@@ -49,11 +49,10 @@ import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
  */
 public class Migration_3_0_0_rfinal extends DefaultMigration {
 
-    private final Locale generatorLocale;
+    private Locale generatorLocale;
 
     public Migration_3_0_0_rfinal(IIpsProject projectToMigrate, String featureId) {
         super(projectToMigrate, featureId);
-        generatorLocale = getIpsProject().getIpsArtefactBuilderSet().getLanguageUsedInGeneratedSourceCode();
     }
 
     @Override
@@ -114,6 +113,7 @@ public class Migration_3_0_0_rfinal extends DefaultMigration {
 
     @Override
     protected void beforeFileMigration() throws CoreException {
+        generatorLocale = getIpsProject().getIpsArtefactBuilderSet().getLanguageUsedInGeneratedSourceCode();
         IIpsProjectProperties properties = getIpsProject().getProperties();
         properties.addSupportedLanguage(generatorLocale);
         properties.setDefaultLanguage(properties.getSupportedLanguage(generatorLocale));
