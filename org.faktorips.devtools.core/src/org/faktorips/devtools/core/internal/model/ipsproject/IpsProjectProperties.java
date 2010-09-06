@@ -88,6 +88,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean productDefinitionProject;
     private boolean persistentProject;
 
+    public static final String VERSION_ATTRIBUTE = "version";
+    private String version;
+
     private String changesInTimeConventionIdForGeneratedCode = IChangesOverTimeNamingConvention.VAA;
     private IProductCmptNamingStrategy productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
     private String builderSetId = ""; //$NON-NLS-1$
@@ -374,6 +377,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 "javaProjectContainsClassesForDynamicDatatypes", "" + javaProjectContainsClassesForDynamicDatatypes); //$NON-NLS-1$ //$NON-NLS-2$
         projectEl.setAttribute("changesInTimeNamingConvention", changesInTimeConventionIdForGeneratedCode); //$NON-NLS-1$
         projectEl.setAttribute("persistentProject", "" + persistentProject); //$NON-NLS-1$ //$NON-NLS-2$
+        projectEl.setAttribute(VERSION_ATTRIBUTE, version);
 
         // required features
         createRequiredIpsFeaturesComment(projectEl);
@@ -483,6 +487,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         modelProject = Boolean.valueOf(element.getAttribute("modelProject")).booleanValue(); //$NON-NLS-1$
         productDefinitionProject = Boolean.valueOf(element.getAttribute("productDefinitionProject")).booleanValue(); //$NON-NLS-1$
         persistentProject = Boolean.valueOf(element.getAttribute("persistentProject")).booleanValue(); //$NON-NLS-1$
+        version = element.getAttribute(VERSION_ATTRIBUTE);
         runtimeIdPrefix = element.getAttribute("runtimeIdPrefix"); //$NON-NLS-1$
         javaProjectContainsClassesForDynamicDatatypes = Boolean.valueOf(
                 element.getAttribute("javaProjectContainsClassesForDynamicDatatypes")).booleanValue(); //$NON-NLS-1$
@@ -1173,6 +1178,15 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     public void removeSupportedLanguage(ISupportedLanguage supportedLanguage) {
         ArgumentCheck.notNull(supportedLanguage);
         supportedLanguages.remove(supportedLanguage);
+    }
+
+    @Override
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
 }

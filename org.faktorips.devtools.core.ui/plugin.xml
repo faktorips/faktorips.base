@@ -124,6 +124,14 @@
                label="%org.faktorips.devtools.core.ChangeWorkingDateAction.label"
                toolbarPath="org.faktorips.devtools"
                tooltip="%org.faktorips.devtools.core.ChangeWorkingDateAction.tooltip"/>
+         <action
+               class="org.faktorips.devtools.core.ui.wizards.deployment.ShowReleaserBuilderWizardAction"
+               icon="icons/FaktorIpsIcon16.gif"
+               id="org.faktorips.devtools.core.ui.wizards.deployment.ShowDeploymentWizardAction"
+               label="Deploy"
+               style="push"
+               toolbarPath="org.faktorips.devtools">
+         </action>
       </actionSet>
       <actionSet
             label="Faktor-IPS Navigation"

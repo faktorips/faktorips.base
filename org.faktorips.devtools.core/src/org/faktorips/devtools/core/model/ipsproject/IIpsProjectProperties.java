@@ -433,4 +433,19 @@ public interface IIpsProjectProperties {
      */
     public void removeSupportedLanguage(ISupportedLanguage supportedLanguage);
 
+    /**
+     * Return the version of this project. The version is needed in deployment process and should be
+     * updated for a new deployment.
+     * 
+     * @return the version string of this project
+     */
+    public String getVersion();
+
+    /**
+     * Setting a new version for this project. This should be done by deployment process.
+     * 
+     * @param version The new version of this project
+     */
+    public void setVersion(String version);
+
 }

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.ICommand;
@@ -81,6 +82,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
 import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
+import org.faktorips.devtools.core.model.ipsproject.IVersionFormat;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -1891,4 +1893,21 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return getPropertiesInternal().isPersistenceSupportEnabled();
     }
 
+    @Override
+    public IVersionFormat getVersionFormat() {
+        return new IVersionFormat() {
+
+            private Pattern versionPattern = Pattern.compile("[0-9]*\\.[0-9]*\\.[0-9]*\\..*"); //$NON-NLS-1$
+
+            @Override
+            public boolean isCorrectVersionFormat(String version) {
+                return versionPattern.matcher(version).matches();
+            }
+
+            @Override
+            public String getVersionFormat() {
+                return versionPattern.pattern();
+            }
+        };
+    }
 }
