@@ -26,11 +26,16 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IObjectActionDelegate;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -59,9 +64,17 @@ import org.faktorips.devtools.core.ui.util.TypedSelection;
  * 
  * @since 3.1
  */
-public class CleanUpTranslationsAction extends IpsAction {
+public class CleanUpTranslationsAction extends IpsAction implements IObjectActionDelegate {
 
     private IWorkbenchWindow workbenchWindow;
+
+    private ISelection delegateSelection;
+
+    private IWorkbenchPart delegateActivePart;
+
+    public CleanUpTranslationsAction() {
+        super(null);
+    }
 
     public CleanUpTranslationsAction(ISelectionProvider selectionProvider, IWorkbenchWindow workbenchWindow) {
         super(selectionProvider);
@@ -97,7 +110,8 @@ public class CleanUpTranslationsAction extends IpsAction {
             }
         }
 
-        ProgressMonitorDialog dialog = new ProgressMonitorDialog(workbenchWindow.getShell());
+        Shell shell = delegateActivePart == null ? workbenchWindow.getShell() : delegateActivePart.getSite().getShell();
+        ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
         try {
             dialog.run(true, true, new CleanUpRunnable(ipsProjects));
         } catch (InvocationTargetException e) {
@@ -105,6 +119,21 @@ public class CleanUpTranslationsAction extends IpsAction {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+        delegateActivePart = targetPart;
+    }
+
+    @Override
+    public void run(IAction action) {
+        run((IStructuredSelection)delegateSelection);
+    }
+
+    @Override
+    public void selectionChanged(IAction action, ISelection selection) {
+        delegateSelection = selection;
     }
 
     private static class CleanUpRunnable implements IRunnableWithProgress {
