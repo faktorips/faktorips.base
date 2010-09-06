@@ -216,6 +216,10 @@
             categoryId="org.eclipse.debug.ui.category.run"
             id="org.faktorips.devtools.core.launchIpsTest.debug">
       </command>
+      <command
+            id="org.faktorips.devtools.core.ui.commands.cleanUpTranslations"
+            name="%cleanUpTranslationsCommand">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -1303,6 +1307,33 @@
             </count>
          </enabledWhen>
       </handler>
+      <handler
+            class="org.faktorips.devtools.core.ui.handlers.CleanUpTranslationsHandler"
+            commandId="org.faktorips.devtools.core.ui.commands.cleanUpTranslations">
+         <enabledWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false"
+                     operator="or">
+                  <adapt
+                        type="org.eclipse.core.runtime.IAdaptable">
+                     <or>
+                        <instanceof
+                              value="org.eclipse.core.resources.IResource">
+                        </instanceof>
+                        <instanceof
+                              value="org.eclipse.jdt.core.IJavaElement">
+                        </instanceof>
+                        <instanceof
+                              value="org.faktorips.devtools.core.model.IIpsElement">
+                        </instanceof>
+                     </or>
+                  </adapt>
+               </iterate>
+            </with>
+         </enabledWhen>
+      </handler>
    </extension>
 
    <extension
@@ -1319,7 +1350,29 @@
       <extension
          point="org.eclipse.ui.menus">
       <menuContribution
-            locationURI="popup:org.faktorips.refactoring">
+            locationURI="popup:org.eclipse.jdt.ui.PackageExplorer">
+         <menu
+               label="%faktorIPSMenu">
+            <menu
+                  label="%cleanUpMenu">
+               <command
+                     commandId="org.faktorips.devtools.core.ui.commands.cleanUpTranslations"
+                     label="%cleanUpTranslationsCommand"
+                     style="push">
+               </command>
+            </menu>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.faktorips.devtools.core.ui.views.modelexplorer.cleanup">
+         <command
+               commandId="org.faktorips.devtools.core.ui.commands.cleanUpTranslations"
+               label="%cleanUpTranslationsCommand"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.faktorips.devtools.core.ui.views.modelexplorer.refactoring">
          <command
                commandId="org.eclipse.ui.edit.rename"
                id="Rename"

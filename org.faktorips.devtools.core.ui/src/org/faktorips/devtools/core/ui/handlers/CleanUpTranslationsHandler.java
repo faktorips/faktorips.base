@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.actions;
+package org.faktorips.devtools.core.ui.handlers;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -21,14 +21,19 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.handlers.HandlerUtil;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -40,14 +45,14 @@ import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 
 /**
- * This action goes over all {@link IIpsObjectPartContainer}s of an {@link IIpsProject} and ensures
+ * This handler goes over all {@link IIpsObjectPartContainer}s of an {@link IIpsProject} and ensures
  * that each one has an {@link ILabel} and an {@link IDescription} for each
  * {@link ISupportedLanguage}.
  * <p>
  * If a container has too many labels or descriptions, the ones that are too much are deleted. If a
  * container has too few labels or descriptions, the missing ones are created.
  * <p>
- * This action is only a temporary solution that is needed in case supported languages are added or
+ * This handler is only a temporary solution that is needed in case supported languages are added or
  * removed from an IPS project. It will be replaced at a later time by preference pages that allow
  * to edit the properties of an IPS project.
  * 
@@ -55,32 +60,44 @@ import org.faktorips.devtools.core.ui.util.TypedSelection;
  * 
  * @since 3.1
  */
-public class CleanUpAction extends IpsAction {
-
-    private final Shell shell;
-
-    public CleanUpAction(ISelectionProvider selectionProvider, Shell shell) {
-        super(selectionProvider);
-        this.shell = shell;
-        setText(Messages.CleanUpAction_text);
-    }
+public class CleanUpTranslationsHandler extends AbstractHandler {
 
     @Override
-    public void run(IStructuredSelection selection) {
-        TypedSelection<IIpsProject> typedSelection = TypedSelection.create(IIpsProject.class, selection, 1,
-                TypedSelection.INFINITY);
-        if (!(typedSelection.isValid())) {
-            return;
-        }
+    public Object execute(ExecutionEvent event) throws ExecutionException {
+        TypedSelection<IAdaptable> typedSelection = TypedSelection.create(IAdaptable.class, HandlerUtil
+                .getCurrentSelectionChecked(event), 1, TypedSelection.INFINITY);
+        if (typedSelection.isValid()) {
+            /*
+             * Collect the potential different IPS projects of the selected elements as we want to
+             * batch-execute the action on all projects.
+             */
+            Set<IIpsProject> ipsProjects = new HashSet<IIpsProject>();
+            for (IAdaptable adaptable : typedSelection.getElements()) {
+                IIpsProject ipsProject = null;
+                if (adaptable instanceof IIpsElement) {
+                    ipsProject = ((IIpsElement)adaptable).getIpsProject();
+                } else if (adaptable instanceof IResource) {
+                    ipsProject = IpsPlugin.getDefault().getIpsModel()
+                            .getIpsProject(((IResource)adaptable).getProject());
+                } else if (adaptable instanceof IJavaElement) {
+                    ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(
+                            ((IJavaElement)adaptable).getJavaProject().getProject());
+                }
+                if (!(ipsProjects.contains(ipsProject)) && ipsProject != null) {
+                    ipsProjects.add(ipsProject);
+                }
+            }
 
-        ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
-        try {
-            dialog.run(true, true, new CleanUpRunnable(typedSelection.getElements()));
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            ProgressMonitorDialog dialog = new ProgressMonitorDialog(HandlerUtil.getActiveShell(event));
+            try {
+                dialog.run(true, true, new CleanUpRunnable(ipsProjects));
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
+        return null;
     }
 
     private static class CleanUpRunnable implements IRunnableWithProgress {
@@ -103,7 +120,8 @@ public class CleanUpAction extends IpsAction {
 
                 Set<Locale> supportedLocales = getSupportedLocales(ipsProject);
 
-                monitor.beginTask(NLS.bind(Messages.CleanUpAction_progressTask, ipsProject), ipsSrcFiles.size());
+                int totalWork = ipsSrcFiles.size();
+                monitor.beginTask(NLS.bind(Messages.CleanUpTranslationsHandler_progressTask, ipsProject), totalWork);
                 for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
                     try {
                         IIpsObject ipsObject = ipsSrcFile.getIpsObject();
@@ -118,6 +136,7 @@ public class CleanUpAction extends IpsAction {
                     }
                     monitor.worked(1);
                 }
+                monitor.done();
             }
         }
 

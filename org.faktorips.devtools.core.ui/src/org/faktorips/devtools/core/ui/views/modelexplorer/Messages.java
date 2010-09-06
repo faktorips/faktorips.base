@@ -18,7 +18,6 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.views.modelexplorer.messages"; //$NON-NLS-1$
-
     static {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
@@ -37,6 +36,7 @@ public class Messages extends NLS {
     public static String ModelExplorer_actionFlatLayout;
     public static String ModelExplorer_actionHierarchicalLayout;
     public static String ModelExplorer_submenuRefactor;
+    public static String ModelExplorer_submenuCleanUp;
     public static String ModelExplorer_errorTitle;
     public static String ModelExplorer_defaultPackageLabel;
     public static String ModelExplorer_nonIpsProjectLabel;

@@ -60,7 +60,6 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrationOperation;
-import org.faktorips.devtools.core.ui.actions.CleanUpAction;
 import org.faktorips.devtools.core.ui.actions.CopyTableAction;
 import org.faktorips.devtools.core.ui.actions.CreateIpsArchiveAction;
 import org.faktorips.devtools.core.ui.actions.CreateMissingEnumContentsAction;
@@ -212,9 +211,9 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         createImportExportEnumActions(manager, selected);
         createTestCaseAction(manager, selected);
         createIpsEditSortOrderAction(manager, selected);
-        createFixDifferencesAction(manager, selected, (IStructuredSelection)treeViewer.getSelection());
         createIpsArchiveAction(manager, selected);
-        createMissingEnumContentsAction(manager, selected);
+
+        createCleanUpMenu(manager, selected);
 
         // Menus with sub menus.
         createRefactorMenu(manager, selected);
@@ -405,8 +404,6 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
                 } catch (CoreException e) {
                     IpsPlugin.log(e);
                 }
-
-                manager.add(new CleanUpAction(treeViewer, viewSite.getShell()));
             }
         } else {
             if (selected instanceof IProject) {
@@ -461,9 +458,14 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         }
     }
 
-    protected void createMissingEnumContentsAction(IMenuManager manager, Object selected) {
+    protected void createCleanUpMenu(IMenuManager manager, Object selected) {
         if (selected instanceof IIpsElement) {
-            manager.add(new CreateMissingEnumContentsAction(treeViewer, viewSite.getWorkbenchWindow()));
+            MenuManager cleanUpMenu = new MenuManager(Messages.ModelExplorer_submenuCleanUp,
+                    "org.faktorips.devtools.core.ui.views.modelexplorer.cleanup"); //$NON-NLS-1$
+            // Commands added via extension point org.eclipse.ui.menus
+            createFixDifferencesAction(cleanUpMenu, selected, (IStructuredSelection)treeViewer.getSelection());
+            cleanUpMenu.add(new CreateMissingEnumContentsAction(treeViewer, viewSite.getWorkbenchWindow()));
+            manager.add(cleanUpMenu);
         }
     }
 
@@ -524,8 +526,9 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         if (selected instanceof IIpsElement & !(selected instanceof IIpsProject) | selected instanceof IFile
                 | selected instanceof IFolder) {
             if (!isRootArchive(selected)) {
-                MenuManager subMm = new MenuManager(Messages.ModelExplorer_submenuRefactor, "org.faktorips.refactoring"); //$NON-NLS-1$
-                // commands added via extension point org.eclipse.ui.menus
+                MenuManager subMm = new MenuManager(Messages.ModelExplorer_submenuRefactor,
+                        "org.faktorips.devtools.core.ui.views.modelexplorer.refactoring"); //$NON-NLS-1$
+                // Commands added via extension point org.eclipse.ui.menus
                 manager.add(subMm);
             }
         }
