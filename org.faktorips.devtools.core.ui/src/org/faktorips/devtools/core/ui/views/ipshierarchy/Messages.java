@@ -27,10 +27,10 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
-    public static String Hierarchy_tooltipRefreshContents;
-    public static String Hierarchy_tooltipClear;
-    public static String Hierarchy_tooltipShowSubtypeHierarchy;
-    public static String InstanceExplorer_infoMessageEmptyView;
-    public static String Hierarchy_infoMessageEmptyView;
-    public static String Hierarchy_tooltipShowTypeHierarchy;
+    public static String IpsHierarchy_tooltipClear;
+    public static String IpsHierarchy_tooltipShowSubtypeHierarchy;
+    public static String IpsHierarchy_infoMessageEmptyView;
+    public static String IpsHierarchy_tooltipShowTypeHierarchy;
+    public static String IpsHierarchy_tooltipLinkWithEditor;
+    public static String IpsHierarchy_tooltipRefreshContents;
 }

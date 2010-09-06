@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.model.pctype;
+package org.faktorips.devtools.core.internal.model.type;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -257,15 +257,15 @@ public class TypeHierarchy implements ITypeHierarchy {
 
     @Override
     public IAttribute[] getAllAttributes(IType type) {
-        List<IPolicyCmptTypeAttribute> attributes = new ArrayList<IPolicyCmptTypeAttribute>();
+        List<IAttribute> attributes = new ArrayList<IAttribute>();
         IType[] types = getAllSupertypesInclSelf(type);
         for (IType type2 : types) {
-            List<?> list = ((PolicyCmptType)type2).getAttributeList();
+            IAttribute[] list = type2.getAttributes();
             for (Object nextAttr : list) {
-                attributes.add((IPolicyCmptTypeAttribute)nextAttr);
+                attributes.add((IAttribute)nextAttr);
             }
         }
-        return attributes.toArray(new IPolicyCmptTypeAttribute[attributes.size()]);
+        return attributes.toArray(new IAttribute[attributes.size()]);
     }
 
     @Override
@@ -286,7 +286,7 @@ public class TypeHierarchy implements ITypeHierarchy {
                 }
             }
         }
-        return attributes.toArray(new IPolicyCmptTypeAttribute[attributes.size()]);
+        return attributes.toArray(new IAttribute[attributes.size()]);
     }
 
     @Override
@@ -294,7 +294,7 @@ public class TypeHierarchy implements ITypeHierarchy {
         List<IMethod> methods = new ArrayList<IMethod>();
         IType[] types = getAllSupertypesInclSelf(type);
         for (IType type2 : types) {
-            List<?> typeMethods = ((PolicyCmptType)type2).getMethodList();
+            IMethod[] typeMethods = type2.getMethods();
             for (Object nextMethod : typeMethods) {
                 methods.add((IMethod)nextMethod);
             }
@@ -307,9 +307,11 @@ public class TypeHierarchy implements ITypeHierarchy {
         List<IValidationRule> rules = new ArrayList<IValidationRule>();
         IType[] types = getAllSupertypesInclSelf(type);
         for (IType type2 : types) {
-            List<?> typeRules = ((PolicyCmptType)type2).getRulesList();
-            for (Object nextRule : typeRules) {
-                rules.add((IValidationRule)nextRule);
+            if (type2 instanceof IPolicyCmptType) {
+                IValidationRule[] typeRules = ((IPolicyCmptType)type2).getRules();
+                for (Object nextRule : typeRules) {
+                    rules.add((IValidationRule)nextRule);
+                }
             }
         }
         return rules.toArray(new IValidationRule[rules.size()]);
@@ -327,12 +329,13 @@ public class TypeHierarchy implements ITypeHierarchy {
         return null;
     }
 
-    public boolean isSupertype(String supertype) {
-        int beginIndex = supertype.lastIndexOf(".");
-        String supertypeName = supertype.substring(beginIndex + 1);
-        for (Node node : nodes.values()) {
-            if (supertypeName.equals(node.type.getName())) {
-                return true;
+    public boolean isPartOfHierarchy(String name) {
+        if (name != null) {
+            for (Node node : nodes.values()) {
+                String nodeName = node.type.getQualifiedName();
+                if (name.equals(nodeName)) {
+                    return true;
+                }
             }
         }
         return false;

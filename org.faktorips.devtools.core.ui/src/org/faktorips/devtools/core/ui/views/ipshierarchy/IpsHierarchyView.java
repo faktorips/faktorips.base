@@ -14,7 +14,11 @@
 package org.faktorips.devtools.core.ui.views.ipshierarchy;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
@@ -22,6 +26,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -36,35 +41,50 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
-import org.eclipse.ui.forms.widgets.ImageHyperlink;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
-import org.faktorips.devtools.core.internal.model.pctype.TypeHierarchy;
-import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.internal.model.type.TypeHierarchy;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 
 public class IpsHierarchyView extends ViewPart implements IResourceChangeListener {
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchy"; //$NON-NLS-1$
-    public static final String LOGO = "IpsHierarchy.gif"; //$NON-NLS-1$
+    public static final String LOGO = "IpsHierarchyView.gif"; //$NON-NLS-1$
     private TreeViewer treeViewer;
     private Label errormsg;
     private Composite panel;
-    private ImageHyperlink selectedElementLink;
     private HierarchyContentProvider hierarchyContentProvider = new HierarchyContentProvider();
     private Display display;
+    private Action showTypeHierarchyAction;
+    private Action showSubtypeHierarchyAction;
+    private Action clearAction;
+    private Action refreshAction;
+    protected boolean linkingEnabled = true;
+
+    /**
+     * Check whether this HierarchyView supports this object or not. Null is also a supported type
+     * to reset the editor.
+     * 
+     * @param object the object to test
+     * @return true of the HierarchyView supports this object
+     */
+    public static boolean supports(Object object) {
+        if (object == null) {
+            return true;
+        }
+        return object instanceof IType;
+    }
 
     public IpsHierarchyView() {
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_BUILD);
@@ -78,13 +98,8 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
         panel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         DropTarget dropTarget = new DropTarget(parent, DND.DROP_LINK);
-        dropTarget.addDropListener(new InstanceDropListener());
+        dropTarget.addDropListener(new HierarchyDropListener());
         dropTarget.setTransfer(new Transfer[] { FileTransfer.getInstance() });
-
-        selectedElementLink = new ImageHyperlink(panel, SWT.FILL);
-        selectedElementLink.setText(""); //$NON-NLS-1$
-        selectedElementLink.setUnderlined(true);
-        selectedElementLink.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
         treeViewer = new TreeViewer(panel);
         treeViewer.setLabelProvider(new DefaultLabelProvider());
@@ -103,86 +118,160 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
 
         IActionBars actionBars = getViewSite().getActionBars();
         initToolBar(actionBars.getToolBarManager());
-
         showEmptyMessage();
+
+        if (linkingEnabled) {
+            IEditorPart editorPart = getSite().getPage().getActiveEditor();
+            if (editorPart != null) {
+                try {
+                    editorActivated(editorPart);
+                } catch (CoreException e) {
+                    IpsPlugin.log(e);
+                }
+            }
+        }
     }
 
     private void initToolBar(IToolBarManager toolBarManager) {
         // show Type Hierarchy
-        toolBarManager.add(new Action(Messages.Hierarchy_tooltipShowTypeHierarchy, IpsUIPlugin.getImageHandling()
-                .createImageDescriptor("ShowTypeHierarchy.gif")) { //$NON-NLS-1$
-                    @Override
-                    public void run() {
-                        try {
-                            getHierarchy(hierarchyContentProvider.getActualElement());
-                        } catch (CoreException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public String getToolTipText() {
-                        return Messages.Hierarchy_tooltipShowTypeHierarchy;
-                    }
-                });
-
-        // show the Subtype Hierarchy
-        toolBarManager.add(new Action(Messages.Hierarchy_tooltipShowSubtypeHierarchy, IpsUIPlugin.getImageHandling()
-                .createImageDescriptor("ShowSubtypeHierarchy.gif")) { //$NON-NLS-1$
-                    @Override
-                    public void run() {
-                        try {
-                            setInputData(TypeHierarchy.getSubtypeHierarchy(hierarchyContentProvider.getActualElement()));
-                        } catch (CoreException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public String getToolTipText() {
-                        return Messages.Hierarchy_tooltipShowSubtypeHierarchy;
-                    }
-                });
-
-        // refresh action
-        Action refreshAction = new Action(Messages.Hierarchy_tooltipRefreshContents, IpsUIPlugin.getImageHandling()
-                .createImageDescriptor("Refresh.gif")) { //$NON-NLS-1$
+        showTypeHierarchyAction = new Action(Messages.IpsHierarchy_tooltipShowTypeHierarchy, SWT.TOGGLE) {
+            @Override
+            public ImageDescriptor getImageDescriptor() {
+                return IpsUIPlugin.getImageHandling().createImageDescriptor("ShowTypeHierarchy.gif"); //$NON-NLS-1$
+            }
 
             @Override
             public void run() {
                 try {
-                    getHierarchy(hierarchyContentProvider.getActualElement());
+                    showHierarchy(hierarchyContentProvider.getTypeHierarchy().getType());
+                    showSubtypeHierarchyAction.setChecked(false);
                 } catch (CoreException e) {
-                    e.printStackTrace();
+                    IpsPlugin.log(e);
                 }
             }
 
             @Override
             public String getToolTipText() {
-                return Messages.Hierarchy_tooltipRefreshContents;
+                return Messages.IpsHierarchy_tooltipShowTypeHierarchy;
             }
         };
-        getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshAction);
-        IWorkbenchAction retargetAction = ActionFactory.REFRESH.create(getViewSite().getWorkbenchWindow());
-        retargetAction.setImageDescriptor(refreshAction.getImageDescriptor());
-        retargetAction.setToolTipText(refreshAction.getToolTipText());
-        toolBarManager.add(retargetAction);
+        toolBarManager.add(showTypeHierarchyAction);
+        // show the Subtype Hierarchy
+        showSubtypeHierarchyAction = new Action(Messages.IpsHierarchy_tooltipShowSubtypeHierarchy, SWT.TOGGLE) {
+            @Override
+            public ImageDescriptor getImageDescriptor() {
+                return IpsUIPlugin.getImageHandling().createImageDescriptor("ShowSubtypeHierarchy.gif"); //$NON-NLS-1$
+            }
 
+            @Override
+            public void run() {
+                try {
+                    setInputData(TypeHierarchy.getSubtypeHierarchy(hierarchyContentProvider.getTypeHierarchy()
+                            .getType()));
+                    showTypeHierarchyAction.setChecked(false);
+                } catch (CoreException e) {
+                    IpsPlugin.log(e);
+                }
+            }
+
+            @Override
+            public String getToolTipText() {
+                return Messages.IpsHierarchy_tooltipShowSubtypeHierarchy;
+            }
+        };
+        toolBarManager.add(showSubtypeHierarchyAction);
+        refreshAction = new Action(Messages.IpsHierarchy_tooltipRefreshContents, IpsUIPlugin.getImageHandling()
+                .createImageDescriptor("Refresh.gif")) //$NON-NLS-1$
+        {
+            @Override
+            public void run() {
+                setInputData((hierarchyContentProvider.getTypeHierarchy()));
+            }
+
+            @Override
+            public String getToolTipText() {
+                return Messages.IpsHierarchy_tooltipRefreshContents;
+            }
+        };
+        toolBarManager.add(refreshAction);
         // clear action
-        toolBarManager.add(new Action(Messages.Hierarchy_tooltipClear, IpsUIPlugin.getImageHandling()
+        clearAction = new Action(Messages.IpsHierarchy_tooltipClear, IpsUIPlugin.getImageHandling()
                 .createImageDescriptor("Clear.gif")) { //$NON-NLS-1$
-                    @Override
-                    public void run() {
-                        hierarchyContentProvider.deleteActualElement();
-                        setInputData(null);
-                    }
+            @Override
+            public void run() {
+                hierarchyContentProvider.getTypeHierarchy().getType();
+                showTypeHierarchyAction.setChecked(false);
+                setInputData(null);
+            }
 
-                    @Override
-                    public String getToolTipText() {
-                        return Messages.Hierarchy_tooltipClear;
-                    }
-                });
+            @Override
+            public String getToolTipText() {
+                return Messages.IpsHierarchy_tooltipClear;
+            }
+        };
+        toolBarManager.add(clearAction);
+        toolBarManager.add(new Action(Messages.IpsHierarchy_tooltipLinkWithEditor, SWT.TOGGLE) {
+            @Override
+            public ImageDescriptor getImageDescriptor() {
+                return IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/synced.gif"); //$NON-NLS-1$
+            }
 
+            @Override
+            public void run() {
+                changeLinkingEnabled();
+            }
+
+            @Override
+            public String getToolTipText() {
+                return Messages.IpsHierarchy_tooltipLinkWithEditor;
+            }
+        });
+    }
+
+    /**
+     * Get the Hierarchy of the IIpsObject for setting it in the Treeviewer
+     * 
+     */
+    public void showHierarchy(IIpsObject element) throws CoreException {
+        ITypeHierarchy hierarchy = null;
+        if (element instanceof IType && element.getEnclosingResource().isAccessible()) {
+            IType iType = (IType)element;
+            hierarchy = TypeHierarchy.getTypeHierarchy(iType);
+        }
+        showSubtypeHierarchyAction.setChecked(false);
+        setInputData(hierarchy);
+    }
+
+    /**
+     * 
+     * Update the IpsHierarchyView in chase of changes on the file
+     */
+    public void resourceChanged(IResourceChangeEvent event) {
+        ITypeHierarchy hierarchyTreeViewer = hierarchyContentProvider.getTypeHierarchy();
+        if (hierarchyTreeViewer != null) {
+            try {
+                List<IFile> affectedFiles = getChangedFiles(event.getDelta().getAffectedChildren());
+                List<IIpsSrcFile> aIipsElement = getIpsSrcFiles(affectedFiles);
+                if (aIipsElement.size() > 0) {
+                    isNodeOfHierarchy(aIipsElement, hierarchyTreeViewer);
+                }
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+        }
+    }
+
+    @Override
+    public void setFocus() {
+        // does nothing
+    }
+
+    private void changeLinkingEnabled() {
+        if (linkingEnabled) {
+            linkingEnabled = false;
+        } else {
+            linkingEnabled = true;
+        }
     }
 
     private void setInputData(final ITypeHierarchy hierarchy) {
@@ -190,28 +279,37 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
         updateView();
     }
 
-    private void updateView() {
+    private void enableButtons(boolean status) {
+        showSubtypeHierarchyAction.setEnabled(status);
+        showTypeHierarchyAction.setEnabled(status);
+        clearAction.setEnabled(status);
+        refreshAction.setEnabled(status);
+    }
 
+    private void updateView() {
         if (treeViewer != null && !treeViewer.getControl().isDisposed()) {
             Object element = treeViewer.getInput();
             if (element == null) {
                 showEmptyMessage();
-            } else if (element instanceof TypeHierarchy) {
+            } else if (element instanceof ITypeHierarchy) {
+                ITypeHierarchy hierarchy = (ITypeHierarchy)element;
                 showMessgeOrTableView(MessageTableSwitch.TABLE);
+                enableButtons(true);
                 treeViewer.refresh();
                 int level = 1;
-                treeViewer.expandToLevel(hierarchyContentProvider.getActualElement(), level);
-                treeViewer.setSelection(new StructuredSelection(hierarchyContentProvider.getActualElement()), true);
+                treeViewer.expandToLevel(hierarchy.getType(), level);
+                treeViewer.setSelection(new StructuredSelection(hierarchy.getType()), true);
+                showTypeHierarchyAction.setChecked(true);
             }
         }
     }
 
     private void showEmptyMessage() {
-        showErrorMessage(Messages.Hierarchy_infoMessageEmptyView);
+        enableButtons(false);
+        showErrorMessage(Messages.IpsHierarchy_infoMessageEmptyView);
     }
 
     private void showErrorMessage(String message) {
-
         if (errormsg != null && !errormsg.isDisposed()) {
             errormsg.setText(message);
             showMessgeOrTableView(MessageTableSwitch.MESSAGE);
@@ -232,36 +330,113 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
         }
     }
 
+    private void isNodeOfHierarchy(List<IIpsSrcFile> ipsSrcFiles, ITypeHierarchy hierarchyTreeViewer)
+            throws CoreException {
+        for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+            String qName = ipsSrcFile.getQualifiedNameType().getName();
+            if (hierarchyTreeViewer.isPartOfHierarchy(qName)) {
+                updateHierarchy();
+                return;
+            }
+            if (ipsSrcFile.exists()) {
+                String superType = ipsSrcFile.getPropertyValue(IType.PROPERTY_SUPERTYPE);
+                if (hierarchyTreeViewer.isPartOfHierarchy(superType)) {
+                    updateHierarchy();
+                    return;
+                }
+            }
+        }
+    }
+
+    private void updateHierarchy() {
+        display.asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    showHierarchy(hierarchyContentProvider.getTypeHierarchy().getType());
+                } catch (CoreException e) {
+                    IpsPlugin.log(e);
+                }
+            }
+        });
+    }
+
     /**
-     * Check whether this HierarchyView supports this object or not. Null is also a supported type
-     * to reset the editor.
-     * 
-     * @param object the object to test
-     * @return true of the HierarchyView supports this object
+     * protected to test this method
      */
-    public static boolean supports(Object object) {
-        if (object == null) {
-            return true;
+    protected List<IFile> getChangedFiles(IResourceDelta[] projectResourceDeltas) throws CoreException {
+        List<IResourceDelta> projectDeltas = new ArrayList<IResourceDelta>();
+        for (IResourceDelta aResourceDelta : projectResourceDeltas) {
+            IResource aResource = aResourceDelta.getResource();
+            IIpsProject ipsProject = null;
+            if (aResource instanceof IProject) {
+                IProject aProject = (IProject)aResource;
+                ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(aProject);
+            }
+            if (ipsProject != null) {
+                projectDeltas.add(aResourceDelta);
+            }
         }
-        return object instanceof IPolicyCmptType || object instanceof IProductCmptType;
+        return getChangedFilesFromIpsProjectDelta(projectDeltas);
     }
 
-    private enum MessageTableSwitch {
-        MESSAGE,
-        TABLE;
-
-        public boolean isMessage() {
-            return equals(MESSAGE);
+    private List<IFile> getChangedFilesFromIpsProjectDelta(List<IResourceDelta> ipsProjectDeltas) throws CoreException {
+        List<IResourceDelta> ipsPackageFragmentRootDeltas = new ArrayList<IResourceDelta>();
+        for (IResourceDelta aResourceDelta : ipsProjectDeltas) {
+            IResource resource = aResourceDelta.getResource();
+            IProject aProject = (IProject)resource;
+            IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(aProject);
+            IIpsPackageFragmentRoot[] roots = ipsProject.getIpsPackageFragmentRoots();
+            for (IResourceDelta child : aResourceDelta.getAffectedChildren()) {
+                for (IIpsPackageFragmentRoot pfRoot : roots) {
+                    if (child.getResource().getName().equals(pfRoot.getName())) {
+                        ipsPackageFragmentRootDeltas.add(child);
+                    }
+                }
+            }
         }
-
+        return getChangedFilesForIpsPackeFragmentRootDeltas(ipsPackageFragmentRootDeltas);
     }
 
-    @Override
-    public void setFocus() {
-        // does nothing
+    private List<IFile> getChangedFilesForIpsPackeFragmentRootDeltas(List<IResourceDelta> ipsPackageFragmentRootDeltas) {
+        List<IFile> result = new ArrayList<IFile>();
+        getChangedFilesRecoursive(ipsPackageFragmentRootDeltas.toArray(new IResourceDelta[0]), result);
+        return result;
     }
 
-    private class InstanceDropListener extends IpsElementDropListener {
+    private void getChangedFilesRecoursive(IResourceDelta[] deltas, List<IFile> result) {
+        for (IResourceDelta aDelta : deltas) {
+            if (aDelta.getResource() instanceof IFile) {
+                result.add((IFile)aDelta.getResource());
+            } else {
+                getChangedFilesRecoursive(aDelta.getAffectedChildren(), result);
+            }
+        }
+    }
+
+    private List<IIpsSrcFile> getIpsSrcFiles(List<IFile> affectedFiles) {
+        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        for (IFile aFile : affectedFiles) {
+            IIpsSrcFile srcFile = (IIpsSrcFile)IpsPlugin.getDefault().getIpsModel().getIpsElement(aFile);
+            result.add(srcFile);
+        }
+        return result;
+    }
+
+    private void editorActivated(IEditorPart editorPart) throws CoreException {
+        if (!linkingEnabled || editorPart == null) {
+            return;
+        }
+        if (editorPart instanceof IpsObjectEditor) {
+            IpsObjectEditor ipsEditor = (IpsObjectEditor)editorPart;
+            IIpsObject i = ipsEditor.getIpsSrcFile().getIpsObject();
+            if (i instanceof IType) {
+                showHierarchy(i);
+            }
+        }
+    }
+
+    private class HierarchyDropListener extends IpsElementDropListener {
 
         @Override
         public void dragEnter(DropTargetEvent event) {
@@ -273,7 +448,7 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
             Object[] transferred = super.getTransferedElements(event.currentDataType);
             if (transferred.length > 0 && transferred[0] instanceof IIpsSrcFile) {
                 try {
-                    getHierarchy(((IIpsSrcFile)transferred[0]).getIpsObject());
+                    showHierarchy(((IIpsSrcFile)transferred[0]).getIpsObject());
                 } catch (CoreException e) {
                     IpsPlugin.log(e);
                 }
@@ -305,89 +480,12 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
         }
     }
 
-    public void resourceChanged(IResourceChangeEvent event) {
-        ITypeHierarchy hierarchy = hierarchyContentProvider.getInput();
-        if (hierarchy != null) {
-            IIpsElement iipsElement = null;
-            // IType[] hierarchy2 = null;
-            IIpsObject iipsObject = null;
-            String supertype = ""; //$NON-NLS-1$
-            IResourceDelta[] element = event.getDelta().getAffectedChildren();
-            ArrayList<IResourceDelta> a = null;
-            a = weiter(element[0].getAffectedChildren());
+    private enum MessageTableSwitch {
+        MESSAGE,
+        TABLE;
 
-            for (int i = 0; a.size() > i; i++) {
-                if (iipsElement == null) {
-                    iipsElement = IpsPlugin.getDefault().getIpsModel().findIpsElement(a.get(i).getResource());
-                }
-            }
-            IpsSrcFile ipsSrcFile = null;
-            if (iipsElement instanceof IpsSrcFile) {
-                ipsSrcFile = (IpsSrcFile)iipsElement;
-            }
-            try {
-                if (ipsSrcFile != null) {
-                    iipsObject = ipsSrcFile.getIpsObject();
-                }
-            } catch (CoreException e1) {
-                e1.printStackTrace();
-            }
-            if (iipsObject instanceof IType) {
-                IType itype = (IType)iipsObject;
-                supertype = itype.getSupertype();
-                // hierarchy2 = hierarchy.getAllSupertypes(itype);
-            }
-            if (/* hierarchy2.length > 0 || */hierarchy.isSupertype(supertype)) {
-                display.asyncExec(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            getHierarchy(hierarchyContentProvider.getActualElement());
-                        } catch (CoreException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-            }
+        public boolean isMessage() {
+            return equals(MESSAGE);
         }
     }
-
-    private ArrayList<IResourceDelta> weiter(IResourceDelta[] resourceDelta) {
-        ArrayList<IResourceDelta> a = new ArrayList<IResourceDelta>();
-        for (int i = 0; resourceDelta.length > i; i++) {
-            a.add(getAffectedChildren(resourceDelta[i].getAffectedChildren()));
-        }
-        return a;
-    }
-
-    private IResourceDelta getAffectedChildren(IResourceDelta[] resourceDelta) {
-        if (resourceDelta[0].getAffectedChildren().length == 0) {
-            return resourceDelta[0];
-        }
-        // for (int i = 0; resourceDelta.length > i; i++) {
-        return getAffectedChildren(resourceDelta[0].getAffectedChildren());
-        // }
-    }
-
-    /**
-     * 
-     * Returns the hierarchy of IIpsObject
-     * 
-     */
-    public void getHierarchy(IIpsObject element) throws CoreException {
-        ITypeHierarchy hierarchy = null;
-        if (element != null && !element.getEnclosingResource().isAccessible()) {
-            setInputData(null);
-        } else if (element instanceof IProductCmptType) {
-            IProductCmptType pcType = (IProductCmptType)element;
-            hierarchy = TypeHierarchy.getTypeHierarchy(pcType);
-            hierarchyContentProvider.setActualElement(pcType);
-        } else if (element instanceof IPolicyCmptType) {
-            IPolicyCmptType pcType = (IPolicyCmptType)element;
-            hierarchy = TypeHierarchy.getTypeHierarchy(pcType);
-            hierarchyContentProvider.setActualElement(pcType);
-        }
-        setInputData(hierarchy);
-    }
-
 }

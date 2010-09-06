@@ -72,7 +72,7 @@ public class ShowHierarchyAction extends IpsAction {
             try {
                 IViewPart pse = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage()
                         .showView(IpsHierarchyView.EXTENSION_ID);
-                ((IpsHierarchyView)pse).getHierarchy(ipsObject);
+                ((IpsHierarchyView)pse).showHierarchy(ipsObject);
             } catch (PartInitException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             } catch (CoreException e) {

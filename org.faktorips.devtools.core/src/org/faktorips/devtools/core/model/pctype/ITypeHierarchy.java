@@ -85,7 +85,8 @@ public interface ITypeHierarchy {
 
     /**
      * Returns all rules of the given type either defined in the type itself or any of it's super
-     * types found in the hierarchy.
+     * types found in the hierarchy. Works only for PolicyCmptType. Returns an empty array for all
+     * other types.
      */
     public IValidationRule[] getAllRules(IType type);
 
@@ -111,6 +112,11 @@ public interface ITypeHierarchy {
      */
     public IType[] getAllSubtypes(IType type);
 
-    public boolean isSupertype(String supertype);
-
+    /**
+     * Test if the IType with the given name is part of the Hierarchy.
+     * 
+     * @param name qualified name of the IType
+     * @return true if IType is part of the hierarchy, false if IType is not part of the hierarchy
+     */
+    public boolean isPartOfHierarchy(String name);
 }
