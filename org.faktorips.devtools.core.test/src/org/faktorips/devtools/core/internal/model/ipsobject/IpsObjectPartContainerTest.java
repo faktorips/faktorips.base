@@ -131,7 +131,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         IPolicyCmptType policyContainer = newPolicyCmptType(ipsProject, "TestPolicy");
         assertEquals("", policyContainer.getDescription());
 
-        Locale localizationLocale = IpsPlugin.getDefault().getLocalizationLocale();
+        Locale localizationLocale = IpsPlugin.getMultiLanguageSupport().getLocalizationLocale();
         IDescription localizedDescription = policyContainer.getDescription(localizationLocale);
         if (localizedDescription == null) {
             localizedDescription = policyContainer.newDescription();

@@ -256,8 +256,9 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
                     setMessage(msg.getText(), IMessageProvider.INFORMATION);
                     return;
                 }
-            } else if (!(StringUtils.isEmpty(IpsPlugin.getDefault().getLocalizedDescription(part).trim()))) {
-                setMessage(IpsPlugin.getDefault().getLocalizedDescription(part), IMessageProvider.INFORMATION);
+            } else if (!(StringUtils.isEmpty(IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(part).trim()))) {
+                setMessage(IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(part),
+                        IMessageProvider.INFORMATION);
             } else {
                 setMessage(null);
             }

@@ -256,7 +256,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             if (generatorDescription != null) {
                 description = generatorDescription.getText();
             } else {
-                description = IpsPlugin.getDefault().getDefaultDescription(ipsObjectPartContainer);
+                description = IpsPlugin.getMultiLanguageSupport().getDefaultDescription(ipsObjectPartContainer);
             }
         }
         return description;

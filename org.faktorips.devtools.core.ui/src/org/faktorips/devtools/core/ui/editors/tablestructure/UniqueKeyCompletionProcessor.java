@@ -65,7 +65,7 @@ public class UniqueKeyCompletionProcessor extends AbstractCompletionProcessor {
         String name = key.getName();
         String displayText = name;
         Image image = IpsUIPlugin.getImageHandling().getImage(key);
-        String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(key);
+        String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(key);
         CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), image,
                 displayText, null, localizedDescription);
         result.add(proposal);

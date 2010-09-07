@@ -372,7 +372,7 @@ public class TestCaseDetailArea {
                 .getTestAttribute()));
         if (testAttribute != null) {
             // use description of parameter as tooltip
-            String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(testAttribute);
+            String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(testAttribute);
             label.setToolTipText(localizedDescription);
         }
         addSectionSelectionListeners(null, label, testPolicyCmptForSelection);
@@ -557,7 +557,7 @@ public class TestCaseDetailArea {
         Label label = toolkit.createFormLabel(composite, Messages.TestCaseDetailArea_Label_Value);
         if (param != null) {
             // use description of parameter as tooltip
-            String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(param);
+            String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(param);
             label.setToolTipText(localizedDescription);
             section.getChildren()[0].setToolTipText(localizedDescription);
         }
@@ -622,7 +622,8 @@ public class TestCaseDetailArea {
         Label label = toolkit.createFormLabel(composite, Messages.TestCaseDetailArea_Label_Violation);
         if (testRuleParameter != null) {
             // use description of parameter as tooltip
-            String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(testRuleParameter);
+            String localizedDescription = IpsPlugin.getMultiLanguageSupport()
+                    .getLocalizedDescription(testRuleParameter);
             label.setToolTipText(localizedDescription);
             section.getChildren()[0].setToolTipText(localizedDescription);
         }

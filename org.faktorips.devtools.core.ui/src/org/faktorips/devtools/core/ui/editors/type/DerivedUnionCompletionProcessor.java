@@ -54,7 +54,7 @@ public class DerivedUnionCompletionProcessor extends AbstractCompletionProcessor
     private void addToResult(List<ICompletionProposal> result, IAssociation relation, int documentOffset) {
         String name = relation.getName();
         String displayText = name + " - " + relation.getParent().getName(); //$NON-NLS-1$
-        String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(relation);
+        String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(relation);
         Image image = IpsUIPlugin.getImageHandling().getImage(relation);
         ICompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), image,
                 displayText, null, localizedDescription);

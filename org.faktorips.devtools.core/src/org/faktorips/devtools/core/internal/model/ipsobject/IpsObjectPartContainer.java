@@ -951,7 +951,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     @Deprecated
     @Override
     public String getDescription() {
-        return IpsPlugin.getDefault().getLocalizedDescription(this);
+        return IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(this);
     }
 
     // Deprecated since 3.1

@@ -43,7 +43,7 @@ public class TableModelDescriptionPage extends DefaultModelDescriptionPage {
 
         ITableStructure tableStructure = tableContents.findTableStructure(tableContents.getIpsProject());
 
-        String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(tableStructure);
+        String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(tableStructure);
         DescriptionItem structureDescription = new DescriptionItem(
                 Messages.TableModelDescriptionPage_generalInformation, localizedDescription);
         columnsList.add(structureDescription);
@@ -54,7 +54,7 @@ public class TableModelDescriptionPage extends DefaultModelDescriptionPage {
          * Default sort order is same as table definition.
          */
         for (IColumn column : columns) {
-            localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(column);
+            localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(column);
             DescriptionItem item = new DescriptionItem(column.getName(), localizedDescription);
             columnsList.add(item);
         }

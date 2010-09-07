@@ -102,7 +102,7 @@ public abstract class JavaGeneratorForIpsPart {
             if (generatorDescription != null) {
                 description = generatorDescription.getText();
             } else {
-                description = IpsPlugin.getDefault().getDefaultDescription(ipsObjectPart);
+                description = IpsPlugin.getMultiLanguageSupport().getDefaultDescription(ipsObjectPart);
             }
         }
         return description;

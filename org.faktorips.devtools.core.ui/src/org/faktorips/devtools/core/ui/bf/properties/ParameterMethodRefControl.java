@@ -137,7 +137,7 @@ public class ParameterMethodRefControl extends TextButtonControl {
             String match = prefix.toLowerCase();
             for (IMethod method : getSelectableMethods()) {
                 if (method.getName().startsWith(match)) {
-                    String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(method);
+                    String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(method);
                     Image image = IpsUIPlugin.getImageHandling().getImage(method);
                     result.add(new CompletionProposal(method.getName(), 0, documentOffset, method.getName().length(),
                             image, method.getSignatureString(), null, localizedDescription));

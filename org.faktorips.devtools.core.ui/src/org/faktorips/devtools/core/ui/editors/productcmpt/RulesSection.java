@@ -110,7 +110,7 @@ public class RulesSection extends SimpleIpsPartsSection {
                         descriptionText.setText(""); //$NON-NLS-1$
                         return;
                     }
-                    String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(
+                    String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(
                             (IDescribedElement)selected);
                     descriptionText.setText(localizedDescription);
                 }

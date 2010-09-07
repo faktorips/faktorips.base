@@ -107,8 +107,8 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
                     if (IpsObjectType.TABLE_CONTENTS != ipsSrcFile.getIpsObjectType()) {
                         // table contents doesn't support description, thus doen't call getIpsObject
                         // due to performance reason
-                        localizedDescription = IpsPlugin.getDefault()
-                                .getLocalizedDescription(ipsSrcFile.getIpsObject());
+                        localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(
+                                ipsSrcFile.getIpsObject());
                     }
 
                     CompletionProposal proposal = new CompletionProposal(qName, 0, documentOffset, qName.length(),

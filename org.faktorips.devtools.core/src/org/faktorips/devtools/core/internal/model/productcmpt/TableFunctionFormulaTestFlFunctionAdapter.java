@@ -107,7 +107,7 @@ public class TableFunctionFormulaTestFlFunctionAdapter implements FlFunction {
 
     @Override
     public String getDescription() {
-        String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(fct);
+        String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(fct);
         return localizedDescription;
     }
 

@@ -88,7 +88,7 @@ public class TestCaseModelDescriptionPage extends DefaultModelDescriptionPage im
             uniqueTestObjects.add(ipsObjectPart);
         }
         String desrcItemName = name.equals(parameterName) ? name : parameterName + " : " + name; //$NON-NLS-1$
-        String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(ipsObjectPart);
+        String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(ipsObjectPart);
         desrList.add(new DescriptionItem(desrcItemName, localizedDescription));
     }
 

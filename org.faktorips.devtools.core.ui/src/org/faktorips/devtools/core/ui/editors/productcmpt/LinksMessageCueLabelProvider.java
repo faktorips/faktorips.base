@@ -83,9 +83,9 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
             if (element instanceof String) {
                 IAssociation association = productCmptType.getAssociation((String)element);
                 if (association.is1ToMany()) {
-                    return IpsPlugin.getDefault().getLocalizedPluralLabel(association);
+                    return IpsPlugin.getMultiLanguageSupport().getLocalizedPluralLabel(association);
                 } else {
-                    return IpsPlugin.getDefault().getLocalizedLabel(association);
+                    return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association);
                 }
             }
             if (element instanceof IProductCmptLink) {

@@ -61,7 +61,7 @@ public class ValidatedAttributesCompletionProcessor extends AbstractCompletionPr
     private void addToResult(List<ICompletionProposal> result, IPolicyCmptTypeAttribute attribute, int documentOffset) {
         String name = attribute.getName();
         Image image = IpsUIPlugin.getImageHandling().getImage(attribute);
-        String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(attribute);
+        String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(attribute);
         CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), image, name, null,
                 localizedDescription);
         result.add(proposal);

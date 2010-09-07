@@ -69,7 +69,7 @@ public class InverseAssociationCompletionProcessor extends AbstractCompletionPro
         String name = relation.getName();
         String displayText = name + " - " + relation.getParent().getName(); //$NON-NLS-1$
         Image image = IpsUIPlugin.getImageHandling().getImage(relation);
-        String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(relation);
+        String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(relation);
         CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), image,
                 displayText, null, localizedDescription);
         result.add(proposal);

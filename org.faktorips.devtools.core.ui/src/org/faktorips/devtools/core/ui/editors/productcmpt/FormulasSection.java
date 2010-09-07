@@ -158,7 +158,7 @@ public class FormulasSection extends IpsSection {
                 // use description of table structure usage as tooltip
                 ITableStructureUsage tsu = findTableStructureUsage(usage.getStructureUsage());
                 if (tsu != null) {
-                    String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(tsu);
+                    String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(tsu);
                     hyperlink.setToolTipText(localizedDescription);
                 }
 
@@ -176,7 +176,7 @@ public class FormulasSection extends IpsSection {
         for (IFormula formula : formulas) {
             Label label = toolkit.createFormLabel(rootPane, StringUtils.capitalize(formula.getName()));
             // use description of formula attribute as tooltip
-            String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(formula);
+            String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(formula);
             label.setToolTipText(localizedDescription);
 
             FormulaEditControl evc = new FormulaEditControl(rootPane, toolkit, formula, this.getShell(), this);
@@ -190,7 +190,7 @@ public class FormulasSection extends IpsSection {
                         .createContentAssistant(completionProcessor));
                 IMethod signature = formula.findFormulaSignature(generation.getIpsProject());
                 if (signature != null) {
-                    localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(signature);
+                    localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(signature);
                     label.setToolTipText(localizedDescription);
                 }
             } catch (CoreException e) {

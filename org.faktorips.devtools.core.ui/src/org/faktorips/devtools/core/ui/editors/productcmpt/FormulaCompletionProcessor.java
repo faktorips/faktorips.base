@@ -244,7 +244,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
         String name = attribute.getName();
         String displayText = name + " - " + attribute.getDatatype(); //$NON-NLS-1$
         Image image = IpsUIPlugin.getImageHandling().getImage(attribute);
-        String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(attribute);
+        String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(attribute);
         ICompletionProposal proposal = new CompletionProposal(name, replacementOffset, replacementLength,
                 name.length(), image, displayText, null, localizedDescription);
         result.add(proposal);

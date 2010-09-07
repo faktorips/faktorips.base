@@ -200,7 +200,7 @@ public class GenerationAttributesSection extends IpsSection {
             IValueSet valueset = null;
             // use description of attribute as tooltip
             if (attr != null) {
-                String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(attr);
+                String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(attr);
                 label.setToolTipText(localizedDescription);
                 datatype = attr.findDatatype(ipsProject);
                 valueset = attr.getValueSet();

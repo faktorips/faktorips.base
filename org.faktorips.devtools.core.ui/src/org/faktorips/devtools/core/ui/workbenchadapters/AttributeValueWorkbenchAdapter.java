@@ -54,7 +54,7 @@ public class AttributeValueWorkbenchAdapter extends IpsObjectPartWorkbenchAdapte
         }
 
         IAttributeValue attributeValue = (IAttributeValue)ipsObjectPart;
-        String caption = IpsPlugin.getDefault().getLocalizedCaption(attributeValue);
+        String caption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(attributeValue);
         return caption + '=' + attributeValue.getValue();
     }
 

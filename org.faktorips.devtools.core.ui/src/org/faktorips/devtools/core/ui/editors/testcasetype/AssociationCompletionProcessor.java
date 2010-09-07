@@ -82,7 +82,7 @@ public class AssociationCompletionProcessor extends AbstractCompletionProcessor 
         String name = association.getName();
         String displayText = name + " - " + association.getParent().getName(); //$NON-NLS-1$
         Image image = IpsUIPlugin.getImageHandling().getImage(association);
-        String localizedDescription = IpsPlugin.getDefault().getLocalizedDescription(association);
+        String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(association);
         CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), image,
                 displayText, null, localizedDescription);
         result.add(proposal);
