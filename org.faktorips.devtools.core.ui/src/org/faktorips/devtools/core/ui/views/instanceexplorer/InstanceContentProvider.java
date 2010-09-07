@@ -85,10 +85,9 @@ public class InstanceContentProvider extends DeferredStructuredContentProvider {
         return null;
     }
 
-    // TODO AW: Internationalize?
     @Override
     protected String getWaitingLabel() {
-        return "collecting instances..."; //$NON-NLS-1$
+        return Messages.InstanceExplorer_waitingLabel;
     }
 
 }

@@ -78,4 +78,5 @@ public class HierarchyContentProvider implements ITreeContentProvider {
     public ITypeHierarchy getTypeHierarchy() {
         return this.hierarchy;
     }
+
 }

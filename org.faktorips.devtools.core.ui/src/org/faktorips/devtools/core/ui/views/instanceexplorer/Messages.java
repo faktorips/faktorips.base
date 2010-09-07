@@ -35,5 +35,6 @@ public class Messages extends NLS {
     public static String InstanceExplorer_infoMessageEmptyView;
     public static String InstanceExplorer_tryToSearchSubtypes;
     public static String InstanceExplorer_noMetaClassFound;
+    public static String InstanceExplorer_waitingLabel;
 
 }

@@ -67,7 +67,7 @@ import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 
-public class IpsHierarchyView extends ViewPart implements IResourceChangeListener {
+public class IpsHierarchyView extends ViewPart implements IResourceChangeListener, Runnable {
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchy"; //$NON-NLS-1$
     public static final String LOGO = "IpsHierarchyView.gif"; //$NON-NLS-1$
     protected static final String LINK_TO_EDITOR_KEY = "linktoeditor"; //$NON-NLS-1$
@@ -77,8 +77,6 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
     private Composite panel;
     private HierarchyContentProvider hierarchyContentProvider = new HierarchyContentProvider();
     private Display display;
-    private Action showTypeHierarchyAction;
-    private Action showSubtypeHierarchyAction;
     private Action clearAction;
     private Action refreshAction;
     private Action linkWithEditor;
@@ -153,55 +151,6 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
 
     private void initToolBar(IToolBarManager toolBarManager) {
 
-        // show Type Hierarchy
-        showTypeHierarchyAction = new Action(Messages.IpsHierarchy_tooltipShowTypeHierarchy, SWT.TOGGLE) {
-            @Override
-            public ImageDescriptor getImageDescriptor() {
-                return IpsUIPlugin.getImageHandling().createImageDescriptor("ShowTypeHierarchy.gif"); //$NON-NLS-1$
-            }
-
-            @Override
-            public void run() {
-                try {
-                    showHierarchy(hierarchyContentProvider.getTypeHierarchy().getType());
-                    showSubtypeHierarchyAction.setChecked(false);
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                }
-            }
-
-            @Override
-            public String getToolTipText() {
-                return Messages.IpsHierarchy_tooltipShowTypeHierarchy;
-            }
-        };
-        toolBarManager.add(showTypeHierarchyAction);
-
-        // show the Subtype Hierarchy
-        showSubtypeHierarchyAction = new Action(Messages.IpsHierarchy_tooltipShowSubtypeHierarchy, SWT.TOGGLE) {
-            @Override
-            public ImageDescriptor getImageDescriptor() {
-                return IpsUIPlugin.getImageHandling().createImageDescriptor("ShowSubtypeHierarchy.gif"); //$NON-NLS-1$
-            }
-
-            @Override
-            public void run() {
-                try {
-                    setInputData(TypeHierarchy.getSubtypeHierarchy(hierarchyContentProvider.getTypeHierarchy()
-                            .getType()));
-                    showTypeHierarchyAction.setChecked(false);
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                }
-            }
-
-            @Override
-            public String getToolTipText() {
-                return Messages.IpsHierarchy_tooltipShowSubtypeHierarchy;
-            }
-        };
-        toolBarManager.add(showSubtypeHierarchyAction);
-
         // refresh action
         refreshAction = new Action(Messages.IpsHierarchy_tooltipRefreshContents, IpsUIPlugin.getImageHandling()
                 .createImageDescriptor("Refresh.gif")) //$NON-NLS-1$
@@ -223,9 +172,8 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
                 .createImageDescriptor("Clear.gif")) { //$NON-NLS-1$
             @Override
             public void run() {
-                hierarchyContentProvider.getTypeHierarchy().getType();
+                enableButtons(false);
                 selected.setText(""); //$NON-NLS-1$
-                showTypeHierarchyAction.setChecked(false);
                 setInputData(null);
             }
 
@@ -268,8 +216,6 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
     }
 
     private void enableButtons(boolean status) {
-        showSubtypeHierarchyAction.setEnabled(status);
-        showTypeHierarchyAction.setEnabled(status);
         clearAction.setEnabled(status);
         refreshAction.setEnabled(status);
     }
@@ -288,16 +234,13 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
         if (element instanceof IType && element.getEnclosingResource().isAccessible()) {
             IType iType = (IType)element;
             hierarchy = TypeHierarchy.getTypeHierarchy(iType);
+            setInputData(hierarchy);
         }
-        showSubtypeHierarchyAction.setChecked(false);
-        setInputData(hierarchy);
     }
 
     private void setInputData(final ITypeHierarchy hierarchy) {
-        if (hierarchy != null) {
-            treeViewer.setInput(hierarchy);
-            updateView();
-        }
+        treeViewer.setInput(hierarchy);
+        updateView();
     }
 
     private void updateView() {
@@ -314,7 +257,6 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
                 treeViewer.expandToLevel(type, level);
                 treeViewer.setSelection(new StructuredSelection(type), true);
                 selected.setText(type.getName());
-                showTypeHierarchyAction.setChecked(true);
                 treeViewer.refresh();
             }
         }
@@ -633,5 +575,10 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
         public boolean isMessage() {
             return equals(MESSAGE);
         }
+    }
+
+    @Override
+    public void run() {
+
     }
 }

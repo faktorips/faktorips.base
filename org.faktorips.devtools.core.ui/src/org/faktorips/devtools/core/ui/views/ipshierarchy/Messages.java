@@ -28,9 +28,8 @@ public class Messages extends NLS {
     }
 
     public static String IpsHierarchy_tooltipClear;
-    public static String IpsHierarchy_tooltipShowSubtypeHierarchy;
     public static String IpsHierarchy_infoMessageEmptyView;
-    public static String IpsHierarchy_tooltipShowTypeHierarchy;
     public static String IpsHierarchy_tooltipLinkWithEditor;
     public static String IpsHierarchy_tooltipRefreshContents;
+    public static String IpsHierarchy_waitingLabel;
 }
