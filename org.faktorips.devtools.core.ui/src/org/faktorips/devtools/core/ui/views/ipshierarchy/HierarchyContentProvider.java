@@ -19,7 +19,8 @@ import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.type.IType;
 
 /**
- * TODO
+ * 
+ * Input ITypeHierarchy Show the Hierarchy in a Treeviewer Output IType
  * 
  * @author stoll
  */
@@ -74,11 +75,6 @@ public class HierarchyContentProvider implements ITreeContentProvider {
 
     }
 
-    /**
-     * TODO
-     * 
-     * @return
-     */
     public ITypeHierarchy getTypeHierarchy() {
         return this.hierarchy;
     }

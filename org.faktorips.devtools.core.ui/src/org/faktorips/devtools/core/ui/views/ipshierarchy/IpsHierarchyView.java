@@ -42,6 +42,15 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IPartService;
+import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.IWindowListener;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.type.TypeHierarchy;
@@ -61,6 +70,8 @@ import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 public class IpsHierarchyView extends ViewPart implements IResourceChangeListener {
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchy"; //$NON-NLS-1$
     public static final String LOGO = "IpsHierarchyView.gif"; //$NON-NLS-1$
+    protected static final String LINK_TO_EDITOR_KEY = "linktoeditor"; //$NON-NLS-1$
+    private static final String MEMENTO = "ipsHierarchyView.memento"; //$NON-NLS-1$
     private TreeViewer treeViewer;
     private Label errormsg;
     private Composite panel;
@@ -70,14 +81,17 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
     private Action showSubtypeHierarchyAction;
     private Action clearAction;
     private Action refreshAction;
-    protected boolean linkingEnabled = true;
+    private Action linkWithEditor;
+    private Label selected;
+    private boolean linkingEnabled = false;
+    private ActivationListener editorActivationListener;
 
     /**
      * Check whether this HierarchyView supports this object or not. Null is also a supported type
      * to reset the editor.
      * 
      * @param object the object to test
-     * @return true of the HierarchyView supports this object
+     * @return true of the HierarchyView supports this object and false if not
      */
     public static boolean supports(Object object) {
         if (object == null) {
@@ -101,6 +115,9 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
         dropTarget.addDropListener(new HierarchyDropListener());
         dropTarget.setTransfer(new Transfer[] { FileTransfer.getInstance() });
 
+        selected = new Label(panel, SWT.LEFT);
+        selected.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
         treeViewer = new TreeViewer(panel);
         treeViewer.setLabelProvider(new DefaultLabelProvider());
         treeViewer.setContentProvider(hierarchyContentProvider);
@@ -121,6 +138,7 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
         showEmptyMessage();
 
         if (linkingEnabled) {
+            linkWithEditor.setChecked(true);
             IEditorPart editorPart = getSite().getPage().getActiveEditor();
             if (editorPart != null) {
                 try {
@@ -130,9 +148,11 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
                 }
             }
         }
+        editorActivationListener = new ActivationListener(getSite().getPage());
     }
 
     private void initToolBar(IToolBarManager toolBarManager) {
+
         // show Type Hierarchy
         showTypeHierarchyAction = new Action(Messages.IpsHierarchy_tooltipShowTypeHierarchy, SWT.TOGGLE) {
             @Override
@@ -156,6 +176,7 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
             }
         };
         toolBarManager.add(showTypeHierarchyAction);
+
         // show the Subtype Hierarchy
         showSubtypeHierarchyAction = new Action(Messages.IpsHierarchy_tooltipShowSubtypeHierarchy, SWT.TOGGLE) {
             @Override
@@ -180,6 +201,8 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
             }
         };
         toolBarManager.add(showSubtypeHierarchyAction);
+
+        // refresh action
         refreshAction = new Action(Messages.IpsHierarchy_tooltipRefreshContents, IpsUIPlugin.getImageHandling()
                 .createImageDescriptor("Refresh.gif")) //$NON-NLS-1$
         {
@@ -194,12 +217,14 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
             }
         };
         toolBarManager.add(refreshAction);
+
         // clear action
         clearAction = new Action(Messages.IpsHierarchy_tooltipClear, IpsUIPlugin.getImageHandling()
                 .createImageDescriptor("Clear.gif")) { //$NON-NLS-1$
             @Override
             public void run() {
                 hierarchyContentProvider.getTypeHierarchy().getType();
+                selected.setText(""); //$NON-NLS-1$
                 showTypeHierarchyAction.setChecked(false);
                 setInputData(null);
             }
@@ -210,7 +235,9 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
             }
         };
         toolBarManager.add(clearAction);
-        toolBarManager.add(new Action(Messages.IpsHierarchy_tooltipLinkWithEditor, SWT.TOGGLE) {
+
+        // link with editor action
+        linkWithEditor = new Action(Messages.IpsHierarchy_tooltipLinkWithEditor, SWT.TOGGLE) {
             @Override
             public ImageDescriptor getImageDescriptor() {
                 return IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/synced.gif"); //$NON-NLS-1$
@@ -218,14 +245,38 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
 
             @Override
             public void run() {
-                changeLinkingEnabled();
+                try {
+                    setLinkingEnabled(isChecked());
+                } catch (CoreException e) {
+                    IpsPlugin.log(e);
+                }
             }
 
             @Override
             public String getToolTipText() {
                 return Messages.IpsHierarchy_tooltipLinkWithEditor;
             }
-        });
+        };
+        toolBarManager.add(linkWithEditor);
+    }
+
+    @Override
+    public void dispose() {
+        editorActivationListener.dispose();
+        ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+        super.dispose();
+    }
+
+    private void enableButtons(boolean status) {
+        showSubtypeHierarchyAction.setEnabled(status);
+        showTypeHierarchyAction.setEnabled(status);
+        clearAction.setEnabled(status);
+        refreshAction.setEnabled(status);
+    }
+
+    @Override
+    public void setFocus() {
+        // does nothing
     }
 
     /**
@@ -242,48 +293,11 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
         setInputData(hierarchy);
     }
 
-    /**
-     * 
-     * Update the IpsHierarchyView in chase of changes on the file
-     */
-    public void resourceChanged(IResourceChangeEvent event) {
-        ITypeHierarchy hierarchyTreeViewer = hierarchyContentProvider.getTypeHierarchy();
-        if (hierarchyTreeViewer != null) {
-            try {
-                List<IFile> affectedFiles = getChangedFiles(event.getDelta().getAffectedChildren());
-                List<IIpsSrcFile> aIipsElement = getIpsSrcFiles(affectedFiles);
-                if (aIipsElement.size() > 0) {
-                    isNodeOfHierarchy(aIipsElement, hierarchyTreeViewer);
-                }
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
-        }
-    }
-
-    @Override
-    public void setFocus() {
-        // does nothing
-    }
-
-    private void changeLinkingEnabled() {
-        if (linkingEnabled) {
-            linkingEnabled = false;
-        } else {
-            linkingEnabled = true;
-        }
-    }
-
     private void setInputData(final ITypeHierarchy hierarchy) {
-        treeViewer.setInput(hierarchy);
-        updateView();
-    }
-
-    private void enableButtons(boolean status) {
-        showSubtypeHierarchyAction.setEnabled(status);
-        showTypeHierarchyAction.setEnabled(status);
-        clearAction.setEnabled(status);
-        refreshAction.setEnabled(status);
+        if (hierarchy != null) {
+            treeViewer.setInput(hierarchy);
+            updateView();
+        }
     }
 
     private void updateView() {
@@ -295,11 +309,13 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
                 ITypeHierarchy hierarchy = (ITypeHierarchy)element;
                 showMessgeOrTableView(MessageTableSwitch.TABLE);
                 enableButtons(true);
-                treeViewer.refresh();
                 int level = 1;
-                treeViewer.expandToLevel(hierarchy.getType(), level);
-                treeViewer.setSelection(new StructuredSelection(hierarchy.getType()), true);
+                IType type = hierarchy.getType();
+                treeViewer.expandToLevel(type, level);
+                treeViewer.setSelection(new StructuredSelection(type), true);
+                selected.setText(type.getName());
                 showTypeHierarchyAction.setChecked(true);
+                treeViewer.refresh();
             }
         }
     }
@@ -330,6 +346,25 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
         }
     }
 
+    /**
+     * 
+     * Update the IpsHierarchyView in chase of changes on the file
+     */
+    public void resourceChanged(IResourceChangeEvent event) {
+        ITypeHierarchy hierarchyTreeViewer = hierarchyContentProvider.getTypeHierarchy();
+        if (hierarchyTreeViewer != null) {
+            try {
+                List<IFile> affectedFiles = getChangedFiles(event.getDelta().getAffectedChildren());
+                List<IIpsSrcFile> aIipsElement = getIpsSrcFiles(affectedFiles);
+                if (aIipsElement.size() > 0) {
+                    isNodeOfHierarchy(aIipsElement, hierarchyTreeViewer);
+                }
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+        }
+    }
+
     private void isNodeOfHierarchy(List<IIpsSrcFile> ipsSrcFiles, ITypeHierarchy hierarchyTreeViewer)
             throws CoreException {
         for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
@@ -340,9 +375,11 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
             }
             if (ipsSrcFile.exists()) {
                 String superType = ipsSrcFile.getPropertyValue(IType.PROPERTY_SUPERTYPE);
-                if (hierarchyTreeViewer.isPartOfHierarchy(superType)) {
-                    updateHierarchy();
-                    return;
+                if (superType != null) {
+                    if (hierarchyTreeViewer.isPartOfHierarchy(superType)) {
+                        updateHierarchy();
+                        return;
+                    }
                 }
             }
         }
@@ -423,6 +460,17 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
         return result;
     }
 
+    private void setLinkingEnabled(boolean linkingEnabled) throws CoreException {
+        this.linkingEnabled = linkingEnabled;
+
+        if (linkingEnabled) {
+            IEditorPart editorPart = getSite().getPage().getActiveEditor();
+            if (editorPart != null) {
+                editorActivated(editorPart);
+            }
+        }
+    }
+
     private void editorActivated(IEditorPart editorPart) throws CoreException {
         if (!linkingEnabled || editorPart == null) {
             return;
@@ -434,6 +482,104 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
                 showHierarchy(i);
             }
         }
+    }
+
+    @Override
+    public void init(IViewSite site, IMemento memento) throws PartInitException {
+        super.init(site, memento);
+        if (memento != null) {
+            IMemento layout = memento.getChild(MEMENTO);
+            if (layout != null) {
+                Integer linkingValue = layout.getInteger(LINK_TO_EDITOR_KEY);
+                linkingEnabled = linkingValue == null ? false : linkingValue.intValue() == 1;
+            }
+        }
+    }
+
+    @Override
+    public void saveState(IMemento memento) {
+        super.saveState(memento);
+        IMemento layout = memento.createChild(MEMENTO);
+        layout.putInteger(LINK_TO_EDITOR_KEY, linkingEnabled ? 1 : 0);
+    }
+
+    private class ActivationListener implements IPartListener, IWindowListener {
+
+        private IPartService partService;
+
+        /**
+         * Creates a new activation listener.
+         */
+        public ActivationListener(IPartService partService) {
+            this.partService = partService;
+            partService.addPartListener(this);
+            PlatformUI.getWorkbench().addWindowListener(this);
+        }
+
+        /**
+         * Disposes this activation listener.
+         */
+        public void dispose() {
+            partService.removePartListener(this);
+            PlatformUI.getWorkbench().removeWindowListener(this);
+            partService = null;
+        }
+
+        @Override
+        public void partActivated(IWorkbenchPart part) {
+            if (part instanceof IEditorPart) {
+                try {
+                    editorActivated((IEditorPart)part);
+                } catch (CoreException e) {
+                    IpsPlugin.log(e);
+                }
+            }
+        }
+
+        @Override
+        public void windowActivated(IWorkbenchWindow window) {
+            try {
+                editorActivated(window.getActivePage().getActiveEditor());
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+        }
+
+        @Override
+        public void partBroughtToTop(IWorkbenchPart part) {
+            // Nothing to do
+        }
+
+        @Override
+        public void partClosed(IWorkbenchPart part) {
+            // Nothing to do
+        }
+
+        @Override
+        public void partDeactivated(IWorkbenchPart part) {
+            // Nothing to do
+        }
+
+        @Override
+        public void partOpened(IWorkbenchPart part) {
+            // Nothing to do
+        }
+
+        @Override
+        public void windowDeactivated(IWorkbenchWindow window) {
+            // Nothing to do
+        }
+
+        @Override
+        public void windowClosed(IWorkbenchWindow window) {
+            // Nothing to do
+        }
+
+        @Override
+        public void windowOpened(IWorkbenchWindow window) {
+            // Nothing to do
+        }
+
     }
 
     private class HierarchyDropListener extends IpsElementDropListener {
