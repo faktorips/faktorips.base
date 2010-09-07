@@ -27,7 +27,6 @@ import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -419,16 +418,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     @Override
     public boolean hasDescriptionSupport() {
         return true;
-    }
-
-    @Override
-    protected String getLastResortLabel() {
-        return StringUtils.capitalize(pcTypeAttribute);
-    }
-
-    @Override
-    protected ILabeledElement getCurrentLabelProvider() throws CoreException {
-        return findPcTypeAttribute(getIpsProject());
     }
 
 }

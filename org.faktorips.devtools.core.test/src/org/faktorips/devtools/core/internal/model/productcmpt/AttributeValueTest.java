@@ -16,9 +16,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
-import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -138,18 +136,6 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         copy.initFromXml(el);
         assertEquals("rate", copy.getAttribute());
         assertEquals("42", copy.getValue());
-    }
-
-    public void testGetLastResortLabel() {
-        attrValue.setAttribute("small");
-        assertEquals("Small", attrValue.getCurrentLabel());
-    }
-
-    public void testGetCurrentLabelProvider() {
-        ILabel label = attribute.newLabel();
-        label.setLocale(IpsPlugin.getDefault().getLocalizationLocale());
-        label.setValue("quarniboo");
-        assertEquals(label.getValue(), attrValue.getCurrentLabel());
     }
 
 }

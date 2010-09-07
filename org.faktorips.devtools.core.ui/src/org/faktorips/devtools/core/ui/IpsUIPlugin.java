@@ -101,7 +101,6 @@ import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog.IpsOb
 import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings;
-import org.faktorips.devtools.core.ui.workbenchadapters.IPluralLabelWorkbenchAdapter;
 import org.faktorips.devtools.core.ui.workbenchadapters.IWorkbenchAdapterProvider;
 import org.faktorips.devtools.core.ui.workbenchadapters.IpsElementWorkbenchAdapter;
 import org.faktorips.devtools.core.ui.workbenchadapters.IpsElementWorkbenchAdapterAdapterFactory;
@@ -477,9 +476,9 @@ public class IpsUIPlugin extends AbstractUIPlugin {
              * show information in the status bar about using the default text editor instead of
              * using the default IPS object editor.
              */
-            ((IEditorSite)editorPart.getSite()).getActionBars().getStatusLineManager()
-                    .setMessage(images.getSharedImage("size8/InfoMessage.gif", true), //$NON-NLS-1$
-                            Messages.IpsPlugin_infoDefaultTextEditorWasOpened);
+            ((IEditorSite)editorPart.getSite()).getActionBars().getStatusLineManager().setMessage(
+                    images.getSharedImage("size8/InfoMessage.gif", true), //$NON-NLS-1$
+                    Messages.IpsPlugin_infoDefaultTextEditorWasOpened);
             return editorPart;
         } catch (PartInitException e) {
             IpsPlugin.logAndShowErrorDialog(e);
@@ -627,8 +626,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     private IDialogSettings getHistorySettings() {
-        IDialogSettings settings = IpsUIPlugin.getDefault().getDialogSettings()
-                .getSection(OPEN_IPS_OBJECT_HISTORY_SETTINGS);
+        IDialogSettings settings = IpsUIPlugin.getDefault().getDialogSettings().getSection(
+                OPEN_IPS_OBJECT_HISTORY_SETTINGS);
         if (settings == null) {
             settings = IpsUIPlugin.getDefault().getDialogSettings().addNewSection(OPEN_IPS_OBJECT_HISTORY_SETTINGS);
         }
@@ -646,18 +645,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             return ""; //$NON-NLS-1$
         } else {
             return adapter.getLabel(ipsElement);
-        }
-    }
-
-    public final static String getPluralLabel(IIpsElement ipsElement) {
-        IPluralLabelWorkbenchAdapter adapter = (IPluralLabelWorkbenchAdapter)ipsElement
-                .getAdapter(IPluralLabelWorkbenchAdapter.class);
-        if (adapter != null) {
-            return adapter.getPluralLabel(ipsElement);
-        } else {
-            IpsPlugin.log(new IpsStatus(IStatus.WARNING, "Plural not configured for element type " //$NON-NLS-1$
-                    + ipsElement.getClass()));
-            return getLabel(ipsElement);
         }
     }
 
@@ -763,8 +750,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     /**
      * Images in eclipse is not so easy as it looks like. If you are not familiar with the basics of
-     * image handling in eclipse, read this short article <a href=
-     * "http://www.eclipse.org/articles/Article-Using%20Images%20In%20Eclipse/Using%20Images%20In%20Eclipse.html"
+     * image handling in eclipse, read this short article <a href="http://www.eclipse.org/articles/Article-Using%20Images%20In%20Eclipse/Using%20Images%20In%20Eclipse.html"
      * >Using Images in the Eclipse UI</a>
      * <p>
      * In Faktor IPS we have a two kinds of images handled by the image handling. The first kind of

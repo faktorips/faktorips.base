@@ -13,13 +13,11 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -162,16 +160,6 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     @Override
     public String getName() {
         return attribute;
-    }
-
-    @Override
-    protected ILabeledElement getCurrentLabelProvider() throws CoreException {
-        return findAttribute(getIpsProject());
-    }
-
-    @Override
-    protected String getLastResortLabel() {
-        return StringUtils.capitalize(attribute);
     }
 
     @Override

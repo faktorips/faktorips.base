@@ -63,6 +63,33 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
 
     /**
      * @throws UnsupportedOperationException If this <tt>IIpsObjectPartContainer</tt> does not
+     *             support labels.
+     * 
+     * @see #hasLabelSupport()
+     */
+    @Override
+    public ILabel newLabel();
+
+    /**
+     * @throws UnsupportedOperationException If this <tt>IIpsObjectPartContainer</tt> does not
+     *             support labels.
+     * 
+     * @see #hasLabelSupport()
+     */
+    @Override
+    public ILabel getLabel(Locale locale);
+
+    /**
+     * @throws UnsupportedOperationException If this <tt>IIpsObjectPartContainer</tt> does not
+     *             support labels.
+     * 
+     * @see #hasLabelSupport()
+     */
+    @Override
+    public List<ILabel> getLabels();
+
+    /**
+     * @throws UnsupportedOperationException If this <tt>IIpsObjectPartContainer</tt> does not
      *             support descriptions.
      * 
      * @see #hasDescriptionSupport()
@@ -89,21 +116,45 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
     public List<IDescription> getDescriptions();
 
     /**
-     * @throws UnsupportedOperationException If this <tt>IIpsObjectPartContainer</tt> does not
-     *             support labels.
+     * Returns the caption of this <tt>IIpsObjectPartContainer</tt> for the given {@link Locale}. A
+     * caption is a string that describes the object itself.
+     * <p>
+     * Returns <tt>null</tt> if no caption for the given locale exists.
      * 
-     * @see #hasLabelSupport()
+     * @param locale The locale to request the caption for.
+     * 
+     * @throws NullPointerException If <tt>locale</tt> is <tt>null</tt>.
      */
-    @Override
-    public ILabel newLabel();
+    public String getCaption(Locale locale);
 
     /**
-     * @throws UnsupportedOperationException If this <tt>IIpsObjectPartContainer</tt> does not
-     *             support plural labels.
+     * Returns the plural caption of this <tt>IIpsObjectPartContainer</tt> for the given
+     * {@link Locale}. A caption is a string that describes the object itself.
+     * <p>
+     * Returns <tt>null</tt> if no plural caption for the given locale exists.
      * 
-     * @see #isPluralLabelSupported()
+     * @param locale The locale to request the plural caption for.
+     * 
+     * @throws NullPointerException If <tt>locale</tt> is <tt>null</tt>.
      */
-    @Override
-    public String getCurrentPluralLabel();
+    public String getPluralCaption(Locale locale);
+
+    /**
+     * Returns the last resort caption of this <tt>IIpsObjectPartContainer</tt>. The last resort
+     * caption is used in case that neither the caption for the requested locale nor a caption for
+     * the default locale exists.
+     * <p>
+     * Never returns <tt>null</tt>.
+     */
+    public String getLastResortCaption();
+
+    /**
+     * Returns the last resort plural caption of this <tt>IIpsObjectPartContainer</tt>. The last
+     * resort plural caption is used in case that neither the plural caption for the requested
+     * locale nor a plural caption for the default locale exists.
+     * <p>
+     * Never returns <tt>null</tt>.
+     */
+    public String getLastResortPluralCaption();
 
 }

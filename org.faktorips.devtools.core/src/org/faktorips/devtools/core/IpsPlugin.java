@@ -39,6 +39,9 @@ import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsobject.ILabel;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnector;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -113,6 +116,8 @@ public class IpsPlugin extends AbstractUIPlugin {
 
     private DependencyGraphPersistenceManager dependencyGraphPersistenceManager;
 
+    private final Locale localizationLocale;
+
     /**
      * Returns the number of the installed Faktor-IPS version.
      */
@@ -130,6 +135,13 @@ public class IpsPlugin extends AbstractUIPlugin {
     public IpsPlugin() {
         super();
         plugin = this;
+
+        String nl = Platform.getNL();
+        // As of now, only the language is of concern to us, not the country.
+        if (nl.length() > 2) {
+            nl = nl.substring(0, 2);
+        }
+        localizationLocale = new Locale(nl);
     }
 
     /**
@@ -361,12 +373,7 @@ public class IpsPlugin extends AbstractUIPlugin {
      * @see #getUsedLanguagePackLocale()
      */
     public Locale getLocalizationLocale() {
-        String nl = Platform.getNL();
-        // As of now, only the language is of concern to us, not the country.
-        if (nl.length() > 2) {
-            nl = nl.substring(0, 2);
-        }
-        return new Locale(nl);
+        return localizationLocale;
     }
 
     /**
@@ -614,17 +621,297 @@ public class IpsPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Returns the description for the locale that Faktor-IPS uses at the time this operation is
-     * called to internationalize Faktor-IPS elements.
+     * Returns the caption of the given {@link IIpsObjectPartContainer} for the locale that
+     * Faktor-IPS uses at the time this operation is called to internationalize Faktor-IPS elements.
+     * <p>
+     * If there is no caption for that locale, the default caption will be returned. If there is no
+     * default caption as well, a last resort caption that is specific to the element is returned.
+     * <p>
+     * Never returns <tt>null</tt>.
+     * 
+     * @param ipsObjectPartContainer The {@link IIpsObjectPartContainer} to obtain the localized
+     *            caption of.
+     * 
+     * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
+     * 
+     * @see #getLocalizationLocale()
+     * @see #getDefaultCaption(IIpsObjectPartContainer)
+     */
+    public String getLocalizedCaption(IIpsObjectPartContainer ipsObjectPartContainer) {
+        ArgumentCheck.notNull(ipsObjectPartContainer);
+
+        String localizedCaption = ipsObjectPartContainer.getCaption(getLocalizationLocale());
+        if (localizedCaption == null) {
+            localizedCaption = getDefaultCaption(ipsObjectPartContainer);
+        }
+        return localizedCaption;
+    }
+
+    /**
+     * Returns the plural caption of the given {@link IIpsObjectPartContainer} for the locale that
+     * Faktor-IPS uses at the time this operation is called to internationalize Faktor-IPS elements.
+     * <p>
+     * If there is no plural caption for that locale, the default plural caption will be returned.
+     * If there is no default plural caption as well, a last resort plural caption that is specific
+     * to the element is returned.
+     * <p>
+     * Never returns <tt>null</tt>.
+     * 
+     * @param ipsObjectPartContainer The {@link IIpsObjectPartContainer} to obtain the localized
+     *            plural caption of.
+     * 
+     * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
+     * 
+     * @see #getLocalizationLocale()
+     * @see #getDefaultPluralCaption(IIpsObjectPartContainer)
+     */
+    public String getLocalizedPluralCaption(IIpsObjectPartContainer ipsObjectPartContainer) {
+        ArgumentCheck.notNull(ipsObjectPartContainer);
+
+        String localizedPluralCaption = ipsObjectPartContainer.getPluralCaption(getLocalizationLocale());
+        if (localizedPluralCaption == null) {
+            localizedPluralCaption = getDefaultPluralCaption(ipsObjectPartContainer);
+        }
+        return localizedPluralCaption;
+    }
+
+    /**
+     * Returns the caption of the given {@link IIpsObjectPartContainer} for the default language.
+     * The default language is specified trough the IPS project the element belongs to.
+     * <p>
+     * If there is no caption for that locale, a last resort caption that is specific to the element
+     * is returned.
+     * <p>
+     * Never returns <tt>null</tt>.
+     * 
+     * @param ipsObjectPartContainer The {@link IIpsObjectPartContainer} to obtain the default
+     *            caption of.
+     * 
+     * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
+     * 
+     * @see IIpsProjectProperties#getDefaultLanguage()
+     */
+    public String getDefaultCaption(IIpsObjectPartContainer ipsObjectPartContainer) {
+        ArgumentCheck.notNull(ipsObjectPartContainer);
+
+        String defaultCaption = null;
+        Locale defaultLocale = getDefaultLocale(ipsObjectPartContainer.getIpsProject());
+        if (defaultLocale != null) {
+            defaultCaption = ipsObjectPartContainer.getCaption(defaultLocale);
+        }
+        if (defaultCaption == null) {
+            defaultCaption = ipsObjectPartContainer.getLastResortCaption();
+        }
+        return defaultCaption;
+    }
+
+    /**
+     * Returns the plural caption of the given {@link IIpsObjectPartContainer} for the default
+     * language. The default language is specified trough the IPS project the element belongs to.
+     * <p>
+     * If there is no plural caption for that locale, a last resort plural caption that is specific
+     * to the element is returned.
+     * <p>
+     * Never returns <tt>null</tt>.
+     * 
+     * @param ipsObjectPartContainer The {@link IIpsObjectPartContainer} to obtain the default
+     *            plural caption of.
+     * 
+     * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
+     * 
+     * @see IIpsProjectProperties#getDefaultLanguage()
+     */
+    public String getDefaultPluralCaption(IIpsObjectPartContainer ipsObjectPartContainer) {
+        ArgumentCheck.notNull(ipsObjectPartContainer);
+
+        String defaultPluralCaption = null;
+        Locale defaultLocale = getDefaultLocale(ipsObjectPartContainer.getIpsProject());
+        if (defaultLocale != null) {
+            defaultPluralCaption = ipsObjectPartContainer.getPluralCaption(defaultLocale);
+        }
+        if (defaultPluralCaption == null) {
+            defaultPluralCaption = ipsObjectPartContainer.getLastResortPluralCaption();
+        }
+        return defaultPluralCaption;
+    }
+
+    /**
+     * Returns the label of the given {@link ILabeledElement} for the locale that Faktor-IPS uses at
+     * the time this operation is called to internationalize Faktor-IPS elements.
+     * <p>
+     * If there is no label for that locale, the default label will be returned. If there is no
+     * default label as well, the pure name of the element is returned.
+     * <p>
+     * Never returns <tt>null</tt>.
+     * 
+     * @param labeledElement The {@link ILabeledElement} to obtain the localized label of.
+     * 
+     * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
+     * 
+     * @see #getLocalizationLocale()
+     * @see #getDefaultLabel(ILabeledElement)
+     */
+    public String getLocalizedLabel(ILabeledElement labeledElement) {
+        ArgumentCheck.notNull(labeledElement);
+
+        String label;
+        ILabel localizedLabel = labeledElement.getLabel(getLocalizationLocale());
+        if (localizedLabel == null) {
+            label = getDefaultLabel(labeledElement);
+        } else {
+            label = localizedLabel.getValue();
+        }
+        return label;
+    }
+
+    /**
+     * Returns the plural label of the given {@link ILabeledElement} for the locale that Faktor-IPS
+     * uses at the time this operation is called to internationalize Faktor-IPS elements.
+     * <p>
+     * If there is no plural label for that locale, the default label will be returned. If there is
+     * no default label as well, the pure name of the element is returned.
+     * <p>
+     * Never returns <tt>null</tt>.
+     * 
+     * @param labeledElement The {@link ILabeledElement} to obtain the localized plural label of.
+     * 
+     * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
+     * @throws IllegalArgumentException If the given {@link ILabeledElement} does not support plural
+     *             labels.
+     * 
+     * @see #getLocalizationLocale()
+     * @see #getDefaultPluralLabel(ILabeledElement)
+     * @see ILabeledElement#isPluralLabelSupported()
+     */
+    public String getLocalizedPluralLabel(ILabeledElement labeledElement) {
+        ArgumentCheck.notNull(labeledElement);
+        ArgumentCheck.isTrue(labeledElement.isPluralLabelSupported());
+
+        String label;
+        ILabel localizedLabel = labeledElement.getLabel(getLocalizationLocale());
+        if (localizedLabel == null) {
+            label = getDefaultPluralLabel(labeledElement);
+        } else {
+            label = localizedLabel.getPluralValue();
+        }
+        return label;
+    }
+
+    /**
+     * Returns the label of the given {@link ILabeledElement} for the default language. The default
+     * language is specified trough the IPS project the element belongs to.
+     * <p>
+     * If there is no label for that locale or no default language is specified, the pure name of
+     * the element is returned.
+     * 
+     * @param labeledElement The {@link ILabeledElement} to obtain the default label of.
+     * 
+     * @throws NullPointerException If <tt>labeledElement</tt> is <tt>null</tt>.
+     * 
+     * @see IIpsProjectProperties#getDefaultLanguage()
+     */
+    public String getDefaultLabel(ILabeledElement labeledElement) {
+        ArgumentCheck.notNull(labeledElement);
+
+        String label = labeledElement.getName();
+        ILabel defaultLabel = getDefaultLabelPart(labeledElement);
+        if (defaultLabel != null) {
+            label = defaultLabel.getValue();
+        }
+        return label;
+    }
+
+    /**
+     * Returns the plural label of the given {@link ILabeledElement} for the default language. The
+     * default language is specified trough the IPS project the element belongs to.
+     * <p>
+     * If there is no plural label for that locale or no default language is specified, the pure
+     * name of the element is returned.
+     * 
+     * @param labeledElement The {@link ILabeledElement} to obtain the default plural label of.
+     * 
+     * @throws NullPointerException If <tt>labeledElement</tt> is <tt>null</tt>.
+     * @throws IllegalArgumentException If the given {@link ILabeledElement} does not support plural
+     *             labels.
+     * 
+     * @see IIpsProjectProperties#getDefaultLanguage()
+     * @see ILabeledElement#isPluralLabelSupported()
+     */
+    public String getDefaultPluralLabel(ILabeledElement labeledElement) {
+        ArgumentCheck.notNull(labeledElement);
+        ArgumentCheck.isTrue(labeledElement.isPluralLabelSupported());
+
+        String pluralLabel = labeledElement.getName();
+        ILabel defaultLabel = getDefaultLabelPart(labeledElement);
+        if (defaultLabel != null) {
+            pluralLabel = defaultLabel.getPluralValue();
+        }
+        return pluralLabel;
+    }
+
+    /**
+     * Sets the label of the given {@link ILabeledElement} for the default language. The default
+     * language is specified trough the IPS project the element belongs to.
+     * <p>
+     * If there is no label for that locale or no default language is specified, nothing will
+     * happen.
+     * 
+     * @param labeledElement The {@link ILabeledElement} to set the default label for.
+     * @param value The value to set the label to.
+     * 
+     * @throws NullPointerException If <tt>labeledElement</tt> is <tt>null</tt>.
+     * 
+     * @see IIpsProjectProperties#getDefaultLanguage()
+     */
+    public void setDefaultLabel(ILabeledElement labeledElement, String value) {
+        ArgumentCheck.notNull(labeledElement);
+
+        ILabel defaultLabel = getDefaultLabelPart(labeledElement);
+        if (defaultLabel != null) {
+            defaultLabel.setValue(value);
+        }
+    }
+
+    /**
+     * Sets the plural label of the given {@link ILabeledElement} for the default language. The
+     * default language is specified trough the IPS project the element belongs to.
+     * <p>
+     * If there is no plural label for that locale or no default language is specified, nothing will
+     * happen.
+     * 
+     * @param labeledElement The {@link ILabeledElement} to set the default plural label for.
+     * @param pluralValue The value to set the plural label to.
+     * 
+     * @throws NullPointerException If <tt>labeledElement</tt> is <tt>null</tt>.
+     * @throws IllegalArgumentException If the given {@link ILabeledElement} does not support plural
+     *             labels.
+     * 
+     * @see IIpsProjectProperties#getDefaultLanguage()
+     * @see ILabeledElement#isPluralLabelSupported()
+     */
+    public void setDefaultPluralLabel(ILabeledElement labeledElement, String pluralValue) {
+        ArgumentCheck.notNull(labeledElement);
+        ArgumentCheck.isTrue(labeledElement.isPluralLabelSupported());
+
+        ILabel defaultLabel = getDefaultLabelPart(labeledElement);
+        if (defaultLabel != null) {
+            defaultLabel.setPluralValue(pluralValue);
+        }
+    }
+
+    /**
+     * Returns the description of the given {@link IDescribedElement} for the locale that Faktor-IPS
+     * uses at the time this operation is called to internationalize Faktor-IPS elements.
      * <p>
      * If there is no description for that locale, the default description will be returned. If
-     * there is no default description, an empty string is returned.
+     * there is no default description as well, an empty string is returned.
      * 
      * @param describedElement The {@link IDescribedElement} to obtain the localized description of.
      * 
      * @throws NullPointerException If <tt>describedElement</tt> is <tt>null</tt>.
      * 
      * @see #getLocalizationLocale()
+     * @see #getDefaultDescription(IDescribedElement)
      */
     public String getLocalizedDescription(IDescribedElement describedElement) {
         ArgumentCheck.notNull(describedElement);
@@ -636,13 +923,12 @@ public class IpsPlugin extends AbstractUIPlugin {
         } else {
             description = localizedDescription.getText();
         }
-
         return description;
     }
 
     /**
-     * Returns the description of the given element for the default language. The default language
-     * is specified trough the IPS project the element belongs to.
+     * Returns the description of the given {@link IDescribedElement} for the default language. The
+     * default language is specified trough the IPS project the element belongs to.
      * <p>
      * If there is no description for that locale or no default language is specified, an empty
      * string is returned.
@@ -657,20 +943,16 @@ public class IpsPlugin extends AbstractUIPlugin {
         ArgumentCheck.notNull(describedElement);
 
         String description = ""; //$NON-NLS-1$
-        Locale defaultLocale = getDefaultLocale(describedElement.getIpsProject());
-        if (defaultLocale != null) {
-            IDescription descriptionPart = describedElement.getDescription(defaultLocale);
-            if (descriptionPart != null) {
-                description = descriptionPart.getText();
-            }
+        IDescription defaultDescription = getDefaultDescriptionPart(describedElement);
+        if (defaultDescription != null) {
+            description = defaultDescription.getText();
         }
-
         return description;
     }
 
     /**
-     * Sets the description of the given element for the default language. The default language is
-     * specified trough the IPS project the element belongs to.
+     * Sets the description of the given {@link IDescribedElement} for the default language. The
+     * default language is specified trough the IPS project the element belongs to.
      * <p>
      * If there is no description for that locale or no default language is specified, nothing will
      * happen.
@@ -685,15 +967,36 @@ public class IpsPlugin extends AbstractUIPlugin {
     public void setDefaultDescription(IDescribedElement describedElement, String text) {
         ArgumentCheck.notNull(new Object[] { describedElement, text });
 
-        Locale defaultLocale = getDefaultLocale(describedElement.getIpsProject());
-        if (defaultLocale != null) {
-            IDescription descriptionPart = describedElement.getDescription(defaultLocale);
-            if (descriptionPart != null) {
-                descriptionPart.setText(text);
-            }
+        IDescription defaultDescription = getDefaultDescriptionPart(describedElement);
+        if (defaultDescription != null) {
+            defaultDescription.setText(text);
         }
     }
 
+    private ILabel getDefaultLabelPart(ILabeledElement labeledElement) {
+        ILabel labelPart = null;
+        Locale defaultLocale = getDefaultLocale(labeledElement.getIpsProject());
+        if (defaultLocale != null) {
+            labelPart = labeledElement.getLabel(defaultLocale);
+        }
+        return labelPart;
+    }
+
+    private IDescription getDefaultDescriptionPart(IDescribedElement describedElement) {
+        IDescription descriptionPart = null;
+        Locale defaultLocale = getDefaultLocale(describedElement.getIpsProject());
+        if (defaultLocale != null) {
+            descriptionPart = describedElement.getDescription(defaultLocale);
+        }
+        return descriptionPart;
+    }
+
+    /**
+     * Returns the locale of the {@link ISupportedLanguage} that is set as the default language for
+     * the given {@link IIpsProject}.
+     * <p>
+     * Returns <tt>null</tt> if no default language is set.
+     */
     private Locale getDefaultLocale(IIpsProject ipsProject) {
         Locale defaultLocale = null;
         ISupportedLanguage defaultLanguage = ipsProject.getProperties().getDefaultLanguage();

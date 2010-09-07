@@ -499,12 +499,30 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         }
     }
 
-    public void testGetLastResortLabel() {
-        assertEquals(container.getName(), container.getLastResortLabel());
+    public void testGetCaption() {
+        assertEquals("", container.getCaption(Locale.US));
+        try {
+            container.getCaption(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
     }
 
-    public void testGetLastResortPluralLabel() {
-        assertEquals("", container.getLastResortPluralLabel());
+    public void testGetPluralCaption() {
+        assertEquals("", container.getPluralCaption(Locale.US));
+        try {
+            container.getPluralCaption(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+    }
+
+    public void testGetLastResortCaption() {
+        assertEquals("", container.getLastResortCaption());
+    }
+
+    public void testGetLastResortPluralCaption() {
+        assertEquals("", container.getLastResortPluralCaption());
     }
 
     class TestIpsObjectPartContainer extends AtomicIpsObjectPart {
@@ -578,24 +596,6 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
          */
         private IIpsObjectPart newPartAccessor(Class<? extends IIpsObjectPart> partType) {
             return super.newPart(partType);
-        }
-
-        /*
-         * Calls the protected method getLastResortLabel() so that it can be accessed by this test
-         * case.
-         */
-        @Override
-        public String getLastResortLabel() {
-            return super.getLastResortLabel();
-        }
-
-        /*
-         * Calls the protected method getLastResortPluralLabel() so that it can be accessed by this
-         * test case.
-         */
-        @Override
-        public String getLastResortPluralLabel() {
-            return super.getLastResortPluralLabel();
         }
 
         @Override

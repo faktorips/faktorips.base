@@ -47,11 +47,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
-import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
@@ -876,88 +873,12 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     @Override
-    public boolean isPluralLabelSupported() {
-        return false;
-    }
-
-    @Override
-    public String getCurrentLabel() {
-        return getCurrentLabel(false);
-    }
-
-    @Override
-    public String getCurrentPluralLabel() {
-        if (!(isPluralLabelSupported())) {
-            throw new UnsupportedOperationException("This IPS Object Part Container does not support Plural Labels."); //$NON-NLS-1$
-        }
-        return getCurrentLabel(true);
-    }
-
-    private String getCurrentLabel(boolean plural) {
-        ILabeledElement currentLabelProvider = null;
-        try {
-            currentLabelProvider = getCurrentLabelProvider();
-        } catch (CoreException e) {
-            // Exception is not so critical, we log it so the user can check back about it.
-            // If the exception occurs, the last resort label will be returned.
-            IpsPlugin.log(e);
-        }
-
-        ILabel label = null;
-        if (currentLabelProvider != null) {
-            label = currentLabelProvider.getLabelForIpsModelLocale();
-            if (label == null) {
-                label = currentLabelProvider.getLabelForDefaultLocale();
-            }
-        }
-        if (label != null) {
-            String value = plural ? label.getPluralValue() : label.getValue();
-            if (!(StringUtils.isEmpty(value))) {
-                return value;
-            }
-        }
-        return plural ? getLastResortPluralLabel() : getLastResortLabel();
-    }
-
-    /**
-     * This operation is called by {@link #getCurrentLabel()} and {@link #getCurrentPluralLabel()}
-     * to obtain a reference to the {@link ILabeledElement} that provides the {@link ILabel}.
-     * <p>
-     * This implementation returns this container itself. It can be overridden by subclasses as
-     * necessary. For example, an {@link IAttributeValue} needs to refer to the {@link ILabel} of
-     * it's {@link IAttribute} in order to obtain it's label.
-     * 
-     * @throws CoreException This operation may throw this kind of exception at any time.
-     */
-    protected ILabeledElement getCurrentLabelProvider() throws CoreException {
-        return this;
-    }
-
-    /**
-     * Called by {@link #getCurrentLabel()} if no {@link ILabel} for the IPS model locale or the
-     * default locale exists.
-     * <p>
-     * This implementation returns the IPS Object Part Container's name. Overriding subclasses must
-     * not return <tt>null</tt>.
-     */
-    protected String getLastResortLabel() {
-        return getName();
-    }
-
-    /**
-     * Called by {@link #getCurrentLabel()} if no {@link ILabel} for the IPS model locale or the
-     * default locale exists.
-     * <p>
-     * This implementation returns an empty string. Overriding subclasses must not return
-     * <tt>null</tt>.
-     */
-    protected String getLastResortPluralLabel() {
-        return ""; //$NON-NLS-1$
-    }
-
-    @Override
     public ILabel getLabel(Locale locale) {
         ArgumentCheck.notNull(locale);
+        if (!(hasLabelSupport())) {
+            throw new UnsupportedOperationException("This IPS Object Part Container does not support Labels."); //$NON-NLS-1$
+        }
+
         for (ILabel label : labels) {
             Locale labelLocale = label.getLocale();
             if (labelLocale == null) {
@@ -972,23 +893,10 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     @Override
     public List<ILabel> getLabels() {
-        return Collections.unmodifiableList(labels);
-    }
-
-    @Override
-    public ILabel getLabelForIpsModelLocale() {
-        Locale ipsModelLocale = IpsPlugin.getDefault().getLocalizationLocale();
-        return getLabel(ipsModelLocale);
-    }
-
-    @Override
-    public ILabel getLabelForDefaultLocale() {
-        ILabel defaultLabel = null;
-        ISupportedLanguage defaultLanguage = getIpsProject().getProperties().getDefaultLanguage();
-        if (defaultLanguage != null) {
-            defaultLabel = getLabel(defaultLanguage.getLocale());
+        if (!(hasLabelSupport())) {
+            throw new UnsupportedOperationException("This IPS Object Part Container does not support Labels."); //$NON-NLS-1$
         }
-        return defaultLabel;
+        return Collections.unmodifiableList(labels);
     }
 
     @Override
@@ -997,6 +905,11 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             throw new UnsupportedOperationException("This IPS Object Part Container does not support Labels."); //$NON-NLS-1$
         }
         return newLabel(getNextPartId());
+    }
+
+    @Override
+    public boolean isPluralLabelSupported() {
+        return false;
     }
 
     @Override
@@ -1065,6 +978,44 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     @Override
     public final boolean isDescriptionChangable() {
         return hasDescriptionSupport();
+    }
+
+    /**
+     * This implementation always returns an empty string and should be overridden by subclasses to
+     * provide the correct caption.
+     */
+    @Override
+    public String getCaption(Locale locale) {
+        ArgumentCheck.notNull(locale);
+        return ""; //$NON-NLS-1$
+    }
+
+    /**
+     * This implementation always returns an empty string and should be overridden by subclasses to
+     * provide the correct plural caption.
+     */
+    @Override
+    public String getPluralCaption(Locale locale) {
+        ArgumentCheck.notNull(locale);
+        return ""; //$NON-NLS-1$
+    }
+
+    /**
+     * This implementation always returns an empty string and should be overridden by subclasses if
+     * they are able to provide a reasonable last resort caption.
+     */
+    @Override
+    public String getLastResortCaption() {
+        return ""; //$NON-NLS-1$
+    }
+
+    /**
+     * This implementation always returns an empty string and should be overridden by subclasses if
+     * they are able to provide a reasonable last resort plural caption.
+     */
+    @Override
+    public String getLastResortPluralCaption() {
+        return ""; //$NON-NLS-1$
     }
 
     /**

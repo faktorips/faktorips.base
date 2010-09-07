@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.workbenchadapters;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
@@ -53,7 +54,8 @@ public class AttributeValueWorkbenchAdapter extends IpsObjectPartWorkbenchAdapte
         }
 
         IAttributeValue attributeValue = (IAttributeValue)ipsObjectPart;
-        return attributeValue.getCurrentLabel();
+        String caption = IpsPlugin.getDefault().getLocalizedCaption(attributeValue);
+        return caption + '=' + attributeValue.getValue();
     }
 
 }

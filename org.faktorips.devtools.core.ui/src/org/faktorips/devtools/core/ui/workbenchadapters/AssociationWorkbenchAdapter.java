@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -25,7 +24,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
 
-public class AssociationWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter implements IPluralLabelWorkbenchAdapter {
+public class AssociationWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
 
     @Override
     protected ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
@@ -64,20 +63,15 @@ public class AssociationWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter i
 
     @Override
     protected String getLabel(IIpsObjectPart ipsObjectPart) {
-        if (!(ipsObjectPart instanceof IAssociation)) {
+        if (ipsObjectPart instanceof IAssociation) {
+            IAssociation association = (IAssociation)ipsObjectPart;
+            if (association.is1ToMany()) {
+                return association.getTargetRolePlural();
+            }
+            return association.getTargetRoleSingular();
+        } else {
             return super.getLabel(ipsObjectPart);
         }
-        IAssociation association = (IAssociation)ipsObjectPart;
-        return association.getCurrentLabel();
-    }
-
-    @Override
-    public String getPluralLabel(IIpsElement element) {
-        if (!(element instanceof IAssociation)) {
-            return null;
-        }
-        IAssociation association = (IAssociation)element;
-        return association.getCurrentPluralLabel();
     }
 
 }
