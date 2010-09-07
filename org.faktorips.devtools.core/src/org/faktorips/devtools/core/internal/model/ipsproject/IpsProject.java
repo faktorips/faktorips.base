@@ -1897,7 +1897,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     public IVersionFormat getVersionFormat() {
         return new IVersionFormat() {
 
-            private Pattern versionPattern = Pattern.compile("[0-9]*\\.[0-9]*\\.[0-9]*\\..*"); //$NON-NLS-1$
+            private Pattern versionPattern = Pattern.compile("[0-9]+\\.[0-9]+\\.[0-9]+\\.[a-z]+"); //$NON-NLS-1$
 
             @Override
             public boolean isCorrectVersionFormat(String version) {
@@ -1906,7 +1906,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
             @Override
             public String getVersionFormat() {
-                return versionPattern.pattern();
+                return "[0-9].[0-9].[0-9].[a-z]"; //$NON-NLS-1$
             }
         };
     }

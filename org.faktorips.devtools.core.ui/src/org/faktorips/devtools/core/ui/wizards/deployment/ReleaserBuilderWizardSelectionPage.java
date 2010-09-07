@@ -22,8 +22,8 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.VerifyEvent;
-import org.eclipse.swt.events.VerifyListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -42,15 +42,11 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
     private Label latestVersionLabel;
     private Text newVersionText;
 
+    private boolean correctVersionFormat = false;
+
     protected ReleaserBuilderWizardSelectionPage() {
         super("Releaser Builder");
         setTitle("Releaser Builder");
-    }
-
-    @Override
-    public boolean canFlipToNextPage() {
-        return super.canFlipToNextPage() && ipsProject != null
-                && ipsProject.getVersionFormat().isCorrectVersionFormat(newVersionText.getText());
     }
 
     @Override
@@ -86,26 +82,29 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
                         .getSelection());
                 if (typedSelection.isValid()) {
                     IIpsProject ipsProject = typedSelection.getFirstElement();
-                    checkPrerequisite(ipsProject);
                     setIpsProject(ipsProject);
                 } else {
                     setIpsProject(null);
                 }
+                updatePageComplete();
             }
         });
 
-        newVersionText.addVerifyListener(new VerifyListener() {
+        newVersionText.addModifyListener(new ModifyListener() {
 
             @Override
-            public void verifyText(VerifyEvent e) {
+            public void modifyText(ModifyEvent e) {
                 if (ipsProject != null) {
                     String newVersion = newVersionText.getText();
-                    if (!ipsProject.getVersionFormat().isCorrectVersionFormat(newVersion)) {
-                        setMessage("The format of version \"" + newVersion + "\" is incorrect.", DialogPage.ERROR);
+                    correctVersionFormat = ipsProject.getVersionFormat().isCorrectVersionFormat(newVersion);
+                    if (!correctVersionFormat) {
+                        setMessage("The format of version \"" + newVersion + "\" is incorrect. Format: "
+                                + ipsProject.getVersionFormat().getVersionFormat(), DialogPage.ERROR);
                     } else {
                         setMessage("", DialogPage.NONE);
                     }
                 }
+                updatePageComplete();
             }
         });
 
@@ -122,11 +121,6 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
         setControl(pageControl);
     }
 
-    protected void checkPrerequisite(IIpsProject ipsProject2) {
-        // TODO Auto-generated method stub
-
-    }
-
     public void setIpsProject(IIpsProject ipsProject) {
         this.ipsProject = ipsProject;
         if (latestVersionLabel != null && newVersionText != null) {
@@ -139,6 +133,21 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
             }
             latestVersionLabel.setText(oldVersion);
         }
-        setPageComplete(ipsProject != null);
+        updatePageComplete();
+    }
+
+    /**
+     * @return Returns the ipsProject.
+     */
+    public IIpsProject getIpsProject() {
+        return ipsProject;
+    }
+
+    private void updatePageComplete() {
+        setPageComplete(ipsProject != null && correctVersionFormat);
+    }
+
+    public String getNewVersion() {
+        return newVersionText.getText();
     }
 }
