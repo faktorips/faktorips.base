@@ -154,7 +154,7 @@
         	
 			<!-- create a temp-jarfile and move it after successful creation to right place -->
         	
-        	<jar destfile="${temp_jarfile}" >
+        	<jar destfile="${temp_jarfile}" manifest="../META-INF/MANIFEST.MF">
 				<fileset dir="${classes}" >
 					<patternset>
 						<exclude name="**/*.java"/>
