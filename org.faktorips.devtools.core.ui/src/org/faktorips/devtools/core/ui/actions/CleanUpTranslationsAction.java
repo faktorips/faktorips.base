@@ -17,6 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -156,11 +157,22 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
                     throw new RuntimeException(e);
                 }
 
+                /*
+                 * We are only interested in the source files of the current project and don't want
+                 * all source files accessible from the object path.
+                 */
+                Set<IIpsSrcFile> relevantIpsSrcFiles = new LinkedHashSet<IIpsSrcFile>();
+                for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+                    if (ipsProject.equals(ipsSrcFile.getIpsProject())) {
+                        relevantIpsSrcFiles.add(ipsSrcFile);
+                    }
+                }
+
                 Set<Locale> supportedLocales = getSupportedLocales(ipsProject);
 
-                int totalWork = ipsSrcFiles.size();
+                int totalWork = relevantIpsSrcFiles.size();
                 monitor.beginTask(NLS.bind(Messages.CleanUpTranslationsAction_progressTask, ipsProject), totalWork);
-                for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+                for (IIpsSrcFile ipsSrcFile : relevantIpsSrcFiles) {
                     try {
                         IIpsObject ipsObject = ipsSrcFile.getIpsObject();
                         cleanUp(ipsObject, supportedLocales);

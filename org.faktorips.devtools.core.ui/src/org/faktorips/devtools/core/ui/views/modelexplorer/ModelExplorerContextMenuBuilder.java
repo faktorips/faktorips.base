@@ -44,7 +44,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -463,11 +462,18 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         if (selected instanceof IIpsElement) {
             MenuManager cleanUpMenu = new MenuManager(Messages.ModelExplorer_submenuCleanUp,
                     "org.faktorips.devtools.core.ui.views.modelexplorer.cleanup"); //$NON-NLS-1$
-            createFixDifferencesAction(cleanUpMenu, selected, (IStructuredSelection)treeViewer.getSelection());
+
+            if (modelExplorer.isModelExplorer()) {
+                cleanUpMenu.add(new FixDifferencesAction(viewSite.getWorkbenchWindow(),
+                        (IStructuredSelection)treeViewer.getSelection()));
+            }
+
             cleanUpMenu.add(new CreateMissingEnumContentsAction(treeViewer, viewSite.getWorkbenchWindow()));
+
             if (modelExplorer.isModelExplorer()) {
                 cleanUpMenu.add(new CleanUpTranslationsAction(treeViewer, viewSite.getWorkbenchWindow()));
             }
+
             manager.add(cleanUpMenu);
         }
     }
@@ -479,27 +485,6 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
                     || selected instanceof IIpsProject || selected instanceof ITestCase
                     || selected instanceof IProductCmpt) {
                 manager.add(new IpsTestAction(treeViewer));
-            }
-        }
-    }
-
-    protected void createFixDifferencesAction(IMenuManager manager, Object selected, IStructuredSelection selection) {
-        // show fix differences menu only for the model explorer
-        if (!(modelExplorer.isModelExplorer())) {
-            return;
-        }
-        if (selected instanceof IIpsElement) {
-            if (selected instanceof IIpsProject) {
-                IIpsProject project = (IIpsProject)selected;
-                if (project.isProductDefinitionProject()) {
-                    manager.add(new FixDifferencesAction(viewSite.getWorkbenchWindow(), selection));
-                }
-            } else if (selected instanceof IIpsPackageFragmentRoot) {
-                manager.add(new FixDifferencesAction(viewSite.getWorkbenchWindow(), selection));
-            } else if (selected instanceof IIpsPackageFragment) {
-                manager.add(new FixDifferencesAction(viewSite.getWorkbenchWindow(), selection));
-            } else if (selected instanceof IFixDifferencesToModelSupport) {
-                manager.add(new FixDifferencesAction(viewSite.getWorkbenchWindow(), selection));
             }
         }
     }
