@@ -75,7 +75,7 @@ public class ShowHierarchyAction extends IpsAction {
                 ((IpsHierarchyView)pse).showHierarchy(ipsObject);
             } catch (PartInitException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
-            } catch (CoreException e) {
+            } catch (InterruptedException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }

@@ -50,7 +50,8 @@ public class HierarchyContentProvider implements ITreeContentProvider {
 
     @Override
     public boolean hasChildren(Object element) {
-        return (getChildren(element) != null && getChildren(element).length != 0);
+        Object[] elements = getChildren(element);
+        return (elements != null && elements.length != 0);
     }
 
     @Override
@@ -67,16 +68,14 @@ public class HierarchyContentProvider implements ITreeContentProvider {
         // nothing to dispose
     }
 
-    @Override
-    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-        if (newInput instanceof ITypeHierarchy) {
-            hierarchy = (ITypeHierarchy)newInput;
-        }
-
-    }
-
     public ITypeHierarchy getTypeHierarchy() {
         return this.hierarchy;
     }
 
+    @Override
+    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+        if (newInput instanceof ITypeHierarchy) {
+            this.hierarchy = (ITypeHierarchy)newInput;
+        }
+    }
 }
