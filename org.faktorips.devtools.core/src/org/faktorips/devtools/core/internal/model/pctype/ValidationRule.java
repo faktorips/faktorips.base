@@ -404,9 +404,4 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         valueChanged(oldValue, isAttributeValueValidationRule);
     }
 
-    @Override
-    public boolean hasDescriptionSupport() {
-        return true;
-    }
-
 }

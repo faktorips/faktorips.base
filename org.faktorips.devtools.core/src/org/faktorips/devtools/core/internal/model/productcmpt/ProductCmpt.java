@@ -314,9 +314,4 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         return getProductCmptType();
     }
 
-    @Override
-    public boolean hasDescriptionSupport() {
-        return true;
-    }
-
 }

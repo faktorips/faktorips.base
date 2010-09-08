@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
@@ -88,7 +89,8 @@ public class TestCaseModelDescriptionPage extends DefaultModelDescriptionPage im
             uniqueTestObjects.add(ipsObjectPart);
         }
         String desrcItemName = name.equals(parameterName) ? name : parameterName + " : " + name; //$NON-NLS-1$
-        String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(ipsObjectPart);
+        String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(
+                (IDescribedElement)ipsObjectPart);
         desrList.add(new DescriptionItem(desrcItemName, localizedDescription));
     }
 

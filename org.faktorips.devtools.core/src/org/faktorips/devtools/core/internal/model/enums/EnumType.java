@@ -944,11 +944,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return !isAbstract && containingValues;
     }
 
-    @Override
-    public boolean hasLabelSupport() {
-        return true;
-    }
-
     private static class IsSubEnumTypeOfVisitor extends EnumTypeHierachyVisitor {
 
         private IEnumType superEnumTypeCandidate;

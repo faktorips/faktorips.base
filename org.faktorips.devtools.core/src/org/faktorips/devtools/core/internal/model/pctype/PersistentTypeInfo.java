@@ -666,11 +666,6 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         return getPolicyCmptType() == rootEntity;
     }
 
-    @Override
-    public boolean hasDescriptionSupport() {
-        return true;
-    }
-
     private static class ColumnNameCollector extends PolicyCmptTypeHierarchyVisitor {
         private Map<String, Object> persistentObjectesBySameColumnName = new HashMap<String, Object>();
 

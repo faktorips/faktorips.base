@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 
-public interface IIpsObject extends IIpsObjectPartContainer {
+public interface IIpsObject extends IIpsObjectPartContainer, IDescribedElement {
 
     /**
      * Prefix for all message codes of this class.

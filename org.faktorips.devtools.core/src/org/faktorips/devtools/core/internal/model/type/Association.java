@@ -382,16 +382,6 @@ public abstract class Association extends IpsObjectPart implements IAssociation 
         return true;
     }
 
-    @Override
-    public boolean hasDescriptionSupport() {
-        return true;
-    }
-
-    @Override
-    public boolean hasLabelSupport() {
-        return true;
-    }
-
     private class DerivedUnionCandidatesFinder extends TypeHierarchyVisitor {
 
         private List<IAssociation> candidates = new ArrayList<IAssociation>();

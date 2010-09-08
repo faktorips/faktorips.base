@@ -18,7 +18,7 @@ import java.util.GregorianCalendar;
 /**
  * An IPS object generation contains the object's state for a period of time.
  */
-public interface IIpsObjectGeneration extends IIpsObjectPart {
+public interface IIpsObjectGeneration extends IIpsObjectPart, IDescribedElement {
 
     public final static String PROPERTY_VALID_FROM = "validFrom"; //$NON-NLS-1$
 

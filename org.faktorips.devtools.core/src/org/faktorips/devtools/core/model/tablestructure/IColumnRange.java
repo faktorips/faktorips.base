@@ -13,9 +13,10 @@
 
 package org.faktorips.devtools.core.model.tablestructure;
 
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
-public interface IColumnRange extends IIpsObjectPart, IKeyItem {
+public interface IColumnRange extends IIpsObjectPart, IKeyItem, IDescribedElement {
 
     public final static String PROPERTY_RANGE_TYPE = "columnRangeType"; //$NON-NLS-1$
     public final static String PROPERTY_FROM_COLUMN = "fromColumn"; //$NON-NLS-1$

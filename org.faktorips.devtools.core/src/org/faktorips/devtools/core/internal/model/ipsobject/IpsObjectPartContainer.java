@@ -39,6 +39,7 @@ import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.ICustomValidation;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
@@ -47,6 +48,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -61,6 +63,10 @@ import org.w3c.dom.NodeList;
 
 /**
  * Implementation of {@link IIpsObjectPartContainer}.
+ * <p>
+ * This implementation already provides the operations required by the interfaces
+ * {@link IDescribedElement} and {@link ILabeledElement}. Therefore, subclasses are able to receive
+ * multi-language support just by implementing the corresponding interfaces.
  * 
  * @see IIpsObjectPartContainer
  * 
@@ -98,7 +104,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     public IpsObjectPartContainer(IIpsElement parent, String name) {
         super(parent, name);
-        if (!(this instanceof ILabel || this instanceof IDescription)) {
+        if (this instanceof ILabeledElement || this instanceof IDescribedElement) {
             initLabelsAndDescriptions();
         }
     }
@@ -111,18 +117,15 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     private void initLabelsAndDescriptions() {
-        if (!(hasLabelSupport() || hasDescriptionSupport())) {
-            return;
-        }
         IIpsProject ipsProject = getIpsProject();
         if (ipsProject != null) {
             for (ISupportedLanguage language : ipsProject.getProperties().getSupportedLanguages()) {
                 Locale locale = language.getLocale();
-                if (hasLabelSupport()) {
+                if (this instanceof ILabeledElement) {
                     Label label = (Label)newLabel();
                     label.setLocaleWithoutChangeEvent(locale);
                 }
-                if (hasDescriptionSupport()) {
+                if (this instanceof IDescribedElement) {
                     Description description = (Description)newDescription();
                     description.setLocaleWithoutChangeEvent(locale);
                 }
@@ -554,11 +557,11 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @param part The {@link IIpsObjectPart} to add to this container.
      */
     protected final boolean addPart(IIpsObjectPart part) {
-        if (part instanceof ILabel && hasLabelSupport()) {
+        if (part instanceof ILabel) {
             labels.add((ILabel)part);
             return true;
 
-        } else if (part instanceof IDescription && hasDescriptionSupport()) {
+        } else if (part instanceof IDescription) {
             descriptions.add((IDescription)part);
             return true;
         }
@@ -584,11 +587,11 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @param part The {@link IIpsObjectPart} to remove from this container.
      */
     protected final boolean removePart(IIpsObjectPart part) {
-        if (part instanceof ILabel && hasLabelSupport()) {
+        if (part instanceof ILabel) {
             labels.remove(part);
             return true;
 
-        } else if (part instanceof IDescription && hasDescriptionSupport()) {
+        } else if (part instanceof IDescription) {
             descriptions.remove(part);
             return true;
         }
@@ -612,10 +615,10 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      */
     protected final IIpsObjectPart newPart(Element xmlTag, String id) {
         String nodeName = xmlTag.getNodeName();
-        if (nodeName.equals(ILabel.XML_TAG_NAME) && hasLabelSupport()) {
+        if (nodeName.equals(ILabel.XML_TAG_NAME)) {
             return newLabel(id);
 
-        } else if (nodeName.equals(IDescription.XML_TAG_NAME) && hasDescriptionSupport()) {
+        } else if (nodeName.equals(IDescription.XML_TAG_NAME)) {
             return newDescription(id);
         }
         return newPartThis(xmlTag, id);
@@ -641,10 +644,10 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @param partType The published interface of the IPS object part that should be created.
      */
     public final IIpsObjectPart newPart(Class<? extends IIpsObjectPart> partType) {
-        if (partType == Label.class && hasLabelSupport()) {
+        if (partType == Label.class) {
             return newLabel();
 
-        } else if (partType == Description.class && hasDescriptionSupport()) {
+        } else if (partType == Description.class) {
             return newDescription();
         }
         return newPartThis(partType);
@@ -857,27 +860,10 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     /**
-     * The default implementation always returns <tt>false</tt>.
+     * @see ILabeledElement#getLabel(Locale)
      */
-    @Override
-    public boolean hasDescriptionSupport() {
-        return false;
-    }
-
-    /**
-     * The default implementation always returns <tt>false</tt>.
-     */
-    @Override
-    public boolean hasLabelSupport() {
-        return false;
-    }
-
-    @Override
     public ILabel getLabel(Locale locale) {
         ArgumentCheck.notNull(locale);
-        if (!(hasLabelSupport())) {
-            throw new UnsupportedOperationException("This IPS Object Part Container does not support Labels."); //$NON-NLS-1$
-        }
 
         for (ILabel label : labels) {
             Locale labelLocale = label.getLocale();
@@ -891,33 +877,32 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         return null;
     }
 
-    @Override
+    /**
+     * @see ILabeledElement#getLabels()
+     */
     public List<ILabel> getLabels() {
-        if (!(hasLabelSupport())) {
-            throw new UnsupportedOperationException("This IPS Object Part Container does not support Labels."); //$NON-NLS-1$
-        }
         return Collections.unmodifiableList(labels);
     }
 
-    @Override
+    /**
+     * @see ILabeledElement#newLabel()
+     */
     public ILabel newLabel() {
-        if (!(hasLabelSupport())) {
-            throw new UnsupportedOperationException("This IPS Object Part Container does not support Labels."); //$NON-NLS-1$
-        }
         return newLabel(getNextPartId());
     }
 
-    @Override
+    /**
+     * @see ILabeledElement#isPluralLabelSupported()
+     */
     public boolean isPluralLabelSupported() {
         return false;
     }
 
-    @Override
+    /**
+     * @see IDescribedElement#getDescription(Locale)
+     */
     public IDescription getDescription(Locale locale) {
         ArgumentCheck.notNull(locale);
-        if (!(hasDescriptionSupport())) {
-            throw new UnsupportedOperationException("This IPS Object Part Container does not support Descriptions."); //$NON-NLS-1$
-        }
 
         for (IDescription description : descriptions) {
             Locale descriptionLocale = description.getLocale();
@@ -931,19 +916,17 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         return null;
     }
 
-    @Override
+    /**
+     * @see IDescribedElement#getDescriptions()
+     */
     public List<IDescription> getDescriptions() {
-        if (!(hasDescriptionSupport())) {
-            throw new UnsupportedOperationException("This IPS Object Part Container does not support Descriptions."); //$NON-NLS-1$
-        }
         return Collections.unmodifiableList(descriptions);
     }
 
-    @Override
+    /**
+     * @see IDescribedElement#newDescription()
+     */
     public IDescription newDescription() {
-        if (!(hasDescriptionSupport())) {
-            throw new UnsupportedOperationException("This IPS Object Part Container does not support Descriptions."); //$NON-NLS-1$
-        }
         return newDescription(getNextPartId());
     }
 
@@ -951,7 +934,11 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     @Deprecated
     @Override
     public String getDescription() {
-        return IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(this);
+        String description = ""; //$NON-NLS-1$
+        if (this instanceof IDescribedElement) {
+            description = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription((IDescribedElement)this);
+        }
+        return description;
     }
 
     // Deprecated since 3.1
@@ -977,7 +964,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     @Deprecated
     @Override
     public final boolean isDescriptionChangable() {
-        return hasDescriptionSupport();
+        return this instanceof IDescribedElement;
     }
 
     /**

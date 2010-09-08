@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.model.tablestructure;
 
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 /**
@@ -20,7 +21,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
  * 
  * @author firstName lastName
  */
-public interface ITableAccessFunction extends IIpsObjectPart {
+public interface ITableAccessFunction extends IIpsObjectPart, IDescribedElement {
 
     /**
      * Returns the table structure this function gives access to.

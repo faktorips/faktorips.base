@@ -401,11 +401,6 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         list.add(new Message(MSGCODE_WRONG_FORMULA_DATATYPE, text, Message.ERROR, this, PROPERTY_EXPRESSION));
     }
 
-    @Override
-    public boolean hasDescriptionSupport() {
-        return true;
-    }
-
     class EnumDatatypesCollector extends PolicyCmptTypeHierarchyVisitor {
 
         private IIpsProject project;

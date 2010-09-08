@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.model.testcasetype;
 
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 /**
@@ -20,7 +21,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
  * 
  * @author Joerg Ortmann
  */
-public interface ITestParameter extends IIpsObjectPart {
+public interface ITestParameter extends IIpsObjectPart, IDescribedElement {
 
     /** Property names */
     public final static String PROPERTY_TEST_PARAMETER_TYPE = "testParameterType"; //$NON-NLS-1$

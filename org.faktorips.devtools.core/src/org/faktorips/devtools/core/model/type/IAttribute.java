@@ -15,7 +15,9 @@ package org.faktorips.devtools.core.model.type;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -23,7 +25,7 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 /**
  * A type's attribute.
  */
-public interface IAttribute extends IIpsObjectPart {
+public interface IAttribute extends IIpsObjectPart, IDescribedElement, ILabeledElement {
 
     public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
 

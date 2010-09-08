@@ -56,6 +56,7 @@ import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
@@ -312,10 +313,8 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             addPagesForParsableSrcFile();
             IIpsObject ipsObject = getIpsObject();
             if (ipsObject != null) {
-                if (ipsObject.hasDescriptionSupport()) {
-                    addPage(new DescriptionPage(this));
-                }
-                if (ipsObject.hasLabelSupport()) {
+                addPage(new DescriptionPage(this));
+                if (ipsObject instanceof ILabeledElement) {
                     addPage(new LabelPage(this));
                 }
             }

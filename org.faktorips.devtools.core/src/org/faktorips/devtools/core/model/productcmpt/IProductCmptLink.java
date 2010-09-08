@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.model.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -25,7 +26,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
  * 
  * @see IProductCmptTypeAssociation
  */
-public interface IProductCmptLink extends IIpsObjectPart {
+public interface IProductCmptLink extends IIpsObjectPart, IDescribedElement {
 
     public final static String PROPERTY_TARGET = "target"; //$NON-NLS-1$
     public final static String PROPERTY_ASSOCIATION = "association"; //$NON-NLS-1$

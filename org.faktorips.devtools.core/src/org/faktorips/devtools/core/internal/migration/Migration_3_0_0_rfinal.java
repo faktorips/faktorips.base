@@ -63,12 +63,10 @@ public class Migration_3_0_0_rfinal extends DefaultMigration {
     @Override
     protected void migrate(IIpsSrcFile srcFile) throws CoreException {
         IIpsObject ipsObject = srcFile.getIpsObject();
-        if (ipsObject.hasLabelSupport()) {
-            addLabelForGeneratorLocale(ipsObject);
+        if (ipsObject instanceof ILabeledElement) {
+            addLabelForGeneratorLocale((ILabeledElement)ipsObject);
         }
-        if (ipsObject.hasDescriptionSupport()) {
-            associateDescriptionToGeneratorLocale(ipsObject);
-        }
+        associateDescriptionToGeneratorLocale(ipsObject);
         migrateChildren(ipsObject);
     }
 
@@ -77,13 +75,9 @@ public class Migration_3_0_0_rfinal extends DefaultMigration {
             if (child instanceof IIpsObjectPartContainer) {
                 IIpsObjectPartContainer ipsObjectPartContainer = (IIpsObjectPartContainer)child;
                 migrateChildren(ipsObjectPartContainer);
-                if (ipsObjectPartContainer.hasDescriptionSupport()) {
-                    associateDescriptionToGeneratorLocale(ipsObjectPartContainer);
-                }
-                if (ipsObjectPartContainer.hasLabelSupport()) {
-                    addLabelForGeneratorLocale(ipsObjectPartContainer);
-                }
-                continue;
+            }
+            if (child instanceof IDescribedElement) {
+                associateDescriptionToGeneratorLocale((IDescribedElement)child);
             }
             if (child instanceof ILabeledElement) {
                 addLabelForGeneratorLocale((ILabeledElement)child);

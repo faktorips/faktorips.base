@@ -22,6 +22,7 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -97,12 +98,13 @@ public abstract class JavaGeneratorForIpsPart {
     protected final String getDescriptionInGeneratorLanguage(IIpsObjectPart ipsObjectPart) {
         ArgumentCheck.notNull(ipsObjectPart);
         String description = ""; //$NON-NLS-1$
-        if (ipsObjectPart.hasDescriptionSupport()) {
-            IDescription generatorDescription = ipsObjectPart.getDescription(getLanguageUsedInGeneratedSourceCode());
+        if (ipsObjectPart instanceof IDescribedElement) {
+            IDescribedElement describedElement = (IDescribedElement)ipsObjectPart;
+            IDescription generatorDescription = describedElement.getDescription(getLanguageUsedInGeneratedSourceCode());
             if (generatorDescription != null) {
                 description = generatorDescription.getText();
             } else {
-                description = IpsPlugin.getMultiLanguageSupport().getDefaultDescription(ipsObjectPart);
+                description = IpsPlugin.getMultiLanguageSupport().getDefaultDescription(describedElement);
             }
         }
         return description;

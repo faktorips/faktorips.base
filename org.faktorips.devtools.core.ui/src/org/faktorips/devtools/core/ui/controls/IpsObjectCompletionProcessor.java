@@ -20,6 +20,7 @@ import org.eclipse.jface.contentassist.IContentAssistSubjectControl;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -107,8 +108,8 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
                     if (IpsObjectType.TABLE_CONTENTS != ipsSrcFile.getIpsObjectType()) {
                         // table contents doesn't support description, thus doen't call getIpsObject
                         // due to performance reason
-                        localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(
-                                ipsSrcFile.getIpsObject());
+                        IIpsObject ipsObject = ipsSrcFile.getIpsObject();
+                        localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(ipsObject);
                     }
 
                     CompletionProposal proposal = new CompletionProposal(qName, 0, documentOffset, qName.length(),

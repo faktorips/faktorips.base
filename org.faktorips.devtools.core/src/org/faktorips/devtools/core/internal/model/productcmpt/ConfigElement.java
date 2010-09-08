@@ -415,9 +415,4 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         return true;
     }
 
-    @Override
-    public boolean hasDescriptionSupport() {
-        return true;
-    }
-
 }

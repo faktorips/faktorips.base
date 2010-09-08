@@ -220,8 +220,4 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
         }
     }
 
-    @Override
-    public boolean hasDescriptionSupport() {
-        return true;
-    }
 }

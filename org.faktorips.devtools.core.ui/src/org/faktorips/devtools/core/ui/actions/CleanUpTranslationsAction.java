@@ -39,11 +39,13 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
@@ -191,13 +193,17 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
         private void cleanUp(IIpsObjectPartContainer ipsObjectPartContainer, Set<Locale> supportedLocales) {
             cleanUpChildren(ipsObjectPartContainer, supportedLocales);
 
-            if (!(ipsObjectPartContainer.hasDescriptionSupport() || ipsObjectPartContainer.hasLabelSupport())) {
-                return;
+            if (ipsObjectPartContainer instanceof IDescribedElement) {
+                IDescribedElement describedElement = (IDescribedElement)ipsObjectPartContainer;
+                deleteObsoleteDescriptions(describedElement, supportedLocales);
+                addMissingDescriptions(describedElement, supportedLocales);
             }
 
-            deleteObsoleteDescriptions(ipsObjectPartContainer, supportedLocales);
-            deleteObsoleteLabels(ipsObjectPartContainer, supportedLocales);
-            addMissingDescriptionsAndLabels(ipsObjectPartContainer, supportedLocales);
+            if (ipsObjectPartContainer instanceof ILabeledElement) {
+                ILabeledElement labeledElement = (ILabeledElement)ipsObjectPartContainer;
+                deleteObsoleteLabels(labeledElement, supportedLocales);
+                addMissingLabels(labeledElement, supportedLocales);
+            }
         }
 
         private void cleanUpChildren(IIpsObjectPartContainer ipsObjectPartContainer, Set<Locale> supportedLocales) {
@@ -213,30 +219,26 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
             }
         }
 
-        private void addMissingDescriptionsAndLabels(IIpsObjectPartContainer ipsObjectPartContainer,
-                Set<Locale> supportedLocales) {
-
+        private void addMissingDescriptions(IDescribedElement describedElement, Set<Locale> supportedLocales) {
             for (Locale locale : supportedLocales) {
-                if (ipsObjectPartContainer.hasDescriptionSupport()) {
-                    if (ipsObjectPartContainer.getDescription(locale) == null) {
-                        IDescription newDescription = ipsObjectPartContainer.newDescription();
-                        newDescription.setLocale(locale);
-                    }
-                }
-
-                if (ipsObjectPartContainer.hasLabelSupport()) {
-                    if (ipsObjectPartContainer.getLabel(locale) == null) {
-                        ILabel newLabel = ipsObjectPartContainer.newLabel();
-                        newLabel.setLocale(locale);
-                    }
+                if (describedElement.getDescription(locale) == null) {
+                    IDescription newDescription = describedElement.newDescription();
+                    newDescription.setLocale(locale);
                 }
             }
         }
 
-        private void deleteObsoleteDescriptions(IIpsObjectPartContainer ipsObjectPartContainer,
-                Set<Locale> supportedLocales) {
+        private void addMissingLabels(ILabeledElement labeledElement, Set<Locale> supportedLocales) {
+            for (Locale locale : supportedLocales) {
+                if (labeledElement.getLabel(locale) == null) {
+                    ILabel newLabel = labeledElement.newLabel();
+                    newLabel.setLocale(locale);
+                }
+            }
+        }
 
-            List<IDescription> descriptionList = ipsObjectPartContainer.getDescriptions();
+        private void deleteObsoleteDescriptions(IDescribedElement describedElement, Set<Locale> supportedLocales) {
+            List<IDescription> descriptionList = describedElement.getDescriptions();
             // Transformation to array to avoid concurrent modification
             IDescription[] descriptionArray = descriptionList.toArray(new IDescription[descriptionList.size()]);
             for (IDescription description : descriptionArray) {
@@ -249,8 +251,8 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
             }
         }
 
-        private void deleteObsoleteLabels(IIpsObjectPartContainer ipsObjectPartContainer, Set<Locale> supportedLocales) {
-            List<ILabel> labelList = ipsObjectPartContainer.getLabels();
+        private void deleteObsoleteLabels(ILabeledElement labeledElement, Set<Locale> supportedLocales) {
+            List<ILabel> labelList = labeledElement.getLabels();
             // Transformation to array to avoid concurrent modification
             ILabel[] labelArray = labelList.toArray(new ILabel[labelList.size()]);
             for (ILabel label : labelArray) {

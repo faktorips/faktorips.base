@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -27,7 +28,7 @@ import org.faktorips.fl.ExprCompiler;
  * 
  * @author Jan Ortmann
  */
-public interface IFormula extends IIpsObjectPart, IPropertyValue {
+public interface IFormula extends IIpsObjectPart, IPropertyValue, IDescribedElement {
 
     public final static String PROPERTY_FORMULA_SIGNATURE_NAME = "formulaSignature"; //$NON-NLS-1$
     public final static String PROPERTY_EXPRESSION = "expression"; //$NON-NLS-1$

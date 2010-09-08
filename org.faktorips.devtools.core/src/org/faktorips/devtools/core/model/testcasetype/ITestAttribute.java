@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.model.testcasetype;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -26,7 +27,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
  * 
  * @author Joerg Ortmann
  */
-public interface ITestAttribute extends IIpsObjectPart {
+public interface ITestAttribute extends IIpsObjectPart, IDescribedElement {
 
     public final static String PROPERTY_ATTRIBUTE = "attribute"; //$NON-NLS-1$
 

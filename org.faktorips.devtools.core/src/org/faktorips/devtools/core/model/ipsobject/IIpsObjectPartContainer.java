@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.model.ipsobject;
 
-import java.util.List;
 import java.util.Locale;
 
 import org.faktorips.devtools.core.model.Described;
@@ -23,18 +22,13 @@ import org.faktorips.devtools.core.model.XmlSupport;
 import org.faktorips.util.memento.MementoSupport;
 
 /**
- * A container for {@link IIpsObjectPart}s that may have {@link IDescription}s and {@link ILabel}s
- * attached to it.
- * <p>
- * Whether or not descriptions and / or labels are supported by this
- * <tt>IIpsObjectPartContainer</tt> can be queried trough the operations
- * {@link #hasDescriptionSupport()} and {@link #hasLabelSupport()} respectively.
+ * A container for {@link IIpsObjectPart}s.
  * 
  * @author Thorsten Guenther
  * @author Alexander Weickmann
  */
 public interface IIpsObjectPartContainer extends IIpsElement, IExtensionPropertyAccess, Validatable, XmlSupport,
-        MementoSupport, Described, IDescribedElement, ILabeledElement {
+        MementoSupport, Described {
 
     /**
      * Returns the IPS object this part belongs to if this <tt>IIpsObjectPartContainer</tt> is a
@@ -46,74 +40,6 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
      * Returns the IPS source file this <tt>IIpsObjectPartContainer</tt> belongs to.
      */
     public IIpsSrcFile getIpsSrcFile();
-
-    /**
-     * Returns whether this <tt>IIpsObjectPartContainer</tt> does support descriptions. This
-     * operation is called by the constructor so it's crucial that the return value does not depend
-     * on any instance state.
-     */
-    public boolean hasDescriptionSupport();
-
-    /**
-     * Returns whether this <tt>IIpsObjectPartContainer</tt> does support labels. This operation is
-     * called by the constructor so it's crucial that the return value does not depend on any
-     * instance state.
-     */
-    public boolean hasLabelSupport();
-
-    /**
-     * @throws UnsupportedOperationException If this <tt>IIpsObjectPartContainer</tt> does not
-     *             support labels.
-     * 
-     * @see #hasLabelSupport()
-     */
-    @Override
-    public ILabel newLabel();
-
-    /**
-     * @throws UnsupportedOperationException If this <tt>IIpsObjectPartContainer</tt> does not
-     *             support labels.
-     * 
-     * @see #hasLabelSupport()
-     */
-    @Override
-    public ILabel getLabel(Locale locale);
-
-    /**
-     * @throws UnsupportedOperationException If this <tt>IIpsObjectPartContainer</tt> does not
-     *             support labels.
-     * 
-     * @see #hasLabelSupport()
-     */
-    @Override
-    public List<ILabel> getLabels();
-
-    /**
-     * @throws UnsupportedOperationException If this <tt>IIpsObjectPartContainer</tt> does not
-     *             support descriptions.
-     * 
-     * @see #hasDescriptionSupport()
-     */
-    @Override
-    public IDescription newDescription();
-
-    /**
-     * @throws UnsupportedOperationException If this <tt>IIpsObjectPartContainer</tt> does not
-     *             support descriptions.
-     * 
-     * @see #hasDescriptionSupport()
-     */
-    @Override
-    public IDescription getDescription(Locale locale);
-
-    /**
-     * @throws UnsupportedOperationException If this <tt>IIpsObjectPartContainer</tt> does not
-     *             support descriptions.
-     * 
-     * @see #hasDescriptionSupport()
-     */
-    @Override
-    public List<IDescription> getDescriptions();
 
     /**
      * Returns the caption of this <tt>IIpsObjectPartContainer</tt> for the given {@link Locale}. A

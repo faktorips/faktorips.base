@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
@@ -151,10 +152,10 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         Composite composite = createWorkAreaThis(parent);
         if (isTabFolderUsed()) {
             TabFolder tabFolder = (TabFolder)parent;
-            if (part.hasDescriptionSupport()) {
+            if (part instanceof IDescribedElement) {
                 createDescriptionTabItem(tabFolder);
             }
-            if (part.hasLabelSupport()) {
+            if (part instanceof ILabeledElement) {
                 createLabelTabItem(tabFolder);
             }
         }
@@ -164,7 +165,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
     protected abstract Composite createWorkAreaThis(Composite parent);
 
     private TabItem createDescriptionTabItem(TabFolder folder) {
-        IDescribedElement describedElement = part;
+        IDescribedElement describedElement = (IDescribedElement)part;
         Composite editComposite = new DescriptionEditComposite(folder, describedElement, uiToolkit);
 
         TabItem item = new TabItem(folder, SWT.NONE);
@@ -175,7 +176,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
     }
 
     private TabItem createLabelTabItem(TabFolder folder) {
-        Composite editComposite = new LabelEditComposite(folder, part);
+        Composite editComposite = new LabelEditComposite(folder, (ILabeledElement)part);
 
         TabItem item = new TabItem(folder, SWT.NONE);
         item.setText(Messages.IpsPartEditDialog_tabItemLabel);
@@ -232,40 +233,46 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
      * validation information.
      */
     protected void updateMessageArea() {
+        MessageList msgList;
         try {
-            MessageList msgList = part.validate(part.getIpsProject());
+            msgList = part.validate(part.getIpsProject());
             MessageList objMsgList = part.getIpsObject().validate(part.getIpsProject());
             msgList.add(objMsgList.getMessagesFor(part));
-
-            Message msg = null;
-            if (msgList.getNoOfMessages() > 0) {
-                msg = msgList.getFirstMessage(Message.ERROR);
-                if (msg != null) {
-                    setMessage(msg.getText(), IMessageProvider.ERROR);
-                    return;
-                }
-
-                msg = msgList.getFirstMessage(Message.WARNING);
-                if (msg != null) {
-                    setMessage(msg.getText(), IMessageProvider.WARNING);
-                    return;
-                }
-
-                msg = msgList.getFirstMessage(Message.INFO);
-                if (msg != null) {
-                    setMessage(msg.getText(), IMessageProvider.INFORMATION);
-                    return;
-                }
-            } else if (!(StringUtils.isEmpty(IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(part).trim()))) {
-                setMessage(IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(part),
-                        IMessageProvider.INFORMATION);
-            } else {
-                setMessage(null);
-            }
-
         } catch (CoreException e) {
             IpsPlugin.log(e);
+            return;
         }
+
+        if (msgList.getNoOfMessages() > 0) {
+            Message msg = msgList.getFirstMessage(Message.ERROR);
+            if (msg != null) {
+                setMessage(msg.getText(), IMessageProvider.ERROR);
+                return;
+            }
+
+            msg = msgList.getFirstMessage(Message.WARNING);
+            if (msg != null) {
+                setMessage(msg.getText(), IMessageProvider.WARNING);
+                return;
+            }
+
+            msg = msgList.getFirstMessage(Message.INFO);
+            if (msg != null) {
+                setMessage(msg.getText(), IMessageProvider.INFORMATION);
+                return;
+            }
+        }
+
+        if (part instanceof IDescribedElement) {
+            String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(
+                    (IDescribedElement)part);
+            if (!(StringUtils.isEmpty(localizedDescription.trim()))) {
+                setMessage(localizedDescription, IMessageProvider.INFORMATION);
+                return;
+            }
+        }
+
+        setMessage(null);
     }
 
     /**

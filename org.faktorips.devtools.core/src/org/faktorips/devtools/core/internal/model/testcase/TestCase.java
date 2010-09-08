@@ -1057,9 +1057,4 @@ public class TestCase extends IpsObject implements ITestCase {
         return getTestCaseType();
     }
 
-    @Override
-    public boolean hasDescriptionSupport() {
-        return true;
-    }
-
 }

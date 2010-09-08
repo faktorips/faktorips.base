@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
@@ -30,7 +31,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * 
  * @since 2.3
  */
-public interface IEnumValue extends IIpsObjectPart {
+public interface IEnumValue extends IIpsObjectPart, IDescribedElement {
 
     /** The XML tag for this IPS object part. */
     public final static String XML_TAG = "EnumValue"; //$NON-NLS-1$

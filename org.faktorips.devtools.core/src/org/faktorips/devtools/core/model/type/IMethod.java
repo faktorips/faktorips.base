@@ -15,13 +15,14 @@ package org.faktorips.devtools.core.model.type;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  * A type's method.
  */
-public interface IMethod extends IParameterContainer {
+public interface IMethod extends IParameterContainer, IDescribedElement {
 
     public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
     public final static String PROPERTY_MODIFIER = "modifier"; //$NON-NLS-1$

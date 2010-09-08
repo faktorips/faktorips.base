@@ -89,9 +89,4 @@ public class TableAccessFunction extends AtomicIpsObjectPart implements ITableAc
         return types; // return defensive copy
     }
 
-    @Override
-    public boolean hasDescriptionSupport() {
-        return true;
-    }
-
 }

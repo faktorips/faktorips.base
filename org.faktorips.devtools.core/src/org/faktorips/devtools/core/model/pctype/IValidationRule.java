@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.model.pctype;
 
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 /**
@@ -20,7 +21,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
  * name, message e.g. exist. The actual rule condition is part of the concept of this interface. It
  * has to be implemented within the generated source code.
  */
-public interface IValidationRule extends IIpsObjectPart {
+public interface IValidationRule extends IIpsObjectPart, IDescribedElement {
 
     public final static String PROPERTY_BUSINESS_FUNCTIONS = "businessFunctions"; //$NON-NLS-1$
 

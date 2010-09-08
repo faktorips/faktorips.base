@@ -102,7 +102,7 @@ public class LabelTest extends AbstractIpsPluginTest {
         assertEquals("foo", labelAttributes.getNamedItem(ILabel.PROPERTY_VALUE).getTextContent());
         assertEquals("bar", labelAttributes.getNamedItem(ILabel.PROPERTY_PLURAL_VALUE).getTextContent());
 
-        ILabel loadedLabel = policyCmptType.newLabel();
+        ILabel loadedLabel = attribute.newLabel();
         loadedLabel.initFromXml(xmlElement);
         assertEquals(Locale.ENGLISH, loadedLabel.getLocale());
         assertEquals("foo", loadedLabel.getValue());

@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.model.pctype;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
 
@@ -26,7 +27,7 @@ import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
  * 
  * @author Roman Grutza
  */
-public interface IPersistentTypeInfo extends IIpsObjectPart {
+public interface IPersistentTypeInfo extends IIpsObjectPart, IDescribedElement {
 
     /** The XML tag for this IPS object part. */
     public final static String XML_TAG = "Persistence"; //$NON-NLS-1$

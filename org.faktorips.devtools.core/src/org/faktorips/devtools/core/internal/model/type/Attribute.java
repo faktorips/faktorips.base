@@ -194,14 +194,4 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
         return new ProcessorBasedRefactoring(new PullUpAttributeProcessor(this));
     }
 
-    @Override
-    public boolean hasDescriptionSupport() {
-        return true;
-    }
-
-    @Override
-    public boolean hasLabelSupport() {
-        return true;
-    }
-
 }

@@ -544,14 +544,4 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         return result.toArray(new IIpsSrcFile[result.size()]);
     }
 
-    @Override
-    public boolean hasDescriptionSupport() {
-        return true;
-    }
-
-    @Override
-    public boolean hasLabelSupport() {
-        return true;
-    }
-
 }

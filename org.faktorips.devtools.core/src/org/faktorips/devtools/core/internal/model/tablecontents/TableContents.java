@@ -246,9 +246,4 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         return getTableStructure();
     }
 
-    @Override
-    public boolean hasDescriptionSupport() {
-        return true;
-    }
-
 }

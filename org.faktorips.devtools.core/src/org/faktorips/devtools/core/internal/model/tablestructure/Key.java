@@ -181,9 +181,4 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
         return items.get(index);
     }
 
-    @Override
-    public boolean hasDescriptionSupport() {
-        return true;
-    }
-
 }

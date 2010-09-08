@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.util.ArgumentCheck;
@@ -101,10 +102,10 @@ public abstract class IpsPartEditDialog extends EditDialog {
         Composite composite = createWorkAreaThis(parent);
         if (isTabFolderUsed()) {
             TabFolder tabFolder = (TabFolder)parent;
-            if (part.hasDescriptionSupport()) {
+            if (part instanceof IDescribedElement) {
                 createDescriptionTabItem(tabFolder);
             }
-            if (part.hasLabelSupport()) {
+            if (part instanceof ILabeledElement) {
                 createLabelTabItem(tabFolder);
             }
         }
@@ -114,7 +115,7 @@ public abstract class IpsPartEditDialog extends EditDialog {
     protected abstract Composite createWorkAreaThis(Composite parent);
 
     private TabItem createLabelTabItem(TabFolder folder) {
-        Composite editComposite = new LabelEditComposite(folder, part);
+        Composite editComposite = new LabelEditComposite(folder, (ILabeledElement)part);
 
         TabItem item = new TabItem(folder, SWT.NONE);
         item.setText(Messages.IpsPartEditDialog_tabItemLabel);
@@ -124,7 +125,7 @@ public abstract class IpsPartEditDialog extends EditDialog {
     }
 
     private TabItem createDescriptionTabItem(TabFolder folder) {
-        IDescribedElement describedElement = part;
+        IDescribedElement describedElement = (IDescribedElement)part;
         DescriptionEditComposite descriptionEditComposite = new DescriptionEditComposite(folder, describedElement,
                 uiToolkit);
         descriptionEditComposite.setViewOnly(!(descriptionEnabled));

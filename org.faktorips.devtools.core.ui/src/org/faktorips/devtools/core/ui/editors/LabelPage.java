@@ -35,7 +35,7 @@ class LabelPage extends IpsObjectEditorPage {
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         formBody.setLayout(createPageLayout(1, false));
-        new LabelSection(getIpsObject(), formBody, toolkit);
+        new LabelSection((ILabeledElement)getIpsObject(), formBody, toolkit);
     }
 
     private static class LabelSection extends IpsSection {

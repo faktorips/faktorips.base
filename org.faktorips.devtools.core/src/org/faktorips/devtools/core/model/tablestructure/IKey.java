@@ -13,12 +13,13 @@
 
 package org.faktorips.devtools.core.model.tablestructure;
 
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 /**
  * A key is list of key items. Key items are either columns or ranges that belong to the same table.
  */
-public interface IKey extends IIpsObjectPart {
+public interface IKey extends IIpsObjectPart, IDescribedElement {
 
     /**
      * Java beans property name for the property keyItems.

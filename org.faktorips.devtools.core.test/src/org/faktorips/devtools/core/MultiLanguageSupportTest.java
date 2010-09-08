@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -58,6 +59,8 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     private IAssociation association;
 
+    private IAttribute attribute;
+
     private IDescription germanDescription;
 
     private IDescription usDescription;
@@ -85,6 +88,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         association = policyCmptType.newAssociation();
         association.setTargetRoleSingular(TARGET_ROLE_SINGULAR);
         association.setTargetRolePlural(TARGET_ROLE_PLURAL);
+        attribute = policyCmptType.newAttribute();
 
         germanDescription = policyCmptType.getDescription(Locale.GERMAN);
         germanDescription.setText(GERMAN_DESCRIPTION);
@@ -270,7 +274,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     public void testGetLocalizedPluralLabelNotSupported() {
         try {
-            support.getLocalizedPluralLabel(policyCmptType);
+            support.getLocalizedPluralLabel(attribute);
             fail();
         } catch (IllegalArgumentException e) {
         }
@@ -325,7 +329,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     public void testGetDefaultPluralLabelNotSupported() {
         try {
-            support.getDefaultPluralLabel(policyCmptType);
+            support.getDefaultPluralLabel(attribute);
             fail();
         } catch (IllegalArgumentException e) {
         }
@@ -388,7 +392,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     public void testSetDefaultPluralLabelNotSupported() {
         try {
-            support.setDefaultPluralLabel(policyCmptType, "foos");
+            support.setDefaultPluralLabel(attribute, "foos");
             fail();
         } catch (IllegalArgumentException e) {
         }

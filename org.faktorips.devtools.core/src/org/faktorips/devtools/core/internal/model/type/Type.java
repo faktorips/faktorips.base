@@ -611,16 +611,6 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
     }
 
-    @Override
-    public boolean hasDescriptionSupport() {
-        return true;
-    }
-
-    @Override
-    public boolean hasLabelSupport() {
-        return true;
-    }
-
     private static class SupertypesCollector extends TypeHierarchyVisitor {
 
         private List<IType> supertypes = new ArrayList<IType>();

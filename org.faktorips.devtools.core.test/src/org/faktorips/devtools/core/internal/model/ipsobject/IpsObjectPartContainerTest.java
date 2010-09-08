@@ -32,11 +32,13 @@ import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -355,9 +357,9 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         IPolicyCmptType type = this.newPolicyCmptType(rootFolder, "folder.TestProduct");
         memento = type.newMemento();
         type.newPolicyCmptTypeAttribute();
-        assertEquals(5, type.getChildren().length);
+        assertEquals(3, type.getChildren().length);
         type.setState(memento);
-        assertEquals(4, type.getChildren().length);
+        assertEquals(2, type.getChildren().length);
 
         IpsSrcFile file2 = new IpsSrcFile(null, IpsObjectType.POLICY_CMPT_TYPE.getFileName("file"));
         IIpsObject pdObject2 = new PolicyCmptType(file2);
@@ -525,7 +527,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertEquals("", container.getLastResortPluralCaption());
     }
 
-    class TestIpsObjectPartContainer extends AtomicIpsObjectPart {
+    class TestIpsObjectPartContainer extends AtomicIpsObjectPart implements IDescribedElement, ILabeledElement {
 
         private String name;
 
@@ -596,16 +598,6 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
          */
         private IIpsObjectPart newPartAccessor(Class<? extends IIpsObjectPart> partType) {
             return super.newPart(partType);
-        }
-
-        @Override
-        public boolean hasDescriptionSupport() {
-            return true;
-        }
-
-        @Override
-        public boolean hasLabelSupport() {
-            return true;
         }
 
         @Override

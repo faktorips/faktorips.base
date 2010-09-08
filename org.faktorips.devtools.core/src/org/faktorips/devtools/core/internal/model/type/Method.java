@@ -366,11 +366,6 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         }
     }
 
-    @Override
-    public boolean hasDescriptionSupport() {
-        return true;
-    }
-
     class OverridingMethodFinder extends TypeHierarchyVisitor {
 
         private IMethod overridingMethod;

@@ -56,6 +56,7 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -250,13 +251,13 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     protected final String getDescriptionInGeneratorLanguage(IIpsObjectPartContainer ipsObjectPartContainer) {
         ArgumentCheck.notNull(ipsObjectPartContainer);
         String description = ""; //$NON-NLS-1$
-        if (ipsObjectPartContainer.hasDescriptionSupport()) {
-            IDescription generatorDescription = ipsObjectPartContainer
-                    .getDescription(getLanguageUsedInGeneratedSourceCode());
+        if (ipsObjectPartContainer instanceof IDescribedElement) {
+            IDescribedElement describedElement = (IDescribedElement)ipsObjectPartContainer;
+            IDescription generatorDescription = describedElement.getDescription(getLanguageUsedInGeneratedSourceCode());
             if (generatorDescription != null) {
                 description = generatorDescription.getText();
             } else {
-                description = IpsPlugin.getMultiLanguageSupport().getDefaultDescription(ipsObjectPartContainer);
+                description = IpsPlugin.getMultiLanguageSupport().getDefaultDescription(describedElement);
             }
         }
         return description;

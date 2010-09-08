@@ -299,16 +299,6 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         return ""; //$NON-NLS-1$
     }
 
-    @Override
-    public boolean hasDescriptionSupport() {
-        return true;
-    }
-
-    @Override
-    public boolean hasLabelSupport() {
-        return true;
-    }
-
     public class TableStructureReference extends AtomicIpsObjectPart {
 
         private String tableStructure = ""; //$NON-NLS-1$
