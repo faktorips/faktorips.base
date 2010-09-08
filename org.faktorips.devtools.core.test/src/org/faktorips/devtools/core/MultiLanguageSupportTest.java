@@ -15,14 +15,19 @@ package org.faktorips.devtools.core;
 
 import java.util.Locale;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * @author Alexander Weickmann
@@ -61,6 +66,8 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     private ILabel usLabel;
 
+    private CaptionedContainer captionedPart;
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -90,6 +97,103 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         usLabel = association.getLabel(Locale.US);
         usLabel.setValue(US_LABEL);
         usLabel.setPluralValue(US_PLURAL_LABEL);
+
+        captionedPart = new CaptionedContainer(policyCmptType, "id");
+    }
+
+    public void testGetLocalizedCaption() {
+        String localizedCaption = support.getLocalizedCaption(captionedPart);
+        assertEquals("Caption for " + support.getLocalizationLocale().getLanguage(), localizedCaption);
+    }
+
+    public void testGetLocalizedCaptionLocalizedCaptionMissing() {
+        captionedPart.missingCaptionLocale1 = support.getLocalizationLocale();
+        String localizedCaption = support.getLocalizedCaption(captionedPart);
+        assertEquals("Caption for " + Locale.GERMAN.getLanguage(), localizedCaption);
+    }
+
+    public void testGetLocalizedCaptionLastResort() {
+        captionedPart.missingCaptionLocale1 = support.getLocalizationLocale();
+        captionedPart.missingCaptionLocale2 = Locale.GERMAN;
+        assertEquals(CaptionedContainer.LAST_RESORT_CAPTION, support.getLocalizedCaption(captionedPart));
+    }
+
+    public void testGetLocalizedCaptionNullPointer() {
+        try {
+            support.getLocalizedCaption(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+    }
+
+    public void testGetLocalizedPluralCaption() {
+        String localizedPluralCaption = support.getLocalizedPluralCaption(captionedPart);
+        assertEquals("Plural Caption for " + support.getLocalizationLocale().getLanguage(), localizedPluralCaption);
+    }
+
+    public void testGetLocalizedPluralCaptionLocalizedCaptionMissing() {
+        captionedPart.missingCaptionLocale1 = support.getLocalizationLocale();
+        String localizedPluralCaption = support.getLocalizedPluralCaption(captionedPart);
+        assertEquals("Plural Caption for " + Locale.GERMAN.getLanguage(), localizedPluralCaption);
+    }
+
+    public void testGetLocalizedPluralCaptionLastResort() {
+        captionedPart.missingCaptionLocale1 = support.getLocalizationLocale();
+        captionedPart.missingCaptionLocale2 = Locale.GERMAN;
+        assertEquals(CaptionedContainer.LAST_RESORT_PLURAL_CAPTION, support.getLocalizedPluralCaption(captionedPart));
+    }
+
+    public void testGetLocalizedPluralCaptionNullPointer() {
+        try {
+            support.getLocalizedPluralCaption(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+    }
+
+    public void testGetDefaultCaption() {
+        assertEquals("Caption for " + Locale.GERMAN.getLanguage(), support.getDefaultCaption(captionedPart));
+    }
+
+    public void testGetDefaultCaptionNotExisting() {
+        captionedPart.missingCaptionLocale1 = Locale.GERMAN;
+        assertEquals(CaptionedContainer.LAST_RESORT_CAPTION, support.getDefaultCaption(captionedPart));
+    }
+
+    public void testGetDefaultCaptionNullPointer() {
+        try {
+            support.getDefaultCaption(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+    }
+
+    public void testGetDefaultCaptionNoDefaultLanguage() throws CoreException {
+        removeDefaultLanguage();
+        assertEquals(CaptionedContainer.LAST_RESORT_CAPTION, support.getDefaultCaption(captionedPart));
+    }
+
+    public void testGetDefaultPluralCaption() {
+        assertEquals("Plural Caption for " + Locale.GERMAN.getLanguage(), support
+                .getDefaultPluralCaption(captionedPart));
+    }
+
+    public void testGetDefaultPluralCaptionNotExisting() {
+        captionedPart.missingCaptionLocale1 = Locale.GERMAN;
+        assertEquals(CaptionedContainer.LAST_RESORT_PLURAL_CAPTION, support.getDefaultPluralCaption(captionedPart));
+    }
+
+    public void testGetDefaultPluralCaptionNullPointer() {
+        try {
+            support.getDefaultPluralCaption(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+    }
+
+    public void testGetDefaultPluralCaptionNoDefaultLanguage() throws CoreException {
+        removeDefaultLanguage();
+        assertEquals(CaptionedContainer.LAST_RESORT_PLURAL_CAPTION, support.getDefaultPluralCaption(captionedPart));
     }
 
     public void testGetLocalizedLabel() {
@@ -197,6 +301,11 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         }
     }
 
+    public void testGetDefaultLabelNoDefaultLanguage() throws CoreException {
+        removeDefaultLanguage();
+        assertEquals(association.getName(), support.getDefaultLabel(association));
+    }
+
     public void testGetDefaultPluralLabel() {
         assertEquals(GERMAN_PLURAL_LABEL, support.getDefaultPluralLabel(association));
     }
@@ -222,6 +331,11 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         }
     }
 
+    public void testGetDefaultPluralLabelNoDefaultLanguage() throws CoreException {
+        removeDefaultLanguage();
+        assertEquals(association.getName(), support.getDefaultPluralLabel(association));
+    }
+
     public void testSetDefaultLabel() {
         support.setDefaultLabel(association, "foo");
         assertEquals("foo", germanLabel.getValue());
@@ -242,6 +356,13 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     public void testSetDefaultLabelNotExistent() {
         germanLabel.delete();
+        support.setDefaultLabel(association, "foo");
+        assertEquals(GERMAN_LABEL, germanLabel.getValue());
+        assertEquals(US_LABEL, usLabel.getValue());
+    }
+
+    public void testSetDefaultLabelNoDefaultLanguage() throws CoreException {
+        removeDefaultLanguage();
         support.setDefaultLabel(association, "foo");
         assertEquals(GERMAN_LABEL, germanLabel.getValue());
         assertEquals(US_LABEL, usLabel.getValue());
@@ -276,6 +397,13 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
     public void testSetDefaultPluralLabelNotExistent() {
         germanLabel.delete();
         support.setDefaultPluralLabel(association, "foos");
+        assertEquals(GERMAN_PLURAL_LABEL, germanLabel.getPluralValue());
+        assertEquals(US_PLURAL_LABEL, usLabel.getPluralValue());
+    }
+
+    public void testSetDefaultPluralLabelNoDefaultLanguage() throws CoreException {
+        removeDefaultLanguage();
+        support.setDefaultLabel(association, "foos");
         assertEquals(GERMAN_PLURAL_LABEL, germanLabel.getPluralValue());
         assertEquals(US_PLURAL_LABEL, usLabel.getPluralValue());
     }
@@ -342,6 +470,11 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         assertEquals("", support.getDefaultDescription(policyCmptType));
     }
 
+    public void testGetDefaultDescriptionNoDefaultLanguage() throws CoreException {
+        removeDefaultLanguage();
+        assertEquals("", support.getDefaultDescription(policyCmptType));
+    }
+
     public void testSetDefaultDescription() {
         support.setDefaultDescription(policyCmptType, "foo");
         assertEquals("foo", germanDescription.getText());
@@ -371,6 +504,13 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         assertEquals(US_DESCRIPTION, usDescription.getText());
     }
 
+    public void testSetDefaultDescriptionNoDefaultLanguage() throws CoreException {
+        removeDefaultLanguage();
+        support.setDefaultDescription(policyCmptType, "foo");
+        assertEquals(GERMAN_DESCRIPTION, germanDescription.getText());
+        assertEquals(US_DESCRIPTION, usDescription.getText());
+    }
+
     public void testGetLocalizationLocale() {
         Locale localizationLocale = support.getLocalizationLocale();
         String nl = Platform.getNL();
@@ -378,6 +518,59 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
             nl = nl.substring(0, 2);
         }
         assertEquals(nl, localizationLocale.getLanguage());
+    }
+
+    private void removeDefaultLanguage() throws CoreException {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.removeSupportedLanguage(properties.getSupportedLanguage(Locale.GERMAN));
+        ipsProject.setProperties(properties);
+    }
+
+    private static class CaptionedContainer extends AtomicIpsObjectPart {
+
+        private static final String LAST_RESORT_CAPTION = "Last Resort Caption";
+
+        private static final String LAST_RESORT_PLURAL_CAPTION = "Last Resort Plural Caption";
+
+        private Locale missingCaptionLocale1;
+
+        private Locale missingCaptionLocale2;
+
+        public CaptionedContainer(IIpsObjectPartContainer parent, String id) {
+            super(parent, id);
+        }
+
+        @Override
+        protected Element createElement(Document doc) {
+            return null;
+        }
+
+        @Override
+        public String getCaption(Locale locale) {
+            if (locale.equals(missingCaptionLocale1) || locale.equals(missingCaptionLocale2)) {
+                return null;
+            }
+            return "Caption for " + locale.getLanguage();
+        }
+
+        @Override
+        public String getPluralCaption(Locale locale) {
+            if (locale.equals(missingCaptionLocale1) || locale.equals(missingCaptionLocale2)) {
+                return null;
+            }
+            return "Plural Caption for " + locale.getLanguage();
+        }
+
+        @Override
+        public String getLastResortCaption() {
+            return LAST_RESORT_CAPTION;
+        }
+
+        @Override
+        public String getLastResortPluralCaption() {
+            return LAST_RESORT_PLURAL_CAPTION;
+        }
+
     }
 
 }
