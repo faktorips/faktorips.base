@@ -1,0 +1,132 @@
+/*******************************************************************************
+ * Copyright (c) 2005-2010 Faktor Zehn AG und andere.
+ * 
+ * Alle Rechte vorbehalten.
+ * 
+ * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
+ * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
+ * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * 
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
+ *******************************************************************************/
+
+package org.faktorips.devtools.core.deployment;
+
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.mapping.ResourceMapping;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.team.core.RepositoryProvider;
+import org.eclipse.team.core.TeamException;
+import org.eclipse.team.core.subscribers.Subscriber;
+import org.eclipse.team.core.synchronize.SyncInfo;
+import org.eclipse.team.core.synchronize.SyncInfoSet;
+import org.eclipse.team.internal.ccvs.core.CVSTag;
+import org.eclipse.team.internal.ccvs.core.CVSTeamProvider;
+import org.eclipse.team.internal.ccvs.core.ICVSResource;
+import org.eclipse.team.internal.ccvs.core.client.Command;
+import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
+import org.eclipse.team.internal.ccvs.ui.operations.CommitOperation;
+import org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation;
+import org.eclipse.team.internal.ccvs.ui.operations.TagOperation;
+
+@SuppressWarnings("restriction")
+public class CvsTeamOperations implements ITeamOperations {
+
+    @Override
+    public void commitFile(IProject project, IResource[] resources, String comment, IProgressMonitor monitor)
+            throws TeamException, InterruptedException {
+        monitor.beginTask(null, 2);
+        try {
+            RepositoryProvider repositoryProvider = RepositoryProvider.getProvider(project);
+            Subscriber subscriber = repositoryProvider.getSubscriber();
+            subscriber.refresh(resources, IResource.DEPTH_ZERO, new SubProgressMonitor(monitor, 1));
+            for (IResource aResource : resources) {
+                SyncInfo syncInfo = subscriber.getSyncInfo(aResource);
+                if (syncInfo.getKind() != 0 && (syncInfo.getKind() & SyncInfo.OUTGOING) != SyncInfo.OUTGOING) {
+                    throw new InterruptedException("Some files have remote changes");
+                }
+            }
+
+            CommitOperation commitOperation = new CommitOperation(null, RepositoryProviderOperation
+                    .asResourceMappers(resources), new Command.LocalOption[0], comment);
+            commitOperation.execute(new SubProgressMonitor(monitor, 1));
+        } finally {
+            monitor.done();
+        }
+    }
+
+    private ICVSResource[] getCvsResources(IResource[] resources) {
+        ICVSResource[] result = new ICVSResource[resources.length];
+        for (int i = 0; i < resources.length; i++) {
+            result[i] = CVSWorkspaceRoot.getCVSResourceFor(resources[i]);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean isProjectSynchronized(IProject project, IProgressMonitor monitor) {
+        try {
+            RepositoryProvider repositoryProvider = RepositoryProvider.getProvider(project);
+            SyncInfoSet syncInfoSet = new SyncInfoSet();
+            Subscriber subscriber = repositoryProvider.getSubscriber();
+            IResource[] resources = new IResource[] { project };
+            monitor.beginTask(null, 2);
+            if (subscriber != null) {
+                subscriber.refresh(resources, IResource.DEPTH_INFINITE, new SubProgressMonitor(monitor, 1));
+                subscriber.collectOutOfSync(resources, IResource.DEPTH_INFINITE, syncInfoSet, new SubProgressMonitor(
+                        monitor, 1));
+                return syncInfoSet.isEmpty();
+            } else {
+                // seems to be no cvs project
+                return true;
+            }
+        } catch (RuntimeException e) {
+            // runtime exceptions should not be thrown
+            throw e;
+        } catch (Exception e) {
+            // any exception during cvs check would be catched and 'not synchron' is returned
+            return false;
+        } finally {
+            monitor.done();
+        }
+    }
+
+    @Override
+    public void tagProject(IProject project, String version, IProgressMonitor monitor) throws TeamException,
+            InterruptedException {
+        String tag = version;
+        if (tag.matches("[0-9].*")) {
+            // tag must start with a letter
+            tag = "v" + tag;
+        }
+        tag = tag.replaceAll("[\\$,\\.:;@]", "_");
+
+        RepositoryProvider repositoryProvider = RepositoryProvider.getProvider(project);
+
+        IResource[] resources = new IResource[] { project };
+
+        ResourceMapping[] resourceMappers = RepositoryProviderOperation.asResourceMappers(resources);
+
+        //
+
+        //
+
+        TagOperation tagOperation = new TagOperation(null, resourceMappers);
+        tagOperation.setTag(new CVSTag(tag, CVSTag.VERSION));
+        tagOperation.setInvolvesMultipleResources(true);
+        IStatus status = tagOperation.tag((CVSTeamProvider)repositoryProvider, resources, true, monitor);
+        // tagOperation.execute(monitor);
+        if (status.getException() != null) {
+            throw new InterruptedException("Error while tagging: " + status.getException().getMessage());
+        } else if (status.getSeverity() == IStatus.ERROR) {
+            throw new InterruptedException(status.getMessage());
+        }
+
+        // TODO TAG geht noch nicht
+    }
+
+}
