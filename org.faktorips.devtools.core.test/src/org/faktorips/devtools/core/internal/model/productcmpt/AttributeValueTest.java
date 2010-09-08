@@ -13,10 +13,13 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.util.Locale;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
+import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -136,6 +139,18 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         copy.initFromXml(el);
         assertEquals("rate", copy.getAttribute());
         assertEquals("42", copy.getValue());
+    }
+
+    public void testGetCaption() throws CoreException {
+        Locale locale = Locale.US;
+        ILabel label = attribute.newLabel();
+        label.setLocale(locale);
+        label.setValue("TheCaption");
+        assertEquals("TheCaption", attrValue.getCaption(locale));
+    }
+
+    public void testGetCaptionNotExistent() throws CoreException {
+        assertNull(attrValue.getCaption(Locale.US));
     }
 
 }

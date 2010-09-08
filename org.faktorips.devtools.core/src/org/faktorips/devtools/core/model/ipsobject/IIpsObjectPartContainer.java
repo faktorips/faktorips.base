@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.model.ipsobject;
 
 import java.util.Locale;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.Described;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.Validatable;
@@ -49,9 +50,10 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
      * 
      * @param locale The locale to request the caption for.
      * 
+     * @throws CoreException If any error occurs while retrieving the caption.
      * @throws NullPointerException If <tt>locale</tt> is <tt>null</tt>.
      */
-    public String getCaption(Locale locale);
+    public String getCaption(Locale locale) throws CoreException;
 
     /**
      * Returns the plural caption of this <tt>IIpsObjectPartContainer</tt> for the given
@@ -61,9 +63,10 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
      * 
      * @param locale The locale to request the plural caption for.
      * 
+     * @throws CoreException If any error occurs while retrieving the caption.
      * @throws NullPointerException If <tt>locale</tt> is <tt>null</tt>.
      */
-    public String getPluralCaption(Locale locale);
+    public String getPluralCaption(Locale locale) throws CoreException;
 
     /**
      * Returns the last resort caption of this <tt>IIpsObjectPartContainer</tt>. The last resort

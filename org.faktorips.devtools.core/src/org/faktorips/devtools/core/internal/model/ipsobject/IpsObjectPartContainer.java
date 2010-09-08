@@ -972,7 +972,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * provide the correct caption.
      */
     @Override
-    public String getCaption(Locale locale) {
+    public String getCaption(Locale locale) throws CoreException {
         ArgumentCheck.notNull(locale);
         return ""; //$NON-NLS-1$
     }
@@ -982,7 +982,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * provide the correct plural caption.
      */
     @Override
-    public String getPluralCaption(Locale locale) {
+    public String getPluralCaption(Locale locale) throws CoreException {
         ArgumentCheck.notNull(locale);
         return ""; //$NON-NLS-1$
     }

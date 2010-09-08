@@ -501,7 +501,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         }
     }
 
-    public void testGetCaption() {
+    public void testGetCaption() throws CoreException {
         assertEquals("", container.getCaption(Locale.US));
         try {
             container.getCaption(null);
@@ -510,7 +510,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         }
     }
 
-    public void testGetPluralCaption() {
+    public void testGetPluralCaption() throws CoreException {
         assertEquals("", container.getPluralCaption(Locale.US));
         try {
             container.getPluralCaption(null);

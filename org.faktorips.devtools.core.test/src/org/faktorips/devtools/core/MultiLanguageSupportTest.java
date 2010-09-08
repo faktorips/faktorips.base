@@ -105,24 +105,24 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         captionedPart = new CaptionedContainer(policyCmptType, "id");
     }
 
-    public void testGetLocalizedCaption() {
+    public void testGetLocalizedCaption() throws CoreException {
         String localizedCaption = support.getLocalizedCaption(captionedPart);
         assertEquals("Caption for " + support.getLocalizationLocale().getLanguage(), localizedCaption);
     }
 
-    public void testGetLocalizedCaptionLocalizedCaptionMissing() {
+    public void testGetLocalizedCaptionLocalizedCaptionMissing() throws CoreException {
         captionedPart.missingCaptionLocale1 = support.getLocalizationLocale();
         String localizedCaption = support.getLocalizedCaption(captionedPart);
         assertEquals("Caption for " + Locale.GERMAN.getLanguage(), localizedCaption);
     }
 
-    public void testGetLocalizedCaptionLastResort() {
+    public void testGetLocalizedCaptionLastResort() throws CoreException {
         captionedPart.missingCaptionLocale1 = support.getLocalizationLocale();
         captionedPart.missingCaptionLocale2 = Locale.GERMAN;
         assertEquals(CaptionedContainer.LAST_RESORT_CAPTION, support.getLocalizedCaption(captionedPart));
     }
 
-    public void testGetLocalizedCaptionNullPointer() {
+    public void testGetLocalizedCaptionNullPointer() throws CoreException {
         try {
             support.getLocalizedCaption(null);
             fail();
@@ -130,24 +130,24 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         }
     }
 
-    public void testGetLocalizedPluralCaption() {
+    public void testGetLocalizedPluralCaption() throws CoreException {
         String localizedPluralCaption = support.getLocalizedPluralCaption(captionedPart);
         assertEquals("Plural Caption for " + support.getLocalizationLocale().getLanguage(), localizedPluralCaption);
     }
 
-    public void testGetLocalizedPluralCaptionLocalizedCaptionMissing() {
+    public void testGetLocalizedPluralCaptionLocalizedCaptionMissing() throws CoreException {
         captionedPart.missingCaptionLocale1 = support.getLocalizationLocale();
         String localizedPluralCaption = support.getLocalizedPluralCaption(captionedPart);
         assertEquals("Plural Caption for " + Locale.GERMAN.getLanguage(), localizedPluralCaption);
     }
 
-    public void testGetLocalizedPluralCaptionLastResort() {
+    public void testGetLocalizedPluralCaptionLastResort() throws CoreException {
         captionedPart.missingCaptionLocale1 = support.getLocalizationLocale();
         captionedPart.missingCaptionLocale2 = Locale.GERMAN;
         assertEquals(CaptionedContainer.LAST_RESORT_PLURAL_CAPTION, support.getLocalizedPluralCaption(captionedPart));
     }
 
-    public void testGetLocalizedPluralCaptionNullPointer() {
+    public void testGetLocalizedPluralCaptionNullPointer() throws CoreException {
         try {
             support.getLocalizedPluralCaption(null);
             fail();
@@ -155,16 +155,16 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         }
     }
 
-    public void testGetDefaultCaption() {
+    public void testGetDefaultCaption() throws CoreException {
         assertEquals("Caption for " + Locale.GERMAN.getLanguage(), support.getDefaultCaption(captionedPart));
     }
 
-    public void testGetDefaultCaptionNotExisting() {
+    public void testGetDefaultCaptionNotExisting() throws CoreException {
         captionedPart.missingCaptionLocale1 = Locale.GERMAN;
         assertEquals(CaptionedContainer.LAST_RESORT_CAPTION, support.getDefaultCaption(captionedPart));
     }
 
-    public void testGetDefaultCaptionNullPointer() {
+    public void testGetDefaultCaptionNullPointer() throws CoreException {
         try {
             support.getDefaultCaption(null);
             fail();
@@ -177,17 +177,17 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         assertEquals(CaptionedContainer.LAST_RESORT_CAPTION, support.getDefaultCaption(captionedPart));
     }
 
-    public void testGetDefaultPluralCaption() {
+    public void testGetDefaultPluralCaption() throws CoreException {
         assertEquals("Plural Caption for " + Locale.GERMAN.getLanguage(), support
                 .getDefaultPluralCaption(captionedPart));
     }
 
-    public void testGetDefaultPluralCaptionNotExisting() {
+    public void testGetDefaultPluralCaptionNotExisting() throws CoreException {
         captionedPart.missingCaptionLocale1 = Locale.GERMAN;
         assertEquals(CaptionedContainer.LAST_RESORT_PLURAL_CAPTION, support.getDefaultPluralCaption(captionedPart));
     }
 
-    public void testGetDefaultPluralCaptionNullPointer() {
+    public void testGetDefaultPluralCaptionNullPointer() throws CoreException {
         try {
             support.getDefaultPluralCaption(null);
             fail();

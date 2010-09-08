@@ -13,11 +13,14 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.util.Locale;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -25,6 +28,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
@@ -160,6 +164,21 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     @Override
     public String getName() {
         return attribute;
+    }
+
+    @Override
+    public String getCaption(Locale locale) throws CoreException {
+        String caption = null;
+
+        IAttribute attribute = findAttribute(getIpsProject());
+        if (attribute != null) {
+            ILabel label = attribute.getLabel(locale);
+            if (label != null) {
+                caption = label.getValue();
+            }
+        }
+
+        return caption;
     }
 
     @Override

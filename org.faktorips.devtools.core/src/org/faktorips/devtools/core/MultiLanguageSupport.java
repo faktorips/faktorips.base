@@ -15,6 +15,7 @@ package org.faktorips.devtools.core;
 
 import java.util.Locale;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
@@ -58,12 +59,13 @@ public final class MultiLanguageSupport {
      * @param ipsObjectPartContainer The {@link IIpsObjectPartContainer} to obtain the localized
      *            caption of.
      * 
+     * @throws CoreException If any error occurs while retrieving the caption.
      * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
      * 
      * @see #getLocalizationLocale()
      * @see #getDefaultCaption(IIpsObjectPartContainer)
      */
-    public String getLocalizedCaption(IIpsObjectPartContainer ipsObjectPartContainer) {
+    public String getLocalizedCaption(IIpsObjectPartContainer ipsObjectPartContainer) throws CoreException {
         ArgumentCheck.notNull(ipsObjectPartContainer);
 
         String localizedCaption = ipsObjectPartContainer.getCaption(getLocalizationLocale());
@@ -86,12 +88,13 @@ public final class MultiLanguageSupport {
      * @param ipsObjectPartContainer The {@link IIpsObjectPartContainer} to obtain the localized
      *            plural caption of.
      * 
+     * @throws CoreException If any error occurs while retrieving the caption.
      * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
      * 
      * @see #getLocalizationLocale()
      * @see #getDefaultPluralCaption(IIpsObjectPartContainer)
      */
-    public String getLocalizedPluralCaption(IIpsObjectPartContainer ipsObjectPartContainer) {
+    public String getLocalizedPluralCaption(IIpsObjectPartContainer ipsObjectPartContainer) throws CoreException {
         ArgumentCheck.notNull(ipsObjectPartContainer);
 
         String localizedPluralCaption = ipsObjectPartContainer.getPluralCaption(getLocalizationLocale());
@@ -113,11 +116,12 @@ public final class MultiLanguageSupport {
      * @param ipsObjectPartContainer The {@link IIpsObjectPartContainer} to obtain the default
      *            caption of.
      * 
+     * @throws CoreException If any error occurs while retrieving the caption.
      * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
      * 
      * @see IIpsProjectProperties#getDefaultLanguage()
      */
-    public String getDefaultCaption(IIpsObjectPartContainer ipsObjectPartContainer) {
+    public String getDefaultCaption(IIpsObjectPartContainer ipsObjectPartContainer) throws CoreException {
         ArgumentCheck.notNull(ipsObjectPartContainer);
 
         String defaultCaption = null;
@@ -143,11 +147,12 @@ public final class MultiLanguageSupport {
      * @param ipsObjectPartContainer The {@link IIpsObjectPartContainer} to obtain the default
      *            plural caption of.
      * 
+     * @throws CoreException If any error occurs while retrieving the caption.
      * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
      * 
      * @see IIpsProjectProperties#getDefaultLanguage()
      */
-    public String getDefaultPluralCaption(IIpsObjectPartContainer ipsObjectPartContainer) {
+    public String getDefaultPluralCaption(IIpsObjectPartContainer ipsObjectPartContainer) throws CoreException {
         ArgumentCheck.notNull(ipsObjectPartContainer);
 
         String defaultPluralCaption = null;
