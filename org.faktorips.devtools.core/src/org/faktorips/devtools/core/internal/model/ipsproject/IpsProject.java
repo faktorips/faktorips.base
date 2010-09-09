@@ -36,6 +36,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
@@ -59,6 +60,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.IpsBuilder;
+import org.faktorips.devtools.core.deployment.ReleaseAndDeploymentOperation;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.IpsModel;
@@ -1894,10 +1896,14 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public IVersionFormat getVersionFormat() {
+    public IVersionFormat getVersionFormat() throws CoreException {
+        final IConfigurationElement releaseExtension = ReleaseAndDeploymentOperation.getReleaseExtensionElement(this);
+        if (releaseExtension == null) {
+            return null;
+        }
         return new IVersionFormat() {
 
-            private Pattern versionPattern = Pattern.compile("[0-9]+\\.[0-9]+\\.[0-9]+\\.[a-z]+"); //$NON-NLS-1$
+            private Pattern versionPattern = Pattern.compile(releaseExtension.getAttribute("versionFormatRegex")); //$NON-NLS-1$
 
             @Override
             public boolean isCorrectVersionFormat(String version) {
@@ -1906,7 +1912,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
             @Override
             public String getVersionFormat() {
-                return "[0-9].[0-9].[0-9].[a-z]"; //$NON-NLS-1$
+                return releaseExtension.getAttribute("readableVersionFormat"); //$NON-NLS-1$
             }
         };
     }

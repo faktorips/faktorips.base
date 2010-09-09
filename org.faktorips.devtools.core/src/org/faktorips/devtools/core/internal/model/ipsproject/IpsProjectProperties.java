@@ -88,8 +88,16 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean productDefinitionProject;
     private boolean persistentProject;
 
-    public static final String VERSION_ATTRIBUTE = "version";
+    public static final String VERSION_ATTRIBUTE = "version"; //$NON-NLS-1$
+    /**
+     * the version of this project, used for release
+     */
     private String version;
+    private final static String RELEASE_EXTENSION_ID_ATTRIBUTE = "releaseExtensionId"; //$NON-NLS-1$
+    /**
+     * The id of the release extension that is associatied with this project
+     */
+    private String releaseExtensionId;
 
     private String changesInTimeConventionIdForGeneratedCode = IChangesOverTimeNamingConvention.VAA;
     private IProductCmptNamingStrategy productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
@@ -378,6 +386,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         projectEl.setAttribute("changesInTimeNamingConvention", changesInTimeConventionIdForGeneratedCode); //$NON-NLS-1$
         projectEl.setAttribute("persistentProject", "" + persistentProject); //$NON-NLS-1$ //$NON-NLS-2$
         projectEl.setAttribute(VERSION_ATTRIBUTE, version);
+        projectEl.setAttribute(RELEASE_EXTENSION_ID_ATTRIBUTE, releaseExtensionId);
 
         // required features
         createRequiredIpsFeaturesComment(projectEl);
@@ -488,6 +497,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         productDefinitionProject = Boolean.valueOf(element.getAttribute("productDefinitionProject")).booleanValue(); //$NON-NLS-1$
         persistentProject = Boolean.valueOf(element.getAttribute("persistentProject")).booleanValue(); //$NON-NLS-1$
         version = element.getAttribute(VERSION_ATTRIBUTE);
+        releaseExtensionId = element.getAttribute(RELEASE_EXTENSION_ID_ATTRIBUTE);
         runtimeIdPrefix = element.getAttribute("runtimeIdPrefix"); //$NON-NLS-1$
         javaProjectContainsClassesForDynamicDatatypes = Boolean.valueOf(
                 element.getAttribute("javaProjectContainsClassesForDynamicDatatypes")).booleanValue(); //$NON-NLS-1$
@@ -1187,6 +1197,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public String getReleaseExtensionId() {
+        return releaseExtensionId;
     }
 
 }

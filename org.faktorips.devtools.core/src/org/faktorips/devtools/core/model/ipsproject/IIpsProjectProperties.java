@@ -448,4 +448,11 @@ public interface IIpsProjectProperties {
      */
     public void setVersion(String version);
 
+    /**
+     * Getting the id of the release extension associated with this project
+     * 
+     * @return The id of the release extension for this project
+     */
+    public String getReleaseExtensionId();
+
 }

@@ -893,6 +893,6 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      */
     public List<ITestCase> getAllTestCases() throws CoreException;
 
-    public IVersionFormat getVersionFormat();
+    public IVersionFormat getVersionFormat() throws CoreException;
 
 }
