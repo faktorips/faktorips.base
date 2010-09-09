@@ -26,9 +26,7 @@ import org.eclipse.team.core.synchronize.SyncInfo;
 import org.eclipse.team.core.synchronize.SyncInfoSet;
 import org.eclipse.team.internal.ccvs.core.CVSTag;
 import org.eclipse.team.internal.ccvs.core.CVSTeamProvider;
-import org.eclipse.team.internal.ccvs.core.ICVSResource;
 import org.eclipse.team.internal.ccvs.core.client.Command;
-import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 import org.eclipse.team.internal.ccvs.ui.operations.CommitOperation;
 import org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation;
 import org.eclipse.team.internal.ccvs.ui.operations.TagOperation;
@@ -57,14 +55,6 @@ public class CvsTeamOperations implements ITeamOperations {
         } finally {
             monitor.done();
         }
-    }
-
-    private ICVSResource[] getCvsResources(IResource[] resources) {
-        ICVSResource[] result = new ICVSResource[resources.length];
-        for (int i = 0; i < resources.length; i++) {
-            result[i] = CVSWorkspaceRoot.getCVSResourceFor(resources[i]);
-        }
-        return result;
     }
 
     @Override
@@ -99,11 +89,12 @@ public class CvsTeamOperations implements ITeamOperations {
     public void tagProject(IProject project, String version, IProgressMonitor monitor) throws TeamException,
             InterruptedException {
         String tag = version;
-        if (tag.matches("[0-9].*")) {
+        if (tag.matches("[0-9].*")) { //$NON-NLS-1$
             // tag must start with a letter
-            tag = "v" + tag;
+            tag = "v" + tag; //$NON-NLS-1$
         }
-        tag = tag.replaceAll("[\\$,\\.:;@]", "_");
+        // replace not allowed characters to '_'
+        tag = tag.replaceAll("[\\$,\\.:;@]", "_"); //$NON-NLS-1$ //$NON-NLS-2$
 
         RepositoryProvider repositoryProvider = RepositoryProvider.getProvider(project);
 

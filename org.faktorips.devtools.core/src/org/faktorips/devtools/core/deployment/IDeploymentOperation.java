@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.deployment;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.util.message.MessageList;
 
@@ -21,14 +23,14 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author dirmeier
  */
-public interface IDeployReleaseOperation {
+public interface IDeploymentOperation {
 
     /**
      * This method should return a list of target system where the release could be deployed to.
      * 
      * @return A List of available target systems
      */
-    public String[] getAvailableTargetSystems();
+    public List<String> getAvailableTargetSystems();
 
     /**
      * This method should start the deployment on the selected target system. If this method does
@@ -41,7 +43,7 @@ public interface IDeployReleaseOperation {
      * @param progressMonitor the progress monitor to indicate the progress
      * @return true if the deployment is ok
      */
-    public boolean buildReleaseAndDeployment(String[] selectedTargetSystems,
+    public boolean buildReleaseAndDeployment(List<String> selectedTargetSystems,
             IProgressMonitor progressMonitor,
             MessageList messageList);
 
