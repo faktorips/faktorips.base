@@ -16,6 +16,7 @@
    <extension-point id="flFunctionResolverFactory" name="factory for formula language function resolvers" schema="schema/flFunctionResolverFactory.exsd"/>
    <extension-point id="pullUpParticipants" name="Pull Up Participants" schema="schema/pullUpParticipants.exsd"/>
    <extension-point id="customValidation" name="Custom Validation" schema="schema/customValidation.exsd"/>
+   <extension-point id="releaseDeploymentExtension" name="Release Deployment Extension" schema="schema/releaseDeploymentExtension.exsd"/>
    
 <!-- 
     Product Definition Perspective
