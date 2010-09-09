@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.ui.wizards.deployment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -20,6 +23,7 @@ import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -30,9 +34,14 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.deployment.IDeploymentOperation;
+import org.faktorips.devtools.core.deployment.ReleaseAndDeploymentOperation;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IVersionFormat;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 
@@ -43,6 +52,8 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
     private Text newVersionText;
 
     private boolean correctVersionFormat = false;
+    private TableViewer targetSystemViewer;
+    private ReleaseAndDeploymentOperation releaseAndDeploymentOperation;
 
     protected ReleaserBuilderWizardSelectionPage() {
         super("Releaser Builder");
@@ -73,6 +84,19 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
 
         toolkit.createLabel(selectVersionControl, "New Version:");
         newVersionText = new Text(selectVersionControl, SWT.SINGLE | SWT.BORDER);
+        newVersionText.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+
+        Group selectTargetSystemGroup = toolkit.createGroup(pageControl, "Target Systems");
+        Composite selectTargetSystemControl = toolkit.createLabelEditColumnComposite(selectTargetSystemGroup);
+        // Label targetSystemLabel = toolkit.createLabel(selectTargetSystemControl, "Select:");
+        // targetSystemLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
+        Table table = toolkit.createTable(selectTargetSystemControl, SWT.CHECK | SWT.BORDER);
+        table.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true));
+        targetSystemViewer = new TableViewer(table);
+        targetSystemViewer.setContentProvider(new ArrayContentProvider());
+
+        // TODO get list from extension
+        targetSystemViewer.setInput(new String[] { "Test", "Praxis", "Supi" });
 
         projectSelectComboViewer.setContentProvider(new ArrayContentProvider());
         projectSelectComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -93,16 +117,26 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
         newVersionText.addModifyListener(new ModifyListener() {
 
             @Override
-            public void modifyText(ModifyEvent e) {
+            public void modifyText(ModifyEvent event) {
                 if (ipsProject != null) {
                     String newVersion = newVersionText.getText();
-                    correctVersionFormat = ipsProject.getVersionFormat().isCorrectVersionFormat(newVersion);
-                    if (!correctVersionFormat) {
-                        setMessage("The format of version \"" + newVersion + "\" is incorrect. Format: "
-                                + ipsProject.getVersionFormat().getVersionFormat(), DialogPage.ERROR);
-                    } else {
-                        setMessage("", DialogPage.NONE);
+                    try {
+                        IVersionFormat versionFormat = ipsProject.getVersionFormat();
+                        if (versionFormat == null) {
+                            setMessage("Could not determine version format", DialogPage.ERROR);
+                            return;
+                        }
+                        correctVersionFormat = versionFormat.isCorrectVersionFormat(newVersion);
+                        if (!correctVersionFormat) {
+                            setMessage("The format of version \"" + newVersion + "\" is incorrect. Format: "
+                                    + ipsProject.getVersionFormat().getVersionFormat(), DialogPage.ERROR);
+                        } else {
+                            setMessage("", DialogPage.NONE);
+                        }
+                    } catch (CoreException e) {
+                        setMessage("Could not determine version format: " + e.getMessage(), DialogPage.ERROR);
                     }
+
                 }
                 updatePageComplete();
             }
@@ -118,36 +152,66 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
         if (ipsProject != null) {
             projectSelectComboViewer.setSelection(new StructuredSelection(ipsProject));
         }
+
         setControl(pageControl);
     }
 
     public void setIpsProject(IIpsProject ipsProject) {
+        setMessage("", DialogPage.NONE);
         this.ipsProject = ipsProject;
-        if (latestVersionLabel != null && newVersionText != null) {
-            String oldVersion = ipsProject.getProperties().getVersion();
-            if (oldVersion == null) {
-                oldVersion = "";
+        String oldVersion = "";
+        releaseAndDeploymentOperation = null;
+        if (ipsProject != null) {
+            oldVersion = ipsProject.getProperties().getVersion();
+            try {
+                releaseAndDeploymentOperation = new ReleaseAndDeploymentOperation(ipsProject);
+            } catch (CoreException e) {
+                setMessage("No deployment deploymentExtension found for this project", DialogPage.ERROR);
             }
+        }
+        if (newVersionText != null && !newVersionText.isDisposed()) {
             if (latestVersionLabel.getText().equals(newVersionText.getText())) {
                 newVersionText.setText(oldVersion);
             }
+        }
+        if (latestVersionLabel != null && !latestVersionLabel.isDisposed()) {
             latestVersionLabel.setText(oldVersion);
         }
+        if (targetSystemViewer != null && !targetSystemViewer.getTable().isDisposed()) {
+            if (releaseAndDeploymentOperation != null) {
+                IDeploymentOperation deploymentOperation = releaseAndDeploymentOperation.getDeploymentOperation();
+                if (deploymentOperation != null) {
+                    targetSystemViewer.setInput(deploymentOperation.getAvailableTargetSystems());
+                }
+            } else {
+                targetSystemViewer.setInput(new String[0]);
+            }
+        }
+
         updatePageComplete();
     }
 
-    /**
-     * @return Returns the ipsProject.
-     */
-    public IIpsProject getIpsProject() {
-        return ipsProject;
+    private void updatePageComplete() {
+        boolean complete = ipsProject != null && correctVersionFormat && releaseAndDeploymentOperation != null
+                && releaseAndDeploymentOperation.getDeploymentOperation() != null;
+        setPageComplete(complete);
     }
 
-    private void updatePageComplete() {
-        setPageComplete(ipsProject != null && correctVersionFormat);
+    public ReleaseAndDeploymentOperation getReleaseBuilderOpertation() {
+        return releaseAndDeploymentOperation;
     }
 
     public String getNewVersion() {
         return newVersionText.getText();
+    }
+
+    public List<String> getSelectedTargetSystems() {
+        List<String> result = new ArrayList<String>();
+        for (TableItem item : targetSystemViewer.getTable().getItems()) {
+            if (item.getChecked()) {
+                result.add(item.getText());
+            }
+        }
+        return result;
     }
 }
