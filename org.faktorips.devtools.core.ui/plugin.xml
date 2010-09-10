@@ -188,10 +188,10 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            name="%org.faktorips.devtools.core.openIpsObject.label"
-            description="%org.faktorips.devtools.core.openIpsObject.tooltip"
             categoryId="org.faktorips.devtools.core.ui.category.navigate"
-            id="org.faktorips.devtools.core.openIpsObject">
+            description="%org.faktorips.devtools.core.openIpsObject.tooltip"
+            id="org.faktorips.devtools.core.openIpsObject"
+            name="%org.faktorips.devtools.core.openIpsObject.label">
       </command>
       <category
             id="org.faktorips.devtools.core.ui.category.navigate"
@@ -207,6 +207,11 @@
             description="%org.faktorips.devtools.core.launchIpsTest.debug.description"
             categoryId="org.eclipse.debug.ui.category.run"
             id="org.faktorips.devtools.core.launchIpsTest.debug">
+      </command>
+      <command
+            defaultHandler="org.faktorips.devtools.core.ui.views.ipshierarchy.ShowHierarchyHandler"
+            id="org.faktorips.devtools.core.ui.actions.showHierarchy"
+            name="Zeige Hierarchy">
       </command>
    </extension>
    <extension
@@ -224,7 +229,12 @@
       <key
             sequence="M3+M2+X I"
             commandId="org.faktorips.devtools.core.launchIpsTest.run"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>            
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+      <key
+            commandId="org.faktorips.devtools.core.ui.actions.showHierarchy"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="F4">
+      </key>            
    </extension>
    
 
@@ -856,6 +866,7 @@
             name="Instance-Explorer">
       </view>
       <view
+            allowMultiple="false"
             category="org.faktorips.devtools.productDefinitionCategory"
             class="org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchyView"
             icon="icons/IpsHierarchyView.gif"
@@ -1309,6 +1320,14 @@
          <command
                commandId="org.eclipse.ui.edit.move"
                id="Move"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any">
+         <command
+               commandId="org.faktorips.devtools.core.ui.actions.showHierarchy"
+               label="fff"
                style="push">
          </command>
       </menuContribution>

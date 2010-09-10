@@ -13,53 +13,38 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TreeSelection;
+import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchyView;
 
-public class ShowHierarchyAction extends IpsAction {
-    /**
-     * Use this constructor if you did not already extracted the IIpsElement from the
-     * selectionProvider
-     * 
-     * @param selectionProvider the selection provider for this action
-     */
-    public ShowHierarchyAction(ISelectionProvider selectionProvider) {
-        super(selectionProvider);
-        if (selectionProvider.getSelection() instanceof IStructuredSelection) {
-            IStructuredSelection structuredSelection = (IStructuredSelection)selectionProvider.getSelection();
-            initialize(getIpsObjectForSelection(structuredSelection));
-        }
+public class ShowHierarchyAction extends IpsAction implements IWorkbenchWindowActionDelegate {
+
+    public ShowHierarchyAction() {
+        super(null);
     }
 
     /**
-     * Use this constructor if you already have extracted the IIpsElement from the selectionProvider
-     * Uses the IpsAction(ISelectionProvider) constructor of {@link IpsAction}
+     * The constructor needs a selection provider to get the selected object
      * 
-     * @param selectedElement the selected element, this action is constructed for
      * @param selectionProvider the selection provider
      */
-    public ShowHierarchyAction(IIpsElement selectedElement, ISelectionProvider selectionProvider) {
-        super(selectionProvider);
-        initialize(selectedElement);
-    }
 
-    private void initialize(IIpsElement selectedElement) {
-        if (selectedElement instanceof IProductCmptType || selectedElement instanceof IPolicyCmptType) {
-            setText(Messages.ShowHierarchyAction_nameForTypes);
-            setDescription(Messages.ShowHierarchyAction_descriptionForTypes);
-            setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IpsHierarchyView.LOGO));
-        }
-        setToolTipText(getDescription());
+    public ShowHierarchyAction(ISelectionProvider selectionProvider) {
+        super(selectionProvider);
+        setText(Messages.ShowHierarchyAction_nameForTypes);
+        setDescription(Messages.ShowHierarchyAction_descriptionForTypes);
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IpsHierarchyView.LOGO));
     }
 
     @Override
@@ -75,9 +60,49 @@ public class ShowHierarchyAction extends IpsAction {
                 ((IpsHierarchyView)pse).showHierarchy(ipsObject);
             } catch (PartInitException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
-            } catch (InterruptedException e) {
+            }
+        }
+    }
+
+    public ISelectionService selectionService;
+
+    @Override
+    public void init(IWorkbenchWindow window) {
+        selectionService = window.getSelectionService();
+    }
+
+    @Override
+    public void run(IAction action) {
+        run();
+
+    }
+
+    @Override
+    public void run() {
+        TreeSelection treeSelection = null;
+        if (selectionService != null) {
+            treeSelection = (TreeSelection)selectionService.getSelection();
+        } else {
+            treeSelection = (TreeSelection)this.selectionProvider.getSelection();
+        }
+        IIpsObject ipsObject = getIpsObjectForSelection(treeSelection);
+        if (ipsObject == null) {
+            return;
+        }
+        if (IpsHierarchyView.supports(ipsObject)) {
+            try {
+                IViewPart hierarchyView = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow()
+                        .getActivePage().showView(IpsHierarchyView.EXTENSION_ID);
+                ((IpsHierarchyView)hierarchyView).showHierarchy(ipsObject);
+            } catch (PartInitException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }
+    }
+
+    @Override
+    public void selectionChanged(IAction action, ISelection selection) {
+        // TODO Auto-generated method stub
+
     }
 }

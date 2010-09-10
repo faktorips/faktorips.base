@@ -188,7 +188,6 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                 new IpsElementDragListener(treeViewer));
         treeViewer.addDropSupport(DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance() },
                 new ModelExplorerDropListener());
-
         createFilters(treeViewer);
 
         getSite().setSelectionProvider(treeViewer);

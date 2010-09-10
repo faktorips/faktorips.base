@@ -134,6 +134,8 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
     private TreeViewer treeViewer;
 
+    private final IAction hierarchyAction;
+
     /**
      * Creates a <tt>ModelExplorerContextMenuBuilder</tt>.
      * 
@@ -155,7 +157,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
                 "org.eclipse.ui.edit.delete", CommandContributionItem.STYLE_PUSH)); //$NON-NLS-1$
         refresh = ActionFactory.REFRESH.create(viewSite.getWorkbenchWindow());
         properties = ActionFactory.PROPERTIES.create(viewSite.getWorkbenchWindow());
-
+        hierarchyAction = new ShowHierarchyAction(treeViewer);
         IActionBars actionBars = viewSite.getActionBars();
         actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), new IpsCopyAction(treeViewer, workbenchPartSite
                 .getShell()));
@@ -284,7 +286,6 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
             // Ips package and default file actions
             newMenu.add(new NewIpsPacketAction(viewSite.getShell(), treeViewer));
             newMenu.add(new NewFileResourceAction(viewSite.getShell(), treeViewer));
-
         }
 
         manager.add(newMenu);
@@ -378,12 +379,16 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
             if (selected instanceof IPolicyCmptType) {
                 manager.add(new FindPolicyReferencesAction(treeViewer));
             }
-            if (InstanceExplorer.supports(selected)) {
-                manager.add(new ShowInstanceAction((IIpsElement)selected, treeViewer));
+            ShowInstanceAction showInstanceAction = new ShowInstanceAction((IIpsElement)selected, treeViewer);
+            manager.add(showInstanceAction);
+            if (!InstanceExplorer.supports(selected)) {
+                showInstanceAction.setEnabled(false);
             }
-            if (IpsHierarchyView.supports(selected)) {
-                manager.add(new ShowHierarchyAction((IIpsElement)selected, treeViewer));
+            manager.add(hierarchyAction);
+            if (!IpsHierarchyView.supports(selected)) {
+                hierarchyAction.setEnabled(false);
             }
+
             // TODO not to be used in this release
             // if (selected instanceof IPolicyCmptType | selected instanceof IProductCmpt) {
             // manager.add(new ShowAttributesAction(treeViewer));

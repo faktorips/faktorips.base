@@ -20,7 +20,7 @@ import org.faktorips.devtools.core.model.type.IType;
 
 /**
  * 
- * Input ITypeHierarchy Show the Hierarchy in a Treeviewer Output IType
+ * Input ITypeHierarchy Output IType Show the Hierarchy of an IType Object in a Treeviewer
  * 
  * @author stoll
  */
@@ -30,7 +30,7 @@ public class HierarchyContentProvider implements ITreeContentProvider {
 
     @Override
     public Object[] getChildren(Object parentElement) {
-        if (parentElement instanceof IType) {
+        if (hierarchy != null && parentElement instanceof IType) {
             IType type = (IType)parentElement;
             return hierarchy.getSubtypes(type);
         } else {
@@ -40,7 +40,7 @@ public class HierarchyContentProvider implements ITreeContentProvider {
 
     @Override
     public Object getParent(Object element) {
-        if (element instanceof IType) {
+        if (hierarchy != null && element instanceof IType) {
             IType type = (IType)element;
             return hierarchy.getSupertype(type);
         } else {
@@ -56,11 +56,14 @@ public class HierarchyContentProvider implements ITreeContentProvider {
 
     @Override
     public Object[] getElements(Object inputElement) {
-        IType root = hierarchy.getType();
-        while (hierarchy.getSupertype(root) != null) {
-            root = hierarchy.getSupertype(root);
+        if (hierarchy != null) {
+            IType root = hierarchy.getType();
+            while (hierarchy.getSupertype(root) != null) {
+                root = hierarchy.getSupertype(root);
+            }
+            return new Object[] { root };
         }
-        return new Object[] { root };
+        return new Object[] { inputElement };
     }
 
     @Override
@@ -76,6 +79,8 @@ public class HierarchyContentProvider implements ITreeContentProvider {
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         if (newInput instanceof ITypeHierarchy) {
             this.hierarchy = (ITypeHierarchy)newInput;
+        } else {
+            hierarchy = null;
         }
     }
 }

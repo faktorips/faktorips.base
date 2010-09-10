@@ -85,7 +85,6 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
     private Action refreshAction;
     private Action linkWithEditor;
     private Label selected;
-    // private ITypeHierarchy hierarchy;
     private boolean linkingEnabled = false;
     private ActivationListener editorActivationListener;
 
@@ -148,8 +147,6 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
                     editorActivated(editorPart);
                 } catch (CoreException e) {
                     IpsPlugin.log(e);
-                } catch (InterruptedException e) {
-                    IpsPlugin.log(e);
                 }
             }
         }
@@ -164,7 +161,7 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
         {
             @Override
             public void run() {
-                setInputData((hierarchyContentProvider.getTypeHierarchy()));
+                showHierarchy((hierarchyContentProvider.getTypeHierarchy().getType()));
             }
 
             @Override
@@ -175,7 +172,7 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
         toolBarManager.add(refreshAction);
 
         // clear action
-        clearAction = new Action(Messages.IpsHierarchy_tooltipClear, IpsUIPlugin.getImageHandling()
+        clearAction = new Action(Messages.IpsHierarchy_tooltipClear + "@ALT+L", IpsUIPlugin.getImageHandling()
                 .createImageDescriptor("Clear.gif")) { //$NON-NLS-1$
             @Override
             public void run() {
@@ -203,8 +200,6 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
                 try {
                     setLinkingEnabled(isChecked());
                 } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                } catch (InterruptedException e) {
                     IpsPlugin.log(e);
                 }
             }
@@ -243,11 +238,13 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
      * 
      * 
      */
-    public void showHierarchy(final IIpsObject element) throws InterruptedException {
+    public void showHierarchy(final IIpsObject element) {
         if (element instanceof IType && element.getEnclosingResource().isAccessible()) {
             IType iType = (IType)element;
-            showErrorMessage(getWaitingLabel());
-            BuildingHierarchyThread job = new BuildingHierarchyThread(iType);
+            selected.setText(""); //$NON-NLS-1$
+            treeViewer.setInput(getWaitingLabel());
+            updateView();
+            BuildingHierarchyJob job = new BuildingHierarchyJob(iType);
             job.schedule();
         }
     }
@@ -267,16 +264,18 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
             Object element = treeViewer.getInput();
             if (element == null) {
                 showEmptyMessage();
+            } else if (element instanceof String) {
+                // waiting for building hierarchy
+                showMessgeOrTableView(MessageTableSwitch.TABLE);
             } else if (element instanceof ITypeHierarchy) {
                 ITypeHierarchy hierarchy = (ITypeHierarchy)element;
-                // IType type = (IType)element;
                 showMessgeOrTableView(MessageTableSwitch.TABLE);
                 enableButtons(true);
                 int level = 1;
                 IType type = hierarchy.getType();
-                treeViewer.refresh();
                 treeViewer.expandToLevel(type, level);
                 treeViewer.setSelection(new StructuredSelection(type), true);
+                treeViewer.refresh();
                 selected.setText(type.getName());
             }
         }
@@ -332,27 +331,18 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
         for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
             String qName = ipsSrcFile.getQualifiedNameType().getName();
             if (hierarchyTreeViewer.isPartOfHierarchy(qName)) {
-                updateHierarchy();
+                showHierarchy(hierarchyContentProvider.getTypeHierarchy().getType());
                 return;
             }
             if (ipsSrcFile.exists()) {
                 String superType = ipsSrcFile.getPropertyValue(IType.PROPERTY_SUPERTYPE);
                 if (superType != null) {
                     if (hierarchyTreeViewer.isPartOfHierarchy(superType)) {
-                        updateHierarchy();
+                        showHierarchy(hierarchyContentProvider.getTypeHierarchy().getType());
                         return;
                     }
                 }
             }
-        }
-    }
-
-    private void updateHierarchy() {
-
-        try {
-            showHierarchy(hierarchyContentProvider.getTypeHierarchy().getType());
-        } catch (InterruptedException e) {
-            IpsPlugin.log(e);
         }
     }
 
@@ -418,7 +408,7 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
         return result;
     }
 
-    private void setLinkingEnabled(boolean linkingEnabled) throws CoreException, InterruptedException {
+    private void setLinkingEnabled(boolean linkingEnabled) throws CoreException {
         this.linkingEnabled = linkingEnabled;
 
         if (linkingEnabled) {
@@ -429,7 +419,7 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
         }
     }
 
-    private void editorActivated(IEditorPart editorPart) throws CoreException, InterruptedException {
+    private void editorActivated(IEditorPart editorPart) throws CoreException {
         if (!linkingEnabled || editorPart == null) {
             return;
         }
@@ -490,9 +480,6 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
                     editorActivated((IEditorPart)part);
                 } catch (CoreException e) {
                     IpsPlugin.log(e);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
                 }
             }
         }
@@ -503,9 +490,6 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
                 editorActivated(window.getActivePage().getActiveEditor());
             } catch (CoreException e) {
                 IpsPlugin.log(e);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
             }
         }
 
@@ -546,10 +530,10 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
 
     }
 
-    public class BuildingHierarchyThread extends Job {
+    public class BuildingHierarchyJob extends Job {
         private final IType iType;
 
-        public BuildingHierarchyThread(IType iType) {
+        public BuildingHierarchyJob(IType iType) {
             super(getWaitingLabel());
             this.iType = iType;
         }
@@ -580,8 +564,6 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
                 try {
                     showHierarchy(((IIpsSrcFile)transferred[0]).getIpsObject());
                 } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                } catch (InterruptedException e) {
                     IpsPlugin.log(e);
                 }
             }
