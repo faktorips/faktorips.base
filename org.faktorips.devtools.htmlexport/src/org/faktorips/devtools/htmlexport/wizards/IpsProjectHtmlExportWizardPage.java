@@ -194,6 +194,9 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
 
     private String getDefaultDestinationDirectory() {
         IProject firstElement = getProject();
+        if (firstElement == null) {
+            return ""; //$NON-NLS-1$
+        }
         return firstElement.getLocation().toOSString() + File.separator + "html"; //$NON-NLS-1$
     }
 
