@@ -40,12 +40,8 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
  */
 public class IpsElementImagePageElement extends ImagePageElement {
 
-    public IpsElementImagePageElement(IIpsElement element, String title, String path) {
-        super(createImageDataByIpsElement(element), title, path);
-    }
-
     public IpsElementImagePageElement(IIpsElement element) {
-        this(element, element.getName(), getIpsElementImageName(element));
+        super(createImageDataByIpsElement(element), element.getName(), getIpsElementImageName(element));
     }
 
     private static ImageData createImageDataByIpsElement(IIpsElement element) {
@@ -120,7 +116,13 @@ public class IpsElementImagePageElement extends ImagePageElement {
     private static String createImageNameByProductCmpt(IProductCmpt object) {
         try {
             IProductCmptType productCmptType = object.getIpsProject().findProductCmptType(object.getProductCmptType());
-            return getProductCmptImageNameByProductCmptType(productCmptType);
+
+            String productCmptImageNameByProductCmptType = getProductCmptImageNameByProductCmptType(productCmptType);
+
+            // System.out.println(object.getQualifiedName() + "\t" +
+            // productCmptType.getQualifiedName() + "\t" + productCmptType.isUseCustomInstanceIcon()
+            // + "\t" + productCmptImageNameByProductCmptType);
+            return productCmptImageNameByProductCmptType;
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
@@ -130,6 +132,16 @@ public class IpsElementImagePageElement extends ImagePageElement {
         if (productCmptType.isUseCustomInstanceIcon()) {
             return productCmptType.getQualifiedName();
         }
+
+        if (productCmptType.hasSupertype()) {
+            try {
+                return getProductCmptImageNameByProductCmptType(productCmptType
+                        .findSuperProductCmptType(productCmptType.getIpsProject()));
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         return IpsObjectType.PRODUCT_CMPT.getFileExtension();
     }
 }
