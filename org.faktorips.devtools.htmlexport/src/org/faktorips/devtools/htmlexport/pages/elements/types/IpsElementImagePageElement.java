@@ -45,7 +45,7 @@ public class IpsElementImagePageElement extends ImagePageElement {
     }
 
     public IpsElementImagePageElement(IIpsElement element) {
-        this(element, element.getName(), getIpsElementImageName(element));
+        super(createImageDataByIpsElement(element), element.getName(), getIpsElementImageName(element));
     }
 
     private static ImageData createImageDataByIpsElement(IIpsElement element) {
@@ -130,6 +130,16 @@ public class IpsElementImagePageElement extends ImagePageElement {
         if (productCmptType.isUseCustomInstanceIcon()) {
             return productCmptType.getQualifiedName();
         }
+
+        if (productCmptType.hasSupertype()) {
+            try {
+                return getProductCmptImageNameByProductCmptType(productCmptType
+                        .findSuperProductCmptType(productCmptType.getIpsProject()));
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         return IpsObjectType.PRODUCT_CMPT.getFileExtension();
     }
 }
