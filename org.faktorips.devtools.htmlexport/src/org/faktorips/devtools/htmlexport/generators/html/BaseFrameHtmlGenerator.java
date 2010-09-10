@@ -20,6 +20,7 @@ public class BaseFrameHtmlGenerator extends AbstractTextGenerator {
     private String title;
     private String colDefinition;
     private String rowsDefinition;
+    private HtmlUtil htmlUtil = new HtmlUtil();
 
     public BaseFrameHtmlGenerator(String title, String colDefinition, String rowsDefinition) {
         super();
@@ -30,7 +31,7 @@ public class BaseFrameHtmlGenerator extends AbstractTextGenerator {
 
     @Override
     public String generateText() {
-        return HtmlUtil.createDocFrame(title, colDefinition, rowsDefinition);
+        return htmlUtil.createDocFrame(title, colDefinition, rowsDefinition);
     }
 
 }

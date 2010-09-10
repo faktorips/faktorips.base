@@ -41,6 +41,7 @@ import org.faktorips.devtools.htmlexport.standard.pages.ProjectOverviewPageEleme
 public class StandardDocumentorScript implements IDocumentorScript {
 
     private static final String STANDARD_PATH = ""; //$NON-NLS-1$
+    private final HtmlUtil htmlUtil = new HtmlUtil();
 
     @Override
     public void execute(DocumentorConfiguration config, IProgressMonitor monitor) {
@@ -94,7 +95,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
         AbstractPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(ipsSrcFile, config);
         objectContentPage.build();
         FileHandler.writeFile(config, STANDARD_PATH
-                + HtmlUtil.getPathFromRoot(ipsSrcFile, LinkedFileType.getLinkedFileTypeByIpsElement(ipsSrcFile)),
+                + htmlUtil.getPathFromRoot(ipsSrcFile, LinkedFileType.getLinkedFileTypeByIpsElement(ipsSrcFile)),
                 getPageContent(config, objectContentPage));
     }
 
@@ -126,7 +127,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
         allClassesPage.setLinkTarget("content"); //$NON-NLS-1$
         allClassesPage.build();
         FileHandler.writeFile(config, STANDARD_PATH
-                + HtmlUtil.getPathFromRoot(ipsPackageFragment, LinkedFileType
+                + htmlUtil.getPathFromRoot(ipsPackageFragment, LinkedFileType
                         .getLinkedFileTypeByIpsElement(ipsPackageFragment)), getPageContent(config, allClassesPage));
     }
 

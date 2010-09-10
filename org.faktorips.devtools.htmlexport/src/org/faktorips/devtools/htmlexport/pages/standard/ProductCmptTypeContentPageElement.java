@@ -88,7 +88,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
                     links.add(PageElementUtils.createLinkPageElement(getConfig(), ipsObject,
                             "content", tableStructure, true)); //$NON-NLS-1$
                 } catch (CoreException e) {
-                    new RuntimeException(e);
+                    throw new RuntimeException(e);
                 }
             }
 

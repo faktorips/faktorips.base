@@ -59,6 +59,7 @@ public class HtmlLayouter extends AbstractLayouter {
      * path from the actual RootPageElement to the root-folder of the site
      */
     private String pathToRoot;
+    private HtmlUtil htmlUtil = new HtmlUtil();
 
     public HtmlLayouter(String resourcePath) {
         super();
@@ -69,14 +70,14 @@ public class HtmlLayouter extends AbstractLayouter {
     @Override
     public void layoutLinkPageElement(LinkPageElement pageElement) {
         if (pageElement.hasStyle(Style.BLOCK)) {
-            append(HtmlUtil.createHtmlElementOpenTag("div")); //$NON-NLS-1$
+            append(htmlUtil.createHtmlElementOpenTag("div")); //$NON-NLS-1$
         }
-        append(HtmlUtil
+        append(htmlUtil
                 .createLinkOpenTag(createLinkBase(pageElement), pageElement.getTarget(), getClasses(pageElement)));
         visitSubElements(pageElement);
-        append(HtmlUtil.createHtmlElementCloseTag("a")); //$NON-NLS-1$
+        append(htmlUtil.createHtmlElementCloseTag("a")); //$NON-NLS-1$
         if (pageElement.hasStyle(Style.BLOCK)) {
-            append(HtmlUtil.createHtmlElementCloseTag("div")); //$NON-NLS-1$
+            append(htmlUtil.createHtmlElementCloseTag("div")); //$NON-NLS-1$
         }
     }
 
@@ -90,16 +91,16 @@ public class HtmlLayouter extends AbstractLayouter {
     @Override
     public void layoutListPageElement(ListPageElement pageElement) {
         String listBaseHtmlTag = pageElement.isOrdered() ? "ul" : "ol"; //$NON-NLS-1$ //$NON-NLS-2$
-        append(HtmlUtil.createHtmlElementOpenTag(listBaseHtmlTag, getClasses(pageElement)));
+        append(htmlUtil.createHtmlElementOpenTag(listBaseHtmlTag, getClasses(pageElement)));
         visitSubElements(pageElement);
-        append(HtmlUtil.createHtmlElementCloseTag(listBaseHtmlTag));
+        append(htmlUtil.createHtmlElementCloseTag(listBaseHtmlTag));
     }
 
     @Override
     public void layoutTablePageElement(TablePageElement pageElement) {
-        append(HtmlUtil.createHtmlElementOpenTag("table", getClasses(pageElement))); //$NON-NLS-1$
+        append(htmlUtil.createHtmlElementOpenTag("table", getClasses(pageElement))); //$NON-NLS-1$
         visitSubElements(pageElement);
-        append(HtmlUtil.createHtmlElementCloseTag("table")); //$NON-NLS-1$
+        append(htmlUtil.createHtmlElementCloseTag("table")); //$NON-NLS-1$
     }
 
     @Override
@@ -110,9 +111,9 @@ public class HtmlLayouter extends AbstractLayouter {
             return;
         }
         String wrappingElement = getHtmlElementByWrappingType(wrapperType);
-        append(HtmlUtil.createHtmlElementOpenTag(wrappingElement, getClasses(wrapperPageElement)));
+        append(htmlUtil.createHtmlElementOpenTag(wrappingElement, getClasses(wrapperPageElement)));
         visitSubElements(wrapperPageElement);
-        append(HtmlUtil.createHtmlElementCloseTag(wrappingElement));
+        append(htmlUtil.createHtmlElementCloseTag(wrappingElement));
     }
 
     /**
@@ -139,10 +140,10 @@ public class HtmlLayouter extends AbstractLayouter {
     public void layoutRootPageElement(AbstractRootPageElement pageElement) {
         initRootPage(pageElement);
 
-        append(HtmlUtil.createHtmlHead(pageElement.getTitle(), getPathToRoot() + getStyleDefinitionPath()));
+        append(htmlUtil.createHtmlHead(pageElement.getTitle(), getPathToRoot() + getStyleDefinitionPath()));
         visitSubElements(pageElement);
 
-        append(HtmlUtil.createHtmlFoot());
+        append(htmlUtil.createHtmlFoot());
     }
 
     /**
@@ -157,10 +158,10 @@ public class HtmlLayouter extends AbstractLayouter {
     @Override
     public void layoutTextPageElement(TextPageElement pageElement) {
         if (pageElement.getType() == TextType.WITHOUT_TYPE && pageElement.getStyles().isEmpty()) {
-            append(HtmlUtil.getHtmlText(pageElement.getText()));
+            append(htmlUtil.getHtmlText(pageElement.getText()));
             return;
         }
-        append(HtmlUtil.createHtmlElement(identifyTagName(pageElement), pageElement.getText(), getClasses(pageElement)));
+        append(htmlUtil.createHtmlElement(identifyTagName(pageElement), pageElement.getText(), getClasses(pageElement)));
     }
 
     /**
@@ -227,7 +228,7 @@ public class HtmlLayouter extends AbstractLayouter {
         addLayoutResource(new LayoutResource(path, DocumentorUtil.convertImageDataToByteArray(imagePageElement
                 .getImageData(), SWT.IMAGE_PNG)));
 
-        append(HtmlUtil.createImage(getPathToRoot() + path, imagePageElement.getTitle()));
+        append(htmlUtil.createImage(getPathToRoot() + path, imagePageElement.getTitle()));
     }
 
     public String getPathToRoot() {
