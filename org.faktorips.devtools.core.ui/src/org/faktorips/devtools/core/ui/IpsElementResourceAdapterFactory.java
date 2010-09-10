@@ -26,7 +26,7 @@ public class IpsElementResourceAdapterFactory implements IAdapterFactory {
         if (adaptableObject instanceof IIpsElement) {
             IIpsElement ipsElement = (IIpsElement)adaptableObject;
             IResource corrResource = ipsElement.getCorrespondingResource();
-            if (adapterType.isAssignableFrom(corrResource.getClass())) {
+            if (corrResource != null && adapterType.isAssignableFrom(corrResource.getClass())) {
                 return corrResource;
             }
         }
