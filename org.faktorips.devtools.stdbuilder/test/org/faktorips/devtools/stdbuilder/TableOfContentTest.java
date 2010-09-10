@@ -16,6 +16,7 @@ package org.faktorips.devtools.stdbuilder;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -118,7 +119,7 @@ public class TableOfContentTest extends XmlAbstractTestCase {
         // replace Motor with policy component class name changed
         toc.resetModified();
         entry0 = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
-                "MotorProduct2005.ipsproduct", "org.sample.MotorPolicyPk", "org.sample.MotorPolicyPkAnpStufe",
+                "MotorProduct2005.ipsproduct", "org.sample.MotorPolicyPk2", "org.sample.MotorPolicyPkAnpStufe",
                 new DateTime(2010, 1, 1));
         changed = toc.addOrReplaceTocEntry(entry0);
         assertTrue(changed);
@@ -274,7 +275,12 @@ public class TableOfContentTest extends XmlAbstractTestCase {
         toc2.addOrReplaceTocEntry(entry1);
         toc2.addOrReplaceTocEntry(entry0);
         String toc2String = XmlUtil.nodeToString(toc2.toXml(newDocument()), "UTF-8");
-        assertEquals(tocString, toc2String);
+
+        Pattern versionPattern = Pattern.compile("productDataVersion=\".*{1}\"");
+        String tocWithoutVersion = versionPattern.matcher(tocString).replaceFirst("");
+        String toc2WithoutVersion = versionPattern.matcher(toc2String).replaceFirst("");
+
+        assertEquals(tocWithoutVersion, toc2WithoutVersion);
     }
 
 }
