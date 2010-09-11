@@ -117,7 +117,11 @@ public class Label extends AtomicIpsObjectPart implements ILabel {
             return;
         }
 
-        boolean localeSupported = ipsProject.getProperties().isSupportedLanguage(locale);
+        /*
+         * Don't use the IPS project from the parameter as only the project of the label itself must
+         * support the language.
+         */
+        boolean localeSupported = getIpsProject().getProperties().isSupportedLanguage(locale);
         if (!(localeSupported)) {
             String text = NLS.bind(Messages.Label_msgLocaleNotSupportedByProject, locale.getLanguage());
             Message msg = new Message(ILabel.MSGCODE_LOCALE_NOT_SUPPORTED_BY_IPS_PROJECT, text, Message.ERROR, this,
