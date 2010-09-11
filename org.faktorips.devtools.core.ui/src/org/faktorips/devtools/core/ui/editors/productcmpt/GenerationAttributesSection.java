@@ -189,7 +189,8 @@ public class GenerationAttributesSection extends IpsSection {
             return;
         }
         IIpsProject ipsProject = toDisplay.getIpsProject();
-        Label label = toolkit.createLabel(rootPane, IpsUIPlugin.getLabel(toDisplay));
+        String localizedCaption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(toDisplay);
+        Label label = toolkit.createLabel(rootPane, localizedCaption);
 
         IpsObjectUIController controller = new IpsObjectUIController(toDisplay);
         uiMasterController.add(controller);

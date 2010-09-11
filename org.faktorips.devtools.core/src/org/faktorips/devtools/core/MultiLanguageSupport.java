@@ -15,6 +15,7 @@ package org.faktorips.devtools.core;
 
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
@@ -59,17 +60,22 @@ public final class MultiLanguageSupport {
      * @param ipsObjectPartContainer The {@link IIpsObjectPartContainer} to obtain the localized
      *            caption of.
      * 
-     * @throws CoreException If any error occurs while retrieving the caption.
      * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
      * 
      * @see #getLocalizationLocale()
      * @see #getDefaultCaption(IIpsObjectPartContainer)
      */
-    public String getLocalizedCaption(IIpsObjectPartContainer ipsObjectPartContainer) throws CoreException {
+    public String getLocalizedCaption(IIpsObjectPartContainer ipsObjectPartContainer) {
         ArgumentCheck.notNull(ipsObjectPartContainer);
 
-        String localizedCaption = ipsObjectPartContainer.getCaption(getLocalizationLocale());
-        if (localizedCaption == null) {
+        String localizedCaption = null;
+        try {
+            localizedCaption = ipsObjectPartContainer.getCaption(getLocalizationLocale());
+        } catch (CoreException e) {
+            // Exception not too critical, just log it and use the next possible caption.
+            IpsPlugin.log(e);
+        }
+        if (StringUtils.isEmpty(localizedCaption)) {
             localizedCaption = getDefaultCaption(ipsObjectPartContainer);
         }
         return localizedCaption;
@@ -88,17 +94,22 @@ public final class MultiLanguageSupport {
      * @param ipsObjectPartContainer The {@link IIpsObjectPartContainer} to obtain the localized
      *            plural caption of.
      * 
-     * @throws CoreException If any error occurs while retrieving the caption.
      * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
      * 
      * @see #getLocalizationLocale()
      * @see #getDefaultPluralCaption(IIpsObjectPartContainer)
      */
-    public String getLocalizedPluralCaption(IIpsObjectPartContainer ipsObjectPartContainer) throws CoreException {
+    public String getLocalizedPluralCaption(IIpsObjectPartContainer ipsObjectPartContainer) {
         ArgumentCheck.notNull(ipsObjectPartContainer);
 
-        String localizedPluralCaption = ipsObjectPartContainer.getPluralCaption(getLocalizationLocale());
-        if (localizedPluralCaption == null) {
+        String localizedPluralCaption = null;
+        try {
+            localizedPluralCaption = ipsObjectPartContainer.getPluralCaption(getLocalizationLocale());
+        } catch (CoreException e) {
+            // Exception not too critical, just log it and use the next possible caption.
+            IpsPlugin.log(e);
+        }
+        if (StringUtils.isEmpty(localizedPluralCaption)) {
             localizedPluralCaption = getDefaultPluralCaption(ipsObjectPartContainer);
         }
         return localizedPluralCaption;
@@ -116,20 +127,24 @@ public final class MultiLanguageSupport {
      * @param ipsObjectPartContainer The {@link IIpsObjectPartContainer} to obtain the default
      *            caption of.
      * 
-     * @throws CoreException If any error occurs while retrieving the caption.
      * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
      * 
      * @see IIpsProjectProperties#getDefaultLanguage()
      */
-    public String getDefaultCaption(IIpsObjectPartContainer ipsObjectPartContainer) throws CoreException {
+    public String getDefaultCaption(IIpsObjectPartContainer ipsObjectPartContainer) {
         ArgumentCheck.notNull(ipsObjectPartContainer);
 
         String defaultCaption = null;
         Locale defaultLocale = getDefaultLocale(ipsObjectPartContainer.getIpsProject());
         if (defaultLocale != null) {
-            defaultCaption = ipsObjectPartContainer.getCaption(defaultLocale);
+            try {
+                defaultCaption = ipsObjectPartContainer.getCaption(defaultLocale);
+            } catch (CoreException e) {
+                // Exception not too critical, just log it and use the next possible caption.
+                IpsPlugin.log(e);
+            }
         }
-        if (defaultCaption == null) {
+        if (StringUtils.isEmpty(defaultCaption)) {
             defaultCaption = ipsObjectPartContainer.getLastResortCaption();
         }
         return defaultCaption;
@@ -147,20 +162,24 @@ public final class MultiLanguageSupport {
      * @param ipsObjectPartContainer The {@link IIpsObjectPartContainer} to obtain the default
      *            plural caption of.
      * 
-     * @throws CoreException If any error occurs while retrieving the caption.
      * @throws NullPointerException If <tt>ipsObjectPartContainer</tt> is <tt>null</tt>.
      * 
      * @see IIpsProjectProperties#getDefaultLanguage()
      */
-    public String getDefaultPluralCaption(IIpsObjectPartContainer ipsObjectPartContainer) throws CoreException {
+    public String getDefaultPluralCaption(IIpsObjectPartContainer ipsObjectPartContainer) {
         ArgumentCheck.notNull(ipsObjectPartContainer);
 
         String defaultPluralCaption = null;
         Locale defaultLocale = getDefaultLocale(ipsObjectPartContainer.getIpsProject());
         if (defaultLocale != null) {
-            defaultPluralCaption = ipsObjectPartContainer.getPluralCaption(defaultLocale);
+            try {
+                defaultPluralCaption = ipsObjectPartContainer.getPluralCaption(defaultLocale);
+            } catch (CoreException e) {
+                // Exception not too critical, just log it and use the next possible caption.
+                IpsPlugin.log(e);
+            }
         }
-        if (defaultPluralCaption == null) {
+        if (StringUtils.isEmpty(defaultPluralCaption)) {
             defaultPluralCaption = ipsObjectPartContainer.getLastResortPluralCaption();
         }
         return defaultPluralCaption;
@@ -190,7 +209,12 @@ public final class MultiLanguageSupport {
         if (localizedLabel == null) {
             label = getDefaultLabel(labeledElement);
         } else {
-            label = localizedLabel.getValue();
+            String value = localizedLabel.getValue();
+            if (StringUtils.isEmpty(value)) {
+                label = getDefaultLabel(labeledElement);
+            } else {
+                label = value;
+            }
         }
         return label;
     }
@@ -218,14 +242,19 @@ public final class MultiLanguageSupport {
         ArgumentCheck.notNull(labeledElement);
         ArgumentCheck.isTrue(labeledElement.isPluralLabelSupported());
 
-        String label;
+        String pluralLabel;
         ILabel localizedLabel = labeledElement.getLabel(getLocalizationLocale());
         if (localizedLabel == null) {
-            label = getDefaultPluralLabel(labeledElement);
+            pluralLabel = getDefaultPluralLabel(labeledElement);
         } else {
-            label = localizedLabel.getPluralValue();
+            String pluralValue = localizedLabel.getPluralValue();
+            if (StringUtils.isEmpty(pluralValue)) {
+                pluralLabel = getDefaultPluralLabel(labeledElement);
+            } else {
+                pluralLabel = pluralValue;
+            }
         }
-        return label;
+        return pluralLabel;
     }
 
     /**
@@ -247,7 +276,10 @@ public final class MultiLanguageSupport {
         String label = labeledElement.getName();
         ILabel defaultLabel = getDefaultLabelPart(labeledElement);
         if (defaultLabel != null) {
-            label = defaultLabel.getValue();
+            String value = defaultLabel.getValue();
+            if (!(StringUtils.isEmpty(value))) {
+                label = value;
+            }
         }
         return label;
     }
@@ -275,7 +307,10 @@ public final class MultiLanguageSupport {
         String pluralLabel = labeledElement.getName();
         ILabel defaultLabel = getDefaultLabelPart(labeledElement);
         if (defaultLabel != null) {
-            pluralLabel = defaultLabel.getPluralValue();
+            String pluralValue = defaultLabel.getPluralValue();
+            if (!(StringUtils.isEmpty(pluralValue))) {
+                pluralLabel = pluralValue;
+            }
         }
         return pluralLabel;
     }
@@ -352,7 +387,12 @@ public final class MultiLanguageSupport {
         if (localizedDescription == null) {
             description = getDefaultDescription(describedElement);
         } else {
-            description = localizedDescription.getText();
+            String text = localizedDescription.getText();
+            if (StringUtils.isEmpty(text)) {
+                description = getDefaultDescription(describedElement);
+            } else {
+                description = text;
+            }
         }
         return description;
     }

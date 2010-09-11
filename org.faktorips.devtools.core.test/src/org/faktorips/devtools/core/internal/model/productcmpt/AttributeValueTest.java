@@ -153,4 +153,8 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         assertNull(attrValue.getCaption(Locale.US));
     }
 
+    public void testGetLastResortCaption() {
+        assertEquals(attrValue.getAttribute(), attrValue.getLastResortCaption());
+    }
+
 }
