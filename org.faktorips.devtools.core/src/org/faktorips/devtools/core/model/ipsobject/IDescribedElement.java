@@ -34,14 +34,26 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 public interface IDescribedElement extends IIpsElement {
 
     /**
-     * Returns the {@link IDescription} for the given {@link Locale}. If no description for the
-     * locale exists, <tt>null</tt> is returned.
+     * Returns the {@link IDescription} for the given {@link Locale}.
+     * <p>
+     * If no description for the locale exists, null is returned.
      * 
-     * @param locale The locale to retrieve the description for.
+     * @param locale The locale to retrieve the description for
      * 
-     * @throws NullPointerException If <tt>locale</tt> is <tt>null</tt>.
+     * @throws NullPointerException If the parameter is null
      */
     public IDescription getDescription(Locale locale);
+
+    /**
+     * Returns the text of the {@link IDescription} that has the given {@link Locale}.
+     * <p>
+     * An empty string is returned if no description for the locale exists.
+     * 
+     * @param locale The {@link Locale} of the {@link IDescription} to retrieve the text from
+     * 
+     * @throws NullPointerException If the parameter is null
+     */
+    public String getDescriptionText(Locale locale);
 
     /**
      * Returns an unmodifiable view on the list of descriptions of this element.
@@ -49,8 +61,21 @@ public interface IDescribedElement extends IIpsElement {
     public List<IDescription> getDescriptions();
 
     /**
-     * Creates a new description for this element.
+     * Creates a new {@link IDescription} for this element.
      */
     public IDescription newDescription();
+
+    /**
+     * Sets the text of the {@link IDescription} that has the given {@link Locale}.
+     * <p>
+     * The description text will be set to the empty string if null is given as text.
+     * 
+     * @param locale The {@link Locale} of the {@link IDescription} to set the text for
+     * @param text The text to set
+     * 
+     * @throws NullPointerException If the parameter locale is null
+     * @throws IllegalArgumentException If there is no description with the given locale
+     */
+    public void setDescriptionText(Locale locale, String text);
 
 }

@@ -36,10 +36,15 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
 
+    private IIpsProjectProperties properties;
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
+        properties = new IpsProjectProperties();
+        properties.addSupportedLanguage(Locale.ENGLISH);
+        properties.addSupportedLanguage(Locale.GERMAN);
     }
 
     public void testValidate_DefinedDatatypes() throws CoreException {
@@ -313,45 +318,86 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     public void testAddSupportedLanguage() {
-        IIpsProjectProperties props = new IpsProjectProperties();
-        props.addSupportedLanguage(Locale.ENGLISH);
-        assertEquals(1, props.getSupportedLanguages().size());
-        assertTrue(props.getSupportedLanguages().contains(new SupportedLanguage(Locale.ENGLISH)));
+        properties.addSupportedLanguage(Locale.TAIWAN);
+        assertEquals(3, properties.getSupportedLanguages().size());
+        assertTrue(properties.getSupportedLanguages().contains(new SupportedLanguage(Locale.TAIWAN)));
     }
 
     public void testRemoveSupportedLanguage() {
-        IIpsProjectProperties props = new IpsProjectProperties();
-        props.addSupportedLanguage(Locale.ENGLISH);
-        props.addSupportedLanguage(Locale.GERMAN);
-        assertEquals(2, props.getSupportedLanguages().size());
-        props.removeSupportedLanguage(props.getSupportedLanguage(Locale.ENGLISH));
-        assertEquals(1, props.getSupportedLanguages().size());
-        assertFalse(props.getSupportedLanguages().contains(new SupportedLanguage(Locale.ENGLISH)));
+        properties.removeSupportedLanguage(properties.getSupportedLanguage(Locale.ENGLISH));
+        assertEquals(1, properties.getSupportedLanguages().size());
+        assertFalse(properties.getSupportedLanguages().contains(new SupportedLanguage(Locale.ENGLISH)));
     }
 
-    public void testGetSetDefaultLanguage() {
-        IIpsProjectProperties props = new IpsProjectProperties();
-        props.addSupportedLanguage(Locale.ENGLISH);
-        props.addSupportedLanguage(Locale.GERMAN);
-        assertNull(props.getDefaultLanguage());
+    public void testRemoveSupportedLanguageNullPointer() {
+        try {
+            properties.removeSupportedLanguage((ISupportedLanguage)null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+    }
 
-        ISupportedLanguage englishLanguage = props.getSupportedLanguage(Locale.ENGLISH);
-        props.setDefaultLanguage(englishLanguage);
+    public void testRemoveSupportedLanguageUsingLocale() {
+        properties.removeSupportedLanguage(Locale.ENGLISH);
+        assertEquals(1, properties.getSupportedLanguages().size());
+        assertFalse(properties.getSupportedLanguages().contains(new SupportedLanguage(Locale.ENGLISH)));
+    }
+
+    public void testRemoveSupportedLanguageUsingLocaleNullPointer() {
+        try {
+            properties.removeSupportedLanguage((Locale)null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+    }
+
+    public void testSetDefaultLanguage() {
+        ISupportedLanguage englishLanguage = properties.getSupportedLanguage(Locale.ENGLISH);
+        properties.setDefaultLanguage(englishLanguage);
         assertTrue(englishLanguage.isDefaultLanguage());
-        assertEquals(englishLanguage, props.getDefaultLanguage());
+        assertEquals(englishLanguage, properties.getDefaultLanguage());
+    }
 
-        ISupportedLanguage germanLanguage = props.getSupportedLanguage(Locale.GERMAN);
-        props.setDefaultLanguage(germanLanguage);
-        assertTrue(germanLanguage.isDefaultLanguage());
-        assertFalse(englishLanguage.isDefaultLanguage());
-        assertEquals(germanLanguage, props.getDefaultLanguage());
+    public void testSetDefaultLanguageNullPointer() {
+        try {
+            properties.setDefaultLanguage((ISupportedLanguage)null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+    }
+
+    public void testSetDefaultLanguageUsingLocale() {
+        properties.setDefaultLanguage(Locale.ENGLISH);
+        assertEquals(properties.getSupportedLanguage(Locale.ENGLISH), properties.getDefaultLanguage());
+    }
+
+    public void testSetDefaultLanguageUsingLocaleNullPointer() {
+        try {
+            properties.setDefaultLanguage((Locale)null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+    }
+
+    public void testSetDefaultLanguageUsingLocaleIllegalLocale() {
+        try {
+            properties.setDefaultLanguage(Locale.TAIWAN);
+            fail();
+        } catch (IllegalArgumentException e) {
+        }
     }
 
     public void testIsSupportedLanguage() {
-        IIpsProjectProperties props = new IpsProjectProperties();
-        props.addSupportedLanguage(Locale.ENGLISH);
-        assertTrue(props.isSupportedLanguage(Locale.ENGLISH));
-        assertFalse(props.isSupportedLanguage(Locale.JAPANESE));
+        assertTrue(properties.isSupportedLanguage(Locale.ENGLISH));
+        assertFalse(properties.isSupportedLanguage(Locale.JAPANESE));
+    }
+
+    public void testIsSupportedLanguageNullPointer() {
+        try {
+            properties.isSupportedLanguage(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
     }
 
 }

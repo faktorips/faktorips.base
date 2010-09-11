@@ -899,6 +899,44 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     /**
+     * @see ILabeledElement#getLabelValue(Locale)
+     */
+    public String getLabelValue(Locale locale) {
+        ILabel label = getLabel(locale);
+        return label == null ? null : label.getValue();
+    }
+
+    /**
+     * @see ILabeledElement#getPluralLabelValue(Locale)
+     */
+    public String getPluralLabelValue(Locale locale) {
+        ILabel label = getLabel(locale);
+        return label == null ? null : label.getPluralValue();
+    }
+
+    /**
+     * @see ILabeledElement#setLabelValue(Locale, String)
+     */
+    public void setLabelValue(Locale locale, String value) {
+        ILabel label = getLabel(locale);
+        if (label == null) {
+            throw new IllegalArgumentException("There is no label with the locale '" + locale + "'."); //$NON-NLS-1$//$NON-NLS-2$
+        }
+        label.setValue(value);
+    }
+
+    /**
+     * @see ILabeledElement#setPluralLabelValue(Locale, String)
+     */
+    public void setPluralLabelValue(Locale locale, String pluralValue) {
+        ILabel label = getLabel(locale);
+        if (label == null) {
+            throw new IllegalArgumentException("There is no label with the locale '" + locale + "'."); //$NON-NLS-1$//$NON-NLS-2$
+        }
+        label.setPluralValue(pluralValue);
+    }
+
+    /**
      * @see IDescribedElement#getDescription(Locale)
      */
     public IDescription getDescription(Locale locale) {
@@ -917,6 +955,14 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     /**
+     * @see IDescribedElement#getDescriptionText(Locale)
+     */
+    public String getDescriptionText(Locale locale) {
+        IDescription description = getDescription(locale);
+        return description == null ? "" : description.getText(); //$NON-NLS-1$
+    }
+
+    /**
      * @see IDescribedElement#getDescriptions()
      */
     public List<IDescription> getDescriptions() {
@@ -928,6 +974,17 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      */
     public IDescription newDescription() {
         return newDescription(getNextPartId());
+    }
+
+    /**
+     * @see IDescribedElement#setDescriptionText(Locale, String)
+     */
+    public void setDescriptionText(Locale locale, String text) {
+        IDescription description = getDescription(locale);
+        if (description == null) {
+            throw new IllegalArgumentException("There is no description with the locale '" + locale + "'."); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        description.setText(text);
     }
 
     // Deprecated since 3.1

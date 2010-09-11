@@ -363,22 +363,18 @@ public interface IIpsProjectProperties {
      */
     public IPersistenceOptions getPersistenceOptions();
 
-    // --
-    // ## Methods related to multi-language support
-    // --
-
     /**
      * Returns an unmodifiable view on the set of languages supported by this IPS project.
      */
     public Set<ISupportedLanguage> getSupportedLanguages();
 
     /**
-     * Returns the {@link ISupportedLanguage} with the given {@link Locale}. Returns <tt>null</tt>
-     * if the locale is not supported.
+     * Returns the {@link ISupportedLanguage} with the given {@link Locale} or null if the locale is
+     * not supported.
      * 
-     * @param locale The locale to retrieve the {@link ISupportedLanguage} for.
+     * @param locale The locale to retrieve the {@link ISupportedLanguage} for
      * 
-     * @throws NullPointerException If <tt>locale</tt> is <tt>null</tt>.
+     * @throws NullPointerException If the parameter is null
      */
     public ISupportedLanguage getSupportedLanguage(Locale locale);
 
@@ -386,26 +382,37 @@ public interface IIpsProjectProperties {
      * Returns whether the language corresponding to the given {@link Locale} is supported by this
      * IPS project.
      * 
-     * @param locale The {@link Locale} to check whether it is supported.
+     * @param locale The {@link Locale} to check whether it is supported
      * 
-     * @throws NullPointerException If <tt>locale</tt> is <tt>null</tt>.
+     * @throws NullPointerException If the parameter is null
      */
     public boolean isSupportedLanguage(Locale locale);
 
     /**
-     * Returns the {@link ISupportedLanguage} that is currently set as default language or
-     * <tt>null</tt> if there is no default language set at this moment.
+     * Returns the {@link ISupportedLanguage} that is currently set as default language or null if
+     * there is no default language set at this moment.
      */
     public ISupportedLanguage getDefaultLanguage();
 
     /**
      * Sets the given {@link ISupportedLanguage} to be the default language.
      * 
-     * @param supportedLanguage The {@link ISupportedLanguage} to set as default language.
+     * @param language The {@link ISupportedLanguage} to set as default language
      * 
-     * @throws NullPointerException If <tt>supportedLanguage</tt> is <tt>null</tt>.
+     * @throws NullPointerException If the parameter is null
      */
-    public void setDefaultLanguage(ISupportedLanguage supportedLanguage);
+    public void setDefaultLanguage(ISupportedLanguage language);
+
+    /**
+     * Sets the {@link ISupportedLanguage} with the given {@link Locale} to be the default language.
+     * 
+     * @param locale The {@link Locale} of the {@link ISupportedLanguage} to set as the default
+     *            language
+     * 
+     * @throws NullPointerException If the parameter is null
+     * @throws IllegalArgumentException If there is no supported language with the given locale
+     */
+    public void setDefaultLanguage(Locale locale);
 
     /**
      * Adds the language identified by the given {@link Locale} to the supported languages of this
@@ -413,10 +420,9 @@ public interface IIpsProjectProperties {
      * <p>
      * A call to this operation does nothing if the language is already supported.
      * 
-     * @param locale The {@link Locale} identifying the language that shall be supported from now
-     *            on.
+     * @param locale The {@link Locale} identifying the language to be supported from now on
      * 
-     * @throws NullPointerException If <tt>locale</tt> is <tt>null</tt>.
+     * @throws NullPointerException If the parameter is null
      */
     public void addSupportedLanguage(Locale locale);
 
@@ -424,14 +430,25 @@ public interface IIpsProjectProperties {
      * Removes the given {@link ISupportedLanguage} from the list of supported languages causing it
      * to be no longer supported.
      * <p>
-     * A call to this operation does nothing if the language isn't supported at the time of the
-     * call.
+     * Does nothing if there is no such supported language.
      * 
-     * @param supportedLanguage The {@link ISupportedLanguage} that is no longer supported.
+     * @param supportedLanguage The {@link ISupportedLanguage} that is no longer supported
      * 
-     * @throws NullPointerException If <tt>supportedLanguage</tt> is <tt>null</tt>.
+     * @throws NullPointerException If the parameter is null
      */
     public void removeSupportedLanguage(ISupportedLanguage supportedLanguage);
+
+    /**
+     * Removes the {@link ISupportedLanguage} with the given {@link Locale} from the list of
+     * supported languages causing it to be no longer supported.
+     * <p>
+     * Does nothing if there is no supported language with the given locale.
+     * 
+     * @param locale The {@link Locale} of the {@link ISupportedLanguage} to remove
+     * 
+     * @throws NullPointerException If the parameter is null
+     */
+    public void removeSupportedLanguage(Locale locale);
 
     /**
      * Return the version of this project. The version is needed in deployment process and should be

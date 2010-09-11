@@ -15,17 +15,11 @@ package org.faktorips.devtools.core.internal.model.enums;
 
 import java.util.List;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
-import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
-import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
-import org.w3c.dom.Element;
 
 public class EnumValueTest extends AbstractIpsEnumPluginTest {
 
@@ -44,17 +38,6 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
 
     public void testGetEnumAttributeValues() {
         assertEquals(2, genderEnumValueMale.getEnumAttributeValues().size());
-    }
-
-    public void testXml() throws ParserConfigurationException, CoreException {
-        Element xmlElement = genderEnumContent.toXml(createXmlDocument(IEnumContent.XML_TAG));
-        assertEquals(4, xmlElement.getChildNodes().getLength());
-        Element enumValue = XmlUtil.getFirstElement(xmlElement, IEnumValue.XML_TAG);
-        Element descriptionElement = XmlUtil.getFirstElement(enumValue, DescriptionHelper.XML_ELEMENT_NAME);
-        assertNull(descriptionElement);
-        IEnumContent loadedEnumContent = newEnumContent(ipsProject, "LoadedEnumContent");
-        loadedEnumContent.initFromXml(xmlElement);
-        assertEquals(2, loadedEnumContent.getEnumValues().size());
     }
 
     public void testValidateThis() throws CoreException {

@@ -48,7 +48,7 @@ public interface ILabel extends IIpsObjectPart {
     public final static String MSGCODE_LOCALE_MISSING = MSGCODE_PREFIX + "LocaleMissing"; //$NON-NLS-1$
 
     /**
-     * Returns the locale of this label or <tt>null</tt> if this information is for some reason not
+     * Returns the locale of this label or null if this information is for some reason not
      * available.
      */
     public Locale getLocale();
@@ -56,31 +56,31 @@ public interface ILabel extends IIpsObjectPart {
     /**
      * Sets the locale of this label.
      * 
-     * @param locale The locale of this label.
+     * @param locale The locale of this label
      */
     public void setLocale(Locale locale);
 
     /**
-     * Returns the value of the label or <tt>null</tt> if this label has no value.
+     * Returns the value of the label or null if this label has no value.
      */
     public String getValue();
 
     /**
      * Sets the value of the label.
      * 
-     * @param value The value for the label.
+     * @param value The value for the label
      */
     public void setValue(String value);
 
     /**
-     * Returns the plural value of the label or <tt>null</tt> if this label has no plural label.
+     * Returns the plural value of the label or null if this label has no plural label.
      */
     public String getPluralValue();
 
     /**
      * Sets the plural value of the label.
      * 
-     * @param pluralValue The plural value for the label.
+     * @param pluralValue The plural value for the label
      */
     public void setPluralValue(String pluralValue);
 

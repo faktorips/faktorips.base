@@ -124,7 +124,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertEquals(Integer.MAX_VALUE, association.getMaxCardinality());
         assertTrue(association.isDerivedUnion());
         assertEquals("BaseCoverageType", association.getSubsettedDerivedUnion());
-        assertEquals("blabla", association.getDescription(Locale.US).getText());
+        assertEquals("blabla", association.getDescriptionText(Locale.US));
     }
 
     /**

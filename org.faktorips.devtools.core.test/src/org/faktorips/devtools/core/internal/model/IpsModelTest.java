@@ -296,7 +296,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
 
         object = (IPolicyCmptType)sourceFile.getIpsObject();
         attribute = object.getPolicyCmptTypeAttributes()[0];
-        assertEquals("something serious", attribute.getDescription(Locale.US).getText());
+        assertEquals("something serious", attribute.getDescriptionText(Locale.US));
     }
 
     public void testGetIpsObjectExtensionProperties() {

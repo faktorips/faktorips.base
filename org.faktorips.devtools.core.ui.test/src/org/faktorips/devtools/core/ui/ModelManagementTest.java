@@ -85,7 +85,7 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
         }
         IpsUIPlugin.getDefault().openEditor(type);
         IIpsSrcFile ipsFile = type.getIpsSrcFile();
-        type.getDescription(Locale.US).setText("Blabla");
+        type.setDescriptionText(Locale.US, "Blabla");
         ipsFile.save(true, null);
         Thread.sleep(2000); // wait for 2 seconds, so that the file definitly has a
         // different timestamp, otherwise refreshLocal won't refresh!
@@ -104,7 +104,7 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
         file.refreshLocal(IResource.DEPTH_INFINITE, null);
 
         type = (IPolicyCmptType)ipsFile.getIpsObject(); // forces a reload
-        assertEquals("NewBlabla", type.getDescription(Locale.US).getText());
+        assertEquals("NewBlabla", type.getDescriptionText(Locale.US));
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("===== Finished testChangeDirectlyOnDiskWithoutUsingTheEclipseApiAndOpenEditor() =====");
         }

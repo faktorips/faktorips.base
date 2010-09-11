@@ -34,12 +34,12 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 public interface ILabeledElement extends IIpsElement {
 
     /**
-     * Returns the {@link ILabel} for the given {@link Locale}. If no label for the locale exists,
-     * <tt>null</tt> is returned.
+     * Returns the {@link ILabel} for the given {@link Locale} or null if no label for the locale
+     * exists.
      * 
-     * @param locale The locale to retrieve the label for.
+     * @param locale The locale to retrieve the label for
      * 
-     * @throws NullPointerException If <tt>locale</tt> is <tt>null</tt>.
+     * @throws NullPointerException If the parameter is null
      */
     public ILabel getLabel(Locale locale);
 
@@ -57,5 +57,47 @@ public interface ILabeledElement extends IIpsElement {
      * Creates a new label for this element.
      */
     public ILabel newLabel();
+
+    /**
+     * Returns the value of the {@link ILabel} that has the given {@link Locale} or null if no such
+     * label exists.
+     * 
+     * @param locale The {@link Locale} of the {@link ILabel} to obtain the value for
+     * 
+     * @throws NullPointerException If the parameter is null
+     */
+    public String getLabelValue(Locale locale);
+
+    /**
+     * Returns the plural value of the {@link ILabel} that has the given {@link Locale} or null if
+     * no such label exists.
+     * 
+     * @param locale The {@link Locale} of the {@link ILabel} to obtain the plural value for
+     * 
+     * @throws NullPointerException If the parameter is null
+     */
+    public String getPluralLabelValue(Locale locale);
+
+    /**
+     * Sets the value of the {@link ILabel} that has the given {@link Locale}.
+     * 
+     * @param locale The {@link Locale} of the {@link ILabel} to set the value for
+     * @param value The value to set
+     * 
+     * @throws NullPointerException If the parameter locale is null
+     * @throws IllegalArgumentException If there is no label for the given locale
+     */
+    void setLabelValue(Locale locale, String value);
+
+    /**
+     * Sets the plural value of the {@link ILabel} that has the given {@link Locale}.
+     * 
+     * @param locale The {@link Locale} of the {@link ILabel} to set the plural value for
+     * @param pluralValue The plural value to set
+     * 
+     * @throws NullPointerException If the parameter locale is null
+     * @throws IllegalArgumentException If there is no label for the given locale
+     */
+    void setPluralLabelValue(Locale locale, String pluralValue);
 
 }

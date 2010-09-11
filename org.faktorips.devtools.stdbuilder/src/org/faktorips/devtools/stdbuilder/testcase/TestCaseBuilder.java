@@ -36,7 +36,6 @@ import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
-import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -210,8 +209,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         Element testCaseElm = doc.createElement("TestCase");
         testCaseElm.setAttribute("testCaseType", testCase.getTestCaseType());
         Locale generatorLocale = getBuilderSet().getLanguageUsedInGeneratedSourceCode();
-        IDescription generatorDescription = testCase.getDescription(generatorLocale);
-        String description = generatorDescription == null ? "" : generatorDescription.getText();
+        String description = testCase.getDescriptionText(generatorLocale);
         DescriptionHelper.setDescription(testCaseElm, description);
         doc.appendChild(testCaseElm);
 

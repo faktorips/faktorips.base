@@ -433,12 +433,22 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     }
 
     @Override
+    public void setDefaultLanguage(Locale locale) {
+        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+    }
+
+    @Override
     public void addSupportedLanguage(Locale locale) {
         throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
     }
 
     @Override
     public void removeSupportedLanguage(ISupportedLanguage supportedLanguage) {
+        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+    }
+
+    @Override
+    public void removeSupportedLanguage(Locale locale) {
         throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
     }
 

@@ -41,14 +41,13 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
     }
 
     public void testGetChildren() {
+        int childrenSizeBefore = generation.getChildren().length;
         table.newColumn(null);
         table.newColumn(null);
-        IRow row0 = generation.newRow();
-        IRow row1 = generation.newRow();
+        generation.newRow();
+        generation.newRow();
         IIpsElement[] children = generation.getChildren();
-        assertEquals(2, children.length);
-        assertSame(row0, children[0]);
-        assertSame(row1, children[1]);
+        assertEquals(childrenSizeBefore + 2, children.length);
     }
 
     public void testNewRow() {

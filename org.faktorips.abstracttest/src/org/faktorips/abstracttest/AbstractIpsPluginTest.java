@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -221,9 +222,46 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Creates a new IpsProject.
+     * Creates a new IpsProject with the given name.
      */
     protected IIpsProject newIpsProject(final String name) throws CoreException {
+        return newIpsProjectWithMultiLanguageSupport(name, new ArrayList<Locale>(0));
+    }
+
+    /**
+     * Creates a new IpsProject with 2 supported locales German and US, whereas German is the
+     * default language.
+     */
+    protected IIpsProject newIpsProjectWithMultiLanguageSupport() throws CoreException {
+        return newIpsProjectWithMultiLanguageSupport("TestProject");
+    }
+
+    /**
+     * Creates a new IpsProject with the given name and 2 supported locales German and US, whereas
+     * German is the default language.
+     */
+    protected IIpsProject newIpsProjectWithMultiLanguageSupport(String name) throws CoreException {
+        List<Locale> supportedLocales = new ArrayList<Locale>(2);
+        supportedLocales.add(Locale.GERMAN);
+        supportedLocales.add(Locale.US);
+        return newIpsProjectWithMultiLanguageSupport(name, supportedLocales);
+    }
+
+    /**
+     * Creates a new IPS project with multi-language support for the given locales. The first locale
+     * in the list will be used as default language.
+     */
+    protected IIpsProject newIpsProjectWithMultiLanguageSupport(List<Locale> supportedLocales) throws CoreException {
+        return newIpsProjectWithMultiLanguageSupport("TestProject", supportedLocales);
+    }
+
+    /**
+     * Creates a new IPS project with the given name and multi-language support for the given
+     * locales. The first locale in the list will be used as default language.
+     */
+    protected IIpsProject newIpsProjectWithMultiLanguageSupport(final String name, List<Locale> supportedLocales)
+            throws CoreException {
+
         IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
             @Override
             public void run(IProgressMonitor monitor) throws CoreException {
@@ -235,7 +273,17 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
 
-        return IpsPlugin.getDefault().getIpsModel().getIpsProject(name);
+        IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(name);
+        if (supportedLocales.size() > 0) {
+            IIpsProjectProperties properties = ipsProject.getProperties();
+            for (Locale locale : supportedLocales) {
+                properties.addSupportedLanguage(locale);
+            }
+            properties.setDefaultLanguage(supportedLocales.get(0));
+            ipsProject.setProperties(properties);
+        }
+
+        return ipsProject;
     }
 
     /**

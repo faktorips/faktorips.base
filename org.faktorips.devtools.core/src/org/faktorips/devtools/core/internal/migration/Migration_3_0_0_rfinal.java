@@ -110,7 +110,7 @@ public class Migration_3_0_0_rfinal extends DefaultMigration {
         generatorLocale = getIpsProject().getIpsArtefactBuilderSet().getLanguageUsedInGeneratedSourceCode();
         IIpsProjectProperties properties = getIpsProject().getProperties();
         properties.addSupportedLanguage(generatorLocale);
-        properties.setDefaultLanguage(properties.getSupportedLanguage(generatorLocale));
+        properties.setDefaultLanguage(generatorLocale);
         getIpsProject().setProperties(properties);
     }
 

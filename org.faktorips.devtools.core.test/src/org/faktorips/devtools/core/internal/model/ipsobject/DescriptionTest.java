@@ -44,13 +44,13 @@ public class DescriptionTest extends AbstractIpsPluginTest {
         description = attribute.newDescription();
     }
 
-    public void testGetSetLocale() {
+    public void testSetLocale() {
         assertNull(description.getLocale());
         description.setLocale(Locale.GERMAN);
         assertEquals(Locale.GERMAN, description.getLocale());
     }
 
-    public void testGetSetText() {
+    public void testSetText() {
         assertEquals("", description.getText());
         description.setText("foo");
         assertEquals("foo", description.getText());

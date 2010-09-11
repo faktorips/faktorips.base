@@ -42,7 +42,6 @@ import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -80,12 +79,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
 
-        ipsProject = newIpsProject();
-        IIpsProjectProperties properties = ipsProject.getProperties();
-        properties.addSupportedLanguage(Locale.GERMAN);
-        properties.addSupportedLanguage(Locale.US);
-        properties.setDefaultLanguage(properties.getSupportedLanguage(Locale.GERMAN));
-        ipsProject.setProperties(properties);
+        ipsProject = newIpsProjectWithMultiLanguageSupport();
 
         container = new TestIpsObjectPartContainer();
         model = (IpsModel)container.getIpsModel();
@@ -115,7 +109,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         });
 
         policyContainer.setDescription("new description");
-        assertEquals("new description", policyContainer.getDescription(Locale.GERMAN).getText());
+        assertEquals("new description", policyContainer.getDescriptionText(Locale.GERMAN));
         assertEquals("", policyContainer.getDescription(Locale.US).getText());
         assertTrue(policyContainer.getIpsSrcFile().isDirty());
         assertEquals(policyContainer.getIpsSrcFile(), lastEvent.getIpsSrcFile());
@@ -458,21 +452,161 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     public void testNewDescription() {
-        assertEquals(2, container.getDescriptions().size());
         assertNotNull(container.newDescription());
         assertEquals(3, container.getDescriptions().size());
     }
 
+    public void testSetDescriptionText() {
+        container.setDescriptionText(Locale.US, "foo");
+        container.setDescriptionText(Locale.GERMAN, "bar");
+        assertEquals("foo", container.getDescriptionText(Locale.US));
+        assertEquals("bar", container.getDescriptionText(Locale.GERMAN));
+    }
+
+    public void testSetDescriptionTextNullPointerLocale() {
+        try {
+            container.setDescriptionText(null, "foo");
+            fail();
+        } catch (NullPointerException e) {
+        }
+    }
+
+    public void testSetDescriptionTextNullPointerText() {
+        container.setDescriptionText(Locale.US, null);
+        assertEquals("", container.getDescriptionText(Locale.US));
+    }
+
+    public void testSetDescriptionTextNotExistent() {
+        try {
+            container.setDescriptionText(Locale.TAIWAN, "foo");
+            fail();
+        } catch (IllegalArgumentException e) {
+        }
+    }
+
     public void testNewLabel() {
-        assertEquals(2, container.getLabels().size());
         assertNotNull(container.newLabel());
         assertEquals(3, container.getLabels().size());
+    }
+
+    public void testGetLabelValue() {
+        assertEquals(germanLabel.getValue(), container.getLabelValue(Locale.GERMAN));
+        assertEquals(usLabel.getValue(), container.getLabelValue(Locale.US));
+    }
+
+    public void testGetLabelValueNotExistent() {
+        assertNull(container.getLabelValue(Locale.TAIWAN));
+    }
+
+    public void testGetLabelValueNullPointer() {
+        try {
+            container.getLabelValue(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+    }
+
+    public void testGetPluralLabelValue() {
+        assertEquals(germanLabel.getPluralValue(), container.getPluralLabelValue(Locale.GERMAN));
+        assertEquals(usLabel.getPluralValue(), container.getPluralLabelValue(Locale.US));
+    }
+
+    public void testGetPluralLabelValueNotExistent() {
+        assertNull(container.getPluralLabelValue(Locale.TAIWAN));
+    }
+
+    public void testGetPluralLabelValueNullPointer() {
+        try {
+            container.getPluralLabelValue(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+    }
+
+    public void testSetLabelValue() {
+        container.setLabelValue(Locale.US, "foo");
+        assertEquals("foo", container.getLabelValue(Locale.US));
+    }
+
+    public void testSetLabelValueNullPointerLocale() {
+        try {
+            container.setLabelValue(null, "foo");
+            fail();
+        } catch (NullPointerException e) {
+        }
+    }
+
+    public void testSetLabelValueNullPointerValue() {
+        container.setLabelValue(Locale.US, null);
+        assertNull(container.getLabelValue(Locale.US));
+    }
+
+    public void testSetLabelValueNotExistent() {
+        try {
+            container.setLabelValue(Locale.TAIWAN, "foo");
+            fail();
+        } catch (IllegalArgumentException e) {
+        }
+    }
+
+    public void testSetPluralLabelValue() {
+        container.setPluralLabelValue(Locale.US, "foos");
+        assertEquals("foos", container.getPluralLabelValue(Locale.US));
+    }
+
+    public void testSetPluralLabelValueNullPointerLocale() {
+        try {
+            container.setPluralLabelValue(null, "foos");
+            fail();
+        } catch (NullPointerException e) {
+        }
+    }
+
+    public void testSetPluralLabelValueNullPointerPluralValue() {
+        container.setPluralLabelValue(Locale.US, null);
+        assertNull(container.getPluralLabelValue(Locale.US));
+    }
+
+    public void testSetPluralLabelValueNotExistent() {
+        try {
+            container.setPluralLabelValue(Locale.TAIWAN, "foos");
+            fail();
+        } catch (IllegalArgumentException e) {
+        }
     }
 
     public void testGetDescription() {
         assertEquals(usDescription, container.getDescription(Locale.US));
         assertEquals(germanDescription, container.getDescription(Locale.GERMAN));
+    }
+
+    public void testGetDescriptionNotExistent() {
         assertNull(container.getDescription(Locale.KOREAN));
+    }
+
+    public void testGetDescriptionNullPointer() {
+        try {
+            container.getDescription(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+    }
+
+    public void testGetDescriptionText() {
+        assertEquals(usDescription.getText(), container.getDescriptionText(Locale.US));
+        assertEquals(germanDescription.getText(), container.getDescriptionText(Locale.GERMAN));
+    }
+
+    public void testGetDescriptionTextNotExistent() {
+        assertEquals("", container.getDescriptionText(Locale.KOREAN));
+    }
+
+    public void testGetDescriptionTextNullPointer() {
+        try {
+            container.getDescriptionText(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
     }
 
     public void testGetLabel() {

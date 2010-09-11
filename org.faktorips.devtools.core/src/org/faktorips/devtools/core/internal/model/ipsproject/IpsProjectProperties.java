@@ -1125,10 +1125,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         this.persistenceOptions = persistenceOptions;
     }
 
-    // --
-    // ## Methods related to multi-language support
-    // --
-
     @Override
     public Set<ISupportedLanguage> getSupportedLanguages() {
         return Collections.unmodifiableSet(supportedLanguages);
@@ -1167,15 +1163,25 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     @Override
-    public void setDefaultLanguage(ISupportedLanguage supportedLanguage) {
-        ArgumentCheck.notNull(supportedLanguage);
+    public void setDefaultLanguage(Locale locale) {
+        ISupportedLanguage language = getSupportedLanguage(locale);
+        if (language == null) {
+            throw new IllegalArgumentException("There is no supported language with the locale '" + locale + "'."); //$NON-NLS-1$//$NON-NLS-2$
+        }
+        setDefaultLanguage(language);
+    }
 
+    @Override
+    public void setDefaultLanguage(ISupportedLanguage language) {
+        clearDefaultLanguage();
+        ((SupportedLanguage)language).setDefaultLanguage(true);
+    }
+
+    private void clearDefaultLanguage() {
         ISupportedLanguage currentDefaultLanguage = getDefaultLanguage();
         if (currentDefaultLanguage != null) {
             ((SupportedLanguage)currentDefaultLanguage).setDefaultLanguage(false);
         }
-
-        ((SupportedLanguage)supportedLanguage).setDefaultLanguage(true);
     }
 
     @Override
@@ -1188,6 +1194,14 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     public void removeSupportedLanguage(ISupportedLanguage supportedLanguage) {
         ArgumentCheck.notNull(supportedLanguage);
         supportedLanguages.remove(supportedLanguage);
+    }
+
+    @Override
+    public void removeSupportedLanguage(Locale locale) {
+        ISupportedLanguage language = getSupportedLanguage(locale);
+        if (language != null) {
+            supportedLanguages.remove(language);
+        }
     }
 
     @Override

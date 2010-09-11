@@ -187,7 +187,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         assertTrue(persistenceTypeInfo.isEnabled());
         assertTrue(persistenceTypeInfo.isDefinesDiscriminatorColumn());
         assertTrue(persistenceTypeInfo.isUseTableDefinedInSupertype());
-        assertEquals("persistence descr", persistenceTypeInfo.getDescription(Locale.US).getText());
+        assertEquals("persistence descr", persistenceTypeInfo.getDescriptionText(Locale.US));
         assertEquals("D_COLUMN", persistenceTypeInfo.getDiscriminatorColumnName());
         assertEquals(DiscriminatorDatatype.INTEGER, persistenceTypeInfo.getDiscriminatorDatatype());
         assertEquals("422", persistenceTypeInfo.getDiscriminatorValue());
@@ -214,7 +214,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         copyOfPcType.initFromXml(element);
         IPersistentTypeInfo copy = copyOfPcType.getPersistenceTypeInfo();
 
-        assertEquals("persistence descr", copy.getDescription(Locale.US).getText());
+        assertEquals("persistence descr", copy.getDescriptionText(Locale.US));
         assertEquals("D_COLUMN", copy.getDiscriminatorColumnName());
         assertEquals(DiscriminatorDatatype.CHAR, copy.getDiscriminatorDatatype());
         assertEquals("A", copy.getDiscriminatorValue());

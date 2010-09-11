@@ -44,15 +44,15 @@ public interface IDescription extends IIpsObjectPart {
     public final static String MSGCODE_LOCALE_MISSING = MSGCODE_PREFIX + "LocaleMissing"; //$NON-NLS-1$
 
     /**
-     * Returns the locale of this description or <tt>null</tt> if this information is for some
-     * reason not available.
+     * Returns the locale of this description or null if this information is for some reason not
+     * available.
      */
     public Locale getLocale();
 
     /**
      * Sets the locale of this description.
      * 
-     * @param locale The locale of this description.
+     * @param locale The locale of this description
      */
     public void setLocale(Locale locale);
 
@@ -64,7 +64,7 @@ public interface IDescription extends IIpsObjectPart {
     /**
      * Sets the text of this description.
      * 
-     * @param text The text for this description.
+     * @param text The text for this description
      */
     public void setText(String text);
 
