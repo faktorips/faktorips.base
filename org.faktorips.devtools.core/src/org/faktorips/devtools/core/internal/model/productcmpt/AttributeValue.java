@@ -168,8 +168,9 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
 
     @Override
     public String getCaption(Locale locale) throws CoreException {
-        String caption = null;
+        ArgumentCheck.notNull(locale);
 
+        String caption = null;
         IAttribute attribute = findAttribute(getIpsProject());
         if (attribute != null) {
             ILabel label = attribute.getLabel(locale);
@@ -177,7 +178,6 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
                 caption = label.getValue();
             }
         }
-
         return caption;
     }
 

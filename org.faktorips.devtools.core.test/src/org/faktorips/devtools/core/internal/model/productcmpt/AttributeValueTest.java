@@ -153,6 +153,14 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         assertNull(attrValue.getCaption(Locale.US));
     }
 
+    public void testGetCaptionNullPointer() throws CoreException {
+        try {
+            attrValue.getCaption(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+    }
+
     public void testGetLastResortCaption() {
         assertEquals(attrValue.getAttribute(), attrValue.getLastResortCaption());
     }

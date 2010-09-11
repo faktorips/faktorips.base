@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -30,6 +31,7 @@ import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -464,6 +466,34 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         newCfgElement.initFromXml(xmlElement);
 
         assertNull(newCfgElement.getValue());
+    }
+
+    public void testGetCaption() throws CoreException {
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
+        attribute.setName("attribute");
+        configElement.setPolicyCmptTypeAttribute("attribute");
+
+        Locale locale = Locale.US;
+        ILabel label = attribute.newLabel();
+        label.setLocale(locale);
+        label.setValue("TheCaption");
+        assertEquals("TheCaption", configElement.getCaption(locale));
+    }
+
+    public void testGetCaptionNotExistent() throws CoreException {
+        assertNull(configElement.getCaption(Locale.TAIWAN));
+    }
+
+    public void testGetCaptionNullPointer() throws CoreException {
+        try {
+            configElement.getCaption(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+    }
+
+    public void testGetLastResortCaption() {
+        assertEquals(configElement.getPolicyCmptTypeAttribute(), configElement.getLastResortCaption());
     }
 
     private class InvalidDatatype implements ValueDatatype {

@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -27,6 +28,7 @@ import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -36,11 +38,13 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -266,7 +270,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
 
     private void validateValueVsValueSet(IIpsProject ipsProject, MessageList list) throws CoreException {
-
         if (StringUtils.isNotEmpty(value)) {
             if (!valueSet.containsValue(value, ipsProject)) {
                 list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET, NLS.bind(
@@ -413,6 +416,26 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     @Override
     public boolean isValueSetUpdateable() {
         return true;
+    }
+
+    @Override
+    public String getCaption(Locale locale) throws CoreException {
+        ArgumentCheck.notNull(locale);
+
+        String caption = null;
+        IAttribute attribute = findPcTypeAttribute(getIpsProject());
+        if (attribute != null) {
+            ILabel label = attribute.getLabel(locale);
+            if (label != null) {
+                caption = label.getValue();
+            }
+        }
+        return caption;
+    }
+
+    @Override
+    public String getLastResortCaption() {
+        return pcTypeAttribute;
     }
 
 }

@@ -22,8 +22,8 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGeneration;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
@@ -31,7 +31,6 @@ import org.faktorips.devtools.core.model.productcmpt.PropertyValueComparator;
 import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.IActiveGenerationChangedListener;
 import org.faktorips.devtools.core.ui.views.modeldescription.DefaultModelDescriptionPage;
 import org.faktorips.devtools.core.ui.views.modeldescription.DescriptionItem;
@@ -106,10 +105,7 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
         for (IPropertyValue value : values) {
             IProdDefProperty property = value.findProperty(productCmptGen.getIpsProject());
             if (property != null) {
-                String label = value.getPropertyName();
-                if (value instanceof IIpsElement) {
-                    label = IpsUIPlugin.getLabel((IIpsElement)value);
-                }
+                String label = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption((IIpsObjectPartContainer)value);
                 String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(property);
                 DescriptionItem item = new DescriptionItem(label, localizedDescription);
                 descriptions.add(item);

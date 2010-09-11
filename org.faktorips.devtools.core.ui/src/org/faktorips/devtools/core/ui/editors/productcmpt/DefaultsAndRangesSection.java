@@ -166,7 +166,8 @@ public class DefaultsAndRangesSection extends IpsSection {
     }
 
     private void createConfigElementNameLabel(IConfigElement element, IPolicyCmptTypeAttribute attribute) {
-        Label label = toolkit.createFormLabel(rootPane, IpsUIPlugin.getLabel(element));
+        Label label = toolkit.createFormLabel(rootPane, IpsPlugin.getMultiLanguageSupport()
+                .getLocalizedCaption(element));
         // use the description of the attribute as tooltip
         if (attribute != null) {
             String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(attribute);
