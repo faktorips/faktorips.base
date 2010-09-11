@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.util.Locale;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
@@ -26,6 +28,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -269,6 +272,40 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     @Override
     public boolean is1ToMany() {
         return getMaxCardinality() > 1;
+    }
+
+    @Override
+    public String getCaption(Locale locale) throws CoreException {
+        ArgumentCheck.notNull(locale);
+
+        String caption = null;
+        IAssociation association = findAssociation(getIpsProject());
+        if (association != null) {
+            caption = association.getLabelValue(locale);
+        }
+        return caption;
+    }
+
+    @Override
+    public String getPluralCaption(Locale locale) throws CoreException {
+        ArgumentCheck.notNull(locale);
+
+        String pluralCaption = null;
+        IAssociation association = findAssociation(getIpsProject());
+        if (association != null) {
+            pluralCaption = association.getPluralLabelValue(locale);
+        }
+        return pluralCaption;
+    }
+
+    @Override
+    public String getLastResortCaption() {
+        return association;
+    }
+
+    @Override
+    public String getLastResortPluralCaption() {
+        return association;
     }
 
 }

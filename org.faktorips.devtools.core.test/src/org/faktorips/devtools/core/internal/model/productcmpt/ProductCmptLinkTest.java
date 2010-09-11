@@ -13,9 +13,12 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.util.Locale;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -235,4 +238,51 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         link.setMaxCardinality(1);
         assertFalse(link.is1ToMany());
     }
+
+    public void testGetCaption() throws CoreException {
+        createAssociation();
+        assertEquals("foo", link.getCaption(Locale.US));
+    }
+
+    public void testGetCaptionNullPointer() throws CoreException {
+        try {
+            link.getCaption(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+    }
+
+    public void testGetPluralCaption() throws CoreException {
+        createAssociation();
+        assertEquals("foos", link.getPluralCaption(Locale.US));
+    }
+
+    public void testGetPluralCaptionNullPointer() throws CoreException {
+        try {
+            link.getPluralCaption(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+    }
+
+    public void testGetLastResortCaption() {
+        assertEquals(link.getAssociation(), link.getLastResortCaption());
+    }
+
+    public void testGetLastResortPluralCaption() {
+        assertEquals(link.getAssociation(), link.getLastResortPluralCaption());
+    }
+
+    private IAssociation createAssociation() {
+        IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
+        association.setTargetRoleSingular("CoverageType");
+
+        ILabel label = association.newLabel();
+        label.setLocale(Locale.US);
+        label.setValue("foo");
+        label.setPluralValue("foos");
+
+        return association;
+    }
+
 }

@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpt.GenerationToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
@@ -38,7 +39,7 @@ public class MissingPropertyValueEntry extends AbstractDeltaEntryForProperty {
 
     @Override
     public String getPropertyName() {
-        return property.getPropertyName();
+        return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(property);
     }
 
     @Override

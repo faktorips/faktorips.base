@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpt.GenerationToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
@@ -42,7 +43,7 @@ public class PropertyTypeMismatchEntry extends AbstractDeltaEntryForProperty {
 
     @Override
     public String getPropertyName() {
-        return property.getPropertyName();
+        return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(property);
     }
 
     @Override

@@ -28,7 +28,6 @@ import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -425,10 +424,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         String caption = null;
         IAttribute attribute = findPcTypeAttribute(getIpsProject());
         if (attribute != null) {
-            ILabel label = attribute.getLabel(locale);
-            if (label != null) {
-                caption = label.getValue();
-            }
+            caption = attribute.getLabelValue(locale);
         }
         return caption;
     }

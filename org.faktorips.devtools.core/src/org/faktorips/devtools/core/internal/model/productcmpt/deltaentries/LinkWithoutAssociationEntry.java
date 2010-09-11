@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpt.GenerationToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
@@ -49,7 +50,7 @@ public class LinkWithoutAssociationEntry extends AbstractDeltaEntry {
 
     @Override
     public String getDescription() {
-        return getDeltaType() + ": " + link.getAssociation(); //$NON-NLS-1$
+        return getDeltaType() + ": " + IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(link); //$NON-NLS-1$
     }
 
 }
