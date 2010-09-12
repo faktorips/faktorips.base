@@ -351,9 +351,9 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         IPolicyCmptType type = this.newPolicyCmptType(rootFolder, "folder.TestProduct");
         memento = type.newMemento();
         type.newPolicyCmptTypeAttribute();
-        assertEquals(3, type.getChildren().length);
+        assertEquals(5, type.getChildren().length);
         type.setState(memento);
-        assertEquals(2, type.getChildren().length);
+        assertEquals(4, type.getChildren().length);
 
         IpsSrcFile file2 = new IpsSrcFile(null, IpsObjectType.POLICY_CMPT_TYPE.getFileName("file"));
         IIpsObject pdObject2 = new PolicyCmptType(file2);
