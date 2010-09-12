@@ -22,6 +22,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
@@ -151,7 +152,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
                 if (list3.getMessageByCode(IType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY) != null
                         || list3.getMessageByCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND) != null
                         || list3.getMessageByCode(IType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY) != null) {
-                    String msg = NLS.bind(Messages.ProductCmpt_msgInvalidTypeHierarchy, getProductCmptType());
+                    String typeLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(type);
+                    String msg = NLS.bind(Messages.ProductCmpt_msgInvalidTypeHierarchy, typeLabel);
                     list.add(new Message(MSGCODE_INCONSISTENT_TYPE_HIERARCHY, msg, Message.ERROR, type,
                             IIpsElement.PROPERTY_NAME));
                 }

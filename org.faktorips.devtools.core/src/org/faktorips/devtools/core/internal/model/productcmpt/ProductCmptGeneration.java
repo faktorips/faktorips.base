@@ -737,7 +737,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
         @Override
         protected boolean visit(IProductCmptType currentType) throws CoreException {
-
             IAssociation[] associations = currentType.getAssociations();
             for (IAssociation association : associations) {
                 if (association.isDerivedUnion()) {
@@ -752,7 +751,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
                 }
 
                 if (association.getMinCardinality() > relations.length) {
-                    Object[] params = { new Integer(relations.length), association.getTargetRoleSingular(),
+                    String associationLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association);
+                    Object[] params = { new Integer(relations.length), associationLabel,
                             new Integer(association.getMinCardinality()) };
                     String msg = NLS.bind(Messages.ProductCmptGeneration_msgNotEnoughRelations, params);
                     ObjectProperty prop1 = new ObjectProperty(this, null);
@@ -763,8 +763,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
                 int maxCardinality = association.getMaxCardinality();
                 if (maxCardinality < relations.length) {
-                    Object[] params = { new Integer(relations.length),
-                            "" + maxCardinality, association.getTargetRoleSingular() }; //$NON-NLS-1$
+                    String associationLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association);
+                    Object[] params = { new Integer(relations.length), "" + maxCardinality, associationLabel }; //$NON-NLS-1$
                     String msg = NLS.bind(Messages.ProductCmptGeneration_msgTooManyRelations, params);
                     ObjectProperty prop1 = new ObjectProperty(this, null);
                     ObjectProperty prop2 = new ObjectProperty(association.getTargetRoleSingular(), null);
@@ -778,8 +778,9 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
                     String target = relation.getTarget();
                     if (!targets.add(target)) {
                         if (msg == null) {
-                            msg = NLS.bind(Messages.ProductCmptGeneration_msgDuplicateTarget, association
-                                    .getTargetRoleSingular(), target);
+                            String associationLabel = IpsPlugin.getMultiLanguageSupport()
+                                    .getLocalizedLabel(association);
+                            msg = NLS.bind(Messages.ProductCmptGeneration_msgDuplicateTarget, associationLabel, target);
                         }
                         list.add(new Message(MSGCODE_DUPLICATE_RELATION_TARGET, msg, Message.ERROR, association
                                 .getTargetRoleSingular()));

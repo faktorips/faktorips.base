@@ -17,6 +17,7 @@ import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -141,8 +142,12 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         super.validateThis(list, ipsProject);
         IProductCmptTypeAttribute attr = findAttribute(ipsProject);
         if (attr == null) {
-            String text = NLS.bind(Messages.AttributeValue_attributeNotFound, attribute, getProductCmptGeneration()
-                    .getProductCmpt().getProductCmptType());
+            String typeLabel = getProductCmptGeneration().getProductCmpt().getProductCmptType();
+            IProductCmptType productCmptType = getProductCmptGeneration().findProductCmptType(ipsProject);
+            if (productCmptType != null) {
+                typeLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(productCmptType);
+            }
+            String text = NLS.bind(Messages.AttributeValue_attributeNotFound, attribute, typeLabel);
             list.add(new Message(MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this, PROPERTY_ATTRIBUTE));
             return;
         }

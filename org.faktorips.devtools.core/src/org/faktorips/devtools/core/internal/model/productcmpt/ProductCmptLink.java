@@ -17,6 +17,7 @@ import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -163,8 +164,12 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
 
         IProductCmptTypeAssociation associationObj = findAssociation(ipsProject);
         if (associationObj == null) {
-            String text = NLS.bind(Messages.ProductCmptRelation_msgNoRelationDefined, association, getProductCmpt()
-                    .getProductCmptType());
+            String typeLabel = getProductCmpt().getProductCmptType();
+            IProductCmptType productCmptType = getProductCmpt().findProductCmptType(ipsProject);
+            if (productCmptType != null) {
+                typeLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(productCmptType);
+            }
+            String text = NLS.bind(Messages.ProductCmptRelation_msgNoRelationDefined, association, typeLabel);
             list.add(new Message(MSGCODE_UNKNWON_ASSOCIATION, text, Message.ERROR, this, PROPERTY_ASSOCIATION));
             return;
         }
@@ -175,8 +180,8 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
 
         IProductCmpt targetObj = findTarget(ipsProject);
         if (!willBeValid(targetObj, associationObj, ipsProject)) {
-            String msg = NLS.bind(Messages.ProductCmptRelation_msgInvalidTarget, target, associationObj
-                    .getTargetRoleSingular());
+            String associationLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(associationObj);
+            String msg = NLS.bind(Messages.ProductCmptRelation_msgInvalidTarget, target, associationLabel);
             list.add(new Message(MSGCODE_INVALID_TARGET, msg, Message.ERROR, this, PROPERTY_TARGET));
         }
     }

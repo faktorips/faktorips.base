@@ -168,8 +168,8 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
                 list.add(new Message(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this,
                         PROPERTY_VALUE));
             } else {
-                String text = NLS.bind(Messages.ConfigElement_msgAttrNotDefined, pcTypeAttribute, policyCmptType
-                        .getName());
+                String policyCmptTypeLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(policyCmptType);
+                String text = NLS.bind(Messages.ConfigElement_msgAttrNotDefined, pcTypeAttribute, policyCmptTypeLabel);
                 list.add(new Message(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this,
                         PROPERTY_VALUE));
             }
@@ -231,7 +231,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             return;
         }
         if (valueSet.isAbstract()) {
-            String text = "Must specify a concrete set of values!"; //$NON-NLS-1$
+            String text = "Must specify a concrete set of values!";
             list.add(new Message("", text, Message.ERROR, this, IConfigElement.PROPERTY_VALUE_SET)); //$NON-NLS-1$
             return;
         }

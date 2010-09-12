@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 
@@ -28,7 +29,7 @@ import org.faktorips.devtools.core.model.pctype.AssociationType;
  * 
  * @author Jan Ortmann
  */
-public interface IType extends IIpsObject, Datatype {
+public interface IType extends IIpsObject, Datatype, ILabeledElement {
 
     public final static String PROPERTY_SUPERTYPE = "supertype"; //$NON-NLS-1$
 
