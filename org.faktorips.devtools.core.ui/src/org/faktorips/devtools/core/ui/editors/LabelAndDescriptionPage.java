@@ -16,26 +16,31 @@ package org.faktorips.devtools.core.ui.editors;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.Section;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
- * An editor page that allows to edit the {@link ILabel}s of an {@link ILabeledElement}.
+ * An editor page that allows to edit the {@link ILabel}s and {@link IDescription}s of an
+ * {@link IIpsObject}.
  */
-class LabelPage extends IpsObjectEditorPage {
+class LabelAndDescriptionPage extends IpsObjectEditorPage {
 
-    final static String PAGEID = "Label"; //$NON-NLS-1$
+    final static String PAGEID = "LabelAndDescription"; //$NON-NLS-1$
 
-    LabelPage(IpsObjectEditor editor) {
-        super(editor, PAGEID, Messages.LabelPage_label);
+    LabelAndDescriptionPage(IpsObjectEditor editor) {
+        super(editor, PAGEID, Messages.LabelAndDescriptionPage_label);
     }
 
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
-        formBody.setLayout(createPageLayout(1, false));
+        formBody.setLayout(createPageLayout(1, true));
         new LabelSection((ILabeledElement)getIpsObject(), formBody, toolkit);
+        new DescriptionSection(getIpsObject(), formBody, toolkit);
     }
 
     private static class LabelSection extends IpsSection {
@@ -64,6 +69,31 @@ class LabelPage extends IpsObjectEditorPage {
                 return;
             }
             labelEditComposite.refresh();
+        }
+
+    }
+
+    private static class DescriptionSection extends IpsSection {
+
+        private final IDescribedElement describedElement;
+
+        private DescriptionSection(IDescribedElement describedElement, Composite parent, UIToolkit toolkit) {
+            super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
+
+            this.describedElement = describedElement;
+
+            initControls();
+            setText(Messages.DescriptionSection_description);
+        }
+
+        @Override
+        protected void initClientComposite(Composite client, UIToolkit toolkit) {
+            new DescriptionEditComposite(client, describedElement, toolkit);
+        }
+
+        @Override
+        protected void performRefresh() {
+            // Nothing to do
         }
 
     }

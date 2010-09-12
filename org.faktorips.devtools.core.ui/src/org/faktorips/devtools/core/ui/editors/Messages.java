@@ -32,8 +32,11 @@ public class Messages extends NLS {
     public static String IpsObjectEditor_fileHasChangesOnDiskTitle;
     public static String IpsObjectEditor_fileHasChangesOnDiskYesButton;
 
+    public static String IpsPartEditDialog_tabItemLabelAndDescription;
     public static String IpsPartEditDialog_tabItemLabel;
     public static String IpsPartEditDialog_tabItemDescription;
+    public static String IpsPartEditDialog_groupLabel;
+    public static String IpsPartEditDialog_groupDescription;
 
     public static String IpsPartsComposite_buttonNew;
     public static String IpsPartsComposite_buttonEdit;
@@ -52,7 +55,7 @@ public class Messages extends NLS {
 
     public static String DescriptionSection_description;
 
-    public static String LabelPage_label;
+    public static String LabelAndDescriptionPage_label;
 
     public static String LabelSection_label;
 

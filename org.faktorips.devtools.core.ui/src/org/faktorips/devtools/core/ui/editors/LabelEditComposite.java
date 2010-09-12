@@ -127,14 +127,14 @@ public class LabelEditComposite extends Composite {
     private void createTableColumns(TableViewer tableViewer) {
         TableViewerColumn languageColumn = new TableViewerColumn(tableViewer, SWT.NONE);
         languageColumn.getColumn().setText(Messages.LabelEditComposite_tableColumnHeaderLanguage);
-        languageColumn.getColumn().setWidth(100);
+        languageColumn.getColumn().setWidth(90);
         TableViewerColumn labelColumn = new TableViewerColumn(tableViewer, SWT.NONE);
         labelColumn.getColumn().setText(Messages.LabelEditComposite_tableColumnHeaderLabel);
-        labelColumn.getColumn().setWidth(190);
+        labelColumn.getColumn().setWidth(180);
         if (labeledElement.isPluralLabelSupported()) {
             TableViewerColumn pluralLabelColumn = new TableViewerColumn(tableViewer, SWT.NONE);
             pluralLabelColumn.getColumn().setText(Messages.LabelEditComposite_tableColumnHeaderPluralLabel);
-            pluralLabelColumn.getColumn().setWidth(190);
+            pluralLabelColumn.getColumn().setWidth(180);
         }
     }
 

@@ -23,6 +23,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -152,10 +153,11 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         Composite composite = createWorkAreaThis(parent);
         if (isTabFolderUsed()) {
             TabFolder tabFolder = (TabFolder)parent;
-            if (part instanceof IDescribedElement) {
+            if (part instanceof IDescribedElement && part instanceof ILabeledElement) {
+                createLabelAndDescriptionTabItem(tabFolder);
+            } else if (part instanceof IDescribedElement) {
                 createDescriptionTabItem(tabFolder);
-            }
-            if (part instanceof ILabeledElement) {
+            } else if (part instanceof ILabeledElement) {
                 createLabelTabItem(tabFolder);
             }
         }
@@ -163,6 +165,20 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
     }
 
     protected abstract Composite createWorkAreaThis(Composite parent);
+
+    private TabItem createLabelAndDescriptionTabItem(TabFolder folder) {
+        Composite composite = uiToolkit.createGridComposite(folder, 1, true, true);
+        Group labelGroup = uiToolkit.createGroup(composite, Messages.IpsPartEditDialog_groupLabel);
+        new LabelEditComposite(labelGroup, (ILabeledElement)part);
+        Group descriptionGroup = uiToolkit.createGroup(composite, Messages.IpsPartEditDialog_groupDescription);
+        new DescriptionEditComposite(descriptionGroup, (IDescribedElement)part, uiToolkit);
+
+        TabItem item = new TabItem(folder, SWT.NONE);
+        item.setText(Messages.IpsPartEditDialog_tabItemLabelAndDescription);
+        item.setControl(composite);
+
+        return item;
+    }
 
     private TabItem createDescriptionTabItem(TabFolder folder) {
         IDescribedElement describedElement = (IDescribedElement)part;
