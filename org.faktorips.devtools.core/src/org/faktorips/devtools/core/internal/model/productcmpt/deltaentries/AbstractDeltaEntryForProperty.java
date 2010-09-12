@@ -27,11 +27,6 @@ public abstract class AbstractDeltaEntryForProperty extends AbstractDeltaEntry i
     }
 
     @Override
-    public String getDescription() {
-        return getPropertyName();
-    }
-
-    @Override
     public String toString() {
         return getDeltaType() + ": " + getPropertyName() + "(" + getPropertyType().getName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }

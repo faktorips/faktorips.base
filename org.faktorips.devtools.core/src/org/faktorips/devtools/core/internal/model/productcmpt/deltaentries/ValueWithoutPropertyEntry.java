@@ -40,6 +40,11 @@ public class ValueWithoutPropertyEntry extends AbstractDeltaEntryForProperty {
 
     @Override
     public String getPropertyName() {
+        return value.getPropertyName();
+    }
+
+    @Override
+    public String getDescription() {
         return IpsPlugin.getMultiLanguageSupport().getLocalizedCaption((IIpsObjectPartContainer)value);
     }
 

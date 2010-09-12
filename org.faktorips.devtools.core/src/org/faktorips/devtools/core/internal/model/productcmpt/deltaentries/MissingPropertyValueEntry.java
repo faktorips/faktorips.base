@@ -39,6 +39,11 @@ public class MissingPropertyValueEntry extends AbstractDeltaEntryForProperty {
 
     @Override
     public String getPropertyName() {
+        return property.getPropertyName();
+    }
+
+    @Override
+    public String getDescription() {
         return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(property);
     }
 

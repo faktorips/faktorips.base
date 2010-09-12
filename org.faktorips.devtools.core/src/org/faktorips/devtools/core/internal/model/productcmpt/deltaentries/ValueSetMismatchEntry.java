@@ -48,7 +48,7 @@ public class ValueSetMismatchEntry extends AbstractDeltaEntryForProperty {
 
     @Override
     public String getPropertyName() {
-        return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(attribute);
+        return element.getName();
     }
 
     @Override
@@ -59,7 +59,8 @@ public class ValueSetMismatchEntry extends AbstractDeltaEntryForProperty {
     @Override
     public String getDescription() {
         String desc = Messages.ValueSetMismatchEntry_desc;
-        return NLS.bind(desc, new Object[] { getPropertyName(), attribute.getValueSet().getValueSetType().getName(),
+        String label = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(attribute);
+        return NLS.bind(desc, new Object[] { label, attribute.getValueSet().getValueSetType().getName(),
                 element.getValueSet().getValueSetType().getName() });
     }
 
