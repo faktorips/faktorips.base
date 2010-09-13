@@ -98,8 +98,7 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
         targetSystemViewer = new TableViewer(table);
         targetSystemViewer.setContentProvider(new ArrayContentProvider());
 
-        // TODO get list from extension
-        targetSystemViewer.setInput(new String[] { "Test", "Praxis", "Supi" });
+        targetSystemViewer.setInput(new String[] {});
 
         projectSelectComboViewer.setContentProvider(new ArrayContentProvider());
         projectSelectComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
