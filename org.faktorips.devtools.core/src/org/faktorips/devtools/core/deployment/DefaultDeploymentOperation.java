@@ -31,9 +31,6 @@ public class DefaultDeploymentOperation implements IDeploymentOperation {
     @Override
     public List<String> getAvailableTargetSystems() {
         ArrayList<String> result = new ArrayList<String>();
-        result.add("Test");
-        result.add("Sytest");
-        result.add("Praxistest");
         return result;
     }
 
