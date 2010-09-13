@@ -755,8 +755,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * <p>
      * In Faktor IPS we have a two kinds of images handled by the image handling. The first kind of
      * image is a plugin shared image. Only use shared images for those icons that are realy
-     * importeant for several components of the plugin and more important, those does not change
-     * over time.
+     * important for several components of the plugin and more important, those does not change over
+     * time.
      * <p>
      * The second kind of images are not shared images. You have to look for the
      * 
