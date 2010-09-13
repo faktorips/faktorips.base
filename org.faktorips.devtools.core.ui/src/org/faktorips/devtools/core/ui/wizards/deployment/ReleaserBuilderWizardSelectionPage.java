@@ -119,27 +119,7 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
             @Override
             public void modifyText(ModifyEvent event) {
                 if (ipsProject != null) {
-                    String newVersion = newVersionText.getText();
-                    try {
-                        IVersionFormat versionFormat = ipsProject.getVersionFormat();
-                        if (versionFormat == null) {
-                            setMessage("Could not determine version format", DialogPage.ERROR);
-                            return;
-                        }
-                        correctVersionFormat = versionFormat.isCorrectVersionFormat(newVersion);
-                        if (!correctVersionFormat) {
-                            setMessage("The format of version \"" + newVersion + "\" is incorrect. Format: "
-                                    + ipsProject.getVersionFormat().getVersionFormat(), DialogPage.ERROR);
-                        }
-                        if (newVersion.equals(ipsProject.getProperties().getVersion())) {
-                            setMessage("The new version is the same as the last one", DialogPage.WARNING);
-                        } else {
-                            setMessage("", DialogPage.NONE);
-                        }
-                    } catch (CoreException e) {
-                        setMessage("Could not determine version format: " + e.getMessage(), DialogPage.ERROR);
-                    }
-
+                    updateMessage();
                 }
                 updatePageComplete();
             }
@@ -160,24 +140,23 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
     }
 
     public void setIpsProject(IIpsProject ipsProject) {
-        setMessage("", DialogPage.NONE);
         this.ipsProject = ipsProject;
-        String oldVersion = "";
+        String oldVersion = ""; //$NON-NLS-1$
         releaseAndDeploymentOperation = null;
         if (ipsProject != null) {
             oldVersion = ipsProject.getProperties().getVersion();
             try {
                 releaseAndDeploymentOperation = new ReleaseAndDeploymentOperation(ipsProject);
             } catch (CoreException e) {
-                setMessage("No deployment Extension found for this project", DialogPage.ERROR);
+                IpsPlugin.log(e);
             }
         }
         if (latestVersionLabel != null && !latestVersionLabel.isDisposed()) {
-            String nextVersion = latestVersionLabel.getText();
+            String latestVersionText = latestVersionLabel.getText();
             if (newVersionText != null && !newVersionText.isDisposed()) {
-                if (nextVersion.equals(newVersionText.getText())) {
+                if (latestVersionText.equals(newVersionText.getText())) {
                     // only overwrite the text if the label has the default value
-                    newVersionText.setText(nextVersion);
+                    newVersionText.setText(oldVersion);
                 }
             }
             latestVersionLabel.setText(oldVersion);
@@ -192,8 +171,38 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
                 targetSystemViewer.setInput(new String[0]);
             }
         }
-
+        updateMessage();
         updatePageComplete();
+    }
+
+    private void updateMessage() {
+        setMessage("", DialogPage.NONE);
+
+        if (ipsProject == null) {
+            setMessage("Please select a product definition project", DialogPage.INFORMATION);
+            return;
+        } else if (releaseAndDeploymentOperation == null) {
+            setMessage("No deployment Extension found for this project", DialogPage.ERROR);
+            return;
+        }
+        String newVersion = newVersionText.getText();
+        try {
+            IVersionFormat versionFormat = ipsProject.getVersionFormat();
+            if (versionFormat == null) {
+                setMessage("Could not determine version format", DialogPage.ERROR);
+                return;
+            }
+            correctVersionFormat = versionFormat.isCorrectVersionFormat(newVersion);
+            if (!correctVersionFormat) {
+                setMessage("The format of version \"" + newVersion + "\" is incorrect. Format: "
+                        + ipsProject.getVersionFormat().getVersionFormat(), DialogPage.ERROR);
+            } else if (newVersion.equals(ipsProject.getProperties().getVersion())) {
+                setMessage("The new version is the same as the last one", DialogPage.WARNING);
+            }
+        } catch (CoreException e) {
+            setMessage("Error while looking for version format: " + e.getMessage(), DialogPage.ERROR);
+            IpsPlugin.log(e);
+        }
     }
 
     private void updatePageComplete() {
