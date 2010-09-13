@@ -32,7 +32,6 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
-import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ICustomModelExtensions;
@@ -52,14 +51,14 @@ public class CustomModelExtensions implements ICustomModelExtensions {
     /** extension properties per ips object (or part) type, e.g. IAttribute. */
     private Map<Class<?>, List<IExtensionPropertyDefinition>> typeExtensionPropertiesMap = null;
 
-    /** custom validations per ips object (or part) type, e.g. IAttribute. */
-    private Map<Class<? extends IIpsObjectPartContainer>, Set<ICustomValidation<? extends IIpsObjectPartContainer>>> typeValidationsMap = null;
+    private CustomValidationsPerType customValidationsPerType = null;
 
     private IpsModel ipsModel;
 
     public CustomModelExtensions(IpsModel ipsModel) {
         ArgumentCheck.notNull(ipsModel);
         this.ipsModel = ipsModel;
+        customValidationsPerType = CustomValidationsPerType.createFromExtensions();
     }
 
     @Override
@@ -206,62 +205,17 @@ public class CustomModelExtensions implements ICustomModelExtensions {
 
     @Override
     public <T extends IIpsObjectPartContainer> Set<ICustomValidation<T>> getCustomValidations(Class<T> type) {
-        ArgumentCheck.notNull(type);
-        if (typeValidationsMap == null) {
-            initCustomValidations();
-        }
-        Set<ICustomValidation<T>> validations = new HashSet<ICustomValidation<T>>();
-        collectCustomValidations(type, validations);
-        return validations;
-    }
-
-    @SuppressWarnings("unchecked")
-    private void collectCustomValidations(Class<? extends IIpsObjectPartContainer> type, Set validations) {
-
-        Set<ICustomValidation<? extends IIpsObjectPartContainer>> typeValidations = typeValidationsMap.get(type);
-        if (typeValidations != null) {
-            for (ICustomValidation<? extends IIpsObjectPartContainer> validation : typeValidations) {
-                validations.add(validation);
-            }
-        }
-        if (type.getSuperclass() != null && IIpsObjectPartContainer.class.isAssignableFrom(type.getSuperclass())) {
-            collectCustomValidations((Class<? extends IIpsObjectPartContainer>)type.getSuperclass(), validations);
-        }
-        Class<?>[] interfaces = type.getInterfaces();
-        for (Class<?> interface1 : interfaces) {
-            if (IIpsObjectPartContainer.class.isAssignableFrom(interface1)) {
-                collectCustomValidations((Class<? extends IIpsObjectPartContainer>)interface1, validations);
-            }
-        }
+        return customValidationsPerType.getCustomValidations(type);
     }
 
     /**
-     * Adds the given custom validation.
+     * Adds the given custom validation to the model validations.
      * 
-     * @throws NullPointerException if newValidation is <code>null</code> or
-     *             newValidation.getExtendedClass() is <code>null</code>.
+     * @param validation The validation to add.
      */
-    public boolean addCustomValidation(ICustomValidation<? extends IIpsObjectPartContainer> newValidation) {
-        ArgumentCheck.notNull(newValidation);
-        ArgumentCheck.notNull(newValidation.getExtendedClass());
-        Set<ICustomValidation<? extends IIpsObjectPartContainer>> validations = typeValidationsMap.get(newValidation
-                .getExtendedClass());
-        if (validations == null) {
-            validations = new HashSet<ICustomValidation<? extends IIpsObjectPartContainer>>(2);
-            typeValidationsMap.put(newValidation.getExtendedClass(), validations);
-        }
+    public void addCustomValidation(ICustomValidation<? extends IIpsObjectPartContainer> validation) {
         ipsModel.clearValidationCache();
-        return validations.add(newValidation);
+        customValidationsPerType.addCustomValidation(validation);
     }
 
-    @SuppressWarnings("unchecked")
-    private void initCustomValidations() {
-        typeValidationsMap = new HashMap<Class<? extends IIpsObjectPartContainer>, Set<ICustomValidation<? extends IIpsObjectPartContainer>>>();
-        ExtensionPoints extensionPoints = new ExtensionPoints(IpsPlugin.PLUGIN_ID);
-        List<ICustomValidation> allValidations = extensionPoints.createExecutableExtensions(
-                ExtensionPoints.CUSTOM_VALIDATION, "customValidation", "validationClass", ICustomValidation.class); //$NON-NLS-1$ //$NON-NLS-2$
-        for (ICustomValidation validation : allValidations) {
-            addCustomValidation(validation);
-        }
-    }
 }
