@@ -14,7 +14,6 @@
 package org.faktorips.devtools.stdbuilder;
 
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -73,7 +72,7 @@ public class TableOfContent {
 
     /**
      * Check if the table of content was modified since last {@link #initFromXml(Element)},
-     * {@link #toXml(Document)} or {@link #resetModified()}
+     * {@link #toXml(String, Document)} or {@link #resetModified()}
      */
     public boolean isModified() {
         return modified;
@@ -154,11 +153,10 @@ public class TableOfContent {
      * @param doc The xml document used to create new objects.
      * @throws NullPointerException if doc is <code>null</code>.
      */
-    public Element toXml(Document doc) {
+    public Element toXml(String version, Document doc) {
         Element element = doc.createElement(AbstractReadonlyTableOfContents.TOC_XML_ELEMENT);
-        long lastModified = new Date().getTime();
         element.setAttribute(VERSION_XML_ATTRIBUTE, ACTUAL_XML_VERSION);
-        element.setAttribute(AbstractReadonlyTableOfContents.PRODUCT_DATA_VERSION_XML_ELEMENT, "" + lastModified);
+        element.setAttribute(AbstractReadonlyTableOfContents.PRODUCT_DATA_VERSION_XML_ELEMENT, "" + version);
         for (TocEntryObject entry : getEntries()) {
             element.appendChild(entry.toXml(doc));
         }

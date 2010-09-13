@@ -16,7 +16,6 @@ package org.faktorips.devtools.stdbuilder;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -240,7 +239,7 @@ public class TableOfContentTest extends XmlAbstractTestCase {
         toc.addOrReplaceTocEntry(entry3);
         toc.addOrReplaceTocEntry(entry4);
 
-        Element tocElement = toc.toXml(newDocument());
+        Element tocElement = toc.toXml("0", newDocument());
         assertNotNull(tocElement);
         AbstractReadonlyTableOfContents readOnlyToc = new ReadonlyTableOfContents();
         readOnlyToc.initFromXml(tocElement);
@@ -270,17 +269,17 @@ public class TableOfContentTest extends XmlAbstractTestCase {
                 "HomeProduct2005.ipsproduct", "HomePolicyPk", "HomePolicyPkAnpStufe", new DateTime(2010, 1, 1));
         toc.addOrReplaceTocEntry(entry0);
         toc.addOrReplaceTocEntry(entry1);
-        String tocString = XmlUtil.nodeToString(toc.toXml(newDocument()), "UTF-8");
+        String tocString = XmlUtil.nodeToString(toc.toXml("0", newDocument()), "UTF-8");
         TableOfContent toc2 = new TableOfContent();
         toc2.addOrReplaceTocEntry(entry1);
         toc2.addOrReplaceTocEntry(entry0);
-        String toc2String = XmlUtil.nodeToString(toc2.toXml(newDocument()), "UTF-8");
+        String toc2String = XmlUtil.nodeToString(toc2.toXml("0", newDocument()), "UTF-8");
 
-        Pattern versionPattern = Pattern.compile("productDataVersion=\".*{1}\"");
-        String tocWithoutVersion = versionPattern.matcher(tocString).replaceFirst("");
-        String toc2WithoutVersion = versionPattern.matcher(toc2String).replaceFirst("");
+        assertEquals(tocString, toc2String);
 
-        assertEquals(tocWithoutVersion, toc2WithoutVersion);
+        toc2String = XmlUtil.nodeToString(toc2.toXml("other", newDocument()), "UTF-8");
+        assertNotSame(tocString.intern(), toc2String.intern());
+
     }
 
 }

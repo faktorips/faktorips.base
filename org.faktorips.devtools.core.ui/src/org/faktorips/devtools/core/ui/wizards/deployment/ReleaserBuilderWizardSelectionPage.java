@@ -130,6 +130,9 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
                         if (!correctVersionFormat) {
                             setMessage("The format of version \"" + newVersion + "\" is incorrect. Format: "
                                     + ipsProject.getVersionFormat().getVersionFormat(), DialogPage.ERROR);
+                        }
+                        if (newVersion.equals(ipsProject.getProperties().getVersion())) {
+                            setMessage("The new version is the same as the last one", DialogPage.WARNING);
                         } else {
                             setMessage("", DialogPage.NONE);
                         }
@@ -166,15 +169,17 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
             try {
                 releaseAndDeploymentOperation = new ReleaseAndDeploymentOperation(ipsProject);
             } catch (CoreException e) {
-                setMessage("No deployment deploymentExtension found for this project", DialogPage.ERROR);
-            }
-        }
-        if (newVersionText != null && !newVersionText.isDisposed()) {
-            if (latestVersionLabel.getText().equals(newVersionText.getText())) {
-                newVersionText.setText(oldVersion);
+                setMessage("No deployment Extension found for this project", DialogPage.ERROR);
             }
         }
         if (latestVersionLabel != null && !latestVersionLabel.isDisposed()) {
+            String nextVersion = latestVersionLabel.getText();
+            if (newVersionText != null && !newVersionText.isDisposed()) {
+                if (nextVersion.equals(newVersionText.getText())) {
+                    // only overwrite the text if the label has the default value
+                    newVersionText.setText(nextVersion);
+                }
+            }
             latestVersionLabel.setText(oldVersion);
         }
         if (targetSystemViewer != null && !targetSystemViewer.getTable().isDisposed()) {
