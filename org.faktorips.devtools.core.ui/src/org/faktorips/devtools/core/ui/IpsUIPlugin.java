@@ -166,7 +166,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     private IpsObjectSelectionHistory openIpsObjectHistory;
 
-    private static IWorkbenchAdapterProvider[] workbenchAdapterProviders;
+    private static List<IWorkbenchAdapterProvider> workbenchAdapterProviders;
 
     private IpsElementWorkbenchAdapterAdapterFactory ipsElementWorkbenchAdapterAdapterFactory;
 
@@ -550,6 +550,15 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         return factory;
     }
 
+    /**
+     * This method collects all registered {@link IWorkbenchAdapterProvider}s registered in any
+     * plugin extension. The {@link IWorkbenchAdapterProvider} are used to register additional
+     * {@link IWorkbenchAdapter} that have to be registered for {@link IIpsElement}. The provider is
+     * necessary because it is not possible to register multiple {@link IWorkbenchAdapter} for
+     * {@link IIpsElement}, but we do not want to register the adapters for every specific object.
+     * 
+     * @return The list of registered {@link IWorkbenchAdapterProvider}
+     */
     public static List<IWorkbenchAdapterProvider> getWorkbenchAdapterProviders() {
         List<IWorkbenchAdapterProvider> result = new ArrayList<IWorkbenchAdapterProvider>();
         if (workbenchAdapterProviders == null) {
@@ -562,8 +571,14 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                         for (IConfigurationElement configElement : configElements) {
                             if (configElement != null
                                     && configElement.getName().equals(CONFIG_ELEMENT_ID_WORKBENCHADAPTER_PROVIDER)) {
-                                result.add(ExtensionPoints.createExecutableExtension(extension, configElement,
-                                        CONFIG_PROPERTY_CLASS, IWorkbenchAdapterProvider.class));
+                                IWorkbenchAdapterProvider executableExtension = ExtensionPoints
+                                        .createExecutableExtension(extension, configElement, CONFIG_PROPERTY_CLASS,
+                                                IWorkbenchAdapterProvider.class);
+                                if (executableExtension != null) {
+                                    result.add(executableExtension);
+                                } else {
+                                    throw new RuntimeException("error while initialize workbench adapter provider"); //$NON-NLS-1$
+                                }
                             }
                         }
                     }
@@ -571,15 +586,28 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             } catch (Exception e) {
                 IpsPlugin.log(e);
             }
+        } else {
+            workbenchAdapterProviders = result;
         }
         return result;
     }
 
+    /**
+     * Adding an {@link IIpsSrcFile} to the object history. The history stores all used files to
+     * give the user a hint which files he used recently.
+     * 
+     * @param ipsSrcFile The new file for the history
+     */
     public void addHistoryItem(IIpsSrcFile ipsSrcFile) {
         getOpenIpsObjectHistory().accessed(ipsSrcFile);
         saveOpenIpsObjectHistory();
     }
 
+    /**
+     * Get the history of the recently used ips objects.
+     * 
+     * @return the history containing all recenty used objects
+     */
     public IpsObjectSelectionHistory getOpenIpsObjectHistory() {
         if (openIpsObjectHistory == null) {
             loadOpenIpsObjectHistory();
@@ -588,6 +616,10 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     }
 
+    /**
+     * Load the history with the recently used {@link IIpsSrcFile}s. This history is used to give a
+     * hint for the user which objects he recently used.
+     */
     public void loadOpenIpsObjectHistory() {
         openIpsObjectHistory = new IpsObjectSelectionHistory();
 
@@ -605,6 +637,14 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         }
     }
 
+    /**
+     * Save the history containing the recently used {@link IIpsSrcFile}s. You could specify the
+     * history you want to safe. Normally you should use the method
+     * {@link #saveOpenIpsObjectHistory()} to save the history of this {@link IpsUIPlugin}.
+     * 
+     * @param selectionHistory the history with the recently used objects, @see
+     *            {@link #loadOpenIpsObjectHistory()}
+     */
     public void saveOpenIpsObjectHistory(IpsObjectSelectionHistory selectionHistory) {
         XMLMemento memento = XMLMemento.createWriteRoot(HISTORY_SETTING);
         selectionHistory.save(memento);
@@ -621,6 +661,11 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         }
     }
 
+    /**
+     * Save the history containing the recently used {@link IIpsSrcFile}s.
+     * 
+     * @see #saveOpenIpsObjectHistory(IpsObjectSelectionHistory)
+     */
     public void saveOpenIpsObjectHistory() {
         saveOpenIpsObjectHistory(openIpsObjectHistory);
     }
@@ -634,11 +679,26 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         return settings;
     }
 
+    /**
+     * Creates a {@link DecoratingLabelProvider} for the specified {@link ILabelProvider}
+     * 
+     * @param labelProvider the label provider you want to decorate
+     * @return the decorated label provider
+     */
     public static LabelProvider getDecoratedLabelProvider(ILabelProvider labelProvider) {
         IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
         return new DecoratingLabelProvider(labelProvider, decoManager.getLabelDecorator());
     }
 
+    /**
+     * Returning the default label of an {@link IIpsElement}. The default label is the label
+     * provided by the {@link IWorkbenchAdapter}. If there is no {@link IWorkbenchAdapter} for the
+     * specified {@link IIpsElement} then the empty String "" is returned.
+     * 
+     * @param ipsElement The {@link IIpsElement} you want to get the default label for
+     * @return the default label of the {@link IIpsElement} returned by the
+     *         {@link IWorkbenchAdapter}
+     */
     public final static String getLabel(IIpsElement ipsElement) {
         IWorkbenchAdapter adapter = (IWorkbenchAdapter)ipsElement.getAdapter(IWorkbenchAdapter.class);
         if (adapter == null) {
