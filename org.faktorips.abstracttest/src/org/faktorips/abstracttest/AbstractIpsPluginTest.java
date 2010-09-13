@@ -90,9 +90,12 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.util.BeanUtil;
@@ -672,6 +675,98 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         policyCmptType.getIpsSrcFile().save(true, null);
         productCmptType.getIpsSrcFile().save(true, null);
         return (PolicyCmptType)policyCmptType;
+    }
+
+    /**
+     * Creates a new composition (master-detail) between 'from' and 'to' type and the inverse
+     * detail-master association. The role name singular is set to the target's unqualified name.
+     * The plural name is the singular name followed by an 's'. Min cardinality is 1, max
+     * cardinality is '*'.
+     * 
+     * @param save <code>true</code> if the file that contain to and from are saved after adding the
+     *            associations
+     * 
+     * @throws CoreException if an error occurs while saving the files.
+     */
+    public IPolicyCmptTypeAssociation newComposition(IPolicyCmptType from, IPolicyCmptType to, boolean save)
+            throws CoreException {
+        IPolicyCmptTypeAssociation master2detail = from.newPolicyCmptTypeAssociation();
+        master2detail.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        master2detail.setTarget(to.getQualifiedName());
+        master2detail.setTargetRoleSingular(to.getUnqualifiedName());
+        master2detail.setTargetRolePlural(to.getUnqualifiedName() + "s");
+        master2detail.setMinCardinality(1);
+        master2detail.setMaxCardinality(Integer.MAX_VALUE);
+
+        IPolicyCmptTypeAssociation detail2master = to.newPolicyCmptTypeAssociation();
+        detail2master.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        detail2master.setTarget(from.getQualifiedName());
+        detail2master.setTargetRoleSingular(from.getUnqualifiedName());
+        detail2master.setTargetRolePlural(from.getUnqualifiedName() + "s");
+        detail2master.setMinCardinality(1);
+        detail2master.setMaxCardinality(1);
+
+        // inverse settings
+        master2detail.setInverseAssociation(detail2master.getName());
+        detail2master.setInverseAssociation(master2detail.getName());
+
+        if (save) {
+            from.getIpsSrcFile().save(true, null);
+            to.getIpsSrcFile().save(true, null);
+        }
+        return master2detail;
+    }
+
+    /**
+     * Creates a new composition (master-detail) between 'from' and 'to' type and the inverse
+     * detail-master association. The role name singular is set to the target's unqualified name.
+     * The plural name is the singular name followed by an 's'. Min cardinality is 1, max
+     * cardinality is '*'.
+     * <p>
+     * The files containing from and to are saved. If you don't want to save the file use
+     * {@link #newComposition(IPolicyCmptType, IPolicyCmptType, boolean)}.
+     * 
+     * @throws CoreException if an error occurs while saving the files.
+     */
+    public IPolicyCmptTypeAssociation newComposition(IPolicyCmptType from, IPolicyCmptType to) throws CoreException {
+        return newComposition(from, to, true);
+    }
+
+    /**
+     * Creates a new aggregation between 'from' and 'to' type. The role name singular is set to the
+     * target's unqualified name. The plural name is the singular name followed by an 's'. Min
+     * cardinality is 1, max cardinality is '*'.
+     * <p>
+     * The file containing from and to are saved. If you don't want to save the file use
+     * {@link #newComposition(IPolicyCmptType, IPolicyCmptType, boolean)}.
+     * 
+     * @throws CoreException if an error occurs while saving the files.
+     */
+    public IProductCmptTypeAssociation newAggregation(IProductCmptType from, IProductCmptType to) throws CoreException {
+        return newAggregation(from, to, true);
+    }
+
+    /**
+     * Creates a new aggregation between 'from' and 'to' type. The role name singular is set to the
+     * target's unqualified name. The plural name is the singular name followed by an 's'. Min
+     * cardinality is 1, max cardinality is '*'.
+     * 
+     * @throws CoreException if an error occurs while saving the files.
+     */
+    public IProductCmptTypeAssociation newAggregation(IProductCmptType from, IProductCmptType to, boolean save)
+            throws CoreException {
+        IProductCmptTypeAssociation agg = from.newProductCmptTypeAssociation();
+        agg.setAssociationType(AssociationType.AGGREGATION);
+        agg.setTarget(to.getQualifiedName());
+        agg.setTargetRoleSingular(to.getUnqualifiedName());
+        agg.setTargetRolePlural(to.getUnqualifiedName() + "s");
+        agg.setMinCardinality(1);
+        agg.setMaxCardinality(Integer.MAX_VALUE);
+        if (save) {
+            from.getIpsSrcFile().save(true, null);
+            to.getIpsSrcFile().save(true, null);
+        }
+        return agg;
     }
 
     /**
