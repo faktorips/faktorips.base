@@ -14,6 +14,9 @@
 package org.faktorips.devtools.core.ui.wizards.deployment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -130,7 +133,15 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
         IIpsProject[] projects;
         try {
             projects = IpsPlugin.getDefault().getIpsModel().getIpsProductDefinitionProjects();
-            projectSelectComboViewer.setInput(projects);
+            ArrayList<IIpsProject> sortedProjectList = new ArrayList<IIpsProject>(Arrays.asList(projects));
+            Collections.sort(sortedProjectList, new Comparator<IIpsProject>() {
+
+                @Override
+                public int compare(IIpsProject o1, IIpsProject o2) {
+                    return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
+                }
+            });
+            projectSelectComboViewer.setInput(sortedProjectList);
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
@@ -164,13 +175,12 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
             latestVersionLabel.setText(oldVersion);
         }
         if (targetSystemViewer != null && !targetSystemViewer.getTable().isDisposed()) {
+            targetSystemViewer.setInput(new String[0]);
             if (releaseAndDeploymentOperation != null) {
                 IDeploymentOperation deploymentOperation = releaseAndDeploymentOperation.getDeploymentOperation();
                 if (deploymentOperation != null) {
                     targetSystemViewer.setInput(deploymentOperation.getAvailableTargetSystems());
                 }
-            } else {
-                targetSystemViewer.setInput(new String[0]);
             }
         }
         updateMessage();
