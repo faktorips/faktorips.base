@@ -61,9 +61,14 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
     @Override
     public void focusGained(FocusEvent e) {
         if (skippedColumns.contains(getColumnIndex())) {
-            if (!(isAtNewRow())) {
-                editNextColumn();
-            }
+            /*
+             * We don't want to create a new row in case the user clicked the last column in the
+             * last row that happens to also be a skipped column
+             */
+            boolean rowCreating = isRowCreating();
+            setRowCreating(false);
+            editNextColumn();
+            setRowCreating(rowCreating);
         }
     }
 
@@ -81,7 +86,6 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
     protected void editNextRow() {
         fireApplyEditorValue();
         if (getNextRow() != getCurrentRow() && isAtNewRow()) {
-
             appendTableRow();
         }
         editCell(getNextRow(), getColumnIndex());
@@ -103,7 +107,7 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
     protected void editNextColumn() {
         if (isAtNewColumn()) {
             fireApplyEditorValue();
-            if (isAtNewRow()) {
+            if (isAtNewRow() && isRowCreating()) {
                 // in gtk/linux appending a new row resetting the selected column to -1
                 // so we safe the currently selected column
                 int currentRow = getCurrentRow();
