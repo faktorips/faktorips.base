@@ -58,6 +58,15 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
         }
     }
 
+    @Override
+    public void focusGained(FocusEvent e) {
+        if (skippedColumns.contains(getColumnIndex())) {
+            if (!(isAtNewRow())) {
+                editNextColumn();
+            }
+        }
+    }
+
     /**
      * Edits the next row relative to the current selection of the <tt>TableViewer</tt> this
      * <tt>TableCellEditor</tt> is used in. If no following row exists, two behaviors are possible:
