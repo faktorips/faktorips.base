@@ -43,7 +43,7 @@ public abstract class IpsPartEditDialog extends EditDialog {
 
     private boolean dirty = false;
 
-    private boolean descriptionEnabled;
+    private boolean descriptionEnabled = true;
 
     public IpsPartEditDialog(IIpsObjectPart part, Shell parentShell, String windowTitle) {
         this(part, parentShell, windowTitle, false);
