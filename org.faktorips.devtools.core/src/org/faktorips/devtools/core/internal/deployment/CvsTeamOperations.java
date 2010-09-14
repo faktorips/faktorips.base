@@ -41,12 +41,15 @@ public class CvsTeamOperations implements ITeamOperations {
         monitor.beginTask(null, 2);
         try {
             RepositoryProvider repositoryProvider = RepositoryProvider.getProvider(project);
+            if (repositoryProvider == null) {
+                return;
+            }
             Subscriber subscriber = repositoryProvider.getSubscriber();
             subscriber.refresh(resources, IResource.DEPTH_ZERO, new SubProgressMonitor(monitor, 1));
             for (IResource aResource : resources) {
                 SyncInfo syncInfo = subscriber.getSyncInfo(aResource);
                 if (syncInfo.getKind() != 0 && (syncInfo.getKind() & SyncInfo.OUTGOING) != SyncInfo.OUTGOING) {
-                    throw new InterruptedException("Some files have remote changes");
+                    throw new InterruptedException(Messages.CvsTeamOperations_exception_remoteChanges);
                 }
             }
 
@@ -62,6 +65,9 @@ public class CvsTeamOperations implements ITeamOperations {
     public boolean isProjectSynchronized(IProject project, IProgressMonitor monitor) {
         try {
             RepositoryProvider repositoryProvider = RepositoryProvider.getProvider(project);
+            if (repositoryProvider == null) {
+                return true;
+            }
             SyncInfoSet syncInfoSet = new SyncInfoSet();
             Subscriber subscriber = repositoryProvider.getSubscriber();
             IResource[] resources = new IResource[] { project };
@@ -87,7 +93,7 @@ public class CvsTeamOperations implements ITeamOperations {
     }
 
     @Override
-    public void tagProject(IProject project, String version, IProgressMonitor monitor) throws TeamException,
+    public String tagProject(IProject project, String version, IProgressMonitor monitor) throws TeamException,
             InterruptedException {
         String tag = version;
         if (tag.matches("[0-9].*")) { //$NON-NLS-1$
@@ -98,14 +104,13 @@ public class CvsTeamOperations implements ITeamOperations {
         tag = tag.replaceAll("[\\$,\\.:;@]", "_"); //$NON-NLS-1$ //$NON-NLS-2$
 
         RepositoryProvider repositoryProvider = RepositoryProvider.getProvider(project);
+        if (repositoryProvider == null) {
+            return tag;
+        }
 
         IResource[] resources = new IResource[] { project };
 
         ResourceMapping[] resourceMappers = RepositoryProviderOperation.asResourceMappers(resources);
-
-        //
-
-        //
 
         TagOperation tagOperation = new TagOperation(null, resourceMappers);
         tagOperation.setTag(new CVSTag(tag, CVSTag.VERSION));
@@ -113,12 +118,15 @@ public class CvsTeamOperations implements ITeamOperations {
         IStatus status = tagOperation.tag((CVSTeamProvider)repositoryProvider, resources, true, monitor);
         // tagOperation.execute(monitor);
         if (status.getException() != null) {
-            throw new InterruptedException("Error while tagging: " + status.getException().getMessage());
+            throw new InterruptedException("Error while tagging: " + status.getException().getMessage()); //$NON-NLS-1$
         } else if (status.getSeverity() == IStatus.ERROR) {
             throw new InterruptedException(status.getMessage());
         }
-
-        // TODO TAG geht noch nicht
+        return tag;
     }
 
+    @Override
+    public String getName() {
+        return "CVS"; //$NON-NLS-1$
+    }
 }

@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.TeamException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.deployment.IDeploymentOperation;
@@ -68,15 +69,16 @@ public class ReleaseAndDeploymentOperation {
             List<ITargetSystem> selectedTargetSystems,
             IProgressMonitor monitor) throws InterruptedException, CoreException {
         if (deploymentExtension == null) {
-            throw new InterruptedException("No deployment deploymentExtension found for this project");
+            throw new InterruptedException(
+                    Messages.ReleaseAndDeploymentOperation_exception_noDeploymentExtension);
         }
-        monitor.beginTask("Release", 100);
+        monitor.beginTask(Messages.ReleaseAndDeploymentOperation_taskName_release, 100);
         try {
-            buildRelease(ipsProject, newVersion, monitor);
+            String tag = buildRelease(ipsProject, newVersion, monitor);
 
             // start extended release
             MessageList messageList = new MessageList();
-            if (!getDeploymentOperation(ipsProject).buildReleaseAndDeployment(ipsProject, selectedTargetSystems,
+            if (!getDeploymentOperation(ipsProject).buildReleaseAndDeployment(ipsProject, tag, selectedTargetSystems,
                     monitor, messageList)) {
                 throw new InterruptedException(messageList.getFirstMessage(Message.ERROR).getText());
             }
@@ -85,7 +87,12 @@ public class ReleaseAndDeploymentOperation {
         }
     }
 
-    private void buildRelease(IIpsProject ipsProject, String newVersion, IProgressMonitor monitor)
+    /**
+     * calls all the operations to build a new release
+     * 
+     * @return the tag used to tag the project in version control system
+     */
+    private String buildRelease(IIpsProject ipsProject, String newVersion, IProgressMonitor monitor)
             throws JavaModelException, InterruptedException, CoreException, TeamException {
         // save all
         saveAll(ipsProject);
@@ -117,7 +124,7 @@ public class ReleaseAndDeploymentOperation {
         commitFiles(ipsProject, newVersion, new SubProgressMonitor(monitor, 10));
 
         // tag the project with the new version
-        tagProject(ipsProject, newVersion, new SubProgressMonitor(monitor, 20));
+        return tagProject(ipsProject, newVersion, new SubProgressMonitor(monitor, 20));
     }
 
     public static IDeploymentOperation getDeploymentOperation(IIpsProject ipsProject) throws CoreException {
@@ -126,7 +133,7 @@ public class ReleaseAndDeploymentOperation {
             return null;
         }
         IDeploymentOperation result = IDeploymentOperation.class.cast(releaseExtensionElement
-                .createExecutableExtension("deploymentOperation"));
+                .createExecutableExtension("deploymentOperation")); //$NON-NLS-1$
         return result;
     }
 
@@ -138,7 +145,7 @@ public class ReleaseAndDeploymentOperation {
         for (IExtension extension : extensions) {
             IConfigurationElement[] configElements = extension.getConfigurationElements();
             for (IConfigurationElement confElement : configElements) {
-                if (confElement.getAttribute("id").equals(releasaeExtensionId)) {
+                if (confElement.getAttribute("id").equals(releasaeExtensionId)) { //$NON-NLS-1$
                     return confElement;
                 }
             }
@@ -149,19 +156,25 @@ public class ReleaseAndDeploymentOperation {
     private void saveAll(IIpsProject ipsProject) throws JavaModelException, InterruptedException {
         if (!IpsPlugin.getDefault().getWorkbench().saveAllEditors(true)
                 || ipsProject.getJavaProject().hasUnsavedChanges()) {
-            throw new InterruptedException("There are unsafed Files!");
+            throw new InterruptedException(Messages.ReleaseAndDeploymentOperation_exception_unsavedChanges);
         }
     }
 
     private void checkSyncWithFilesystem(IIpsProject ipsProject) throws InterruptedException {
         if (!ipsProject.getProject().isSynchronized(IResource.DEPTH_INFINITE)) {
-            throw new InterruptedException("Filesystem is not synchron!");
+            throw new InterruptedException(
+                    Messages.ReleaseAndDeploymentOperation_exception_refreshFilesystem);
         }
     }
 
     private void checkSynchronization(IIpsProject ipsProject, IProgressMonitor monitor) throws InterruptedException {
         if (!teamOperation.isProjectSynchronized(ipsProject.getProject(), monitor)) {
-            throw new InterruptedException("Project not synchronized with CVS");
+
+            throw new InterruptedException(
+                    NLS
+                            .bind(
+                                    Messages.ReleaseAndDeploymentOperation_exception_notSynchron,
+                                    teamOperation.getName()));
         }
     }
 
@@ -174,13 +187,15 @@ public class ReleaseAndDeploymentOperation {
     private void validateIpsProject(IIpsProject ipsProject) throws CoreException, InterruptedException {
         MessageList messages = ipsProject.validate();
         if (messages.containsErrorMsg()) {
-            throw new InterruptedException("Project contains Faktor-IPS errors");
+            throw new InterruptedException(
+                    Messages.ReleaseAndDeploymentOperation_exception_fipsErrors);
         }
     }
 
     private void checkProblemMarkers(IIpsProject ipsProject) throws CoreException, InterruptedException {
         if (ipsProject.getProject().findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE) == IMarker.SEVERITY_ERROR) {
-            throw new InterruptedException("Project contains errors");
+            throw new InterruptedException(
+                    Messages.ReleaseAndDeploymentOperation_exception_errors);
         }
     }
 
@@ -192,16 +207,20 @@ public class ReleaseAndDeploymentOperation {
         for (IIpsPackageFragmentRoot root : ipsProject.getIpsPackageFragmentRoots()) {
             resources.add(ipsProject.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root));
         }
-        teamOperation.commitFile(ipsProject.getProject(), resources.toArray(new IResource[0]), "update version to "
+        teamOperation.commitFile(ipsProject.getProject(), resources.toArray(new IResource[0]), Messages.ReleaseAndDeploymentOperation_commit_comment
                 + newVersion, new SubProgressMonitor(monitor, 10));
         if (!teamOperation.isProjectSynchronized(ipsProject.getProject(), monitor)) {
-            throw new InterruptedException("Some files have changed, project no longer synchronized with CVS");
+            throw new InterruptedException(
+                    NLS
+                            .bind(
+                                    Messages.ReleaseAndDeploymentOperation_exception_noLongerSynchron,
+                                    teamOperation.getName()));
         }
     }
 
-    private void tagProject(IIpsProject ipsProject, String newVersion, IProgressMonitor monitor) throws TeamException,
-            InterruptedException {
-        teamOperation.tagProject(ipsProject.getProject(), newVersion, monitor);
+    private String tagProject(IIpsProject ipsProject, String newVersion, IProgressMonitor monitor)
+            throws TeamException, InterruptedException {
+        return teamOperation.tagProject(ipsProject.getProject(), newVersion, monitor);
     }
 
     private void buildProject(IIpsProject ipsProject, IProgressMonitor monitor) throws CoreException {

@@ -46,6 +46,7 @@ public interface IDeploymentOperation {
      * @return true if the deployment is ok
      */
     public boolean buildReleaseAndDeployment(IIpsProject ipsProject,
+            String tag,
             List<ITargetSystem> selectedTargetSystems,
             IProgressMonitor progressMonitor,
             MessageList messageList);

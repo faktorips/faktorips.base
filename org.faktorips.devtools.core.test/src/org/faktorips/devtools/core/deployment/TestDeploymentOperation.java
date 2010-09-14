@@ -25,6 +25,7 @@ public class TestDeploymentOperation implements IDeploymentOperation {
 
     @Override
     public boolean buildReleaseAndDeployment(IIpsProject ipsProject,
+            String tag,
             List<ITargetSystem> selectedTargetSystems,
             IProgressMonitor progressMonitor,
             MessageList messageList) {

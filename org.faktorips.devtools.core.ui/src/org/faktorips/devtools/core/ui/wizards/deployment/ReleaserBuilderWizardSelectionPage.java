@@ -54,12 +54,13 @@ import org.faktorips.devtools.core.ui.util.TypedSelection;
 public class ReleaserBuilderWizardSelectionPage extends WizardPage {
 
     private IIpsProject ipsProject;
-    private Label latestVersionLabel;
+    private Label currentVersionLabel;
     private Text newVersionText;
 
     private boolean correctVersionFormat = false;
     private CheckboxTableViewer targetSystemViewer;
     private ReleaseAndDeploymentOperation releaseAndDeploymentOperation;
+    private Label versionFormatLabel;
 
     protected ReleaserBuilderWizardSelectionPage() {
         super(Messages.ReleaserBuilderWizardSelectionPage_title);
@@ -89,11 +90,14 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
         Composite selectVersionControl = toolkit.createLabelEditColumnComposite(selectVersionGroup);
 
         toolkit.createLabel(selectVersionControl, Messages.ReleaserBuilderWizardSelectionPage_latest_version);
-        latestVersionLabel = toolkit.createLabel(selectVersionControl, ""); //$NON-NLS-1$
+        currentVersionLabel = toolkit.createLabel(selectVersionControl, ""); //$NON-NLS-1$
 
         toolkit.createLabel(selectVersionControl, Messages.ReleaserBuilderWizardSelectionPage_new_version);
         newVersionText = new Text(selectVersionControl, SWT.SINGLE | SWT.BORDER);
         newVersionText.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+
+        toolkit.createLabel(selectVersionControl, ""); //$NON-NLS-1$
+        versionFormatLabel = toolkit.createLabel(selectVersionControl, ""); //$NON-NLS-1$
 
         Group selectTargetSystemGroup = toolkit.createGroup(pageControl,
                 Messages.ReleaserBuilderWizardSelectionPage_group_targetsystem);
@@ -167,6 +171,7 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
         }
 
         setControl(pageControl);
+        setMessage("", DialogPage.NONE); //$NON-NLS-1$
     }
 
     public void setIpsProject(IIpsProject ipsProject) {
@@ -181,15 +186,28 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
                 IpsPlugin.log(e);
             }
         }
-        if (latestVersionLabel != null && !latestVersionLabel.isDisposed()) {
-            String latestVersionText = latestVersionLabel.getText();
+        if (currentVersionLabel != null && !currentVersionLabel.isDisposed()) {
+            String latestVersionText = currentVersionLabel.getText();
             if (newVersionText != null && !newVersionText.isDisposed()) {
                 if (latestVersionText.equals(newVersionText.getText())) {
                     // only overwrite the text if the label has the default value
                     newVersionText.setText(oldVersion);
+                    IVersionFormat versionFormat;
+                    try {
+                        if (ipsProject != null) {
+                            versionFormat = ipsProject.getVersionFormat();
+                            if (versionFormat != null) {
+                                versionFormatLabel.setText(versionFormat.getVersionFormat());
+                            }
+                        }
+                    } catch (CoreException e) {
+                        setMessage(Messages.ReleaserBuilderWizardSelectionPage_error_versionFormat + e.getMessage(),
+                                DialogPage.ERROR);
+                        IpsPlugin.log(e);
+                    }
                 }
             }
-            latestVersionLabel.setText(oldVersion);
+            currentVersionLabel.setText(oldVersion);
         }
         if (targetSystemViewer != null && !targetSystemViewer.getTable().isDisposed()) {
             targetSystemViewer.setInput(new String[0]);
