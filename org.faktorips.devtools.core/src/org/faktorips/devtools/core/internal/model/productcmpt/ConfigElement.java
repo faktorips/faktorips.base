@@ -431,7 +431,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
     @Override
     public String getLastResortCaption() {
-        return pcTypeAttribute;
+        return StringUtils.capitalize(pcTypeAttribute);
     }
 
 }

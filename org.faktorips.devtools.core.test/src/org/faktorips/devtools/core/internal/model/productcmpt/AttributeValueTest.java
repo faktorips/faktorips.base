@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
@@ -48,7 +49,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         ipsProject = newIpsProject();
         productCmptType = newProductCmptType(ipsProject, "Product");
         attribute = productCmptType.newProductCmptTypeAttribute();
-        attribute.setName("Minimum Premium");
+        attribute.setName("minimumPremium");
         attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         productCmpt = newProductCmpt(productCmptType, "ProductA");
         generation = productCmpt.getProductCmptGeneration(0);
@@ -162,7 +163,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     }
 
     public void testGetLastResortCaption() {
-        assertEquals(attrValue.getAttribute(), attrValue.getLastResortCaption());
+        assertEquals(StringUtils.capitalize(attrValue.getAttribute()), attrValue.getLastResortCaption());
     }
 
 }

@@ -15,6 +15,7 @@ package org.faktorips.devtools.core;
 
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -253,7 +254,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         ILabel localizedLabel = getLocalizedLabel();
         localizedLabel.setValue("");
         if (localizedLabel.equals(germanLabel)) {
-            assertEquals(association.getName(), support.getLocalizedLabel(association));
+            assertEquals(StringUtils.capitalize(association.getName()), support.getLocalizedLabel(association));
         } else {
             assertEquals(GERMAN_LABEL, support.getLocalizedLabel(association));
         }
@@ -264,14 +265,14 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         if (!(germanLabel.isDeleted())) {
             germanLabel.delete();
         }
-        assertEquals(association.getName(), support.getLocalizedLabel(association));
+        assertEquals(StringUtils.capitalize(association.getName()), support.getLocalizedLabel(association));
     }
 
     public void testGetLocalizedLabelEvenDefaultLabelMissingEmptyString() {
         ILabel localizedLabel = getLocalizedLabel();
         localizedLabel.setValue("");
         germanLabel.setValue("");
-        assertEquals(association.getName(), support.getLocalizedLabel(association));
+        assertEquals(StringUtils.capitalize(association.getName()), support.getLocalizedLabel(association));
     }
 
     public void testGetLocalizedLabelNullPointer() {
@@ -291,7 +292,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
     public void testGetLocalizedPluralLabelLocalizedLabelMissing() {
         deleteLocalizedLabel();
         if (germanLabel.isDeleted()) {
-            assertEquals(association.getName(), support.getLocalizedPluralLabel(association));
+            assertEquals(StringUtils.capitalize(association.getName()), support.getLocalizedPluralLabel(association));
         } else {
             assertEquals(GERMAN_PLURAL_LABEL, support.getLocalizedPluralLabel(association));
         }
@@ -301,7 +302,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         ILabel localizedLabel = getLocalizedLabel();
         localizedLabel.setPluralValue("");
         if (localizedLabel.equals(germanLabel)) {
-            assertEquals(association.getName(), support.getLocalizedPluralLabel(association));
+            assertEquals(StringUtils.capitalize(association.getName()), support.getLocalizedPluralLabel(association));
         } else {
             assertEquals(GERMAN_PLURAL_LABEL, support.getLocalizedPluralLabel(association));
         }
@@ -312,14 +313,14 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         if (!(germanLabel.isDeleted())) {
             germanLabel.delete();
         }
-        assertEquals(association.getName(), support.getLocalizedPluralLabel(association));
+        assertEquals(StringUtils.capitalize(association.getName()), support.getLocalizedPluralLabel(association));
     }
 
     public void testGetLocalizedPluralLabelLocalizedEvenDefaultLabelMissingEmptyString() {
         ILabel localizedLabel = getLocalizedLabel();
         localizedLabel.setPluralValue("");
         germanLabel.setPluralValue("");
-        assertEquals(association.getName(), support.getLocalizedPluralLabel(association));
+        assertEquals(StringUtils.capitalize(association.getName()), support.getLocalizedPluralLabel(association));
     }
 
     public void testGetLocalizedPluralLabelNullPointer() {
@@ -344,12 +345,12 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     public void testGetDefaultLabelNotExistent() {
         germanLabel.delete();
-        assertEquals(association.getName(), support.getDefaultLabel(association));
+        assertEquals(StringUtils.capitalize(association.getName()), support.getDefaultLabel(association));
     }
 
     public void testGetDefaultLabelNotExistentEmptyString() {
         germanLabel.setValue("");
-        assertEquals(association.getName(), support.getDefaultLabel(association));
+        assertEquals(StringUtils.capitalize(association.getName()), support.getDefaultLabel(association));
     }
 
     public void testGetDefaultLabelNullPointer() {
@@ -362,7 +363,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     public void testGetDefaultLabelNoDefaultLanguage() throws CoreException {
         removeDefaultLanguage();
-        assertEquals(association.getName(), support.getDefaultLabel(association));
+        assertEquals(StringUtils.capitalize(association.getName()), support.getDefaultLabel(association));
     }
 
     public void testGetDefaultPluralLabel() {
@@ -371,12 +372,12 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     public void testGetDefaultPluralLabelNotExistent() {
         germanLabel.delete();
-        assertEquals(association.getName(), support.getDefaultPluralLabel(association));
+        assertEquals(StringUtils.capitalize(association.getName()), support.getDefaultPluralLabel(association));
     }
 
     public void testGetDefaultPluralLabelNotExistentEmptyString() {
         germanLabel.setPluralValue("");
-        assertEquals(association.getName(), support.getDefaultPluralLabel(association));
+        assertEquals(StringUtils.capitalize(association.getName()), support.getDefaultPluralLabel(association));
     }
 
     public void testGetDefaultPluralLabelNullPointer() {
@@ -397,7 +398,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     public void testGetDefaultPluralLabelNoDefaultLanguage() throws CoreException {
         removeDefaultLanguage();
-        assertEquals(association.getName(), support.getDefaultPluralLabel(association));
+        assertEquals(StringUtils.capitalize(association.getName()), support.getDefaultPluralLabel(association));
     }
 
     public void testSetDefaultLabel() {

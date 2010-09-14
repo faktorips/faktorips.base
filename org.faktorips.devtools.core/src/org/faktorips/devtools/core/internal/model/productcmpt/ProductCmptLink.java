@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -305,12 +306,12 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
 
     @Override
     public String getLastResortCaption() {
-        return association;
+        return StringUtils.capitalize(association);
     }
 
     @Override
     public String getLastResortPluralCaption() {
-        return association;
+        return StringUtils.capitalize(association);
     }
 
 }

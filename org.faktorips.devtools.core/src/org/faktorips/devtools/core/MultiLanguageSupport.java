@@ -273,7 +273,7 @@ public final class MultiLanguageSupport {
     public String getDefaultLabel(ILabeledElement labeledElement) {
         ArgumentCheck.notNull(labeledElement);
 
-        String label = labeledElement.getName();
+        String label = StringUtils.capitalize(labeledElement.getName());
         ILabel defaultLabel = getDefaultLabelPart(labeledElement);
         if (defaultLabel != null) {
             String value = defaultLabel.getValue();
@@ -304,7 +304,7 @@ public final class MultiLanguageSupport {
         ArgumentCheck.notNull(labeledElement);
         ArgumentCheck.isTrue(labeledElement.isPluralLabelSupported());
 
-        String pluralLabel = labeledElement.getName();
+        String pluralLabel = StringUtils.capitalize(labeledElement.getName());
         ILabel defaultLabel = getDefaultLabelPart(labeledElement);
         if (defaultLabel != null) {
             String pluralValue = defaultLabel.getPluralValue();

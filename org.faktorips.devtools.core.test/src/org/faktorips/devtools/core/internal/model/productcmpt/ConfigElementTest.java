@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
@@ -493,7 +494,9 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     }
 
     public void testGetLastResortCaption() {
-        assertEquals(configElement.getPolicyCmptTypeAttribute(), configElement.getLastResortCaption());
+        configElement.setPolicyCmptTypeAttribute("attribute");
+        assertEquals(StringUtils.capitalize(configElement.getPolicyCmptTypeAttribute()), configElement
+                .getLastResortCaption());
     }
 
     private class InvalidDatatype implements ValueDatatype {

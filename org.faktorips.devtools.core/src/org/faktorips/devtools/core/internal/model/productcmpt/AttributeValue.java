@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -184,7 +185,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
 
     @Override
     public String getLastResortCaption() {
-        return attribute;
+        return StringUtils.capitalize(attribute);
     }
 
     @Override

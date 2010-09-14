@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -266,11 +267,13 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     }
 
     public void testGetLastResortCaption() {
-        assertEquals(link.getAssociation(), link.getLastResortCaption());
+        link.setAssociation("notCapitalized");
+        assertEquals(StringUtils.capitalize(link.getAssociation()), link.getLastResortCaption());
     }
 
     public void testGetLastResortPluralCaption() {
-        assertEquals(link.getAssociation(), link.getLastResortPluralCaption());
+        link.setAssociation("notCapitalized");
+        assertEquals(StringUtils.capitalize(link.getAssociation()), link.getLastResortPluralCaption());
     }
 
     private IAssociation createAssociation() {
