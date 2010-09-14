@@ -58,7 +58,7 @@ public class ReleaserBuilderWizard extends Wizard {
                 if (releaseAndDeploymentOperation != null) {
                     releaseAndDeploymentOperation.startReleaseBuilder(newVersion, selectedTargetSystems, monitor);
                 } else {
-                    throw new InterruptedException("Release operation not ready");
+                    throw new InterruptedException(Messages.ReleaserBuilderWizard_exception_NotReady);
                 }
             }
 
@@ -67,7 +67,7 @@ public class ReleaserBuilderWizard extends Wizard {
             getContainer().run(false, true, progress);
             return true;
         } catch (InvocationTargetException e) {
-            selectionPage.setErrorMessage("Invocation Exception: " + e.getTargetException().getMessage());
+            selectionPage.setErrorMessage("Invocation Exception: " + e.getTargetException().getMessage()); //$NON-NLS-1$
             selectionPage.setPageComplete(false);
             IpsPlugin.log(e);
             return false;

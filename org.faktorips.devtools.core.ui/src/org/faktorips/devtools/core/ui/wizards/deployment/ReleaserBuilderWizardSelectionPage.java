@@ -28,6 +28,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -59,8 +60,8 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
     private ReleaseAndDeploymentOperation releaseAndDeploymentOperation;
 
     protected ReleaserBuilderWizardSelectionPage() {
-        super("Releaser Builder");
-        setTitle("Releaser Builder");
+        super(Messages.ReleaserBuilderWizardSelectionPage_title);
+        setTitle(Messages.ReleaserBuilderWizardSelectionPage_title);
     }
 
     @Override
@@ -71,25 +72,28 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
         GridData data = new GridData(SWT.FILL, SWT.TOP, true, true);
         pageControl.setLayoutData(data);
 
-        Group selectProjectGroup = toolkit.createGroup(pageControl, "Project");
+        Group selectProjectGroup = toolkit.createGroup(pageControl,
+                Messages.ReleaserBuilderWizardSelectionPage_group_project);
         Composite selectProjectControl = toolkit.createLabelEditColumnComposite(selectProjectGroup);
 
-        toolkit.createLabel(selectProjectControl, "Product Definition Project:");
+        toolkit.createLabel(selectProjectControl, Messages.ReleaserBuilderWizardSelectionPage_select_project);
 
         Combo projectSelectCombo = toolkit.createCombo(selectProjectControl);
         ComboViewer projectSelectComboViewer = new ComboViewer(projectSelectCombo);
 
-        Group selectVersionGroup = toolkit.createGroup(pageControl, "Version");
+        Group selectVersionGroup = toolkit.createGroup(pageControl,
+                Messages.ReleaserBuilderWizardSelectionPage_group_version);
         Composite selectVersionControl = toolkit.createLabelEditColumnComposite(selectVersionGroup);
 
-        toolkit.createLabel(selectVersionControl, "Latest Version:");
-        latestVersionLabel = toolkit.createLabel(selectVersionControl, "");
+        toolkit.createLabel(selectVersionControl, Messages.ReleaserBuilderWizardSelectionPage_latest_version);
+        latestVersionLabel = toolkit.createLabel(selectVersionControl, ""); //$NON-NLS-1$
 
-        toolkit.createLabel(selectVersionControl, "New Version:");
+        toolkit.createLabel(selectVersionControl, Messages.ReleaserBuilderWizardSelectionPage_new_version);
         newVersionText = new Text(selectVersionControl, SWT.SINGLE | SWT.BORDER);
         newVersionText.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 
-        Group selectTargetSystemGroup = toolkit.createGroup(pageControl, "Target Systems");
+        Group selectTargetSystemGroup = toolkit.createGroup(pageControl,
+                Messages.ReleaserBuilderWizardSelectionPage_group_targetsystem);
         Composite selectTargetSystemControl = toolkit.createLabelEditColumnComposite(selectTargetSystemGroup);
         // Label targetSystemLabel = toolkit.createLabel(selectTargetSystemControl, "Select:");
         // targetSystemLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
@@ -188,13 +192,13 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
     }
 
     private void updateMessage() {
-        setMessage("", DialogPage.NONE);
+        setMessage("", DialogPage.NONE); //$NON-NLS-1$
 
         if (ipsProject == null) {
-            setMessage("Please select a product definition project", DialogPage.INFORMATION);
+            setMessage(Messages.ReleaserBuilderWizardSelectionPage_info_selectProject, DialogPage.INFORMATION);
             return;
         } else if (releaseAndDeploymentOperation == null) {
-            setMessage("No deployment Extension found for this project", DialogPage.ERROR);
+            setMessage(Messages.ReleaserBuilderWizardSelectionPage_error_noDeploymentExtension, DialogPage.ERROR);
             return;
         }
         if (newVersionText != null && !newVersionText.isDisposed()) {
@@ -202,18 +206,20 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
             try {
                 IVersionFormat versionFormat = ipsProject.getVersionFormat();
                 if (versionFormat == null) {
-                    setMessage("Could not determine version format", DialogPage.ERROR);
+                    setMessage(Messages.ReleaserBuilderWizardSelectionPage_error_couldNotDetermineFormat,
+                            DialogPage.ERROR);
                     return;
                 }
                 correctVersionFormat = versionFormat.isCorrectVersionFormat(newVersion);
                 if (!correctVersionFormat) {
-                    setMessage("The format of version \"" + newVersion + "\" is incorrect. Format: "
-                            + ipsProject.getVersionFormat().getVersionFormat(), DialogPage.ERROR);
+                    setMessage(NLS.bind(Messages.ReleaserBuilderWizardSelectionPage_error_illegalVersion, newVersion,
+                            ipsProject.getVersionFormat().getVersionFormat()), DialogPage.ERROR);
                 } else if (newVersion.equals(ipsProject.getProperties().getVersion())) {
-                    setMessage("The new version is the same as the last one", DialogPage.WARNING);
+                    setMessage(Messages.ReleaserBuilderWizardSelectionPage_warning_sameVersion, DialogPage.WARNING);
                 }
             } catch (CoreException e) {
-                setMessage("Error while looking for version format: " + e.getMessage(), DialogPage.ERROR);
+                setMessage(Messages.ReleaserBuilderWizardSelectionPage_error_versionFormat + e.getMessage(),
+                        DialogPage.ERROR);
                 IpsPlugin.log(e);
             }
         }
