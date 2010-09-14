@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.editors;
 import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -39,6 +38,8 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
+import org.faktorips.devtools.core.ui.table.IpsCellEditor;
+import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -116,9 +117,12 @@ public class LabelEditComposite extends Composite {
         UIToolkit uiToolkit = new UIToolkit(null);
 
         int numberCellEditors = labeledElement.isPluralLabelSupported() ? 3 : 2;
-        final CellEditor[] cellEditors = new CellEditor[numberCellEditors];
+        final IpsCellEditor[] cellEditors = new IpsCellEditor[numberCellEditors];
         for (int i = 0; i < cellEditors.length; i++) {
             cellEditors[i] = controlFactory.createTableCellEditor(uiToolkit, datatype, null, tableViewer, i, null);
+            TableViewerTraversalStrategy traversalStrategy = (TableViewerTraversalStrategy)cellEditors[i]
+                    .getTraversalStrategy();
+            traversalStrategy.addSkippedColumnIndex(0);
         }
 
         tableViewer.setCellEditors(cellEditors);
