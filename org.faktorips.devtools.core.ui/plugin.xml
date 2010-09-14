@@ -126,9 +126,9 @@
                tooltip="%org.faktorips.devtools.core.ChangeWorkingDateAction.tooltip"/>
          <action
                class="org.faktorips.devtools.core.ui.wizards.deployment.ShowReleaserBuilderWizardAction"
-               icon="icons/FaktorIpsIcon16.gif"
+               icon="icons/DeploymentAction.gif"
                id="org.faktorips.devtools.core.ui.wizards.deployment.ShowDeploymentWizardAction"
-               label="Deploy"
+               label="Build Release"
                style="push"
                toolbarPath="org.faktorips.devtools">
          </action>

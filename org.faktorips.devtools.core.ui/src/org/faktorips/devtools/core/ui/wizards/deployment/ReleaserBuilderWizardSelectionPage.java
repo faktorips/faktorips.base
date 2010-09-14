@@ -46,6 +46,7 @@ import org.faktorips.devtools.core.deployment.IDeploymentOperation;
 import org.faktorips.devtools.core.deployment.ReleaseAndDeploymentOperation;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IVersionFormat;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 
@@ -62,6 +63,7 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
     protected ReleaserBuilderWizardSelectionPage() {
         super(Messages.ReleaserBuilderWizardSelectionPage_title);
         setTitle(Messages.ReleaserBuilderWizardSelectionPage_title);
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/DeploymentWizard.png")); //$NON-NLS-1$
     }
 
     @Override

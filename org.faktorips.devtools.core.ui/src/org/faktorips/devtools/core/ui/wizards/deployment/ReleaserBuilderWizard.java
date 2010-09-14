@@ -54,7 +54,8 @@ public class ReleaserBuilderWizard extends Wizard {
                     InterruptedException {
                 String newVersion = selectionPage.getNewVersion();
                 List<String> selectedTargetSystems = selectionPage.getSelectedTargetSystems();
-                ReleaseAndDeploymentOperation releaseAndDeploymentOperation = selectionPage.getReleaseBuilderOpertation();
+                ReleaseAndDeploymentOperation releaseAndDeploymentOperation = selectionPage
+                        .getReleaseBuilderOpertation();
                 if (releaseAndDeploymentOperation != null) {
                     releaseAndDeploymentOperation.startReleaseBuilder(newVersion, selectedTargetSystems, monitor);
                 } else {
