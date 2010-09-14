@@ -116,7 +116,7 @@ public class LabelEditComposite extends Composite {
         UIToolkit uiToolkit = new UIToolkit(null);
 
         int numberCellEditors = labeledElement.isPluralLabelSupported() ? 3 : 2;
-        CellEditor[] cellEditors = new CellEditor[numberCellEditors];
+        final CellEditor[] cellEditors = new CellEditor[numberCellEditors];
         for (int i = 0; i < cellEditors.length; i++) {
             cellEditors[i] = controlFactory.createTableCellEditor(uiToolkit, datatype, null, tableViewer, i, null);
         }
@@ -265,7 +265,7 @@ public class LabelEditComposite extends Composite {
             String valueString = (String)value;
 
             if (property.equals(ILabel.PROPERTY_LOCALE)) {
-                label.setLocale(new Locale(valueString));
+                // The locale cannot be modified
             } else if (property.equals(ILabel.PROPERTY_VALUE)) {
                 label.setValue(valueString);
             } else if (property.equals(ILabel.PROPERTY_PLURAL_VALUE)) {
