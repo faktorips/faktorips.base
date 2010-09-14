@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.util;
 
 import java.io.ByteArrayInputStream;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
@@ -34,6 +35,7 @@ import org.faktorips.devtools.core.FaktorIpsClasspathVariableInitializer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.Util;
 import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategy;
+import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
@@ -345,7 +347,8 @@ public class ProjectUtil {
             boolean isPersistentProject) throws CoreException {
 
         addIpsRuntimeLibraries(javaProject);
-        IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().createIpsProject(javaProject);
+        IIpsModel ipsModel = IpsPlugin.getDefault().getIpsModel();
+        IIpsProject ipsProject = ipsModel.createIpsProject(javaProject);
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setRuntimeIdPrefix(runtimeIdPrefix);
         props.setProductDefinitionProject(isProductDefinitionProject);
@@ -353,11 +356,10 @@ public class ProjectUtil {
         props.setPersistenceSupport(isPersistentProject);
 
         // use the first registered builder set info as default
-        IIpsArtefactBuilderSetInfo[] builderSetInfos = IpsPlugin.getDefault().getIpsModel()
-                .getIpsArtefactBuilderSetInfos();
+        IIpsArtefactBuilderSetInfo[] builderSetInfos = ipsModel.getIpsArtefactBuilderSetInfos();
         props.setBuilderSetId(builderSetInfos.length > 0 ? builderSetInfos[0].getBuilderSetId() : ""); //$NON-NLS-1$
 
-        props.setPredefinedDatatypesUsed(IpsPlugin.getDefault().getIpsModel().getPredefinedValueDatatypes());
+        props.setPredefinedDatatypesUsed(ipsModel.getPredefinedValueDatatypes());
         DateBasedProductCmptNamingStrategy namingStrategy = new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", true); //$NON-NLS-1$ //$NON-NLS-2$
         props.setProductCmptNamingStrategy(namingStrategy);
         props
@@ -365,11 +367,15 @@ public class ProjectUtil {
                         "org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         props.setChangesOverTimeNamingConventionIdForGeneratedCode(IpsPlugin.getDefault().getIpsPreferences()
                 .getChangesOverTimeNamingConvention().getId());
-        IIpsArtefactBuilderSetInfo builderSetInfo = IpsPlugin.getDefault().getIpsModel().getIpsArtefactBuilderSetInfo(
-                props.getBuilderSetId());
+        IIpsArtefactBuilderSetInfo builderSetInfo = ipsModel.getIpsArtefactBuilderSetInfo(props.getBuilderSetId());
         if (builderSetInfo != null) {
             props.setBuilderSetConfig(builderSetInfo.createDefaultConfiguration(ipsProject));
         }
+
+        Locale localizationLocale = IpsPlugin.getMultiLanguageSupport().getLocalizationLocale();
+        props.addSupportedLanguage(localizationLocale);
+        props.setDefaultLanguage(localizationLocale);
+
         ipsProject.setProperties(props);
 
         return ipsProject;
