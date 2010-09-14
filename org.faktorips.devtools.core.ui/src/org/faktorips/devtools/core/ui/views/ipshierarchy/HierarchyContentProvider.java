@@ -19,8 +19,8 @@ import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.type.IType;
 
 /**
- * 
- * Input ITypeHierarchy Output IType Show the Hierarchy of an IType Object in a Treeviewer
+ * The HierarchyContentProvider is used with the Treeviewer in the class IpsHierarchyView Input
+ * ITypeHierarchy Output Show the Hierarchy of an IType Object in a Treeviewer
  * 
  * @author stoll
  */

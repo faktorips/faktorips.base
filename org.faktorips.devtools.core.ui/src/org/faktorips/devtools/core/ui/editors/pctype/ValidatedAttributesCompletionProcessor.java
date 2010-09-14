@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.ArgumentCheck;
@@ -44,14 +45,14 @@ public class ValidatedAttributesCompletionProcessor extends AbstractCompletionPr
             throws Exception {
 
         prefix = prefix.toLowerCase();
-        IPolicyCmptTypeAttribute[] attributes = (IPolicyCmptTypeAttribute[])pcType.getSupertypeHierarchy()
-                .getAllAttributes(pcType);
+        IAttribute[] attributes = pcType.getSupertypeHierarchy().getAllAttributes(pcType);
         List<String> validatedAttributes = Arrays.asList(rule.getValidatedAttributes());
-        for (int i = 0; i < attributes.length; i++) {
-            if (attributes[i].getAttributeType() != AttributeType.CONSTANT) {
-                if (!validatedAttributes.contains(attributes[i].getName())
-                        && attributes[i].getName().toLowerCase().startsWith(prefix)) {
-                    addToResult(result, attributes[i], documentOffset);
+        for (IAttribute attribute : attributes) {
+            IPolicyCmptTypeAttribute iPolicyCmptAttributte = (IPolicyCmptTypeAttribute)attribute;
+            if (iPolicyCmptAttributte.getAttributeType() != AttributeType.CONSTANT) {
+                if (!validatedAttributes.contains(iPolicyCmptAttributte.getName())
+                        && iPolicyCmptAttributte.getName().toLowerCase().startsWith(prefix)) {
+                    addToResult(result, iPolicyCmptAttributte, documentOffset);
                 }
             }
         }

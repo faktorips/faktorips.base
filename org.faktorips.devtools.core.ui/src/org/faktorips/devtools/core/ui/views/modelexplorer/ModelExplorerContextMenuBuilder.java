@@ -88,12 +88,10 @@ import org.faktorips.devtools.core.ui.actions.NewTableStructureAction;
 import org.faktorips.devtools.core.ui.actions.NewTestCaseAction;
 import org.faktorips.devtools.core.ui.actions.NewTestCaseTypeAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
-import org.faktorips.devtools.core.ui.actions.ShowHierarchyAction;
 import org.faktorips.devtools.core.ui.actions.ShowInstanceAction;
 import org.faktorips.devtools.core.ui.actions.ShowStructureAction;
 import org.faktorips.devtools.core.ui.actions.TableImportExportAction;
 import org.faktorips.devtools.core.ui.views.instanceexplorer.InstanceExplorer;
-import org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchyView;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
 
 /**
@@ -134,8 +132,6 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
     private TreeViewer treeViewer;
 
-    private final IAction hierarchyAction;
-
     /**
      * Creates a <tt>ModelExplorerContextMenuBuilder</tt>.
      * 
@@ -157,7 +153,6 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
                 "org.eclipse.ui.edit.delete", CommandContributionItem.STYLE_PUSH)); //$NON-NLS-1$
         refresh = ActionFactory.REFRESH.create(viewSite.getWorkbenchWindow());
         properties = ActionFactory.PROPERTIES.create(viewSite.getWorkbenchWindow());
-        hierarchyAction = new ShowHierarchyAction(treeViewer);
         IActionBars actionBars = viewSite.getActionBars();
         actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), new IpsCopyAction(treeViewer, workbenchPartSite
                 .getShell()));
@@ -369,31 +364,26 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
     }
 
     protected void createObjectInfoActions(IMenuManager manager, Object selected) {
-        if (selected instanceof IIpsElement) {
-            if (selected instanceof IProductCmpt) {
-                manager.add(new ShowStructureAction(treeViewer));
-            }
-            if (selected instanceof IProductCmpt || selected instanceof ITableContents) {
-                manager.add(new FindProductReferencesAction(treeViewer));
-            }
-            if (selected instanceof IPolicyCmptType) {
-                manager.add(new FindPolicyReferencesAction(treeViewer));
-            }
-            ShowInstanceAction showInstanceAction = new ShowInstanceAction((IIpsElement)selected, treeViewer);
-            manager.add(showInstanceAction);
-            if (!InstanceExplorer.supports(selected)) {
-                showInstanceAction.setEnabled(false);
-            }
-            manager.add(hierarchyAction);
-            if (!IpsHierarchyView.supports(selected)) {
-                hierarchyAction.setEnabled(false);
-            }
+        ShowStructureAction showStructureAction = new ShowStructureAction(treeViewer);
+        manager.add(showStructureAction);
+        showStructureAction.setEnabled(selected instanceof IIpsElement);
 
-            // TODO not to be used in this release
-            // if (selected instanceof IPolicyCmptType | selected instanceof IProductCmpt) {
-            // manager.add(new ShowAttributesAction(treeViewer));
-            // }
-        }
+        FindProductReferencesAction findProductReferencesAction = new FindProductReferencesAction(treeViewer);
+        manager.add(findProductReferencesAction);
+        findProductReferencesAction.setEnabled(selected instanceof IProductCmpt || selected instanceof ITableContents);
+
+        FindPolicyReferencesAction findPolicyReferencesAction = new FindPolicyReferencesAction(treeViewer);
+        manager.add(findPolicyReferencesAction);
+        findPolicyReferencesAction.setEnabled(selected instanceof IPolicyCmptType);
+
+        ShowInstanceAction showInstanceAction = new ShowInstanceAction((IIpsElement)selected, treeViewer);
+        showInstanceAction.setId("instanceExplorerAction"); //$NON-NLS-1$
+        manager.add(showInstanceAction);
+        showInstanceAction.setEnabled(InstanceExplorer.supports(selected));
+        // TODO not to be used in this release
+        // if (selected instanceof IPolicyCmptType | selected instanceof IProductCmpt) {
+        // manager.add(new ShowAttributesAction(treeViewer));
+        // }
     }
 
     protected void createProjectActions(IMenuManager manager, Object selected, IStructuredSelection selection) {

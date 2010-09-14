@@ -19,6 +19,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.PcTypeRefControl;
 
@@ -56,7 +57,7 @@ public class AssociationTargetRefControl extends PcTypeRefControl {
          * policy cmpt from this selection of policy cmpt types
          */
         ITypeHierarchy subTypeHierarchy = policyCmptTypeTarget.getSubtypeHierarchy();
-        IPolicyCmptType[] subTypes = (IPolicyCmptType[])subTypeHierarchy.getAllSubtypes(policyCmptTypeTarget);
+        IType[] subTypes = subTypeHierarchy.getAllSubtypes(policyCmptTypeTarget);
         if (subTypes == null) {
             subTypes = new IPolicyCmptType[0];
         }

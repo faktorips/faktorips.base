@@ -210,8 +210,9 @@
       </command>
       <command
             defaultHandler="org.faktorips.devtools.core.ui.views.ipshierarchy.ShowHierarchyHandler"
+            description="%ShowHierarchyHandler.tooltip"
             id="org.faktorips.devtools.core.ui.actions.showHierarchy"
-            name="Zeige Hierarchy">
+            name="%ShowHierarchyHandler.name">
       </command>
    </extension>
    <extension
@@ -232,6 +233,7 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             commandId="org.faktorips.devtools.core.ui.actions.showHierarchy"
+            contextId="org.faktorips.devtools.core.ui.views.modelExplorer.context"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="F4">
       </key>            
@@ -1295,6 +1297,33 @@
             </count>
          </enabledWhen>
       </handler>
+      <handler
+            class="org.faktorips.devtools.core.ui.views.ipshierarchy.ShowHierarchyHandler"
+            commandId="org.faktorips.devtools.core.ui.actions.showHierarchy">
+         <activeWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false">
+               </iterate>
+            </with>
+         </activeWhen>
+         <enabledWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false"
+                     operator="and">
+                  <adapt
+                        type="org.eclipse.core.resources.IResource">
+                     <adapt
+                           type="org.faktorips.devtools.core.model.type.IType">
+                     </adapt>
+                  </adapt>
+               </iterate>
+            </with>
+         </enabledWhen>
+      </handler>
    </extension>
 
    <extension
@@ -1324,11 +1353,13 @@
          </command>
       </menuContribution>
       <menuContribution
-            locationURI="popup:org.eclipse.ui.popup.any">
+            locationURI="popup:org.eclipse.ui.popup.any?after=instanceExplorerAction">
          <command
                commandId="org.faktorips.devtools.core.ui.actions.showHierarchy"
-               label="fff"
-               style="push">
+               icon="icons/IpsHierarchyView.gif"
+               label="%ShowHierarchyHandler.name"
+               style="push"
+               tooltip="%ShowHierarchyHandler.tooltip">
          </command>
       </menuContribution>
    </extension>
@@ -1341,6 +1372,15 @@
                   type="org.eclipse.core.resources.IResource">
             </adapter>
          </factory>
+      </extension>
+      <extension
+            point="org.eclipse.ui.contexts">
+         <context
+               description="Context for %org.faktorips.devtools.core.ui.views.modelExplorer"
+               id="org.faktorips.devtools.core.ui.views.modelExplorer.context"
+               name="%org.faktorips.devtools.core.ui.views.modelExplorer Context"
+               parentId="org.eclipse.ui.contexts.window">
+         </context>
       </extension>
    
 </plugin>

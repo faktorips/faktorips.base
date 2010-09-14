@@ -71,10 +71,15 @@ import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 
+/**
+ * The <tt>IpsHierarchyView</tt> is a <tt>ViewPart</tt> for displaying a<tt>hierarchy of ITypes</tt>
+ * 
+ * @author stoll
+ */
 public class IpsHierarchyView extends ViewPart implements IResourceChangeListener {
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchy"; //$NON-NLS-1$
     public static final String LOGO = "IpsHierarchyView.gif"; //$NON-NLS-1$
-    protected static final String LINK_TO_EDITOR_KEY = "linktoeditor"; //$NON-NLS-1$
+    protected static final String LINK_WITH_EDITOR_KEY = "linktoeditor"; //$NON-NLS-1$
     private static final String MEMENTO = "ipsHierarchyView.memento"; //$NON-NLS-1$
     private TreeViewer treeViewer;
     private Label errormsg;
@@ -172,7 +177,7 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
         toolBarManager.add(refreshAction);
 
         // clear action
-        clearAction = new Action(Messages.IpsHierarchy_tooltipClear + "@ALT+L", IpsUIPlugin.getImageHandling()
+        clearAction = new Action(Messages.IpsHierarchy_tooltipClear, IpsUIPlugin.getImageHandling()
                 .createImageDescriptor("Clear.gif")) { //$NON-NLS-1$
             @Override
             public void run() {
@@ -309,7 +314,7 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
 
     /**
      * 
-     * Update the IpsHierarchyView in chase of changes on the file
+     * Update the IpsHierarchyView in chase of changes on the object
      */
     public void resourceChanged(IResourceChangeEvent event) {
         ITypeHierarchy hierarchyTreeViewer = hierarchyContentProvider.getTypeHierarchy();
@@ -432,23 +437,30 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
         }
     }
 
+    /**
+     * Initialize the button "Link with Editor"
+     */
     @Override
     public void init(IViewSite site, IMemento memento) throws PartInitException {
         super.init(site, memento);
         if (memento != null) {
             IMemento layout = memento.getChild(MEMENTO);
             if (layout != null) {
-                Integer linkingValue = layout.getInteger(LINK_TO_EDITOR_KEY);
+                Integer linkingValue = layout.getInteger(LINK_WITH_EDITOR_KEY);
                 linkingEnabled = linkingValue == null ? false : linkingValue.intValue() == 1;
             }
         }
     }
 
+    /**
+     * Saves state of the button "Link with Editor"
+     * 
+     */
     @Override
     public void saveState(IMemento memento) {
         super.saveState(memento);
         IMemento layout = memento.createChild(MEMENTO);
-        layout.putInteger(LINK_TO_EDITOR_KEY, linkingEnabled ? 1 : 0);
+        layout.putInteger(LINK_WITH_EDITOR_KEY, linkingEnabled ? 1 : 0);
     }
 
     private class ActivationListener implements IPartListener, IWindowListener {

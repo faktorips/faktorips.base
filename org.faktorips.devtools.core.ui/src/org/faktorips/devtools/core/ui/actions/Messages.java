@@ -195,9 +195,6 @@ public class Messages extends NLS {
     public static String ShowInstanceAction_descriptionForInstances;
     public static String ShowInstanceAction_nameForInstances;
 
-    public static String ShowHierarchyAction_descriptionForTypes;
-    public static String ShowHierarchyAction_nameForTypes;
-
     public static String CreateMissingEnumContentsAction_text;
 
 }

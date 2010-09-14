@@ -118,6 +118,7 @@ import org.faktorips.devtools.core.model.testcase.TestRuleViolationType;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -2285,14 +2286,13 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         }
 
         // TODO joerg getSubtypeHierarchy better performance using IpsSrcFiles
-        IPolicyCmptType[] allSubtypes = (IPolicyCmptType[])policyCmptType.getSubtypeHierarchy().getAllSubtypes(
-                policyCmptType);
+        IType[] allSubtypes = policyCmptType.getSubtypeHierarchy().getAllSubtypes(policyCmptType);
         List<IIpsSrcFile> allIpsSrcFilesSubtypes = new ArrayList<IIpsSrcFile>();
-        for (IPolicyCmptType allSubtype : allSubtypes) {
-            if (allSubtype.isAbstract()) {
+        for (IType subtype : allSubtypes) {
+            if (subtype.isAbstract()) {
                 continue;
             }
-            allIpsSrcFilesSubtypes.add(allSubtype.getIpsSrcFile());
+            allIpsSrcFilesSubtypes.add(subtype.getIpsSrcFile());
         }
         if (!policyCmptType.isAbstract()) {
             allIpsSrcFilesSubtypes.add(policyCmptType.getIpsSrcFile());
