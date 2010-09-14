@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.deployment;
+package org.faktorips.devtools.core.internal.deployment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +29,9 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.team.core.TeamException;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.deployment.IDeploymentOperation;
+import org.faktorips.devtools.core.deployment.ITargetSystem;
+import org.faktorips.devtools.core.deployment.ITeamOperations;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -49,11 +52,11 @@ public class ReleaseAndDeploymentOperation {
         deploymentExtension = getDeploymentOperation(ipsProject);
     }
 
-    public List<String> getTargetSystems() {
+    public List<ITargetSystem> getTargetSystems() {
         if (deploymentExtension != null) {
             return deploymentExtension.getAvailableTargetSystems();
         } else {
-            return new ArrayList<String>();
+            return new ArrayList<ITargetSystem>();
         }
     }
 
@@ -61,8 +64,9 @@ public class ReleaseAndDeploymentOperation {
         return deploymentExtension;
     }
 
-    public void startReleaseBuilder(String newVersion, List<String> selectedTargetSystems, IProgressMonitor monitor)
-            throws InterruptedException, CoreException {
+    public void startReleaseBuilder(String newVersion,
+            List<ITargetSystem> selectedTargetSystems,
+            IProgressMonitor monitor) throws InterruptedException, CoreException {
         if (deploymentExtension == null) {
             throw new InterruptedException("No deployment deploymentExtension found for this project");
         }
@@ -72,8 +76,8 @@ public class ReleaseAndDeploymentOperation {
 
             // start extended release
             MessageList messageList = new MessageList();
-            if (!getDeploymentOperation(ipsProject).buildReleaseAndDeployment(selectedTargetSystems, monitor,
-                    messageList)) {
+            if (!getDeploymentOperation(ipsProject).buildReleaseAndDeployment(ipsProject, selectedTargetSystems,
+                    monitor, messageList)) {
                 throw new InterruptedException(messageList.getFirstMessage(Message.ERROR).getText());
             }
         } finally {

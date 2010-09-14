@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.deployment;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -30,7 +31,7 @@ public interface IDeploymentOperation {
      * 
      * @return A List of available target systems
      */
-    public List<String> getAvailableTargetSystems();
+    public List<ITargetSystem> getAvailableTargetSystems();
 
     /**
      * This method should start the deployment on the selected target system. If this method does
@@ -39,11 +40,13 @@ public interface IDeploymentOperation {
      * user have to change some settings, the method returns false. In this case the messages in the
      * message list are displayed. If the method returns true, the messages are ignored!
      * 
+     * @param ipsProject the project to be built
      * @param selectedTargetSystems the selected target systems
      * @param progressMonitor the progress monitor to indicate the progress
      * @return true if the deployment is ok
      */
-    public boolean buildReleaseAndDeployment(List<String> selectedTargetSystems,
+    public boolean buildReleaseAndDeployment(IIpsProject ipsProject,
+            List<ITargetSystem> selectedTargetSystems,
             IProgressMonitor progressMonitor,
             MessageList messageList);
 

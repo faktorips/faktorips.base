@@ -22,7 +22,8 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.deployment.ReleaseAndDeploymentOperation;
+import org.faktorips.devtools.core.deployment.ITargetSystem;
+import org.faktorips.devtools.core.internal.deployment.ReleaseAndDeploymentOperation;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
@@ -53,7 +54,7 @@ public class ReleaserBuilderWizard extends Wizard {
             protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
                     InterruptedException {
                 String newVersion = selectionPage.getNewVersion();
-                List<String> selectedTargetSystems = selectionPage.getSelectedTargetSystems();
+                List<ITargetSystem> selectedTargetSystems = selectionPage.getSelectedTargetSystems();
                 ReleaseAndDeploymentOperation releaseAndDeploymentOperation = selectionPage
                         .getReleaseBuilderOpertation();
                 if (releaseAndDeploymentOperation != null) {

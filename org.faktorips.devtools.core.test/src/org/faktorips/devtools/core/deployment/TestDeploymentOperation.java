@@ -17,24 +17,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.core.internal.deployment.TargetSystem;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.MessageList;
 
 public class TestDeploymentOperation implements IDeploymentOperation {
 
     @Override
-    public boolean buildReleaseAndDeployment(List<String> selectedTargetSystems,
+    public boolean buildReleaseAndDeployment(IIpsProject ipsProject,
+            List<ITargetSystem> selectedTargetSystems,
             IProgressMonitor progressMonitor,
             MessageList messageList) {
         return true;
     }
 
     @Override
-    public List<String> getAvailableTargetSystems() {
-        ArrayList<String> result = new ArrayList<String>();
-        result.add("System A");
-        result.add("System B");
-        result.add("System C");
-        result.add("System D");
+    public List<ITargetSystem> getAvailableTargetSystems() {
+        ArrayList<ITargetSystem> result = new ArrayList<ITargetSystem>();
+        result.add(new TargetSystem("System A"));
+        result.add(new TargetSystem("System B"));
+        result.add(new TargetSystem("System C"));
+        result.add(new TargetSystem("System D"));
         return result;
     }
 

@@ -22,11 +22,12 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -39,11 +40,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.deployment.IDeploymentOperation;
-import org.faktorips.devtools.core.deployment.ReleaseAndDeploymentOperation;
+import org.faktorips.devtools.core.deployment.ITargetSystem;
+import org.faktorips.devtools.core.internal.deployment.ReleaseAndDeploymentOperation;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IVersionFormat;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -57,7 +58,7 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
     private Text newVersionText;
 
     private boolean correctVersionFormat = false;
-    private TableViewer targetSystemViewer;
+    private CheckboxTableViewer targetSystemViewer;
     private ReleaseAndDeploymentOperation releaseAndDeploymentOperation;
 
     protected ReleaserBuilderWizardSelectionPage() {
@@ -104,8 +105,18 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
         layoutData.minimumHeight = 90;
         table.setLayoutData(layoutData);
 
-        targetSystemViewer = new TableViewer(table);
+        targetSystemViewer = new CheckboxTableViewer(table);
         targetSystemViewer.setContentProvider(new ArrayContentProvider());
+        targetSystemViewer.setLabelProvider(new LabelProvider() {
+            @Override
+            public String getText(Object element) {
+                if (element instanceof ITargetSystem) {
+                    ITargetSystem targetSystem = (ITargetSystem)element;
+                    return targetSystem.getName();
+                }
+                return super.getText(element);
+            }
+        });
 
         targetSystemViewer.setInput(new String[] {});
 
@@ -241,11 +252,12 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
         return newVersionText.getText();
     }
 
-    public List<String> getSelectedTargetSystems() {
-        List<String> result = new ArrayList<String>();
-        for (TableItem item : targetSystemViewer.getTable().getItems()) {
-            if (item.getChecked()) {
-                result.add(item.getText());
+    public List<ITargetSystem> getSelectedTargetSystems() {
+        List<ITargetSystem> result = new ArrayList<ITargetSystem>();
+        for (Object checkedItem : targetSystemViewer.getCheckedElements()) {
+            if (checkedItem instanceof ITargetSystem) {
+                ITargetSystem targetSystem = (ITargetSystem)checkedItem;
+                result.add(targetSystem);
             }
         }
         return result;

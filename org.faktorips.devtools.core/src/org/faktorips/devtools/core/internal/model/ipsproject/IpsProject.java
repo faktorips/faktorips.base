@@ -60,7 +60,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.IpsBuilder;
-import org.faktorips.devtools.core.deployment.ReleaseAndDeploymentOperation;
+import org.faktorips.devtools.core.internal.deployment.ReleaseAndDeploymentOperation;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.IpsModel;

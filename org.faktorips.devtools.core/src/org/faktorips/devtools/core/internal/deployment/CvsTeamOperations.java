@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.deployment;
+package org.faktorips.devtools.core.internal.deployment;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -30,6 +30,7 @@ import org.eclipse.team.internal.ccvs.core.client.Command;
 import org.eclipse.team.internal.ccvs.ui.operations.CommitOperation;
 import org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation;
 import org.eclipse.team.internal.ccvs.ui.operations.TagOperation;
+import org.faktorips.devtools.core.deployment.ITeamOperations;
 
 @SuppressWarnings("restriction")
 public class CvsTeamOperations implements ITeamOperations {
