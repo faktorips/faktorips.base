@@ -39,8 +39,6 @@ import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Image;
@@ -476,20 +474,6 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         for (CellEditor cellEditor : cellEditors) {
             addSkippedColumnIndex((IpsCellEditor)cellEditor, skippedColumnIndex);
         }
-
-        getCellEditorForLiteralNameColumn().getControl().addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (lockAndSynchronizeLiteralNames) {
-                    getCellEditorForLiteralNameColumn().deactivate();
-                }
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                // Nothing to do on focus lost event.
-            }
-        });
     }
 
     private void addSkippedColumnIndex(IpsCellEditor cellEditor, int skippedColumnIndex) {
@@ -506,20 +490,6 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         if (tableTraverseStrat != null) {
             tableTraverseStrat.clearSkippedColumns();
         }
-    }
-
-    /**
-     * Returns the cell editor for the first <tt>IEnumLiteralNameAttribute</tt> column or
-     * <tt>null</tt> if there is none.
-     * <p>
-     * <strong>Important:</strong> May only be called if an <tt>IEnumType</tt> is being edited and
-     * the cell editors are currently in sync with the <tt>IEnumType</tt>.
-     */
-    private CellEditor getCellEditorForLiteralNameColumn() {
-        if (enumType.getIndexOfEnumLiteralNameAttribute() == -1) {
-            return null;
-        }
-        return cellEditors[enumType.getIndexOfEnumLiteralNameAttribute()];
     }
 
     /**
