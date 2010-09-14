@@ -63,9 +63,8 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
     private Label versionFormatLabel;
 
     protected ReleaserBuilderWizardSelectionPage() {
-        super(Messages.ReleaserBuilderWizardSelectionPage_title);
-        setTitle(Messages.ReleaserBuilderWizardSelectionPage_title);
-        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/DeploymentWizard.png")); //$NON-NLS-1$
+        super(Messages.ReleaserBuilderWizardSelectionPage_title, Messages.ReleaserBuilderWizardSelectionPage_title,
+                IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/DeploymentWizard.png")); //$NON-NLS-1$
     }
 
     @Override
@@ -171,7 +170,9 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
         }
 
         setControl(pageControl);
-        setMessage("", DialogPage.NONE); //$NON-NLS-1$
+        if (getMessageType() != DialogPage.INFORMATION) {
+            setMessage("", DialogPage.NONE); //$NON-NLS-1$
+        }
     }
 
     public void setIpsProject(IIpsProject ipsProject) {

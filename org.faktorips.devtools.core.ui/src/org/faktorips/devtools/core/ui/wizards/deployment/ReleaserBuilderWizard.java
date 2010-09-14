@@ -39,6 +39,7 @@ public class ReleaserBuilderWizard extends Wizard {
     public ReleaserBuilderWizard() {
         selectionPage = new ReleaserBuilderWizardSelectionPage();
         setNeedsProgressMonitor(true);
+        setWindowTitle(Messages.ReleaserBuilderWizard_title);
     }
 
     @Override
