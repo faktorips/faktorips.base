@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -65,7 +65,7 @@ public class DescriptionEditComposite extends Composite {
         this.uiToolkit = uiToolkit;
         this.describedElement = describedElement;
 
-        languageCodes = new HashMap<String, String>();
+        languageCodes = new LinkedHashMap<String, String>();
         for (IDescription description : describedElement.getDescriptions()) {
             Locale locale = description.getLocale();
             if (locale != null) {

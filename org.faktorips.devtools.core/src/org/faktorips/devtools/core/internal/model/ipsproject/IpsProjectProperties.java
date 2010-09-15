@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -122,7 +123,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private IPersistenceOptions persistenceOptions = new PersistenceOptions();
 
     /** The set of natural languages supported by the IPS project. */
-    private Set<ISupportedLanguage> supportedLanguages = new HashSet<ISupportedLanguage>(2);
+    private Set<ISupportedLanguage> supportedLanguages = new LinkedHashSet<ISupportedLanguage>(2);
 
     public IpsProjectProperties() {
         super();

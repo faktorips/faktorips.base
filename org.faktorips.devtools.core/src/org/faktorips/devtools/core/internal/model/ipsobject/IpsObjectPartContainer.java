@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -881,7 +880,23 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @see ILabeledElement#getLabels()
      */
     public List<ILabel> getLabels() {
-        return Collections.unmodifiableList(labels);
+        List<ILabel> orderedLabels = new ArrayList<ILabel>(labels.size());
+        for (ISupportedLanguage language : getIpsProject().getProperties().getSupportedLanguages()) {
+            Locale locale = language.getLocale();
+            if (locale == null) {
+                continue;
+            }
+            ILabel label = getLabel(locale);
+            if (label != null) {
+                orderedLabels.add(label);
+            }
+        }
+        for (ILabel label : labels) {
+            if (!(orderedLabels.contains(label))) {
+                orderedLabels.add(label);
+            }
+        }
+        return orderedLabels;
     }
 
     /**
@@ -966,7 +981,23 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @see IDescribedElement#getDescriptions()
      */
     public List<IDescription> getDescriptions() {
-        return Collections.unmodifiableList(descriptions);
+        List<IDescription> orderedDescriptions = new ArrayList<IDescription>(descriptions.size());
+        for (ISupportedLanguage language : getIpsProject().getProperties().getSupportedLanguages()) {
+            Locale locale = language.getLocale();
+            if (locale == null) {
+                continue;
+            }
+            IDescription description = getDescription(locale);
+            if (description != null) {
+                orderedDescriptions.add(description);
+            }
+        }
+        for (IDescription description : descriptions) {
+            if (!(orderedDescriptions.contains(description))) {
+                orderedDescriptions.add(description);
+            }
+        }
+        return orderedDescriptions;
     }
 
     /**

@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -42,6 +43,8 @@ import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -615,24 +618,32 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertNull(container.getLabel(Locale.KOREAN));
     }
 
-    public void testGetDescriptions() {
+    public void testGetDescriptions() throws CoreException {
+        changeSupportedLanguagesOrder();
         List<IDescription> descriptionList = container.getDescriptions();
-        assertEquals(2, descriptionList.size());
-        try {
-            descriptionList.remove(descriptionList.get(0));
-            fail();
-        } catch (UnsupportedOperationException e) {
-        }
+        assertEquals(descriptionList.get(0), usDescription);
+        assertEquals(descriptionList.get(1), germanDescription);
     }
 
-    public void testGetLabels() {
+    public void testGetDescriptionsDefensiveCopy() {
+        List<IDescription> descriptions = container.getDescriptions();
+        int descriptionCount = descriptions.size();
+        descriptions.remove(0);
+        assertEquals(descriptionCount, container.getDescriptions().size());
+    }
+
+    public void testGetLabels() throws CoreException {
+        changeSupportedLanguagesOrder();
         List<ILabel> labelList = container.getLabels();
-        assertEquals(2, labelList.size());
-        try {
-            labelList.remove(labelList.get(0));
-            fail();
-        } catch (UnsupportedOperationException e) {
-        }
+        assertEquals(labelList.get(0), usLabel);
+        assertEquals(labelList.get(1), germanLabel);
+    }
+
+    public void testGetLabelsDefensiveCopy() {
+        List<ILabel> labels = container.getLabels();
+        int labelCount = labels.size();
+        labels.remove(0);
+        assertEquals(labelCount, container.getLabels().size());
     }
 
     public void testGetCaption() throws CoreException {
@@ -659,6 +670,18 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     public void testGetLastResortPluralCaption() {
         assertEquals("", container.getLastResortPluralCaption());
+    }
+
+    private void changeSupportedLanguagesOrder() throws CoreException {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        Set<ISupportedLanguage> supportedLanguages = properties.getSupportedLanguages();
+        ISupportedLanguage[] languageArray = supportedLanguages.toArray(new ISupportedLanguage[supportedLanguages
+                .size()]);
+        properties.removeSupportedLanguage(languageArray[0]);
+        properties.removeSupportedLanguage(languageArray[1]);
+        properties.addSupportedLanguage(languageArray[1].getLocale());
+        properties.addSupportedLanguage(languageArray[0].getLocale());
+        ipsProject.setProperties(properties);
     }
 
     class TestIpsObjectPartContainer extends AtomicIpsObjectPart implements IDescribedElement, ILabeledElement {

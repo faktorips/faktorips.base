@@ -56,7 +56,10 @@ public interface IDescribedElement extends IIpsElement {
     public String getDescriptionText(Locale locale);
 
     /**
-     * Returns an unmodifiable view on the list of descriptions of this element.
+     * Returns the list of descriptions this element currently has attached.
+     * <p>
+     * Note that only a defensive copy is returned. The descriptions are ordered according to the
+     * order of the supported languages as they occur in the {@code .ipsproject} file.
      */
     public List<IDescription> getDescriptions();
 

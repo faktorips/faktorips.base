@@ -44,7 +44,10 @@ public interface ILabeledElement extends IIpsElement {
     public ILabel getLabel(Locale locale);
 
     /**
-     * Returns an unmodifiable view on the list of labels this element currently has attached.
+     * Returns the list of labels this element currently has attached.
+     * <p>
+     * Note that only a defensive copy is returned. The labels are ordered according to the order of
+     * the supported languages as they occur in the {@code .ipsproject} file.
      */
     public List<ILabel> getLabels();
 
