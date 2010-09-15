@@ -15,9 +15,9 @@ package org.faktorips.devtools.core.ui.actions;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -47,6 +47,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
@@ -152,27 +154,21 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
             for (IIpsProject ipsProject : ipsProjects) {
                 List<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>();
                 try {
-                    ipsProject.findAllIpsSrcFiles(ipsSrcFiles);
+                    IIpsPackageFragmentRoot[] fragmentRoots = ipsProject.getIpsPackageFragmentRoots();
+                    for (IIpsPackageFragmentRoot root : fragmentRoots) {
+                        for (IIpsPackageFragment fragment : root.getIpsPackageFragments()) {
+                            ipsSrcFiles.addAll(Arrays.asList(fragment.getIpsSrcFiles()));
+                        }
+                    }
                 } catch (CoreException e) {
                     throw new RuntimeException(e);
                 }
 
-                /*
-                 * We are only interested in the source files of the current project and don't want
-                 * all source files accessible from the object path.
-                 */
-                Set<IIpsSrcFile> relevantIpsSrcFiles = new LinkedHashSet<IIpsSrcFile>();
-                for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
-                    if (ipsProject.equals(ipsSrcFile.getIpsProject())) {
-                        relevantIpsSrcFiles.add(ipsSrcFile);
-                    }
-                }
-
                 Set<Locale> supportedLocales = getSupportedLocales(ipsProject);
 
-                int totalWork = relevantIpsSrcFiles.size();
+                int totalWork = ipsSrcFiles.size();
                 monitor.beginTask(NLS.bind(Messages.CleanUpTranslationsAction_progressTask, ipsProject), totalWork);
-                for (IIpsSrcFile ipsSrcFile : relevantIpsSrcFiles) {
+                for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
                     try {
                         IIpsObject ipsObject = ipsSrcFile.getIpsObject();
                         cleanUp(ipsObject, supportedLocales);
