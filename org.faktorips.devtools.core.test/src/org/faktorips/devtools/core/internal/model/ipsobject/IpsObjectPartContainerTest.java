@@ -82,7 +82,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
 
-        ipsProject = newIpsProjectWithMultiLanguageSupport();
+        ipsProject = newIpsProject();
 
         container = new TestIpsObjectPartContainer();
         model = (IpsModel)container.getIpsModel();

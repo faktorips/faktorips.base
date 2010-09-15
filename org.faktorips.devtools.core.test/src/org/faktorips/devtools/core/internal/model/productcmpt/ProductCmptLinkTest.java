@@ -280,8 +280,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
         association.setTargetRoleSingular("CoverageType");
 
-        ILabel label = association.newLabel();
-        label.setLocale(Locale.US);
+        ILabel label = association.getLabel(Locale.US);
         label.setValue("foo");
         label.setPluralValue("foos");
 

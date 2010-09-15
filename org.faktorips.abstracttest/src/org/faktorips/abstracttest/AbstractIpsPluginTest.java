@@ -228,43 +228,25 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Creates a new IpsProject with the given name.
      */
     protected IIpsProject newIpsProject(final String name) throws CoreException {
-        return newIpsProjectWithMultiLanguageSupport(name, new ArrayList<Locale>(0));
-    }
-
-    /**
-     * Creates a new IpsProject with 2 supported locales German and US, whereas German is the
-     * default language.
-     */
-    protected IIpsProject newIpsProjectWithMultiLanguageSupport() throws CoreException {
-        return newIpsProjectWithMultiLanguageSupport("TestProject");
-    }
-
-    /**
-     * Creates a new IpsProject with the given name and 2 supported locales German and US, whereas
-     * German is the default language.
-     */
-    protected IIpsProject newIpsProjectWithMultiLanguageSupport(String name) throws CoreException {
         List<Locale> supportedLocales = new ArrayList<Locale>(2);
         supportedLocales.add(Locale.GERMAN);
         supportedLocales.add(Locale.US);
-        return newIpsProjectWithMultiLanguageSupport(name, supportedLocales);
+        return newIpsProject(name, supportedLocales);
     }
 
     /**
      * Creates a new IPS project with multi-language support for the given locales. The first locale
      * in the list will be used as default language.
      */
-    protected IIpsProject newIpsProjectWithMultiLanguageSupport(List<Locale> supportedLocales) throws CoreException {
-        return newIpsProjectWithMultiLanguageSupport("TestProject", supportedLocales);
+    protected IIpsProject newIpsProject(List<Locale> supportedLocales) throws CoreException {
+        return newIpsProject("TestProject", supportedLocales);
     }
 
     /**
      * Creates a new IPS project with the given name and multi-language support for the given
      * locales. The first locale in the list will be used as default language.
      */
-    protected IIpsProject newIpsProjectWithMultiLanguageSupport(final String name, List<Locale> supportedLocales)
-            throws CoreException {
-
+    protected IIpsProject newIpsProject(final String name, List<Locale> supportedLocales) throws CoreException {
         IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
             @Override
             public void run(IProgressMonitor monitor) throws CoreException {

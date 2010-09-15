@@ -13,8 +13,10 @@
 
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -42,7 +44,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        project = newIpsProject("TestProject");
+        project = newIpsProject("TestProject", new ArrayList<Locale>());
         table = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "TestTable");
     }
 

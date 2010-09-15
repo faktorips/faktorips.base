@@ -88,11 +88,11 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         policyCmptType.setConfigurableByProductCmptType(true);
 
         IIpsElement[] elements = policyCmptType.getChildren();
-        assertEquals(4, elements.length);
-        assertEquals(a1, elements[0]);
-        assertEquals(r1, elements[1]);
-        assertEquals(m1, elements[2]);
-        assertEquals(rule1, elements[3]);
+        List<IIpsElement> childrenList = Arrays.asList(elements);
+        assertTrue(childrenList.contains(a1));
+        assertTrue(childrenList.contains(r1));
+        assertTrue(childrenList.contains(m1));
+        assertTrue(childrenList.contains(rule1));
     }
 
     public void testValidateProductCmptTypeDoesNotConfigureThisType() throws CoreException {
@@ -601,9 +601,8 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
     public void testToXml() throws CoreException {
         policyCmptType.setConfigurableByProductCmptType(true);
         policyCmptType.setProductCmptType("Product");
-        IDescription description = policyCmptType.newDescription();
+        IDescription description = policyCmptType.getDescription(Locale.US);
         description.setText("blabla");
-        description.setLocale(Locale.US);
         policyCmptType.setAbstract(true);
         policyCmptType.setSupertype("NewSuperType");
         IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();

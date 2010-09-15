@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.DependencyDetail;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -212,7 +213,10 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testGetChildren() throws CoreException {
-        assertEquals(2, genderEnumType.getChildren().length);
+        IIpsElement[] children = genderEnumType.getChildren();
+        List<IIpsElement> childrenList = Arrays.asList(children);
+        assertTrue(childrenList.contains(genderEnumAttributeId));
+        assertTrue(childrenList.contains(genderEnumAttributeName));
     }
 
     public void testNewEnumAttribute() throws CoreException {

@@ -13,7 +13,9 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -33,7 +35,7 @@ public class TimedIpsObjectTest extends AbstractIpsPluginTest {
         super.setUp();
         // we use the ProductCmptImpl to test the TimedIpsObject class
         // because TimedIpsObject is abstract.
-        IIpsProject project = newIpsProject("TestProject");
+        IIpsProject project = newIpsProject("TestProject", new ArrayList<Locale>());
         timedObject = newProductCmpt(project, "Product");
         ((ProductCmpt)timedObject).setRuntimeId("abc");
     }

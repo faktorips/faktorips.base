@@ -474,11 +474,9 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         attribute.setName("attribute");
         configElement.setPolicyCmptTypeAttribute("attribute");
 
-        Locale locale = Locale.US;
-        ILabel label = attribute.newLabel();
-        label.setLocale(locale);
+        ILabel label = attribute.getLabel(Locale.US);
         label.setValue("TheCaption");
-        assertEquals("TheCaption", configElement.getCaption(locale));
+        assertEquals("TheCaption", configElement.getCaption(Locale.US));
     }
 
     public void testGetCaptionNotExistent() throws CoreException {

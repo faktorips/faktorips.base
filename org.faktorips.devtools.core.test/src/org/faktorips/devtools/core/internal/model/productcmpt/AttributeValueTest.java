@@ -143,11 +143,9 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     }
 
     public void testGetCaption() throws CoreException {
-        Locale locale = Locale.US;
-        ILabel label = attribute.newLabel();
-        label.setLocale(locale);
+        ILabel label = attribute.getLabel(Locale.US);
         label.setValue("TheCaption");
-        assertEquals("TheCaption", attrValue.getCaption(locale));
+        assertEquals("TheCaption", attrValue.getCaption(Locale.US));
     }
 
     public void testGetCaptionNotExistent() throws CoreException {

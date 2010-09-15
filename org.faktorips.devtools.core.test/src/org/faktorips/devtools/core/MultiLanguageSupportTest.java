@@ -77,7 +77,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         super.setUp();
 
         support = IpsPlugin.getMultiLanguageSupport();
-        ipsProject = newIpsProjectWithMultiLanguageSupport();
+        ipsProject = newIpsProject();
 
         policyCmptType = newPolicyCmptType(ipsProject, "TestPolicy");
         association = policyCmptType.newAssociation();

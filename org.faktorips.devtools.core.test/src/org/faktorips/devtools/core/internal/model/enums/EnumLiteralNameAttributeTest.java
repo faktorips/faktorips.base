@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -41,18 +40,15 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testXml() throws ParserConfigurationException, CoreException {
-        Element xmlElement = paymentMode.toXml(createXmlDocument(IEnumLiteralNameAttribute.XML_TAG));
-        NamedNodeMap attributes = xmlElement.getChildNodes().item(2).getAttributes();
+        Element xmlElement = literalNameAttribute.toXml(createXmlDocument(IEnumLiteralNameAttribute.XML_TAG));
+        NamedNodeMap attributes = xmlElement.getAttributes();
         assertEquals("name", attributes.getNamedItem(
                 IEnumLiteralNameAttribute.PROPERTY_DEFAULT_VALUE_PROVIDER_ATTRIBUTE).getTextContent());
-        assertEquals(5, xmlElement.getChildNodes().getLength());
 
-        IEnumType loadedEnumType = newEnumType(ipsProject, "LoadedEnumType");
-        loadedEnumType.initFromXml(xmlElement);
-        IEnumLiteralNameAttribute literalNameAttribute = loadedEnumType.getEnumLiteralNameAttribute();
-        assertEquals(IEnumLiteralNameAttribute.DEFAULT_NAME, literalNameAttribute.getName());
-        assertEquals("name", literalNameAttribute.getDefaultValueProviderAttribute());
-        assertTrue(loadedEnumType.containsEnumLiteralNameAttribute());
+        IEnumLiteralNameAttribute loadedAttribute = paymentMode.newEnumLiteralNameAttribute();
+        loadedAttribute.initFromXml(xmlElement);
+        assertEquals(IEnumLiteralNameAttribute.DEFAULT_NAME, loadedAttribute.getName());
+        assertEquals("name", loadedAttribute.getDefaultValueProviderAttribute());
     }
 
     public void testValidate() throws CoreException {

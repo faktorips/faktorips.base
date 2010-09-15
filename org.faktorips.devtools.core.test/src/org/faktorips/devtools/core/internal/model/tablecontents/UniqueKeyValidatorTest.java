@@ -13,8 +13,10 @@
 
 package org.faktorips.devtools.core.internal.model.tablecontents;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -41,7 +43,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        project = newIpsProject("TestProject");
+        project = newIpsProject("TestProject", new ArrayList<Locale>());
         table = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "Tc");
     }
 

@@ -126,8 +126,8 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     public void testXml() throws ParserConfigurationException, CoreException {
-        Element xmlElement = genderEnumType.toXml(createXmlDocument(IEnumAttribute.XML_TAG));
-        NamedNodeMap attributes = xmlElement.getChildNodes().item(0).getAttributes();
+        Element xmlElement = genderEnumAttributeId.toXml(createXmlDocument(IEnumAttribute.XML_TAG));
+        NamedNodeMap attributes = xmlElement.getAttributes();
         assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME, attributes.getNamedItem(IIpsElement.PROPERTY_NAME).getTextContent());
         assertEquals(Datatype.STRING.getQualifiedName(), attributes.getNamedItem(IEnumAttribute.PROPERTY_DATATYPE)
                 .getTextContent());
@@ -136,18 +136,15 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertFalse(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI)
                 .getTextContent()));
         assertFalse(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_INHERITED).getTextContent()));
-        assertEquals(2, xmlElement.getChildNodes().getLength());
 
-        IEnumType loadedEnumType = newEnumType(ipsProject, "LoadedEnumType");
-        loadedEnumType.initFromXml(xmlElement);
-        IEnumAttribute idAttribute = loadedEnumType.getEnumAttributes(true).get(0);
-        assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME, idAttribute.getName());
-        assertEquals(Datatype.STRING.getQualifiedName(), idAttribute.getDatatype());
-        assertTrue(idAttribute.isUnique());
-        assertTrue(idAttribute.isIdentifier());
-        assertFalse(idAttribute.isUsedAsNameInFaktorIpsUi());
-        assertFalse(idAttribute.isInherited());
-        assertEquals(2, loadedEnumType.getEnumAttributesCountIncludeSupertypeCopies(true));
+        IEnumAttribute loadedEnumAttribute = genderEnumType.newEnumAttribute();
+        loadedEnumAttribute.initFromXml(xmlElement);
+        assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME, loadedEnumAttribute.getName());
+        assertEquals(Datatype.STRING.getQualifiedName(), loadedEnumAttribute.getDatatype());
+        assertTrue(loadedEnumAttribute.isUnique());
+        assertTrue(loadedEnumAttribute.isIdentifier());
+        assertFalse(loadedEnumAttribute.isUsedAsNameInFaktorIpsUi());
+        assertFalse(loadedEnumAttribute.isInherited());
     }
 
     public void testValidateThis() throws CoreException {

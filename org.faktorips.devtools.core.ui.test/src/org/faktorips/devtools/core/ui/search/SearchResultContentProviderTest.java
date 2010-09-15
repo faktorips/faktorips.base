@@ -13,7 +13,9 @@
 
 package org.faktorips.devtools.core.ui.search;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -46,7 +48,7 @@ public class SearchResultContentProviderTest extends AbstractIpsPluginTest {
     protected void setUp() throws Exception {
         super.setUp();
         provider = new SearchResultContentProvider(null);
-        proj = newIpsProject("TestProjekt");
+        proj = newIpsProject("TestProjekt", new ArrayList<Locale>());
         root = proj.getIpsPackageFragmentRoots()[0];
         pcType = newPolicyCmptType(root, "TestPCType");
         pcType2 = newPolicyCmptType(root, "TestPCType2");

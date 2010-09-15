@@ -13,7 +13,9 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.util.Arrays;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -383,11 +385,11 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         IFormula formula = generation.newFormula();
 
         IIpsElement[] children = generation.getChildren();
-        assertEquals(4, children.length);
-        assertSame(element, children[0]);
-        assertSame(usage, children[1]);
-        assertSame(formula, children[2]);
-        assertSame(link, children[3]);
+        List<IIpsElement> childrenList = Arrays.asList(children);
+        assertTrue(childrenList.contains(element));
+        assertTrue(childrenList.contains(usage));
+        assertTrue(childrenList.contains(formula));
+        assertTrue(childrenList.contains(link));
     }
 
     public void testGetConfigElements() {

@@ -281,9 +281,8 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         IIpsSrcFile sourceFile = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
         IPolicyCmptType object = (PolicyCmptType)sourceFile.getIpsObject();
         IPolicyCmptTypeAttribute attribute = object.newPolicyCmptTypeAttribute();
-        IDescription description = attribute.newDescription();
+        IDescription description = attribute.getDescription(Locale.US);
         description.setText("blabla");
-        description.setLocale(Locale.US);
         sourceFile.save(true, null);
 
         IFile file = sourceFile.getCorrespondingFile();

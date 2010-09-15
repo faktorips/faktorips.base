@@ -308,8 +308,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         association.setInverseAssociation("reverse");
         association.setMinCardinality(2);
         association.setMaxCardinality(3);
-        IDescription description = association.newDescription();
-        description.setLocale(Locale.US);
+        IDescription description = association.getDescription(Locale.US);
         description.setText("blabla");
 
         Element element = association.toXml(newDocument());

@@ -13,8 +13,10 @@
 
 package org.faktorips.devtools.core.ui.team.compare.productcmpt;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import org.eclipse.compare.ResourceNode;
 import org.eclipse.compare.structuremergeviewer.IStructureCreator;
@@ -52,7 +54,7 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        IIpsProject proj = newIpsProject("TestProject");
+        IIpsProject proj = newIpsProject("TestProject", new ArrayList<Locale>());
         root = proj.getIpsPackageFragmentRoots()[0];
         product = newProductCmpt(root, "TestProductCmpt");
         IProductCmpt productReferenced = newProductCmpt(root, "TestProductCmptReferenced");

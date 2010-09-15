@@ -205,8 +205,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         persTypeInfo.setDiscriminatorValue("A");
         persTypeInfo.setInheritanceStrategy(InheritanceStrategy.JOINED_SUBCLASS);
         persTypeInfo.setTableName("Table1");
-        IDescription description = persTypeInfo.newDescription();
-        description.setLocale(Locale.US);
+        IDescription description = persTypeInfo.getDescription(Locale.US);
         description.setText("persistence descr");
         Element element = policyCmptType.toXml(newDocument());
 
