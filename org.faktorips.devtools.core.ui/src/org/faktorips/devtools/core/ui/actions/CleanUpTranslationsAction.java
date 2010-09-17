@@ -97,6 +97,11 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
             return;
         }
 
+        boolean editorsSaved = IpsPlugin.getDefault().getWorkbench().saveAllEditors(true);
+        if (!(editorsSaved)) {
+            return;
+        }
+
         /*
          * Collect the potential different IPS projects of the selected elements as we want to
          * batch-execute the action on all projects.
@@ -182,6 +187,12 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
                     int totalWork = ipsSrcFiles.size();
                     monitor.beginTask(NLS.bind(Messages.CleanUpTranslationsAction_progressTask, ipsProject), totalWork);
                     for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+                        /*
+                         * If the source file is opened in an editor and the user has de-selected
+                         * the check box to save the file we discard any changes made by the user
+                         */
+                        ipsSrcFile.discardChanges();
+
                         try {
                             IIpsObject ipsObject = ipsSrcFile.getIpsObject();
                             cleanUp(ipsObject, supportedLocales);
