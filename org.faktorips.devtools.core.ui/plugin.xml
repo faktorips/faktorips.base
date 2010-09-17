@@ -196,10 +196,10 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            name="%org.faktorips.devtools.core.openIpsObject.label"
-            description="%org.faktorips.devtools.core.openIpsObject.tooltip"
             categoryId="org.faktorips.devtools.core.ui.category.navigate"
-            id="org.faktorips.devtools.core.openIpsObject">
+            description="%org.faktorips.devtools.core.openIpsObject.tooltip"
+            id="org.faktorips.devtools.core.openIpsObject"
+            name="%org.faktorips.devtools.core.openIpsObject.label">
       </command>
       <category
             id="org.faktorips.devtools.core.ui.category.navigate"
@@ -215,6 +215,12 @@
             description="%org.faktorips.devtools.core.launchIpsTest.debug.description"
             categoryId="org.eclipse.debug.ui.category.run"
             id="org.faktorips.devtools.core.launchIpsTest.debug">
+      </command>
+      <command
+            defaultHandler="org.faktorips.devtools.core.ui.views.ipshierarchy.ShowHierarchyHandler"
+            description="%ShowHierarchyHandler.tooltip"
+            id="org.faktorips.devtools.core.ui.actions.showHierarchy"
+            name="%ShowHierarchyHandler.name">
       </command>
    </extension>
    <extension
@@ -232,7 +238,13 @@
       <key
             sequence="M3+M2+X I"
             commandId="org.faktorips.devtools.core.launchIpsTest.run"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>            
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+      <key
+            commandId="org.faktorips.devtools.core.ui.actions.showHierarchy"
+            contextId="org.faktorips.devtools.core.ui.views.modelExplorer.context"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="F4">
+      </key>            
    </extension>
    
 
@@ -614,6 +626,13 @@
             id="testCaseEditor"
             name="%testCaseEditor">
         </editor>
+       <editor
+             class="org.faktorips.devtools.core.ui.editors.projectproperties.ProjectPropertyEditor"
+             default="true"
+             extensions="ipsproject"
+             id="projectpropertiesEditor"
+             name="name">
+       </editor>
 	</extension>
 
 <!-- 
@@ -933,6 +952,15 @@
             icon="icons/InstanceExplorer.gif"
             id="org.faktorips.devtools.core.ui.views.instanceexplorer"
             name="Instance-Explorer">
+      </view>
+      <view
+            allowMultiple="false"
+            category="org.faktorips.devtools.productDefinitionCategory"
+            class="org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchyView"
+            icon="icons/IpsHierarchyView.gif"
+            id="org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchy"
+            name="IPS Hierarchy"
+            restorable="true">
       </view>
    </extension>
    
@@ -1355,6 +1383,33 @@
             </count>
          </enabledWhen>
       </handler>
+      <handler
+            class="org.faktorips.devtools.core.ui.views.ipshierarchy.ShowHierarchyHandler"
+            commandId="org.faktorips.devtools.core.ui.actions.showHierarchy">
+         <activeWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false">
+               </iterate>
+            </with>
+         </activeWhen>
+         <enabledWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false"
+                     operator="and">
+                  <adapt
+                        type="org.eclipse.core.resources.IResource">
+                     <adapt
+                           type="org.faktorips.devtools.core.model.type.IType">
+                     </adapt>
+                  </adapt>
+               </iterate>
+            </with>
+         </enabledWhen>
+      </handler>
    </extension>
 
    <extension
@@ -1383,6 +1438,16 @@
                style="push">
          </command>
       </menuContribution>
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any?after=instanceExplorerAction">
+         <command
+               commandId="org.faktorips.devtools.core.ui.actions.showHierarchy"
+               icon="icons/IpsHierarchyView.gif"
+               label="%ShowHierarchyHandler.name"
+               style="push"
+               tooltip="%ShowHierarchyHandler.tooltip">
+         </command>
+      </menuContribution>
    </extension>
       <extension
             point="org.eclipse.core.runtime.adapters">
@@ -1393,6 +1458,15 @@
                   type="org.eclipse.core.resources.IResource">
             </adapter>
          </factory>
+      </extension>
+      <extension
+            point="org.eclipse.ui.contexts">
+         <context
+               description="Context for %org.faktorips.devtools.core.ui.views.modelExplorer"
+               id="org.faktorips.devtools.core.ui.views.modelExplorer.context"
+               name="%org.faktorips.devtools.core.ui.views.modelExplorer Context"
+               parentId="org.eclipse.ui.contexts.window">
+         </context>
       </extension>
    
 </plugin>

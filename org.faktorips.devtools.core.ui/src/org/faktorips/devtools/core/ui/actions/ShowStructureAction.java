@@ -64,4 +64,14 @@ public class ShowStructureAction extends IpsAction {
         }
     }
 
+    @Override
+    protected boolean computeEnabledProperty(IStructuredSelection selection) {
+        IIpsObject[] ipsObjects = getIpsObjectsForSelection(selection);
+        if (ipsObjects.length != 1) {
+            return false;
+        }
+        IIpsObject selected = ipsObjects[0];
+        return selected instanceof IProductCmpt;
+    }
+
 }

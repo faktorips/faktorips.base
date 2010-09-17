@@ -42,6 +42,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -271,6 +272,20 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         IpsPlugin.getDefault().getIpsModel().addChangeListener(IpsObjectEditor.this);
         IpsPlugin.getDefault().getIpsModel().addModifcationStatusChangeListener(IpsObjectEditor.this);
         IpsPlugin.getDefault().getIpsPreferences().addChangeListener(IpsObjectEditor.this);
+        activateContext();
+    }
+
+    /**
+     * 
+     * Activate a context that this view uses. It will be tied to this * view activation events and
+     * will be removed when the view is
+     * 
+     * disposed.
+     */
+
+    private void activateContext() {
+        IContextService serivce = (IContextService)getSite().getService(IContextService.class);
+        serivce.activateContext("org.faktorips.devtools.core.ui.views.modelExplorer.context"); //$NON-NLS-1$
     }
 
     @Override

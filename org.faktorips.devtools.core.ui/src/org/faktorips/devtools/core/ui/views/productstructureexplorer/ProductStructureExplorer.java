@@ -84,7 +84,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.LinkDropListener;
 import org.faktorips.devtools.core.ui.actions.CollapseAllAction;
 import org.faktorips.devtools.core.ui.actions.ExpandAllAction;
-import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
+import org.faktorips.devtools.core.ui.actions.SearchReferencesAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeepCopyAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.ShowInstanceAction;
@@ -518,7 +518,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         menumanager.add(copyProductAction);
 
         menumanager.add(new Separator("otherviews")); //$NON-NLS-1$
-        final IAction findReferenceAction = new FindProductReferencesAction(treeViewer);
+        final IAction findReferenceAction = new SearchReferencesAction(treeViewer);
         menumanager.add(findReferenceAction);
         final IAction showInstancesAction = new ShowInstanceAction(treeViewer);
         menumanager.add(showInstancesAction);

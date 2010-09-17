@@ -11,11 +11,9 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.pctype;
+package org.faktorips.devtools.core.model.type;
 
-import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 
 /**
  * Represents the hierarchy formed by the sub type / super type relationship between types.

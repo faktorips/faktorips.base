@@ -36,8 +36,10 @@ import org.eclipse.ui.dialogs.FilteredList;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.ITypeHierarchy;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
@@ -139,23 +141,26 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
     }
 
     private IPolicyCmptTypeAttribute[] getElements() throws CoreException {
-        IPolicyCmptTypeAttribute[] attributes = typeHierarchy.getAllAttributesRespectingOverride(policyCmptType);
+        IAttribute[] attributes = typeHierarchy.getAllAttributesRespectingOverride(policyCmptType);
         List<IPolicyCmptTypeAttribute> attributesInDialog = new ArrayList<IPolicyCmptTypeAttribute>();
-        for (IPolicyCmptTypeAttribute attribute : attributes) {
-            if (isAllowedAttribute(attribute)) {
-                attributesInDialog.add(attribute);
+        for (IAttribute attribute : attributes) {
+            IPolicyCmptTypeAttribute policyCmptarttribute = (IPolicyCmptTypeAttribute)attribute;
+            if (isAllowedAttribute(policyCmptarttribute)) {
+                attributesInDialog.add(policyCmptarttribute);
             }
         }
         if (showSubtypes) {
             if (subtypeHierarchy == null) {
                 subtypeHierarchy = policyCmptType.getSubtypeHierarchy();
             }
-            IPolicyCmptType[] allSubtypes = subtypeHierarchy.getAllSubtypes(policyCmptType);
-            for (IPolicyCmptType allSubtype : allSubtypes) {
-                attributes = allSubtype.getPolicyCmptTypeAttributes();
-                for (IPolicyCmptTypeAttribute attribute : attributes) {
-                    if (isAllowedAttribute(attribute)) {
-                        attributesInDialog.add(attribute);
+            IType[] allSubtypes = subtypeHierarchy.getAllSubtypes(policyCmptType);
+            for (IType allSubtype : allSubtypes) {
+                IPolicyCmptType policyCmptTypeAllSubtype = (IPolicyCmptType)allSubtype;
+                attributes = policyCmptTypeAllSubtype.getPolicyCmptTypeAttributes();
+                for (IAttribute attribute : attributes) {
+                    IPolicyCmptTypeAttribute policyCmptarttribute = (IPolicyCmptTypeAttribute)attribute;
+                    if (isAllowedAttribute(policyCmptarttribute)) {
+                        attributesInDialog.add(policyCmptarttribute);
                     }
                 }
             }

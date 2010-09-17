@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.internal.model.type.Method;
 import org.faktorips.devtools.core.internal.model.type.Type;
+import org.faktorips.devtools.core.internal.model.type.TypeHierarchy;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -45,13 +46,13 @@ import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.ITypeHierarchy;
 import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -192,22 +193,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         return (IPolicyCmptTypeAttribute)newAttribute();
     }
 
-    /**
-     * Returns the list holding the attributes as a reference. Package private for use in
-     * TypeHierarchy.
-     */
-    List<?> getAttributeList() {
-        return attributes.getBackingList();
-    }
-
-    /**
-     * Returns the list holding the methods as a reference. Package private for use in
-     * TypeHierarchy.
-     */
-    List<?> getMethodList() {
-        return methods.getBackingList();
-    }
-
     @Override
     public boolean isAggregateRoot() throws CoreException {
         IsAggregrateRootVisitor visitor = new IsAggregrateRootVisitor();
@@ -227,14 +212,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         return r;
     }
 
-    /**
-     * Returns the list holding the associations as a reference. Package private for use in
-     * TypeHierarchy.
-     */
-    List<?> getAssociationList() {
-        return associations.getBackingList();
-    }
-
     @Override
     public IPolicyCmptTypeAssociation newPolicyCmptTypeAssociation() {
         return (IPolicyCmptTypeAssociation)newAssociation();
@@ -245,13 +222,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         IValidationRule[] r = new IValidationRule[rules.size()];
         rules.toArray(r);
         return r;
-    }
-
-    /**
-     * Returns the list holding the rules as a reference. Package private for use in TypeHierarchy.
-     */
-    List<?> getRulesList() {
-        return rules.getBackingList();
     }
 
     @Override
@@ -380,11 +350,14 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         }
 
         // find all overwrite-candidates
-        IPolicyCmptTypeAttribute[] candidates = getSupertypeHierarchy().getAllAttributes(supertype);
+        IAttribute[] candidates = getSupertypeHierarchy().getAllAttributes(supertype);
         List<IPolicyCmptTypeAttribute> result = new ArrayList<IPolicyCmptTypeAttribute>();
         for (int i = 0; i < candidates.length; i++) {
             if (!toExclude.containsKey(candidates[i].getName())) {
-                result.add(candidates[i]);
+                if (candidates[i] instanceof IPolicyCmptTypeAttribute) {
+                    IPolicyCmptTypeAttribute pctAttributeCandidate = (IPolicyCmptTypeAttribute)candidates[i];
+                    result.add(pctAttributeCandidate);
+                }
             }
         }
 

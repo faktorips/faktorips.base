@@ -48,6 +48,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
+import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.IShowInTarget;
 import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
@@ -188,7 +189,6 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                 new IpsElementDragListener(treeViewer));
         treeViewer.addDropSupport(DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance() },
                 new ModelExplorerDropListener());
-
         createFilters(treeViewer);
 
         getSite().setSelectionProvider(treeViewer);
@@ -220,6 +220,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         }
 
         editorActivationListener = new ActivationListener(getSite().getPage());
+        activateContext();
     }
 
     /**
@@ -678,5 +679,18 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
                 treeViewer.refresh();
             }
         };
+    }
+
+    /**
+     * 
+     * Activate a context that this view uses. It will be tied to this * view activation events and
+     * will be removed when the view is
+     * 
+     * disposed.
+     */
+
+    private void activateContext() {
+        IContextService serivce = (IContextService)getSite().getService(IContextService.class);
+        serivce.activateContext("org.faktorips.devtools.core.ui.views.modelExplorer.context"); //$NON-NLS-1$
     }
 }

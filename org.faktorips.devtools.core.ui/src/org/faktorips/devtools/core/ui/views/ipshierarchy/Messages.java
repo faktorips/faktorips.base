@@ -11,13 +11,13 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.views.instanceexplorer;
+package org.faktorips.devtools.core.ui.views.ipshierarchy;
 
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
 
-    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.views.instanceexplorer.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.views.ipshierarchy.messages"; //$NON-NLS-1$
 
     static {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
@@ -27,14 +27,9 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
-    public static String InstanceExplorer_tooltipRefreshContents;
-    public static String InstanceExplorer_tooltipClear;
-    public static String InstanceExplorer_tooltipSubtypeSearch;
-    public static String InstanceExplorer_enumContainsValues;
-    public static String InstanceExplorer_noInstancesFoundInProject;
-    public static String InstanceExplorer_infoMessageEmptyView;
-    public static String InstanceExplorer_tryToSearchSubtypes;
-    public static String InstanceExplorer_noMetaClassFound;
-    public static String InstanceExplorer_waitingLabel;
-
+    public static String IpsHierarchy_tooltipClear;
+    public static String IpsHierarchy_infoMessageEmptyView;
+    public static String IpsHierarchy_tooltipLinkWithEditor;
+    public static String IpsHierarchy_tooltipRefreshContents;
+    public static String IpsHierarchy_waitingLabel;
 }

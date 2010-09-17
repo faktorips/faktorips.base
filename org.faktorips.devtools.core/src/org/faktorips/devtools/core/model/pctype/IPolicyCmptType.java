@@ -18,6 +18,7 @@ import org.faktorips.devtools.core.internal.model.pctype.PersistentTypeInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.ITypeHierarchy;
 
 /**
  * The policy component type represents a Java class that is part of a policy class model.
@@ -207,8 +208,7 @@ public interface IPolicyCmptType extends IType {
      * 
      * @throws CoreException if an error occurs while searching.
      */
-    public IPolicyCmptTypeAttribute findPolicyCmptTypeAttribute(String name, IIpsProject ipsProject)
-            throws CoreException;
+    public IPolicyCmptTypeAttribute findPolicyCmptTypeAttribute(String name, IIpsProject ipsProject) throws CoreException;
 
     /**
      * Creates a new attribute and returns it.

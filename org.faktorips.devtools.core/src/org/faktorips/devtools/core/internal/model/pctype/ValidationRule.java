@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -217,10 +218,10 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
     }
 
     private void validateValidatedAttribute(MessageList list, IIpsProject ipsProject) throws CoreException {
-        IPolicyCmptTypeAttribute[] attributes = getPolicyCmptType().getSupertypeHierarchy().getAllAttributes(
-                getPolicyCmptType());
+        IAttribute[] attributes = getPolicyCmptType().getSupertypeHierarchy()
+                .getAllAttributes(getPolicyCmptType());
         Set<String> attributeNames = new HashSet<String>(attributes.length);
-        for (IPolicyCmptTypeAttribute attribute : attributes) {
+        for (IAttribute attribute : attributes) {
             attributeNames.add(attribute.getName());
         }
         for (int i = 0; i < validatedAttributes.size(); i++) {
