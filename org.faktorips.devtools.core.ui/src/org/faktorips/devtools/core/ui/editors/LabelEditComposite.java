@@ -200,11 +200,9 @@ public final class LabelEditComposite extends Composite {
                     Locale locale = label.getLocale();
                     return (locale == null) ? "" : locale.getLanguage(); //$NON-NLS-1$
                 case 1:
-                    String value = label.getValue();
-                    return (value == null) ? "" : value; //$NON-NLS-1$
+                    return label.getValue();
                 case 2:
-                    String pluralValue = label.getPluralValue();
-                    return (pluralValue == null) ? "" : pluralValue; //$NON-NLS-1$
+                    return label.getPluralValue();
             }
             return null;
         }

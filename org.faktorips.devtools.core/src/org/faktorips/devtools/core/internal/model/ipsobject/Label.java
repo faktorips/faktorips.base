@@ -44,6 +44,8 @@ public class Label extends AtomicIpsObjectPart implements ILabel {
      */
     public Label(IIpsObjectPartContainer ipsObjectPartContainer, String id) {
         super(ipsObjectPartContainer, id);
+        value = ""; //$NON-NLS-1$
+        pluralValue = ""; //$NON-NLS-1$
     }
 
     @Override
@@ -73,6 +75,9 @@ public class Label extends AtomicIpsObjectPart implements ILabel {
 
     @Override
     public void setPluralValue(String pluralValue) {
+        if (pluralValue == null) {
+            pluralValue = ""; //$NON-NLS-1$
+        }
         String oldValue = this.pluralValue;
         this.pluralValue = pluralValue;
         valueChanged(oldValue, pluralValue);
@@ -80,6 +85,9 @@ public class Label extends AtomicIpsObjectPart implements ILabel {
 
     @Override
     public void setValue(String value) {
+        if (value == null) {
+            value = ""; //$NON-NLS-1$
+        }
         String oldValue = this.value;
         this.value = value;
         valueChanged(oldValue, value);

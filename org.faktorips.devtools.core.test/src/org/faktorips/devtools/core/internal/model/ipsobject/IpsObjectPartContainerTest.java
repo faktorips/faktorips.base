@@ -541,7 +541,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     public void testSetLabelValueNullPointerValue() {
         container.setLabelValue(Locale.US, null);
-        assertNull(container.getLabelValue(Locale.US));
+        assertEquals("", container.getLabelValue(Locale.US));
     }
 
     public void testSetLabelValueNotExistent() {
@@ -567,7 +567,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     public void testSetPluralLabelValueNullPointerPluralValue() {
         container.setPluralLabelValue(Locale.US, null);
-        assertNull(container.getPluralLabelValue(Locale.US));
+        assertEquals("", container.getPluralLabelValue(Locale.US));
     }
 
     public void testSetPluralLabelValueNotExistent() {

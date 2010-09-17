@@ -85,7 +85,7 @@ public interface ILabeledElement extends IIpsElement {
      * Sets the value of the {@link ILabel} that has the given {@link Locale}.
      * 
      * @param locale The {@link Locale} of the {@link ILabel} to set the value for
-     * @param value The value to set
+     * @param value The value to set or null to set the value to the empty string
      * 
      * @throws NullPointerException If the parameter locale is null
      * @throws IllegalArgumentException If there is no label for the given locale
@@ -96,7 +96,7 @@ public interface ILabeledElement extends IIpsElement {
      * Sets the plural value of the {@link ILabel} that has the given {@link Locale}.
      * 
      * @param locale The {@link Locale} of the {@link ILabel} to set the plural value for
-     * @param pluralValue The plural value to set
+     * @param pluralValue The plural value to set or null to set plural value to the empty string
      * 
      * @throws NullPointerException If the parameter locale is null
      * @throws IllegalArgumentException If there is no label for the given locale

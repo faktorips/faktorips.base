@@ -48,22 +48,35 @@ public class LabelTest extends AbstractIpsPluginTest {
         label = attribute.newLabel();
     }
 
-    public void testGetSetLocale() {
+    public void testConstructor() {
         assertNull(label.getLocale());
+        assertEquals("", label.getValue());
+        assertEquals("", label.getPluralValue());
+    }
+
+    public void testSetLocale() {
         label.setLocale(Locale.GERMAN);
         assertEquals(Locale.GERMAN, label.getLocale());
     }
 
-    public void testGetSetValue() {
-        assertNull(label.getValue());
+    public void testSetValue() {
         label.setValue("foo");
         assertEquals("foo", label.getValue());
     }
 
-    public void testGetSetPluralValue() {
-        assertNull(label.getPluralValue());
+    public void testSetValueNullPointer() {
+        label.setValue(null);
+        assertEquals("", label.getValue());
+    }
+
+    public void testSetPluralValue() {
         label.setPluralValue("bar");
         assertEquals("bar", label.getPluralValue());
+    }
+
+    public void testSetPluralValueNullPointer() {
+        label.setPluralValue(null);
+        assertEquals("", label.getPluralValue());
     }
 
     public void testValidateLocaleMissing() throws CoreException {

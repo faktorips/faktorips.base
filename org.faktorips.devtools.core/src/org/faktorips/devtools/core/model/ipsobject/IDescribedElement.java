@@ -70,11 +70,9 @@ public interface IDescribedElement extends IIpsElement {
 
     /**
      * Sets the text of the {@link IDescription} that has the given {@link Locale}.
-     * <p>
-     * The description text will be set to the empty string if null is given as text.
      * 
      * @param locale The {@link Locale} of the {@link IDescription} to set the text for
-     * @param text The text to set
+     * @param text The text to set or null to set the description text to the empty string
      * 
      * @throws NullPointerException If the parameter locale is null
      * @throws IllegalArgumentException If there is no description with the given locale

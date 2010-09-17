@@ -416,7 +416,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     public void testSetDefaultLabelNullPointer2() {
         support.setDefaultLabel(association, null);
-        assertEquals(null, germanLabel.getValue());
+        assertEquals("", germanLabel.getValue());
     }
 
     public void testSetDefaultLabelNotExistent() {
@@ -448,7 +448,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     public void testSetDefaultPluralLabelNullPointer2() {
         support.setDefaultPluralLabel(association, null);
-        assertEquals(null, germanLabel.getPluralValue());
+        assertEquals("", germanLabel.getPluralValue());
     }
 
     public void testSetDefaultPluralLabelNotSupported() {

@@ -67,6 +67,8 @@ public interface ILabel extends IIpsObjectPart {
 
     /**
      * Sets the value of the label.
+     * <p>
+     * The value will be set to the empty string if null is given as value.
      * 
      * @param value The value for the label
      */
@@ -79,6 +81,8 @@ public interface ILabel extends IIpsObjectPart {
 
     /**
      * Sets the plural value of the label.
+     * <p>
+     * The plural value will be set to the empty string if null is given as plural value.
      * 
      * @param pluralValue The plural value for the label
      */
