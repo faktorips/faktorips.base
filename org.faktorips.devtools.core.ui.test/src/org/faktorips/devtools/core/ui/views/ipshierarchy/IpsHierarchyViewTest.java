@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.views.ipshierarchy;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -73,14 +74,20 @@ public class IpsHierarchyViewTest extends AbstractIpsPluginTest implements IReso
         IIpsElement iipsElement = null;
         IResourceChangeEvent event1 = getTriggeredEvent();
         List<IFile> a = test.getChangedFiles(event1.getDelta().getAffectedChildren());
-        assertTrue(a.get(0).toString().equals(
-                "L/TestProject/productdef/products/folder/Supersupertype.ipspolicycmpttype"));
-        assertTrue(a.get(1).toString().equals("L/TestProject/productdef/products/folder/Supertype.ipspolicycmpttype"));
-        assertTrue(a.get(2).toString().equals("L/TestProject/productdef/products/folder/TestPolicy.ipspolicycmpttype"));
+
+        List<String> expectedFiles = new ArrayList<String>(3);
+        expectedFiles.add("L/TestProject/productdef/products/folder/Supersupertype.ipspolicycmpttype");
+        expectedFiles.add("L/TestProject/productdef/products/folder/Supertype.ipspolicycmpttype");
+        expectedFiles.add("L/TestProject/productdef/products/folder/TestPolicy.ipspolicycmpttype");
+
+        for (IFile aFile : a) {
+            assertTrue(expectedFiles.contains(aFile.toString()));
+        }
+
         for (IFile b : a) {
             iipsElement = IpsPlugin.getDefault().getIpsModel().findIpsElement(b);
+            assertTrue(iipsElement instanceof IpsSrcFile);
         }
-        assertTrue(iipsElement instanceof IpsSrcFile);
     }
 
     private IResourceChangeEvent getTriggeredEvent() throws InterruptedException {
