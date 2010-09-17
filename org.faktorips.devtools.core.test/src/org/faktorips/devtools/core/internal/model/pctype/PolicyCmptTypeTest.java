@@ -50,7 +50,6 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.pctype.ITypeHierarchy;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.PersistentType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -59,6 +58,7 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.ITypeHierarchy;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
