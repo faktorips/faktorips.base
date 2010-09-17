@@ -101,9 +101,6 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
      * @return true of the HierarchyView supports this object and false if not
      */
     public static boolean supports(Object object) {
-        if (object == null) {
-            return true;
-        }
         return object instanceof IType;
     }
 
