@@ -626,13 +626,6 @@
             id="testCaseEditor"
             name="%testCaseEditor">
         </editor>
-       <editor
-             class="org.faktorips.devtools.core.ui.editors.projectproperties.ProjectPropertyEditor"
-             default="true"
-             extensions="ipsproject"
-             id="projectpropertiesEditor"
-             name="name">
-       </editor>
 	</extension>
 
 <!-- 
