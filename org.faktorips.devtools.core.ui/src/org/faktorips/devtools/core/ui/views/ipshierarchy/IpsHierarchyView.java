@@ -180,7 +180,7 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
             public void run() {
                 enableButtons(false);
                 selected.setText(""); //$NON-NLS-1$
-                setInputData(null);
+                showHierarchy(null);
             }
 
             @Override
@@ -242,23 +242,24 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
      */
     public void showHierarchy(final IIpsObject element) {
         if (element instanceof IType && element.getEnclosingResource().isAccessible()) {
+            display.asyncExec(new Runnable() {
+                public void run() {
+                    selected.setText(""); //$NON-NLS-1$
+                    treeViewer.setInput(getWaitingLabel());
+                    updateView();
+                }
+            });
             IType iType = (IType)element;
-            selected.setText(""); //$NON-NLS-1$
-            treeViewer.setInput(getWaitingLabel());
-            updateView();
             BuildingHierarchyJob job = new BuildingHierarchyJob(iType);
             job.schedule();
+        } else if (element == null) {
+            setInputData(null);
         }
     }
 
     private void setInputData(final ITypeHierarchy hierarchy) {
-        display.asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                treeViewer.setInput(hierarchy);
-                updateView();
-            }
-        });
+        treeViewer.setInput(hierarchy);
+        updateView();
     }
 
     private void updateView() {
@@ -337,6 +338,7 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
                 return;
             }
             if (ipsSrcFile.exists()) {
+                // getPropertyValue simply returns null if the property does not exists
                 String superType = ipsSrcFile.getPropertyValue(IType.PROPERTY_SUPERTYPE);
                 if (superType != null) {
                     if (hierarchyTreeViewer.isPartOfHierarchy(superType)) {
@@ -550,8 +552,12 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
         @Override
         protected IStatus run(IProgressMonitor monitor) {
             try {
-                ITypeHierarchy hierarchy = TypeHierarchy.getTypeHierarchy(iType);
-                setInputData(hierarchy);
+                final ITypeHierarchy hierarchy = TypeHierarchy.getTypeHierarchy(iType);
+                display.asyncExec(new Runnable() {
+                    public void run() {
+                        setInputData(hierarchy);
+                    }
+                });
             } catch (CoreException e) {
                 IpsPlugin.log(e);
             }
