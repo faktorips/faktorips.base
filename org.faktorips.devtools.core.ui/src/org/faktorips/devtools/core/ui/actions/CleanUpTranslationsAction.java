@@ -23,6 +23,8 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -118,7 +120,7 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
         Shell shell = delegateActivePart == null ? workbenchWindow.getShell() : delegateActivePart.getSite().getShell();
         ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
         try {
-            dialog.run(true, true, new CleanUpRunnable(ipsProjects));
+            dialog.run(true, true, new CleanUpTranslationsRunnableWithProgress(ipsProjects));
         } catch (InvocationTargetException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
@@ -141,136 +143,149 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
         delegateSelection = selection;
     }
 
-    private static class CleanUpRunnable implements IRunnableWithProgress {
+    private static class CleanUpTranslationsRunnableWithProgress implements IRunnableWithProgress {
 
         private final Collection<IIpsProject> ipsProjects;
 
-        public CleanUpRunnable(Collection<IIpsProject> ipsProjects) {
+        public CleanUpTranslationsRunnableWithProgress(Collection<IIpsProject> ipsProjects) {
             this.ipsProjects = ipsProjects;
         }
 
         @Override
         public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-            for (IIpsProject ipsProject : ipsProjects) {
-                List<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>();
-                try {
-                    IIpsPackageFragmentRoot[] fragmentRoots = ipsProject.getIpsPackageFragmentRoots();
-                    for (IIpsPackageFragmentRoot root : fragmentRoots) {
-                        for (IIpsPackageFragment fragment : root.getIpsPackageFragments()) {
-                            ipsSrcFiles.addAll(Arrays.asList(fragment.getIpsSrcFiles()));
-                        }
-                    }
-                } catch (CoreException e) {
-                    throw new RuntimeException(e);
-                }
-
-                Set<Locale> supportedLocales = getSupportedLocales(ipsProject);
-
-                int totalWork = ipsSrcFiles.size();
-                monitor.beginTask(NLS.bind(Messages.CleanUpTranslationsAction_progressTask, ipsProject), totalWork);
-                for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
-                    try {
-                        IIpsObject ipsObject = ipsSrcFile.getIpsObject();
-                        cleanUp(ipsObject, supportedLocales);
-                    } catch (CoreException e) {
-                        throw new RuntimeException(e);
-                    }
-                    try {
-                        ipsSrcFile.save(true, null);
-                    } catch (CoreException e) {
-                        throw new RuntimeException(e);
-                    }
-                    monitor.worked(1);
-                }
-                monitor.done();
-            }
-        }
-
-        private Set<Locale> getSupportedLocales(IIpsProject ipsProject) {
-            Set<ISupportedLanguage> supportedLanguages = ipsProject.getProperties().getSupportedLanguages();
-            Set<Locale> supportedLocales = new HashSet<Locale>(supportedLanguages.size());
-            for (ISupportedLanguage language : supportedLanguages) {
-                Locale locale = language.getLocale();
-                if (locale != null) {
-                    supportedLocales.add(locale);
-                }
-            }
-            return supportedLocales;
-        }
-
-        private void cleanUp(IIpsObjectPartContainer ipsObjectPartContainer, Set<Locale> supportedLocales) {
-            cleanUpChildren(ipsObjectPartContainer, supportedLocales);
-
-            if (ipsObjectPartContainer instanceof IDescribedElement) {
-                IDescribedElement describedElement = (IDescribedElement)ipsObjectPartContainer;
-                deleteObsoleteDescriptions(describedElement, supportedLocales);
-                addMissingDescriptions(describedElement, supportedLocales);
-            }
-
-            if (ipsObjectPartContainer instanceof ILabeledElement) {
-                ILabeledElement labeledElement = (ILabeledElement)ipsObjectPartContainer;
-                deleteObsoleteLabels(labeledElement, supportedLocales);
-                addMissingLabels(labeledElement, supportedLocales);
-            }
-        }
-
-        private void cleanUpChildren(IIpsObjectPartContainer ipsObjectPartContainer, Set<Locale> supportedLocales) {
             try {
-                IIpsElement[] children = ipsObjectPartContainer.getChildren();
-                for (IIpsElement child : children) {
-                    if (child instanceof IIpsObjectPartContainer) {
-                        cleanUp((IIpsObjectPartContainer)child, supportedLocales);
-                    }
-                }
+                ResourcesPlugin.getWorkspace().run(new CleanUpTranslationsWorkspaceRunnable(), monitor);
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }
         }
 
-        private void addMissingDescriptions(IDescribedElement describedElement, Set<Locale> supportedLocales) {
-            for (Locale locale : supportedLocales) {
-                if (describedElement.getDescription(locale) == null) {
-                    IDescription newDescription = describedElement.newDescription();
-                    newDescription.setLocale(locale);
+        private class CleanUpTranslationsWorkspaceRunnable implements IWorkspaceRunnable {
+
+            @Override
+            public void run(IProgressMonitor monitor) throws CoreException {
+                for (IIpsProject ipsProject : ipsProjects) {
+                    List<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>();
+                    try {
+                        IIpsPackageFragmentRoot[] fragmentRoots = ipsProject.getIpsPackageFragmentRoots();
+                        for (IIpsPackageFragmentRoot root : fragmentRoots) {
+                            for (IIpsPackageFragment fragment : root.getIpsPackageFragments()) {
+                                ipsSrcFiles.addAll(Arrays.asList(fragment.getIpsSrcFiles()));
+                            }
+                        }
+                    } catch (CoreException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    Set<Locale> supportedLocales = getSupportedLocales(ipsProject);
+
+                    int totalWork = ipsSrcFiles.size();
+                    monitor.beginTask(NLS.bind(Messages.CleanUpTranslationsAction_progressTask, ipsProject), totalWork);
+                    for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+                        try {
+                            IIpsObject ipsObject = ipsSrcFile.getIpsObject();
+                            cleanUp(ipsObject, supportedLocales);
+                        } catch (CoreException e) {
+                            throw new RuntimeException(e);
+                        }
+                        try {
+                            ipsSrcFile.save(true, null);
+                        } catch (CoreException e) {
+                            throw new RuntimeException(e);
+                        }
+                        monitor.worked(1);
+                    }
+                    monitor.done();
                 }
             }
-        }
 
-        private void addMissingLabels(ILabeledElement labeledElement, Set<Locale> supportedLocales) {
-            for (Locale locale : supportedLocales) {
-                if (labeledElement.getLabel(locale) == null) {
-                    ILabel newLabel = labeledElement.newLabel();
-                    newLabel.setLocale(locale);
+            private Set<Locale> getSupportedLocales(IIpsProject ipsProject) {
+                Set<ISupportedLanguage> supportedLanguages = ipsProject.getProperties().getSupportedLanguages();
+                Set<Locale> supportedLocales = new HashSet<Locale>(supportedLanguages.size());
+                for (ISupportedLanguage language : supportedLanguages) {
+                    Locale locale = language.getLocale();
+                    if (locale != null) {
+                        supportedLocales.add(locale);
+                    }
+                }
+                return supportedLocales;
+            }
+
+            private void cleanUp(IIpsObjectPartContainer ipsObjectPartContainer, Set<Locale> supportedLocales) {
+                cleanUpChildren(ipsObjectPartContainer, supportedLocales);
+
+                if (ipsObjectPartContainer instanceof IDescribedElement) {
+                    IDescribedElement describedElement = (IDescribedElement)ipsObjectPartContainer;
+                    deleteObsoleteDescriptions(describedElement, supportedLocales);
+                    addMissingDescriptions(describedElement, supportedLocales);
+                }
+
+                if (ipsObjectPartContainer instanceof ILabeledElement) {
+                    ILabeledElement labeledElement = (ILabeledElement)ipsObjectPartContainer;
+                    deleteObsoleteLabels(labeledElement, supportedLocales);
+                    addMissingLabels(labeledElement, supportedLocales);
                 }
             }
-        }
 
-        private void deleteObsoleteDescriptions(IDescribedElement describedElement, Set<Locale> supportedLocales) {
-            List<IDescription> descriptionList = describedElement.getDescriptions();
-            // Transformation to array to avoid concurrent modification
-            IDescription[] descriptionArray = descriptionList.toArray(new IDescription[descriptionList.size()]);
-            for (IDescription description : descriptionArray) {
-                Locale locale = description.getLocale();
-                if (locale != null) {
-                    if (!(supportedLocales.contains(locale))) {
-                        description.delete();
+            private void cleanUpChildren(IIpsObjectPartContainer ipsObjectPartContainer, Set<Locale> supportedLocales) {
+                try {
+                    IIpsElement[] children = ipsObjectPartContainer.getChildren();
+                    for (IIpsElement child : children) {
+                        if (child instanceof IIpsObjectPartContainer) {
+                            cleanUp((IIpsObjectPartContainer)child, supportedLocales);
+                        }
+                    }
+                } catch (CoreException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            private void addMissingDescriptions(IDescribedElement describedElement, Set<Locale> supportedLocales) {
+                for (Locale locale : supportedLocales) {
+                    if (describedElement.getDescription(locale) == null) {
+                        IDescription newDescription = describedElement.newDescription();
+                        newDescription.setLocale(locale);
                     }
                 }
             }
-        }
 
-        private void deleteObsoleteLabels(ILabeledElement labeledElement, Set<Locale> supportedLocales) {
-            List<ILabel> labelList = labeledElement.getLabels();
-            // Transformation to array to avoid concurrent modification
-            ILabel[] labelArray = labelList.toArray(new ILabel[labelList.size()]);
-            for (ILabel label : labelArray) {
-                Locale locale = label.getLocale();
-                if (locale != null) {
-                    if (!(supportedLocales.contains(locale))) {
-                        label.delete();
+            private void addMissingLabels(ILabeledElement labeledElement, Set<Locale> supportedLocales) {
+                for (Locale locale : supportedLocales) {
+                    if (labeledElement.getLabel(locale) == null) {
+                        ILabel newLabel = labeledElement.newLabel();
+                        newLabel.setLocale(locale);
                     }
                 }
             }
+
+            private void deleteObsoleteDescriptions(IDescribedElement describedElement, Set<Locale> supportedLocales) {
+                List<IDescription> descriptionList = describedElement.getDescriptions();
+                // Transformation to array to avoid concurrent modification
+                IDescription[] descriptionArray = descriptionList.toArray(new IDescription[descriptionList.size()]);
+                for (IDescription description : descriptionArray) {
+                    Locale locale = description.getLocale();
+                    if (locale != null) {
+                        if (!(supportedLocales.contains(locale))) {
+                            description.delete();
+                        }
+                    }
+                }
+            }
+
+            private void deleteObsoleteLabels(ILabeledElement labeledElement, Set<Locale> supportedLocales) {
+                List<ILabel> labelList = labeledElement.getLabels();
+                // Transformation to array to avoid concurrent modification
+                ILabel[] labelArray = labelList.toArray(new ILabel[labelList.size()]);
+                for (ILabel label : labelArray) {
+                    Locale locale = label.getLocale();
+                    if (locale != null) {
+                        if (!(supportedLocales.contains(locale))) {
+                            label.delete();
+                        }
+                    }
+                }
+            }
+
         }
 
     }
