@@ -299,10 +299,14 @@ public class IpsSrcFileContent {
             PropertyDescriptor propertyDescriptor = BeanUtil.getPropertyDescriptor(ipsObject.getClass(), propertyName);
             Method readMethod = propertyDescriptor.getReadMethod();
             return "" + readMethod.invoke(ipsObject, new Object[0]); //$NON-NLS-1$
+        } catch (IllegalArgumentException e) {
+            // due to documentation this method should return null in case of property does not
+            // exists.
+            return null;
         } catch (Exception e) {
             IpsPlugin.log(e);
+            return null;
         }
-        return null;
     }
 
     public void save(final boolean force, final IProgressMonitor monitor) throws CoreException {
