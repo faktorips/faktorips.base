@@ -239,7 +239,7 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
     }
 
     /**
-     * Get the Hierarchy of the IIpsObject for setting it in the Treeviewer
+     * Get the Hierarchy of the IIpsObject for setting it in the TreeViewer
      * 
      * 
      */
