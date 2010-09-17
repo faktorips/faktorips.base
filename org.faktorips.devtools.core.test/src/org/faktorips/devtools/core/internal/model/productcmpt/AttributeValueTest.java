@@ -149,7 +149,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     }
 
     public void testGetCaptionNotExistent() throws CoreException {
-        assertNull(attrValue.getCaption(Locale.US));
+        assertNull(attrValue.getCaption(Locale.TAIWAN));
     }
 
     public void testGetCaptionNullPointer() throws CoreException {
