@@ -51,7 +51,6 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -64,8 +63,6 @@ import org.faktorips.devtools.core.ui.actions.CopyTableAction;
 import org.faktorips.devtools.core.ui.actions.CreateIpsArchiveAction;
 import org.faktorips.devtools.core.ui.actions.CreateMissingEnumContentsAction;
 import org.faktorips.devtools.core.ui.actions.EnumImportExportAction;
-import org.faktorips.devtools.core.ui.actions.FindPolicyReferencesAction;
-import org.faktorips.devtools.core.ui.actions.FindProductReferencesAction;
 import org.faktorips.devtools.core.ui.actions.FixDifferencesAction;
 import org.faktorips.devtools.core.ui.actions.IpsCopyAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeepCopyAction;
@@ -90,6 +87,7 @@ import org.faktorips.devtools.core.ui.actions.NewTableStructureAction;
 import org.faktorips.devtools.core.ui.actions.NewTestCaseAction;
 import org.faktorips.devtools.core.ui.actions.NewTestCaseTypeAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
+import org.faktorips.devtools.core.ui.actions.SearchReferencesAction;
 import org.faktorips.devtools.core.ui.actions.ShowInstanceAction;
 import org.faktorips.devtools.core.ui.actions.ShowStructureAction;
 import org.faktorips.devtools.core.ui.actions.TableImportExportAction;
@@ -155,7 +153,6 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
                 "org.eclipse.ui.edit.delete", CommandContributionItem.STYLE_PUSH)); //$NON-NLS-1$
         refresh = ActionFactory.REFRESH.create(viewSite.getWorkbenchWindow());
         properties = ActionFactory.PROPERTIES.create(viewSite.getWorkbenchWindow());
-
         IActionBars actionBars = viewSite.getActionBars();
         actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), new IpsCopyAction(treeViewer, workbenchPartSite
                 .getShell()));
@@ -284,7 +281,6 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
             // Ips package and default file actions
             newMenu.add(new NewIpsPacketAction(viewSite.getShell(), treeViewer));
             newMenu.add(new NewFileResourceAction(viewSite.getShell(), treeViewer));
-
         }
 
         manager.add(newMenu);
@@ -368,24 +364,24 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
     }
 
     protected void createObjectInfoActions(IMenuManager manager, Object selected) {
-        if (selected instanceof IIpsElement) {
-            if (selected instanceof IProductCmpt) {
-                manager.add(new ShowStructureAction(treeViewer));
-            }
-            if (selected instanceof IProductCmpt || selected instanceof ITableContents) {
-                manager.add(new FindProductReferencesAction(treeViewer));
-            }
-            if (selected instanceof IPolicyCmptType) {
-                manager.add(new FindPolicyReferencesAction(treeViewer));
-            }
-            if (InstanceExplorer.supports(selected)) {
-                manager.add(new ShowInstanceAction((IIpsElement)selected, treeViewer));
-            }
-            // TODO not to be used in this release
-            // if (selected instanceof IPolicyCmptType | selected instanceof IProductCmpt) {
-            // manager.add(new ShowAttributesAction(treeViewer));
-            // }
+        if (selected instanceof IIpsObject) {
+            ShowStructureAction showStructureAction = new ShowStructureAction(treeViewer);
+            manager.add(showStructureAction);
+            showStructureAction.updateEnabledProperty();
+
+            SearchReferencesAction searchReferencesAction = new SearchReferencesAction(treeViewer);
+            manager.add(searchReferencesAction);
+            searchReferencesAction.updateEnabledProperty();
+
+            ShowInstanceAction showInstanceAction = new ShowInstanceAction(treeViewer);
+            showInstanceAction.setId("instanceExplorerAction"); //$NON-NLS-1$
+            manager.add(showInstanceAction);
+            showInstanceAction.setEnabled(InstanceExplorer.supports(selected));
         }
+        // TODO not to be used in this release
+        // if (selected instanceof IPolicyCmptType | selected instanceof IProductCmpt) {
+        // manager.add(new ShowAttributesAction(treeViewer));
+        // }
     }
 
     protected void createProjectActions(IMenuManager manager, Object selected, IStructuredSelection selection) {
