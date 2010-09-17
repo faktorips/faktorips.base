@@ -41,7 +41,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  * 
  * @author Alexander Weickmann
  */
-public class DescriptionEditComposite extends Composite {
+public final class DescriptionEditComposite extends Composite {
 
     private final IDescribedElement describedElement;
 
@@ -64,25 +64,15 @@ public class DescriptionEditComposite extends Composite {
 
         this.uiToolkit = uiToolkit;
         this.describedElement = describedElement;
-
         languageCodes = new LinkedHashMap<String, String>();
-        for (IDescription description : describedElement.getDescriptions()) {
-            Locale locale = description.getLocale();
-            if (locale != null) {
-                languageCodes.put(locale.getDisplayLanguage(), locale.getLanguage());
-            }
-        }
 
         createLayout();
+
         languageCombo = createLanguageCombo();
         textArea = createTextArea();
 
         refresh();
-    }
-
-    public void refresh() {
-        updateCurrentDescription();
-        updateTextArea();
+        updateDescription();
     }
 
     private void createLayout() {
@@ -93,33 +83,11 @@ public class DescriptionEditComposite extends Composite {
 
     private Combo createLanguageCombo() {
         Combo combo = uiToolkit.createCombo(this);
-
-        int defaultIndex = -1;
-        int i = 0;
-        for (String languageName : languageCodes.keySet()) {
-            String languageCode = languageCodes.get(languageName);
-            combo.add(languageName + " (" + languageCode + ")"); //$NON-NLS-1$ //$NON-NLS-2$
-
-            IIpsProjectProperties properties = describedElement.getIpsProject().getProperties();
-            ISupportedLanguage language = properties.getSupportedLanguage(new Locale(languageCode));
-            if (language != null) {
-                if (language.isDefaultLanguage()) {
-                    defaultIndex = i;
-                }
-            }
-            i++;
-        }
-
-        // Preselect the default language if available
-        if (defaultIndex != -1) {
-            combo.select(defaultIndex);
-        }
-
         combo.addModifyListener(new ModifyListener() {
 
             @Override
             public void modifyText(ModifyEvent e) {
-                refresh();
+                updateDescription();
             }
 
         });
@@ -142,6 +110,95 @@ public class DescriptionEditComposite extends Composite {
         return text;
     }
 
+    public void refresh() {
+        refreshLanguageCodes();
+        refreshLanguageCombo();
+    }
+
+    /**
+     * Refreshes the map of language codes associating them to the respective language names. This
+     * has to be done because it might happen that the editor is opened while the supported
+     * languages change.
+     */
+    private void refreshLanguageCodes() {
+        languageCodes.clear();
+        for (IDescription description : describedElement.getDescriptions()) {
+            Locale locale = description.getLocale();
+            if (locale != null) {
+                languageCodes.put(locale.getDisplayLanguage(), locale.getLanguage());
+            }
+        }
+    }
+
+    /**
+     * Ensures that the language combo box contains all languages the element has descriptions for.
+     * The user's selection is preserved if possible (e.g. it's not possible if the selected
+     * language has been removed). In case the selection could not be preserved, the default
+     * description will be selected if existent. If not existent the first description will be
+     * selected (if at least one exists).
+     */
+    private void refreshLanguageCombo() {
+        int selectionIndex = languageCombo.getSelectionIndex();
+        String selectedItem = null;
+        if (selectionIndex != -1) {
+            selectedItem = languageCombo.getItem(selectionIndex);
+        }
+        languageCombo.removeAll();
+        for (String languageName : languageCodes.keySet()) {
+            String languageCode = languageCodes.get(languageName);
+            String item = languageName + " (" + languageCode + ")";//$NON-NLS-1$ //$NON-NLS-2$
+            languageCombo.add(item);
+            if (item.equals(selectedItem)) {
+                languageCombo.select(languageCombo.getItemCount() - 1);
+            }
+        }
+        if (selectionIndex == -1) {
+            boolean selectionSuccess = selectDefaultDescription();
+            if (!(selectionSuccess) && languageCombo.getItemCount() > 0) {
+                languageCombo.select(0);
+            }
+        }
+    }
+
+    /**
+     * Tries to select the default description and returns if successful (e.g. it's not successful
+     * if there is no default language).
+     */
+    private boolean selectDefaultDescription() {
+        int defaultIndex = -1;
+        int i = 0;
+        for (String languageName : languageCodes.keySet()) {
+            String languageCode = languageCodes.get(languageName);
+            IIpsProjectProperties properties = describedElement.getIpsProject().getProperties();
+            ISupportedLanguage language = properties.getSupportedLanguage(new Locale(languageCode));
+            if (language != null) {
+                if (language.isDefaultLanguage()) {
+                    defaultIndex = i;
+                    break;
+                }
+            }
+            i++;
+        }
+
+        if (defaultIndex != -1) {
+            languageCombo.select(defaultIndex);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Ensures that the description text area shows the currently selected description.
+     */
+    private void updateDescription() {
+        updateCurrentDescription();
+        updateTextArea();
+    }
+
+    /**
+     * Updates the current active {@link IDescription} based on the user selection in the language
+     * combo box.
+     */
     private void updateCurrentDescription() {
         int currentSelectionIndex = languageCombo.getSelectionIndex();
         if (currentSelectionIndex == -1) {
@@ -156,6 +213,9 @@ public class DescriptionEditComposite extends Composite {
         currentDescription = describedElement.getDescription(currentLocale);
     }
 
+    /**
+     * Updates the text area by setting the text to the text of the current description.
+     */
     private void updateTextArea() {
         if (currentDescription == null) {
             textArea.setEnabled(false);

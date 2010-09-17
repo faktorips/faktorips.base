@@ -50,7 +50,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Alexander Weickmann
  */
-public class LabelEditComposite extends Composite {
+public final class LabelEditComposite extends Composite {
 
     private final ILabeledElement labeledElement;
 

@@ -65,9 +65,6 @@ class LabelAndDescriptionPage extends IpsObjectEditorPage {
 
         @Override
         protected void performRefresh() {
-            if (labeledElement == null) {
-                return;
-            }
             labelEditComposite.refresh();
         }
 
@@ -76,6 +73,8 @@ class LabelAndDescriptionPage extends IpsObjectEditorPage {
     private static class DescriptionSection extends IpsSection {
 
         private final IDescribedElement describedElement;
+
+        private DescriptionEditComposite descriptionEditComposite;
 
         private DescriptionSection(IDescribedElement describedElement, Composite parent, UIToolkit toolkit) {
             super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
@@ -88,12 +87,12 @@ class LabelAndDescriptionPage extends IpsObjectEditorPage {
 
         @Override
         protected void initClientComposite(Composite client, UIToolkit toolkit) {
-            new DescriptionEditComposite(client, describedElement, toolkit);
+            descriptionEditComposite = new DescriptionEditComposite(client, describedElement, toolkit);
         }
 
         @Override
         protected void performRefresh() {
-            // Nothing to do
+            descriptionEditComposite.refresh();
         }
 
     }
