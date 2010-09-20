@@ -23,4 +23,7 @@ import org.eclipse.swt.events.TraverseListener;
  * @author Stefan Widmaier
  */
 public interface TraversalStrategy extends TraverseListener, KeyListener, FocusListener {
+
+    // No methods as of now
+
 }

@@ -58,20 +58,6 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
         }
     }
 
-    @Override
-    public void focusGained(FocusEvent e) {
-        if (skippedColumns.contains(getColumnIndex())) {
-            /*
-             * We don't want to create a new row in case the user clicked the last column in the
-             * last row that happens to also be a skipped column
-             */
-            boolean rowCreating = isRowCreating();
-            setRowCreating(false);
-            editNextColumn();
-            setRowCreating(rowCreating);
-        }
-    }
-
     /**
      * Edits the next row relative to the current selection of the <tt>TableViewer</tt> this
      * <tt>TableCellEditor</tt> is used in. If no following row exists, two behaviors are possible:
@@ -115,9 +101,9 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
                 tableViewer.getTable().select(currentRow);
             }
             editCell(getNextRow(), getNextColumn());
-            return;
+        } else {
+            editCell(getCurrentRow(), getNextColumn());
         }
-        editCell(getCurrentRow(), getNextColumn());
     }
 
     /**
@@ -141,11 +127,12 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
      */
     @Override
     protected int getNextColumn() {
-        int nextColumn = (getColumnIndex() + 1) % getColumnCount();
-        while (skippedColumns.contains(nextColumn)) {
-            nextColumn++;
-        }
-        return nextColumn % getColumnCount();
+        int nextColumn = getColumnIndex();
+        do {
+            nextColumn = (nextColumn + 1) % getColumnCount();
+        } while (skippedColumns.contains(nextColumn));
+
+        return nextColumn;
     }
 
     /**
@@ -160,14 +147,26 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
      */
     @Override
     protected int getPreviousColumn() {
-        int previousColumn = super.getPreviousColumn();
-        while (skippedColumns.contains(previousColumn)) {
-            previousColumn--;
+        int previousColumn = getColumnIndex();
+        do {
+            previousColumn = (previousColumn - 1) % getColumnCount();
             if (previousColumn < 0) {
-                previousColumn = (getCurrentRow() == 0) ? 0 : getColumnCount() - 1;
+                previousColumn = getCurrentRow() == 0 ? getFirstNotSkippedColumn() : getColumnCount() - 1;
             }
-        }
+        } while (skippedColumns.contains(previousColumn));
+
         return previousColumn;
+    }
+
+    private int getFirstNotSkippedColumn() {
+        int firstNotSkippedColumn = 0;
+        for (int i : skippedColumns) {
+            if (i > firstNotSkippedColumn) {
+                break;
+            }
+            firstNotSkippedColumn++;
+        }
+        return firstNotSkippedColumn;
     }
 
     /** Returns <tt>true</tt> if the next row does not exist yet, <tt>false</tt> otherwise. */
