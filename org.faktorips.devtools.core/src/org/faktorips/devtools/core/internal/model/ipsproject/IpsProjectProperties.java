@@ -93,8 +93,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * the version of this project, used for release
      */
-    private String version;
+    private String releaseVersion;
     private final static String RELEASE_EXTENSION_ID_ATTRIBUTE = "releaseExtensionId"; //$NON-NLS-1$
+
+    private static final String PRODUCT_DEFINITION_RELEASE = "productDefinitionRelease"; //$NON-NLS-1$
     /**
      * The id of the release extension that is associatied with this project
      */
@@ -386,8 +388,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 "javaProjectContainsClassesForDynamicDatatypes", "" + javaProjectContainsClassesForDynamicDatatypes); //$NON-NLS-1$ //$NON-NLS-2$
         projectEl.setAttribute("changesInTimeNamingConvention", changesInTimeConventionIdForGeneratedCode); //$NON-NLS-1$
         projectEl.setAttribute("persistentProject", "" + persistentProject); //$NON-NLS-1$ //$NON-NLS-2$
-        projectEl.setAttribute(VERSION_ATTRIBUTE, version);
-        projectEl.setAttribute(RELEASE_EXTENSION_ID_ATTRIBUTE, releaseExtensionId);
 
         // required features
         createRequiredIpsFeaturesComment(projectEl);
@@ -441,6 +441,13 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             resourceExcludedEl.setAttribute("path", exclResource); //$NON-NLS-1$
             resourcesExcludedFromProdDefEl.appendChild(resourceExcludedEl);
         }
+
+        // product definition release
+        createProductDefinitionReleaseComment(projectEl);
+        Element release = doc.createElement(PRODUCT_DEFINITION_RELEASE);
+        release.setAttribute(VERSION_ATTRIBUTE, releaseVersion);
+        release.setAttribute(RELEASE_EXTENSION_ID_ATTRIBUTE, releaseExtensionId);
+        projectEl.appendChild(release);
 
         // optional constraints
         createOptionalConstraintsDescriptionComment(projectEl);
@@ -497,8 +504,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         modelProject = Boolean.valueOf(element.getAttribute("modelProject")).booleanValue(); //$NON-NLS-1$
         productDefinitionProject = Boolean.valueOf(element.getAttribute("productDefinitionProject")).booleanValue(); //$NON-NLS-1$
         persistentProject = Boolean.valueOf(element.getAttribute("persistentProject")).booleanValue(); //$NON-NLS-1$
-        version = element.getAttribute(VERSION_ATTRIBUTE);
-        releaseExtensionId = element.getAttribute(RELEASE_EXTENSION_ID_ATTRIBUTE);
         runtimeIdPrefix = element.getAttribute("runtimeIdPrefix"); //$NON-NLS-1$
         javaProjectContainsClassesForDynamicDatatypes = Boolean.valueOf(
                 element.getAttribute("javaProjectContainsClassesForDynamicDatatypes")).booleanValue(); //$NON-NLS-1$
@@ -538,6 +543,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
         initResourcesExcludedFromProductDefinition(XmlUtil.getFirstElement(element,
                 "ResourcesExcludedFromProductDefinition")); //$NON-NLS-1$
+
+        initProductDefinitionRelease(XmlUtil.getFirstElement(element, PRODUCT_DEFINITION_RELEASE));
 
         initOptionalConstraints(element);
 
@@ -620,6 +627,14 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 resourcesPathExcludedFromTheProductDefiniton.add(path.getValue());
             }
         }
+    }
+
+    private void initProductDefinitionRelease(Element element) {
+        if (element == null) {
+            return;
+        }
+        releaseVersion = element.getAttribute(VERSION_ATTRIBUTE);
+        releaseExtensionId = element.getAttribute(RELEASE_EXTENSION_ID_ATTRIBUTE);
     }
 
     /**
@@ -933,6 +948,22 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         createDescriptionComment(s, parentEl);
     }
 
+    private void createProductDefinitionReleaseComment(Element parentEl) {
+        // TODO Auto-generated method stub
+        String s = "Product Definition Release" + SystemUtils.LINE_SEPARATOR + " " + SystemUtils.LINE_SEPARATOR + //$NON-NLS-1$ //$NON-NLS-2$
+                "In this section, the product defintion release is configured. You could reference an release extension" //$NON-NLS-1$
+                + SystemUtils.LINE_SEPARATOR
+                + "by specifying the releaseExtensionId. This extension is used by the release builder wizard." //$NON-NLS-1$
+                + SystemUtils.LINE_SEPARATOR
+                + "The version of the latest release is also configured in this element. If you use the release builder wizard" //$NON-NLS-1$
+                + SystemUtils.LINE_SEPARATOR
+                + "you should not set this version manually but using the release builder wizard." //$NON-NLS-1$
+                + SystemUtils.LINE_SEPARATOR + " " + SystemUtils.LINE_SEPARATOR + //$NON-NLS-1$
+                "<productDefinitionRelease releaseExtensionId=\"id-of-the-extension\" version=\"1.2.3\"/>" //$NON-NLS-1$
+                + SystemUtils.LINE_SEPARATOR;
+        createDescriptionComment(s, parentEl);
+    }
+
     private void createOptionalConstraintsDescriptionComment(Node parentEl) {
         String s = "OptionalConstraints" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -1207,11 +1238,11 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     @Override
     public String getVersion() {
-        return version;
+        return releaseVersion;
     }
 
     public void setVersion(String version) {
-        this.version = version;
+        this.releaseVersion = version;
     }
 
     public String getReleaseExtensionId() {
