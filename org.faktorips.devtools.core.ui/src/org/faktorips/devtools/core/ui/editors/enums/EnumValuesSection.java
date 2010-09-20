@@ -438,7 +438,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         IDialogSettings settings = IpsPlugin.getDefault().getDialogSettings();
         settings.put(SETTINGS_KEY_LOCK_AND_SYNC, lockAndSynchronizeLiteralNames);
 
-        updateCellEditorSkippedColumns();
+        updateSkippedColumns();
     }
 
     /**
@@ -452,11 +452,11 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
      * <strong>Important:</strong> May only be called if an <tt>IEnumType</tt> is being edited and
      * the cell editors are currently in sync with the <tt>IEnumType</tt>.
      */
-    private void updateCellEditorSkippedColumns() {
-        if (!lockAndSynchronizeLiteralNames) {
+    private void updateSkippedColumns() {
+        if (!(lockAndSynchronizeLiteralNames)) {
             /*
-             * Making sure that there are no columns skipped if the 'Lock and Sync Literal Names'
-             * option is not active.
+             * Make sure that there are no columns skipped if the 'Lock and Sync Literal Names'
+             * option is not active
              */
             for (CellEditor cellEditor : cellEditors) {
                 clearSkippedColumnIndex((IpsCellEditor)cellEditor);
@@ -464,12 +464,12 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             return;
         }
 
-        // Do nothing if there isn't a literal name attribute.
+        // Do nothing if there isn't a literal name attribute
         if (!(enumType.hasEnumLiteralNameAttribute())) {
             return;
         }
 
-        // Skip the literal name column in all cell editors.
+        // Skip the literal name column in all cell editors
         int skippedColumnIndex = enumType.getIndexOfEnumLiteralNameAttribute();
         for (CellEditor cellEditor : cellEditors) {
             addSkippedColumnIndex((IpsCellEditor)cellEditor, skippedColumnIndex);
@@ -582,7 +582,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         }
         enumValuesTableViewer.setCellEditors(cellEditors);
         if (enumTypeEditing) {
-            updateCellEditorSkippedColumns();
+            updateSkippedColumns();
         }
         enumValuesTableViewer.refresh();
     }

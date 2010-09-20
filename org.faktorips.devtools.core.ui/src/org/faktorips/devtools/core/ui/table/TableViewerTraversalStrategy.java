@@ -51,8 +51,14 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
     }
 
     @Override
+    public void focusGained(FocusEvent e) {
+        if (skippedColumns.contains(getColumnIndex())) {
+            getCellEditor().deactivate();
+        }
+    }
+
+    @Override
     public void focusLost(FocusEvent e) {
-        // Skipped columns do not fire the event.
         if (!(skippedColumns.contains(getColumnIndex()))) {
             fireApplyEditorValue();
         }
