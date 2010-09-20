@@ -79,7 +79,7 @@ public class ContentPageUtil {
             return new TestCaseContentPageElement((ITestCase)ipsSrcFile, config);
         }
 
-        // TODO Businessfunction
+        // TODO Businessfunction && ORMEXT???
         return new IpsObjectContentPageElement(ipsSrcFile, config);
     }
 

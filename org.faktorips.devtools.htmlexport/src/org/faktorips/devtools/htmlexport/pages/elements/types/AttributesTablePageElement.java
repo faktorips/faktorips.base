@@ -40,6 +40,7 @@ public class AttributesTablePageElement extends AbstractIpsObjectPartsContainerT
     public AttributesTablePageElement(IType type) {
         super(Arrays.asList(type.getAttributes()));
         this.type = type;
+        setId(type.getName() + "_" + "attributes"); //$NON-NLS-1$//$NON-NLS-2$
     }
 
     @Override

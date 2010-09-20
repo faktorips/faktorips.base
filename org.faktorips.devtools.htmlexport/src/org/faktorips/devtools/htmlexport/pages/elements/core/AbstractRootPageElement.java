@@ -15,7 +15,6 @@ package org.faktorips.devtools.htmlexport.pages.elements.core;
 
 import java.util.ArrayList;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 
 /**
@@ -25,8 +24,6 @@ import org.faktorips.devtools.htmlexport.generators.ILayouter;
  * 
  */
 public abstract class AbstractRootPageElement extends AbstractCompositePageElement {
-
-    private String id;
 
     @Override
     public void build() {
@@ -43,25 +40,5 @@ public abstract class AbstractRootPageElement extends AbstractCompositePageEleme
      * @return path to the root (used for setting the right relative path in links from the page
      */
     public abstract String getPathToRoot();
-
-    /**
-     * creates the Id of a page e.g. for internal links
-     * 
-     */
-    protected void createId() {
-        // could be overridden
-    }
-
-    public boolean hasId() {
-        return StringUtils.isNotBlank(getId());
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    protected void setId(String id) {
-        this.id = id;
-    }
 
 }

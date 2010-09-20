@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 
 /**
@@ -28,6 +29,7 @@ import org.faktorips.devtools.htmlexport.generators.ILayouter;
 public abstract class AbstractPageElement implements PageElement {
 
     protected Set<Style> styles = new LinkedHashSet<Style>();
+    private String id;
 
     public AbstractPageElement() {
         super();
@@ -73,5 +75,27 @@ public abstract class AbstractPageElement implements PageElement {
     @Override
     public void makeBlock() {
         addStyles(Style.BLOCK);
+    }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    /**
+     * creates the Id of a page e.g. for internal links
+     * 
+     */
+    protected void createId() {
+        // could be overridden
+    }
+
+    public boolean hasId() {
+        return StringUtils.isNotBlank(getId());
     }
 }

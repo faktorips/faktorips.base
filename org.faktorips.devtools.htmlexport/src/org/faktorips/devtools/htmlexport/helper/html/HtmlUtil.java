@@ -15,7 +15,10 @@ package org.faktorips.devtools.htmlexport.helper.html;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -87,8 +90,12 @@ public class HtmlUtil {
      * 
      */
     public String createHtmlElement(String element, String text, String classes) {
+        return createHtmlElement(element, null, text, classes);
+    }
+
+    private String createHtmlElement(String element, String id, String text, String classes) {
         StringBuilder builder = new StringBuilder();
-        builder.append(createHtmlElementOpenTag(element, classes));
+        builder.append(createHtmlElementOpenTag(element, id, classes));
         builder.append(getHtmlText(text));
         builder.append(createHtmlElementCloseTag(element));
         return builder.toString();
@@ -98,7 +105,7 @@ public class HtmlUtil {
      * creates complete html-element without text
      * 
      */
-    public String createHtmlElement(String element, HtmlAttribute... attribute) {
+    public String createHtmlElement(String element, List<HtmlAttribute> attribute) {
         StringBuilder builder = createHtmlElementOpenTagBase(element, attribute);
         builder.append("/>"); //$NON-NLS-1$
         return builder.toString();
@@ -115,28 +122,42 @@ public class HtmlUtil {
     }
 
     /**
-     * creates opening tag
+     * creates opening tag with classes
+     * 
+     * @param string
      * 
      */
-    public String createHtmlElementOpenTag(String element, String classes) {
-        if (StringUtils.isBlank(classes)) {
-            return createHtmlElementOpenTag(element, new HtmlAttribute[] {});
+    public String createHtmlElementOpenTag(String element, String id, String classes) {
+        List<HtmlAttribute> attributes = new ArrayList<HtmlAttribute>();
+
+        if (StringUtils.isNotBlank(classes)) {
+            attributes.add(new HtmlAttribute("class", classes)); //$NON-NLS-1$
         }
-        HtmlAttribute classesAttr = new HtmlAttribute("class", classes); //$NON-NLS-1$
-        return createHtmlElementOpenTag(element, classesAttr);
+
+        if (StringUtils.isNotBlank(id)) {
+            attributes.add(new HtmlAttribute("id", id)); //$NON-NLS-1$
+        }
+
+        return createHtmlElementOpenTag(element, attributes);
+    }
+
+    public String createHtmlElementOpenTag(String element) {
+        StringBuilder builder = createHtmlElementOpenTagBase(element, Collections.<HtmlAttribute> emptyList());
+        builder.append('>');
+        return builder.toString();
     }
 
     /**
      * creates opening tag with given html-attributes
      * 
      */
-    public String createHtmlElementOpenTag(String element, HtmlAttribute... attributes) {
+    public String createHtmlElementOpenTag(String element, List<HtmlAttribute> attributes) {
         StringBuilder builder = createHtmlElementOpenTagBase(element, attributes);
         builder.append('>');
         return builder.toString();
     }
 
-    private StringBuilder createHtmlElementOpenTagBase(String element, HtmlAttribute... attributes) {
+    private StringBuilder createHtmlElementOpenTagBase(String element, List<HtmlAttribute> attributes) {
         StringBuilder builder = new StringBuilder();
         builder.append('\n');
         builder.append('<');
@@ -170,19 +191,18 @@ public class HtmlUtil {
      * 
      */
     public String createLinkOpenTag(String href, String target, String classes) {
-        HtmlAttribute hrefAttr = new HtmlAttribute("href", href); //$NON-NLS-1$
-        HtmlAttribute targetAttr = (target == null ? null : new HtmlAttribute("target", target)); //$NON-NLS-1$
+        List<HtmlAttribute> attributes = new ArrayList<HtmlAttribute>();
 
-        StringBuilder builder = new StringBuilder();
-
-        if (StringUtils.isBlank(classes)) {
-            builder.append(createHtmlElementOpenTag("a", hrefAttr, targetAttr)); //$NON-NLS-1$
-            return builder.toString();
+        attributes.add(new HtmlAttribute("href", href)); //$NON-NLS-1$
+        if (StringUtils.isNotBlank(target)) {
+            attributes.add(new HtmlAttribute("target", target)); //$NON-NLS-1$
         }
 
-        HtmlAttribute classAttr = new HtmlAttribute("class", classes); //$NON-NLS-1$
-        builder.append(createHtmlElementOpenTag("a", hrefAttr, classAttr, targetAttr)); //$NON-NLS-1$
-        return builder.toString();
+        if (StringUtils.isNotBlank(classes)) {
+            attributes.add(new HtmlAttribute("class", classes)); //$NON-NLS-1$
+        }
+
+        return createHtmlElementOpenTag("a", attributes);
     }
 
     /**
@@ -199,8 +219,10 @@ public class HtmlUtil {
      * 
      */
     public String createImage(String src, String alt) {
-        HtmlAttribute[] attribute = new HtmlAttribute[] { new HtmlAttribute("src", src), new HtmlAttribute("alt", alt) }; //$NON-NLS-1$ //$NON-NLS-2$
-        return createHtmlElement("img", attribute).toString(); //$NON-NLS-1$
+        List<HtmlAttribute> attributes = new ArrayList<HtmlAttribute>();
+        attributes.add(new HtmlAttribute("src", src)); //$NON-NLS-1$
+        attributes.add(new HtmlAttribute("alt", alt)); //$NON-NLS-1$
+        return createHtmlElement("img", attributes); //$NON-NLS-1$
 
     }
 

@@ -91,14 +91,14 @@ public class HtmlLayouter extends AbstractLayouter {
     @Override
     public void layoutListPageElement(ListPageElement pageElement) {
         String listBaseHtmlTag = pageElement.isOrdered() ? "ul" : "ol"; //$NON-NLS-1$ //$NON-NLS-2$
-        append(htmlUtil.createHtmlElementOpenTag(listBaseHtmlTag, getClasses(pageElement)));
+        append(htmlUtil.createHtmlElementOpenTag(listBaseHtmlTag, pageElement.getId(), getClasses(pageElement)));
         visitSubElements(pageElement);
         append(htmlUtil.createHtmlElementCloseTag(listBaseHtmlTag));
     }
 
     @Override
     public void layoutTablePageElement(TablePageElement pageElement) {
-        append(htmlUtil.createHtmlElementOpenTag("table", getClasses(pageElement))); //$NON-NLS-1$
+        append(htmlUtil.createHtmlElementOpenTag("table", pageElement.getId(), getClasses(pageElement))); //$NON-NLS-1$
         visitSubElements(pageElement);
         append(htmlUtil.createHtmlElementCloseTag("table")); //$NON-NLS-1$
     }
@@ -111,7 +111,8 @@ public class HtmlLayouter extends AbstractLayouter {
             return;
         }
         String wrappingElement = getHtmlElementByWrappingType(wrapperType);
-        append(htmlUtil.createHtmlElementOpenTag(wrappingElement, getClasses(wrapperPageElement)));
+        append(htmlUtil.createHtmlElementOpenTag(wrappingElement, wrapperPageElement.getId(),
+                getClasses(wrapperPageElement)));
         visitSubElements(wrapperPageElement);
         append(htmlUtil.createHtmlElementCloseTag(wrappingElement));
     }

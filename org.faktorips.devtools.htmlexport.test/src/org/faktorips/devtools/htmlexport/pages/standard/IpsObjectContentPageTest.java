@@ -13,41 +13,10 @@
 
 package org.faktorips.devtools.htmlexport.pages.standard;
 
-import java.io.IOException;
-
-import org.custommonkey.xmlunit.XMLTestCase;
-import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.htmlexport.generators.IGenerator;
-import org.faktorips.devtools.htmlexport.generators.ILayouter;
-import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractPageElement;
-import org.faktorips.devtools.htmlexport.test.documentor.AbstractHtmlExportTest;
-import org.xml.sax.SAXException;
 
-public class IpsObjectContentPageTest extends AbstractHtmlExportTest {
-    private class HtmlExportXmlUnitTest extends XMLTestCase {
-        public void test(String xml, String... xPaths) throws XpathException, IOException, SAXException {
-            for (String xPath : xPaths) {
-                String xmlWithoutDoctypeDeclaration = prepareXml(xml);
-
-                assertXpathExists(xPath, xmlWithoutDoctypeDeclaration);
-            }
-
-        }
-
-        private String prepareXml(String xml) {
-            return xml.replaceFirst("<html .+\n", "<html>\n").replaceFirst("<!DOCTYPE .+\n", "").trim();
-        }
-    }
-
-    private ILayouter layouter;
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        layouter = new HtmlLayouter("");
-    }
+public class IpsObjectContentPageTest extends AbstractXmlUnitHtmlExportTest {
 
     public void testPolicyCmptType() throws Exception {
         PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Vertrag", "VertragProdukt");
@@ -58,19 +27,6 @@ public class IpsObjectContentPageTest extends AbstractHtmlExportTest {
 
         AbstractPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(),
                 config);
-        assertXPath(objectContentPage, xPath);
-
-    }
-
-    private void assertXPath(AbstractPageElement pageElement, String... xPath) throws Exception {
-        pageElement.build();
-
-        layouter.clear();
-        pageElement.acceptLayouter(layouter);
-
-        String xml = new String(layouter.generate(), IGenerator.CHARSET);
-
-        new HtmlExportXmlUnitTest().test(xml, xPath);
-
+        assertXPathExists(objectContentPage, xPath);
     }
 }

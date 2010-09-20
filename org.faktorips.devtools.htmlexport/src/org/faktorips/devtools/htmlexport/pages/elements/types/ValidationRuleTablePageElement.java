@@ -39,6 +39,7 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
      */
     public ValidationRuleTablePageElement(IPolicyCmptType policyCmptType) {
         super(Arrays.asList(policyCmptType.getRules()));
+        setId(policyCmptType.getName() + "_validationrules"); //$NON-NLS-1$
     }
 
     @Override

@@ -65,4 +65,9 @@ public interface PageElement {
      * changes the PageElement to a block
      */
     public void makeBlock();
+
+    public String getId();
+
+    public void setId(String id);
+
 }
