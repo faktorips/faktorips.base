@@ -93,12 +93,23 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
     protected void editNextColumn() {
         if (isAtNewColumn()) {
             fireApplyEditorValue();
-            if (isAtNewRow() && isRowCreating()) {
-                // in gtk/linux appending a new row resetting the selected column to -1
-                // so we safe the currently selected column
-                int currentRow = getCurrentRow();
-                appendTableRow();
-                tableViewer.getTable().select(currentRow);
+            if (isAtNewRow()) {
+                if (isRowCreating()) {
+                    /*
+                     * in GTK / Linux appending a new row resetting the selected column to -1 so we
+                     * safe the currently selected column
+                     */
+                    int currentRow = getCurrentRow();
+                    appendTableRow();
+                    tableViewer.getTable().select(currentRow);
+                } else {
+                    /*
+                     * This will ensure that if the cursor is in the last row and last column,
+                     * hitting tab will set the focus to the table so that if tab is pressed again,
+                     * the next UI element will be focused
+                     */
+                    tableViewer.getTable().forceFocus();
+                }
             }
             editCell(getNextRow(), getNextColumn());
         } else {

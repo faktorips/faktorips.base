@@ -122,6 +122,7 @@ public final class LabelEditComposite extends Composite {
             cellEditors[i] = controlFactory.createTableCellEditor(uiToolkit, datatype, null, tableViewer, i, null);
             TableViewerTraversalStrategy traversalStrategy = (TableViewerTraversalStrategy)cellEditors[i]
                     .getTraversalStrategy();
+            traversalStrategy.setRowCreating(false);
             traversalStrategy.addSkippedColumnIndex(0);
         }
 
