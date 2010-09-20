@@ -80,9 +80,19 @@ public class IpsHierarchyViewTest extends AbstractIpsPluginTest implements IReso
         expectedFiles.add("L/TestProject/productdef/products/folder/Supertype.ipspolicycmpttype");
         expectedFiles.add("L/TestProject/productdef/products/folder/TestPolicy.ipspolicycmpttype");
 
+        boolean[] expectedFilesFound = new boolean[3];
+
         for (IFile aFile : a) {
-            assertTrue(expectedFiles.contains(aFile.toString()));
+            for (int i = 0; i < 3; i++) {
+                if (expectedFiles.get(i).equals(aFile.toString())) {
+                    expectedFilesFound[i] = true;
+                }
+            }
         }
+
+        assertTrue(expectedFilesFound[0]);
+        assertTrue(expectedFilesFound[1]);
+        assertTrue(expectedFilesFound[2]);
 
         for (IFile b : a) {
             iipsElement = IpsPlugin.getDefault().getIpsModel().findIpsElement(b);
