@@ -53,6 +53,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 
 /**
@@ -97,7 +98,7 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
             return;
         }
 
-        boolean editorsSaved = IpsPlugin.getDefault().getWorkbench().saveAllEditors(true);
+        boolean editorsSaved = IpsUIPlugin.getDefault().saveAllEditors();
         if (!(editorsSaved)) {
             return;
         }
@@ -187,12 +188,6 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
                     int totalWork = ipsSrcFiles.size();
                     monitor.beginTask(NLS.bind(Messages.CleanUpTranslationsAction_progressTask, ipsProject), totalWork);
                     for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
-                        /*
-                         * If the source file is opened in an editor and the user has de-selected
-                         * the check box to save the file we discard any changes made by the user
-                         */
-                        ipsSrcFile.discardChanges();
-
                         try {
                             IIpsObject ipsObject = ipsSrcFile.getIpsObject();
                             cleanUp(ipsObject, supportedLocales);
