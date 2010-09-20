@@ -157,11 +157,12 @@ initDefaultParameter()
   fi
   
   MAJOR_VERSION=`echo $BUILD_VERSION | awk -F. '{print $1}'`
+  MINOR_VERSION=`echo $BUILD_VERSION | awk -F. '{print $2}'`
   
   if [ $MAJOR_VERSION -ge 3 ] ; then
-	PUBLISH_DOWNLOAD_DIR=${PUBLISH_DOWNLOAD_DIR:-'/var/www/update.faktorzehn.org/faktorips/v'$MAJOR_VERSION'/downloads'}
-  	PUBLISH_UPDATESITE_DIR=${PUBLISH_UPDATESITE_DIR:-'/var/www/update.faktorzehn.org/faktorips/v'$MAJOR_VERSION}
-  	PUBLISH_UPDATESITE_FILE=${PUBLISH_UPDATESITE_FILE:-'site_v'$MAJOR_VERSION.xml}
+	PUBLISH_DOWNLOAD_DIR=${PUBLISH_DOWNLOAD_DIR:-'/var/www/update.faktorzehn.org/faktorips/v'$MAJOR_VERSION'_'$MINOR_VERSION'/downloads'}
+  	PUBLISH_UPDATESITE_DIR=${PUBLISH_UPDATESITE_DIR:-'/var/www/update.faktorzehn.org/faktorips/v'$MAJOR_VERSION'_'$MINOR_VERSION}
+  	PUBLISH_UPDATESITE_FILE=${PUBLISH_UPDATESITE_FILE:-'site_v'$MAJOR_VERSION'_'$MINOR_VERSION.xml}
   else
   	PUBLISH_DOWNLOAD_DIR=${PUBLISH_DOWNLOAD_DIR:-'/var/www/update.faktorzehn.org/faktorips/downloads'}
   	PUBLISH_UPDATESITE_DIR=${PUBLISH_UPDATESITE_DIR:-'/var/www/update.faktorzehn.org/faktorips'}
@@ -482,6 +483,7 @@ showParameter()
   echo "  --------------------------------------------------------------------------------------"
   echo -e "  Release Version=\e[35m$BUILD_VERSION\e[0m"
   echo -e "  Major Version=\e[35m$MAJOR_VERSION\e[0m"
+  echo -e "  Minor Version=\e[35m$MINOR_VERSION\e[0m"
   echo -e "  Min Version 3=\e[35m$MIN_VERSION_3\e[0m"
   echo -e "  Feature Category=\e[35m$BUILD_CATEGORY\e[0m"
   echo -e "  CVS Tag=\e[35m$FETCH_TAG\e[0m"
