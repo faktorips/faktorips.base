@@ -672,7 +672,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         for (IDeltaEntry entrie : entries) {
             if (entrie.getDeltaType() == DeltaType.MISSING_PROPERTY_VALUE) {
                 String text = NLS.bind(Messages.ProductCmptGeneration_msgAttributeWithMissingConfigElement,
-                        ((IDeltaEntryForProperty)entrie).getPropertyName());
+                        ((IDeltaEntryForProperty)entrie).getDescription());
                 list.add(new Message(MSGCODE_ATTRIBUTE_WITH_MISSING_CONFIG_ELEMENT, text, Message.WARNING, this));
             }
         }
