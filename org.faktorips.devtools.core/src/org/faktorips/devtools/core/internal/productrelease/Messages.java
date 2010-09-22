@@ -11,12 +11,12 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.deployment;
+package org.faktorips.devtools.core.internal.productrelease;
 
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
-    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.deployment.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.productrelease.messages"; //$NON-NLS-1$
     public static String CvsTeamOperations_exception_remoteChanges;
     public static String ReleaseAndDeploymentOperation_commit_comment;
     public static String ReleaseAndDeploymentOperation_exception_errors;
@@ -33,5 +33,6 @@ public class Messages extends NLS {
     }
 
     private Messages() {
+        // do not instantiate
     }
 }

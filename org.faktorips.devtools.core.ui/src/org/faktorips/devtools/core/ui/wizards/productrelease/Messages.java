@@ -11,12 +11,12 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.wizards.deployment;
+package org.faktorips.devtools.core.ui.wizards.productrelease;
 
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
-    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.deployment.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.productrelease.messages"; //$NON-NLS-1$
     public static String ReleaserBuilderWizard_title;
     public static String ReleaserBuilderWizard_exception_NotReady;
     public static String ReleaserBuilderWizardSelectionPage_error_couldNotDetermineFormat;

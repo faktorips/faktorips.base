@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.deployment;
+package org.faktorips.devtools.core.productrelease;
 
 import java.util.List;
 
@@ -20,11 +20,12 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.MessageList;
 
 /**
- * This interface is implemented for a release deployment extension.
+ * This interface is implemented for a release deployment extension. The implementation is
+ * referenced by the extension <i>releaseDeploymentExtension</i> in the attribute <i>operation</i>.
  * 
  * @author dirmeier
  */
-public interface IDeploymentOperation {
+public interface IReleaseAndDeploymentOperation {
 
     /**
      * This method should return a list of target system where the release could be deployed to.

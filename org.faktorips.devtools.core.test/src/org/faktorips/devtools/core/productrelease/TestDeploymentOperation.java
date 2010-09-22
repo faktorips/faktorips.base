@@ -11,17 +11,19 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.deployment;
+package org.faktorips.devtools.core.productrelease;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.core.internal.deployment.TargetSystem;
+import org.faktorips.devtools.core.internal.productrelease.DefaultTargetSystem;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.productrelease.IReleaseAndDeploymentOperation;
+import org.faktorips.devtools.core.productrelease.ITargetSystem;
 import org.faktorips.util.message.MessageList;
 
-public class TestDeploymentOperation implements IDeploymentOperation {
+public class TestDeploymentOperation implements IReleaseAndDeploymentOperation {
 
     @Override
     public boolean buildReleaseAndDeployment(IIpsProject ipsProject,
@@ -35,10 +37,10 @@ public class TestDeploymentOperation implements IDeploymentOperation {
     @Override
     public List<ITargetSystem> getAvailableTargetSystems() {
         ArrayList<ITargetSystem> result = new ArrayList<ITargetSystem>();
-        result.add(new TargetSystem("System A"));
-        result.add(new TargetSystem("System B"));
-        result.add(new TargetSystem("System C"));
-        result.add(new TargetSystem("System D"));
+        result.add(new DefaultTargetSystem("System A"));
+        result.add(new DefaultTargetSystem("System B"));
+        result.add(new DefaultTargetSystem("System C"));
+        result.add(new DefaultTargetSystem("System D"));
         return result;
     }
 

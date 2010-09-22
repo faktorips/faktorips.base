@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.deployment;
+package org.faktorips.devtools.core.productrelease;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -37,7 +37,7 @@ public interface ITeamOperations {
      * Commit the files in the project. All files have to be from the same project.
      * 
      */
-    public void commitFile(IProject project, IResource[] resources, String comment, IProgressMonitor monitor)
+    public void commitFiles(IProject project, IResource[] resources, String comment, IProgressMonitor monitor)
             throws TeamException, InterruptedException;
 
     /**
@@ -56,8 +56,8 @@ public interface ITeamOperations {
     /**
      * Return the name of the version system
      * 
-     * @return
+     * @return the name of the version control system
      */
-    public String getName();
+    public String getVersionControlSystem();
 
 }

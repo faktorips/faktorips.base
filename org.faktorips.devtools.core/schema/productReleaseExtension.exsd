@@ -57,13 +57,13 @@ To validate the version format you have to specify the correct version format by
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="deploymentOperation" type="string" use="required">
+         <attribute name="operation" type="string" use="required">
             <annotation>
                <documentation>
                   An implementaion of IDeploymentOperation that provides the available target systems and implements the concrete deployment.
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.deployment.IDeploymentOperation"/>
+                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.productrelease.IReleaseAndDeploymentOperation"/>
                </appInfo>
             </annotation>
          </attribute>

@@ -60,11 +60,11 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.IpsBuilder;
-import org.faktorips.devtools.core.internal.deployment.ReleaseAndDeploymentOperation;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.productrelease.ProductReleaseProcessor;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
@@ -1897,7 +1897,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     @Override
     public IVersionFormat getVersionFormat() throws CoreException {
-        final IConfigurationElement releaseExtension = ReleaseAndDeploymentOperation.getReleaseExtensionElement(this);
+        final IConfigurationElement releaseExtension = ProductReleaseProcessor.getReleaseExtensionElement(this);
         if (releaseExtension == null) {
             return null;
         }

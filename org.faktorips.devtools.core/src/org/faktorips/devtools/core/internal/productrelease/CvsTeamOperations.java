@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.deployment;
+package org.faktorips.devtools.core.internal.productrelease;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -30,13 +30,21 @@ import org.eclipse.team.internal.ccvs.core.client.Command;
 import org.eclipse.team.internal.ccvs.ui.operations.CommitOperation;
 import org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation;
 import org.eclipse.team.internal.ccvs.ui.operations.TagOperation;
-import org.faktorips.devtools.core.deployment.ITeamOperations;
+import org.faktorips.devtools.core.productrelease.ITeamOperations;
 
+/**
+ * This implements the {@link ITeamOperations} for the eclipse cvs plugin. Most operations of the
+ * plugin are in restricted API. However we neet to use this api to get rich of the CVS operations
+ * within eclipse without using an own cvs implementation.
+ * 
+ * @author dirmeier
+ */
 @SuppressWarnings("restriction")
+// we have to use very much restricted API here
 public class CvsTeamOperations implements ITeamOperations {
 
     @Override
-    public void commitFile(IProject project, IResource[] resources, String comment, IProgressMonitor monitor)
+    public void commitFiles(IProject project, IResource[] resources, String comment, IProgressMonitor monitor)
             throws TeamException, InterruptedException {
         monitor.beginTask(null, 2);
         try {
@@ -48,6 +56,10 @@ public class CvsTeamOperations implements ITeamOperations {
             subscriber.refresh(resources, IResource.DEPTH_ZERO, new SubProgressMonitor(monitor, 1));
             for (IResource aResource : resources) {
                 SyncInfo syncInfo = subscriber.getSyncInfo(aResource);
+                if (syncInfo == null) {
+                    // resource is not in cvs - may be ignored
+                    continue;
+                }
                 if (syncInfo.getKind() != 0 && (syncInfo.getKind() & SyncInfo.OUTGOING) != SyncInfo.OUTGOING) {
                     throw new InterruptedException(Messages.CvsTeamOperations_exception_remoteChanges);
                 }
@@ -126,7 +138,8 @@ public class CvsTeamOperations implements ITeamOperations {
     }
 
     @Override
-    public String getName() {
+    public String getVersionControlSystem() {
         return "CVS"; //$NON-NLS-1$
     }
+
 }

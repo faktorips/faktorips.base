@@ -96,7 +96,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private String releaseVersion;
     private final static String RELEASE_EXTENSION_ID_ATTRIBUTE = "releaseExtensionId"; //$NON-NLS-1$
 
-    private static final String PRODUCT_DEFINITION_RELEASE = "productDefinitionRelease"; //$NON-NLS-1$
+    private static final String PRODUCT_RELEASE = "productRelease"; //$NON-NLS-1$
     /**
      * The id of the release extension that is associatied with this project
      */
@@ -443,8 +443,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         }
 
         // product definition release
-        createProductDefinitionReleaseComment(projectEl);
-        Element release = doc.createElement(PRODUCT_DEFINITION_RELEASE);
+        createProductReleaseComment(projectEl);
+        Element release = doc.createElement(PRODUCT_RELEASE);
         release.setAttribute(VERSION_ATTRIBUTE, releaseVersion);
         release.setAttribute(RELEASE_EXTENSION_ID_ATTRIBUTE, releaseExtensionId);
         projectEl.appendChild(release);
@@ -544,7 +544,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         initResourcesExcludedFromProductDefinition(XmlUtil.getFirstElement(element,
                 "ResourcesExcludedFromProductDefinition")); //$NON-NLS-1$
 
-        initProductDefinitionRelease(XmlUtil.getFirstElement(element, PRODUCT_DEFINITION_RELEASE));
+        initProductRelease(XmlUtil.getFirstElement(element, PRODUCT_RELEASE));
 
         initOptionalConstraints(element);
 
@@ -629,7 +629,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         }
     }
 
-    private void initProductDefinitionRelease(Element element) {
+    private void initProductRelease(Element element) {
         if (element == null) {
             return;
         }
@@ -948,9 +948,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         createDescriptionComment(s, parentEl);
     }
 
-    private void createProductDefinitionReleaseComment(Element parentEl) {
+    private void createProductReleaseComment(Element parentEl) {
         // TODO Auto-generated method stub
-        String s = "Product Definition Release" + SystemUtils.LINE_SEPARATOR + " " + SystemUtils.LINE_SEPARATOR + //$NON-NLS-1$ //$NON-NLS-2$
+        String s = "Product Release" + SystemUtils.LINE_SEPARATOR + " " + SystemUtils.LINE_SEPARATOR + //$NON-NLS-1$ //$NON-NLS-2$
                 "In this section, the product defintion release is configured. You could reference an release extension" //$NON-NLS-1$
                 + SystemUtils.LINE_SEPARATOR
                 + "by specifying the releaseExtensionId. This extension is used by the release builder wizard." //$NON-NLS-1$
@@ -958,8 +958,11 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "The version of the latest release is also configured in this element. If you use the release builder wizard" //$NON-NLS-1$
                 + SystemUtils.LINE_SEPARATOR
                 + "you should not set this version manually but using the release builder wizard." //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR + " " + SystemUtils.LINE_SEPARATOR + //$NON-NLS-1$
-                "<productDefinitionRelease releaseExtensionId=\"id-of-the-extension\" version=\"1.2.3\"/>" //$NON-NLS-1$
+                + SystemUtils.LINE_SEPARATOR
+                + " " + SystemUtils.LINE_SEPARATOR + //$NON-NLS-1$
+                "<" //$NON-NLS-1$
+                + PRODUCT_RELEASE
+                + " " + RELEASE_EXTENSION_ID_ATTRIBUTE + "=\"id-of-the-extension\" " + VERSION_ATTRIBUTE + "=\"1.2.3\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + SystemUtils.LINE_SEPARATOR;
         createDescriptionComment(s, parentEl);
     }

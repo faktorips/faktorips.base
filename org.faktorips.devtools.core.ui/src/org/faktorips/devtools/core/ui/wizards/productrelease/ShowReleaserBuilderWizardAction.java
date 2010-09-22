@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.wizards.deployment;
+package org.faktorips.devtools.core.ui.wizards.productrelease;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -46,7 +46,7 @@ public class ShowReleaserBuilderWizardAction implements IWorkbenchWindowActionDe
             }
         }
 
-        ReleaserBuilderWizard wizard = new ReleaserBuilderWizard();
+        ProductReleaserBuilderWizard wizard = new ProductReleaserBuilderWizard();
         wizard.setIpsProject(ipsProject);
 
         WizardDialog dialog = new WizardDialog(window.getShell(), wizard);

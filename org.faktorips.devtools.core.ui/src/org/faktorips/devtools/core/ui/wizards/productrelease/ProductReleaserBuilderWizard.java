@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.wizards.deployment;
+package org.faktorips.devtools.core.ui.wizards.productrelease;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -22,9 +22,9 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.deployment.ITargetSystem;
-import org.faktorips.devtools.core.internal.deployment.ReleaseAndDeploymentOperation;
+import org.faktorips.devtools.core.internal.productrelease.ProductReleaseProcessor;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.productrelease.ITargetSystem;
 
 /**
  * The deployment wizard provides the basic ui for deployments of product definition projects. On
@@ -32,12 +32,12 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * 
  * @author dirmeier
  */
-public class ReleaserBuilderWizard extends Wizard {
+public class ProductReleaserBuilderWizard extends Wizard {
 
-    private ReleaserBuilderWizardSelectionPage selectionPage;
+    private ProductReleaserBuilderWizardPage selectionPage;
 
-    public ReleaserBuilderWizard() {
-        selectionPage = new ReleaserBuilderWizardSelectionPage();
+    public ProductReleaserBuilderWizard() {
+        selectionPage = new ProductReleaserBuilderWizardPage();
         setNeedsProgressMonitor(true);
         setWindowTitle(Messages.ReleaserBuilderWizard_title);
     }
@@ -56,10 +56,10 @@ public class ReleaserBuilderWizard extends Wizard {
                     InterruptedException {
                 String newVersion = selectionPage.getNewVersion();
                 List<ITargetSystem> selectedTargetSystems = selectionPage.getSelectedTargetSystems();
-                ReleaseAndDeploymentOperation releaseAndDeploymentOperation = selectionPage
+                ProductReleaseProcessor productReleaseProcessor = selectionPage
                         .getReleaseBuilderOpertation();
-                if (releaseAndDeploymentOperation != null) {
-                    releaseAndDeploymentOperation.startReleaseBuilder(newVersion, selectedTargetSystems, monitor);
+                if (productReleaseProcessor != null) {
+                    productReleaseProcessor.startReleaseBuilder(newVersion, selectedTargetSystems, monitor);
                 } else {
                     throw new InterruptedException(Messages.ReleaserBuilderWizard_exception_NotReady);
                 }

@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.wizards.deployment;
+package org.faktorips.devtools.core.ui.wizards.productrelease;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,16 +42,16 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.deployment.IDeploymentOperation;
-import org.faktorips.devtools.core.deployment.ITargetSystem;
-import org.faktorips.devtools.core.internal.deployment.ReleaseAndDeploymentOperation;
+import org.faktorips.devtools.core.internal.productrelease.ProductReleaseProcessor;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IVersionFormat;
+import org.faktorips.devtools.core.productrelease.IReleaseAndDeploymentOperation;
+import org.faktorips.devtools.core.productrelease.ITargetSystem;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 
-public class ReleaserBuilderWizardSelectionPage extends WizardPage {
+public class ProductReleaserBuilderWizardPage extends WizardPage {
 
     private IIpsProject ipsProject;
     private Label currentVersionLabel;
@@ -59,10 +59,11 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
 
     private boolean correctVersionFormat = false;
     private CheckboxTableViewer targetSystemViewer;
-    private ReleaseAndDeploymentOperation releaseAndDeploymentOperation;
+    private ProductReleaseProcessor productReleaseProcessor;
     private Label versionFormatLabel;
+    private Group selectTargetSystemGroup;
 
-    protected ReleaserBuilderWizardSelectionPage() {
+    protected ProductReleaserBuilderWizardPage() {
         super(Messages.ReleaserBuilderWizardSelectionPage_title, Messages.ReleaserBuilderWizardSelectionPage_title,
                 IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/DeploymentWizard.png")); //$NON-NLS-1$
     }
@@ -98,8 +99,9 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
         toolkit.createLabel(selectVersionControl, ""); //$NON-NLS-1$
         versionFormatLabel = toolkit.createLabel(selectVersionControl, ""); //$NON-NLS-1$
 
-        Group selectTargetSystemGroup = toolkit.createGroup(pageControl,
+        selectTargetSystemGroup = toolkit.createGroup(pageControl,
                 Messages.ReleaserBuilderWizardSelectionPage_group_targetsystem);
+        selectTargetSystemGroup.setVisible(false);
         Composite selectTargetSystemControl = toolkit.createLabelEditColumnComposite(selectTargetSystemGroup);
         // Label targetSystemLabel = toolkit.createLabel(selectTargetSystemControl, "Select:");
         // targetSystemLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
@@ -178,11 +180,11 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
     public void setIpsProject(IIpsProject ipsProject) {
         this.ipsProject = ipsProject;
         String oldVersion = ""; //$NON-NLS-1$
-        releaseAndDeploymentOperation = null;
+        productReleaseProcessor = null;
         if (ipsProject != null) {
             oldVersion = ipsProject.getProperties().getVersion();
             try {
-                releaseAndDeploymentOperation = new ReleaseAndDeploymentOperation(ipsProject);
+                productReleaseProcessor = new ProductReleaseProcessor(ipsProject);
             } catch (CoreException e) {
                 IpsPlugin.log(e);
             }
@@ -211,12 +213,22 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
             currentVersionLabel.setText(oldVersion);
         }
         if (targetSystemViewer != null && !targetSystemViewer.getTable().isDisposed()) {
-            targetSystemViewer.setInput(new String[0]);
-            if (releaseAndDeploymentOperation != null) {
-                IDeploymentOperation deploymentOperation = releaseAndDeploymentOperation.getDeploymentOperation();
-                if (deploymentOperation != null) {
-                    targetSystemViewer.setInput(deploymentOperation.getAvailableTargetSystems());
+            boolean targetSystemWasVisible = selectTargetSystemGroup.getVisible();
+            boolean showTargetSystems = false;
+            if (productReleaseProcessor != null) {
+                IReleaseAndDeploymentOperation releaseAndDeploymentOperation = productReleaseProcessor
+                        .getReleaseAndDeploymentOperation();
+                if (releaseAndDeploymentOperation != null) {
+                    List<ITargetSystem> availableTargetSystems = releaseAndDeploymentOperation
+                            .getAvailableTargetSystems();
+                    if (!availableTargetSystems.isEmpty()) {
+                        targetSystemViewer.setInput(availableTargetSystems);
+                        showTargetSystems = true;
+                    }
                 }
+            }
+            if (targetSystemWasVisible != showTargetSystems) {
+                selectTargetSystemGroup.setVisible(showTargetSystems);
             }
         }
         updateMessage();
@@ -229,7 +241,7 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
         if (ipsProject == null) {
             setMessage(Messages.ReleaserBuilderWizardSelectionPage_info_selectProject, DialogPage.INFORMATION);
             return;
-        } else if (releaseAndDeploymentOperation == null) {
+        } else if (productReleaseProcessor == null) {
             setMessage(Messages.ReleaserBuilderWizardSelectionPage_error_noDeploymentExtension, DialogPage.ERROR);
             return;
         }
@@ -258,13 +270,13 @@ public class ReleaserBuilderWizardSelectionPage extends WizardPage {
     }
 
     private void updatePageComplete() {
-        boolean complete = ipsProject != null && correctVersionFormat && releaseAndDeploymentOperation != null
-                && releaseAndDeploymentOperation.getDeploymentOperation() != null;
+        boolean complete = ipsProject != null && correctVersionFormat && productReleaseProcessor != null
+                && productReleaseProcessor.getReleaseAndDeploymentOperation() != null;
         setPageComplete(complete);
     }
 
-    public ReleaseAndDeploymentOperation getReleaseBuilderOpertation() {
-        return releaseAndDeploymentOperation;
+    public ProductReleaseProcessor getReleaseBuilderOpertation() {
+        return productReleaseProcessor;
     }
 
     public String getNewVersion() {

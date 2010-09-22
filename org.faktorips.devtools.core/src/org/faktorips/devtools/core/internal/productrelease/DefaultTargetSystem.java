@@ -11,10 +11,31 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.deployment;
+package org.faktorips.devtools.core.internal.productrelease;
 
-public interface ITargetSystem {
+import org.faktorips.devtools.core.productrelease.ITargetSystem;
 
-    public String getName();
+/**
+ * Default implementation for {@link ITargetSystem} only provides the name of the target system
+ * 
+ * @author dirmeier
+ */
+public class DefaultTargetSystem implements ITargetSystem {
+
+    private final String name;
+
+    public DefaultTargetSystem(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 
 }

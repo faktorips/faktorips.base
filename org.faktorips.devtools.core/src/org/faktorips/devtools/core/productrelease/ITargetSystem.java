@@ -11,26 +11,24 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.deployment;
+package org.faktorips.devtools.core.productrelease;
 
-import org.faktorips.devtools.core.deployment.ITargetSystem;
+/**
+ * This object represents a target system for the release and deployment extension. It is used by
+ * the {@link IReleaseAndDeploymentOperation}.
+ * 
+ * The intreface only provides the method {@link #getName()}, returning a readable name of this
+ * system that is displayed to the user.
+ * 
+ * @author dirmeier
+ */
+public interface ITargetSystem {
 
-public class TargetSystem implements ITargetSystem {
-
-    private final String name;
-
-    public TargetSystem(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public String toString() {
-        return getName();
-    }
+    /**
+     * Getting a readable name of this target system
+     * 
+     * return the name of the target system
+     */
+    public String getName();
 
 }

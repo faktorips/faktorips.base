@@ -7,11 +7,11 @@
 	This extension is used to test the deployment wizard
 	-->
    <extension
-         point="org.faktorips.devtools.core.releaseDeploymentExtension">
+         point="org.faktorips.devtools.core.productReleaseExtension">
       <releaseExtension
             id="org.faktorips.devtools.core.test.releaseExtension"
             readableVersionFormat="z.B. 2.4.1.rfinal"
-            deploymentOperation="org.faktorips.devtools.core.deployment.TestDeploymentOperation"
+            operation="org.faktorips.devtools.core.productrelease.TestDeploymentOperation"
             versionFormatRegex="[0-9]+\.[0-9]+\.[0-9]+\.[a-z]+">
       </releaseExtension>
    </extension>
