@@ -276,7 +276,7 @@ public class TableOfContentTest extends XmlAbstractTestCase {
         toc2.addOrReplaceTocEntry(entry0);
         String toc2String = XmlUtil.nodeToString(toc2.toXml(newDocument()), "UTF-8");
 
-        Pattern versionPattern = Pattern.compile("productDataVersion=\".*{1}\"");
+        Pattern versionPattern = Pattern.compile("productDataVersion=\"[0-9]*\"");
         String tocWithoutVersion = versionPattern.matcher(tocString).replaceFirst("");
         String toc2WithoutVersion = versionPattern.matcher(toc2String).replaceFirst("");
 
