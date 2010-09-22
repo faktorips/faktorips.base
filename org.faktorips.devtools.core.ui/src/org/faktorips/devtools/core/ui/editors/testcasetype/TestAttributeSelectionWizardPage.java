@@ -154,9 +154,9 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
                 subtypeHierarchy = policyCmptType.getSubtypeHierarchy();
             }
             IType[] allSubtypes = subtypeHierarchy.getAllSubtypes(policyCmptType);
-            for (IType allSubtype : allSubtypes) {
-                IPolicyCmptType policyCmptTypeAllSubtype = (IPolicyCmptType)allSubtype;
-                attributes = policyCmptTypeAllSubtype.getPolicyCmptTypeAttributes();
+            for (IType subtype : allSubtypes) {
+                IPolicyCmptType policyCmptTypeSubtype = (IPolicyCmptType)subtype;
+                attributes = policyCmptTypeSubtype.getPolicyCmptTypeAttributes();
                 for (IAttribute attribute : attributes) {
                     IPolicyCmptTypeAttribute policyCmptarttribute = (IPolicyCmptTypeAttribute)attribute;
                     if (isAllowedAttribute(policyCmptarttribute)) {
