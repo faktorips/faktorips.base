@@ -135,7 +135,7 @@
       </actionSet>
       <actionSet
             label="Faktor-IPS Navigation"
-            visible="false"
+            visible="true"
             id="org.faktorips.devtools.actions.NavigationActionSet">
          <action
                class="org.faktorips.devtools.core.ui.actions.OpenIpsObjectAction"
@@ -151,7 +151,7 @@
       <actionSet
             id="org.faktorips.devtools.actions.StandardActionSet"
             label="%org.faktorips.devtools.actions.StandardActionSet"
-            visible="true">
+            visible="false">
          <action
                class="org.faktorips.devtools.core.ui.wizards.ipspackage.OpenNewIpsPackageWizardAction"
                icon="icons/NewIpsPackageFragment.gif"
@@ -287,7 +287,6 @@
                showTitle="true"
                standalone="false"
                visible="true"/>
-         <actionSet id="org.faktorips.devtools.actions.NavigationActionSet"/>
          <view
                closeable="true"
                id="org.faktorips.devtools.core.ui.views.modelDescription"
