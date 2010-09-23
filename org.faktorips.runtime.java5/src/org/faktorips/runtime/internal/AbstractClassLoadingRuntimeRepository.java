@@ -57,7 +57,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
      * @param cl the {@link ClassLoader} used to load the classes
      */
     public AbstractClassLoadingRuntimeRepository(String name, ICacheFactory cacheFactory, ClassLoader cl) {
-        super(name, cacheFactory);
+        super(name, cacheFactory, cl);
         this.cl = cl;
     }
 
@@ -66,7 +66,8 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
         Class<?> implClass = getClass(tocEntry.getImplementationClassName(), getClassLoader());
         ProductComponent productCmpt;
         try {
-            Constructor<?> constructor = implClass.getConstructor(new Class[] { IRuntimeRepository.class, String.class,
+            Class<?> runtimeRepoClass = getClass(IRuntimeRepository.class.getName(), getClassLoader());
+            Constructor<?> constructor = implClass.getConstructor(new Class[] { runtimeRepoClass, String.class,
                     String.class, String.class });
             productCmpt = (ProductComponent)constructor.newInstance(new Object[] { this, tocEntry.getIpsObjectId(),
                     tocEntry.getKindId(), tocEntry.getVersionId() });
@@ -92,6 +93,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
         }
         T enumValue = null;
         ArrayList<T> enumValues = new ArrayList<T>();
+        Class<?> runtimeRepoClass = getClass(IRuntimeRepository.class.getName(), getClassLoader());
         try {
             Constructor<?>[] constructors = clazz.getDeclaredConstructors();
             Constructor<T> constructor = null;
@@ -99,7 +101,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
                 if ((currentConstructor.getModifiers() & Modifier.PROTECTED) > 0) {
                     Class<?>[] parameterTypes = currentConstructor.getParameterTypes();
                     if (parameterTypes.length == 2 && parameterTypes[0] == List.class
-                            && parameterTypes[1] == IRuntimeRepository.class) {
+                            && parameterTypes[1] == runtimeRepoClass) {
                         @SuppressWarnings("unchecked")
                         // neccessary as Class.getDeclaredConstructors() is of type Constructor<?>[]
                         // while returning Contructor<T>[]

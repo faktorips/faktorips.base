@@ -65,7 +65,8 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
      * @throws RuntimeException if the registry's table of contents file can't be read.
      */
     public final static ClassloaderRuntimeRepository create(String tocResource) {
-        return create(tocResource, ClassloaderRuntimeRepository.class.getClassLoader(), new DefaultCacheFactory());
+        return create(tocResource, ClassloaderRuntimeRepository.class.getClassLoader(), new DefaultCacheFactory(
+                ClassloaderRuntimeRepository.class.getClassLoader()));
     }
 
     /**
@@ -95,7 +96,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
      * @throws RuntimeException if the registry's table of contents file can't be read.
      */
     public final static ClassloaderRuntimeRepository create(String tocResource, ClassLoader cl) {
-        return create(tocResource, cl, new DefaultCacheFactory());
+        return create(tocResource, cl, new DefaultCacheFactory(cl));
     }
 
     /**
@@ -148,7 +149,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
      * @see #TABLE_OF_CONTENTS_FILE
      */
     public ClassloaderRuntimeRepository(ClassLoader cl, String basePackage) {
-        this(cl, basePackage, TABLE_OF_CONTENTS_FILE, new DefaultCacheFactory());
+        this(cl, basePackage, TABLE_OF_CONTENTS_FILE, new DefaultCacheFactory(cl));
     }
 
     /**
@@ -166,7 +167,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
      * @throws RuntimeException if the registry's table of contents file can't be read.
      */
     public ClassloaderRuntimeRepository(ClassLoader cl, String basePackage, String pathToToc) {
-        this(cl, basePackage, pathToToc, new DefaultCacheFactory());
+        this(cl, basePackage, pathToToc, new DefaultCacheFactory(cl));
     }
 
     /**

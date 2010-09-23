@@ -62,15 +62,27 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
     private volatile IComputable<Class<?>, List<?>> enumValuesCacheByClass;
     private List<XmlAdapter<?, ?>> enumXmlAdapters;
 
-    public AbstractCachingRuntimeRepository(String name, ICacheFactory cacheFactory) {
+    public AbstractCachingRuntimeRepository(String name, ICacheFactory cacheFactory, ClassLoader cl) {
         super(name);
         this.cacheFactory = cacheFactory;
-        initCaches();
+        initCaches(cl);
     }
 
-    protected void initCaches() {
+    @SuppressWarnings("unchecked")
+    protected void initCaches(ClassLoader cl) {
+        Class<IProductComponent> productCmptClass;
+        Class<IProductComponentGeneration> productCmptGenClass;
+        Class<ITable> tableClass;
+        try {
+            productCmptClass = (Class<IProductComponent>)cl.loadClass(IProductComponent.class.getName());
+            productCmptGenClass = (Class<IProductComponentGeneration>)cl.loadClass(IProductComponentGeneration.class
+                    .getName());
+            tableClass = (Class<ITable>)cl.loadClass(ITable.class.getName());
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         IComputable<String, IProductComponent> productCmptComputer = new AbstractComputable<String, IProductComponent>(
-                IProductComponent.class) {
+                productCmptClass) {
             public IProductComponent compute(String key) throws InterruptedException {
                 return getNotCachedProductComponent(key);
             }
@@ -78,7 +90,7 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
         productCmptCache = cacheFactory.createProductCmptCache(productCmptComputer);
 
         IComputable<GenerationId, IProductComponentGeneration> productCmptGenComputer = new AbstractComputable<GenerationId, IProductComponentGeneration>(
-                IProductComponentGeneration.class) {
+                productCmptGenClass) {
 
             public IProductComponentGeneration compute(GenerationId key) throws InterruptedException {
                 return getNotCachedProductComponentGeneration(key);

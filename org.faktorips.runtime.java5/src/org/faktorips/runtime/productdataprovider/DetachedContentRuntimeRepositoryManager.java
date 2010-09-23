@@ -76,7 +76,7 @@ public class DetachedContentRuntimeRepositoryManager extends AbstractRuntimeRepo
         private String repositoryName = "";
         private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         private IFormulaEvaluatorFactory formulaEvaluatorFactory;
-        private ICacheFactory cacheFactory = new DefaultCacheFactory();
+        private ICacheFactory cacheFactory = new DefaultCacheFactory(classLoader);
 
         /**
          * The only mandatory parameter is the {@link IProductDataProviderFactory}. It is used to

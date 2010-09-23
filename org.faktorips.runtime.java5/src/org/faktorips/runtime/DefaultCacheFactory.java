@@ -35,10 +35,8 @@ public class DefaultCacheFactory extends AbstractCacheFactory implements ICacheF
 
     private int concurrencyLevel = 16;
 
-    public DefaultCacheFactory() {
-        setInitialSize(IProductComponent.class, 500);
-        setInitialSize(IProductComponentGeneration.class, 5000);
-        setInitialSize(ITable.class, 100);
+    public DefaultCacheFactory(ClassLoader cl) {
+        this(cl, 500, 5000, 100, 100, 100);
     }
 
     /**
@@ -51,13 +49,18 @@ public class DefaultCacheFactory extends AbstractCacheFactory implements ICacheF
      *             {@link #setInitialSize(Class, int)} instead
      */
     @Deprecated
-    public DefaultCacheFactory(int initialCapacityForProductCmpts, int initialCapacityForProductCmptGenerations,
-            int initialCapacityForTablesByClassname, int initialCapacityForTablesByQname,
-            int initialCapacityForEnumContentByClassName) {
+    public DefaultCacheFactory(ClassLoader cl, int initialCapacityForProductCmpts,
+            int initialCapacityForProductCmptGenerations, int initialCapacityForTablesByClassname,
+            int initialCapacityForTablesByQname, int initialCapacityForEnumContentByClassName) {
         super();
-        setInitialSize(IProductComponent.class, initialCapacityForProductCmpts);
-        setInitialSize(IProductComponentGeneration.class, initialCapacityForProductCmptGenerations);
-        setInitialSize(ITable.class, initialCapacityForTablesByClassname);
+        try {
+            setInitialSize(cl.loadClass(IProductComponent.class.getName()), initialCapacityForProductCmpts);
+            setInitialSize(cl.loadClass(IProductComponentGeneration.class.getName()),
+                    initialCapacityForProductCmptGenerations);
+            setInitialSize(cl.loadClass(ITable.class.getName()), initialCapacityForTablesByClassname);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void setInitialSize(Class<?> typeClass, int size) {

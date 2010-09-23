@@ -51,8 +51,8 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
 
     private volatile IReadonlyTableOfContents toc;
 
-    public AbstractTocBasedRuntimeRepository(String name, ICacheFactory cacheFactory) {
-        super(name, cacheFactory);
+    public AbstractTocBasedRuntimeRepository(String name, ICacheFactory cacheFactory, ClassLoader cl) {
+        super(name, cacheFactory, cl);
     }
 
     protected abstract IReadonlyTableOfContents loadTableOfContents();

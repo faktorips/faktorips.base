@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Runtime for Java5
 Bundle-SymbolicName: org.faktorips.runtime.java5
-Bundle-Version: 0.0.0
+Bundle-Version: 3.1.0
 Bundle-Vendor: Faktor Zehn AG
 Require-Bundle: org.faktorips.valuetypes.java5,
  org.junit
