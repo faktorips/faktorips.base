@@ -19,6 +19,9 @@ import java.util.Locale;
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
@@ -78,10 +81,33 @@ public class Migration_3_0_0_rfinal extends DefaultMigration {
             }
             if (child instanceof IDescribedElement) {
                 associateDescriptionToGeneratorLocale((IDescribedElement)child);
+            } else {
+                if (child instanceof IIpsObjectPartContainer) {
+                    deleteObsoleteDescriptions((IIpsObjectPartContainer)child);
+                }
             }
             if (child instanceof ILabeledElement) {
                 addLabelForGeneratorLocale((ILabeledElement)child);
             }
+        }
+    }
+
+    /**
+     * This is necessary as there are some containers that had descriptions in the past where it
+     * does not make sense at all, e.g. attribute values.
+     */
+    private void deleteObsoleteDescriptions(IIpsObjectPartContainer container) {
+        List<IDescription> obsoleteDescriptions = ((IpsObjectPartContainer)container).getDescriptions();
+        IDescription[] descriptionArray = obsoleteDescriptions.toArray(new IDescription[obsoleteDescriptions.size()]);
+        for (IDescription description : descriptionArray) {
+            if (description.getText().length() > 0) {
+                MessageDialog
+                        .openInformation(Display.getDefault().getActiveShell(),
+                                "Migration Information", //$NON-NLS-1$
+                                "The description '" + description.getText() + "' of the element '" + container.getName() //$NON-NLS-1$ //$NON-NLS-2$
+                                        + "' in the file '" + container.getIpsSrcFile() + "' cannot be migrated and will be deleted."); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            description.delete();
         }
     }
 
