@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.core.internal.model.ipsobject.Description;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
@@ -94,15 +95,15 @@ public class TableContentsSaxHandler extends DefaultHandler {
             columns.clear();
         } else if (DESCRIPTION.equals(qName)) {
             insideDescriptionNode = false;
-            if (textBuffer != null) {
-                if (!(StringUtils.isEmpty(currentDescriptionLocale))) {
-                    Locale locale = new Locale(currentDescriptionLocale);
-                    IDescription description = tableContents.getDescription(locale);
-                    if (description == null) {
-                        description = tableContents.newDescription();
-                        description.setLocale(locale);
-                    }
-                    description.setText(textBuffer.toString());
+            if (!(StringUtils.isEmpty(currentDescriptionLocale))) {
+                Locale locale = new Locale(currentDescriptionLocale);
+                Description description = (Description)tableContents.getDescription(locale);
+                if (description == null) {
+                    description = (Description)tableContents.newDescription();
+                    description.setLocaleWithoutChangeEvent(locale);
+                }
+                if (textBuffer != null) {
+                    description.setTextWithoutChangeEvent(textBuffer.toString());
                 }
             }
             textBuffer = null;
@@ -137,6 +138,7 @@ public class TableContentsSaxHandler extends DefaultHandler {
         } else if (DESCRIPTION.equals(qName)) {
             insideDescriptionNode = true;
             currentDescriptionLocale = attributes.getValue(IDescription.PROPERTY_LOCALE);
+
         } else if (EXTENSIONPROPERTIES.equals(qName)) {
             insideExtensionPropertiesNode = true;
         } else if (ROW.equals(qName)) {
