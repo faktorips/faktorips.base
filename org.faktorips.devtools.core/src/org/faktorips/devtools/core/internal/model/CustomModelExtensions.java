@@ -81,6 +81,7 @@ public class CustomModelExtensions implements ICustomModelExtensions {
         return result;
     }
 
+    @Override
     public IExtensionPropertyDefinition getExtensionPropertyDefinition(Class<?> type,
             String propertyId,
             boolean includeSupertypesAndInterfaces) {
