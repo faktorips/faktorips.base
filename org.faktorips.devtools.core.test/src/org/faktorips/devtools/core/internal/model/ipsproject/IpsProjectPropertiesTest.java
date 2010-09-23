@@ -53,7 +53,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         int numOfMessages = list.getNoOfMessages();
         DynamicValueDatatype dynDatatype = new DynamicValueDatatype(ipsProject);
         props.setDefinedDatatypes(new DynamicValueDatatype[] { dynDatatype });
-        // must supress as the dynamic datatype's class can't be loaded (and this is written to the
+        // must suppress as the dynamic datatype's class can't be loaded (and this is written to the
         // error log.)
         suppressLoggingDuringExecutionOfThisTestCase();
         list = props.validate(ipsProject);
@@ -389,6 +389,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 
     public void testIsSupportedLanguage() {
         assertTrue(properties.isSupportedLanguage(Locale.ENGLISH));
+        assertTrue(properties.isSupportedLanguage(Locale.US));
         assertFalse(properties.isSupportedLanguage(Locale.JAPANESE));
     }
 

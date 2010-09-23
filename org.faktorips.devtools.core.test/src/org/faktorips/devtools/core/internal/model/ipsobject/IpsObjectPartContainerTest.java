@@ -50,6 +50,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.memento.Memento;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.DOMException;
@@ -395,6 +396,52 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         MessageList messagesImmutable = srcFileImmutable.getIpsObject().validate(ipsProject);
         assertNotNull(messagesImmutable);
         assertTrue(messagesImmutable.isEmpty());
+    }
+
+    public void testValidateDescriptionCountOk() throws CoreException {
+        MessageList validationMessageList = container.validate(ipsProject);
+        assertNull(validationMessageList.getMessageByCode(IIpsObjectPartContainer.MSGCODE_INVALID_DESCRIPTION_COUNT));
+    }
+
+    public void testValidateDescriptionCountTooFewDescriptions() throws CoreException {
+        usDescription.delete();
+        MessageList validationMessageList = container.validate(ipsProject);
+
+        Message expectedMessage = validationMessageList
+                .getMessageByCode(IIpsObjectPartContainer.MSGCODE_INVALID_DESCRIPTION_COUNT);
+        assertEquals(Message.WARNING, expectedMessage.getSeverity());
+    }
+
+    public void testValidateDescriptionCountTooManyDescriptions() throws CoreException {
+        container.newDescription();
+        MessageList validationMessageList = container.validate(ipsProject);
+
+        Message expectedMessage = validationMessageList
+                .getMessageByCode(IIpsObjectPartContainer.MSGCODE_INVALID_DESCRIPTION_COUNT);
+        assertEquals(Message.WARNING, expectedMessage.getSeverity());
+    }
+
+    public void testValidateLabelCountOk() throws CoreException {
+        MessageList validationMessageList = container.validate(ipsProject);
+        assertNull(validationMessageList.getMessageByCode(IIpsObjectPartContainer.MSGCODE_INVALID_LABEL_COUNT));
+    }
+
+    public void testValidateLabelCountTooFewLabels() throws CoreException {
+        usLabel.delete();
+        MessageList validationMessageList = container.validate(ipsProject);
+
+        Message expectedMessage = validationMessageList
+                .getMessageByCode(IIpsObjectPartContainer.MSGCODE_INVALID_LABEL_COUNT);
+        assertEquals(Message.WARNING, expectedMessage.getSeverity());
+    }
+
+    public void testValidateLabelCountTooManyLabels() throws CoreException {
+        container.newLabel();
+        MessageList validationMessageList = container.validate(ipsProject);
+
+        Message expectedMessage = validationMessageList
+                .getMessageByCode(IIpsObjectPartContainer.MSGCODE_INVALID_LABEL_COUNT);
+        assertEquals(Message.WARNING, expectedMessage.getSeverity());
     }
 
     public void testGetChildren() {

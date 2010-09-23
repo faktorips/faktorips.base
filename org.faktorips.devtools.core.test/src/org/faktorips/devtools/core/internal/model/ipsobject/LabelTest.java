@@ -87,18 +87,26 @@ public class LabelTest extends AbstractIpsPluginTest {
     }
 
     public void testValidateLocaleNotSupported() throws CoreException {
-        label.setLocale(Locale.CANADA);
+        label.setLocale(Locale.TAIWAN);
         MessageList validationMessages = label.validate(ipsProject);
         assertEquals(1, validationMessages.getNoOfMessages());
-        Message message = validationMessages.getFirstMessage(Message.ERROR);
+        Message message = validationMessages.getFirstMessage(Message.WARNING);
         assertEquals(ILabel.MSGCODE_LOCALE_NOT_SUPPORTED_BY_IPS_PROJECT, message.getCode());
     }
 
+    public void testValidateLocaleNotSupportedByContextProject() throws CoreException {
+        IIpsProject contextProject = newIpsProject("ContextProject");
+        IIpsProjectProperties properties = contextProject.getProperties();
+        properties.removeSupportedLanguage(Locale.GERMAN);
+        contextProject.setProperties(properties);
+
+        label.setLocale(Locale.GERMAN);
+        MessageList validationMessages = label.validate(contextProject);
+        assertTrue(validationMessages.isEmpty());
+    }
+
     public void testValidateOk() throws CoreException {
-        IIpsProjectProperties properties = ipsProject.getProperties();
-        properties.addSupportedLanguage(Locale.ENGLISH);
-        ipsProject.setProperties(properties);
-        label.setLocale(Locale.ENGLISH);
+        label.setLocale(Locale.US);
         MessageList validationMessages = label.validate(ipsProject);
         assertEquals(0, validationMessages.getNoOfMessages());
     }

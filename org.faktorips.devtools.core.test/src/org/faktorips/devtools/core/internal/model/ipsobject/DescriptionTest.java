@@ -17,11 +17,15 @@ import java.util.Locale;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
@@ -45,17 +49,50 @@ public class DescriptionTest extends AbstractIpsPluginTest {
     }
 
     public void testSetLocale() {
-        assertNull(description.getLocale());
         description.setLocale(Locale.GERMAN);
         assertEquals(Locale.GERMAN, description.getLocale());
     }
 
     public void testSetText() {
-        assertEquals("", description.getText());
         description.setText("foo");
         assertEquals("foo", description.getText());
+    }
+
+    public void testSetTextNullPointer() {
         description.setText(null);
         assertEquals("", description.getText());
+    }
+
+    public void testValidateLocaleMissing() throws CoreException {
+        MessageList validationMessages = description.validate(ipsProject);
+        assertEquals(1, validationMessages.getNoOfMessages());
+        Message message = validationMessages.getFirstMessage(Message.ERROR);
+        assertEquals(IDescription.MSGCODE_LOCALE_MISSING, message.getCode());
+    }
+
+    public void testValidateLocaleNotSupported() throws CoreException {
+        description.setLocale(Locale.TAIWAN);
+        MessageList validationMessages = description.validate(ipsProject);
+        assertEquals(1, validationMessages.getNoOfMessages());
+        Message message = validationMessages.getFirstMessage(Message.WARNING);
+        assertEquals(IDescription.MSGCODE_LOCALE_NOT_SUPPORTED_BY_IPS_PROJECT, message.getCode());
+    }
+
+    public void testValidateLocaleNotSupportedByContextProject() throws CoreException {
+        IIpsProject contextProject = newIpsProject("ContextProject");
+        IIpsProjectProperties properties = contextProject.getProperties();
+        properties.removeSupportedLanguage(Locale.GERMAN);
+        contextProject.setProperties(properties);
+
+        description.setLocale(Locale.GERMAN);
+        MessageList validationMessages = description.validate(contextProject);
+        assertTrue(validationMessages.isEmpty());
+    }
+
+    public void testValidateOk() throws CoreException {
+        description.setLocale(Locale.US);
+        MessageList validationMessages = description.validate(ipsProject);
+        assertEquals(0, validationMessages.getNoOfMessages());
     }
 
     public void testXml() throws ParserConfigurationException {

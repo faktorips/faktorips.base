@@ -114,25 +114,27 @@ public class Label extends AtomicIpsObjectPart implements ILabel {
 
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
-        validateLocale(list, ipsProject);
+        if (locale == null) {
+            validateLocaleMissing(list);
+        } else {
+            validateLocaleSupported(list);
+        }
     }
 
-    private void validateLocale(MessageList list, IIpsProject ipsProject) {
-        if (locale == null) {
-            String text = Messages.Label_msgLocaleMissing;
-            Message msg = new Message(ILabel.MSGCODE_LOCALE_MISSING, text, Message.ERROR, this, ILabel.PROPERTY_LOCALE);
-            list.add(msg);
-            return;
-        }
+    private void validateLocaleMissing(MessageList list) {
+        String text = Messages.Label_msgLocaleMissing;
+        Message msg = new Message(ILabel.MSGCODE_LOCALE_MISSING, text, Message.ERROR, this, ILabel.PROPERTY_LOCALE);
+        list.add(msg);
+    }
 
-        /*
-         * Don't use the IPS project from the parameter as only the project of the label itself must
-         * support the language.
-         */
-        boolean localeSupported = getIpsProject().getProperties().isSupportedLanguage(locale);
+    private void validateLocaleSupported(MessageList list) {
+        // Only the project of the label itself must support the language
+        IIpsProject ipsProject = getIpsProject();
+
+        boolean localeSupported = ipsProject.getProperties().isSupportedLanguage(locale);
         if (!(localeSupported)) {
             String text = NLS.bind(Messages.Label_msgLocaleNotSupportedByProject, locale.getLanguage());
-            Message msg = new Message(ILabel.MSGCODE_LOCALE_NOT_SUPPORTED_BY_IPS_PROJECT, text, Message.ERROR, this,
+            Message msg = new Message(ILabel.MSGCODE_LOCALE_NOT_SUPPORTED_BY_IPS_PROJECT, text, Message.WARNING, this,
                     ILabel.PROPERTY_LOCALE);
             list.add(msg);
         }

@@ -1180,7 +1180,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     public boolean isSupportedLanguage(Locale locale) {
         ArgumentCheck.notNull(locale);
         for (ISupportedLanguage supportedLanguage : supportedLanguages) {
-            if (supportedLanguage.getLocale().equals(locale)) {
+            if (supportedLanguage.getLocale().getLanguage().equals(locale.getLanguage())) {
                 return true;
             }
         }

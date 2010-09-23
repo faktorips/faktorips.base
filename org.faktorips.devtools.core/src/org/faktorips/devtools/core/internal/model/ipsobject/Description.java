@@ -77,26 +77,38 @@ public class Description extends AtomicIpsObjectPart implements IDescription {
         valueChanged(oldValue, this.text);
     }
 
-    @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
-        // TODO AW: Out commented for now, it needs to be decided if this will be necessary
-        // Right now it conflicts with the integration test projects that cannot be migrated yet
-        // validateLocale(list, ipsProject);
+    public void setTextWithoutChangeEvent(String text) {
+        if (text == null) {
+            this.text = ""; //$NON-NLS-1$
+        } else {
+            this.text = text;
+        }
     }
 
-    private void validateLocale(MessageList list, IIpsProject ipsProject) {
+    @Override
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         if (locale == null) {
-            String text = Messages.Description_msgLocaleMissing;
-            Message msg = new Message(IDescription.MSGCODE_LOCALE_MISSING, text, Message.ERROR, this,
-                    IDescription.PROPERTY_LOCALE);
-            list.add(msg);
-            return;
+            validateLocaleMissing(list);
+        } else {
+            validateLocaleSupported(list);
         }
+    }
+
+    private void validateLocaleMissing(MessageList list) {
+        String text = Messages.Description_msgLocaleMissing;
+        Message msg = new Message(IDescription.MSGCODE_LOCALE_MISSING, text, Message.ERROR, this,
+                IDescription.PROPERTY_LOCALE);
+        list.add(msg);
+    }
+
+    private void validateLocaleSupported(MessageList list) {
+        // Only the project of the label itself must support the language
+        IIpsProject ipsProject = getIpsProject();
 
         boolean localeSupported = ipsProject.getProperties().isSupportedLanguage(locale);
         if (!(localeSupported)) {
             String text = NLS.bind(Messages.Description_msgLocaleNotSupportedByProject, locale.getLanguage());
-            Message msg = new Message(IDescription.MSGCODE_LOCALE_NOT_SUPPORTED_BY_IPS_PROJECT, text, Message.ERROR,
+            Message msg = new Message(IDescription.MSGCODE_LOCALE_NOT_SUPPORTED_BY_IPS_PROJECT, text, Message.WARNING,
                     this, IDescription.PROPERTY_LOCALE);
             list.add(msg);
         }

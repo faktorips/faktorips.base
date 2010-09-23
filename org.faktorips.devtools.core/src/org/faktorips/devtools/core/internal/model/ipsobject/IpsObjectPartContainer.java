@@ -27,6 +27,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsElement;
@@ -54,6 +55,7 @@ import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.memento.XmlMemento;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -673,10 +675,38 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         }
 
         result = new MessageList();
+        if (this instanceof IDescribedElement) {
+            validateDescriptionCount(result);
+        }
+        if (this instanceof ILabeledElement) {
+            validateLabelCount(result);
+        }
         validateThis(result, ipsProject);
         execCustomValidations(result, ipsProject);
         afterValidateThis(result, ipsProject);
         return result;
+    }
+
+    private void validateDescriptionCount(MessageList result) {
+        int descriptionCount = descriptions.size();
+        int languageCount = getIpsProject().getProperties().getSupportedLanguages().size();
+        if (descriptionCount != languageCount) {
+            String text = NLS.bind(Messages.IpsObjectPartContainer_msgInvalidDescriptionCount, descriptionCount,
+                    languageCount);
+            Message message = new Message(IIpsObjectPartContainer.MSGCODE_INVALID_DESCRIPTION_COUNT, text,
+                    Message.WARNING);
+            result.add(message);
+        }
+    }
+
+    private void validateLabelCount(MessageList result) {
+        int labelCount = labels.size();
+        int languageCount = getIpsProject().getProperties().getSupportedLanguages().size();
+        if (labelCount != languageCount) {
+            String text = NLS.bind(Messages.IpsObjectPartContainer_msgInvalidLabelCount, labelCount, languageCount);
+            Message message = new Message(IIpsObjectPartContainer.MSGCODE_INVALID_LABEL_COUNT, text, Message.WARNING);
+            result.add(message);
+        }
     }
 
     private void execCustomValidations(MessageList result, IIpsProject ipsProject) throws CoreException {

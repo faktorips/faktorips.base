@@ -31,6 +31,21 @@ import org.faktorips.util.memento.MementoSupport;
 public interface IIpsObjectPartContainer extends IIpsElement, IExtensionPropertyAccess, Validatable, XmlSupport,
         MementoSupport, Described {
 
+    /** Prefix for all message codes of this class. */
+    public final static String MSGCODE_PREFIX = "IPSOBJECTPARTCONTAINER-"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the number of descriptions this container has does
+     * not correspond to the number of languages supported by the IPS project.
+     */
+    public final static String MSGCODE_INVALID_DESCRIPTION_COUNT = MSGCODE_PREFIX + "InvalidDescriptionCount"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the number of labels this container has does not
+     * correspond to the number of languages supported by the IPS project.
+     */
+    public final static String MSGCODE_INVALID_LABEL_COUNT = MSGCODE_PREFIX + "InvalidLabelCount"; //$NON-NLS-1$
+
     /**
      * Returns the IPS object this part belongs to if this <tt>IIpsObjectPartContainer</tt> is a
      * part, or the IPS object itself, if this <tt>IIpsObjectPartContainer</tt> is the IPS object.
