@@ -275,7 +275,7 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
         setPageComplete(complete);
     }
 
-    public ProductReleaseProcessor getReleaseBuilderOpertation() {
+    public ProductReleaseProcessor getProductReleaseProcessor() {
         return productReleaseProcessor;
     }
 

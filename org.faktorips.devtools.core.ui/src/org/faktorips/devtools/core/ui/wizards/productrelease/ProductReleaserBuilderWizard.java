@@ -18,13 +18,13 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.productrelease.ProductReleaseProcessor;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.productrelease.ITargetSystem;
+import org.faktorips.util.message.MessageList;
 
 /**
  * The deployment wizard provides the basic ui for deployments of product definition projects. On
@@ -49,26 +49,14 @@ public class ProductReleaserBuilderWizard extends Wizard {
 
     @Override
     public boolean performFinish() {
-        IRunnableWithProgress progress = new WorkspaceModifyOperation() {
-
-            @Override
-            protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
-                    InterruptedException {
-                String newVersion = selectionPage.getNewVersion();
-                List<ITargetSystem> selectedTargetSystems = selectionPage.getSelectedTargetSystems();
-                ProductReleaseProcessor productReleaseProcessor = selectionPage
-                        .getReleaseBuilderOpertation();
-                if (productReleaseProcessor != null) {
-                    productReleaseProcessor.startReleaseBuilder(newVersion, selectedTargetSystems, monitor);
-                } else {
-                    throw new InterruptedException(Messages.ReleaserBuilderWizard_exception_NotReady);
-                }
-            }
-
-        };
+        Operation operation = new Operation(selectionPage.getNewVersion(), selectionPage.getSelectedTargetSystems(),
+                selectionPage.getProductReleaseProcessor());
         try {
-            getContainer().run(false, true, progress);
-            return true;
+            getContainer().run(false, true, operation);
+            if (!operation.messageList.isEmpty()) {
+                selectionPage.setErrorMessage(operation.messageList.getText());
+            }
+            return operation.returnState;
         } catch (InvocationTargetException e) {
             selectionPage.setErrorMessage("Invocation Exception: " + e.getTargetException().getMessage()); //$NON-NLS-1$
             selectionPage.setPageComplete(false);
@@ -82,6 +70,36 @@ public class ProductReleaserBuilderWizard extends Wizard {
 
     public void setIpsProject(IIpsProject ipsProject) {
         selectionPage.setIpsProject(ipsProject);
+    }
+
+    static class Operation extends WorkspaceModifyOperation {
+
+        private final String newVersion;
+        private final List<ITargetSystem> selectedTargetSystems;
+        private final ProductReleaseProcessor productReleaseProcessor;
+        private MessageList messageList;
+
+        private boolean returnState;
+
+        public Operation(String newVersion, List<ITargetSystem> selectedTargetSystems,
+                ProductReleaseProcessor productReleaseProcessor) {
+            this.newVersion = newVersion;
+            this.selectedTargetSystems = selectedTargetSystems;
+            this.productReleaseProcessor = productReleaseProcessor;
+            messageList = new MessageList();
+        }
+
+        @Override
+        protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
+                InterruptedException {
+            if (productReleaseProcessor != null) {
+                returnState = productReleaseProcessor.startReleaseBuilder(newVersion, selectedTargetSystems,
+                        messageList, monitor);
+            } else {
+                throw new InterruptedException(Messages.ReleaserBuilderWizard_exception_NotReady);
+            }
+        }
+
     }
 
 }

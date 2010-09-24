@@ -66,22 +66,21 @@ public class ProductReleaseProcessor {
         return releaseAndDeploymentOperation;
     }
 
-    public void startReleaseBuilder(String newVersion,
+    public boolean startReleaseBuilder(String newVersion,
             List<ITargetSystem> selectedTargetSystems,
+            MessageList messageList,
             IProgressMonitor monitor) throws InterruptedException, CoreException {
         if (releaseAndDeploymentOperation == null) {
-            throw new InterruptedException(Messages.ReleaseAndDeploymentOperation_exception_noDeploymentExtension);
+            messageList.add(new Message("ERROR", //$NON-NLS-1$
+                    Messages.ReleaseAndDeploymentOperation_exception_noDeploymentExtension, Message.ERROR));
+            return false;
         }
         monitor.beginTask(Messages.ReleaseAndDeploymentOperation_taskName_release, 100);
         try {
             String tag = buildRelease(ipsProject, newVersion, monitor);
-
             // start extended release
-            MessageList messageList = new MessageList();
-            if (!getDeploymentOperation(ipsProject).buildReleaseAndDeployment(ipsProject, tag, selectedTargetSystems,
-                    monitor, messageList)) {
-                throw new InterruptedException(messageList.getFirstMessage(Message.ERROR).getText());
-            }
+            return getDeploymentOperation(ipsProject).buildReleaseAndDeployment(ipsProject, tag, selectedTargetSystems,
+                    monitor, messageList);
         } finally {
             monitor.done();
         }
@@ -196,7 +195,6 @@ public class ProductReleaseProcessor {
     private void commitFiles(IIpsProject ipsProject, String newVersion, IProgressMonitor monitor) throws CoreException,
             TeamException, InterruptedException {
         List<IResource> resources = new ArrayList<IResource>();
-        resources.add(ipsProject.getProject());
         resources.add(ipsProject.getProject().getFile(IpsProject.PROPERTY_FILE_EXTENSION_INCL_DOT));
         for (IIpsPackageFragmentRoot root : ipsProject.getIpsPackageFragmentRoots()) {
             resources.add(ipsProject.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root));

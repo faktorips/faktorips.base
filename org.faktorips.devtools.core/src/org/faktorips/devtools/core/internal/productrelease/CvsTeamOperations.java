@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.internal.productrelease;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.mapping.ResourceMapping;
@@ -54,6 +57,7 @@ public class CvsTeamOperations implements ITeamOperations {
             }
             Subscriber subscriber = repositoryProvider.getSubscriber();
             subscriber.refresh(resources, IResource.DEPTH_ZERO, new SubProgressMonitor(monitor, 1));
+            List<IResource> syncResources = new ArrayList<IResource>();
             for (IResource aResource : resources) {
                 SyncInfo syncInfo = subscriber.getSyncInfo(aResource);
                 if (syncInfo == null) {
@@ -63,10 +67,12 @@ public class CvsTeamOperations implements ITeamOperations {
                 if (syncInfo.getKind() != 0 && (syncInfo.getKind() & SyncInfo.OUTGOING) != SyncInfo.OUTGOING) {
                     throw new InterruptedException(Messages.CvsTeamOperations_exception_remoteChanges);
                 }
+                syncResources.add(aResource);
             }
 
             CommitOperation commitOperation = new CommitOperation(null, RepositoryProviderOperation
-                    .asResourceMappers(resources), new Command.LocalOption[0], comment);
+                    .asResourceMappers(syncResources.toArray(new IResource[syncResources.size()])),
+                    new Command.LocalOption[0], comment);
             commitOperation.execute(new SubProgressMonitor(monitor, 1));
         } finally {
             monitor.done();
@@ -85,6 +91,7 @@ public class CvsTeamOperations implements ITeamOperations {
             IResource[] resources = new IResource[] { project };
             monitor.beginTask(null, 2);
             if (subscriber != null) {
+
                 subscriber.refresh(resources, IResource.DEPTH_INFINITE, new SubProgressMonitor(monitor, 1));
                 subscriber.collectOutOfSync(resources, IResource.DEPTH_INFINITE, syncInfoSet, new SubProgressMonitor(
                         monitor, 1));
