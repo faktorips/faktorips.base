@@ -16,30 +16,28 @@ package org.faktorips.devtools.core.productrelease;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.core.internal.productrelease.DefaultTargetSystem;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.MessageList;
 
-public class TestDeploymentOperation extends AbstractReleaseAndDeploymentOperation {
-
-    @Override
-    public boolean buildReleaseAndDeployment(IIpsProject ipsProject,
-            String tag,
-            List<ITargetSystem> selectedTargetSystems,
-            IProgressMonitor progressMonitor,
-            MessageList messageList) {
-        return true;
-    }
+public abstract class AbstractReleaseAndDeploymentOperation implements IReleaseAndDeploymentOperation {
 
     @Override
     public List<ITargetSystem> getAvailableTargetSystems() {
-        ArrayList<ITargetSystem> result = new ArrayList<ITargetSystem>();
-        result.add(new DefaultTargetSystem("System A"));
-        result.add(new DefaultTargetSystem("System B"));
-        result.add(new DefaultTargetSystem("System C"));
-        result.add(new DefaultTargetSystem("System D"));
-        return result;
+        return new ArrayList<ITargetSystem>();
+    }
+
+    @Override
+    public List<IFile> additionalResourcesToCommit() {
+        return new ArrayList<IFile>();
+    }
+
+    @Override
+    public boolean customReleaseSettings(IIpsProject ipsProject,
+            IProgressMonitor progressMonitor,
+            MessageList messageList) {
+        return true;
     }
 
 }

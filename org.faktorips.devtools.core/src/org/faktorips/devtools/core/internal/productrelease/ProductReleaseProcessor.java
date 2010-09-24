@@ -119,6 +119,8 @@ public class ProductReleaseProcessor {
         checkProblemMarkers(ipsProject);
         monitor.worked(1);
 
+        // TODO call custom release settings!
+
         // commit property file and toc file
         commitFiles(ipsProject, newVersion, new SubProgressMonitor(monitor, 10));
 
@@ -199,6 +201,9 @@ public class ProductReleaseProcessor {
         for (IIpsPackageFragmentRoot root : ipsProject.getIpsPackageFragmentRoots()) {
             resources.add(ipsProject.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root));
         }
+
+        // TODO add additional files from extension
+
         teamOperation
                 .commitFiles(ipsProject.getProject(), resources.toArray(new IResource[0]),
                         Messages.ReleaseAndDeploymentOperation_commit_comment + newVersion, new SubProgressMonitor(

@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.productrelease;
 
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.MessageList;
@@ -33,6 +34,27 @@ public interface IReleaseAndDeploymentOperation {
      * @return A List of available target systems
      */
     public List<ITargetSystem> getAvailableTargetSystems();
+
+    /**
+     * Returns a list of resources that have to be commited when the release operation commits the
+     * .ipsproject file.
+     * 
+     * @return List of files to commit
+     */
+    public List<IFile> additionalResourcesToCommit();
+
+    /**
+     * This method is called by the release build processor just before commiting changed files. The
+     * new version is already set in the .ipsproject file and the project have been clean built.
+     * 
+     * @param ipsProject the project to release
+     * @param progressMonitor a {@link IProgressMonitor} to view sate of work
+     * @param messageList a {@link MessageList} to return status messages and problems
+     * @return true when everything was right, false to stop the release process
+     */
+    public boolean customReleaseSettings(IIpsProject ipsProject,
+            IProgressMonitor progressMonitor,
+            MessageList messageList);
 
     /**
      * This method should start the deployment on the selected target system. If this method does
