@@ -139,8 +139,8 @@ public class FormulasSection extends IpsSection {
             try {
                 // create label as hyperlink to open the corresponding table content in a new new
                 // editor
-                Hyperlink hyperlink = toolkit.createHyperlink(rootPane, StringUtils.capitalize(usage
-                        .getStructureUsage()));
+                String localizedCaption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(usage);
+                Hyperlink hyperlink = toolkit.createHyperlink(rootPane, localizedCaption);
                 hyperlink.addHyperlinkListener(new HyperlinkAdapter() {
                     @Override
                     public void linkActivated(HyperlinkEvent event) {

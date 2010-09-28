@@ -15,8 +15,9 @@ package org.faktorips.devtools.core.model.tablestructure;
 
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.IIpsMetaClass;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 
-public interface ITableStructure extends IIpsMetaClass {
+public interface ITableStructure extends IIpsMetaClass, ILabeledElement {
 
     public final static String PROPERTY_TYPE = "tableStructureType"; //$NON-NLS-1$
 

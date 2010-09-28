@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.util.Locale;
+
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -151,4 +154,30 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
         contentUsage.initFromXml(el);
         assertNull(contentUsage.getTableContentName());
     }
+
+    public void testGetCaption() throws CoreException {
+        contentUsage.setStructureUsage(STRUCTURE_ROLENAME);
+        structUsage.getLabel(Locale.GERMAN).setValue("foo");
+
+        assertEquals("foo", contentUsage.getCaption(Locale.GERMAN));
+    }
+
+    public void testGetCaptionNotExistent() throws CoreException {
+        contentUsage.setStructureUsage(STRUCTURE_ROLENAME);
+        assertNull(contentUsage.getCaption(Locale.TAIWAN));
+    }
+
+    public void testGetCaptionNullPointer() throws CoreException {
+        try {
+            structUsage.getCaption(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+    }
+
+    public void testGetLastResortCaption() {
+        contentUsage.setStructureUsage("foo");
+        assertEquals("Foo", contentUsage.getLastResortCaption());
+    }
+
 }

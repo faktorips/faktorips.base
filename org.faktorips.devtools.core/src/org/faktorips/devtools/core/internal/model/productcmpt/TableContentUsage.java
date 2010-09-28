@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.util.Locale;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -27,6 +29,7 @@ import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -183,6 +186,23 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
             return null;
         }
         return type.findTableStructureUsage(structureUsage, ipsProject);
+    }
+
+    @Override
+    public String getCaption(Locale locale) throws CoreException {
+        ArgumentCheck.notNull(locale);
+
+        String caption = null;
+        ITableStructureUsage structureUsage = findTableStructureUsage(getIpsProject());
+        if (structureUsage != null) {
+            caption = structureUsage.getLabelValue(locale);
+        }
+        return caption;
+    }
+
+    @Override
+    public String getLastResortCaption() {
+        return StringUtils.capitalize(structureUsage);
     }
 
 }
