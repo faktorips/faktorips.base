@@ -58,6 +58,7 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptS
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.util.StringUtil;
@@ -360,6 +361,13 @@ public class ReferenceAndPreviewPage extends WizardPage {
                                 + getErrorMessage(structureReference);
                     }
                     return name;
+                } else if (wrapped instanceof IAssociation) {
+                    IAssociation association = (IAssociation)wrapped;
+                    if (association.is1ToMany()) {
+                        return IpsPlugin.getMultiLanguageSupport().getLocalizedPluralLabel(association);
+                    } else {
+                        return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association);
+                    }
                 }
                 return ((IIpsObjectPartContainer)wrapped).getName();
             } else {

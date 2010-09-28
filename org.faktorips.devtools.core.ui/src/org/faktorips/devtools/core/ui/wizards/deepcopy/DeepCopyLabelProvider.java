@@ -19,9 +19,11 @@ import java.util.List;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.StringUtil;
 
@@ -29,41 +31,26 @@ public class DeepCopyLabelProvider implements ILabelProvider {
 
     private List<ILabelProviderListener> listeners = new ArrayList<ILabelProviderListener>();
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void addListener(ILabelProviderListener listener) {
         listeners.add(listener);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         listeners = null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isLabelProperty(Object element, String property) {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void removeListener(ILabelProviderListener listener) {
         listeners.remove(listener);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Image getImage(Object element) {
         if (element instanceof IProductCmptReference) {
@@ -78,16 +65,18 @@ public class DeepCopyLabelProvider implements ILabelProvider {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getText(Object element) {
         if (element instanceof IProductCmptReference) {
             IProductCmptReference productCmptReference = (IProductCmptReference)element;
             return productCmptReference.getProductCmpt().getName();
         } else if (element instanceof IProductCmptTypeAssociationReference) {
-            return ((IProductCmptTypeAssociationReference)element).getAssociation().getName();
+            IAssociation association = ((IProductCmptTypeAssociationReference)element).getAssociation();
+            if (association.is1ToMany()) {
+                return IpsPlugin.getMultiLanguageSupport().getLocalizedPluralLabel(association);
+            } else {
+                return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association);
+            }
         } else if (element instanceof IProductCmptStructureTblUsageReference) {
             return StringUtil.unqualifiedName(((IProductCmptStructureTblUsageReference)element).getTableContentUsage()
                     .getTableContentName());
@@ -98,4 +87,5 @@ public class DeepCopyLabelProvider implements ILabelProvider {
     public Image getErrorImage() {
         return IpsUIPlugin.getImageHandling().getSharedImage("error_tsk.gif", true); //$NON-NLS-1$
     }
+
 }
