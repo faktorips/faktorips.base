@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
 import java.util.GregorianCalendar;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.ViewerLabel;
@@ -67,18 +66,18 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
             return getProductCmptLabel(((IProductCmptReference)element).getProductCmpt());
         } else if (element instanceof IProductCmptTypeAssociationReference) {
             IProductCmptTypeAssociation association = ((IProductCmptTypeAssociationReference)element).getAssociation();
-            // if the cardinality of the association is "toMany" then show the name (target role
-            // name) in plural
-            // otherwise show the default name, which normally is the singular target role name
             if (association.is1ToMany()) {
-                return association.getTargetRolePlural();
+                return IpsPlugin.getMultiLanguageSupport().getLocalizedPluralLabel(association);
             } else {
-                return association.getName();
+                return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association);
             }
         } else if (element instanceof IProductCmptStructureTblUsageReference) {
             ITableContentUsage tcu = ((IProductCmptStructureTblUsageReference)element).getTableContentUsage();
-            String tableUsageLabelText = showTableStructureUsageName ? tcu.getStructureUsage() + ": " : ""; //$NON-NLS-1$ //$NON-NLS-2$
-            return StringUtils.capitalize(tableUsageLabelText) + StringUtil.unqualifiedName(tcu.getTableContentName());
+            String localizedCaption = ""; //$NON-NLS-1$
+            if (showTableStructureUsageName) {
+                localizedCaption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(tcu) + ": "; //$NON-NLS-1$
+            }
+            return localizedCaption + StringUtil.unqualifiedName(tcu.getTableContentName());
         } else if (element instanceof ViewerLabel) {
             return ((ViewerLabel)element).getText();
         }
