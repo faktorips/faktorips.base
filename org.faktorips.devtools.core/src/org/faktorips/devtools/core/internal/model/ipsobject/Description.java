@@ -17,9 +17,12 @@ import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.internal.model.IpsModel;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -103,9 +106,9 @@ public class Description extends AtomicIpsObjectPart implements IDescription {
 
     private void validateLocaleSupported(MessageList list) {
         // Only the project of the label itself must support the language
-        IIpsProject ipsProject = getIpsProject();
-
-        boolean localeSupported = ipsProject.getProperties().isSupportedLanguage(locale);
+        IIpsProjectProperties properties = ((IpsModel)getIpsModel())
+                .getIpsProjectProperties((IpsProject)getIpsProject());
+        boolean localeSupported = properties.isSupportedLanguage(locale);
         if (!(localeSupported)) {
             String text = NLS.bind(Messages.Description_msgLocaleNotSupportedByProject, locale.getLanguage());
             Message msg = new Message(IDescription.MSGCODE_LOCALE_NOT_SUPPORTED_BY_IPS_PROJECT, text, Message.WARNING,
