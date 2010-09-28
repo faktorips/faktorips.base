@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ValidationResultCache;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.DependencyDetail;
 import org.faktorips.devtools.core.model.IDependency;
@@ -50,6 +51,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
@@ -675,11 +677,14 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         }
 
         result = new MessageList();
+        IIpsProjectProperties properties = ((IpsModel)getIpsModel())
+                .getIpsProjectProperties((IpsProject)getIpsProject());
+        int languageCount = properties.getSupportedLanguages().size();
         if (this instanceof IDescribedElement) {
-            validateDescriptionCount(result);
+            validateDescriptionCount(result, languageCount);
         }
         if (this instanceof ILabeledElement) {
-            validateLabelCount(result);
+            validateLabelCount(result, languageCount);
         }
         validateThis(result, ipsProject);
         execCustomValidations(result, ipsProject);
@@ -687,9 +692,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         return result;
     }
 
-    private void validateDescriptionCount(MessageList result) {
+    private void validateDescriptionCount(MessageList result, int languageCount) {
         int descriptionCount = descriptions.size();
-        int languageCount = getIpsProject().getProperties().getSupportedLanguages().size();
         if (descriptionCount != languageCount) {
             String text = NLS.bind(Messages.IpsObjectPartContainer_msgInvalidDescriptionCount, descriptionCount,
                     languageCount);
@@ -699,9 +703,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         }
     }
 
-    private void validateLabelCount(MessageList result) {
+    private void validateLabelCount(MessageList result, int languageCount) {
         int labelCount = labels.size();
-        int languageCount = getIpsProject().getProperties().getSupportedLanguages().size();
         if (labelCount != languageCount) {
             String text = NLS.bind(Messages.IpsObjectPartContainer_msgInvalidLabelCount, labelCount, languageCount);
             Message message = new Message(IIpsObjectPartContainer.MSGCODE_INVALID_LABEL_COUNT, text, Message.WARNING);
