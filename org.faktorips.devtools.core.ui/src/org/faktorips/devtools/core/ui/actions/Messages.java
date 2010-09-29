@@ -27,35 +27,18 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
+    public static String AddIpsNatureAction_needToSelectOneSingleJavaProject;
+    public static String AddIpsNatureAction_titleAddFaktorIpsNature;
+    public static String AddIpsNatureAction_msgIPSNatureAlreadySet;
+    public static String AddIpsNatureAction_mustSelectAJavaProject;
+    public static String AddIpsNatureAction_readdNature;
+    public static String AddIpsNatureAction_msgSourceInProjectImpossible;
+    public static String AddIpsNatureAction_msgErrorCreatingIPSProject;
+
     public static String ExpandAllAction_Selection_Description;
     public static String ExpandAllAction_Description;
     public static String CollapseAllAction_Description;
     public static String CopyTableAction_title;
-    public static String AddIpsNatureAction_basePackage_default;
-    public static String AddIpsNatureAction_basePackageName;
-    public static String AddIpsNatureAction_basePackageNameNotValid;
-    public static String AddIpsNatureAction_defaultRuntimeIdPrefix;
-    public static String AddIpsNatureAction_defaultSourceFolderName;
-    public static String AddIpsNatureAction_dialogMessage;
-    public static String AddIpsNatureAction_dialogTitle;
-    public static String AddIpsNatureAction_ErrorNoSourceFolderName;
-    public static String AddIpsNatureAction_fullProject;
-    public static String AddIpsNatureAction_modelProject;
-    public static String AddIpsNatureAction_productDefinitionProject;
-    public static String AddIpsNatureAction_PersistenceSupport;
-    public static String AddIpsNatureAction_ProjectType;
-    public static String AddIpsNatureAction_readdNature;
-    public static String AddIpsNatureAction_runtimeIdPrefix;
-    public static String AddIpsNatureAction_sourceFolderName;
-    public static String AddIpsNatureAction_TheSourceFolderMustBeADirectChildOfTheProject;
-    public static String AddIpsNatureAction_needToSelectOneSingleJavaProject;
-    public static String AddIpsNatureAction_noJavaProject;
-    public static String AddIpsNatureAction_errorTitle;
-    public static String AddIpsNatureAction_msgIPSNatureAlreadySet;
-    public static String AddIpsNatureAction_msgSourceInProjectImpossible;
-    public static String AddIpsNatureAction_msgErrorCreatingIPSProject;
-    public static String AddIpsNatureAction_mustSelectAJavaProject;
-    public static String AddIpsNatureAction_titleAddFaktorIpsNature;
 
     public static String DeleteRowAction_Label;
     public static String DeleteRowAction_Tooltip;

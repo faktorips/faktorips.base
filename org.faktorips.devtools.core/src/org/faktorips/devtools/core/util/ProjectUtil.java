@@ -14,6 +14,8 @@
 package org.faktorips.devtools.core.util;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
@@ -339,12 +341,48 @@ public class ProjectUtil {
      * @throws CoreException In case of any Errors.
      * 
      * @since 2.6
+     * 
+     * @deprecated Use
+     *             {@link #createIpsProject(IJavaProject, String, boolean, boolean, boolean, List)}
+     *             instead.
      */
+    // Deprecated since 3.1
+    @Deprecated
     public static IIpsProject createIpsProject(IJavaProject javaProject,
             String runtimeIdPrefix,
             boolean isProductDefinitionProject,
             boolean isModelProject,
             boolean isPersistentProject) throws CoreException {
+
+        List<Locale> supportedLocales = new ArrayList<Locale>(1);
+        supportedLocales.add(IpsPlugin.getMultiLanguageSupport().getLocalizationLocale());
+        return createIpsProject(javaProject, runtimeIdPrefix, isProductDefinitionProject, isModelProject,
+                isPersistentProject, supportedLocales);
+    }
+
+    /**
+     * Creates and returns an <tt>IIpsProject</tt> based on the given <tt>IJavaProject</tt>.
+     * 
+     * @param javaProject The <tt>IJavaProject</tt> which is to be extended with IPS capabilities.
+     * @param runtimeIdPrefix The prefix for runtime IDs to be used in this project.
+     * @param isProductDefinitionProject Must be <code>true</code> if this is a product definition
+     *            project.
+     * @param isModelProject Must be <code>true</code> if this is a model project.
+     * @param isPersistentProject Must be true if persistence support should be enabled for the
+     *            project
+     * @param supportedLocales List of locales that will reflect the languages supported by the
+     *            project
+     * 
+     * @throws CoreException In case of any Errors.
+     * 
+     * @since 3.1
+     */
+    public static IIpsProject createIpsProject(IJavaProject javaProject,
+            String runtimeIdPrefix,
+            boolean isProductDefinitionProject,
+            boolean isModelProject,
+            boolean isPersistentProject,
+            List<Locale> supportedLocales) throws CoreException {
 
         addIpsRuntimeLibraries(javaProject);
         IIpsModel ipsModel = IpsPlugin.getDefault().getIpsModel();
@@ -372,9 +410,13 @@ public class ProjectUtil {
             props.setBuilderSetConfig(builderSetInfo.createDefaultConfiguration(ipsProject));
         }
 
-        Locale localizationLocale = IpsPlugin.getMultiLanguageSupport().getLocalizationLocale();
-        props.addSupportedLanguage(localizationLocale);
-        props.setDefaultLanguage(localizationLocale);
+        for (int i = 0; i < supportedLocales.size(); i++) {
+            Locale locale = supportedLocales.get(i);
+            props.addSupportedLanguage(locale);
+            if (i == 0) {
+                props.setDefaultLanguage(locale);
+            }
+        }
 
         ipsProject.setProperties(props);
 

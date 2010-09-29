@@ -154,9 +154,11 @@ public abstract class EditTableControl extends Composite implements IDataChangea
         }
         tableViewer.setCellModifier(createCellModifier());
 
-        for (int i = 0; i < editors.length; i++) {
-            if (editors[i] != null) {
-                addListenersToEditor(editors[i], i);
+        if (editors != null) {
+            for (int i = 0; i < editors.length; i++) {
+                if (editors[i] != null) {
+                    addListenersToEditor(editors[i], i);
+                }
             }
         }
     }
