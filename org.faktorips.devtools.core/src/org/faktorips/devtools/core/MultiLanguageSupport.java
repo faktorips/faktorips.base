@@ -26,6 +26,8 @@ import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -190,7 +192,7 @@ public final class MultiLanguageSupport {
      * the time this operation is called to internationalize Faktor-IPS elements.
      * <p>
      * If there is no label for that locale, the default label will be returned. If there is no
-     * default label as well, the pure name of the element is returned.
+     * default label as well, the pure name of the element is returned (capitalized).
      * <p>
      * Never returns <tt>null</tt>.
      * 
@@ -224,7 +226,7 @@ public final class MultiLanguageSupport {
      * uses at the time this operation is called to internationalize Faktor-IPS elements.
      * <p>
      * If there is no plural label for that locale, the default label will be returned. If there is
-     * no default label as well, the pure name of the element is returned.
+     * no default label as well, the pure name of the element is returned (capitalized).
      * <p>
      * Never returns <tt>null</tt>.
      * 
@@ -262,7 +264,7 @@ public final class MultiLanguageSupport {
      * language is specified trough the IPS project the element belongs to.
      * <p>
      * If there is no label for that locale or no default language is specified, the pure name of
-     * the element is returned.
+     * the element is returned (capitalized).
      * 
      * @param labeledElement The {@link ILabeledElement} to obtain the default label of.
      * 
@@ -274,6 +276,15 @@ public final class MultiLanguageSupport {
         ArgumentCheck.notNull(labeledElement);
 
         String label = StringUtils.capitalize(labeledElement.getName());
+
+        // TODO AW: Awkward hard-coded solution but so far we havn't agreed upon another approach
+        if (labeledElement instanceof IProductCmptTypeMethod) {
+            IProductCmptTypeMethod method = (IProductCmptTypeMethod)labeledElement;
+            if (method.isFormulaSignatureDefinition()) {
+                label = StringUtils.capitalize(method.getFormulaName());
+            }
+        }
+
         ILabel defaultLabel = getDefaultLabelPart(labeledElement);
         if (defaultLabel != null) {
             String value = defaultLabel.getValue();
@@ -289,7 +300,7 @@ public final class MultiLanguageSupport {
      * default language is specified trough the IPS project the element belongs to.
      * <p>
      * If there is no plural label for that locale or no default language is specified, the pure
-     * name of the element is returned.
+     * name of the element is returned (capitalized).
      * 
      * @param labeledElement The {@link ILabeledElement} to obtain the default plural label of.
      * 
@@ -305,6 +316,12 @@ public final class MultiLanguageSupport {
         ArgumentCheck.isTrue(labeledElement.isPluralLabelSupported());
 
         String pluralLabel = StringUtils.capitalize(labeledElement.getName());
+
+        // TODO AW: Awkward hard-coded solution but so far we havn't agreed upon another approach
+        if (labeledElement instanceof IAssociation) {
+            pluralLabel = StringUtils.capitalize(((IAssociation)labeledElement).getTargetRolePlural());
+        }
+
         ILabel defaultLabel = getDefaultLabelPart(labeledElement);
         if (defaultLabel != null) {
             String pluralValue = defaultLabel.getPluralValue();

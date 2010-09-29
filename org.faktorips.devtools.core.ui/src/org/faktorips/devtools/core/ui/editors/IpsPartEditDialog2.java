@@ -60,6 +60,8 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
     private Memento oldState;
     private boolean dirty = false;
 
+    private LabelEditComposite labelEditComposite;
+
     /**
      * Creates a new <code>IpsPartEditDialog2</code>.
      * 
@@ -168,7 +170,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
     private TabItem createLabelAndDescriptionTabItem(TabFolder folder) {
         Composite composite = uiToolkit.createGridComposite(folder, 1, true, true);
         Group labelGroup = uiToolkit.createGroup(composite, Messages.IpsPartEditDialog_groupLabel);
-        new LabelEditComposite(labelGroup, (ILabeledElement)part);
+        labelEditComposite = new LabelEditComposite(labelGroup, (ILabeledElement)part);
         Group descriptionGroup = uiToolkit.createGroup(composite, Messages.IpsPartEditDialog_groupDescription);
         new DescriptionEditComposite(descriptionGroup, (IDescribedElement)part, uiToolkit);
 
@@ -191,11 +193,11 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
     }
 
     private TabItem createLabelTabItem(TabFolder folder) {
-        Composite editComposite = new LabelEditComposite(folder, (ILabeledElement)part);
+        labelEditComposite = new LabelEditComposite(folder, (ILabeledElement)part);
 
         TabItem item = new TabItem(folder, SWT.NONE);
         item.setText(Messages.IpsPartEditDialog_tabItemLabel);
-        item.setControl(editComposite);
+        item.setControl(labelEditComposite);
 
         return item;
     }
@@ -307,4 +309,18 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         }
         combo.setItems(allEnumValues);
     }
+
+    /**
+     * Allows subclasses to set whether the composite that allows to edit labels is enabled in case
+     * the part being edited is an {@link ILabeledElement}.
+     * 
+     * @throws RuntimeException If the part being edited is not an {@link ILabeledElement}
+     */
+    protected final void setLabelCompositeEnabled(boolean enabled) {
+        if (!(part instanceof ILabeledElement)) {
+            throw new RuntimeException();
+        }
+        labelEditComposite.setEnabled(enabled);
+    }
+
 }

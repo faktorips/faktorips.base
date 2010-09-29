@@ -15,12 +15,14 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -405,6 +407,29 @@ public class FormulaTest extends AbstractIpsPluginTest {
 
     public void testSetExpression() {
         testPropertyAccessReadWrite(IFormula.class, IFormula.PROPERTY_EXPRESSION, formula, "a + b");
+    }
+
+    public void testGetCaption() throws CoreException {
+        ILabel label = formulaSignature.getLabel(Locale.GERMAN);
+        label.setValue("foo");
+        assertEquals("foo", formula.getCaption(Locale.GERMAN));
+    }
+
+    public void testGetCaptionNotExistent() throws CoreException {
+        assertNull(formula.getCaption(Locale.TAIWAN));
+    }
+
+    public void testGetCaptionNullPointer() throws CoreException {
+        try {
+            formulaSignature.getCaption(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
+    }
+
+    public void testGetLastResortCaption() {
+        formula.setFormulaSignature("blub");
+        assertEquals("Blub", formula.getLastResortCaption());
     }
 
 }

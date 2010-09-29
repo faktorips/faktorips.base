@@ -106,6 +106,7 @@ public class Description extends AtomicIpsObjectPart implements IDescription {
 
     private void validateLocaleSupported(MessageList list) {
         // Only the project of the label itself must support the language
+        // Obtain the project properties via the IPS model as it provides caching
         IIpsProjectProperties properties = ((IpsModel)getIpsModel())
                 .getIpsProjectProperties((IpsProject)getIpsProject());
         boolean localeSupported = properties.isSupportedLanguage(locale);

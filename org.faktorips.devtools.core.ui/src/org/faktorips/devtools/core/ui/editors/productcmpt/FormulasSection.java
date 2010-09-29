@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -174,12 +173,20 @@ public class FormulasSection extends IpsSection {
 
         // create formula edit fields
         for (IFormula formula : formulas) {
-            Label label = toolkit.createFormLabel(rootPane, StringUtils.capitalize(formula.getName()));
-            // use description of formula attribute as tooltip
-            String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(formula);
-            label.setToolTipText(localizedDescription);
+            String localizedCaption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(formula);
+            Label label = toolkit.createFormLabel(rootPane, localizedCaption);
+            try {
+                IMethod signature = formula.findFormulaSignature(generation.getIpsProject());
+                if (signature != null) {
+                    String localizedDescription = IpsPlugin.getMultiLanguageSupport()
+                            .getLocalizedDescription(signature);
+                    label.setToolTipText(localizedDescription);
+                }
+            } catch (CoreException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
 
-            FormulaEditControl evc = new FormulaEditControl(rootPane, toolkit, formula, this.getShell(), this);
+            FormulaEditControl evc = new FormulaEditControl(rootPane, toolkit, formula, getShell(), this);
             ctrl.add(new TextField(evc.getTextControl()), formula, IFormula.PROPERTY_EXPRESSION);
             addFocusControl(evc.getTextControl());
             this.editControls.add(evc);
@@ -188,11 +195,6 @@ public class FormulasSection extends IpsSection {
                 FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(formula);
                 ContentAssistHandler.createHandlerForText(evc.getTextControl(), CompletionUtil
                         .createContentAssistant(completionProcessor));
-                IMethod signature = formula.findFormulaSignature(generation.getIpsProject());
-                if (signature != null) {
-                    localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(signature);
-                    label.setToolTipText(localizedDescription);
-                }
             } catch (CoreException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }

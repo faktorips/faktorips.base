@@ -677,6 +677,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         }
 
         result = new MessageList();
+
+        // Obtain the project properties via the IPS model as it provides caching
         IIpsProjectProperties properties = ((IpsModel)getIpsModel())
                 .getIpsProjectProperties((IpsProject)getIpsProject());
         int languageCount = properties.getSupportedLanguages().size();
@@ -686,6 +688,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         if (this instanceof ILabeledElement) {
             validateLabelCount(result, languageCount);
         }
+
         validateThis(result, ipsProject);
         execCustomValidations(result, ipsProject);
         afterValidateThis(result, ipsProject);

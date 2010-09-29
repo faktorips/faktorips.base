@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -51,6 +52,7 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -399,6 +401,23 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         }
         String text = NLS.bind(Messages.Formula_msgWrongReturntype, signatureDatatype, result.getDatatype().getName());
         list.add(new Message(MSGCODE_WRONG_FORMULA_DATATYPE, text, Message.ERROR, this, PROPERTY_EXPRESSION));
+    }
+
+    @Override
+    public String getCaption(Locale locale) throws CoreException {
+        ArgumentCheck.notNull(locale);
+
+        String caption = null;
+        IProductCmptTypeMethod signature = findFormulaSignature(getIpsProject());
+        if (signature != null) {
+            caption = signature.getLabelValue(locale);
+        }
+        return caption;
+    }
+
+    @Override
+    public String getLastResortCaption() {
+        return StringUtils.capitalize(formulaSignature);
     }
 
     class EnumDatatypesCollector extends PolicyCmptTypeHierarchyVisitor {

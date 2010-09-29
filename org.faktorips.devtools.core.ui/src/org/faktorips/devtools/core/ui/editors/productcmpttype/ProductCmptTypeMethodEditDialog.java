@@ -75,6 +75,7 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
             IProductCmptTypeMethod tMethod = (IProductCmptTypeMethod)method;
             datatypeControl.setVoidAllowed(!tMethod.isFormulaSignatureDefinition());
             datatypeControl.setOnlyValueDatatypesAllowed(tMethod.isFormulaSignatureDefinition());
+            setLabelCompositeEnabled(tMethod.isFormulaSignatureDefinition());
         }
     }
 

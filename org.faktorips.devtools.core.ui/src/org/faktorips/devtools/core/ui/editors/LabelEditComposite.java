@@ -155,6 +155,12 @@ public final class LabelEditComposite extends Composite {
         table.setLayoutData(gridData);
     }
 
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        tableViewer.getTable().setEnabled(enabled);
+    }
+
     private class TableContentProvider implements IStructuredContentProvider {
 
         @Override
