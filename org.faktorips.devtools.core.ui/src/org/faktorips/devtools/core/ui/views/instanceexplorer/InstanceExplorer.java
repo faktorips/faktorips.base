@@ -286,7 +286,7 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
 
     @Override
     public void setFocus() {
-        // nothing to do.
+        tableViewer.getControl().setFocus();
     }
 
     @Override

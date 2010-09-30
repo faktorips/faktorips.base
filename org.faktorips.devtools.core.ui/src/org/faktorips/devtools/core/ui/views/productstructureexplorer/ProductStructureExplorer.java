@@ -84,9 +84,9 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.LinkDropListener;
 import org.faktorips.devtools.core.ui.actions.CollapseAllAction;
 import org.faktorips.devtools.core.ui.actions.ExpandAllAction;
-import org.faktorips.devtools.core.ui.actions.SearchReferencesAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeepCopyAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
+import org.faktorips.devtools.core.ui.actions.SearchReferencesAction;
 import org.faktorips.devtools.core.ui.actions.ShowInstanceAction;
 import org.faktorips.devtools.core.ui.internal.ICollectorFinishedListener;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
@@ -585,7 +585,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
     @Override
     public void setFocus() {
-        // nothing to do.
+        treeViewer.getControl().setFocus();
     }
 
     /**

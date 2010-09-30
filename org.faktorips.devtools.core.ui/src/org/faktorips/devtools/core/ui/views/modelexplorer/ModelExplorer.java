@@ -338,7 +338,7 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
     @Override
     public void setFocus() {
-        // Nothing to do
+        treeViewer.getControl().setFocus();
     }
 
     /** Answers whether this part shows the packagFragments flat or hierarchical */

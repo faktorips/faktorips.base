@@ -126,7 +126,7 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
         treeViewer.setLabelProvider(new DefaultLabelProvider());
         treeViewer.setContentProvider(hierarchyContentProvider);
         treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        getSite().setSelectionProvider(treeViewer);
+         getSite().setSelectionProvider(treeViewer);
         treeViewer.addDoubleClickListener(new TreeViewerDoubleclickListener(treeViewer));
 
         treeViewer.addDragSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance() },
@@ -228,7 +228,7 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
 
     @Override
     public void setFocus() {
-        // does nothing
+        treeViewer.getControl().setFocus();
     }
 
     protected String getWaitingLabel() {
