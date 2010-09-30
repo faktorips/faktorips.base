@@ -38,8 +38,7 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class EnumContentModelDescriptionPage extends DefaultModelDescriptionPage implements ContentsChangeListener {
 
-    /** The <tt>IEnumContent</tt> to display a description for. */
-    private IEnumContent enumContent;
+    private IEnumType enumType;
 
     /**
      * Creates the <tt>EnumContentModelDescriptionPage</tt>.
@@ -52,7 +51,8 @@ public class EnumContentModelDescriptionPage extends DefaultModelDescriptionPage
         super();
         ArgumentCheck.notNull(editor);
 
-        enumContent = editor.getEnumContent();
+        IEnumContent enumContent = editor.getEnumContent();
+        enumType = enumContent.findEnumType(editor.getIpsProject());
         setDescriptionData();
         IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
     }
@@ -69,9 +69,8 @@ public class EnumContentModelDescriptionPage extends DefaultModelDescriptionPage
      *             referenced by the <tt>IEnumContent</tt>.
      */
     private void setDescriptionData() throws CoreException {
-        setTitle(enumContent.getName());
+        setTitle(enumType.getName());
 
-        IEnumType enumType = enumContent.findEnumType(enumContent.getIpsProject());
         if (enumType == null) {
             return;
         }
@@ -96,14 +95,8 @@ public class EnumContentModelDescriptionPage extends DefaultModelDescriptionPage
          * Return if the changed IIpsSrcFile was not the IIpsSrcFile of the EnumType referenced by
          * the EnumContent or the IIpsSrcFile of the EnumContent itself.
          */
-        IEnumType enumType = null;
-        try {
-            enumType = enumContent.findEnumType(enumContent.getIpsProject());
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
         IIpsSrcFile changedIpsSrcFile = event.getIpsSrcFile();
-        if (changedIpsSrcFile != enumType.getIpsSrcFile() && changedIpsSrcFile != enumContent.getIpsSrcFile()) {
+        if (changedIpsSrcFile != enumType.getIpsSrcFile()) {
             return;
         }
 
