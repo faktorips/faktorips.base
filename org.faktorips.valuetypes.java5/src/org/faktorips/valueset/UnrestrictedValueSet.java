@@ -33,7 +33,7 @@ public class UnrestrictedValueSet<T> implements ValueSet<T> {
         return true;
     }
 
-    public Set<? extends T> getValues(boolean excludeNull) {
+    public Set<T> getValues(boolean excludeNull) {
         throw new IllegalStateException();
     }
 

@@ -61,6 +61,6 @@ public interface ValueSet<T> extends Serializable {
      * @throws IllegalStateException if the method is called on a set that doesn't contain discrete
      *             values or has an unlimited number of values
      */
-    public Set<? extends T> getValues(boolean excludeNull);
+    public Set<T> getValues(boolean excludeNull);
 
 }
