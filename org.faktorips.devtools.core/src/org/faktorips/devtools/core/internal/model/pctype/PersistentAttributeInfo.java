@@ -20,6 +20,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IPersistenceOptions;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPersistableTypeConverter;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
@@ -269,24 +270,7 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
                     IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME));
         }
 
-        if (tableColumnSize < MIN_TABLE_COLUMN_SIZE || tableColumnSize > MAX_TABLE_COLUMN_SIZE) {
-            String text = NLS.bind(Messages.PersistentAttributeInfo_msgColumnSizeExceedsTheLimit, new Object[] {
-                    MIN_TABLE_COLUMN_SIZE, MAX_TABLE_COLUMN_SIZE });
-            msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS, text, Message.ERROR, this,
-                    IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE));
-        }
-        if (tableColumnPrecision < MIN_TABLE_COLUMN_PRECISION || tableColumnPrecision > MAX_TABLE_COLUMN_PRECISION) {
-            String text = NLS.bind(Messages.PersistentAttributeInfo_msgColumnPrecisionExceedsTheLimit, new Object[] {
-                    MIN_TABLE_COLUMN_PRECISION, MAX_TABLE_COLUMN_PRECISION });
-            msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS, text, Message.ERROR, this,
-                    IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_PRECISION));
-        }
-        if (tableColumnScale < MIN_TABLE_COLUMN_SCALE || tableColumnScale > MAX_TABLE_COLUMN_SCALE) {
-            String text = NLS.bind(Messages.PersistentAttributeInfo_msgColumnScaleExceedsTheLimit, new Object[] {
-                    MIN_TABLE_COLUMN_SCALE, MAX_TABLE_COLUMN_SCALE });
-            msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS, text, Message.ERROR, this,
-                    IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE));
-        }
+        validateUsingPersistentOptions(msgList, ipsProject);
 
         /*
          * to get the max length we use the ips project which belongs to this object not the given
@@ -298,6 +282,35 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
             msgList.add(new Message(MSGCODE_COLUMN_NAME_EXCEEDS_MAX_LENGTH, NLS.bind(
                     Messages.PersistentAttributeInfo_msgColumnNameLengthExceedsMaximumLength, tableColumnName.length(),
                     maxColumnNameLenght), Message.ERROR, this, IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME));
+        }
+    }
+
+    private void validateUsingPersistentOptions(MessageList msgList, IIpsProject ipsProject) {
+        IPersistenceOptions pOpt = ipsProject.getProperties().getPersistenceOptions();
+        int minTableColumnSize = pOpt.getMinTableColumnSize();
+        int maxTableColumnSize = pOpt.getMaxTableColumnSize();
+        int minTableColumnPrecision = pOpt.getMinTableColumnPrecision();
+        int maxTableColumnPrecision = pOpt.getMaxTableColumnPrecision();
+        int minTableColumnScale = pOpt.getMinTableColumnScale();
+        int maxTableColumnScale = pOpt.getMaxTableColumnScale();
+
+        if (tableColumnSize < minTableColumnSize || tableColumnSize > maxTableColumnSize) {
+            String text = NLS.bind(Messages.PersistentAttributeInfo_msgColumnSizeExceedsTheLimit, new Object[] {
+                    minTableColumnSize, maxTableColumnSize });
+            msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS, text, Message.ERROR, this,
+                    IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE));
+        }
+        if (tableColumnPrecision < minTableColumnPrecision || tableColumnPrecision > maxTableColumnPrecision) {
+            String text = NLS.bind(Messages.PersistentAttributeInfo_msgColumnPrecisionExceedsTheLimit, new Object[] {
+                    minTableColumnPrecision, maxTableColumnPrecision });
+            msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS, text, Message.ERROR, this,
+                    IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_PRECISION));
+        }
+        if (tableColumnScale < minTableColumnScale || tableColumnScale > maxTableColumnScale) {
+            String text = NLS.bind(Messages.PersistentAttributeInfo_msgColumnScaleExceedsTheLimit, new Object[] {
+                    minTableColumnScale, maxTableColumnScale });
+            msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS, text, Message.ERROR, this,
+                    IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE));
         }
     }
 

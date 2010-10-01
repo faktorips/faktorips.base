@@ -402,14 +402,19 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         // persistence options
         createPersistenceOptionsDescriptionComment(projectEl);
         Element persistenceOptionsEl = doc.createElement("PersistenceOptions"); //$NON-NLS-1$
+        projectEl.appendChild(persistenceOptionsEl);
         persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_NAME_LENGTH_ATTRIBUTENAME, String
                 .valueOf(getPersistenceOptions().getMaxTableNameLength()));
         persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_COLUMN_NAME_LENGTH_ATTRIBUTENAME, String
                 .valueOf(getPersistenceOptions().getMaxColumnNameLenght()));
-        projectEl.appendChild(persistenceOptionsEl);
         persistenceOptionsEl.setAttribute(IPersistenceOptions.ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS, "" //$NON-NLS-1$
                 + Boolean.valueOf(getPersistenceOptions().isAllowLazyFetchForSingleValuedAssociations()));
-        projectEl.appendChild(persistenceOptionsEl);
+        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_COLUMN_SIZE, String
+                .valueOf(getPersistenceOptions().getMaxTableColumnSize()));
+        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_COLUMN_SCALE, String
+                .valueOf(getPersistenceOptions().getMaxTableColumnScale()));
+        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_COLUMN_PRECISION, String
+                .valueOf(getPersistenceOptions().getMaxTableColumnPrecision()));
 
         ITableNamingStrategy tableNamingStrategy = getPersistenceOptions().getTableNamingStrategy();
         ITableColumnNamingStrategy tableColumnNamingStrategy = getPersistenceOptions().getTableColumnNamingStrategy();
@@ -872,8 +877,15 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "constrain the maximum possible length of a table or column name." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "The attribute " + IPersistenceOptions.ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS + " defines if is is allowed to use lazy fetching " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
                 + "on the association side which holds a single value (to-one relationship side)." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "<PersistenceOptions maxColumnNameLength=\"255\" maxTableNameLength=\"255\">" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "The attributes " //$NON-NLS-1$
+                + IPersistenceOptions.MAX_TABLE_COLUMN_SIZE
+                + ", " //$NON-NLS-1$
+                + IPersistenceOptions.MAX_TABLE_COLUMN_SCALE
+                + ", and " //$NON-NLS-1$
+                + IPersistenceOptions.MAX_TABLE_COLUMN_PRECISION
+                + " constrain the maximum possible size, scale, and precision of the column content." + SystemUtils.LINE_SEPARATOR + " " + SystemUtils.LINE_SEPARATOR//$NON-NLS-1$  //$NON-NLS-2$
+                + "<PersistenceOptions maxColumnNameLength=\"255\" maxTableNameLength=\"255\" allowLazyFetchForSingleValuedAssociations=\"false\" " //$NON-NLS-1$
+                + "maxTableColumnPrecision=\"255\" maxTableColumnScale=\"255\" maxTableColumnSize=\"255\" >" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <TableNamingStrategy id=\"org.faktorips.devtools.core.CamelCaseToUpperUnderscoreTableNamingStrategy\">" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <TableColumnNamingStrategy id=\"org.faktorips.devtools.core.CamelCaseToUpperUnderscoreColumnNamingStrategy\">" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "</PersistenceOptions>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$

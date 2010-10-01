@@ -16,6 +16,8 @@ package org.faktorips.devtools.core.internal.model.pctype;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.ipsproject.IPersistenceOptions;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo.DateTimeMapping;
@@ -36,11 +38,6 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         pcAttribute = policyCmptType.newPolicyCmptTypeAttribute();
         pcAttribute.getPersistenceAttributeInfo().setTransient(false);
         pcAttribute.setName("attr1");
-    }
-
-    public void testValidate() {
-        // TODO missing validate test
-        // MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS / scale and precision
     }
 
     public void testTransient() throws CoreException {
@@ -108,6 +105,54 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         assertEquals(DateTimeMapping.DATE_AND_TIME, persistenceAttributeInfoCopy.getTemporalMapping());
         assertEquals("sqlColumnDefinition0", persistenceAttributeInfo.getSqlColumnDefinition());
         assertEquals("converterQualifiedClassName0", persistenceAttributeInfo.getConverterQualifiedClassName());
+    }
+
+    public void testValidateSizeScalePrecision() throws CoreException {
+        IPersistentAttributeInfo pAttInfo = pcAttribute.getPersistenceAttributeInfo();
+        MessageList ml = null;
+
+        setPersistenceOptionSizeScalePrecision(10, 20, 30);
+        pAttInfo.setTableColumnSize(2);
+        pAttInfo.setTableColumnScale(2);
+        pAttInfo.setTableColumnPrecision(2);
+
+        ml = pAttInfo.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS));
+
+        pAttInfo.setTableColumnSize(11);
+        ml = pAttInfo.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS));
+
+        pAttInfo.setTableColumnSize(2);
+        pAttInfo.setTableColumnScale(2);
+        pAttInfo.setTableColumnPrecision(2);
+
+        pAttInfo.setTableColumnScale(21);
+        ml = pAttInfo.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS));
+
+        pAttInfo.setTableColumnSize(2);
+        pAttInfo.setTableColumnScale(2);
+        pAttInfo.setTableColumnPrecision(2);
+
+        pAttInfo.setTableColumnPrecision(31);
+        ml = pAttInfo.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS));
+
+        pAttInfo.setTableColumnSize(2);
+        pAttInfo.setTableColumnScale(2);
+        pAttInfo.setTableColumnPrecision(2);
+        ml = pAttInfo.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS));
+    }
+
+    private void setPersistenceOptionSizeScalePrecision(int size, int scale, int precision) throws CoreException {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        IPersistenceOptions persistenceOptions = properties.getPersistenceOptions();
+        persistenceOptions.setMaxTableColumnSize(size);
+        persistenceOptions.setMaxTableColumnScale(scale);
+        persistenceOptions.setMaxTableColumnPrecision(precision);
+        ipsProject.setProperties(properties);
     }
 
     public void testValidateMaxColumnNameLength() throws CoreException {
