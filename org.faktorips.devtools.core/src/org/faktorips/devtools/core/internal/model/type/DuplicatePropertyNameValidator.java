@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.type;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -21,8 +22,10 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
@@ -38,7 +41,7 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor {
      * (with the name) as value. If there are multiple properties with a name, the value is a list
      * containing all the objects with the same name.
      */
-    private Map<String, Object> properties = new HashMap<String, Object>();
+    private Map<String, ObjectProperty[]> properties = new HashMap<String, ObjectProperty[]>();
     private List<String> duplicateProperties = new ArrayList<String>();
 
     public DuplicatePropertyNameValidator(IIpsProject ipsProject) {
@@ -52,10 +55,35 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor {
 
     public void addMessagesForDuplicates(MessageList messages) {
         for (String propertyName : duplicateProperties) {
-            List<ObjectProperty> objects = (List<ObjectProperty>)properties.get(propertyName);
-            ObjectProperty[] invalidObjProperties = objects.toArray(new ObjectProperty[objects.size()]);
-            messages.add(createMessage(propertyName, invalidObjProperties));
+            ObjectProperty[] invalidObjProperties = properties.get(propertyName);
+            if (!ignorePropertyCheck(invalidObjProperties)) {
+                messages.add(createMessage(propertyName, invalidObjProperties));
+            }
         }
+    }
+
+    private boolean ignorePropertyCheck(ObjectProperty[] objectProperties) {
+        if (objectProperties[0].getObject() instanceof IAssociation) {
+            IAssociation association = (IAssociation)objectProperties[0].getObject();
+            // The detail-to-master association that is a subset of a derived union association
+            // could have the same name as the corresponding derived union association @see MTB#357
+            if (association.isSubsetOfADerivedUnion()
+                    && association.getAssociationType() == AssociationType.COMPOSITION_DETAIL_TO_MASTER) {
+                // we have a look at the highest association in the type hierarchy. The array should
+                // be sorted that way because the visitor visits bottom-up
+                int lastIndex = objectProperties.length - 1;
+                // there could also be a duplicate name with an attribute or another property
+                if (objectProperties[lastIndex].getObject() instanceof IAssociation) {
+                    IAssociation superAssociation = (IAssociation)objectProperties[lastIndex].getObject();
+                    try {
+                        return association.isSubsetOfDerivedUnion(superAssociation, association.getIpsProject());
+                    } catch (CoreException e) {
+                        IpsPlugin.log(e);
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     @Override
@@ -69,9 +97,6 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor {
         }
         for (Iterator<? extends IAssociation> it = currType.getIteratorForAssociations(); it.hasNext();) {
             IAssociation ass = it.next();
-            // TODO it needs to be clarified if we should ask the builder set which naming
-            // conventions are used and instead of just
-            // uncapitalize ask the naming convention how it is handled
             if (ass.is1ToMany()) {
                 // target role plural only check if is many association
                 add(ass.getTargetRolePlural().toLowerCase(), new ObjectProperty(ass,
@@ -84,22 +109,21 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor {
         return true;
     }
 
-    @SuppressWarnings("unchecked")
     protected void add(String propertyName, ObjectProperty wrapper) {
         Object objInMap = properties.get(propertyName);
         if (objInMap == null) {
-            properties.put(propertyName, wrapper);
+            properties.put(propertyName, new ObjectProperty[] { wrapper });
             return;
         }
-        if (objInMap instanceof List) {
-            ((List<ObjectProperty>)objInMap).add(wrapper);
-            return;
+        if (objInMap instanceof ObjectProperty[]) {
+            ObjectProperty[] objects = (ObjectProperty[])objInMap;
+            int i = objects.length;
+            objects = Arrays.copyOf(objects, i + 1);
+            objects[i] = wrapper;
+            // there is already at least one object with this name
+            if (i > 1) {
+                duplicateProperties.add(propertyName);
+            }
         }
-        List<ObjectProperty> objects = new ArrayList<ObjectProperty>(2);
-        objects.add((ObjectProperty)objInMap);
-        objects.add(wrapper);
-        properties.put(propertyName, objects);
-        duplicateProperties.add(propertyName);
     }
-
 }
