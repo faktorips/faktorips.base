@@ -76,8 +76,13 @@ public class Memoizer<K, V> implements IComputable<K, V> {
                 Callable<SoftValue<V>> eval = new Callable<SoftValue<V>>() {
 
                     public SoftValue<V> call() throws Exception {
-                        return new SoftValue<V>(key, computable.compute(key), queue);
+                        V computed = computable.compute(key);
+                        if (computed == null) {
+                            return null;
+                        }
+                        return new SoftValue<V>(key, computed, queue);
                     }
+
                 };
                 FutureTask<SoftValue<V>> futureTask = new FutureTask<SoftValue<V>>(eval);
                 processQueue();
@@ -89,13 +94,17 @@ public class Memoizer<K, V> implements IComputable<K, V> {
             }
             try {
                 SoftValue<V> softValue = future.get();
-                if (softValue.get() == null) {
+                if (softValue == null) {
+                    // computable returned null
+                    cache.remove(key);
+                    return null;
+                } else if (softValue.get() == null) {
+                    // softreference was garbaged
                     cache.remove(softValue.key);
                     // try again: while (true)
                 } else {
                     return softValue.get();
                 }
-                return future.get().get();
             } catch (CancellationException e) {
                 cache.remove(key, future);
                 // try again: while (true)
