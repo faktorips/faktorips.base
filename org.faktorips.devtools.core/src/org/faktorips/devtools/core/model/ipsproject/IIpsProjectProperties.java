@@ -59,6 +59,13 @@ public interface IIpsProjectProperties {
     public final static String MSGCODE_MISSING_MIN_FEATURE_ID = MSGCODE_PREFIX + "MissingMinFeatureId"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the product component naming strategy can't be
+     * found.
+     */
+    public final static String MSGCODE_INVALID_PRODUCT_CMPT_NAMING_STRATEGY = MSGCODE_PREFIX
+            + "InvalidProductCmptNamingStrategy"; //$NON-NLS-1$
+
+    /**
      * Validation message code to indicate that the language identifier used as locale for a
      * supported language is not a valid ISO 639 language code.
      */

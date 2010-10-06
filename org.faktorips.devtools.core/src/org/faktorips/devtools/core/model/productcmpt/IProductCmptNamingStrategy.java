@@ -180,9 +180,9 @@ public interface IProductCmptNamingStrategy {
      * nested inside the given element. E.g.
      * 
      * <pre>
-     *     <ProductCmptNamingStrategy>
-     *         <NoVersionIdProductCmptNamingStrategy/>
-     *     </ProductCmptNamingStrategy>
+     *     &lt;ProductCmptNamingStrategy&gt;
+     *         &lt;NoVersionIdProductCmptNamingStrategy/&gt;
+     *     &lt;/ProductCmptNamingStrategy&gt;
      * </pre>
      */
     public void initFromXml(Element el);

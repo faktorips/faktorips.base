@@ -37,7 +37,6 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.enums.DefaultEnumType;
 import org.faktorips.devtools.core.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
-import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
@@ -52,6 +51,7 @@ import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
 import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategyFactory;
 import org.faktorips.devtools.core.model.question.QuestionAssignedUserGroup;
 import org.faktorips.devtools.core.model.question.QuestionStatus;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
@@ -103,7 +103,11 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private String releaseExtensionId;
 
     private String changesInTimeConventionIdForGeneratedCode = IChangesOverTimeNamingConvention.VAA;
+
     private IProductCmptNamingStrategy productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
+    private String productCmptNamingStrategyId = null; // must keep id as well, to report validation
+    // errors, if strategy is not found!
+
     private String builderSetId = ""; //$NON-NLS-1$
     private IIpsArtefactBuilderSetConfigModel builderSetConfig = new IpsArtefactBuilderSetConfigModel();
     private IIpsObjectPath path = new IpsObjectPath(new IpsProject());
@@ -148,6 +152,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             if (validateBuilderSetId(ipsProject, list)) {
                 validateBuilderSetConfig(ipsProject, list);
             }
+            validateProductCmptNamingStrategy(list);
             validateUsedPredefinedDatatype(ipsProject, list);
             validateIpsObjectPath(list);
             validateRequiredFeatures(list);
@@ -161,6 +166,14 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             // if runtime exceptions are not converted into core exceptions the stack trace gets
             // lost in the logging file and they are hard to find
             throw new CoreException(new IpsStatus(e));
+        }
+    }
+
+    private void validateProductCmptNamingStrategy(MessageList msgList) {
+        if (productCmptNamingStrategy == null) {
+            String text = NLS.bind("Unknown product component naming strategy, ID={0}", productCmptNamingStrategyId);
+            msgList.add(new Message(IIpsProjectProperties.MSGCODE_INVALID_PRODUCT_CMPT_NAMING_STRATEGY, text,
+                    Message.ERROR, this));
         }
     }
 
@@ -308,6 +321,15 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     public void setProductCmptNamingStrategy(IProductCmptNamingStrategy newStrategy) {
         ArgumentCheck.notNull(newStrategy);
         productCmptNamingStrategy = newStrategy;
+        productCmptNamingStrategyId = newStrategy.getExtensionId();
+    }
+
+    /**
+     * For testing purposes only!
+     */
+    public void setProductCmptNamingStrategyInternal(IProductCmptNamingStrategy newStrategy, String id) {
+        productCmptNamingStrategy = newStrategy;
+        productCmptNamingStrategyId = id;
     }
 
     @Override
@@ -569,13 +591,20 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private void initProductCmptNamingStrategyFromXml(IIpsProject ipsProject, Element el) {
         productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
+        productCmptNamingStrategyId = productCmptNamingStrategy.getExtensionId();
         if (el != null) {
-            String id = el.getAttribute("id"); //$NON-NLS-1$
-            if (id.equals(DateBasedProductCmptNamingStrategy.EXTENSION_ID)) {
-                productCmptNamingStrategy = new DateBasedProductCmptNamingStrategy();
+            productCmptNamingStrategyId = el.getAttribute("id"); //$NON-NLS-1$
+            if (StringUtils.isEmpty(productCmptNamingStrategyId)) {
+                return;
             }
-            productCmptNamingStrategy.setIpsProject(ipsProject);
-            productCmptNamingStrategy.initFromXml(el);
+            IProductCmptNamingStrategyFactory factory = ipsProject.getIpsModel().getCustomModelExtensions()
+                    .getProductCmptNamingStrategyFactory(productCmptNamingStrategyId);
+            if (factory != null) {
+                productCmptNamingStrategy = factory.newProductCmptNamingStrategy(ipsProject);
+                productCmptNamingStrategy.initFromXml(el);
+            } else {
+                productCmptNamingStrategy = null;
+            }
         }
     }
 

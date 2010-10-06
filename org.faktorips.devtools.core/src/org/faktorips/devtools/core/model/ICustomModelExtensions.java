@@ -19,6 +19,7 @@ import org.faktorips.devtools.core.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategyFactory;
 
 /**
  * The single instance of this class is owned by the IpsModel and gives access to extensions of the
@@ -85,14 +86,15 @@ public interface ICustomModelExtensions {
     <T extends IIpsObjectPartContainer> Set<ICustomValidation<T>> getCustomValidations(Class<T> type);
 
     /**
-     * Returns the product component naming stratgey identified by the given extension id.
+     * Returns a factory to create product component naming strategies. The type of strategy is
+     * identified by the given extension id.
      * 
-     * @param extensionId The extension ID that identifies the naming strategy.
+     * @param extensionId The extension ID that identifies the type of naming strategy.
      * @return The naming strategy of <code>null</code> if none is found for the given extension id.
      * 
-     * @throws NullPointerException if extension id is <code>null</code>.
+     * @throws NullPointerException if extension is <code>null</code>.
      * 
-     * @see IProductCmptNamingStrategy#getExtensionId()
+     * @see IProductCmptNamingStrategyFactory#getExtensionId()
      */
-    public IProductCmptNamingStrategy getProductCmptNamingStrategy(String extensionId);
+    public IProductCmptNamingStrategyFactory getProductCmptNamingStrategyFactory(String extensionId);
 }

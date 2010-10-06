@@ -22,11 +22,13 @@ import org.faktorips.devtools.core.internal.model.ipsobject.AbstractCustomValida
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategy;
+import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategyFactory;
 import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategy;
+import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategyFactory;
 import org.faktorips.devtools.core.internal.model.type.Attribute;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategyFactory;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -43,17 +45,18 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
         modelExtensions = (CustomModelExtensions)IpsPlugin.getDefault().getIpsModel().getCustomModelExtensions();
     }
 
-    public void testProductCmptNamingStrategies() {
-        IProductCmptNamingStrategy strategy = modelExtensions
-                .getProductCmptNamingStrategy(DateBasedProductCmptNamingStrategy.EXTENSION_ID);
-        DateBasedProductCmptNamingStrategy dateBasedStrategy = (DateBasedProductCmptNamingStrategy)strategy;
-        assertNotNull(dateBasedStrategy);
+    public void testGetProductCmptNamingStrategyFactory() {
+        IProductCmptNamingStrategyFactory factory = modelExtensions
+                .getProductCmptNamingStrategyFactory(DateBasedProductCmptNamingStrategy.EXTENSION_ID);
+        DateBasedProductCmptNamingStrategyFactory dateBasedFactory = (DateBasedProductCmptNamingStrategyFactory)factory;
+        assertNotNull(dateBasedFactory);
 
-        strategy = modelExtensions.getProductCmptNamingStrategy(NoVersionIdProductCmptNamingStrategy.EXTENSION_ID);
-        NoVersionIdProductCmptNamingStrategy noVersionIdStrategy = (NoVersionIdProductCmptNamingStrategy)strategy;
-        assertNotNull(noVersionIdStrategy);
+        factory = modelExtensions
+                .getProductCmptNamingStrategyFactory(NoVersionIdProductCmptNamingStrategy.EXTENSION_ID);
+        NoVersionIdProductCmptNamingStrategyFactory noVersionIdFactory = (NoVersionIdProductCmptNamingStrategyFactory)factory;
+        assertNotNull(noVersionIdFactory);
 
-        assertNull(modelExtensions.getProductCmptNamingStrategy("UnknownExtensionId"));
+        assertNull(modelExtensions.getProductCmptNamingStrategyFactory("UnknownExtensionId"));
     }
 
     public void testCustomValidation() throws CoreException {

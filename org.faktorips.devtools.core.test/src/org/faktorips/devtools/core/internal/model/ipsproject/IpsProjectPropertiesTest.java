@@ -24,6 +24,7 @@ import org.faktorips.datatype.JavaClass2DatatypeAdaptor;
 import org.faktorips.devtools.core.internal.model.DynamicEnumDatatype;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategy;
+import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
@@ -45,6 +46,16 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         properties = new IpsProjectProperties();
         properties.addSupportedLanguage(Locale.ENGLISH);
         properties.addSupportedLanguage(Locale.GERMAN);
+    }
+
+    public void testValidate_ProductCmptNamingStrategy() throws CoreException {
+        ((IpsProjectProperties)properties).setProductCmptNamingStrategyInternal(null, "UnknownStrategy-ID");
+        MessageList result = properties.validate(ipsProject);
+        assertNotNull(result.getMessageByCode(IIpsProjectProperties.MSGCODE_INVALID_PRODUCT_CMPT_NAMING_STRATEGY));
+
+        properties.setProductCmptNamingStrategy(new NoVersionIdProductCmptNamingStrategy());
+        result = properties.validate(ipsProject);
+        assertNull(result.getMessageByCode(IIpsProjectProperties.MSGCODE_INVALID_PRODUCT_CMPT_NAMING_STRATEGY));
     }
 
     public void testValidate_DefinedDatatypes() throws CoreException {

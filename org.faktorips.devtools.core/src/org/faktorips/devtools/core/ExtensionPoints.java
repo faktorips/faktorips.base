@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.Platform;
 import org.faktorips.devtools.core.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategyFactory;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -53,6 +54,7 @@ public class ExtensionPoints {
      * IpsPlugin relative id of the extension point for product component naming strategies.
      * 
      * @see IProductCmptNamingStrategy
+     * @see IProductCmptNamingStrategyFactory
      */
     public final static String PRODUCT_COMPONENT_NAMING_STRATEGY = "productComponentNamingStrategy"; //$NON-NLS-1$
 

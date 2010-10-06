@@ -40,7 +40,7 @@ import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefiniti
 import org.faktorips.devtools.core.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategyFactory;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -55,7 +55,7 @@ public class CustomModelExtensions implements ICustomModelExtensions {
 
     private CustomValidationsPerType customValidationsPerType = null;
 
-    private Map<String, IProductCmptNamingStrategy> productCmptNamingStrategies = new HashMap<String, IProductCmptNamingStrategy>();
+    private Map<String, IProductCmptNamingStrategyFactory> productCmptNamingStrategies = new HashMap<String, IProductCmptNamingStrategyFactory>();
 
     private IpsModel ipsModel;
 
@@ -68,11 +68,11 @@ public class CustomModelExtensions implements ICustomModelExtensions {
 
     private void initProductCmptNamingStrategies() {
         ExtensionPoints extensionPoints = new ExtensionPoints(IpsPlugin.PLUGIN_ID);
-        List<IProductCmptNamingStrategy> strategies = extensionPoints.createExecutableExtensions(
+        List<IProductCmptNamingStrategyFactory> strategyFactories = extensionPoints.createExecutableExtensions(
                 ExtensionPoints.PRODUCT_COMPONENT_NAMING_STRATEGY, ExtensionPoints.PRODUCT_COMPONENT_NAMING_STRATEGY,
-                "strategyClass", IProductCmptNamingStrategy.class); //$NON-NLS-1$ 
-        for (IProductCmptNamingStrategy strategy : strategies) {
-            productCmptNamingStrategies.put(strategy.getExtensionId(), strategy);
+                "factoryClass", IProductCmptNamingStrategyFactory.class); //$NON-NLS-1$ 
+        for (IProductCmptNamingStrategyFactory factory : strategyFactories) {
+            productCmptNamingStrategies.put(factory.getExtensionId(), factory);
         }
     }
 
@@ -235,9 +235,8 @@ public class CustomModelExtensions implements ICustomModelExtensions {
     }
 
     @Override
-    public IProductCmptNamingStrategy getProductCmptNamingStrategy(String extensionId) {
+    public IProductCmptNamingStrategyFactory getProductCmptNamingStrategyFactory(String extensionId) {
         ArgumentCheck.notNull(extensionId);
         return productCmptNamingStrategies.get(extensionId);
     }
-
 }

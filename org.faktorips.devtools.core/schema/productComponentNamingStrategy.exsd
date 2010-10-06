@@ -49,13 +49,13 @@
 
    <element name="productComponentNamingStrategy">
       <complexType>
-         <attribute name="strategyClass" type="string" use="required">
+         <attribute name="factoryClass" type="string" use="required">
             <annotation>
                <documentation>
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy"/>
+                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategyFactory"/>
                </appInfo>
             </annotation>
          </attribute>

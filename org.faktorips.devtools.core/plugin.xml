@@ -362,10 +362,10 @@
    <extension
          point="org.faktorips.devtools.core.productComponentNamingStrategy">
       <productComponentNamingStrategy
-            strategyClass="org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategy">
+            factoryClass="org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategyFactory">
       </productComponentNamingStrategy>
       <productComponentNamingStrategy
-            strategyClass="org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategy">
+            factoryClass="org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategyFactory">
       </productComponentNamingStrategy>
    </extension>
 </plugin>
