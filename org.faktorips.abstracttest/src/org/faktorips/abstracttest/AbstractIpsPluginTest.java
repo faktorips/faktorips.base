@@ -132,37 +132,16 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         setAutoBuild(false);
         IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar());
 
-        IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-            @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
-                if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                    System.out.println("AbstractIpsPlugin.setUp(): Start deleting projects.");
-                }
-                waitForIndexer();
-                IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-                for (IProject project : projects) {
-                    project.close(null);
-                    project.delete(true, true, null);
-                }
-                if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                    System.out.println("AbstractIpsPlugin.setUp(): Projects deleted.");
-                }
-                IpsPlugin.getDefault().reinitModel(); // also starts the listening process
-            }
-        };
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
+        workspace.run(new CleanUpRunnable(), workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
 
     }
 
     @Override
     protected final void tearDown() throws Exception {
         IpsPlugin.getDefault().setSuppressLoggingDuringTest(false);
-        IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-        for (IProject project : projects) {
-            project.close(null);
-            project.delete(true, true, null);
-        }
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        workspace.run(new CleanUpRunnable(), workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
         tearDownExtension();
     }
 
@@ -374,7 +353,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         javaProject.setRawClasspath(newEntries, null);
     }
 
-    private void waitForIndexer() throws JavaModelException {
+    protected void waitForIndexer() throws JavaModelException {
         SearchEngine engine = new SearchEngine();
         engine.searchAllTypeNames(new char[] {}, SearchPattern.R_EXACT_MATCH, new char[] {},
                 SearchPattern.R_EXACT_MATCH, IJavaSearchConstants.CLASS, SearchEngine
@@ -1153,6 +1132,25 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         IFile file = parentFolder.getFile(fileName);
         if (!file.exists()) {
             file.create(new ByteArrayInputStream(content.getBytes()), true, null);
+        }
+    }
+
+    private class CleanUpRunnable implements IWorkspaceRunnable {
+        @Override
+        public void run(IProgressMonitor monitor) throws CoreException {
+            if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+                System.out.println("AbstractIpsPlugin.setUp(): Start deleting projects.");
+            }
+            waitForIndexer();
+            IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+            for (IProject project : projects) {
+                project.close(null);
+                project.delete(true, true, null);
+            }
+            if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+                System.out.println("AbstractIpsPlugin.setUp(): Projects deleted.");
+            }
+            IpsPlugin.getDefault().reinitModel(); // also starts the listening process
         }
     }
 
