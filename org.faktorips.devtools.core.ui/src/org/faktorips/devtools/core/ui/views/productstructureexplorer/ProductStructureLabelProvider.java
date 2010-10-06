@@ -164,7 +164,11 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
     }
 
     private String getRolenameLabel(IAssociation association) {
-        return " - " + association.getTargetRoleSingular(); //$NON-NLS-1$
+        if (association.is1ToMany()) {
+            return " - " + IpsPlugin.getMultiLanguageSupport().getLocalizedPluralLabel(association); //$NON-NLS-1$
+        } else {
+            return " - " + IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association); //$NON-NLS-1$
+        }
     }
 
     private String getGenerationLabel(IProductCmpt productCmpt) {
