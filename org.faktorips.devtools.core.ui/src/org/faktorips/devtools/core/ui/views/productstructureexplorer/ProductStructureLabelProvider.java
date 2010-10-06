@@ -73,11 +73,11 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
             }
         } else if (element instanceof IProductCmptStructureTblUsageReference) {
             ITableContentUsage tcu = ((IProductCmptStructureTblUsageReference)element).getTableContentUsage();
-            String localizedCaption = ""; //$NON-NLS-1$
             if (showTableStructureUsageName) {
-                localizedCaption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(tcu) + ": "; //$NON-NLS-1$
+                return IpsUIPlugin.getLabel(tcu);
+            } else {
+                return StringUtil.unqualifiedName(tcu.getTableContentName());
             }
-            return localizedCaption + StringUtil.unqualifiedName(tcu.getTableContentName());
         } else if (element instanceof ViewerLabel) {
             return ((ViewerLabel)element).getText();
         }

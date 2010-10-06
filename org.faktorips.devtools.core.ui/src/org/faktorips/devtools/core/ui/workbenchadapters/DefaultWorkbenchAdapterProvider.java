@@ -194,7 +194,7 @@ public class DefaultWorkbenchAdapterProvider implements IWorkbenchAdapterProvide
         imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("ProductCmptLink.gif", true); //$NON-NLS-1$
         register(ProductCmptLink.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
         imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TableContentsUsage.gif", true); //$NON-NLS-1$
-        register(TableContentUsage.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
+        register(TableContentUsage.class, new TableContentUsageWorkbenchAdapter(imageDescriptor));
 
         // TableStructure
         imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TableColumn.gif", true); //$NON-NLS-1$
