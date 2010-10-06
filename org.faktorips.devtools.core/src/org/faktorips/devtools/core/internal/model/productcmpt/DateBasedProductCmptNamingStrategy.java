@@ -39,6 +39,9 @@ public class DateBasedProductCmptNamingStrategy extends AbstractProductCmptNamin
 
     public final static String EXTENSION_ID = "org.faktorips.devtools.core.DateBasedProductCmptNamingStrategy"; //$NON-NLS-1$
 
+    /**
+     * XML Element name.
+     */
     public final static String XML_TAG_NAME = "DateBasedProductCmptNamingStrategy"; //$NON-NLS-1$
 
     private String dateFormatPattern; // the pattern has to be kept in order to save the state to

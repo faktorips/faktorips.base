@@ -104,7 +104,7 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
     public void putSpecialCharReplacement(char specialChar, String replacement) {
         if (specialChar == '.') {
             throw new IllegalArgumentException(
-                    "The dot (.) is is prohibited in names, as it is used to separate name and package information in qualified names."); //$NON-NLS-1$
+                    "The dot (.) is prohibited in names, as it is used to separate name and package information in qualified names."); //$NON-NLS-1$
         }
         if (replacement == null) {
             specialCharReplacements.remove(new Character(specialChar));

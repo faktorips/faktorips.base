@@ -21,9 +21,12 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.AbstractCustomValidation;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategy;
+import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategy;
 import org.faktorips.devtools.core.internal.model.type.Attribute;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -40,6 +43,19 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
         modelExtensions = (CustomModelExtensions)IpsPlugin.getDefault().getIpsModel().getCustomModelExtensions();
     }
 
+    public void testProductCmptNamingStrategies() {
+        IProductCmptNamingStrategy strategy = modelExtensions
+                .getProductCmptNamingStrategy(DateBasedProductCmptNamingStrategy.EXTENSION_ID);
+        DateBasedProductCmptNamingStrategy dateBasedStrategy = (DateBasedProductCmptNamingStrategy)strategy;
+        assertNotNull(dateBasedStrategy);
+
+        strategy = modelExtensions.getProductCmptNamingStrategy(NoVersionIdProductCmptNamingStrategy.EXTENSION_ID);
+        NoVersionIdProductCmptNamingStrategy noVersionIdStrategy = (NoVersionIdProductCmptNamingStrategy)strategy;
+        assertNotNull(noVersionIdStrategy);
+
+        assertNull(modelExtensions.getProductCmptNamingStrategy("UnknownExtensionId"));
+    }
+
     public void testCustomValidation() throws CoreException {
         PolicyCmptType type = newPolicyCmptType(ipsProject, "Policy");
         IPolicyCmptTypeAttribute attribute = type.newPolicyCmptTypeAttribute();
@@ -53,7 +69,7 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
         MyValidation1 validation1 = new MyValidation1();
         validation1.msgToReturn = Message.newError("M1", "blabal");
         modelExtensions.addCustomValidation(validation1);
-        Set validations = modelExtensions.getCustomValidations(PolicyCmptTypeAttribute.class);
+        Set<?> validations = modelExtensions.getCustomValidations(PolicyCmptTypeAttribute.class);
         assertEquals(1, validations.size());
         assertTrue(validations.contains(validation1));
 

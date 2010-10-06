@@ -21,8 +21,11 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.faktorips.devtools.core.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -42,9 +45,16 @@ public class ExtensionPoints {
     /**
      * IpsPlugin relative id of the extension point for custom validations.
      * 
-     * @see IpsObjectType
+     * @see ICustomValidation
      */
     public final static String CUSTOM_VALIDATION = "customValidation"; //$NON-NLS-1$
+
+    /**
+     * IpsPlugin relative id of the extension point for product component naming strategies.
+     * 
+     * @see IProductCmptNamingStrategy
+     */
+    public final static String PRODUCT_COMPONENT_NAMING_STRATEGY = "productComponentNamingStrategy"; //$NON-NLS-1$
 
     private IExtensionRegistry registry;
     private String nameSpace;
@@ -108,13 +118,51 @@ public class ExtensionPoints {
         IExtension[] extensions = point.getExtensions();
         List<T> execExtensions = new ArrayList<T>(extensions.length);
         for (int i = 0; i < extensions.length; i++) {
-            T newExt = createExecutableExtension(extensions[i], elementName, propertyName, expectedType);
-            if (newExt != null) {
-                execExtensions.add(newExt);
-            }
+            execExtensions.addAll(createExecutableExtensions(extensions[i], elementName, propertyName, expectedType));
         }
         return execExtensions;
+    }
 
+    /**
+     * Creates the objects defined by the given extension. A lot of extension points allow to define
+     * more than one object with one extension. Examples are Eclipse's
+     * <code>org.eclipse.jdt.core.classpathVariableInitializer</code> or Faktor-IPS's
+     * <code>datatypeDefinition</code> extension points.
+     * 
+     * @param extension The extension.
+     * @param elementName Name of the config elements that contains a property that specifies the
+     *            qualified name of the class to instantiate. The extension contains at least one
+     *            element with the given name, but can contain more than one.
+     * @param propertyName Name of the config element's property that contains the qualified name of
+     *            the class to instantiate.
+     * @param expectedType The expected class/type of the instance.
+     * 
+     * @see IConfigurationElement#createExecutableExtension(String)
+     * 
+     * @throws NullPointerException if any of the arguments is <code>null</code>.
+     */
+    public final static <T> List<T> createExecutableExtensions(IExtension extension,
+            String elementName,
+            String propertyName,
+            Class<T> expectedType) {
+
+        IConfigurationElement[] configElements = extension.getConfigurationElements();
+        List<T> executables = new ArrayList<T>(configElements.length);
+        if (configElements.length == 0) {
+            String text = "No config elements with name " + elementName + " found in extension "//$NON-NLS-1$ //$NON-NLS-2$
+                    + extension.getUniqueIdentifier() + "."; //$NON-NLS-1$ 
+            IpsPlugin.log(new IpsStatus(IStatus.WARNING, text));
+            return executables;
+        }
+        for (int i = 0; i < configElements.length; i++) {
+            if (elementName.equalsIgnoreCase(configElements[i].getName())) {
+                T newExecutable = createExecutableExtension(extension, configElements[i], propertyName, expectedType);
+                if (newExecutable != null) {
+                    executables.add(newExecutable);
+                }
+            }
+        }
+        return executables;
     }
 
     /**

@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ICustomModelExtensions;
@@ -39,6 +40,7 @@ import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefiniti
 import org.faktorips.devtools.core.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -53,12 +55,25 @@ public class CustomModelExtensions implements ICustomModelExtensions {
 
     private CustomValidationsPerType customValidationsPerType = null;
 
+    private Map<String, IProductCmptNamingStrategy> productCmptNamingStrategies = new HashMap<String, IProductCmptNamingStrategy>();
+
     private IpsModel ipsModel;
 
     public CustomModelExtensions(IpsModel ipsModel) {
         ArgumentCheck.notNull(ipsModel);
         this.ipsModel = ipsModel;
         customValidationsPerType = CustomValidationsPerType.createFromExtensions();
+        initProductCmptNamingStrategies();
+    }
+
+    private void initProductCmptNamingStrategies() {
+        ExtensionPoints extensionPoints = new ExtensionPoints(IpsPlugin.PLUGIN_ID);
+        List<IProductCmptNamingStrategy> strategies = extensionPoints.createExecutableExtensions(
+                ExtensionPoints.PRODUCT_COMPONENT_NAMING_STRATEGY, ExtensionPoints.PRODUCT_COMPONENT_NAMING_STRATEGY,
+                "strategyClass", IProductCmptNamingStrategy.class); //$NON-NLS-1$ 
+        for (IProductCmptNamingStrategy strategy : strategies) {
+            productCmptNamingStrategies.put(strategy.getExtensionId(), strategy);
+        }
     }
 
     @Override
@@ -217,6 +232,12 @@ public class CustomModelExtensions implements ICustomModelExtensions {
     public void addCustomValidation(ICustomValidation<? extends IIpsObjectPartContainer> validation) {
         ipsModel.clearValidationCache();
         customValidationsPerType.addCustomValidation(validation);
+    }
+
+    @Override
+    public IProductCmptNamingStrategy getProductCmptNamingStrategy(String extensionId) {
+        ArgumentCheck.notNull(extensionId);
+        return productCmptNamingStrategies.get(extensionId);
     }
 
 }

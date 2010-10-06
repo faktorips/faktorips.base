@@ -17,18 +17,8 @@
    <extension-point id="pullUpParticipants" name="Pull Up Participants" schema="schema/pullUpParticipants.exsd"/>
    <extension-point id="customValidation" name="Custom Validation" schema="schema/customValidation.exsd"/>
    <extension-point id="productReleaseExtension" name="Release Deployment Extension" schema="schema/productReleaseExtension.exsd"/>
+   <extension-point id="productComponentNamingStrategy" name="Product Component Naming Strategy" schema="schema/productComponentNamingStrategy.exsd"/>
    
-<!-- 
-    Product Definition Perspective
-  -->
-
-<!--
-	Action sets
--->
-   
-
-   
-
 <!-- 
     Extensions to the Java perspective
   -->
@@ -101,31 +91,6 @@
       </builder>
    </extension>
    
-<!-- 
-    Views
-  -->
-
-<!-- 
-    Editors
-  -->
-
-<!-- 
-    Wizards
-  -->
-
-
-
-<!-- 
-    Preference Pages
-  -->
-    
-<!-- 
-    Property Pages
-    
-    Note that the project property page has to be registered for IProject as well as IJavaProject, because the Package Explorer
-    shows IJavaProjects while the Resource Navigator shows IProjects.
-    
-  -->
     
 <!-- 
     Default Datatypes
@@ -393,5 +358,14 @@
                type="org.faktorips.devtools.core.model.type.IType">
          </adapter>
       </factory>
+   </extension>
+   <extension
+         point="org.faktorips.devtools.core.productComponentNamingStrategy">
+      <productComponentNamingStrategy
+            strategyClass="org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategy">
+      </productComponentNamingStrategy>
+      <productComponentNamingStrategy
+            strategyClass="org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategy">
+      </productComponentNamingStrategy>
    </extension>
 </plugin>

@@ -18,21 +18,26 @@ import java.util.Set;
 import org.faktorips.devtools.core.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 
 /**
- * The single instance of this class is owned by the IpsModel and gives access to extensions to the
- * Faktor-IPS meta model. Currently two types of extension are supported.
+ * The single instance of this class is owned by the IpsModel and gives access to extensions of the
+ * Faktor-IPS meta model. Currently three types of extension are supported.
  * <ol>
  * <li>Extension Properties</li>
  * <li>Custom Validations</li>
+ * <li>Naming Strategies for Product Components</li>
  * </ol>
  * 
  * Extensions to the Faktor-IPS meta model can be contributed by PlugIn extensions.
  * 
  * @see IExtensionPropertyDefinition
  * @see ICustomValidation
+ * @see IProductCmptNamingStrategy
  * 
  * @author Jan Ortmann
+ * 
+ * @since 3.1.0
  */
 public interface ICustomModelExtensions {
 
@@ -78,4 +83,16 @@ public interface ICustomModelExtensions {
      * @throws NullPointerException if type is <code>null</code>.
      */
     <T extends IIpsObjectPartContainer> Set<ICustomValidation<T>> getCustomValidations(Class<T> type);
+
+    /**
+     * Returns the product component naming stratgey identified by the given extension id.
+     * 
+     * @param extensionId The extension ID that identifies the naming strategy.
+     * @return The naming strategy of <code>null</code> if none is found for the given extension id.
+     * 
+     * @throws NullPointerException if extension id is <code>null</code>.
+     * 
+     * @see IProductCmptNamingStrategy#getExtensionId()
+     */
+    public IProductCmptNamingStrategy getProductCmptNamingStrategy(String extensionId);
 }
