@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
@@ -63,20 +64,52 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor {
     }
 
     private boolean ignorePropertyCheck(ObjectProperty[] objectProperties) {
-        if (objectProperties[0].getObject() instanceof IAssociation) {
-            IAssociation association = (IAssociation)objectProperties[0].getObject();
+        // special case for associations @see MTB#357
+        // get the type of the first object property (if it is an association). The type of the
+        // first object property have to be the type we validate
+        String typeName = null;
+        for (ObjectProperty objectProperty : objectProperties) {
+            // first verify that every property is of type association - otherwise there is no
+            // special case
+            if (objectProperty.getObject() instanceof IPolicyCmptTypeAssociation) {
+                IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)objectProperty.getObject();
+                // get the name of type of the first object property - this should be the type we
+                // validate at the moment.
+                if (typeName == null) {
+                    typeName = association.getType().getQualifiedName();
+                } else {
+                    // if there is an association in the same type, we could not ignore the
+                    // duplicated name
+                    if (association.getType().getQualifiedName().equals(typeName)) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        if (objectProperties[0].getObject() instanceof IPolicyCmptTypeAssociation) {
+            IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)objectProperties[0].getObject();
             // The detail-to-master association that is a subset of a derived union association
-            // could have the same name as the corresponding derived union association @see MTB#357
-            if (association.isSubsetOfADerivedUnion()
-                    && association.getAssociationType() == AssociationType.COMPOSITION_DETAIL_TO_MASTER) {
+            // could have the same name as the corresponding derived union association
+            if (association.getAssociationType() == AssociationType.COMPOSITION_DETAIL_TO_MASTER) {
                 // we have a look at the highest association in the type hierarchy. The array should
                 // be sorted that way because the visitor visits bottom-up
                 int lastIndex = objectProperties.length - 1;
                 // there could also be a duplicate name with an attribute or another property
-                if (objectProperties[lastIndex].getObject() instanceof IAssociation) {
-                    IAssociation superAssociation = (IAssociation)objectProperties[lastIndex].getObject();
+                if (objectProperties[lastIndex].getObject() instanceof IPolicyCmptTypeAssociation) {
+                    IPolicyCmptTypeAssociation superAssociation = (IPolicyCmptTypeAssociation)objectProperties[lastIndex]
+                            .getObject();
                     try {
-                        return association.isSubsetOfDerivedUnion(superAssociation, association.getIpsProject());
+                        if (association.getType().isSubtypeOf(superAssociation.getType(), ipsProject)) {
+                            // the derived-union/subset information are only stored in the
+                            // corresponding Master-To-Detail-Association
+                            IPolicyCmptTypeAssociation inverse = association.findInverseAssociation(ipsProject);
+                            if (inverse == null) {
+                                return false;
+                            }
+                            String inverseSuperAssociation = superAssociation.getInverseAssociation();
+                            return inverse.getSubsettedDerivedUnion().equals(inverseSuperAssociation);
+                        }
                     } catch (CoreException e) {
                         IpsPlugin.log(e);
                     }
@@ -118,10 +151,12 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor {
         if (objInMap instanceof ObjectProperty[]) {
             ObjectProperty[] objects = (ObjectProperty[])objInMap;
             int i = objects.length;
-            objects = Arrays.copyOf(objects, i + 1);
-            objects[i] = wrapper;
-            // there is already at least one object with this name
-            if (i > 1) {
+            ObjectProperty[] objectsCopy = Arrays.copyOf(objects, i + 1);
+            objectsCopy[i] = wrapper;
+            properties.put(propertyName, objectsCopy);
+
+            if (i == 1) {
+                // there is already an object with this name
                 duplicateProperties.add(propertyName);
             }
         }
