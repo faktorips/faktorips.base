@@ -369,8 +369,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
         newTableContents.setTableStructure(template.getTableStructure());
         newTableContents.setNumOfColumnsInternal(template.getNumOfColumns());
         for (IDescription description : template.getDescriptions()) {
-            IDescription newDescription = newTableContents.newDescription();
-            newDescription.setLocale(description.getLocale());
+            IDescription newDescription = newTableContents.getDescription(description.getLocale());
             newDescription.setText(description.getText());
         }
     }
@@ -398,8 +397,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
             newProductCmpt.setProductCmptType(template.getProductCmptType());
             newProductCmpt.setValidTo(template.getValidTo());
             for (IDescription description : template.getDescriptions()) {
-                IDescription newDescription = newProductCmpt.newDescription();
-                newDescription.setLocale(description.getLocale());
+                IDescription newDescription = newProductCmpt.getDescription(description.getLocale());
                 newDescription.setText(description.getText());
             }
             newProductCmpt.newGeneration(source, IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
