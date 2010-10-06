@@ -308,13 +308,10 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         parametersControl.setInput(infos);
     }
 
-    /**
-     * Overrides the parent method and returns a combination of attribute name and datatype name of
-     * the attribute this formula relates to.
-     */
     @Override
     protected String buildTitle() {
-        return formula.getFormulaSignature() + (signature != null ? " - " + signature.getDatatype() : ""); //$NON-NLS-1$ //$NON-NLS-2$
+        String localizedCaption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(formula);
+        return localizedCaption + (signature != null ? " - " + signature.getDatatype() : ""); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
