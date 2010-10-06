@@ -59,6 +59,8 @@ public final class DescriptionEditComposite extends Composite {
 
     private boolean viewOnly;
 
+    private boolean inTextChange;
+
     public DescriptionEditComposite(Composite parent, IDescribedElement describedElement, UIToolkit uiToolkit) {
         super(parent, SWT.NONE);
 
@@ -102,7 +104,10 @@ public final class DescriptionEditComposite extends Composite {
             @Override
             public void modifyText(ModifyEvent e) {
                 if (currentDescription != null) {
+                    // Set flag to avoid focus problems when modifying the description text
+                    inTextChange = true;
                     currentDescription.setText(text.getText());
+                    inTextChange = false;
                 }
             }
 
@@ -111,8 +116,11 @@ public final class DescriptionEditComposite extends Composite {
     }
 
     public void refresh() {
-        refreshLanguageCodes();
-        refreshLanguageCombo();
+        // Check flag to avoid focus problems when modifying the description text
+        if (!(inTextChange)) {
+            refreshLanguageCodes();
+            refreshLanguageCombo();
+        }
     }
 
     /**
@@ -191,8 +199,12 @@ public final class DescriptionEditComposite extends Composite {
      * Ensures that the description text area shows the currently selected description.
      */
     private void updateDescription() {
+        IDescription descriptionBeforeUpdate = currentDescription;
         updateCurrentDescription();
-        updateTextArea();
+        if (descriptionBeforeUpdate == null || currentDescription == null
+                || !(currentDescription.equals(descriptionBeforeUpdate))) {
+            updateTextArea();
+        }
     }
 
     /**
