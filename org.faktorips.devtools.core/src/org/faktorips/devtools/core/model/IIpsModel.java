@@ -292,4 +292,22 @@ public interface IIpsModel extends IIpsElement {
      */
     public List<ITestCase> searchReferencingTestCases(IProductCmpt cmpt) throws CoreException;
 
+    /**
+     * Adding a {@link IIpsSrcFilesChangeListener} to the list of listeners. If the listener already
+     * exists this method does nothing.
+     * 
+     * 
+     * @param listener the new listener
+     * @return true if this set did not already contain the specified element
+     */
+    boolean addIpsSrcFilesChangedListener(IIpsSrcFilesChangeListener listener);
+
+    /**
+     * Removes the {@link IIpsSrcFilesChangeListener} from the list of listeners.
+     * 
+     * @param listener the listener to remove
+     * @return true if the listener was removed
+     */
+    boolean removeIpsSrcFilesChangedListener(IIpsSrcFilesChangeListener listener);
+
 }
