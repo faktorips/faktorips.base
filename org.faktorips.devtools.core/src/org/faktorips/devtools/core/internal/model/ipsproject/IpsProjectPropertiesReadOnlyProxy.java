@@ -270,6 +270,31 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
         throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
+    @Override
+    public boolean isRulesWithoutReferencesAllowedEnabled() {
+        return propertiesInternal.isRulesWithoutReferencesAllowedEnabled();
+    }
+
+    @Override
+    public Set<String> getResourcesPathExcludedFromTheProductDefiniton() {
+        return propertiesInternal.getResourcesPathExcludedFromTheProductDefiniton();
+    }
+
+    @Override
+    public void setResourcesPathExcludedFromTheProductDefiniton(Set<String> resourcesPathExcludedFromTheProductDefiniton) {
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+    }
+
+    @Override
+    public void addResourcesPathExcludedFromTheProductDefiniton(String resourcesPath) {
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+    }
+
+    @Override
+    public boolean isResourceExcludedFromProductDefinition(String location) {
+        return propertiesInternal.isResourceExcludedFromProductDefinition(location);
+    }
+
     /**
      * Throws a runtime exceptions since manipulation of this object is disallowed.
      */

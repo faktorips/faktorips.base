@@ -16,23 +16,28 @@ package org.faktorips.devtools.core.ui.editors.projectproperties;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.editors.Messages;
+import org.faktorips.devtools.core.ui.editors.projectproperties.sections.ProductDefinitionComposite;
 
-public class ModellPropertiesPage extends ProjectPropertyPage {
-    final static String PAGEID = "Description";
+public class ProductDefinitionPropertiesPage extends ProjectPropertyPage {
+    final static String PAGEID = "ProductDefinitionProperties";
 
-    public ModellPropertiesPage(FormEditor editor, String id, String title) {
+    public ProductDefinitionPropertiesPage(FormEditor editor, String id, String title) {
         super(editor, id, title);
         // TODO Auto-generated constructor stub
     }
 
-    public ModellPropertiesPage(ProjectPropertyEditor projectPropertyEditor) {
-        super(projectPropertyEditor, PAGEID, Messages.DescriptionPage_description);
+    public ProductDefinitionPropertiesPage(ProjectPropertyEditor projectPropertyEditor) {
+        super(projectPropertyEditor, PAGEID, Messages.ProductDefinitionPropertiesPage_description);
     }
 
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         formBody.setLayout(createPageLayout(1, false));
-        // new LabelSection(null, formBody, toolkit);
+        new ProductDefinitionComposite(formBody, getIIpsProjectProperties(), toolkit);
+    }
+
+    @Override
+    protected String getPageName() {
+        return Messages.ProductDefinitionPropertiesPage_description;
     }
 }

@@ -808,6 +808,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         return referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled;
     }
 
+    @Override
     public boolean isRulesWithoutReferencesAllowedEnabled() {
         return rulesWithoutReferencesAllowed;
     }
@@ -1101,20 +1102,20 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         requiredFeatures.put(featureId, version);
     }
 
-    /**
-     * Adds the given resource path to the list of excluded resources in the product definition.
-     */
     public void addResourcesPathExcludedFromTheProductDefiniton(String resourcesPath) {
         resourcesPathExcludedFromTheProductDefiniton.add(resourcesPath);
     }
 
-    /**
-     * Returns <code>true</code> if the given resource will be excluded from the product definition.<br>
-     * If the given resource is relevant for the product definition the method returns
-     * <code>false</code>.
-     */
     public boolean isResourceExcludedFromProductDefinition(String location) {
         return resourcesPathExcludedFromTheProductDefiniton.contains(location);
+    }
+
+    public Set<String> getResourcesPathExcludedFromTheProductDefiniton() {
+        return resourcesPathExcludedFromTheProductDefiniton;
+    }
+
+    public void setResourcesPathExcludedFromTheProductDefiniton(Set<String> resourcesPathExcludedFromTheProductDefiniton) {
+        this.resourcesPathExcludedFromTheProductDefiniton = resourcesPathExcludedFromTheProductDefiniton;
     }
 
     @Override

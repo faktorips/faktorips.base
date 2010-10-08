@@ -297,11 +297,42 @@
                showTitle="true"
                standalone="false"
                visible="true"/>
+         <view
+               closeable="true"
+               id="org.faktorips.devtools.core.ui.views.productStructureExplorer"
+               minimized="false"
+               moveable="true"
+               relationship="bottom"
+               relative="org.faktorips.devtools.core.ui.views.modelExplorer"
+               showTitle="true"
+               standalone="false"
+               visible="true">
+         </view>
+         <view
+               closeable="true"
+               id="org.faktorips.devtools.core.ui.views.instanceexplorer"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="org.faktorips.devtools.core.ui.views.productStructureExplorer"
+               showTitle="true"
+               standalone="false"
+               visible="false">
+         </view>
+         <view
+               closeable="true"
+               id="org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchy"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="org.faktorips.devtools.core.ui.views.productStructureExplorer"
+               showTitle="true"
+               standalone="false"
+               visible="false">
+         </view>
       </perspectiveExtension>
-   </extension>
-   <extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension targetID="org.faktorips.devtools.core.productDefinitionPerspective">
+      <perspectiveExtension
+            targetID="org.faktorips.devtools.core.productDefinitionPerspective">
          <view
                closeable="false"
                id="org.faktorips.devtools.core.ui.views.productDefinitionExplorer"
@@ -311,7 +342,8 @@
                relative="org.eclipse.ui.editorss"
                showTitle="true"
                standalone="false"
-               visible="true"/>
+               visible="true">
+         </view>
          <view
                closeable="false"
                id="org.faktorips.devtools.core.ui.views.productStructureExplorer"
@@ -321,7 +353,8 @@
                relative="org.faktorips.devtools.core.ui.views.productDefinitionExplorer"
                showTitle="true"
                standalone="false"
-               visible="true"/>
+               visible="true">
+         </view>
          <view
                closeable="false"
                id="org.eclipse.ui.views.ProblemView"
@@ -331,10 +364,17 @@
                relative="org.eclipse.ui.editorss"
                showTitle="true"
                standalone="false"
-               visible="true"/>
-         <actionSet id="org.faktorips.devtools.actions.EditModeActionSet"/>
-         <actionSet id="org.faktorips.devtools.actions.StandardActionSet"/>
-         <actionSet id="org.faktorips.devtools.actions.ProductDefinitionActionSet"/>
+               visible="true">
+         </view>
+         <actionSet
+               id="org.faktorips.devtools.actions.EditModeActionSet">
+         </actionSet>
+         <actionSet
+               id="org.faktorips.devtools.actions.StandardActionSet">
+         </actionSet>
+         <actionSet
+               id="org.faktorips.devtools.actions.ProductDefinitionActionSet">
+         </actionSet>
          <view
                closeable="true"
                id="org.faktorips.devtools.core.ui.views.modelExplorer"
@@ -343,7 +383,8 @@
                relative="org.faktorips.devtools.core.ui.views.productDefinitionExplorer"
                showTitle="true"
                standalone="false"
-               visible="false"/>
+               visible="false">
+         </view>
          <view
                closeable="true"
                id="org.faktorips.devtools.core.ui.views.testRunner"
@@ -352,8 +393,11 @@
                relative="org.faktorips.devtools.core.ui.views.productDefinitionExplorer"
                showTitle="true"
                standalone="false"
-               visible="false"/>
-         <actionSet id="org.faktorips.devtools.actions.NavigationActionSet"/>
+               visible="false">
+         </view>
+         <actionSet
+               id="org.faktorips.devtools.actions.NavigationActionSet">
+         </actionSet>
          <view
                closeable="true"
                id="org.faktorips.devtools.core.ui.views.modelDescription"
@@ -363,7 +407,30 @@
                relative="org.eclipse.ui.editorss"
                showTitle="true"
                standalone="false"
-               visible="true"/>
+               visible="true">
+         </view>
+         <view
+               closeable="true"
+               id="org.faktorips.devtools.core.ui.views.productStructureExplorer"
+               minimized="false"
+               moveable="true"
+               relationship="bottom"
+               relative="org.faktorips.devtools.core.ui.views.modelExplorer"
+               showTitle="true"
+               standalone="false"
+               visible="false">
+         </view>
+         <view
+               closeable="true"
+               id="org.faktorips.devtools.core.ui.views.instanceexplorer"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="org.faktorips.devtools.core.ui.views.productStructureExplorer"
+               showTitle="true"
+               standalone="false"
+               visible="false">
+         </view>
       </perspectiveExtension>
    </extension>
    <extension point="org.eclipse.ui.popupMenus">
@@ -1392,12 +1459,17 @@
                <iterate
                      ifEmpty="false"
                      operator="and">
-                  <adapt
-                        type="org.eclipse.core.resources.IResource">
+                  <or>
                      <adapt
-                           type="org.faktorips.devtools.core.model.type.IType">
+                           type="org.eclipse.core.resources.IResource">
+                        <adapt
+                              type="org.faktorips.devtools.core.model.type.IType">
+                        </adapt>
                      </adapt>
-                  </adapt>
+                     <instanceof
+                           value="org.faktorips.devtools.core.model.type.IType">
+                     </instanceof>
+                  </or>
                </iterate>
             </with>
          </enabledWhen>

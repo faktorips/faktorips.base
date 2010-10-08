@@ -13,9 +13,12 @@
 
 package org.faktorips.devtools.core.ui.editors.projectproperties;
 
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.editors.projectproperties.sections.DefinedDatatypesSection;
+import org.faktorips.devtools.core.ui.editors.projectproperties.sections.PredefinedDatatypesSection;
 
 public class DatatypesPropertiesPage extends ProjectPropertyPage {
     final static String PAGEID = "Datatypes";
@@ -32,6 +35,14 @@ public class DatatypesPropertiesPage extends ProjectPropertyPage {
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         formBody.setLayout(createPageLayout(1, false));
-        // new LabelSection(null, formBody, toolkit);
+        Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
+        new PredefinedDatatypesSection(getIIpsProjectProperties(), members, toolkit);
+        new DefinedDatatypesSection(getIIpsProjectProperties(), members, toolkit);
     }
+
+    @Override
+    protected String getPageName() {
+        return Messages.DatatypePropertiesPage_description;
+    }
+
 }

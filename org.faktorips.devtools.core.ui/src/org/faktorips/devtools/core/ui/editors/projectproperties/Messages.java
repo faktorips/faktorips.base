@@ -62,4 +62,12 @@ public class Messages extends NLS {
 
     public static String OverviewPropertiesPage_description;
     public static String DatatypePropertiesPage_description;
+    public static String ModelPropertiesPage_description;
+
+    public static String BuildPathPropertiesPage_description;
+    public static String BuildPathPropertiesPage_source;
+    public static String BuildPathPropertiesPage_archive;
+    public static String BuildPathPropertiesPage_projects;
+    public static String BuildPathPropertiesPage_path_order;
+    public static String ProductDefinitionPropertiesPage_description;
 }

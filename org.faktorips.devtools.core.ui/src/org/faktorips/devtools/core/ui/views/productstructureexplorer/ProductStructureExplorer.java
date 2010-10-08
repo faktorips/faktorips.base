@@ -786,8 +786,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     }
 
     private void showEmptyMessage() {
-        showErrorMsg(Messages.ProductStructureExplorer_infoMessageEmptyView_1
-                + Messages.ProductStructureExplorer_infoMessageEmptyView_2);
+        showErrorMsg(Messages.ProductStructureExplorer_infoMessageEmptyView_1);
     }
 
     @Override

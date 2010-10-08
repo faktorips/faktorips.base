@@ -14,8 +14,16 @@
 package org.faktorips.devtools.core.ui.editors.projectproperties;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IPartListener;
@@ -27,15 +35,21 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.IModificationStatusChangeListener;
+import org.faktorips.devtools.core.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.SelectionProviderDispatcher;
 
-public class ProjectPropertyEditor extends FormEditor implements ContentsChangeListener {
+public class ProjectPropertyEditor extends FormEditor implements ContentsChangeListener,
+        IModificationStatusChangeListener, IResourceChangeListener, IPropertyChangeListener {
     private IIpsSrcFile ipsSrcFile;
     private boolean isCheckingForChangesMadeOutsideEclipse;
     private boolean dontLoadChanges;
@@ -43,8 +57,10 @@ public class ProjectPropertyEditor extends FormEditor implements ContentsChangeL
     private SelectionProviderDispatcher selectionProviderDispatcher;
     private boolean updatingPageStructure;
     private boolean pagesForParsableSrcFileShown;
-    private IIpsProjectProperties aaa;
+    private IIpsProjectProperties iipsProjectProperties;
+    private IIpsProject ipsProject;
     public final static boolean TRACE = IpsPlugin.TRACE_UI;
+    private boolean dirty = false;
 
     public ProjectPropertyEditor() {
         super();
@@ -119,14 +135,15 @@ public class ProjectPropertyEditor extends FormEditor implements ContentsChangeL
 
         if (input instanceof IFileEditorInput) {
             IFile file = ((IFileEditorInput)input).getFile();
-            aaa = model.getIpsProject(file.getProject()).getProperties();
-            if (aaa != null) {
+            ipsProject = model.getIpsProject(file.getProject());
+            iipsProjectProperties = ipsProject.getProperties();
+            if (iipsProjectProperties != null) {
 
             }
             // ipsSrcFile = (IIpsSrcFile)model.getIpsElement(file);
         }
 
-        String title = "Projectproperties"; // ipsSrcFile.getIpsObjectName();
+        String title = iipsProjectProperties.getBuilderSetId(); // ipsSrcFile.getIpsObjectName();
         setPartName(title);
         // setContentDescription(ipsSrcFile.getParent().getEnclosingResource().getFullPath().toOSString());
 
@@ -171,10 +188,10 @@ public class ProjectPropertyEditor extends FormEditor implements ContentsChangeL
     protected void createPages() {
         super.createPages();
 
-        // ResourcesPlugin.getWorkspace().addResourceChangeListener(IpsObjectEditor.this);
-        // IpsPlugin.getDefault().getIpsModel().addChangeListener(IpsObjectEditor.this);
-        // IpsPlugin.getDefault().getIpsModel().addModifcationStatusChangeListener(IpsObjectEditor.this);
-        // IpsPlugin.getDefault().getIpsPreferences().addChangeListener(IpsObjectEditor.this);
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(ProjectPropertyEditor.this);
+        IpsPlugin.getDefault().getIpsModel().addChangeListener(ProjectPropertyEditor.this);
+        IpsPlugin.getDefault().getIpsModel().addModifcationStatusChangeListener(ProjectPropertyEditor.this);
+        IpsPlugin.getDefault().getIpsPreferences().addChangeListener(ProjectPropertyEditor.this);
         // activateContext();
     }
 
@@ -185,9 +202,12 @@ public class ProjectPropertyEditor extends FormEditor implements ContentsChangeL
             addPage(new DatatypesPropertiesPage(this));
             addPage(new OverviewPropertiesPage(this));
             addPage(new BuildPathPropertiesPage(this));
-            addPage(new CodeGeneratorPropertiesPage(this));
-            addPage(new ModellPropertiesPage(this));
+            addPage(new ProductDefinitionPropertiesPage(this));
+            addPage(new ModelPropertiesPage(this));
         } catch (PartInitException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (CoreException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -198,10 +218,27 @@ public class ProjectPropertyEditor extends FormEditor implements ContentsChangeL
 
     }
 
+    protected void setDirty(boolean newValue) {
+        if (dirty == newValue) {
+            return;
+        }
+
+        dirty = newValue;
+        firePropertyChange(IEditorPart.PROP_DIRTY);
+    }
+
     @Override
     public boolean isDirty() {
-        // TODO Auto-generated method stub
-        return false;
+        return dirty;
+    }
+
+    @Override
+    public void modificationStatusHasChanged(ModificationStatusChangedEvent event) {
+        if (!ipsSrcFile.equals(event.getIpsSrcFile())) {
+            return;
+        }
+
+        setDirty(ipsSrcFile.isDirty());
     }
 
     @Override
@@ -235,7 +272,11 @@ public class ProjectPropertyEditor extends FormEditor implements ContentsChangeL
     }
 
     public IIpsProjectProperties getProperty() {
-        return aaa;
+        return iipsProjectProperties;
+    }
+
+    public IIpsProject getIpsProject() {
+        return ipsProject;
     }
 
     private String getLogPrefix() {
@@ -370,4 +411,98 @@ public class ProjectPropertyEditor extends FormEditor implements ContentsChangeL
         // TODO Auto-generated method stub
 
     }
+
+    @Override
+    public void resourceChanged(IResourceChangeEvent event) {
+        IResource enclResource = ipsSrcFile.getEnclosingResource();
+        if (enclResource == null || event.getDelta() == null
+                || event.getDelta().findMember(enclResource.getFullPath()) == null) {
+            return;
+        }
+
+        if (TRACE) {
+            logMethodStarted("resourceChanged(): Received resource changed event for the file being edited."); //$NON-NLS-1$
+        }
+
+        if (!ipsSrcFile.exists()) {
+            close(false);
+        }
+
+        if (TRACE) {
+            logMethodFinished("resourceChanged()"); //$NON-NLS-1$
+        }
+
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent event) {
+        if (TRACE) {
+            logMethodStarted("propertyChange(): Received property changed event " + event); //$NON-NLS-1$
+        }
+
+        if (!isActive()) {
+            return;
+        }
+
+        if (event.getProperty().equals(IpsPreferences.WORKING_MODE)) {
+            refresh();
+        }
+
+        if (TRACE) {
+            logMethodFinished("propertyChange()"); //$NON-NLS-1$
+        }
+
+    }
+
+    protected boolean isActive() {
+        return this == getSite().getPage().getActiveEditor();
+    }
+
+    protected void refresh() {
+        if (updatingPageStructure) {
+            return;
+        }
+
+        /*
+         * ipsSrcFile can be null if the editor is opened on an ips source file that is not in an
+         * ips package.
+         */
+
+        if (ipsSrcFile == null || !ipsSrcFile.exists()) {
+            return;
+        }
+
+        try {
+            if (!ipsSrcFile.isContentParsable()) {
+                return;
+            }
+            /*
+             * here we have to request the ips object once, to make sure that it's state is
+             * synchronized with the enclosing resource.
+             * 
+             * otherwise if some part of the ui keeps a reference to the ips object, it won't
+             * contain the correct state.
+             */
+            ipsSrcFile.getIpsObject();
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
+
+        if (TRACE) {
+            logMethodStarted("refresh"); //$NON-NLS-1$
+        }
+
+        IEditorPart editorPart = getActivePageInstance();
+        if (editorPart instanceof IpsObjectEditorPage) {
+            IpsObjectEditorPage page = (IpsObjectEditorPage)editorPart;
+            page.refresh();
+        }
+
+        // updateDataChangeableState();
+
+        if (TRACE) {
+            logMethodFinished("refresh"); //$NON-NLS-1$
+        }
+    }
+
 }

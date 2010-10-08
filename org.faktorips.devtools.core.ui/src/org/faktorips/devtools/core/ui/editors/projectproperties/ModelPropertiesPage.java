@@ -17,32 +17,34 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.editors.projectproperties.sections.GeneratorSection;
-import org.faktorips.devtools.core.ui.editors.projectproperties.sections.OverviewSection;
+import org.faktorips.devtools.core.ui.editors.projectproperties.sections.LanguageSection;
+import org.faktorips.devtools.core.ui.editors.projectproperties.sections.OptionalConstraintsSection;
+import org.faktorips.devtools.core.ui.editors.projectproperties.sections.PersistenceOptionsSection;
 
-public class OverviewPropertiesPage extends ProjectPropertyPage {
-    final static String PAGEID = "Overview";
+public class ModelPropertiesPage extends ProjectPropertyPage {
+    final static String PAGEID = "ModelPropertiesPage";
 
-    public OverviewPropertiesPage(FormEditor editor, String id, String title) {
+    public ModelPropertiesPage(FormEditor editor, String id, String title) {
         super(editor, id, title);
         // TODO Auto-generated constructor stub
     }
 
-    public OverviewPropertiesPage(ProjectPropertyEditor projectPropertyEditor) {
-        super(projectPropertyEditor, PAGEID, Messages.OverviewPropertiesPage_description);
+    public ModelPropertiesPage(ProjectPropertyEditor projectPropertyEditor) {
+        super(projectPropertyEditor, PAGEID, Messages.ModelPropertiesPage_description);
     }
 
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
-        formBody.setLayout(createPageLayout(1, true));
+        formBody.setLayout(createPageLayout(1, false));
         Composite members = createGridComposite(toolkit, formBody, 1, true, GridData.FILL_BOTH);
-        new OverviewSection(getIIpsProjectProperties(), members, toolkit);
-        new GeneratorSection(getProjectPropertyEditor().getIpsProject(), getIIpsProjectProperties()
-                .getBuilderSetConfig(), getIIpsProjectProperties(), members, toolkit);
+        new OptionalConstraintsSection(getIIpsProjectProperties(), members, toolkit);
+        new PersistenceOptionsSection(getIIpsProjectProperties(), members, toolkit);
+        new LanguageSection(getIIpsProjectProperties(), members, toolkit);
+        // new ProductNamingStrategySection(getIIpsProjectProperties(), members, toolkit);
     }
 
     @Override
     protected String getPageName() {
-        return Messages.OverviewPropertiesPage_description;
+        return Messages.ModelPropertiesPage_description;
     }
 }

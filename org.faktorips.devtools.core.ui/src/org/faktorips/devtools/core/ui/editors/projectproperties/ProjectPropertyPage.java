@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.editors.projectproperties;
 
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -23,9 +24,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.editors.Messages;
 
-public class ProjectPropertyPage extends FormPage {
+public abstract class ProjectPropertyPage extends FormPage {
     /** The horizontal space between two sections. */
     public final static int HORIZONTAL_SECTION_SPACE = 15;
 
@@ -33,33 +33,27 @@ public class ProjectPropertyPage extends FormPage {
     public final static int VERTICAL_SECTION_SPACE = 10;
 
     private UIToolkit uiToolkit;
-    final static String PAGEID = "Datatypes";
 
     public ProjectPropertyPage(FormEditor editor, String id, String title) {
         super(editor, id, title);
         uiToolkit = new UIToolkit(new FormToolkit(Display.getCurrent()));
     }
 
-    public ProjectPropertyPage(ProjectPropertyEditor editor) {
-        super(editor, PAGEID, Messages.DescriptionPage_description);
-    }
+    abstract protected void createPageContent(Composite formBody, UIToolkit toolkit);
 
-    protected void createPageContent(Composite formBody, UIToolkit toolkit) {
-        formBody.setLayout(createPageLayout(1, false));
-        // new LabelSection(null, formBody, toolkit);
-    }
+    abstract protected String getPageName();
 
     @Override
     protected void createFormContent(IManagedForm managedForm) {
         super.createFormContent(managedForm);
 
         ScrolledForm form = managedForm.getForm();
-        if (getIpsObject() == null) {
+        if (getIIpsProjectProperties() == null) {
             // No valid IPS source file, create nothing.
             return;
         }
 
-        form.setText(getProjectPropertyEditor().getTitle());
+        form.setText(getPageName());
         FormToolkit toolkit = managedForm.getToolkit();
         form.setExpandHorizontal(true);
         form.setExpandVertical(true);
@@ -73,7 +67,7 @@ public class ProjectPropertyPage extends FormPage {
         return (ProjectPropertyEditor)getEditor();
     }
 
-    public IIpsProjectProperties getIpsObject() {
+    public IIpsProjectProperties getIIpsProjectProperties() {
         /*
          * Null checking is necessary since it might be the case that the IPS source file cannot be
          * determined. E.g. in the special case that one tries to open an IPS source file which is
@@ -96,6 +90,32 @@ public class ProjectPropertyPage extends FormPage {
         return layout;
     }
 
+    /**
+     * Creates a grid composite for the inner page structure. The composite has no margins but the
+     * default spacing settings.
+     * 
+     * @param numOfColumns Number of columns in the grid.
+     * @param equalSize Set to <tt>true</tt> if the columns should have the same size.
+     */
+    protected Composite createGridComposite(UIToolkit toolkit,
+            Composite parent,
+            int numOfColumns,
+            boolean equalSize,
+            int gridData) {
+
+        Composite composite = toolkit.getFormToolkit().createComposite(parent);
+
+        GridLayout layout = new GridLayout(numOfColumns, equalSize);
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        layout.verticalSpacing = VERTICAL_SECTION_SPACE;
+        layout.horizontalSpacing = HORIZONTAL_SECTION_SPACE;
+
+        composite.setLayout(layout);
+        composite.setLayoutData(new GridData(gridData));
+
+        return composite;
+    }
     // private static class LabelSection extends IpsSection {
     //
     // private final ILabeledElement labeledElement;

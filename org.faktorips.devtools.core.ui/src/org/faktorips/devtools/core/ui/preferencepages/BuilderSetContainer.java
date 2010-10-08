@@ -36,14 +36,12 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -59,7 +57,6 @@ import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.util.StringUtils;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.StringUtil;
 
 /**
  * Dialog for configuring IPS builder sets of an IPS project.
@@ -463,7 +460,7 @@ public class BuilderSetContainer {
     }
 
     /** Widget action handling */
-    private final class BuilderSetAdapter implements ValueChangeListener, SelectionListener {
+    public final class BuilderSetAdapter implements ValueChangeListener, SelectionListener {
 
         @Override
         public void valueChanged(FieldValueChangedEvent event) {
@@ -541,7 +538,7 @@ public class BuilderSetContainer {
      * 
      * @author Roman Grutza
      */
-    private static class BuilderSetContentProvider implements IStructuredContentProvider {
+    public static class BuilderSetContentProvider implements IStructuredContentProvider {
 
         @Override
         public void dispose() {
@@ -563,55 +560,4 @@ public class BuilderSetContainer {
             return null;
         }
     }
-
-    /**
-     * Column label provider for the value of a Builder Set property
-     * 
-     * @author Roman Grutza
-     */
-    private class BuilderSetPropertyLabelProvider extends ColumnLabelProvider {
-
-        private IIpsArtefactBuilderSetConfigModel model;
-        private IIpsProject ipsProject;
-
-        BuilderSetPropertyLabelProvider(IIpsProject ipsProject,
-                IIpsArtefactBuilderSetConfigModel ipsArtefactBuilderSetConfigModel) {
-
-            this.ipsProject = ipsProject;
-            this.model = ipsArtefactBuilderSetConfigModel;
-        }
-
-        @Override
-        public String getText(Object element) {
-            if (element instanceof IIpsBuilderSetPropertyDef) {
-                IIpsBuilderSetPropertyDef propertyDef = (IIpsBuilderSetPropertyDef)element;
-                String propertyValue = model.getPropertyValue(propertyDef.getName());
-                if (propertyValue == null || "".equals(propertyValue)) { //$NON-NLS-1$
-                    // value not set in .ipsproject file, use default
-                    propertyValue = propertyDef.getDefaultValue(ipsProject);
-                } else if (propertyDef.getName().equals("loggingFrameworkConnector")) { //$NON-NLS-1$
-                    // Special treatment of qualified names:
-                    // Prevent the table column to be too wide by removing package information from
-                    // the following type. The full qualified name is shown only when the combo box
-                    // is opened.
-                    propertyValue = StringUtil.unqualifiedName(propertyValue);
-                }
-                return propertyValue;
-            }
-            return ""; //$NON-NLS-1$
-        }
-
-        @Override
-        public Color getBackground(Object element) {
-            Color bgColor = Display.getDefault().getSystemColor(SWT.COLOR_LIST_BACKGROUND);
-            if (element instanceof IIpsBuilderSetPropertyDef) {
-                IIpsBuilderSetPropertyDef propertyDef = (IIpsBuilderSetPropertyDef)element;
-                if (!propertyDef.isAvailable(ipsProject)) {
-                    bgColor = Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
-                }
-            }
-            return bgColor;
-        }
-    }
-
 }

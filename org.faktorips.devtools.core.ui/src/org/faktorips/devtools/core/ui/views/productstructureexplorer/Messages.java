@@ -31,7 +31,6 @@ public class Messages extends NLS {
     public static String AddLinkAction_selectDialogTitle;
     public static String ProductStructureExplorer_collectingAdjustmentDates;
     public static String ProductStructureExplorer_infoMessageEmptyView_1;
-    public static String ProductStructureExplorer_infoMessageEmptyView_2;
     public static String ProductStructureExplorer_label_NoGenerationForDate;
     public static String ProductStructureExplorer_menuShowReferencedTables_name;
     public static String ProductStructureExplorer_menuShowReferencedTables_tooltip;

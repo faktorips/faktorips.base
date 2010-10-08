@@ -49,7 +49,7 @@ public class ObjectPathOrderComposite extends Composite {
     private Button moveBottomButton;
     private boolean dataChanged = false;
 
-    ObjectPathOrderComposite(Composite parent) {
+    public ObjectPathOrderComposite(Composite parent) {
         super(parent, SWT.NONE);
         this.toolkit = new UIToolkit(null);
 

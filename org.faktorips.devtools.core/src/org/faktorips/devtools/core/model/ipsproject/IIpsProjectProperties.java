@@ -325,6 +325,13 @@ public interface IIpsProjectProperties {
     public boolean isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled();
 
     /**
+     * Check if the option to allow rules without references is enabled or not
+     * 
+     * @return true if the option is enabled
+     */
+    public boolean isRulesWithoutReferencesAllowedEnabled();
+
+    /**
      * @see #isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled()
      */
     public void setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(boolean enabled);
@@ -351,6 +358,32 @@ public interface IIpsProjectProperties {
      * @param version The minimum version number for this feature.
      */
     public void setMinRequiredVersionNumber(String featureId, String version);
+
+    /**
+     * Adds the given resource path to the list of excluded resources in the product definition.
+     */
+    public void addResourcesPathExcludedFromTheProductDefiniton(String resourcesPath);
+
+    /**
+     * Returns <code>true</code> if the given resource will be excluded from the product definition.<br>
+     * If the given resource is relevant for the product definition the method returns
+     * <code>false</code>.
+     */
+    public boolean isResourceExcludedFromProductDefinition(String location);
+
+    /**
+     * Returns the resourcesPathExcludedFromTheProductDefiniton
+     * 
+     * @return A {@link Set} of {@link String} that contains the list of excluded paths for the
+     *         product definition
+     */
+    public Set<String> getResourcesPathExcludedFromTheProductDefiniton();
+
+    /**
+     * Setting the resourcesPathExcludedFromTheProductDefiniton.
+     * 
+     */
+    public void setResourcesPathExcludedFromTheProductDefiniton(Set<String> resourcesPathExcludedFromTheProductDefiniton);
 
     /**
      * Returns the assigned user group allowed for a question in the IPS project.
