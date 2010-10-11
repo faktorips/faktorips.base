@@ -268,7 +268,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     public ClassLoader getClassLoaderForJavaProject(ClassLoader parent) throws CoreException {
         ArgumentCheck.notNull(parent);
         // always creates a new classloader,
-        final ClassLoaderProvider classLoaderProvider = new ClassLoaderProvider(getJavaProject(), parent, true, false);
+        final ClassLoaderProvider classLoaderProvider = new ClassLoaderProvider(getJavaProject(), true, false);
         return classLoaderProvider.getClassLoader();
     }
 

@@ -1268,8 +1268,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             // create a new classloader provider, make sure that the jars (inside the provided
             // classloader) will be copied, this fixed the problem if the classloader is used
             // to load classes for DynamicValueDatatype
-            provider = new ClassLoaderProvider(ipsProject.getJavaProject(), ClassLoader.getSystemClassLoader(),
-                    ipsProject.getReadOnlyProperties().isJavaProjectContainsClassesForDynamicDatatypes(), true);
+            provider = new ClassLoaderProvider(ipsProject.getJavaProject(), ipsProject.getReadOnlyProperties()
+                    .isJavaProjectContainsClassesForDynamicDatatypes(), true);
             classLoaderProviderMap.put(ipsProject, provider);
         }
         return provider;
