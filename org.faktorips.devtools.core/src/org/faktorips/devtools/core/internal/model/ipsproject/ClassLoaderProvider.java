@@ -21,7 +21,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -33,8 +35,11 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.util.ArgumentCheck;
@@ -71,9 +76,21 @@ public class ClassLoaderProvider {
      */
     private IResourceChangeListener resourceChangeListener;
 
+    /**
+     * Class loader used as parent of the class loader created by this provider.
+     */
+    private ClassLoader parentClassLoader = null;
+
     public ClassLoaderProvider(IJavaProject project, boolean includeProjectsOutputLocation, boolean copyJars) {
+        this(project, ClassLoader.getSystemClassLoader(), includeProjectsOutputLocation, copyJars);
+    }
+
+    public ClassLoaderProvider(IJavaProject project, ClassLoader parentClassLoader,
+            boolean includeProjectsOutputLocation, boolean copyJars) {
         ArgumentCheck.notNull(project);
+        ArgumentCheck.notNull(parentClassLoader);
         javaProject = project;
+        this.parentClassLoader = parentClassLoader;
         this.includeProjectsOutputLocation = includeProjectsOutputLocation;
         this.copyJars = copyJars;
     }
@@ -90,8 +107,11 @@ public class ClassLoaderProvider {
                     workspace.removeResourceChangeListener(resourceChangeListener);
                 }
                 resourceChangeListener = new ChangeListener();
-                javaProject.getProject().getWorkspace().addResourceChangeListener(resourceChangeListener,
-                        IResourceChangeEvent.POST_CHANGE | IResourceChangeEvent.PRE_BUILD);
+                javaProject
+                        .getProject()
+                        .getWorkspace()
+                        .addResourceChangeListener(resourceChangeListener,
+                                IResourceChangeEvent.POST_CHANGE | IResourceChangeEvent.PRE_BUILD);
 
             } catch (Exception e) {
                 throw new CoreException(new IpsStatus(e));
@@ -136,7 +156,7 @@ public class ClassLoaderProvider {
         List<URL> urlsList = new ArrayList<URL>();
         accumulateClasspath(project, urlsList);
         URL[] urls = urlsList.toArray(new URL[urlsList.size()]);
-        return new URLClassLoader(urls, ClassLoader.getSystemClassLoader());
+        return new URLClassLoader(urls, parentClassLoader);
     }
 
     private void accumulateClasspath(IJavaProject currentProject, List<URL> urlsList) throws IOException, CoreException {
@@ -154,8 +174,12 @@ public class ClassLoaderProvider {
             addClassfileContainer(output);
         }
 
-        IClasspathEntry[] entry = currentProject.getRawClasspath();
+        Set<IPath> jreEntries = getJrePathEntries(currentProject);
+        IClasspathEntry[] entry = currentProject.getResolvedClasspath(true);
         for (IClasspathEntry element : entry) {
+            if (jreEntries.contains(element.getPath())) {
+                continue; // assume that JRE libs are already available via the parent class loader
+            }
             if (element.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
                 IPath jarPath;
                 /*
@@ -192,6 +216,21 @@ public class ClassLoaderProvider {
                 accumulateClasspath(currentProject.getJavaModel().getJavaProject(requiredProjectName), urlsList);
             }
         }
+    }
+
+    private Set<IPath> getJrePathEntries(IJavaProject javaProject) throws JavaModelException {
+        Set<IPath> jreEntries = new HashSet<IPath>();
+        IClasspathContainer jreContainer = JavaCore.getClasspathContainer(new Path(
+                "org.eclipse.jdt.launching.JRE_CONTAINER"), javaProject); //$NON-NLS-1$
+        if (jreContainer == null) {
+            IpsPlugin.log(new IpsStatus("No JRE Classpath Container found for project " + javaProject)); //$NON-NLS-1$
+        } else {
+            IClasspathEntry[] entries = jreContainer.getClasspathEntries();
+            for (int i = 0; i < entries.length; i++) {
+                jreEntries.add(entries[i].getPath());
+            }
+        }
+        return jreEntries;
     }
 
     /**
