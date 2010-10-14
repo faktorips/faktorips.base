@@ -893,6 +893,14 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      */
     public List<ITestCase> getAllTestCases() throws CoreException;
 
+    /**
+     * Returning the format for the product definition version of this project. The version format
+     * is configured via the extension <i>productReleaseExtension</i> The version is stored in the
+     * {@link IIpsProjectProperties}.
+     * 
+     * @return The {@link IVersionFormat} that is configured for this project
+     * @throws CoreException in case of exception
+     */
     public IVersionFormat getVersionFormat() throws CoreException;
 
 }
