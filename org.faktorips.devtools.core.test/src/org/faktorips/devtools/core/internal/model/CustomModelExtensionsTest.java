@@ -139,6 +139,7 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
             super(PolicyCmptTypeAttribute.class);
         }
 
+        @Override
         public MessageList validate(PolicyCmptTypeAttribute attribute, IIpsProject ipsProject) throws CoreException {
             MessageList result = new MessageList();
             result.add(msgToReturn);
@@ -155,6 +156,7 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
             super(IPolicyCmptTypeAttribute.class);
         }
 
+        @Override
         public MessageList validate(IPolicyCmptTypeAttribute attribute, IIpsProject ipsProject) throws CoreException {
             MessageList result = new MessageList();
             result.add(msgToReturn);
@@ -171,6 +173,7 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
             super(Attribute.class);
         }
 
+        @Override
         public MessageList validate(Attribute attribute, IIpsProject ipsProject) throws CoreException {
             MessageList result = new MessageList();
             result.add(msgToReturn);
@@ -187,6 +190,7 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
             super(IAttribute.class);
         }
 
+        @Override
         public MessageList validate(IAttribute attribute, IIpsProject ipsProject) throws CoreException {
             MessageList result = new MessageList();
             result.add(msgToReturn);

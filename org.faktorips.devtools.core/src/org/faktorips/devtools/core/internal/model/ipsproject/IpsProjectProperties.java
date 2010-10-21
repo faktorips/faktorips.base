@@ -489,10 +489,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         // persistence options
         createPersistenceOptionsDescriptionComment(projectEl);
         Element persistenceOptionsEl = doc.createElement("PersistenceOptions"); //$NON-NLS-1$
-        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_NAME_LENGTH_ATTRIBUTENAME, String
-                .valueOf(getPersistenceOptions().getMaxTableNameLength()));
-        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_COLUMN_NAME_LENGTH_ATTRIBUTENAME, String
-                .valueOf(getPersistenceOptions().getMaxColumnNameLenght()));
+        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_NAME_LENGTH_ATTRIBUTENAME,
+                String.valueOf(getPersistenceOptions().getMaxTableNameLength()));
+        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_COLUMN_NAME_LENGTH_ATTRIBUTENAME,
+                String.valueOf(getPersistenceOptions().getMaxColumnNameLenght()));
         projectEl.appendChild(persistenceOptionsEl);
         persistenceOptionsEl.setAttribute(IPersistenceOptions.ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS, "" //$NON-NLS-1$
                 + Boolean.valueOf(getPersistenceOptions().isAllowLazyFetchForSingleValuedAssociations()));
@@ -544,8 +544,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             builderSetConfig = new IpsArtefactBuilderSetConfigModel();
             builderSetConfig.initFromXml(artefactConfigEl);
         }
-        initProductCmptNamingStrategyFromXml(ipsProject, XmlUtil.getFirstElement(element,
-                IProductCmptNamingStrategy.XML_TAG_NAME));
+        initProductCmptNamingStrategyFromXml(ipsProject,
+                XmlUtil.getFirstElement(element, IProductCmptNamingStrategy.XML_TAG_NAME));
         Element pathEl = XmlUtil.getFirstElement(element, IpsObjectPath.XML_TAG_NAME);
         if (pathEl != null) {
             path = IpsObjectPath.createFromXml(ipsProject, pathEl);
@@ -1102,18 +1102,22 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         requiredFeatures.put(featureId, version);
     }
 
+    @Override
     public void addResourcesPathExcludedFromTheProductDefiniton(String resourcesPath) {
         resourcesPathExcludedFromTheProductDefiniton.add(resourcesPath);
     }
 
+    @Override
     public boolean isResourceExcludedFromProductDefinition(String location) {
         return resourcesPathExcludedFromTheProductDefiniton.contains(location);
     }
 
+    @Override
     public Set<String> getResourcesPathExcludedFromTheProductDefiniton() {
         return resourcesPathExcludedFromTheProductDefiniton;
     }
 
+    @Override
     public void setResourcesPathExcludedFromTheProductDefiniton(Set<String> resourcesPathExcludedFromTheProductDefiniton) {
         this.resourcesPathExcludedFromTheProductDefiniton = resourcesPathExcludedFromTheProductDefiniton;
     }
@@ -1274,10 +1278,12 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         return releaseVersion;
     }
 
+    @Override
     public void setVersion(String version) {
         this.releaseVersion = version;
     }
 
+    @Override
     public String getReleaseExtensionId() {
         return releaseExtensionId;
     }

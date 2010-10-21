@@ -329,6 +329,7 @@ public class TypeHierarchy implements ITypeHierarchy {
         return null;
     }
 
+    @Override
     public boolean isPartOfHierarchy(String name) {
         if (name != null) {
             for (Node node : nodes.values()) {

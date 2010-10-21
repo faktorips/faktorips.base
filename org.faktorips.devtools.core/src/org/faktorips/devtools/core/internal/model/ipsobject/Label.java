@@ -61,6 +61,7 @@ public class Label extends AtomicIpsObjectPart implements ILabel {
         return value;
     }
 
+    @Override
     public String getPluralValue() {
         return pluralValue;
     }

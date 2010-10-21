@@ -126,7 +126,7 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
         treeViewer.setLabelProvider(new DefaultLabelProvider());
         treeViewer.setContentProvider(hierarchyContentProvider);
         treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-         getSite().setSelectionProvider(treeViewer);
+        getSite().setSelectionProvider(treeViewer);
         treeViewer.addDoubleClickListener(new TreeViewerDoubleclickListener(treeViewer));
 
         treeViewer.addDragSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance() },
@@ -243,6 +243,7 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
     public void showHierarchy(final IIpsObject element) {
         if (element instanceof IType && element.getEnclosingResource().isAccessible()) {
             display.asyncExec(new Runnable() {
+                @Override
                 public void run() {
                     selected.setText(""); //$NON-NLS-1$
                     treeViewer.setInput(getWaitingLabel());
@@ -314,6 +315,7 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
      * 
      * Update the IpsHierarchyView in chase of changes on the object
      */
+    @Override
     public void resourceChanged(IResourceChangeEvent event) {
         ITypeHierarchy hierarchyTreeViewer = hierarchyContentProvider.getTypeHierarchy();
         if (hierarchyTreeViewer != null) {
@@ -554,6 +556,7 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
             try {
                 final ITypeHierarchy hierarchy = TypeHierarchy.getTypeHierarchy(iType);
                 display.asyncExec(new Runnable() {
+                    @Override
                     public void run() {
                         setInputData(hierarchy);
                     }
