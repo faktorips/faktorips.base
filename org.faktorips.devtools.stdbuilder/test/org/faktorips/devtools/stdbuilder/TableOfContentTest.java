@@ -280,7 +280,7 @@ public class TableOfContentTest extends XmlAbstractTestCase {
         toc2String = XmlUtil.nodeToString(toc2.toXml("other", newDocument()), "UTF-8");
         assertNotSame(tocString.intern(), toc2String.intern());
         
-        Pattern versionPattern = Pattern.compile("productDataVersion=\"[0-9]*\"");
+        Pattern versionPattern = Pattern.compile("productDataVersion=\".*\"");
         String tocWithoutVersion = versionPattern.matcher(tocString).replaceFirst("");
         String toc2WithoutVersion = versionPattern.matcher(toc2String).replaceFirst("");
 
