@@ -800,17 +800,19 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
              * this is a child test policy cmpt, check allowed product depending on parent product
              * cmpt
              */
-            ITestPolicyCmpt parentPolicyCmpt = getParentTestPolicyCmpt();
-            if (parentPolicyCmpt == null) {
+            ITestPolicyCmpt parentTestPolicyCmpt = getParentTestPolicyCmpt();
+            if (parentTestPolicyCmpt == null) {
                 // no further validation possible because parent policy cmpt not found
                 return;
-            }
-            IPolicyCmptType parentPolicyCmptType = parentPolicyCmpt.findPolicyCmptType();
-            if (!parentPolicyCmptType.isConfigurableByProductCmptType()) {
-                /*
-                 * No further validation possible as parent policyCmptType is not product relevant
-                 */
-                return;
+            } else {
+                IPolicyCmptType parentPolicyCmptType = parentTestPolicyCmpt.findPolicyCmptType();
+                if (parentPolicyCmptType == null || !parentPolicyCmptType.isConfigurableByProductCmptType()) {
+                    /*
+                     * No further validation possible as parent policyCmptType is not product
+                     * relevant
+                     */
+                    return;
+                }
             }
 
             ITestPolicyCmptTypeParameter parentParameter = param.getParentTestPolicyCmptTypeParam();
@@ -826,7 +828,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
              * found, even if parent does not require/define a product component. Add warning to
              * inform user, that validation could not be completed due to errors in parent.
              */
-            IProductCmpt productCmptOfParent = parentPolicyCmpt.findProductCmpt(ipsProject);
+            IProductCmpt productCmptOfParent = parentTestPolicyCmpt.findProductCmpt(ipsProject);
             if (productCmptOfParent == null) {
                 String text = NLS
                         .bind(

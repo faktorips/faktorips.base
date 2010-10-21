@@ -186,13 +186,13 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         // inverse association
         uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_inverseAssociationLabel);
-        Text reverseRelationText = uiToolkit.createText(workArea);
-        bindingContext.bindContent(reverseRelationText, association,
+        Text inverseRelationText = uiToolkit.createText(workArea);
+        bindingContext.bindContent(inverseRelationText, association,
                 IPolicyCmptTypeAssociation.PROPERTY_INVERSE_ASSOCIATION);
         InverseAssociationCompletionProcessor inverseAssociationCompletionProcessor = new InverseAssociationCompletionProcessor(
                 association);
         inverseAssociationCompletionProcessor.setComputeProposalForEmptyPrefix(true);
-        CompletionUtil.createHandlerForText(reverseRelationText, inverseAssociationCompletionProcessor);
+        CompletionUtil.createHandlerForText(inverseRelationText, inverseAssociationCompletionProcessor);
 
         Composite info = uiToolkit.createGridComposite(c, 1, true, false);
         Label note = uiToolkit.createLabel(info, pmoAssociation.getConstrainedNote());

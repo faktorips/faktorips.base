@@ -23,6 +23,10 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.JavaClass2DatatypeAdaptor;
 import org.faktorips.devtools.core.internal.model.DynamicEnumDatatype;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
+import org.faktorips.devtools.core.internal.model.pctype.CamelCaseToUpperUnderscoreColumnNamingStrategy;
+import org.faktorips.devtools.core.internal.model.pctype.CamelCaseToUpperUnderscoreTableNamingStrategy;
+import org.faktorips.devtools.core.internal.model.pctype.CamelCaseToUpperUnderscoreColumnNamingStrategy;
+import org.faktorips.devtools.core.internal.model.pctype.CamelCaseToUpperUnderscoreTableNamingStrategy;
 import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
@@ -165,6 +169,12 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         props.setPredefinedDatatypesUsed(new String[] { "Integer", "Boolean" });
         props.setMinRequiredVersionNumber("featureId", "versionNumber");
         props.setPersistenceSupport(true);
+        props.getPersistenceOptions().setMaxTableColumnSize(100);
+        props.getPersistenceOptions().setMaxTableColumnScale(101);
+        props.getPersistenceOptions().setMaxTableColumnPrecision(102);
+        props.getPersistenceOptions().setMaxTableColumnSize(100);
+        props.getPersistenceOptions().setMaxTableColumnScale(101);
+        props.getPersistenceOptions().setMaxTableColumnPrecision(102);
 
         Document doc = newDocument();
         Element configEl = doc.createElement("IpsArtefactBuilderSetConfig");
@@ -239,6 +249,10 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertTrue(props.isSupportedLanguage(Locale.ENGLISH));
         assertTrue(props.isSupportedLanguage(Locale.KOREAN));
         assertFalse(props.isSupportedLanguage(Locale.GERMAN));
+
+        assertEquals(100, props.getPersistenceOptions().getMaxTableColumnSize());
+        assertEquals(101, props.getPersistenceOptions().getMaxTableColumnScale());
+        assertEquals(102, props.getPersistenceOptions().getMaxTableColumnPrecision());
     }
 
     public void testAddDefinedDatatype() {
@@ -321,6 +335,18 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertTrue(props.isResourceExcludedFromProductDefinition("src"));
         assertTrue(props.isResourceExcludedFromProductDefinition("build/build.xml"));
 
+        // persistence options
+        assertEquals(4092, props.getPersistenceOptions().getMaxTableColumnSize());
+        assertEquals(10, props.getPersistenceOptions().getMaxTableColumnScale());
+        assertEquals(11, props.getPersistenceOptions().getMaxTableColumnPrecision());
+        assertEquals(30, props.getPersistenceOptions().getMaxTableNameLength());
+        assertEquals(60, props.getPersistenceOptions().getMaxColumnNameLenght());
+        assertTrue(props.getPersistenceOptions().isAllowLazyFetchForSingleValuedAssociations());
+        assertEquals(CamelCaseToUpperUnderscoreColumnNamingStrategy.class.getName(), props.getPersistenceOptions()
+                .getTableColumnNamingStrategy().getClass().getName());
+        assertEquals(CamelCaseToUpperUnderscoreTableNamingStrategy.class.getName(), props.getPersistenceOptions()
+                .getTableNamingStrategy().getClass().getName());
+                
         // supported languages
         Set<ISupportedLanguage> supportedLanguages = props.getSupportedLanguages();
         assertEquals(2, supportedLanguages.size());

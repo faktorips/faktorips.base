@@ -59,4 +59,8 @@
 		<SupportedLanguage locale="en" defaultLanguage="true"/>
 		<SupportedLanguage locale="de"/>
 	</SupportedLanguages>
+  <PersistenceOptions allowLazyFetchForSingleValuedAssociations="true" maxColumnNameLength="60" maxTableNameLength="30" maxTableColumnScale="10" maxTableColumnPrecision="11" maxTableColumnSize="4092">
+    <TableNamingStrategy id="org.faktorips.devtools.core.CamelCaseToUpperUnderscoreTableNamingStrategy"/>
+    <TableColumnNamingStrategy id="org.faktorips.devtools.core.CamelCaseToUpperUnderscoreColumnNamingStrategy"/>
+  </PersistenceOptions>	
 </IpsProject>

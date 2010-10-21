@@ -800,6 +800,42 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         policyCmptType.getPersistenceTypeInfo().setPersistentType(PersistentType.NONE);
     }
 
+    public void testValidateDuplicateAssociationSpecialCase() throws CoreException {
+        // MTB#357 special case: a detail-to-master association that is a subset of a derived-union
+        // could have the same name as the corresponding derived union association
+
+        IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "supertype");
+        IPolicyCmptType target = newPolicyCmptType(ipsProject, "target");
+        IPolicyCmptType superTarget = newPolicyCmptType(ipsProject, "superTarget");
+
+        IPolicyCmptTypeAssociation derivedUnion = supertype.newPolicyCmptTypeAssociation();
+        derivedUnion.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        derivedUnion.setTargetRoleSingular("aSuperTarget");
+        derivedUnion.setDerivedUnion(true);
+        derivedUnion.setTarget(superTarget.getQualifiedName());
+
+        IPolicyCmptTypeAssociation superInverse = derivedUnion.newInverseAssociation();
+        superInverse.setTargetRoleSingular("abc");
+
+        IPolicyCmptTypeAssociation subset = policyCmptType.newPolicyCmptTypeAssociation();
+        subset.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        subset.setTargetRoleSingular("aTarget");
+        subset.setSubsettedDerivedUnion(derivedUnion.getTargetRoleSingular());
+        subset.setTarget(target.getQualifiedName());
+        IPolicyCmptTypeAssociation inverse = subset.newInverseAssociation();
+        inverse.setTargetRoleSingular("abc");
+
+        MessageList result = target.validate(ipsProject);
+        assertNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
+
+        // TODO Test with expected error message:
+        // - beide Assoziationen am selben typ
+        // - Maser-Detail-Association
+        // - Not derived union
+        // - not subset of derived union
+
+    }
+
     private class AggregateRootBuilderSet extends EmptyBuilderSet {
 
         public final static String ID = "AggregateRootBuilderSet";

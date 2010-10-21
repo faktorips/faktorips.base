@@ -26,6 +26,9 @@ import org.faktorips.util.ArgumentCheck;
  * hierarchy. The class provides navigation of the super type hierarchy and stops if a cycle is
  * detected in the type hierarchy. It also provides the information if a cycle exists in the
  * hierarchy.
+ * <p>
+ * The visitor visits the hierarchy bottom-up, that means the start type is visited first, followed
+ * by the direct supertype.
  * 
  * @since 2.3
  * 

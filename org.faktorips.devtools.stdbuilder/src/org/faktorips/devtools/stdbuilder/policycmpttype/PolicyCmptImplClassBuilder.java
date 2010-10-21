@@ -75,7 +75,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
     public final static String METHOD_NEW_COPY = "newCopyInternal";
 
-    public PolicyCmptImplClassBuilder(IIpsArtefactBuilderSet builderSet, String kindId) throws CoreException {
+    public PolicyCmptImplClassBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(PolicyCmptImplClassBuilder.class));
         setMergeEnabled(true);
     }
@@ -207,6 +207,21 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             }
 
             for (GenAssociation genAssociation : generatorsForInverseOfDerivedUnion) {
+
+                IPolicyCmptTypeAssociation association = genAssociation.getAssociation();
+                if (!type.getQualifiedName().equals(association.getType().getQualifiedName())) {
+                    // the type is not the same - must be a supertype
+                    if (type.getAssociation(association.getTargetRoleSingular()) != null) {
+                        // an association with the same name exists in the type and supertype.
+                        // This could happen if a detail-to-master association is the subset of a
+                        // derived union association with the same role name as the derived union.
+                        // @see MTB#357
+                        // Because of this association also exists in type, the corresponding getter
+                        // method is already generated
+                        continue;
+                    }
+                }
+
                 // the derived union could be implemented by different associations in the same
                 // class thus we need a list of associations
                 List<IPolicyCmptTypeAssociation> associationsInResult = result.get(genAssociation);
@@ -415,7 +430,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
         IPolicyCmptTypeAssociation[] associations = getPcType().getPolicyCmptTypeAssociations();
         for (int i = 0; i < associations.length; i++) {
-            if (!associations[i].isValid() || associations[i].isDerived()) {
+            if (!associations[i].isValid(getIpsProject()) || associations[i].isDerived()) {
                 continue;
             }
             if (associations[i].isCompositionDetailToMaster()) {
@@ -500,7 +515,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
 
         for (IPolicyCmptTypeAssociation association : getPcType().getPolicyCmptTypeAssociations()) {
-            if (!association.isValid() || association.isDerived()) {
+            if (!association.isValid(getIpsProject()) || association.isDerived()) {
                 continue;
             }
             if (association.isCompositionDetailToMaster()) {
@@ -656,7 +671,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         // "SomethingElse", options);
         IPolicyCmptTypeAssociation[] associations = getPcType().getPolicyCmptTypeAssociations();
         for (int i = 0; i < associations.length; i++) {
-            if (!associations[i].isValid() || associations[i].isDerived()
+            if (!associations[i].isValid(getIpsProject()) || associations[i].isDerived()
                     || !associations[i].isCompositionMasterToDetail()) {
                 continue;
             }
@@ -755,20 +770,20 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
         IPolicyCmptTypeAssociation[] associations = getPcType().getPolicyCmptTypeAssociations();
         for (IPolicyCmptTypeAssociation association : associations) {
-            IPolicyCmptTypeAssociation r = association;
-            if (r.isValid() && r.isCompositionMasterToDetail() && !r.isDerivedUnion()) {
-                IPolicyCmptType target = r.findTargetPolicyCmptType(getIpsProject());
+            if (association.isValid(getIpsProject()) && association.isCompositionMasterToDetail()
+                    && !association.isDerivedUnion()) {
+                IPolicyCmptType target = association.findTargetPolicyCmptType(getIpsProject());
                 if (!target.isConfigurableByProductCmptType()) {
                     continue;
                 }
-                String field = getGenerator(r).getFieldNameForAssociation();
-                if (r.is1ToMany()) {
+                String field = getGenerator(association).getFieldNameForAssociation();
+                if (association.is1ToMany()) {
                     methodsBuilder.append("for (");
                     methodsBuilder.appendClassName(Iterator.class);
                     if (isUseTypesafeCollections()) {
                         methodsBuilder.append("<");
-                        methodsBuilder.appendClassName(getGenerator(r).getQualifiedClassName(
-                                getGenerator(r).getTargetPolicyCmptType(), true));
+                        methodsBuilder.appendClassName(getGenerator(association).getQualifiedClassName(
+                                getGenerator(association).getTargetPolicyCmptType(), true));
                         methodsBuilder.append('>');
                     }
                     methodsBuilder.append(" it=" + field + ".iterator(); it.hasNext();) {");
@@ -825,7 +840,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     protected void generateCodeForValidationRules(JavaCodeFragmentBuilder constantBuilder,
             JavaCodeFragmentBuilder memberVarBuilder,
             JavaCodeFragmentBuilder methodBuilder) throws CoreException {
-        generateMethodValidateSelf(methodBuilder, getPcType().getPolicyCmptTypeAttributes());
+        generateMethodValidateSelf(methodBuilder);
         generateMethodValidateDependants(methodBuilder);
         super.generateCodeForValidationRules(constantBuilder, memberVarBuilder, methodBuilder);
     }
@@ -871,11 +886,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         body.append(parameterValidationContext);
         body.append(");");
         for (IPolicyCmptTypeAssociation association : associations) {
-            IPolicyCmptTypeAssociation r = association;
-            GenAssociation gen = getGenerator(r);
-            if (!r.validate(getIpsProject()).containsErrorMsg()) {
-                if (r.getAssociationType() == AssociationType.COMPOSITION_MASTER_TO_DETAIL
-                        && StringUtils.isEmpty(r.getSubsettedDerivedUnion())) {
+            GenAssociation gen = getGenerator(association);
+            if (!association.validate(getIpsProject()).containsErrorMsg()) {
+                if (association.getAssociationType() == AssociationType.COMPOSITION_MASTER_TO_DETAIL
+                        && StringUtils.isEmpty(association.getSubsettedDerivedUnion())) {
                     body.appendln();
                     gen.generateCodeForValidateDependants(body);
                 }
@@ -901,8 +915,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * }
      * </pre>
      */
-    private void generateMethodValidateSelf(JavaCodeFragmentBuilder builder, IPolicyCmptTypeAttribute[] attributes)
-            throws CoreException {
+    private void generateMethodValidateSelf(JavaCodeFragmentBuilder builder) throws CoreException {
         String methodName = "validateSelf";
         String javaDoc = getLocalizedText(getIpsObject(), "VALIDATE_SELF_JAVADOC", getPcType().getName());
 
@@ -929,7 +942,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             }
         }
         body.appendln(" return true;");
-        // buildValidationValueSet(body, attributes); wegschmeissen ??
         builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         appendOverrideAnnotation(builder, false);
         builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Datatype.PRIMITIVE_BOOLEAN.getJavaClassName(),
@@ -1021,10 +1033,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         IPolicyCmptTypeAttribute[] attributes = getPcType().getPolicyCmptTypeAttributes();
         ArrayList<IPolicyCmptTypeAttribute> selectedValues = new ArrayList<IPolicyCmptTypeAttribute>();
         for (IPolicyCmptTypeAttribute attribute : attributes) {
-            IPolicyCmptTypeAttribute a = attribute;
-            if (!a.validate(getIpsProject()).containsErrorMsg()) {
-                if (a.isProductRelevant() && a.isChangeable() && !a.isOverwrite()) {
-                    selectedValues.add(a);
+            if (!attribute.validate(getIpsProject()).containsErrorMsg()) {
+                if (attribute.isProductRelevant() && attribute.isChangeable() && !attribute.isOverwrite()) {
+                    selectedValues.add(attribute);
                 }
             }
         }
@@ -1224,8 +1235,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.appendln("}");
 
         IPolicyCmptTypeAssociation[] associations = getPcType().getPolicyCmptTypeAssociations();
-        for (IPolicyCmptTypeAssociation association2 : associations) {
-            IPolicyCmptTypeAssociation association = association2;
+        for (IPolicyCmptTypeAssociation association : associations) {
             if (!association.isCompositionMasterToDetail() || association.isDerivedUnion()
                     || !association.isValid(getIpsProject())) {
                 continue;
@@ -1290,7 +1300,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
         IPolicyCmptTypeAssociation[] associations = getPcType().getPolicyCmptTypeAssociations();
         for (int i = 0; i < associations.length; i++) {
-            if (!associations[i].isValid() || !associations[i].isAssoziation()) {
+            if (!associations[i].isValid(getIpsProject()) || !associations[i].isAssoziation()) {
                 continue;
             }
             IPolicyCmptTypeAssociation association = associations[i];
@@ -1324,8 +1334,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         generateMethodGetParentModelObject(methodBuilder, detailToMasterAssociations);
 
         // methods create for each parent
-        for (IPolicyCmptTypeAssociation iPolicyCmptTypeAssociation : detailToMasterAssociations) {
-            IPolicyCmptTypeAssociation association = iPolicyCmptTypeAssociation;
+        for (IPolicyCmptTypeAssociation association : detailToMasterAssociations) {
             generateFieldForParent(memberVarsBuilder, association);
             generateMethodSetParentObjectInternal(methodBuilder, association);
         }
@@ -1435,9 +1444,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             List<IPolicyCmptTypeAssociation> detailToMasterAssociations) throws CoreException {
         List<IPolicyCmptTypeAssociation> inverseAssociationsWithoutDerivedUnion = new ArrayList<IPolicyCmptTypeAssociation>(
                 detailToMasterAssociations.size());
-        for (IPolicyCmptTypeAssociation iPolicyCmptTypeAssociation : detailToMasterAssociations) {
-            IPolicyCmptTypeAssociation association = iPolicyCmptTypeAssociation;
-            if (getGenerator(association) == null || getGenerator(association).isInverseOfDerivedUnionAssociation()) {
+        for (IPolicyCmptTypeAssociation association : detailToMasterAssociations) {
+            GenAssociation generator = getGenerator(association);
+            if (generator == null || generator.isInverseOfDerivedUnionAssociation()) {
                 continue;
             }
             inverseAssociationsWithoutDerivedUnion.add(association);
@@ -1459,8 +1468,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
         methodBuilder.methodBegin(Modifier.PUBLIC, qualifiedReturnType, methodName, EMPTY_STRING_ARRAY,
                 EMPTY_STRING_ARRAY);
-        for (IPolicyCmptTypeAssociation iPolicyCmptTypeAssociation : inverseAssociationsWithoutDerivedUnion) {
-            IPolicyCmptTypeAssociation association = iPolicyCmptTypeAssociation;
+        for (IPolicyCmptTypeAssociation association : inverseAssociationsWithoutDerivedUnion) {
             String fieldName = getGenerator(association).getFieldNameForAssociation();
             methodBuilder.append("if (");
             methodBuilder.append(fieldName);
@@ -1625,7 +1633,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         ITableStructureUsage[] tsus = productCmptType.getTableStructureUsages();
         IIpsProject ipsProject = getIpsProject();
         for (int i = 0; i < tsus.length; i++) {
-            if (!tsus[i].isValid()) {
+            if (!tsus[i].isValid(getIpsProject())) {
                 continue;
             }
             String roleCapitalized = StringUtils.capitalize(tsus[i].getRoleName());
@@ -1715,13 +1723,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
         getGenPolicyCmptType().getBuilderSet().addAnnotations(AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS,
                 getPcType(), builder);
-
-        // TODO: JAXB annotation generation should be handled by the line above (create subclass of
-        // AnnotationGenerator and add it to the Standard Builder Set)
-        if (!getGenPolicyCmptType().getBuilderSet().isGenerateJaxbSupport()) {
-            return;
-        }
-        builder.annotationLn("javax.xml.bind.annotation.XmlRootElement", "name", getUnqualifiedClassName());
     }
 
     @Override

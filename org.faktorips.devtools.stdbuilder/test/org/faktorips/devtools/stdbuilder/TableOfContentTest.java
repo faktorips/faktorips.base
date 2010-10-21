@@ -16,7 +16,7 @@ package org.faktorips.devtools.stdbuilder;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
+import java.util.regex.Pattern;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -279,7 +279,12 @@ public class TableOfContentTest extends XmlAbstractTestCase {
 
         toc2String = XmlUtil.nodeToString(toc2.toXml("other", newDocument()), "UTF-8");
         assertNotSame(tocString.intern(), toc2String.intern());
+        
+        Pattern versionPattern = Pattern.compile("productDataVersion=\"[0-9]*\"");
+        String tocWithoutVersion = versionPattern.matcher(tocString).replaceFirst("");
+        String toc2WithoutVersion = versionPattern.matcher(toc2String).replaceFirst("");
 
+        assertEquals(tocWithoutVersion, toc2WithoutVersion);
     }
 
 }
