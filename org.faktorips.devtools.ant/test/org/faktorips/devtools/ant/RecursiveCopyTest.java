@@ -23,26 +23,29 @@ public class RecursiveCopyTest extends TestCase {
 
     private File tmpFile = null;
     private File tmpFile2 = null;
-    private File tmpDir = new File(System.getProperty("java.io.tmpdir") + "/org.faktorips.devtools.ant.util.CopyTest/");
-    private File tmpDir3 = new File(System.getProperty("java.io.tmpdir")
-            + "/org.faktorips.devtools.ant.util.CopyTest2/");
-    private File tmpDir2 = new File(tmpDir.getAbsolutePath() + "/2/");
+    private File tmpDir;
+    private File tmpDir3;
+    private File tmpDir2;
 
     public void setUp() throws IOException {
-        tmpDir.mkdir();
+        tmpDir = createTmpDir(null);
+        tmpDir2 = createTmpDir(tmpDir);
+        tmpDir3 = createTmpDir(null);
         tmpFile = File.createTempFile(this.getName() + "file", "");
-        tmpFile2 = new File(tmpDir2.getAbsolutePath() + "/temp");
+        tmpFile2 = new File(tmpDir2, "/temp");
         tmpFile.createNewFile();
-        tmpDir2.mkdir();
-        tmpDir3.mkdir();
         tmpFile2.createNewFile();
 
         tmpFile.deleteOnExit();
         tmpFile2.deleteOnExit();
-        tmpDir.deleteOnExit();
-        tmpDir2.deleteOnExit();
-        tmpDir3.deleteOnExit();
+    }
 
+    private static File createTmpDir(File inDir) throws IOException {
+        File dir = File.createTempFile("fipsAntTest", "dir", inDir);
+        dir.delete();
+        dir.mkdir();
+        dir.deleteOnExit();
+        return dir;
     }
 
     public void testRecursiveDirCopy() {
@@ -50,11 +53,12 @@ public class RecursiveCopyTest extends TestCase {
 
         try {
             c.copyDir(tmpDir.getAbsolutePath(), tmpDir3.getAbsolutePath());
-            File expected = new File(tmpDir3.getAbsolutePath() + "/2/" + tmpFile2.getName());
-            if (!expected.exists()) {
-                fail("recursive dircopy failed");
-            }
-
+            File expectedDir = new File(tmpDir3, tmpDir2.getName());
+            expectedDir.deleteOnExit();
+            assertTrue("expected directory does not exists", expectedDir.exists());
+            File expected = new File(expectedDir, tmpFile2.getName());
+            expected.deleteOnExit();
+            assertTrue("recursive dircopy failed", expected.exists());
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -86,18 +90,14 @@ public class RecursiveCopyTest extends TestCase {
 
             // copy file to file => should work
             try {
-                c.copyFile(tmpFile.getAbsolutePath(), tmpDir.getAbsolutePath() + tmpFile.getName());
+                File expectedCopy = new File(tmpDir, tmpFile.getName());
+                expectedCopy.deleteOnExit();
+                c.copyFile(tmpFile.getAbsolutePath(), expectedCopy.getAbsolutePath());
+                assertTrue("copied file doesn't exist", expectedCopy.exists());
+                assertEquals("filesize of copied file is incorrect. original:" + tmpFile.length() + " copy:"
+                        + expectedCopy.length(), tmpFile.length(), expectedCopy.length());
             } catch (Exception e) {
                 fail(e.getMessage());
-            }
-
-            File expectedCopy = new File(tmpDir.getAbsolutePath() + tmpFile.getName());
-
-            if (!expectedCopy.exists()) {
-                fail("copied file doesn't exist");
-            } else if (tmpFile.length() != expectedCopy.length()) {
-                fail("filesize of copied file is incorrect. original:" + tmpFile.length() + " copy:"
-                        + expectedCopy.length());
             }
 
         } catch (IOException e) {
