@@ -51,6 +51,7 @@ import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClass
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptImplClassBuilder;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.runtime.FormulaExecutionException;
+import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.message.MessageList;
@@ -271,7 +272,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         }
         try {
             ExtendedExprCompiler compiler = formula.newExprCompiler(getIpsProject(), formulaTest);
-            compiler.setRuntimeRepositoryExpression(new JavaCodeFragment("getRepository()"));
+            compiler.setRuntimeRepositoryExpression(new JavaCodeFragment(MethodNames.GET_THIS_REPOSITORY + "()"));
             CompilationResult result = compiler.compile(expression);
             if (result.successfull()) {
                 Datatype attributeDatatype = formulaSignature.findDatatype(getIpsProject());

@@ -275,7 +275,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         result.addAllIdentifierUsed(argResults);
         code.appendClassName(tableImplBuilder.getQualifiedClassName(tableStructure.getIpsSrcFile()));
         // create get instance method by using the qualified name of the table content
-        code.append(".getInstance(" + MethodNames.GET_REPOSITORY + "(), \"" + tableContents.getQualifiedName() //$NON-NLS-1$ //$NON-NLS-2$
+        code.append(".getInstance(" + MethodNames.GET_THIS_REPOSITORY + "(), \"" + tableContents.getQualifiedName() //$NON-NLS-1$ //$NON-NLS-2$
                 + "\").findRowNullRowReturnedForEmtpyResult("); //$NON-NLS-1$
 
         // TODO pk: findRow is not correct in general. JO: Why?
