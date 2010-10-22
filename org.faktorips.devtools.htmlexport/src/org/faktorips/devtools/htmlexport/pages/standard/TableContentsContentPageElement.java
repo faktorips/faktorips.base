@@ -54,7 +54,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
         private ITableStructure tableStructure;
 
         public ContentTablePageElement(ITableContentsGeneration tableContentsGeneration) {
-            super(Arrays.asList(tableContentsGeneration.getRows()));
+            super(Arrays.asList(tableContentsGeneration.getRows()), config);
             this.tableStructure = findTableStructure();
         }
 
@@ -135,8 +135,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
             wrapper.addPageElements(new TextPageElement(Messages.TableContentsContentPageElement_generation
                     + " " + tableContentsGeneration.getName(), //$NON-NLS-1$
                     TextType.HEADING_3));
-            // TODO AW: HTML-Export description needs to be configured
-            String description = tableContentsGeneration.getDescription();
+            String description = getConfig().getDescription(tableContentsGeneration);
             wrapper.addPageElements(new TextPageElement(Messages.TableContentsContentPageElement_description + ": " //$NON-NLS-1$
                     + description));
 

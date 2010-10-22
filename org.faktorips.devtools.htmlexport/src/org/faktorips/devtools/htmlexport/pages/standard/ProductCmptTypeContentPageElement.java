@@ -55,10 +55,10 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
      * @author dicker
      * 
      */
-    private class TableStructureTablePageElement extends
+    private static class TableStructureTablePageElement extends
             AbstractIpsObjectPartsContainerTablePageElement<ITableStructureUsage> {
-        public TableStructureTablePageElement(IProductCmptType productCmptType) {
-            super(Arrays.asList(productCmptType.getTableStructureUsages()));
+        public TableStructureTablePageElement(IProductCmptType productCmptType, DocumentorConfiguration config) {
+            super(Arrays.asList(productCmptType.getTableStructureUsages()), config);
         }
 
         @Override
@@ -68,8 +68,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
             pageElements.add(new TextPageElement(tableStructureUsage.getRoleName()));
             pageElements.add(getTableStructureLinks(tableStructureUsage));
             pageElements.add(new TextPageElement(tableStructureUsage.isMandatoryTableContent() ? "X" : "-")); //$NON-NLS-1$ //$NON-NLS-2$
-            // TODO AW: HTML-Export description needs to be configured
-            pageElements.add(new TextPageElement(tableStructureUsage.getDescription()));
+            pageElements.add(new TextPageElement(getConfig().getDescription(tableStructureUsage)));
 
             return pageElements;
         }
@@ -140,7 +139,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
         wrapper.addPageElements(new TextPageElement(IpsObjectType.TABLE_STRUCTURE.getDisplayNamePlural(),
                 TextType.HEADING_2));
 
-        wrapper.addPageElements(new TableStructureTablePageElement(getDocumentedIpsObject()));
+        wrapper.addPageElements(new TableStructureTablePageElement(getDocumentedIpsObject(), config));
         addPageElements(wrapper);
     }
 
@@ -201,7 +200,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 
     @Override
     MethodsTablePageElement getMethodsTablePageElement() {
-        return new MethodsTablePageElement(getDocumentedIpsObject()) {
+        return new MethodsTablePageElement(getDocumentedIpsObject(), config) {
 
             @Override
             protected List<String> getHeadlineWithIpsObjectPart() {

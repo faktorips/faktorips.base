@@ -49,8 +49,8 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
      */
     private class ForeignKeysTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IForeignKey> {
 
-        public ForeignKeysTablePageElement(ITableStructure tableStructure) {
-            super(Arrays.asList(tableStructure.getForeignKeys()));
+        public ForeignKeysTablePageElement(ITableStructure tableStructure, DocumentorConfiguration config) {
+            super(Arrays.asList(tableStructure.getForeignKeys()), config);
         }
 
         @Override
@@ -63,8 +63,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
             cells.add(new TextPageElement(StringUtils.join(foreignKey.getKeyItemNames(), ", "))); //$NON-NLS-1$
             cells.add(link);
             cells.add(new TextPageElement(foreignKey.getReferencedUniqueKey()));
-            // TODO AW: HTML-Export description needs to be configured
-            cells.add(new TextPageElement(foreignKey.getDescription()));
+            cells.add(new TextPageElement(config.getDescription(foreignKey)));
 
             return cells;
         }
@@ -110,8 +109,8 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
      */
     private class ColumnsRangesTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IColumnRange> {
 
-        public ColumnsRangesTablePageElement(ITableStructure tableStructure) {
-            super(Arrays.asList(tableStructure.getRanges()));
+        public ColumnsRangesTablePageElement(ITableStructure tableStructure, DocumentorConfiguration config) {
+            super(Arrays.asList(tableStructure.getRanges()), config);
         }
 
         protected List<String> getColumnRangeData(IColumnRange columnRange) {
@@ -122,8 +121,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
             columnData.add(columnRange.getColumnRangeType().getName());
             columnData.add(columnRange.getFromColumn());
             columnData.add(columnRange.getToColumn());
-            // TODO AW: HTML-Export description needs to be configured
-            columnData.add(columnRange.getDescription());
+            columnData.add(config.getDescription(columnRange));
 
             return columnData;
 
@@ -155,10 +153,10 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
      * @author dicker
      * 
      */
-    private class ColumnsTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IColumn> {
+    private static class ColumnsTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IColumn> {
 
-        public ColumnsTablePageElement(ITableStructure tableStructure) {
-            super(Arrays.asList(tableStructure.getColumns()));
+        public ColumnsTablePageElement(ITableStructure tableStructure, DocumentorConfiguration config) {
+            super(Arrays.asList(tableStructure.getColumns()), config);
         }
 
         @Override
@@ -171,8 +169,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
 
             columnData.add(column.getName());
             columnData.add(column.getDatatype());
-            // TODO AW: HTML-Export description needs to be configured
-            columnData.add(column.getDescription());
+            columnData.add(getConfig().getDescription(column));
 
             return columnData;
         }
@@ -195,10 +192,10 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
      * @author dicker
      * 
      */
-    private class UniqueKeysTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IUniqueKey> {
+    private static class UniqueKeysTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IUniqueKey> {
 
-        public UniqueKeysTablePageElement(ITableStructure tableStructure) {
-            super(Arrays.asList(tableStructure.getUniqueKeys()));
+        public UniqueKeysTablePageElement(ITableStructure tableStructure, DocumentorConfiguration config) {
+            super(Arrays.asList(tableStructure.getUniqueKeys()), config);
         }
 
         @Override
@@ -210,8 +207,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
             List<String> columnData = new ArrayList<String>();
 
             columnData.add(uniqueKey.getName());
-            // TODO AW: HTML-Export description needs to be configured
-            columnData.add(uniqueKey.getDescription());
+            columnData.add(getConfig().getDescription(uniqueKey));
 
             return columnData;
         }
@@ -263,7 +259,8 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         wrapper.addPageElements(new TextPageElement(Messages.TableStructureContentPageElement_columns,
                 TextType.HEADING_2));
 
-        wrapper.addPageElements(getTableOrAlternativeText(new ColumnsTablePageElement(getDocumentedIpsObject()),
+        wrapper.addPageElements(getTableOrAlternativeText(
+                new ColumnsTablePageElement(getDocumentedIpsObject(), config),
                 Messages.TableStructureContentPageElement_noColumns));
         addPageElements(wrapper);
     }
@@ -276,8 +273,8 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         wrapper.addPageElements(new TextPageElement(Messages.TableStructureContentPageElement_uniqueKeys,
                 TextType.HEADING_2));
 
-        wrapper.addPageElements(getTableOrAlternativeText(new UniqueKeysTablePageElement(getDocumentedIpsObject()),
-                Messages.TableStructureContentPageElement_noUniqueKeys));
+        wrapper.addPageElements(getTableOrAlternativeText(new UniqueKeysTablePageElement(getDocumentedIpsObject(),
+                config), Messages.TableStructureContentPageElement_noUniqueKeys));
         addPageElements(wrapper);
     }
 
@@ -289,8 +286,8 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         wrapper.addPageElements(new TextPageElement(Messages.TableStructureContentPageElement_columnRanges,
                 TextType.HEADING_2));
 
-        wrapper.addPageElements(getTableOrAlternativeText(new ColumnsRangesTablePageElement(getDocumentedIpsObject()),
-                Messages.TableStructureContentPageElement_noColumnRanges));
+        wrapper.addPageElements(getTableOrAlternativeText(new ColumnsRangesTablePageElement(getDocumentedIpsObject(),
+                config), Messages.TableStructureContentPageElement_noColumnRanges));
         addPageElements(wrapper);
     }
 
@@ -302,8 +299,8 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         wrapper.addPageElements(new TextPageElement(Messages.TableStructureContentPageElement_foreignKeys,
                 TextType.HEADING_2));
 
-        wrapper.addPageElements(getTableOrAlternativeText(new ForeignKeysTablePageElement(getDocumentedIpsObject()),
-                Messages.TableStructureContentPageElement_noForeignKeys));
+        wrapper.addPageElements(getTableOrAlternativeText(new ForeignKeysTablePageElement(getDocumentedIpsObject(),
+                config), Messages.TableStructureContentPageElement_noForeignKeys));
         addPageElements(wrapper);
     }
 

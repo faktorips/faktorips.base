@@ -18,10 +18,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -53,6 +56,8 @@ public class DocumentorConfiguration {
     protected String path;
 
     private boolean showValidationErrors = true;
+
+    private Locale descriptionLocale;
 
     /**
      * All scripts within this documentation
@@ -174,5 +179,21 @@ public class DocumentorConfiguration {
 
     public void setShowValidationErrors(boolean outputMessages) {
         this.showValidationErrors = outputMessages;
+    }
+
+    public void setDescriptionLocale(Locale descriptionLocale) {
+        this.descriptionLocale = descriptionLocale;
+    }
+
+    public Locale getDescriptionLocale() {
+        return descriptionLocale;
+    }
+
+    public String getDescription(IDescribedElement describedElement) {
+        IDescription description = describedElement.getDescription(getDescriptionLocale());
+        if (description == null) {
+            return null;
+        }
+        return description.getText();
     }
 }

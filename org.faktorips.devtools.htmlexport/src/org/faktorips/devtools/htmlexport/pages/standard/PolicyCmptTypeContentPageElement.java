@@ -62,15 +62,15 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
                 .addPageElements(new TextPageElement(Messages.PolicyCmptTypeContentPageElement_rules,
                         TextType.HEADING_2));
 
-        wrapper.addPageElements(getTableOrAlternativeText(new ValidationRuleTablePageElement(getDocumentedIpsObject()),
-                Messages.PolicyCmptTypeContentPageElement_noValidationrules));
+        wrapper.addPageElements(getTableOrAlternativeText(new ValidationRuleTablePageElement(getDocumentedIpsObject(),
+                config), Messages.PolicyCmptTypeContentPageElement_noValidationrules));
 
         addPageElements(wrapper);
     }
 
     @Override
     AttributesTablePageElement getAttributesTablePageElement() {
-        return new AttributesTablePageElement(getDocumentedIpsObject()) {
+        return new AttributesTablePageElement(getDocumentedIpsObject(), config) {
 
             @Override
             protected List<String> getAttributeData(IAttribute attribute) {

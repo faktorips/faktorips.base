@@ -61,7 +61,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
             AbstractIpsObjectPartsContainerTablePageElement<ITestAttribute> {
 
         public TestAttributesTablePageElement(ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter) {
-            super(Arrays.asList(testPolicyCmptTypeParameter.getTestAttributes()));
+            super(Arrays.asList(testPolicyCmptTypeParameter.getTestAttributes()), config);
             addLayouts(new RegexTablePageElementLayout(".{1}", Style.CENTER)); //$NON-NLS-1$
         }
 
@@ -79,8 +79,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
 
             addPolicyComponentAndDataType(attribute, attributeData);
 
-            // TODO AW: HTML-Export description needs to be configured
-            attributeData.add(new TextPageElement(attribute.getDescription()));
+            attributeData.add(new TextPageElement(getConfig().getDescription(attribute)));
 
             return attributeData.toArray(new PageElement[attributeData.size()]);
         }
@@ -237,9 +236,8 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
         keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_name, testParameter.getName());
         keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_testParameterType, testParameter
                 .getTestParameterType().getName());
-        // TODO AW: HTML-Export description needs to be configured
-        keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_description, testParameter
-                .getDescription());
+        keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_description, getConfig().getDescription(
+                testParameter));
 
         testParameterPageElement.addPageElements(keyValueTable);
         return testParameterPageElement;
@@ -258,9 +256,8 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
                 .getValueDatatype());
         keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_testParameterType, testParameter
                 .getTestParameterType().getName());
-        // TODO AW: HTML-Export description needs to be configured
-        keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_description, testParameter
-                .getDescription());
+        keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_description, getConfig().getDescription(
+                testParameter));
 
         testParameter.getTestParameterType();
 

@@ -48,7 +48,7 @@ import org.faktorips.util.message.MessageList;
 public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> extends AbstractRootPageElement {
 
     private T documentedIpsObject;
-    private DocumentorConfiguration config;
+    public DocumentorConfiguration config;
 
     /**
      * creates a page, which represents the given documentedIpsObject according to the given config
@@ -89,10 +89,9 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
                 + getDocumentedIpsObject().getIpsSrcFile().getIpsPackageFragment()));
 
         addPageElements(new TextPageElement(Messages.AbstractObjectContentPageElement_description, TextType.HEADING_2));
-        // TODO AW: HTML-Export description needs to be configured
         addPageElements(new TextPageElement(
-                StringUtils.isBlank(getDocumentedIpsObject().getDescription()) ? Messages.AbstractObjectContentPageElement_noDescription
-                        : getDocumentedIpsObject().getDescription(), TextType.BLOCK));
+                StringUtils.isBlank(config.getDescription(getDocumentedIpsObject())) ? Messages.AbstractObjectContentPageElement_noDescription
+                        : config.getDescription(getDocumentedIpsObject()), TextType.BLOCK));
 
         if (getConfig().isShowValidationErrors()) {
             addValidationErrors();
@@ -189,7 +188,9 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
             return;
         }
 
-        KeyValueTablePageElement extensionPropertiesTable = new KeyValueTablePageElement(Messages.AbstractIpsObjectContentPageElement_extensionPropertyKeyHeadline, Messages.AbstractIpsObjectContentPageElement_extensionPropertyValueHeadline);
+        KeyValueTablePageElement extensionPropertiesTable = new KeyValueTablePageElement(
+                Messages.AbstractIpsObjectContentPageElement_extensionPropertyKeyHeadline,
+                Messages.AbstractIpsObjectContentPageElement_extensionPropertyValueHeadline);
 
         for (IExtensionPropertyDefinition iExtensionPropertyDefinition : properties) {
             Object extPropertyValue = getDocumentedIpsObject().getExtPropertyValue(

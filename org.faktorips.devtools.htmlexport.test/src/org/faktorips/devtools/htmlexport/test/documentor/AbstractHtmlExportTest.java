@@ -2,6 +2,7 @@ package org.faktorips.devtools.htmlexport.test.documentor;
 
 import java.io.File;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -56,6 +57,7 @@ public abstract class AbstractHtmlExportTest extends AbstractIpsPluginTest {
         config.setPath(location + File.separator + "html");
         config.setIpsProject(ipsProject);
         config.setLayouter(new HtmlLayouter(".resource"));
+        config.setDescriptionLocale(Locale.GERMANY);
 
         operation = new HtmlExportOperation(config);
     }

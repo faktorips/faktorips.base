@@ -14,6 +14,7 @@
 package org.faktorips.devtools.htmlexport.wizards;
 
 import java.io.File;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IProject;
@@ -41,6 +42,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
@@ -58,6 +60,8 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
 
     private UIToolkit toolkit = new UIToolkit(null);
     private Combo destinationNamesCombo;
+    private Combo supportedLanguageCombo;
+
     private Checkbox showValidationErrorsCheckBox;
 
     protected IpsProjectHtmlExportWizardPage(IStructuredSelection selection) {
@@ -92,14 +96,40 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
         showValidationErrorsCheckBox = toolkit.createCheckbox(composite,
                 Messages.IpsProjectHtmlExportWizardPage_showValidationErrors);
 
+        createSupportedLanguageGroup(composite);
+
         restoreWidgetValues();
 
         setControl(composite);
     }
 
+    private void createSupportedLanguageGroup(Composite parent) {
+        Composite supportedLanguageComboGroup = new Composite(parent, SWT.NONE);
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 2;
+        supportedLanguageComboGroup.setLayout(layout);
+        supportedLanguageComboGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
+                | GridData.VERTICAL_ALIGN_FILL));
+
+        new Label(supportedLanguageComboGroup, SWT.NONE).setText(Messages.IpsProjectHtmlExportWizardPage_supportedLanguage);
+
+        supportedLanguageCombo = new Combo(supportedLanguageComboGroup, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN
+                | SWT.READ_ONLY);
+        supportedLanguageCombo.addModifyListener(this);
+        supportedLanguageCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+        for (ISupportedLanguage iSupportedLanguage : getIpsProject(selection).getProperties().getSupportedLanguages()) {
+            supportedLanguageCombo.add(iSupportedLanguage.getLanguageName());
+            if (iSupportedLanguage.isDefaultLanguage()) {
+                supportedLanguageCombo.select(supportedLanguageCombo.getItemCount() - 1);
+            }
+        }
+    }
+
     private void createDestinationGroup(Composite parent) {
         // destination specification group
         Composite destinationSelectionGroup = new Composite(parent, SWT.NONE);
+
         GridLayout layout = new GridLayout();
         layout.numColumns = 3;
         destinationSelectionGroup.setLayout(layout);
@@ -192,6 +222,15 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
         return showValidationErrorsCheckBox.isChecked();
     }
 
+    public Locale getSupportedLanguage() {
+        for (ISupportedLanguage iSupportedLanguage : getIpsProject(selection).getProperties().getSupportedLanguages()) {
+            if (supportedLanguageCombo.getText().equals(iSupportedLanguage.getLanguageName())) {
+                return iSupportedLanguage.getLocale();
+            }
+        }
+        return null;
+    }
+
     private String getDefaultDestinationDirectory() {
         IProject firstElement = getProject();
         if (firstElement == null) {
@@ -209,6 +248,12 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
             setPageComplete(false);
             return;
         }
+
+        if (supportedLanguageCombo.getSelectionIndex() == -1) {
+            setPageComplete(false);
+            return;
+        }
+
         if (StringUtils.isNotBlank(getDestinationDirectory())) {
             setPageComplete(true);
             return;

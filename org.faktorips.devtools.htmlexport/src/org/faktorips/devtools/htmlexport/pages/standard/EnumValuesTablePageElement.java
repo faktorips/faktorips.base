@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractIpsObjectPartsContainerTablePageElement;
@@ -49,8 +50,8 @@ class EnumValuesTablePageElement extends AbstractIpsObjectPartsContainerTablePag
      * creates an EnumValuesTablePageElement basing on the given {@link IEnumType}
      * 
      */
-    public EnumValuesTablePageElement(IEnumType type) {
-        super(type.getEnumValues());
+    public EnumValuesTablePageElement(IEnumType type, DocumentorConfiguration config) {
+        super(type.getEnumValues(), config);
         initEnumAttributes(type);
     }
 
@@ -58,8 +59,8 @@ class EnumValuesTablePageElement extends AbstractIpsObjectPartsContainerTablePag
      * creates an EnumValuesTablePageElement basing on the given {@link IEnumContent}
      * 
      */
-    public EnumValuesTablePageElement(IEnumContent content) {
-        super(content.getEnumValues());
+    public EnumValuesTablePageElement(IEnumContent content, DocumentorConfiguration config) {
+        super(content.getEnumValues(), config);
         try {
             initEnumAttributes(content.findEnumType(content.getIpsProject()));
         } catch (CoreException e) {

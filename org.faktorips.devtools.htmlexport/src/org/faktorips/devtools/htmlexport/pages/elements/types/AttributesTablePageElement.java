@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 
@@ -37,8 +38,8 @@ public class AttributesTablePageElement extends AbstractIpsObjectPartsContainerT
      * Creates an {@link AttributesTablePageElement} for the specified {@link IType}
      * 
      */
-    public AttributesTablePageElement(IType type) {
-        super(Arrays.asList(type.getAttributes()));
+    public AttributesTablePageElement(IType type, DocumentorConfiguration config) {
+        super(Arrays.asList(type.getAttributes()), config);
         this.type = type;
         setId(type.getName() + "_" + "attributes"); //$NON-NLS-1$//$NON-NLS-2$
     }
@@ -59,8 +60,7 @@ public class AttributesTablePageElement extends AbstractIpsObjectPartsContainerT
         attributeData.add(attribute.getDatatype());
         attributeData.add(attribute.getModifier().toString());
         attributeData.add(attribute.getDefaultValue());
-        // TODO AW: HTML-Export description needs to be configured
-        attributeData.add(attribute.getDescription());
+        attributeData.add(getConfig().getDescription(attribute));
 
         return attributeData;
     }

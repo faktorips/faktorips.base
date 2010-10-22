@@ -44,7 +44,7 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
      * 
      */
     public AssociationTablePageElement(IType type, DocumentorConfiguration config) {
-        super(Arrays.asList(type.getAssociations()));
+        super(Arrays.asList(type.getAssociations()), config);
         this.config = config;
         this.type = type;
     }
@@ -59,7 +59,7 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
         values.add(""); //$NON-NLS-1$
 
         // TODO AW: HTML-Export description needs to be configured
-        values.add(association.getDescription());
+        values.add(getConfig().getDescription(association));
         values.add(association.getAssociationType().getName());
         values.add(association.getAggregationKind().getName());
         values.add(association.getTargetRoleSingular());

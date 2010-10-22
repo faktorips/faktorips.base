@@ -68,8 +68,8 @@ public class EnumContentContentPageElement extends AbstractIpsObjectContentPageE
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.EnumContentContentPageElement_values, TextType.HEADING_2));
 
-        wrapper.addPageElements(getTableOrAlternativeText(new EnumValuesTablePageElement(getDocumentedIpsObject()),
-                Messages.EnumContentContentPageElement_noValues));
+        wrapper.addPageElements(getTableOrAlternativeText(new EnumValuesTablePageElement(getDocumentedIpsObject(),
+                config), Messages.EnumContentContentPageElement_noValues));
 
         addPageElements(wrapper);
     }

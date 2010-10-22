@@ -25,6 +25,7 @@ public class Messages extends NLS {
     public static String IpsProjectHtmlExportWizardPage_noProjectSelected;
     public static String IpsProjectHtmlExportWizardPage_projectName;
     public static String IpsProjectHtmlExportWizardPage_showValidationErrors;
+    public static String IpsProjectHtmlExportWizardPage_supportedLanguage;
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

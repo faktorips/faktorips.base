@@ -21,6 +21,7 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.internal.model.pctype.ValidationRule;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 
@@ -37,8 +38,8 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
      * Creates a {@link ValidationRuleTablePageElement} for the specified {@link IPolicyCmptType}
      * 
      */
-    public ValidationRuleTablePageElement(IPolicyCmptType policyCmptType) {
-        super(Arrays.asList(policyCmptType.getRules()));
+    public ValidationRuleTablePageElement(IPolicyCmptType policyCmptType, DocumentorConfiguration config) {
+        super(Arrays.asList(policyCmptType.getRules()), config);
         setId(policyCmptType.getName() + "_validationrules"); //$NON-NLS-1$
     }
 
@@ -51,8 +52,7 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
         ruleData.add(rule.getMessageSeverity().getName());
         ruleData.add(rule.getMessageText());
         ruleData.add(StringUtils.join(rule.getValidatedAttributes(), '\n'));
-        // TODO AW: HTML-Export description needs to be configured
-        ruleData.add(rule.getDescription());
+        ruleData.add(getConfig().getDescription(rule));
 
         return Arrays.asList(PageElementUtils.createTextPageElements(ruleData));
 

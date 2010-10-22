@@ -62,11 +62,11 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
      * @author dicker
      * 
      */
-    private class EnumAttributesTablePageElement extends
+    private static class EnumAttributesTablePageElement extends
             AbstractIpsObjectPartsContainerTablePageElement<IEnumAttribute> {
 
-        public EnumAttributesTablePageElement(IEnumType type) {
-            super(findAllEnumAttributes(type));
+        public EnumAttributesTablePageElement(IEnumType type, DocumentorConfiguration config) {
+            super(findAllEnumAttributes(type), config);
         }
 
         @Override
@@ -79,9 +79,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
             attributeData1.add(rowData.isUsedAsNameInFaktorIpsUi() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
             attributeData1.add(rowData.isUnique() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
             attributeData1.add(rowData.isInherited() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
-
-            // TODO AW: HTML-Export description needs to be configured
-            attributeData1.add(rowData.getDescription());
+            attributeData1.add(getConfig().getDescription(rowData));
             List<String> attributeData = attributeData1;
             return Arrays.asList(PageElementUtils.createTextPageElements(attributeData));
         }
@@ -109,7 +107,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
      * @author dicker
      * 
      */
-    private class SupertypeHierarchieVisitor extends EnumTypeHierachyVisitor {
+    private static class SupertypeHierarchieVisitor extends EnumTypeHierachyVisitor {
         List<IEnumType> superTypes = new ArrayList<IEnumType>();
 
         public SupertypeHierarchieVisitor(IIpsProject ipsProject) {
@@ -229,8 +227,8 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
         wrapper
                 .addPageElements(new TextPageElement(Messages.EnumTypeContentPageElement_attributes, TextType.HEADING_2));
 
-        wrapper.addPageElements(getTableOrAlternativeText(new EnumAttributesTablePageElement(getDocumentedIpsObject()),
-                Messages.EnumTypeContentPageElement_noAttributes));
+        wrapper.addPageElements(getTableOrAlternativeText(new EnumAttributesTablePageElement(getDocumentedIpsObject(),
+                config), Messages.EnumTypeContentPageElement_noAttributes));
 
         addPageElements(wrapper);
     }
@@ -268,8 +266,8 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.EnumTypeContentPageElement_values, TextType.HEADING_2));
 
-        wrapper.addPageElements(getTableOrAlternativeText(new EnumValuesTablePageElement(getDocumentedIpsObject()),
-                Messages.EnumTypeContentPageElement_noValues));
+        wrapper.addPageElements(getTableOrAlternativeText(new EnumValuesTablePageElement(getDocumentedIpsObject(),
+                config), Messages.EnumTypeContentPageElement_noValues));
 
         addPageElements(wrapper);
     }

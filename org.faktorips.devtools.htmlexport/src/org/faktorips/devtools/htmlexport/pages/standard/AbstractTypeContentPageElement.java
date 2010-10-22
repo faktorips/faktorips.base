@@ -109,7 +109,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
      * 
      */
     MethodsTablePageElement getMethodsTablePageElement() {
-        return new MethodsTablePageElement(getDocumentedIpsObject());
+        return new MethodsTablePageElement(getDocumentedIpsObject(), config);
     }
 
     @Override
@@ -237,6 +237,6 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
      * 
      */
     AttributesTablePageElement getAttributesTablePageElement() {
-        return new AttributesTablePageElement(getDocumentedIpsObject());
+        return new AttributesTablePageElement(getDocumentedIpsObject(), config);
     }
 }
