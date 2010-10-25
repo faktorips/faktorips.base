@@ -37,7 +37,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.productrelease.IReleaseAndDeploymentOperation;
 import org.faktorips.devtools.core.productrelease.ITargetSystem;
 import org.faktorips.devtools.core.productrelease.ITeamOperations;
-import org.faktorips.util.message.Message;
+import org.faktorips.devtools.core.productrelease.ObservableProgressMessages;
 import org.faktorips.util.message.MessageList;
 
 public class ProductReleaseProcessor {
@@ -48,10 +48,17 @@ public class ProductReleaseProcessor {
     private final IIpsProject ipsProject;
     private final IReleaseAndDeploymentOperation releaseAndDeploymentOperation;
 
-    public ProductReleaseProcessor(IIpsProject ipsProject) throws CoreException {
+    private final ObservableProgressMessages observableProgressMessages;
+
+    public ProductReleaseProcessor(IIpsProject ipsProject, ObservableProgressMessages observableProgressMessages)
+            throws CoreException {
         this.ipsProject = ipsProject;
-        teamOperation = new CvsTeamOperations();
+        teamOperation = new CvsTeamOperations(observableProgressMessages);
+        this.observableProgressMessages = observableProgressMessages;
         releaseAndDeploymentOperation = getDeploymentOperation(ipsProject);
+        if (releaseAndDeploymentOperation != null) {
+            releaseAndDeploymentOperation.setObservableProgressMessages(observableProgressMessages);
+        }
     }
 
     public List<ITargetSystem> getTargetSystems() {
@@ -68,19 +75,20 @@ public class ProductReleaseProcessor {
 
     public boolean startReleaseBuilder(String newVersion,
             List<ITargetSystem> selectedTargetSystems,
-            MessageList messageList,
             IProgressMonitor monitor) throws InterruptedException, CoreException {
         if (releaseAndDeploymentOperation == null) {
-            messageList.add(new Message("ERROR", //$NON-NLS-1$
-                    Messages.ReleaseAndDeploymentOperation_exception_noDeploymentExtension, Message.ERROR));
+            observableProgressMessages.error(Messages.ReleaseAndDeploymentOperation_exception_noDeploymentExtension);
             return false;
         }
-        monitor.beginTask(Messages.ReleaseAndDeploymentOperation_taskName_release, 100);
+        monitor.beginTask(null, 100);
+        observableProgressMessages.info(Messages.ProductReleaseProcessor_status_start);
+
         try {
-            String tag = buildRelease(ipsProject, newVersion, monitor);
+            String tag = buildRelease(ipsProject, newVersion, new SubProgressMonitor(monitor, 50));
             // start extended release
-            return getDeploymentOperation(ipsProject).buildReleaseAndDeployment(ipsProject, tag, selectedTargetSystems,
-                    monitor, messageList);
+            boolean buildReleaseAndDeployment = getDeploymentOperation(ipsProject).buildReleaseAndDeployment(
+                    ipsProject, tag, selectedTargetSystems, new SubProgressMonitor(monitor, 50));
+            return buildReleaseAndDeployment;
         } finally {
             monitor.done();
         }
@@ -93,39 +101,47 @@ public class ProductReleaseProcessor {
      */
     private String buildRelease(IIpsProject ipsProject, String newVersion, IProgressMonitor monitor)
             throws JavaModelException, InterruptedException, CoreException, TeamException {
-        // save all
-        saveAll(ipsProject);
-        monitor.worked(1);
+        monitor.beginTask(null, 95);
+        try {
+            // save all
+            saveAll(ipsProject);
+            monitor.worked(1);
 
-        // check project is synchrony with filesystem
-        checkSyncWithFilesystem(ipsProject);
-        monitor.worked(4);
+            // check project is synchrony with filesystem
+            checkSyncWithFilesystem(ipsProject, new SubProgressMonitor(monitor, 4));
 
-        // check project is synchrony with repository
-        checkSynchronization(ipsProject, new SubProgressMonitor(monitor, 10));
+            // check project is synchrony with repository
+            checkSynchronization(ipsProject, new SubProgressMonitor(monitor, 10));
 
-        // update version in project
-        updateVersionProperty(ipsProject, newVersion);
-        monitor.worked(2);
+            // update version in project
+            updateVersionProperty(ipsProject, newVersion);
+            monitor.worked(2);
 
-        // build project
-        buildProject(ipsProject, new SubProgressMonitor(monitor, 40));
+            // build project
+            buildProject(ipsProject, new SubProgressMonitor(monitor, 40));
 
-        // check for fips error markers
-        validateIpsProject(ipsProject);
-        monitor.worked(2);
+            // check for fips error markers
+            validateIpsProject(ipsProject);
+            monitor.worked(2);
 
-        // check for other error markers
-        checkProblemMarkers(ipsProject);
-        monitor.worked(1);
+            // check for other error markers
+            checkProblemMarkers(ipsProject);
+            monitor.worked(1);
 
-        // TODO call custom release settings!
+            if (!releaseAndDeploymentOperation.customReleaseSettings(ipsProject, new SubProgressMonitor(monitor, 5))) {
+                throw new InterruptedException(Messages.ProductReleaseProcessor_error_custom_validation_failed);
+            }
 
-        // commit property file and toc file
-        commitFiles(ipsProject, newVersion, new SubProgressMonitor(monitor, 10));
+            // commit property file and toc file
+            commitFiles(ipsProject, newVersion, new SubProgressMonitor(monitor, 10));
 
-        // tag the project with the new version
-        return tagProject(ipsProject, newVersion, new SubProgressMonitor(monitor, 20));
+            // tag the project with the new version
+            String tagProject = tagProject(ipsProject, newVersion, new SubProgressMonitor(monitor, 20));
+
+            return tagProject;
+        } finally {
+            monitor.done();
+        }
     }
 
     public static IReleaseAndDeploymentOperation getDeploymentOperation(IIpsProject ipsProject) throws CoreException {
@@ -161,15 +177,18 @@ public class ProductReleaseProcessor {
         }
     }
 
-    private void checkSyncWithFilesystem(IIpsProject ipsProject) throws InterruptedException {
-        if (!ipsProject.getProject().isSynchronized(IResource.DEPTH_INFINITE)) {
-            throw new InterruptedException(Messages.ReleaseAndDeploymentOperation_exception_refreshFilesystem);
+    private void checkSyncWithFilesystem(IIpsProject ipsProject, IProgressMonitor monitor) throws CoreException {
+        try {
+            if (!ipsProject.getProject().isSynchronized(IResource.DEPTH_INFINITE)) {
+                ipsProject.getProject().refreshLocal(IResource.DEPTH_INFINITE, monitor);
+            }
+        } finally {
+            monitor.done();
         }
     }
 
     private void checkSynchronization(IIpsProject ipsProject, IProgressMonitor monitor) throws InterruptedException {
         if (!teamOperation.isProjectSynchronized(ipsProject.getProject(), monitor)) {
-
             throw new InterruptedException(NLS.bind(Messages.ReleaseAndDeploymentOperation_exception_notSynchron,
                     teamOperation.getVersionControlSystem()));
         }
@@ -179,6 +198,7 @@ public class ProductReleaseProcessor {
         IIpsProjectProperties projectProperties = ipsProject.getProperties();
         projectProperties.setVersion(newVersion);
         ipsProject.setProperties(projectProperties);
+        observableProgressMessages.info(NLS.bind(Messages.ProductReleaseProcessor_status_new_version_set, newVersion));
     }
 
     private void validateIpsProject(IIpsProject ipsProject) throws CoreException, InterruptedException {
@@ -191,6 +211,8 @@ public class ProductReleaseProcessor {
     private void checkProblemMarkers(IIpsProject ipsProject) throws CoreException, InterruptedException {
         if (ipsProject.getProject().findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE) == IMarker.SEVERITY_ERROR) {
             throw new InterruptedException(Messages.ReleaseAndDeploymentOperation_exception_errors);
+        } else {
+            observableProgressMessages.info(Messages.ProductReleaseProcessor_status_build_success);
         }
     }
 

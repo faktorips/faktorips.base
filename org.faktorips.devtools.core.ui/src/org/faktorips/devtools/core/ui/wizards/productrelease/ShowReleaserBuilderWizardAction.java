@@ -49,7 +49,7 @@ public class ShowReleaserBuilderWizardAction implements IWorkbenchWindowActionDe
         ProductReleaserBuilderWizard wizard = new ProductReleaserBuilderWizard();
         wizard.setIpsProject(ipsProject);
 
-        WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
+        WizardDialog dialog = new ProductReleaseBuilderDialog(window.getShell(), wizard);
         dialog.open();
     }
 

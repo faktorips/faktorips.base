@@ -18,13 +18,14 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.productrelease.ProductReleaseProcessor;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.productrelease.ITargetSystem;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.devtools.core.productrelease.ObservableProgressMessages;
 
 /**
  * The deployment wizard provides the basic ui for deployments of product definition projects. On
@@ -36,8 +37,17 @@ public class ProductReleaserBuilderWizard extends Wizard {
 
     private ProductReleaserBuilderWizardPage selectionPage;
 
+    private StatusPage statusPage;
+
+    private ObservableProgressMessages observableProgressMessages;
+
+    private boolean finished;
+
     public ProductReleaserBuilderWizard() {
-        selectionPage = new ProductReleaserBuilderWizardPage();
+        observableProgressMessages = new ObservableProgressMessages();
+        selectionPage = new ProductReleaserBuilderWizardPage(observableProgressMessages);
+        statusPage = new StatusPage();
+        observableProgressMessages.addObserver(statusPage);
         setNeedsProgressMonitor(true);
         setWindowTitle(Messages.ReleaserBuilderWizard_title);
     }
@@ -48,23 +58,48 @@ public class ProductReleaserBuilderWizard extends Wizard {
     }
 
     @Override
+    public IWizardPage getNextPage(IWizardPage page) {
+        return super.getNextPage(page);
+    }
+
+    @Override
+    public boolean canFinish() {
+        return !finished && super.canFinish();
+    }
+
+    @Override
     public boolean performFinish() {
+        addPage(statusPage);
+        getContainer().showPage(statusPage);
+        runProgress();
+        return false;
+    }
+
+    private boolean runProgress() {
         Operation operation = new Operation(selectionPage.getNewVersion(), selectionPage.getSelectedTargetSystems(),
                 selectionPage.getProductReleaseProcessor());
         try {
-            getContainer().run(false, true, operation);
-            if (!operation.messageList.isEmpty()) {
-                selectionPage.setErrorMessage(operation.messageList.getText());
-            }
-            return operation.returnState;
+            finished = true;
+            getContainer().run(true, false, operation);
+            setFinishStatus(!operation.returnState);
+            getContainer().updateButtons();
+            return false;
         } catch (InvocationTargetException e) {
-            selectionPage.setErrorMessage("Invocation Exception: " + e.getTargetException().getMessage()); //$NON-NLS-1$
+            observableProgressMessages.error("Invocation Exception: " + e.getTargetException().getMessage()); //$NON-NLS-1$
             selectionPage.setPageComplete(false);
             IpsPlugin.log(e);
             return false;
         } catch (InterruptedException e) {
-            selectionPage.setErrorMessage(e.getMessage());
+            observableProgressMessages.error(e.getMessage());
             return false;
+        }
+    }
+
+    private void setFinishStatus(boolean errorWhileFinished) {
+        if (errorWhileFinished) {
+            observableProgressMessages.error(Messages.ProductReleaserBuilderWizard_ccomplete_error);
+        } else {
+            observableProgressMessages.info(Messages.ProductReleaserBuilderWizard_complete_success);
         }
     }
 
@@ -77,7 +112,6 @@ public class ProductReleaserBuilderWizard extends Wizard {
         private final String newVersion;
         private final List<ITargetSystem> selectedTargetSystems;
         private final ProductReleaseProcessor productReleaseProcessor;
-        private MessageList messageList;
 
         private boolean returnState;
 
@@ -86,18 +120,17 @@ public class ProductReleaserBuilderWizard extends Wizard {
             this.newVersion = newVersion;
             this.selectedTargetSystems = selectedTargetSystems;
             this.productReleaseProcessor = productReleaseProcessor;
-            messageList = new MessageList();
         }
 
         @Override
         protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
                 InterruptedException {
             if (productReleaseProcessor != null) {
-                returnState = productReleaseProcessor.startReleaseBuilder(newVersion, selectedTargetSystems,
-                        messageList, monitor);
+                returnState = productReleaseProcessor.startReleaseBuilder(newVersion, selectedTargetSystems, monitor);
             } else {
                 throw new InterruptedException(Messages.ReleaserBuilderWizard_exception_NotReady);
             }
+
         }
 
     }

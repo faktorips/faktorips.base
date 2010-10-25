@@ -19,7 +19,6 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.internal.productrelease.DefaultTargetSystem;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.util.message.MessageList;
 
 public class TestDeploymentOperation extends AbstractReleaseAndDeploymentOperation {
 
@@ -27,8 +26,7 @@ public class TestDeploymentOperation extends AbstractReleaseAndDeploymentOperati
     public boolean buildReleaseAndDeployment(IIpsProject ipsProject,
             String tag,
             List<ITargetSystem> selectedTargetSystems,
-            IProgressMonitor progressMonitor,
-            MessageList messageList) {
+            IProgressMonitor progressMonitor) {
         return true;
     }
 

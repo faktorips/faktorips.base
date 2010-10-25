@@ -17,6 +17,8 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.productrelease.messages"; //$NON-NLS-1$
+    public static String ProductReleaserBuilderWizard_ccomplete_error;
+    public static String ProductReleaserBuilderWizard_complete_success;
     public static String ReleaserBuilderWizard_title;
     public static String ReleaserBuilderWizard_exception_NotReady;
     public static String ReleaserBuilderWizardSelectionPage_error_couldNotDetermineFormat;

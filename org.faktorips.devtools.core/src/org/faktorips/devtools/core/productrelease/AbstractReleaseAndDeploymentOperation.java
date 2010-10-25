@@ -19,9 +19,10 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.util.message.MessageList;
 
 public abstract class AbstractReleaseAndDeploymentOperation implements IReleaseAndDeploymentOperation {
+
+    private ObservableProgressMessages observableProgressMessages = new ObservableProgressMessages();
 
     @Override
     public List<ITargetSystem> getAvailableTargetSystems() {
@@ -34,10 +35,20 @@ public abstract class AbstractReleaseAndDeploymentOperation implements IReleaseA
     }
 
     @Override
-    public boolean customReleaseSettings(IIpsProject ipsProject,
-            IProgressMonitor progressMonitor,
-            MessageList messageList) {
+    public boolean customReleaseSettings(IIpsProject ipsProject, IProgressMonitor progressMonitor) {
         return true;
+    }
+
+    @Override
+    public void setObservableProgressMessages(ObservableProgressMessages observableProgressMessages) {
+        this.observableProgressMessages = observableProgressMessages;
+    }
+
+    /**
+     * @return Returns the observableProgressMessages.
+     */
+    public ObservableProgressMessages getObservableProgressMessages() {
+        return observableProgressMessages;
     }
 
 }

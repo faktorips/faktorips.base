@@ -47,6 +47,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IVersionFormat;
 import org.faktorips.devtools.core.productrelease.IReleaseAndDeploymentOperation;
 import org.faktorips.devtools.core.productrelease.ITargetSystem;
+import org.faktorips.devtools.core.productrelease.ObservableProgressMessages;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
@@ -62,10 +63,12 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
     private ProductReleaseProcessor productReleaseProcessor;
     private Label versionFormatLabel;
     private Group selectTargetSystemGroup;
+    private final ObservableProgressMessages observableProgressMessages;
 
-    protected ProductReleaserBuilderWizardPage() {
+    protected ProductReleaserBuilderWizardPage(ObservableProgressMessages observableProgressMessages) {
         super(Messages.ReleaserBuilderWizardSelectionPage_title, Messages.ReleaserBuilderWizardSelectionPage_title,
                 IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/DeploymentWizard.png")); //$NON-NLS-1$
+        this.observableProgressMessages = observableProgressMessages;
     }
 
     @Override
@@ -172,9 +175,9 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
         }
 
         setControl(pageControl);
-        if (getMessageType() != DialogPage.INFORMATION) {
-            setMessage("", DialogPage.NONE); //$NON-NLS-1$
-        }
+        // if (getMessageType() != DialogPage.INFORMATION) {
+        //            setMessage("", DialogPage.NONE); //$NON-NLS-1$
+        // }
     }
 
     public void setIpsProject(IIpsProject ipsProject) {
@@ -184,7 +187,7 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
         if (ipsProject != null) {
             oldVersion = ipsProject.getProperties().getVersion();
             try {
-                productReleaseProcessor = new ProductReleaseProcessor(ipsProject);
+                productReleaseProcessor = new ProductReleaseProcessor(ipsProject, observableProgressMessages);
             } catch (CoreException e) {
                 IpsPlugin.log(e);
             }
@@ -293,4 +296,5 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
         }
         return result;
     }
+
 }

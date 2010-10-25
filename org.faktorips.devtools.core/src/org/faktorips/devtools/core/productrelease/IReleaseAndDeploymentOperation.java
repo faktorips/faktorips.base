@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.util.message.MessageList;
 
 /**
  * This interface is implemented for a release deployment extension. The implementation is
@@ -49,12 +48,9 @@ public interface IReleaseAndDeploymentOperation {
      * 
      * @param ipsProject the project to release
      * @param progressMonitor a {@link IProgressMonitor} to view sate of work
-     * @param messageList a {@link MessageList} to return status messages and problems
      * @return true when everything was right, false to stop the release process
      */
-    public boolean customReleaseSettings(IIpsProject ipsProject,
-            IProgressMonitor progressMonitor,
-            MessageList messageList);
+    public boolean customReleaseSettings(IIpsProject ipsProject, IProgressMonitor progressMonitor);
 
     /**
      * This method should start the deployment on the selected target system. If this method does
@@ -71,7 +67,14 @@ public interface IReleaseAndDeploymentOperation {
     public boolean buildReleaseAndDeployment(IIpsProject ipsProject,
             String tag,
             List<ITargetSystem> selectedTargetSystems,
-            IProgressMonitor progressMonitor,
-            MessageList messageList);
+            IProgressMonitor progressMonitor);
+
+    /**
+     * Setting the observable progress messages to add messages that are displayed to the user
+     * 
+     * @see ObservableProgressMessages
+     * 
+     */
+    public void setObservableProgressMessages(ObservableProgressMessages observableProgressMessages);
 
 }

@@ -22,6 +22,8 @@ import org.eclipse.core.resources.mapping.ResourceMapping;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.team.core.ITeamStatus;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.core.subscribers.Subscriber;
@@ -34,6 +36,7 @@ import org.eclipse.team.internal.ccvs.ui.operations.CommitOperation;
 import org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation;
 import org.eclipse.team.internal.ccvs.ui.operations.TagOperation;
 import org.faktorips.devtools.core.productrelease.ITeamOperations;
+import org.faktorips.devtools.core.productrelease.ObservableProgressMessages;
 
 /**
  * This implements the {@link ITeamOperations} for the eclipse cvs plugin. Most operations of the
@@ -46,6 +49,12 @@ import org.faktorips.devtools.core.productrelease.ITeamOperations;
 // we have to use very much restricted API here
 public class CvsTeamOperations implements ITeamOperations {
 
+    private final ObservableProgressMessages observableProgressMessages;
+
+    public CvsTeamOperations(ObservableProgressMessages observableProgressMessages) {
+        this.observableProgressMessages = observableProgressMessages;
+    }
+
     @Override
     public void commitFiles(IProject project, IResource[] resources, String comment, IProgressMonitor monitor)
             throws TeamException, InterruptedException {
@@ -53,6 +62,7 @@ public class CvsTeamOperations implements ITeamOperations {
         try {
             RepositoryProvider repositoryProvider = RepositoryProvider.getProvider(project);
             if (repositoryProvider == null) {
+                observableProgressMessages.warning(Messages.CvsTeamOperations_status_notVersionized);
                 return;
             }
             Subscriber subscriber = repositoryProvider.getSubscriber();
@@ -61,7 +71,7 @@ public class CvsTeamOperations implements ITeamOperations {
             for (IResource aResource : resources) {
                 SyncInfo syncInfo = subscriber.getSyncInfo(aResource);
                 if (syncInfo == null) {
-                    // resource is not in cvs - may be ignored
+                    // file seems to be ignored
                     continue;
                 }
                 if (syncInfo.getKind() != 0 && (syncInfo.getKind() & SyncInfo.OUTGOING) != SyncInfo.OUTGOING) {
@@ -74,6 +84,7 @@ public class CvsTeamOperations implements ITeamOperations {
                     .asResourceMappers(syncResources.toArray(new IResource[syncResources.size()])),
                     new Command.LocalOption[0], comment);
             commitOperation.execute(new SubProgressMonitor(monitor, 1));
+            observableProgressMessages.info(Messages.ProductReleaseProcessor_status_commit_success);
         } finally {
             monitor.done();
         }
@@ -84,6 +95,7 @@ public class CvsTeamOperations implements ITeamOperations {
         try {
             RepositoryProvider repositoryProvider = RepositoryProvider.getProvider(project);
             if (repositoryProvider == null) {
+                observableProgressMessages.warning(Messages.CvsTeamOperations_status_notVersionized);
                 return true;
             }
             SyncInfoSet syncInfoSet = new SyncInfoSet();
@@ -95,9 +107,22 @@ public class CvsTeamOperations implements ITeamOperations {
                 subscriber.refresh(resources, IResource.DEPTH_INFINITE, new SubProgressMonitor(monitor, 1));
                 subscriber.collectOutOfSync(resources, IResource.DEPTH_INFINITE, syncInfoSet, new SubProgressMonitor(
                         monitor, 1));
-                return syncInfoSet.isEmpty();
+                final boolean empty = syncInfoSet.isEmpty();
+                if (empty) {
+                    observableProgressMessages.info(Messages.ProductReleaseProcessor_status_synchon);
+                } else {
+                    for (IResource resource : syncInfoSet.getResources()) {
+                        observableProgressMessages.warning(NLS.bind(Messages.CvsTeamOperations_status_notSynchron,
+                                resource.getName()));
+                    }
+                    for (ITeamStatus status : syncInfoSet.getErrors()) {
+                        observableProgressMessages.error(status.getMessage());
+                    }
+                }
+                return empty;
             } else {
                 // seems to be no cvs project
+                observableProgressMessages.warning(Messages.CvsTeamOperations_status_notVersionized);
                 return true;
             }
         } catch (RuntimeException e) {
@@ -124,6 +149,7 @@ public class CvsTeamOperations implements ITeamOperations {
 
         RepositoryProvider repositoryProvider = RepositoryProvider.getProvider(project);
         if (repositoryProvider == null) {
+            observableProgressMessages.warning(Messages.CvsTeamOperations_status_notVersionized);
             return tag;
         }
 
@@ -141,6 +167,7 @@ public class CvsTeamOperations implements ITeamOperations {
         } else if (status.getSeverity() == IStatus.ERROR) {
             throw new InterruptedException(status.getMessage());
         }
+        observableProgressMessages.info(NLS.bind(Messages.ProductReleaseProcessor_status_tag_success, tag));
         return tag;
     }
 
