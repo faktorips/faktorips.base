@@ -112,7 +112,7 @@ public abstract class AbstractHtmlExportTest extends AbstractIpsPluginTest {
             IPolicyCmptTypeAssociation assoLvbVersObj = lvb.newPolicyCmptTypeAssociation();
             assoLvbVersObj.setTarget(versObj.getQualifiedName());
             assoLvbVersObj.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
-            assoLvbVersObj.setDescription("Das übliche Blabla");
+            assoLvbVersObj.newDescription().setText("Das übliche Blabla");
             assoLvbVersObj.setTargetRoleSingular("Versichertes Objekt");
 
             IPolicyCmptTypeAssociation assoVersObjLvb = assoLvbVersObj.newInverseAssociation();
@@ -135,7 +135,8 @@ public abstract class AbstractHtmlExportTest extends AbstractIpsPluginTest {
                     "kranken.KrankenBVBArt");
             krankenBVB.setSupertype(baseSubBVB.getQualifiedName());
 
-            krankenBVB.setDescription("blablablabla sdfishiurgh sdfiugfughs \n\nodfiug sodufhgosdfzgosdfgsdfg \nENDE");
+            krankenBVB.newDescription().setText(
+                    "blablablabla sdfishiurgh sdfiugfughs \n\nodfiug sodufhgosdfzgosdfgsdfg \nENDE");
             // krankenBVB.setAbstract(true);
 
             addPolicyCmptTypeAttribute(krankenBVB.newPolicyCmptTypeAttribute(), "Text1", "String", Modifier.PUBLISHED,
@@ -148,7 +149,7 @@ public abstract class AbstractHtmlExportTest extends AbstractIpsPluginTest {
 
             IValidationRule rule1 = krankenBVB.newRule();
             rule1.setName("Regel1");
-            rule1.setDescription("Beschreibung der Regel");
+            rule1.newDescription().setText("Beschreibung der Regel");
             rule1.setMessageCode("xyz");
             rule1.setMessageSeverity(MessageSeverity.WARNING);
             rule1.setMessageText("Hallo, Fehler!");
@@ -162,7 +163,7 @@ public abstract class AbstractHtmlExportTest extends AbstractIpsPluginTest {
             methodCompZahl3.setDatatype("Integer");
             methodCompZahl3.setFormulaSignatureDefinition(true);
             methodCompZahl3.setFormulaName("Formelname");
-            methodCompZahl3.setDescription("Die Methode berechneZahl3 ...");
+            methodCompZahl3.newDescription().setText("Die Methode berechneZahl3 ...");
             attributeZahl3.setComputationMethodSignature(methodNameZahl3 + "()");
 
             IProductCmptTypeMethod methodCompXyz = ipsProject.findProductCmptType(krankenBVB.getProductCmptType())
@@ -171,7 +172,7 @@ public abstract class AbstractHtmlExportTest extends AbstractIpsPluginTest {
             methodCompXyz.setName(methodNameXyz);
             methodCompXyz.setDatatype("String");
             methodCompXyz.setFormulaSignatureDefinition(false);
-            methodCompXyz.setDescription("Die Methode berechneXyz ...");
+            methodCompXyz.newDescription().setText("Die Methode berechneXyz ...");
             methodCompXyz.newParameter("Integer", "zahl");
             methodCompXyz.newParameter("String", "name");
 
@@ -186,27 +187,25 @@ public abstract class AbstractHtmlExportTest extends AbstractIpsPluginTest {
             addAttribute(zahl2Attribute, "Zahl2", "Integer", Modifier.PUBLISHED);
             IProductCmptTypeAttribute text3Attribute = krankenBVBArt.newProductCmptTypeAttribute();
             addAttribute(text3Attribute, "Text3", "String", Modifier.PUBLIC);
-            krankenBVBArt
-                    .setDescription("Produkt blabla\nblablablabla sdfishiurgh sdfiugfughs \n\nodfiug sodufhgosdfzgosdfgsdfg \nENDE");
+            krankenBVBArt.newDescription().setText(
+                    "Produkt blabla\nblablablabla sdfishiurgh sdfiugfughs \n\nodfiug sodufhgosdfzgosdfgsdfg \nENDE");
 
             IProductCmpt krankenBvbBeitragXyz = newProductCmpt(krankenBVBArt, "kranken.KrankenBVB-Beitrag-Xyz");
-            krankenBvbBeitragXyz.setDescription("Ich bin also die BVB für den Beitrag!");
+            krankenBvbBeitragXyz.newDescription().setText("Ich bin also die BVB für den Beitrag!");
 
             GregorianCalendar cal = new GregorianCalendar(2010, 0, 1);
             IProductCmptGeneration krankenBvbBeitragXyzGeneration = (IProductCmptGeneration)krankenBvbBeitragXyz
                     .newGeneration(cal);
-            krankenBvbBeitragXyzGeneration.setDescription("Ich bin ne Generation der BVB für den Beitrag!");
             krankenBvbBeitragXyzGeneration.newAttributeValue(text3Attribute, "Ich bin der Text meiner Generation");
             krankenBvbBeitragXyzGeneration.newAttributeValue(zahl2Attribute, "234");
             krankenBvbBeitragXyzGeneration.newAttributeValue(geld1Attribute, "120 EUR");
             krankenBvbBeitragXyzGeneration.newFormula(methodCompZahl3);
 
             IProductCmpt krankenBvbBeitragZyx = newProductCmpt(krankenBVBArt, "kranken.KrankenBVB-Beitrag-Zyx");
-            krankenBvbBeitragZyx.setDescription("Ich bin die andere BVB für den Beitrag!");
+            krankenBvbBeitragZyx.newDescription().setText(("Ich bin die andere BVB für den Beitrag!"));
 
             IProductCmptGeneration krankenBvbBeitragZyxGeneration = (IProductCmptGeneration)krankenBvbBeitragZyx
                     .newGeneration(cal);
-            krankenBvbBeitragXyzGeneration.setDescription("Ich bin ne Generation der BVB für den Beitrag!");
             krankenBvbBeitragZyxGeneration.newAttributeValue(text3Attribute, "Ich bin der Text meiner Generation");
             krankenBvbBeitragZyxGeneration.newAttributeValue(zahl2Attribute, "254");
             krankenBvbBeitragZyxGeneration.newAttributeValue(geld1Attribute, "125 EUR");

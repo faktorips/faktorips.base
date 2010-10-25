@@ -22,20 +22,27 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractPageElement
 public class LanguageSupportTest extends AbstractXmlUnitHtmlExportTest {
 
     public void testDescriptionLanguage() throws Exception {
+
         String deBeschreibung = "Deutsche Beschreibung";
         String deXPath = "//div[.='" + deBeschreibung + "']";
 
         String enBeschreibung = "English Description";
         String enXPath = "//div[.='" + enBeschreibung + "']";
 
-        PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Vertrag", "VertragProdukt");
+        PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "VertragDesc", "VertragDescProdukt");
 
-        IDescription deDescription = policy.newDescription();
-        deDescription.setLocale(Locale.GERMANY);
+        IDescription deDescription = policy.getDescription(Locale.GERMANY);
+        if (deDescription == null) {
+            deDescription = policy.newDescription();
+            deDescription.setLocale(Locale.GERMANY);
+        }
         deDescription.setText(deBeschreibung);
 
-        IDescription enDescription = policy.newDescription();
-        enDescription.setLocale(Locale.ENGLISH);
+        IDescription enDescription = policy.getDescription(Locale.ENGLISH);
+        if (enDescription == null) {
+            enDescription = policy.newDescription();
+            enDescription.setLocale(Locale.ENGLISH);
+        }
         enDescription.setText(enBeschreibung);
 
         config.setDescriptionLocale(Locale.GERMANY);
