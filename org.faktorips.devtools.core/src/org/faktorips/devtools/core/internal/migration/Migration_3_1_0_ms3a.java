@@ -16,19 +16,19 @@ package org.faktorips.devtools.core.internal.migration;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- * Migration to version 3.1.0.ms3a.
+ * Migration to version 3.1.0.ms3b.
  * 
  * @author dirmeier
  */
-public class Migration_3_1_0_ms3 extends EmptyMigration {
+public class Migration_3_1_0_ms3a extends EmptyMigration {
 
-    public Migration_3_1_0_ms3(IIpsProject projectToMigrate, String featureId) {
+    public Migration_3_1_0_ms3a(IIpsProject projectToMigrate, String featureId) {
         super(projectToMigrate, featureId);
     }
 
     @Override
     public String getTargetVersion() {
-        return "3.1.0.ms3a"; //$NON-NLS-1$
+        return "3.1.0.ms3b"; //$NON-NLS-1$
     }
 
 }
