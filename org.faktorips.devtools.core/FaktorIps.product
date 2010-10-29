@@ -23,7 +23,7 @@
    <splash
       location="org.faktorips.devtools.core" />
    <launcher name="faktorips">
-      <linux icon="/org.faktorips.devtools.core/icons/FaktorIpsIcon.xpm"/>
+      <linux icon="/org.faktorips.devtools.core.ui/icons/FaktorIpsIcon.xpm"/>
       <solaris/>
       <win useIco="true">
          <ico path="/org.faktorips.devtools.core/icons/FaktorIpsIcon.ico"/>
