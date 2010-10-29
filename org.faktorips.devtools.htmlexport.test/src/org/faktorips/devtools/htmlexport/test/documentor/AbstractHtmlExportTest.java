@@ -234,7 +234,7 @@ public abstract class AbstractHtmlExportTest extends AbstractIpsPluginTest {
         newAttribute.setName(name);
         newAttribute.setDatatype(datatype);
         newAttribute.setModifier(modifier);
-        newAttribute.setDescription(name + " - " + datatype);
+        newAttribute.newDescription().setText(name + " - " + datatype);
     }
 
     protected void deletePreviousGeneratedFiles() {
