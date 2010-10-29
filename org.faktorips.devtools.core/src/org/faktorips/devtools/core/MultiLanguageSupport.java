@@ -41,13 +41,29 @@ public final class MultiLanguageSupport {
 
     private final Locale localizationLocale;
 
-    MultiLanguageSupport() {
+    /**
+     * Creates the MultiLanguageSupport and uses the Locale of the Platform.
+     */
+    public MultiLanguageSupport() {
         String nl = Platform.getNL();
         // As of now, only the language is of concern to us, not the country.
         if (nl.length() > 2) {
             nl = nl.substring(0, 2);
         }
         localizationLocale = new Locale(nl);
+    }
+
+    /**
+     * Creates a MultiLanguageSupport with the given Locale. Used by the HtmlExport
+     * 
+     * @param localizationLocale the Locale for the MultiLanguageSupport
+     * 
+     * @throws NullPointerException if localizationLocale is null
+     */
+    public MultiLanguageSupport(Locale localizationLocale) {
+        ArgumentCheck.notNull(localizationLocale);
+
+        this.localizationLocale = localizationLocale;
     }
 
     /**
