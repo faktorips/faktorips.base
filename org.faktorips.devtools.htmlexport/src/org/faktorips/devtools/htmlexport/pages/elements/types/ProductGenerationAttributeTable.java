@@ -135,7 +135,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         IAssociation[] associations = productCmptType.getAssociations();
         for (IAssociation association : associations) {
             TreeNodePageElement root = new TreeNodePageElement(PageElementUtils.createIpsElementRepresentation(
-                    association, true));
+                    association, config.getLabel(association), true));
             IProductCmptLink[] links = productCmptGeneration.getLinks(association.getName());
             for (IProductCmptLink productCmptLink : links) {
                 try {
@@ -157,11 +157,12 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     private void addAttributeRow(IAttribute attribute) {
         PageElement[] cells = new PageElement[productCmpt.getNumOfGenerations() + 1];
 
-        String name = attribute.getName();
-        cells[0] = new TextPageElement(name);
+        String caption = config.getLabel(attribute);
+        cells[0] = new TextPageElement(caption);
 
         for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
-            IAttributeValue attributeValue = productCmpt.getProductCmptGeneration(i).getAttributeValue(name);
+            IAttributeValue attributeValue = productCmpt.getProductCmptGeneration(i).getAttributeValue(
+                    attribute.getName());
             String value = attributeValue == null ? Messages.ProductGenerationAttributeTable_undefined : attributeValue
                     .getValue();
             cells[i + 1] = new TextPageElement(value);
@@ -187,6 +188,11 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     @Override
     public boolean isEmpty() {
         return productCmpt.getNumOfGenerations() == 0;
+    }
+
+    @Override
+    protected void createId() {
+        setId(productCmpt.getName() + "_ProductGenerationAttributeTable"); //$NON-NLS-1$
     }
 
 }

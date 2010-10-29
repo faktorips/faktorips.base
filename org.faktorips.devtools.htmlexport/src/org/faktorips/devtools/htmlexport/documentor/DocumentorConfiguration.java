@@ -22,11 +22,13 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
-import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -58,6 +60,7 @@ public class DocumentorConfiguration {
     private boolean showValidationErrors = true;
 
     private Locale descriptionLocale;
+    private MultiLanguageSupport multiLanguageSupport;
 
     /**
      * All scripts within this documentation
@@ -183,6 +186,7 @@ public class DocumentorConfiguration {
 
     public void setDescriptionLocale(Locale descriptionLocale) {
         this.descriptionLocale = descriptionLocale;
+        multiLanguageSupport = new MultiLanguageSupport(descriptionLocale);
     }
 
     public Locale getDescriptionLocale() {
@@ -190,10 +194,32 @@ public class DocumentorConfiguration {
     }
 
     public String getDescription(IDescribedElement describedElement) {
-        IDescription description = describedElement.getDescription(getDescriptionLocale());
-        if (description == null) {
-            return null;
+        return getMultiLanguageSupport().getLocalizedDescription(describedElement);
+    }
+
+    private MultiLanguageSupport getMultiLanguageSupport() {
+        return multiLanguageSupport;
+    }
+
+    public String getLabel(ILabeledElement labeledElement) {
+        return getLabel(labeledElement, true);
+    }
+
+    public String getLabel(ILabeledElement labeledElement, boolean singular) {
+        if (singular) {
+            return getMultiLanguageSupport().getLocalizedLabel(labeledElement);
         }
-        return description.getText();
+        return getMultiLanguageSupport().getLocalizedPluralLabel(labeledElement);
+    }
+
+    public String getCaption(IIpsObjectPartContainer ipsObjectPartContainer) {
+        return getCaption(ipsObjectPartContainer, true);
+    }
+
+    public String getCaption(IIpsObjectPartContainer ipsObjectPartContainer, boolean singular) {
+        if (singular) {
+            return getMultiLanguageSupport().getLocalizedCaption(ipsObjectPartContainer);
+        }
+        return getMultiLanguageSupport().getLocalizedPluralCaption(ipsObjectPartContainer);
     }
 }

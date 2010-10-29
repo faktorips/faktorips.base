@@ -21,6 +21,7 @@ public class Messages extends NLS {
     public static String AssociationTablePageElement_headlineAssociationType;
     public static String AssociationTablePageElement_headlineDerivedUnion;
     public static String AssociationTablePageElement_headlineDescription;
+    public static String AssociationTablePageElement_headlineLabel;
     public static String AssociationTablePageElement_headlineMaxCardinality;
     public static String AssociationTablePageElement_headlineMinCardinality;
     public static String AssociationTablePageElement_headlineName;
@@ -32,6 +33,7 @@ public class Messages extends NLS {
     public static String AttributesTablePageElement_headlineDatatype;
     public static String AttributesTablePageElement_headlineDefaultValue;
     public static String AttributesTablePageElement_headlineDescription;
+    public static String AttributesTablePageElement_headlineLabel;
     public static String AttributesTablePageElement_headlineModifier;
     public static String AttributesTablePageElement_headlineName;
     public static String IpsObjectListPageElement_allObjects;

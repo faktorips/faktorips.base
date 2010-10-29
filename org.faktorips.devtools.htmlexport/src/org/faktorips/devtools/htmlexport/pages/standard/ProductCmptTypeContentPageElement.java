@@ -66,6 +66,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
             List<PageElement> pageElements = new ArrayList<PageElement>();
 
             pageElements.add(new TextPageElement(tableStructureUsage.getRoleName()));
+            pageElements.add(new TextPageElement(getConfig().getLabel(tableStructureUsage)));
             pageElements.add(getTableStructureLinks(tableStructureUsage));
             pageElements.add(new TextPageElement(tableStructureUsage.isMandatoryTableContent() ? "X" : "-")); //$NON-NLS-1$ //$NON-NLS-2$
             pageElements.add(new TextPageElement(getConfig().getDescription(tableStructureUsage)));
@@ -103,6 +104,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
             List<String> headline = new ArrayList<String>();
 
             headline.add(Messages.ProductCmptTypeContentPageElement_roleName);
+            headline.add(Messages.ProductCmptTypeContentPageElement_headlineLabel);
             headline.add(IpsObjectType.TABLE_STRUCTURE.getDisplayName());
 
             addHeadlineAndColumnLayout(headline, IpsObjectType.TABLE_CONTENTS.getDisplayName()
@@ -138,8 +140,8 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(IpsObjectType.TABLE_STRUCTURE.getDisplayNamePlural(),
                 TextType.HEADING_2));
-
-        wrapper.addPageElements(new TableStructureTablePageElement(getDocumentedIpsObject(), config));
+        wrapper.addPageElements((getTableOrAlternativeText(new TableStructureTablePageElement(getDocumentedIpsObject(),
+                config), Messages.ProductCmptTypeContentPageElement_noTableStructures)));
         addPageElements(wrapper);
     }
 

@@ -79,6 +79,9 @@ public abstract class AbstractPageElement implements PageElement {
 
     @Override
     public String getId() {
+        if (id == null) {
+            createId();
+        }
         return id;
     }
 

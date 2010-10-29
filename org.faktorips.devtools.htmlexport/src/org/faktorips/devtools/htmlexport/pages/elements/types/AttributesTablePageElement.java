@@ -57,6 +57,7 @@ public class AttributesTablePageElement extends AbstractIpsObjectPartsContainerT
         List<String> attributeData = new ArrayList<String>();
 
         attributeData.add(attribute.getName());
+        attributeData.add(getConfig().getLabel(attribute));
         attributeData.add(attribute.getDatatype());
         attributeData.add(attribute.getModifier().toString());
         attributeData.add(attribute.getDefaultValue());
@@ -70,6 +71,7 @@ public class AttributesTablePageElement extends AbstractIpsObjectPartsContainerT
         List<String> headline = new ArrayList<String>();
 
         headline.add(Messages.AttributesTablePageElement_headlineName);
+        headline.add(Messages.AttributesTablePageElement_headlineLabel);
         headline.add(Messages.AttributesTablePageElement_headlineDatatype);
         headline.add(Messages.AttributesTablePageElement_headlineModifier);
         headline.add(Messages.AttributesTablePageElement_headlineDefaultValue);

@@ -11,23 +11,24 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.htmlexport.pages.standard;
+package org.faktorips.devtools.htmlexport.test.documentor;
 
 import java.util.Locale;
 
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.productcmpt.AttributeValue;
+import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
-import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractPageElement;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.type.IAttribute;
 
-public class LanguageSupportTest extends AbstractXmlUnitHtmlExportTest {
+public class LanguageSupportTest extends AbstractHtmlExportTest {
 
     public void testDescriptionLanguage() throws Exception {
 
         String deBeschreibung = "Deutsche Beschreibung";
-        String deXPath = "//div[.='" + deBeschreibung + "']";
-
         String enBeschreibung = "English Description";
-        String enXPath = "//div[.='" + enBeschreibung + "']";
 
         PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "VertragDesc", "VertragDescProdukt");
 
@@ -46,12 +47,36 @@ public class LanguageSupportTest extends AbstractXmlUnitHtmlExportTest {
         enDescription.setText(enBeschreibung);
 
         config.setDescriptionLocale(Locale.GERMANY);
-        AbstractPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(),
-                config);
-        assertXPathExists(objectContentPage, deXPath);
+
+        assertEquals(deBeschreibung, config.getDescription(policy));
 
         config.setDescriptionLocale(Locale.ENGLISH);
-        objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), config);
-        assertXPathExists(objectContentPage, enXPath);
+
+        assertEquals(enBeschreibung, config.getDescription(policy));
+    }
+
+    public void testLabelLanguage() throws Exception {
+        String deLabel = "Currywurst";
+        String enLabel = "Haggis";
+        String name = "Schonkost";
+
+        ProductCmptType type = newProductCmptType(ipsProject, "ProduktTyp");
+        ProductCmpt productCmpt = newProductCmpt(type, "Produkt");
+        IAttribute attribute = type.newAttribute();
+        attribute.setName(name);
+
+        IAttributeValue value = new AttributeValue(productCmpt.newGeneration(), "xxx", attribute.getName(), "yxz");
+        assertEquals(name, config.getCaption(value));
+
+        config.setDescriptionLocale(Locale.GERMAN);
+        attribute.setLabelValue(Locale.GERMAN, deLabel);
+
+        assertEquals(deLabel, config.getCaption(value));
+
+        config.setDescriptionLocale(Locale.ENGLISH);
+        assertEquals(deLabel, config.getCaption(value));
+
+        attribute.setLabelValue(Locale.ENGLISH, enLabel);
+        assertEquals(enLabel, config.getCaption(value));
     }
 }

@@ -54,11 +54,12 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
         List<String> values = new ArrayList<String>();
 
         values.add(association.getName());
+        values.add(getConfig().getLabel(association));
 
         // will be replaced with the link
         values.add(""); //$NON-NLS-1$
+        int linkElementIndex = 2;
 
-        // TODO AW: HTML-Export description needs to be configured
         values.add(getConfig().getDescription(association));
         values.add(association.getAssociationType().getName());
         values.add(association.getAggregationKind().getName());
@@ -74,9 +75,10 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
 
         try {
             IIpsObject target = type.getIpsProject().findIpsObject(type.getIpsObjectType(), association.getTarget());
-            elements[1] = PageElementUtils.createLinkPageElement(config, target, "content", target.getName(), true); //$NON-NLS-1$
+            elements[linkElementIndex] = PageElementUtils.createLinkPageElement(config, target,
+                    "content", target.getName(), true); //$NON-NLS-1$
         } catch (CoreException e) {
-            elements[1] = new TextPageElement(""); //$NON-NLS-1$
+            elements[linkElementIndex] = new TextPageElement(""); //$NON-NLS-1$
         }
 
         return Arrays.asList(elements);
@@ -94,6 +96,7 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
         List<String> headline = new ArrayList<String>();
 
         headline.add(Messages.AssociationTablePageElement_headlineName);
+        headline.add(Messages.AssociationTablePageElement_headlineLabel);
         headline.add(Messages.AssociationTablePageElement_headlineTarget);
         headline.add(Messages.AssociationTablePageElement_headlineDescription);
         headline.add(Messages.AssociationTablePageElement_headlineAssociationType);

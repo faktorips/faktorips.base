@@ -33,6 +33,7 @@ public abstract class AbstractXmlUnitHtmlExportTest extends AbstractHtmlExportTe
             String xmlWithoutDoctypeDeclaration = prepareXml(xml);
 
             try {
+                System.out.println(xmlWithoutDoctypeDeclaration);
                 super.assertXpathExists(xPath, xmlWithoutDoctypeDeclaration);
             } catch (XpathException e) {
                 throw new RuntimeException("Fehler bei XPath: " + xPath, e);

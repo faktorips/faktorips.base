@@ -63,9 +63,11 @@ public class Messages extends NLS {
     public static String ProductCmptContentPageElement_noGenerationsOrAttributes;
     public static String ProductCmptTypeContentPageElement_description;
     public static String ProductCmptTypeContentPageElement_formulaName;
+    public static String ProductCmptTypeContentPageElement_headlineLabel;
     public static String ProductCmptTypeContentPageElement_mandatory;
     public static String ProductCmptTypeContentPageElement_no;
     public static String ProductCmptTypeContentPageElement_none;
+    public static String ProductCmptTypeContentPageElement_noTableStructures;
     public static String ProductCmptTypeContentPageElement_roleName;
     public static String TableContentsContentPageElement_content;
     public static String TableContentsContentPageElement_description;

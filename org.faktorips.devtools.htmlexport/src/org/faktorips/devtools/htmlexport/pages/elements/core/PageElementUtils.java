@@ -102,7 +102,7 @@ public class PageElementUtils {
         return element.addStyles(Style.DEAD_LINK);
     }
 
-    private static PageElement createIpsElementRepresentation(IIpsElement ipsElement, String text, boolean useImage) {
+    public static PageElement createIpsElementRepresentation(IIpsElement ipsElement, String text, boolean useImage) {
         if (useImage) {
             return new WrapperPageElement(WrapperType.NONE).addPageElements(new IpsElementImagePageElement(ipsElement))
                     .addPageElements(new TextPageElement('\u00A0' + text));
