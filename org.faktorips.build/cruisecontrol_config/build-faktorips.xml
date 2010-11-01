@@ -907,6 +907,7 @@ ${faktoripsProductLinuxZipPath}
 		<!-- checkout de.qv.faktorips.feature and plugin -->
 		<cvs command="co" package="de.qv.faktorips.feature.test" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 		<cvs command="co" package="de.qv.faktorips.feature" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+		<cvs command="co" package="de.qv.faktorips.feature.product" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 		<cvs command="co" package="de.qv.faktorips" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 		
 		<antcall target="-checkout.OLD_runtimeAndValuetypes" />
