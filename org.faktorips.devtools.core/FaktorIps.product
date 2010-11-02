@@ -4,7 +4,7 @@
 <product name="Faktor-IPS" id="org.faktorips.devtools.core.FaktorIPS" application="org.faktorips.devtools.core.productDefinitionTool" version="FAKTOR_IPS_DO_NOT_CHANGE_0.0.0" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
-      <image path="/org.faktorips.devtools.core.ui/icons/FaktorIpsIcon128.gif"/>
+      <image path="/org.faktorips.devtools.core/icons/FaktorIpsIcon128.gif"/>
       <text>
          %org.faktorips.aboutText
       </text>
@@ -18,15 +18,15 @@
 -Xmx512m</vmArgs>
    </launcherArgs>
 
-   <windowImages i16="/org.faktorips.devtools.core.ui/icons/FaktorIpsIcon16.gif" i32="/org.faktorips.devtools.core.ui/icons/FaktorIpsIcon32.gif"/>
+   <windowImages i16="/org.faktorips.devtools.core/icons/FaktorIpsIcon16.gif" i32="/org.faktorips.devtools.core/icons/FaktorIpsIcon32.gif"/>
 
    <splash
       location="org.faktorips.devtools.core" />
    <launcher name="faktorips">
-      <linux icon="/org.faktorips.devtools.core.ui/icons/FaktorIpsIcon.xpm"/>
+      <linux icon="/org.faktorips.devtools.core/icons/FaktorIpsIcon.xpm"/>
       <solaris/>
       <win useIco="true">
-         <ico path="/org.faktorips.devtools.core.ui/icons/FaktorIpsIcon.ico"/>
+         <ico path="/org.faktorips.devtools.core/icons/FaktorIpsIcon.ico"/>
          <bmp/>
       </win>
    </launcher>
