@@ -81,11 +81,16 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
         @Override
         public String getText(Object element) {
             if (element instanceof String) {
-                IAssociation association = productCmptType.getAssociation((String)element);
-                if (association.is1ToMany()) {
-                    return IpsPlugin.getMultiLanguageSupport().getLocalizedPluralLabel(association);
-                } else {
-                    return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association);
+                try {
+                    IAssociation association = productCmptType.findAssociation((String)element, productCmptType
+                            .getIpsProject());
+                    if (association.is1ToMany()) {
+                        return IpsPlugin.getMultiLanguageSupport().getLocalizedPluralLabel(association);
+                    } else {
+                        return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(association);
+                    }
+                } catch (CoreException e) {
+                    throw new RuntimeException(e);
                 }
             }
             if (element instanceof IProductCmptLink) {
