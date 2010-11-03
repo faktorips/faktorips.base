@@ -947,6 +947,10 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         return checkedElements.contains(element);
     }
 
+    public IIpsPackageFragmentRoot getIIpsPackageFragmentRoot() {
+        return targetPackRootControl.getIpsPckFragmentRoot();
+    }
+
     public IProductCmptStructureReference[] getCheckedNodes() {
         List<Object> result = new ArrayList<Object>();
         List<Object> checkedElements = Arrays.asList(tree.getCheckedElements());

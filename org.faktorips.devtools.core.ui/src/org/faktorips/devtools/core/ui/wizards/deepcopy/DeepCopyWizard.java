@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.productcmpt.DeepCopyOperation;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
@@ -175,7 +176,9 @@ public class DeepCopyWizard extends ResizableWizard {
             final IProductCmptStructureReference[] toCopy = deepCopyPreview.getProductCmptStructRefToCopy();
             final IProductCmptStructureReference[] toRefer = deepCopyPreview.getProductsOrtTableContentsToRefer();
 
-            final Map<IProductCmptStructureReference, IIpsSrcFile> handles = deepCopyPreview.getHandles();
+            final IIpsPackageFragmentRoot ipsPackageFragmentRoot = sourcePage.getIIpsPackageFragmentRoot();
+            final Map<IProductCmptStructureReference, IIpsSrcFile> handles = deepCopyPreview
+                    .getHandles(ipsPackageFragmentRoot);
             final boolean createEmptyTableContents = sourcePage.isCreateEmptyTableContents();
 
             schedulingRule = structure.getRoot().getProductCmpt().getIpsProject().getCorrespondingResource()
@@ -186,6 +189,7 @@ public class DeepCopyWizard extends ResizableWizard {
                         InterruptedException {
                     logTraceStart("DeepCopyOperation.run");
                     DeepCopyOperation dco = new DeepCopyOperation(toCopy, toRefer, handles);
+                    dco.setIpsPackageFragmentRoot(ipsPackageFragmentRoot);
                     dco.setCreateEmptyTableContents(createEmptyTableContents);
                     dco.run(monitor);
                     copiedRoot = dco.getCopiedRoot();

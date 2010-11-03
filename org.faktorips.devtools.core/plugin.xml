@@ -288,7 +288,7 @@
          </property>
          <property
                name="aboutImage"
-               value="/org.faktorips.devtools.core.ui/icons/FaktorIpsIcon128.gif">
+               value="icons/FaktorIpsIcon128.gif">
          </property>
          <property
                name="aboutText"
@@ -296,7 +296,7 @@
          </property>
          <property
                name="windowImages"
-               value="/org.faktorips.devtools.core.ui/icons/FaktorIpsIcon16.gif,/org.faktorips.devtools.core.ui/icons/FaktorIpsIcon32.gif">
+               value="icons/FaktorIpsIcon16.gif,icons/FaktorIpsIcon32.gif">
          </property>
       </product>
    </extension>
