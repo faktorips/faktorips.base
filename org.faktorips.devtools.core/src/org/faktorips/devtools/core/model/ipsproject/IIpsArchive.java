@@ -112,8 +112,13 @@ public interface IIpsArchive {
     public InputStream getContent(QualifiedNameType qnt) throws CoreException;
 
     /**
-     * Returns the content of a file or <code>null</code> if the archive does not contain a resource
-     * with the given path. Returns <code>null</code> if path is <code>null</code>.
+     * Returns the content of a file with the given path. Returns <code>null</code> if path is
+     * <code>null</code>. Throws a CoreException if no Entry with the given path is found within
+     * this {@link IIpsArchive}.
+     * 
+     * @throws CoreException if no Entry with the given path is found within this
+     *             {@link IIpsArchive}, or if problems are encountert opening, reading or writing
+     *             this archive.
      */
     public InputStream getResourceAsStream(String path) throws CoreException;
 
