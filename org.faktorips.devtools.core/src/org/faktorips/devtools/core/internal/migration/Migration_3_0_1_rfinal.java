@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.internal.migration;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- * Migration from Faktor-IPS Version 3.0.0.rfinal to 3.0.1.rfinal
+ * Migration from Faktor-IPS Version 3.0.1.rfinal to 3.0.2.rfinal
  * 
  * @author Joerg Ortmann
  */
@@ -28,7 +28,7 @@ public class Migration_3_0_1_rfinal extends EmptyMigration {
 
     @Override
     public String getTargetVersion() {
-        return "3.0.2.test"; //$NON-NLS-1$
+        return "3.0.2.rfinal"; //$NON-NLS-1$
     }
 
 }
