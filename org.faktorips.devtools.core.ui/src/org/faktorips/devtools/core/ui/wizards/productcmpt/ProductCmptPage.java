@@ -50,6 +50,9 @@ import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
+/**
+ *
+ */
 public class ProductCmptPage extends IpsObjectPage {
 
     private ProductCmptType2RefControl typeRefControl;
@@ -199,6 +202,9 @@ public class ProductCmptPage extends IpsObjectPage {
         return runtimeId.getText();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void sourceFolderChanged() {
         super.sourceFolderChanged();
@@ -261,12 +267,17 @@ public class ProductCmptPage extends IpsObjectPage {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void packageChanged() {
         super.packageChanged();
         updateEnableState();
     }
 
+    @SuppressWarnings("null")
+    // warning about namingStrategy is wrong
     private void updateEnableState() {
         IProductCmptNamingStrategy namingStrategy = getNamingStrategy();
         boolean enabled = namingStrategy != null && namingStrategy.supportsVersionId();
@@ -323,7 +334,7 @@ public class ProductCmptPage extends IpsObjectPage {
         return defaultRuntimeId;
     }
 
-    /**
+    /*
      * Updates the runtime id, if the runtime edit field is read-only
      */
     private void updateRuntimeId() {
@@ -350,9 +361,9 @@ public class ProductCmptPage extends IpsObjectPage {
             } else {
                 constName.setText(sourceProductCmpt.getName());
             }
-            IPolicyCmptType pct = sourceProductCmpt.findPolicyCmptType(getIpsProject());
+            IProductCmptType pct = sourceProductCmpt.findProductCmptType(getIpsProject());
             if (pct != null) {
-                typeRefControl.setText(pct.getProductCmptType());
+                typeRefControl.setText(pct.getQualifiedName());
                 // because the new product cmpt is based on an existing product cmpt,
                 // the product cmpt type couldn't be changed
                 typeRefControl.setEnabled(false);

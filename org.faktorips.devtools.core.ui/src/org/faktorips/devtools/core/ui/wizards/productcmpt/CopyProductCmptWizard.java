@@ -17,6 +17,7 @@ import javax.xml.transform.TransformerException;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -65,6 +66,12 @@ public class CopyProductCmptWizard extends Wizard implements INewIpsObjectWizard
         productCmptPage = new ProductCmptPage(selection);
         productCmptPage.setDefaultProductCmpt(sourceProductCmpt);
         return productCmptPage;
+    }
+
+    @Override
+    public void createPageControls(Composite pageContainer) {
+        super.createPageControls(pageContainer);
+        productCmptPage.setDefaultFocus();
     }
 
     @Override
