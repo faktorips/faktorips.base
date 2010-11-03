@@ -13,18 +13,24 @@
 
 package org.faktorips.devtools.core.model;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsArchive;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
 /**
  * 
@@ -44,7 +50,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
         CreateIpsArchiveOperation operation = new CreateIpsArchiveOperation(project.getIpsPackageFragmentRoots(), file);
         operation.setInclJavaBinaries(true);
         operation.setInclJavaSources(true);
-        operation.run(null);
+        operation.run(new NullProgressMonitor());
         createLinkIfNecessary(archiveFile, file);
 
         assertTrue(archiveFile.exists());
@@ -60,6 +66,45 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
         assertTrue(qnt.contains(new QualifiedNameType("mycompany.motor.MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE)));
         assertTrue(qnt.contains(new QualifiedNameType("mycompany.motor.MotorCoverage", IpsObjectType.POLICY_CMPT_TYPE)));
         assertTrue(qnt.contains(new QualifiedNameType("mycompany.home.HomePolicy", IpsObjectType.POLICY_CMPT_TYPE)));
+    }
+
+    public void testRunWithIconFile() throws CoreException {
+        IIpsProject project = newIpsProject();
+        newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy", "mycompany.motor.MotorProduct");
+
+        // configure Icon
+        IIpsSrcFile productSrcFile = project.findIpsSrcFile(new QualifiedNameType("mycompany.motor.MotorProduct",
+                IpsObjectType.PRODUCT_CMPT_TYPE));
+        IProductCmptType prodType = (IProductCmptType)productSrcFile.getIpsObject();
+        prodType.setInstancesIcon("test.gif");
+        productSrcFile.save(true, new NullProgressMonitor());
+
+        // create fake icon file
+        IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
+        IFolder folder = (IFolder)root.getEnclosingResource();
+        IFile iconFile = folder.getFile("test.gif");
+        // fake content, this is not a valid gif-file
+        iconFile.create(new ByteArrayInputStream("test".getBytes()), true, new NullProgressMonitor());
+
+        IFile archiveFile = project.getProject().getFile("test.ipsar");
+        File file = archiveFile.getLocation().toFile();
+        CreateIpsArchiveOperation operation = new CreateIpsArchiveOperation(project.getIpsPackageFragmentRoots(), file);
+        operation.run(new NullProgressMonitor());
+        createLinkIfNecessary(archiveFile, file);
+
+        assertTrue(archiveFile.exists());
+
+        IIpsArchive archive = new IpsArchive(project, archiveFile.getLocation());
+        String[] packs = archive.getNonEmptyPackages();
+        assertEquals(1, packs.length);
+        assertEquals("mycompany.motor", packs[0]);
+
+        Set<QualifiedNameType> qnt = archive.getQNameTypes();
+        assertEquals(2, qnt.size());
+        assertTrue(qnt.contains(new QualifiedNameType("mycompany.motor.MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE)));
+        assertTrue(qnt.contains(new QualifiedNameType("mycompany.motor.MotorProduct", IpsObjectType.PRODUCT_CMPT_TYPE)));
+
+        assertTrue(archive.getResourceAsStream("test.gif") != null);
     }
 
 }

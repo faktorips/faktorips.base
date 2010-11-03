@@ -42,10 +42,12 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
 /**
  * An operation to create an IPS archive.
@@ -78,7 +80,7 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
         roots = rootsInt.toArray(new IIpsPackageFragmentRoot[rootsInt.size()]);
     }
 
-    public CreateIpsArchiveOperation(IIpsPackageFragmentRoot rootToArchive, File archive) throws CoreException {
+    public CreateIpsArchiveOperation(IIpsPackageFragmentRoot rootToArchive, File archive) {
         this(new IIpsPackageFragmentRoot[] { rootToArchive }, archive);
     }
 
@@ -101,13 +103,17 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
             if (workspaceFile != null && workspaceFile.getLocalTimeStamp() == archive.lastModified()) {
                 try {
                     /*
-                     * windows file system does not return milliseconds, only seconds if the cached
-                     * time stamp is equal to the file's time stamp on disk, we wait for a bit more
-                     * than one seconds before creating the file. After that time we are sure that
-                     * the file on disk gets a different time stamp when writing the file. This hack
-                     * has to be done, because we write using java.io.OutputStream (because we have
-                     * to use the JarOutputStream to ZIP) and therefore have to call refreshLocal()
-                     * afterwards. RefreshLocal refreshes only if we have a different time stamp.
+                     * Force the archive's file to have different time stamp than the cached IFile.
+                     * This is necessary so we can call refreshLocal() after finishing the archive,
+                     * as eclipse refreshes only if a file had its time stamp changed.
+                     * 
+                     * The reason for the 1010ms wait is that the windows file system does not track
+                     * milliseconds but only full seconds with a file's last-modified date. Thus
+                     * waiting for more than a second is necessary to guarantee that different time
+                     * stamp.
+                     * 
+                     * This little hack needs to be done, as we have to use JarOutputStream and
+                     * thereby bypass eclipse's file-tracking.
                      */
                     Thread.sleep(1010);
                 } catch (InterruptedException e) {
@@ -241,9 +247,35 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
         if (isDuplicateEntry(entryName)) {
             return;
         }
+        writeJarEntry(os, content, entryName, file.getCorrespondingFile().getName());
+        writeCustomIconIfApplicable(file, os);
 
-        JarEntry newEntry = new JarEntry(entryName);
+        String path = file.getQualifiedNameType().toPath().toString();
+        String basePackageProperty = path + IIpsArchive.QNT_PROPERTY_POSTFIX_SEPARATOR
+                + IIpsArchive.PROPERTY_POSTFIX_BASE_PACKAGE_MERGABLE;
+        ipsObjectsProperties.setProperty(basePackageProperty, file.getBasePackageNameForMergableArtefacts());
+        String extensionPackageProperty = path + IIpsArchive.QNT_PROPERTY_POSTFIX_SEPARATOR
+                + IIpsArchive.PROPERTY_POSTFIX_BASE_PACKAGE_DERIVED;
+        ipsObjectsProperties.setProperty(extensionPackageProperty, file.getBasePackageNameForDerivedArtefacts());
+    }
+
+    /**
+     * Creates a new {@link JarEntry} for the given {@link JarOutputStream} with the given entryName
+     * and the content/data provided by the content {@link InputStream}.
+     * 
+     * @param os the {@link JarOutputStream} to write the new {@link JarEntry} to.
+     * @param content the content/data to be written to the new {@link JarEntry}.
+     * @param entryName the name of the new {@link JarEntry}. Path segments will create
+     *            folder/sub-folders in the jar. See {@link JarOutputStream} for details.
+     * @param fileName the name of the original file whose content is written to the jar. It is used
+     *            to create an error message in case an {@link IOException} occurs.
+     * @throws CoreException if writing the {@link JarOutputStream}, or reading/closing the
+     *             content-stream result in an {@link IOException}.
+     */
+    private void writeJarEntry(JarOutputStream os, InputStream content, String entryName, String fileName)
+            throws CoreException {
         try {
+            JarEntry newEntry = new JarEntry(entryName);
             os.putNextEntry(newEntry);
             int nextByte = content.read();
             while (nextByte != -1) {
@@ -251,7 +283,7 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
                 nextByte = content.read();
             }
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus("Error writing archive entry for ips src file " + file, e)); //$NON-NLS-1$
+            throw new CoreException(new IpsStatus("Error writing archive entry for file " + fileName, e)); //$NON-NLS-1$
         } finally {
             if (content != null) {
                 try {
@@ -261,13 +293,24 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
                 }
             }
         }
-        String path = file.getQualifiedNameType().toPath().toString();
-        String basePackageProperty = path + IIpsArchive.QNT_PROPERTY_POSTFIX_SEPARATOR
-                + IIpsArchive.PROPERTY_POSTFIX_BASE_PACKAGE_MERGABLE;
-        ipsObjectsProperties.setProperty(basePackageProperty, file.getBasePackageNameForMergableArtefacts());
-        String extensionPackageProperty = path + IIpsArchive.QNT_PROPERTY_POSTFIX_SEPARATOR
-                + IIpsArchive.PROPERTY_POSTFIX_BASE_PACKAGE_DERIVED;
-        ipsObjectsProperties.setProperty(extensionPackageProperty, file.getBasePackageNameForDerivedArtefacts());
+    }
+
+    /**
+     * If the given {@link IIpsSrcFile} is an {@link IProductCmptType} its custom icon (if existent)
+     * is added to the archive as well.
+     * 
+     * @param file the {@link IIpsSrcFile} to process.
+     * @param os the {@link JarOutputStream} to write the custom Icon to.
+     * @throws CoreException if writing the {@link JarEntry} encounters problems.
+     */
+    private void writeCustomIconIfApplicable(IIpsSrcFile file, JarOutputStream os) throws CoreException {
+        if (file.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT_TYPE) {
+            String iconPath = file.getPropertyValue(IProductCmptType.PROPERTY_ICON_FOR_INSTANCES);
+            if (iconPath != null && iconPath.trim().length() > 0) { // if custom icon is set
+                InputStream iconStream = file.getIpsProject().getResourceAsStream(iconPath);
+                writeJarEntry(os, iconStream, iconPath, iconPath);
+            }
+        }
     }
 
     private void createIpsObjectsPropertiesEntry(JarOutputStream os, Properties ipsObjectsProperties)
