@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -79,6 +80,12 @@ public class CopyProductCmptWizard extends Wizard implements INewIpsObjectWizard
         return productCmptPage;
     }
 
+    @Override
+    public void createPageControls(Composite pageContainer) {
+        super.createPageControls(pageContainer);
+        productCmptPage.setDefaultFocus();
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -98,7 +105,7 @@ public class CopyProductCmptWizard extends Wizard implements INewIpsObjectWizard
         return true;
     }
 
-    private void finishIpsObject(IProductCmpt productCmpt) throws CoreException {
+    private void finishIpsObject(IProductCmpt productCmpt) {
         productCmpt.setProductCmptType(productCmptPage.getProductCmptType());
         productCmpt.setRuntimeId(productCmptPage.getRuntimeId());
     }
