@@ -82,7 +82,7 @@ public class TableRowGenerator extends JetJavaContentGenerator {
     IColumn[] columns = tableStructure.getColumns();
     boolean validationStatus = true;
     for (int i = 0; i < columns.length; i++) {
-        if(!columns[i].validate(ipsSrcFile.getIpsProject()).isEmpty()){
+        if(!columns[i].isValid(ipsSrcFile.getIpsProject())){
             validationStatus = false;
             break;
         }
