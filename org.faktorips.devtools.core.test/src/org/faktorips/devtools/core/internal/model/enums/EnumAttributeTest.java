@@ -208,15 +208,6 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
                 .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DATATYPE_DOES_NOT_EXIST));
         genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
 
-        // Test data type primitive.
-        ipsModel.clearValidationCache();
-        genderEnumAttributeId.setDatatype("int");
-        validationMessageList = genderEnumAttributeId.validate(ipsProject);
-        assertOneValidationMessage(validationMessageList);
-        assertNotNull(validationMessageList
-                .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_PRIMITIVE));
-        genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
-
         // Test data type void.
         ipsModel.clearValidationCache();
         genderEnumAttributeId.setDatatype("void");

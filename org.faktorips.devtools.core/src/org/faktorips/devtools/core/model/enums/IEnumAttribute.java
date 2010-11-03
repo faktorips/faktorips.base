@@ -103,7 +103,12 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement {
     /**
      * Validation message code to indicate that the data type of this <tt>IEnumAttribute</tt> is a
      * primitive data type, which is forbidden.
+     * 
+     * @deprecated This message code is no longer used from version 3.1 on. There is no replacement
+     *             as it is now allowed to use primitive data types for enumeration attributes.
      */
+    // Deprecated since 3.1
+    @Deprecated
     public final static String MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_PRIMITIVE = MSGCODE_PREFIX
             + "EnumAttributeDatatypeIsPrimitive"; //$NON-NLS-1$
 

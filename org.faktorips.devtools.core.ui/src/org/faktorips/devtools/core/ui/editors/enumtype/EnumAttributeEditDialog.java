@@ -190,7 +190,6 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         uiToolkit.createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelDatatype);
         datatypeControl = uiToolkit.createDatatypeRefEdit(enumAttribute.getIpsProject(), workArea);
         datatypeControl.setVoidAllowed(false);
-        datatypeControl.setPrimitivesAllowed(false);
         datatypeControl.setOnlyValueDatatypesAllowed(true);
         filterDatatypes();
 

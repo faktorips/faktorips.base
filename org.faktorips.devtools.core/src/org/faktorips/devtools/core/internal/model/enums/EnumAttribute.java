@@ -228,14 +228,6 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             return;
         }
 
-        // The data type may not be primitive.
-        if (ipsDatatype.isPrimitive()) {
-            text = NLS.bind(Messages.EnumAttribute_DatatypeIsPrimitive, datatype);
-            validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_PRIMITIVE, text, Message.ERROR, this,
-                    PROPERTY_DATATYPE);
-            list.add(validationMessage);
-        }
-
         // The data type may not be void.
         if (ipsDatatype.isVoid()) {
             text = Messages.EnumAttribute_DatatypeIsVoid;
