@@ -126,12 +126,14 @@ public class ChangesOverTimeNamingConvention implements IChangesOverTimeNamingCo
         return getGenerationConceptNameSingular(IpsPlugin.getDefault().getUsedLanguagePackLocale(), usageInsideSentence);
     }
 
-    private String getGenerationConceptNamePlural(Locale usedLanguagePackLocale, boolean usageInsideSentence) {
+    @Override
+    public String getGenerationConceptNamePlural(Locale usedLanguagePackLocale, boolean usageInsideSentence) {
         return locStringSet.getString(!usageInsideSentence ? "generationConceptNamePlural" //$NON-NLS-1$
                 : "generationConceptNamePluralInsideSentence", usedLanguagePackLocale); //$NON-NLS-1$
     }
 
-    private String getGenerationConceptNameSingular(Locale usedLanguagePackLocale, boolean usageInsideSentence) {
+    @Override
+    public String getGenerationConceptNameSingular(Locale usedLanguagePackLocale, boolean usageInsideSentence) {
         return locStringSet.getString(!usageInsideSentence ? "generationConceptNameSingular" //$NON-NLS-1$
                 : "generationConceptNameSingularInsideSentence", usedLanguagePackLocale); //$NON-NLS-1$
     }

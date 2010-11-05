@@ -113,7 +113,7 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
      */
     protected void generateMethodTypeSafeGetProductCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         String generationConceptName = getChangesInTimeNamingConvention(getIpsObject())
-                .getGenerationConceptNameSingular(true);
+                .getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode(), true);
         appendLocalizedJavaDoc("METHOD_TYPESAFE_GET_PRODUCT_CMPT", new String[] { getProductCmptType().getName(),
                 generationConceptName }, getIpsObject(), methodsBuilder);
         generateSignatureTypeSafeGetProductCmpt(getProductCmptType(), methodsBuilder);
@@ -141,6 +141,7 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
         // nothing to do, building an interface.
     }
 
+    @SuppressWarnings("unused")
     protected void generateCodeForMethod(IPolicyCmptTypeAttribute a,
             DatatypeHelper datatypeHelper,
             JavaCodeFragmentBuilder memberVarsBuilder,
