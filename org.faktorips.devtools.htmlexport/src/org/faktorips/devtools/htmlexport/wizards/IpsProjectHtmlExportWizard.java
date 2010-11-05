@@ -77,7 +77,7 @@ public class IpsProjectHtmlExportWizard extends Wizard implements IExportWizard 
         documentorConfig.setShowValidationErrors(ipsProjectHtmlExportWizardPage.getShowValidationErrors());
         documentorConfig.setDescriptionLocale(ipsProjectHtmlExportWizardPage.getSupportedLanguage());
 
-        documentorConfig.setIpsProject(ipsProjectHtmlExportWizardPage.getIpsProject(selection));
+        documentorConfig.setIpsProject(ipsProjectHtmlExportWizardPage.getSelectedIpsProject());
         documentorConfig.setLayouter(new HtmlLayouter(".resource")); //$NON-NLS-1$
 
         documentorConfig.addDocumentorScript(new StandardDocumentorScript());

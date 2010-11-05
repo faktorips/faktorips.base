@@ -19,8 +19,10 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -29,6 +31,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -61,19 +64,47 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
     private UIToolkit toolkit = new UIToolkit(null);
     private Combo destinationNamesCombo;
     private Combo supportedLanguageCombo;
+    private Combo ipsProjectsCombo;
 
     private Checkbox showValidationErrorsCheckBox;
+
+    private IIpsProject[] ipsProjects;
+
+    private ComboField destinationNameComboField;
 
     protected IpsProjectHtmlExportWizardPage(IStructuredSelection selection) {
         super(PAGE_NAME);
         this.selection = selection;
-        IProject project = getProject();
-        String projectName = project != null ? project.getName()
-                : Messages.IpsProjectHtmlExportWizardPage_noProjectSelected;
-        setTitle(Messages.IpsProjectHtmlExportWizardPage_projectName + projectName);
+        setPageComplete(false);
+
+        initIpsProjects();
+    }
+
+    private void initIpsProjects() {
+        try {
+            ipsProjects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
+    }
+
+    private void updateSelectedProject() {
+        IIpsProject project = getSelectedIpsProject();
+
+        if (project == null) {
+            setTitle(Messages.IpsProjectHtmlExportWizardPage_htmlExport);
+            setMessage(Messages.IpsProjectHtmlExportWizardPage_noProjectSelected, IMessageProvider.WARNING);
+            return;
+        }
+
+        setMessage(null);
+
+        setTitle(Messages.IpsProjectHtmlExportWizardPage_projectName + project.getName());
         setDescription(Messages.IpsProjectHtmlExportWizardPage_description);
 
-        setPageComplete(false);
+        updateSupportedLanguageGroup();
+
+        destinationNamesCombo.setFocus();
     }
 
     @Override
@@ -91,6 +122,7 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
         Composite composite = new Composite(parent, SWT.NONE);
         composite.setLayout(new GridLayout(1, true));
 
+        createIpsProjectsCombo(composite);
         createDestinationGroup(composite);
 
         showValidationErrorsCheckBox = toolkit.createCheckbox(composite,
@@ -101,6 +133,48 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
         restoreWidgetValues();
 
         setControl(composite);
+
+        updateSelectedProject();
+
+    }
+
+    private void createIpsProjectsCombo(Composite parent) {
+        Composite existingIpsProjectsComboGroup = new Composite(parent, SWT.NONE);
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 2;
+        existingIpsProjectsComboGroup.setLayout(layout);
+        existingIpsProjectsComboGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
+                | GridData.VERTICAL_ALIGN_FILL));
+
+        new Label(existingIpsProjectsComboGroup, SWT.NONE).setText(Messages.IpsProjectHtmlExportWizardPage_project);
+
+        ipsProjectsCombo = new Combo(existingIpsProjectsComboGroup, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN
+                | SWT.READ_ONLY);
+        ipsProjectsCombo.addModifyListener(this);
+        ipsProjectsCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        ipsProjectsCombo.addSelectionListener(new SelectionListener() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                handleIpsProjectSelectionChanged();
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // nothing to do
+            }
+        });
+
+        for (IIpsProject ipsProject : ipsProjects) {
+            ipsProjectsCombo.add(ipsProject.getName());
+            if (ipsProject.equals(getIpsProject(selection))) {
+                ipsProjectsCombo.select(ipsProjectsCombo.getItemCount() - 1);
+            }
+        }
+    }
+
+    protected void handleIpsProjectSelectionChanged() {
+        updateSelectedProject();
     }
 
     private void createSupportedLanguageGroup(Composite parent) {
@@ -111,14 +185,24 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
         supportedLanguageComboGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
                 | GridData.VERTICAL_ALIGN_FILL));
 
-        new Label(supportedLanguageComboGroup, SWT.NONE).setText(Messages.IpsProjectHtmlExportWizardPage_supportedLanguage);
+        new Label(supportedLanguageComboGroup, SWT.NONE)
+                .setText(Messages.IpsProjectHtmlExportWizardPage_supportedLanguage);
 
         supportedLanguageCombo = new Combo(supportedLanguageComboGroup, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN
                 | SWT.READ_ONLY);
         supportedLanguageCombo.addModifyListener(this);
         supportedLanguageCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-        for (ISupportedLanguage iSupportedLanguage : getIpsProject(selection).getProperties().getSupportedLanguages()) {
+        updateSupportedLanguageGroup();
+    }
+
+    private void updateSupportedLanguageGroup() {
+        IIpsProject ipsProject = getSelectedIpsProject();
+        if (ipsProject == null) {
+            return;
+        }
+        supportedLanguageCombo.removeAll();
+        for (ISupportedLanguage iSupportedLanguage : ipsProject.getProperties().getSupportedLanguages()) {
             supportedLanguageCombo.add(iSupportedLanguage.getLanguageName());
             if (iSupportedLanguage.isDefaultLanguage()) {
                 supportedLanguageCombo.select(supportedLanguageCombo.getItemCount() - 1);
@@ -140,9 +224,10 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
 
         // destination name entry field
         destinationNamesCombo = new Combo(destinationSelectionGroup, SWT.SINGLE | SWT.BORDER);
-        ComboField destinationNameComboField = new ComboField(destinationNamesCombo);
+        destinationNameComboField = new ComboField(destinationNamesCombo);
         destinationNameComboField.addChangeListener(this);
         destinationNameComboField.setText(getDefaultDestinationDirectory());
+
         destinationNamesCombo.addModifyListener(this);
         destinationNamesCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
@@ -164,7 +249,7 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
     protected void handleDestinationBrowseButtonPressed() {
         DirectoryDialog directoryDialog = new DirectoryDialog(getContainer().getShell());
         directoryDialog.setText(Messages.IpsProjectHtmlExportWizardPage_directoryDialogText);
-        directoryDialog.setFilterPath(getProject().getLocation() + File.separator + "html"); //$NON-NLS-1$
+        directoryDialog.setFilterPath(getSelectedIpsProject().getProject().getLocation() + File.separator + "html"); //$NON-NLS-1$
 
         String selectedDirectoryName = directoryDialog.open();
         if (selectedDirectoryName != null) {
@@ -172,8 +257,11 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
         }
     }
 
-    private IProject getProject() {
-        return getProject(selection);
+    protected IIpsProject getSelectedIpsProject() {
+        if (ipsProjectsCombo.getSelectionIndex() == -1) {
+            return null;
+        }
+        return ipsProjects[ipsProjectsCombo.getSelectionIndex()];
     }
 
     private IProject getProject(IStructuredSelection strSelection) {
@@ -223,7 +311,10 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
     }
 
     public Locale getSupportedLanguage() {
-        for (ISupportedLanguage iSupportedLanguage : getIpsProject(selection).getProperties().getSupportedLanguages()) {
+        if (supportedLanguageCombo == null) {
+            return null;
+        }
+        for (ISupportedLanguage iSupportedLanguage : getSelectedIpsProject().getProperties().getSupportedLanguages()) {
             if (supportedLanguageCombo.getText().equals(iSupportedLanguage.getLanguageName())) {
                 return iSupportedLanguage.getLocale();
             }
@@ -232,11 +323,11 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
     }
 
     private String getDefaultDestinationDirectory() {
-        IProject firstElement = getProject();
+        IIpsProject firstElement = getSelectedIpsProject();
         if (firstElement == null) {
             return ""; //$NON-NLS-1$
         }
-        return firstElement.getLocation().toOSString() + File.separator + "html"; //$NON-NLS-1$
+        return firstElement.getProject().getLocation().toOSString() + File.separator + "html"; //$NON-NLS-1$
     }
 
     public boolean isIncludingReferencedProjects() {
@@ -244,12 +335,12 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
     }
 
     private void canFinish() {
-        if (selection.size() != 1 || getProject() == null) {
+        if (getSelectedIpsProject() == null) {
             setPageComplete(false);
             return;
         }
 
-        if (supportedLanguageCombo.getSelectionIndex() == -1) {
+        if (getSupportedLanguage() == null) {
             setPageComplete(false);
             return;
         }

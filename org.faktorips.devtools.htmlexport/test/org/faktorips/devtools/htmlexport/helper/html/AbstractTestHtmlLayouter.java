@@ -64,7 +64,6 @@ public abstract class AbstractTestHtmlLayouter extends TestCase {
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
-        System.out.println(html);
         return html;
     }
 
