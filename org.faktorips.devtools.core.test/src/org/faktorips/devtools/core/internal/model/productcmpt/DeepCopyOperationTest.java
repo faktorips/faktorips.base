@@ -75,6 +75,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         }
 
         DeepCopyOperation dco = new DeepCopyOperation(toCopy, new IProductCmptReference[0], handles);
+        dco.setIpsPackageFragmentRoot(productCmpt.getIpsPackageFragment().getRoot());
         dco.run(null);
 
         for (IProductCmptStructureReference element : toCopy) {
@@ -150,6 +151,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         }
 
         DeepCopyOperation dco = new DeepCopyOperation(toCopy, toRefer, handles);
+        dco.setIpsPackageFragmentRoot(comfortMotorProduct.getIpsPackageFragment().getRoot());
         dco.run(null);
         for (IProductCmptReference element : toCopy) {
             IIpsSrcFile src = handles.get(element);
@@ -191,6 +193,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(1990, 1, 1));
 
         DeepCopyOperation dco = new DeepCopyOperation(toCopy, new IProductCmptReference[0], handles);
+        dco.setIpsPackageFragmentRoot(product.getIpsPackageFragment().getRoot());
         dco.run(null);
 
         for (IProductCmptStructureReference element : toCopy) {
