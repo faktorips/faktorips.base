@@ -26,8 +26,11 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestRule;
+import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
+import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
+import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ImagePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
@@ -66,42 +69,56 @@ public class IpsElementImagePageElement extends ImagePageElement {
         }
 
         if (element instanceof ITestObject) {
-            return createImageNameByTestObject(element);
+            return createImageNameByTestObject((ITestObject)element);
         }
 
         if (element instanceof ITestParameter) {
-            return createImageNameByTestParameter(element);
+            return createImageNameByTestParameter((ITestParameter)element);
         }
 
         if (element instanceof IProductCmptTypeAssociation) {
-            return getProductCmptImageNameByProductCmptType(((IProductCmptTypeAssociation)element).getProductCmptType())
-                    + "assoc"; //$NON-NLS-1$
+            IProductCmptTypeAssociation assoc = (IProductCmptTypeAssociation)element;
+            if (assoc.isAssoziation()) {
+                return "association"; //$NON-NLS-1$
+            }
+            return "aggregation"; //$NON-NLS-1$
         }
 
         return element.getName();
     }
 
-    private static String createImageNameByTestParameter(IIpsElement element) {
+    private static String createImageNameByTestParameter(ITestParameter element) {
         if (element instanceof ITestRuleParameter) {
             return "testruleparameter"; //$NON-NLS-1$
         }
-        ITestParameter testParameter = (ITestParameter)element;
-        return testParameter.getDatatype();
+        if (element instanceof ITestValueParameter) {
+            return "datatype"; //$NON-NLS-1$
+        }
+        if (element instanceof ITestPolicyCmptTypeParameter) {
+            ITestPolicyCmptTypeParameter cmptTypeParameter = (ITestPolicyCmptTypeParameter)element;
+            if (cmptTypeParameter.isRequiresProductCmpt()) {
+                return IpsObjectType.PRODUCT_CMPT.getFileExtension();
+            }
+            return IpsObjectType.PRODUCT_CMPT_TYPE.getFileExtension();
+        }
+        throw new RuntimeException("Unknown Type of ITestParameter"); //$NON-NLS-1$
     }
 
-    private static String createImageNameByTestObject(IIpsElement element) {
+    private static String createImageNameByTestObject(ITestObject element) {
         if (element instanceof ITestRule) {
             return "testrule"; //$NON-NLS-1$
         }
         if (element instanceof ITestPolicyCmpt) {
+            ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt)element;
+            if (testPolicyCmpt.isProductRelevant()) {
+                return "testpolicycmptproductrelevant"; //$NON-NLS-1$
+            }
             return "testpolicycmpt"; //$NON-NLS-1$
         }
-        ITestObject testObject = (ITestObject)element;
-        try {
-            return testObject.findTestParameter(element.getIpsProject()).getDatatype();
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
+        if (element instanceof ITestValue) {
+            return "testvalue"; //$NON-NLS-1$
         }
+        throw new RuntimeException("Unknown Type of ITestValue"); //$NON-NLS-1$
     }
 
     private static String createImageNameByIpsSrcFile(IIpsElement element) {

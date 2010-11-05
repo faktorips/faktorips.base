@@ -23,7 +23,6 @@ import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTyp
 import org.faktorips.devtools.core.internal.model.testcase.TestCase;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestCaseType;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestRuleParameter;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
@@ -48,8 +47,7 @@ public class IpsElementImagePageElementTest extends AbstractHtmlExportTest {
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "xxx.BVB"); //$NON-NLS-1$
         ProductCmptTypeAssociation association = new ProductCmptTypeAssociation(productCmptType, "xxx.BVBAsso");
 
-        assertEquals(IpsObjectType.PRODUCT_CMPT.getFileExtension() + "assoc", new IpsElementImagePageElement(
-                association).getFileName());
+        assertEquals("aggregation", new IpsElementImagePageElement(association).getFileName());
     }
 
     public void testPathPolicyCmpt() throws CoreException {
@@ -127,7 +125,7 @@ public class IpsElementImagePageElementTest extends AbstractHtmlExportTest {
 
         newTestValue.setTestValueParameter(testParameterName);
 
-        assertEquals(testDatatype, new IpsElementImagePageElement(newTestValue).getFileName());
+        assertEquals("testvalue", new IpsElementImagePageElement(newTestValue).getFileName());
     }
 
     public void testPathTestParameter() throws CoreException {
@@ -140,11 +138,11 @@ public class IpsElementImagePageElementTest extends AbstractHtmlExportTest {
         valueParameter.setName(testParameterName);
         valueParameter.setDatatype(testDatatype);
 
-        assertEquals(testDatatype, new IpsElementImagePageElement(valueParameter).getFileName());
+        assertEquals("datatype", new IpsElementImagePageElement(valueParameter).getFileName());
 
         ITestPolicyCmptTypeParameter policyCmptTypeParameter = testCaseType.newExpectedResultPolicyCmptTypeParameter();
         policyCmptTypeParameter.setDatatype(testDatatype);
-        assertEquals(testDatatype, new IpsElementImagePageElement(policyCmptTypeParameter).getFileName());
+        assertEquals("ipsproductcmpttype", new IpsElementImagePageElement(policyCmptTypeParameter).getFileName());
 
         TestRuleParameter ruleParameter = testCaseType.newExpectedResultRuleParameter();
         assertEquals("testruleparameter", new IpsElementImagePageElement(ruleParameter).getFileName());

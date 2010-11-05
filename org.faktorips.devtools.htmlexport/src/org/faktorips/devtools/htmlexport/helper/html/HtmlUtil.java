@@ -124,8 +124,6 @@ public class HtmlUtil {
     /**
      * creates opening tag with classes
      * 
-     * @param string
-     * 
      */
     public String createHtmlElementOpenTag(String element, String id, String classes) {
         List<HtmlAttribute> attributes = new ArrayList<HtmlAttribute>();
@@ -202,7 +200,7 @@ public class HtmlUtil {
             attributes.add(new HtmlAttribute("class", classes)); //$NON-NLS-1$
         }
 
-        return createHtmlElementOpenTag("a", attributes);
+        return createHtmlElementOpenTag("a", attributes); //$NON-NLS-1$
     }
 
     /**
