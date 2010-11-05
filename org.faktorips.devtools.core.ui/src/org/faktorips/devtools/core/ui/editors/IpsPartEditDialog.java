@@ -17,6 +17,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
@@ -119,6 +120,9 @@ public abstract class IpsPartEditDialog extends EditDialog {
     private TabItem createLabelAndDescriptionTabItem(TabFolder folder) {
         Composite composite = uiToolkit.createGridComposite(folder, 1, true, true);
         Group labelGroup = uiToolkit.createGroup(composite, Messages.IpsPartEditDialog_groupLabel);
+        GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
+        layoutData.minimumHeight = 120;
+        labelGroup.setLayoutData(layoutData);
         new LabelEditComposite(labelGroup, (ILabeledElement)part);
         Group descriptionGroup = uiToolkit.createGroup(composite, Messages.IpsPartEditDialog_groupDescription);
         new DescriptionEditComposite(descriptionGroup, (IDescribedElement)part, uiToolkit);
