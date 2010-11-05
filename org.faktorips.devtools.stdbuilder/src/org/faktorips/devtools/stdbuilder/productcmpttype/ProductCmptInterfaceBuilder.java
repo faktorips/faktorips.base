@@ -114,8 +114,8 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
      */
     private void generateMethodGetGeneration(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         IChangesOverTimeNamingConvention convention = getChangesInTimeNamingConvention(getIpsSrcFile());
-        String generationConceptName = convention
-                .getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode());
+        String generationConceptName = convention.getGenerationConceptNameSingular(
+                getLanguageUsedInGeneratedSourceCode(), true);
         appendLocalizedJavaDoc("METHOD_GET_GENERATION", generationConceptName, getIpsObject(), methodsBuilder);
         getStandardBuilderSet().getGenerator(getProductCmptType()).generateSignatureGetGeneration(methodsBuilder);
         methodsBuilder.append(';');
@@ -195,18 +195,21 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
         // nothing to do
     }
 
+    @SuppressWarnings("unused")
     protected GenProductCmptTypeAttribute createGenerator(IProductCmptTypeAttribute a,
             LocalizedStringsSet localizedStringsSet) throws CoreException {
         // return null, as this builder does not need code for product component type attributes
         return null;
     }
 
+    @SuppressWarnings("unused")
     protected GenPolicyCmptTypeAttribute createGenerator(IPolicyCmptTypeAttribute a,
             LocalizedStringsSet localizedStringsSet) throws CoreException {
         // return null, as this builder does not need code for policy component type attributes
         return null;
     }
 
+    @SuppressWarnings("unused")
     protected GenProdAssociation createGenerator(IProductCmptTypeAssociation a, LocalizedStringsSet stringsSet)
             throws CoreException {
         // return null, as this builder does not need code for product component type associations
@@ -215,7 +218,7 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
 
     @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements, IIpsElement ipsElement) {
-
+        // nothing to do
     }
 
     @Override

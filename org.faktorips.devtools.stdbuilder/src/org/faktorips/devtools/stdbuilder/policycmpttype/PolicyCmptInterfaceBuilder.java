@@ -39,7 +39,7 @@ import org.faktorips.util.StringUtil;
 
 public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
 
-    public PolicyCmptInterfaceBuilder(IIpsArtefactBuilderSet builderSet, String kindId) throws CoreException {
+    public PolicyCmptInterfaceBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(PolicyCmptInterfaceBuilder.class));
         setMergeEnabled(true);
     }
@@ -54,7 +54,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
         return getJavaNamingConvention().getPublishedInterfaceName(getPolicyCmptTypeName(ipsSrcFile));
     }
 
-    public String getPolicyCmptTypeName(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public String getPolicyCmptTypeName(IIpsSrcFile ipsSrcFile) {
         String name = StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName());
         return StringUtils.capitalize(name);
     }
@@ -112,6 +112,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
 
     @Override
     protected void generateConstructors(JavaCodeFragmentBuilder builder) throws CoreException {
+        // nothing to do
     }
 
     @Override
@@ -184,7 +185,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
             List<IAssociation> subAssociations,
             JavaCodeFragmentBuilder memberVarsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) throws Exception {
-
+        // nothing to do
     }
 
     @Override

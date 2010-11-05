@@ -78,7 +78,7 @@ public class GenProductCmptType extends GenType {
         return (IProductCmptType)getType();
     }
 
-    public String getUnqualifiedClassNameForProductCmptTypeGen(boolean forInterface) throws CoreException {
+    public String getUnqualifiedClassNameForProductCmptTypeGen(boolean forInterface) {
         if (forInterface) {
             String name = getType().getName() + getAbbreviationForGenerationConcept();
             return getJavaNamingConvention().getPublishedInterfaceName(name);
@@ -98,7 +98,7 @@ public class GenProductCmptType extends GenType {
     public void generateMethodGetProductCmptGeneration(IIpsProject ipsProject, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         IPolicyCmptType pcType = getProductCmptType().findPolicyCmptType(ipsProject);
-        String[] replacements = new String[] { getNameForGenerationConcept(), getType().getName(),
+        String[] replacements = new String[] { getNameForGenerationConcept(true), getType().getName(),
                 pcType != null ? pcType.getName() : "missing" };
         appendLocalizedJavaDoc("METHOD_GET_PRODUCTCMPT_GENERATION", replacements, methodsBuilder);
         generateSignatureGetProductCmptGeneration(methodsBuilder);
@@ -111,7 +111,7 @@ public class GenProductCmptType extends GenType {
      */
     public String getMethodNameGetProductCmptGeneration() {
         String[] replacements = new String[] { getType().getName(), getAbbreviationForGenerationConcept(),
-                getNameForGenerationConcept() };
+                getNameForGenerationConcept(true) };
         return getLocalizedText("METHOD_GET_PRODUCTCMPT_GENERATION_NAME", replacements);
     }
 

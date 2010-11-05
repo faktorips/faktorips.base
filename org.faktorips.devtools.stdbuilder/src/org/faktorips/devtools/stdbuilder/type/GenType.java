@@ -166,9 +166,9 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
      * @see org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention
      * @see org.faktorips.devtools.core.builder.AbstractPcTypeBuilder#getNameForGenerationConcept
      */
-    public String getNameForGenerationConcept() {
+    public String getNameForGenerationConcept(boolean usedInsideSentence) {
         return getChangesInTimeNamingConvention().getGenerationConceptNameSingular(
-                getLanguageUsedInGeneratedSourceCode());
+                getLanguageUsedInGeneratedSourceCode(), usedInsideSentence);
     }
 
     /**
