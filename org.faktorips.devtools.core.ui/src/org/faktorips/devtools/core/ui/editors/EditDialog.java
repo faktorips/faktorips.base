@@ -86,6 +86,13 @@ public abstract class EditDialog extends TitleAreaDialog implements IDataChangea
     }
 
     @Override
+    protected Control createContents(Composite parent) {
+        Control control = super.createContents(parent);
+        setDataChangeableThis(dataChangeable);
+        return control;
+    }
+
+    @Override
     protected final Control createDialogArea(Composite parent) {
         getShell().setText(windowTitle);
         Composite composite = (Composite)super.createDialogArea(parent);
@@ -105,12 +112,9 @@ public abstract class EditDialog extends TitleAreaDialog implements IDataChangea
             panel.setLayout(layout);
         }
         Composite workArea = createWorkArea(panel);
-        uiToolkit.setDataChangeable(workArea, dataChangeable);
         if (workArea.getLayoutData() == null) {
             workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         }
-
-        setDataChangeable(dataChangeable);
         return composite;
     }
 
