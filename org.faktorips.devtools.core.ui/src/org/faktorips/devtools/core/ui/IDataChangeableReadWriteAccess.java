@@ -22,7 +22,7 @@ package org.faktorips.devtools.core.ui;
 public interface IDataChangeableReadWriteAccess extends IDataChangeableReadAccess {
 
     /**
-     * Sets if the data shown in this user interface component can be changed ot not.
+     * Sets if the data shown in this user interface component can be changed or not.
      */
     public void setDataChangeable(boolean changeable);
 
