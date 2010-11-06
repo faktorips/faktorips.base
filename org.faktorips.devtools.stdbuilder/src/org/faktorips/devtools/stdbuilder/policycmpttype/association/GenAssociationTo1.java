@@ -229,13 +229,16 @@ public class GenAssociationTo1 extends GenAssociation {
             return; // setter defined in base class.
         }
 
-        String paramName = getParamNameForSetObject();
-        String javaDocText = internal ? null : getJavaDocCommentForOverriddenMethod();
-        builder.javaDoc(javaDocText, JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        if (internal) {
+            appendLocalizedJavaDoc("METHOD_SET_OBJECT_INTERNAL", association.getTargetRoleSingular(), builder);
+        } else {
+            builder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        }
         generateSignatureSetObject(builder, internal);
 
         builder.openBracket();
 
+        String paramName = getParamNameForSetObject();
         if (target.isDependantType() && inverseAssociation != null) {
             builder.appendln("if(" + fieldName + " != null) {");
             builder.append(generateCodeToSynchronizeReverseComposition(fieldName, "null", false));

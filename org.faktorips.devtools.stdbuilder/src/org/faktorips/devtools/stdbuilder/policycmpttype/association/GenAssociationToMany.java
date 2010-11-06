@@ -446,7 +446,13 @@ public class GenAssociationToMany extends GenAssociation {
 
     protected void generateMethodAddObject(JavaCodeFragmentBuilder methodsBuilder, boolean internal)
             throws CoreException {
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        
+        if (internal) {
+            appendLocalizedJavaDoc("METHOD_ADD_OBJECT_INTERNAL", association.getTargetRoleSingular(), methodsBuilder);            
+        } else {
+            methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        }
+        
         generateSignatureAddObject(methodsBuilder, internal);
         String paramName = getParamNameForAddObject();
         methodsBuilder.openBracket();
