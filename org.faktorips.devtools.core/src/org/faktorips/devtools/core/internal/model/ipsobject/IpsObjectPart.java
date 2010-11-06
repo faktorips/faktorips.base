@@ -86,7 +86,10 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     protected void objectHasChanged() {
         IpsModel model = (IpsModel)getIpsModel();
         ContentChangeEvent event = ContentChangeEvent.newPartChangedEvent(this);
-        model.getIpsSrcFileContent(getIpsSrcFile()).ipsObjectChanged(event);
+        IpsSrcFileContent content = model.getIpsSrcFileContent(getIpsSrcFile());
+        if (content != null) {
+            content.ipsObjectChanged(event);
+        }
     }
 
     @Override
