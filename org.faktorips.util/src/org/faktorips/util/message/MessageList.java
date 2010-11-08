@@ -124,9 +124,20 @@ public class MessageList implements Iterable<Message> {
 
     /**
      * Returns the total number of messages in the list.
+     * 
      */
-    public int getNoOfMessages() {
+    public int size() {
         return messages.size();
+    }
+
+    /**
+     * Returns the total number of messages in the list.
+     * 
+     * @deprecated use {@link #size()}
+     */
+    @Deprecated
+    public int getNoOfMessages() {
+        return size();
     }
 
     /**
