@@ -25,9 +25,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageE
 public class KeyValueTablePageElement extends TablePageElement {
 
     public KeyValueTablePageElement() {
-        super(true);
-        addLayouts(new AlternateRowTablePageElementLayout(false));
-        addLayouts(new RegexTablePageElementLayout(".{1,3}", Style.CENTER)); //$NON-NLS-1$
+        this(Messages.KeyValueTablePageElement_headlineProperty, Messages.KeyValueTablePageElement_headlineValue);
     }
 
     /**
