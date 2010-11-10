@@ -31,9 +31,8 @@ import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Provides labels for relations. IProductCmptRelations are displayed as the target object including
- * a special cue label provider to get messages for product component type relations from the
- * generations instead of the product component type relation itself.
+ * Provides labels for links. {@link IProductCmptLink}s are displayed as the target object including
+ * a special cue label provider to get messages from the generations instead of the link itself.
  * 
  * @author Thorsten Guenther
  * @author Cornelius Dirmeier
@@ -82,8 +81,17 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
         public String getText(Object element) {
             if (element instanceof String) {
                 try {
+                    // the reason why we use String elements at all is that we want to be able to
+                    // show the association names event if we cannot find the association nor the
+                    // product component type
+                    if (productCmptType == null) {
+                        return element.toString();
+                    }
                     IAssociation association = productCmptType.findAssociation((String)element, productCmptType
                             .getIpsProject());
+                    if (association == null) {
+                        return element.toString();
+                    }
                     if (association.is1ToMany()) {
                         return IpsPlugin.getMultiLanguageSupport().getLocalizedPluralLabel(association);
                     } else {
