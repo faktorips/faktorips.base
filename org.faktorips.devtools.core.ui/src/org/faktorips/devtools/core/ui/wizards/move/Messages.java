@@ -39,6 +39,7 @@ public class Messages extends NLS {
     public static String MoveWizard_errorUnsupported;
     public static String MoveWizard_errorToManySelected;
     public static String MoveWizard_error;
+    public static String MoveWizard_errorPackageContainsInvalidObjects;
 
     public static String ErrorPage_error;
 

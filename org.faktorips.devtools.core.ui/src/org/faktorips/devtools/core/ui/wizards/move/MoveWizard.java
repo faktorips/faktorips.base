@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.refactor.MoveOperation;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -145,10 +146,25 @@ public class MoveWizard extends Wizard {
      */
     @Override
     public boolean performFinish() {
+        boolean okToRefactor = true;
         try {
             MoveOperation moveOp;
             if (operation == OPERATION_MOVE) {
-                moveOp = new MoveOperation(selectedObjects, ((MovePage)sourcePage).getTarget());
+                for (IIpsElement element : selectedObjects) {
+                    if (element instanceof IIpsPackageFragment) {
+                        IIpsPackageFragment fragment = (IIpsPackageFragment)element;
+                        okToRefactor = packageValid(fragment);
+                        if (!(okToRefactor)) {
+                            MessageDialog.openError(getShell(), Messages.MoveWizard_titleMove, NLS.bind(
+                                    Messages.MoveWizard_errorPackageContainsInvalidObjects, fragment.getName()));
+                            break;
+                        }
+                    }
+                }
+                if (okToRefactor) {
+                    moveOp = new MoveOperation(selectedObjects, ((MovePage)sourcePage).getTarget());
+                    getContainer().run(true, true, new ModifyOperation(moveOp));
+                }
             } else if (operation == OPERATION_RENAME) {
                 RenamePage renamePage = (RenamePage)sourcePage;
                 IProductCmpt productCmpt = getSelectedProductCmpt();
@@ -157,10 +173,10 @@ public class MoveWizard extends Wizard {
                 } else {
                     moveOp = new MoveOperation(productCmpt, renamePage.getNewName(), renamePage.getNewRuntimeId());
                 }
+                getContainer().run(true, true, new ModifyOperation(moveOp));
             } else {
                 throw new CoreException(new IpsStatus("Wrong operation: " + operation));
             }
-            getContainer().run(true, true, new ModifyOperation(moveOp));
 
         } catch (CoreException e) {
             if (e.getStatus() != null) {
@@ -174,6 +190,23 @@ public class MoveWizard extends Wizard {
             IpsPlugin.logAndShowErrorDialog(e);
         }
 
+        return okToRefactor;
+    }
+
+    // TODO AW: Awkward and duplicate code in ModelExplorerDropListener, will be automatically
+    // removed when enabling invalid objects to be refactored
+    private boolean packageValid(IIpsPackageFragment fragment) throws CoreException {
+        for (IIpsPackageFragment childFragment : fragment.getChildIpsPackageFragments()) {
+            if (!(packageValid(childFragment))) {
+                return false;
+            }
+        }
+        for (IIpsSrcFile ipsSrcFile : fragment.getIpsSrcFiles()) {
+            IIpsObject ipsObject = ipsSrcFile.getIpsObject();
+            if (!(ipsObject.isValid(ipsSrcFile.getIpsProject()))) {
+                return false;
+            }
+        }
         return true;
     }
 

@@ -23,9 +23,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -118,6 +120,18 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
 
             // If the situation could not be handled by the new refactoring support the old code
             // is called.
+            for (Object source : sources) {
+                if (source instanceof IIpsPackageFragment) {
+                    IIpsPackageFragment fragment = (IIpsPackageFragment)source;
+                    if (!(packageValid(fragment))) {
+                        MessageDialog.openError(Display.getCurrent().getActiveShell(),
+                                Messages.ModelExplorerDropListener_titleMove, NLS.bind(
+                                        Messages.ModelExplorerDropListener_errorPackageContainsInvalidObjects, fragment
+                                                .getName()));
+                        return;
+                    }
+                }
+            }
             MoveOperation moveOp = null;
             if (target instanceof IIpsPackageFragment) {
                 moveOp = new MoveOperation(sources, (IIpsPackageFragment)target);
@@ -145,6 +159,23 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
         } catch (InterruptedException e) {
             IpsPlugin.log(e);
         }
+    }
+
+    // TODO AW: Awkward and duplicate code in MoveWizard, will be automatically
+    // removed when enabling invalid objects to be refactored
+    private boolean packageValid(IIpsPackageFragment fragment) throws CoreException {
+        for (IIpsPackageFragment childFragment : fragment.getChildIpsPackageFragments()) {
+            if (!(packageValid(childFragment))) {
+                return false;
+            }
+        }
+        for (IIpsSrcFile ipsSrcFile : fragment.getIpsSrcFiles()) {
+            IIpsObject ipsObject = ipsSrcFile.getIpsObject();
+            if (!(ipsObject.isValid(ipsSrcFile.getIpsProject()))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private Object getTarget(DropTargetEvent event) {
