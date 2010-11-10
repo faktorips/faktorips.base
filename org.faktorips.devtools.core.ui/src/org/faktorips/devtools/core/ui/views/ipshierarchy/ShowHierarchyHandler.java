@@ -73,8 +73,7 @@ public class ShowHierarchyHandler extends AbstractHandler {
             IIpsObject ipsObject = ipsSrcFile.getIpsObject();
             if (IpsHierarchyView.supports(ipsObject)) {
                 try {
-                    IViewPart hierarchyView = activePage.showView(IpsHierarchyView.EXTENSION_ID, null,
-                            IWorkbenchPage.VIEW_VISIBLE);
+                    IViewPart hierarchyView = activePage.showView(IpsHierarchyView.EXTENSION_ID);
                     ((IpsHierarchyView)hierarchyView).showHierarchy(ipsObject);
                 } catch (PartInitException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
