@@ -336,6 +336,9 @@ public interface IIpsProjectProperties {
      */
     public void setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(boolean enabled);
 
+    /**
+     * @see #isRulesWithoutReferencesAllowedEnabled()
+     */
     public void setRulesWithoutReferencesAllowedEnabled(boolean enabled);
 
     /**

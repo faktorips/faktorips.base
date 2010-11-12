@@ -331,6 +331,9 @@
          <adapter
                type="org.faktorips.devtools.core.model.type.IType">
          </adapter>
+         <adapter
+               type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+         </adapter>
       </factory>
       <factory
             adaptableType="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer"
@@ -357,7 +360,32 @@
          <adapter
                type="org.faktorips.devtools.core.model.type.IType">
          </adapter>
+         <adapter
+               type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+         </adapter>
       </factory>
+      <factory
+            adaptableType="org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile"
+            class="org.faktorips.devtools.core.internal.model.adapter.IpsSrcFileAdapterFactory">
+         <adapter
+               type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+         </adapter>
+         <adapter
+               type="org.faktorips.devtools.core.model.type.IType">
+         </adapter>
+         <adapter
+               type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+         </adapter>
+      </factory>
+   </extension>
+   <extension
+         point="org.faktorips.devtools.core.productComponentNamingStrategy">
+      <productComponentNamingStrategy
+            factoryClass="org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategyFactory">
+      </productComponentNamingStrategy>
+      <productComponentNamingStrategy
+            factoryClass="org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategyFactory">
+      </productComponentNamingStrategy>
    </extension>
    <extension
          point="org.faktorips.devtools.core.productComponentNamingStrategy">

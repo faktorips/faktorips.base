@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.adapter;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.PlatformObject;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.type.IType;
@@ -49,6 +50,10 @@ public class IpsSrcFileWrapperAdapterFactory extends AbstractIpsAdapterFactory {
             return adaptToIpsSrcFile(adaptableObject);
         }
 
+        if (adapterType.isAssignableFrom(IIpsObject.class)) {
+            return adaptToIpsObject(adaptToIpsSrcFile(adaptableObject));
+        }
+
         if (adapterType.isAssignableFrom(IProductCmpt.class)) {
             return adaptToProductCmpt(adaptToIpsSrcFile(adaptableObject));
         }
@@ -67,7 +72,7 @@ public class IpsSrcFileWrapperAdapterFactory extends AbstractIpsAdapterFactory {
 
     @Override
     public Class<?>[] getAdapterList() {
-        return new Class<?>[] { IIpsElement.class, IIpsSrcFile.class, IProductCmpt.class, IType.class };
+        return new Class<?>[] { IIpsObject.class, IIpsElement.class, IIpsSrcFile.class, IProductCmpt.class, IType.class };
     }
 
 }

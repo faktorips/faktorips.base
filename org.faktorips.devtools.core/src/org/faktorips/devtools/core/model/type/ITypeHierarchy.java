@@ -117,4 +117,10 @@ public interface ITypeHierarchy {
      * @return true if IType is part of the hierarchy, false if IType is not part of the hierarchy
      */
     public boolean isPartOfHierarchy(String name);
+
+    /**
+     * Test if the IType with the given name is the saved IType of the Hierarchy
+     * 
+     */
+    public boolean isSelectedType(String name);
 }

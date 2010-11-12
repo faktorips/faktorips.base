@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -26,6 +27,21 @@ import org.faktorips.devtools.core.model.type.IType;
  * An abstract class for IPS adapter factories, providing standard adaptation methods.
  */
 public abstract class AbstractIpsAdapterFactory implements IAdapterFactory {
+
+    /**
+     * Getting the {@link IIpsObject} of an {@link IpsSrcFile} if the file is of this type.
+     */
+    protected IIpsObject adaptToIpsObject(IIpsSrcFile file) {
+        if (file == null) {
+            return null;
+        }
+        try {
+            return file.getIpsObject();
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            return null;
+        }
+    }
 
     /**
      * Getting the {@link IType} of an {@link IpsSrcFile} if the file is of this type.

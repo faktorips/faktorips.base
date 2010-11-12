@@ -341,4 +341,8 @@ public class TypeHierarchy implements ITypeHierarchy {
         }
         return false;
     }
+
+    public boolean isSelectedType(String name) {
+        return pcType.getQualifiedName().equals(name);
+    }
 }
