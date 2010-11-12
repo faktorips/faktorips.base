@@ -11,38 +11,25 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.views.ipshierarchy;
+package org.faktorips.devtools.core.ui.commands;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.ISelectionService;
-import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 
-/**
- * ShowHierarchyHandler is a defaultHandler for the command id:
- * org.faktorips.devtools.core.ui.actions.showHierarchy in plugin.xml Extensions
- * org.eclipse.ui.commands Opens or updates IpsHierarchyView
- * 
- * @author stoll
- */
-public class ShowHierarchyHandler extends AbstractHandler {
-
-    @Override
+public abstract class IpsAbstractHandler extends AbstractHandler {
     public Object execute(ExecutionEvent event) throws ExecutionException {
         IWorkbenchWindow activeWindow = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
 
@@ -63,28 +50,12 @@ public class ShowHierarchyHandler extends AbstractHandler {
         if (ipsSrcFile == null) {
             return null;
         }
-        showHierarchy(activePage, ipsSrcFile);
+        showView(activePage, ipsSrcFile);
         // return must be null - see jdoc
         return null;
     }
 
-    private void showHierarchy(IWorkbenchPage activePage, IIpsSrcFile ipsSrcFile) {
-        try {
-            IIpsObject ipsObject = ipsSrcFile.getIpsObject();
-            if (IpsHierarchyView.supports(ipsObject)) {
-                try {
-                    IViewPart hierarchyView = activePage.showView(IpsHierarchyView.EXTENSION_ID);
-                    ((IpsHierarchyView)hierarchyView).showHierarchy(ipsObject);
-                } catch (PartInitException e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
-                }
-            }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
-    }
-
-    private TypedSelection<IAdaptable> getSelectionFromSelectionProvider() {
+    protected TypedSelection<IAdaptable> getSelectionFromSelectionProvider() {
         TypedSelection<IAdaptable> typedSelection;
         ISelectionService selectionService = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow()
                 .getSelectionService();
@@ -92,7 +63,7 @@ public class ShowHierarchyHandler extends AbstractHandler {
         return typedSelection;
     }
 
-    private TypedSelection<IAdaptable> getSelectionFromEditor(IWorkbenchPart part) {
+    protected TypedSelection<IAdaptable> getSelectionFromEditor(IWorkbenchPart part) {
         IEditorInput input = ((IEditorPart)part).getEditorInput();
         if (input instanceof IFileEditorInput) {
             return new TypedSelection<IAdaptable>(IAdaptable.class, new StructuredSelection(((IFileEditorInput)input)
@@ -102,4 +73,5 @@ public class ShowHierarchyHandler extends AbstractHandler {
         }
     }
 
+    public abstract void showView(IWorkbenchPage activePage, IIpsSrcFile ipsSrcFile);
 }

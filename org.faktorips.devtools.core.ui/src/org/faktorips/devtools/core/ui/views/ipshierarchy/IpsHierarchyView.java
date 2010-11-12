@@ -13,16 +13,8 @@
 
 package org.faktorips.devtools.core.ui.views.ipshierarchy;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -30,6 +22,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -42,8 +36,10 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IMemento;
@@ -55,30 +51,36 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
+import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.type.TypeHierarchy;
+import org.faktorips.devtools.core.model.IIpsSrcFilesChangeListener;
+import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ITypeHierarchy;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
+import org.faktorips.devtools.core.ui.internal.MenuAdditionsCleaner;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
+import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
 
 /**
  * The <tt>IpsHierarchyView</tt> is a <tt>ViewPart</tt> for displaying a<tt>hierarchy of ITypes</tt>
  * 
- * @author stoll
+ * @author Quirin Stoll
  */
-public class IpsHierarchyView extends ViewPart implements IResourceChangeListener {
+public class IpsHierarchyView extends ViewPart implements IIpsSrcFilesChangeListener {
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchy"; //$NON-NLS-1$
-    public static final String LOGO = "IpsHierarchyView.gif"; //$NON-NLS-1$
+    //public static final String LOGO = "IpsHierarchyView.gif"; //$NON-NLS-1$
     protected static final String LINK_WITH_EDITOR_KEY = "linktoeditor"; //$NON-NLS-1$
     private static final String MEMENTO = "ipsHierarchyView.memento"; //$NON-NLS-1$
     private TreeViewer treeViewer;
@@ -105,7 +107,7 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
     }
 
     public IpsHierarchyView() {
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_BUILD);
+        IpsPlugin.getDefault().getIpsModel().addIpsSrcFilesChangedListener(this);
     }
 
     @Override
@@ -153,6 +155,8 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
             }
         }
         editorActivationListener = new ActivationListener(getSite().getPage());
+        activateContext();
+        createContextMenu();
     }
 
     private void initToolBar(IToolBarManager toolBarManager) {
@@ -171,7 +175,12 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
                 return Messages.IpsHierarchy_tooltipRefreshContents;
             }
         };
-        toolBarManager.add(refreshAction);
+        getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshAction);
+        IWorkbenchAction retargetAction = ActionFactory.REFRESH.create(getViewSite().getWorkbenchWindow());
+        retargetAction.setImageDescriptor(refreshAction.getImageDescriptor());
+        retargetAction.setToolTipText(refreshAction.getToolTipText());
+        getViewSite().getActionBars().getToolBarManager().add(refreshAction);
+        // toolBarManager.add(refreshAction);
 
         // clear action
         clearAction = new Action(Messages.IpsHierarchy_tooltipClear, IpsUIPlugin.getImageHandling()
@@ -214,10 +223,21 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
         toolBarManager.add(linkWithEditor);
     }
 
+    private void createContextMenu() {
+        MenuManager manager = new MenuManager();
+        manager.add(new Separator("open")); //$NON-NLS-1$
+        manager.add(new OpenEditorAction(treeViewer));
+        manager.add(new Separator(ModelExplorerContextMenuBuilder.GROUP_NAVIGATE));
+        Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
+        treeViewer.getControl().setMenu(contextMenu);
+        getSite().registerContextMenu(manager, treeViewer);
+        manager.addMenuListener(new MenuAdditionsCleaner());
+    }
+
     @Override
     public void dispose() {
         editorActivationListener.dispose();
-        ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+        IpsPlugin.getDefault().getIpsModel().removeIpsSrcFilesChangedListener(this);
         super.dispose();
     }
 
@@ -228,7 +248,10 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
 
     @Override
     public void setFocus() {
-        treeViewer.getControl().setFocus();
+        Control control = treeViewer.getControl();
+        if (control != null && !control.isDisposed()) {
+            control.setFocus();
+        }
     }
 
     protected String getWaitingLabel() {
@@ -237,8 +260,6 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
 
     /**
      * Get the Hierarchy of the IIpsObject for setting it in the TreeViewer
-     * 
-     * 
      */
     public void showHierarchy(final IIpsObject element) {
         if (element instanceof IType && element.getEnclosingResource().isAccessible()) {
@@ -263,6 +284,9 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
         updateView();
     }
 
+    /**
+     * Updates View
+     */
     private void updateView() {
         if (treeViewer != null && !treeViewer.getControl().isDisposed()) {
             Object element = treeViewer.getInput();
@@ -287,6 +311,7 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
 
     private void showEmptyMessage() {
         showErrorMessage(Messages.IpsHierarchy_infoMessageEmptyView);
+        selected.setText(""); //$NON-NLS-1$
     }
 
     private void showErrorMessage(String message) {
@@ -298,7 +323,9 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
     }
 
     private void showMessgeOrTableView(MessageTableSwitch mtSwitch) {
+        boolean messageWasVisible = false;
         if (errormsg != null && !errormsg.isDisposed()) {
+            messageWasVisible = errormsg.isVisible();
             errormsg.setVisible(mtSwitch.isMessage());
             ((GridData)errormsg.getLayoutData()).exclude = !mtSwitch.isMessage();
         }
@@ -309,6 +336,9 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
         if (panel != null && !panel.isDisposed()) {
             panel.layout();
         }
+        if (messageWasVisible) {
+            setFocus();
+        }
     }
 
     /**
@@ -316,27 +346,34 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
      * Update the IpsHierarchyView in chase of changes on the object
      */
     @Override
-    public void resourceChanged(IResourceChangeEvent event) {
+    public void ipsSrcFilesChanged(IpsSrcFilesChangedEvent event) {
+        Set<IIpsSrcFile> changedIpsSrcFiles = event.getChangedIpsSrcFiles();
         ITypeHierarchy hierarchyTreeViewer = hierarchyContentProvider.getTypeHierarchy();
         if (hierarchyTreeViewer != null) {
             try {
-                List<IFile> affectedFiles = getChangedFiles(event.getDelta().getAffectedChildren());
-                List<IIpsSrcFile> aIipsElement = getIpsSrcFiles(affectedFiles);
-                if (aIipsElement.size() > 0) {
-                    isNodeOfHierarchy(aIipsElement, hierarchyTreeViewer);
+                if (changedIpsSrcFiles.size() > 0) {
+                    isNodeOfHierarchy(changedIpsSrcFiles, hierarchyTreeViewer);
                 }
             } catch (CoreException e) {
                 IpsPlugin.log(e);
             }
         }
+
     }
 
-    private void isNodeOfHierarchy(List<IIpsSrcFile> ipsSrcFiles, ITypeHierarchy hierarchyTreeViewer)
+    /**
+     * Test if changed object is part of the hierarchy
+     */
+    protected void isNodeOfHierarchy(Set<IIpsSrcFile> ipsSrcFiles, ITypeHierarchy hierarchyTreeViewer)
             throws CoreException {
         for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
             String qName = ipsSrcFile.getQualifiedNameType().getName();
+            if (hierarchyTreeViewer.isSelectedType(qName) && !ipsSrcFile.exists()) {
+                showHierarchy(null);
+                return;
+            }
             if (hierarchyTreeViewer.isPartOfHierarchy(qName)) {
-                showHierarchy(hierarchyContentProvider.getTypeHierarchy().getType());
+                showHierarchy(hierarchyTreeViewer.getType());
                 return;
             }
             if (ipsSrcFile.exists()) {
@@ -344,74 +381,12 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
                 String superType = ipsSrcFile.getPropertyValue(IType.PROPERTY_SUPERTYPE);
                 if (superType != null) {
                     if (hierarchyTreeViewer.isPartOfHierarchy(superType)) {
-                        showHierarchy(hierarchyContentProvider.getTypeHierarchy().getType());
+                        showHierarchy(hierarchyTreeViewer.getType());
                         return;
                     }
                 }
             }
         }
-    }
-
-    /**
-     * protected to test this method
-     */
-    protected List<IFile> getChangedFiles(IResourceDelta[] projectResourceDeltas) throws CoreException {
-        List<IResourceDelta> projectDeltas = new ArrayList<IResourceDelta>();
-        for (IResourceDelta aResourceDelta : projectResourceDeltas) {
-            IResource aResource = aResourceDelta.getResource();
-            IIpsProject ipsProject = null;
-            if (aResource instanceof IProject) {
-                IProject aProject = (IProject)aResource;
-                ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(aProject);
-            }
-            if (ipsProject != null) {
-                projectDeltas.add(aResourceDelta);
-            }
-        }
-        return getChangedFilesFromIpsProjectDelta(projectDeltas);
-    }
-
-    private List<IFile> getChangedFilesFromIpsProjectDelta(List<IResourceDelta> ipsProjectDeltas) throws CoreException {
-        List<IResourceDelta> ipsPackageFragmentRootDeltas = new ArrayList<IResourceDelta>();
-        for (IResourceDelta aResourceDelta : ipsProjectDeltas) {
-            IResource resource = aResourceDelta.getResource();
-            IProject aProject = (IProject)resource;
-            IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(aProject);
-            IIpsPackageFragmentRoot[] roots = ipsProject.getIpsPackageFragmentRoots();
-            for (IResourceDelta child : aResourceDelta.getAffectedChildren()) {
-                for (IIpsPackageFragmentRoot pfRoot : roots) {
-                    if (child.getResource().getName().equals(pfRoot.getName())) {
-                        ipsPackageFragmentRootDeltas.add(child);
-                    }
-                }
-            }
-        }
-        return getChangedFilesForIpsPackeFragmentRootDeltas(ipsPackageFragmentRootDeltas);
-    }
-
-    private List<IFile> getChangedFilesForIpsPackeFragmentRootDeltas(List<IResourceDelta> ipsPackageFragmentRootDeltas) {
-        List<IFile> result = new ArrayList<IFile>();
-        getChangedFilesRecoursive(ipsPackageFragmentRootDeltas.toArray(new IResourceDelta[0]), result);
-        return result;
-    }
-
-    private void getChangedFilesRecoursive(IResourceDelta[] deltas, List<IFile> result) {
-        for (IResourceDelta aDelta : deltas) {
-            if (aDelta.getResource() instanceof IFile) {
-                result.add((IFile)aDelta.getResource());
-            } else {
-                getChangedFilesRecoursive(aDelta.getAffectedChildren(), result);
-            }
-        }
-    }
-
-    private List<IIpsSrcFile> getIpsSrcFiles(List<IFile> affectedFiles) {
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
-        for (IFile aFile : affectedFiles) {
-            IIpsSrcFile srcFile = (IIpsSrcFile)IpsPlugin.getDefault().getIpsModel().getIpsElement(aFile);
-            result.add(srcFile);
-        }
-        return result;
     }
 
     private void setLinkingEnabled(boolean linkingEnabled) throws CoreException {
@@ -621,4 +596,8 @@ public class IpsHierarchyView extends ViewPart implements IResourceChangeListene
         }
     }
 
+    private void activateContext() {
+        IContextService serivce = (IContextService)getSite().getService(IContextService.class);
+        serivce.activateContext("org.faktorips.devtools.core.ui.views.modelExplorer.context"); //$NON-NLS-1$
+    }
 }

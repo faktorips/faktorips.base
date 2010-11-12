@@ -217,10 +217,33 @@
             id="org.faktorips.devtools.core.launchIpsTest.debug">
       </command>
       <command
-            defaultHandler="org.faktorips.devtools.core.ui.views.ipshierarchy.ShowHierarchyHandler"
+            defaultHandler="org.faktorips.devtools.core.ui.commands.ShowHierarchyHandler"
             description="%ShowHierarchyHandler.tooltip"
-            id="org.faktorips.devtools.core.ui.actions.showHierarchy"
+            id="org.faktorips.devtools.core.ui.commands.showHierarchy"
             name="%ShowHierarchyHandler.name">
+      </command>
+      <command
+            defaultHandler="org.faktorips.devtools.core.ui.commands.ShowInstanceHandler"
+            description="%ShowInstanceAction_descriptionForTypes"
+            id="org.faktorips.devtools.core.ui.commands.showInstanceAction"
+            name="%ShowInstanceExplorerAction.name">
+      </command>
+      <command
+            defaultHandler="org.faktorips.devtools.core.ui.commands.ShowInstanceHandler"
+            id="org.faktorips.devtools.core.ui.commands.showInstanceAction.instances"
+            name="%ShowInstanceAction_nameForInstances">
+      </command>
+      <command
+            defaultHandler="org.faktorips.devtools.core.ui.commands.ShowStructureHandler"
+            description="%ShowStructureAction_description"
+            id="org.faktorips.devtools.core.ui.commands.showStructureAction"
+            name="%ShowStructureAction_name">
+      </command>
+      <command
+            defaultHandler="org.faktorips.devtools.core.ui.commands.SearchReferencesHandler"
+            description="%SearchReferencesAction_description"
+            id="org.faktorips.devtools.core.ui.commands.searchReferencesAction"
+            name="%SearchProductReferencesAction_name">
       </command>
    </extension>
    <extension
@@ -240,7 +263,7 @@
             commandId="org.faktorips.devtools.core.launchIpsTest.run"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
-            commandId="org.faktorips.devtools.core.ui.actions.showHierarchy"
+            commandId="org.faktorips.devtools.core.ui.commands.showHierarchy"
             contextId="org.faktorips.devtools.core.ui.views.modelExplorer.context"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="F4">
@@ -508,7 +531,7 @@
                  menubarPath="faktorIPSMenu/cleanUpMenu/main"
                  tooltip="%createMissingEnumContentsAction.tooltip">
            </action>
-        </objectContribution>
+        </objectContribution>  
     	<objectContribution id="fixDifferencesAction" objectClass="org.eclipse.core.runtime.IAdaptable">
             <menu id="faktorIPSMenu" label="%faktorIPSMenu" path="additions">
 			    <separator name="faktorIpsGroup"/>
@@ -543,7 +566,7 @@
 		              <objectClass name="org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport"/>
 	             </or>
 		      </visibility> 
-    	</objectContribution>  
+    	</objectContribution>
 		<objectContribution id="addIpsNature" objectClass="org.eclipse.core.runtime.IAdaptable">
             <menu id="faktorIPSMenu" label="%faktorIPSMenu" path="additions">
 			    <separator name="faktorIpsGroup"/>
@@ -1443,16 +1466,8 @@
          </enabledWhen>
       </handler>
       <handler
-            class="org.faktorips.devtools.core.ui.views.ipshierarchy.ShowHierarchyHandler"
-            commandId="org.faktorips.devtools.core.ui.actions.showHierarchy">
-         <activeWhen>
-            <with
-                  variable="selection">
-               <iterate
-                     ifEmpty="false">
-               </iterate>
-            </with>
-         </activeWhen>
+            class="org.faktorips.devtools.core.ui.commands.ShowHierarchyHandler"
+            commandId="org.faktorips.devtools.core.ui.commands.showHierarchy">
          <enabledWhen>
             <with
                   variable="selection">
@@ -1469,6 +1484,150 @@
                      <instanceof
                            value="org.faktorips.devtools.core.model.type.IType">
                      </instanceof>
+                  </or>
+               </iterate>
+            </with>
+         </enabledWhen>
+         <activeWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false">
+               </iterate>
+            </with>
+         </activeWhen>
+      </handler>
+      <handler
+            class="org.faktorips.devtools.core.ui.commands.ShowInstanceHandler"
+            commandId="org.faktorips.devtools.core.ui.commands.showInstanceAction">
+         <class
+               class="org.faktorips.devtools.core.ui.commands.ShowInstanceHandler">
+         </class>
+         <enabledWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false"
+                     operator="and">
+                  <or>
+                     <adapt
+                           type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                        <instanceof
+                              value="org.faktorips.devtools.core.model.IIpsMetaClass">
+                        </instanceof>
+                     </adapt>
+                  </or>
+               </iterate>
+            </with>
+         </enabledWhen>
+         <activeWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false">
+               </iterate>
+            </with>
+         </activeWhen>
+      </handler>
+      <handler
+            class="org.faktorips.devtools.core.ui.commands.ShowInstanceHandler"
+            commandId="org.faktorips.devtools.core.ui.commands.showInstanceAction.instances">
+         <activeWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false">
+               </iterate>
+            </with>
+         </activeWhen>
+         <enabledWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false"
+                     operator="and">
+                  <or>
+                     <adapt
+                           type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                        <instanceof
+                              value="org.faktorips.devtools.core.model.IIpsMetaObject">
+                        </instanceof>
+                     </adapt>
+                  </or>
+               </iterate>
+            </with>
+         </enabledWhen>
+         <class
+               class="org.faktorips.devtools.core.ui.commands.ShowInstanceHandler">
+         </class>
+      </handler>
+      <handler
+            class="org.faktorips.devtools.core.ui.commands.ShowStructureHandler"
+            commandId="org.faktorips.devtools.core.ui.commands.showStructureAction">
+         <enabledWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false"
+                     operator="and">
+                  <or>
+                     <adapt
+                           type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                        <adapt
+                              type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+                        </adapt>
+                     </adapt>
+                     <instanceof
+                           value="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+                     </instanceof>
+                  </or>
+               </iterate>
+            </with>
+         </enabledWhen>
+         <class
+               class="org.faktorips.devtools.core.ui.commands.ShowStructureHandler">
+         </class>
+         <activeWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false">
+               </iterate>
+            </with>
+         </activeWhen>
+      </handler>
+      <handler
+            class="org.faktorips.devtools.core.ui.commands.SearchReferencesHandler"
+            commandId="org.faktorips.devtools.core.ui.commands.searchReferencesAction">
+         <activeWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false">
+               </iterate>
+            </with>
+         </activeWhen>
+         <enabledWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false"
+                     operator="and">
+                  <or>
+                     <adapt
+                           type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                        <or>
+                           <instanceof
+                                 value="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+                           </instanceof>
+                           <instanceof
+                                 value="org.faktorips.devtools.core.model.tablecontents.ITableContents">
+                           </instanceof>
+                           <instanceof
+                                 value="org.faktorips.devtools.core.model.pctype.IPolicyCmptType">
+                           </instanceof>
+                        </or>
+                     </adapt>
                   </or>
                </iterate>
             </with>
@@ -1503,13 +1662,125 @@
          </command>
       </menuContribution>
       <menuContribution
-            locationURI="popup:org.faktorips.devtools.core.ui.views.modelExplorer?after=info">
+            locationURI="popup:org.eclipse.ui.popup.any?after=navigate">
          <command
-               commandId="org.faktorips.devtools.core.ui.actions.showHierarchy"
+               commandId="org.faktorips.devtools.core.ui.commands.showHierarchy"
                icon="icons/IpsHierarchyView.gif"
                label="%ShowHierarchyHandler.name"
                style="push"
                tooltip="%ShowHierarchyHandler.tooltip">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <iterate
+                        ifEmpty="false"
+                        operator="and">
+                     <adapt
+                           type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                        <test
+                              forcePluginActivation="true"
+                              property="org.faktorips.devtools.core.ui.propertyTester1.isModelObject">
+                        </test>
+                     </adapt>
+                  </iterate>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="org.faktorips.devtools.core.ui.commands.showInstanceAction"
+               icon="icons/InstanceExplorer.gif"
+               label="%ShowInstanceAction_nameForTypes"
+               style="push"
+               tooltip="%ShowInstanceAction_descriptionForTypes">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <iterate
+                        ifEmpty="false"
+                        operator="and">
+                     <adapt
+                           type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                        <test
+                              forcePluginActivation="true"
+                              property="org.faktorips.devtools.core.ui.propertyTester1.isModelObject">
+                        </test>
+                     </adapt>
+                  </iterate>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="org.faktorips.devtools.core.ui.commands.showStructureAction"
+               icon="icons/ProductStructureExplorer.gif"
+               label="%ShowStructureAction_name"
+               style="push"
+               tooltip="%ShowStructureAction_description">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <iterate
+                        ifEmpty="false"
+                        operator="and">
+                     <adapt
+                           type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                        <not>
+                           <test
+                                 forcePluginActivation="true"
+                                 property="org.faktorips.devtools.core.ui.propertyTester1.isModelObject">
+                           </test>
+                        </not>
+                     </adapt>
+                  </iterate>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="org.faktorips.devtools.core.ui.commands.searchReferencesAction"
+               label="%SearchReferencesAction_name"
+               style="push"
+               tooltip="%SearchReferencesAction_description">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <iterate
+                        ifEmpty="false"
+                        operator="and">
+                     <adapt
+                           type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                     </adapt>
+                  </iterate>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="org.faktorips.devtools.core.ui.commands.showInstanceAction.instances"
+               icon="icons/InstanceExplorer.gif"
+               label="%ShowInstanceAction_nameForInstances"
+               style="push"
+               tooltip="%ShowInstanceAction_descriptionForInstances">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <iterate
+                        ifEmpty="false"
+                        operator="and">
+                     <adapt
+                           type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                        <not>
+                           <test
+                                 forcePluginActivation="true"
+                                 property="org.faktorips.devtools.core.ui.propertyTester1.isModelObject">
+                           </test>
+                        </not>
+                     </adapt>
+                  </iterate>
+               </with>
+            </visibleWhen>
          </command>
       </menuContribution>
    </extension>
@@ -1531,6 +1802,16 @@
                name="%org.faktorips.devtools.core.ui.views.modelExplorer Context"
                parentId="org.eclipse.ui.contexts.window">
          </context>
+      </extension>
+      <extension
+            point="org.eclipse.core.expressions.propertyTesters">
+         <propertyTester
+               class="org.faktorips.devtools.core.ui.commands.ModelObjectTester"
+               id="org.faktorips.devtools.core.ui.propertyTester1"
+               namespace="org.faktorips.devtools.core.ui.propertyTester1"
+               properties="isModelObject"
+               type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+         </propertyTester>
       </extension>
    
 </plugin>

@@ -15,10 +15,8 @@ package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
 import java.util.GregorianCalendar;
 import java.util.Observable;
+import java.util.Set;
 
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -69,6 +67,8 @@ import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.Prod
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsSrcFilesChangeListener;
+import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -86,14 +86,13 @@ import org.faktorips.devtools.core.ui.actions.CollapseAllAction;
 import org.faktorips.devtools.core.ui.actions.ExpandAllAction;
 import org.faktorips.devtools.core.ui.actions.IpsDeepCopyAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
-import org.faktorips.devtools.core.ui.actions.SearchReferencesAction;
-import org.faktorips.devtools.core.ui.actions.ShowInstanceAction;
 import org.faktorips.devtools.core.ui.internal.ICollectorFinishedListener;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateContentProvider;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateViewer;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
+import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
 
 /**
@@ -103,7 +102,7 @@ import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
  * 
  */
 public class ProductStructureExplorer extends ViewPart implements ContentsChangeListener, IShowInSource,
-        IResourceChangeListener {// , IPropertyChangeListener {
+        IIpsSrcFilesChangeListener {// , IPropertyChangeListener {
     /**
      * The ID of this view extension
      */
@@ -146,6 +145,14 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     private Button nextButton;
 
     private ProductStructureContentProvider contentProvider;
+
+    private Action refreshAction;
+
+    private Action clearAction;
+
+    private ExpandAllAction expandAllAction;
+
+    private CollapseAllAction collapseAllAction;
 
     /**
      * Class to handle double clicks. Doubleclicks of ProductCmptTypeAssociationReference will be
@@ -208,10 +215,9 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
      */
     public ProductStructureExplorer() {
         IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
-
+        IpsPlugin.getDefault().getIpsModel().addIpsSrcFilesChangedListener(this);
         // add as resource listener because refactoring-actions like move or rename
         // does not cause a model-changed-event.
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
     }
 
     /**
@@ -325,7 +331,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
     private void initToolBar(IToolBarManager toolBarManager) {
         final ImageDescriptor refreshDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("Refresh.gif"); //$NON-NLS-1$
-        Action refreshAction = new Action() {
+        refreshAction = new Action() {
             @Override
             public ImageDescriptor getImageDescriptor() {
                 return refreshDescriptor;
@@ -345,26 +351,28 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         IWorkbenchAction retargetAction = ActionFactory.REFRESH.create(getViewSite().getWorkbenchWindow());
         retargetAction.setImageDescriptor(refreshAction.getImageDescriptor());
         retargetAction.setToolTipText(refreshAction.getToolTipText());
-        getViewSite().getActionBars().getToolBarManager().add(retargetAction);
-
-        toolBarManager.add(new ExpandAllAction(treeViewer));
-        toolBarManager.add(new CollapseAllAction(treeViewer));
+        getViewSite().getActionBars().getToolBarManager().add(refreshAction);
+        expandAllAction = new ExpandAllAction(treeViewer);
+        toolBarManager.add(expandAllAction);
+        collapseAllAction = new CollapseAllAction(treeViewer);
+        toolBarManager.add(collapseAllAction);
 
         // clear action
-        toolBarManager.add(new Action("", IpsUIPlugin.getImageHandling().createImageDescriptor("Clear.gif")) {//$NON-NLS-1$ //$NON-NLS-2$
-                    @Override
-                    public void run() {
-                        productComponent = null;
-                        treeViewer.setInput(null);
-                        treeViewer.refresh();
-                        showEmptyMessage();
-                    }
+        clearAction = new Action("", IpsUIPlugin.getImageHandling().createImageDescriptor("Clear.gif")) {//$NON-NLS-1$ //$NON-NLS-2$
+            @Override
+            public void run() {
+                productComponent = null;
+                showTreeInput(null);
+                // treeViewer.refresh();
+                // showEmptyMessage();
+            }
 
-                    @Override
-                    public String getToolTipText() {
-                        return Messages.ProductStructureExplorer_tooltipClear;
-                    }
-                });
+            @Override
+            public String getToolTipText() {
+                return Messages.ProductStructureExplorer_tooltipClear;
+            }
+        };
+        toolBarManager.add(clearAction);
     }
 
     /**
@@ -517,11 +525,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
                 DeepCopyWizard.TYPE_COPY_PRODUCT);
         menumanager.add(copyProductAction);
 
-        menumanager.add(new Separator("otherviews")); //$NON-NLS-1$
-        final IAction findReferenceAction = new SearchReferencesAction(treeViewer);
-        menumanager.add(findReferenceAction);
-        final IAction showInstancesAction = new ShowInstanceAction(treeViewer);
-        menumanager.add(showInstancesAction);
+        menumanager.add(new Separator(ModelExplorerContextMenuBuilder.GROUP_NAVIGATE));
 
         treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -546,21 +550,21 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
                 copyNewVersionAction.setEnabled(copyEnabled);
                 copyProductAction.setEnabled(copyEnabled);
                 openAction.setEnabled(enabled);
-                findReferenceAction.setEnabled(enabled);
-                showInstancesAction.setEnabled(enabled);
+
             }
         });
 
         Menu menu = menumanager.createContextMenu(treeViewer.getControl());
         treeViewer.getControl().setMenu(menu);
-        getSite().setSelectionProvider(treeViewer);
+        getSite().registerContextMenu(menumanager, treeViewer);
 
-        showEmptyMessage();
+        getSite().setSelectionProvider(treeViewer);
 
         IActionBars actionBars = getViewSite().getActionBars();
         initMenu(actionBars.getMenuManager());
         initToolBar(actionBars.getToolBarManager());
         hookGlobalActions();
+        showEmptyMessage();
     }
 
     private void hookGlobalActions() {
@@ -585,7 +589,10 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
     @Override
     public void setFocus() {
-        treeViewer.getControl().setFocus();
+        Control control = treeViewer.getControl();
+        if (control != null && !control.isDisposed()) {
+            control.setFocus();
+        }
     }
 
     /**
@@ -622,6 +629,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         file = product.getIpsSrcFile();
         generationDateViewer.setInput(product);
         generationDateViewer.setSelection(0);
+        // TODO
         // setting the adjustment date to null updates the treeViewer content with latest adjustment
         // until the valid adjustment dates are collected
         setAdjustmentDate(null);
@@ -749,23 +757,15 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     }
 
     @Override
-    public void resourceChanged(IResourceChangeEvent event) {
-        // TODO update AdjustmentDateContent, wenn neue Anpassungsstufe hinzugekommen ist
-        if (file == null) {
-            return;
-        }
-        postRefresh();
-    }
-
-    @Override
     public void dispose() {
         IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
-        ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+        IpsPlugin.getDefault().getIpsModel().removeIpsSrcFilesChangedListener(this);
         // IpsPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
         super.dispose();
     }
 
     private void showErrorMsg(String message) {
+        enableButtons(false);
         viewerPanel.setVisible(false);
         errormsg.setText(message);
         errormsg.setVisible(true);
@@ -774,19 +774,53 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     }
 
     private void showTreeInput(IProductCmptTreeStructure input) {
-        errormsg.setVisible(false);
-        ((GridData)errormsg.getLayoutData()).exclude = true;
-
-        viewerPanel.setVisible(true);
-        ((GridData)viewerPanel.getLayoutData()).exclude = false;
-        viewerPanel.getParent().layout();
-
         treeViewer.setInput(input);
-        treeViewer.expandToLevel(2);
+        updateView();
+    }
+
+    public void updateView() {
+        if (treeViewer != null && !treeViewer.getControl().isDisposed()) {
+            Object element = treeViewer.getInput();
+            if (element == null) {
+                showEmptyMessage();
+            } else if (element instanceof IProductCmptTreeStructure) {
+                showMessgeOrTableView(MessageTableSwitch.TABLE);
+                enableButtons(true);
+                treeViewer.expandToLevel(2);
+                treeViewer.refresh();
+            }
+        }
     }
 
     private void showEmptyMessage() {
         showErrorMsg(Messages.ProductStructureExplorer_infoMessageEmptyView_1);
+    }
+
+    private void showMessgeOrTableView(MessageTableSwitch mtSwitch) {
+        boolean messageWasVisible = false;
+        if (errormsg != null && !errormsg.isDisposed()) {
+            messageWasVisible = errormsg.isVisible();
+            errormsg.setVisible(mtSwitch.isMessage());
+            ((GridData)errormsg.getLayoutData()).exclude = !mtSwitch.isMessage();
+        }
+        if (treeViewer != null && !treeViewer.getTree().isDisposed()) {
+            viewerPanel.setVisible(!mtSwitch.isMessage());
+            ((GridData)viewerPanel.getLayoutData()).exclude = mtSwitch.isMessage();
+            viewerPanel.getParent().layout();
+        }
+        if (viewerPanel != null && !viewerPanel.isDisposed()) {
+            viewerPanel.layout();
+        }
+        if (messageWasVisible) {
+            setFocus();
+        }
+    }
+
+    private void enableButtons(boolean status) {
+        clearAction.setEnabled(status);
+        refreshAction.setEnabled(status);
+        expandAllAction.setEnabled(status);
+        collapseAllAction.setEnabled(status);
     }
 
     @Override
@@ -851,6 +885,29 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
      */
     public boolean isShowAssociatedCmpts() {
         return showAssociatedCmpts;
+    }
+
+    @Override
+    public void ipsSrcFilesChanged(IpsSrcFilesChangedEvent event) {
+        Set<IIpsSrcFile> ipsSrcFiles = event.getChangedIpsSrcFiles();
+        if (file != null) {
+            for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+                if (file.getName().equals(ipsSrcFile.getName()) && !ipsSrcFile.exists()) {
+                    treeViewer.setInput(null);
+                    return;
+                }
+            }
+        }
+        postRefresh();
+    }
+
+    private enum MessageTableSwitch {
+        MESSAGE,
+        TABLE;
+
+        public boolean isMessage() {
+            return equals(MESSAGE);
+        }
     }
 
 }

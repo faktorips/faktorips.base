@@ -13,13 +13,14 @@
 
 package org.faktorips.devtools.core.ui.views.instanceexplorer;
 
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.ResourcesPlugin;
+import java.util.Set;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -36,8 +37,10 @@ import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.actions.ActionFactory;
@@ -50,6 +53,8 @@ import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsMetaClass;
 import org.faktorips.devtools.core.model.IIpsMetaObject;
+import org.faktorips.devtools.core.model.IIpsSrcFilesChangeListener;
+import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -60,8 +65,11 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
+import org.faktorips.devtools.core.ui.internal.MenuAdditionsCleaner;
+import org.faktorips.devtools.core.ui.views.InstanceIpsSrcFileViewItem;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
+import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
 import org.w3c.dom.Element;
 
 /**
@@ -78,7 +86,7 @@ import org.w3c.dom.Element;
  * 
  */
 
-public class InstanceExplorer extends ViewPart implements IResourceChangeListener {
+public class InstanceExplorer extends ViewPart implements IIpsSrcFilesChangeListener {
 
     /**
      * Extension id of this viewer extension.
@@ -104,11 +112,15 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
 
     private DecoratingLabelProvider decoratedLabelProvider;
 
+    private Action clearAction;
+
+    private Action refreshAction;
+
     /**
      * The default constructor setup the listener and loads the default view.
      */
     public InstanceExplorer() {
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_BUILD);
+        IpsPlugin.getDefault().getIpsModel().addIpsSrcFilesChangedListener(this);
     }
 
     @Override
@@ -176,6 +188,7 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         initToolBar(actionBars.getToolBarManager());
 
         showEmptyMessage();
+        createContextMenu();
     }
 
     private void initToolBar(IToolBarManager toolBarManager) {
@@ -186,8 +199,8 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         toolBarManager.add(subtypeSearchAction);
 
         // refresh action
-        Action refreshAction = new Action(Messages.InstanceExplorer_tooltipRefreshContents, IpsUIPlugin
-                .getImageHandling().createImageDescriptor("Refresh.gif")) { //$NON-NLS-1$
+        refreshAction = new Action(Messages.InstanceExplorer_tooltipRefreshContents, IpsUIPlugin.getImageHandling()
+                .createImageDescriptor("Refresh.gif")) { //$NON-NLS-1$
             @Override
             public void run() {
                 setInputData(contentProvider.getActualElement());
@@ -205,18 +218,31 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         toolBarManager.add(retargetAction);
 
         // clear action
-        toolBarManager.add(new Action(Messages.InstanceExplorer_tooltipClear, IpsUIPlugin.getImageHandling()
+        clearAction = new Action(Messages.InstanceExplorer_tooltipClear, IpsUIPlugin.getImageHandling()
                 .createImageDescriptor("Clear.gif")) { //$NON-NLS-1$
-                    @Override
-                    public void run() {
-                        setInputData(null);
-                    }
+            @Override
+            public void run() {
+                setInputData(null);
+                contentProvider.removeActualElement();
+            }
 
-                    @Override
-                    public String getToolTipText() {
-                        return Messages.InstanceExplorer_tooltipClear;
-                    }
-                });
+            @Override
+            public String getToolTipText() {
+                return Messages.InstanceExplorer_tooltipClear;
+            }
+        };
+        toolBarManager.add(clearAction);
+    }
+
+    private void createContextMenu() {
+        MenuManager manager = new MenuManager();
+        manager.add(new Separator("open")); //$NON-NLS-1$
+        manager.add(new OpenEditorAction(tableViewer));
+        manager.add(new Separator(ModelExplorerContextMenuBuilder.GROUP_NAVIGATE));
+        Menu contextMenu = manager.createContextMenu(tableViewer.getControl());
+        tableViewer.getControl().setMenu(contextMenu);
+        getSite().registerContextMenu(manager, tableViewer);
+        manager.addMenuListener(new MenuAdditionsCleaner());
     }
 
     /**
@@ -242,8 +268,19 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
     }
 
     private void setInputData(final IIpsMetaClass element) {
-        tableViewer.setInput(element);
-        updateView();
+        display.asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                tableViewer.setInput(element);
+                updateView();
+            }
+        });
+    }
+
+    private void enableButtons(boolean status) {
+        clearAction.setEnabled(status);
+        refreshAction.setEnabled(status);
+        subtypeSearchAction.setEnabled(status);
     }
 
     private void showEmptyTableMessage(IIpsObject element) {
@@ -260,6 +297,7 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
     }
 
     private void showEmptyMessage() {
+        enableButtons(false);
         showErrorMessage(Messages.InstanceExplorer_infoMessageEmptyView);
     }
 
@@ -271,7 +309,9 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
     }
 
     private void showMessgeOrTableView(MessageTableSwitch mtSwitch) {
+        boolean messageWasVisible = false;
         if (errormsg != null && !errormsg.isDisposed()) {
+            messageWasVisible = errormsg.isVisible();
             errormsg.setVisible(mtSwitch.isMessage());
             ((GridData)errormsg.getLayoutData()).exclude = !mtSwitch.isMessage();
         }
@@ -279,25 +319,94 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
             tableViewer.getTable().setVisible(!mtSwitch.isMessage());
             ((GridData)tableViewer.getTable().getLayoutData()).exclude = mtSwitch.isMessage();
         }
+        if (selectedElementLink != null && !selectedElementLink.isDisposed()) {
+            selectedElementLink.setVisible(!mtSwitch.isMessage());
+            ((GridData)selectedElementLink.getLayoutData()).exclude = mtSwitch.isMessage();
+        }
         if (panel != null && !panel.isDisposed()) {
             panel.layout();
+        }
+        if (messageWasVisible) {
+            setFocus();
         }
     }
 
     @Override
     public void setFocus() {
-        tableViewer.getControl().setFocus();
+        Control control = tableViewer.getControl();
+        if (control != null && !control.isDisposed()) {
+            control.setFocus();
+        }
     }
 
     @Override
-    public void resourceChanged(IResourceChangeEvent event) {
-        display.syncExec(new Runnable() {
+    public void ipsSrcFilesChanged(IpsSrcFilesChangedEvent event) {
+        Set<IIpsSrcFile> changedIpsSrcFiles = event.getChangedIpsSrcFiles();
+        if (selectedElementLink.getImage() != null) {
+            try {
 
-            @Override
-            public void run() {
-                updateView();
+                if (changedIpsSrcFiles.size() > 0) {
+                    selectedFile(changedIpsSrcFiles);
+                }
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
             }
-        });
+        }
+    }
+
+    private void selectedFile(Set<IIpsSrcFile> ipsSrcFiles) throws CoreException {
+        Object input = tableViewer.getInput();
+        if (input instanceof IIpsMetaClass) {
+            IIpsMetaClass element = (IIpsMetaClass)input;
+            if (isRootElement(ipsSrcFiles)) {
+                setInputData(null);
+                contentProvider.removeActualElement();
+            } else if (isChanged(element, ipsSrcFiles) || deletedElement(ipsSrcFiles)) {
+                showInstancesOf(contentProvider.getActualElement());
+            }
+        }
+    }
+
+    private boolean isChanged(IIpsMetaClass element, Set<IIpsSrcFile> ipsSrcFiles) throws CoreException {
+        for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+            if (ipsSrcFile.exists()) {
+                IDependency[] dependencys = ipsSrcFile.getIpsObject().dependsOn();
+                for (IDependency dependency : dependencys) {
+                    String target = dependency.getTarget().toString();
+                    String qualifiedName = target.substring(target.indexOf(":") + 2);//$NON-NLS-1$
+                    if (element.getQualifiedName().equals(qualifiedName)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isRootElement(Set<IIpsSrcFile> ipsSrcFiles) {
+
+        for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+            String qName = contentProvider.getActualElement().getQualifiedName();
+            if (qName.equals(ipsSrcFile.getQualifiedNameType().getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean deletedElement(Set<IIpsSrcFile> ipsSrcFiles) throws CoreException {
+        Object[] elements = contentProvider.getElements(null);
+        for (Object anElement : elements) {
+            if (anElement instanceof InstanceIpsSrcFileViewItem) {
+                InstanceIpsSrcFileViewItem viewItem = (InstanceIpsSrcFileViewItem)anElement;
+                IIpsSrcFile srcFileElement = viewItem.getIpsSrcFile();
+                if (ipsSrcFiles.contains(srcFileElement)) {
+                    showInstancesOf(contentProvider.getActualElement());
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private void updateView() {
@@ -313,9 +422,14 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
                 } else {
                     showMessgeOrTableView(MessageTableSwitch.TABLE);
                 }
+                enableButtons(true);
                 if (selectedElementLink != null && !selectedElementLink.isDisposed()) {
-                    selectedElementLink.setText(decoratedLabelProvider.getText(ipsObject));
-                    selectedElementLink.setImage(decoratedLabelProvider.getImage(ipsObject));
+                    if (ipsObject instanceof NotFoundMetaClass) {
+                        selectedElementLink.setVisible(false);
+                    } else {
+                        selectedElementLink.setText(decoratedLabelProvider.getText(ipsObject));
+                        selectedElementLink.setImage(decoratedLabelProvider.getImage(ipsObject));
+                    }
                 }
                 tableViewer.refresh();
             }
@@ -323,7 +437,7 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
     }
 
     /**
-     * Checks wether the argument supports sub type hierarchy or not
+     * Checks whether the argument supports sub type hierarchy or not
      * 
      * @param ipsObject the object to be checked
      * @return true if the parameter support subtypes
@@ -354,7 +468,6 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
 
     @Override
     public void dispose() {
-        ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
         getSite().setSelectionProvider(null);
         getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.REFRESH.getId(), null);
         super.dispose();
@@ -372,6 +485,7 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
             Object[] transferred = super.getTransferedElements(event.currentDataType);
             if (transferred.length > 0 && transferred[0] instanceof IIpsSrcFile) {
                 try {
+                    // getSite().getPage().activate(getSite().getPage().findView(EXTENSION_ID));
                     showInstancesOf(((IIpsSrcFile)transferred[0]).getIpsObject());
                 } catch (CoreException e) {
                     IpsPlugin.log(e);
@@ -517,5 +631,4 @@ public class InstanceExplorer extends ViewPart implements IResourceChangeListene
         }
 
     }
-
 }

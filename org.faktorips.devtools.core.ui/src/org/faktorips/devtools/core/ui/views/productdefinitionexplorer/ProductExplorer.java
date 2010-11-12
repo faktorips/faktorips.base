@@ -39,6 +39,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.ui.actions.WrapperAction;
+import org.faktorips.devtools.core.ui.internal.MenuAdditionsCleaner;
 import org.faktorips.devtools.core.ui.refactor.IpsMoveHandler;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringHandler;
 import org.faktorips.devtools.core.ui.refactor.IpsRenameHandler;
@@ -116,10 +117,11 @@ public class ProductExplorer extends ModelExplorer {
         MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);
         manager.addMenuListener(new ProductMenuBuilder(this, config, getViewSite(), getSite(), treeViewer));
-
         Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
         treeViewer.getControl().setMenu(contextMenu);
         // do not register contextmenue to prevent insertion of MB-Additions
+        getSite().registerContextMenu(manager, treeViewer);
+        manager.addMenuListener(new MenuAdditionsCleaner());
     }
 
     protected class ProductMenuBuilder extends ModelExplorerContextMenuBuilder {
@@ -198,6 +200,11 @@ public class ProductExplorer extends ModelExplorer {
             super(modelExplorer, modelExplorerConfig, viewSite, workbenchPartSite, treeViewer);
         }
 
+        @Override
+        public void menuAboutToShow(IMenuManager manager) {
+            super.menuAboutToShow(manager);
+        }
+
         private boolean isResourceShared(Object selectedObj) {
             if (selectedObj instanceof IIpsElement) {
                 IIpsElement ipsElement = (IIpsElement)selectedObj;
@@ -224,6 +231,7 @@ public class ProductExplorer extends ModelExplorer {
 
         @Override
         protected void createAdditionalActions(IMenuManager manager, IStructuredSelection structuredSelection) {
+            manager.add(new Separator("custom-additions")); //$NON-NLS-1$
             Object selected = structuredSelection.getFirstElement();
             boolean isResourceShared = isResourceShared(selected);
             boolean advancedTeamFunctionsEnabled = IpsPlugin.getDefault().getIpsPreferences()
@@ -277,6 +285,11 @@ public class ProductExplorer extends ModelExplorer {
                 replaceMenu.add(replaceWith_localHistory);
             }
             manager.add(replaceMenu);
+        }
+
+        @Override
+        protected void createRefactorMenu(IMenuManager manager, Object selected) {
+            // Refactoring actions are provided directly in #createReorgActions
         }
     }
 

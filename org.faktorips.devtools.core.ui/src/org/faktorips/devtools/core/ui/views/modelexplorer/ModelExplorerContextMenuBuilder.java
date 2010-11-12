@@ -87,11 +87,7 @@ import org.faktorips.devtools.core.ui.actions.NewTableStructureAction;
 import org.faktorips.devtools.core.ui.actions.NewTestCaseAction;
 import org.faktorips.devtools.core.ui.actions.NewTestCaseTypeAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
-import org.faktorips.devtools.core.ui.actions.SearchReferencesAction;
-import org.faktorips.devtools.core.ui.actions.ShowInstanceAction;
-import org.faktorips.devtools.core.ui.actions.ShowStructureAction;
 import org.faktorips.devtools.core.ui.actions.TableImportExportAction;
-import org.faktorips.devtools.core.ui.views.instanceexplorer.InstanceExplorer;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
 
 /**
@@ -99,6 +95,8 @@ import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
  * <tt>ModelExplorer</tt>.
  */
 public class ModelExplorerContextMenuBuilder implements IMenuListener {
+
+    public static final String GROUP_NAVIGATE = "navigate"; //$NON-NLS-1$
 
     public static final String NEW_MENU_ID = "group.new"; //$NON-NLS-1$
 
@@ -197,8 +195,8 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         createOpenMenu(manager, selected, (IStructuredSelection)treeViewer.getSelection());
         manager.add(new Separator("reorg")); //$NON-NLS-1$
         createReorgActions(manager, selected);
-        manager.add(new Separator("info")); //$NON-NLS-1$
-        createObjectInfoActions(manager, selected);
+        manager.add(new Separator(GROUP_NAVIGATE));
+        createObjectNavigateActions(manager, selected);
         manager.add(new Separator("misc")); //$NON-NLS-1$
         createRefreshAction(manager, selected);
         createProjectActions(manager, selected, (IStructuredSelection)treeViewer.getSelection());
@@ -217,7 +215,6 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         manager.add(new Separator("global")); //$NON-NLS-1$
 
         manager.add(new GroupMarker("faktorIpsGroup")); //$NON-NLS-1$
-        manager.add(new Separator("additions")); //$NON-NLS-1$
         createAdditionalActions(manager, structuredSelection);
 
         manager.add(new Separator("properties")); //$NON-NLS-1$
@@ -363,25 +360,12 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         return false;
     }
 
-    protected void createObjectInfoActions(IMenuManager manager, Object selected) {
-        if (selected instanceof IIpsObject) {
-            ShowStructureAction showStructureAction = new ShowStructureAction(treeViewer);
-            manager.add(showStructureAction);
-            showStructureAction.updateEnabledProperty();
-
-            SearchReferencesAction searchReferencesAction = new SearchReferencesAction(treeViewer);
-            manager.add(searchReferencesAction);
-            searchReferencesAction.updateEnabledProperty();
-
-            ShowInstanceAction showInstanceAction = new ShowInstanceAction(treeViewer);
-            showInstanceAction.setId("instanceExplorerAction"); //$NON-NLS-1$
-            manager.add(showInstanceAction);
-            showInstanceAction.setEnabled(InstanceExplorer.supports(selected));
-        }
-        // TODO not to be used in this release
-        // if (selected instanceof IPolicyCmptType | selected instanceof IProductCmpt) {
-        // manager.add(new ShowAttributesAction(treeViewer));
-        // }
+    /**
+     * @param manager The menu manager
+     * @param selected the selected object
+     */
+    protected void createObjectNavigateActions(IMenuManager manager, Object selected) {
+        // For model explorer the navigator commands are provided by the plugin.xml
     }
 
     protected void createProjectActions(IMenuManager manager, Object selected, IStructuredSelection selection) {
@@ -528,6 +512,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
      * @param structuredSelection actual selection
      */
     protected void createAdditionalActions(IMenuManager manager, IStructuredSelection structuredSelection) {
+        manager.add(new Separator("additions")); //$NON-NLS-1$
         manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end"));//$NON-NLS-1$
     }

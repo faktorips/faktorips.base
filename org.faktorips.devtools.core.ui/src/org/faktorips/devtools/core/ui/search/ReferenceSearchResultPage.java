@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.search;
 
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TableViewer;
@@ -31,8 +32,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
-import org.faktorips.devtools.core.ui.actions.ShowStructureAction;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
+import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
 
 public class ReferenceSearchResultPage extends AbstractTextSearchViewPage {
 
@@ -125,7 +126,8 @@ public class ReferenceSearchResultPage extends AbstractTextSearchViewPage {
         mgr.appendToGroup(IContextMenuConstants.GROUP_OPEN, new OpenEditorAction(getViewer()));
         IIpsSrcFile ipsSrcFile = getIpsSrcFileForSelection();
         if (ipsSrcFile != null && IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType())) {
-            mgr.appendToGroup(IContextMenuConstants.GROUP_SHOW, new ShowStructureAction(getViewer()));
+            mgr.appendToGroup(IContextMenuConstants.GROUP_SHOW, new Separator(
+                    ModelExplorerContextMenuBuilder.GROUP_NAVIGATE));
         }
         super.fillContextMenu(mgr);
     }

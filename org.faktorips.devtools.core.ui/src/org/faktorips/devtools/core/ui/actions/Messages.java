@@ -43,8 +43,6 @@ public class Messages extends NLS {
     public static String DeleteRowAction_Label;
     public static String DeleteRowAction_Tooltip;
 
-    public static String FindProductReferencesAction_description;
-    public static String FindProductReferencesAction_name;
     public static String FixDifferencesAction_text;
 
     public static String IpsEditSortOrderAction_description;
@@ -68,9 +66,6 @@ public class Messages extends NLS {
     public static String OpenIpsObjectAction_titleText;
     public static String OpenIpsObjectAction_tooltip;
     public static String OpenIpsObjectSelectionDialog_processName;
-
-    public static String ShowStructureAction_description;
-    public static String ShowStructureAction_name;
 
     public static String OpenEditorAction_name;
     public static String OpenEditorAction_description;

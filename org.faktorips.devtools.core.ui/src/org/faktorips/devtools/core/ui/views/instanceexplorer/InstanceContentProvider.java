@@ -76,6 +76,10 @@ public class InstanceContentProvider extends DeferredStructuredContentProvider {
         return ipsMetaClass;
     }
 
+    public void removeActualElement() {
+        ipsMetaClass = null;
+    }
+
     @Override
     protected Object[] collectElements(Object inputElement, IProgressMonitor monitor) {
         if (inputElement instanceof IIpsMetaClass) {
