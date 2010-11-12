@@ -13,19 +13,16 @@
 
 package org.faktorips.devtools.core.ui.views.ipshierarchy;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.internal.model.type.TypeHierarchy;
+import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -33,7 +30,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 
-public class IpsHierarchyViewTest extends AbstractIpsPluginTest implements IResourceChangeListener {
+public class IpsHierarchyViewTest extends AbstractIpsPluginTest {
     private IIpsProject pdProject;
     private IIpsPackageFragmentRoot pdRootFolder;
     private IIpsPackageFragment pdFolder;
@@ -42,13 +39,17 @@ public class IpsHierarchyViewTest extends AbstractIpsPluginTest implements IReso
     private IPolicyCmptType supertype;
     private IPolicyCmptType supersupertype;
     private IpsHierarchyView test;
-    private IResourceChangeEvent event;
+    private IpsSrcFilesChangedEvent event;
     public int eventNr;
+    private ProductCmptType productType;
+    private IIpsProject pdProject2;
+    private IIpsPackageFragmentRoot pdRootFolder2;
+    private IIpsPackageFragment pdFolder2;
+    private IIpsSrcFile pdSrcFile2;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        eventNr = 0;
         pdProject = this.newIpsProject("TestProject");
         pdRootFolder = pdProject.getIpsPackageFragmentRoots()[0];
         pdFolder = pdRootFolder.createPackageFragment("products.folder", true, null);
@@ -63,58 +64,74 @@ public class IpsHierarchyViewTest extends AbstractIpsPluginTest implements IReso
         pcType.setSupertype(supertype.getQualifiedName());
         supertype.setSupertype(supersupertype.getQualifiedName());
         test = new IpsHierarchyView();
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_BUILD);
     }
 
     public void testSupport() {
         assertTrue(IpsHierarchyView.supports(pcType));
     }
 
-    public void testGetPath() throws InterruptedException, CoreException {
-        IIpsElement iipsElement = null;
-        IResourceChangeEvent event1 = getTriggeredEvent();
-        List<IFile> a = test.getChangedFiles(event1.getDelta().getAffectedChildren());
+    public void testIsNodeOfHierarchy() throws CoreException {
+        // UIToolkit t = new UIToolkit(null);
+        IpsHierarchyViewMock testMock = new IpsHierarchyViewMock();
+        //
+        // IWorkbenchPage activePage =
+        // WorkbenchPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow()
+        // .getActivePage();
+        //
+        // IViewPart hierarchyView = activePage
+        // .showView(IpsHierarchyView.EXTENSION_ID, null, IWorkbenchPage.VIEW_ACTIVATE);
+        //
 
-        List<String> expectedFiles = new ArrayList<String>(3);
-        expectedFiles.add("L/TestProject/productdef/products/folder/Supersupertype.ipspolicycmpttype");
-        expectedFiles.add("L/TestProject/productdef/products/folder/Supertype.ipspolicycmpttype");
-        expectedFiles.add("L/TestProject/productdef/products/folder/TestPolicy.ipspolicycmpttype");
+        Set<IIpsSrcFile> ipsSrcFiles = new HashSet<IIpsSrcFile>();
+        ipsSrcFiles.add(pcType.getIpsSrcFile());
+        testMock.isNodeOfHierarchy(ipsSrcFiles, TypeHierarchy.getTypeHierarchy(pcType));
+        assertEquals(pcType, testMock.element);
 
-        boolean[] expectedFilesFound = new boolean[3];
+        // IIpsElement iipsElement = null;
+        // IpsSrcFilesChangedEvent event1 = getTriggeredEvent();
+        // Set<IIpsSrcFile> a = event1.getChangedIpsSrcFiles();
+        //
+        // List<String> expectedFiles = new ArrayList<String>(3);
+        //
+        //
+        // expectedFiles.add("L/TestProject/productdef/products/folder/Supersupertype.ipspolicycmpttype");
+        // //
+        // expectedFiles.add("L/TestProject/productdef/products/folder/Supertype.ipspolicycmpttype");
+        // //
+        // //
+        // expectedFiles.add("L/TestProject/productdef/products/folder/TestPolicy.ipspolicycmpttype");
+        //
+        // boolean[] expectedFilesFound = new boolean[3];
+        //
+        // for (IFile aFile : a) {
+        // for (int i = 0; i < 3; i++) {
+        // if (expectedFiles.get(i).equals(aFile.toString())) {
+        // expectedFilesFound[i] = true;
+        // }
+        // }
+        // }
+        //
+        // assertTrue(expectedFilesFound[0]);
+        // assertTrue(expectedFilesFound[1]);
+        // assertTrue(expectedFilesFound[2]);
+        //
+        // for (IFile b : a) {
+        // iipsElement = IpsPlugin.getDefault().getIpsModel().findIpsElement(b);
+        // assertTrue(iipsElement instanceof IpsSrcFile);
+        // }
+        // }
+        //
 
-        for (IFile aFile : a) {
-            for (int i = 0; i < 3; i++) {
-                if (expectedFiles.get(i).equals(aFile.toString())) {
-                    expectedFilesFound[i] = true;
-                }
-            }
-        }
-
-        assertTrue(expectedFilesFound[0]);
-        assertTrue(expectedFilesFound[1]);
-        assertTrue(expectedFilesFound[2]);
-
-        for (IFile b : a) {
-            iipsElement = IpsPlugin.getDefault().getIpsModel().findIpsElement(b);
-            assertTrue(iipsElement instanceof IpsSrcFile);
-        }
     }
 
-    private IResourceChangeEvent getTriggeredEvent() throws InterruptedException {
-        while (event == null) {
-            Thread.sleep(500);
-            Thread.yield();
-        }
-        IResourceChangeEvent recentEvent = event;
-        event = null;
-        return recentEvent;
-    }
+    private class IpsHierarchyViewMock extends IpsHierarchyView {
 
-    @Override
-    public void resourceChanged(IResourceChangeEvent event) {
-        if (eventNr == 0) {
-            eventNr++;
-            this.event = event;
+        private IIpsObject element;
+
+        @Override
+        public void showHierarchy(IIpsObject element) {
+            this.element = element;
         }
+
     }
 }
