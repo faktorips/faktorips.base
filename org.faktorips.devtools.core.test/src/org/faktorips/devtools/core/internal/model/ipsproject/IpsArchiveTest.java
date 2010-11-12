@@ -13,12 +13,16 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -37,6 +41,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
 /**
  * 
@@ -347,5 +352,37 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         for (IIpsPackageFragment childFragment : childFragments) {
             collectChildren(childFragment, childList);
         }
+    }
+
+    public void testGetResourceAsStream() throws CoreException, IOException {
+        // Icon must be accessible via ipsObjectPath, thus it is create in the default root-folder
+        IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
+        IFolder rootFolder = (IFolder)root.getEnclosingResource();
+        IFile iconFile = rootFolder.getFile("test.gif");
+        // fake content, this is not a valid gif-file
+        iconFile.create(new ByteArrayInputStream("test".getBytes()), true, new NullProgressMonitor());
+        IProductCmptType prodType = newProductCmptType(project, "motor.MotorProduct");
+        prodType.setInstancesIcon("test.gif");
+        prodType.getIpsSrcFile().save(true, new NullProgressMonitor());
+
+        // as a custom icon test.gif is automatically included in the archive
+        IPath path = project.getProject().getFile("test.ipsar").getLocation();
+        CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(project, path.toFile());
+        op.run(new NullProgressMonitor());
+
+        // test files existence in the archive
+        IpsArchive ipsArchive = new IpsArchive(project, path);
+        Set<QualifiedNameType> qNameTypes = ipsArchive.getQNameTypes();
+        try {
+            ipsArchive.getResourceAsStream("test.gif");
+        } catch (CoreException e) {
+            fail("Unexpected CoreException accessing file test.gif");
+        }
+
+        // test the archived file's contents
+        byte[] fileContent = new byte[4];
+        InputStream inStream = ipsArchive.getResourceAsStream("test.gif");
+        inStream.read(fileContent);
+        assertEquals("test", new String(fileContent));
     }
 }
