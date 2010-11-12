@@ -121,14 +121,20 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
     public void createControl(Composite parent) {
         Composite composite = new Composite(parent, SWT.NONE);
         composite.setLayout(new GridLayout(1, true));
+        composite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL));
 
-        createIpsProjectsCombo(composite);
-        createDestinationGroup(composite);
+        Composite grid = new Composite(composite, SWT.NONE);
+        grid.setLayout(new GridLayout(2, false));
+        grid.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
+
+        createIpsProjectsCombo(grid);
+
+        createDestinationGroup(grid);
+
+        createSupportedLanguageGroup(grid);
 
         showValidationErrorsCheckBox = toolkit.createCheckbox(composite,
                 Messages.IpsProjectHtmlExportWizardPage_showValidationErrors);
-
-        createSupportedLanguageGroup(composite);
 
         restoreWidgetValues();
 
@@ -139,17 +145,9 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
     }
 
     private void createIpsProjectsCombo(Composite parent) {
-        Composite existingIpsProjectsComboGroup = new Composite(parent, SWT.NONE);
-        GridLayout layout = new GridLayout();
-        layout.numColumns = 2;
-        existingIpsProjectsComboGroup.setLayout(layout);
-        existingIpsProjectsComboGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
-                | GridData.VERTICAL_ALIGN_FILL));
+        new Label(parent, SWT.NONE).setText(Messages.IpsProjectHtmlExportWizardPage_project);
 
-        new Label(existingIpsProjectsComboGroup, SWT.NONE).setText(Messages.IpsProjectHtmlExportWizardPage_project);
-
-        ipsProjectsCombo = new Combo(existingIpsProjectsComboGroup, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN
-                | SWT.READ_ONLY);
+        ipsProjectsCombo = new Combo(parent, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN | SWT.READ_ONLY);
         ipsProjectsCombo.addModifyListener(this);
         ipsProjectsCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         ipsProjectsCombo.addSelectionListener(new SelectionListener() {
@@ -178,18 +176,9 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
     }
 
     private void createSupportedLanguageGroup(Composite parent) {
-        Composite supportedLanguageComboGroup = new Composite(parent, SWT.NONE);
-        GridLayout layout = new GridLayout();
-        layout.numColumns = 2;
-        supportedLanguageComboGroup.setLayout(layout);
-        supportedLanguageComboGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
-                | GridData.VERTICAL_ALIGN_FILL));
+        new Label(parent, SWT.NONE).setText(Messages.IpsProjectHtmlExportWizardPage_supportedLanguage);
 
-        new Label(supportedLanguageComboGroup, SWT.NONE)
-                .setText(Messages.IpsProjectHtmlExportWizardPage_supportedLanguage);
-
-        supportedLanguageCombo = new Combo(supportedLanguageComboGroup, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN
-                | SWT.READ_ONLY);
+        supportedLanguageCombo = new Combo(parent, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN | SWT.READ_ONLY);
         supportedLanguageCombo.addModifyListener(this);
         supportedLanguageCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
@@ -211,16 +200,18 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
     }
 
     private void createDestinationGroup(Composite parent) {
+        new Label(parent, SWT.NONE).setText(Messages.IpsProjectHtmlExportWizardPage_destination);
+
         // destination specification group
         Composite destinationSelectionGroup = new Composite(parent, SWT.NONE);
 
         GridLayout layout = new GridLayout();
-        layout.numColumns = 3;
+        layout.marginWidth = 0;
+        layout.marginHeight = 0;
+        layout.numColumns = 2;
         destinationSelectionGroup.setLayout(layout);
         destinationSelectionGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
                 | GridData.VERTICAL_ALIGN_FILL));
-
-        new Label(destinationSelectionGroup, SWT.NONE).setText(Messages.IpsProjectHtmlExportWizardPage_destination);
 
         // destination name entry field
         destinationNamesCombo = new Combo(destinationSelectionGroup, SWT.SINGLE | SWT.BORDER);
