@@ -104,7 +104,54 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
         assertTrue(qnt.contains(new QualifiedNameType("mycompany.motor.MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE)));
         assertTrue(qnt.contains(new QualifiedNameType("mycompany.motor.MotorProduct", IpsObjectType.PRODUCT_CMPT_TYPE)));
 
-        assertTrue(archive.getResourceAsStream("test.gif") != null);
+        assertFalse(coreExceptionThrownOnGetResourceAsStream(archive));
     }
 
+    public void testRunWithErroneousIconFile() throws CoreException {
+        IIpsProject project = newIpsProject();
+        newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy", "mycompany.motor.MotorProduct");
+
+        // configure Icon
+        IIpsSrcFile productSrcFile = project.findIpsSrcFile(new QualifiedNameType("mycompany.motor.MotorProduct",
+                IpsObjectType.PRODUCT_CMPT_TYPE));
+        IProductCmptType prodType = (IProductCmptType)productSrcFile.getIpsObject();
+        prodType.setInstancesIcon("test_doesNotExist.gif");
+        productSrcFile.save(true, new NullProgressMonitor());
+
+        // create fake icon file
+        IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
+        IFolder folder = (IFolder)root.getEnclosingResource();
+        IFile iconFile = folder.getFile("test.gif");
+        // fake content, this is not a valid gif-file
+        iconFile.create(new ByteArrayInputStream("test".getBytes()), true, new NullProgressMonitor());
+
+        IFile archiveFile = project.getProject().getFile("test.ipsar");
+        File file = archiveFile.getLocation().toFile();
+        CreateIpsArchiveOperation operation = new CreateIpsArchiveOperation(project.getIpsPackageFragmentRoots(), file);
+        operation.run(new NullProgressMonitor());
+        createLinkIfNecessary(archiveFile, file);
+
+        assertTrue(archiveFile.exists());
+
+        IIpsArchive archive = new IpsArchive(project, archiveFile.getLocation());
+        String[] packs = archive.getNonEmptyPackages();
+        assertEquals(1, packs.length);
+        assertEquals("mycompany.motor", packs[0]);
+
+        Set<QualifiedNameType> qnt = archive.getQNameTypes();
+        assertEquals(2, qnt.size());
+        assertTrue(qnt.contains(new QualifiedNameType("mycompany.motor.MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE)));
+        assertTrue(qnt.contains(new QualifiedNameType("mycompany.motor.MotorProduct", IpsObjectType.PRODUCT_CMPT_TYPE)));
+
+        assertTrue(coreExceptionThrownOnGetResourceAsStream(archive));
+    }
+
+    private boolean coreExceptionThrownOnGetResourceAsStream(IIpsArchive archive) {
+        try {
+            archive.getResourceAsStream("test.gif");
+        } catch (CoreException e) {
+            return true;
+        }
+        return false;
+    }
 }
