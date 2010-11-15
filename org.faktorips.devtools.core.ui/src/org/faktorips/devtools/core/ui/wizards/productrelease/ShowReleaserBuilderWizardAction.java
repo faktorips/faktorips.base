@@ -25,6 +25,11 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 
+/**
+ * This Action starts the product release builder wizard
+ * 
+ * @author dirmeier
+ */
 public class ShowReleaserBuilderWizardAction implements IWorkbenchWindowActionDelegate {
 
     private IWorkbenchWindow window;
@@ -63,13 +68,12 @@ public class ShowReleaserBuilderWizardAction implements IWorkbenchWindowActionDe
 
     @Override
     public void selectionChanged(IAction action, ISelection selection) {
-        // TODO Auto-generated method stub
+        // nothing to do
     }
 
     @Override
     public void dispose() {
-        // TODO Auto-generated method stub
-
+        // nothing to dispose
     }
 
 }

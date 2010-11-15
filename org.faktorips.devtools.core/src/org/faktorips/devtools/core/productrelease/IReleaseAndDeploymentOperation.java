@@ -30,17 +30,21 @@ public interface IReleaseAndDeploymentOperation {
     /**
      * This method should return a list of target system where the release could be deployed to.
      * 
+     * @param ipsProject The selected {@link IIpsProject}
+     * 
      * @return A List of available target systems
      */
-    public List<ITargetSystem> getAvailableTargetSystems();
+    public List<ITargetSystem> getAvailableTargetSystems(IIpsProject ipsProject);
 
     /**
      * Returns a list of resources that have to be commited when the release operation commits the
      * .ipsproject file.
      * 
+     * @param ipsProject the selected {@link IIpsProject}
+     * 
      * @return List of files to commit
      */
-    public List<IFile> additionalResourcesToCommit();
+    public List<IFile> additionalResourcesToCommit(IIpsProject ipsProject);
 
     /**
      * This method is called by the release build processor just before commiting changed files. The

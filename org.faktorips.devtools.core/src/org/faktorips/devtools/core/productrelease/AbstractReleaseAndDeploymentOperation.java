@@ -25,12 +25,12 @@ public abstract class AbstractReleaseAndDeploymentOperation implements IReleaseA
     private ObservableProgressMessages observableProgressMessages = new ObservableProgressMessages();
 
     @Override
-    public List<ITargetSystem> getAvailableTargetSystems() {
+    public List<ITargetSystem> getAvailableTargetSystems(IIpsProject ipsProject) {
         return new ArrayList<ITargetSystem>();
     }
 
     @Override
-    public List<IFile> additionalResourcesToCommit() {
+    public List<IFile> additionalResourcesToCommit(IIpsProject ipsProject) {
         return new ArrayList<IFile>();
     }
 

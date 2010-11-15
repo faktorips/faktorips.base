@@ -61,14 +61,6 @@ public class ProductReleaseProcessor {
         }
     }
 
-    public List<ITargetSystem> getTargetSystems() {
-        if (releaseAndDeploymentOperation != null) {
-            return releaseAndDeploymentOperation.getAvailableTargetSystems();
-        } else {
-            return new ArrayList<ITargetSystem>();
-        }
-    }
-
     public IReleaseAndDeploymentOperation getReleaseAndDeploymentOperation() {
         return releaseAndDeploymentOperation;
     }
@@ -224,7 +216,7 @@ public class ProductReleaseProcessor {
             resources.add(ipsProject.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root));
         }
 
-        // TODO add additional files from extension
+        resources.addAll(releaseAndDeploymentOperation.additionalResourcesToCommit(ipsProject));
 
         teamOperation
                 .commitFiles(ipsProject.getProject(), resources.toArray(new IResource[0]),

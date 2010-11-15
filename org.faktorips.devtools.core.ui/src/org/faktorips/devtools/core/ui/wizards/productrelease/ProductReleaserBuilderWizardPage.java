@@ -223,7 +223,7 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
                         .getReleaseAndDeploymentOperation();
                 if (releaseAndDeploymentOperation != null) {
                     List<ITargetSystem> availableTargetSystems = releaseAndDeploymentOperation
-                            .getAvailableTargetSystems();
+                            .getAvailableTargetSystems(ipsProject);
                     if (!availableTargetSystems.isEmpty()) {
                         targetSystemViewer.setInput(availableTargetSystems);
                         showTargetSystems = true;
