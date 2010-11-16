@@ -85,6 +85,7 @@ public class GenProductCmptTypeMethod extends GenMethod {
                 methodsBuilder.appendln();
                 methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(),
                         JavaSourceFileBuilder.ANNOTATION_GENERATED);
+                appendOverrideAnnotation(methodsBuilder, getIpsProject(), false);
                 ((GenProductCmptType)getGenType()).getGenerator(overloadedFormulaMethod)
                         .generateSignatureForModelMethod(false, false, methodsBuilder, ipsProject);
                 methodsBuilder.openBracket();

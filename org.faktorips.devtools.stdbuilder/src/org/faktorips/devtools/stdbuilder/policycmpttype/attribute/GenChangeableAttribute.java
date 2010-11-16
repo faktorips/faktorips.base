@@ -28,6 +28,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.codegen.dthelpers.Java5ClassNames;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.model.DatatypeUtil;
@@ -233,7 +234,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
 
         if (!generatesInterface) {
             methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
-            if (((IPolicyCmptTypeAttribute)getAttribute()).isOverwrite()) {
+            if (((IPolicyCmptTypeAttribute)getAttribute()).isOverwrite() && isSuperAttributeConfigured()) {
                 appendOverrideAnnotation(methodsBuilder, getIpsProject(), false);
             } else if (getAttribute().getModifier().isPublished()) {
                 appendOverrideAnnotation(methodsBuilder, getIpsProject(), true);
@@ -250,6 +251,17 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
             appendLocalizedJavaDoc("METHOD_GET_DEFAULTVALUE", getAttribute().getName(), methodsBuilder);
             generateSignatureGetDefaultValue(datatypeHelper, methodsBuilder);
             methodsBuilder.append(';');
+        }
+    }
+
+    private boolean isSuperAttributeConfigured() {
+        try {
+            IPolicyCmptTypeAttribute overwrittenAttribute = ((IPolicyCmptTypeAttribute)getAttribute())
+                    .findOverwrittenAttribute(getIpsProject());
+            return overwrittenAttribute.isProductRelevant();
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            return false;
         }
     }
 
@@ -338,7 +350,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
     private void generateMethodGetSetOfAllowedValuesForProductCmptType(JavaCodeFragmentBuilder methodsBuilder) {
 
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
-        if (getAttribute().isOverwrite()) {
+        if (getAttribute().isOverwrite() && isSuperAttributeConfigured()) {
             appendOverrideAnnotation(methodsBuilder, getIpsProject(), false);
         } else if (getAttribute().getModifier().isPublished()) {
             appendOverrideAnnotation(methodsBuilder, getIpsProject(), true);
