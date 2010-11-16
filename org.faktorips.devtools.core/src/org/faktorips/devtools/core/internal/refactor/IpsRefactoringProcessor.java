@@ -77,8 +77,8 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
 
         RefactoringStatus status = new RefactoringStatus();
         if (!(ipsElement.exists())) {
-            status.addFatalError(NLS.bind(Messages.IpsRefactoringProcessor_errorIpsElementDoesNotExist, ipsElement
-                    .getName()));
+            status.addFatalError(NLS.bind(Messages.IpsRefactoringProcessor_errorIpsElementDoesNotExist,
+                    ipsElement.getName()));
         }
         return status;
     }
@@ -255,8 +255,11 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
         return true;
     }
 
-    /** Returns the <tt>IIpsElement</tt> to be refactored. */
-    protected final IIpsElement getIpsElement() {
+    /**
+     * Returns the <tt>IIpsElement</tt> to be refactored.
+     */
+    @Override
+    public final IIpsElement getIpsElement() {
         return ipsElement;
     }
 

@@ -49,18 +49,12 @@ public class LinkedFileType {
     }
 
     /**
-     * @param element
      * @return {@link LinkedFileType} according to the given {@link IIpsElement}
      */
     public static LinkedFileType getLinkedFileTypeByIpsElement(IIpsElement element) {
         if (element instanceof IIpsPackageFragment) {
             return PACKAGE_CLASSES_OVERVIEW;
         }
-        /*
-         * if (element instanceof IIpsObject) { return new LinkedFileType( "object_", "." +
-         * ((IIpsObject)element).getIpsObjectType().getFileExtension(), "content"); //$NON-NLS-1$
-         * //$NON-NLS-2$ //$NON-NLS-3$ }
-         */
         return ELEMENT_CONTENT;
     }
 }

@@ -225,6 +225,10 @@ public final class MoveRenameIpsObjectHelper {
         deleteIpsSourceFile(tempSrcFile, pm);
     }
 
+    public boolean isSourceFilesSavedRequired() {
+        return true;
+    }
+
     private boolean isMatching(IDependency dependency) throws CoreException {
         Object target = dependency.getTarget();
 

@@ -71,4 +71,9 @@ public class EnumLiteralNameAttributeValue extends EnumAttributeValue implements
         return doc.createElement(IEnumLiteralNameAttributeValue.XML_TAG);
     }
 
+    @Override
+    public String getName() {
+        return getValue();
+    }
+
 }

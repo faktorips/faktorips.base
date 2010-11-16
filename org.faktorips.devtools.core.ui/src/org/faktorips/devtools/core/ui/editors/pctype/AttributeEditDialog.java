@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -41,6 +42,7 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.pctype.PersistentAttributeInfo;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
@@ -116,6 +118,10 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     private Group configGroup;
 
     private Checkbox validationRuleAdded;
+
+    // workaround (MBT#280): see showWarningIfManuallyCodeFixWasNecessary
+    private boolean manuallyCodeFixNecessary;
+    private String currentMessage;
 
     /**
      * TextField to link the name input control with the rule name
@@ -512,9 +518,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 MessageDialog.openInformation(getShell(), Messages.AttributeEditDialog_Info, text);
             }
         } catch (CoreException e) {
-            String text = NLS
-                    .bind(
-                            "An error occurred while searching for the product component type ''{0}''.", policyCmptType.getProductCmptType()); //$NON-NLS-1$
+            String text = NLS.bind(Messages.AttributeEditDialog_msgErrorWhileSearchingProductComponentType,
+                    policyCmptType.getProductCmptType());
             MessageDialog.openInformation(getShell(), Messages.AttributeEditDialog_Info, text);
         }
         return productCmptType;
@@ -742,62 +747,64 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             return;
         }
         final TabItem persistencePage = new TabItem(tabFolder, SWT.NONE);
-        persistencePage.setText("Persistence"); //$NON-NLS-1$
+        persistencePage.setText(Messages.AttributeEditDialog_labelPersistence);
 
         Composite c = createTabItemComposite(tabFolder, 1, false);
         persistencePage.setControl(c);
 
         Composite checkComposite = uiToolkit.createGridComposite(c, 1, true, false);
-        Checkbox checkTransient = uiToolkit.createCheckbox(checkComposite, "The attribute is transient"); //$NON-NLS-1$
+        Checkbox checkTransient = uiToolkit.createCheckbox(checkComposite,
+                Messages.AttributeEditDialog_labelAttributeIsTransient);
         bindingContext.bindContent(checkTransient, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TRANSIENT);
 
-        final Group group = uiToolkit.createGroup(checkComposite, "Persistent Properties"); //$NON-NLS-1$
+        final Group group = uiToolkit.createGroup(checkComposite,
+                Messages.AttributeEditDialog_labelPersistentProperties);
         Composite workArea = uiToolkit.createLabelEditColumnComposite(group);
 
-        uiToolkit.createFormLabel(workArea, "Column name:"); //$NON-NLS-1$
+        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelColumnName);
         Text columnNameText = uiToolkit.createText(workArea);
         bindingContext.bindContent(columnNameText, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME);
 
-        uiToolkit.createFormLabel(workArea, "Unique:"); //$NON-NLS-1$
+        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelUnique);
         uniqueCheckbox = uiToolkit.createCheckbox(workArea);
         bindingContext.bindContent(uniqueCheckbox, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_UNIQE);
 
-        uiToolkit.createFormLabel(workArea, "Nullable:"); //$NON-NLS-1$
+        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelNullable);
         nullableCheckbox = uiToolkit.createCheckbox(workArea);
         bindingContext.bindContent(nullableCheckbox, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NULLABLE);
 
-        uiToolkit.createFormLabel(workArea, "Column size:"); //$NON-NLS-1$
+        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelColumnSize);
         sizeField = new IntegerField(uiToolkit.createText(workArea));
         bindingContext.bindContent(sizeField, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE);
 
-        uiToolkit.createFormLabel(workArea, "Column precision:"); //$NON-NLS-1$
+        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelPrecision);
         precisionField = new IntegerField(uiToolkit.createText(workArea));
         bindingContext.bindContent(precisionField, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_PRECISION);
 
-        uiToolkit.createFormLabel(workArea, "Column scale:"); //$NON-NLS-1$
+        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelColumnScale);
         scaleField = new IntegerField(uiToolkit.createText(workArea));
         bindingContext.bindContent(scaleField, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE);
 
-        uiToolkit.createFormLabel(workArea, "Temporal type:"); //$NON-NLS-1$
+        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelTemporalType);
         Combo temporalMappingCombo = uiToolkit.createCombo(workArea);
         setComboItemsForEnum(temporalMappingCombo, DateTimeMapping.class);
         temporalMappingField = new EnumField<DateTimeMapping>(temporalMappingCombo, DateTimeMapping.class);
         bindingContext.bindContent(temporalMappingField, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TEMPORAL_MAPPING);
 
-        uiToolkit.createFormLabel(workArea, "SQL column definition:"); //$NON-NLS-1$
+        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelSqlColumnDefinition);
         sqlColumnDefinition = uiToolkit.createText(workArea);
         bindingContext.bindContent(sqlColumnDefinition, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_SQL_COLUMN_DEFINITION);
 
-        uiToolkit.createFormLabel(workArea, "Datatype converter class:"); //$NON-NLS-1$
+        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelDatatypeConverterClass);
         if (ipsProject.getIpsArtefactBuilderSet().isPersistentProviderSupportConverter()) {
             final Text converterQualifiedName = uiToolkit.createText(workArea);
             bindingContext.bindContent(converterQualifiedName, attribute.getPersistenceAttributeInfo(),
@@ -805,7 +812,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         } else {
             final Text converterQualifiedName = uiToolkit.createText(workArea);
             converterQualifiedName.setEnabled(false);
-            converterQualifiedName.setText("Not supported by persistence provider."); //$NON-NLS-1$
+            converterQualifiedName.setText(Messages.AttributeEditDialog_textNotSupportedByPersistenceProvider);
         }
 
         // disable all tab page controls if policy component type shouldn't persist
@@ -861,6 +868,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 }
             }
         });
+
     }
 
     private boolean isPersistentEnabled() {
@@ -898,6 +906,47 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             uiToolkit.setDataChangeable(temporalMappingField.getControl(), needsTemporalType);
         } catch (CoreException e) {
             // validation error, displayed in dialog message area
+        }
+    }
+
+    // workaround (MBT#280): see showWarningIfManuallyCodeFixWasNecessary
+    @Override
+    protected void updateMessageArea() {
+        super.updateMessageArea();
+        showWarningIfManuallyCodeFixWasNecessary();
+    }
+
+    // workaround (MBT#280): see showWarningIfManuallyCodeFixWasNecessary
+    @Override
+    public void setMessage(String newMessage) {
+        super.setMessage(newMessage);
+        currentMessage = newMessage; // "no getter available"
+    }
+
+    // workaround (MBT#280): see showWarningIfManuallyCodeFixWasNecessary
+    @Override
+    public void setMessage(String newMessage, int newType) {
+        super.setMessage(newMessage, newType);
+        currentMessage = newMessage;
+    }
+
+    /*
+     * Show a warning if manually code fix is necessary, see
+     * PersistentAssociationInfo.manuallyCodeFixNecessary
+     */
+    private void showWarningIfManuallyCodeFixWasNecessary() {
+        if (currentMessage != null || !ipsProject.getProperties().isPersistenceSupportEnabled()) {
+            return;
+        }
+
+        PersistentAttributeInfo persistenceAttributeInfo = (PersistentAttributeInfo)attribute
+                .getPersistenceAttributeInfo();
+        if (persistenceAttributeInfo.isManuallyCodeFixNecessary() || manuallyCodeFixNecessary) {
+            manuallyCodeFixNecessary = true;
+            String text = NLS.bind(Messages.AttributeEditDialog_msgWarningManualyCodeMergeNecessary, attribute
+                    .getName());
+            setMessage(text, IMessageProvider.WARNING);
+            persistenceAttributeInfo.resetManuallyCodeFixNecessary();
         }
     }
 

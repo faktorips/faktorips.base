@@ -135,6 +135,11 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
         getEnumAttribute().setName(getNewName());
     }
 
+    @Override
+    public boolean isSourceFilesSavedRequired() {
+        return false;
+    }
+
     private IEnumType getEnumType() {
         return getEnumAttribute().getEnumType();
     }

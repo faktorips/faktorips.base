@@ -115,6 +115,7 @@ public class TestExtension implements IExtension {
     }
 
     // @since Eclipse 3.6 (Helios)
+    // do not add @Override until 3.6 is the default target platform
     public String getLabel(String locale) throws InvalidRegistryObjectException {
         throw new RuntimeException("Not implemented yet.");
     }

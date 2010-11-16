@@ -127,7 +127,7 @@
       </actionSet>
       <actionSet
             label="Faktor-IPS Navigation"
-            visible="false"
+            visible="true"
             id="org.faktorips.devtools.actions.NavigationActionSet">
          <action
                class="org.faktorips.devtools.core.ui.actions.OpenIpsObjectAction"
@@ -143,7 +143,7 @@
       <actionSet
             id="org.faktorips.devtools.actions.StandardActionSet"
             label="%org.faktorips.devtools.actions.StandardActionSet"
-            visible="true">
+            visible="false">
          <action
                class="org.faktorips.devtools.core.ui.wizards.ipspackage.OpenNewIpsPackageWizardAction"
                icon="icons/NewIpsPackageFragment.gif"
@@ -267,7 +267,6 @@
                showTitle="true"
                standalone="false"
                visible="true"/>
-         <actionSet id="org.faktorips.devtools.actions.NavigationActionSet"/>
          <view
                closeable="true"
                id="org.faktorips.devtools.core.ui.views.modelDescription"
@@ -379,7 +378,7 @@
                  tooltip="%createMissingEnumContentsAction.tooltip">
            </action>
         </objectContribution>  
-		<objectContribution adaptable="true" id="addIpsNature" objectClass="org.eclipse.core.resources.IProject">
+		<objectContribution id="addIpsNature" objectClass="org.eclipse.core.runtime.IAdaptable">
             <menu id="faktorIPSMenu" label="%faktorIPSMenu" path="additions">
 			    <separator name="faktorIpsGroup"/>
             </menu>
@@ -390,6 +389,16 @@
 		    id="addIpsNatureAction"
 		    label="%addIpsNatureAction"
 		    menubarPath="faktorIPSMenu/faktorIpsGroup"/>
+   <visibility>
+      <or>
+         <objectClass
+               name="org.eclipse.jdt.core.IJavaProject">
+         </objectClass>
+         <objectClass
+               name="org.eclipse.core.resources.IProject">
+         </objectClass>
+      </or>
+   </visibility>
 		  		<!-- <filter name="nature" value="org.eclipse.emf.codegen.jet.IJETNature"/> -->
 		</objectContribution>
     	<objectContribution id="fixDifferencesAction" objectClass="org.eclipse.core.runtime.IAdaptable">
@@ -420,7 +429,7 @@
 		      </visibility> 
     	</objectContribution>
         <objectContribution id="migrateIpsProject"
-            objectClass="org.eclipse.jdt.core.IJavaProject">
+            objectClass="org.eclipse.core.runtime.IAdaptable">
             <menu id="faktorIPSMenu" label="%faktorIPSMenu" path="additions">
 			    <separator name="faktorIpsGroup"/>
             </menu>            
@@ -432,6 +441,15 @@
             label="%org.faktorips.devtools.core.Migrate.label"
             menubarPath="faktorIPSMenu/faktorIpsGroup"
             tooltip="%org.faktorips.devtools.core.Migrate.tooltip"/>
+            <visibility>
+               <or>
+                  <objectClass
+                        name="org.eclipse.core.resources.IResource">
+                  </objectClass>
+                  <objectClass
+                        name="org.eclipse.jdt.core.IJavaProject">
+                  </objectClass></or>
+            </visibility>
         </objectContribution>
 
   </extension>
@@ -1238,7 +1256,7 @@
          </enabledWhen>
       </handler>
             <handler
-            class="org.faktorips.devtools.core.ui.actions.RenameHandler"
+            class="org.faktorips.devtools.core.ui.refactor.IpsRenameHandler"
             commandId="org.eclipse.ui.edit.rename">
          <activeWhen>
             <with
@@ -1252,7 +1270,7 @@
             </with>
          </activeWhen>
          <class
-               class="org.faktorips.devtools.core.ui.actions.RenameHandler">
+               class="org.faktorips.devtools.core.ui.refactor.IpsRenameHandler">
          </class>
          <enabledWhen>
             <count
@@ -1261,7 +1279,7 @@
          </enabledWhen>
       </handler>
       <handler
-            class="org.faktorips.devtools.core.ui.actions.MoveHandler"
+            class="org.faktorips.devtools.core.ui.refactor.IpsMoveHandler"
             commandId="org.eclipse.ui.edit.move">
          <activeWhen>
             <with
@@ -1275,7 +1293,7 @@
             </with>
          </activeWhen>
          <class
-               class="org.faktorips.devtools.core.ui.actions.MoveHandler">
+               class="org.faktorips.devtools.core.ui.refactor.IpsMoveHandler">
          </class>
          <enabledWhen>
             <count

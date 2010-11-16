@@ -32,7 +32,6 @@ import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.util.memento.Memento;
@@ -133,6 +132,9 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         updateTitleInTitleArea();
         // updateMessageArea should be called after the size of the dialog has been calculated -->
         // @see method create() (MTB#142)
+        // at least an empty message must be set, otherwise the height of the dialog will be
+        // to short (MTB#0291 )
+        setMessage(null);
         return control;
     }
 
@@ -164,7 +166,6 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
     @Override
     protected void updateTitleInTitleArea() {
         setTitle(buildTitle());
-        setTitleImage(IpsUIPlugin.getImageHandling().getImage(getIpsPart()));
     }
 
     /**

@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.refactor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.faktorips.devtools.core.model.IIpsElement;
 
 /**
  * An <tt>IIpsRefactoringProcessor</tt> implements a specific Faktor-IPS refactoring.
@@ -32,5 +33,16 @@ public interface IIpsRefactoringProcessor {
      * @throws CoreException If an error occurs while validating the user input.
      */
     public abstract RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreException;
+
+    /**
+     * Returns the {@link IIpsElement} to refactor.
+     */
+    public IIpsElement getIpsElement();
+
+    /**
+     * Returns whether this refactoring processor requires that all IPS source files are saved
+     * before the refactoring may happen.
+     */
+    public boolean isSourceFilesSavedRequired();
 
 }

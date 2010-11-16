@@ -19,8 +19,8 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TreeNodePageElement
 public class HtmlLayouterTreeNodePageElementTest extends AbstractTestHtmlLayouter {
 
     public void testTreeEinfach() {
-        String rootName = "root";
-        String childBaseName = "child";
+        String rootName = "root"; //$NON-NLS-1$
+        String childBaseName = "child"; //$NON-NLS-1$
         int countChildren = 5;
 
         TreeNodePageElement pageElement = new TreeNodePageElement(new TextPageElement(rootName));
@@ -29,15 +29,15 @@ public class HtmlLayouterTreeNodePageElementTest extends AbstractTestHtmlLayoute
             pageElement.addPageElements(new TextPageElement(childBaseName + i));
         }
 
-        String layout = layout(pageElement).replaceAll("\\s+<", "<");
+        String layout = layout(pageElement).replaceAll("\\s+<", "<"); //$NON-NLS-1$ //$NON-NLS-2$
 
         StringBuilder expectedResult = new StringBuilder();
-        expectedResult.append("<div>").append(rootName).append("<div class=\"INDENTION\">");
+        expectedResult.append("<div>").append(rootName).append("<div class=\"INDENTION\">"); //$NON-NLS-1$ //$NON-NLS-2$
         for (int i = 1; i <= countChildren; i++) {
-            expectedResult.append("<div>").append(childBaseName).append(i).append("</div>");
+            expectedResult.append("<div>").append(childBaseName).append(i).append("</div>"); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        expectedResult.append("</div>");
-        expectedResult.append("</div>");
+        expectedResult.append("</div>"); //$NON-NLS-1$
+        expectedResult.append("</div>"); //$NON-NLS-1$
 
         assertEquals(expectedResult.toString(), layout);
     }

@@ -32,8 +32,6 @@ public interface TablePageElementLayout {
      * This method is called by the {@link TablePageElement}
      * </p>
      * 
-     * @param row
-     * @param rowPageElement
      */
     public void layoutRow(int row, TableRowPageElement rowPageElement);
 
@@ -47,9 +45,6 @@ public interface TablePageElementLayout {
      * This method is called by the {@link TableRowPageElement}
      * </p>
      * 
-     * @param row
-     * @param cell
-     * @param cellPageElement
      */
     public void layoutCell(int row, int column, TableCellPageElement cellPageElement);
 }

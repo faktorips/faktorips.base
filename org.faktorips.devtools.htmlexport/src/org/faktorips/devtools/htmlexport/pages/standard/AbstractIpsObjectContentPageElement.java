@@ -13,12 +13,16 @@
 
 package org.faktorips.devtools.htmlexport.pages.standard;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
@@ -27,7 +31,8 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractStandardTablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.KeyValueTablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.MessageListTablePageElement;
 import org.faktorips.util.message.MessageList;
 
@@ -39,7 +44,6 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author dicker
  * 
- * @param <T>
  */
 public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> extends AbstractRootPageElement {
 
@@ -49,8 +53,6 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
     /**
      * creates a page, which represents the given documentedIpsObject according to the given config
      * 
-     * @param documentedIpsObject
-     * @param config
      */
     protected AbstractIpsObjectContentPageElement(T documentedIpsObject, DocumentorConfiguration config) {
         this.documentedIpsObject = documentedIpsObject;
@@ -58,11 +60,6 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
         setTitle(documentedIpsObject.getName());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement #build()
-     */
     @Override
     public void build() {
         super.build();
@@ -99,9 +96,11 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
         if (getConfig().isShowValidationErrors()) {
             addValidationErrors();
         }
+
+        addExtensionPropertiesTable();
     }
 
-    /*
+    /**
      * adds a table with all validation messages of the {@link IpsObject}. Nothing will be shown, if
      * there are no messages.
      */
@@ -118,7 +117,7 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
             return;
         }
 
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.AbstractObjectContentPageElement_validationErrors,
                 TextType.HEADING_2));
 
@@ -134,33 +133,26 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
      * adds {@link PageElement}s for structural data like fitting ProductCmpt for a PolicyCmptType
      */
     protected void addStructureData() {
+        // could be overridden
     }
 
     /**
      * adds {@link PageElement}s for hierarchical data like super- and subclasses
      */
     protected void addTypeHierarchy() {
+        // could be overridden
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement
-     * #getPathToRoot()
-     */
     @Override
     public String getPathToRoot() {
         return PathUtilFactory.createPathUtil(getDocumentedIpsObject()).getPathToRoot();
     }
 
     /**
-     * returns a table, if there is data within it, or an alternative text
+     * returns the given table or the given alternative text, if the table is empty
      * 
-     * @param tablePageElement
-     * @param alternativeText
-     * @return
      */
-    PageElement getTableOrAlternativeText(AbstractSpecificTablePageElement tablePageElement, String alternativeText) {
+    PageElement getTableOrAlternativeText(AbstractStandardTablePageElement tablePageElement, String alternativeText) {
         if (tablePageElement.isEmpty()) {
             return new TextPageElement(alternativeText);
         }
@@ -170,7 +162,6 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
     /**
      * returns the documentedIpsObject
      * 
-     * @return
      */
     protected T getDocumentedIpsObject() {
         return documentedIpsObject;
@@ -179,7 +170,6 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
     /**
      * returns the config
      * 
-     * @return
      */
     protected DocumentorConfiguration getConfig() {
         return config;
@@ -188,5 +178,32 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
     @Override
     protected void createId() {
         setId(documentedIpsObject.getQualifiedName());
+    }
+
+    protected void addExtensionPropertiesTable() {
+        IExtensionPropertyDefinition[] properties = getDocumentedIpsObject().getIpsModel()
+                .getExtensionPropertyDefinitions(getDocumentedIpsObject().getClass(), true);
+
+        if (ArrayUtils.isEmpty(properties)) {
+            return;
+        }
+
+        KeyValueTablePageElement extensionPropertiesTable = new KeyValueTablePageElement(Messages.AbstractIpsObjectContentPageElement_extensionPropertyKeyHeadline, Messages.AbstractIpsObjectContentPageElement_extensionPropertyValueHeadline);
+
+        for (IExtensionPropertyDefinition iExtensionPropertyDefinition : properties) {
+            Object extPropertyValue = getDocumentedIpsObject().getExtPropertyValue(
+                    iExtensionPropertyDefinition.getPropertyId());
+            extensionPropertiesTable.addKeyValueRow(iExtensionPropertyDefinition.getName(),
+                    extPropertyValue == null ? null : extPropertyValue.toString());
+        }
+
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        wrapper.addPageElements(new TextPageElement(Messages.AbstractIpsObjectContentPageElement_extensionProperties,
+                TextType.HEADING_2));
+
+        wrapper.addPageElements(extensionPropertiesTable);
+
+        addPageElements(wrapper);
+
     }
 }

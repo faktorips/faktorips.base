@@ -291,19 +291,34 @@ public abstract class GenAssociation extends GenTypePart {
     }
 
     /**
+     * If <code>castFromPublishedInterfaceToImplClassNeeded</code> = <code>true</code>, the
+     * following is generated.
+     * 
      * <pre>
      * ((Policy)parentModelObject).setPolicyInternal(this);
      * </pre>
+     * 
+     * Otherwise
+     * 
+     * <pre>
+     * parentModelObject.setPolicyInternal(this);
+     * </pre>
      */
-    protected JavaCodeFragment generateCodeToSynchronizeReverseComposition(String varName, String newValue)
-            throws CoreException {
+    protected JavaCodeFragment generateCodeToSynchronizeReverseComposition(String varName,
+            String newValue,
+            boolean castFromPublishedInterfaceToImplClassNeeded) throws CoreException {
         JavaCodeFragment code = new JavaCodeFragment();
 
-        code.append("((");
-        code.appendClassName(getQualifiedClassName(getTargetPolicyCmptType(), false));
-        code.append(')');
+        if (castFromPublishedInterfaceToImplClassNeeded) {
+            code.append("((");
+            code.appendClassName(getQualifiedClassName(getTargetPolicyCmptType(), false));
+            code.append(')');
+        }
         code.append(varName);
-        code.append(").");
+        if (castFromPublishedInterfaceToImplClassNeeded) {
+            code.append(')');
+        }
+        code.append('.');
         code.append(getMethodNameSetParentObjectInternal(true));
         code.append('(');
         code.append(newValue);

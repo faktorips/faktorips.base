@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -30,6 +29,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
@@ -37,8 +37,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractIpsObjectPartsContainerTablePageElement;
 
 public class TableStructureContentPageElement extends AbstractIpsObjectContentPageElement<ITableStructure> {
 
@@ -48,24 +47,14 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
      * @author dicker
      * 
      */
-    private class ForeignKeysTablePageElement extends AbstractSpecificTablePageElement {
-        private ITableStructure tableStructure;
+    private class ForeignKeysTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IForeignKey> {
 
         public ForeignKeysTablePageElement(ITableStructure tableStructure) {
-            super();
-            this.tableStructure = tableStructure;
+            super(Arrays.asList(tableStructure.getForeignKeys()));
         }
 
         @Override
-        protected void addDataRows() {
-            IForeignKey[] foreignKeys = tableStructure.getForeignKeys();
-            for (IForeignKey foreignKey : foreignKeys) {
-                addForeignKeyRow(foreignKey);
-            }
-
-        }
-
-        private void addForeignKeyRow(IForeignKey foreignKey) {
+        protected List<? extends PageElement> createRowWithIpsObjectPart(IForeignKey foreignKey) {
             List<PageElement> cells = new ArrayList<PageElement>();
 
             PageElement link = getLinkToReferencedTableStructure(foreignKey);
@@ -76,8 +65,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
             cells.add(new TextPageElement(foreignKey.getReferencedUniqueKey()));
             cells.add(new TextPageElement(foreignKey.getDescription()));
 
-            addSubElement(new TableRowPageElement(cells.toArray(new PageElement[cells.size()])));
-
+            return cells;
         }
 
         private PageElement getLinkToReferencedTableStructure(IForeignKey foreignKey) {
@@ -89,6 +77,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
                         "content", foreignKey //$NON-NLS-1$
                                 .getReferencedTableStructure(), true);
             } catch (CoreException e) {
+                // TODO exception handeln
             } finally {
                 if (link == null) {
                     link = new TextPageElement(foreignKey.getReferencedTableStructure());
@@ -98,7 +87,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         }
 
         @Override
-        protected List<String> getHeadline() {
+        protected List<String> getHeadlineWithIpsObjectPart() {
             List<String> headline = new ArrayList<String>();
 
             headline.add(Messages.TableStructureContentPageElement_name);
@@ -110,11 +99,6 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
 
             return headline;
         }
-
-        @Override
-        public boolean isEmpty() {
-            return ArrayUtils.isEmpty(tableStructure.getForeignKeys());
-        }
     }
 
     /**
@@ -123,26 +107,10 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
      * @author dicker
      * 
      */
-    private class ColumnsRangesTablePageElement extends AbstractSpecificTablePageElement {
-        private ITableStructure tableStructure;
+    private class ColumnsRangesTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IColumnRange> {
 
         public ColumnsRangesTablePageElement(ITableStructure tableStructure) {
-            super();
-            this.tableStructure = tableStructure;
-        }
-
-        @Override
-        protected void addDataRows() {
-            IColumnRange[] ranges = tableStructure.getRanges();
-            for (IColumnRange columnRange : ranges) {
-                addColumnRangeRow(columnRange);
-            }
-
-        }
-
-        private void addColumnRangeRow(IColumnRange columnRange) {
-            addSubElement(new TableRowPageElement(PageElementUtils
-                    .createTextPageElements(getColumnRangeData(columnRange))));
+            super(Arrays.asList(tableStructure.getRanges()));
         }
 
         protected List<String> getColumnRangeData(IColumnRange columnRange) {
@@ -160,7 +128,12 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         }
 
         @Override
-        protected List<String> getHeadline() {
+        protected List<? extends PageElement> createRowWithIpsObjectPart(IColumnRange columnRange) {
+            return Arrays.asList(PageElementUtils.createTextPageElements(getColumnRangeData(columnRange)));
+        }
+
+        @Override
+        protected List<String> getHeadlineWithIpsObjectPart() {
             List<String> headline = new ArrayList<String>();
 
             headline.add(Messages.TableStructureContentPageElement_name);
@@ -172,12 +145,6 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
 
             return headline;
         }
-
-        @Override
-        public boolean isEmpty() {
-            return ArrayUtils.isEmpty(tableStructure.getRanges());
-        }
-
     }
 
     /**
@@ -186,25 +153,15 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
      * @author dicker
      * 
      */
-    private class ColumnsTablePageElement extends AbstractSpecificTablePageElement {
-        private ITableStructure tableStructure;
+    private class ColumnsTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IColumn> {
 
         public ColumnsTablePageElement(ITableStructure tableStructure) {
-            super();
-            this.tableStructure = tableStructure;
+            super(Arrays.asList(tableStructure.getColumns()));
         }
 
         @Override
-        protected void addDataRows() {
-            IColumn[] columns = tableStructure.getColumns();
-            for (IColumn column : columns) {
-                addColumnRow(column);
-            }
-
-        }
-
-        private void addColumnRow(IColumn column) {
-            addSubElement(new TableRowPageElement(PageElementUtils.createTextPageElements(getColumnData(column))));
+        protected List<? extends PageElement> createRowWithIpsObjectPart(IColumn column) {
+            return Arrays.asList(PageElementUtils.createTextPageElements(getColumnData(column)));
         }
 
         protected List<String> getColumnData(IColumn column) {
@@ -218,7 +175,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         }
 
         @Override
-        protected List<String> getHeadline() {
+        protected List<String> getHeadlineWithIpsObjectPart() {
             List<String> headline = new ArrayList<String>();
 
             headline.add(Messages.TableStructureContentPageElement_name);
@@ -227,12 +184,6 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
 
             return headline;
         }
-
-        @Override
-        public boolean isEmpty() {
-            return ArrayUtils.isEmpty(tableStructure.getColumns());
-        }
-
     }
 
     /**
@@ -241,25 +192,15 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
      * @author dicker
      * 
      */
-    private class UniqueKeysTablePageElement extends AbstractSpecificTablePageElement {
-        private ITableStructure tableStructure;
+    private class UniqueKeysTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IUniqueKey> {
 
         public UniqueKeysTablePageElement(ITableStructure tableStructure) {
-            super();
-            this.tableStructure = tableStructure;
+            super(Arrays.asList(tableStructure.getUniqueKeys()));
         }
 
         @Override
-        protected void addDataRows() {
-            IUniqueKey[] uniqueKeys = tableStructure.getUniqueKeys();
-            for (IUniqueKey uniqueKey : uniqueKeys) {
-                addUniqueKeyRow(uniqueKey);
-            }
-
-        }
-
-        private void addUniqueKeyRow(IUniqueKey uniqueKey) {
-            addSubElement(new TableRowPageElement(PageElementUtils.createTextPageElements(getUniqueKeyData(uniqueKey))));
+        protected List<? extends PageElement> createRowWithIpsObjectPart(IUniqueKey uniqueKey) {
+            return Arrays.asList(PageElementUtils.createTextPageElements(getUniqueKeyData(uniqueKey)));
         }
 
         protected List<String> getUniqueKeyData(IUniqueKey uniqueKey) {
@@ -272,7 +213,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         }
 
         @Override
-        protected List<String> getHeadline() {
+        protected List<String> getHeadlineWithIpsObjectPart() {
             List<String> headline = new ArrayList<String>();
 
             headline.add(Messages.TableStructureContentPageElement_name);
@@ -281,29 +222,16 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
             return headline;
         }
 
-        @Override
-        public boolean isEmpty() {
-            return ArrayUtils.isEmpty(tableStructure.getUniqueKeys());
-        }
-
     }
 
     /**
      * creates a page for the given {@link ITableStructure} with the config
      * 
-     * @param object
-     * @param config
      */
     protected TableStructureContentPageElement(ITableStructure object, DocumentorConfiguration config) {
         super(object, config);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.standard.
-     * AbstractObjectContentPageElement#build()
-     */
     @Override
     public void build() {
         super.build();
@@ -327,7 +255,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
      * adds a table for the columns
      */
     private void addColumnTable() {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.TableStructureContentPageElement_columns,
                 TextType.HEADING_2));
 
@@ -340,7 +268,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
      * adds a table for the unique keys
      */
     private void addUniqueKeysTable() {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.TableStructureContentPageElement_uniqueKeys,
                 TextType.HEADING_2));
 
@@ -353,7 +281,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
      * adds a table for columns ranges
      */
     private void addColumnRangesTable() {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.TableStructureContentPageElement_columnRanges,
                 TextType.HEADING_2));
 
@@ -366,7 +294,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
      * adds a table for foreign keys
      */
     private void addForeignKeyTable() {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.TableStructureContentPageElement_foreignKeys,
                 TextType.HEADING_2));
 
@@ -381,14 +309,15 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
     private void addTableContentList() {
         List<IIpsSrcFile> tableContentsSrcFiles;
         try {
-            tableContentsSrcFiles = Arrays.asList(getDocumentedIpsObject().searchMetaObjectSrcFiles(true));
+            tableContentsSrcFiles = new ArrayList<IIpsSrcFile>(Arrays.asList(getDocumentedIpsObject()
+                    .searchMetaObjectSrcFiles(true)));
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
 
         tableContentsSrcFiles.retainAll(getConfig().getDocumentedSourceFiles());
 
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(IpsObjectType.TABLE_CONTENTS.getDisplayNamePlural(),
                 TextType.HEADING_2));
 

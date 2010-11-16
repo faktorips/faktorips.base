@@ -101,12 +101,14 @@ public class TestCaseDetailArea {
     /** The section this details belongs to */
     private TestCaseSection testCaseSection;
 
+    private final String nullRepresentation = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+
     /**
      * Composites to change the UI area which contains the dynamic detail controls
      */
     private Composite detailsArea;
 
-    /** area which contains alls detail controls */
+    /** area which contains all detail controls */
     private Composite dynamicArea;
 
     private List<ITestCaseDetailAreaRedrawListener> testCaseDetailAreaRedrawListener = new ArrayList<ITestCaseDetailAreaRedrawListener>(
@@ -771,16 +773,21 @@ public class TestCaseDetailArea {
 
     private void updateValue(EditField editField, String actualValue) {
         IIpsObjectPart object = editField2ModelObject.get(editField);
+        String actualValueToSet = nullIfNullRepresentation(actualValue);
         if (object != null) {
             if (object instanceof ITestValue) {
-                ((ITestValue)object).setValue(actualValue);
+                ((ITestValue)object).setValue(actualValueToSet);
             } else if (object instanceof ITestAttributeValue) {
-                ((ITestAttributeValue)object).setValue(actualValue);
+                ((ITestAttributeValue)object).setValue(actualValueToSet);
             } else if (object instanceof ITestRule) {
                 ((ITestRule)object).setViolationType((TestRuleViolationType)TestRuleViolationType.getEnumType()
                         .getEnumValue(actualValue));
             }
         }
+    }
+
+    private String nullIfNullRepresentation(String actualValue) {
+        return nullRepresentation != null && nullRepresentation.equals(actualValue) ? null : actualValue;
     }
 
     /**

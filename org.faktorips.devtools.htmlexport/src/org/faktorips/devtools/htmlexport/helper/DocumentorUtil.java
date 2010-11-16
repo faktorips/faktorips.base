@@ -35,9 +35,6 @@ public class DocumentorUtil {
     /**
      * returns the {@link IIpsObject} of the given {@link IIpsSrcFile}
      * 
-     * @param <T>
-     * @param srcFile
-     * @return
      */
     public static IIpsObject getIpsObject(IIpsSrcFile srcFile) {
         try {
@@ -50,9 +47,6 @@ public class DocumentorUtil {
     /**
      * returns a list of {@link IIpsObject}s of the given {@link IIpsSrcFile}s
      * 
-     * @param <T>
-     * @param srcFiles
-     * @return
      */
     public static <T extends IIpsObject> List<T> getIpsObjects(IIpsSrcFile... srcFiles) {
         List<T> objects = new ArrayList<T>();
@@ -67,11 +61,8 @@ public class DocumentorUtil {
     }
 
     /**
-     * converts {@link ImageData} to a byte[] using the given format
+     * converts {@link ImageData} to a byte[] using the given image format (e.g. png)
      * 
-     * @param imageData
-     * @param format
-     * @return
      */
     public static byte[] convertImageDataToByteArray(ImageData imageData, int format) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();

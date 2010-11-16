@@ -137,4 +137,8 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
         }
     }
 
+    public void testGetRenameRefactoring() {
+        assertNull(literalNameAttribute.getRenameRefactoring());
+    }
+
 }

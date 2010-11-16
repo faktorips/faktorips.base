@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -31,6 +30,7 @@ import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
@@ -38,8 +38,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractIpsObjectPartsContainerTablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.MethodsTablePageElement;
 
 /**
@@ -56,29 +55,22 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
      * @author dicker
      * 
      */
-    private class TableStructureTablePageElement extends AbstractSpecificTablePageElement {
-        private IProductCmptType productCmptType;
-
+    private class TableStructureTablePageElement extends
+            AbstractIpsObjectPartsContainerTablePageElement<ITableStructureUsage> {
         public TableStructureTablePageElement(IProductCmptType productCmptType) {
-            super();
-            this.productCmptType = productCmptType;
+            super(Arrays.asList(productCmptType.getTableStructureUsages()));
         }
 
         @Override
-        protected void addDataRows() {
-            ITableStructureUsage[] tableStructureUsages = productCmptType.getTableStructureUsages();
-            for (ITableStructureUsage tableStructureUsage : tableStructureUsages) {
-                addTableStructureUsageRow(tableStructureUsage);
-            }
+        protected List<? extends PageElement> createRowWithIpsObjectPart(ITableStructureUsage tableStructureUsage) {
+            List<PageElement> pageElements = new ArrayList<PageElement>();
 
-        }
+            pageElements.add(new TextPageElement(tableStructureUsage.getRoleName()));
+            pageElements.add(getTableStructureLinks(tableStructureUsage));
+            pageElements.add(new TextPageElement(tableStructureUsage.isMandatoryTableContent() ? "X" : "-")); //$NON-NLS-1$ //$NON-NLS-2$
+            pageElements.add(new TextPageElement(tableStructureUsage.getDescription()));
 
-        private void addTableStructureUsageRow(ITableStructureUsage tableStructureUsage) {
-            addSubElement(new TableRowPageElement(new PageElement[] {
-                    new TextPageElement(tableStructureUsage.getRoleName()),
-                    getTableStructureLinks(tableStructureUsage),
-                    new TextPageElement(tableStructureUsage.isMandatoryTableContent() ? "X" : "-"), //$NON-NLS-1$ //$NON-NLS-2$
-                    new TextPageElement(tableStructureUsage.getDescription()) }));
+            return pageElements;
         }
 
         private PageElement getTableStructureLinks(ITableStructureUsage tableStructureUsage) {
@@ -95,7 +87,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
                     links.add(PageElementUtils.createLinkPageElement(getConfig(), ipsObject,
                             "content", tableStructure, true)); //$NON-NLS-1$
                 } catch (CoreException e) {
-                    new RuntimeException(e);
+                    throw new RuntimeException(e);
                 }
             }
 
@@ -107,7 +99,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
         }
 
         @Override
-        protected List<String> getHeadline() {
+        protected List<String> getHeadlineWithIpsObjectPart() {
             List<String> headline = new ArrayList<String>();
 
             headline.add(Messages.ProductCmptTypeContentPageElement_roleName);
@@ -120,29 +112,16 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 
             return headline;
         }
-
-        @Override
-        public boolean isEmpty() {
-            return ArrayUtils.isEmpty(productCmptType.getTableStructureUsages());
-        }
-
     }
 
     /**
      * creates a page for the given {@link ProductCmptType} with the given config
      * 
-     * @param productCmptType
-     * @param config
      */
     protected ProductCmptTypeContentPageElement(IProductCmptType productCmptType, DocumentorConfiguration config) {
         super(productCmptType, config);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.standard. AbstractTypeContentPageElement#build()
-     */
     @Override
     public void build() {
         super.build();
@@ -156,7 +135,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
      * adds a table with the table structure
      */
     private void addTableStructureTable() {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(IpsObjectType.TABLE_STRUCTURE.getDisplayNamePlural(),
                 TextType.HEADING_2));
 
@@ -178,7 +157,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 
         allProductCmptSrcFiles.retainAll(getConfig().getDocumentedSourceFiles());
 
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(IpsObjectType.PRODUCT_CMPT.getDisplayNamePlural(),
                 TextType.HEADING_2));
 
@@ -197,12 +176,6 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
         addPageElements(wrapper);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.standard.
-     * AbstractTypeContentPageElement#addStructureData()
-     */
     @Override
     protected void addStructureData() {
         super.addStructureData();
@@ -225,20 +198,14 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.standard.
-     * AbstractTypeContentPageElement#getMethodsTablePageElement()
-     */
     @Override
     MethodsTablePageElement getMethodsTablePageElement() {
         return new MethodsTablePageElement(getDocumentedIpsObject()) {
 
             @Override
-            protected List<String> getHeadline() {
+            protected List<String> getHeadlineWithIpsObjectPart() {
 
-                List<String> headline = super.getHeadline();
+                List<String> headline = super.getHeadlineWithIpsObjectPart();
                 headline.add(Messages.ProductCmptTypeContentPageElement_formulaName);
 
                 return headline;

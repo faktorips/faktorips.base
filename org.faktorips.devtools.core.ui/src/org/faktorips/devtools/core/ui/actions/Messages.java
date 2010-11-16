@@ -30,6 +30,7 @@ public class Messages extends NLS {
     public static String ExpandAllAction_Selection_Description;
     public static String ExpandAllAction_Description;
     public static String CollapseAllAction_Description;
+    public static String CopyTableAction_title;
     public static String AddIpsNatureAction_basePackage_default;
     public static String AddIpsNatureAction_basePackageName;
     public static String AddIpsNatureAction_basePackageNameNotValid;

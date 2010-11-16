@@ -33,32 +33,26 @@ public interface PageElement {
     public Set<Style> getStyles();
 
     /**
-     * adds {@link Style}s
+     * adds {@link Style}s and returns this
      * 
-     * @param style
-     * @return this
      */
     public PageElement addStyles(Style... style);
 
     /**
      * checks, whether PageElement has the Style
      * 
-     * @param style
-     * @return boolean
      */
     public boolean hasStyle(Style style);
 
     /**
      * removes the given {@link Style}s
      * 
-     * @param style
      */
     public void removeStyles(Style... style);
 
     /**
      * accepts an {@link ILayouter}
      * 
-     * @param layouter
      */
     public void acceptLayouter(ILayouter layouter);
 

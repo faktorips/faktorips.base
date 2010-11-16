@@ -14,6 +14,7 @@
 package org.faktorips.runtime.modeltype.internal;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,7 +32,7 @@ import org.faktorips.runtime.modeltype.IModelElement;
  */
 public class AbstractModelElement implements IModelElement {
 
-    private Map<String, Object> extPropertyValues = new HashMap<String, Object>();
+    private Map<String, Object> extPropertyValues = null;
     private String name = null;
     private AbstractRuntimeRepository repository;
 
@@ -43,7 +44,20 @@ public class AbstractModelElement implements IModelElement {
      * {@inheritDoc}
      */
     public Object getExtensionPropertyValue(String propertyId) {
+        if (extPropertyValues == null) {
+            return null;
+        }
         return extPropertyValues.get(propertyId);
+    }
+
+    /**
+     * Sets the value of the extension property <code>propertyId</code>.
+     */
+    public void setExtensionPropertyValue(String propertyId, Object value) {
+        if (extPropertyValues == null) {
+            extPropertyValues = new HashMap<String, Object>(5);
+        }
+        extPropertyValues.put(propertyId, value);
     }
 
     /**
@@ -68,6 +82,9 @@ public class AbstractModelElement implements IModelElement {
      * {@inheritDoc}
      */
     public Set<String> getExtensionPropertyIds() {
+        if (extPropertyValues == null) {
+            return new HashSet<String>(0);
+        }
         return extPropertyValues.keySet();
     }
 
@@ -103,7 +120,7 @@ public class AbstractModelElement implements IModelElement {
             }
         }
         if (isNull) {
-            extPropertyValues.put(id, null);
+            setExtensionPropertyValue(id, null);
         } else {
             for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
                 switch (event) {
@@ -115,7 +132,7 @@ public class AbstractModelElement implements IModelElement {
                         break;
                     case XMLStreamConstants.END_ELEMENT:
                         if (parser.getLocalName().equals("Value")) {
-                            extPropertyValues.put(id, value.toString());
+                            setExtensionPropertyValue(id, value.toString());
                             return;
                         }
                         break;

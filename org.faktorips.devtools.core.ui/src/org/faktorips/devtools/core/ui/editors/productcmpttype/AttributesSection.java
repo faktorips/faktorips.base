@@ -25,12 +25,13 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.actions.RenameHandler;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 import org.faktorips.devtools.core.ui.editors.pctype.Messages;
+import org.faktorips.devtools.core.ui.refactor.IpsRefactoringHandler;
+import org.faktorips.devtools.core.ui.refactor.IpsRenameHandler;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -64,7 +65,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
             MenuManager manager = new MenuManager();
             MenuManager refactorSubmenu = new MenuManager(Messages.AttributesSection_submenuRefactor);
 
-            refactorSubmenu.add(RenameHandler.getContributionItem());
+            refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsRenameHandler.CONTRIBUTION_ID));
 
             manager.add(refactorSubmenu);
             Menu contextMenu = manager.createContextMenu(getViewer().getControl());

@@ -87,6 +87,7 @@ public class MethodEditDialog extends IpsPartEditDialog2 {
         datatypeControl = uiToolkit.createDatatypeRefEdit(method.getIpsProject(), propertyPane);
         datatypeControl.setVoidAllowed(true);
         datatypeControl.setOnlyValueDatatypesAllowed(false);
+        datatypeControl.setAbstractAllowed(true);
         bindingContext.bindContent(datatypeControl, method, IMethod.PROPERTY_DATATYPE);
 
         uiToolkit.createFormLabel(propertyPane, Messages.MethodEditDialog_labelName);

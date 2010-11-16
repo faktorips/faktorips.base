@@ -36,13 +36,15 @@ import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.standard.StandardDocumentorScript;
 
+/**
+ * The ActionDelegate for the HtmlExport
+ * 
+ * @author dicker
+ */
 public class CreateHtmlExportAction extends ActionDelegate {
 
     private IStructuredSelection selection = StructuredSelection.EMPTY;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void selectionChanged(IAction action, ISelection newSelection) {
         if (newSelection instanceof IStructuredSelection) {
@@ -67,9 +69,6 @@ public class CreateHtmlExportAction extends ActionDelegate {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run(IAction action) {
         if (selection.size() > 1) {
@@ -98,10 +97,11 @@ public class CreateHtmlExportAction extends ActionDelegate {
 
         documentorConfig.setPath(selected);
         documentorConfig.setIpsProject(getIpsProject());
-        documentorConfig.setLayouter(new HtmlLayouter(".resource"));
+        documentorConfig.setLayouter(new HtmlLayouter(".resource")); //$NON-NLS-1$
 
         documentorConfig.addDocumentorScript(new StandardDocumentorScript());
-        documentorConfig.setDocumentedIpsObjectTypes(documentorConfig.getIpsProject().getIpsModel().getIpsObjectTypes());
+        documentorConfig
+                .setDocumentedIpsObjectTypes(documentorConfig.getIpsProject().getIpsModel().getIpsObjectTypes());
 
         try {
             new HtmlExportOperation(documentorConfig).run(new NullProgressMonitor());
@@ -118,13 +118,10 @@ public class CreateHtmlExportAction extends ActionDelegate {
     private DirectoryDialog createFileSaveDialog() {
         DirectoryDialog fd = new DirectoryDialog(getShell());
         fd.setText(Messages.CreateHtmlExportAction_Export);
-        fd.setFilterPath(getIpsProject().getProject().getLocation() + File.separator + "html");
+        fd.setFilterPath(getIpsProject().getProject().getLocation() + File.separator + "html"); //$NON-NLS-1$
         return fd;
     }
 
-    /**
-     * Returns the active shell.
-     */
     protected Shell getShell() {
         return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
     }

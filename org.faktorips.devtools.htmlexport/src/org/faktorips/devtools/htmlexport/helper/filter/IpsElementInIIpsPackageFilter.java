@@ -37,12 +37,6 @@ public class IpsElementInIIpsPackageFilter implements IpsElementFilter {
         this.ipsPackageFragment = ipsPackageFragment;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.htmlexport.helper.filter.IpsElementFilter#accept
-     * (org.faktorips.devtools.core.model.IIpsElement)
-     */
     @Override
     public boolean accept(IIpsElement ipsElement) {
 
@@ -62,6 +56,10 @@ public class IpsElementInIIpsPackageFilter implements IpsElementFilter {
         return false;
     }
 
+    /**
+     * check, whether the IpsPackageFragment are equal or their names (because of different
+     * projects)
+     */
     private boolean acceptIpsObject(IIpsObject ipsObject) {
         return ipsObject.getIpsPackageFragment().equals(ipsPackageFragment)
                 || ipsObject.getIpsPackageFragment().getName().equals(ipsPackageFragment.getName());

@@ -107,6 +107,12 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public final static String MSGCODE_ICON_PATH_INVALID = MSGCODE_PREFIX + "IconPathInvalid"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the corresponding policy component type is inherited
+     * from a super type, but the product component type is not.
+     */
+    public final static String MSGCODE_MUST_HAVE_SUPERTYPE = MSGCODE_PREFIX + "MustHaveSupertype"; //$NON-NLS-1$
+
+    /**
      * Returns the policy component type this product component type refers to. Returns
      * <code>null</code> if this type does not refer to a policy component type.
      */

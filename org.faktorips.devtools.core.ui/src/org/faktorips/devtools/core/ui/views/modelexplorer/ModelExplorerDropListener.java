@@ -37,7 +37,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.refactor.IIpsMoveProcessor;
-import org.faktorips.devtools.core.ui.IpsRefactoringOperation;
+import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 
 public class ModelExplorerDropListener extends IpsElementDropListener {
@@ -109,7 +109,7 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
                         moveProcessor.setTargetIpsPackageFragment((IIpsPackageFragment)target);
 
                         IpsRefactoringOperation refactorOp = new IpsRefactoringOperation(moveRefactoring, shell);
-                        refactorOp.execute();
+                        refactorOp.runDirectExecution();
                     }
 
                     return;

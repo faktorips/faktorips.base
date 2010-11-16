@@ -23,12 +23,20 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ImagePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 
+/**
+ * Element to chose a {@link IpsObjectType}
+ * 
+ * TODO: nearly complete implementation
+ * 
+ * @author dicker
+ */
 public class TypeChosePageElement extends AbstractPageElement {
-    private WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+    private AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
     private final Collection<IpsObjectType> types;
     private final DocumentorConfiguration config;
 

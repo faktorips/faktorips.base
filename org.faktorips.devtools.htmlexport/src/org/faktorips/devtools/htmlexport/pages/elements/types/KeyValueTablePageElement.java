@@ -18,6 +18,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.AlternateRowTablePageElementLayout;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.RegexTablePageElementLayout;
+import org.faktorips.devtools.htmlexport.pages.elements.core.table.RowTablePageElementLayout;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
 
@@ -30,10 +31,23 @@ public class KeyValueTablePageElement extends TablePageElement {
     }
 
     /**
+     * Creates an KeyValueTablePageElement with a headline
+     * 
+     */
+    public KeyValueTablePageElement(String keyHeadline, String valueHeadline) {
+        super(true);
+        addLayouts(RowTablePageElementLayout.HEADLINE);
+        addLayouts(new AlternateRowTablePageElementLayout(true));
+        addLayouts(new RegexTablePageElementLayout(".{1,3}", Style.CENTER)); //$NON-NLS-1$
+
+        addKeyValueRow(keyHeadline, valueHeadline);
+    }
+
+    /**
      * Adds Rows to the {@link KeyValueTablePageElement}. One Row consists of two
      * {@link PageElement}s.
      * 
-     * @param an array of {@link PageElement}
+     * @param pageElements an array of {@link PageElement}
      * @throws IllegalArgumentException if the number of elements is uneven
      * @return a reference of this
      */
@@ -54,37 +68,28 @@ public class KeyValueTablePageElement extends TablePageElement {
     }
 
     /**
-     * adds a row to the table
+     * adds a row to the table with a key and a value and returns this
      * 
-     * @param key
-     * @param value
-     * @return this
      */
     public KeyValueTablePageElement addKeyValueRow(String key, String value) {
         return addKeyValueRow(new TextPageElement(key), new TextPageElement(value));
     }
 
     /**
-     * adds a row to the table
+     * adds a row to the table with a key and a {@link PageElement} as value and returns this
      * 
-     * @param key
-     * @param valuePageElement
-     * @return
      */
     public KeyValueTablePageElement addKeyValueRow(String key, PageElement valuePageElement) {
         return addKeyValueRow(new TextPageElement(key), valuePageElement);
     }
 
     /**
-     * adds a row to the table
+     * adds a row to the table with a {@link PageElement} as key and a {@link PageElement} as value
+     * and returns this
      * 
-     * @param keyPageElement
-     * @param valuePageElement
-     * @return
      */
     public KeyValueTablePageElement addKeyValueRow(PageElement keyPageElement, PageElement valuePageElement) {
         addSubElement(new TableRowPageElement(new PageElement[] { keyPageElement, valuePageElement }));
         return this;
     }
-
 }

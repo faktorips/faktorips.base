@@ -153,6 +153,13 @@ public class Message implements Serializable {
     }
 
     /**
+     * Creates a new message with the code text and severity, code is <code>null</code>.
+     */
+    public Message(String text, Severity severity) {
+        this(null, text, severity);
+    }
+
+    /**
      * Creates a new message with the indicated code, text and severity.
      */
     public Message(String code, String text, Severity severity) {
@@ -418,7 +425,13 @@ public class Message implements Serializable {
             return false;
         }
         Message other = (Message)o;
-        if (!code.equals(other.code) || severity != other.severity || !text.equals(other.text)) {
+        if ((code != null && !code.equals(other.code)) || (code == null && other.code != null)) {
+            return false;
+        }
+        if ((text != null && !text.equals(other.text)) || (text == null && other.text != null)) {
+            return false;
+        }
+        if (severity != other.severity) {
             return false;
         }
         int numOfInvalidObjectProperties = getNumOfInvalidObjectProperties();

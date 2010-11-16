@@ -24,7 +24,6 @@ import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
-import org.faktorips.devtools.htmlexport.pages.elements.core.IpsElementImagePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
@@ -32,6 +31,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TreeNodePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.IpsElementImagePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.KeyValueTablePageElement;
 
 /**
@@ -47,8 +47,6 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
     /**
      * creates a page for the given {@link ITestCase} with the given config
      * 
-     * @param object
-     * @param config
      */
     protected TestCaseContentPageElement(ITestCase object, DocumentorConfiguration config) {
         super(object, config);
@@ -91,8 +89,6 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
     /**
      * creates a {@link PageElement} for an {@link ITestObject}
      * 
-     * @param testObject
-     * @return
      */
     private PageElement createTestObjectPageElement(ITestObject testObject) {
         if (testObject instanceof ITestValue) {

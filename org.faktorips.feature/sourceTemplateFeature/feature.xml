@@ -764,7 +764,7 @@ schutz” abgerufen und ausgedruckt werden.
 
 </license>
     <url>
-        <update label="Faktor-IPS" url="http://update.faktorzehn.org/faktorips/"/>
+        <update label="Faktor-IPS" url="http://update.faktorzehn.org/faktorips/v3/"/>
     </url>
     <plugin id="org.faktorips.feature.source" install-size="0" download-size="0" version="0.0.0"/>
 </feature>

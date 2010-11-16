@@ -769,6 +769,16 @@ Diese Datenschutzbestimmungen können auf der Website der Faktor Zehn AG über d
 schutz” abgerufen und ausgedruckt werden.
    </license>
 
+   <url>
+      <update label="Faktor-IPS" url="http://update.faktorzehn.org/faktorips/v3/"/>
+   </url>
+
+   <includes
+         id="org.faktorips.feature.source"
+         version="0.0.0"
+         name="Faktor-IPS Source"
+         optional="true"/>
+         
    <requires>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
@@ -861,7 +871,7 @@ schutz” abgerufen und ausgedruckt werden.
          unpack="false"/>
 
    <plugin
-         id="org.apache.commons.lang"
+         id="org.faktorips.apache.commons.lang"
          download-size="0"
          install-size="0"
          version="0.0.0"

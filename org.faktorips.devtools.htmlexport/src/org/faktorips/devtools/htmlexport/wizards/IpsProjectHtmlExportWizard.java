@@ -13,17 +13,13 @@
 
 package org.faktorips.devtools.htmlexport.wizards;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
 import org.faktorips.devtools.htmlexport.HtmlExportOperation;
 import org.faktorips.devtools.htmlexport.HtmlExportPlugin;
@@ -33,7 +29,7 @@ import org.faktorips.devtools.htmlexport.standard.StandardDocumentorScript;
 
 public class IpsProjectHtmlExportWizard extends Wizard implements IExportWizard {
 
-    private static String DIALOG_SETTINGS_KEY = "org.faktorips.devtools.htmlexport.ipsProjectHtmlExportWizard";
+    private static String DIALOG_SETTINGS_KEY = "org.faktorips.devtools.htmlexport.ipsProjectHtmlExportWizard"; //$NON-NLS-1$
     private IpsProjectHtmlExportWizardPage ipsProjectHtmlExportWizardPage;
     /**
      * Create a new IpsArExportWizard
@@ -43,7 +39,7 @@ public class IpsProjectHtmlExportWizard extends Wizard implements IExportWizard 
 
     public IpsProjectHtmlExportWizard() {
         super();
-        setWindowTitle("Faktor-IPS Html Export");
+        setWindowTitle(Messages.IpsProjectHtmlExportWizard_windowTitle);
         setDefaultPageImageDescriptor(HtmlExportPlugin.getImageDescriptor("icons/HtmlExportWizard.png")); //$NON-NLS-1$
 
         IDialogSettings workbenchSettings = IpsPlugin.getDefault().getDialogSettings();
@@ -80,7 +76,7 @@ public class IpsProjectHtmlExportWizard extends Wizard implements IExportWizard 
         documentorConfig.setPath(ipsProjectHtmlExportWizardPage.getDestinationDirectory());
         documentorConfig.setShowValidationErrors(ipsProjectHtmlExportWizardPage.getShowValidationErrors());
 
-        documentorConfig.setIpsProject(IpsProjectHtmlExportWizard.getIpsProject(selection));
+        documentorConfig.setIpsProject(ipsProjectHtmlExportWizardPage.getIpsProject(selection));
         documentorConfig.setLayouter(new HtmlLayouter(".resource")); //$NON-NLS-1$
 
         documentorConfig.addDocumentorScript(new StandardDocumentorScript());
@@ -113,22 +109,6 @@ public class IpsProjectHtmlExportWizard extends Wizard implements IExportWizard 
         super.addPages();
         ipsProjectHtmlExportWizardPage = new IpsProjectHtmlExportWizardPage(selection);
         addPage(ipsProjectHtmlExportWizardPage);
-    }
-
-    protected static IIpsProject getIpsProject(IStructuredSelection structuredSelection) {
-        if (structuredSelection.size() != 1) {
-            return null;
-        }
-        if (structuredSelection.getFirstElement() instanceof PlatformObject) {
-            IProject project = (IProject)((PlatformObject)structuredSelection.getFirstElement())
-                    .getAdapter(IProject.class);
-            if (project == null) {
-                return null;
-            }
-            IIpsModel ipsModel = IpsPlugin.getDefault().getIpsModel();
-            return ipsModel.getIpsProject(project.getProject());
-        }
-        return null;
     }
 
 }

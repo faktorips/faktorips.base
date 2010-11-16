@@ -31,10 +31,9 @@ public class HtmlExportOperation implements IWorkspaceRunnable {
     private DocumentorConfiguration config;
 
     /**
-     * Instantiates a Documentor. Throws an {@link IllegalArgumentException}, if config is null.
+     * Instantiates a Documentor.
      * 
-     * @param config
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException thrown if config is null.
      */
     public HtmlExportOperation(DocumentorConfiguration config) {
         setDocumentorConfiguration(config);
@@ -48,7 +47,6 @@ public class HtmlExportOperation implements IWorkspaceRunnable {
     }
 
     /**
-     * 
      * @return the {@link DocumentorConfiguration}
      */
     public DocumentorConfiguration getDocumentorConfiguration() {
@@ -64,7 +62,7 @@ public class HtmlExportOperation implements IWorkspaceRunnable {
     public void run(IProgressMonitor monitor) throws CoreException {
         List<IDocumentorScript> scripts = getDocumentorConfiguration().getScripts();
 
-        monitor.beginTask("HTML EXPORT PROGRESS MONITOR", scripts.size());
+        monitor.beginTask("HTML EXPORT PROGRESS MONITOR", scripts.size()); //$NON-NLS-1$
 
         for (IDocumentorScript documentorScript : scripts) {
             IProgressMonitor subProgressMonitor = new SubProgressMonitor(monitor, 1);

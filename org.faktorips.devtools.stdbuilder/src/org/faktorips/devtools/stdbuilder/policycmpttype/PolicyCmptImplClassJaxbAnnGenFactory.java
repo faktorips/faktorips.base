@@ -18,6 +18,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.AnnotationGeneratorFactory;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
+import org.faktorips.devtools.stdbuilder.PolicyCmptImplClassJaxbAnnGen;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 public class PolicyCmptImplClassJaxbAnnGenFactory implements AnnotationGeneratorFactory {
@@ -30,6 +31,8 @@ public class PolicyCmptImplClassJaxbAnnGenFactory implements AnnotationGenerator
     @Override
     public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type) throws CoreException {
         switch (type) {
+            case POLICY_CMPT_IMPL_CLASS:
+                return new PolicyCmptImplClassJaxbAnnGen(standardBuilderSet);
             case POLICY_CMPT_IMPL_CLASS_ASSOCIATION:
                 return new PolicyCmptImplClassAssociationJaxbAnnGen(standardBuilderSet);
             case POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD:

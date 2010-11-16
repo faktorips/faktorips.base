@@ -594,6 +594,7 @@ ${faktoripsOrmextReleaseDownloadZipPath}
 ${faktoripsOrmextNls1ReleaseDownloadZipPath}
 ${faktoripsUpdateSiteZipPath}
 ${faktoripsRuntimeAndValuetypesZipPath}
+${faktoripsRuntimeAddonsZipPath}
 		</echo>
 		<echo file="${basedir}/archives_products">
 ${faktoripsProductWinZipPath}
@@ -842,8 +843,9 @@ ${faktoripsProductLinuxZipPath}
         <echo message="   4. ${faktoripsUmlNls1ReleaseDownloadZipPath}"/>    	
         <echo message="   5. ${faktoripsOrmextReleaseDownloadZipPath}"/>
         <echo message="   6. ${faktoripsOrmextNls1ReleaseDownloadZipPath}"/>    	
-        <echo message="   7. ${faktoripsUpdateSiteZipPath}"/>    	
+        <echo message="   7. ${faktoripsUpdateSiteZipPath}"/>	
         <echo message="   8. ${faktoripsRuntimeAndValuetypesZipPath}"/>    	
+        <echo message="   8. ${faktoripsRuntimeAddonsZipPath}"/>    	
     </target>
 	
 	<target name="-checkout.all" >
@@ -856,7 +858,7 @@ ${faktoripsProductLinuxZipPath}
 		<cvs command="co" package="org.faktorips.dtflcommon" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 		<cvs command="co" package="org.faktorips.fl" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 		<cvs command="co" package="org.faktorips.util" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
-		<cvs command="co" package="org.apache.commons.lang" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
+		<cvs command="co" package="org.faktorips.apache.commons.lang" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 		<cvs command="co" package="org.faktorips.devtools.ant" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 		<cvs command="co" package="org.faktorips.devtools.core" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
 		<cvs command="co" package="org.faktorips.devtools.stdbuilder" dest="${projectsRootDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
@@ -1028,7 +1030,7 @@ ${faktoripsProductLinuxZipPath}
     </target>
               	
     <target name="-merge.updatesite.xml" unless="isSkipPublish">
-        <xslt in="${projectsRootDir}/org.faktorips.updatesite/site.xml" out="${projectsRootDir}/org.faktorips.updatesite/site_merge.xml" 
+        <xslt in="${projectsRootDir}/org.faktorips.updatesite/${siteXmlFileName}" out="${projectsRootDir}/org.faktorips.updatesite/site_merge.xml" 
         	style="${projectsRootDir}/org.faktorips.build/cruisecontrol_config/xsl/mergeupdatesite.xsl" force="true">
             <outputproperty name="method" value="xml"/>
             <outputproperty name="encoding" value="UTF-8"/>
@@ -1036,7 +1038,7 @@ ${faktoripsProductLinuxZipPath}
             <param name="doc2" expression="${projectsRootDir}/org.faktorips.updatesite/${site.xml}"/>
         </xslt>
         <delete file="${projectsRootDir}/org.faktorips.updatesite/${site.xml}" verbose="false"/>
-        <copy file="${projectsRootDir}/org.faktorips.updatesite/site_merge.xml" tofile="${projectsRootDir}/org.faktorips.updatesite/site.xml" verbose="false" overwrite="true"/>
+        <copy file="${projectsRootDir}/org.faktorips.updatesite/site_merge.xml" tofile="${projectsRootDir}/org.faktorips.updatesite/${siteXmlFileName}" verbose="false" overwrite="true"/>
         <delete file="${projectsRootDir}/org.faktorips.updatesite/site_merge.xml" verbose="false"/>
     </target>
 

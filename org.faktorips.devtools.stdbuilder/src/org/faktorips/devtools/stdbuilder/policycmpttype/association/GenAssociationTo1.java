@@ -21,9 +21,11 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
@@ -173,7 +175,7 @@ public class GenAssociationTo1 extends GenAssociation {
             getGenType().getBuilderSet().addAnnotations(AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ASSOCIATION,
                     association, builder);
 
-            builder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, targetInterfaceName, fieldName,
+            builder.varDeclaration(java.lang.reflect.Modifier.PRIVATE, targetImplClassName, fieldName,
                     new JavaCodeFragment("null"));
         }
     }
@@ -230,18 +232,19 @@ public class GenAssociationTo1 extends GenAssociation {
         }
 
         String paramName = getParamNameForSetObject();
-        builder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        String javaDocText = internal ? null : getJavaDocCommentForOverriddenMethod();
+        builder.javaDoc(javaDocText, JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureSetObject(builder, internal);
 
         builder.openBracket();
 
         if (target.isDependantType() && inverseAssociation != null) {
             builder.appendln("if(" + fieldName + " != null) {");
-            builder.append(generateCodeToSynchronizeReverseComposition(fieldName, "null"));
+            builder.append(generateCodeToSynchronizeReverseComposition(fieldName, "null", false));
             builder.appendln("}");
 
             builder.appendln("if(" + paramName + " != null) {");
-            builder.append(generateCodeToSynchronizeReverseComposition(paramName, "this"));
+            builder.append(generateCodeToSynchronizeReverseComposition(paramName, "this", true));
             builder.appendln("}");
         }
 
@@ -334,7 +337,8 @@ public class GenAssociationTo1 extends GenAssociation {
     protected void generateMethodSetRefObjectForAssociation(JavaCodeFragmentBuilder methodsBuilder, boolean internal)
             throws CoreException {
         String paramName = getParamNameForSetObject();
-        methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        String javaDocText = internal ? null : getJavaDocCommentForOverriddenMethod();
+        methodsBuilder.javaDoc(javaDocText, JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureSetObject(methodsBuilder, internal);
         methodsBuilder.openBracket();
         methodsBuilder.append("if(" + paramName + " == ");
@@ -460,6 +464,9 @@ public class GenAssociationTo1 extends GenAssociation {
         // note this is necessary because this getter method is used
         // to assert that a child is only related to one parent
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        if (isAlreadyDefinedInSupertype()) {
+            appendOverrideAnnotation(methodsBuilder, getIpsProject(), false);
+        }
         generateSignatureGetRefObject(methodsBuilder);
         methodsBuilder.openBracket();
         methodsBuilder.append("return ");
@@ -467,6 +474,25 @@ public class GenAssociationTo1 extends GenAssociation {
         methodsBuilder.append(getFieldNameForAssociation());
         methodsBuilder.append(";");
         methodsBuilder.closeBracket();
+    }
+
+    private boolean isAlreadyDefinedInSupertype() {
+        try {
+            IPolicyCmptType policyCmptType = getGenPolicyCmptType().getPolicyCmptType();
+            if (policyCmptType == null) {
+                return false;
+            }
+            IPolicyCmptType foundSupertype = (IPolicyCmptType)policyCmptType.findSupertype(getIpsProject());
+            if (foundSupertype == null) {
+                return false;
+            }
+            IAssociation superAssociation = foundSupertype.findAssociation(association.getTargetRoleSingular(),
+                    getIpsProject());
+            return superAssociation != null;
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            return false;
+        }
     }
 
     /**
@@ -530,14 +556,9 @@ public class GenAssociationTo1 extends GenAssociation {
         methodsBuilder.append(MethodNames.NEW_COPY);
         methodsBuilder.appendln("();");
         if (targetType.isDependantType() && inverseAssociation != null) {
-            methodsBuilder.append("(");
-            methodsBuilder.append("(");
-            methodsBuilder.appendClassName(targetTypeQName);
-            methodsBuilder.append(")");
             methodsBuilder.append(paramName);
             methodsBuilder.append(".");
             methodsBuilder.append(field);
-            methodsBuilder.append(")");
             methodsBuilder.append(".");
             methodsBuilder.append(getMethodNameSetParentObjectInternal(true));
             methodsBuilder.append("(");
@@ -711,7 +732,7 @@ public class GenAssociationTo1 extends GenAssociation {
         methodsBuilder.append(unqTargetImplName).append(' ').append(varCopyTarget).append(" = ") //
                 .append('(').append(unqTargetImplName).append(')').append(varCopyMap) //
                 .append(".get(").append(fieldName).appendln(");");
-        methodsBuilder.append("((").append(unqTargetImplName).append(')').append(fieldName).append(").") //
+        methodsBuilder.append(fieldName).append(".") //
                 .append(PolicyCmptImplClassBuilder.METHOD_COPY_ASSOCIATIONS) //
                 .append('(').append(varCopyTarget).append(", ").append(varCopyMap).append(");");
         methodsBuilder.closeBracket();

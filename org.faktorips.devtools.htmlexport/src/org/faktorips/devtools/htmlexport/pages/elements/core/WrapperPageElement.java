@@ -26,22 +26,19 @@ import org.faktorips.devtools.htmlexport.generators.WrapperType;
  * 
  */
 public class WrapperPageElement extends AbstractCompositePageElement {
-    protected WrapperType wrapperType;
 
     /**
-     * creates an empty {@link WrapperPageElement}
+     * creates an empty {@link WrapperPageElement} with the given {@link WrapperType} (e.g.
+     * LISTITEM, TABLECELL, BLOCK)
      * 
-     * @param wrapperType
      */
     public WrapperPageElement(WrapperType wrapperType) {
-        this.wrapperType = wrapperType;
+        setWrapperType(wrapperType);
     }
 
     /**
      * creates an {@link WrapperPageElement} with the given {@link PageElement}s
      * 
-     * @param wrapperType
-     * @param pageElements
      */
     public WrapperPageElement(WrapperType wrapperType, PageElement... pageElements) {
         this(wrapperType, null, pageElements);
@@ -51,9 +48,6 @@ public class WrapperPageElement extends AbstractCompositePageElement {
      * creates an {@link WrapperPageElement} with the given {@link PageElement}s and the given
      * styles
      * 
-     * @param wrapperType
-     * @param styles
-     * @param pageElements
      */
     public WrapperPageElement(WrapperType wrapperType, Set<Style> styles, PageElement... pageElements) {
         super();
@@ -61,45 +55,17 @@ public class WrapperPageElement extends AbstractCompositePageElement {
         if (styles != null) {
             addStyles(styles.toArray(new Style[styles.size()]));
         }
-        this.wrapperType = wrapperType;
+        setWrapperType(wrapperType);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement#build()
-     */
     @Override
     public void build() {
+        // could be overridden
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement#acceptLayouter
-     * (org.faktorips.devtools.htmlexport.generators.ILayouter)
-     */
     @Override
     public void acceptLayouter(ILayouter layouter) {
         layouter.layoutWrapperPageElement(this);
-    }
-
-    /**
-     * @return the wrapperType
-     */
-    public WrapperType getWrapperType() {
-        return wrapperType;
-    }
-
-    /**
-     * sets the {@link WrapperType}
-     * 
-     * @param wrapperType
-     */
-    public void setWrapperType(WrapperType wrapperType) {
-        this.wrapperType = wrapperType;
     }
 
     @Override

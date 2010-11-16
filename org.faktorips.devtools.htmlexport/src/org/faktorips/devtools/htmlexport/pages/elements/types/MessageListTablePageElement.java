@@ -30,26 +30,19 @@ import org.faktorips.util.message.MessageList;
  * @author dicker
  * 
  */
-public class MessageListTablePageElement extends AbstractSpecificTablePageElement {
+public class MessageListTablePageElement extends AbstractStandardTablePageElement {
 
     protected MessageList messageList;
 
     /**
      * Creates a {@link MessageListTablePageElement} for the specified {@link MessageList}
      * 
-     * @param messageList
      */
     public MessageListTablePageElement(MessageList messageList) {
         super();
         this.messageList = messageList;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement#
-     * addDataRows()
-     */
     @Override
     protected void addDataRows() {
         for (Message message : messageList) {
@@ -60,7 +53,6 @@ public class MessageListTablePageElement extends AbstractSpecificTablePageElemen
     /**
      * adds a row for the given message
      * 
-     * @param message
      */
     protected void addMessageRow(Message message) {
         int severity = message.getSeverity();
@@ -74,12 +66,6 @@ public class MessageListTablePageElement extends AbstractSpecificTablePageElemen
                 new TextPageElement(Arrays.toString(message.getInvalidObjectProperties())) }));
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.faktorips.devtools.htmlexport.pages.elements.types.AbstractSpecificTablePageElement#
-     * getHeadline()
-     */
     @Override
     protected List<String> getHeadline() {
         List<String> headline = new ArrayList<String>();
@@ -92,14 +78,8 @@ public class MessageListTablePageElement extends AbstractSpecificTablePageElemen
         return headline;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.htmlexport.pages.elements.core.DataPageElement#isEmpty()
-     */
     @Override
     public boolean isEmpty() {
         return messageList.isEmpty();
     }
-
 }

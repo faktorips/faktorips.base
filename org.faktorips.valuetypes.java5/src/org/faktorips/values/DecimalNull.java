@@ -20,15 +20,13 @@ import java.math.BigDecimal;
  * <p>
  * Overrides all Decimal methods with appropriate NullObject behaviour, e.g. add() called on a null
  * value always returns an instance of DecimalNull.
- * <p>
- * The class is package private as the null behaviour is completly defined in {@link Decimal}.
  */
 public class DecimalNull extends Decimal implements NullObject {
 
     private static final long serialVersionUID = -662857878963625638L;
     static final String STRING_REPRESENTATION = "DecimalNull";
 
-    DecimalNull() {
+    public DecimalNull() {
         super(null);
     }
 

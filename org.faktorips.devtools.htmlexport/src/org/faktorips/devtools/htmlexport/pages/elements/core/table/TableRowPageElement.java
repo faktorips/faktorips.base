@@ -34,18 +34,11 @@ public class TableRowPageElement extends WrapperPageElement {
      * creates a {@link TableRowPageElement} with the given {@link PageElement}s as content of the
      * cells
      * 
-     * @param pageElements
      */
     public TableRowPageElement(PageElement[] pageElements) {
         super(WrapperType.TABLEROW, pageElements);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement
-     * #acceptLayouter(org.faktorips.devtools.htmlexport.generators.ILayouter)
-     */
     @Override
     public void acceptLayouter(ILayouter layouter) {
         layouter.layoutWrapperPageElement(this);
@@ -81,9 +74,6 @@ public class TableRowPageElement extends WrapperPageElement {
      * layouts the given {@link TableCellPageElement} using all {@link TablePageElementLayout}s of
      * the parent {@link TablePageElement}
      * 
-     * @param row
-     * @param column
-     * @param columnPageElement
      */
     protected void layoutTableCell(int row, int column, TableCellPageElement columnPageElement) {
         for (TablePageElementLayout tableLayout : parentTablePageElement.getLayouts()) {
@@ -101,7 +91,6 @@ public class TableRowPageElement extends WrapperPageElement {
     /**
      * sets the parentTablePageElement
      * 
-     * @param parentTablePageElement
      */
     protected void setParentTablePageElement(TablePageElement parentTablePageElement) {
         this.parentTablePageElement = parentTablePageElement;

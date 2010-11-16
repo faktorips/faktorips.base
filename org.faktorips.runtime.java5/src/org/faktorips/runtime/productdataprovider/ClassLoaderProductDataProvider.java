@@ -20,6 +20,7 @@ import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
+import org.faktorips.runtime.IVersionChecker;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
@@ -48,6 +49,12 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
     private final URL tocUrl;
 
     public ClassLoaderProductDataProvider(ClassLoader classLoader, String tocResourcePath, boolean checkTocModifications) {
+        super(new IVersionChecker() {
+
+            public boolean isCompatibleVersion(String oldVersion, String newVersion) {
+                return oldVersion.equals(newVersion);
+            }
+        });
         this.cl = classLoader;
         tocUrl = cl.getResource(tocResourcePath);
         if (tocUrl == null) {
@@ -188,7 +195,7 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
     }
 
     private void throwExceptionIfModified(String name, String timestamp) throws DataModifiedException {
-        if (checkTocModifications && !isCompatibleVersion(getVersion(), timestamp)) {
+        if (checkTocModifications && !getVersionChecker().isCompatibleVersion(getVersion(), timestamp)) {
             throw new DataModifiedException(MODIFIED_EXCEPTION_MESSAGE + name, getVersion(), timestamp);
         }
     }

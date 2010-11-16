@@ -67,6 +67,16 @@ public class MethodNames {
     public final static String GET_REPOSITORY = "getRepository";
 
     /**
+     * Use this instead of {@link #GET_REPOSITORY} when the method is in this class. This is
+     * important if the method is generated for formulas. If the formula is evaluated e.g. by
+     * groovy, we convert the keyword 'this' to a special variable to call the method on the correct
+     * object.
+     * 
+     * @see #GET_REPOSITORY
+     */
+    public final static String GET_THIS_REPOSITORY = "this." + GET_REPOSITORY;
+
+    /**
      * @see org.faktorips.runtime.IRuntimeRepository#isModifiable()
      */
     public final static String IS_MODIFIABLE = "isModifiable";

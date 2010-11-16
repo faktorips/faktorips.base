@@ -78,7 +78,7 @@
 	<!-- calls default-target of template-buildfile -->
 	<target name="buildjar"  >
 
-		<ant antfile="../../org.faktorips.build/build.xml" target="buildjarWithoutTest">
+		<ant antfile="../../org.faktorips.build/build.xml" target="buildjar">
 			<property name="projectname" value="devtools.stdbuilder" />
 			<reference refid="classpath" torefid="classpath"/>
 		</ant>

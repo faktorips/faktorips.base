@@ -71,8 +71,8 @@ public class CreateIpsArchiveTask extends AbstractIpsTask {
                 IpsPackageFragmentRoot fragmentRoot = (IpsPackageFragmentRoot)it.next();
                 IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoot(fragmentRoot.getName());
                 if (root == null) {
-                    throw new BuildException("The IpsPackageFragmentRoot: " + root.getName() + " of the IpsProject: "
-                            + ipsProjectName + " could not be found.");
+                    throw new BuildException("The IpsPackageFragmentRoot: " + fragmentRoot.getName()
+                            + " of the IpsProject: " + ipsProjectName + " could not be found.");
                 }
                 ipsPackageFragmentRoots.add(root);
             }

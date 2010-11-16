@@ -18,6 +18,7 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.ui.refactoring.UserInputWizardPage;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
@@ -70,6 +71,8 @@ abstract class IpsRefactoringUserInputPage extends UserInputWizardPage {
             ipsElementName = Messages.ElementNames_Method;
         } else if (ipsElement instanceof IType) {
             ipsElementName = Messages.ElementNames_Type;
+        } else if (ipsElement instanceof IEnumLiteralNameAttributeValue) {
+            ipsElementName = Messages.ElementNames_EnumLiteralNameAttributeValue;
         }
         return ipsElementName;
     }

@@ -30,6 +30,10 @@ public interface IPersistenceOptions {
     public static final String MAX_COLUMN_NAME_LENGTH_ATTRIBUTENAME = "maxColumnNameLength"; //$NON-NLS-1$
     public static final String ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS = "allowLazyFetchForSingleValuedAssociations"; //$NON-NLS-1$
 
+    public static final String MAX_TABLE_COLUMN_SCALE = "maxTableColumnScale"; //$NON-NLS-1$
+    public static final String MAX_TABLE_COLUMN_PRECISION = "maxTableColumnPrecision"; //$NON-NLS-1$
+    public static final String MAX_TABLE_COLUMN_SIZE = "maxTableColumnSize"; //$NON-NLS-1$
+
     /**
      * Returns the maximum length allowed for a valid database table name.
      */
@@ -80,4 +84,48 @@ public interface IPersistenceOptions {
      */
     public void setAllowLazyFetchForSingleValuedAssociations(boolean allowLazyFetchForSingleValuedAssociations);
 
+    /**
+     * Returns the maximum column size.
+     */
+    public int getMaxTableColumnSize();
+
+    /**
+     * Returns the maximum column scale.
+     */
+    public int getMaxTableColumnScale();
+
+    /**
+     * Returns the maximum column precision.
+     */
+    public int getMaxTableColumnPrecision();
+
+    /**
+     * Returns the minimum column precision.
+     */
+    public int getMinTableColumnPrecision();
+
+    /**
+     * Returns the minimum column scale.
+     */
+    public int getMinTableColumnScale();
+
+    /**
+     * Returns the minimum column size.
+     */
+    public int getMinTableColumnSize();
+
+    /**
+     * Sets the maximum column scale.
+     */
+    public void setMaxTableColumnScale(int scale);
+
+    /**
+     * Sets the maximum column precision.
+     */
+    public void setMaxTableColumnPrecision(int precision);
+
+    /**
+     * Sets the maximum column size.
+     */
+    public void setMaxTableColumnSize(int size);
 }

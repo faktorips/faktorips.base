@@ -32,29 +32,15 @@ public class LinkPageElement extends AbstractCompositePageElement {
      */
     private String path;
 
-    /**
-     * @param path
-     * @param target
-     * @param pageElements
-     */
     public LinkPageElement(String path, String target, PageElement... pageElements) {
         this(path, target);
         addPageElements(pageElements);
     }
 
-    /**
-     * @param path
-     * @param target
-     * @param text
-     */
     public LinkPageElement(String path, String target, String text) {
         this(path, target, new TextPageElement(text));
     }
 
-    /**
-     * @param path
-     * @param target
-     */
     private LinkPageElement(String path, String target) {
         this.path = path;
         this.target = target;
@@ -75,32 +61,19 @@ public class LinkPageElement extends AbstractCompositePageElement {
 
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement#acceptLayouter
-     * (org.faktorips.devtools.htmlexport.generators.ILayouter)
-     */
     @Override
     public void acceptLayouter(ILayouter layouter) {
         layouter.layoutLinkPageElement(this);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement#build()
-     */
     @Override
     public void build() {
+        // could be overridden
     }
 
     /**
      * sets the target
      * 
-     * @param target
      */
     public void setTarget(String target) {
         this.target = target;

@@ -29,13 +29,6 @@ public class IpsPackageFragmentPathUtil extends AbstractIpsElementPathUtil<IIpsP
         super(ipsElement);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.helper.path.AbstractIpsElementPathUtil#getPathFromRoot(
-     * org.faktorips.devtools.htmlexport.helper.path.LinkedFileType)
-     */
     @Override
     public String getPathFromRoot(LinkedFileType linkedFileType) {
         if (getIpsElement().isDefaultPackage()) {
@@ -44,11 +37,6 @@ public class IpsPackageFragmentPathUtil extends AbstractIpsElementPathUtil<IIpsP
         return super.getPathFromRoot(linkedFileType);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.faktorips.devtools.htmlexport.helper.path.IpsElementPathUtil#getPathToRoot()
-     */
     @Override
     public String getPathToRoot() {
         if (getIpsElement().isDefaultPackage()) {
@@ -57,28 +45,11 @@ public class IpsPackageFragmentPathUtil extends AbstractIpsElementPathUtil<IIpsP
         return getPackageFragmentPathToRoot(getIpsElement());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.helper.path.AbstractIpsElementPathUtil#getLinkText(boolean)
-     */
     @Override
     public String getLinkText(boolean withImage) {
         return IpsUIPlugin.getLabel(getIpsElement());
-        /*
-         * if (ipsPackageFragment.isDefaultPackage()) { return DEFAULT_PACKAGE_NAME; } return
-         * ipsPackageFragment.getName();
-         */
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.faktorips.devtools.htmlexport.helper.path.AbstractIpsElementPathUtil#getIpsPackageFragment
-     * ()
-     */
     @Override
     protected IIpsPackageFragment getIpsPackageFragment() {
         return getIpsElement();

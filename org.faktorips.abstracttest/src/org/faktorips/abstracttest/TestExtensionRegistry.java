@@ -251,6 +251,7 @@ public class TestExtensionRegistry implements IExtensionRegistry {
     }
 
     // @since Eclipse 3.6 (Helios)
+    // do not add @Override until 3.6 is the default target platform
     public boolean isMultiLanguage() {
         throw new RuntimeException("Not implemented");
     }

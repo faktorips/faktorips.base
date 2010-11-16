@@ -28,13 +28,20 @@ import org.w3c.dom.NodeList;
  * @author Roman Grutza
  */
 public class PersistenceOptions implements IPersistenceOptions {
-
     private ITableColumnNamingStrategy tableColumnNamingStrategy = new CamelCaseToUpperUnderscoreColumnNamingStrategy();
     private ITableNamingStrategy tableNamingStrategy = new CamelCaseToUpperUnderscoreTableNamingStrategy();
 
     private int maxColumnNameLength = 255;
     private int maxTableNameLength = 255;
     private boolean allowLazyFetchForSingleValuedAssociations = false;
+
+    private int maxTableColumnScale = 255;
+    private int maxTableColumnPrecision = 255;
+    private int maxTableColumnSize = 255;
+    // note that only the maximum could be changed in the ips-project-file, the minimum is always 1
+    private int minTableColumnScale = 1;
+    private int minTableColumnPrecision = 1;
+    private int minTableColumnSize = 1;
 
     public PersistenceOptions() {
         this(null);
@@ -46,7 +53,8 @@ public class PersistenceOptions implements IPersistenceOptions {
      * The concrete structure is:
      * 
      * <pre>
-     *       &lt;PersistenceOptions maxColumnNameLength=&quot;255&quot; maxTableNameLength=&quot;255&quot; allowLazyFetchForSingleValuedAssociations=&quot;false&quot;&gt;
+     *       &lt;PersistenceOptions maxColumnNameLength=&quot;255&quot; maxTableNameLength=&quot;255&quot; maxTableColumnPrecision=&quot;255&quot; maxTableColumnScale=&quot;255&quot; 
+     *       maxTableColumnSize=&quot;255&quot; allowLazyFetchForSingleValuedAssociations=&quot;false&quot;&gt; 
      *         &lt;TableNamingStrategy id=&quot;org.faktorips.devtools.core.CamelCaseToUpperUnderscoreTableNamingStrategy&quot; /&gt;
      *         &lt;TableColumnNamingStrategy id=&quot;org.faktorips.devtools.core.CamelCaseToUpperUnderscoreColumnNamingStrategy&quot; /&gt;
      *       &lt;/PersistenceOptions&gt;
@@ -60,6 +68,9 @@ public class PersistenceOptions implements IPersistenceOptions {
         maxTableNameLength = Integer.valueOf(element.getAttribute(MAX_TABLE_NAME_LENGTH_ATTRIBUTENAME));
         allowLazyFetchForSingleValuedAssociations = Boolean.valueOf(element
                 .getAttribute(ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS));
+        maxTableColumnSize = getValueOrDefault(element, MAX_TABLE_COLUMN_SIZE, maxTableColumnSize);
+        maxTableColumnScale = getValueOrDefault(element, MAX_TABLE_COLUMN_SCALE, maxTableColumnScale);
+        maxTableColumnPrecision = getValueOrDefault(element, MAX_TABLE_COLUMN_PRECISION, maxTableColumnPrecision);
 
         NodeList elementsByTagName = element.getElementsByTagName(ITableNamingStrategy.XML_TAG_NAME);
         if (elementsByTagName.getLength() > 0) {
@@ -76,6 +87,14 @@ public class PersistenceOptions implements IPersistenceOptions {
                 tableColumnNamingStrategy = new CamelCaseToUpperUnderscoreColumnNamingStrategy();
             }
         }
+    }
+
+    private int getValueOrDefault(Element element, String attrName, int defaultValue) {
+        String attributeValue = element.getAttribute(attrName);
+        if (attributeValue == null || attributeValue.length() == 0) {
+            return defaultValue;
+        }
+        return Integer.valueOf(attributeValue);
     }
 
     @Override
@@ -132,4 +151,48 @@ public class PersistenceOptions implements IPersistenceOptions {
         this.allowLazyFetchForSingleValuedAssociations = allowLazyFetchForSingleValuedAssociations;
     }
 
+    @Override
+    public int getMaxTableColumnScale() {
+        return maxTableColumnScale;
+    }
+
+    @Override
+    public int getMaxTableColumnPrecision() {
+        return maxTableColumnPrecision;
+    }
+
+    @Override
+    public int getMaxTableColumnSize() {
+        return maxTableColumnSize;
+    }
+
+    @Override
+    public int getMinTableColumnScale() {
+        return minTableColumnScale;
+    }
+
+    @Override
+    public int getMinTableColumnPrecision() {
+        return minTableColumnPrecision;
+    }
+
+    @Override
+    public int getMinTableColumnSize() {
+        return minTableColumnSize;
+    }
+
+    @Override
+    public void setMaxTableColumnScale(int scale) {
+        this.maxTableColumnScale = scale;
+    }
+
+    @Override
+    public void setMaxTableColumnPrecision(int precision) {
+        this.maxTableColumnPrecision = precision;
+    }
+
+    @Override
+    public void setMaxTableColumnSize(int size) {
+        this.maxTableColumnSize = size;
+    }
 }

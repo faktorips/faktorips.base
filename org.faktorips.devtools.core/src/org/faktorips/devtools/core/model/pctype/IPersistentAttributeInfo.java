@@ -26,14 +26,6 @@ import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
  * @author Roman Grutza
  */
 public interface IPersistentAttributeInfo extends IIpsObjectPart {
-
-    public static final int MAX_TABLE_COLUMN_SCALE = 255;
-    public static final int MIN_TABLE_COLUMN_SCALE = 1;
-    public static final int MAX_TABLE_COLUMN_PRECISION = 255;
-    public static final int MIN_TABLE_COLUMN_PRECISION = 1;
-    public static final int MAX_TABLE_COLUMN_SIZE = 255;
-    public static final int MIN_TABLE_COLUMN_SIZE = 1;
-
     /** The XML tag for this IPS object part. */
     public final static String XML_TAG = "PersistenceAttribute"; //$NON-NLS-1$
 

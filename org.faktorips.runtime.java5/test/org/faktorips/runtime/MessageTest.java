@@ -184,9 +184,19 @@ public class MessageTest extends XmlAbstractTestCase {
         Message msg2 = Message.newError("2", "blabla");
         assertFalse(msg.equals(msg2));
 
+        // diferent code, one code is null
+        msg2 = Message.newError(null, "blabla");
+        assertFalse(msg.equals(msg2));
+        assertFalse(msg2.equals(msg));
+
         // different text
         msg2 = Message.newError("1", "bla");
         assertFalse(msg.equals(msg2));
+
+        // different text, one text is null
+        msg2 = Message.newError("1", null);
+        assertFalse(msg.equals(msg2));
+        assertFalse(msg2.equals(msg));
 
         // different severity
         msg2 = Message.newWarning("1", "blabla");
@@ -198,6 +208,16 @@ public class MessageTest extends XmlAbstractTestCase {
 
         // no differences (no referenced object properties)
         msg2 = new Message("1", "blabla", Message.ERROR);
+        assertTrue(msg.equals(msg2));
+
+        // no difference, code is null
+        msg = Message.newError(null, "bla");
+        msg2 = Message.newError(null, "bla");
+        assertTrue(msg.equals(msg2));
+
+        // no difference, text is null
+        msg = Message.newError("1", null);
+        msg2 = Message.newError("1", null);
         assertTrue(msg.equals(msg2));
 
         // different referenced object properties (different object)

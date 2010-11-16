@@ -17,6 +17,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.faktorips.runtime.IVersionChecker;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -73,6 +74,18 @@ public abstract class AbstractProductDataProvider implements IProductDataProvide
         return builder;
     }
 
+    private final IVersionChecker versionChecker;
+
+    /**
+     * This constructor needs a {@link IVersionChecker} that is used to verify the compatibility of
+     * the product data versions
+     * 
+     * @param versionChecker the verison checker to check the product data version
+     */
+    public AbstractProductDataProvider(IVersionChecker versionChecker) {
+        this.versionChecker = versionChecker;
+    }
+
     /**
      * Getting the thread local instance of {@link DocumentBuilder}
      * 
@@ -82,18 +95,8 @@ public abstract class AbstractProductDataProvider implements IProductDataProvide
         return docBuilderHolder.get();
     }
 
-    /**
-     * Returns true if both versions are compatible. At the moment compatible means both versions
-     * are equal
-     * <p>
-     * {@inheritDoc}
-     */
-    public boolean isCompatibleVersion(String oldVersion, String newVersion) {
-        return oldVersion.equals(newVersion);
-    }
-
     public boolean isCompatibleToBaseVersion() {
-        return isCompatibleVersion(getVersion(), getBaseVersion());
+        return getVersionChecker().isCompatibleVersion(getVersion(), getBaseVersion());
     }
 
     /**
@@ -103,5 +106,12 @@ public abstract class AbstractProductDataProvider implements IProductDataProvide
      * @return the actual version of the product data
      */
     public abstract String getBaseVersion();
+
+    /**
+     * @return Returns the versionChecker.
+     */
+    public IVersionChecker getVersionChecker() {
+        return versionChecker;
+    }
 
 }

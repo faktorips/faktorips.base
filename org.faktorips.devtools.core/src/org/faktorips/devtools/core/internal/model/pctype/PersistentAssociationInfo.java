@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.util.PersistenceUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.values.ObjectUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -60,6 +61,9 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     private FetchType fetchType = FetchType.LAZY;
 
     private IIpsObjectPart policyComponentTypeAssociation;
+
+    // workaround (MBT#280), due to problem in jmerge (MBT#223)
+    private boolean manuallyCodeFixNecessary = false;
 
     public PersistentAssociationInfo(IIpsObjectPart ipsObject, String id) {
         super(ipsObject, id);
@@ -123,7 +127,14 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         }
         boolean oldValue = this.cascadeTypeOverwriteDefault;
         this.cascadeTypeOverwriteDefault = cascadeTypeOverwriteDefault;
+        checkIfManuallyCodeFixIsNecessary(oldValue, cascadeTypeOverwriteDefault);
         valueChanged(oldValue, cascadeTypeOverwriteDefault);
+    }
+
+    private void checkIfManuallyCodeFixIsNecessary(Object oldValue, Object newValue) {
+        if (!ObjectUtil.equals(oldValue, newValue)) {
+            manuallyCodeFixNecessary = true;
+        }
     }
 
     @Override
@@ -161,6 +172,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     public void setCascadeTypePersist(boolean cascadeTypePersist) {
         boolean oldValue = this.cascadeTypePersist;
         this.cascadeTypePersist = cascadeTypePersist;
+        checkIfManuallyCodeFixIsNecessary(oldValue, cascadeTypePersist);
         valueChanged(oldValue, cascadeTypePersist);
     }
 
@@ -173,6 +185,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     public void setCascadeTypeMerge(boolean cascadeTypeMerge) {
         boolean oldValue = this.cascadeTypeMerge;
         this.cascadeTypeMerge = cascadeTypeMerge;
+        checkIfManuallyCodeFixIsNecessary(oldValue, cascadeTypeMerge);
         valueChanged(oldValue, cascadeTypeMerge);
     }
 
@@ -185,6 +198,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     public void setCascadeTypeRemove(boolean cascadeTypeRemove) {
         boolean oldValue = this.cascadeTypeRemove;
         this.cascadeTypeRemove = cascadeTypeRemove;
+        checkIfManuallyCodeFixIsNecessary(oldValue, cascadeTypeRemove);
         valueChanged(oldValue, cascadeTypeRemove);
     }
 
@@ -197,6 +211,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     public void setCascadeTypeRefresh(boolean cascadeTypeRefresh) {
         boolean oldValue = this.cascadeTypeRefresh;
         this.cascadeTypeRefresh = cascadeTypeRefresh;
+        checkIfManuallyCodeFixIsNecessary(oldValue, cascadeTypeRefresh);
         valueChanged(oldValue, cascadeTypeRefresh);
     }
 
@@ -249,6 +264,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         ArgumentCheck.notNull(fetchType);
         FetchType oldValue = this.fetchType;
         this.fetchType = fetchType;
+        checkIfManuallyCodeFixIsNecessary(oldValue, fetchType);
         valueChanged(oldValue, fetchType);
     }
 
@@ -257,6 +273,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         ArgumentCheck.notNull(newJoinTableName);
         String oldValue = joinTableName;
         joinTableName = newJoinTableName;
+        checkIfManuallyCodeFixIsNecessary(oldValue, newJoinTableName);
         valueChanged(oldValue, joinTableName);
     }
 
@@ -265,6 +282,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         ArgumentCheck.notNull(newSourceColumnName);
         String oldValue = sourceColumnName;
         sourceColumnName = newSourceColumnName;
+        checkIfManuallyCodeFixIsNecessary(oldValue, sourceColumnName);
         valueChanged(oldValue, sourceColumnName);
     }
 
@@ -273,6 +291,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         ArgumentCheck.notNull(newTargetColumnName);
         String oldValue = targetColumnName;
         targetColumnName = newTargetColumnName;
+        checkIfManuallyCodeFixIsNecessary(oldValue, targetColumnName);
         valueChanged(oldValue, targetColumnName);
     }
 
@@ -281,6 +300,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         ArgumentCheck.notNull(newJoinColumnName);
         String oldValue = joinColumnName;
         joinColumnName = newJoinColumnName;
+        checkIfManuallyCodeFixIsNecessary(oldValue, joinColumnName);
         valueChanged(oldValue, joinColumnName);
     }
 
@@ -306,9 +326,11 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         valueChanged(oldValue, ownerOfManyToManyAssociation);
     }
 
+    @Override
     public void setOrphanRemoval(boolean orphanRemoval) {
         boolean oldValue = this.orphanRemoval;
         this.orphanRemoval = orphanRemoval;
+        checkIfManuallyCodeFixIsNecessary(oldValue, orphanRemoval);
         valueChanged(oldValue, orphanRemoval);
     }
 
@@ -456,7 +478,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         if (relType == RelationshipType.MANY_TO_ONE) {
             return true;
         }
-        throw new RuntimeException("'Unsupported relationship type: " + relType.toString());
+        throw new RuntimeException("'Unsupported relationship type: " + relType.toString()); //$NON-NLS-1$
     }
 
     @Override
@@ -587,7 +609,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         if ((relationshipType == RelationshipType.MANY_TO_ONE || relationshipType == RelationshipType.ONE_TO_ONE)
                 && FetchType.LAZY == getFetchType()) {
             msgList.add(new Message(MSGCODE_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS_NOT_ALLOWED,
-                    "The lazy fetch type is not supported on single valued associations sides.", Message.ERROR, this, //$NON-NLS-1$
+                    Messages.PersistentAssociationInfo_msgLazyFetchNotSupported, Message.ERROR, this,
                     IPersistentAssociationInfo.PROPERTY_FETCH_TYPE));
         }
     }
@@ -625,11 +647,9 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             }
         }
         if (transientMismatch) {
-            msgList
-                    .add(new Message(
-                            MSGCODE_TRANSIENT_MISMATCH,
-                            "If the association is marked as transient or if the persistent type is not entity, then target side must also be marked as transient and vise versa.", //$NON-NLS-1$
-                            Message.ERROR, this, IPersistentAssociationInfo.PROPERTY_TRANSIENT));
+            msgList.add(new Message(MSGCODE_TRANSIENT_MISMATCH,
+                    Messages.PersistentAssociationInfo_msgTransientMismatch, Message.ERROR, this,
+                    IPersistentAssociationInfo.PROPERTY_TRANSIENT));
             return;
         }
     }
@@ -646,11 +666,9 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
 
         // if no join table is required then mark as owner is invalid
         if (!isJoinTableRequired(inverseAssociation) && isOwnerOfManyToManyAssociation()) {
-            msgList
-                    .add(new Message(
-                            MSGCODE_OWNER_OF_ASSOCIATION_MUST_NOT_GIVEN,
-                            "Must not be marked as owning side of many-to-many association because an join table is not required.", //$NON-NLS-1$
-                            Message.ERROR, this, IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION));
+            msgList.add(new Message(MSGCODE_OWNER_OF_ASSOCIATION_MUST_NOT_GIVEN,
+                    Messages.PersistentAssociationInfo_msgOwningSideManyToManyNotAllowed, Message.ERROR, this,
+                    IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION));
             return;
         }
 
@@ -668,12 +686,12 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         if (isJoinTableRequired(inverseAssociation) && !isOwnerOfManyToManyAssociation()
                 && !inverseAssociation.getPersistenceAssociatonInfo().isOwnerOfManyToManyAssociation()) {
             msgList.add(new Message(MSGCODE_OWNER_OF_ASSOCIATION_MISMATCH,
-                    "At least one assocition must be marked as the owning side of the relationship.", Message.ERROR, //$NON-NLS-1$
-                    this, IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION));
+                    Messages.PersistentAssociationInfo_msgOwningSideMissing, Message.ERROR, this,
+                    IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION));
         } else if (isJoinTableRequired(inverseAssociation) && isOwnerOfManyToManyAssociation()
                 && inverseAssociation.getPersistenceAssociatonInfo().isOwnerOfManyToManyAssociation()) {
             msgList.add(new Message(MSGCODE_OWNER_OF_ASSOCIATION_MISMATCH,
-                    "The owning side of the relationship is marked on both sides.", Message.ERROR, this, //$NON-NLS-1$
+                    Messages.PersistentAssociationInfo_msgOwningSideManyToManyMarkedOnBothSides, Message.ERROR, this,
                     IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION));
         }
     }
@@ -681,30 +699,30 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     private void validateJoinColumn(MessageList msgList, boolean mustBeEmpty) {
         validateEmptyAndValidDatabaseIdentifier(msgList, mustBeEmpty, MSGCODE_JOIN_COLUMN_NAME_EMPTY,
                 MSGCODE_JOIN_COLUMN_NAME_INVALID, IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME, joinColumnName,
-                "join column name");
+                Messages.PersistentAssociationInfo_joinColumnName);
         if (!mustBeEmpty) {
             // validate max join column name length
-            validateMaxColumnNameLength(msgList, joinColumnName, "join column name", MSGCODE_JOIN_COLUMN_NAME_INVALID,
-                    PROPERTY_JOIN_COLUMN_NAME);
+            validateMaxColumnNameLength(msgList, joinColumnName, Messages.PersistentAssociationInfo_joinColumnName,
+                    MSGCODE_JOIN_COLUMN_NAME_INVALID, PROPERTY_JOIN_COLUMN_NAME);
         }
     }
 
     private void validateJoinTableDetails(MessageList msgList, boolean mustBeEmpty) {
         validateEmptyAndValidDatabaseIdentifier(msgList, mustBeEmpty, MSGCODE_JOIN_TABLE_NAME_EMPTY,
                 MSGCODE_JOIN_TABLE_NAME_INVALID, IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME, joinTableName,
-                "join table name");
+                Messages.PersistentAssociationInfo_joinTableName);
         validateEmptyAndValidDatabaseIdentifier(msgList, mustBeEmpty, MSGCODE_SOURCE_COLUMN_NAME_EMPTY,
                 MSGCODE_SOURCE_COLUMN_NAME_INVALID, IPersistentAssociationInfo.PROPERTY_SOURCE_COLUMN_NAME,
-                sourceColumnName, "source column name");
+                sourceColumnName, Messages.PersistentAssociationInfo_sourceColumnName);
         validateEmptyAndValidDatabaseIdentifier(msgList, mustBeEmpty, MSGCODE_TARGET_COLUMN_NAME_EMPTY,
                 MSGCODE_TARGET_COLUMN_NAME_INVALID, IPersistentAssociationInfo.PROPERTY_TARGET_COLUMN_NAME,
-                targetColumnName, "target column name");
+                targetColumnName, Messages.PersistentAssociationInfo_tagetColumnName);
 
         // validate max join table columns name source and target length
         if (!mustBeEmpty) {
-            validateMaxColumnNameLength(msgList, sourceColumnName, "source column name",
+            validateMaxColumnNameLength(msgList, sourceColumnName, Messages.PersistentAssociationInfo_sourceColumnName,
                     MSGCODE_SOURCE_COLUMN_NAME_INVALID, PROPERTY_SOURCE_COLUMN_NAME);
-            validateMaxColumnNameLength(msgList, targetColumnName, "target column name",
+            validateMaxColumnNameLength(msgList, targetColumnName, Messages.PersistentAssociationInfo_tagetColumnName,
                     MSGCODE_TARGET_COLUMN_NAME_INVALID, PROPERTY_TARGET_COLUMN_NAME);
         }
 
@@ -712,14 +730,10 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         if (!mustBeEmpty) {
             int maxTableNameLenght = getIpsProject().getProperties().getPersistenceOptions().getMaxTableNameLength();
             if (joinTableName.length() > maxTableNameLenght) {
-                msgList
-                        .add(new Message(
-                                MSGCODE_JOIN_TABLE_NAME_INVALID,
-                                NLS
-                                        .bind(
-                                                "The join table name length exceeds the maximum length defined in the persistence options. The join table name length is {0} and the maximum length is {1}.", //$NON-NLS-1$
-                                                joinTableName.length(), maxTableNameLenght), Message.ERROR, this,
-                                IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME));
+                msgList.add(new Message(MSGCODE_JOIN_TABLE_NAME_INVALID, NLS.bind(
+                        Messages.PersistentAssociationInfo_msgJoinTableNameExceedsMaximumLength,
+                        joinTableName.length(), maxTableNameLenght), Message.ERROR, this,
+                        IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME));
             }
         }
     }
@@ -732,14 +746,9 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
 
         int maxColumnNameLenght = getIpsProject().getProperties().getPersistenceOptions().getMaxColumnNameLenght();
         if (columnName.length() > maxColumnNameLenght) {
-            msgList
-                    .add(new Message(
-                            messageCode,
-                            NLS
-                                    .bind(
-                                            "The {0} length exceeds the maximum length defined in the persistence options. The length is {1} and the maximum column length is {2}.", //$NON-NLS-1$
-                                            new Object[] { propertyName, columnName.length(), maxColumnNameLenght }),
-                            Message.ERROR, this, property));
+            msgList.add(new Message(messageCode, NLS.bind(Messages.PersistentAssociationInfo_msgMaxLengthExceeds,
+                    new Object[] { propertyName, columnName.length(), maxColumnNameLenght }), Message.ERROR, this,
+                    property));
         }
     }
 
@@ -751,8 +760,14 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             String value,
             String propertyName) {
 
-        String emptyText = "The " + propertyName + " must" + (mustBeEmpty ? "" : " not") + " be empty"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-        String invalidText = propertyName + " is invalid."; //$NON-NLS-1$
+        String emptyText = null;
+        if (mustBeEmpty) {
+            emptyText = NLS.bind(Messages.PersistentAssociationInfo_msgMustBeEmpty, propertyName);
+        } else {
+            emptyText = NLS.bind(Messages.PersistentAssociationInfo_msgMustNotBeEmpty, propertyName);
+        }
+
+        String invalidText = NLS.bind(Messages.PersistentAssociationInfo_msgIsInvalid, propertyName);
         if (mustBeEmpty && !StringUtils.isEmpty(value) || !mustBeEmpty && StringUtils.isEmpty(value)) {
             msgList.add(new Message(msgCodeEmpty, emptyText, Message.ERROR, this, property));
         } else if (!mustBeEmpty && !PersistenceUtil.isValidDatabaseIdentifier(value)) {
@@ -760,4 +775,17 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         }
     }
 
+    /**
+     * Resets the flag manually code fix necessary, workaround (MBT#280)
+     */
+    public void resetManuallyCodeFixNecessary() {
+        manuallyCodeFixNecessary = false;
+    }
+
+    /**
+     * Returns <code>true</code> im manually code fixing is necessary, workaround (MBT#280)
+     */
+    public boolean isManuallyCodeFixNecessary() {
+        return manuallyCodeFixNecessary;
+    }
 }

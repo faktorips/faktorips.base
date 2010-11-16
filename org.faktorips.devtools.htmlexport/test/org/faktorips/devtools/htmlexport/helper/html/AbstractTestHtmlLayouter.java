@@ -25,7 +25,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 
 public abstract class AbstractTestHtmlLayouter extends TestCase {
 
-    HtmlLayouter layouter = new HtmlLayouter(".resources");
+    HtmlLayouter layouter = new HtmlLayouter(".resources"); //$NON-NLS-1$
 
     public AbstractTestHtmlLayouter() {
         super();
@@ -38,7 +38,6 @@ public abstract class AbstractTestHtmlLayouter extends TestCase {
     @Override
     protected void setUp() throws Exception {
         layouter.clear();
-        System.out.println("====================================================");
     }
 
     protected List<PageElement> createPageElementListe(String[] texte) {
@@ -51,7 +50,7 @@ public abstract class AbstractTestHtmlLayouter extends TestCase {
 
     protected void assertContains(String html, String... containments) {
         for (String string : containments) {
-            assertTrue("Nicht enthalten: " + string, html.contains(string));
+            assertTrue("Nicht enthalten: " + string, html.contains(string)); //$NON-NLS-1$
         }
     }
 
@@ -61,7 +60,7 @@ public abstract class AbstractTestHtmlLayouter extends TestCase {
 
         String html;
         try {
-            html = new String(generate, "UTF-8").trim();
+            html = new String(generate, "UTF-8").trim(); //$NON-NLS-1$
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }

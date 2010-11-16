@@ -24,7 +24,7 @@ import org.faktorips.devtools.htmlexport.generators.WrapperType;
  */
 public class TreeNodePageElement extends WrapperPageElement {
 
-    WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+    AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
 
     /**
      * creates a {@link TreeNodePageElement} with a PageElement as representation
