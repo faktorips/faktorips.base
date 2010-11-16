@@ -21,9 +21,11 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
@@ -462,6 +464,9 @@ public class GenAssociationTo1 extends GenAssociation {
         // note this is necessary because this getter method is used
         // to assert that a child is only related to one parent
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        if (isAlreadyDefinedInSupertype()) {
+            appendOverrideAnnotation(methodsBuilder, getIpsProject(), false);
+        }
         generateSignatureGetRefObject(methodsBuilder);
         methodsBuilder.openBracket();
         methodsBuilder.append("return ");
@@ -469,6 +474,25 @@ public class GenAssociationTo1 extends GenAssociation {
         methodsBuilder.append(getFieldNameForAssociation());
         methodsBuilder.append(";");
         methodsBuilder.closeBracket();
+    }
+
+    private boolean isAlreadyDefinedInSupertype() {
+        try {
+            IPolicyCmptType policyCmptType = getGenPolicyCmptType().getPolicyCmptType();
+            if (policyCmptType == null) {
+                return false;
+            }
+            IPolicyCmptType foundSupertype = (IPolicyCmptType)policyCmptType.findSupertype(getIpsProject());
+            if (foundSupertype == null) {
+                return false;
+            }
+            IAssociation superAssociation = foundSupertype.findAssociation(association.getTargetRoleSingular(),
+                    getIpsProject());
+            return superAssociation != null;
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            return false;
+        }
     }
 
     /**
