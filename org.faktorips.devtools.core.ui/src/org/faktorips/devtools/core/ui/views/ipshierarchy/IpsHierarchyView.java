@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.views.ipshierarchy;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -25,6 +26,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -54,7 +56,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.contexts.IContextService;
-import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.type.TypeHierarchy;
 import org.faktorips.devtools.core.model.IIpsSrcFilesChangeListener;
@@ -70,6 +71,7 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.internal.MenuAdditionsCleaner;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
+import org.faktorips.devtools.core.ui.views.AbstractShowInSupportingViewPart;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
 
@@ -78,9 +80,8 @@ import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMe
  * 
  * @author Quirin Stoll
  */
-public class IpsHierarchyView extends ViewPart implements IIpsSrcFilesChangeListener {
+public class IpsHierarchyView extends AbstractShowInSupportingViewPart implements IIpsSrcFilesChangeListener {
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchy"; //$NON-NLS-1$
-    //public static final String LOGO = "IpsHierarchyView.gif"; //$NON-NLS-1$
     protected static final String LINK_WITH_EDITOR_KEY = "linktoeditor"; //$NON-NLS-1$
     private static final String MEMENTO = "ipsHierarchyView.memento"; //$NON-NLS-1$
     private TreeViewer treeViewer;
@@ -600,4 +601,23 @@ public class IpsHierarchyView extends ViewPart implements IIpsSrcFilesChangeList
         IContextService serivce = (IContextService)getSite().getService(IContextService.class);
         serivce.activateContext("org.faktorips.devtools.core.ui.views.modelExplorer.context"); //$NON-NLS-1$
     }
+
+    @Override
+    protected ISelection getSelection() {
+        return treeViewer.getSelection();
+    }
+
+    @Override
+    protected boolean show(IAdaptable adaptable) {
+        IIpsObject ipsObject = (IIpsObject)adaptable.getAdapter(IIpsObject.class);
+        if (ipsObject == null) {
+            return false;
+        }
+        if (supports(ipsObject)) {
+            showHierarchy(ipsObject);
+            return true;
+        }
+        return false;
+    }
+
 }

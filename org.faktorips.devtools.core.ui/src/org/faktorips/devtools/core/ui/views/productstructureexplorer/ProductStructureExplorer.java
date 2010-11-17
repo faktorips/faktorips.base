@@ -18,6 +18,7 @@ import java.util.Observable;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -58,9 +59,6 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
-import org.eclipse.ui.part.IShowInSource;
-import org.eclipse.ui.part.ShowInContext;
-import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTypeAssociationReference;
@@ -91,6 +89,7 @@ import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateContentProvider;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateViewer;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
+import org.faktorips.devtools.core.ui.views.AbstractShowInSupportingViewPart;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
@@ -101,7 +100,7 @@ import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
  * @author guenther
  * 
  */
-public class ProductStructureExplorer extends ViewPart implements ContentsChangeListener, IShowInSource,
+public class ProductStructureExplorer extends AbstractShowInSupportingViewPart implements ContentsChangeListener,
         IIpsSrcFilesChangeListener {// , IPropertyChangeListener {
     /**
      * The ID of this view extension
@@ -292,7 +291,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         return new Action(Messages.ProductStructureExplorer_menuShowAssociationNodes_name, IAction.AS_CHECK_BOX) {
             @Override
             public ImageDescriptor getImageDescriptor() {
-                return IpsUIPlugin.getImageHandling().createImageDescriptor("ShowAssociationTypeNodes.gif"); //$NON-NLS-1$
+                return IpsUIPlugin.getImageHandling().createImageDescriptor("ShowAssociationTypeNodes.gif");
             }
 
             @Override
@@ -313,7 +312,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
             @Override
             public ImageDescriptor getImageDescriptor() {
-                return IpsUIPlugin.getImageHandling().createImageDescriptor("AssociationType-Association.gif"); //$NON-NLS-1$
+                return IpsUIPlugin.getImageHandling().createImageDescriptor("AssociationType-Association.gif");
             }
 
             @Override
@@ -358,7 +357,7 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         toolBarManager.add(collapseAllAction);
 
         // clear action
-        clearAction = new Action("", IpsUIPlugin.getImageHandling().createImageDescriptor("Clear.gif")) {//$NON-NLS-1$ //$NON-NLS-2$
+        clearAction = new Action("", IpsUIPlugin.getImageHandling().createImageDescriptor("Clear.gif")) {
             @Override
             public void run() {
                 productComponent = null;
@@ -428,13 +427,13 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         });
 
         prevButton = new Button(adjustmentDatePanel, SWT.NONE);
-        prevButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft_small.gif", true)); //$NON-NLS-1$
+        prevButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft_small.gif", true));
         prevButton.setToolTipText(NLS.bind(Messages.ProductStructureExplorer_prevAdjustmentToolTip,
                 generationConceptName));
         prevButton.setEnabled(false);
 
         nextButton = new Button(adjustmentDatePanel, SWT.NONE);
-        nextButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight_small.gif", true)); //$NON-NLS-1$
+        nextButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight_small.gif", true));
         nextButton.setToolTipText(NLS.bind(Messages.ProductStructureExplorer_nextAdjustmentToolTip,
                 generationConceptName));
         nextButton.setEnabled(false);
@@ -508,16 +507,16 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
 
         MenuManager menumanager = new MenuManager();
         menumanager.setRemoveAllWhenShown(false);
-        menumanager.add(new Separator("open")); //$NON-NLS-1$
+        menumanager.add(new Separator("open"));
         final IAction openAction = new OpenEditorAction(treeViewer);
         menumanager.add(openAction);
 
-        menumanager.add(new Separator("edit")); //$NON-NLS-1$
+        menumanager.add(new Separator("edit"));
         final IAction addAction = new AddLinkAction(treeViewer);
         menumanager.add(addAction);
         menumanager.add(ActionFactory.DELETE.create(getSite().getWorkbenchWindow()));
 
-        menumanager.add(new Separator("copy")); //$NON-NLS-1$
+        menumanager.add(new Separator("copy"));
         final IpsDeepCopyAction copyNewVersionAction = new IpsDeepCopyAction(getSite().getShell(), treeViewer,
                 DeepCopyWizard.TYPE_NEW_VERSION);
         menumanager.add(copyNewVersionAction);
@@ -695,9 +694,25 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
     }
 
     @Override
-    public ShowInContext getShowInContext() {
-        ShowInContext context = new ShowInContext(null, treeViewer.getSelection());
-        return context;
+    protected ISelection getSelection() {
+        return treeViewer.getSelection();
+    }
+
+    @Override
+    protected boolean show(IAdaptable adaptable) {
+        IIpsSrcFile ipsSrcFile = (IIpsSrcFile)adaptable.getAdapter(IIpsSrcFile.class);
+        if (ipsSrcFile == null) {
+            return false;
+        }
+        try {
+            if (isSupported(ipsSrcFile)) {
+                showStructure(ipsSrcFile);
+                return true;
+            }
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
+        return false;
     }
 
     private void handleCircle(CycleInProductStructureException e) {
@@ -719,11 +734,11 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         }
 
         for (int i = cyclePathCpy.length - 1; i >= 0; i--) {
-            path.append(cyclePathCpy[i] == null ? "" : cyclePathCpy[i].getName()); //$NON-NLS-1$
+            path.append(cyclePathCpy[i] == null ? "" : cyclePathCpy[i].getName());
             if (i % 2 != 0) {
-                path.append(" -> "); //$NON-NLS-1$
+                path.append(" -> ");
             } else if (i % 2 == 0 && i > 0) {
-                path.append(":"); //$NON-NLS-1$
+                path.append(":");
             }
         }
 

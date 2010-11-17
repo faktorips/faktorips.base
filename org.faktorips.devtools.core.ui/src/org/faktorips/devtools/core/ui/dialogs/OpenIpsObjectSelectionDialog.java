@@ -405,7 +405,14 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
             }
 
             IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-            IResource resource = root.getFile(new Path(fileName));
+            Path path = new Path(fileName);
+            IResource resource;
+            try {
+                resource = root.getFile(path);
+            } catch (Exception e) {
+                // If the resource is invalid we return null, the object will be removed
+                return null;
+            }
             IIpsModel ipsModel = IpsPlugin.getDefault().getIpsModel();
             IIpsElement ipsElement = ipsModel.getIpsElement(resource);
             if (ipsElement == null) {

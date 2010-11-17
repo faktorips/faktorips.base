@@ -347,6 +347,9 @@
          <adapter
                type="org.faktorips.devtools.core.model.type.IType">
          </adapter>
+         <adapter
+               type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+         </adapter>
       </factory>
       <factory
             adaptableType="org.eclipse.core.resources.IResource"

@@ -14,9 +14,10 @@
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -49,22 +50,19 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.contexts.IContextService;
-import org.eclipse.ui.part.IShowInTarget;
-import org.eclipse.ui.part.ShowInContext;
-import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.CollapseAllAction;
 import org.faktorips.devtools.core.ui.actions.TreeViewerRefreshAction;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
+import org.faktorips.devtools.core.ui.views.AbstractShowInSupportingViewPart;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 import org.faktorips.util.ArgumentCheck;
 
@@ -79,7 +77,7 @@ import org.faktorips.util.ArgumentCheck;
  * @author Stefan Widmaier
  */
 
-public class ModelExplorer extends ViewPart implements IShowInTarget {
+public class ModelExplorer extends AbstractShowInSupportingViewPart {
 
     /** Extension id of this viewer extension. */
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.modelExplorer"; //$NON-NLS-1$
@@ -338,6 +336,9 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
 
     @Override
     public void setFocus() {
+        if (treeViewer == null || treeViewer.getControl() == null || treeViewer.getControl().isDisposed()) {
+            return;
+        }
         treeViewer.getControl().setFocus();
     }
 
@@ -436,56 +437,77 @@ public class ModelExplorer extends ViewPart implements IShowInTarget {
         super.dispose();
     }
 
+    //
+    // @Override
+    // public boolean show(ShowInContext context) {
+    // ISelection selection = context.getSelection();
+    // if (selection instanceof IStructuredSelection) {
+    // IStructuredSelection structuredSelection = ((IStructuredSelection)selection);
+    // if (structuredSelection.size() >= 1) {
+    // return reveal(structuredSelection.getFirstElement());
+    // }
+    // }
+    //
+    // Object input = context.getInput();
+    // if (input instanceof IProductCmpt) {
+    // return reveal(context.getInput());
+    // } else if (input instanceof IFileEditorInput) {
+    // IFile file = ((IFileEditorInput)input).getFile();
+    // return reveal(file);
+    // }
+    //
+    // return false;
+    // }
+
     @Override
-    public boolean show(ShowInContext context) {
-        ISelection selection = context.getSelection();
-        if (selection instanceof IStructuredSelection) {
-            IStructuredSelection structuredSelection = ((IStructuredSelection)selection);
-            if (structuredSelection.size() >= 1) {
-                return reveal(structuredSelection.getFirstElement());
+    protected boolean show(IAdaptable adaptable) {
+        IIpsElement ipsElement = (IIpsElement)adaptable.getAdapter(IIpsElement.class);
+        if (ipsElement != null) {
+            if (ipsElement instanceof IIpsObject) {
+                // If the object is an IpsElement we have to get the ipsSrcFile because only the
+                // SrcFile is in the content, not the ipsObject
+                ipsElement = ((IIpsObject)ipsElement).getIpsSrcFile();
             }
+            selectAndReveal(ipsElement);
+            return true;
         }
-
-        Object input = context.getInput();
-        if (input instanceof IProductCmpt) {
-            return reveal(context.getInput());
-        } else if (input instanceof IFileEditorInput) {
-            IFile file = ((IFileEditorInput)input).getFile();
-            return reveal(file);
+        IIpsSrcFile ipsSrcFile = (IIpsSrcFile)adaptable.getAdapter(IIpsSrcFile.class);
+        if (ipsSrcFile != null) {
+            selectAndReveal(ipsSrcFile);
+            return true;
         }
-
+        IResource resource = (IResource)adaptable.getAdapter(IResource.class);
+        if (resource != null) {
+            ipsElement = IpsPlugin.getDefault().getIpsModel().getIpsElement(resource);
+            if (ipsElement != null) {
+                selectAndReveal(ipsElement);
+                return true;
+            }
+            selectAndReveal(resource);
+        }
         return false;
     }
 
-    private boolean reveal(Object toReveal) {
-        Object node;
-        if (toReveal instanceof Object[]) {
-            node = ((Object[])toReveal)[0];
-        } else {
-            node = toReveal;
-        }
-
-        if (node instanceof IProductCmptGeneration) {
-            treeViewer.setSelection(new StructuredSelection(node), true);
-            return true;
-        } else if (node instanceof IProductCmpt) {
-            treeViewer.setSelection(new StructuredSelection(node), true);
-            return true;
-        } else if (node instanceof IFile) {
-            try {
-                IIpsSrcFile file = (IIpsSrcFile)IpsPlugin.getDefault().getIpsModel().getIpsElement((IFile)node);
-                if (file == null || !file.exists()) {
-                    return false;
-                }
-                IIpsObject obj = file.getIpsObject();
-                treeViewer.setSelection(new StructuredSelection(obj), true);
-                return true;
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
+    private void selectAndReveal(Object aObject) {
+        // The reveal does not always works with the setSelection(..., true) (Eclipse 3.4)
+        treeViewer.reveal(aObject);
+        StructuredSelection selection = new StructuredSelection(aObject);
+        treeViewer.setSelection(selection, true);
+        if (!treeViewer.getSelection().equals(selection)) {
+            // If the IpsObject is not expanded yet, the parts are not loaded in the model explorer.
+            // We have to expand the IpsObject (indeed it is the IpsSrcFile) and then select the
+            // part again.
+            if (aObject instanceof IIpsObjectPart) {
+                IIpsObjectPart ipsObjectPart = (IIpsObjectPart)aObject;
+                treeViewer.expandToLevel(ipsObjectPart.getIpsSrcFile(), 1);
+                treeViewer.setSelection(selection, true);
             }
         }
+    }
 
-        return false;
+    @Override
+    protected ISelection getSelection() {
+        return treeViewer.getSelection();
     }
 
     /** Returns the content provider. */

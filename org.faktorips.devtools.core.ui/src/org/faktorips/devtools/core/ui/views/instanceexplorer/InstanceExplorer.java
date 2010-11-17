@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.views.instanceexplorer;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
@@ -24,6 +25,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -46,7 +48,6 @@ import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
-import org.eclipse.ui.part.ViewPart;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IDependency;
@@ -69,6 +70,7 @@ import org.faktorips.devtools.core.ui.internal.MenuAdditionsCleaner;
 import org.faktorips.devtools.core.ui.views.InstanceIpsSrcFileViewItem;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
+import org.faktorips.devtools.core.ui.views.AbstractShowInSupportingViewPart;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
 import org.w3c.dom.Element;
 
@@ -86,7 +88,7 @@ import org.w3c.dom.Element;
  * 
  */
 
-public class InstanceExplorer extends ViewPart implements IIpsSrcFilesChangeListener {
+public class InstanceExplorer extends AbstractShowInSupportingViewPart implements IIpsSrcFilesChangeListener {
 
     /**
      * Extension id of this viewer extension.
@@ -630,5 +632,27 @@ public class InstanceExplorer extends ViewPart implements IIpsSrcFilesChangeList
             return new IDependency[0];
         }
 
+    }
+
+    @Override
+    protected ISelection getSelection() {
+        return tableViewer.getSelection();
+    }
+
+    @Override
+    protected boolean show(IAdaptable adaptable) {
+        IIpsObject ipsObject = (IIpsObject)adaptable.getAdapter(IIpsObject.class);
+        if (ipsObject == null) {
+            return false;
+        }
+        try {
+            if (supports(ipsObject)) {
+                showInstancesOf(ipsObject);
+                return true;
+            }
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
+        return false;
     }
 }

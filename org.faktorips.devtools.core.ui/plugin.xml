@@ -226,7 +226,7 @@
             defaultHandler="org.faktorips.devtools.core.ui.commands.ShowInstanceHandler"
             description="%ShowInstanceAction_descriptionForTypes"
             id="org.faktorips.devtools.core.ui.commands.showInstanceAction"
-            name="%ShowInstanceExplorerAction.name">
+            name="%ShowInstanceAction_nameForTypes">
       </command>
       <command
             defaultHandler="org.faktorips.devtools.core.ui.commands.ShowInstanceHandler"
@@ -243,7 +243,7 @@
             defaultHandler="org.faktorips.devtools.core.ui.commands.SearchReferencesHandler"
             description="%SearchReferencesAction_description"
             id="org.faktorips.devtools.core.ui.commands.searchReferencesAction"
-            name="%SearchProductReferencesAction_name">
+            name="%SearchReferencesAction_name">
       </command>
    </extension>
    <extension
@@ -353,6 +353,18 @@
                standalone="false"
                visible="false">
          </view>
+         <showInPart
+               id="org.faktorips.devtools.core.ui.views.productStructureExplorer">
+         </showInPart>
+         <showInPart
+               id="org.faktorips.devtools.core.ui.views.modelExplorer">
+         </showInPart>
+         <showInPart
+               id="org.faktorips.devtools.core.ui.views.instanceexplorer">
+         </showInPart>
+         <showInPart
+               id="org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchy">
+         </showInPart>
       </perspectiveExtension>
       <perspectiveExtension
             targetID="org.faktorips.devtools.core.productDefinitionPerspective">
@@ -454,6 +466,15 @@
                standalone="false"
                visible="false">
          </view>
+         <showInPart
+               id="org.faktorips.devtools.core.ui.views.productDefinitionExplorer">
+         </showInPart>
+         <showInPart
+               id="org.faktorips.devtools.core.ui.views.instanceexplorer">
+         </showInPart>
+         <showInPart
+               id="org.faktorips.devtools.core.ui.views.productStructureExplorer">
+         </showInPart>
       </perspectiveExtension>
    </extension>
    <extension point="org.eclipse.ui.popupMenus">
@@ -962,7 +983,14 @@
             </adapt>
          </enabledWhen>
         </page>
-	  
+	    <page
+	          class="org.eclipse.ui.internal.ide.dialogs.ResourceInfoPage"
+	          id="org.faktorips.devtools.core.ui.propertyPages.IpsObjectResourceInfoPage"
+	          name="%org.faktorips.ipsobjectresourceinfopropertypage">
+	          <enabledWhen>
+	            <adapt type="org.faktorips.devtools.core.model.IIpsElement"/>
+	          </enabledWhen>
+	    </page>
     </extension> 
     
 <!-- 
@@ -1033,7 +1061,7 @@
             class="org.faktorips.devtools.core.ui.views.instanceexplorer.InstanceExplorer"
             icon="icons/InstanceExplorer.gif"
             id="org.faktorips.devtools.core.ui.views.instanceexplorer"
-            name="Instance-Explorer">
+            name="%InstanceExplorerTitle">
       </view>
       <view
             allowMultiple="false"
@@ -1041,7 +1069,7 @@
             class="org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchyView"
             icon="icons/IpsHierarchyView.gif"
             id="org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchy"
-            name="IPS Hierarchy"
+            name="%IpsHierarchyTitle"
             restorable="true">
       </view>
    </extension>
@@ -1172,18 +1200,6 @@
                </with>
             </enablement>
          </contextualLaunch>
-         <perspective
-               id="org.eclipse.jdt.ui.JavaPerspective">
-         </perspective>
-         <perspective
-               id="org.eclipse.jdt.ui.JavaHierarchyPerspective">
-         </perspective>
-         <perspective
-               id="org.eclipse.jdt.ui.JavaBrowsingPerspective">
-         </perspective>
-         <perspective
-               id="org.eclipse.debug.ui.DebugPerspective">
-         </perspective>
       </shortcut>
    </extension>
    <extension

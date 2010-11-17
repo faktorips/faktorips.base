@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.adapter;
 
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -37,6 +38,10 @@ public class IpsObjectPartContainerAdapterFactory extends AbstractIpsAdapterFact
             return adaptToIpsSrcFile(adaptableObject);
         }
 
+        if (IIpsObject.class.equals(adapterType)) {
+            return adaptToIpsObject(adaptToIpsSrcFile(adaptableObject));
+        }
+
         if (IProductCmpt.class.equals(adapterType)) {
             return adaptToProductCmpt(adaptToIpsSrcFile(adaptableObject));
         }
@@ -54,7 +59,7 @@ public class IpsObjectPartContainerAdapterFactory extends AbstractIpsAdapterFact
 
     @Override
     public Class<?>[] getAdapterList() {
-        return new Class[] { IIpsSrcFile.class, IProductCmpt.class, IType.class };
+        return new Class[] { IIpsSrcFile.class, IIpsObject.class, IProductCmpt.class, IType.class };
     }
 
 }
