@@ -123,7 +123,7 @@ public abstract class IpsPartEditDialog extends EditDialog {
         GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
         layoutData.minimumHeight = 120;
         labelGroup.setLayoutData(layoutData);
-        new LabelEditComposite(labelGroup, (ILabeledElement)part);
+        new LabelEditComposite(labelGroup, (ILabeledElement)part, uiToolkit);
         Group descriptionGroup = uiToolkit.createGroup(composite, Messages.IpsPartEditDialog_groupDescription);
         new DescriptionEditComposite(descriptionGroup, (IDescribedElement)part, uiToolkit);
 
@@ -135,7 +135,7 @@ public abstract class IpsPartEditDialog extends EditDialog {
     }
 
     private TabItem createLabelTabItem(TabFolder folder) {
-        Composite editComposite = new LabelEditComposite(folder, (ILabeledElement)part);
+        Composite editComposite = new LabelEditComposite(folder, (ILabeledElement)part, uiToolkit);
 
         TabItem item = new TabItem(folder, SWT.NONE);
         item.setText(Messages.IpsPartEditDialog_tabItemLabel);

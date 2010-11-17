@@ -56,10 +56,13 @@ public final class LabelEditComposite extends Composite {
 
     private final TableViewer tableViewer;
 
-    public LabelEditComposite(Composite parent, ILabeledElement labeledElement) {
+    private final UIToolkit toolkit;
+
+    public LabelEditComposite(Composite parent, ILabeledElement labeledElement, UIToolkit toolkit) {
         super(parent, SWT.NONE);
 
         this.labeledElement = labeledElement;
+        this.toolkit = toolkit;
 
         createLayout();
         tableViewer = createTableViewer();
@@ -114,12 +117,11 @@ public final class LabelEditComposite extends Composite {
     private void createTableCellEditors(TableViewer tableViewer) {
         ValueDatatype datatype = ValueDatatype.STRING;
         ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
-        UIToolkit uiToolkit = new UIToolkit(null);
 
         int numberCellEditors = labeledElement.isPluralLabelSupported() ? 3 : 2;
         final IpsCellEditor[] cellEditors = new IpsCellEditor[numberCellEditors];
         for (int i = 0; i < cellEditors.length; i++) {
-            cellEditors[i] = controlFactory.createTableCellEditor(uiToolkit, datatype, null, tableViewer, i, null);
+            cellEditors[i] = controlFactory.createTableCellEditor(toolkit, datatype, null, tableViewer, i, null);
             TableViewerTraversalStrategy traversalStrategy = (TableViewerTraversalStrategy)cellEditors[i]
                     .getTraversalStrategy();
             traversalStrategy.setRowCreating(false);

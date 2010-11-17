@@ -170,7 +170,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
     private TabItem createLabelAndDescriptionTabItem(TabFolder folder) {
         Composite composite = uiToolkit.createGridComposite(folder, 1, true, true);
         Group labelGroup = uiToolkit.createGroup(composite, Messages.IpsPartEditDialog_groupLabel);
-        labelEditComposite = new LabelEditComposite(labelGroup, (ILabeledElement)part);
+        labelEditComposite = new LabelEditComposite(labelGroup, (ILabeledElement)part, uiToolkit);
         Group descriptionGroup = uiToolkit.createGroup(composite, Messages.IpsPartEditDialog_groupDescription);
         new DescriptionEditComposite(descriptionGroup, (IDescribedElement)part, uiToolkit);
 
@@ -193,7 +193,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
     }
 
     private TabItem createLabelTabItem(TabFolder folder) {
-        labelEditComposite = new LabelEditComposite(folder, (ILabeledElement)part);
+        labelEditComposite = new LabelEditComposite(folder, (ILabeledElement)part, uiToolkit);
 
         TabItem item = new TabItem(folder, SWT.NONE);
         item.setText(Messages.IpsPartEditDialog_tabItemLabel);

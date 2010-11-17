@@ -60,7 +60,7 @@ class LabelAndDescriptionPage extends IpsObjectEditorPage {
 
         @Override
         protected void initClientComposite(Composite client, UIToolkit toolkit) {
-            labelEditComposite = new LabelEditComposite(client, labeledElement);
+            labelEditComposite = new LabelEditComposite(client, labeledElement, toolkit);
         }
 
         @Override
