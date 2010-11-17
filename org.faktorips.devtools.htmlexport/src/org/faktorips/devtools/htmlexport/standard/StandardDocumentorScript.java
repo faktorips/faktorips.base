@@ -122,8 +122,9 @@ public class StandardDocumentorScript implements IDocumentorScript {
     private void writePackagesClassesPage(DocumentorConfiguration config,
             IIpsPackageFragment ipsPackageFragment,
             List<IIpsSrcFile> srcFiles) {
+        boolean shownTypeChooser = false; // TODO auf true, wenn fertig
         IpsElementListPageElement allClassesPage = new IpsElementListPageElement(ipsPackageFragment, srcFiles,
-                new IpsElementInIIpsPackageFilter(ipsPackageFragment), config, true);
+                new IpsElementInIIpsPackageFilter(ipsPackageFragment), config, shownTypeChooser);
         allClassesPage.setLinkTarget("content"); //$NON-NLS-1$
         allClassesPage.build();
         FileHandler.writeFile(config, STANDARD_PATH
