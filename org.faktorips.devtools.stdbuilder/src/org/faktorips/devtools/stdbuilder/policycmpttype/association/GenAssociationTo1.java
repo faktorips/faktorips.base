@@ -486,9 +486,15 @@ public class GenAssociationTo1 extends GenAssociation {
             if (foundSupertype == null) {
                 return false;
             }
-            IAssociation superAssociation = foundSupertype.findAssociation(association.getTargetRoleSingular(),
-                    getIpsProject());
-            return superAssociation != null;
+            IPolicyCmptTypeAssociation superAssociation = (IPolicyCmptTypeAssociation)foundSupertype.findAssociation(
+                    association.getTargetRoleSingular(), getIpsProject());
+            if (superAssociation == null) {
+                return false;
+            }
+            if (superAssociation.isInverseOfDerivedUnion()) {
+                return false;
+            }
+            return true;
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return false;
