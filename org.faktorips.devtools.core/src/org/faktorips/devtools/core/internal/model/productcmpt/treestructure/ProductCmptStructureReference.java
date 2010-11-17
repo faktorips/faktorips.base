@@ -84,7 +84,11 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
 
     @Override
     public IIpsSrcFile getWrappedIpsSrcFile() {
-        return getWrappedIpsObject().getIpsSrcFile();
+        if (getWrappedIpsObject() != null) {
+            return getWrappedIpsObject().getIpsSrcFile();
+        } else {
+            return null;
+        }
     }
 
     @Override

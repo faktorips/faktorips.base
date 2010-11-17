@@ -96,6 +96,9 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement {
     @SuppressWarnings("unchecked")
     // IAdaptable uses unchecked Class
     public Object getAdapter(Class adapterType) {
+        // TODO this code is getting deprecated. The adapters should be handled in
+        // IpsElementAdapterFactory
+
         if (adapterType == null) {
             return null;
         }
@@ -103,6 +106,7 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement {
         if (adapterType.isInstance(enclosingResource)) {
             return enclosingResource;
         }
+        // TODO the adaptation to ResourceMapping have to be moved to the IpsElementAdapterFactory.
         if (adapterType.equals(ResourceMapping.class)) {
             return new IpsElementResourceMapping(this);
         }

@@ -56,6 +56,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
     private Map<IProductCmptStructureReference, IIpsSrcFile> handleMap;
     private IProductCmpt copiedRoot;
     private boolean createEmptyTableContents = false;
+    private IIpsPackageFragmentRoot ipsPackageFragmentRoot;
 
     /**
      * Creates a new operation to copy the given product components.
@@ -71,6 +72,10 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
         this.toCopy = toCopy;
         this.toRefer = toRefer;
         this.handleMap = handleMap;
+    }
+
+    public void setIpsPackageFragmentRoot(IIpsPackageFragmentRoot ipsPackageFragmentRoot) {
+        this.ipsPackageFragmentRoot = ipsPackageFragmentRoot;
     }
 
     /**
@@ -344,9 +349,8 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
      */
     private IIpsPackageFragment createTargetPackage(IIpsSrcFile file, IProgressMonitor monitor) throws CoreException {
         IIpsPackageFragment result;
-        IIpsPackageFragmentRoot root = file.getIpsPackageFragment().getRoot();
         String path = file.getIpsPackageFragment().getRelativePath().toString().replace('/', '.');
-        result = root.createPackageFragment(path, false, monitor);
+        result = ipsPackageFragmentRoot.createPackageFragment(path, false, monitor);
         return result;
     }
 

@@ -11,33 +11,50 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui;
+package org.faktorips.devtools.core.internal.model.adapter;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdapterFactory;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 
-public class IpsElementResourceAdapterFactory implements IAdapterFactory {
+/**
+ * This {@link IAdapterFactory} is able to adapt {@link IIpsElement}s to other objects like
+ * {@link IResource}
+ * 
+ * @author dirmeier
+ */
+public class IpsElementAdapterFactory implements IAdapterFactory {
 
     @SuppressWarnings("unchecked")
-    // eclipse api is not type safe
+    // the eclipse API is not generified
     @Override
     public Object getAdapter(Object adaptableObject, Class adapterType) {
-        if (adaptableObject instanceof IIpsElement) {
-            IIpsElement ipsElement = (IIpsElement)adaptableObject;
-            IResource corrResource = ipsElement.getCorrespondingResource();
-            if (corrResource != null && adapterType.isAssignableFrom(corrResource.getClass())) {
-                return corrResource;
+        if (!(adaptableObject instanceof IIpsElement)) {
+            return null;
+        }
+
+        IIpsElement ipsElement = (IIpsElement)adaptableObject;
+
+        try {
+            IResource enclosingResource = ipsElement.getEnclosingResource();
+            if (adapterType.isInstance(enclosingResource)) {
+                return enclosingResource;
             }
+        } catch (Exception e) {
+            IpsPlugin.log(e);
         }
         return null;
     }
 
     @SuppressWarnings("unchecked")
-    // eclipse api is not type safe
+    // the eclipse API is not generified
     @Override
     public Class[] getAdapterList() {
-        return new Class[] { IResource.class };
+        return new Class[] { IResource.class, IProject.class, IFolder.class, IFile.class };
     }
 
 }

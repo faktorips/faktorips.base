@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?pde version="3.4"?>
+<?pde version="3.5"?>
 
-<product name="Faktor-IPS" id="org.faktorips.devtools.core.FaktorIPS" application="org.faktorips.devtools.core.productDefinitionTool" version="FAKTOR_IPS_DO_NOT_CHANGE_0.0.0" useFeatures="true">
+<product name="Faktor-IPS" id="org.faktorips.devtools.core.FaktorIPS" application="org.faktorips.devtools.core.productDefinitionTool" version="FAKTOR_IPS_DO_NOT_CHANGE_0.0.0" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.faktorips.devtools.core/icons/FaktorIpsIcon128.gif"/>
@@ -14,8 +14,8 @@
    </configIni>
 
    <launcherArgs>
-	<vmArgs>-Xms40m
--Xmx512m</vmArgs>   
+      <vmArgs>-Xms40m
+-Xmx512m</vmArgs>
    </launcherArgs>
 
    <windowImages i16="/org.faktorips.devtools.core/icons/FaktorIpsIcon16.gif" i32="/org.faktorips.devtools.core/icons/FaktorIpsIcon32.gif"/>
@@ -39,12 +39,14 @@
    </plugins>
 
    <features>
-      <feature id="org.faktorips.feature" version="0.0.0"/>
-      <feature id="org.eclipse.emf" version="0.0.0"/>
-      <feature id="org.eclipse.jdt" version="0.0.0"/>
-      <feature id="org.eclipse.platform" version="0.0.0"/>
-      <feature id="org.eclipse.rcp" version="0.0.0"/>
-      <feature id="org.eclipse.cvs" version="0.0.0"/>
-      <feature id="org.eclipse.gef" version="0.0.0"/>
+      <feature id="org.faktorips.feature"/>
+      <feature id="org.eclipse.emf"/>
+      <feature id="org.eclipse.jdt"/>
+      <feature id="org.eclipse.platform"/>
+      <feature id="org.eclipse.rcp"/>
+      <feature id="org.eclipse.cvs"/>
+      <feature id="org.eclipse.gef"/>
    </features>
+
+
 </product>

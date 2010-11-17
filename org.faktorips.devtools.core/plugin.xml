@@ -380,6 +380,22 @@
                type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
          </adapter>
       </factory>
+      <factory
+            adaptableType="org.faktorips.devtools.core.model.IIpsElement"
+            class="org.faktorips.devtools.core.internal.model.adapter.IpsElementAdapterFactory">
+         <adapter
+               type="org.eclipse.core.resources.IResource">
+         </adapter>
+         <adapter
+               type="org.eclipse.core.resources.IProject">
+         </adapter>
+         <adapter
+               type="org.eclipse.core.resources.IFolder">
+         </adapter>
+         <adapter
+               type="org.eclipse.core.resources.IFile">
+         </adapter>
+      </factory>
    </extension>
    <extension
          point="org.faktorips.devtools.core.productComponentNamingStrategy">

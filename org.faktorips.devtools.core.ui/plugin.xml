@@ -983,14 +983,6 @@
             </adapt>
          </enabledWhen>
         </page>
-	    <page
-	          class="org.eclipse.ui.internal.ide.dialogs.ResourceInfoPage"
-	          id="org.faktorips.devtools.core.ui.propertyPages.IpsObjectResourceInfoPage"
-	          name="%org.faktorips.ipsobjectresourceinfopropertypage">
-	          <enabledWhen>
-	            <adapt type="org.faktorips.devtools.core.model.IIpsElement"/>
-	          </enabledWhen>
-	    </page>
     </extension> 
     
 <!-- 
@@ -1696,7 +1688,7 @@
                            type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
                         <test
                               forcePluginActivation="true"
-                              property="org.faktorips.devtools.core.ui.propertyTester1.isModelObject">
+                              property="org.faktorips.devtools.core.ui.ModelObjectTester.isModelObject">
                         </test>
                      </adapt>
                   </iterate>
@@ -1720,7 +1712,7 @@
                            type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
                         <test
                               forcePluginActivation="true"
-                              property="org.faktorips.devtools.core.ui.propertyTester1.isModelObject">
+                              property="org.faktorips.devtools.core.ui.ModelObjectTester.isModelObject">
                         </test>
                      </adapt>
                   </iterate>
@@ -1745,7 +1737,7 @@
                         <not>
                            <test
                                  forcePluginActivation="true"
-                                 property="org.faktorips.devtools.core.ui.propertyTester1.isModelObject">
+                                 property="org.faktorips.devtools.core.ui.ModelObjectTester.isModelObject">
                            </test>
                         </not>
                      </adapt>
@@ -1790,7 +1782,7 @@
                         <not>
                            <test
                                  forcePluginActivation="true"
-                                 property="org.faktorips.devtools.core.ui.propertyTester1.isModelObject">
+                                 property="org.faktorips.devtools.core.ui.ModelObjectTester.isModelObject">
                            </test>
                         </not>
                      </adapt>
@@ -1800,16 +1792,6 @@
          </command>
       </menuContribution>
    </extension>
-      <extension
-            point="org.eclipse.core.runtime.adapters">
-         <factory
-               adaptableType="org.faktorips.devtools.core.model.IIpsElement"
-               class="org.faktorips.devtools.core.ui.IpsElementResourceAdapterFactory">
-            <adapter
-                  type="org.eclipse.core.resources.IResource">
-            </adapter>
-         </factory>
-      </extension>
       <extension
             point="org.eclipse.ui.contexts">
          <context
@@ -1823,8 +1805,8 @@
             point="org.eclipse.core.expressions.propertyTesters">
          <propertyTester
                class="org.faktorips.devtools.core.ui.commands.ModelObjectTester"
-               id="org.faktorips.devtools.core.ui.propertyTester1"
-               namespace="org.faktorips.devtools.core.ui.propertyTester1"
+               id="org.faktorips.devtools.core.ui.ModelObjectTester"
+               namespace="org.faktorips.devtools.core.ui.ModelObjectTester"
                properties="isModelObject"
                type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
          </propertyTester>

@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
@@ -86,10 +87,11 @@ public class DeepCopyPreview {
         IProductCmptStructureReference[] toCopy = getProductCmptStructRefToCopy();
         int segmentsToIgnore = sourcePage.getSegmentsToIgnore(toCopy);
         IIpsPackageFragment base = sourcePage.getTargetPackage();
+        IIpsPackageFragmentRoot root = sourcePage.getIIpsPackageFragmentRoot();
 
         Hashtable<IProductCmptStructureReference, String> errors = new Hashtable<IProductCmptStructureReference, String>(
                 1);
-        validateTarget(ref, segmentsToIgnore, base, errors);
+        validateTarget(ref, segmentsToIgnore, root, base, errors);
         return errors.size() == 1;
     }
 
@@ -108,9 +110,10 @@ public class DeepCopyPreview {
         IProductCmptStructureReference[] toCopy = getProductCmptStructRefToCopy();
         int segmentsToIgnore = sourcePage.getSegmentsToIgnore(toCopy);
         IIpsPackageFragment base = sourcePage.getTargetPackage();
+        IIpsPackageFragmentRoot root = sourcePage.getIIpsPackageFragmentRoot();
 
         for (IProductCmptStructureReference element : toCopy) {
-            validateTarget(element, segmentsToIgnore, base, errorElements);
+            validateTarget(element, segmentsToIgnore, root, base, errorElements);
         }
 
         MessageList validationResult = new MessageList();
@@ -128,6 +131,7 @@ public class DeepCopyPreview {
 
     private void validateTarget(IProductCmptStructureReference modified,
             int segmentsToIgnore,
+            IIpsPackageFragmentRoot root,
             IIpsPackageFragment base,
             Hashtable<IProductCmptStructureReference, String> errorElements) {
         if (base == null || !base.getRoot().exists()) {
@@ -137,7 +141,7 @@ public class DeepCopyPreview {
 
         StringBuffer message = new StringBuffer();
         String packageName = buildTargetPackageName(base, correspondingIpsObject, segmentsToIgnore);
-        IIpsPackageFragment targetPackage = base.getRoot().getIpsPackageFragment(packageName);
+        IIpsPackageFragment targetPackage = root.getIpsPackageFragment(packageName);
         String newName = getNewName(targetPackage, correspondingIpsObject);
         oldObject2newNameMap.put(modified, newName);
         if (targetPackage.exists()) {
@@ -282,10 +286,10 @@ public class DeepCopyPreview {
                 newName = namingStrategy.getProductCmptName(namingStrategy.getKindId(newName), sourcePage.getVersion());
             }
         }
-        if (kindId == null) {
+        if (kindId == null && uniqueCopyOfCounter > 0) {
             // could't determine kind id, thus add copy of in front of the name
             // to get an unique new name
-            newName = org.faktorips.devtools.core.util.StringUtils.computeCopyOfName(uniqueCopyOfCounter, newName);
+            newName = org.faktorips.devtools.core.util.StringUtils.computeCopyOfName(uniqueCopyOfCounter - 1, newName);
         }
 
         if (deepCopyWizard.getType() == DeepCopyWizard.TYPE_COPY_PRODUCT) {
@@ -370,10 +374,13 @@ public class DeepCopyPreview {
      * point to non-existing resources or, if this condition can not be performed, a CoreException
      * is thrown.
      * 
+     * @param ipsPackageFragmentRoot
+     * 
      * @throws CoreException if any error exists (e.g. naming collisions).
      */
-    public Map<IProductCmptStructureReference, IIpsSrcFile> getHandles() throws CoreException {
-        deepCopyWizard.logTraceStart("getHandles"); //$NON-NLS-1$
+    public Map<IProductCmptStructureReference, IIpsSrcFile> getHandles(IIpsPackageFragmentRoot ipsPackageFragmentRoot)
+            throws CoreException {
+        deepCopyWizard.logTraceStart("getHandles");
 
         if (!isValid()) {
             StringBuffer message = new StringBuffer();
@@ -395,7 +402,7 @@ public class DeepCopyPreview {
             IIpsObject correspondingIpsObject = sourcePage.getCorrespondingIpsObject(element);
 
             String packageName = buildTargetPackageName(base, correspondingIpsObject, segmentsToIgnore);
-            IIpsPackageFragment targetPackage = base.getRoot().getIpsPackageFragment(packageName);
+            IIpsPackageFragment targetPackage = ipsPackageFragmentRoot.getIpsPackageFragment(packageName);
 
             IIpsSrcFile file = getNewIpsSrcFile(targetPackage, correspondingIpsObject);
 
