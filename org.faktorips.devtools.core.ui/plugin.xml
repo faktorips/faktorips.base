@@ -217,29 +217,34 @@
             id="org.faktorips.devtools.core.launchIpsTest.debug">
       </command>
       <command
+            categoryId="org.faktorips.devtools.core.ui.category.navigate"
             defaultHandler="org.faktorips.devtools.core.ui.commands.ShowHierarchyHandler"
             description="%ShowHierarchyHandler.tooltip"
             id="org.faktorips.devtools.core.ui.commands.showHierarchy"
             name="%ShowHierarchyHandler.name">
       </command>
       <command
+            categoryId="org.faktorips.devtools.core.ui.category.navigate"
             defaultHandler="org.faktorips.devtools.core.ui.commands.ShowInstanceHandler"
             description="%ShowInstanceAction_descriptionForTypes"
             id="org.faktorips.devtools.core.ui.commands.showInstanceAction"
             name="%ShowInstanceAction_nameForTypes">
       </command>
       <command
+            categoryId="org.faktorips.devtools.core.ui.category.navigate"
             defaultHandler="org.faktorips.devtools.core.ui.commands.ShowInstanceHandler"
             id="org.faktorips.devtools.core.ui.commands.showInstanceAction.instances"
             name="%ShowInstanceAction_nameForInstances">
       </command>
       <command
+            categoryId="org.faktorips.devtools.core.ui.category.navigate"
             defaultHandler="org.faktorips.devtools.core.ui.commands.ShowStructureHandler"
             description="%ShowStructureAction_description"
             id="org.faktorips.devtools.core.ui.commands.showStructureAction"
             name="%ShowStructureAction_name">
       </command>
       <command
+            categoryId="org.faktorips.devtools.core.ui.category.navigate"
             defaultHandler="org.faktorips.devtools.core.ui.commands.SearchReferencesHandler"
             description="%SearchReferencesAction_description"
             id="org.faktorips.devtools.core.ui.commands.searchReferencesAction"
