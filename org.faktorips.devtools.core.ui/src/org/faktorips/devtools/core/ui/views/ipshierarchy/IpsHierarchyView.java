@@ -69,9 +69,9 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.internal.MenuAdditionsCleaner;
+import org.faktorips.devtools.core.ui.views.AbstractShowInSupportingViewPart;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
-import org.faktorips.devtools.core.ui.views.AbstractShowInSupportingViewPart;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
 
@@ -168,7 +168,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
         {
             @Override
             public void run() {
-                showHierarchy((hierarchyContentProvider.getTypeHierarchy().getType()));
+                showHierarchy(((ITypeHierarchy)treeViewer.getInput()).getType());
             }
 
             @Override
@@ -264,14 +264,15 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
      */
     public void showHierarchy(final IIpsObject element) {
         if (element instanceof IType && element.getEnclosingResource().isAccessible()) {
-            display.asyncExec(new Runnable() {
-                @Override
-                public void run() {
-                    selected.setText(""); //$NON-NLS-1$
-                    treeViewer.setInput(getWaitingLabel());
-                    updateView();
-                }
-            });
+            // TODO: Waiting label is currenty deactivated. Check if we do need some
+            // display.asyncExec(new Runnable() {
+            // @Override
+            // public void run() {
+            //                     selected.setText(""); //$NON-NLS-1$
+            // treeViewer.setInput(getWaitingLabel());
+            // updateView();
+            // }
+            // });
             IType iType = (IType)element;
             BuildingHierarchyJob job = new BuildingHierarchyJob(iType);
             job.schedule();
@@ -300,11 +301,9 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
                 ITypeHierarchy hierarchy = (ITypeHierarchy)element;
                 showMessgeOrTableView(MessageTableSwitch.TABLE);
                 enableButtons(true);
-                int level = 1;
                 IType type = hierarchy.getType();
-                treeViewer.expandToLevel(type, level);
+                treeViewer.expandAll();
                 treeViewer.setSelection(new StructuredSelection(type), true);
-                treeViewer.refresh();
                 selected.setText(type.getName());
             }
         }
@@ -349,7 +348,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
     @Override
     public void ipsSrcFilesChanged(IpsSrcFilesChangedEvent event) {
         Set<IIpsSrcFile> changedIpsSrcFiles = event.getChangedIpsSrcFiles();
-        ITypeHierarchy hierarchyTreeViewer = hierarchyContentProvider.getTypeHierarchy();
+        ITypeHierarchy hierarchyTreeViewer = (ITypeHierarchy)treeViewer.getInput();
         if (hierarchyTreeViewer != null) {
             try {
                 if (changedIpsSrcFiles.size() > 0) {
