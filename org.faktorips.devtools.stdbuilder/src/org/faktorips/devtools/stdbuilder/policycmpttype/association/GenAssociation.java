@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
+import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.type.GenType;
 import org.faktorips.devtools.stdbuilder.type.GenTypePart;
 import org.faktorips.util.LocalizedStringsSet;
@@ -429,6 +430,11 @@ public abstract class GenAssociation extends GenTypePart {
     protected void generateMethodGetRefObjectsByQualifierForNonDerivedUnion(JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        GenProductCmptType generator = getGenType().getBuilderSet().getGenerator(
+                association.findQualifier(getIpsProject()));
+        if (generator == null) {
+            return;
+        }
         generateSignatureGetRefObjectByQualifier(methodsBuilder);
         IPolicyCmptType target = association.findTargetPolicyCmptType(getIpsProject());
         String className = getQualifiedClassName(target, true);
@@ -482,8 +488,7 @@ public abstract class GenAssociation extends GenTypePart {
         methodsBuilder.append("if(");
         methodsBuilder.append(pcTypeLocalVariable);
         methodsBuilder.append('.');
-        methodsBuilder.append(getGenType().getBuilderSet().getGenerator(association.findQualifier(getIpsProject()))
-                .getMethodNameGetProductCmpt());
+        methodsBuilder.append(generator.getMethodNameGetProductCmpt());
         methodsBuilder.append("().equals(qualifier))");
         methodsBuilder.openBracket();
         if (association.is1ToManyIgnoringQualifier()) {
@@ -564,6 +569,11 @@ public abstract class GenAssociation extends GenTypePart {
             throws CoreException {
 
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        GenProductCmptType generator = getGenType().getBuilderSet().getGenerator(
+                association.findQualifier(getIpsProject()));
+        if (generator == null) {
+            return;
+        }
         generateSignatureGetRefObjectByQualifier(methodsBuilder);
         IPolicyCmptType target = association.findTargetPolicyCmptType(getIpsProject());
         String className = getQualifiedClassName(target, true);
@@ -621,8 +631,7 @@ public abstract class GenAssociation extends GenTypePart {
             methodsBuilder.append(localVarName);
             methodsBuilder.append("[i].");
         }
-        methodsBuilder.append(getGenType().getBuilderSet().getGenerator(association.findQualifier(getIpsProject()))
-                .getMethodNameGetProductCmpt());
+        methodsBuilder.append(generator.getMethodNameGetProductCmpt());
         methodsBuilder.append("().equals(qualifier))");
         methodsBuilder.openBracket();
         if (association.is1ToManyIgnoringQualifier()) {
@@ -731,9 +740,12 @@ public abstract class GenAssociation extends GenTypePart {
             }
         }
         IProductCmptType qualifier = association.findQualifier(getIpsProject());
-        String qualifierClassName = getGenType().getBuilderSet().getGenerator(qualifier).getQualifiedName(true);
-        methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, returnType, methodName,
-                new String[] { "qualifier" }, new String[] { qualifierClassName });
+        GenProductCmptType generator = getGenType().getBuilderSet().getGenerator(qualifier);
+        if (generator != null) {
+            String qualifierClassName = generator.getQualifiedName(true);
+            methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, returnType, methodName,
+                    new String[] { "qualifier" }, new String[] { qualifierClassName });
+        }
     }
 
     /**
