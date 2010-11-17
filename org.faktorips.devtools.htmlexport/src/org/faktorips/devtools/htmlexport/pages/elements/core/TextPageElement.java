@@ -45,8 +45,15 @@ public class TextPageElement extends AbstractPageElement {
         return new TextPageElement(text, TextType.BLOCK);
     }
 
+    /**
+     * @throws NullPointerException if text is null
+     */
     public TextPageElement(String text, Set<Style> styles, TextType type) {
         super(styles);
+        /*
+         * TODO wieder einkommentieren sobald moeglich if (text == null) { throw new
+         * NullPointerException("text must not be null"); //$NON-NLS-1$ }
+         */
         this.text = text;
         this.type = type;
     }

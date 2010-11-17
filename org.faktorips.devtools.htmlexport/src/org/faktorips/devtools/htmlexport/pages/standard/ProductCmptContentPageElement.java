@@ -86,8 +86,7 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
      */
     private void addGenerationAttributeTable() {
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-        wrapper.addPageElements(new TextPageElement(Messages.ProductCmptContentPageElement_attributes,
-                TextType.HEADING_2));
+        wrapper.addPageElements(new TextPageElement(Messages.ProductCmptContentPageElement_values, TextType.HEADING_2));
 
         wrapper.addPageElements(getTableOrAlternativeText(new ProductGenerationAttributeTable(getDocumentedIpsObject(),
                 getProductCmptType(), getConfig()), Messages.ProductCmptContentPageElement_noGenerationsOrAttributes));

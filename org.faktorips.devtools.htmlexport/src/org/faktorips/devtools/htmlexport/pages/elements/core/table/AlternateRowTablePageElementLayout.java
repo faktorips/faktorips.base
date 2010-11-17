@@ -40,6 +40,9 @@ public class AlternateRowTablePageElementLayout extends DefaultTablePageElementL
 
     @Override
     public void layoutRow(int row, TableRowPageElement rowPageElement) {
+        if (rowPageElement.hasStyle(Style.TABLE_HEADLINE)) {
+            return;
+        }
         if (ignoreFirstRow && row == 0) {
             return;
         }

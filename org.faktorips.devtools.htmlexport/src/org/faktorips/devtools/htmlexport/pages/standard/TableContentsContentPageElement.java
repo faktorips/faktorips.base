@@ -18,7 +18,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.tablecontents.Row;
+import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
@@ -52,10 +53,24 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
      */
     public class ContentTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IRow> {
         private ITableStructure tableStructure;
+        private ValueDatatype[] datatypes;
 
         public ContentTablePageElement(ITableContentsGeneration tableContentsGeneration) {
             super(Arrays.asList(tableContentsGeneration.getRows()), config);
             this.tableStructure = findTableStructure();
+            initDatatypes(tableContentsGeneration);
+        }
+
+        private void initDatatypes(ITableContentsGeneration tableContentsGeneration) {
+            try {
+                datatypes = new ValueDatatype[tableStructure.getNumOfColumns()];
+                for (int i = 0; i < tableStructure.getNumOfColumns(); i++) {
+                    datatypes[i] = tableStructure.getColumn(i).findValueDatatype(
+                            tableContentsGeneration.getIpsProject());
+                }
+            } catch (CoreException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
         }
 
         @Override
@@ -66,8 +81,10 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
         private List<String> getRowData(IRow row) {
             List<String> rowData = new ArrayList<String>();
 
-            for (int i = 0; i < ((Row)row).getNoOfColumns(); i++) {
-                rowData.add(row.getValue(i));
+            for (int i = 0; i < tableStructure.getNumOfColumns(); i++) {
+                String value = row.getValue(i);
+                rowData.add(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(datatypes[i],
+                        value));
             }
 
             return rowData;

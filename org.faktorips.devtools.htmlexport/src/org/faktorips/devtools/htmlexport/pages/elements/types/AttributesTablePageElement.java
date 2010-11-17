@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
@@ -60,7 +62,16 @@ public class AttributesTablePageElement extends AbstractIpsObjectPartsContainerT
         attributeData.add(getConfig().getLabel(attribute));
         attributeData.add(attribute.getDatatype());
         attributeData.add(attribute.getModifier().toString());
-        attributeData.add(attribute.getDefaultValue());
+
+        try {
+            attributeData.add(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
+                    .formatValue(getConfig().getIpsProject().findValueDatatype(attribute.getDatatype()),
+                            attribute.getDefaultValue()));
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            attributeData.add(attribute.getDefaultValue());
+        }
+
         attributeData.add(getConfig().getDescription(attribute));
 
         return attributeData;

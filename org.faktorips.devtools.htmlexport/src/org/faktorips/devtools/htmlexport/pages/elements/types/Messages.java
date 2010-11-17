@@ -58,8 +58,17 @@ public class Messages extends NLS {
     public static String MethodsTablePageElement_headlineName;
     public static String MethodsTablePageElement_headlineSignature;
     public static String ProductGenerationAttributeTable_associatedComponents;
+    public static String ProductGenerationAttributeTable_attributes;
+    public static String ProductGenerationAttributeTable_defaultsAndValueSets;
+    public static String ProductGenerationAttributeTable_defaultValue;
+    public static String ProductGenerationAttributeTable_formulas;
     public static String ProductGenerationAttributeTable_generationFrom;
+    public static String ProductGenerationAttributeTable_minMaxStep;
+    public static String ProductGenerationAttributeTable_structure;
+    public static String ProductGenerationAttributeTable_tables;
     public static String ProductGenerationAttributeTable_undefined;
+    public static String ProductGenerationAttributeTable_valueSet;
+    public static String ProductGenerationAttributeTable_valueSetUnrestricted;
     public static String ValidationRuleTablePageElement_headlineDescription;
     public static String ValidationRuleTablePageElement_headlineMessageCode;
     public static String ValidationRuleTablePageElement_headlineMessageSeverity;

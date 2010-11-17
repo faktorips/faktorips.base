@@ -14,14 +14,19 @@
 package org.faktorips.devtools.htmlexport.pages.standard;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
+import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
+import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
@@ -91,35 +96,59 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
      * 
      */
     private PageElement createTestObjectPageElement(ITestObject testObject) {
-        if (testObject instanceof ITestValue) {
-            return createTestValuePageElement((ITestValue)testObject);
-        }
-        if (testObject instanceof ITestRule) {
-            return createTestRulePageElement((ITestRule)testObject);
-        }
-        if (testObject instanceof ITestPolicyCmpt) {
-            return createTestPolicyCmptPageElement((ITestPolicyCmpt)testObject);
+        try {
+            if (testObject instanceof ITestValue) {
+                return createTestValuePageElement((ITestValue)testObject);
+            }
+            if (testObject instanceof ITestRule) {
+                return createTestRulePageElement((ITestRule)testObject);
+            }
+            if (testObject instanceof ITestPolicyCmpt) {
+                return createTestPolicyCmptPageElement((ITestPolicyCmpt)testObject);
+            }
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
         }
 
         return TextPageElement.createParagraph(testObject.getName() + " " + testObject.getClass()).addStyles(Style.BIG) //$NON-NLS-1$
                 .addStyles(Style.BOLD);
     }
 
-    private PageElement createTestPolicyCmptPageElement(ITestPolicyCmpt testObject) {
+    private PageElement createTestPolicyCmptPageElement(ITestPolicyCmpt testObject) throws CoreException {
         TreeNodePageElement testObjectPageElement = new TreeNodePageElement(new WrapperPageElement(WrapperType.BLOCK)
                 .addPageElements(new IpsElementImagePageElement(testObject)).addPageElements(
                         new TextPageElement(testObject.getTestParameterName())));
 
+        PageElement testAttributesTable = createTestPolicyCmptTestAttributesTable(testObject);
+
+        testObjectPageElement.addPageElements(testAttributesTable);
+
+        ITestPolicyCmptLink[] policyCmptLinks = testObject.getTestPolicyCmptLinks();
+
+        for (ITestPolicyCmptLink testPolicyCmptLink : policyCmptLinks) {
+            ITestPolicyCmpt target = testPolicyCmptLink.findTarget();
+            testObjectPageElement.addPageElements(createTestPolicyCmptPageElement(target));
+        }
+
+        return testObjectPageElement;
+    }
+
+    private PageElement createTestPolicyCmptTestAttributesTable(ITestPolicyCmpt testObject) throws CoreException {
         ITestAttributeValue[] testAttributeValues = testObject.getTestAttributeValues();
+        if (testAttributeValues.length == 0) {
+            return new TextPageElement(Messages.TestCaseContentPageElement_noTestAttributes);
+        }
 
         KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement();
         for (ITestAttributeValue testAttributeValue : testAttributeValues) {
-            keyValueTable.addKeyValueRow(testAttributeValue.getName(), testAttributeValue.getValue());
+            String value = testAttributeValue.getValue();
+            ITestAttribute attribute = testAttributeValue.findTestAttribute(config.getIpsProject());
+            ValueDatatype datatype = attribute.findDatatype(config.getIpsProject());
+
+            keyValueTable.addKeyValueRow(testAttributeValue.getName(), IpsPlugin.getDefault().getIpsPreferences()
+                    .getDatatypeFormatter().formatValue(datatype, value));
         }
-
-        testObjectPageElement.addPageElements(keyValueTable);
-
-        return testObjectPageElement;
+        return keyValueTable;
     }
 
     private PageElement createTestRulePageElement(ITestRule testObject) {
@@ -137,20 +166,23 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
         return testObjectPageElement;
     }
 
-    private PageElement createTestValuePageElement(ITestValue testObject) {
+    private PageElement createTestValuePageElement(ITestValue testObject) throws CoreException {
         TreeNodePageElement testObjectPageElement = new TreeNodePageElement(new WrapperPageElement(WrapperType.BLOCK)
                 .addPageElements(new IpsElementImagePageElement(testObject)).addPageElements(
                         new TextPageElement(testObject.getTestParameterName())));
 
         KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement();
         keyValueTable.addKeyValueRow(Messages.TestCaseContentPageElement_name, testObject.getName());
-        keyValueTable.addKeyValueRow(Messages.TestCaseContentPageElement_value, testObject.getValue());
-        try {
-            keyValueTable.addKeyValueRow(Messages.TestCaseContentPageElement_testParameterType, testObject
-                    .findTestValueParameter(getConfig().getIpsProject()).getTestParameterType().getName());
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+
+        ITestValueParameter testValueParameter = testObject.findTestValueParameter(getConfig().getIpsProject());
+        ValueDatatype datatype = testValueParameter.findValueDatatype(getConfig().getIpsProject());
+
+        String value = testObject.getValue();
+        keyValueTable.addKeyValueRow(Messages.TestCaseContentPageElement_value, IpsPlugin.getDefault()
+                .getIpsPreferences().getDatatypeFormatter().formatValue(datatype, value));
+
+        keyValueTable.addKeyValueRow(Messages.TestCaseContentPageElement_testParameterType, testValueParameter
+                .getTestParameterType().getName());
 
         testObjectPageElement.addPageElements(keyValueTable);
 

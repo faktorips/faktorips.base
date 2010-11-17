@@ -21,6 +21,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -85,7 +87,15 @@ class EnumValuesTablePageElement extends AbstractIpsObjectPartsContainerTablePag
         List<String> valueData = new ArrayList<String>();
 
         for (IEnumAttribute enumAttribute : enumAttributes) {
-            valueData.add(rowData.getEnumAttributeValue(enumAttribute).getValue());
+            String value = rowData.getEnumAttributeValue(enumAttribute).getValue();
+            try {
+                ValueDatatype datatype = enumAttribute.findDatatype(getConfig().getIpsProject());
+
+                valueData.add(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(datatype,
+                        value));
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         return Arrays.asList(PageElementUtils.createTextPageElements(valueData));
