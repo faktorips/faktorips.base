@@ -64,6 +64,14 @@ public class TextCellEditor extends IpsCellEditor {
         }
     }
 
+    protected String getText() {
+        return textControl.getText();
+    }
+
+    protected void setText(String newText) {
+        textControl.setText(newText);
+    }
+
     /**
      * {@inheritDoc}
      */

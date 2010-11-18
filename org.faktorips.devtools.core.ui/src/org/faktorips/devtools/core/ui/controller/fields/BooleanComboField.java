@@ -11,10 +11,9 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.controlfactories;
+package org.faktorips.devtools.core.ui.controller.fields;
 
 import org.eclipse.swt.widgets.Combo;
-import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.util.ArgumentCheck;
 
 /**

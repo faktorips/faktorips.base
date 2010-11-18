@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui;
 
+import java.util.Locale;
+
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
@@ -129,6 +131,21 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
                         { Messages.FaktorIpsPreferencePage_label_explicit, IpsPreferences.REFACTORING_MODE_EXPLICIT } },
                 getFieldEditorParent(), true);
         addField(refactoringMode);
+
+        createDatatypeFormattingCombo();
+    }
+
+    protected void createDatatypeFormattingCombo() {
+        Locale[] availableLocales = new Locale[] { Locale.GERMAN, Locale.ENGLISH };
+        String[][] localeDisplayNameValues = new String[availableLocales.length][2];
+        for (int i = 0; i < availableLocales.length; i++) {
+            localeDisplayNameValues[i][0] = availableLocales[i].getDisplayName();
+            localeDisplayNameValues[i][1] = availableLocales[i].getLanguage();
+        }
+        ComboFieldEditor datatypeFormattingLocale = new ComboFieldEditor(IpsPreferences.DATATYPE_FORMATTING_LOCALE,
+                Messages.FaktorIpsPreferencePage_LabelFormattingOfValues, localeDisplayNameValues,
+                getFieldEditorParent());
+        addField(datatypeFormattingLocale);
     }
 
     @Override

@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 
 public abstract class IpsAbstractHandler extends AbstractHandler {
+    @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
         IWorkbenchWindow activeWindow = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
 
@@ -66,8 +67,8 @@ public abstract class IpsAbstractHandler extends AbstractHandler {
     protected TypedSelection<IAdaptable> getSelectionFromEditor(IWorkbenchPart part) {
         IEditorInput input = ((IEditorPart)part).getEditorInput();
         if (input instanceof IFileEditorInput) {
-            return new TypedSelection<IAdaptable>(IAdaptable.class, new StructuredSelection(((IFileEditorInput)input)
-                    .getFile()));
+            return new TypedSelection<IAdaptable>(IAdaptable.class, new StructuredSelection(
+                    ((IFileEditorInput)input).getFile()));
         } else {
             return null;
         }

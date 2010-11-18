@@ -19,41 +19,45 @@ import org.eclipse.nebula.jface.gridviewer.GridTreeViewer;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.PrimitiveBooleanDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.BooleanDatatype;
-import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.fields.BooleanComboField;
+import org.faktorips.devtools.core.ui.controller.fields.DoubleFormat;
+import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 import org.faktorips.devtools.core.ui.table.ComboCellEditor;
 import org.faktorips.devtools.core.ui.table.GridTableViewerTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
-import org.faktorips.util.ArgumentCheck;
 
 /**
- * A control factory for the datytpes boolean and primitve boolean.
+ * A factory for edit fields/controls for the data type Double and Decimal.
  * 
- * @author Joerg Ortmann
+ * @author Stefan Widmaier
  */
-public class BooleanControlFactory extends ValueDatatypeControlFactory {
+public class DoubleDecimalControlFactory extends ValueDatatypeControlFactory {
 
-    private IpsPreferences preferences;
+    // private IpsPreferences preferences;
 
-    public BooleanControlFactory(IpsPreferences preferences) {
+    // public MoneyControlFactory(IpsPreferences preferences) {
+    // super();
+    // ArgumentCheck.notNull(preferences, this);
+    // this.preferences = preferences;
+    // }
+
+    public DoubleDecimalControlFactory() {
         super();
-        ArgumentCheck.notNull(preferences, this);
-        this.preferences = preferences;
     }
 
     @Override
     public boolean isFactoryFor(ValueDatatype datatype) {
-        return Datatype.BOOLEAN.equals(datatype) || Datatype.PRIMITIVE_BOOLEAN.equals(datatype);
+        return Datatype.DOUBLE.equals(datatype) || Datatype.DECIMAL.equals(datatype);
     }
 
     @Override
@@ -63,9 +67,8 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
             IValueSet valueSet,
             IIpsProject ipsProject) {
 
-        return new BooleanComboField((Combo)createControl(toolkit, parent, datatype, valueSet, ipsProject), preferences
-                .getDatatypeFormatter().getBooleanTrueDisplay(), preferences.getDatatypeFormatter()
-                .getBooleanFalseDisplay());
+        return new FormattingTextField((Text)createControl(toolkit, parent, datatype, valueSet, ipsProject),
+                new DoubleFormat());
 
     }
 
@@ -76,8 +79,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
             IValueSet valueSet,
             IIpsProject ipsProject) {
 
-        return toolkit.createComboForBoolean(parent, !datatype.isPrimitive(), preferences.getDatatypeFormatter()
-                .getBooleanTrueDisplay(), preferences.getDatatypeFormatter().getBooleanFalseDisplay());
+        return toolkit.createText(parent);
     }
 
     /**

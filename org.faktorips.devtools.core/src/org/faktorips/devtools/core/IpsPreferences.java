@@ -15,6 +15,7 @@ package org.faktorips.devtools.core;
 
 import java.text.DateFormat;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -140,6 +141,11 @@ public class IpsPreferences {
      */
     public final static String RANGE_EDIT_FIELDS_IN_ONE_ROW = IpsPlugin.PLUGIN_ID + ".rangeEditFieldsInOneRow"; //$NON-NLS-1$
 
+    /**
+     * Constant that identifies the locale to be used for formating values of specific datatypes.
+     */
+    public final static String DATATYPE_FORMATTING_LOCALE = IpsPlugin.PLUGIN_ID + ".datatypeFormattingLocale"; //$NON-NLS-1$
+
     private DatatypeFormatter datatypeFormatter;
 
     private IPreferenceStore prefStore;
@@ -159,6 +165,7 @@ public class IpsPreferences {
         prefStore.setDefault(ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER, false);
         prefStore.setDefault(SECTIONS_IN_TYPE_EDITORS, TWO_SECTIONS_IN_TYPE_EDITOR_PAGE);
         prefStore.setDefault(RANGE_EDIT_FIELDS_IN_ONE_ROW, true);
+        prefStore.setDefault(DATATYPE_FORMATTING_LOCALE, Locale.getDefault().getCountry());
 
         if (IPreferenceStore.STRING_DEFAULT_DEFAULT.equals(prefStore.getString(WORKING_DATE))) {
             setWorkingDate(new GregorianCalendar());
@@ -391,6 +398,24 @@ public class IpsPreferences {
      */
     public void setRangeEditFieldsInOneRow(boolean enabled) {
         prefStore.setValue(RANGE_EDIT_FIELDS_IN_ONE_ROW, enabled);
+    }
+
+    /**
+     * @return the currently configured locale for formating values of the data types Integer,
+     *         Double, Date.
+     */
+    public Locale getDatatypeFormattingLocale() {
+        String language = prefStore.getString(DATATYPE_FORMATTING_LOCALE);
+        return new Locale(language);
+    }
+
+    /**
+     * Sets the locale used for formating values of the data types Integer, Double, Date.
+     * 
+     * @param locale the new locale to be used
+     */
+    public void setDatatypeFormattingLocale(Locale locale) {
+        prefStore.setValue(DATATYPE_FORMATTING_LOCALE, locale.getLanguage());
     }
 
     /**
