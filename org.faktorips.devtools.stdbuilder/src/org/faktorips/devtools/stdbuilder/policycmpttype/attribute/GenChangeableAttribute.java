@@ -449,8 +449,8 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
 
     protected String getConstantName(IValueSet valueSet) {
         if (valueSet.isEnum()) {
-            return getLocalizedText("FIELD_MAX_ALLOWED_VALUES_FOR_NAME", StringUtils
-                    .upperCase(getAttribute().getName()));
+            return getLocalizedText("FIELD_MAX_ALLOWED_VALUES_FOR_NAME",
+                    StringUtils.upperCase(getAttribute().getName()));
         }
         if (valueSet.isRange()) {
             return getLocalizedText("FIELD_MAX_RANGE_FOR_NAME", StringUtils.upperCase(getAttribute().getName()));
@@ -467,8 +467,9 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
                 createCastExpression(range.getUpperBound()), createCastExpression(range.getStep()), containsNullFrag,
                 isUseTypesafeCollections());
         membersBuilder.varDeclaration(java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.FINAL
-                | java.lang.reflect.Modifier.STATIC, valuesetDatatypeHelper
-                .getRangeJavaClassName(isUseTypesafeCollections()), getConstantName(getValueSet()), frag);
+                | java.lang.reflect.Modifier.STATIC,
+                valuesetDatatypeHelper.getRangeJavaClassName(isUseTypesafeCollections()),
+                getConstantName(getValueSet()), frag);
     }
 
     protected void generateConstantEnumSetOfAllowedValues(JavaCodeFragmentBuilder builder) {

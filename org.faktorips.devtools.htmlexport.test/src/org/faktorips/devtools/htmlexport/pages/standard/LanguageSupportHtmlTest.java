@@ -89,8 +89,8 @@ public class LanguageSupportHtmlTest extends AbstractXmlUnitHtmlExportTest {
         config.setDescriptionLocale(Locale.GERMAN);
         attribute.setLabelValue(Locale.GERMAN, deLabel);
 
-        AbstractPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(productCmpt
-                .getIpsSrcFile(), config);
+        AbstractPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(
+                productCmpt.getIpsSrcFile(), config);
         assertXPathExists(objectContentPage, deXPath);
 
         assertEquals(deLabel, config.getCaption(value));

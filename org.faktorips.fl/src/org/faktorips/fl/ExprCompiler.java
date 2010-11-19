@@ -483,8 +483,8 @@ public class ExprCompiler {
         } catch (ParseException pe) {
             return parseExceptionToResult(pe);
         } catch (Exception pe) {
-            return new CompilationResultImpl(Message.newError(INTERNAL_ERROR, localizedStrings.getString(
-                    INTERNAL_ERROR, locale)));
+            return new CompilationResultImpl(Message.newError(INTERNAL_ERROR,
+                    localizedStrings.getString(INTERNAL_ERROR, locale)));
         } catch (TokenMgrError e) {
             String text = localizedStrings.getString(LEXICAL_ERROR, locale, new String[] { e.getMessage() });
             return new CompilationResultImpl(Message.newError(LEXICAL_ERROR, text));
@@ -495,8 +495,8 @@ public class ExprCompiler {
             ParseTreeVisitor visitor = new ParseTreeVisitor(this);
             result = (CompilationResultImpl)rootNode.jjtAccept(visitor, null);
         } catch (Exception e) {
-            return new CompilationResultImpl(Message.newError(INTERNAL_ERROR, localizedStrings.getString(
-                    INTERNAL_ERROR, locale)));
+            return new CompilationResultImpl(Message.newError(INTERNAL_ERROR,
+                    localizedStrings.getString(INTERNAL_ERROR, locale)));
         }
         if (result.failed()) {
             return result;
@@ -508,13 +508,13 @@ public class ExprCompiler {
             }
             // convert primitive to wrapper object
             JavaCodeFragment converted = CodeGenUtil.convertPrimitiveToWrapper(resultType, result.getCodeFragment());
-            CompilationResultImpl finalResult = new CompilationResultImpl(converted, ((ValueDatatype)resultType)
-                    .getWrapperType());
+            CompilationResultImpl finalResult = new CompilationResultImpl(converted,
+                    ((ValueDatatype)resultType).getWrapperType());
             finalResult.addIdentifiersUsed(result.getIdentifiersUsedAsSet());
             return finalResult;
         } catch (Exception e) {
-            return new CompilationResultImpl(Message.newError(INTERNAL_ERROR, localizedStrings.getString(
-                    INTERNAL_ERROR, locale)));
+            return new CompilationResultImpl(Message.newError(INTERNAL_ERROR,
+                    localizedStrings.getString(INTERNAL_ERROR, locale)));
         }
     }
 
@@ -530,8 +530,8 @@ public class ExprCompiler {
         }
         Object[] replacements = new Object[] { e.currentToken.next.toString(),
                 new Integer(e.currentToken.next.beginLine), new Integer(e.currentToken.next.beginColumn), expected };
-        return new CompilationResultImpl(Message.newError(SYNTAX_ERROR, localizedStrings.getString(SYNTAX_ERROR,
-                locale, replacements)));
+        return new CompilationResultImpl(Message.newError(SYNTAX_ERROR,
+                localizedStrings.getString(SYNTAX_ERROR, locale, replacements)));
     }
 
     BinaryOperation[] getBinaryOperations(String operator) {

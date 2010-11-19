@@ -81,8 +81,8 @@ public class TableContentsLabelProvider implements ITableLabelProvider {
                 return null;
             }
             String value = row.getValue(columnIndex);
-            return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(
-                    datatypes[columnIndex], value);
+            return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
+                    .formatValue(datatypes[columnIndex], value);
         }
         return null;
     }

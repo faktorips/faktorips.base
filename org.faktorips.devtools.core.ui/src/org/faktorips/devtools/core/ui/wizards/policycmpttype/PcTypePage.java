@@ -108,8 +108,8 @@ public class PcTypePage extends TypePage {
         super.valueChangedExtension(e);
         if (e.field == configurableField) {
             IDialogSettings settings = getSettings();
-            settings.put(IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE, ((Boolean)configurableField
-                    .getValue()).booleanValue());
+            settings.put(IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE,
+                    ((Boolean)configurableField.getValue()).booleanValue());
         }
     }
 

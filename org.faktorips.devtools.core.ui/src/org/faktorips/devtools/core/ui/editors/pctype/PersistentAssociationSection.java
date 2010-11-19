@@ -60,7 +60,8 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
     private static final Map<Integer, AttrPropertyAndLabel> columnProperties = new HashMap<Integer, AttrPropertyAndLabel>();
 
     static {
-        columnProperties.put(0, new AttrPropertyAndLabel(IAssociation.PROPERTY_TARGET, Messages.PersistentAssociationSection_labelAssociationTarget));
+        columnProperties.put(0, new AttrPropertyAndLabel(IAssociation.PROPERTY_TARGET,
+                Messages.PersistentAssociationSection_labelAssociationTarget));
         columnProperties.put(1, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME,
                 Messages.PersistentAssociationSection_labelJoinTableName));
         columnProperties.put(2, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_SOURCE_COLUMN_NAME,
@@ -69,7 +70,8 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
                 Messages.PersistentAssociationSection_labelTargetColumnName));
         columnProperties.put(4, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME,
                 Messages.PersistentAssociationSection_labelJoinColumnName));
-        columnProperties.put(5, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_FETCH_TYPE, Messages.PersistentAssociationSection_labelFetchType));
+        columnProperties.put(5, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_FETCH_TYPE,
+                Messages.PersistentAssociationSection_labelFetchType));
         columnProperties.put(6, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_ORPHAN_REMOVAL,
                 Messages.PersistentAssociationSection_labelOrphanRemoval));
     }

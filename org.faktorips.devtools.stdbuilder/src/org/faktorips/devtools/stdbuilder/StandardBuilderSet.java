@@ -186,7 +186,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         // Most of the time we hardwire the version of the generated code here, but from time to
         // time
         // we want to sync it with the plugin version, so the code remains here.
-        // 
+        //
         // Version versionObj =
         // Version.parseVersion((String)StdBuilderPlugin.getDefault().getBundle(
         // ).getHeaders().get(org
@@ -304,8 +304,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                     ExprCompiler exprCompiler,
                     String value) throws CoreException {
                 ExtendedExprCompiler compiler = (ExtendedExprCompiler)exprCompiler;
-                fragment.append(enumTypeBuilder.getNewInstanceCodeFragement(datatype, value, compiler
-                        .getRuntimeRepositoryExpression()));
+                fragment.append(enumTypeBuilder.getNewInstanceCodeFragement(datatype, value,
+                        compiler.getRuntimeRepositoryExpression()));
             }
 
             @Override
@@ -341,8 +341,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                     ExprCompiler exprCompiler,
                     String value) throws CoreException {
                 ExtendedExprCompiler compiler = (ExtendedExprCompiler)exprCompiler;
-                fragment.append(enumTypeBuilder.getNewInstanceCodeFragement(datatype, value, compiler
-                        .getRuntimeRepositoryExpression()));
+                fragment.append(enumTypeBuilder.getNewInstanceCodeFragement(datatype, value,
+                        compiler.getRuntimeRepositoryExpression()));
             }
 
             @Override

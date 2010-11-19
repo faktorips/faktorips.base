@@ -57,8 +57,8 @@ public abstract class ProductCmptTypeBuilderTest extends AbstractStdBuilderTest 
         policyCmptType.setConfigurableByProductCmptType(true);
         policyCmptType.setProductCmptType(productCmptType.getQualifiedName());
         productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
-        genProductCmptType = new GenProductCmptType(productCmptType, (StandardBuilderSet)ipsProject
-                .getIpsArtefactBuilderSet());
+        genProductCmptType = new GenProductCmptType(productCmptType,
+                (StandardBuilderSet)ipsProject.getIpsArtefactBuilderSet());
 
         javaClassConfiguredPolicy = getGeneratedJavaType(policyCmptType, false, true, POLICY_NAME);
         javaInterfaceConfiguredPolicy = getGeneratedJavaType(policyCmptType, false, false, POLICY_NAME);

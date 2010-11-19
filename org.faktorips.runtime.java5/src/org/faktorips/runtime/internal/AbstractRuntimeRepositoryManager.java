@@ -76,8 +76,8 @@ public abstract class AbstractRuntimeRepositoryManager implements IRuntimeReposi
      * @return true if any direct referenced repository changed
      */
     private boolean isReferencedRepositorysUpToDate() {
-        List<IRuntimeRepository> directReferencedRepos = new ArrayList<IRuntimeRepository>(actualRuntimeRepository
-                .getDirectlyReferencedRepositories());
+        List<IRuntimeRepository> directReferencedRepos = new ArrayList<IRuntimeRepository>(
+                actualRuntimeRepository.getDirectlyReferencedRepositories());
         for (IRuntimeRepositoryManager manager : managers) {
             IRuntimeRepository referencedRepository = manager.getActualRuntimeRepository();
             // the repository of every manager have to be in the list of direct referenced

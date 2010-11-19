@@ -362,8 +362,8 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      *         Returns <code>Money.null</code> if this is the Money.NULL object.
      */
     public Money divide(int d, int roundingMode) {
-        long newAmount = getAmount().divide(d, currency.getDefaultFractionDigits(), roundingMode).multiply(
-                power10[currency.getDefaultFractionDigits()]).longValue();
+        long newAmount = getAmount().divide(d, currency.getDefaultFractionDigits(), roundingMode)
+                .multiply(power10[currency.getDefaultFractionDigits()]).longValue();
         return new Money(newAmount, currency);
     }
 
@@ -381,8 +381,8 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      *         Returns <code>Money.null</code> if this is the Money.NULL object.
      */
     public Money divide(long d, int roundingMode) {
-        long newAmount = getAmount().divide(d, currency.getDefaultFractionDigits(), roundingMode).multiply(
-                power10[currency.getDefaultFractionDigits()]).longValue();
+        long newAmount = getAmount().divide(d, currency.getDefaultFractionDigits(), roundingMode)
+                .multiply(power10[currency.getDefaultFractionDigits()]).longValue();
         return new Money(newAmount, currency);
     }
 
@@ -406,8 +406,8 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
         if (d.isNull()) {
             return Money.NULL;
         }
-        long newAmount = getAmount().divide(d, currency.getDefaultFractionDigits(), roundingMode).multiply(
-                power10[currency.getDefaultFractionDigits()]).longValue();
+        long newAmount = getAmount().divide(d, currency.getDefaultFractionDigits(), roundingMode)
+                .multiply(power10[currency.getDefaultFractionDigits()]).longValue();
         return new Money(newAmount, currency);
     }
 

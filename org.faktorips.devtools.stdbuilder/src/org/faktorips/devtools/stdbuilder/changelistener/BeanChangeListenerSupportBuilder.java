@@ -274,8 +274,8 @@ public class BeanChangeListenerSupportBuilder implements IChangeListenerSupportB
      */
     @Override
     public void generateChangeListenerConstants(JavaCodeFragmentBuilder builder) {
-        localizedTextHelper.appendLocalizedJavaDoc("FIELD_PROPERTY_CHANGE_SUPPORT", builder, genPolicyCmptType
-                .getLanguageUsedInGeneratedSourceCode());
+        localizedTextHelper.appendLocalizedJavaDoc("FIELD_PROPERTY_CHANGE_SUPPORT", builder,
+                genPolicyCmptType.getLanguageUsedInGeneratedSourceCode());
 
         genPolicyCmptType.getBuilderSet().addAnnotations(
                 AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD, genPolicyCmptType.getPolicyCmptType(),

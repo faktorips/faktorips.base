@@ -31,7 +31,7 @@ public interface ICustomValidation<T extends IIpsObjectPartContainer> {
      * {@link #validate(IIpsObjectPartContainer, IIpsProject)} method to execute the custom
      * validation.
      * 
-     *@return The extended class or interface of the Faktor-IPS model, e.g. IAttribute or
+     * @return The extended class or interface of the Faktor-IPS model, e.g. IAttribute or
      *         IPolicyCmptType.
      */
     Class<T> getExtendedClass();

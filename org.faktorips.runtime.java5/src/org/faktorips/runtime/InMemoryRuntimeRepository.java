@@ -262,8 +262,8 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     private SortedSet<IProductComponentGeneration> getGenerationSortedSet(String productCmptId) {
         SortedSet<IProductComponentGeneration> genSortedSet = productCmptGenLists.get(productCmptId);
         if (genSortedSet == null) {
-            genSortedSet = new TreeSet<IProductComponentGeneration>(new ProductCmptGenerationComparator(TimeZone
-                    .getDefault()));
+            genSortedSet = new TreeSet<IProductComponentGeneration>(new ProductCmptGenerationComparator(
+                    TimeZone.getDefault()));
             productCmptGenLists.put(productCmptId, genSortedSet);
         }
         return genSortedSet;

@@ -30,7 +30,7 @@ public class HtmlExportPlugin extends AbstractUIPlugin {
      * The constructor
      */
     public HtmlExportPlugin() {
-        // 
+        //
     }
 
     @Override

@@ -992,8 +992,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     private String getJMergeConfigLocation(IIpsProject ipsProject) {
-        IFile mergeFile = ipsProject.getJavaProject().getProject().getFile(
-                ComplianceCheck.isComplianceLevelAtLeast5(ipsProject) ? "merge.java5.xml" : "merge.xml"); //$NON-NLS-1$ //$NON-NLS-2$
+        IFile mergeFile = ipsProject.getJavaProject().getProject()
+                .getFile(ComplianceCheck.isComplianceLevelAtLeast5(ipsProject) ? "merge.java5.xml" : "merge.xml"); //$NON-NLS-1$ //$NON-NLS-2$
         if (mergeFile.exists()) {
             return mergeFile.getLocation().toPortableString();
         }

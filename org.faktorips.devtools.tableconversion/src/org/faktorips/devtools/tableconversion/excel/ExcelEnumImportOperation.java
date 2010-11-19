@@ -91,8 +91,8 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
             monitor.worked(1);
             monitor.done();
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus(NLS
-                    .bind(Messages.AbstractXlsTableImportOperation_errRead, sourceFile), e));
+            throw new CoreException(new IpsStatus(
+                    NLS.bind(Messages.AbstractXlsTableImportOperation_errRead, sourceFile), e));
         }
     }
 

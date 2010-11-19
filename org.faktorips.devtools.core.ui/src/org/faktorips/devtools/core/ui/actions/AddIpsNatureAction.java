@@ -142,9 +142,9 @@ public class AddIpsNatureAction extends ActionDelegate {
                 }
             }
 
-            IIpsProject ipsProject = ProjectUtil.createIpsProject(javaProject, dialog.getRuntimeIdPrefix(), dialog
-                    .isProductDefinitionProject(), dialog.isModelProject(), dialog.isPersistentProject(), dialog
-                    .getLocales());
+            IIpsProject ipsProject = ProjectUtil.createIpsProject(javaProject, dialog.getRuntimeIdPrefix(),
+                    dialog.isProductDefinitionProject(), dialog.isModelProject(), dialog.isPersistentProject(),
+                    dialog.getLocales());
             IFolder ipsModelFolder = ipsProject.getProject().getFolder(dialog.getSourceFolderName());
             if (!ipsModelFolder.exists()) {
                 ipsModelFolder.create(true, true, null);

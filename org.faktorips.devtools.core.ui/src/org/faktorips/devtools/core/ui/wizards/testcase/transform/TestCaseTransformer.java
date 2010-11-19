@@ -301,9 +301,10 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
                     getShortTestParameterTypeName(isInput)));
             return null;
         } else {
-            logError(testPolicyCmpt.getIpsObject().getQualifiedName(), NLS.bind(
-                    Messages.TestCaseTransformer_Error_TestPolicyCmptTypeNotFound, testPolicyCmpt
-                            .getTestPolicyCmptTypeParameter()));
+            logError(
+                    testPolicyCmpt.getIpsObject().getQualifiedName(),
+                    NLS.bind(Messages.TestCaseTransformer_Error_TestPolicyCmptTypeNotFound,
+                            testPolicyCmpt.getTestPolicyCmptTypeParameter()));
         }
         return null;
     }
@@ -499,8 +500,10 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
     }
 
     private void logError(String objectName, String message) {
-        IpsPlugin.getDefault().getLog().log(
-                new Status(IStatus.WARNING, IpsPlugin.PLUGIN_ID, 0,
+        IpsPlugin
+                .getDefault()
+                .getLog()
+                .log(new Status(IStatus.WARNING, IpsPlugin.PLUGIN_ID, 0,
                         "TestCaseTransformer: " + objectName + " - " + message, null)); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
@@ -520,16 +523,16 @@ public class TestCaseTransformer implements IWorkspaceRunnable {
                             Messages.TestCaseTransformer_Error_ImportPackageEqualsTargetPackage));
                 }
 
-                transformFolder((IFolder)((IPackageFragment)selObj).getCorrespondingResource(), root, targtePackage
-                        .getName(), testCaseTypeName, nameExtension, "", monitor); //$NON-NLS-1$
+                transformFolder((IFolder)((IPackageFragment)selObj).getCorrespondingResource(), root,
+                        targtePackage.getName(), testCaseTypeName, nameExtension, "", monitor); //$NON-NLS-1$
             } else if (selObj instanceof IPackageFragmentRoot) {
                 if (root.equals(selObj)) {
                     throw new CoreException(new IpsStatus(
                             Messages.TestCaseTransformer_Error_ImportPackageEqualsTargetPackage));
                 }
 
-                transformFolder((IFolder)((IPackageFragmentRoot)selObj).getCorrespondingResource(), root, targtePackage
-                        .getName(), testCaseTypeName, nameExtension, "", monitor); //$NON-NLS-1$
+                transformFolder((IFolder)((IPackageFragmentRoot)selObj).getCorrespondingResource(), root,
+                        targtePackage.getName(), testCaseTypeName, nameExtension, "", monitor); //$NON-NLS-1$
             } else if (selObj instanceof IJavaProject) {
                 IJavaProject project = (IJavaProject)selObj;
                 IPackageFragmentRoot[] roots = project.getAllPackageFragmentRoots();

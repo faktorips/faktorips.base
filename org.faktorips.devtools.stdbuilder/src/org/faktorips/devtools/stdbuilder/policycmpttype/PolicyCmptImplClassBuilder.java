@@ -351,9 +351,10 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
             // declare variable: Policy newCopy = new Policy();
             String varName = "newCopy";
-            methodsBuilder.append(getUnqualifiedClassName()).append(' ').append(varName).append(" = ") //
-                    .append('(').append(getUnqualifiedClassName()).append(')').append(varCopyMap).appendln(
-                            ".get(this);");
+            methodsBuilder.append(getUnqualifiedClassName()).append(' ').append(varName).append(" = ")
+                    //
+                    .append('(').append(getUnqualifiedClassName()).append(')').append(varCopyMap)
+                    .appendln(".get(this);");
             methodsBuilder.append("if (").append(varName).append(" == null)").openBracket() //
                     .append(varName).append(" = new ").append(getUnqualifiedClassName()).appendln("();");
             if (getPcType().isConfigurableByProductCmptType() && getProductCmptType() != null) {
@@ -1044,8 +1045,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             appendOverrideAnnotation(builder, false);
         }
         GenPolicyCmptType genPolicyCmptType = getGenerator();
-        builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Datatype.VOID.getJavaClassName(), genPolicyCmptType
-                .getMethodNameInitialize(), EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
+        builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Datatype.VOID.getJavaClassName(),
+                genPolicyCmptType.getMethodNameInitialize(), EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
         if (StringUtils.isNotEmpty(getPcType().getSupertype())) {
             builder.append("super." + genPolicyCmptType.getMethodNameInitialize() + "();");
         }
@@ -1267,8 +1268,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 builder.append(getGenerator(association).getMethodNameNewChild());
                 builder.appendln("();");
             } else {
-                builder
-                        .appendln("throw new RuntimeException(childEl.toString() + \": Attribute className is missing.\");");
+                builder.appendln("throw new RuntimeException(childEl.toString() + \": Attribute className is missing.\");");
             }
             builder.appendln("}");
         }
@@ -1411,9 +1411,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     private void generateMethodGetParentModelObjectForSubsetDerivedUnion(JavaCodeFragmentBuilder methodBuilder,
             GenAssociation genAssociation,
             List<IPolicyCmptTypeAssociation> associations) throws CoreException {
-        generateMethodGetParentModelObject(methodBuilder, genAssociation.getQualifiedClassName(genAssociation
-                .getTargetPolicyCmptType(), true), genAssociation.getMethodNameGetParentObject(false), false,
-                associations);
+        generateMethodGetParentModelObject(methodBuilder,
+                genAssociation.getQualifiedClassName(genAssociation.getTargetPolicyCmptType(), true),
+                genAssociation.getMethodNameGetParentObject(false), false, associations);
     }
 
     /**
@@ -1425,7 +1425,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      *     if (police != null) {
      *         return police;
      *     }
-     *     return null; // if class has no supertype 
+     *     return null; // if class has no supertype
      *     return super.getParentModelObject; // if class has supertype
      * }
      * </pre>
@@ -1687,8 +1687,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         if (genTsu == null) {
             return;
         }
-        builder.methodBegin(Modifier.PUBLIC, genTsu.getReturnTypeOfMethodGetTableUsage(), genTsu
-                .getMethodNameGetTableUsage(), EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
+        builder.methodBegin(Modifier.PUBLIC, genTsu.getReturnTypeOfMethodGetTableUsage(),
+                genTsu.getMethodNameGetTableUsage(), EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
         String productCmptGenClass = getGenProductCmptType().getQualifiedClassNameForProductCmptTypeGen(false);
         builder.appendClassName(productCmptGenClass);
         builder.append(" productCmpt = (");

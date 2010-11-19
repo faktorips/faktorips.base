@@ -666,13 +666,13 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     }
 
     private void storeActualAsExpectedValue(FailureDetails failureDetails, String tooltip) {
-        testCaseDetailArea.storeActualValueInExpResult(findUniqueEditFieldKey(failureDetails), failureDetails
-                .getActualValue(), tooltip);
+        testCaseDetailArea.storeActualValueInExpResult(findUniqueEditFieldKey(failureDetails),
+                failureDetails.getActualValue(), tooltip);
     }
 
     private String findUniqueEditFieldKey(FailureDetails failureDetails) {
-        String uniqueEditFieldKey = getUniqueEditFieldKey(failureDetails.getObjectName(), failureDetails
-                .getAttributeName());
+        String uniqueEditFieldKey = getUniqueEditFieldKey(failureDetails.getObjectName(),
+                failureDetails.getAttributeName());
         EditField editField = testCaseDetailArea.getEditField(uniqueEditFieldKey);
         if (editField != null) {
             return uniqueEditFieldKey;
@@ -1712,8 +1712,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 if (associationType != null) {
                     treeViewer.expandToLevel(testPolicyCmpt, 1);
                     // get the cached dummy object, otherwise the expand doesn't work!
-                    IDummyTestCaseObject dummyObject = contentProvider.getDummyObject(associationType
-                            .getTestParameter(), associationType.getParentTestPolicyCmpt());
+                    IDummyTestCaseObject dummyObject = contentProvider.getDummyObject(
+                            associationType.getTestParameter(), associationType.getParentTestPolicyCmpt());
                     addAssociation((TestCaseTypeAssociation)dummyObject);
                 }
             } else if (selectedObject instanceof TestCaseTypeRule) {
@@ -1783,13 +1783,13 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 return;
             }
 
-            selectedTargetsQualifiedNames = selectProductCmptsDialog(testPolicyCmptTypeParam, associationType
-                    .getParentTestPolicyCmpt(), true);
+            selectedTargetsQualifiedNames = selectProductCmptsDialog(testPolicyCmptTypeParam,
+                    associationType.getParentTestPolicyCmpt(), true);
         } else {
             // target doesn't requires a product cmpt
             chooseProductCmpts = false;
-            selectedTargetsQualifiedNames = selectPolicyCmptTypeDialog(testPolicyCmptTypeParam, associationType
-                    .getParentTestPolicyCmpt(), true);
+            selectedTargetsQualifiedNames = selectPolicyCmptTypeDialog(testPolicyCmptTypeParam,
+                    associationType.getParentTestPolicyCmpt(), true);
         }
         if (selectedTargetsQualifiedNames == null) {
             // maybe cancel pressed in the dialog
@@ -2028,8 +2028,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             // policy cmpt type not found, this is a validation error
             return;
         }
-        String[] productCmptQualifiedNames = selectProductCmptsDialog(testTypeParam, testPolicyCmpt
-                .getParentTestPolicyCmpt(), false);
+        String[] productCmptQualifiedNames = selectProductCmptsDialog(testTypeParam,
+                testPolicyCmpt.getParentTestPolicyCmpt(), false);
         if (productCmptQualifiedNames == null || productCmptQualifiedNames.length == 0) {
             // cancel
             return;
@@ -2274,8 +2274,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private IIpsSrcFile[] getProductCmptSrcFiles(ITestPolicyCmptTypeParameter testTypeParam,
             ITestPolicyCmpt testPolicyCmptParent) throws CoreException {
 
-        return testTypeParam.getAllowedProductCmpt(ipsProject, testPolicyCmptParent != null ? testPolicyCmptParent
-                .findProductCmpt(ipsProject) : null);
+        return testTypeParam.getAllowedProductCmpt(ipsProject,
+                testPolicyCmptParent != null ? testPolicyCmptParent.findProductCmpt(ipsProject) : null);
     }
 
     private IIpsSrcFile[] getPolicyCmptTypesSrcFiles(ITestPolicyCmptTypeParameter testTypeParam) throws CoreException {
@@ -2390,8 +2390,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             // find and return the correspondinf test object in the test case
             ITestPolicyCmpt[] testPolicyCmpts = testCase.getTestPolicyCmpts();
             for (ITestPolicyCmpt testPolicyCmpt2 : testPolicyCmpts) {
-                if (testCaseTypeAssociation.getTestPolicyCmptTypeParam().getName().equals(
-                        testPolicyCmpt2.getTestParameterName())) {
+                if (testCaseTypeAssociation.getTestPolicyCmptTypeParam().getName()
+                        .equals(testPolicyCmpt2.getTestParameterName())) {
                     return testPolicyCmpt2;
                 }
             }
@@ -2698,8 +2698,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 }
 
                 // create context menu to store actual value
-                EditField editField = testCaseDetailArea.getEditField(getUniqueEditFieldKey(failureDetailsObj
-                        .getObjectName(), failureDetailsObj.getAttributeName()));
+                EditField editField = testCaseDetailArea.getEditField(getUniqueEditFieldKey(
+                        failureDetailsObj.getObjectName(), failureDetailsObj.getAttributeName()));
                 if (editField != null) {
                     ArrayList<FailureDetails> list = new ArrayList<FailureDetails>(1);
                     list.add(failureDetailsObj);

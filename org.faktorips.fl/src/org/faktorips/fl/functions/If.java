@@ -48,14 +48,14 @@ public class If extends AbstractFlFunction {
         // check if the 2. and 3. argument have either the same datatype or can be converted
         if (!datatype1.equals(datatype2)) {
             if (ccg.canConvert(datatype1, datatype2)) {
-                JavaCodeFragment converted = ccg.getConversionCode(datatype1, datatype2, argResults[1]
-                        .getCodeFragment());
+                JavaCodeFragment converted = ccg.getConversionCode(datatype1, datatype2,
+                        argResults[1].getCodeFragment());
                 CompilationResultImpl newResult = new CompilationResultImpl(converted, datatype2);
                 newResult.addMessages(argResults[1].getMessages());
                 argResults[1] = newResult;
             } else if (ccg.canConvert(datatype2, datatype1)) {
-                JavaCodeFragment converted = ccg.getConversionCode(datatype2, datatype1, argResults[2]
-                        .getCodeFragment());
+                JavaCodeFragment converted = ccg.getConversionCode(datatype2, datatype1,
+                        argResults[2].getCodeFragment());
                 CompilationResultImpl newResult = new CompilationResultImpl(converted, datatype1);
                 newResult.addMessages(argResults[2].getMessages());
                 argResults[2] = newResult;

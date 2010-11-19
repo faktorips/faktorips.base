@@ -179,8 +179,8 @@ public class SameOperationValidator {
             if (productCmptStructureReferences[i] instanceof IProductCmptReference) {
                 storeOperations(structure.getChildProductCmptReferences(productCmptStructureReferences[i]),
                         objectOperations, result, operation, validParentChildOperation, invalidParentChildOperation);
-                storeOperations(structure
-                        .getChildProductCmptStructureTblUsageReference(productCmptStructureReferences[i]),
+                storeOperations(
+                        structure.getChildProductCmptStructureTblUsageReference(productCmptStructureReferences[i]),
                         objectOperations, result, operation, validParentChildOperation, invalidParentChildOperation);
 
                 IProductCmptTypeAssociationReference parent = (IProductCmptTypeAssociationReference)((IProductCmptReference)productCmptStructureReferences[i])
@@ -190,8 +190,8 @@ public class SameOperationValidator {
                 }
                 IProductCmptReference parentProductCmptReference = (IProductCmptReference)parent.getParent();
                 childOperation = new ParentProductCmptChildOperation(parentProductCmptReference.getProductCmpt(),
-                        operation, parent.getAssociation(), ((IProductCmptReference)productCmptStructureReferences[i])
-                                .getProductCmpt());
+                        operation, parent.getAssociation(),
+                        ((IProductCmptReference)productCmptStructureReferences[i]).getProductCmpt());
                 errorMsg = NLS.bind(Messages.SameOperationValidator_errorMsgInvalidSelectionOfProductCmpt,
                         ((IProductCmptReference)productCmptStructureReferences[i]).getProductCmpt().getName(),
                         parentProductCmptReference.getProductCmpt().getName());
@@ -206,8 +206,8 @@ public class SameOperationValidator {
                 IProductCmptStructureTblUsageReference tblUsageReference = (IProductCmptStructureTblUsageReference)productCmptStructureReferences[i];
                 childOperation = new ParentProductCmptChildOperation(parentProductCmptReference.getProductCmpt(),
                         operation, tblUsageReference.getTableContentUsage());
-                errorMsg = NLS.bind(Messages.SameOperationValidator_errorMsgInvalidSelectionOfProductCmpt, StringUtil
-                        .unqualifiedName(tblUsageReference.getTableContentUsage().getTableContentName()),
+                errorMsg = NLS.bind(Messages.SameOperationValidator_errorMsgInvalidSelectionOfProductCmpt,
+                        StringUtil.unqualifiedName(tblUsageReference.getTableContentUsage().getTableContentName()),
                         parentProductCmptReference.getProductCmpt().getName());
             }
 

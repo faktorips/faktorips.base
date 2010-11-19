@@ -110,8 +110,8 @@ public class ProductCmptTypeValidations {
         if (!StringUtils.isEmpty(productCmptSuperType)) {
             IProductCmptType superType = ipsProject.findProductCmptType(productCmptSuperType);
             if (superType != null && superType.isConfigurationForPolicyCmptType()) {
-                String msg = NLS.bind("The supertype of the configured policy component type must be {0}", superType
-                        .getPolicyCmptType());
+                String msg = NLS.bind("The supertype of the configured policy component type must be {0}",
+                        superType.getPolicyCmptType());
                 if (StringUtils.isEmpty(policyCmptSupertype)) {
                     return Message.newError("", msg); //$NON-NLS-1$
                 }

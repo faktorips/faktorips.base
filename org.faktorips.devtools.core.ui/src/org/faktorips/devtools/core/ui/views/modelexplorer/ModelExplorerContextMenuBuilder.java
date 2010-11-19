@@ -152,10 +152,10 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         refresh = ActionFactory.REFRESH.create(viewSite.getWorkbenchWindow());
         properties = ActionFactory.PROPERTIES.create(viewSite.getWorkbenchWindow());
         IActionBars actionBars = viewSite.getActionBars();
-        actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), new IpsCopyAction(treeViewer, workbenchPartSite
-                .getShell()));
-        actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(), new IpsPasteAction(treeViewer, workbenchPartSite
-                .getShell()));
+        actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(),
+                new IpsCopyAction(treeViewer, workbenchPartSite.getShell()));
+        actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(),
+                new IpsPasteAction(treeViewer, workbenchPartSite.getShell()));
         actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), deleteAction);
         actionBars.setGlobalActionHandler(ActionFactory.REFRESH.getId(), refresh);
         actionBars.setGlobalActionHandler(ActionFactory.PROPERTIES.getId(), propertiesAction);

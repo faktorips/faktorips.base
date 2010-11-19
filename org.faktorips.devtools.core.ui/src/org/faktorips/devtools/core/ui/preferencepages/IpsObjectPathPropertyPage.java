@@ -70,8 +70,7 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
 
     private Control createForClosedProject(Composite parent) {
         Label label = new Label(parent, SWT.LEFT);
-        label
-                .setText(org.faktorips.devtools.core.ui.preferencepages.Messages.IpsObjectPathsPropertyPage_closed_project_message);
+        label.setText(org.faktorips.devtools.core.ui.preferencepages.Messages.IpsObjectPathsPropertyPage_closed_project_message);
         objectPathsContainer = null;
         setValid(true);
         return label;

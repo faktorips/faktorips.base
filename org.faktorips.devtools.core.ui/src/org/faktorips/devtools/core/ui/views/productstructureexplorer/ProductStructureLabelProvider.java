@@ -153,8 +153,8 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
                 for (IProductCmptTypeAssociationReference aReference : associationReferences) {
                     // if the assicuation is anotherone but have the same target... show role name
                     if (aReference != associationReference
-                            && aReference.getAssociation().getTarget().equals(
-                                    associationReference.getAssociation().getTarget())) {
+                            && aReference.getAssociation().getTarget()
+                                    .equals(associationReference.getAssociation().getTarget())) {
                         return getRolenameLabel(associationReference.getAssociation());
                     }
                 }

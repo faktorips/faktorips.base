@@ -63,8 +63,8 @@ public class IpsObjectUIController extends DefaultUIController {
      * @see DefaultUIController#add(EditField, Object, String)
      */
     public void add(EditField editField, String propertyName) {
-        IExtensionPropertyDefinition extProperty = IpsPlugin.getDefault().getIpsModel().getExtensionPropertyDefinition(
-                partContainer.getClass(), propertyName, true);
+        IExtensionPropertyDefinition extProperty = IpsPlugin.getDefault().getIpsModel()
+                .getExtensionPropertyDefinition(partContainer.getClass(), propertyName, true);
         if (extProperty != null) {
             addMapping(new FieldExtensionPropertyMapping(editField, partContainer, propertyName));
         } else {

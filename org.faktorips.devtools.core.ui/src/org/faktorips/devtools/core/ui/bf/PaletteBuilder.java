@@ -52,9 +52,9 @@ public class PaletteBuilder {
 
         ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
                 "obj16/CallOperationAction.gif"); //$NON-NLS-1$
-        CombinedTemplateCreationEntry actionEntry = new CombinedTemplateCreationEntry(BFElementType.ACTION_METHODCALL
-                .getName(), Messages.PaletteBuilder_methodCallActionDesc, new BFElementFactory(
-                BFElementType.ACTION_METHODCALL), imageDescriptor, imageDescriptor);
+        CombinedTemplateCreationEntry actionEntry = new CombinedTemplateCreationEntry(
+                BFElementType.ACTION_METHODCALL.getName(), Messages.PaletteBuilder_methodCallActionDesc,
+                new BFElementFactory(BFElementType.ACTION_METHODCALL), imageDescriptor, imageDescriptor);
         entries.add(actionEntry);
 
         imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/CallBehaviorAction.gif"); //$NON-NLS-1$
@@ -64,15 +64,15 @@ public class PaletteBuilder {
         entries.add(bfCallEntry);
 
         imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/OpaqueAction.gif"); //$NON-NLS-1$
-        CombinedTemplateCreationEntry inlineActionEntry = new CombinedTemplateCreationEntry(BFElementType.ACTION_INLINE
-                .getName(), Messages.PaletteBuilder_inlineActionDesc,
-                new BFElementFactory(BFElementType.ACTION_INLINE), imageDescriptor, imageDescriptor);
+        CombinedTemplateCreationEntry inlineActionEntry = new CombinedTemplateCreationEntry(
+                BFElementType.ACTION_INLINE.getName(), Messages.PaletteBuilder_inlineActionDesc, new BFElementFactory(
+                        BFElementType.ACTION_INLINE), imageDescriptor, imageDescriptor);
         entries.add(inlineActionEntry);
 
         imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/DecisionNode.gif"); //$NON-NLS-1$
-        CombinedTemplateCreationEntry decisionEntry = new CombinedTemplateCreationEntry(BFElementType.DECISION
-                .getName(), Messages.PaletteBuilder_decisionDesc, new BFElementFactory(BFElementType.DECISION),
-                imageDescriptor, imageDescriptor);
+        CombinedTemplateCreationEntry decisionEntry = new CombinedTemplateCreationEntry(
+                BFElementType.DECISION.getName(), Messages.PaletteBuilder_decisionDesc, new BFElementFactory(
+                        BFElementType.DECISION), imageDescriptor, imageDescriptor);
         entries.add(decisionEntry);
 
         imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/DecisionNode.gif"); //$NON-NLS-1$

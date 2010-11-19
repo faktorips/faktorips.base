@@ -568,7 +568,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         // if(associationElement != null) {
         // vertragsteilePk = ((Element)associationElement.get(0)).getAttribute("targetRuntimeId");
         // }
-        // 
+        //
         // for each 1-many association in the policy component type we generate:
         // associationElements = (ArrayList) associationMap.get("Product");
         // if(associationElement != null) {

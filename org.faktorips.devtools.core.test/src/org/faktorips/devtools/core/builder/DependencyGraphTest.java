@@ -108,8 +108,8 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
         IDependency[] dependants = graph.getDependants(e.getQualifiedNameType());
         List<IDependency> dependsOnList = CollectionUtil.toArrayList(dependants);
         assertTrue(dependsOnList.contains(new DatatypeDependency(c.getQualifiedNameType(), e.getQualifiedName())));
-        assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(a.getQualifiedNameType(), e
-                .getQualifiedNameType())));
+        assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(a.getQualifiedNameType(),
+                e.getQualifiedNameType())));
         assertEquals(2, dependants.length);
     }
 
@@ -122,14 +122,14 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
     public void testGetDependants() {
         IDependency[] dependants = graph.getDependants(a.getQualifiedNameType());
         List<IDependency> dependsOnList = CollectionUtil.toArrayList(dependants);
-        assertTrue(dependsOnList.contains(IpsObjectDependency.createSubtypeDependency(c.getQualifiedNameType(), a
-                .getQualifiedNameType())));
+        assertTrue(dependsOnList.contains(IpsObjectDependency.createSubtypeDependency(c.getQualifiedNameType(),
+                a.getQualifiedNameType())));
         assertEquals(1, dependants.length);
 
         dependants = graph.getDependants(b.getQualifiedNameType());
         dependsOnList = CollectionUtil.toArrayList(dependants);
-        assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(c.getQualifiedNameType(), b
-                .getQualifiedNameType())));
+        assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(c.getQualifiedNameType(),
+                b.getQualifiedNameType())));
         assertEquals(1, dependants.length);
 
         dependants = graph.getDependants(c.getQualifiedNameType());
@@ -138,8 +138,8 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
 
         dependants = graph.getDependants(d.getQualifiedNameType());
         dependsOnList = CollectionUtil.toArrayList(dependants);
-        assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(a.getQualifiedNameType(), d
-                .getQualifiedNameType())));
+        assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(a.getQualifiedNameType(),
+                d.getQualifiedNameType())));
         assertEquals(1, dependants.length);
 
         dependants = graph.getDependants(e.getQualifiedNameType());
@@ -161,14 +161,14 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
         }
 
         List<IDependency> dependsOnList = CollectionUtil.toArrayList(dependants);
-        assertTrue(dependsOnList.contains(IpsObjectDependency.createSubtypeDependency(c.getQualifiedNameType(), a
-                .getQualifiedNameType())));
+        assertTrue(dependsOnList.contains(IpsObjectDependency.createSubtypeDependency(c.getQualifiedNameType(),
+                a.getQualifiedNameType())));
         assertEquals(1, dependants.length);
 
         dependants = graph.getDependants(b.getQualifiedNameType());
         dependsOnList = CollectionUtil.toArrayList(dependants);
-        assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(c.getQualifiedNameType(), b
-                .getQualifiedNameType())));
+        assertTrue(dependsOnList.contains(IpsObjectDependency.createReferenceDependency(c.getQualifiedNameType(),
+                b.getQualifiedNameType())));
         assertEquals(1, dependants.length);
 
         dependants = graph.getDependants(c.getQualifiedNameType());

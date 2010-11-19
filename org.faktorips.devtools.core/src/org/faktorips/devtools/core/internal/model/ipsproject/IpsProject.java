@@ -1697,8 +1697,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
             for (IPath tocPath : tocPathsInRefProject) {
                 if (tocPaths.contains(tocPath)) {
-                    String msg = NLS.bind(Messages.IpsProject_msgDuplicateTocFilePath, tocPath, referencedProjects[i]
-                            .getName());
+                    String msg = NLS.bind(Messages.IpsProject_msgDuplicateTocFilePath, tocPath,
+                            referencedProjects[i].getName());
                     result.add(new Message(MSGCODE_DUPLICATE_TOC_FILE_PATH_IN_DIFFERENT_PROJECTS, msg, Message.ERROR,
                             this));
                 }

@@ -186,8 +186,8 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         try {
             datatype = param.findDatatype(ipsproject);
             if (datatype == null) {
-                String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgDatatypeCanNotBeResolved, param
-                        .getDatatype(), param.getName());
+                String text = NLS.bind(Messages.AbstractParameterIdentifierResolver_msgDatatypeCanNotBeResolved,
+                        param.getDatatype(), param.getName());
                 return new CompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
             }
         } catch (Exception e) {

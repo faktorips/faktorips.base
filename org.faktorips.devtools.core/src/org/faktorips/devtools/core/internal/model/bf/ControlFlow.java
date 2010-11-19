@@ -223,8 +223,8 @@ public class ControlFlow extends AtomicIpsObjectPart implements IControlFlow {
                 continue;
             }
             if (controlFlow.getConditionValue().equals(getConditionValue())) {
-                String text = NLS.bind(Messages.ControlFlow_duplicateControlFlowValue, new String[] {
-                        decision.getName(), getConditionValue() });
+                String text = NLS.bind(Messages.ControlFlow_duplicateControlFlowValue,
+                        new String[] { decision.getName(), getConditionValue() });
                 msgList.add(new Message(MSGCODE_DUBLICATE_VALUES, text, Message.ERROR, this));
             }
         }

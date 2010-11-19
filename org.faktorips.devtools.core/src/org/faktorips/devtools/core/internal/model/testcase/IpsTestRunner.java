@@ -540,8 +540,8 @@ public class IpsTestRunner implements IIpsTestRunner {
 
         // get source container from the project
         ISourceContainer sc = new ProjectSourceContainer(ipsProject.getProject(), true);
-        List<ISourceContainer> sourceContainer = new ArrayList<ISourceContainer>(Arrays
-                .asList(sc.getSourceContainers()));
+        List<ISourceContainer> sourceContainer = new ArrayList<ISourceContainer>(
+                Arrays.asList(sc.getSourceContainers()));
 
         // get source container from the workspace
         sc = new WorkspaceSourceContainer();
@@ -703,8 +703,8 @@ public class IpsTestRunner implements IIpsTestRunner {
         } else if (line.startsWith(SocketIpsTestRunner.TEST_FAILED)) {
             // format: qualifiedName|testObject|testedAttribute|expectedValue|actualValue|message
             String failureDetailsLine = line.substring(SocketIpsTestRunner.TEST_FAILED.length());
-            String qualifiedTestName = failureDetailsLine.substring(0, failureDetailsLine
-                    .indexOf(SocketIpsTestRunner.TEST_FAILED_DELIMITERS));
+            String qualifiedTestName = failureDetailsLine.substring(0,
+                    failureDetailsLine.indexOf(SocketIpsTestRunner.TEST_FAILED_DELIMITERS));
             ArrayList<String> failureTokens = new ArrayList<String>(5);
             while (failureDetailsLine.length() > 0) {
                 String token = ""; //$NON-NLS-1$
@@ -730,8 +730,8 @@ public class IpsTestRunner implements IIpsTestRunner {
         } else if (line.endsWith(SocketIpsTestRunner.TEST_ERROR_END)) {
             String errorDetails = line.substring(0, line.indexOf(SocketIpsTestRunner.TEST_ERROR_END));
             parseErrorStack(errorDetailList, errorDetails);
-            notifyTestErrorOccured(qualifiedTestName, errorDetailList == null ? new String[0] : errorDetailList
-                    .toArray(new String[0]));
+            notifyTestErrorOccured(qualifiedTestName,
+                    errorDetailList == null ? new String[0] : errorDetailList.toArray(new String[0]));
             errorDetailList = null;
         } else if (errorDetailList != null) {
             // parse multiline stack elements

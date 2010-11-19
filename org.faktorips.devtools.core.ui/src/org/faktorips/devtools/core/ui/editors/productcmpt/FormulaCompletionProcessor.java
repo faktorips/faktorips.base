@@ -88,8 +88,8 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
         for (EnumDatatype enumType : enumTypes) {
             if (enumType.getName().startsWith(enumTypePrefix)) {
                 ICompletionProposal proposal = new CompletionProposal(enumType.getName(), replacementOffset,
-                        enumTypePrefix.length(), enumType.getName().length(), new DefaultLabelProvider()
-                                .getImage(enumType), enumType.getName(), null, null);
+                        enumTypePrefix.length(), enumType.getName().length(),
+                        new DefaultLabelProvider().getImage(enumType), enumType.getName(), null, null);
                 result.add(proposal);
             }
         }
@@ -206,8 +206,8 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
         description = description.replaceAll("\r\n", "<br>"); //$NON-NLS-1$ //$NON-NLS-2$
         description = description.replaceAll("\n", "<br>"); //$NON-NLS-1$ //$NON-NLS-2$
         ICompletionProposal proposal = new CompletionProposal(name, replacementOffset, replacementLength,
-                replacementOffset + name.length(), new DefaultLabelProvider().getImage(function), displayText
-                        .toString(), null, description);
+                replacementOffset + name.length(), new DefaultLabelProvider().getImage(function),
+                displayText.toString(), null, description);
         result.add(proposal);
     }
 

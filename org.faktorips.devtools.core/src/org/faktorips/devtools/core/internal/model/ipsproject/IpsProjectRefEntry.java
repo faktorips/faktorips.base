@@ -138,9 +138,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
     public Element toXml(Document doc) {
         Element element = doc.createElement(XML_ELEMENT);
         element.setAttribute("type", TYPE_PROJECT_REFERENCE); //$NON-NLS-1$
-        element
-                .setAttribute(
-                        "referencedIpsProject", referencedIpsProject == null ? "" : referencedIpsProject.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+        element.setAttribute("referencedIpsProject", referencedIpsProject == null ? "" : referencedIpsProject.getName()); //$NON-NLS-1$ //$NON-NLS-2$
         return element;
     }
 

@@ -137,8 +137,7 @@ public class KeyEditDialog extends IpsPartEditDialog {
                     // and then update the ui.
                     ((IForeignKey)key).setReferencedTableStructure(tableStructureRefField.getText());
                     try {
-                        ITableStructure structure = ((IForeignKey)key)
-                                .findReferencedTableStructure(key.getIpsProject());
+                        ITableStructure structure = ((IForeignKey)key).findReferencedTableStructure(key.getIpsProject());
                         completionProcessor.setTableStructure(structure);
                         if (structure != null) {
                             IUniqueKey[] keys = structure.getUniqueKeys();
@@ -156,8 +155,8 @@ public class KeyEditDialog extends IpsPartEditDialog {
             uiToolkit.createFormLabel(refTableComposite, Messages.KeyEditDialog_labelReferenceUniqueKey);
             Text ukRefControl = uiToolkit.createText(refTableComposite);
             completionProcessor = new UniqueKeyCompletionProcessor();
-            ContentAssistHandler.createHandlerForText(ukRefControl, CompletionUtil
-                    .createContentAssistant(completionProcessor));
+            ContentAssistHandler.createHandlerForText(ukRefControl,
+                    CompletionUtil.createContentAssistant(completionProcessor));
 
             uniqueKeyRefField = new TextField(ukRefControl);
             uniqueKeyRefField.addChangeListener(new ValueChangeListener() {
@@ -478,8 +477,8 @@ public class KeyEditDialog extends IpsPartEditDialog {
                 return image;
             }
 
-            MessageList itemMsgList = list.getMessagesFor(key, IKey.PROPERTY_KEY_ITEMS, key
-                    .getIndexForKeyItemName(item));
+            MessageList itemMsgList = list.getMessagesFor(key, IKey.PROPERTY_KEY_ITEMS,
+                    key.getIndexForKeyItemName(item));
             if (itemMsgList.getSeverity() == Message.NONE) {
                 return image;
             }

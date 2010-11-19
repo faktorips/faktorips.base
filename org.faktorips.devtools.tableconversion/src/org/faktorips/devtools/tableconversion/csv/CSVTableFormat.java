@@ -116,8 +116,8 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
             MessageList list) {
 
         try {
-            AbstractTableExportOperation enumExportOperation = new CSVEnumExportOperation(valueContainer, filename
-                    .toOSString(), this, nullRepresentationString, exportColumnHeaderRow, list);
+            AbstractTableExportOperation enumExportOperation = new CSVEnumExportOperation(valueContainer,
+                    filename.toOSString(), this, nullRepresentationString, exportColumnHeaderRow, list);
             enumExportOperation.run(new NullProgressMonitor());
             return true;
         } catch (Exception e) {

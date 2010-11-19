@@ -147,8 +147,10 @@ public class GenerationAttributesSection extends IpsSection {
 
         // create a label and edit control for each attribute value
         IAttributeValue[] elements = generation.getAttributeValues();
-        Arrays.sort(elements, new PropertyValueComparator(generation.getProductCmpt().getProductCmptType(), generation
-                .getIpsProject()));
+        Arrays.sort(
+                elements,
+                new PropertyValueComparator(generation.getProductCmpt().getProductCmptType(), generation
+                        .getIpsProject()));
         for (IAttributeValue element : elements) {
             addAndRegister(element);
         }
@@ -207,8 +209,8 @@ public class GenerationAttributesSection extends IpsSection {
                 valueset = attr.getValueSet();
             }
             ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
-            EditField field = ctrlFactory.createEditField(toolkit, rootPane, datatype, valueset, generation
-                    .getIpsProject());
+            EditField field = ctrlFactory.createEditField(toolkit, rootPane, datatype, valueset,
+                    generation.getIpsProject());
             Control ctrl = field.getControl();
             controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);
             addFocusControl(ctrl);

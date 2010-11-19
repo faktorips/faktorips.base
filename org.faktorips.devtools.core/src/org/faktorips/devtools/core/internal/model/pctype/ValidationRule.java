@@ -218,8 +218,7 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
     }
 
     private void validateValidatedAttribute(MessageList list, IIpsProject ipsProject) throws CoreException {
-        IAttribute[] attributes = getPolicyCmptType().getSupertypeHierarchy()
-                .getAllAttributes(getPolicyCmptType());
+        IAttribute[] attributes = getPolicyCmptType().getSupertypeHierarchy().getAllAttributes(getPolicyCmptType());
         Set<String> attributeNames = new HashSet<String>(attributes.length);
         for (IAttribute attribute : attributes) {
             attributeNames.add(attribute.getName());
@@ -329,8 +328,8 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_NAME, name);
-        newElement.setAttribute(PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS, String
-                .valueOf(appliedForAllBusinessFunction));
+        newElement.setAttribute(PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS,
+                String.valueOf(appliedForAllBusinessFunction));
         newElement.setAttribute(PROPERTY_MESSAGE_CODE, msgCode);
         newElement.setAttribute(PROPERTY_MESSAGE_TEXT, msgText);
         newElement.setAttribute(PROPERTY_MESSAGE_SEVERITY, msgSeverity.getId());

@@ -127,8 +127,9 @@ public class IpsArchiveExportWizard extends Wizard implements IExportWizard {
             }
         }
 
-        CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(checkedRoots
-                .toArray(new IIpsPackageFragmentRoot[checkedRoots.size()]), ipsArPackageWizardPage.getDestinationFile());
+        CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(
+                checkedRoots.toArray(new IIpsPackageFragmentRoot[checkedRoots.size()]),
+                ipsArPackageWizardPage.getDestinationFile());
         op.setInclJavaBinaries(ipsArPackageWizardPage.isInclJavaBinaries());
         op.setInclJavaSources(ipsArPackageWizardPage.isInclJavaSources());
 

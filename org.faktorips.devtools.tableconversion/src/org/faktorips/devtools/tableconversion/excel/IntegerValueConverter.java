@@ -37,8 +37,8 @@ public class IntegerValueConverter extends AbstractValueConverter {
             int value = ((Double)externalDataValue).intValue();
             Double restored = new Double(value);
             if (!restored.equals(externalDataValue)) {
-                messageList.add(ExtSystemsMessageUtil.createConvertExtToIntLostValueErrorMessage(externalDataValue
-                        .toString(), restored.toString()));
+                messageList.add(ExtSystemsMessageUtil.createConvertExtToIntLostValueErrorMessage(
+                        externalDataValue.toString(), restored.toString()));
                 return externalDataValue.toString();
             }
             return new Integer(value).toString();

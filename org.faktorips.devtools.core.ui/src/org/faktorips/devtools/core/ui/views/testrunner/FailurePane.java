@@ -252,8 +252,8 @@ public class FailurePane implements IMenuListener {
 
             IJavaElement file = findElement(viewPart.getLaunchedProject(), tli.getTestName());
             if (file == null) {
-                MessageDialog.openError(viewPart.getShell(), Messages.FailurePane_DialogClassNotFound_Title, NLS.bind(
-                        Messages.FailurePane_DialogClassNotFound_Description, tli.getTestName()));
+                MessageDialog.openError(viewPart.getShell(), Messages.FailurePane_DialogClassNotFound_Title,
+                        NLS.bind(Messages.FailurePane_DialogClassNotFound_Description, tli.getTestName()));
                 return false;
             }
 
@@ -264,10 +264,11 @@ public class FailurePane implements IMenuListener {
                 IEditorPart part = JavaUI.openInEditor(file);
                 if (part == null) {
                     MessageDialog
-                            .openInformation(viewPart.getShell(),
-                                    Messages.FailurePane_DialogClassNotFoundInSrcFolder_Title, NLS.bind(
-                                            Messages.FailurePane_DialogClassNotFoundInSrcFolder_Description, tli
-                                                    .getTestName()));
+                            .openInformation(
+                                    viewPart.getShell(),
+                                    Messages.FailurePane_DialogClassNotFoundInSrcFolder_Title,
+                                    NLS.bind(Messages.FailurePane_DialogClassNotFoundInSrcFolder_Description,
+                                            tli.getTestName()));
                     return false;
                 }
                 editorInput = part.getEditorInput();

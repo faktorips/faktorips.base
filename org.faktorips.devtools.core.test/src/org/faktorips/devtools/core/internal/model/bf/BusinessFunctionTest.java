@@ -271,8 +271,8 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         MessageList list3 = msgList.getMessagesFor(action3);
         assertNotNull(list3.getMessageByCode(IBusinessFunction.MSGCODE_ELEMENT_NAME_COLLISION));
 
-        BusinessFunction bfAction1 = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType
-                .getInstance(), "action1");
+        BusinessFunction bfAction1 = (BusinessFunction)newIpsObject(ipsProject,
+                BusinessFunctionIpsObjectType.getInstance(), "action1");
 
         IActionBFE action4 = bf.newBusinessFunctionCallAction(new Point(10, 10));
         action4.setTarget(bfAction1.getQualifiedName());
@@ -445,8 +445,9 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
 
         dependencies = bf.dependsOn();
         assertEquals(1, dependencies.length);
-        assertEquals(IpsObjectDependency.createReferenceDependency(bf.getQualifiedNameType(), bf2
-                .getQualifiedNameType()), dependencies[0]);
+        assertEquals(
+                IpsObjectDependency.createReferenceDependency(bf.getQualifiedNameType(), bf2.getQualifiedNameType()),
+                dependencies[0]);
 
         List<IDependencyDetail> details = bf.getDependencyDetails(dependencies[0]);
         assertEquals(1, details.size());
@@ -474,8 +475,9 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         action.setExecutableMethodName(method.getName());
         dependencies = bf.dependsOn();
         assertEquals(1, dependencies.length);
-        assertEquals(IpsObjectDependency.createReferenceDependency(bf.getQualifiedNameType(), pcType
-                .getQualifiedNameType()), dependencies[0]);
+        assertEquals(
+                IpsObjectDependency.createReferenceDependency(bf.getQualifiedNameType(), pcType.getQualifiedNameType()),
+                dependencies[0]);
 
         details = bf.getDependencyDetails(dependencies[0]);
         assertEquals(1, details.size());

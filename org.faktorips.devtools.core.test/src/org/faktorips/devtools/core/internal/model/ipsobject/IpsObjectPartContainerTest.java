@@ -391,8 +391,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         // load data with immutable srcfile (historic srcfile) that should not be validated
         IFile file = product.getIpsSrcFile().getCorrespondingFile();
-        IpsSrcFileImmutable srcFileImmutable = new IpsSrcFileImmutable("TestSrcFileImmutable.ipsproduct", file
-                .getContents());
+        IpsSrcFileImmutable srcFileImmutable = new IpsSrcFileImmutable("TestSrcFileImmutable.ipsproduct",
+                file.getContents());
         MessageList messagesImmutable = srcFileImmutable.getIpsObject().validate(ipsProject);
         assertNotNull(messagesImmutable);
         assertTrue(messagesImmutable.isEmpty());

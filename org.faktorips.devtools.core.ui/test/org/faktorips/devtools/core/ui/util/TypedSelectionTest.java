@@ -255,8 +255,8 @@ public class TypedSelectionTest extends TestCase {
         selectionModel.add(TEST_STRING);
         StructuredSelection selection = new StructuredSelection(selectionModel);
 
-        assertEquals(WRONG_ELEMENT_IN_SELECTION, TEST_STRING, TypedSelection.convertSingleElement(String.class,
-                selection));
+        assertEquals(WRONG_ELEMENT_IN_SELECTION, TEST_STRING,
+                TypedSelection.convertSingleElement(String.class, selection));
     }
 
     /**

@@ -50,8 +50,8 @@ public class ProductCmptModelDescriptionPage extends DefaultModelDescriptionPage
     public ProductCmptModelDescriptionPage(ProductCmptEditor editor) throws CoreException {
         super();
         this.editor = editor;
-        valueComparator = new PropertyValueComparator(editor.getProductCmpt().getProductCmptType(), editor
-                .getIpsProject());
+        valueComparator = new PropertyValueComparator(editor.getProductCmpt().getProductCmptType(),
+                editor.getIpsProject());
         editor.addListener(this);
         IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
         setDescriptionData(editor.getActiveGeneration());

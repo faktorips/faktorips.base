@@ -451,7 +451,8 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                     10);
             int numberOfBuildCandidates = collectDependenciesForIncrementalBuild(visitor.changedAndAddedIpsSrcFiles,
                     visitor.removedIpsSrcFiles, dependenciesForProjectsMap)
-                    + visitor.removedIpsSrcFiles.size() + visitor.changedAndAddedIpsSrcFiles.size();
+                    + visitor.removedIpsSrcFiles.size()
+                    + visitor.changedAndAddedIpsSrcFiles.size();
             monitor.beginTask("build incremental", numberOfBuildCandidates); //$NON-NLS-1$
             for (IIpsSrcFile iIpsSrcFile : visitor.removedIpsSrcFiles) {
                 if (monitor.isCanceled()) {
@@ -729,8 +730,8 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 dependencySet.add(dependencies[i]);
                 counter.increment();
                 if (dependencies[i].getType().equals(DependencyType.SUBTYPE)) {
-                    collectDependencies(ipsArtefactBuilderSet, graph, dependenciesForProjectMap, dependencies[i]
-                            .getSource(), counter, false);
+                    collectDependencies(ipsArtefactBuilderSet, graph, dependenciesForProjectMap,
+                            dependencies[i].getSource(), counter, false);
                     collectDependenciesWithinDependantProjects(dependencies[i].getSource(), graph.getIpsProject(),
                             new HashSet<IIpsProject>(100), dependenciesForProjectMap, counter, false);
                     continue;
@@ -738,16 +739,16 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 
                 if (dependencies[i].getType().equals(DependencyType.REFERENCE_COMPOSITION_MASTER_DETAIL)
                         && ipsArtefactBuilderSet.containsAggregateRootBuilder()) {
-                    collectDependencies(ipsArtefactBuilderSet, graph, dependenciesForProjectMap, dependencies[i]
-                            .getSource(), counter, false);
+                    collectDependencies(ipsArtefactBuilderSet, graph, dependenciesForProjectMap,
+                            dependencies[i].getSource(), counter, false);
                     collectDependenciesWithinDependantProjects(dependencies[i].getSource(), graph.getIpsProject(),
                             new HashSet<IIpsProject>(100), dependenciesForProjectMap, counter, false);
                     continue;
                 }
                 if (dependencies[i].getType().equals(DependencyType.REFERENCE)
                         || dependencies[i].getType().equals(DependencyType.DATATYPE)) {
-                    collectDependencies(ipsArtefactBuilderSet, graph, dependenciesForProjectMap, dependencies[i]
-                            .getSource(), counter, true);
+                    collectDependencies(ipsArtefactBuilderSet, graph, dependenciesForProjectMap,
+                            dependencies[i].getSource(), counter, true);
                     collectDependenciesWithinDependantProjects(dependencies[i].getSource(), graph.getIpsProject(),
                             new HashSet<IIpsProject>(100), dependenciesForProjectMap, counter, true);
                 }

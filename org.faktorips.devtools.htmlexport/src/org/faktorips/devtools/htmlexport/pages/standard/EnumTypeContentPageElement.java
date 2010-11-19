@@ -187,8 +187,8 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
             return;
         }
 
-        TreeNodePageElement baseElement = new TreeNodePageElement(new TreeNodePageElement(PageElementUtils
-                .createLinkPageElement(getConfig(), superTypes.get(0),
+        TreeNodePageElement baseElement = new TreeNodePageElement(new TreeNodePageElement(
+                PageElementUtils.createLinkPageElement(getConfig(), superTypes.get(0),
                         "content", superTypes.get(0).getQualifiedName(), true))); //$NON-NLS-1$
         TreeNodePageElement element = baseElement;
 
@@ -224,8 +224,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
      */
     protected void addAttributesTable() {
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-        wrapper
-                .addPageElements(new TextPageElement(Messages.EnumTypeContentPageElement_attributes, TextType.HEADING_2));
+        wrapper.addPageElements(new TextPageElement(Messages.EnumTypeContentPageElement_attributes, TextType.HEADING_2));
 
         wrapper.addPageElements(getTableOrAlternativeText(new EnumAttributesTablePageElement(getDocumentedIpsObject(),
                 config), Messages.EnumTypeContentPageElement_noAttributes));

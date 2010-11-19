@@ -28,8 +28,7 @@ public class NotEqualsObjectDatatypeTest extends CompilerAbstractTest {
     }
 
     public void testMoney() throws Exception {
-        compiler
-                .setBinaryOperations(new BinaryOperation[] { new NotEqualsObjectDatatype(Datatype.MONEY, Datatype.MONEY) });
+        compiler.setBinaryOperations(new BinaryOperation[] { new NotEqualsObjectDatatype(Datatype.MONEY, Datatype.MONEY) });
         compiler.setEnsureResultIsObject(false);
         execAndTestSuccessfull("1EUR!=2EUR", true);
         execAndTestSuccessfull("1.23EUR!=1.23EUR", false);

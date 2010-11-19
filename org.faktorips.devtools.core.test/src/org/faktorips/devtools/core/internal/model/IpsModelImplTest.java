@@ -53,8 +53,8 @@ public class IpsModelImplTest extends AbstractIpsPluginTest {
         secondProject.setIpsObjectPath(secondPath);
 
         assertEquals("newpackage", path.getSourceFolderEntries()[0].getSpecificBasePackageNameForMergableJavaClasses());
-        assertEquals("secondpackage", secondPath.getSourceFolderEntries()[0]
-                .getSpecificBasePackageNameForMergableJavaClasses());
+        assertEquals("secondpackage",
+                secondPath.getSourceFolderEntries()[0].getSpecificBasePackageNameForMergableJavaClasses());
     }
 
     public void testGetDatatypeHelpers() throws CoreException {

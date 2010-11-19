@@ -226,8 +226,8 @@ public class FormulaEditDialog extends IpsPartEditDialog {
         Text formulaText = uiToolkit.createMultilineText(c);
         try {
             FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(formula);
-            ContentAssistHandler.createHandlerForText(formulaText, CompletionUtil
-                    .createContentAssistant(completionProcessor));
+            ContentAssistHandler.createHandlerForText(formulaText,
+                    CompletionUtil.createContentAssistant(completionProcessor));
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }

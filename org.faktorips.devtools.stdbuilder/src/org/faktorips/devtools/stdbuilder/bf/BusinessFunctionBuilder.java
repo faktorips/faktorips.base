@@ -512,8 +512,12 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
 
             IBusinessFunction bf = action.findReferencedBusinessFunction();
             methodBuilder
-                    .method(Modifier.PRIVATE, getQualifiedClassName(bf),
-                            getMethodNameCreateCallBusinessFunction(action), new String[0], new String[0], body,
+                    .method(Modifier.PRIVATE,
+                            getQualifiedClassName(bf),
+                            getMethodNameCreateCallBusinessFunction(action),
+                            new String[0],
+                            new String[0],
+                            body,
                             "Factory method to create the business function \""
                                     + action.getReferencedBfUnqualifedName() + "\"", ANNOTATION_GENERATED);
             alreadyGenerated.add(getMethodNameCreateCallBusinessFunction(action));
@@ -568,9 +572,10 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
                 }
             }
         }
-        constructorBuilder.method(Modifier.PUBLIC, null, getBusinessFunction().getName(), parameterNames
-                .toArray(new String[parameterNames.size()]), parameterTypes.toArray(new String[parameterTypes.size()]),
-                body, "Creates a new " + getBusinessFunction().getName() + ".", ANNOTATION_GENERATED);
+        constructorBuilder.method(Modifier.PUBLIC, null, getBusinessFunction().getName(),
+                parameterNames.toArray(new String[parameterNames.size()]),
+                parameterTypes.toArray(new String[parameterTypes.size()]), body, "Creates a new "
+                        + getBusinessFunction().getName() + ".", ANNOTATION_GENERATED);
     }
 
     public IBusinessFunction getBusinessFunction() {

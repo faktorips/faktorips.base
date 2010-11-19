@@ -83,8 +83,8 @@ public class GenAssociationToMany extends GenAssociation {
      * getNumOfCoverages().
      */
     protected String getMethodNameContainsObject(IAssociation association) {
-        return getLocalizedText("METHOD_CONTAINS_OBJECT_NAME", StringUtils.capitalize(association
-                .getTargetRoleSingular()));
+        return getLocalizedText("METHOD_CONTAINS_OBJECT_NAME",
+                StringUtils.capitalize(association.getTargetRoleSingular()));
     }
 
     /**
@@ -183,8 +183,8 @@ public class GenAssociationToMany extends GenAssociation {
      * removeCoverage().
      */
     public String getMethodNameRemoveObject() {
-        return getLocalizedText("METHOD_REMOVE_OBJECT_NAME", StringUtils
-                .capitalize(association.getTargetRoleSingular()));
+        return getLocalizedText("METHOD_REMOVE_OBJECT_NAME",
+                StringUtils.capitalize(association.getTargetRoleSingular()));
     }
 
     /**
@@ -446,13 +446,13 @@ public class GenAssociationToMany extends GenAssociation {
 
     protected void generateMethodAddObject(JavaCodeFragmentBuilder methodsBuilder, boolean internal)
             throws CoreException {
-        
+
         if (internal) {
-            appendLocalizedJavaDoc("METHOD_ADD_OBJECT_INTERNAL", association.getTargetRoleSingular(), methodsBuilder);            
+            appendLocalizedJavaDoc("METHOD_ADD_OBJECT_INTERNAL", association.getTargetRoleSingular(), methodsBuilder);
         } else {
             methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         }
-        
+
         generateSignatureAddObject(methodsBuilder, internal);
         String paramName = getParamNameForAddObject();
         methodsBuilder.openBracket();
@@ -782,7 +782,8 @@ public class GenAssociationToMany extends GenAssociation {
      * }
      * </pre>
      * 
-     * @param subsetAssociations List of associations that are subsets of the derived union association that this is a generator for.  
+     * @param subsetAssociations List of associations that are subsets of the derived union
+     *            association that this is a generator for.
      */
     protected void generateMethodGetNumOfForContainerAssociationImplementation(List<IAssociation> subsetAssociations,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
@@ -803,8 +804,8 @@ public class GenAssociationToMany extends GenAssociation {
      * getNumOfCoveragesInternal()
      */
     private String getMethodNameGetNumOfRefObjectsInternal() {
-        return getLocalizedText("METHOD_GET_NUM_OF_INTERNAL_NAME", StringUtils.capitalize(association
-                .getTargetRolePlural()));
+        return getLocalizedText("METHOD_GET_NUM_OF_INTERNAL_NAME",
+                StringUtils.capitalize(association.getTargetRolePlural()));
     }
 
     /**
@@ -1173,8 +1174,8 @@ public class GenAssociationToMany extends GenAssociation {
 
     private JavaCodeFragment getForLoopCodeJ4(String className, String varName, String collectionName) {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
-        builder.append("for (").appendClassName(Iterator.class).append(" iterator = ").append(collectionName).append(
-                ".iterator()").append("; ") //
+        builder.append("for (").appendClassName(Iterator.class).append(" iterator = ").append(collectionName)
+                .append(".iterator()").append("; ") //
                 .appendln("iterator.hasNext();) {");
         builder.append(className).append(' ').append(varName).append(" = ").append('(').append(className).append(')') //
                 .appendln("iterator.next();");

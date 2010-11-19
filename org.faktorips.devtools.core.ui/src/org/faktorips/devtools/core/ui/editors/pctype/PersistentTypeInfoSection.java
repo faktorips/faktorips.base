@@ -111,7 +111,8 @@ public class PersistentTypeInfoSection extends IpsSection {
         setComboItems(persistentTypeCombo, PersistentType.class);
         ComboField persistentTypeField = new EnumField<PersistentType>(persistentTypeCombo, PersistentType.class);
 
-        Label inheritanceStrateyLabel = toolkit.createLabel(detailComposite, Messages.PersistentTypeInfoSection_labelInheritanceStrategy);
+        Label inheritanceStrateyLabel = toolkit.createLabel(detailComposite,
+                Messages.PersistentTypeInfoSection_labelInheritanceStrategy);
         Combo inheritanceStrategyCombo = toolkit.createCombo(detailComposite);
         setComboItems(inheritanceStrategyCombo, InheritanceStrategy.class);
         ComboField inheritanceStrategyField = new EnumField<InheritanceStrategy>(inheritanceStrategyCombo,
@@ -132,11 +133,13 @@ public class PersistentTypeInfoSection extends IpsSection {
         final Text tableNameText = toolkit.createText(tableNameComposite);
 
         // create discriminator group
-        Group discriminatorGroup = toolkit.createGroup(tableAndDiscrComposite, Messages.PersistentTypeInfoSection_labelDescriminator);
+        Group discriminatorGroup = toolkit.createGroup(tableAndDiscrComposite,
+                Messages.PersistentTypeInfoSection_labelDescriminator);
         persistentComposites.add(discriminatorGroup);
 
         Checkbox defineDiscriminatorColumn = toolkit.createCheckbox(discriminatorGroup);
-        defineDiscriminatorColumn.setText(Messages.PersistentTypeInfoSection_labelThisTypeDefinesTheDiscriminatorColumn);
+        defineDiscriminatorColumn
+                .setText(Messages.PersistentTypeInfoSection_labelThisTypeDefinesTheDiscriminatorColumn);
 
         Composite discriminatorDefComposite = toolkit.createLabelEditColumnComposite(discriminatorGroup);
 

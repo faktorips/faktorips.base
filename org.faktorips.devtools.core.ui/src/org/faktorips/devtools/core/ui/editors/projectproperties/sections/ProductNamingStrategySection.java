@@ -70,8 +70,8 @@ public class ProductNamingStrategySection extends IpsSection {
         toolkit.createFormLabel(composite, Messages.Overview_javaProjectContainsClassesForDynamicDatatypes);
         Combo javaProjectContainsClassesForDynamicDatatypesCombo = toolkit.createCombo(composite);
         javaProjectContainsClassesForDynamicDatatypesComboViewer = createComboViewer(javaProjectContainsClassesForDynamicDatatypesCombo);
-        setComboViewer(javaProjectContainsClassesForDynamicDatatypesComboViewer, iIpsProjectProperties
-                .isJavaProjectContainsClassesForDynamicDatatypes());
+        setComboViewer(javaProjectContainsClassesForDynamicDatatypesComboViewer,
+                iIpsProjectProperties.isJavaProjectContainsClassesForDynamicDatatypes());
 
         // IIpsArtefactBuilderSetConfigModel aaa3 = iIpsProjectProperties.getBuilderSetConfig();
         toolkit.createFormLabel(composite, Messages.Overview_modelProject);

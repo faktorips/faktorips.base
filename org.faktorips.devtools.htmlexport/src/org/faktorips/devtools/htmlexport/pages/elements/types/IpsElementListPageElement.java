@@ -88,8 +88,8 @@ public class IpsElementListPageElement extends AbstractListPageElement {
             if (!filter.accept(srcFile)) {
                 continue;
             }
-            PageElement link = PageElementUtils.createLinkPageElement(getConfig(), srcFile, getLinkTarget(), srcFile
-                    .getIpsObjectName(), true);
+            PageElement link = PageElementUtils.createLinkPageElement(getConfig(), srcFile, getLinkTarget(),
+                    srcFile.getIpsObjectName(), true);
             items.add(link);
         }
         return items;

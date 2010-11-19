@@ -206,8 +206,8 @@ public class ProductCmptTypePage extends TypePage {
             if (!StringUtils.isEmpty(getSuperType())) {
                 IProductCmptType superType = getIpsProject().findProductCmptType(getSuperType());
                 if (superType != null && superType.isConfigurationForPolicyCmptType()) {
-                    String msg = NLS.bind(Messages.ProductCmptTypePage_msgPolicyCmptSuperTypeNeedsToBeX, superType
-                            .getPolicyCmptType());
+                    String msg = NLS.bind(Messages.ProductCmptTypePage_msgPolicyCmptSuperTypeNeedsToBeX,
+                            superType.getPolicyCmptType());
                     if (StringUtils.isEmpty(pageOfAssociatedType.getSuperType())) {
                         setErrorMessage(msg);
                         return;

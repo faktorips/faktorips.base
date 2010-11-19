@@ -105,8 +105,8 @@ public class GeneralInfoSection extends IpsSection {
             }
 
         });
-        ProductCmptType2RefControl productCmptTypeRefControl = new ProductCmptType2RefControl(policyCmptType
-                .getIpsProject(), composite, toolkit, false);
+        ProductCmptType2RefControl productCmptTypeRefControl = new ProductCmptType2RefControl(
+                policyCmptType.getIpsProject(), composite, toolkit, false);
         bindingContext.bindContent(productCmptTypeRefControl, policyCmptType,
                 IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE);
         bindingContext.bindEnabled(productCmptTypeRefControl, policyCmptType,

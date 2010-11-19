@@ -30,8 +30,8 @@ public class PolicyCmptImplClassJaxbAnnGen extends AbstractAnnotationGenerator {
         PolicyCmptImplClassBuilder builder = getStandardBuilderSet().getPolicyCmptImplClassBuilder();
         JavaCodeFragmentBuilder codeBuilder = new JavaCodeFragmentBuilder();
         try {
-            codeBuilder.annotationLn("javax.xml.bind.annotation.XmlRootElement", "name", builder
-                    .getUnqualifiedClassName());
+            codeBuilder.annotationLn("javax.xml.bind.annotation.XmlRootElement", "name",
+                    builder.getUnqualifiedClassName());
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }

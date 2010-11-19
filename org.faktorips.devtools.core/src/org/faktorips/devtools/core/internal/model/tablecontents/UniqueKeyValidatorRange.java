@@ -97,8 +97,8 @@ public class UniqueKeyValidatorRange {
             ColumnRange columnRange,
             SortedMap<AbstractKeyValue, Object> keyValueRangeMap) {
 
-        KeyValueRange keyValueRange = KeyValueRange.createKeyValue(tableStructure, uniqueKeyValidator
-                .getCachedValueDatatypes(), uniqueKey, row, columnRange);
+        KeyValueRange keyValueRange = KeyValueRange.createKeyValue(tableStructure,
+                uniqueKeyValidator.getCachedValueDatatypes(), uniqueKey, row, columnRange);
         /*
          * add the key value range, if the value is not parsable then the key value are not added to
          * the cache, otherwise the sorted map can not work correctly (compareTo method fails)
@@ -179,8 +179,8 @@ public class UniqueKeyValidatorRange {
          */
         MessageList uniqueKeyValidationErrors = new MessageList();
         for (Row row : rowsUniqueKeyViolation) {
-            uniqueKeyValidator.createValidationErrorUniqueKeyViolation(uniqueKeyValidationErrors, keyValue
-                    .getUniqueKey(), row);
+            uniqueKeyValidator.createValidationErrorUniqueKeyViolation(uniqueKeyValidationErrors,
+                    keyValue.getUniqueKey(), row);
             if (isMaxNoOfUniqueKeyViolationsReached(uniqueKeyValidationErrors)) {
                 break;
             }
@@ -467,8 +467,8 @@ public class UniqueKeyValidatorRange {
     private boolean collisionInAllRanges(IUniqueKey uniqueKey, Row row1, Row row2) {
         List<ColumnRange> twoColumnRanges = AbstractKeyValue.getTwoColumnRanges(uniqueKey);
         for (ColumnRange columnRange : twoColumnRanges) {
-            if (!KeyValueRange.isRangeCollision(uniqueKeyValidator.getCachedTableStructure(), uniqueKeyValidator
-                    .getCachedValueDatatypes(), columnRange, row1, row2)) {
+            if (!KeyValueRange.isRangeCollision(uniqueKeyValidator.getCachedTableStructure(),
+                    uniqueKeyValidator.getCachedValueDatatypes(), columnRange, row1, row2)) {
                 return false;
             }
 

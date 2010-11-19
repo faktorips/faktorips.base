@@ -308,9 +308,9 @@ public class TestCaseStructurePage extends WizardPage {
 
     private void refreshCanditatesInTable(ITestPolicyCmpt testPolicyCmpt) throws CoreException {
         ITestPolicyCmpt parentPolicyCmpt = testPolicyCmpt.getParentTestPolicyCmpt();
-        changeCandidatesInTable(testPolicyCmpt.findProductCmpt(testPolicyCmpt.getIpsProject()), testPolicyCmpt
-                .findTestPolicyCmptTypeParameter(ipsProject), parentPolicyCmpt == null ? null : parentPolicyCmpt
-                .findProductCmpt(testPolicyCmpt.getIpsProject()));
+        changeCandidatesInTable(testPolicyCmpt.findProductCmpt(testPolicyCmpt.getIpsProject()),
+                testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject), parentPolicyCmpt == null ? null
+                        : parentPolicyCmpt.findProductCmpt(testPolicyCmpt.getIpsProject()));
     }
 
     /**
@@ -429,8 +429,8 @@ public class TestCaseStructurePage extends WizardPage {
             newTestCaseCreated = true;
         } else {
             // delete previous temporary test case if the target changed
-            if (!testCaseContentProvider.getTestCase().getQualifiedName().equals(
-                    getTestCaseCopyWizard().getTargetTestCaseQualifiedName())
+            if (!testCaseContentProvider.getTestCase().getQualifiedName()
+                    .equals(getTestCaseCopyWizard().getTargetTestCaseQualifiedName())
                     || getTestCaseCopyWizard().isReplaceParameterChanged()) {
                 getTestCaseCopyWizard().deleteTestCase(testCaseContentProvider.getTestCase());
                 getTestCaseCopyWizard().createNewTargetTestCase();

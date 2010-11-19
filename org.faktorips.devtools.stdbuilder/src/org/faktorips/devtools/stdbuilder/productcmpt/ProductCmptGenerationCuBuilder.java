@@ -219,7 +219,9 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
             appendOverrideAnnotation(builder, method.getModifier().isPublished());
         }
 
-        ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType()).getGenerator(method)
+        ((StandardBuilderSet)getBuilderSet())
+                .getGenerator(getProductCmptType())
+                .getGenerator(method)
                 .generateSignatureForModelMethod(false, true, builder, methodSuffix, testParameterNames,
                         testParameterTypes, getIpsProject());
         builder.openBracket();
@@ -245,8 +247,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
                     // those can be primitives!
                     builder.append("parameterValues.append(" + parameters[i].getName() + ");"); //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
-                    builder
-                            .append("parameterValues.append(" + parameters[i].getName() + " == null ? \"null\" : " + parameters[i].getName() + ".toString());"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    builder.append("parameterValues.append(" + parameters[i].getName() + " == null ? \"null\" : " + parameters[i].getName() + ".toString());"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 }
             }
         }

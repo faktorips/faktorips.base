@@ -124,8 +124,8 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
             @Override
             public void run() {
                 try {
-                    IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
-                            ModelDescriptionView.EXTENSION_ID);
+                    IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                            .showView(ModelDescriptionView.EXTENSION_ID);
                 } catch (PartInitException e) {
                     IpsPlugin.log(e);
                 }

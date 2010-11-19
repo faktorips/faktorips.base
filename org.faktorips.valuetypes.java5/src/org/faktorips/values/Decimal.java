@@ -225,7 +225,7 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * <code>this.scale()</code>.
      * 
      * @param i value to be subtracted from this Decimal.
-     *@return this - i
+     * @return this - i
      */
     public Decimal subtract(int i) {
         return new Decimal(value.subtract(BigDecimal.valueOf(i)));

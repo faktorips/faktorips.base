@@ -70,8 +70,8 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
      */
     @Override
     protected void generateCodeForJavatype(TypeSection mainSection) throws CoreException {
-        generateCodeForValidationRules(mainSection.getConstantBuilder(), mainSection.getMemberVarBuilder(), mainSection
-                .getMethodBuilder());
+        generateCodeForValidationRules(mainSection.getConstantBuilder(), mainSection.getMemberVarBuilder(),
+                mainSection.getMethodBuilder());
         generateInnerClasses();
     }
 
@@ -99,8 +99,8 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
                     if (helper == null) {
                         throw new CoreException(new IpsStatus("No datatype helper found for datatype " + datatype)); //$NON-NLS-1$
                     }
-                    generateCodeForAttribute(a, helper, mainSection.getConstantBuilder(), mainSection
-                            .getMemberVarBuilder(), mainSection.getMethodBuilder());
+                    generateCodeForAttribute(a, helper, mainSection.getConstantBuilder(),
+                            mainSection.getMemberVarBuilder(), mainSection.getMethodBuilder());
                 } catch (Exception e) {
 
                     throw new CoreException(new IpsStatus(IStatus.ERROR,

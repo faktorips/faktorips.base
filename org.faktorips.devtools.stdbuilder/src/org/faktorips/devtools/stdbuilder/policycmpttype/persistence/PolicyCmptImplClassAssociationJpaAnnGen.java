@@ -395,8 +395,8 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             IPolicyCmptTypeAssociation pcTypeAssociation) {
         GenAssociation pcTypeAssociationGenerator;
         try {
-            pcTypeAssociationGenerator = generator.getStandardBuilderSet().getGenerator(
-                    pcTypeAssociation.getPolicyCmptType()).getGenerator(pcTypeAssociation);
+            pcTypeAssociationGenerator = generator.getStandardBuilderSet()
+                    .getGenerator(pcTypeAssociation.getPolicyCmptType()).getGenerator(pcTypeAssociation);
             return pcTypeAssociationGenerator.getTargetPolicyCmptType().isPersistentEnabled();
         } catch (CoreException e) {
             // in some cases the getGenerator method could throw a CoreException e.g. if the

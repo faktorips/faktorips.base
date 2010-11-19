@@ -61,8 +61,8 @@ public abstract class AbstractVarArgFunction extends AbstractFlFunction {
                     Message msg = Message.newError(ERROR_MESSAGE_CODE, text);
                     return new CompilationResultImpl(msg);
                 }
-                JavaCodeFragment converted = ccg.getConversionCode(argDatatype, expectedArgType, argResults[i]
-                        .getCodeFragment());
+                JavaCodeFragment converted = ccg.getConversionCode(argDatatype, expectedArgType,
+                        argResults[i].getCodeFragment());
                 newResult = new CompilationResultImpl(converted, expectedArgType);
                 // TODO pk CompilationResult needs addMessages!?
                 newResult.addMessages(argResults[i].getMessages());
@@ -72,8 +72,7 @@ public abstract class AbstractVarArgFunction extends AbstractFlFunction {
 
         JavaCodeFragment fragment = new JavaCodeFragment();
         CompilationResultImpl returnValue = new CompilationResultImpl(fragment, getType());
-        compileInternal(returnValue, convertedResults
-                .toArray(new CompilationResult[convertedResults.size()]), fragment);
+        compileInternal(returnValue, convertedResults.toArray(new CompilationResult[convertedResults.size()]), fragment);
 
         for (int i = 0; i < convertedResults.size(); i++) {
             CompilationResultImpl compilationResult = convertedResults.get(i);

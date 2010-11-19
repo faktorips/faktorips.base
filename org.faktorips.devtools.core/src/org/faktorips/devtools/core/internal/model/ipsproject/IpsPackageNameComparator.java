@@ -108,7 +108,7 @@ public class IpsPackageNameComparator implements Comparator<IIpsPackageFragment>
      * getParentNameOfSegment(package, 2) =&gt; &quot;org.faktorips&quot;
      * getParentNameOfSegment(package, 3) =&gt; &quot;org.faktorips.devtools&quot;
      * 
-     *</pre>
+     * </pre>
      * 
      * </blockquote>
      * 
@@ -139,8 +139,8 @@ public class IpsPackageNameComparator implements Comparator<IIpsPackageFragment>
             String segmentName2,
             int segmentNr) {
 
-        IIpsPackageFragmentSortDefinition sortDef = getSortDefinition(pack1, getParentNameOfSegment(pack1.getName(),
-                segmentNr));
+        IIpsPackageFragmentSortDefinition sortDef = getSortDefinition(pack1,
+                getParentNameOfSegment(pack1.getName(), segmentNr));
 
         if (sortDef == null) {
             return segmentName1.compareTo(segmentName2);

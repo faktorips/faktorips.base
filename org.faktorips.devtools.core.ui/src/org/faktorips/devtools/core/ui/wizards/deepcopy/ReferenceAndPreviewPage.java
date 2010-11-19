@@ -129,7 +129,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
                     versionConceptNameSingular));
         }
 
-        // 
+        //
         setPageComplete(true);
     }
 
@@ -329,8 +329,8 @@ public class ReferenceAndPreviewPage extends WizardPage {
                 if (wrapped instanceof IProductCmpt) {
                     String name = ((IProductCmpt)wrapped).getName();
                     if (!getDeepCopyWizard().getDeepCopyPreview().isLinked(structureReference)) {
-                        name = getDeepCopyWizard().getDeepCopyPreview().getOldObject2newNameMap().get(
-                                structureReference);
+                        name = getDeepCopyWizard().getDeepCopyPreview().getOldObject2newNameMap()
+                                .get(structureReference);
                         if (name == null) {
                             name = getNewName(null, (IIpsObject)wrapped);
                         }
@@ -343,8 +343,8 @@ public class ReferenceAndPreviewPage extends WizardPage {
                 } else if (wrapped instanceof ITableContentUsage) {
                     String name = StringUtil.unqualifiedName(((ITableContentUsage)wrapped).getTableContentName());
                     if (!getDeepCopyWizard().getDeepCopyPreview().isLinked(structureReference)) {
-                        name = getDeepCopyWizard().getDeepCopyPreview().getOldObject2newNameMap().get(
-                                structureReference);
+                        name = getDeepCopyWizard().getDeepCopyPreview().getOldObject2newNameMap()
+                                .get(structureReference);
                         if (name == null) {
                             try {
                                 ITableContents tableContents = ((ITableContentUsage)wrapped)

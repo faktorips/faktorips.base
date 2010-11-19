@@ -62,8 +62,8 @@ public class OpenCreateMissingEnumContentsWizardAction implements IObjectActionD
             for (Iterator<?> iter = sel.iterator(); iter.hasNext();) {
                 Object selected = iter.next();
                 if (selected instanceof IJavaProject) {
-                    preselectedIpsElement = IpsPlugin.getDefault().getIpsModel().getIpsProject(
-                            ((IJavaProject)selected).getProject());
+                    preselectedIpsElement = IpsPlugin.getDefault().getIpsModel()
+                            .getIpsProject(((IJavaProject)selected).getProject());
                     break;
                 } else if (selected instanceof IResource) {
                     IResource resource = (IResource)selected;

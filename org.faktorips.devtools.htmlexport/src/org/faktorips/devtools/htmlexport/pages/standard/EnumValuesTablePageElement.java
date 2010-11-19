@@ -91,8 +91,8 @@ class EnumValuesTablePageElement extends AbstractIpsObjectPartsContainerTablePag
             try {
                 ValueDatatype datatype = enumAttribute.findDatatype(getConfig().getIpsProject());
 
-                valueData.add(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(datatype,
-                        value));
+                valueData.add(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
+                        .formatValue(datatype, value));
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }

@@ -54,8 +54,8 @@ public class CreateMissingEnumContentsAction extends IpsAction {
         for (Iterator<?> iter = sel.iterator(); iter.hasNext();) {
             Object selected = iter.next();
             if (selected instanceof IJavaProject) {
-                preselectedIpsElement = IpsPlugin.getDefault().getIpsModel().getIpsProject(
-                        ((IJavaProject)selected).getProject());
+                preselectedIpsElement = IpsPlugin.getDefault().getIpsModel()
+                        .getIpsProject(((IJavaProject)selected).getProject());
                 break;
             } else if (selected instanceof IIpsElement) {
                 preselectedIpsElement = (IIpsElement)selected;

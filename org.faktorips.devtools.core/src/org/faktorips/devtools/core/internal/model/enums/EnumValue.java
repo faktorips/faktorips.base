@@ -206,8 +206,8 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
             IIpsProject ipsProject) throws CoreException {
 
         ArgumentCheck.notNull(new Object[] { uniqueEnumAttributes, ipsProject });
-        List<IEnumAttributeValue> uniqueAttributeValues = new ArrayList<IEnumAttributeValue>(uniqueEnumAttributes
-                .size());
+        List<IEnumAttributeValue> uniqueAttributeValues = new ArrayList<IEnumAttributeValue>(
+                uniqueEnumAttributes.size());
         for (IEnumAttribute currentUniqueAttribute : uniqueEnumAttributes) {
             uniqueAttributeValues.add(getEnumAttributeValue(currentUniqueAttribute));
         }
@@ -236,9 +236,9 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
                     for (int i = 0; i < uniqueEnumAttributeValues.size(); i++) {
                         IEnumAttributeValue currentEnumAttributeValue = uniqueEnumAttributeValues.get(i);
                         IEnumAttribute currentReferencedEnumAttribute = uniqueEnumAttributes.get(i);
-                        enumValueContainerImpl.removeValidationCacheUniqueIdentifierEntry(referencedEnumType
-                                .getIndexOfEnumAttribute(currentReferencedEnumAttribute), currentEnumAttributeValue
-                                .getValue(), currentEnumAttributeValue);
+                        enumValueContainerImpl.removeValidationCacheUniqueIdentifierEntry(
+                                referencedEnumType.getIndexOfEnumAttribute(currentReferencedEnumAttribute),
+                                currentEnumAttributeValue.getValue(), currentEnumAttributeValue);
                     }
                 }
             } catch (CoreException e) {

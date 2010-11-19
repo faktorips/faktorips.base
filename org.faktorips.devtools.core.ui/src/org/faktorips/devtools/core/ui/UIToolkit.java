@@ -644,8 +644,8 @@ public class UIToolkit {
             String[] ids = datatype.getAllValueIds(true);
             ArrayList<String> nameList = new ArrayList<String>(ids.length);
             for (String id : ids) {
-                String formatedText = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(
-                        datatype, id);
+                String formatedText = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
+                        .formatValue(datatype, id);
                 nameList.add(formatedText);
             }
             setComboValues(newCombo, nameList.toArray(new String[ids.length]));
@@ -711,8 +711,8 @@ public class UIToolkit {
         String[] values = new String[enumValueSet.size()];
         for (int i = 0; i < values.length; i++) {
             if (dataType != null) {
-                String formatedText = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(
-                        dataType, enumValueSet.getValue(i));
+                String formatedText = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
+                        .formatValue(dataType, enumValueSet.getValue(i));
                 values[i] = formatedText;
             } else {
                 values[i] = enumValueSet.getValue(i);

@@ -378,8 +378,8 @@ public abstract class GenAssociation extends GenTypePart {
      * Returns the name of the method returning the single referenced object. e.g. getCoverage()
      */
     public String getMethodNameGetRefObject() {
-        return getLocalizedText("METHOD_GET_REF_OBJECT_NAME", StringUtils.capitalize(association
-                .getTargetRoleSingular()));
+        return getLocalizedText("METHOD_GET_REF_OBJECT_NAME",
+                StringUtils.capitalize(association.getTargetRoleSingular()));
     }
 
     /**
@@ -675,8 +675,8 @@ public abstract class GenAssociation extends GenTypePart {
      * Returns the name of the method returning the referenced objects, e.g. getCoverages()
      */
     public String getMethodNameGetAllRefObjects() {
-        return getLocalizedText("METHOD_GET_ALL_REF_OBJECTS_NAME", StringUtils.capitalize(association
-                .getTargetRolePlural()));
+        return getLocalizedText("METHOD_GET_ALL_REF_OBJECTS_NAME",
+                StringUtils.capitalize(association.getTargetRolePlural()));
     }
 
     /**
@@ -716,8 +716,8 @@ public abstract class GenAssociation extends GenTypePart {
      * </pre>
      */
     protected void generateMethodGetRefObjectByQualifier(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        appendLocalizedJavaDoc("METHOD_GET_REF_OBJECT_BY_QUALIFIER", StringUtils.capitalize(association
-                .getTargetRoleSingular()), methodsBuilder);
+        appendLocalizedJavaDoc("METHOD_GET_REF_OBJECT_BY_QUALIFIER",
+                StringUtils.capitalize(association.getTargetRoleSingular()), methodsBuilder);
         generateSignatureGetRefObjectByQualifier(methodsBuilder);
         methodsBuilder.appendln(";");
     }
@@ -786,8 +786,8 @@ public abstract class GenAssociation extends GenTypePart {
             methodsBuilder.append(getMethodNameGetAllRefObjects());
             methodsBuilder.append("().contains(" + paramName + ");");
         } else {
-            methodsBuilder.appendClassName(getQualifiedClassName((IPolicyCmptType)association
-                    .findTarget(getIpsProject()), true));
+            methodsBuilder.appendClassName(getQualifiedClassName(
+                    (IPolicyCmptType)association.findTarget(getIpsProject()), true));
             methodsBuilder.append("[] targets = ");
             methodsBuilder.append(getMethodNameGetAllRefObjects());
             methodsBuilder.append("();");
@@ -879,8 +879,8 @@ public abstract class GenAssociation extends GenTypePart {
      * getNumOfCoverages().
      */
     public String getMethodNameContainsObject() {
-        return getLocalizedText("METHOD_CONTAINS_OBJECT_NAME", StringUtils.capitalize(association
-                .getTargetRoleSingular()));
+        return getLocalizedText("METHOD_CONTAINS_OBJECT_NAME",
+                StringUtils.capitalize(association.getTargetRoleSingular()));
     }
 
     /**
@@ -912,8 +912,8 @@ public abstract class GenAssociation extends GenTypePart {
      * association
      */
     public String getFieldNameGetMaxCardinalityFor() {
-        return getLocalizedText("FIELD_MAX_CARDINALITY_NAME", StringUtils
-                .upperCase(association.getTargetRoleSingular()));
+        return getLocalizedText("FIELD_MAX_CARDINALITY_NAME",
+                StringUtils.upperCase(association.getTargetRoleSingular()));
     }
 
     /**
@@ -934,9 +934,9 @@ public abstract class GenAssociation extends GenTypePart {
      */
     public void generateSignatureGetRefObjectAtIndex(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
         appendLocalizedJavaDoc("METHOD_GET_REF_OBJECT_BY_INDEX", association.getTargetRoleSingular(), methodBuilder);
-        methodBuilder.signature(java.lang.reflect.Modifier.PUBLIC, getQualifiedClassName((IPolicyCmptType)association
-                .findTarget(getIpsProject()), true), getMethodNameGetRefObjectAtIndex(), new String[] { "index" },
-                new String[] { Integer.TYPE.getName() });
+        methodBuilder.signature(java.lang.reflect.Modifier.PUBLIC,
+                getQualifiedClassName((IPolicyCmptType)association.findTarget(getIpsProject()), true),
+                getMethodNameGetRefObjectAtIndex(), new String[] { "index" }, new String[] { Integer.TYPE.getName() });
     }
 
     /**
@@ -980,7 +980,8 @@ public abstract class GenAssociation extends GenTypePart {
      * for (Iterator it = child2s.iterator(); it.hasNext();) {
      *     ICpChild2 cpChild2 = (ICpChild2)it.next();
      *     ICpChild2 copycpChild2 = (ICpChild2)cpChild2.newCopy();
-     *     ((CpChild2)copycpChild2).setCpChild1Internal(copy); // generated only if inverse association is given
+     *     ((CpChild2)copycpChild2).setCpChild1Internal(copy); // generated only if inverse association is
+     *                                                         // given
      *     copy.child2s.add(copycpChild2);
      * }
      * </pre>

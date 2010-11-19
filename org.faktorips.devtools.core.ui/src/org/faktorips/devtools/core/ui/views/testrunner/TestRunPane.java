@@ -196,8 +196,8 @@ public class TestRunPane {
                 String repositoryPackage = null;
                 repositoryPackage = IpsTestAction.getRepPckNameFromPckFrgmtRoot(ipsObject.getIpsPackageFragment()
                         .getRoot());
-                IpsPlugin.getDefault().getIpsTestRunner().startTestRunnerJob(repositoryPackage,
-                        selectedTestQualifiedName, mode, null);
+                IpsPlugin.getDefault().getIpsTestRunner()
+                        .startTestRunnerJob(repositoryPackage, selectedTestQualifiedName, mode, null);
             }
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);

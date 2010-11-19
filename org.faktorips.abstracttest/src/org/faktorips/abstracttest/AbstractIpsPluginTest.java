@@ -360,9 +360,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         props.setPredefinedDatatypesUsed(new String[] { "Decimal", "Money", "Integer", "int", "boolean", "String",
                 "Boolean" });
 
-        props
-                .setMinRequiredVersionNumber(
-                        "org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        props.setMinRequiredVersionNumber(
+                "org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         ipsProject.setProperties(props);
     }
 
@@ -377,8 +376,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     protected void waitForIndexer() throws JavaModelException {
         SearchEngine engine = new SearchEngine();
         engine.searchAllTypeNames(new char[] {}, SearchPattern.R_EXACT_MATCH, new char[] {},
-                SearchPattern.R_EXACT_MATCH, IJavaSearchConstants.CLASS, SearchEngine
-                        .createJavaSearchScope(new IJavaElement[0]), new TypeNameRequestor() {
+                SearchPattern.R_EXACT_MATCH, IJavaSearchConstants.CLASS,
+                SearchEngine.createJavaSearchScope(new IJavaElement[0]), new TypeNameRequestor() {
                 }, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
     }
 
@@ -949,8 +948,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     private void createEnumClassFileInProjectOutputLocation(IIpsProject project, Class<?> adaptedClass)
             throws IOException, CoreException {
 
-        IPath outputLocation = project.getJavaProject().getResource().getLocation().append(
-                project.getJavaProject().getOutputLocation().removeFirstSegments(1));
+        IPath outputLocation = project.getJavaProject().getResource().getLocation()
+                .append(project.getJavaProject().getOutputLocation().removeFirstSegments(1));
         IPath packagePath = outputLocation.append(adaptedClass.getPackage().getName().replace('.', '/'));
         File classFileDir = packagePath.toFile();
         if (!classFileDir.exists()) {

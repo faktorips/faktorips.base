@@ -64,8 +64,8 @@ public class EnumContentGeneralInfoSection extends IpsSection {
      * 
      * @throws NullPointerException If <tt>enumContent</tt> is <tt>null</tt>.
      */
-    public EnumContentGeneralInfoSection(EnumContentEditorPage enumContentEditorPage, IEnumContent enumContent, Composite parent,
-            UIToolkit toolkit) {
+    public EnumContentGeneralInfoSection(EnumContentEditorPage enumContentEditorPage, IEnumContent enumContent,
+            Composite parent, UIToolkit toolkit) {
 
         super(parent, ExpandableComposite.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
         ArgumentCheck.notNull(enumContent);

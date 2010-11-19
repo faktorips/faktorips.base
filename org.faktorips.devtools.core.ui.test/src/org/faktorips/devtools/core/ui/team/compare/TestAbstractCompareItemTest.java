@@ -101,8 +101,8 @@ public class TestAbstractCompareItemTest extends AbstractIpsPluginTest {
     }
 
     public void testGetImage() {
-        assertEquals(IpsUIPlugin.getImageHandling().getImage(compareItemRoot.getIpsElement()), compareItemRoot
-                .getImage());
+        assertEquals(IpsUIPlugin.getImageHandling().getImage(compareItemRoot.getIpsElement()),
+                compareItemRoot.getImage());
     }
 
     public void testIsRoot() {

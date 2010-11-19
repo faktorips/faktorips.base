@@ -62,8 +62,8 @@ public class TypeValidations {
                                 : new ObjectProperty[0]);
             }
             return new Message(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_IN_DEPENDENT_PROJECT_EXISTS, NLS.bind(
-                    Messages.Type_msgOtherTypeWithSameQNameInDependentProject, new Object[] {
-                            otherIpsObjectType.getId(), file.getIpsProject() }), Message.WARNING,
+                    Messages.Type_msgOtherTypeWithSameQNameInDependentProject,
+                    new Object[] { otherIpsObjectType.getId(), file.getIpsProject() }), Message.WARNING,
                     thisType != null ? new ObjectProperty[] { new ObjectProperty(thisType, null) }
                             : new ObjectProperty[0]);
 

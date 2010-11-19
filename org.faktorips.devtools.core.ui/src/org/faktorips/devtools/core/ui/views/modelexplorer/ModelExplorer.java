@@ -175,8 +175,8 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
         treeViewer = new TreeViewer(parent);
         treeViewer.setContentProvider(contentProvider);
         IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
-        DecoratingLabelProvider decoProvider = new DecoratingLabelProvider(labelProvider, decoManager
-                .getLabelDecorator());
+        DecoratingLabelProvider decoProvider = new DecoratingLabelProvider(labelProvider,
+                decoManager.getLabelDecorator());
         treeViewer.setLabelProvider(decoProvider);
         sorter = new ModelExplorerSorter(supportCategories);
         treeViewer.setSorter(sorter);
@@ -315,8 +315,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
     protected void createContextMenu() {
         MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);
-        manager
-                .addMenuListener(new ModelExplorerContextMenuBuilder(this, config, getViewSite(), getSite(), treeViewer));
+        manager.addMenuListener(new ModelExplorerContextMenuBuilder(this, config, getViewSite(), getSite(), treeViewer));
         Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
         treeViewer.getControl().setMenu(contextMenu);
         getSite().registerContextMenu(manager, treeViewer);

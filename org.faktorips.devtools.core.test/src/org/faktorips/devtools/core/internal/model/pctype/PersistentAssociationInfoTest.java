@@ -511,28 +511,28 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         pcAssociation.setMaxCardinality(1);
         targetPcAssociation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
         targetPcAssociation.setMaxCardinality(1);
-        assertEquals(RelationshipType.ONE_TO_ONE, persistenceAssociatonInfo
-                .evalBidirectionalRelationShipType(targetPcAssociation));
-        assertEquals(RelationshipType.ONE_TO_ONE, inversePersistenceAssociatonInfo
-                .evalBidirectionalRelationShipType(pcAssociation));
+        assertEquals(RelationshipType.ONE_TO_ONE,
+                persistenceAssociatonInfo.evalBidirectionalRelationShipType(targetPcAssociation));
+        assertEquals(RelationshipType.ONE_TO_ONE,
+                inversePersistenceAssociatonInfo.evalBidirectionalRelationShipType(pcAssociation));
 
         pcAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         pcAssociation.setMaxCardinality(2);
         targetPcAssociation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
         targetPcAssociation.setMaxCardinality(1);
-        assertEquals(RelationshipType.ONE_TO_MANY, persistenceAssociatonInfo
-                .evalBidirectionalRelationShipType(targetPcAssociation));
-        assertEquals(RelationshipType.MANY_TO_ONE, inversePersistenceAssociatonInfo
-                .evalBidirectionalRelationShipType(pcAssociation));
+        assertEquals(RelationshipType.ONE_TO_MANY,
+                persistenceAssociatonInfo.evalBidirectionalRelationShipType(targetPcAssociation));
+        assertEquals(RelationshipType.MANY_TO_ONE,
+                inversePersistenceAssociatonInfo.evalBidirectionalRelationShipType(pcAssociation));
 
         pcAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         pcAssociation.setMaxCardinality(2);
         targetPcAssociation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
         targetPcAssociation.setMaxCardinality(2);
-        assertEquals(RelationshipType.MANY_TO_MANY, persistenceAssociatonInfo
-                .evalBidirectionalRelationShipType(targetPcAssociation));
-        assertEquals(RelationshipType.MANY_TO_MANY, inversePersistenceAssociatonInfo
-                .evalBidirectionalRelationShipType(pcAssociation));
+        assertEquals(RelationshipType.MANY_TO_MANY,
+                persistenceAssociatonInfo.evalBidirectionalRelationShipType(targetPcAssociation));
+        assertEquals(RelationshipType.MANY_TO_MANY,
+                inversePersistenceAssociatonInfo.evalBidirectionalRelationShipType(pcAssociation));
 
         // now test with qualified asociation (max=1) but is to-many
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "productTyp");
@@ -542,10 +542,10 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         pcAssociation.setMaxCardinality(1);
         targetPcAssociation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
         targetPcAssociation.setMaxCardinality(1);
-        assertEquals(RelationshipType.ONE_TO_MANY, persistenceAssociatonInfo
-                .evalBidirectionalRelationShipType(targetPcAssociation));
-        assertEquals(RelationshipType.MANY_TO_ONE, inversePersistenceAssociatonInfo
-                .evalBidirectionalRelationShipType(pcAssociation));
+        assertEquals(RelationshipType.ONE_TO_MANY,
+                persistenceAssociatonInfo.evalBidirectionalRelationShipType(targetPcAssociation));
+        assertEquals(RelationshipType.MANY_TO_ONE,
+                inversePersistenceAssociatonInfo.evalBidirectionalRelationShipType(pcAssociation));
 
         // unidirectional
         pcAssociation.setInverseAssociation("");

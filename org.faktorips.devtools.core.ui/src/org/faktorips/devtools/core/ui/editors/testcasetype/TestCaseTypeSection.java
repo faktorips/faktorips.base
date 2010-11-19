@@ -717,8 +717,8 @@ public class TestCaseTypeSection extends IpsSection {
                     default:
                         return null;
                 }
-                return (Image)resourceManager.get(IpsProblemOverlayIcon.createOverlayIcon(baseImage, msgList
-                        .getSeverity()));
+                return (Image)resourceManager.get(IpsProblemOverlayIcon.createOverlayIcon(baseImage,
+                        msgList.getSeverity()));
             } catch (CoreException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
                 return null;
@@ -1022,8 +1022,8 @@ public class TestCaseTypeSection extends IpsSection {
         treeViewer = new TreeViewer(tree);
         treeViewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
         labelProvider = new TestCaseTypeLabelProvider();
-        MessageCueLabelProvider msgCueLabelProvider = new MessageCueLabelProvider(labelProvider, testCaseType
-                .getIpsProject());
+        MessageCueLabelProvider msgCueLabelProvider = new MessageCueLabelProvider(labelProvider,
+                testCaseType.getIpsProject());
         treeViewer.setLabelProvider(msgCueLabelProvider);
         TestCaseTypeContentProvider contentProvider = new TestCaseTypeContentProvider(testCaseType);
         treeViewer.setContentProvider(contentProvider);
@@ -1224,8 +1224,8 @@ public class TestCaseTypeSection extends IpsSection {
                 try {
                     IPolicyCmptType pcType = pcTypeParameter.findPolicyCmptType(pcTypeParameter.getIpsProject());
                     Image baseImage = IpsUIPlugin.getImageHandling().getImage(pcType);
-                    ImageDescriptor overlayedImage = IpsProblemOverlayIcon.createOverlayIcon(baseImage, msgList
-                            .getSeverity());
+                    ImageDescriptor overlayedImage = IpsProblemOverlayIcon.createOverlayIcon(baseImage,
+                            msgList.getSeverity());
                     formText.setImage("imagepccmpttype", (Image)resourceManager.get(overlayedImage)); //$NON-NLS-1$
                 } catch (CoreException e) {
                     IpsPlugin.log(e);
@@ -1233,8 +1233,8 @@ public class TestCaseTypeSection extends IpsSection {
             }
             Image baseImage = (Image)resourceManager.get(IpsUIPlugin.getImageHandling().createImageDescriptor(
                     "Association.gif")); //$NON-NLS-1$
-            ImageDescriptor imageassociationDescriptor = IpsProblemOverlayIcon.createOverlayIcon(baseImage, msgList
-                    .getSeverity());
+            ImageDescriptor imageassociationDescriptor = IpsProblemOverlayIcon.createOverlayIcon(baseImage,
+                    msgList.getSeverity());
             formText.setImage("imageassociation", (Image)resourceManager.get(imageassociationDescriptor)); //$NON-NLS-1$
             formText.setColor("red", getDisplay().getSystemColor(SWT.COLOR_DARK_RED)); //$NON-NLS-1$
             formText.setText("<form>" + errorMessageText + "</form>", true, false); //$NON-NLS-1$ //$NON-NLS-2$
@@ -1302,10 +1302,11 @@ public class TestCaseTypeSection extends IpsSection {
                 gridData.heightHint = 60;
                 gridData.widthHint = 100;
                 text.setLayoutData(gridData);
-                text.setText(NLS.bind(Messages.TestCaseTypeSection_FormText_InfoAssociation_1
-                        + Messages.TestCaseTypeSection_FormText_InfoAssociation_2
-                        + Messages.TestCaseTypeSection_FormText_InfoAssociation_3, testPolicyCmptTypeParam
-                        .getAssociation()), true, false);
+                text.setText(
+                        NLS.bind(Messages.TestCaseTypeSection_FormText_InfoAssociation_1
+                                + Messages.TestCaseTypeSection_FormText_InfoAssociation_2
+                                + Messages.TestCaseTypeSection_FormText_InfoAssociation_3,
+                                testPolicyCmptTypeParam.getAssociation()), true, false);
             }
         } else if (testParam instanceof ITestValueParameter) {
             createTestValueParamDetails(editFieldsComposite, (ITestValueParameter)testParam, uiController);
@@ -1492,8 +1493,8 @@ public class TestCaseTypeSection extends IpsSection {
 
         label = toolkit.createFormLabel(editFieldsComposite,
                 Messages.TestCaseTypeSection_EditFieldLabel_TestParameterType);
-        EditField editFieldType = new EnumValueField(toolkit.createCombo(editFieldsComposite, TestParameterType
-                .getEnumType()), TestParameterType.getEnumType());
+        EditField editFieldType = new EnumValueField(toolkit.createCombo(editFieldsComposite,
+                TestParameterType.getEnumType()), TestParameterType.getEnumType());
         addSectionSelectionListeners(editFieldType, label, testParam);
         uiController.add(editFieldType, ITestParameter.PROPERTY_TEST_PARAMETER_TYPE);
 

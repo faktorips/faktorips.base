@@ -493,8 +493,8 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
 
     public void testGetLastResortCaption() {
         configElement.setPolicyCmptTypeAttribute("attribute");
-        assertEquals(StringUtils.capitalize(configElement.getPolicyCmptTypeAttribute()), configElement
-                .getLastResortCaption());
+        assertEquals(StringUtils.capitalize(configElement.getPolicyCmptTypeAttribute()),
+                configElement.getLastResortCaption());
     }
 
     private class InvalidDatatype implements ValueDatatype {

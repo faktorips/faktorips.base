@@ -138,8 +138,8 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
             }
             addDependenciesForTestPolicyCmptTypeParameterAttributes(parameter.getTestAttributes(), details,
                     dependencies);
-            addDependenciesForTestPolicyCmptTypeParams(dependencies, details, parameter
-                    .getTestPolicyCmptTypeParamChilds());
+            addDependenciesForTestPolicyCmptTypeParams(dependencies, details,
+                    parameter.getTestPolicyCmptTypeParamChilds());
         }
     }
 

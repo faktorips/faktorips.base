@@ -59,18 +59,18 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
     }
 
     public boolean isGenerateDeltaSupport() {
-        return getBuilderSet().getConfig().getPropertyValueAsBoolean(
-                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT).booleanValue();
+        return getBuilderSet().getConfig()
+                .getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT).booleanValue();
     }
 
     public boolean isGenerateCopySupport() {
-        return getBuilderSet().getConfig().getPropertyValueAsBoolean(
-                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_COPY_SUPPORT).booleanValue();
+        return getBuilderSet().getConfig()
+                .getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_COPY_SUPPORT).booleanValue();
     }
 
     public boolean isGenerateVisitorSupport() {
-        return getBuilderSet().getConfig().getPropertyValueAsBoolean(
-                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_VISITOR_SUPPORT).booleanValue();
+        return getBuilderSet().getConfig()
+                .getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_VISITOR_SUPPORT).booleanValue();
     }
 
     /**

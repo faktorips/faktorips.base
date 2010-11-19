@@ -84,8 +84,8 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     private void performRenamePolicyCmptType(String newName) throws CoreException {
         performRenameRefactoring(policyCmptType, newName);
 
-        checkIpsSourceFiles(POLICY_CMPT_TYPE_NAME, newName, policyCmptType.getIpsPackageFragment(), policyCmptType
-                .getIpsPackageFragment(), IpsObjectType.POLICY_CMPT_TYPE);
+        checkIpsSourceFiles(POLICY_CMPT_TYPE_NAME, newName, policyCmptType.getIpsPackageFragment(),
+                policyCmptType.getIpsPackageFragment(), IpsObjectType.POLICY_CMPT_TYPE);
 
         checkPolicyCmptTypeReferences(PACKAGE_NAME + "." + newName);
     }
@@ -108,8 +108,8 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     public void testRenameTestCaseType() throws CoreException {
         performRenameRefactoring(testCaseType, NEW_OBJECT_NAME);
 
-        checkIpsSourceFiles(TEST_CASE_TYPE_NAME, NEW_OBJECT_NAME, testCaseType.getIpsPackageFragment(), testCaseType
-                .getIpsPackageFragment(), IpsObjectType.TEST_CASE_TYPE);
+        checkIpsSourceFiles(TEST_CASE_TYPE_NAME, NEW_OBJECT_NAME, testCaseType.getIpsPackageFragment(),
+                testCaseType.getIpsPackageFragment(), IpsObjectType.TEST_CASE_TYPE);
 
         checkTestCaseTypeReferences(NEW_OBJECT_NAME);
     }
@@ -117,8 +117,8 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     public void testRenameEnumType() throws CoreException {
         performRenameRefactoring(enumType, NEW_OBJECT_NAME);
 
-        checkIpsSourceFiles(ENUM_TYPE_NAME, NEW_OBJECT_NAME, enumType.getIpsPackageFragment(), enumType
-                .getIpsPackageFragment(), IpsObjectType.ENUM_TYPE);
+        checkIpsSourceFiles(ENUM_TYPE_NAME, NEW_OBJECT_NAME, enumType.getIpsPackageFragment(),
+                enumType.getIpsPackageFragment(), IpsObjectType.ENUM_TYPE);
 
         checkEnumTypeReferences(NEW_OBJECT_NAME);
     }
@@ -144,8 +144,8 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     public void testRenameProductCmpt() throws CoreException {
         performRenameRefactoring(productCmpt, NEW_OBJECT_NAME);
 
-        checkIpsSourceFiles(PRODUCT_NAME, NEW_OBJECT_NAME, productCmpt.getIpsPackageFragment(), productCmpt
-                .getIpsPackageFragment(), IpsObjectType.PRODUCT_CMPT);
+        checkIpsSourceFiles(PRODUCT_NAME, NEW_OBJECT_NAME, productCmpt.getIpsPackageFragment(),
+                productCmpt.getIpsPackageFragment(), IpsObjectType.PRODUCT_CMPT);
 
         checkProductCmptReferences(NEW_OBJECT_NAME);
     }
@@ -153,8 +153,8 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     public void testRenameTestCase() throws CoreException {
         performRenameRefactoring(testCase, NEW_OBJECT_NAME);
 
-        checkIpsSourceFiles(TEST_CASE_NAME, NEW_OBJECT_NAME, testCase.getIpsPackageFragment(), testCase
-                .getIpsPackageFragment(), IpsObjectType.TEST_CASE);
+        checkIpsSourceFiles(TEST_CASE_NAME, NEW_OBJECT_NAME, testCase.getIpsPackageFragment(),
+                testCase.getIpsPackageFragment(), IpsObjectType.TEST_CASE);
 
         checkTestCaseReferences(NEW_OBJECT_NAME);
     }
@@ -162,8 +162,8 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     public void testRenameEnumContent() throws CoreException {
         performRenameRefactoring(enumContent, NEW_OBJECT_NAME);
 
-        checkIpsSourceFiles(ENUM_CONTENT_NAME, NEW_OBJECT_NAME, enumContent.getIpsPackageFragment(), enumContent
-                .getIpsPackageFragment(), IpsObjectType.ENUM_CONTENT);
+        checkIpsSourceFiles(ENUM_CONTENT_NAME, NEW_OBJECT_NAME, enumContent.getIpsPackageFragment(),
+                enumContent.getIpsPackageFragment(), IpsObjectType.ENUM_CONTENT);
 
         checkEnumContentReferences(NEW_OBJECT_NAME);
     }
@@ -171,8 +171,8 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     public void testRenameTableContent() throws CoreException {
         performRenameRefactoring(tableContents, NEW_OBJECT_NAME);
 
-        checkIpsSourceFiles(TABLE_CONTENTS_NAME, NEW_OBJECT_NAME, tableContents.getIpsPackageFragment(), tableContents
-                .getIpsPackageFragment(), IpsObjectType.TABLE_CONTENTS);
+        checkIpsSourceFiles(TABLE_CONTENTS_NAME, NEW_OBJECT_NAME, tableContents.getIpsPackageFragment(),
+                tableContents.getIpsPackageFragment(), IpsObjectType.TABLE_CONTENTS);
 
         checkTableContentsReferences(NEW_OBJECT_NAME);
     }

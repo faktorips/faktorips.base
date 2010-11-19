@@ -454,8 +454,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
             for (IMethod method : currentType.getMethods()) {
                 if (method.getNumOfParameters() == 0 && method.getName().equals(rule.getName())) {
                     String text = NLS
-                            .bind(
-                                    "The name of this validation rule: {0} collides with the name of a method within this type or within the supertype hierarchy.",
+                            .bind("The name of this validation rule: {0} collides with the name of a method within this type or within the supertype hierarchy.",
                                     rule.getName());
                     msgList.add(new Message(IValidationRule.MSGCODE_VALIDATION_RULE_METHOD_NAME_COLLISION, text,
                             Message.ERROR, rule, IIpsElement.PROPERTY_NAME));

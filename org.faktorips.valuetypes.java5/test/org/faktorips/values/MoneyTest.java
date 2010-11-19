@@ -38,14 +38,14 @@ public class MoneyTest extends TestCase {
     }
 
     public void testValueOf_DecimalCurrencyInt() {
-        assertEquals(Money.valueOf("420EUR"), Money.valueOf(Decimal.valueOf("420"), Currency.getInstance("EUR"),
-                BigDecimal.ROUND_HALF_UP));
-        assertEquals(Money.valueOf("13.42EUR"), Money.valueOf(Decimal.valueOf("13.42"), Currency.getInstance("EUR"),
-                BigDecimal.ROUND_HALF_UP));
-        assertEquals(Money.valueOf("13.4EUR"), Money.valueOf(Decimal.valueOf("13.4"), Currency.getInstance("EUR"),
-                BigDecimal.ROUND_HALF_UP));
-        assertEquals(Money.valueOf("13.42EUR"), Money.valueOf(Decimal.valueOf("13.415"), Currency.getInstance("EUR"),
-                BigDecimal.ROUND_HALF_UP));
+        assertEquals(Money.valueOf("420EUR"),
+                Money.valueOf(Decimal.valueOf("420"), Currency.getInstance("EUR"), BigDecimal.ROUND_HALF_UP));
+        assertEquals(Money.valueOf("13.42EUR"),
+                Money.valueOf(Decimal.valueOf("13.42"), Currency.getInstance("EUR"), BigDecimal.ROUND_HALF_UP));
+        assertEquals(Money.valueOf("13.4EUR"),
+                Money.valueOf(Decimal.valueOf("13.4"), Currency.getInstance("EUR"), BigDecimal.ROUND_HALF_UP));
+        assertEquals(Money.valueOf("13.42EUR"),
+                Money.valueOf(Decimal.valueOf("13.415"), Currency.getInstance("EUR"), BigDecimal.ROUND_HALF_UP));
 
         // null
         assertEquals(Money.NULL, Money.valueOf(null, Currency.getInstance("EUR"), BigDecimal.ROUND_HALF_UP));

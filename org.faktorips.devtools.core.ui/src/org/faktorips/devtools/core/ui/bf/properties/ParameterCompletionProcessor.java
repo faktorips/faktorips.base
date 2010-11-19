@@ -48,9 +48,7 @@ public class ParameterCompletionProcessor extends AbstractCompletionProcessor {
                 continue;
             }
             if (parameter.getName().startsWith(match)) {
-                result
-                        .add(new CompletionProposal(parameter.getName(), 0, documentOffset, parameter.getName()
-                                .length()));
+                result.add(new CompletionProposal(parameter.getName(), 0, documentOffset, parameter.getName().length()));
             }
         }
     }

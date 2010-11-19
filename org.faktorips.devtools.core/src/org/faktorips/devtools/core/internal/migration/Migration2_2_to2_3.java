@@ -154,7 +154,7 @@ public class Migration2_2_to2_3 {
         }
     }
 
-    @SuppressWarnings( { "unchecked" })
+    @SuppressWarnings({ "unchecked" })
     private static void migrateInitFromXmlMethods(IIpsProject ipsProject, IProgressMonitor monitor)
             throws CoreException {
 
@@ -186,8 +186,8 @@ public class Migration2_2_to2_3 {
                                                 Type paramType = parameter.getType();
                                                 if (paramType instanceof SimpleType) {
                                                     SimpleType paraTypeSimple = (SimpleType)paramType;
-                                                    if (paraTypeSimple.getName().getFullyQualifiedName().equals(
-                                                            "HashMap")) { //$NON-NLS-1$
+                                                    if (paraTypeSimple.getName().getFullyQualifiedName()
+                                                            .equals("HashMap")) { //$NON-NLS-1$
                                                         methodDecl.delete();
                                                         modified = true;
                                                     }

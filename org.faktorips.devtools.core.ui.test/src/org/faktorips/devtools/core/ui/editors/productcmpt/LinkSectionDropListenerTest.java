@@ -163,12 +163,12 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
             IProductCmptLink cLink1,
             IProductCmptLink cLink2,
             int bitmask) {
-        assertEquals((bitmask & 1 << 0) == 1 << 0, dropListener
-                .validateDrop(b1Link1, DND.DROP_MOVE, getTransfer(cmptA)));
-        assertEquals((bitmask & 1 << 1) == 1 << 1, dropListener
-                .validateDrop(b1Link2, DND.DROP_MOVE, getTransfer(cmptA)));
-        assertEquals((bitmask & 1 << 2) == 1 << 2, dropListener
-                .validateDrop(b2Link3, DND.DROP_MOVE, getTransfer(cmptA)));
+        assertEquals((bitmask & 1 << 0) == 1 << 0,
+                dropListener.validateDrop(b1Link1, DND.DROP_MOVE, getTransfer(cmptA)));
+        assertEquals((bitmask & 1 << 1) == 1 << 1,
+                dropListener.validateDrop(b1Link2, DND.DROP_MOVE, getTransfer(cmptA)));
+        assertEquals((bitmask & 1 << 2) == 1 << 2,
+                dropListener.validateDrop(b2Link3, DND.DROP_MOVE, getTransfer(cmptA)));
         assertEquals((bitmask & 1 << 3) == 1 << 3, dropListener.validateDrop(cLink1, DND.DROP_MOVE, getTransfer(cmptA)));
         assertEquals((bitmask & 1 << 4) == 1 << 4, dropListener.validateDrop(cLink2, DND.DROP_MOVE, getTransfer(cmptA)));
     }

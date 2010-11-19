@@ -1816,5 +1816,5 @@
                type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
          </propertyTester>
       </extension>
-   
+
 </plugin>

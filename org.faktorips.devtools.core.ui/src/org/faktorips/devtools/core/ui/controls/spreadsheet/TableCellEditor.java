@@ -135,7 +135,7 @@ class TableCellEditor {
         // ugly: if the input is changed during a cell editControl is committing
         // its changes, the deactivation occurs after disposing this
         // object. So, the fieldEditor may be null then.
-        //        		
+        //
         if (tableControl != null && !tableControl.isDisposed()) {
             if (tableControl.getTableEditor() != null) {
                 tableControl.getTableEditor().setEditor(null);

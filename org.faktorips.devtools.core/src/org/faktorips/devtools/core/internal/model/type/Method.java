@@ -262,9 +262,8 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         }
         ValidationUtils.checkDatatypeReference(datatype, true, this, PROPERTY_DATATYPE, "", result, ipsProject); //$NON-NLS-1$
         if (isAbstract() && !getType().isAbstract()) {
-            result
-                    .add(new Message(
-                            "", NLS.bind(Messages.Method_msg_abstractMethodError, getName()), Message.ERROR, this, PROPERTY_ABSTRACT)); //$NON-NLS-1$
+            result.add(new Message(
+                    "", NLS.bind(Messages.Method_msg_abstractMethodError, getName()), Message.ERROR, this, PROPERTY_ABSTRACT)); //$NON-NLS-1$
         }
         validateMultipleParameterNames(result);
         if (validateDuplicateMethodInSameType(result)) {
@@ -293,8 +292,7 @@ public class Method extends BaseIpsObjectPart implements IMethod {
             }
             ObjectProperty[] objectProperties = objProps.toArray(new ObjectProperty[objProps.size()]);
             String text = NLS.bind(Messages.Method_duplicateParamName, paramName);
-            msgList
-                    .add(new Message(MSGCODE_MULTIPLE_USE_OF_SAME_PARAMETER_NAME, text, Message.ERROR, objectProperties));
+            msgList.add(new Message(MSGCODE_MULTIPLE_USE_OF_SAME_PARAMETER_NAME, text, Message.ERROR, objectProperties));
         }
     }
 

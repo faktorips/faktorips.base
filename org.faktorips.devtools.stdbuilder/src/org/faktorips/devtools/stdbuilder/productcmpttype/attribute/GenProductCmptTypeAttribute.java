@@ -252,8 +252,10 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
             String description = StringUtils.isEmpty(getDescriptionInGeneratorLanguage(getAttribute())) ? ""
                     : SystemUtils.LINE_SEPARATOR + "<p>" + SystemUtils.LINE_SEPARATOR
                             + getDescriptionInGeneratorLanguage(getAttribute());
-            methodBuilder.javaDoc(getLocalizedText("METHOD_GETVALUE_JAVADOC", new String[] { getAttribute().getName(),
-                    description }), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+            methodBuilder
+                    .javaDoc(
+                            getLocalizedText("METHOD_GETVALUE_JAVADOC", new String[] { getAttribute().getName(),
+                                    description }), JavaSourceFileBuilder.ANNOTATION_GENERATED);
             generateGetterSignature(methodBuilder);
             methodBuilder.openBracket();
             methodBuilder.append("return ");

@@ -63,14 +63,14 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
     public void testGetEnumAttributeValue() {
         assertNull(genderEnumValueMale.getEnumAttributeValue(null));
 
-        assertEquals(genderEnumValueMale.getEnumAttributeValues().get(0), genderEnumValueMale
-                .getEnumAttributeValue(genderEnumAttributeId));
-        assertEquals(genderEnumValueFemale.getEnumAttributeValues().get(0), genderEnumValueFemale
-                .getEnumAttributeValue(genderEnumAttributeId));
-        assertEquals(genderEnumValueMale.getEnumAttributeValues().get(1), genderEnumValueMale
-                .getEnumAttributeValue(genderEnumAttributeName));
-        assertEquals(genderEnumValueFemale.getEnumAttributeValues().get(1), genderEnumValueFemale
-                .getEnumAttributeValue(genderEnumAttributeName));
+        assertEquals(genderEnumValueMale.getEnumAttributeValues().get(0),
+                genderEnumValueMale.getEnumAttributeValue(genderEnumAttributeId));
+        assertEquals(genderEnumValueFemale.getEnumAttributeValues().get(0),
+                genderEnumValueFemale.getEnumAttributeValue(genderEnumAttributeId));
+        assertEquals(genderEnumValueMale.getEnumAttributeValues().get(1),
+                genderEnumValueMale.getEnumAttributeValue(genderEnumAttributeName));
+        assertEquals(genderEnumValueFemale.getEnumAttributeValues().get(1),
+                genderEnumValueFemale.getEnumAttributeValue(genderEnumAttributeName));
     }
 
     public void testSetEnumAttributeValueAttributeGiven() throws CoreException {
@@ -114,8 +114,8 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
 
     public void testFindUniqueEnumAttributeValues() throws CoreException {
         IEnumValue value = paymentMode.getEnumValues().get(0);
-        List<IEnumAttributeValue> uniqueAttributeValues = value.findUniqueEnumAttributeValues(paymentMode
-                .findUniqueEnumAttributes(true, ipsProject), ipsProject);
+        List<IEnumAttributeValue> uniqueAttributeValues = value.findUniqueEnumAttributeValues(
+                paymentMode.findUniqueEnumAttributes(true, ipsProject), ipsProject);
         assertEquals(3, uniqueAttributeValues.size());
     }
 

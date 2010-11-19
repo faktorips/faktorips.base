@@ -94,8 +94,8 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
                 if (helper == null) {
                     throw new CoreException(new IpsStatus("No datatype helper found for datatype " + datatype)); //$NON-NLS-1$
                 }
-                generateCodeForPolicyCmptTypeAttribute(a, helper, typeSection.getMemberVarBuilder(), typeSection
-                        .getMethodBuilder());
+                generateCodeForPolicyCmptTypeAttribute(a, helper, typeSection.getMemberVarBuilder(),
+                        typeSection.getMethodBuilder());
             } catch (Exception e) {
                 throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building attribute " + attribute.getName() //$NON-NLS-1$
                         + " of " + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e)); //$NON-NLS-1$

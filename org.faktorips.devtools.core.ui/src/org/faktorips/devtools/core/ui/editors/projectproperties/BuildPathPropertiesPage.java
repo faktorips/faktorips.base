@@ -169,8 +169,8 @@ public class BuildPathPropertiesPage extends ProjectPropertyPage {
         archiveComposite = new ArchiveComposite(folder);
         orderComposite = new ObjectPathOrderComposite(folder);
         //
-        addTabItem(folder, Messages.BuildPathPropertiesPage_source, (Image)resourceManager
-                .get(packageFragmentRootImage), srcFolderComposite);
+        addTabItem(folder, Messages.BuildPathPropertiesPage_source,
+                (Image)resourceManager.get(packageFragmentRootImage), srcFolderComposite);
         addTabItem(folder, Messages.BuildPathPropertiesPage_projects, (Image)resourceManager.get(projectImage),
                 refProjectsComposite);
         addTabItem(folder, Messages.BuildPathPropertiesPage_archive, (Image)resourceManager.get(archiveImage),

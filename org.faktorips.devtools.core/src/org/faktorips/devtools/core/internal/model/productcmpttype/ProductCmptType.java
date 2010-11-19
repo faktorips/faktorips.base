@@ -265,8 +265,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE, String
-                .valueOf(configurationForPolicyCmptType));
+        element.setAttribute(PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE,
+                String.valueOf(configurationForPolicyCmptType));
         element.setAttribute(PROPERTY_POLICY_CMPT_TYPE, policyCmptType);
 
         element.setAttribute(PROPERTY_ICON_FOR_INSTANCES, instancesIconPath);

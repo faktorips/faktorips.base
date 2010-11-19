@@ -64,7 +64,10 @@ public class AttributesTablePageElement extends AbstractIpsObjectPartsContainerT
         attributeData.add(attribute.getModifier().toString());
 
         try {
-            attributeData.add(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
+            attributeData.add(IpsPlugin
+                    .getDefault()
+                    .getIpsPreferences()
+                    .getDatatypeFormatter()
                     .formatValue(getConfig().getIpsProject().findValueDatatype(attribute.getDatatype()),
                             attribute.getDefaultValue()));
         } catch (CoreException e) {

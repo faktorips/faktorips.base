@@ -83,8 +83,8 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
 
             for (int i = 0; i < tableStructure.getNumOfColumns(); i++) {
                 String value = row.getValue(i);
-                rowData.add(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(datatypes[i],
-                        value));
+                rowData.add(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
+                        .formatValue(datatypes[i], value));
             }
 
             return rowData;

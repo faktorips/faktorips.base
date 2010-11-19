@@ -80,9 +80,9 @@ public class CvsTeamOperations implements ITeamOperations {
                 syncResources.add(aResource);
             }
 
-            CommitOperation commitOperation = new CommitOperation(null, RepositoryProviderOperation
-                    .asResourceMappers(syncResources.toArray(new IResource[syncResources.size()])),
-                    new Command.LocalOption[0], comment);
+            CommitOperation commitOperation = new CommitOperation(null,
+                    RepositoryProviderOperation.asResourceMappers(syncResources.toArray(new IResource[syncResources
+                            .size()])), new Command.LocalOption[0], comment);
             commitOperation.execute(new SubProgressMonitor(monitor, 1));
             observableProgressMessages.info(Messages.ProductReleaseProcessor_status_commit_success);
         } finally {

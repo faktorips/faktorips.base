@@ -194,8 +194,8 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
     }
 
     public void testGetDefaultPluralCaption() {
-        assertEquals("Plural Caption for " + Locale.GERMAN.getLanguage(), support
-                .getDefaultPluralCaption(testContainer));
+        assertEquals("Plural Caption for " + Locale.GERMAN.getLanguage(),
+                support.getDefaultPluralCaption(testContainer));
     }
 
     public void testGetDefaultPluralCaptionNotExisting() {
@@ -279,8 +279,8 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
     public void testGetLocalizedPluralLabelLocalizedLabelMissing() {
         deleteLocalizedLabel();
         if (germanLabel.isDeleted()) {
-            assertEquals(StringUtils.capitalize(testContainer.getName()), support
-                    .getLocalizedPluralLabel(testContainer));
+            assertEquals(StringUtils.capitalize(testContainer.getName()),
+                    support.getLocalizedPluralLabel(testContainer));
         } else {
             assertEquals(GERMAN_PLURAL_LABEL, support.getLocalizedPluralLabel(testContainer));
         }
@@ -290,8 +290,8 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         ILabel localizedLabel = getLocalizedLabel();
         localizedLabel.setPluralValue("");
         if (localizedLabel.equals(germanLabel)) {
-            assertEquals(StringUtils.capitalize(testContainer.getName()), support
-                    .getLocalizedPluralLabel(testContainer));
+            assertEquals(StringUtils.capitalize(testContainer.getName()),
+                    support.getLocalizedPluralLabel(testContainer));
         } else {
             assertEquals(GERMAN_PLURAL_LABEL, support.getLocalizedPluralLabel(testContainer));
         }

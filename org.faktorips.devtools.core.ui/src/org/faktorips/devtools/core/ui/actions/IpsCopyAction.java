@@ -103,8 +103,8 @@ public class IpsCopyAction extends IpsAction implements ISelectionChangedListene
         }
 
         if (copiedObjects.size() > 0 || copiedResources.size() > 0 || copiedResourceLinks.size() > 0) {
-            clipboard.setContents(getDataArray(copiedObjects, copiedResources, copiedResourceLinks), getTypeArray(
-                    copiedObjects, copiedResources, copiedResourceLinks));
+            clipboard.setContents(getDataArray(copiedObjects, copiedResources, copiedResourceLinks),
+                    getTypeArray(copiedObjects, copiedResources, copiedResourceLinks));
         }
     }
 

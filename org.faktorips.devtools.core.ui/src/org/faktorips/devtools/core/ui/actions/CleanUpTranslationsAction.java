@@ -115,8 +115,8 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
             } else if (adaptable instanceof IResource) {
                 ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(((IResource)adaptable).getProject());
             } else if (adaptable instanceof IJavaElement) {
-                ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(
-                        ((IJavaElement)adaptable).getJavaProject().getProject());
+                ipsProject = IpsPlugin.getDefault().getIpsModel()
+                        .getIpsProject(((IJavaElement)adaptable).getJavaProject().getProject());
             }
             if (!(ipsProjects.contains(ipsProject)) && ipsProject != null) {
                 ipsProjects.add(ipsProject);

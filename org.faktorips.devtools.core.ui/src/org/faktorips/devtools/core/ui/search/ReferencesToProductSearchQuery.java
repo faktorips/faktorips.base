@@ -163,8 +163,8 @@ public class ReferencesToProductSearchQuery extends ReferenceSearchQuery {
         @Override
         public int compare(IIpsElement o1, IIpsElement o2) {
             if (o1 instanceof IProductCmptGeneration && o2 instanceof IProductCmptGeneration) {
-                return ((IProductCmptGeneration)o1).getProductCmpt().getQualifiedName().compareTo(
-                        ((IProductCmptGeneration)o2).getProductCmpt().getQualifiedName());
+                return ((IProductCmptGeneration)o1).getProductCmpt().getQualifiedName()
+                        .compareTo(((IProductCmptGeneration)o2).getProductCmpt().getQualifiedName());
             }
             return 0;
         }

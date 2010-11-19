@@ -62,8 +62,9 @@ public abstract class GenProdAssociation extends GenTypePart {
     }
 
     protected void generateFieldCardinalityForAssociation(JavaCodeFragmentBuilder fieldsBuilder) throws CoreException {
-        appendLocalizedJavaDoc("FIELD_CARDINALITIES_FOR", association.findMatchingPolicyCmptTypeAssociation(
-                association.getIpsProject()).getTargetRoleSingular(), fieldsBuilder);
+        appendLocalizedJavaDoc("FIELD_CARDINALITIES_FOR",
+                association.findMatchingPolicyCmptTypeAssociation(association.getIpsProject()).getTargetRoleSingular(),
+                fieldsBuilder);
         JavaCodeFragment expression = new JavaCodeFragment();
         expression.append(" new ");
         expression.appendClassName(HashMap.class);
@@ -81,8 +82,8 @@ public abstract class GenProdAssociation extends GenTypePart {
     }
 
     public String getFieldNameCardinalityForAssociation() throws CoreException {
-        return getLocalizedText("FIELD_CARDINALITIES_FOR_NAME", association.findMatchingPolicyCmptTypeAssociation(
-                association.getIpsProject()).getTargetRoleSingular());
+        return getLocalizedText("FIELD_CARDINALITIES_FOR_NAME",
+                association.findMatchingPolicyCmptTypeAssociation(association.getIpsProject()).getTargetRoleSingular());
     }
 
     /**
@@ -163,8 +164,8 @@ public abstract class GenProdAssociation extends GenTypePart {
      * getNumOfCoveragesInternal()
      */
     private String getMethodNameGetNumOfRelatedCmptsInternal() {
-        return getLocalizedText("METHOD_GET_NUM_OF_INTERNAL_NAME", StringUtils.capitalize(association
-                .getTargetRolePlural()));
+        return getLocalizedText("METHOD_GET_NUM_OF_INTERNAL_NAME",
+                StringUtils.capitalize(association.getTargetRolePlural()));
     }
 
     /**
@@ -240,9 +241,10 @@ public abstract class GenProdAssociation extends GenTypePart {
 
     public String getMethodNameGetCardinalityForAssociation() throws CoreException {
         return getJavaNamingConvention().getGetterMethodName(
-                getLocalizedText("METHOD_GET_CARDINALITY_FOR_NAME", StringUtils.capitalize(association
-                        .findMatchingPolicyCmptTypeAssociation(association.getIpsProject()).getTargetRoleSingular())),
-                IntegerRange.class);
+                getLocalizedText(
+                        "METHOD_GET_CARDINALITY_FOR_NAME",
+                        StringUtils.capitalize(association.findMatchingPolicyCmptTypeAssociation(
+                                association.getIpsProject()).getTargetRoleSingular())), IntegerRange.class);
     }
 
     public String[][] getParamGetCardinalityForAssociation() throws CoreException {
@@ -425,8 +427,8 @@ public abstract class GenProdAssociation extends GenTypePart {
                     + getGenType().getBuilderSet().getGenerator(target)
                             .getQualifiedClassNameForProductCmptTypeGen(true) + ">";
         } else {
-            returnType = getGenType().getBuilderSet().getGenerator(target).getQualifiedClassNameForProductCmptTypeGen(
-                    true)
+            returnType = getGenType().getBuilderSet().getGenerator(target)
+                    .getQualifiedClassNameForProductCmptTypeGen(true)
                     + "[]";
         }
         builder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), returnType, methodName,
@@ -447,8 +449,9 @@ public abstract class GenProdAssociation extends GenTypePart {
 
     protected void generateMethodGetCardinalityForAssociation(JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
-        appendLocalizedJavaDoc("METHOD_GET_CARDINALITY_FOR", association.findMatchingPolicyCmptTypeAssociation(
-                association.getIpsProject()).getTargetRoleSingular(), methodsBuilder);
+        appendLocalizedJavaDoc("METHOD_GET_CARDINALITY_FOR",
+                association.findMatchingPolicyCmptTypeAssociation(association.getIpsProject()).getTargetRoleSingular(),
+                methodsBuilder);
         generateSignatureGetCardinalityForAssociation(methodsBuilder);
         methodsBuilder.append(';');
     }
@@ -468,8 +471,9 @@ public abstract class GenProdAssociation extends GenTypePart {
      * @throws CoreException
      */
     protected String getQualifiedInterfaceClassNameForTarget() throws CoreException {
-        return getGenType().getBuilderSet().getGenerator(
-                (IProductCmptType)association.findTarget(association.getIpsProject())).getQualifiedName(true);
+        return getGenType().getBuilderSet()
+                .getGenerator((IProductCmptType)association.findTarget(association.getIpsProject()))
+                .getQualifiedName(true);
     }
 
     /**
@@ -477,8 +481,8 @@ public abstract class GenProdAssociation extends GenTypePart {
      * @throws CoreException
      */
     protected String getQualifiedInterfaceClassNameForTargetGen() throws CoreException {
-        return getGenType().getBuilderSet().getGenerator(
-                (IProductCmptType)association.findTarget(association.getIpsProject()))
+        return getGenType().getBuilderSet()
+                .getGenerator((IProductCmptType)association.findTarget(association.getIpsProject()))
                 .getQualifiedClassNameForProductCmptTypeGen(true);
     }
 
@@ -487,8 +491,8 @@ public abstract class GenProdAssociation extends GenTypePart {
      * @throws CoreException
      */
     protected String getMethodNameGetProductCmptGenerationForTarget() throws CoreException {
-        return getGenType().getBuilderSet().getGenerator(
-                (IProductCmptType)association.findTarget(association.getIpsProject()))
+        return getGenType().getBuilderSet()
+                .getGenerator((IProductCmptType)association.findTarget(association.getIpsProject()))
                 .getMethodNameGetProductCmptGeneration();
     }
 

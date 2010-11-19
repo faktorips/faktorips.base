@@ -62,8 +62,8 @@ public abstract class AbstractFormulaEvaluator implements IFormulaEvaluator {
                     parameterValues.append(", ");
                 }
             }
-            throw new FormulaExecutionException(productCmptGeneration.toString(), formularName, parameterValues
-                    .toString(), e);
+            throw new FormulaExecutionException(productCmptGeneration.toString(), formularName,
+                    parameterValues.toString(), e);
         }
 
     }

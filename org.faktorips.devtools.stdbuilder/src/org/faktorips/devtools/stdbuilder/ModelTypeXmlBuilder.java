@@ -99,35 +99,35 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
                     String targetName = association.getTarget();
                     if (targetName != null && targetName.length() > 0) {
                         if (model instanceof IPolicyCmptType) {
-                            modelTypeAssociation.setAttribute("target", ((StandardBuilderSet)getBuilderSet())
-                                    .getGenerator(getIpsProject().findPolicyCmptType(targetName)).getQualifiedName(
-                                            false));
+                            modelTypeAssociation.setAttribute(
+                                    "target",
+                                    ((StandardBuilderSet)getBuilderSet()).getGenerator(
+                                            getIpsProject().findPolicyCmptType(targetName)).getQualifiedName(false));
                         } else if (model instanceof IProductCmptType) {
-                            modelTypeAssociation.setAttribute("target", ((StandardBuilderSet)getBuilderSet())
-                                    .getGenerator(getIpsProject().findProductCmptType(targetName)).getQualifiedName(
-                                            false));
+                            modelTypeAssociation.setAttribute(
+                                    "target",
+                                    ((StandardBuilderSet)getBuilderSet()).getGenerator(
+                                            getIpsProject().findProductCmptType(targetName)).getQualifiedName(false));
                         }
                     } else {
                         modelTypeAssociation.setAttribute("target", null);
                     }
-                    modelTypeAssociation.setAttribute("minCardinality", Integer.toString(association
-                            .getMinCardinality()));
-                    modelTypeAssociation.setAttribute("maxCardinality", Integer.toString(association
-                            .getMaxCardinality()));
+                    modelTypeAssociation.setAttribute("minCardinality",
+                            Integer.toString(association.getMinCardinality()));
+                    modelTypeAssociation.setAttribute("maxCardinality",
+                            Integer.toString(association.getMaxCardinality()));
                     modelTypeAssociation.setAttribute("associationType", getAssociantionType(association));
-                    modelTypeAssociation.setAttribute("isTargetRolePluralRequired", Boolean.toString(association
-                            .isTargetRolePluralRequired()));
+                    modelTypeAssociation.setAttribute("isTargetRolePluralRequired",
+                            Boolean.toString(association.isTargetRolePluralRequired()));
                     modelTypeAssociation.setAttribute("isDerivedUnion", Boolean.toString(association.isDerivedUnion()));
-                    modelTypeAssociation.setAttribute("isSubsetOfADerivedUnion", Boolean.toString(association
-                            .isSubsetOfADerivedUnion()));
+                    modelTypeAssociation.setAttribute("isSubsetOfADerivedUnion",
+                            Boolean.toString(association.isSubsetOfADerivedUnion()));
                     try {
                         modelTypeAssociation
                                 .setAttribute(
                                         "isProductRelevant",
-                                        Boolean
-                                                .toString(association instanceof IPolicyCmptTypeAssociation ? ((IPolicyCmptTypeAssociation)association)
-                                                        .isConstrainedByProductStructure(getIpsProject())
-                                                        : true));
+                                        Boolean.toString(association instanceof IPolicyCmptTypeAssociation ? ((IPolicyCmptTypeAssociation)association)
+                                                .isConstrainedByProductStructure(getIpsProject()) : true));
                     } catch (DOMException e) {
                         // don't bother
                     } catch (CoreException e) {
@@ -170,10 +170,8 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
                     modelTypeAttribute
                             .setAttribute(
                                     "isProductRelevant",
-                                    Boolean
-                                            .toString(attribute instanceof IPolicyCmptTypeAttribute ? ((IPolicyCmptTypeAttribute)attribute)
-                                                    .isProductRelevant()
-                                                    : true));
+                                    Boolean.toString(attribute instanceof IPolicyCmptTypeAttribute ? ((IPolicyCmptTypeAttribute)attribute)
+                                            .isProductRelevant() : true));
                     addExtensionProperties(modelTypeAttribute, attribute);
                 }
             }
@@ -191,8 +189,8 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
                     && element.isExtPropertyDefinitionAvailable(propertyId)) {
                 // TODO enable non-String extension properties
                 Element extensionProperty = doc.createElement("Value");
-                extensionProperty.setAttribute("isNull", Boolean
-                        .toString(element.getExtPropertyValue(propertyId) == null));
+                extensionProperty.setAttribute("isNull",
+                        Boolean.toString(element.getExtPropertyValue(propertyId) == null));
                 extensionProperty.setAttribute("id", propertyId);
                 if (element.getExtPropertyValue(propertyId) != null) {
                     extensionProperty.appendChild(doc.createCDATASection(element.getExtPropertyValue(propertyId)

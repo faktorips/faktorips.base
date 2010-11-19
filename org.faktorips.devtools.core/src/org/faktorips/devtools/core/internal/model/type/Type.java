@@ -947,8 +947,8 @@ public abstract class Type extends BaseIpsObject implements IType {
                      * subset derived union
                      */
                     if (!isInverseSubsetted(policyCmptTypeAssociation)) {
-                        String text = NLS.bind(Messages.Type_msg_MustImplementInverseDerivedUnion, associations[i]
-                                .getName(), associations[i].getType().getQualifiedName());
+                        String text = NLS.bind(Messages.Type_msg_MustImplementInverseDerivedUnion,
+                                associations[i].getName(), associations[i].getType().getQualifiedName());
                         msgList.add(new Message(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION, text,
                                 Message.ERROR, Type.this, IType.PROPERTY_ABSTRACT));
                     }

@@ -327,8 +327,8 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
 
         param.setPolicyCmptType("x");
         ml = testPolicyCmptObjectInput.validate(project);
-        assertEquals(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS, ml.getFirstMessage(
-                Message.WARNING).getCode());
+        assertEquals(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS,
+                ml.getFirstMessage(Message.WARNING).getCode());
     }
 
     public void testValidatePolicyCmptTypeNotExistsWithoutProduct() throws Exception {

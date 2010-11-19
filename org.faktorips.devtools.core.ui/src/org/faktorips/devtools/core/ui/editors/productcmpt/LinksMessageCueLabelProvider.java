@@ -87,8 +87,8 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
                     if (productCmptType == null) {
                         return element.toString();
                     }
-                    IAssociation association = productCmptType.findAssociation((String)element, productCmptType
-                            .getIpsProject());
+                    IAssociation association = productCmptType.findAssociation((String)element,
+                            productCmptType.getIpsProject());
                     if (association == null) {
                         return element.toString();
                     }

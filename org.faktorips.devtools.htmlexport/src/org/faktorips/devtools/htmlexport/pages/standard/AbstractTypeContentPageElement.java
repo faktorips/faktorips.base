@@ -94,9 +94,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
      */
     protected void addMethodsTable() {
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-        wrapper
-                .addPageElements(new TextPageElement(Messages.AbstractTypeContentPageElement_methods,
-                        TextType.HEADING_2));
+        wrapper.addPageElements(new TextPageElement(Messages.AbstractTypeContentPageElement_methods, TextType.HEADING_2));
 
         wrapper.addPageElements(getTableOrAlternativeText(getMethodsTablePageElement(),
                 Messages.AbstractTypeContentPageElement_noMethods));
@@ -167,8 +165,8 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
             return;
         }
 
-        TreeNodePageElement baseElement = new TreeNodePageElement(new TreeNodePageElement(PageElementUtils
-                .createLinkPageElement(getConfig(), superTypes.get(0),
+        TreeNodePageElement baseElement = new TreeNodePageElement(new TreeNodePageElement(
+                PageElementUtils.createLinkPageElement(getConfig(), superTypes.get(0),
                         "content", superTypes.get(0).getQualifiedName(), true))); //$NON-NLS-1$
         TreeNodePageElement element = baseElement;
 

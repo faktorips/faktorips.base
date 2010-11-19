@@ -204,8 +204,8 @@ public class MessageFragment {
             frag.append(messageText.subSequence(beginIndex, messageText.length()).toString());
             frag.appendln("\");"); //$NON-NLS-1$
         }
-        return new MessageFragment(frag, paraNames.toArray(new String[paraNames.size()]), paraValues
-                .toArray(new String[paraValues.size()]), "text.toString()"); //$NON-NLS-1$
+        return new MessageFragment(frag, paraNames.toArray(new String[paraNames.size()]),
+                paraValues.toArray(new String[paraValues.size()]), "text.toString()"); //$NON-NLS-1$
     }
 
 }

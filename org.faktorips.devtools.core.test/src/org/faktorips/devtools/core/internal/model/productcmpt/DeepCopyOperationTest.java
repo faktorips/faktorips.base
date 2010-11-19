@@ -69,8 +69,10 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
 
         for (IProductCmptStructureReference element : toCopy) {
             IIpsObject ipsObject = element.getWrappedIpsObject();
-            handles.put(element, ipsObject.getIpsPackageFragment().getIpsSrcFile(
-                    "DeepCopyOf" + ipsObject.getName() + "." + ipsObject.getIpsObjectType().getFileExtension()));
+            handles.put(
+                    element,
+                    ipsObject.getIpsPackageFragment().getIpsSrcFile(
+                            "DeepCopyOf" + ipsObject.getName() + "." + ipsObject.getIpsObjectType().getFileExtension()));
             assertFalse(handles.get(element).exists());
         }
 
@@ -145,8 +147,8 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
 
         for (IProductCmptReference element : toCopy) {
             IProductCmpt cmpt = element.getProductCmpt();
-            handles.put(element, cmpt.getIpsPackageFragment().getIpsSrcFile(
-                    "DeepCopyOf" + cmpt.getName() + ".ipsproduct"));
+            handles.put(element,
+                    cmpt.getIpsPackageFragment().getIpsSrcFile("DeepCopyOf" + cmpt.getName() + ".ipsproduct"));
             assertFalse(handles.get(element).exists());
         }
 
@@ -185,8 +187,10 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
 
         for (IProductCmptStructureReference element : toCopy) {
             IIpsObject ipsObject = element.getWrappedIpsObject();
-            handles.put(element, ipsObject.getIpsPackageFragment().getIpsSrcFile("DeepCopy2Of" + ipsObject.getName(),
-                    ipsObject.getIpsObjectType()));
+            handles.put(
+                    element,
+                    ipsObject.getIpsPackageFragment().getIpsSrcFile("DeepCopy2Of" + ipsObject.getName(),
+                            ipsObject.getIpsObjectType()));
             assertFalse(handles.get(element).exists());
         }
 
@@ -244,26 +248,27 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         // create association: Contract to Coverage
         createPolicyCmptTypeAssociation(contract, coverage, AssociationType.COMPOSITION_MASTER_TO_DETAIL, "Coverage",
                 "Coverages", 0, Integer.MAX_VALUE);
-        createProductCmptTypeAssociation(contract.findProductCmptType(ipsProject), coverage
-                .findProductCmptType(ipsProject), "CoverageType", "CoverageTypes", 0, 1);
+        createProductCmptTypeAssociation(contract.findProductCmptType(ipsProject),
+                coverage.findProductCmptType(ipsProject), "CoverageType", "CoverageTypes", 0, 1);
 
         // create association: MotorContract to Vehicle
         createPolicyCmptTypeAssociation(motorContract, vehicle, AssociationType.COMPOSITION_MASTER_TO_DETAIL,
                 "Vehicle", "Vehicles", 0, 1);
-        createProductCmptTypeAssociation(motorContract.findProductCmptType(ipsProject), vehicle
-                .findProductCmptType(ipsProject), "VehicleType", "VehicleTypes", 0, 1);
+        createProductCmptTypeAssociation(motorContract.findProductCmptType(ipsProject),
+                vehicle.findProductCmptType(ipsProject), "VehicleType", "VehicleTypes", 0, 1);
 
         // create association: MotorContract to CollisionCoverage
         createPolicyCmptTypeAssociation(motorContract, collisionCoverage, AssociationType.COMPOSITION_MASTER_TO_DETAIL,
                 "CollisionCoverage", "CollisionCoverages", 0, 2);
-        createProductCmptTypeAssociation(motorContract.findProductCmptType(ipsProject), collisionCoverage
-                .findProductCmptType(ipsProject), "CollisionCoverageType", "CollisionCoverageTypes", 0, 2);
+        createProductCmptTypeAssociation(motorContract.findProductCmptType(ipsProject),
+                collisionCoverage.findProductCmptType(ipsProject), "CollisionCoverageType", "CollisionCoverageTypes",
+                0, 2);
 
         // create association: MotorContract to TplCoverage
         createPolicyCmptTypeAssociation(motorContract, tplCoverage, AssociationType.COMPOSITION_MASTER_TO_DETAIL,
                 "TplCoverage", "TplCoverages", 0, 1);
-        createProductCmptTypeAssociation(motorContract.findProductCmptType(ipsProject), tplCoverage
-                .findProductCmptType(ipsProject), "TplCoverageType", "TplCoverageTypes", 0, 1);
+        createProductCmptTypeAssociation(motorContract.findProductCmptType(ipsProject),
+                tplCoverage.findProductCmptType(ipsProject), "TplCoverageType", "TplCoverageTypes", 0, 1);
     }
 
     private void createProducts() throws CoreException {

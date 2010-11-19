@@ -711,18 +711,18 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         assertEquals(testPolicyCmptsWithMissingTypeParam, delta.getTestPolicyCmptsWithMissingTypeParam().length);
         assertEquals(testPolicyCmptAssociationsWithMissingTypeParam,
                 delta.getTestPolicyCmptLinkWithMissingTypeParam().length);
-        assertEquals(testAttributeValuesWithMissingTestAttribute, delta
-                .getTestAttributeValuesWithMissingTestAttribute().length);
+        assertEquals(testAttributeValuesWithMissingTestAttribute,
+                delta.getTestAttributeValuesWithMissingTestAttribute().length);
 
         assertEquals(testValueParametersWithMissingTestValue, delta.getTestValueParametersWithMissingTestValue().length);
-        assertEquals(testPolicyCmptTypeParametersWithMissingTestPolicyCmpt, delta
-                .getTestPolicyCmptTypeParametersWithMissingTestPolicyCmpt().length);
-        assertEquals(testAttributesWithMissingTestAttributeValue, delta
-                .getTestAttributesWithMissingTestAttributeValue().length);
+        assertEquals(testPolicyCmptTypeParametersWithMissingTestPolicyCmpt,
+                delta.getTestPolicyCmptTypeParametersWithMissingTestPolicyCmpt().length);
+        assertEquals(testAttributesWithMissingTestAttributeValue,
+                delta.getTestAttributesWithMissingTestAttributeValue().length);
         assertEquals(testPolicyCmptWithDifferentSortOrder, delta.getTestPolicyCmptWithDifferentSortOrder().length);
         assertEquals(testRulesWithMissingTestValueParam, delta.getTestRulesWithMissingTestValueParam().length);
-        assertEquals(testPolicyCmptWithDifferentSortOrderTestAttr, delta
-                .getTestPolicyCmptWithDifferentSortOrderTestAttr().length);
+        assertEquals(testPolicyCmptWithDifferentSortOrderTestAttr,
+                delta.getTestPolicyCmptWithDifferentSortOrderTestAttr().length);
     }
 
     /**

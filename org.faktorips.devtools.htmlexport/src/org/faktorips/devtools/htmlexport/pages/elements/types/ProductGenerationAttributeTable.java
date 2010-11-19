@@ -169,8 +169,8 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
         pageElement.addPageElements(new TextPageElement(Messages.ProductGenerationAttributeTable_defaultValue
                 + ": " //$NON-NLS-1$
-                + IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(
-                        ((ValueSet)valueSet).getValueDatatype(), defaultValue), TextType.BLOCK));
+                + IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
+                        .formatValue(((ValueSet)valueSet).getValueDatatype(), defaultValue), TextType.BLOCK));
 
         if (valueSet.isEnum()) {
             pageElement.addPageElements(createEnumValueSetCell((EnumValueSet)valueSet));
@@ -186,14 +186,14 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         StringBuilder builder = new StringBuilder();
         builder.append(Messages.ProductGenerationAttributeTable_minMaxStep);
         builder.append(": "); //$NON-NLS-1$
-        builder.append(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(
-                rangeValueSet.getValueDatatype(), rangeValueSet.getLowerBound()));
+        builder.append(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
+                .formatValue(rangeValueSet.getValueDatatype(), rangeValueSet.getLowerBound()));
         builder.append(", "); //$NON-NLS-1$
-        builder.append(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(
-                rangeValueSet.getValueDatatype(), rangeValueSet.getUpperBound()));
+        builder.append(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
+                .formatValue(rangeValueSet.getValueDatatype(), rangeValueSet.getUpperBound()));
         builder.append(", "); //$NON-NLS-1$
-        builder.append(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(
-                rangeValueSet.getValueDatatype(), rangeValueSet.getStep()));
+        builder.append(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
+                .formatValue(rangeValueSet.getValueDatatype(), rangeValueSet.getStep()));
 
         TextPageElement textPageElement = new TextPageElement(builder.toString(), TextType.BLOCK);
         return textPageElement;
@@ -212,8 +212,8 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             if (builder.length() > 0) {
                 builder.append(", "); //$NON-NLS-1$
             }
-            builder.append(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(
-                    enumValueSet.getValueDatatype(), enumValue));
+            builder.append(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
+                    .formatValue(enumValueSet.getValueDatatype(), enumValue));
 
         }
         TextPageElement textPageElement = new TextPageElement(Messages.ProductGenerationAttributeTable_valueSet
@@ -387,9 +387,12 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
             String value;
             try {
-                value = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(
-                        productCmpt.getIpsProject().findValueDatatype(attribute.getDatatype()),
-                        attributeValue.getValue());
+                value = IpsPlugin
+                        .getDefault()
+                        .getIpsPreferences()
+                        .getDatatypeFormatter()
+                        .formatValue(productCmpt.getIpsProject().findValueDatatype(attribute.getDatatype()),
+                                attributeValue.getValue());
             } catch (CoreException e) {
                 IpsPlugin.log(e);
                 value = Messages.ProductGenerationAttributeTable_undefined;

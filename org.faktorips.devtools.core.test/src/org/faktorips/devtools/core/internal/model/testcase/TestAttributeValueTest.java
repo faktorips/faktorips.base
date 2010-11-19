@@ -151,8 +151,8 @@ public class TestAttributeValueTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
         assertNotNull(testAttributeValue.findAttribute(ipsProject));
 
-        assertNotNull(((ITestPolicyCmpt)testAttributeValue.getParent()).findProductCmptTypeAttribute(testAttribute
-                .getAttribute(), ipsProject));
+        assertNotNull(((ITestPolicyCmpt)testAttributeValue.getParent()).findProductCmptTypeAttribute(
+                testAttribute.getAttribute(), ipsProject));
 
         // negative test
 
@@ -193,9 +193,11 @@ public class TestAttributeValueTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
         assertNotNull(ml
                 .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND));
-        assertEquals(Message.WARNING, ml.getMessageByCode(
-                IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND)
-                .getSeverity());
+        assertEquals(
+                Message.WARNING,
+                ml.getMessageByCode(
+                        IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND)
+                        .getSeverity());
 
         testAttribute.setDatatype("String");
         assertFalse(testAttribute.isBasedOnModelAttribute());

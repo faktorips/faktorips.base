@@ -267,8 +267,8 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
 
         MoveOperation move = new MoveOperation(new IIpsElement[] { file.getIpsObject() }, new String[] { "table" });
         move.run(null);
-        IIpsSrcFile target = coverage.getIpsPackageFragment().getRoot().getDefaultIpsPackageFragment().getIpsSrcFile(
-                IpsObjectType.TABLE_CONTENTS.getFileName("table"));
+        IIpsSrcFile target = coverage.getIpsPackageFragment().getRoot().getDefaultIpsPackageFragment()
+                .getIpsSrcFile(IpsObjectType.TABLE_CONTENTS.getFileName("table"));
 
         // assert move
         assertTrue(target.exists());
@@ -371,8 +371,8 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         MoveOperation move = new MoveOperation(new IIpsElement[] { file.getIpsObject() }, new String[] { "table" });
         move.run(null);
 
-        IIpsSrcFile target = coverage.getIpsPackageFragment().getRoot().getDefaultIpsPackageFragment().getIpsSrcFile(
-                IpsObjectType.TABLE_CONTENTS.getFileName("table"));
+        IIpsSrcFile target = coverage.getIpsPackageFragment().getRoot().getDefaultIpsPackageFragment()
+                .getIpsSrcFile(IpsObjectType.TABLE_CONTENTS.getFileName("table"));
         assertTrue(target.exists());
         assertFalse(file.exists());
     }
@@ -393,8 +393,8 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertTrue(enumTypeSrcFile.exists());
         assertTrue(enumContentSrcFile.exists());
 
-        MoveOperation moveOp = new MoveOperation(new IIpsElement[] { enumContent }, ipsRoot
-                .getIpsPackageFragment("model"));
+        MoveOperation moveOp = new MoveOperation(new IIpsElement[] { enumContent },
+                ipsRoot.getIpsPackageFragment("model"));
         moveOp.run(null);
 
         IIpsSrcFile originalFile = ipsRoot.getIpsPackageFragment("model.deep").getIpsSrcFile("EnumType",
@@ -564,20 +564,20 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
 
         // prepare the source object
         IIpsSrcFile file = sourcePackageFrgmt.createIpsFile(IpsObjectType.TEST_CASE, "testCase", true, null);
-        IIpsSrcFile target = sourcePackageFrgmt.getRoot().getIpsPackageFragment(sourcePackageFrgmtName).getIpsSrcFile(
-                IpsObjectType.TEST_CASE.getFileName("testCase"));
+        IIpsSrcFile target = sourcePackageFrgmt.getRoot().getIpsPackageFragment(sourcePackageFrgmtName)
+                .getIpsSrcFile(IpsObjectType.TEST_CASE.getFileName("testCase"));
         assertTrue(file.exists());
 
         // now move the source object into the target root default frgmt
-        MoveOperation move = new MoveOperation(new IIpsElement[] { file.getIpsObject() }, targetRoot
-                .getDefaultIpsPackageFragment());
+        MoveOperation move = new MoveOperation(new IIpsElement[] { file.getIpsObject() },
+                targetRoot.getDefaultIpsPackageFragment());
         move.run(null);
 
-        target = sourcePackageFrgmt.getRoot().getIpsPackageFragment(sourcePackageFrgmtName).getIpsSrcFile(
-                IpsObjectType.TEST_CASE.getFileName("testCase"));
+        target = sourcePackageFrgmt.getRoot().getIpsPackageFragment(sourcePackageFrgmtName)
+                .getIpsSrcFile(IpsObjectType.TEST_CASE.getFileName("testCase"));
         assertFalse(target.exists());
-        target = sourcePackageFrgmt.getRoot().getDefaultIpsPackageFragment().getIpsSrcFile(
-                IpsObjectType.TEST_CASE.getFileName("testCase"));
+        target = sourcePackageFrgmt.getRoot().getDefaultIpsPackageFragment()
+                .getIpsSrcFile(IpsObjectType.TEST_CASE.getFileName("testCase"));
         assertFalse(target.exists());
 
         target = targetRoot.getDefaultIpsPackageFragment().getIpsSrcFile(

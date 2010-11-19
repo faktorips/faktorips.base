@@ -118,8 +118,8 @@ public abstract class MinMaxNativeTypes extends AbstractFlFunction {
             CompilationResult argResult) {
         if (!functionDatatype.equals(datatype)) {
             if (ccg.canConvert(datatype, functionDatatype)) {
-                JavaCodeFragment converted = ccg.getConversionCode(datatype, functionDatatype, argResult
-                        .getCodeFragment());
+                JavaCodeFragment converted = ccg.getConversionCode(datatype, functionDatatype,
+                        argResult.getCodeFragment());
                 CompilationResultImpl newResult = new CompilationResultImpl(converted, functionDatatype);
                 newResult.addMessages(argResult.getMessages());
                 return newResult;

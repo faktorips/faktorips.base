@@ -496,12 +496,12 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         projectEl.appendChild(persistenceOptionsEl);
         persistenceOptionsEl.setAttribute(IPersistenceOptions.ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS, "" //$NON-NLS-1$
                 + Boolean.valueOf(getPersistenceOptions().isAllowLazyFetchForSingleValuedAssociations()));
-        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_COLUMN_SIZE, String
-                .valueOf(getPersistenceOptions().getMaxTableColumnSize()));
-        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_COLUMN_SCALE, String
-                .valueOf(getPersistenceOptions().getMaxTableColumnScale()));
-        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_COLUMN_PRECISION, String
-                .valueOf(getPersistenceOptions().getMaxTableColumnPrecision()));
+        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_COLUMN_SIZE,
+                String.valueOf(getPersistenceOptions().getMaxTableColumnSize()));
+        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_COLUMN_SCALE,
+                String.valueOf(getPersistenceOptions().getMaxTableColumnScale()));
+        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_COLUMN_PRECISION,
+                String.valueOf(getPersistenceOptions().getMaxTableColumnPrecision()));
 
         ITableNamingStrategy tableNamingStrategy = getPersistenceOptions().getTableNamingStrategy();
         ITableColumnNamingStrategy tableColumnNamingStrategy = getPersistenceOptions().getTableColumnNamingStrategy();

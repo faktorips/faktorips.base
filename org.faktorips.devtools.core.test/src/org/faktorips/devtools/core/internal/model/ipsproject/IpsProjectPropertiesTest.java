@@ -346,7 +346,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
                 .getTableColumnNamingStrategy().getClass().getName());
         assertEquals(CamelCaseToUpperUnderscoreTableNamingStrategy.class.getName(), props.getPersistenceOptions()
                 .getTableNamingStrategy().getClass().getName());
-                
+
         // supported languages
         Set<ISupportedLanguage> supportedLanguages = props.getSupportedLanguages();
         assertEquals(2, supportedLanguages.size());

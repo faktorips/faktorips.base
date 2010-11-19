@@ -137,24 +137,24 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
     private IIpsObjectPathEntryAttribute newTocPath(IIpsSrcFolderEntry entry) {
         IIpsObjectPathEntryAttribute attribute = null;
         if (entry.getBasePackageRelativeTocPath() != null) {
-            attribute = new IpsObjectPathEntryAttribute(IIpsObjectPathEntryAttribute.SPECIFIC_TOC_PATH, entry
-                    .getBasePackageRelativeTocPath());
+            attribute = new IpsObjectPathEntryAttribute(IIpsObjectPathEntryAttribute.SPECIFIC_TOC_PATH,
+                    entry.getBasePackageRelativeTocPath());
         }
         return attribute;
     }
 
     private IIpsObjectPathEntryAttribute newOutputFolderForMergableJavaFiles(IIpsSrcFolderEntry entry) {
         IIpsObjectPathEntryAttribute attribute = new IpsObjectPathEntryAttribute(
-                IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES, entry
-                        .getSpecificOutputFolderForMergableJavaFiles());
+                IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES,
+                entry.getSpecificOutputFolderForMergableJavaFiles());
 
         return attribute;
     }
 
     private IIpsObjectPathEntryAttribute newOutputFolderForDerivedJavaFiles(IIpsSrcFolderEntry entry) {
         IIpsObjectPathEntryAttribute attribute = new IpsObjectPathEntryAttribute(
-                IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES, entry
-                        .getSpecificOutputFolderForDerivedJavaFiles());
+                IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES,
+                entry.getSpecificOutputFolderForDerivedJavaFiles());
         return attribute;
     }
 

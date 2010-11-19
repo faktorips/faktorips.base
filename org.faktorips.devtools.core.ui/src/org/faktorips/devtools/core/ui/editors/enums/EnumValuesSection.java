@@ -320,8 +320,8 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
      */
     private void createTableColumnsForEnumType() throws CoreException {
         for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies(true)) {
-            addTableColumn(currentEnumAttribute.getName(), EnumUtil.findEnumAttributeIsUnique(currentEnumAttribute,
-                    ipsProject));
+            addTableColumn(currentEnumAttribute.getName(),
+                    EnumUtil.findEnumAttributeIsUnique(currentEnumAttribute, ipsProject));
         }
     }
 
@@ -338,8 +338,8 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
             } else {
                 IEnumAttribute currentEnumAttribute = referencedEnumType.getEnumAttributesIncludeSupertypeCopies(false)
                         .get(i);
-                addTableColumn(enumAttributeReferences.get(i).getName(), EnumUtil.findEnumAttributeIsUnique(
-                        currentEnumAttribute, ipsProject));
+                addTableColumn(enumAttributeReferences.get(i).getName(),
+                        EnumUtil.findEnumAttributeIsUnique(currentEnumAttribute, ipsProject));
             }
         }
     }
@@ -790,8 +790,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
      * to be edited is an <tt>IEnumType</tt>.
      * <p>
      * Updates the <tt>originalOrderedAttributeValuesMap</tt> and refreshes the <tt>
-     * enumValuesTableViewer</tt>
-     * when <tt>IEnumValue</tt>s have been added, moved or removed.
+     * enumValuesTableViewer</tt> when <tt>IEnumValue</tt>s have been added, moved or removed.
      */
     @Override
     public void contentsChanged(ContentChangeEvent event) {
@@ -952,10 +951,10 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
                 }
 
                 String datatype = enumAttributeValues.get(columnIndex).findEnumAttribute(ipsProject).getDatatype();
-                ValueDatatype valueDatatype = enumAttributeValues.get(columnIndex).getIpsProject().findValueDatatype(
-                        datatype);
-                return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(valueDatatype,
-                        columnValue);
+                ValueDatatype valueDatatype = enumAttributeValues.get(columnIndex).getIpsProject()
+                        .findValueDatatype(datatype);
+                return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
+                        .formatValue(valueDatatype, columnValue);
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }

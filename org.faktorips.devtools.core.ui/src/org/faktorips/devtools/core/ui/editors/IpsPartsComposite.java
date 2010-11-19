@@ -187,8 +187,8 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         viewer = new TableViewer(table);
         viewer.setContentProvider(createContentProvider());
         ILabelProvider lp = createLabelProvider();
-        final MessageCueLabelProvider messageCueLabelProvider = new MessageCueLabelProvider(lp, ipsObject
-                .getIpsProject());
+        final MessageCueLabelProvider messageCueLabelProvider = new MessageCueLabelProvider(lp,
+                ipsObject.getIpsProject());
         viewer.setLabelProvider(messageCueLabelProvider);
 
         new TableMessageHoverService(viewer) {

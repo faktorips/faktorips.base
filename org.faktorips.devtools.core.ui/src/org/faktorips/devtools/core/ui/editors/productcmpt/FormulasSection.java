@@ -120,8 +120,10 @@ public class FormulasSection extends IpsSection {
         uiMasterController.add(ctrl);
 
         IFormula[] formulas = generation.getFormulas();
-        Arrays.sort(formulas, new PropertyValueComparator(generation.getProductCmpt().getProductCmptType(), generation
-                .getIpsProject()));
+        Arrays.sort(
+                formulas,
+                new PropertyValueComparator(generation.getProductCmpt().getProductCmptType(), generation
+                        .getIpsProject()));
 
         ITableContentUsage usages[] = generation.getTableContentUsages();
 
@@ -193,8 +195,8 @@ public class FormulasSection extends IpsSection {
 
             try {
                 FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(formula);
-                ContentAssistHandler.createHandlerForText(evc.getTextControl(), CompletionUtil
-                        .createContentAssistant(completionProcessor));
+                ContentAssistHandler.createHandlerForText(evc.getTextControl(),
+                        CompletionUtil.createContentAssistant(completionProcessor));
             } catch (CoreException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }

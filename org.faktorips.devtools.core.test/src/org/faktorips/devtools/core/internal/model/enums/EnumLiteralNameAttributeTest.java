@@ -42,8 +42,9 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
     public void testXml() throws ParserConfigurationException, CoreException {
         Element xmlElement = literalNameAttribute.toXml(createXmlDocument(IEnumLiteralNameAttribute.XML_TAG));
         NamedNodeMap attributes = xmlElement.getAttributes();
-        assertEquals("name", attributes.getNamedItem(
-                IEnumLiteralNameAttribute.PROPERTY_DEFAULT_VALUE_PROVIDER_ATTRIBUTE).getTextContent());
+        assertEquals("name",
+                attributes.getNamedItem(IEnumLiteralNameAttribute.PROPERTY_DEFAULT_VALUE_PROVIDER_ATTRIBUTE)
+                        .getTextContent());
 
         IEnumLiteralNameAttribute loadedAttribute = paymentMode.newEnumLiteralNameAttribute();
         loadedAttribute.initFromXml(xmlElement);

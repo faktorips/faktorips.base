@@ -473,8 +473,8 @@ public class FixEnumContentWizard extends Wizard {
 
             // Choose EnumType control.
             uiToolkit.createFormLabel(workArea, Messages.FixEnumContentWizard_labelNewEnumType);
-            final IpsObjectRefControl enumTypeRefControl = uiToolkit.createEnumTypeRefControl(enumContent
-                    .getIpsProject(), workArea, false);
+            final IpsObjectRefControl enumTypeRefControl = uiToolkit.createEnumTypeRefControl(
+                    enumContent.getIpsProject(), workArea, false);
             enumTypeRefControl.getTextControl().addModifyListener(new ModifyListener() {
                 @Override
                 public void modifyText(ModifyEvent event) {

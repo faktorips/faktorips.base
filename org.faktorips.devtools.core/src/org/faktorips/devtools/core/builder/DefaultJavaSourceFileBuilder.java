@@ -379,8 +379,8 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         } else {
             message.append("\""); //$NON-NLS-1$
         }
-        generateLoggingStmtWithConditionForMessageExpression(IIpsLoggingFrameworkConnector.LEVEL_DEBUG, frag, message
-                .toString());
+        generateLoggingStmtWithConditionForMessageExpression(IIpsLoggingFrameworkConnector.LEVEL_DEBUG, frag,
+                message.toString());
     }
 
     protected final void generateMethodExitingLoggingStmt(JavaCodeFragment frag,
@@ -403,8 +403,8 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         message.append("\""); //$NON-NLS-1$
         message.append("+ "); //$NON-NLS-1$
         message.append(returnVariable);
-        generateLoggingStmtWithConditionForMessageExpression(IIpsLoggingFrameworkConnector.LEVEL_DEBUG, frag, message
-                .toString());
+        generateLoggingStmtWithConditionForMessageExpression(IIpsLoggingFrameworkConnector.LEVEL_DEBUG, frag,
+                message.toString());
     }
 
     /**

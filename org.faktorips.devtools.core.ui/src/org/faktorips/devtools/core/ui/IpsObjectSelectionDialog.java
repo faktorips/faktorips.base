@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog;
 
 /**
- *@deprecated use {@link OpenIpsObjectSelectionDialog} instead
+ * @deprecated use {@link OpenIpsObjectSelectionDialog} instead
  */
 @Deprecated
 public class IpsObjectSelectionDialog extends TwoPaneElementSelector {

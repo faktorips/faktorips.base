@@ -73,8 +73,8 @@ public class ValidationUtils {
          * is implicitly done by calling findIpsObject).
          */
         if (part.getIpsProject().findIpsSrcFile(type, objectName) == null) {
-            String text = NLS.bind(Messages.ValidationUtils_msgObjectDoesNotExist, StringUtils
-                    .capitalize(propertyDisplayName), objectName);
+            String text = NLS.bind(Messages.ValidationUtils_msgObjectDoesNotExist,
+                    StringUtils.capitalize(propertyDisplayName), objectName);
             list.add(new Message(msgCode, text, Message.ERROR, part, propertyName));
             return false;
         }
@@ -113,8 +113,8 @@ public class ValidationUtils {
         }
         IIpsSrcFile srcFile = ipsProject.findIpsSrcFile(type, objectName);
         if (srcFile == null) {
-            String text = NLS.bind(Messages.ValidationUtils_msgObjectDoesNotExist, StringUtils
-                    .capitalize(propertyDisplayName), objectName);
+            String text = NLS.bind(Messages.ValidationUtils_msgObjectDoesNotExist,
+                    StringUtils.capitalize(propertyDisplayName), objectName);
             list.add(new Message(msgCode, text, Message.ERROR, part, propertyName));
             return null;
         }
@@ -301,8 +301,8 @@ public class ValidationUtils {
             MessageList list) {
 
         if (StringUtils.isEmpty(propertyValue)) {
-            String text = NLS.bind(Messages.ValidationUtils_msgPropertyMissing, StringUtils
-                    .capitalize(propertyDisplayName));
+            String text = NLS.bind(Messages.ValidationUtils_msgPropertyMissing,
+                    StringUtils.capitalize(propertyDisplayName));
             list.add(new Message(msgCode, text, Message.ERROR, object, propertyName));
             return false;
         }

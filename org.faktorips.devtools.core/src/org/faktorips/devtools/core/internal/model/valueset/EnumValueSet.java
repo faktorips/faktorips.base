@@ -116,8 +116,8 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
         if (!datatype.isParsable(value)) {
             String msg = NLS.bind(Messages.EnumValueSet_msgValueNotParsable, value, datatype.getName());
-            addMsg(list, MSGCODE_VALUE_NOT_PARSABLE, msg, invalidObject, getProperty(invalidProperty,
-                    IConfigElement.PROPERTY_VALUE));
+            addMsg(list, MSGCODE_VALUE_NOT_PARSABLE, msg, invalidObject,
+                    getProperty(invalidProperty, IConfigElement.PROPERTY_VALUE));
             return false;
         }
 
@@ -128,8 +128,8 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         }
 
         String text = Messages.EnumValueSet_msgValueNotInEnumeration;
-        addMsg(list, MSGCODE_VALUE_NOT_CONTAINED, text, invalidObject, getProperty(invalidProperty,
-                IConfigElement.PROPERTY_VALUE));
+        addMsg(list, MSGCODE_VALUE_NOT_CONTAINED, text, invalidObject,
+                getProperty(invalidProperty, IConfigElement.PROPERTY_VALUE));
 
         return false;
     }
@@ -155,10 +155,10 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         }
 
         if (!datatype.getQualifiedName().equals(subDatatype.getQualifiedName())) {
-            String msg = NLS.bind(Messages.EnumValueSet_msgDatatypeMissmatch, subDatatype.getQualifiedName(), datatype
-                    .getQualifiedName());
-            addMsg(list, MSGCODE_DATATYPES_NOT_MATCHING, msg, invalidObject, getProperty(invalidProperty,
-                    PROPERTY_VALUES));
+            String msg = NLS.bind(Messages.EnumValueSet_msgDatatypeMissmatch, subDatatype.getQualifiedName(),
+                    datatype.getQualifiedName());
+            addMsg(list, MSGCODE_DATATYPES_NOT_MATCHING, msg, invalidObject,
+                    getProperty(invalidProperty, PROPERTY_VALUES));
             return false;
         }
 
@@ -178,8 +178,8 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         boolean contains = true;
         MessageList dummy = new MessageList();
         for (int i = 0; i < subsetValues.length && contains; i++) {
-            contains = this.containsValue(subsetValues[i], dummy, invalidObject, getProperty(invalidProperty,
-                    PROPERTY_VALUES));
+            contains = this.containsValue(subsetValues[i], dummy, invalidObject,
+                    getProperty(invalidProperty, PROPERTY_VALUES));
         }
 
         if (!contains) {

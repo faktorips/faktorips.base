@@ -154,12 +154,12 @@ public class GenerationSelectionDialogTest extends AbstractIpsPluginTest {
             boolean switchWorkingDate,
             boolean newGeneration) {
         List<Integer> createdButtons = gsDialog.getAllButtons();
-        assertEquals((browse ? "must" : "must not") + " contain browse button", browse, createdButtons
-                .contains(new Integer(GenerationSelectionDialog.CHOICE_BROWSE)));
+        assertEquals((browse ? "must" : "must not") + " contain browse button", browse,
+                createdButtons.contains(new Integer(GenerationSelectionDialog.CHOICE_BROWSE)));
         assertEquals((switchWorkingDate ? "must" : "must not") + " contain switch button", switchWorkingDate,
                 createdButtons.contains(new Integer(GenerationSelectionDialog.CHOICE_SWITCH)));
-        assertEquals((newGeneration ? "must" : "must not") + " contain create button", newGeneration, createdButtons
-                .contains(new Integer(GenerationSelectionDialog.CHOICE_CREATE)));
+        assertEquals((newGeneration ? "must" : "must not") + " contain create button", newGeneration,
+                createdButtons.contains(new Integer(GenerationSelectionDialog.CHOICE_CREATE)));
     }
 
     private GenerationSelectionDialog createDialogWithCanChangeRecentGenerations(String workingDate) {

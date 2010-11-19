@@ -86,8 +86,8 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
         this.showSubtypes = showSubtypes;
 
         ITestPolicyCmptTypeParameter parameter = wizard.geTestPolicyCmptTypeParameter();
-        String description = NLS.bind(Messages.TestAttributeSelectionWizardPage_wizardPageDescription, QNameUtil
-                .getUnqualifiedName(parameter.getPolicyCmptType()));
+        String description = NLS.bind(Messages.TestAttributeSelectionWizardPage_wizardPageDescription,
+                QNameUtil.getUnqualifiedName(parameter.getPolicyCmptType()));
         setDescription(description);
         try {
             policyCmptType = parameter.findPolicyCmptType(wizard.getIpsProjekt());

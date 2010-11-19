@@ -79,12 +79,12 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         assertFalse(policyCmptTypeParameterInput.isCombinedParameter());
         assertTargetTestPolicyCmptTypeParameter(policyCmptTypeParameterInput, "policyCmptType1", "base.Test1",
                 "association1", 2, 3, true, false, false);
-        assertTargetTestPolicyCmptTypeParameter(policyCmptTypeParameterInput
-                .getTestPolicyCmptTypeParamChild("policyCmptType2"), "policyCmptType2", "base.Test2", "association2",
-                4, 5, false, true, false);
-        assertTargetTestPolicyCmptTypeParameter(policyCmptTypeParameterInput
-                .getTestPolicyCmptTypeParamChild("policyCmptType3"), "policyCmptType3", "base.Test3", "association3",
-                6, 7, true, true, true);
+        assertTargetTestPolicyCmptTypeParameter(
+                policyCmptTypeParameterInput.getTestPolicyCmptTypeParamChild("policyCmptType2"), "policyCmptType2",
+                "base.Test2", "association2", 4, 5, false, true, false);
+        assertTargetTestPolicyCmptTypeParameter(
+                policyCmptTypeParameterInput.getTestPolicyCmptTypeParamChild("policyCmptType3"), "policyCmptType3",
+                "base.Test3", "association3", 6, 7, true, true, true);
         assertTrue(policyCmptTypeParameterInput.isRequiresProductCmpt());
 
         paramEl = XmlUtil.getElement(docEl, "PolicyCmptTypeParameter", 1);
@@ -92,18 +92,18 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         assertFalse(policyCmptTypeParameterInput.isInputOrCombinedParameter());
         assertTrue(policyCmptTypeParameterInput.isExpextedResultOrCombinedParameter());
         assertFalse(policyCmptTypeParameterInput.isCombinedParameter());
-        assertTargetTestPolicyCmptTypeParameter(policyCmptTypeParameterInput
-                .getTestPolicyCmptTypeParamChild("policyCmptType4.1"), "policyCmptType4.1", "base.Test4.1",
-                "association4.1", 1, 1, true, false, false);
+        assertTargetTestPolicyCmptTypeParameter(
+                policyCmptTypeParameterInput.getTestPolicyCmptTypeParamChild("policyCmptType4.1"), "policyCmptType4.1",
+                "base.Test4.1", "association4.1", 1, 1, true, false, false);
 
         paramEl = XmlUtil.getElement(docEl, "PolicyCmptTypeParameter", 2);
         policyCmptTypeParameterInput.initFromXml(paramEl);
         assertTrue(policyCmptTypeParameterInput.isInputOrCombinedParameter());
         assertTrue(policyCmptTypeParameterInput.isExpextedResultOrCombinedParameter());
         assertTrue(policyCmptTypeParameterInput.isCombinedParameter());
-        assertTargetTestPolicyCmptTypeParameter(policyCmptTypeParameterInput
-                .getTestPolicyCmptTypeParamChild("policyCmptType5.1"), "policyCmptType5.1", "base.Test5.1",
-                "association5.1", 2, 2, true, true, true);
+        assertTargetTestPolicyCmptTypeParameter(
+                policyCmptTypeParameterInput.getTestPolicyCmptTypeParamChild("policyCmptType5.1"), "policyCmptType5.1",
+                "base.Test5.1", "association5.1", 2, 2, true, true, true);
 
         // wrong type type doesn't result in an exception,
         // the parameter will be parsed and stored as unknown parameter type type
@@ -155,9 +155,9 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         assertTargetTestPolicyCmptTypeParameter(policyCmptTypeParameterInput, "Name1", "base.Test2", "association1", 7,
                 8, true, false, false);
         // child type not specified therfor combinned is the default type
-        assertTargetTestPolicyCmptTypeParameter(policyCmptTypeParameterInput
-                .getTestPolicyCmptTypeParamChild("childpolicyCmptType1"), "childpolicyCmptType1", "base.Test4",
-                "association1", 7, 8, true, true, true);
+        assertTargetTestPolicyCmptTypeParameter(
+                policyCmptTypeParameterInput.getTestPolicyCmptTypeParamChild("childpolicyCmptType1"),
+                "childpolicyCmptType1", "base.Test4", "association1", 7, 8, true, true, true);
         assertTrue(policyCmptTypeParameterInput.isRequiresProductCmpt());
     }
 

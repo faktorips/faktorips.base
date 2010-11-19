@@ -94,8 +94,8 @@ public class MoveRefactoringParticipant extends MoveParticipant {
             RefactoringContribution moveContribution = RefactoringCore
                     .getRefactoringContribution(IJavaRefactorings.MOVE);
             MoveDescriptor descriptor = (MoveDescriptor)moveContribution.createDescriptor();
-            descriptor.setMoveResources(new IFile[0], new IFolder[0], new ICompilationUnit[] { originalJavaType
-                    .getCompilationUnit() });
+            descriptor.setMoveResources(new IFile[0], new IFolder[0],
+                    new ICompilationUnit[] { originalJavaType.getCompilationUnit() });
             descriptor.setDestination(targetJavaType.getPackageFragment());
             descriptor.setProject(targetJavaType.getJavaProject().getElementName());
             descriptor.setUpdateReferences(getArguments().getUpdateReferences());

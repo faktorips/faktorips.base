@@ -540,7 +540,7 @@ public class TestCase extends IpsObject implements ITestCase {
 
     //
     // Getters for expected result objects
-    //    
+    //
 
     @Override
     public ITestObject[] getExpectedResultTestObjects() {

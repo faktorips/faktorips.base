@@ -263,16 +263,16 @@ abstract public class DefaultModelDescriptionPage extends Page {
             setHoverImageDescriptor(descriptor);
             setImageDescriptor(descriptor);
 
-            boolean checked = IpsPlugin.getDefault().getPreferenceStore().getBoolean(
-                    "DefaultModelDescriptionPage.LexicalSortingAction.isChecked"); //$NON-NLS-1$
+            boolean checked = IpsPlugin.getDefault().getPreferenceStore()
+                    .getBoolean("DefaultModelDescriptionPage.LexicalSortingAction.isChecked"); //$NON-NLS-1$
             sortItems(checked);
         }
 
         @Override
         public void run() {
             sortItems(isChecked());
-            IpsPlugin.getDefault().getPreferenceStore().setValue(
-                    "DefaultModelDescriptionPage.LexicalSortingAction.isChecked", isChecked()); //$NON-NLS-1$
+            IpsPlugin.getDefault().getPreferenceStore()
+                    .setValue("DefaultModelDescriptionPage.LexicalSortingAction.isChecked", isChecked()); //$NON-NLS-1$
         }
 
         /**

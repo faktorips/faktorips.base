@@ -171,16 +171,16 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
                 + (month < 10 ? "0" + month : "" + month) //$NON-NLS-1$ //$NON-NLS-2$
                 + (date < 10 ? "0" + date : "" + date); //$NON-NLS-1$ //$NON-NLS-2$
         name = generation.getIpsProject().getProductCmptNamingStrategy().getJavaClassIdentifier(name);
-        return generation.getProductCmpt().getIpsSrcFile().getIpsPackageFragment().getIpsSrcFile(
-                IpsObjectType.PRODUCT_CMPT.getFileName(name));
+        return generation.getProductCmpt().getIpsSrcFile().getIpsPackageFragment()
+                .getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(name));
     }
 
     /**
      * Returns the prefix that is common to the Java source file for all generations.
      */
     private String getJavaSrcFilePrefix(IIpsSrcFile file) throws CoreException {
-        return file.getIpsProject().getProductCmptNamingStrategy().getJavaClassIdentifier(
-                getUnchangedJavaSrcFilePrefix(file));
+        return file.getIpsProject().getProductCmptNamingStrategy()
+                .getJavaClassIdentifier(getUnchangedJavaSrcFilePrefix(file));
     }
 
     /**

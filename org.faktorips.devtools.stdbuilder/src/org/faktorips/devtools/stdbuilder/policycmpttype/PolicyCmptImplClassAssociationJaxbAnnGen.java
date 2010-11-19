@@ -67,8 +67,8 @@ public class PolicyCmptImplClassAssociationJaxbAnnGen extends AbstractAnnotation
                     builder.annotationLn("javax.xml.bind.annotation.XmlIDREF");
                 }
             }
-            builder.annotationLn("javax.xml.bind.annotation.XmlElementWrapper", "name", association
-                    .getTargetRolePlural());
+            builder.annotationLn("javax.xml.bind.annotation.XmlElementWrapper", "name",
+                    association.getTargetRolePlural());
         }
         return builder.getFragment();
     }

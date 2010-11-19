@@ -166,10 +166,10 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         inheritedEnumAttribute.setInherited(true);
         inheritedEnumAttribute.setName("foo");
 
-        assertEquals(genderEnumAttributeId, genderEnumType
-                .getEnumAttributeIncludeSupertypeCopies(GENDER_ENUM_ATTRIBUTE_ID_NAME));
-        assertEquals(genderEnumAttributeName, genderEnumType
-                .getEnumAttributeIncludeSupertypeCopies(GENDER_ENUM_ATTRIBUTE_NAME_NAME));
+        assertEquals(genderEnumAttributeId,
+                genderEnumType.getEnumAttributeIncludeSupertypeCopies(GENDER_ENUM_ATTRIBUTE_ID_NAME));
+        assertEquals(genderEnumAttributeName,
+                genderEnumType.getEnumAttributeIncludeSupertypeCopies(GENDER_ENUM_ATTRIBUTE_NAME_NAME));
         assertEquals(inheritedEnumAttribute, genderEnumType.getEnumAttributeIncludeSupertypeCopies("foo"));
     }
 
@@ -193,8 +193,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         inheritedId.setInherited(true);
         inheritedId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
 
-        assertEquals(genderEnumAttributeId, subEnumType.findEnumAttributeIncludeSupertypeOriginals(ipsProject,
-                GENDER_ENUM_ATTRIBUTE_ID_NAME));
+        assertEquals(genderEnumAttributeId,
+                subEnumType.findEnumAttributeIncludeSupertypeOriginals(ipsProject, GENDER_ENUM_ATTRIBUTE_ID_NAME));
     }
 
     public void testGetEnumAttributesCount() throws CoreException {

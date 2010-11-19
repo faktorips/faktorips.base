@@ -197,8 +197,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertNull(policyCmptType.findProductCmptType(ipsProject));
 
         IProductCmptType productCmptType = newProductCmptType(ipsProject, policyCmptType.getIpsPackageFragment()
-                .getName()
-                + ".Product");
+                .getName() + ".Product");
         policyCmptType.setProductCmptType(productCmptType.getQualifiedName());
         assertSame(productCmptType, policyCmptType.findProductCmptType(ipsProject));
     }
@@ -406,8 +405,8 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
 
         List<IDependency> dependencyList = Arrays.asList(a.dependsOn());
         assertEquals(2, dependencyList.size());
-        IDependency dependency = IpsObjectDependency.createReferenceDependency(a.getQualifiedNameType(), b
-                .getQualifiedNameType());
+        IDependency dependency = IpsObjectDependency.createReferenceDependency(a.getQualifiedNameType(),
+                b.getQualifiedNameType());
         assertTrue(dependencyList.contains(dependency));
 
         assertSingleDependencyDetail(a, dependency, aToB, IAssociation.PROPERTY_TARGET);
@@ -446,8 +445,8 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         c.setSupertype(a.getQualifiedName());
         List<IDependency> dependencyList = Arrays.asList(c.dependsOn());
         assertEquals(3, dependencyList.size());
-        IDependency dependency = IpsObjectDependency.createSubtypeDependency(c.getQualifiedNameType(), a
-                .getQualifiedNameType());
+        IDependency dependency = IpsObjectDependency.createSubtypeDependency(c.getQualifiedNameType(),
+                a.getQualifiedNameType());
         assertTrue(dependencyList.contains(dependency));
         assertSingleDependencyDetail(c, dependency, c, IPolicyCmptType.PROPERTY_SUPERTYPE);
 
@@ -548,8 +547,8 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertSingleDependencyDetail(a, dependency, aToD1, IAssociation.PROPERTY_TARGET);
 
         dependsOn = Arrays.asList(d1.dependsOn());
-        dependency = IpsObjectDependency.createCompostionMasterDetailDependency(d1.getQualifiedNameType(), d2
-                .getQualifiedNameType());
+        dependency = IpsObjectDependency.createCompostionMasterDetailDependency(d1.getQualifiedNameType(),
+                d2.getQualifiedNameType());
         assertTrue(dependsOn.contains(dependency));
         assertSingleDependencyDetail(d1, dependency, d1ToD2, IAssociation.PROPERTY_TARGET);
 
