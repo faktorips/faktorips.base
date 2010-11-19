@@ -179,7 +179,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
 
     private void addValidationErrorsTable() {
         MessageListTablePageElement messageListTablePageElement = new MessageListTablePageElement(
-                validateLinkedObjects());
+                validateLinkedObjects(), getConfig());
         if (messageListTablePageElement.isEmpty()) {
             return;
         }

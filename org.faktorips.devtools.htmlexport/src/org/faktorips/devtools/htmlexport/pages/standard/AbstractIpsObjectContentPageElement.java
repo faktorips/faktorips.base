@@ -32,8 +32,8 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractStandardTablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.IpsObjectMessageListTablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.KeyValueTablePageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.types.MessageListTablePageElement;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -94,7 +94,7 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
                         : config.getDescription(getDocumentedIpsObject()), TextType.BLOCK));
 
         if (getConfig().isShowValidationErrors()) {
-            addValidationErrors();
+            addValidationErrorsTable();
         }
 
         addExtensionPropertiesTable();
@@ -104,7 +104,7 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
      * adds a table with all validation messages of the {@link IpsObject}. Nothing will be shown, if
      * there are no messages.
      */
-    private void addValidationErrors() {
+    private void addValidationErrorsTable() {
 
         MessageList messageList = new MessageList();
         try {
@@ -121,7 +121,7 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
         wrapper.addPageElements(new TextPageElement(Messages.AbstractObjectContentPageElement_validationErrors,
                 TextType.HEADING_2));
 
-        TablePageElement tablePageElement = new MessageListTablePageElement(messageList);
+        TablePageElement tablePageElement = new IpsObjectMessageListTablePageElement(messageList, getConfig());
 
         wrapper.addPageElements(tablePageElement);
 
