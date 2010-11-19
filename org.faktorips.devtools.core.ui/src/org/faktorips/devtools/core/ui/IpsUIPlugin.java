@@ -193,9 +193,9 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         ResourcesPlugin.getWorkspace().addSaveParticipant(this, saveParticipant);
         controlFactories = new ValueDatatypeControlFactory[] {
                 new BooleanControlFactory(IpsPlugin.getDefault().getIpsPreferences()),
-                new EnumDatatypeControlFactory(), new EnumTypeDatatypeControlFactory(), new IntegerLongControlFactory(),
+                new EnumDatatypeControlFactory(), new EnumTypeDatatypeControlFactory(), /*new IntegerLongControlFactory(),
                 new DoubleDecimalControlFactory(),
-                /* new MoneyControlFactory(), */
+                 new MoneyControlFactory(), */
                 new DefaultControlFactory() };
         ipsElementWorkbenchAdapterAdapterFactory = new IpsElementWorkbenchAdapterAdapterFactory();
         Platform.getAdapterManager().registerAdapters(ipsElementWorkbenchAdapterAdapterFactory, IIpsElement.class);

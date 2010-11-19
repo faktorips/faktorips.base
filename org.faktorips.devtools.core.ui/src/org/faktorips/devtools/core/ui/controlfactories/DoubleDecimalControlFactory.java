@@ -16,14 +16,11 @@ package org.faktorips.devtools.core.ui.controlfactories;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridTreeViewer;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.PrimitiveBooleanDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.datatype.classtypes.BooleanDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -31,7 +28,7 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.DoubleFormat;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
-import org.faktorips.devtools.core.ui.table.ComboCellEditor;
+import org.faktorips.devtools.core.ui.table.FormattingTextCellEditor;
 import org.faktorips.devtools.core.ui.table.GridTableViewerTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
@@ -78,7 +75,6 @@ public class DoubleDecimalControlFactory extends ValueDatatypeControlFactory {
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
-
         return toolkit.createText(parent);
     }
 
@@ -111,8 +107,7 @@ public class DoubleDecimalControlFactory extends ValueDatatypeControlFactory {
             int columnIndex,
             IIpsProject ipsProject) {
 
-        IpsCellEditor cellEditor = createComboCellEditor(toolkit, dataType, valueSet, tableViewer.getTable(),
-                ipsProject);
+        IpsCellEditor cellEditor = createCellEditor(toolkit, dataType, valueSet, tableViewer.getTable(), ipsProject);
         TableViewerTraversalStrategy strat = new TableViewerTraversalStrategy(cellEditor, tableViewer, columnIndex);
         strat.setRowCreating(true);
         cellEditor.setTraversalStrategy(strat);
@@ -131,26 +126,20 @@ public class DoubleDecimalControlFactory extends ValueDatatypeControlFactory {
             int columnIndex,
             IIpsProject ipsProject) {
 
-        IpsCellEditor cellEditor = createComboCellEditor(toolkit, dataType, valueSet, gridViewer.getGrid(), ipsProject);
+        IpsCellEditor cellEditor = createCellEditor(toolkit, dataType, valueSet, gridViewer.getGrid(), ipsProject);
         cellEditor.setTraversalStrategy(new GridTableViewerTraversalStrategy(cellEditor, gridViewer, columnIndex));
         return cellEditor;
     }
 
-    private IpsCellEditor createComboCellEditor(UIToolkit toolkit,
+    private IpsCellEditor createCellEditor(UIToolkit toolkit,
             ValueDatatype dataType,
             IValueSet valueSet,
             Composite parent,
             IIpsProject ipsProject) {
 
-        Combo comboControl = (Combo)createControl(toolkit, parent, dataType, valueSet, ipsProject);
-        IpsCellEditor tableCellEditor = new ComboCellEditor(comboControl);
-        // stores the boolean datatype object as data object in the combo,
-        // to indicate that the to be displayed data will be mapped as boolean
-        if (Datatype.PRIMITIVE_BOOLEAN.equals(dataType)) {
-            comboControl.setData(new PrimitiveBooleanDatatype());
-        } else {
-            comboControl.setData(new BooleanDatatype());
-        }
+        Text textControl = (Text)createControl(toolkit, parent, dataType, valueSet, ipsProject);
+        DoubleFormat format = new DoubleFormat();
+        IpsCellEditor tableCellEditor = new FormattingTextCellEditor(textControl, format);
         return tableCellEditor;
     }
 
@@ -162,7 +151,7 @@ public class DoubleDecimalControlFactory extends ValueDatatypeControlFactory {
             int columnIndex,
             IIpsProject ipsProject) {
 
-        IpsCellEditor cellEditor = createComboCellEditor(toolkit, dataType, valueSet, gridViewer.getGrid(), ipsProject);
+        IpsCellEditor cellEditor = createCellEditor(toolkit, dataType, valueSet, gridViewer.getGrid(), ipsProject);
         return cellEditor;
     }
 }

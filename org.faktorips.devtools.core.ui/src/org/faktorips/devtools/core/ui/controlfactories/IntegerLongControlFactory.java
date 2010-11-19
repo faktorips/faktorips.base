@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 import org.faktorips.devtools.core.ui.controller.fields.IntegerFormat;
+import org.faktorips.devtools.core.ui.table.FormattingTextCellEditor;
 import org.faktorips.devtools.core.ui.table.GridTableViewerTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
@@ -61,8 +62,8 @@ public class IntegerLongControlFactory extends ValueDatatypeControlFactory {
             IValueSet valueSet,
             IIpsProject ipsProject) {
 
-        FormattingTextField formatField = new FormattingTextField((Text)createControl(toolkit, parent, datatype, valueSet,
-                ipsProject), new IntegerFormat());
+        FormattingTextField formatField = new FormattingTextField((Text)createControl(toolkit, parent, datatype,
+                valueSet, ipsProject), new IntegerFormat());
         return formatField;
     }
 
@@ -137,7 +138,8 @@ public class IntegerLongControlFactory extends ValueDatatypeControlFactory {
             IIpsProject ipsProject) {
 
         Text textControl = (Text)createControl(toolkit, parent, dataType, valueSet, ipsProject);
-        IpsCellEditor tableCellEditor = new TextCellEditor(textControl);
+        IntegerFormat format = new IntegerFormat();
+        IpsCellEditor tableCellEditor = new FormattingTextCellEditor(textControl, format);
         return tableCellEditor;
     }
 

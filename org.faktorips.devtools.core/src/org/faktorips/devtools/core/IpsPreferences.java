@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core;
 
+import java.awt.im.InputContext;
 import java.text.DateFormat;
 import java.util.GregorianCalendar;
 import java.util.Locale;
@@ -165,7 +166,12 @@ public class IpsPreferences {
         prefStore.setDefault(ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER, false);
         prefStore.setDefault(SECTIONS_IN_TYPE_EDITORS, TWO_SECTIONS_IN_TYPE_EDITOR_PAGE);
         prefStore.setDefault(RANGE_EDIT_FIELDS_IN_ONE_ROW, true);
-        prefStore.setDefault(DATATYPE_FORMATTING_LOCALE, Locale.getDefault().getCountry());
+        /*
+         * Use the system's keyboard-Layout locale and not the java default locale for data type
+         * formatting. Users will then be able to use the Numpad's ./, Key when entering Decimal
+         * numbers, as this key types "." or "," depending on the keyboard layout.
+         */
+        prefStore.setDefault(DATATYPE_FORMATTING_LOCALE, InputContext.getInstance().getLocale().getCountry());
 
         if (IPreferenceStore.STRING_DEFAULT_DEFAULT.equals(prefStore.getString(WORKING_DATE))) {
             setWorkingDate(new GregorianCalendar());

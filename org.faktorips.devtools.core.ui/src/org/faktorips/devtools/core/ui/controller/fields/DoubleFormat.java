@@ -81,7 +81,8 @@ public class DoubleFormat extends Format {
         numberFormat.parse(resultingText, position);
         // System.out.println("ResultinText.length()=" + resultingText.length() + ", position=" +
         // position.getIndex());
-        return position.getIndex() == resultingText.length();
+        boolean isParsable = position.getIndex() == resultingText.length();
+        return isParsable;
     }
 
     private boolean isParsableRegEx(String resultingText) {

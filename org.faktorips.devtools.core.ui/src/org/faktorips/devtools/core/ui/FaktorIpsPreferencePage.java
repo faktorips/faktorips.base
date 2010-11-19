@@ -132,7 +132,7 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
                 getFieldEditorParent(), true);
         addField(refactoringMode);
 
-        createDatatypeFormattingCombo();
+        // createDatatypeFormattingCombo();
     }
 
     protected void createDatatypeFormattingCombo() {
@@ -142,10 +142,13 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
             localeDisplayNameValues[i][0] = availableLocales[i].getDisplayName();
             localeDisplayNameValues[i][1] = availableLocales[i].getLanguage();
         }
-        ComboFieldEditor datatypeFormattingLocale = new ComboFieldEditor(IpsPreferences.DATATYPE_FORMATTING_LOCALE,
-                Messages.FaktorIpsPreferencePage_LabelFormattingOfValues, localeDisplayNameValues,
-                getFieldEditorParent());
-        addField(datatypeFormattingLocale);
+        ComboFieldEditor datatypeFormattingLocaleCombo = new ComboFieldEditor(
+                IpsPreferences.DATATYPE_FORMATTING_LOCALE, Messages.FaktorIpsPreferencePage_LabelFormattingOfValues,
+                localeDisplayNameValues, getFieldEditorParent());
+        // datatypeFormattingLocaleCombo.setEnabled(false, getFieldEditorParent());
+        datatypeFormattingLocaleCombo.getComboBoxControl(getFieldEditorParent()).setEnabled(false);
+
+        addField(datatypeFormattingLocaleCombo);
     }
 
     @Override

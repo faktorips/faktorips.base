@@ -24,8 +24,8 @@ public class FormattingTextField extends TextField {
     private Format format;
 
     /**
-     * Creates a {@link FormattingTextField} with the given {@link Text}-Control and the given format.
-     * Both arguments must not be <code>null</code>.
+     * Creates a {@link FormattingTextField} with the given {@link Text}-Control and the given
+     * format. Both arguments must not be <code>null</code>.
      * 
      * @param text the {@link Text} control to be used by this {@link FormattingTextField}
      * @param format the {@link Format} to be used by this {@link FormattingTextField}

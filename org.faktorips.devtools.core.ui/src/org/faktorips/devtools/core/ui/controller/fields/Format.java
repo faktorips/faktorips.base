@@ -15,8 +15,6 @@ package org.faktorips.devtools.core.ui.controller.fields;
 
 import java.util.Locale;
 
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Point;
@@ -44,14 +42,16 @@ public abstract class Format implements VerifyListener {
 
     public Format() {
         initFormat(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormattingLocale());
-        IpsPlugin.getDefault().getIpsPreferences().addChangeListener(new IPropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent event) {
-                if (event.getProperty().equals(IpsPreferences.DATATYPE_FORMATTING_LOCALE)) {
-                    initFormat(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormattingLocale());
-                }
-            }
-        });
+        // only needed when the format-locale can be configured in the FIPS Preferences
+        // IpsPlugin.getDefault().getIpsPreferences().addChangeListener(new
+        // IPropertyChangeListener() {
+        // @Override
+        // public void propertyChange(PropertyChangeEvent event) {
+        // if (event.getProperty().equals(IpsPreferences.DATATYPE_FORMATTING_LOCALE)) {
+        // initFormat(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormattingLocale());
+        // }
+        // }
+        // });
     }
 
     /**
@@ -149,6 +149,8 @@ public abstract class Format implements VerifyListener {
      * Is called when creating an instance of this class as well as every time the preference
      * {@link IpsPreferences#DATATYPE_FORMATTING_LOCALE} changes. {@link #initFormat(Locale)} is
      * always called with the currently configured locale.
+     * <p>
+     * Subclasses can create helper objects for Formating and parsing in this method.
      * 
      * @param locale the currently configured locale.
      */
