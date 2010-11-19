@@ -20,10 +20,10 @@ public class StringUtilsTest extends TestCase {
     public void testComputeCopyOfName() {
         String oldName = "test";
         assertEquals(Messages.StringUtils_copyOfNamePrefix + oldName, StringUtils.computeCopyOfName(0, oldName));
-        assertEquals(Messages.StringUtils_copyOfNamePrefix + "(2)_" + oldName, StringUtils.computeCopyOfName(1,
-                Messages.StringUtils_copyOfNamePrefix + oldName));
-        assertEquals(Messages.StringUtils_copyOfNamePrefix + "(3)_" + oldName, StringUtils.computeCopyOfName(2,
-                Messages.StringUtils_copyOfNamePrefix + "(2)_" + oldName));
+        assertEquals(Messages.StringUtils_copyOfNamePrefix + "(2)_" + oldName,
+                StringUtils.computeCopyOfName(1, Messages.StringUtils_copyOfNamePrefix + oldName));
+        assertEquals(Messages.StringUtils_copyOfNamePrefix + "(3)_" + oldName,
+                StringUtils.computeCopyOfName(2, Messages.StringUtils_copyOfNamePrefix + "(2)_" + oldName));
     }
 
 }

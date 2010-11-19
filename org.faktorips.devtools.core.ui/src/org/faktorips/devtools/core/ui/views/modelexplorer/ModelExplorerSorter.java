@@ -148,7 +148,7 @@ public class ModelExplorerSorter extends ViewerSorter {
         if (o1 == null || o2 == null) {
             return 0;
         }
-        //        
+        //
         // // place TableStructures below PolicyComponentTypes
         // if (o1 instanceof IType && o2 instanceof ITableStructure) {
         // return -1;
@@ -169,7 +169,7 @@ public class ModelExplorerSorter extends ViewerSorter {
         // } else if (!(o1 instanceof IIpsPackageFragment) && o2 instanceof IIpsPackageFragment) {
         // return 1;
         // }
-        //         
+        //
         if (o1 instanceof IIpsPackageFragmentRoot && o2 instanceof IIpsPackageFragmentRoot) {
             IIpsPackageFragmentRoot root1 = ((IIpsPackageFragmentRoot)o1);
             IIpsPackageFragmentRoot root2 = ((IIpsPackageFragmentRoot)o2);
@@ -223,7 +223,7 @@ public class ModelExplorerSorter extends ViewerSorter {
                 && (o2 instanceof IIpsProject || o2 instanceof IProject)) {
             return getProjectName(o1).compareToIgnoreCase(getProjectName(o2));
         }
-        //        
+        //
         // // Place model-data above other resources
         // if (o1 instanceof IIpsElement && o2 instanceof IResource) {
         // return -1;
@@ -238,7 +238,7 @@ public class ModelExplorerSorter extends ViewerSorter {
         // if (o1 instanceof IFile && o2 instanceof IFolder) {
         // return 1;
         // }
-        //         
+        //
 
         // otherwise let the superclass decide
         return super.compare(viewer, o1, o2);

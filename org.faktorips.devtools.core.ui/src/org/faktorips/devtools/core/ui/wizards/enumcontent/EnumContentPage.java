@@ -99,8 +99,8 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
     protected Control createControlInternal(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
         validateInput = false;
-        setTitle(NLS.bind(org.faktorips.devtools.core.ui.wizards.Messages.NewIpsObjectWizard_title, WordUtils
-                .capitalize(IpsObjectType.ENUM_CONTENT.getDisplayName())));
+        setTitle(NLS.bind(org.faktorips.devtools.core.ui.wizards.Messages.NewIpsObjectWizard_title,
+                WordUtils.capitalize(IpsObjectType.ENUM_CONTENT.getDisplayName())));
         setMessage(NLS.bind(org.faktorips.devtools.core.ui.wizards.Messages.IpsObjectPage_msgNew,
                 IpsObjectType.ENUM_CONTENT.getDisplayName()));
 
@@ -238,8 +238,8 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         IIpsSrcFile enumContentSrcFile = getIpsPackageFragmentRoot().getIpsProject().findIpsSrcFile(
                 IpsObjectType.ENUM_CONTENT, enumType.getEnumContentName());
         if (enumContentSrcFile != null) {
-            setErrorMessage(NLS.bind(Messages.EnumContentPage_msgEnumContentExistsForNameExistsAlready, enumType
-                    .getEnumContentName(), enumType.getQualifiedName()));
+            setErrorMessage(NLS.bind(Messages.EnumContentPage_msgEnumContentExistsForNameExistsAlready,
+                    enumType.getEnumContentName(), enumType.getQualifiedName()));
             return;
         }
 
@@ -302,8 +302,8 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
                         root.getName()));
             } else if (!root.exists()) {
                 setErrorMessage(NLS.bind(
-                        org.faktorips.devtools.core.ui.wizards.Messages.IpsObjectPage_msgRootNoIPSSrcFolder, root
-                                .getName()));
+                        org.faktorips.devtools.core.ui.wizards.Messages.IpsObjectPage_msgRootNoIPSSrcFolder,
+                        root.getName()));
             }
         } else {
             if (sourceFolderControl.getText().length() == 0) {

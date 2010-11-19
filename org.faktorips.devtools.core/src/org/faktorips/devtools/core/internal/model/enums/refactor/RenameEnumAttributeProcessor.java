@@ -49,8 +49,7 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
          * this validation.
          */
         getIgnoredValidationMessageCodes()
-                .add(
-                        IEnumLiteralNameAttribute.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_DOES_NOT_EXIST);
+                .add(IEnumLiteralNameAttribute.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_DOES_NOT_EXIST);
     }
 
     @Override

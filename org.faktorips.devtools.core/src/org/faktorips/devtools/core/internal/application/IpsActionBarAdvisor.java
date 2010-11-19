@@ -788,8 +788,8 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 
         PerspectiveMenu m = new PerspecitveHandler(getWindow(), "unknown"); //$NON-NLS-1$
         openProductDefinitionPerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench()
-                .getPerspectiveRegistry().findPerspectiveWithId(
-                        IpsProductDefinitionPerspectiveFactory.PRODUCTDEFINITIONPERSPECTIVE_ID), m);
+                .getPerspectiveRegistry()
+                .findPerspectiveWithId(IpsProductDefinitionPerspectiveFactory.PRODUCTDEFINITIONPERSPECTIVE_ID), m);
         openSynchronizePerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench()
                 .getPerspectiveRegistry().findPerspectiveWithId("org.eclipse.team.ui.TeamSynchronizingPerspective"), m); //$NON-NLS-1$
         openCVSPerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench()

@@ -139,8 +139,8 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
 
     private void fillFormattedValue2ValueMap(String[] values) {
         for (String value : values) {
-            String formattedValue = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(
-                    valueDatatype, value);
+            String formattedValue = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
+                    .formatValue(valueDatatype, value);
             formattedValue2Value.put(formattedValue, value);
         }
     }
@@ -288,8 +288,8 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
     private String[] formatValues(String[] values) {
         List<String> result = new ArrayList<String>();
         for (String value : values) {
-            String name = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(valueDatatype,
-                    value);
+            String name = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
+                    .formatValue(valueDatatype, value);
             result.add(name);
         }
         return result.toArray(new String[result.size()]);

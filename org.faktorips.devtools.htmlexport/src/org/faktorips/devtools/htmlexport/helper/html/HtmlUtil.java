@@ -45,10 +45,8 @@ public class HtmlUtil {
         builder.append(colDefinition);
         builder.append("\"><frameset rows=\""); //$NON-NLS-1$
         builder.append(rowsDefinition);
-        builder
-                .append("\"><frame src=\"overview.html\" name=\"overview\"><frame src=\"classes.html\" name=\"classes\"></frameset><frame src=\"summary.html\" name=\"content\">"); //$NON-NLS-1$
-        builder
-                .append("<noframes><h2>Frame Alert</h2><p>This document is designed to be viewed only with the frames feature.</p></noframes>"); //$NON-NLS-1$
+        builder.append("\"><frame src=\"overview.html\" name=\"overview\"><frame src=\"classes.html\" name=\"classes\"></frameset><frame src=\"summary.html\" name=\"content\">"); //$NON-NLS-1$
+        builder.append("<noframes><h2>Frame Alert</h2><p>This document is designed to be viewed only with the frames feature.</p></noframes>"); //$NON-NLS-1$
         builder.append("</frameset>"); //$NON-NLS-1$
         builder.append(createHtmlElementCloseTag("html")); //$NON-NLS-1$
         return builder.toString();
@@ -64,8 +62,7 @@ public class HtmlUtil {
         StringBuilder builder = new StringBuilder();
 
         builder.append("<?xml version=\"1.0\" ?>\n"); //$NON-NLS-1$
-        builder
-                .append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"); //$NON-NLS-1$
+        builder.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"); //$NON-NLS-1$
         builder.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head><title>"); //$NON-NLS-1$
         builder.append(title);
         builder.append("</title>"); //$NON-NLS-1$

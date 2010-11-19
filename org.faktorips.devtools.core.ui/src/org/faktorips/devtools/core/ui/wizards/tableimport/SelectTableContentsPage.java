@@ -126,13 +126,13 @@ public class SelectTableContentsPage extends SelectImportTargetPage {
         try {
             ITableContents tableContents = (ITableContents)getTargetForImport();
             if (tableContents == null) {
-                setErrorMessage(NLS.bind(Messages.SelectTableContentsPage_msgMissingContent, importTargetControl
-                        .getText()));
+                setErrorMessage(NLS.bind(Messages.SelectTableContentsPage_msgMissingContent,
+                        importTargetControl.getText()));
                 return;
             }
             if (!tableContents.exists()) {
-                setErrorMessage(NLS.bind(Messages.SelectTableContentsPage_msgMissingContent, importTargetControl
-                        .getText()));
+                setErrorMessage(NLS.bind(Messages.SelectTableContentsPage_msgMissingContent,
+                        importTargetControl.getText()));
                 return;
             }
             ITableStructure structure = tableContents.findTableStructure(tableContents.getIpsProject());

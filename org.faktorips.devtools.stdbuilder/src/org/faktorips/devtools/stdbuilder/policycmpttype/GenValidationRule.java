@@ -255,9 +255,7 @@ public class GenValidationRule extends GenTypePart {
         }
         // code for replacement parameters
         if (msgFrag.hasParameters()) {
-            body
-                    .append(generateCodeForMsgReplacementParameters(localVarReplacementParams, msgFrag
-                            .getParameterNames()));
+            body.append(generateCodeForMsgReplacementParameters(localVarReplacementParams, msgFrag.getParameterNames()));
         }
 
         // code to construct the message's text

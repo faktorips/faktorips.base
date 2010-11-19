@@ -149,8 +149,8 @@ public class FormulaTestCase extends IpsObjectPart implements IFormulaTestCase {
             DatatypeHelper dataTypeHelper = getIpsProject().getDatatypeHelper(datatype);
             if (dataTypeHelper == null) {
                 throw new CoreException(new IpsStatus(NLS.bind(
-                        Messages.FormulaTestCase_CoreException_DatatypeNotFoundOrWrongConfigured, datatype, element
-                                .getIdentifier())));
+                        Messages.FormulaTestCase_CoreException_DatatypeNotFoundOrWrongConfigured, datatype,
+                        element.getIdentifier())));
             }
             resolver.register(element.getIdentifier(), dataTypeHelper.newInstance(storedValue), datatype);
         }

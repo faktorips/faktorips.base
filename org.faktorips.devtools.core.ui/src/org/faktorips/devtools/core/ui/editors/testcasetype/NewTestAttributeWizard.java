@@ -123,8 +123,8 @@ public class NewTestAttributeWizard extends Wizard {
             }
 
             testAttribute.setAttribute(modelAttribute);
-            testAttribute.setName(testCaseType.generateUniqueNameForTestAttribute(testAttribute, modelAttribute
-                    .getName()));
+            testAttribute.setName(testCaseType.generateUniqueNameForTestAttribute(testAttribute,
+                    modelAttribute.getName()));
 
             if (firstCreatedTestAttribute == null) {
                 firstCreatedTestAttribute = testAttribute;

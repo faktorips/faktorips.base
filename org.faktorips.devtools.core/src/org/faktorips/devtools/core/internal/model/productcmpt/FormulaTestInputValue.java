@@ -184,8 +184,7 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
                         // attribute not found
                         knownReason = true;
                         String text = NLS
-                                .bind(
-                                        Messages.FormulaTestInputValue_FormulaTestInputValue_ValidationMessage_AttributeNotFound,
+                                .bind(Messages.FormulaTestInputValue_FormulaTestInputValue_ValidationMessage_AttributeNotFound,
                                         attributeName);
                         list.add(new Message(MSGCODE_RELATED_ATTRIBUTE_NOT_FOUND, text, Message.ERROR, this,
                                 PROPERTY_IDENTIFIER));
@@ -193,8 +192,7 @@ public class FormulaTestInputValue extends AtomicIpsObjectPart implements IFormu
                         // datatype of attribute not found
                         knownReason = true;
                         String text = NLS
-                                .bind(
-                                        Messages.FormulaTestInputValue_FormulaTestInputValue_ValidationMessage_DatatypeOfParameterNotFound,
+                                .bind(Messages.FormulaTestInputValue_FormulaTestInputValue_ValidationMessage_DatatypeOfParameterNotFound,
                                         attribute.getDatatype(), identifier);
                         list.add(new Message(MSGCODE_DATATYPE_OF_RELATED_ATTRIBUTE_NOT_FOUND, text, Message.WARNING,
                                 this, PROPERTY_IDENTIFIER));

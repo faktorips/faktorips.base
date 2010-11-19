@@ -37,8 +37,8 @@ public class BigDecimalRangeTest extends TestCase {
     }
 
     public void testConstructorWithStep() {
-        BigDecimalRange.valueOf(BigDecimal.valueOf(new Integer(10)), BigDecimal.valueOf(new Integer(100)), BigDecimal
-                .valueOf(10, 0));
+        BigDecimalRange.valueOf(BigDecimal.valueOf(new Integer(10)), BigDecimal.valueOf(new Integer(100)),
+                BigDecimal.valueOf(10, 0));
         BigDecimalRange.valueOf(BigDecimal.valueOf(135, 2), BigDecimal.valueOf(108, 1), BigDecimal.valueOf(135, 2));
 
         try {
@@ -60,8 +60,8 @@ public class BigDecimalRangeTest extends TestCase {
     }
 
     public void testContains() {
-        BigDecimalRange range = new BigDecimalRange(BigDecimal.valueOf(new Integer(10)), BigDecimal
-                .valueOf(new Integer(100)));
+        BigDecimalRange range = new BigDecimalRange(BigDecimal.valueOf(new Integer(10)),
+                BigDecimal.valueOf(new Integer(100)));
         assertTrue(range.contains(BigDecimal.valueOf(new Integer(30))));
         assertFalse(range.contains(BigDecimal.valueOf(new Integer(120))));
         assertFalse(range.contains(BigDecimal.valueOf(new Integer(5))));
@@ -81,8 +81,8 @@ public class BigDecimalRangeTest extends TestCase {
 
     public void testGetValues() {
 
-        BigDecimalRange range = new BigDecimalRange(BigDecimal.valueOf(new Integer(10)), BigDecimal
-                .valueOf(new Integer(100)));
+        BigDecimalRange range = new BigDecimalRange(BigDecimal.valueOf(new Integer(10)),
+                BigDecimal.valueOf(new Integer(100)));
         try {
             range.getValues(false);
             fail();
@@ -131,8 +131,8 @@ public class BigDecimalRangeTest extends TestCase {
     }
 
     public void testSerializable() throws Exception {
-        BigDecimalRange range = BigDecimalRange.valueOf(BigDecimal.valueOf(new Integer(10)), BigDecimal
-                .valueOf(new Integer(100)), BigDecimal.valueOf(new Integer(10)), true);
+        BigDecimalRange range = BigDecimalRange.valueOf(BigDecimal.valueOf(new Integer(10)),
+                BigDecimal.valueOf(new Integer(100)), BigDecimal.valueOf(new Integer(10)), true);
         TestUtil.testSerializable(range);
     }
 

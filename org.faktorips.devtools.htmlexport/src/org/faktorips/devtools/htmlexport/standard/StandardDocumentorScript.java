@@ -93,9 +93,13 @@ public class StandardDocumentorScript implements IDocumentorScript {
     private void writeClassContentPage(DocumentorConfiguration config, IIpsSrcFile ipsSrcFile) {
         AbstractPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(ipsSrcFile, config);
         objectContentPage.build();
-        FileHandler.writeFile(config, STANDARD_PATH
-                + HtmlUtil.getPathFromRoot(ipsSrcFile, LinkedFileType.getLinkedFileTypeByIpsElement(ipsSrcFile)),
-                getPageContent(config, objectContentPage));
+        FileHandler
+                .writeFile(
+                        config,
+                        STANDARD_PATH
+                                + HtmlUtil.getPathFromRoot(ipsSrcFile,
+                                        LinkedFileType.getLinkedFileTypeByIpsElement(ipsSrcFile)),
+                        getPageContent(config, objectContentPage));
     }
 
     private byte[] getPageContent(DocumentorConfiguration config, PageElement page) {
@@ -125,9 +129,12 @@ public class StandardDocumentorScript implements IDocumentorScript {
                 new IpsElementInIIpsPackageFilter(ipsPackageFragment), config, true);
         allClassesPage.setLinkTarget("content"); //$NON-NLS-1$
         allClassesPage.build();
-        FileHandler.writeFile(config, STANDARD_PATH
-                + HtmlUtil.getPathFromRoot(ipsPackageFragment, LinkedFileType
-                        .getLinkedFileTypeByIpsElement(ipsPackageFragment)), getPageContent(config, allClassesPage));
+        FileHandler.writeFile(
+                config,
+                STANDARD_PATH
+                        + HtmlUtil.getPathFromRoot(ipsPackageFragment,
+                                LinkedFileType.getLinkedFileTypeByIpsElement(ipsPackageFragment)),
+                getPageContent(config, allClassesPage));
     }
 
     private Set<IIpsPackageFragment> getRelatedPackageFragments(List<IIpsSrcFile> srcFiles) {

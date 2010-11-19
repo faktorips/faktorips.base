@@ -284,8 +284,8 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
                  * for other policy cmpts which defines this subclass attribute
                  */
                 if (attribute == null && !StringUtils.isEmpty(value)) {
-                    String text = NLS.bind(Messages.TestAttributeValue_ValidateError_AttributeNotFound, testAttr
-                            .getAttribute());
+                    String text = NLS.bind(Messages.TestAttributeValue_ValidateError_AttributeNotFound,
+                            testAttr.getAttribute());
                     Message msg = new Message(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND, text, Message.WARNING, this,
                             PROPERTY_VALUE);
                     messageList.add(msg);

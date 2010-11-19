@@ -112,8 +112,8 @@ public class IpsArchiveExportWizard extends Wizard implements IExportWizard {
     }
 
     private boolean askForCreateParent(File folder) {
-        if (MessageDialog.openQuestion(getShell(), "Create Directory", NLS.bind(
-                "Directory {0} does not exists. Do you want to create it?", folder.getAbsolutePath()))) {
+        if (MessageDialog.openQuestion(getShell(), "Create Directory",
+                NLS.bind("Directory {0} does not exists. Do you want to create it?", folder.getAbsolutePath()))) {
             try {
                 folder.mkdirs();
                 return true;
@@ -134,8 +134,9 @@ public class IpsArchiveExportWizard extends Wizard implements IExportWizard {
             }
         }
 
-        CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(checkedRoots
-                .toArray(new IIpsPackageFragmentRoot[checkedRoots.size()]), ipsArPackageWizardPage.getDestinationFile());
+        CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(
+                checkedRoots.toArray(new IIpsPackageFragmentRoot[checkedRoots.size()]),
+                ipsArPackageWizardPage.getDestinationFile());
         op.setInclJavaBinaries(ipsArPackageWizardPage.isInclJavaBinaries());
         op.setInclJavaSources(ipsArPackageWizardPage.isInclJavaSources());
 

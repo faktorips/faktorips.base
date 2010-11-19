@@ -381,8 +381,8 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
             for (int i = 0; i < uniqueEnumAttributeValues.size(); i++) {
                 IEnumAttributeValue currentUniqueAttributeValue = uniqueEnumAttributeValues.get(i);
                 int currentReferencedAttributeIndex = enumType.getIndexOfEnumAttribute(uniqueEnumAttributes.get(i));
-                addValidationCacheUniqueIdentifierEntry(currentReferencedAttributeIndex, currentUniqueAttributeValue
-                        .getValue(), currentUniqueAttributeValue);
+                addValidationCacheUniqueIdentifierEntry(currentReferencedAttributeIndex,
+                        currentUniqueAttributeValue.getValue(), currentUniqueAttributeValue);
             }
         }
     }

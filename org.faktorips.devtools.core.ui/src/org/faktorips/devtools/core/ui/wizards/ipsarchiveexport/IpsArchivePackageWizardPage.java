@@ -151,8 +151,8 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
                             IProject project = ((IJavaProject)element2).getProject();
                             try {
                                 if (project.hasNature(IIpsProject.NATURE_ID)) {
-                                    IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(
-                                            project.getName());
+                                    IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel()
+                                            .getIpsProject(project.getName());
                                     elementsInTree.put(project, ipsProject);
                                     result.add(ipsProject);
                                 }

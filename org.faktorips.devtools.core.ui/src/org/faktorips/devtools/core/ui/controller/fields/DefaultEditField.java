@@ -132,12 +132,15 @@ public abstract class DefaultEditField implements EditField {
 
         if (broadcastImmediately) {
             // notify change listeners immediately
-            IpsUIPlugin.getDefault().getEditFieldChangeBroadcaster().broadcastImmediately(event,
-                    changeListeners.toArray(new ValueChangeListener[changeListeners.size()]));
+            IpsUIPlugin
+                    .getDefault()
+                    .getEditFieldChangeBroadcaster()
+                    .broadcastImmediately(event,
+                            changeListeners.toArray(new ValueChangeListener[changeListeners.size()]));
         } else {
             // notify change listeners in delayed manner
-            IpsUIPlugin.getDefault().getEditFieldChangeBroadcaster().broadcastDelayed(event,
-                    changeListeners.toArray(new ValueChangeListener[changeListeners.size()]));
+            IpsUIPlugin.getDefault().getEditFieldChangeBroadcaster()
+                    .broadcastDelayed(event, changeListeners.toArray(new ValueChangeListener[changeListeners.size()]));
         }
     }
 

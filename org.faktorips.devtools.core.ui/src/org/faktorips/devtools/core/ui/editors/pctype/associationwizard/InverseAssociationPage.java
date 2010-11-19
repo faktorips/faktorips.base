@@ -95,8 +95,7 @@ public class InverseAssociationPage extends WizardPage {
             if (prevSelection != e.getSource()) {
                 prevSelection = (Button)e.getSource();
                 if (e.getSource() == useExistingAssociation) {
-                    wizard
-                            .setInverseAssociationManipulation(NewPcTypeAssociationWizard.USE_EXISTING_INVERSE_ASSOCIATION);
+                    wizard.setInverseAssociationManipulation(NewPcTypeAssociationWizard.USE_EXISTING_INVERSE_ASSOCIATION);
                 } else if (e.getSource() == newInverseAssociation) {
                     wizard.setInverseAssociationManipulation(NewPcTypeAssociationWizard.NEW_INVERSE_ASSOCIATION);
                 } else if (e.getSource() == noInverseAssociation) {

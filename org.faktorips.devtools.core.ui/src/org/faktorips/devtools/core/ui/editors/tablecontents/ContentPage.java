@@ -360,8 +360,8 @@ public class ContentPage extends IpsObjectEditorPage {
                 String title = null;
                 if (difference > 1) {
                     title = Messages.ContentPage_titleMissingColumns;
-                    msg = NLS.bind(Messages.ContentPage_msgAddMany, String.valueOf(difference), String
-                            .valueOf(getTableContents().getNumOfColumns()));
+                    msg = NLS.bind(Messages.ContentPage_msgAddMany, String.valueOf(difference),
+                            String.valueOf(getTableContents().getNumOfColumns()));
 
                 } else if (difference == 1) {
                     title = Messages.ContentPage_titleMissingColumn;
@@ -369,12 +369,12 @@ public class ContentPage extends IpsObjectEditorPage {
                             .bind(Messages.ContentPage_msgAddOne, String.valueOf(getTableContents().getNumOfColumns()));
                 } else if (difference == -1) {
                     title = Messages.ContentPage_titleTooMany;
-                    msg = NLS.bind(Messages.ContentPage_msgRemoveOne, String.valueOf(getTableContents()
-                            .getNumOfColumns()));
+                    msg = NLS.bind(Messages.ContentPage_msgRemoveOne,
+                            String.valueOf(getTableContents().getNumOfColumns()));
                 } else if (difference < -1) {
                     title = Messages.ContentPage_titleTooMany;
-                    msg = NLS.bind(Messages.ContentPage_msgRemoveMany, String.valueOf(Math.abs(difference)), String
-                            .valueOf(getTableContents().getNumOfColumns()));
+                    msg = NLS.bind(Messages.ContentPage_msgRemoveMany, String.valueOf(Math.abs(difference)),
+                            String.valueOf(getTableContents().getNumOfColumns()));
                 }
 
                 InputDialog dialog = new InputDialog(getSite().getShell(), title, msg, "", validator); //$NON-NLS-1$

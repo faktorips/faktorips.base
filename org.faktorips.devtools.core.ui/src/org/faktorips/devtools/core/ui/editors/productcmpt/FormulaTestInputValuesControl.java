@@ -166,8 +166,8 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
                 } else if (columnIndex == IDX_VALUE_COLUMN) {
                     try {
                         ValueDatatype vd = ((IFormulaTestInputValue)element).findDatatypeOfFormulaParameter(ipsProject);
-                        return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(vd,
-                                ((IFormulaTestInputValue)element).getValue());
+                        return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
+                                .formatValue(vd, ((IFormulaTestInputValue)element).getValue());
                     } catch (CoreException e) {
                         // ignore exception, return the unformated value
                     }
@@ -381,10 +381,11 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
             uiController.updateUI();
         }
 
-        MessageDialog.openInformation(getShell(),
-                Messages.FormulaTestInputValuesControl_InfoDialogSuccessfullyStored_Title, NLS.bind(
-                        Messages.FormulaTestInputValuesControl_InfoDialogSuccessfullyStored_Text, storeFormulaRunnable
-                                .getName()));
+        MessageDialog.openInformation(
+                getShell(),
+                Messages.FormulaTestInputValuesControl_InfoDialogSuccessfullyStored_Title,
+                NLS.bind(Messages.FormulaTestInputValuesControl_InfoDialogSuccessfullyStored_Text,
+                        storeFormulaRunnable.getName()));
     }
 
     /**
@@ -579,8 +580,8 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
                         lastCalculatedResult = lastCalculatedResult == null ? null : lastCalculatedResult.toString();
                     } catch (Exception e) {
                         showFormulaResult(NLS.bind(
-                                Messages.FormulaTestInputValuesControl_Error_ParseExceptionWhenExecutingFormula, e
-                                        .getLocalizedMessage()));
+                                Messages.FormulaTestInputValuesControl_Error_ParseExceptionWhenExecutingFormula,
+                                e.getLocalizedMessage()));
                     }
                 }
             };
@@ -677,8 +678,8 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         ValueDatatype vd;
         try {
             vd = formula.findValueDatatype(ipsProject);
-            resultToDisplay = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(vd,
-                    (result == null ? null : result.toString()));
+            resultToDisplay = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
+                    .formatValue(vd, (result == null ? null : result.toString()));
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }

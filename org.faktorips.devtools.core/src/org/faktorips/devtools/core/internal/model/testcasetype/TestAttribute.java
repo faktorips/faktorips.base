@@ -300,8 +300,8 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         // check if the type of the attribute matches the type of the parent
         TestParameterType parentType = ((ITestPolicyCmptTypeParameter)getParent()).getTestParameterType();
         if (!TestParameterType.isChildTypeMatching(type, parentType)) {
-            String text = NLS.bind(Messages.TestAttribute_Error_TypeNotAllowedIfParent, type.getName(), parentType
-                    .getName());
+            String text = NLS.bind(Messages.TestAttribute_Error_TypeNotAllowedIfParent, type.getName(),
+                    parentType.getName());
             Message msg = new Message(MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE, text, Message.ERROR, this,
                     PROPERTY_TEST_ATTRIBUTE_TYPE);
             messageList.add(msg);

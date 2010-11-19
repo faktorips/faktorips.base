@@ -452,8 +452,8 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     public void testSetSubsettedDerivedUnion() {
-        super.testPropertyAccessReadWrite(Association.class, IAssociation.PROPERTY_DERIVED_UNION, association, Boolean
-                .valueOf(!association.isDerivedUnion()));
+        super.testPropertyAccessReadWrite(Association.class, IAssociation.PROPERTY_DERIVED_UNION, association,
+                Boolean.valueOf(!association.isDerivedUnion()));
     }
 
 }

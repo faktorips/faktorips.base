@@ -307,8 +307,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         mainSection.setSuperClass(Table.class.getName());
         mainSection.setClass(true);
 
-        appendLocalizedJavaDoc("CLASS_DESCRIPTION", getIpsObject(), getIpsObject().getDescription(), mainSection
-                .getJavaDocForTypeBuilder());
+        appendLocalizedJavaDoc("CLASS_DESCRIPTION", getIpsObject(), getIpsObject().getDescription(),
+                mainSection.getJavaDocForTypeBuilder());
         createFields(mainSection.getMemberVarBuilder());
         generateConstructors(mainSection.getConstructorBuilder());
         createAddRowMethod(mainSection.getMethodBuilder());
@@ -511,9 +511,9 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             createFindMethodRegular(methodName.toString(), qualifiedTableRowName, fAllItemParameterTypes.get(i),
                     fAllItemNamesAsParameters.get(i), fKeyClassParameterNames.get(i), fKeyVariableNames[i],
                     fKeyClassNames[i], keys[i], codeBuilder);
-            createFindMethodWithNullValueRow(methodName.toString(), qualifiedTableRowName, fAllItemParameterTypes
-                    .get(i), fAllItemNamesAsParameters.get(i), fKeyClassParameterNames.get(i), fKeyVariableNames[i],
-                    fKeyClassNames[i], keys[i], codeBuilder);
+            createFindMethodWithNullValueRow(methodName.toString(), qualifiedTableRowName,
+                    fAllItemParameterTypes.get(i), fAllItemNamesAsParameters.get(i), fKeyClassParameterNames.get(i),
+                    fKeyVariableNames[i], fKeyClassNames[i], keys[i], codeBuilder);
         }
     }
 
@@ -667,19 +667,20 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                     }
                 }
                 for (int j = 1; j < getMapFirstParameter.size(); j++) {
-                    methodBody.append(createInitKeyMapsMapAssignment(getMapFirstParameter.get(j), getMapFirstParameter
-                            .get(j - 1), getMapSecondParameter.get(j - 1), getMapThirdParameter.get(j - 1)));
+                    methodBody.append(createInitKeyMapsMapAssignment(getMapFirstParameter.get(j),
+                            getMapFirstParameter.get(j - 1), getMapSecondParameter.get(j - 1),
+                            getMapThirdParameter.get(j - 1)));
                     methodBody.appendln();
                 }
-                methodBody.append(createInitKeyMapsPutStatement(getMapFirstParameter
-                        .get(getMapFirstParameter.size() - 1), getMapSecondParameter
-                        .get(getMapSecondParameter.size() - 1), getMapThirdParameter
-                        .get(getMapThirdParameter.size() - 1)));
+                methodBody.append(createInitKeyMapsPutStatement(
+                        getMapFirstParameter.get(getMapFirstParameter.size() - 1),
+                        getMapSecondParameter.get(getMapSecondParameter.size() - 1),
+                        getMapThirdParameter.get(getMapThirdParameter.size() - 1)));
                 methodBody.appendln();
                 continue;
             }
-            methodBody.append(buildAddKeyFragment(fKeyVariableNames[i], fKeyClassNames[i], fKeyClassParameterNames
-                    .get(i)));
+            methodBody.append(buildAddKeyFragment(fKeyVariableNames[i], fKeyClassNames[i],
+                    fKeyClassParameterNames.get(i)));
         }
 
         methodBody.appendCloseBracket();
@@ -968,9 +969,12 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             methodBody.append(")");
             methodBody.appendOpenBracket();
             if (useNullValueRow) {
-                generateMethodExitingLoggingStmt(methodBody, keyClassName, methodName, tableRowBuilder
-                        .getQualifiedClassName(getIpsSrcFile())
-                        + '.' + tableRowBuilder.getFieldNameForNullRow());
+                generateMethodExitingLoggingStmt(
+                        methodBody,
+                        keyClassName,
+                        methodName,
+                        tableRowBuilder.getQualifiedClassName(getIpsSrcFile()) + '.'
+                                + tableRowBuilder.getFieldNameForNullRow());
                 methodBody.append("return ");
                 methodBody.appendClassName(tableRowBuilder.getQualifiedClassName(getIpsSrcFile()));
                 methodBody.append('.');
@@ -1010,18 +1014,33 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 String[] rangeParameterNames = new String[parameterNames.length - keyClassParameterNames.length];
                 System.arraycopy(parameterNames, keyClassParameterNames.length, rangeParameterNames, 0,
                         rangeParameterNames.length);
-                generateReturnFindMethodReturnStmt(methodBody, returnTypeName, returnVariableName, keyClassName,
-                        methodName, createFindMethodGetValueFrag(false, mapName, keyClassName, returnTypeName,
-                                returnVariableName, keyClassParameterNames, rangeParameterNames), useNullValueRow);
+                generateReturnFindMethodReturnStmt(
+                        methodBody,
+                        returnTypeName,
+                        returnVariableName,
+                        keyClassName,
+                        methodName,
+                        createFindMethodGetValueFrag(false, mapName, keyClassName, returnTypeName, returnVariableName,
+                                keyClassParameterNames, rangeParameterNames), useNullValueRow);
             } else {
-                generateReturnFindMethodReturnStmt(methodBody, returnTypeName, returnVariableName, keyClassName,
-                        methodName, createFindMethodGetMapEntryFrag(mapName, keyClassName, returnTypeName,
-                                returnVariableName, keyClassParameterNames), useNullValueRow);
+                generateReturnFindMethodReturnStmt(
+                        methodBody,
+                        returnTypeName,
+                        returnVariableName,
+                        keyClassName,
+                        methodName,
+                        createFindMethodGetMapEntryFrag(mapName, keyClassName, returnTypeName, returnVariableName,
+                                keyClassParameterNames), useNullValueRow);
             }
         } else {
-            generateReturnFindMethodReturnStmt(methodBody, returnTypeName, returnVariableName, keyClassName,
-                    methodName, createFindMethodGetValueFrag(true, treeName, keyClassName, returnTypeName,
-                            returnVariableName, keyClassParameterNames, parameterNames), useNullValueRow);
+            generateReturnFindMethodReturnStmt(
+                    methodBody,
+                    returnTypeName,
+                    returnVariableName,
+                    keyClassName,
+                    methodName,
+                    createFindMethodGetValueFrag(true, treeName, keyClassName, returnTypeName, returnVariableName,
+                            keyClassParameterNames, parameterNames), useNullValueRow);
         }
         methodBody.appendln(';');
         String javaDoc = getLocalizedText(getIpsObject(), useNullValueRow ? FIND_RETURN_NULL_ROW_JAVADOC : FIND_JAVADOC);

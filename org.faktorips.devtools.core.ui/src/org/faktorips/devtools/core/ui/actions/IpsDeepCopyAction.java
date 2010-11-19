@@ -122,8 +122,8 @@ public class IpsDeepCopyAction extends IpsAction {
                 }
 
                 if (pe == null) {
-                    pe = IpsPlugin.getDefault().getWorkbench().getViewRegistry().find(
-                            ProductStructureExplorer.EXTENSION_ID).createView();
+                    pe = IpsPlugin.getDefault().getWorkbench().getViewRegistry()
+                            .find(ProductStructureExplorer.EXTENSION_ID).createView();
                 }
 
                 if (pe == null) {

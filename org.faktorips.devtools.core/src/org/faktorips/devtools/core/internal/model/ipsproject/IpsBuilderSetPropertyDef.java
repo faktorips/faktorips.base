@@ -204,11 +204,10 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
 
             String extensionPointId = element.getAttribute("extensionPointId"); //$NON-NLS-1$
             if (StringUtils.isEmpty(extensionPointId)) {
-                logger
-                        .log(new IpsStatus(
-                                "If the type attribute of the builder set property " + element.getName() + " of the builder set " + //$NON-NLS-1$ //$NON-NLS-2$
-                                        builderSetId
-                                        + " has the value \"extensionPoint\" then the \"extensionPointId\" attribute has to have a value.")); //$NON-NLS-1$
+                logger.log(new IpsStatus(
+                        "If the type attribute of the builder set property " + element.getName() + " of the builder set " + //$NON-NLS-1$ //$NON-NLS-2$
+                                builderSetId
+                                + " has the value \"extensionPoint\" then the \"extensionPointId\" attribute has to have a value.")); //$NON-NLS-1$
                 return false;
             }
             properties.put("extensionPointId", extensionPointId); //$NON-NLS-1$
@@ -246,25 +245,22 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
 
         String name = element.getAttribute("name"); //$NON-NLS-1$
         if (!classValueSpecified && StringUtils.isEmpty(name)) {
-            logger
-                    .log(new IpsStatus(
-                            "The required attribute \"name\" of the builder set property " + element.getName() + " of the builder set " + builderSetId + " is missing.")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            logger.log(new IpsStatus(
+                    "The required attribute \"name\" of the builder set property " + element.getName() + " of the builder set " + builderSetId + " is missing.")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return false;
         }
         properties.put("name", name); //$NON-NLS-1$
         String label = element.getAttribute("label"); //$NON-NLS-1$
         if (!classValueSpecified && StringUtils.isEmpty(label)) {
-            logger
-                    .log(new IpsStatus(
-                            "The required attribute \"label\" of the builder set property " + element.getName() + " of the builder set " + builderSetId + " is missing.")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            logger.log(new IpsStatus(
+                    "The required attribute \"label\" of the builder set property " + element.getName() + " of the builder set " + builderSetId + " is missing.")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return false;
         }
         properties.put("label", label); //$NON-NLS-1$
         String type = element.getAttribute("type"); //$NON-NLS-1$
         if (!classValueSpecified && StringUtils.isEmpty(type)) {
-            logger
-                    .log(new IpsStatus(
-                            "The required attribute \"type\" of the builder set property " + element.getName() + " of the builder set " + builderSetId + " is missing.")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            logger.log(new IpsStatus(
+                    "The required attribute \"type\" of the builder set property " + element.getName() + " of the builder set " + builderSetId + " is missing.")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return false;
         }
         properties.put("type", type); //$NON-NLS-1$

@@ -389,8 +389,8 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
                 continue;
             }
             if (!successfullyCheckedForStart.contains(element)) {
-                String text = NLS.bind(Messages.BusinessFunction_elementNotConnectedWithStart, element
-                        .getDisplayString());
+                String text = NLS.bind(Messages.BusinessFunction_elementNotConnectedWithStart,
+                        element.getDisplayString());
                 list.add(new Message(MSGCODE_NOT_CONNECTED_WITH_START, text, Message.ERROR, element));
             }
         }

@@ -207,7 +207,7 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
         assertEquals(compareItemGen1.getContentStringWithoutWhiteSpace().hashCode(), compareItemGen1.hashCode());
         assertEquals(compareItemConfigElement1.getContentStringWithoutWhiteSpace().hashCode(),
                 compareItemConfigElement1.hashCode());
-        assertEquals(compareItemRelation1.getContentStringWithoutWhiteSpace().hashCode(), compareItemRelation1
-                .hashCode());
+        assertEquals(compareItemRelation1.getContentStringWithoutWhiteSpace().hashCode(),
+                compareItemRelation1.hashCode());
     }
 }

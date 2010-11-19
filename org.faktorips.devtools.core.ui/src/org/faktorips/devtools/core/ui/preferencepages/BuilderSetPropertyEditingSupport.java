@@ -149,8 +149,8 @@ public class BuilderSetPropertyEditingSupport extends EditingSupport {
                 return;
             }
             IIpsBuilderSetPropertyDef propertyDef = (IIpsBuilderSetPropertyDef)element;
-            builderSetConfigModel.setPropertyValue(propertyDef.getName(), value.toString(), propertyDef
-                    .getDescription());
+            builderSetConfigModel.setPropertyValue(propertyDef.getName(), value.toString(),
+                    propertyDef.getDescription());
             viewer.update(element, null);
         }
     }

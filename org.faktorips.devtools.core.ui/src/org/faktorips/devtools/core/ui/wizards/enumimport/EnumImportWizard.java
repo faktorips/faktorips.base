@@ -118,8 +118,8 @@ public class EnumImportWizard extends IpsObjectImportWizard {
 
                 addPage(tablePreviewPage);
             } else {
-                tablePreviewPage.reinit(startingPage.getFilename(), startingPage.getFormat(), enumType, startingPage
-                        .isImportIgnoreColumnHeaderRow());
+                tablePreviewPage.reinit(startingPage.getFilename(), startingPage.getFormat(), enumType,
+                        startingPage.isImportIgnoreColumnHeaderRow());
                 tablePreviewPage.validatePage();
             }
             tablePreviewPage.validatePage();
@@ -176,9 +176,9 @@ public class EnumImportWizard extends IpsObjectImportWizard {
                 IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
                     @Override
                     public void run(IProgressMonitor monitor) throws CoreException {
-                        format.executeEnumImport(enumTypeOrContent, new Path(startingPage.getFilename()), startingPage
-                                .getNullRepresentation(), startingPage.isImportIgnoreColumnHeaderRow(), messageList,
-                                startingPage.isImportIntoExisting());
+                        format.executeEnumImport(enumTypeOrContent, new Path(startingPage.getFilename()),
+                                startingPage.getNullRepresentation(), startingPage.isImportIgnoreColumnHeaderRow(),
+                                messageList, startingPage.isImportIntoExisting());
                     }
                 };
                 IIpsModel model = IpsPlugin.getDefault().getIpsModel();

@@ -134,8 +134,8 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         entry.initFromXml(element, project);
         assertEquals("toc.xml", entry.getBasePackageRelativeTocPath());
         assertEquals(project.getFolder("ipssrc").getFolder("modelclasses"), entry.getSourceFolder());
-        assertEquals(project.getFolder("javasrc").getFolder("modelclasses"), entry
-                .getSpecificOutputFolderForMergableJavaFiles());
+        assertEquals(project.getFolder("javasrc").getFolder("modelclasses"),
+                entry.getSpecificOutputFolderForMergableJavaFiles());
         assertEquals("org.faktorips.sample.model", entry.getSpecificBasePackageNameForMergableJavaClasses());
 
         // null, default values for new entries

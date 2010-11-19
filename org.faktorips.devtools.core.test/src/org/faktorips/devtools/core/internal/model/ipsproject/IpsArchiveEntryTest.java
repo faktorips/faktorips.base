@@ -82,9 +82,7 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
 
         Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
-        entry
-                .findIpsSrcFilesStartingWithInternal(IpsObjectType.POLICY_CMPT_TYPE, "motor", true, result,
-                        visitedEntries);
+        entry.findIpsSrcFilesStartingWithInternal(IpsObjectType.POLICY_CMPT_TYPE, "motor", true, result, visitedEntries);
         assertEquals(2, result.size());
         assertTrue(result.contains(motorPolFile));
         assertTrue(result.contains(motorColFile));

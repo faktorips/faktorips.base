@@ -469,8 +469,8 @@ public class UniqueKeyValidator {
      * Creates a unique key validation error and adds it to the give message list.
      */
     void createValidationErrorUniqueKeyViolation(MessageList list, IUniqueKey uniqueKey, Row row) {
-        String text = NLS.bind(Messages.UniqueKeyValidator_msgUniqueKeyViolation, row.getRowNumber(), uniqueKey
-                .getName());
+        String text = NLS.bind(Messages.UniqueKeyValidator_msgUniqueKeyViolation, row.getRowNumber(),
+                uniqueKey.getName());
         List<ObjectProperty> objectProperties = new ArrayList<ObjectProperty>();
         createObjectProperties(uniqueKey, row, objectProperties);
         list.add(new Message(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION, text, Message.ERROR, objectProperties

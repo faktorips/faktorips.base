@@ -156,8 +156,7 @@ public class TableExportPage extends IpsObjectExportPage {
                 objects[1] = structure;
                 objects[2] = new Short(MAX_EXCEL_COLUMNS);
                 String text = NLS
-                        .bind(
-                                org.faktorips.devtools.core.model.tablecontents.Messages.TableExportOperation_errStructureTooMuchColumns,
+                        .bind(org.faktorips.devtools.core.model.tablecontents.Messages.TableExportOperation_errStructureTooMuchColumns,
                                 objects);
                 setErrorMessage(text);
             }

@@ -142,7 +142,8 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
                         if (page.canCreateIpsSrcFile()) {
                             IIpsSrcFile srcFile = page.createIpsSrcFile(new SubProgressMonitor(monitor, 2));
                             if (srcFile == null) {
-                                IpsPlugin.logAndShowErrorDialog(new IpsStatus(Messages.NewIpsObjectWizard_error_unableToCreateIpsSrcFile));
+                                IpsPlugin.logAndShowErrorDialog(new IpsStatus(
+                                        Messages.NewIpsObjectWizard_error_unableToCreateIpsSrcFile));
                             } else {
                                 ArrayList<IIpsObject> modifiedIpsObjects = new ArrayList<IIpsObject>(0);
                                 page.finishIpsObjects(srcFile.getIpsObject(), modifiedIpsObjects);

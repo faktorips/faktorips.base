@@ -178,8 +178,8 @@ public class ExprCompilerTest extends CompilerAbstractTest {
 
     public void testUndefinedOperator() throws Exception {
         CompilationResult result = execAndTestFail("+ false", ExprCompiler.UNDEFINED_OPERATOR);
-        assertEquals("The operator + is undefined for the type(s) boolean.", result.getMessages().getMessageByCode(
-                ExprCompiler.UNDEFINED_OPERATOR).getText());
+        assertEquals("The operator + is undefined for the type(s) boolean.",
+                result.getMessages().getMessageByCode(ExprCompiler.UNDEFINED_OPERATOR).getText());
     }
 
     public void testUnaryOperationCasting() throws Exception {

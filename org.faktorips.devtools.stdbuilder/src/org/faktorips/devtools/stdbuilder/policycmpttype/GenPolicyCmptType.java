@@ -238,8 +238,8 @@ public class GenPolicyCmptType extends GenType {
     }
 
     public boolean isGenerateChangeListenerSupport() {
-        return getBuilderSet().getConfig().getPropertyValueAsBoolean(
-                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER).booleanValue();
+        return getBuilderSet().getConfig()
+                .getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CHANGELISTENER).booleanValue();
     }
 
     public GenProductCmptTypeAttribute getGenerator(IProductCmptTypeAttribute a) throws CoreException {

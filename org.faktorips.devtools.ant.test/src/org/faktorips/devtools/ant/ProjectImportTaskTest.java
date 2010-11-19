@@ -33,11 +33,9 @@ public class ProjectImportTaskTest extends TestCase {
 
         try {
             projectimporter.execute();
-        }
-        catch (BuildException e) {
+        } catch (BuildException e) {
             // is expected
-        }
-        catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             fail();
         }
 
@@ -51,8 +49,7 @@ public class ProjectImportTaskTest extends TestCase {
         try {
             projectimporter.execute();
             fail();
-        }
-        catch (BuildException e) {
+        } catch (BuildException e) {
             // expected
         }
     }
@@ -64,7 +61,7 @@ public class ProjectImportTaskTest extends TestCase {
 
         File d = new File(this.getTempDirPath());
         File f = new File(this.getTempDirPath() + "/file.txt");
-        
+
         d.deleteOnExit();
         f.deleteOnExit();
 
@@ -73,11 +70,9 @@ public class ProjectImportTaskTest extends TestCase {
             f.createNewFile();
             projectimporter.execute();
             fail();
-        }
-        catch (BuildException e) {
+        } catch (BuildException e) {
             // expected
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             // expected
         }
     }
@@ -95,8 +90,7 @@ public class ProjectImportTaskTest extends TestCase {
         try {
             projectimporter.execute();
             fail();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // expected
         }
 

@@ -369,8 +369,8 @@ public class TestCaseDetailArea {
             ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(Datatype.STRING);
         }
 
-        Label label = toolkit.createFormLabel(attributeComposite, StringUtils.capitalize(attributeValue
-                .getTestAttribute()));
+        Label label = toolkit.createFormLabel(attributeComposite,
+                StringUtils.capitalize(attributeValue.getTestAttribute()));
         addSectionSelectionListeners(null, label, testPolicyCmptForSelection);
 
         try {
@@ -482,8 +482,8 @@ public class TestCaseDetailArea {
             addSectionSelectionListeners(null, label, currLink);
         } else {
             // target not found in current test case
-            Label label = toolkit.createLabel(hyperlinkArea, TestCaseHierarchyPath
-                    .unqualifiedName(currLink.getTarget()));
+            Label label = toolkit.createLabel(hyperlinkArea,
+                    TestCaseHierarchyPath.unqualifiedName(currLink.getTarget()));
             addSectionSelectionListeners(null, label, currLink);
             label = toolkit.createLabel(hyperlinkArea,
                     " (" + testCaseSection.getLabelProvider().getAssoziationTargetLabel(currLink.getTarget()) + " ) "); //$NON-NLS-1$ //$NON-NLS-2$
@@ -606,8 +606,8 @@ public class TestCaseDetailArea {
         section.setClient(composite);
 
         Label label = toolkit.createFormLabel(composite, Messages.TestCaseDetailArea_Label_Violation);
-        final EditField editField = new EnumValueField(toolkit.createCombo(composite, TestRuleViolationType
-                .getEnumType()), TestRuleViolationType.getEnumType());
+        final EditField editField = new EnumValueField(toolkit.createCombo(composite,
+                TestRuleViolationType.getEnumType()), TestRuleViolationType.getEnumType());
         addSectionSelectionListeners(editField, label, rule);
 
         editField.getControl().addFocusListener(new FocusAdapter() {

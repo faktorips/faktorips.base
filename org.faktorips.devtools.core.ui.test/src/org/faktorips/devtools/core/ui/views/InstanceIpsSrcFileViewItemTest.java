@@ -41,8 +41,8 @@ public class InstanceIpsSrcFileViewItemTest extends AbstractIpsPluginTest {
         IProductCmpt cmpt2 = newProductCmpt(ipsProject, "home2.ProductA");
         cmpt2.setProductCmptType(subtype.getQualifiedName());
 
-        InstanceIpsSrcFileViewItem[] items = InstanceIpsSrcFileViewItem.createItems(new IIpsSrcFile[] {
-                cmpt0.getIpsSrcFile(), cmpt1.getIpsSrcFile(), cmpt2.getIpsSrcFile() }, type);
+        InstanceIpsSrcFileViewItem[] items = InstanceIpsSrcFileViewItem.createItems(
+                new IIpsSrcFile[] { cmpt0.getIpsSrcFile(), cmpt1.getIpsSrcFile(), cmpt2.getIpsSrcFile() }, type);
         assertEquals(3, items.length);
         assertEquals(cmpt0.getIpsSrcFile(), items[0].getIpsSrcFile());
         assertTrue(items[0].isDuplicateName());

@@ -92,8 +92,8 @@ public class TestCaseDeltaWrapperObject {
      * returned in the result list.
      */
     public Object[] getChildren(TestCaseDeltaWrapperObject parent) {
-        return createWrapperObjects(testCaseContentProvider, deltaType, parent, testCaseContentProvider
-                .getChildren(baseObject));
+        return createWrapperObjects(testCaseContentProvider, deltaType, parent,
+                testCaseContentProvider.getChildren(baseObject));
     }
 
     /**

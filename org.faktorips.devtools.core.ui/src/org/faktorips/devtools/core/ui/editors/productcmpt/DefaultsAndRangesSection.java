@@ -135,8 +135,10 @@ public class DefaultsAndRangesSection extends IpsSection {
 
     private IConfigElement[] getSortedConfigElements() {
         IConfigElement[] elements = generation.getConfigElements();
-        Arrays.sort(elements, new PropertyValueComparator(generation.getProductCmpt().getProductCmptType(), generation
-                .getIpsProject()));
+        Arrays.sort(
+                elements,
+                new PropertyValueComparator(generation.getProductCmpt().getProductCmptType(), generation
+                        .getIpsProject()));
         return elements;
     }
 

@@ -218,8 +218,8 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         Element docElement = getTestDocument().getDocumentElement();
 
         // test case 1
-        IIpsObjectPath path = IpsObjectPath.createFromXml(ipsProject, XmlUtil.getElement(docElement,
-                IpsObjectPath.XML_TAG_NAME, 0));
+        IIpsObjectPath path = IpsObjectPath.createFromXml(ipsProject,
+                XmlUtil.getElement(docElement, IpsObjectPath.XML_TAG_NAME, 0));
 
         assertTrue(path.isOutputDefinedPerSrcFolder());
         assertEquals("", path.getBasePackageNameForMergableJavaClasses());
@@ -267,8 +267,8 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         IIpsSrcFolderEntry entry1 = new IpsSrcFolderEntry(path, project.getFolder("ipssrc").getFolder("products"));
         entry1.setSpecificOutputFolderForMergableJavaFiles(project.getFolder("javasrc").getFolder("products"));
         entry1.setSpecificBasePackageNameForMergableJavaClasses("org.faktorips.sample.products");
-        entry1.setSpecificOutputFolderForDerivedJavaFiles(project.getFolder("javasrc").getFolder("products").getFolder(
-                "extensions"));
+        entry1.setSpecificOutputFolderForDerivedJavaFiles(project.getFolder("javasrc").getFolder("products")
+                .getFolder("extensions"));
         entry1.setSpecificBasePackageNameForDerivedJavaClasses("org.faktorips.sample.products.extensions");
         path.setEntries(new IIpsObjectPathEntry[] { entry0, entry1 });
 

@@ -481,8 +481,8 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
 
                 // store current product cmpt and all found candidates
                 rootParameterProductCmpt.put(testPolicyCmpt, productCmpt.getIpsSrcFile());
-                rootParameterProductCmptCandidates.put(testPolicyCmpt, allowedProductCmptList
-                        .toArray(new IIpsSrcFile[allowedProductCmptList.size()]));
+                rootParameterProductCmptCandidates.put(testPolicyCmpt,
+                        allowedProductCmptList.toArray(new IIpsSrcFile[allowedProductCmptList.size()]));
             }
         }
         delegateCellEditor.setCellEditors(cellEditors.toArray(new IpsCellEditor[cellEditors.size()]));

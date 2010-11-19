@@ -475,8 +475,8 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
         treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         final IpsFileTransferViewerDropAdapter dropListener = new LinkDropListener(treeViewer);
-        treeViewer.addDropSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance(),
-                TextTransfer.getInstance() }, dropListener);
+        treeViewer.addDropSupport(DND.DROP_LINK,
+                new Transfer[] { FileTransfer.getInstance(), TextTransfer.getInstance() }, dropListener);
         // XXX Dragging is disabled because moving components within this view may be confusing
         // treeViewer.addDragSupport(DND.DROP_LINK, new Transfer[] { FileTransfer.getInstance() },
         // new IpsElementDragListener(treeViewer));
@@ -638,8 +638,8 @@ public class ProductStructureExplorer extends ViewPart implements ContentsChange
             if (generationDate != null) {
                 validFrom = generationDate.getValidFrom();
             }
-            IProductCmptTreeStructure structure = productComponent.getStructure(validFrom, productComponent
-                    .getIpsProject());
+            IProductCmptTreeStructure structure = productComponent.getStructure(validFrom,
+                    productComponent.getIpsProject());
             updateButtons();
             labelProvider.setAdjustmentDate(generationDate);
             showTreeInput(structure);

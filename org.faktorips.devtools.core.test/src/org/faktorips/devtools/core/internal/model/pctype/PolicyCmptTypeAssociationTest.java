@@ -224,7 +224,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         // mismatch: master to detail composition
         relationAtoB.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         relationAtoB.setInverseAssociation("roleA");
-        relationBtoA.setInverseAssociation("somethingElse"); // 
+        relationBtoA.setInverseAssociation("somethingElse"); //
         ml = relationAtoB.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_MISMATCH));
 
@@ -350,63 +350,63 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
     // IPolicyCmptType motorContract = content.getMotorContract();
     // IPolicyCmptType collisionCoverage = content.getCollisionCoverage();
     // IPolicyCmptType vehicle = content.getVehicle();
-    //        
+    //
     // // Setup test objects (clear existing relation)
     // clearAllRelations(contract);
     // clearAllRelations(coverage);
     // clearAllRelations(motorContract);
     // clearAllRelations(collisionCoverage);
     // clearAllRelations(vehicle);
-    //        
+    //
     // // New relation which will be used to get the container relation candidates
     // IRelation motorContract2CollisionCoverage = motorContract.newRelation();
     // motorContract2CollisionCoverage.setTarget(collisionCoverage.getQualifiedName());
     // motorContract2CollisionCoverage.setTargetRoleSingular("CollisionCoverage");
-    //        
-    //        
+    //
+    //
     // // Non container relation on supertype
     // IRelation contract2Coverage = contract.newRelation();
     // contract2Coverage.setTarget(coverage.getQualifiedName());
     // contract2Coverage.setReadOnlyContainer(false);
     // contract2Coverage.setTargetRoleSingular("Coverage");
-    //        
+    //
     // // Container relation on supertype with target in supertype hierarchy of rel. target
     // IRelation contRelContract2Coverage = contract.newRelation();
     // contRelContract2Coverage.setTarget(coverage.getQualifiedName());
     // contRelContract2Coverage.setTargetRoleSingular("CoverageContainer");
     // contRelContract2Coverage.setReadOnlyContainer(true);
-    //        
+    //
     // // Container relation on supertype with other target as rel. target
     // IRelation contRelContract2vehicle = contract.newRelation();
     // contRelContract2vehicle.setTarget(vehicle.getQualifiedName());
     // contRelContract2vehicle.setTargetRoleSingular("VehicleContainer");
     // contRelContract2vehicle.setReadOnlyContainer(true);
-    //        
+    //
     // // ==> check if the container relation of the super type and the container rel to the target
     // // will be returned as container candidate for the new relation
     // IRelation[] containerRelationCandidates =
     // motorContract2CollisionCoverage.findContainerRelationCandidates();
     // assertEquals(1, containerRelationCandidates.length);
     // assertEquals(contRelContract2Coverage, containerRelationCandidates[0]);
-    //        
+    //
     // // Container relation on supertype with target equal rel. target
     // IRelation contRelContract2CollisionCoverage = contract.newRelation();
     // contRelContract2CollisionCoverage.setTarget(collisionCoverage.getQualifiedName());
     // contRelContract2CollisionCoverage.setTargetRoleSingular("CollisionCoverageContainer");
     // contRelContract2CollisionCoverage.setReadOnlyContainer(true);
-    //        
+    //
     // // Container relation to target on policy cmpt the new relation belongs to
     // IRelation contRelMotorContract2CollisionCoverage = motorContract.newRelation();
     // contRelMotorContract2CollisionCoverage.setTarget(collisionCoverage.getQualifiedName());
     // contRelMotorContract2CollisionCoverage.setTargetRoleSingular("CollisionCoverageContainer");
     // contRelMotorContract2CollisionCoverage.setReadOnlyContainer(true);
-    //        
+    //
     // // Container relation not to target on policy cmpt the new relation belongs to
     // IRelation contRelMotorContract2Vehicle = motorContract.newRelation();
     // contRelMotorContract2Vehicle.setTarget(vehicle.getQualifiedName());
     // contRelMotorContract2Vehicle.setTargetRoleSingular("VehicleContainer");
     // contRelMotorContract2Vehicle.setReadOnlyContainer(true);
-    //        
+    //
     // // ==> check if the container relation of the super type and the container rel to the target
     // // will be returned as container candidate for the new relation
     // containerRelationCandidates =
@@ -678,10 +678,10 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         relationBtoC.setInverseAssociation("roleB");
 
         // test internal find method
-        assertEquals(relationBtoA, ((PolicyCmptTypeAssociation)relationAtoB)
-                .findTargetAssociationWithCorrespondingInverse(ipsProject));
-        assertEquals(relationBtoC, ((PolicyCmptTypeAssociation)relationCtoB)
-                .findTargetAssociationWithCorrespondingInverse(ipsProject));
+        assertEquals(relationBtoA,
+                ((PolicyCmptTypeAssociation)relationAtoB).findTargetAssociationWithCorrespondingInverse(ipsProject));
+        assertEquals(relationBtoC,
+                ((PolicyCmptTypeAssociation)relationCtoB).findTargetAssociationWithCorrespondingInverse(ipsProject));
     }
 
     public void testInverseOfSubsettedDerivedUnionMustExistsIfInverseOfDerivedUnionExists() throws CoreException {
@@ -760,8 +760,8 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
 
     private void checkNewInverseAssociation() throws CoreException {
         IPolicyCmptTypeAssociation targetAssociation = association.newInverseAssociation();
-        assertEquals(association.getAssociationType().getCorrespondingAssociationType(), targetAssociation
-                .getAssociationType());
+        assertEquals(association.getAssociationType().getCorrespondingAssociationType(),
+                targetAssociation.getAssociationType());
         assertEquals(association.getTarget(), targetAssociation.getPolicyCmptType().getQualifiedName());
     }
 
@@ -784,10 +784,10 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         MessageList ml = pcType.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
         // assume that the duplicate property is the only error
-        assertNotNull(IType.MSGCODE_DUPLICATE_PROPERTY_NAME, ml.getMessagesFor(association2).getFirstMessage(
-                Message.ERROR));
-        assertNotNull(IType.MSGCODE_DUPLICATE_PROPERTY_NAME, ml.getMessagesFor(association2).getFirstMessage(
-                Message.ERROR));
+        assertNotNull(IType.MSGCODE_DUPLICATE_PROPERTY_NAME,
+                ml.getMessagesFor(association2).getFirstMessage(Message.ERROR));
+        assertNotNull(IType.MSGCODE_DUPLICATE_PROPERTY_NAME,
+                ml.getMessagesFor(association2).getFirstMessage(Message.ERROR));
 
         association2.setTargetRoleSingular("b");
         association2.setTargetRolePlural("");

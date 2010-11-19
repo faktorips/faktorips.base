@@ -232,8 +232,8 @@ public class ProductCmptPage extends IpsObjectPage {
             return;
         }
         MessageList list = new MessageList();
-        ProductCmptValidations.validateProductCmptType(null, typeRefControl.getText(), list, typeRefControl
-                .getIpsProject());
+        ProductCmptValidations.validateProductCmptType(null, typeRefControl.getText(), list,
+                typeRefControl.getIpsProject());
         if (!list.isEmpty()) {
             setErrorMessage(list.getMessageWithHighestSeverity());
             return;

@@ -127,10 +127,10 @@ public class Migration_2_1_0_rfinal extends AbstractIpsProjectMigrationOperation
                                                         String newMethodName = StringUtils.uncapitalize(methodName
                                                                 .substring("execRule".length(), methodName.length())); //$NON-NLS-1$
                                                         for (MethodDeclaration methodDecl2 : typeDecl.getMethods()) {
-                                                            if (methodDecl2.getName().getFullyQualifiedName().equals(
-                                                                    newMethodName)) {
-                                                                ASTNode copiedBody = ASTNode.copySubtree(methodDecl2
-                                                                        .getAST(), methodDecl.getBody());
+                                                            if (methodDecl2.getName().getFullyQualifiedName()
+                                                                    .equals(newMethodName)) {
+                                                                ASTNode copiedBody = ASTNode.copySubtree(
+                                                                        methodDecl2.getAST(), methodDecl.getBody());
                                                                 methodDecl2.setBody((Block)copiedBody);
                                                                 methodDecl.delete();
                                                                 modified = true;

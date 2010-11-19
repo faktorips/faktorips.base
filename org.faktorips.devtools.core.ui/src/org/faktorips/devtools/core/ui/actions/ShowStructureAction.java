@@ -54,8 +54,8 @@ public class ShowStructureAction extends IpsAction {
             return;
         }
         try {
-            IViewPart pse = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
-                    ProductStructureExplorer.EXTENSION_ID);
+            IViewPart pse = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                    .showView(ProductStructureExplorer.EXTENSION_ID);
             ((ProductStructureExplorer)pse).showStructure(file);
         } catch (PartInitException e) {
             IpsPlugin.logAndShowErrorDialog(e);

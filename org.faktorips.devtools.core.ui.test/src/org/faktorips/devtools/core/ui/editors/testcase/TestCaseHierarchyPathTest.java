@@ -70,13 +70,13 @@ public class TestCaseHierarchyPathTest extends AbstractIpsPluginTest {
 
     public void testPathForTestCaseType() {
         TestCaseHierarchyPath pathRelation = new TestCaseHierarchyPath(testContent.getRelation2(), false);
-        assertEquals("testPolicyCmptType1//testPolicyCmptTypeRelation1//testPolicyCmptTypeRelation2", pathRelation
-                .getHierarchyPath());
+        assertEquals("testPolicyCmptType1//testPolicyCmptTypeRelation1//testPolicyCmptTypeRelation2",
+                pathRelation.getHierarchyPath());
         assertTrue(pathRelation.count() == 3);
 
         TestCaseHierarchyPath path = new TestCaseHierarchyPath(testContent.getTestPolicyCmpt3(), false);
-        assertEquals("testPolicyCmptType1//testPolicyCmptTypeRelation1//testPolicyCmptTypeRelation2", path
-                .getHierarchyPath());
+        assertEquals("testPolicyCmptType1//testPolicyCmptTypeRelation1//testPolicyCmptTypeRelation2",
+                path.getHierarchyPath());
         assertTrue(path.count() == 3);
         assertEquals("testPolicyCmptType1", path.next());
         assertEquals("testPolicyCmptTypeRelation1", path.next());

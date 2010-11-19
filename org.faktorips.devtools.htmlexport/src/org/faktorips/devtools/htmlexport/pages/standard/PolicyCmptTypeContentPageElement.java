@@ -58,9 +58,7 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
 
     private void addValidationRuleTable() {
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-        wrapper
-                .addPageElements(new TextPageElement(Messages.PolicyCmptTypeContentPageElement_rules,
-                        TextType.HEADING_2));
+        wrapper.addPageElements(new TextPageElement(Messages.PolicyCmptTypeContentPageElement_rules, TextType.HEADING_2));
 
         wrapper.addPageElements(getTableOrAlternativeText(new ValidationRuleTablePageElement(getDocumentedIpsObject()),
                 Messages.PolicyCmptTypeContentPageElement_noValidationrules));

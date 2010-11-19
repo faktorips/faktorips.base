@@ -302,14 +302,14 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         }
         if (getIpsObjectPath().isOutputDefinedPerSrcFolder() && outputFolderMergable != null
                 && !outputFolderMergable.exists()) {
-            String text = NLS.bind(Messages.IpsSrcFolderEntry_outputfolderdoesntexist, outputFolderMergable
-                    .getFullPath());
+            String text = NLS.bind(Messages.IpsSrcFolderEntry_outputfolderdoesntexist,
+                    outputFolderMergable.getFullPath());
             result.add(new Message(MSGCODE_OUTPUT_FOLDER_MERGABLE_DOESNT_EXIST, text, Message.ERROR));
         }
         if (getIpsObjectPath().isOutputDefinedPerSrcFolder() && outputFolderDerived != null
                 && !outputFolderDerived.exists()) {
-            String text = NLS.bind(Messages.IpsSrcFolderEntry_outputfolderdoesntexist, outputFolderDerived
-                    .getFullPath());
+            String text = NLS.bind(Messages.IpsSrcFolderEntry_outputfolderdoesntexist,
+                    outputFolderDerived.getFullPath());
             result.add(new Message(MSGCODE_OUTPUT_FOLDER_DERIVED_DOESNT_EXIST, text, Message.ERROR));
         }
 

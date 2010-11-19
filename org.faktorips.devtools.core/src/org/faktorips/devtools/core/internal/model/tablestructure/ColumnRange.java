@@ -103,9 +103,7 @@ public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
             if (fromColumnDatatype.equals(Datatype.BOOLEAN.getName())
                     || fromColumnDatatype.equals(Datatype.PRIMITIVE_BOOLEAN.getName())) {
                 String msg = NLS.bind(Messages.ColumnRange_msgDatatypeInvalidForRange, fromColumnDatatype);
-                list
-                        .add(new Message(MSGCODE_INVALID_DATATYPE_FOR_FROM, msg, Message.ERROR, this,
-                                PROPERTY_FROM_COLUMN));
+                list.add(new Message(MSGCODE_INVALID_DATATYPE_FOR_FROM, msg, Message.ERROR, this, PROPERTY_FROM_COLUMN));
             }
         }
 

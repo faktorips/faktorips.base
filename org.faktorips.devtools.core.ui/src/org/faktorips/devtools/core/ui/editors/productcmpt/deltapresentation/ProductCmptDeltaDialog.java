@@ -117,10 +117,11 @@ public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
         } else {
             // set warning to inform that recent generation could not be edit,
             // but with this wizard recent generation could be changed
-            setMessage(Messages.ProductCmptDeltaDialog_message
-                    + "\n" //$NON-NLS-1$
-                    + NLS.bind(Messages.ProductCmptDeltaDialog_messageWarningRecentGenerationCouldBeChanged,
-                            genTextPlural), IMessageProvider.WARNING);
+            setMessage(
+                    Messages.ProductCmptDeltaDialog_message
+                            + "\n" //$NON-NLS-1$
+                            + NLS.bind(Messages.ProductCmptDeltaDialog_messageWarningRecentGenerationCouldBeChanged,
+                                    genTextPlural), IMessageProvider.WARNING);
         }
 
         tree.setContentProvider(new DeltaContentProvider());

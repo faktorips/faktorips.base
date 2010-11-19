@@ -172,8 +172,8 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
 
         IProductCmpt targetObj = findTarget(ipsProject);
         if (!willBeValid(targetObj, associationObj, ipsProject)) {
-            String msg = NLS.bind(Messages.ProductCmptRelation_msgInvalidTarget, target, associationObj
-                    .getTargetRoleSingular());
+            String msg = NLS.bind(Messages.ProductCmptRelation_msgInvalidTarget, target,
+                    associationObj.getTargetRoleSingular());
             list.add(new Message(MSGCODE_INVALID_TARGET, msg, Message.ERROR, this, PROPERTY_TARGET));
         }
     }

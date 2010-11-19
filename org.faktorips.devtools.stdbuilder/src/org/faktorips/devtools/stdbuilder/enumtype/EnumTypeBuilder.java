@@ -90,8 +90,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     /** Returns <code>true</code> if Java 5 enums are available. */
     private boolean isJava5EnumsAvailable() {
         return ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())
-                && getIpsProject().getIpsArtefactBuilderSet().getConfig().getPropertyValueAsBoolean(
-                        USE_JAVA_ENUM_TYPES_CONFIG_PROPERTY);
+                && getIpsProject().getIpsArtefactBuilderSet().getConfig()
+                        .getPropertyValueAsBoolean(USE_JAVA_ENUM_TYPES_CONFIG_PROPERTY);
     }
 
     /** Returns whether to generate an enum. */
@@ -278,8 +278,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     if (javaAtLeast5) {
                         lastEnumValueGenerated = (i == enumValues.size() - 1);
                         createEnumValueAsEnumDefinition(currentEnumAttributeValues,
-                                currentLiteralNameEnumAttributeValue, lastEnumValueGenerated, mainSection
-                                        .getEnumDefinitionBuilder());
+                                currentLiteralNameEnumAttributeValue, lastEnumValueGenerated,
+                                mainSection.getEnumDefinitionBuilder());
                         appendSemicolon = false;
                     } else {
                         createEnumValueAsConstant(currentEnumAttributeValues, currentLiteralNameEnumAttributeValue,
@@ -511,8 +511,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         initExpression.append(')');
 
         DatatypeHelper datatypeHelper = getIpsProject().findDatatypeHelper(enumType.getQualifiedName());
-        constantBuilder.varDeclaration(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL, datatypeHelper
-                .getJavaClassName(), literalEnumAttributeValue.getValue().toUpperCase(), initExpression);
+        constantBuilder.varDeclaration(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL,
+                datatypeHelper.getJavaClassName(), literalEnumAttributeValue.getValue().toUpperCase(), initExpression);
         constantBuilder.appendln(' ');
     }
 

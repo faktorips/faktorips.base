@@ -149,8 +149,8 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
 
             @Override
             public void run(IProgressMonitor monitor) throws CoreException {
-                IFolder outFolder = (IFolder)javaProject.getProject().getWorkspace().getRoot().findMember(
-                        javaProject.getOutputLocation());
+                IFolder outFolder = (IFolder)javaProject.getProject().getWorkspace().getRoot()
+                        .findMember(javaProject.getOutputLocation());
                 IFile file = outFolder.getFile("SomeClass.class");
                 file.delete(true, false, null);
             }

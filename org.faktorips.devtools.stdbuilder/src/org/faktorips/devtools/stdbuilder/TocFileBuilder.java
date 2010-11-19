@@ -456,8 +456,8 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         String formulaTestCaseName = formulaTestBuilder.getQualifiedClassName(productCmpt);
 
         String kindId = productCmpt.findProductCmptKind().getName();
-        TocEntryObject entry = new FormulaTestTocEntry(objectId, productCmpt.getQualifiedName(), kindId, productCmpt
-                .getVersionId(), formulaTestCaseName);
+        TocEntryObject entry = new FormulaTestTocEntry(objectId, productCmpt.getQualifiedName(), kindId,
+                productCmpt.getVersionId(), formulaTestCaseName);
 
         return entry;
     }
@@ -482,8 +482,8 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                 tableContents.getIpsSrcFile());
         String tableStructureName = tableImplClassBuilder.getQualifiedClassName(tableStructure.getIpsSrcFile());
         String xmlResourceName = packageInternal.replace('.', '/') + '/' + tableContents.getName() + ".xml"; //$NON-NLS-1$
-        TocEntryObject entry = new TableContentTocEntry(tableContents.getQualifiedName(), tableContents
-                .getQualifiedName(), xmlResourceName, tableStructureName);
+        TocEntryObject entry = new TableContentTocEntry(tableContents.getQualifiedName(),
+                tableContents.getQualifiedName(), xmlResourceName, tableStructureName);
         return entry;
     }
 

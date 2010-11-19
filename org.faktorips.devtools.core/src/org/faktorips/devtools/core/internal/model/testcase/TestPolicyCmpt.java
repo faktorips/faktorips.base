@@ -402,8 +402,8 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
         IPolicyCmptTypeAssociation link = typeParam.findAssociation(typeParam.getIpsProject());
         if (link == null) {
-            throw new CoreException(new IpsStatus(NLS.bind(Messages.TestPolicyCmpt_Error_LinkNotFound, typeParam
-                    .getAssociation())));
+            throw new CoreException(new IpsStatus(NLS.bind(Messages.TestPolicyCmpt_Error_LinkNotFound,
+                    typeParam.getAssociation())));
         }
 
         ITestPolicyCmptLink newTestPcTypeLink = null;
@@ -627,8 +627,8 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             // check if the policy component type exists
             final IPolicyCmptType policyCmptTypeDefinedInTestType = param.findPolicyCmptType(ipsProject);
             if (policyCmptTypeDefinedInTestType == null) {
-                String text = NLS.bind(Messages.TestPolicyCmpt_ValidationWarning_PolicyCmptNotExists, param
-                        .getPolicyCmptType(), testPolicyCmptType);
+                String text = NLS.bind(Messages.TestPolicyCmpt_ValidationWarning_PolicyCmptNotExists,
+                        param.getPolicyCmptType(), testPolicyCmptType);
                 Message msg = new Message(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS, text,
                         Message.WARNING, this, PROPERTY_POLICYCMPTTYPE);
                 list.add(msg);
@@ -657,10 +657,9 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
                     if (policyCmptTypeDefinedInTestType != null) {
                         if (!policyCmptTypeUsed.isSubtypeOrSameType(policyCmptTypeDefinedInTestType, ipsProject)) {
                             String text = NLS
-                                    .bind(
-                                            Messages.TestPolicyCmpt_TestPolicyCmpt_ValidationErrorPolicyCmptTypeNoSubtypeOrSameTypeParam,
-                                            policyCmptTypeUsed.getQualifiedName(), policyCmptTypeDefinedInTestType
-                                                    .getQualifiedName());
+                                    .bind(Messages.TestPolicyCmpt_TestPolicyCmpt_ValidationErrorPolicyCmptTypeNoSubtypeOrSameTypeParam,
+                                            policyCmptTypeUsed.getQualifiedName(),
+                                            policyCmptTypeDefinedInTestType.getQualifiedName());
                             Message msg = new Message(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_NOT_ASSIGNABLE, text,
                                     Message.ERROR, this, PROPERTY_POLICYCMPTTYPE);
                             list.add(msg);
@@ -829,8 +828,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             IProductCmpt productCmptOfParent = parentTestPolicyCmpt.findProductCmpt(ipsProject);
             if (productCmptOfParent == null) {
                 String text = NLS
-                        .bind(
-                                Messages.TestPolicyCmpt_TestPolicyCmpt_ValidationError_ProductCmpCouldNotValidatedParentNotFound,
+                        .bind(Messages.TestPolicyCmpt_TestPolicyCmpt_ValidationError_ProductCmpCouldNotValidatedParentNotFound,
                                 productCmptCandidateObj.getName());
                 Message msg = new Message(MSGCODE_PARENT_PRODUCT_CMPT_OF_LINK_NOT_SPECIFIED, text, Message.WARNING,
                         this, ITestPolicyCmpt.PROPERTY_PRODUCTCMPT);

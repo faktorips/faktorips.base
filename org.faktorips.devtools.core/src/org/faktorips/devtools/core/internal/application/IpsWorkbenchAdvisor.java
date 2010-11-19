@@ -82,8 +82,8 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
 
         // use this image for the help button in dialogs
         ImageRegistry reg = JFaceResources.getImageRegistry();
-        reg.put(Dialog.DLG_IMG_HELP, IDEInternalWorkbenchImages
-                .getImageDescriptor(IDEInternalWorkbenchImages.IMG_LCL_LINKTO_HELP));
+        reg.put(Dialog.DLG_IMG_HELP,
+                IDEInternalWorkbenchImages.getImageDescriptor(IDEInternalWorkbenchImages.IMG_LCL_LINKTO_HELP));
 
     }
 

@@ -57,18 +57,20 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
     private static final Map<Integer, AttrPropertyAndLabel> columnProperties = new HashMap<Integer, AttrPropertyAndLabel>();
 
     static {
-        columnProperties.put(0, new AttrPropertyAndLabel(IIpsElement.PROPERTY_NAME, Messages.PersistentAttributeSection_labelAttributeName));
+        columnProperties.put(0, new AttrPropertyAndLabel(IIpsElement.PROPERTY_NAME,
+                Messages.PersistentAttributeSection_labelAttributeName));
         columnProperties.put(1, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME,
                 Messages.PersistentAttributeSection_labelColumnName));
-        columnProperties.put(2,
-                new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_UNIQE, Messages.PersistentAttributeSection_labelUnique));
+        columnProperties.put(2, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_UNIQE,
+                Messages.PersistentAttributeSection_labelUnique));
         columnProperties.put(3, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NULLABLE,
                 Messages.PersistentAttributeSection_labelNullable));
-        columnProperties.put(4, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE, Messages.PersistentAttributeSection_labelSize));
+        columnProperties.put(4, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE,
+                Messages.PersistentAttributeSection_labelSize));
         columnProperties.put(5, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_PRECISION,
                 Messages.PersistentAttributeSection_labelPrecision));
-        columnProperties
-                .put(6, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE, Messages.PersistentAttributeSection_labelScale));
+        columnProperties.put(6, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE,
+                Messages.PersistentAttributeSection_labelScale));
         columnProperties.put(7, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_SQL_COLUMN_DEFINITION,
                 Messages.PersistentAttributeSection_labelColumnDefinition));
         columnProperties.put(8, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_CONVERTER,

@@ -56,8 +56,8 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
         generateTypeJavadoc(mainSection.getJavaDocForTypeBuilder());
         generateTypeAnnotations(mainSection.getAnnotationsForTypeBuilder());
         generateConstants(mainSection.getConstantBuilder());
-        generateOtherCode(mainSection.getConstantBuilder(), mainSection.getMemberVarBuilder(), mainSection
-                .getMethodBuilder());
+        generateOtherCode(mainSection.getConstantBuilder(), mainSection.getMemberVarBuilder(),
+                mainSection.getMethodBuilder());
         generateCodeForJavatype(mainSection);
     }
 
@@ -222,8 +222,8 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
                 if (helper == null) {
                     throw new CoreException(new IpsStatus("No datatype helper found for datatype " + datatype)); //$NON-NLS-1$
                 }
-                generateCodeForProductCmptTypeAttribute(a, helper, typeSection.getConstantBuilder(), typeSection
-                        .getMemberVarBuilder(), typeSection.getMethodBuilder());
+                generateCodeForProductCmptTypeAttribute(a, helper, typeSection.getConstantBuilder(),
+                        typeSection.getMemberVarBuilder(), typeSection.getMethodBuilder());
             } catch (Exception e) {
                 throw new CoreException(new IpsStatus(IStatus.ERROR,
                         "Error building attribute " + attribute.getName() + " of " //$NON-NLS-1$ //$NON-NLS-2$

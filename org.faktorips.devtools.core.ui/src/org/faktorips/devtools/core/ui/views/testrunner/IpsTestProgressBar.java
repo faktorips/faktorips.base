@@ -140,8 +140,9 @@ public class IpsTestProgressBar extends Canvas {
 
         Rectangle rect = getClientArea();
         gc.fillRectangle(rect);
-        drawBevelRect(gc, rect.x, rect.y, rect.width - 1, rect.height - 1, disp
-                .getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW), disp.getSystemColor(SWT.COLOR_WIDGET_HIGHLIGHT_SHADOW));
+        drawBevelRect(gc, rect.x, rect.y, rect.width - 1, rect.height - 1,
+                disp.getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW),
+                disp.getSystemColor(SWT.COLOR_WIDGET_HIGHLIGHT_SHADOW));
 
         setStatusColor(gc);
         fColorBarWidth = Math.min(rect.width - 2, fColorBarWidth);

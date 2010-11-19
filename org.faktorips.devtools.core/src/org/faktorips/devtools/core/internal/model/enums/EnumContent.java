@@ -197,8 +197,8 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
             String currentEnumAttributeName = enumAttributes.get(i).getName();
             String currentReference = enumAttributeReferences.getPart(i).getName();
             if (!(currentEnumAttributeName.equals(currentReference))) {
-                String text = NLS.bind(Messages.EnumContent_ReferencedEnumAttributesOrderingInvalid, enumType
-                        .getQualifiedName());
+                String text = NLS.bind(Messages.EnumContent_ReferencedEnumAttributesOrderingInvalid,
+                        enumType.getQualifiedName());
                 Message validationMessage = new Message(
                         IEnumContent.MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTE_ORDERING_INVALID, text,
                         Message.ERROR, this);
@@ -218,8 +218,8 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
 
         for (IEnumAttribute currentEnumAttribute : enumAttributes) {
             if (!(containsEnumAttributeReference(currentEnumAttribute.getName()))) {
-                String text = NLS.bind(Messages.EnumContent_ReferencedEnumAttributeNamesInvalid, enumType
-                        .getQualifiedName());
+                String text = NLS.bind(Messages.EnumContent_ReferencedEnumAttributeNamesInvalid,
+                        enumType.getQualifiedName());
                 Message validationMessage = new Message(
                         IEnumContent.MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTE_NAMES_INVALID, text, Message.ERROR,
                         this);
@@ -234,8 +234,8 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
      */
     private void validateEnumAttributeReferencesCount(MessageList validationMessageList, IEnumType enumType) {
         if (enumType.getEnumAttributesCountIncludeSupertypeCopies(false) != getEnumAttributeReferencesCount()) {
-            String text = NLS.bind(Messages.EnumContent_ReferencedEnumAttributesCountInvalid, enumType
-                    .getQualifiedName());
+            String text = NLS.bind(Messages.EnumContent_ReferencedEnumAttributesCountInvalid,
+                    enumType.getQualifiedName());
             Message validationMessage = new Message(
                     IEnumContent.MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTES_COUNT_INVALID, text, Message.ERROR,
                     this);

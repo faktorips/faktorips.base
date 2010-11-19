@@ -135,7 +135,7 @@ public class SelectionProviderDispatcherTest extends TestCase {
 
         @Override
         public void addSelectionChangedListener(ISelectionChangedListener listener) {
-            //            
+            //
         }
 
         @Override
@@ -145,7 +145,7 @@ public class SelectionProviderDispatcherTest extends TestCase {
 
         @Override
         public void removeSelectionChangedListener(ISelectionChangedListener listener) {
-            //            
+            //
         }
 
         @Override

@@ -29,7 +29,7 @@ public class RecursiveCopy {
      * Do a recursive Directory-Copy
      * 
      * @param fromDir Source Directory as String
-     * @param toDir   Target Directory as String
+     * @param toDir Target Directory as String
      * @throws IOException
      */
     public void copyDir(String fromDir, String toDir) throws IOException {
@@ -51,8 +51,7 @@ public class RecursiveCopy {
                 File file = new File(from);
                 if (file.isDirectory()) {
                     copyDir(from, to);
-                }
-                else {
+                } else {
                     copyFile(from, to);
                 }
             }
@@ -63,31 +62,30 @@ public class RecursiveCopy {
      * Copy a single File
      * 
      * @param from - Path to the Sourcefile as String
-     * @param to   - Path to the Targetfile as String
+     * @param to - Path to the Targetfile as String
      */
     public void copyFile(String from, String to) throws FileNotFoundException, IOException {
         mkdirs(to);
         InputStream input = new BufferedInputStream(new FileInputStream(from));
         OutputStream output = new BufferedOutputStream(new FileOutputStream(to));
         int c;
-        try{
+        try {
             while ((c = input.read()) != -1) {
                 output.write(c);
             }
-        }catch (IOException e){
+        } catch (IOException e) {
             throw e;
-        }finally{
+        } finally {
             if ((input != null) && (output != null))
-            input.close();
+                input.close();
             output.close();
         }
 
     }
 
     /**
-     * Create a Directory.
-     * Supports creating multiple Directories at once.
-     * Example: mkdir("/path/to/a/new/dir") will create all subdirs
+     * Create a Directory. Supports creating multiple Directories at once. Example:
+     * mkdir("/path/to/a/new/dir") will create all subdirs
      * 
      * @param dir - Directory-Name as String
      */

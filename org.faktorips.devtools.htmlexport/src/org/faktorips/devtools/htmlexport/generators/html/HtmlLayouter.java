@@ -224,8 +224,8 @@ public class HtmlLayouter extends AbstractLayouter {
     public void layoutImagePageElement(ImagePageElement imagePageElement) {
 
         String path = resourcePath + "/images/" + imagePageElement.getFileName() + ".png"; //$NON-NLS-1$ //$NON-NLS-2$
-        addLayoutResource(new LayoutResource(path, DocumentorUtil.convertImageDataToByteArray(imagePageElement
-                .getImageData(), SWT.IMAGE_PNG)));
+        addLayoutResource(new LayoutResource(path, DocumentorUtil.convertImageDataToByteArray(
+                imagePageElement.getImageData(), SWT.IMAGE_PNG)));
 
         append(HtmlUtil.createImage(getPathToRoot() + path, imagePageElement.getTitle()));
     }

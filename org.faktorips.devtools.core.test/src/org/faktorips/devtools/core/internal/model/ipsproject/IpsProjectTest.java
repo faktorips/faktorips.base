@@ -1633,8 +1633,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         // etablish the dependency so that projectB is dependent from projectA
         IpsObjectPath projectBIpsObjectPath = ipsProjectB.getIpsObjectPathInternal();
-        ArrayList<IIpsObjectPathEntry> projectBIpsObjectPathEntries = new ArrayList<IIpsObjectPathEntry>(Arrays
-                .asList(projectBIpsObjectPath.getEntries()));
+        ArrayList<IIpsObjectPathEntry> projectBIpsObjectPathEntries = new ArrayList<IIpsObjectPathEntry>(
+                Arrays.asList(projectBIpsObjectPath.getEntries()));
         projectBIpsObjectPathEntries.add(new IpsProjectRefEntry(projectBIpsObjectPath, ipsProject));
 
         projectBIpsObjectPath.setEntries(projectBIpsObjectPathEntries

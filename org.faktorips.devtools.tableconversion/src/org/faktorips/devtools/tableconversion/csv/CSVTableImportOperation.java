@@ -115,8 +115,8 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
 
             monitor.done();
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus(NLS
-                    .bind(Messages.getString("CSVImportOperation_errRead"), sourceFile), e)); //$NON-NLS-1$
+            throw new CoreException(new IpsStatus(
+                    NLS.bind(Messages.getString("CSVImportOperation_errRead"), sourceFile), e)); //$NON-NLS-1$
         }
     }
 

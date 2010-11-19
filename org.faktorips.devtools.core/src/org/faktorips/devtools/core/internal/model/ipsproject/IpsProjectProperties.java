@@ -403,18 +403,18 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         createPersistenceOptionsDescriptionComment(projectEl);
         Element persistenceOptionsEl = doc.createElement("PersistenceOptions"); //$NON-NLS-1$
         projectEl.appendChild(persistenceOptionsEl);
-        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_NAME_LENGTH_ATTRIBUTENAME, String
-                .valueOf(getPersistenceOptions().getMaxTableNameLength()));
-        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_COLUMN_NAME_LENGTH_ATTRIBUTENAME, String
-                .valueOf(getPersistenceOptions().getMaxColumnNameLenght()));
+        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_NAME_LENGTH_ATTRIBUTENAME,
+                String.valueOf(getPersistenceOptions().getMaxTableNameLength()));
+        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_COLUMN_NAME_LENGTH_ATTRIBUTENAME,
+                String.valueOf(getPersistenceOptions().getMaxColumnNameLenght()));
         persistenceOptionsEl.setAttribute(IPersistenceOptions.ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS, "" //$NON-NLS-1$
                 + Boolean.valueOf(getPersistenceOptions().isAllowLazyFetchForSingleValuedAssociations()));
-        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_COLUMN_SIZE, String
-                .valueOf(getPersistenceOptions().getMaxTableColumnSize()));
-        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_COLUMN_SCALE, String
-                .valueOf(getPersistenceOptions().getMaxTableColumnScale()));
-        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_COLUMN_PRECISION, String
-                .valueOf(getPersistenceOptions().getMaxTableColumnPrecision()));
+        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_COLUMN_SIZE,
+                String.valueOf(getPersistenceOptions().getMaxTableColumnSize()));
+        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_COLUMN_SCALE,
+                String.valueOf(getPersistenceOptions().getMaxTableColumnScale()));
+        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_COLUMN_PRECISION,
+                String.valueOf(getPersistenceOptions().getMaxTableColumnPrecision()));
 
         ITableNamingStrategy tableNamingStrategy = getPersistenceOptions().getTableNamingStrategy();
         ITableColumnNamingStrategy tableColumnNamingStrategy = getPersistenceOptions().getTableColumnNamingStrategy();
@@ -454,8 +454,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             builderSetConfig = new IpsArtefactBuilderSetConfigModel();
             builderSetConfig.initFromXml(artefactConfigEl);
         }
-        initProductCmptNamingStrategyFromXml(ipsProject, XmlUtil.getFirstElement(element,
-                IProductCmptNamingStrategy.XML_TAG_NAME));
+        initProductCmptNamingStrategyFromXml(ipsProject,
+                XmlUtil.getFirstElement(element, IProductCmptNamingStrategy.XML_TAG_NAME));
         Element pathEl = XmlUtil.getFirstElement(element, IpsObjectPath.XML_TAG_NAME);
         if (pathEl != null) {
             path = IpsObjectPath.createFromXml(ipsProject, pathEl);

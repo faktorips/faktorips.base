@@ -283,8 +283,8 @@ public class TestCaseTest extends AbstractDependencyTest {
         assertEquals("inputTestValue1", testCase.getInputTestValues()[1].getTestValueParameter());
         assertEquals("expResultTestValue0", testCase.getExpectedResultTestValues()[0].getTestValueParameter());
         assertEquals("inputTestPolicyCmpt0", testCase.getInputTestPolicyCmpts()[0].getTestPolicyCmptTypeParameter());
-        assertEquals("expResultTestPolicyCmpt0", testCase.getExpectedResultTestPolicyCmpts()[0]
-                .getTestPolicyCmptTypeParameter());
+        assertEquals("expResultTestPolicyCmpt0",
+                testCase.getExpectedResultTestPolicyCmpts()[0].getTestPolicyCmptTypeParameter());
         assertEquals("expResultTestRule1", testCase.getExpectedResultTestRules()[0].getTestRuleParameter());
 
         assertEquals("testCaseType1", testCase.getTestCaseType());
@@ -310,8 +310,8 @@ public class TestCaseTest extends AbstractDependencyTest {
         testPolicyCmpt1.setProductCmpt(prodCmpt1.getQualifiedName());
         dependsOnList = CollectionUtil.toArrayList(testCase.dependsOn());
         assertEquals(2, dependsOnList.size());
-        dependency = IpsObjectDependency.createReferenceDependency(testCase.getQualifiedNameType(), prodCmpt1
-                .getQualifiedNameType());
+        dependency = IpsObjectDependency.createReferenceDependency(testCase.getQualifiedNameType(),
+                prodCmpt1.getQualifiedNameType());
         assertTrue(dependsOnList.contains(dependency));
         assertSingleDependencyDetail(testCase, dependency, testPolicyCmpt1, ITestPolicyCmpt.PROPERTY_PRODUCTCMPT);
 
@@ -321,13 +321,13 @@ public class TestCaseTest extends AbstractDependencyTest {
         testPolicyCmpt2.setProductCmpt(prodCmpt2.getQualifiedName());
         dependsOnList = CollectionUtil.toArrayList(testCase.dependsOn());
         assertEquals(3, dependsOnList.size());
-        dependency = IpsObjectDependency.createReferenceDependency(testCase.getQualifiedNameType(), prodCmpt1
-                .getQualifiedNameType());
+        dependency = IpsObjectDependency.createReferenceDependency(testCase.getQualifiedNameType(),
+                prodCmpt1.getQualifiedNameType());
         assertTrue(dependsOnList.contains(dependency));
         assertSingleDependencyDetail(testCase, dependency, testPolicyCmpt1, ITestPolicyCmpt.PROPERTY_PRODUCTCMPT);
 
-        dependency = IpsObjectDependency.createReferenceDependency(testCase.getQualifiedNameType(), prodCmpt2
-                .getQualifiedNameType());
+        dependency = IpsObjectDependency.createReferenceDependency(testCase.getQualifiedNameType(),
+                prodCmpt2.getQualifiedNameType());
         assertTrue(dependsOnList.contains(dependency));
         assertSingleDependencyDetail(testCase, dependency, testPolicyCmpt2, ITestPolicyCmpt.PROPERTY_PRODUCTCMPT);
     }

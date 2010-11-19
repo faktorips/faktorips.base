@@ -216,12 +216,12 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
         keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_name, testParameter.getName());
         keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_testParameterType, testParameter
                 .getTestParameterType().getName());
-        keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_requiresProductCmpt, testParameter
-                .isRequiresProductCmpt() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
-        keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_minInstances, Integer
-                .toString(testParameter.getMinInstances()));
-        keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_maxInstances, Integer
-                .toString(testParameter.getMaxInstances()));
+        keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_requiresProductCmpt,
+                testParameter.isRequiresProductCmpt() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
+        keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_minInstances,
+                Integer.toString(testParameter.getMinInstances()));
+        keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_maxInstances,
+                Integer.toString(testParameter.getMaxInstances()));
         return keyValueTable;
     }
 
@@ -236,8 +236,8 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
         keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_name, testParameter.getName());
         keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_testParameterType, testParameter
                 .getTestParameterType().getName());
-        keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_description, testParameter
-                .getDescription());
+        keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_description,
+                testParameter.getDescription());
 
         testParameterPageElement.addPageElements(keyValueTable);
         return testParameterPageElement;
@@ -252,12 +252,12 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
 
         KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement();
         keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_name, testParameter.getName());
-        keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_valueDatatype, testParameter
-                .getValueDatatype());
+        keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_valueDatatype,
+                testParameter.getValueDatatype());
         keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_testParameterType, testParameter
                 .getTestParameterType().getName());
-        keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_description, testParameter
-                .getDescription());
+        keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_description,
+                testParameter.getDescription());
 
         testParameter.getTestParameterType();
 

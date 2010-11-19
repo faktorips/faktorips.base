@@ -222,8 +222,8 @@ public class TestCaseCopyWizard extends ResizableWizard {
         if (!ipsPackageFragment.exists()) {
             IIpsPackageFragment parentIpsPackageFragment = ipsPackageFragment.getParentIpsPackageFragment();
             createIpsPackageFragment(parentIpsPackageFragment);
-            IIpsPackageFragment fragment = parentIpsPackageFragment.createSubPackage(ipsPackageFragment
-                    .getLastSegmentName(), true, null);
+            IIpsPackageFragment fragment = parentIpsPackageFragment.createSubPackage(
+                    ipsPackageFragment.getLastSegmentName(), true, null);
             packageFrgmtsCreatedByWizard.add(fragment);
         }
     }

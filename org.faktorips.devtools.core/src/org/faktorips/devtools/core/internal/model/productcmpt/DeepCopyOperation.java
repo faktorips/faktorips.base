@@ -117,8 +117,8 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
                         linkData2newProductCmptQName);
             } else if (element instanceof IProductCmptStructureTblUsageReference) {
                 IProductCmptStructureTblUsageReference productCmptStructureTblUsageReference = (IProductCmptStructureTblUsageReference)element;
-                storeTableUsageToNewTableContents(productCmptStructureTblUsageReference, newIpsObject
-                        .getQualifiedName(), tblContentData2newTableContentQName);
+                storeTableUsageToNewTableContents(productCmptStructureTblUsageReference,
+                        newIpsObject.getQualifiedName(), tblContentData2newTableContentQName);
             }
 
             monitor.worked(1);
@@ -281,8 +281,8 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmptNew.getGenerationsOrderedByValidDate()[0];
         ITableContentUsage[] tableContentUsages = generation.getTableContentUsages();
         for (ITableContentUsage tableContentUsage : tableContentUsages) {
-            TblContentUsageData tblContentsData = new TblContentUsageData(productCmptTemplate, tableContentUsage
-                    .getTableContentName());
+            TblContentUsageData tblContentsData = new TblContentUsageData(productCmptTemplate,
+                    tableContentUsage.getTableContentName());
             if (objectsToRefer.contains(tblContentsData)) {
                 // keep table usage to old table contents
                 continue;

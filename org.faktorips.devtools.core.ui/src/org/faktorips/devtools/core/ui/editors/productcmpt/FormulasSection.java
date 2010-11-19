@@ -121,8 +121,10 @@ public class FormulasSection extends IpsSection {
         uiMasterController.add(ctrl);
 
         IFormula[] formulas = generation.getFormulas();
-        Arrays.sort(formulas, new PropertyValueComparator(generation.getProductCmpt().getProductCmptType(), generation
-                .getIpsProject()));
+        Arrays.sort(
+                formulas,
+                new PropertyValueComparator(generation.getProductCmpt().getProductCmptType(), generation
+                        .getIpsProject()));
 
         ITableContentUsage usages[] = generation.getTableContentUsages();
 
@@ -139,8 +141,8 @@ public class FormulasSection extends IpsSection {
             try {
                 // create label as hyperlink to open the corresponding table content in a new new
                 // editor
-                Hyperlink hyperlink = toolkit.createHyperlink(rootPane, StringUtils.capitalize(usage
-                        .getStructureUsage()));
+                Hyperlink hyperlink = toolkit.createHyperlink(rootPane,
+                        StringUtils.capitalize(usage.getStructureUsage()));
                 hyperlink.addHyperlinkListener(new HyperlinkAdapter() {
                     @Override
                     public void linkActivated(HyperlinkEvent event) {
@@ -184,8 +186,8 @@ public class FormulasSection extends IpsSection {
 
             try {
                 FormulaCompletionProcessor completionProcessor = new FormulaCompletionProcessor(formula);
-                ContentAssistHandler.createHandlerForText(evc.getTextControl(), CompletionUtil
-                        .createContentAssistant(completionProcessor));
+                ContentAssistHandler.createHandlerForText(evc.getTextControl(),
+                        CompletionUtil.createContentAssistant(completionProcessor));
                 IMethod signature = formula.findFormulaSignature(generation.getIpsProject());
                 if (signature != null) {
                     label.setToolTipText(signature.getDescription());

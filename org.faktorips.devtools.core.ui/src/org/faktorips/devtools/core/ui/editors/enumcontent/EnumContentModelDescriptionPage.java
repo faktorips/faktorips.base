@@ -80,8 +80,8 @@ public class EnumContentModelDescriptionPage extends DefaultModelDescriptionPage
         DescriptionItem[] descriptionItems = new DescriptionItem[enumAttributes.size()];
         for (int i = 0; i < enumAttributes.size(); i++) {
             IEnumAttribute currentEnumAttribute = enumAttributes.get(i);
-            DescriptionItem currentItem = new DescriptionItem(currentEnumAttribute.getName(), currentEnumAttribute
-                    .getDescription());
+            DescriptionItem currentItem = new DescriptionItem(currentEnumAttribute.getName(),
+                    currentEnumAttribute.getDescription());
             descriptionItems[i] = currentItem;
         }
 

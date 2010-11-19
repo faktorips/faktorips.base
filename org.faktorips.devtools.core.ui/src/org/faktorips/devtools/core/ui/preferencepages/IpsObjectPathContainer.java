@@ -109,8 +109,8 @@ public class IpsObjectPathContainer {
         archiveComposite = new ArchiveComposite(folder);
         orderComposite = new ObjectPathOrderComposite(folder);
 
-        addTabItem(folder, Messages.IpsObjectPathContainer_tab_source, (Image)resourceManager
-                .get(packageFragmentRootImage), srcFolderComposite);
+        addTabItem(folder, Messages.IpsObjectPathContainer_tab_source,
+                (Image)resourceManager.get(packageFragmentRootImage), srcFolderComposite);
         addTabItem(folder, Messages.IpsObjectPathContainer_tab_projects, (Image)resourceManager.get(projectImage),
                 refProjectsComposite);
         addTabItem(folder, Messages.IpsObjectPathContainer_tab_archives, (Image)resourceManager.get(archiveImage),

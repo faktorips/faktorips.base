@@ -281,10 +281,10 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
             } else if (rel.isOptional()) {
                 sb.append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.CardinalityPanel_labelOptional);
             } else {
-                sb.append(Messages.ProductCmptCompareItem_RelationCardinalityOther_minimum).append(COLON).append(
-                        rel.getMinCardinality()).append(COMMA).append(BLANK);
-                sb.append(Messages.ProductCmptCompareItem_RelationCardinalityOther_maximum).append(COLON).append(
-                        rel.getMaxCardinality());
+                sb.append(Messages.ProductCmptCompareItem_RelationCardinalityOther_minimum).append(COLON)
+                        .append(rel.getMinCardinality()).append(COMMA).append(BLANK);
+                sb.append(Messages.ProductCmptCompareItem_RelationCardinalityOther_maximum).append(COLON)
+                        .append(rel.getMaxCardinality());
             }
             sb.append("]"); //$NON-NLS-1$
             sb.append(BLANK).append(BLANK).append("(").append(rel.getId()).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -292,46 +292,51 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
             IConfigElement configElement = (IConfigElement)getIpsElement();
             String validFromSimple = simpleDateFormat.format(configElement.getProductCmptGeneration().getValidFrom()
                     .getTime());
-            sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(configElement.getName()).append(
-                    NEWLINE);
-            sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(TAB).append(
-                    org.faktorips.devtools.core.ui.editors.productcmpt.Messages.PolicyAttributeEditDialog_defaultValue)
+            sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(configElement.getName())
+                    .append(NEWLINE);
+            sb.append(validFromSimple)
+                    .append(TAB)
+                    .append(TAB)
+                    .append(TAB)
+                    .append(TAB)
+                    .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.PolicyAttributeEditDialog_defaultValue)
                     .append(BLANK);
             sb.append(configElement.getValue()).append(NEWLINE);
-            sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(TAB).append(
-                    Messages.ProductCmptCompareItem_ValueSet).append(COLON_BLANK);
+            sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(TAB)
+                    .append(Messages.ProductCmptCompareItem_ValueSet).append(COLON_BLANK);
             sb.append(getValueSetContent(configElement));
         } else if (getIpsElement() instanceof IPropertyValue) {
             IPropertyValue value = (IPropertyValue)getIpsElement();
             String validFromSimple = simpleDateFormat.format(value.getProductCmptGeneration().getValidFrom().getTime());
-            sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(value.getPropertyName()).append(
-                    COLON_BLANK);
+            sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(value.getPropertyName())
+                    .append(COLON_BLANK);
             sb.append(value.getPropertyValue());
         } else if (getIpsElement() instanceof IIpsObjectGeneration) {
             IIpsObjectGeneration gen = (IIpsObjectGeneration)getIpsElement();
             String validFromSimple = simpleDateFormat.format(gen.getValidFrom().getTime());
             sb.append(validFromSimple).append(TAB).append(changingNamingConventionGenerationString).append(COLON_BLANK);
             sb.append(QUOTE).append(gen.getName()).append(QUOTE).append(NEWLINE);
-            sb.append(validFromSimple).append(TAB).append(TAB).append(
-                    org.faktorips.devtools.core.ui.editors.productcmpt.Messages.GenerationEditDialog_labelValidFrom)
+            sb.append(validFromSimple)
+                    .append(TAB)
+                    .append(TAB)
+                    .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.GenerationEditDialog_labelValidFrom)
                     .append(BLANK);
             sb.append(dateFormat.format(gen.getValidFrom().getTime()));
         } else if (getIpsElement() instanceof IProductCmpt) {
             IProductCmpt product = (IProductCmpt)getIpsElement();
             sb.append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductCmptEditor_productComponent);
             sb.append(QUOTE).append(product.getName()).append(QUOTE).append(NEWLINE);
-            sb.append(TAB).append(
-                    org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_attribute)
+            sb.append(TAB)
+                    .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_attribute)
                     .append(COLON_BLANK).append(NEWLINE);
-            sb.append(TAB).append(TAB).append(
-                    org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_template)
+            sb.append(TAB)
+                    .append(TAB)
+                    .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_template)
                     .append(COLON_BLANK);
             sb.append(QUOTE).append(product.getProductCmptType()).append(QUOTE).append(NEWLINE);
-            sb
+            sb.append(TAB)
                     .append(TAB)
-                    .append(TAB)
-                    .append(
-                            org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_labelRuntimeId)
+                    .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_labelRuntimeId)
                     .append(COLON_BLANK);
             sb.append(QUOTE).append(product.getRuntimeId()).append(QUOTE);
         } else if (getIpsElement() instanceof IIpsSrcFile) {
@@ -394,20 +399,20 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         if (getIpsElement() != null) {
             if (getIpsElement() instanceof IProductCmptLink) {
                 IProductCmptLink rel = (IProductCmptLink)getIpsElement();
-                sb.append(Messages.ProductCmptCompareItem_Relation).append(COLON_BLANK).append(QUOTE).append(
-                        rel.getName()).append(QUOTE);
+                sb.append(Messages.ProductCmptCompareItem_Relation).append(COLON_BLANK).append(QUOTE)
+                        .append(rel.getName()).append(QUOTE);
             } else if (getIpsElement() instanceof IAttributeValue) {
                 IAttributeValue attrValue = (IAttributeValue)getIpsElement();
-                sb.append(Messages.ProductCmptCompareItem_Attribute).append(COLON_BLANK).append(QUOTE).append(
-                        attrValue.getAttribute()).append(QUOTE);
+                sb.append(Messages.ProductCmptCompareItem_Attribute).append(COLON_BLANK).append(QUOTE)
+                        .append(attrValue.getAttribute()).append(QUOTE);
             } else if (getIpsElement() instanceof IFormula) {
                 IFormula formula = (IFormula)getIpsElement();
-                sb.append(Messages.ProductCmptCompareItem_Formula).append(COLON_BLANK).append(QUOTE).append(
-                        formula.getName()).append(QUOTE);
+                sb.append(Messages.ProductCmptCompareItem_Formula).append(COLON_BLANK).append(QUOTE)
+                        .append(formula.getName()).append(QUOTE);
             } else if (getIpsElement() instanceof IIpsObjectGeneration) {
                 IIpsObjectGeneration gen = (IIpsObjectGeneration)getIpsElement();
-                sb.append(changingNamingConventionGenerationString).append(COLON_BLANK).append(QUOTE).append(
-                        gen.getName()).append(QUOTE);
+                sb.append(changingNamingConventionGenerationString).append(COLON_BLANK).append(QUOTE)
+                        .append(gen.getName()).append(QUOTE);
             } else if (getIpsElement() instanceof IProductCmpt) {
                 IProductCmpt product = (IProductCmpt)getIpsElement();
                 sb.append(

@@ -294,10 +294,10 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         // IPolicyCmptType b = newPolicyAndProductCmptType(ipsProject, "B", "BConfigType");
         // IRelation relation = a.newRelation();
         // relation.setTarget(b.getQualifiedName());
-        //        
+        //
         // IPolicyCmptType c = newPolicyAndProductCmptType(ipsProject, "C", "Config");
         // c.setSupertype(a.getQualifiedName());
-        //        
+        //
         // IPolicyCmptType d = newPolicyCmptType(root, "D");
         // relation = c.newRelation();
         // relation.setTargetRoleSingular("relationD");
@@ -310,7 +310,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         // assertTrue(dependsOnAsList.contains(c.getQualifiedNameType()));
         // assertTrue(dependsOnAsList.contains(a.getQualifiedNameType()));
         // assertTrue(dependsOnAsList.contains(d.getQualifiedNameType()));
-        //        
+        //
         // a.getRelations()[0].setProductRelevant(false);
         // c.getRelations()[0].setProductRelevant(false);
         // dependsOn = productCmptC.dependsOn();
@@ -318,12 +318,12 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         // dependsOnAsList.contains(a.getQualifiedNameType());
         // dependsOnAsList.contains(c.getQualifiedNameType());
         // assertEquals(2, dependsOn.length);
-        //        
+        //
         // IProductCmpt productCmptTmp = (IProductCmpt)newIpsObject(root,
         // IpsObjectType.PRODUCT_CMPT, "deckung");
         // dependsOn = productCmptTmp.dependsOn();
         // assertEquals(0, dependsOn.length);
-        //        
+        //
         // // test dependency to product cmpts in all generations
         // IProductCmpt productCmptD = (IProductCmpt)newIpsObject(root, IpsObjectType.PRODUCT_CMPT,
         // "productD");
@@ -345,7 +345,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         // productCmptC.newGeneration(new GregorianCalendar(1990, 1, 1));
         // productCmptRelation = generation2.newRelation("relationD");
         // productCmptRelation.setTarget(productCmptD2.getQualifiedName());
-        //        
+        //
         // dependsOnAsList = CollectionUtil.toArrayList(productCmptC.dependsOn());
         // assertEquals(5, dependsOnAsList.size());
         // assertTrue(dependsOnAsList.contains(c.getQualifiedNameType()));
@@ -353,20 +353,20 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         // assertTrue(dependsOnAsList.contains(d.getQualifiedNameType()));
         // assertTrue(dependsOnAsList.contains(productCmptD.getQualifiedNameType()));
         // assertTrue(dependsOnAsList.contains(productCmptD2.getQualifiedNameType()));
-        //        
+        //
         // // test dependency to table content usage
         // ITableContents tableContents1 = (ITableContents)newIpsObject(root,
         // IpsObjectType.TABLE_CONTENTS, "table1");
         // ITableContents tableContents2 = (ITableContents)newIpsObject(root,
         // IpsObjectType.TABLE_CONTENTS, "table2");
         // generation1.newTableContentUsage().setTableContentName(tableContents1.getQualifiedName());
-        //        
+        //
         // dependsOnAsList = CollectionUtil.toArrayList(productCmptC.dependsOn());
         // assertEquals(6, dependsOnAsList.size());
         // assertTrue(dependsOnAsList.contains(tableContents1.getQualifiedNameType()));
-        //        
+        //
         // generation2.newTableContentUsage().setTableContentName(tableContents2.getQualifiedName());
-        //        
+        //
         // dependsOnAsList = CollectionUtil.toArrayList(productCmptC.dependsOn());
         // assertEquals(7, dependsOnAsList.size());
         // assertTrue(dependsOnAsList.contains(tableContents2.getQualifiedNameType()));
@@ -393,7 +393,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         // configElAttrA.setPcTypeAttribute(attrA.getName());
         // configElAttrA.setType(ConfigElementType.FORMULA);
         // List dependsOnList = Arrays.asList(productA.dependsOn());
-        //    	
+        //
         // assertTrue(dependsOnList.contains(new QualifiedNameType(a.getQualifiedName(),
         // a.getIpsObjectType())));
         // assertTrue(dependsOnList.contains(new QualifiedNameType(b.getQualifiedName(),

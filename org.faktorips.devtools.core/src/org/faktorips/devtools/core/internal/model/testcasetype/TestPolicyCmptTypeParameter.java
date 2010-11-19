@@ -466,8 +466,8 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
             // check all links, if the target matches the defined target in the test case type
             IProductCmptLink[] links = ((IProductCmptGeneration)generation).getLinks();
             for (IProductCmptLink link : links) {
-                IIpsSrcFile productCmptFoundSrc = ipsProjectToSearch.findIpsSrcFile(IpsObjectType.PRODUCT_CMPT, link
-                        .getTarget());
+                IIpsSrcFile productCmptFoundSrc = ipsProjectToSearch.findIpsSrcFile(IpsObjectType.PRODUCT_CMPT,
+                        link.getTarget());
                 if (productCmptFoundSrc != null && !result.contains(productCmptFoundSrc)) {
                     IProductCmpt productCmptFound = (IProductCmpt)productCmptFoundSrc.getIpsObject();
                     if (productCmptFound == null) {
@@ -533,8 +533,8 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         if (!isRoot()) {
             TestParameterType parentType = ((ITestPolicyCmptTypeParameter)getParent()).getTestParameterType();
             if (!TestParameterType.isChildTypeMatching(type, parentType)) {
-                String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_TypeNotAllowed, type
-                        .getName(), parentType.getName());
+                String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_TypeNotAllowed,
+                        type.getName(), parentType.getName());
                 Message msg = new Message(MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE, text, Message.ERROR, this,
                         PROPERTY_TEST_PARAMETER_TYPE);
                 list.add(msg);
@@ -564,8 +564,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
                 } else {
                     if (!policyCmptTypeFound.isSubtypeOrSameType(targetOfAssociation, ipsProject)) {
                         String text = NLS
-                                .bind(
-                                        Messages.TestPolicyCmptTypeParameter_ValidationError_PolicyCmptNotAllowedForAssociation,
+                                .bind(Messages.TestPolicyCmptTypeParameter_ValidationError_PolicyCmptNotAllowedForAssociation,
                                         policyCmptType, association);
                         Message msg = new Message(MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_ASSOCIATION, text, Message.ERROR,
                                 this, PROPERTY_POLICYCMPTTYPE);
@@ -603,8 +602,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
                     }
                     if (targetOfAssoziationInTestCaseType == null) {
                         String text = NLS
-                                .bind(
-                                        Messages.TestPolicyCmptTypeParameter_ValidationWarning_AccosiationTargetNotInTestCaseType,
+                                .bind(Messages.TestPolicyCmptTypeParameter_ValidationWarning_AccosiationTargetNotInTestCaseType,
                                         policyCmptType, association);
                         Message msg = new Message(MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE, text,
                                 Message.WARNING, this, PROPERTY_POLICYCMPTTYPE);
@@ -639,8 +637,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         if (policyCmptTypeFound != null && requiresProductCmpt
                 && !policyCmptTypeFound.isConfigurableByProductCmptType()) {
             String text = NLS
-                    .bind(
-                            Messages.TestPolicyCmptTypeParameter_ValidationError_FlagRequiresIsTrueButPolicyCmptTypeIsNotConfByProduct,
+                    .bind(Messages.TestPolicyCmptTypeParameter_ValidationError_FlagRequiresIsTrueButPolicyCmptTypeIsNotConfByProduct,
                             policyCmptType);
             Message msg = new Message(MSGCODE_REQUIRES_PROD_BUT_POLICY_CMPT_TYPE_IS_NOT_CONF_BY_PROD, text,
                     Message.ERROR, this, PROPERTY_REQUIRES_PRODUCTCMT);

@@ -90,8 +90,11 @@ public class ClassLoaderProvider {
                     workspace.removeResourceChangeListener(resourceChangeListener);
                 }
                 resourceChangeListener = new ChangeListener();
-                javaProject.getProject().getWorkspace().addResourceChangeListener(resourceChangeListener,
-                        IResourceChangeEvent.POST_CHANGE | IResourceChangeEvent.PRE_BUILD);
+                javaProject
+                        .getProject()
+                        .getWorkspace()
+                        .addResourceChangeListener(resourceChangeListener,
+                                IResourceChangeEvent.POST_CHANGE | IResourceChangeEvent.PRE_BUILD);
 
             } catch (Exception e) {
                 throw new CoreException(new IpsStatus(e));

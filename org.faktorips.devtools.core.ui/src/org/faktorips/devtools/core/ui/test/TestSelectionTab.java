@@ -117,8 +117,8 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
     public void performApply(ILaunchConfigurationWorkingCopy configuration) {
         try {
             if (project != null) {
-                configuration.setAttribute(IpsTestRunner.ATTR_PACKAGEFRAGMENTROOT, testSuiteSelectionComposite
-                        .getPackageFragmentRootText());
+                configuration.setAttribute(IpsTestRunner.ATTR_PACKAGEFRAGMENTROOT,
+                        testSuiteSelectionComposite.getPackageFragmentRootText());
                 configuration
                         .setAttribute(IpsTestRunner.ATTR_TESTCASES, testSuiteSelectionComposite.getTestCasesText());
                 configuration.setAttribute(IpsTestRunner.ATTR_MAX_HEAP_SIZE, parameterText.getText());

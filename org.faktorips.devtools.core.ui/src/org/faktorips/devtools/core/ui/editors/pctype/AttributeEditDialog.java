@@ -466,8 +466,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 if (StringUtils.isEmpty(signature)) {
                     signature = Messages.AttributeEditDialog_emptyString;
                 }
-                String text = NLS.bind(Messages.AttributeEditDialog_questionCreateMethod, productCmptType
-                        .getQualifiedName(), signature);
+                String text = NLS.bind(Messages.AttributeEditDialog_questionCreateMethod,
+                        productCmptType.getQualifiedName(), signature);
                 if (MessageDialog.openQuestion(getShell(), Messages.AttributeEditDialog_MethodDoesNotExist, text)) {
                     createMethodAndOpenDialog();
                 }
@@ -513,8 +513,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         try {
             productCmptType = policyCmptType.findProductCmptType(ipsProject);
             if (productCmptType == null) {
-                String text = NLS.bind(Messages.AttributeEditDialog_TypeCantBeFound, policyCmptType
-                        .getProductCmptType());
+                String text = NLS.bind(Messages.AttributeEditDialog_TypeCantBeFound,
+                        policyCmptType.getProductCmptType());
                 MessageDialog.openInformation(getShell(), Messages.AttributeEditDialog_Info, text);
             }
         } catch (CoreException e) {
@@ -828,8 +828,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                             uiToolkit.setDataChangeable(group, false);
                             return;
                         }
-                        uiToolkit.setDataChangeable(persistencePage.getControl(), ((IPersistentTypeInfo)getObject())
-                                .isEnabled());
+                        uiToolkit.setDataChangeable(persistencePage.getControl(),
+                                ((IPersistentTypeInfo)getObject()).isEnabled());
                     }
                 });
 
@@ -943,8 +943,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 .getPersistenceAttributeInfo();
         if (persistenceAttributeInfo.isManuallyCodeFixNecessary() || manuallyCodeFixNecessary) {
             manuallyCodeFixNecessary = true;
-            String text = NLS.bind(Messages.AttributeEditDialog_msgWarningManualyCodeMergeNecessary, attribute
-                    .getName());
+            String text = NLS.bind(Messages.AttributeEditDialog_msgWarningManualyCodeMergeNecessary,
+                    attribute.getName());
             setMessage(text, IMessageProvider.WARNING);
             persistenceAttributeInfo.resetManuallyCodeFixNecessary();
         }

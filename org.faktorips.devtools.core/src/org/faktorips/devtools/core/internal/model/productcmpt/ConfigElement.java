@@ -165,8 +165,8 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
                 list.add(new Message(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this,
                         PROPERTY_VALUE));
             } else {
-                String text = NLS.bind(Messages.ConfigElement_msgAttrNotDefined, pcTypeAttribute, policyCmptType
-                        .getName());
+                String text = NLS.bind(Messages.ConfigElement_msgAttrNotDefined, pcTypeAttribute,
+                        policyCmptType.getName());
                 list.add(new Message(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this,
                         PROPERTY_VALUE));
             }
@@ -200,9 +200,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         try {
             if (valueDatatype.checkReadyToUse().containsErrorMsg()) {
                 String text = Messages.ConfigElement_msgInvalidDatatype;
-                list
-                        .add(new Message(IConfigElement.MSGCODE_INVALID_DATATYPE, text, Message.ERROR, this,
-                                PROPERTY_VALUE));
+                list.add(new Message(IConfigElement.MSGCODE_INVALID_DATATYPE, text, Message.ERROR, this, PROPERTY_VALUE));
                 return null;
             }
         } catch (Exception e) {
@@ -245,8 +243,8 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
                     modelValueSet.getValueSetType().getName(), valueSet.getValueSetType().getName() });
         } else if (!modelValueSet.containsValueSet(valueSet)) {
             msgCode = IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET;
-            text = NLS.bind(Messages.ConfigElement_valueSetIsNotASubset, valueSet.toShortString(), modelValueSet
-                    .toShortString());
+            text = NLS.bind(Messages.ConfigElement_valueSetIsNotASubset, valueSet.toShortString(),
+                    modelValueSet.toShortString());
         } else {
             throw new RuntimeException(); // should never happen
         }

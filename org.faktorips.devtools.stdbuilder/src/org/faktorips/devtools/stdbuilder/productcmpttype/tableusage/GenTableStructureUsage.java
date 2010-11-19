@@ -127,8 +127,8 @@ public class GenTableStructureUsage extends GenTypePart {
     public String getReturnTypeOfMethodGetTableUsage() throws CoreException {
         String[] tss = tableStructureUsage.getTableStructures();
         if (tss.length == 1) {
-            IIpsSrcFile tsuFile = getGenType().getBuilderSet().getIpsProject().findIpsSrcFile(
-                    IpsObjectType.TABLE_STRUCTURE, tss[0]);
+            IIpsSrcFile tsuFile = getGenType().getBuilderSet().getIpsProject()
+                    .findIpsSrcFile(IpsObjectType.TABLE_STRUCTURE, tss[0]);
             if (tsuFile == null) {
                 return "";
             }

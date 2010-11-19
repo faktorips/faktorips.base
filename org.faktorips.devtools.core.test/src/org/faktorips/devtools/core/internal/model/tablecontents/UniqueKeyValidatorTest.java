@@ -972,9 +972,9 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
             if (i % 1000 == 1) {
             }
             int from = i * 10;
-            createRow(gen1, new String[] { "" + from, "" + (from + 9),
-                    DateUtil.gregorianCalendarToIsoDateString(calendarFrom),
-                    DateUtil.gregorianCalendarToIsoDateString(calendarTo), "" + i });
+            createRow(gen1,
+                    new String[] { "" + from, "" + (from + 9), DateUtil.gregorianCalendarToIsoDateString(calendarFrom),
+                            DateUtil.gregorianCalendarToIsoDateString(calendarTo), "" + i });
             calendarFrom.add(Calendar.DATE, 2);
             calendarTo.add(Calendar.DATE, 2);
         }

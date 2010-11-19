@@ -242,8 +242,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         if (step != null) {
             if (subRange.getStep() == null) {
                 String msg = Messages.Range_msgNoStepDefinedInSubset;
-                addMsg(list, MSGCODE_NO_STEP_DEFINED_IN_SUBSET, msg, invalidObject, getProperty(invalidProperty,
-                        PROPERTY_STEP));
+                addMsg(list, MSGCODE_NO_STEP_DEFINED_IN_SUBSET, msg, invalidObject,
+                        getProperty(invalidProperty, PROPERTY_STEP));
                 isSubset = false;
             } else {
                 String step = getStep();
@@ -260,8 +260,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
                 && validateParsable(datatype, subLower, list, invalidObject, invalidProperty)) {
             if (!datatype.isNull(lower) && !datatype.isNull(subLower) && datatype.compare(lower, subLower) > 0) {
                 String msg = NLS.bind(Messages.Range_msgLowerBoundViolation, getLowerBound(), subRange.getLowerBound());
-                addMsg(list, MSGCODE_LOWER_BOUND_VIOLATION, msg, invalidObject, getProperty(invalidProperty,
-                        PROPERTY_LOWERBOUND));
+                addMsg(list, MSGCODE_LOWER_BOUND_VIOLATION, msg, invalidObject,
+                        getProperty(invalidProperty, PROPERTY_LOWERBOUND));
                 isSubset = false;
             }
         }
@@ -272,8 +272,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
                 && validateParsable(datatype, subUpper, list, invalidObject, invalidProperty)) {
             if (!datatype.isNull(upper) && !datatype.isNull(subUpper) && datatype.compare(upper, subUpper) < 0) {
                 String msg = NLS.bind(Messages.Range_msgUpperBoundViolation, getUpperBound(), subRange.getUpperBound());
-                addMsg(list, MSGCODE_UPPER_BOUND_VIOLATION, msg, invalidObject, getProperty(invalidProperty,
-                        PROPERTY_UPPERBOUND));
+                addMsg(list, MSGCODE_UPPER_BOUND_VIOLATION, msg, invalidObject,
+                        getProperty(invalidProperty, PROPERTY_UPPERBOUND));
                 isSubset = false;
             }
         }
@@ -281,16 +281,16 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         if (lower != null && subRange.getLowerBound() == null) {
             String[] bindings = { subRange.toShortString(), toShortString(), getLowerBound() };
             String msg = NLS.bind(Messages.RangeValueSet_msgLowerboundViolation, bindings);
-            addMsg(list, MSGCODE_LOWER_BOUND_VIOLATION, msg, invalidObject, getProperty(invalidProperty,
-                    PROPERTY_LOWERBOUND));
+            addMsg(list, MSGCODE_LOWER_BOUND_VIOLATION, msg, invalidObject,
+                    getProperty(invalidProperty, PROPERTY_LOWERBOUND));
             isSubset = false;
         }
 
         if (upper != null && subRange.getUpperBound() == null) {
             String[] bindings = { subRange.toShortString(), toShortString(), getUpperBound() };
             String msg = NLS.bind(Messages.RangeValueSet_msgUpperboundViolation, bindings);
-            addMsg(list, MSGCODE_UPPER_BOUND_VIOLATION, msg, invalidObject, getProperty(invalidProperty,
-                    PROPERTY_UPPERBOUND));
+            addMsg(list, MSGCODE_UPPER_BOUND_VIOLATION, msg, invalidObject,
+                    getProperty(invalidProperty, PROPERTY_UPPERBOUND));
             isSubset = false;
         }
 
@@ -347,8 +347,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
                 String diff = datatype.subtract(subLower, lower);
                 if (!datatype.divisibleWithoutRemainder(diff, step)) {
                     String msg = NLS.bind(Messages.RangeValueSet_msgLowerboundMismatch, diff, step);
-                    addMsg(list, MSGCODE_LOWERBOUND_MISMATCH, msg, invalidObject, getProperty(invalidProperty,
-                            PROPERTY_LOWERBOUND));
+                    addMsg(list, MSGCODE_LOWERBOUND_MISMATCH, msg, invalidObject,
+                            getProperty(invalidProperty, PROPERTY_LOWERBOUND));
 
                     match = false;
                 }
@@ -360,8 +360,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
                 String diff = datatype.subtract(upper, subUpper);
                 if (!datatype.divisibleWithoutRemainder(diff, step)) {
                     String msg = NLS.bind(Messages.RangeValueSet_msgUpperboundMismatch, diff, step);
-                    addMsg(list, MSGCODE_UPPERBOUND_MISMATCH, msg, invalidObject, getProperty(invalidProperty,
-                            PROPERTY_UPPERBOUND));
+                    addMsg(list, MSGCODE_UPPERBOUND_MISMATCH, msg, invalidObject,
+                            getProperty(invalidProperty, PROPERTY_UPPERBOUND));
 
                     match = false;
                 }
@@ -376,8 +376,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
                         && list.getMessageByCode(MSGCODE_STEP_RANGE_MISMATCH) == null) {
                     String[] props = { subLower, subUpper, subStep };
                     String msg = NLS.bind(Messages.RangeValueSet_msgStepRangeMismatch, props);
-                    addMsg(list, MSGCODE_STEP_RANGE_MISMATCH, msg, invalidObject, getProperty(invalidProperty,
-                            PROPERTY_STEP));
+                    addMsg(list, MSGCODE_STEP_RANGE_MISMATCH, msg, invalidObject,
+                            getProperty(invalidProperty, PROPERTY_STEP));
                     match = false;
                 }
             }
@@ -465,8 +465,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
             String property) {
 
         if (!datatype.isParsable(value)) {
-            String msg = NLS.bind(Messages.Range_msgPropertyValueNotParsable, new Object[] { property, value,
-                    datatype.getName() });
+            String msg = NLS.bind(Messages.Range_msgPropertyValueNotParsable,
+                    new Object[] { property, value, datatype.getName() });
             addMsg(list, MSGCODE_VALUE_NOT_PARSABLE, msg, invalidObject, property);
             return false;
         }

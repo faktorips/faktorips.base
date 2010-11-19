@@ -149,8 +149,7 @@ public class Migration_2_5_4_rfinal extends AbstractIpsProjectMigrationOperation
         } else {
             // error: to many master detail found, not unique
             String text = "Detail to master association couldn't be fixed, no unique master to detail association found"; //$NON-NLS-1$
-            msgList
-                    .add(new Message(MSGCODE_MASTER_TO_DETAIL_CANDIDATES_NOT_UNIQUE, text, Message.WARNING, association));
+            msgList.add(new Message(MSGCODE_MASTER_TO_DETAIL_CANDIDATES_NOT_UNIQUE, text, Message.WARNING, association));
         }
         return true;
     }

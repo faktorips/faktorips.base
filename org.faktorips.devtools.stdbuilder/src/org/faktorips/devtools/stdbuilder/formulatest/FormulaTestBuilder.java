@@ -213,8 +213,8 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
 
     private IIpsSrcFile getVirtualIpsSrcFile(IIpsObject ipsObject) {
         String name = productCmptNamingStrategy.getJavaClassIdentifier(ipsObject.getName());
-        return productCmpt.getIpsSrcFile().getIpsPackageFragment().getIpsSrcFile(
-                IpsObjectType.PRODUCT_CMPT.getFileName(name));
+        return productCmpt.getIpsSrcFile().getIpsPackageFragment()
+                .getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(name));
     }
 
     @Override
@@ -260,9 +260,9 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
                         + generationId));
             }
             generationBuilder.generateMethodForFormulaForTestCase(formula, builder,
-                    getComputeTestMethodSuffix(generationId.intValue()), testParameterNames
-                            .toArray(new String[testParameterNames.size()]), testParameterTypes
-                            .toArray(new String[testParameterTypes.size()]));
+                    getComputeTestMethodSuffix(generationId.intValue()),
+                    testParameterNames.toArray(new String[testParameterNames.size()]),
+                    testParameterTypes.toArray(new String[testParameterTypes.size()]));
         }
     }
 
@@ -565,8 +565,8 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private IIpsSrcFile getVirtualIpsSrcFile(IProductCmpt productCmpt) throws CoreException {
-        String name = productCmpt.getIpsProject().getProductCmptNamingStrategy().getJavaClassIdentifier(
-                productCmpt.getName());
+        String name = productCmpt.getIpsProject().getProductCmptNamingStrategy()
+                .getJavaClassIdentifier(productCmpt.getName());
         return productCmpt.getIpsPackageFragment().getIpsSrcFile(
                 IpsObjectType.PRODUCT_CMPT.getFileName(name + RUNTIME_EXTENSION));
     }

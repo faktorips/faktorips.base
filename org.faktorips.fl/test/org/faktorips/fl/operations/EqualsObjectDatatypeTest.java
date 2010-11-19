@@ -63,16 +63,14 @@ public class EqualsObjectDatatypeTest extends CompilerAbstractTest {
     }
 
     public void testMoney() throws Exception {
-        compiler
-                .setBinaryOperations(new BinaryOperation[] { new EqualsObjectDatatype(Datatype.MONEY, Datatype.MONEY) });
+        compiler.setBinaryOperations(new BinaryOperation[] { new EqualsObjectDatatype(Datatype.MONEY, Datatype.MONEY) });
         compiler.setEnsureResultIsObject(false);
         execAndTestSuccessfull("1EUR=2EUR", false);
         execAndTestSuccessfull("1.23EUR=1.23EUR", true);
     }
 
     public void testString() throws Exception {
-        compiler
-                .setBinaryOperations(new BinaryOperation[] { new EqualsObjectDatatype(Datatype.STRING, Datatype.STRING) });
+        compiler.setBinaryOperations(new BinaryOperation[] { new EqualsObjectDatatype(Datatype.STRING, Datatype.STRING) });
         compiler.setEnsureResultIsObject(false);
         execAndTestSuccessfull("\"abc\" = \"cde\"", false);
         execAndTestSuccessfull("\"abc\" = \"abc\"", true);

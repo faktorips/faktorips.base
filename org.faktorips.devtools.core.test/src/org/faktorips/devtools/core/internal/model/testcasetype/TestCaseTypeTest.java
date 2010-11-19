@@ -193,8 +193,8 @@ public class TestCaseTypeTest extends AbstractDependencyTest {
         param1.setPolicyCmptType(pcType1.getQualifiedName());
         dependsOnList = CollectionUtil.toArrayList(type.dependsOn());
         assertEquals(1, dependsOnList.size());
-        IDependency dependency = IpsObjectDependency.createReferenceDependency(type.getQualifiedNameType(), pcType1
-                .getQualifiedNameType());
+        IDependency dependency = IpsObjectDependency.createReferenceDependency(type.getQualifiedNameType(),
+                pcType1.getQualifiedNameType());
         assertTrue(dependsOnList.contains(dependency));
         assertSingleDependencyDetail(type, dependency, param1, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
 
@@ -203,13 +203,13 @@ public class TestCaseTypeTest extends AbstractDependencyTest {
         param2.setPolicyCmptType(pcType2.getQualifiedName());
         dependsOnList = CollectionUtil.toArrayList(type.dependsOn());
         assertEquals(2, dependsOnList.size());
-        dependency = IpsObjectDependency.createReferenceDependency(type.getQualifiedNameType(), pcType1
-                .getQualifiedNameType());
+        dependency = IpsObjectDependency.createReferenceDependency(type.getQualifiedNameType(),
+                pcType1.getQualifiedNameType());
         assertTrue(dependsOnList.contains(dependency));
         assertSingleDependencyDetail(type, dependency, param1, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
 
-        dependency = IpsObjectDependency.createReferenceDependency(type.getQualifiedNameType(), pcType2
-                .getQualifiedNameType());
+        dependency = IpsObjectDependency.createReferenceDependency(type.getQualifiedNameType(),
+                pcType2.getQualifiedNameType());
         assertTrue(dependsOnList.contains(dependency));
         assertSingleDependencyDetail(type, dependency, param2, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
 
@@ -218,8 +218,8 @@ public class TestCaseTypeTest extends AbstractDependencyTest {
         param3.setPolicyCmptType(pcType1.getQualifiedName());
         dependsOnList = CollectionUtil.toArrayList(type.dependsOn());
         assertEquals(2, dependsOnList.size());
-        dependency = IpsObjectDependency.createReferenceDependency(type.getQualifiedNameType(), pcType1
-                .getQualifiedNameType());
+        dependency = IpsObjectDependency.createReferenceDependency(type.getQualifiedNameType(),
+                pcType1.getQualifiedNameType());
         assertTrue(dependsOnList.contains(dependency));
 
         List<IDependencyDetail> details = type.getDependencyDetails(dependency);
@@ -229,8 +229,8 @@ public class TestCaseTypeTest extends AbstractDependencyTest {
         assertTrue(details.contains(detail1));
         assertTrue(details.contains(detail2));
 
-        dependency = IpsObjectDependency.createReferenceDependency(type.getQualifiedNameType(), pcType2
-                .getQualifiedNameType());
+        dependency = IpsObjectDependency.createReferenceDependency(type.getQualifiedNameType(),
+                pcType2.getQualifiedNameType());
         assertTrue(dependsOnList.contains(dependency));
 
         // test dependency to policy cmpt type child of child
@@ -238,18 +238,18 @@ public class TestCaseTypeTest extends AbstractDependencyTest {
         param4.setPolicyCmptType(pcType3.getQualifiedName());
         dependsOnList = CollectionUtil.toArrayList(type.dependsOn());
         assertEquals(3, dependsOnList.size());
-        dependency = IpsObjectDependency.createReferenceDependency(type.getQualifiedNameType(), pcType1
-                .getQualifiedNameType());
+        dependency = IpsObjectDependency.createReferenceDependency(type.getQualifiedNameType(),
+                pcType1.getQualifiedNameType());
         assertTrue(dependsOnList.contains(dependency));
         assertDependencyDetailContained(type, dependency, param1, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
 
-        dependency = IpsObjectDependency.createReferenceDependency(type.getQualifiedNameType(), pcType2
-                .getQualifiedNameType());
+        dependency = IpsObjectDependency.createReferenceDependency(type.getQualifiedNameType(),
+                pcType2.getQualifiedNameType());
         assertTrue(dependsOnList.contains(dependency));
         assertDependencyDetailContained(type, dependency, param2, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
 
-        dependency = IpsObjectDependency.createReferenceDependency(type.getQualifiedNameType(), pcType3
-                .getQualifiedNameType());
+        dependency = IpsObjectDependency.createReferenceDependency(type.getQualifiedNameType(),
+                pcType3.getQualifiedNameType());
         assertTrue(dependsOnList.contains(dependency));
         assertDependencyDetailContained(type, dependency, param4, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
     }

@@ -1629,8 +1629,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             IResource enclosingResource = ipsSrcFile.getEnclosingResource();
             System.out
                     .println(NLS
-                            .bind(
-                                    "IpsModel.getIpsSrcFileContent(): {0}, file={1}, FileModStamp={2}, Thread={3}", //$NON-NLS-1$
+                            .bind("IpsModel.getIpsSrcFileContent(): {0}, file={1}, FileModStamp={2}, Thread={3}", //$NON-NLS-1$
                                     new String[] {
                                             text,
                                             "" + ipsSrcFile, "" + enclosingResource.getModificationStamp(), Thread.currentThread().getName() })); //$NON-NLS-1$ //$NON-NLS-2$

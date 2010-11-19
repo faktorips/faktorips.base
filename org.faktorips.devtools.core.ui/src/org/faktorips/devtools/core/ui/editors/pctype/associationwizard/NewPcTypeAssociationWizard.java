@@ -185,8 +185,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         IWizardPage currentPage = getContainer().getCurrentPage();
         IProductCmptType productCmptType = findProductCmptType();
         if (!(event.isAffected(association) || event.isAffected(inverseAssociation) || productCmptType == null ? true
-                : event.isAffected(productCmptType))
-                || currentPage == null) {
+                : event.isAffected(productCmptType)) || currentPage == null) {
             return;
         }
 

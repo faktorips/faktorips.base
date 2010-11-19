@@ -156,8 +156,8 @@ public class AssociationQualificationGroup extends Composite {
 
         public String getQualificationNote() {
             try {
-                return getQualificationNote(association.isCompositionMasterToDetail(), association
-                        .isQualificationPossible(ipsProject));
+                return getQualificationNote(association.isCompositionMasterToDetail(),
+                        association.isQualificationPossible(ipsProject));
 
             } catch (CoreException e) {
                 IpsPlugin.log(e);
@@ -197,8 +197,8 @@ public class AssociationQualificationGroup extends Composite {
                         .findMatchingProductCmptTypeAssociation(ipsProject);
                 if (matchingAss != null) {
                     String type = matchingAss.getProductCmptType().getName();
-                    return NLS.bind(Messages.AssociationQualificationGroup_noteIsConstrained, type, matchingAss
-                            .getTargetRoleSingular())
+                    return NLS.bind(Messages.AssociationQualificationGroup_noteIsConstrained, type,
+                            matchingAss.getTargetRoleSingular())
                             + StringUtils.rightPad("\n", 120); //$NON-NLS-1$
                 } else {
                     String note = Messages.AssociationQualificationGroup_noteIsNotConstrained;

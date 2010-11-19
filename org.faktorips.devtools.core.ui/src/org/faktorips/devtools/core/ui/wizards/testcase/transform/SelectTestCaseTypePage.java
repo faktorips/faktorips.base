@@ -115,8 +115,8 @@ public class SelectTestCaseTypePage extends WizardPage {
         UIToolkit uiToolkit = wizard.getUiToolkit();
         IIpsPackageFragment targetIpsPackageFragment = wizard.getTargetIpsPackageFragment();
         if (wizard.getTargetIpsPackageFragment() != null) {
-            TestCaseTypeRefControl superTypeControl = uiToolkit.createTestCaseTypeRefControl(targetIpsPackageFragment
-                    .getIpsProject(), parent);
+            TestCaseTypeRefControl superTypeControl = uiToolkit.createTestCaseTypeRefControl(
+                    targetIpsPackageFragment.getIpsProject(), parent);
 
             testCaseTypeField = new TextButtonField(superTypeControl);
             testCaseTypeField.addChangeListener(new ValueChangeListener() {

@@ -286,8 +286,8 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
             throws CoreException {
 
         IFolder javaSrcFolder = root.getArtefactDestination(false);
-        IPackageFragmentRoot javaRoot = root.getIpsProject().getJavaProject().findPackageFragmentRoot(
-                javaSrcFolder.getFullPath());
+        IPackageFragmentRoot javaRoot = root.getIpsProject().getJavaProject()
+                .findPackageFragmentRoot(javaSrcFolder.getFullPath());
         if (javaRoot == null) {
             throw new CoreException(new IpsStatus("Can't find file Java root for IPS root " + root.getName())); //$NON-NLS-1$
         }

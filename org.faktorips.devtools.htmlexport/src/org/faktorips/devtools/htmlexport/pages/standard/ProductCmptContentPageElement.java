@@ -82,7 +82,7 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
     }
 
     /**
-     *adds a table with the attributes of the generations
+     * adds a table with the attributes of the generations
      */
     private void addGenerationAttributeTable() {
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
@@ -117,8 +117,7 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
             validFroms.add(getConfig().getSimpleDateFormat().format(validFrom.getTime()));
         }
 
-        wrapper
-                .addPageElements(new ListPageElement(Arrays.asList(PageElementUtils.createTextPageElements(validFroms))));
+        wrapper.addPageElements(new ListPageElement(Arrays.asList(PageElementUtils.createTextPageElements(validFroms))));
         addPageElements(wrapper);
     }
 }

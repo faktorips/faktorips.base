@@ -79,8 +79,8 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
         }
         try {
             initWorkbookAndSheet();
-            monitor.beginTask(Messages.ExcelTableImportOperation_labelImportFile + sourceFile, targetGeneration
-                    .getNumOfRows() + 2);
+            monitor.beginTask(Messages.ExcelTableImportOperation_labelImportFile + sourceFile,
+                    targetGeneration.getNumOfRows() + 2);
 
             // Update datatypes because the structure might be altered if this operation is reused.
             initDatatypes();
@@ -94,8 +94,8 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
             monitor.worked(1);
             monitor.done();
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus(NLS
-                    .bind(Messages.AbstractXlsTableImportOperation_errRead, sourceFile), e));
+            throw new CoreException(new IpsStatus(
+                    NLS.bind(Messages.AbstractXlsTableImportOperation_errRead, sourceFile), e));
         }
     }
 

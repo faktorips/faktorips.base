@@ -45,8 +45,8 @@ public class StdBuilderSetTest extends AbstractIpsPluginTest {
 
     public void testStdBuilderSetPropertyDefinitions() throws CoreException {
         IIpsProject ipsProject = newIpsProject();
-        IIpsArtefactBuilderSetInfo builderSetInfo = IpsPlugin.getDefault().getIpsModel().getIpsArtefactBuilderSetInfo(
-                "org.faktorips.devtools.stdbuilder.ipsstdbuilderset");
+        IIpsArtefactBuilderSetInfo builderSetInfo = IpsPlugin.getDefault().getIpsModel()
+                .getIpsArtefactBuilderSetInfo("org.faktorips.devtools.stdbuilder.ipsstdbuilderset");
         assertNotNull(builderSetInfo);
         IIpsBuilderSetPropertyDef[] propertyDefs = builderSetInfo.getPropertyDefinitions();
         assertEquals(11, propertyDefs.length);
@@ -75,43 +75,41 @@ public class StdBuilderSetTest extends AbstractIpsPluginTest {
         assertNull(connector);
     }
 
-
     /*
-     * Bug FS#1864
-     * Heap performance test. Test runs about 200sec!
+     * Bug FS#1864 Heap performance test. Test runs about 200sec!
      */
-//    public void testBuildPerformanceLongRun() throws CoreException {
-//        IIpsProject ipsProject = newIpsProject();
-//        IIpsObjectPath path = ipsProject.getIpsObjectPath();
-//        IIpsSrcFolderEntry entry = path.getSourceFolderEntries()[0];
-//        entry.setSpecificBasePackageNameForDerivedJavaClasses("org.faktorips.sample.Model");
-//        entry.setSpecificBasePackageNameForMergableJavaClasses("org.faktorips.sample.Model");
-//        ipsProject.getProject().build(IncrementalProjectBuilder.CLEAN_BUILD, null);
-//        ipsProject.setIpsObjectPath(path);
-//        System.out.println("init objects");
-//        for (int i = 0; i < 5000; i++) {
-//            PolicyCmptType policyType = newPolicyCmptType(ipsProject, "Policy" + i);
-//            ProductCmptType productType = newProductCmptType(ipsProject, "Product" + i);
-//
-//            policyType.setConfigurableByProductCmptType(true);
-//            policyType.setProductCmptType(productType.getName());
-//            IAttribute attr = policyType.newAttribute();
-//            attr.setName("attribut" + i);
-//            attr.setDatatype("int");
-//            attr.setDefaultValue("1");
-//
-//            productType.setConfigurationForPolicyCmptType(true);
-//            productType.setPolicyCmptType(policyType.getName());
-//            attr = productType.newAttribute();
-//            attr.setName("prodattribut" + i);
-//            attr.setDatatype("int");
-//            attr.setDefaultValue("1");
-//        }
-//
-//        System.out.println("start build");
-//        Date time = new Date();
-//        ipsProject.getProject().build(IncrementalProjectBuilder.CLEAN_BUILD, null);
-//        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
-//        System.out.println("Buildtime: " + ((new Date().getTime() - time.getTime()) / 1000) + "s");
-//    }
+    // public void testBuildPerformanceLongRun() throws CoreException {
+    // IIpsProject ipsProject = newIpsProject();
+    // IIpsObjectPath path = ipsProject.getIpsObjectPath();
+    // IIpsSrcFolderEntry entry = path.getSourceFolderEntries()[0];
+    // entry.setSpecificBasePackageNameForDerivedJavaClasses("org.faktorips.sample.Model");
+    // entry.setSpecificBasePackageNameForMergableJavaClasses("org.faktorips.sample.Model");
+    // ipsProject.getProject().build(IncrementalProjectBuilder.CLEAN_BUILD, null);
+    // ipsProject.setIpsObjectPath(path);
+    // System.out.println("init objects");
+    // for (int i = 0; i < 5000; i++) {
+    // PolicyCmptType policyType = newPolicyCmptType(ipsProject, "Policy" + i);
+    // ProductCmptType productType = newProductCmptType(ipsProject, "Product" + i);
+    //
+    // policyType.setConfigurableByProductCmptType(true);
+    // policyType.setProductCmptType(productType.getName());
+    // IAttribute attr = policyType.newAttribute();
+    // attr.setName("attribut" + i);
+    // attr.setDatatype("int");
+    // attr.setDefaultValue("1");
+    //
+    // productType.setConfigurationForPolicyCmptType(true);
+    // productType.setPolicyCmptType(policyType.getName());
+    // attr = productType.newAttribute();
+    // attr.setName("prodattribut" + i);
+    // attr.setDatatype("int");
+    // attr.setDefaultValue("1");
+    // }
+    //
+    // System.out.println("start build");
+    // Date time = new Date();
+    // ipsProject.getProject().build(IncrementalProjectBuilder.CLEAN_BUILD, null);
+    // ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+    // System.out.println("Buildtime: " + ((new Date().getTime() - time.getTime()) / 1000) + "s");
+    // }
 }

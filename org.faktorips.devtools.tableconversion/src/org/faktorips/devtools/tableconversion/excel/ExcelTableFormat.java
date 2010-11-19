@@ -53,8 +53,8 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             boolean exportColumnHeaderRow,
             MessageList list) {
         try {
-            ExcelTableExportOperation excelTableExportOperation = new ExcelTableExportOperation(contents, filename
-                    .toOSString(), this, nullRepresentationString, exportColumnHeaderRow, list);
+            ExcelTableExportOperation excelTableExportOperation = new ExcelTableExportOperation(contents,
+                    filename.toOSString(), this, nullRepresentationString, exportColumnHeaderRow, list);
             excelTableExportOperation.run(new NullProgressMonitor());
             return true;
         } catch (Exception e) {
@@ -72,8 +72,8 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             MessageList list,
             boolean importIntoExisting) throws CoreException {
 
-        ExcelTableImportOperation excelTableImportOperation = new ExcelTableImportOperation(structure, filename
-                .toOSString(), targetGeneration, this, nullRepresentationString, ignoreColumnHeaderRow, list,
+        ExcelTableImportOperation excelTableImportOperation = new ExcelTableImportOperation(structure,
+                filename.toOSString(), targetGeneration, this, nullRepresentationString, ignoreColumnHeaderRow, list,
                 importIntoExisting);
         excelTableImportOperation.run(new NullProgressMonitor());
     }
@@ -86,8 +86,8 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             MessageList list) {
 
         try {
-            ExcelEnumExportOperation enumExportOperation = new ExcelEnumExportOperation(valueContainer, filename
-                    .toOSString(), this, nullRepresentationString, exportColumnHeaderRow, list);
+            ExcelEnumExportOperation enumExportOperation = new ExcelEnumExportOperation(valueContainer,
+                    filename.toOSString(), this, nullRepresentationString, exportColumnHeaderRow, list);
             enumExportOperation.run(new NullProgressMonitor());
             return true;
         } catch (Exception e) {
@@ -104,8 +104,8 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             MessageList list,
             boolean importIntoExisting) throws CoreException {
 
-        ExcelEnumImportOperation enumImportOperation = new ExcelEnumImportOperation(valueContainer, filename
-                .toOSString(), this, nullRepresentationString, ignoreColumnHeaderRow, list, importIntoExisting);
+        ExcelEnumImportOperation enumImportOperation = new ExcelEnumImportOperation(valueContainer,
+                filename.toOSString(), this, nullRepresentationString, ignoreColumnHeaderRow, list, importIntoExisting);
         enumImportOperation.run(new NullProgressMonitor());
     }
 

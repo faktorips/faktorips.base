@@ -202,8 +202,8 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
                 "builderSetId", logger, null);
 
         assertEquals(IpsPlugin.PLUGIN_ID + ".javaLoggingConnector", propertyDef.getDefaultValue(null));
-        assertEquals(IpsPlugin.PLUGIN_ID + ".javaLoggingConnector", propertyDef.parseValue(propertyDef
-                .getDefaultValue(null)));
+        assertEquals(IpsPlugin.PLUGIN_ID + ".javaLoggingConnector",
+                propertyDef.parseValue(propertyDef.getDefaultValue(null)));
 
         assertEquals("None", propertyDef.getDisableValue(null));
         assertEquals("None", propertyDef.parseValue(propertyDef.getDisableValue(null)));

@@ -126,8 +126,8 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
                     if (!(packageValid(fragment))) {
                         MessageDialog.openError(Display.getCurrent().getActiveShell(),
                                 Messages.ModelExplorerDropListener_titleMove, NLS.bind(
-                                        Messages.ModelExplorerDropListener_errorPackageContainsInvalidObjects, fragment
-                                                .getName()));
+                                        Messages.ModelExplorerDropListener_errorPackageContainsInvalidObjects,
+                                        fragment.getName()));
                         return;
                     }
                 }

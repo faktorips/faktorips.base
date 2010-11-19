@@ -62,8 +62,8 @@ public class TableContentsTest extends AbstractDependencyTest {
 
         table.setTableStructure(structure.getQualifiedName());
         List<IDependency> dependsOnAsList = Arrays.asList(table.dependsOn());
-        IDependency dependency = IpsObjectDependency.createInstanceOfDependency(table.getQualifiedNameType(), structure
-                .getQualifiedNameType());
+        IDependency dependency = IpsObjectDependency.createInstanceOfDependency(table.getQualifiedNameType(),
+                structure.getQualifiedNameType());
         assertTrue(dependsOnAsList.contains(dependency));
         assertSingleDependencyDetail(table, dependency, table, ITableContents.PROPERTY_TABLESTRUCTURE);
     }

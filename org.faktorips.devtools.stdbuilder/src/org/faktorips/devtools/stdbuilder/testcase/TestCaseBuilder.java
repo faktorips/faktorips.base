@@ -367,11 +367,11 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         IIpsSrcFile productCmptSrcFile = testPolicyCmpt.getIpsProject().findIpsSrcFile(IpsObjectType.PRODUCT_CMPT,
                 testPolicyCmpt.getProductCmpt());
         if (productCmptSrcFile == null) {
-            throw new CoreException(new IpsStatus(NLS.bind("The product component {0} was not found.", testPolicyCmpt
-                    .getProductCmpt())));
+            throw new CoreException(new IpsStatus(NLS.bind("The product component {0} was not found.",
+                    testPolicyCmpt.getProductCmpt())));
         }
-        testPolicyCmptElem.setAttribute("productCmpt", productCmptSrcFile
-                .getPropertyValue(IProductCmpt.PROPERTY_RUNTIME_ID));
+        testPolicyCmptElem.setAttribute("productCmpt",
+                productCmptSrcFile.getPropertyValue(IProductCmpt.PROPERTY_RUNTIME_ID));
         // because the product can be based on a subtype defined in the test type parameter we must
         // search for the correct policy cmpt
         String productCmptTypeQName = productCmptSrcFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
@@ -384,8 +384,8 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         ITestPolicyCmptTypeParameter parameter = testPolicyCmpt.findTestPolicyCmptTypeParameter(getIpsProject());
         if (parameter == null) {
             throw new CoreException(new IpsStatus(NLS.bind(
-                    "The test policy component type parameter {0} was not found.", testPolicyCmpt
-                            .getTestPolicyCmptTypeParameter())));
+                    "The test policy component type parameter {0} was not found.",
+                    testPolicyCmpt.getTestPolicyCmptTypeParameter())));
         }
         return parameter.getPolicyCmptType();
     }
@@ -399,8 +399,8 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             ITestPolicyCmptTypeParameter parameter = link.findTestPolicyCmptTypeParameter(getIpsProject());
             if (parameter == null) {
                 throw new CoreException(new IpsStatus(NLS.bind(
-                        "The test policy component type parameter {0} was not found.", link
-                                .getTestPolicyCmptTypeParameter())));
+                        "The test policy component type parameter {0} was not found.",
+                        link.getTestPolicyCmptTypeParameter())));
             }
             testPolicyCmptElem = XmlUtil.addNewChild(doc, parent, parameter.getAssociation());
             testPolicyCmptElem.setAttribute("type", "composite");
@@ -442,8 +442,8 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                     }
                 } else if (associations[i].isAccoziation()) {
                     associationType = "association"; // @see AbstractModelObject
-                    Element testPolicyCmptElem = XmlUtil.addNewChild(doc, parent, associations[i]
-                            .getTestPolicyCmptTypeParameter());
+                    Element testPolicyCmptElem = XmlUtil.addNewChild(doc, parent,
+                            associations[i].getTestPolicyCmptTypeParameter());
                     testPolicyCmptElem.setAttribute("target", associations[i].getTarget());
                     testPolicyCmptElem.setAttribute("type", associationType);
                     ITestPolicyCmpt target = associations[i].findTarget();
@@ -481,8 +481,8 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                 ITestAttribute testAttribute = testAttrValues[i].findTestAttribute(ipsProject);
                 if (testAttribute == null) {
                     throw new CoreException(new IpsStatus(NLS.bind(
-                            "The test attribute {0} was not found in the test case type definition.", testAttrValues[i]
-                                    .getTestAttribute())));
+                            "The test attribute {0} was not found in the test case type definition.",
+                            testAttrValues[i].getTestAttribute())));
                 }
 
                 // the child name is either the attribute name or the extension attribute (=test

@@ -54,8 +54,8 @@ public class IpsCutAction extends IpsAction {
 
         if (removedObjects.size() > 0) {
             ArrayList<IResource> emptyList = new ArrayList<IResource>(0);
-            clipboard.setContents(getDataArray(removedObjects, emptyList, null), getTypeArray(removedObjects,
-                    emptyList, null));
+            clipboard.setContents(getDataArray(removedObjects, emptyList, null),
+                    getTypeArray(removedObjects, emptyList, null));
         }
     }
 }

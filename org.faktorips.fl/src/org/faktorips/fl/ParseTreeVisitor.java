@@ -373,8 +373,8 @@ class ParseTreeVisitor implements FlParserVisitor {
         // generate a ExprCompiler.WRONG_ARGUMENT_TYPES error message.
         if (functionFoundByName) {
             String[] replacements = new String[] { fctName, argTypesToString(argResults) };
-            String text = ExprCompiler.localizedStrings.getString(ExprCompiler.WRONG_ARGUMENT_TYPES, compiler
-                    .getLocale(), replacements);
+            String text = ExprCompiler.localizedStrings.getString(ExprCompiler.WRONG_ARGUMENT_TYPES,
+                    compiler.getLocale(), replacements);
             return new CompilationResultImpl(Message.newError(ExprCompiler.WRONG_ARGUMENT_TYPES, text));
         }
 
