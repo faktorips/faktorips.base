@@ -19,9 +19,6 @@ import java.util.List;
  * A model object delta represents the delta between two model objects. The two model objects must
  * be instances of the same model class. One typical use case is that the two (technical) objects
  * represent the same business object but at two different points in time.
- * <p>
- * <strong> The delta support is experimental in this version. The API might change without notice
- * until it is finalized in a future version. </strong>
  * 
  * @author Jan Ortmann
  */
