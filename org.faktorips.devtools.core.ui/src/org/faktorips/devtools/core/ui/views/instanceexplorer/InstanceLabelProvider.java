@@ -22,6 +22,8 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.views.InstanceIpsSrcFileViewItem;
 
@@ -96,6 +98,9 @@ public class InstanceLabelProvider extends StyledCellLabelProvider implements IL
 
     @Override
     public String getText(Object element) {
+        if (element instanceof ILabeledElement) {
+            return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel((ILabeledElement)element);
+        }
         return defaultLabelProvider.getText(element);
     }
 
