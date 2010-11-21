@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><umlet_diagram><help_text>// Uncomment the following line to change the fontsize:
+// fontsize=14
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Welcome to UMLet!
+//
+// Double-click on UML elements to add them to the diagram, or to copy them
+// Edit elements by modifying the text in this panel
+// Hold Ctrl to select multiple elements
+// Use Ctrl+mouse to select via lasso
+//
+// Use ± or Ctrl+mouse wheel to zoom
+// Drag a whole relation at its central square icon
+//
+// Press Ctrl+C to copy the whole diagram to the system clipboard (then just paste it to, eg, Word)
+// Edit the files in the "palettes" directory to create your own element palettes
+//
+// Select "Custom Elements &gt; New..." to create new element types
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// This text will be stored with each diagram;  use it for notes.</help_text><zoom_level>10</zoom_level><element><type>com.umlet.element.base.Class</type><coordinates><x>460</x><y>140</y><w>370</w><h>230</h></coordinates><panel_attributes>Policy1
+--
+- policy2s : List&lt;IPolicy2&gt;
+ 
+--
++ getNumOfPolicy2s() : int
++ containsPolicy2(IPolicy2) : boolean
++ getPolicy2s() : List&lt;IPolicy2&gt;
++ getPolicy2(int) : IPolicy2
++ newPolicy2() : IPolicy2
++ addPolicy2(IPolicy2) : void
++ addPolicy2Internal(IPolicy2) : void
++ removePolicy2(IPolicy2) : void
+
+</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>60</x><y>140</y><w>370</w><h>230</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
+/IPolicy1/
+--
+_+ MAX_MULTIPLICITY_OF_POLICY2 : IntegerRange_
+_+ ASSOCIATION_POLICY2S : String_
+ 
+--
+/+ getNumOfPolicy2s() : int/
+/+ containsPolicy2(IPolicy2) : boolean/
+/+ getPolicy2s() : List&lt;IPolicy2&gt;/
+/+ addPolicy2(IPolicy2) : void/
+/+ removePolicy2(IPolicy2) : void/
+/+ newPolicy2() : IPolicy2/
+/+ getPolicy2(int) : IPolicy2/</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.custom.Text</type><coordinates><x>0</x><y>0</y><w>840</w><h>30</h></coordinates><panel_attributes>Generated java source code for an association "Policy2 (Policy2s)" in PolicyCmptType "Policy1" to another PolicyCmptType "Policy2"</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Package</type><coordinates><x>40</x><y>100</y><w>810</w><h>290</h></coordinates><panel_attributes>To Many</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Package</type><coordinates><x>40</x><y>430</y><w>810</w><h>220</h></coordinates><panel_attributes>To One</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>60</x><y>470</y><w>370</w><h>160</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
+/IPolicy1/
+--
+_+ MAX_MULTIPLICITY_OF_POLICY2 : IntegerRange_
+_+ ASSOCIATION_POLICY2 : String_
+ 
+--
+/+ getPolicy2() : IPolicy2/
+/+ setPolicy2(IPolicy2) : void/
+/+ newPolicy2() : IPolicy2/
+
+</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>460</x><y>470</y><w>370</w><h>160</h></coordinates><panel_attributes>Policy1
+--
+- policy2 : Policy2
+ 
+--
++ getPolicy2() : IPolicy2
++ setPolicy2(IPolicy2) : void
++ setPolicy2Internal(IPolicy2) : void
++ newPolicy2() : IPolicy2</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Package</type><coordinates><x>10</x><y>50</y><w>870</w><h>630</h></coordinates><panel_attributes>Master to Detail</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Package</type><coordinates><x>10</x><y>710</y><w>870</w><h>360</h></coordinates><panel_attributes>Detail to Master</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Package</type><coordinates><x>40</x><y>870</y><w>810</w><h>170</h></coordinates><panel_attributes>To One</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>60</x><y>910</y><w>370</w><h>110</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
+/IPolicy1/
+--
+_+ ASSOCIATION_POLICY2 : String_
+ 
+--
+/+ getPolicy2() : IPolicy2/
+
+</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>460</x><y>910</y><w>370</w><h>110</h></coordinates><panel_attributes>Policy1
+--
+- policy2 : Policy2
+ 
+--
++ getPolicy2() : IPolicy2
++ setPolicy2Internal(IPolicy2) : void</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Package</type><coordinates><x>40</x><y>760</y><w>810</w><h>70</h></coordinates><panel_attributes>To Many</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.custom.Text</type><coordinates><x>60</x><y>790</y><w>100</w><h>30</h></coordinates><panel_attributes>Not possible</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Package</type><coordinates><x>10</x><y>1100</y><w>870</w><h>590</h></coordinates><panel_attributes>Association</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Package</type><coordinates><x>40</x><y>1150</y><w>810</w><h>270</h></coordinates><panel_attributes>To Many</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>60</x><y>1190</y><w>370</w><h>210</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
+/IPolicy1/
+--
+_+ MAX_MULTIPLICITY_OF_POLICY2 : IntegerRange_
+_+ ASSOCIATION_POLICY2S : String_
+ 
+--
+/+ getNumOfPolicy2s() : int/
+/+ containsPolicy2(IPolicy2) : boolean/
+/+ getPolicy2s() : List&lt;IPolicy2&gt;/
+/+ addPolicy2(IPolicy2) : void/
+/+ removePolicy2(IPolicy2) : void/
+/+ getPolicy2(int) : IPolicy2/</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>460</x><y>1190</y><w>370</w><h>210</h></coordinates><panel_attributes>Policy1
+--
+- policy2s : List&lt;IPolicy2&gt;
+ 
+--
++ getNumOfPolicy2s() : int
++ containsPolicy2(IPolicy2) : boolean
++ getPolicy2s() : List&lt;IPolicy2&gt;
++ getPolicy2(int) : IPolicy2
++ addPolicy2(IPolicy2) : void
++ addPolicy2Internal(IPolicy2) : void
++ removePolicy2(IPolicy2) : void
+
+</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Package</type><coordinates><x>40</x><y>1460</y><w>810</w><h>200</h></coordinates><panel_attributes>To One</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>60</x><y>1500</y><w>370</w><h>140</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
+/IPolicy1/
+--
+_+ MAX_MULTIPLICITY_OF_POLICY2 : IntegerRange_
+_+ ASSOCIATION_POLICY2 : String_
+ 
+--
+/+ getPolicy2() : IPolicy2/
+/+ setPolicy2(IPolicy2) : void/
+
+</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>460</x><y>1500</y><w>370</w><h>140</h></coordinates><panel_attributes>Policy1
+--
+- policy2 : Policy2
+ 
+--
++ getPolicy2() : IPolicy2
++ setPolicy2(IPolicy2) : void
++ setPolicy2Internal(IPolicy2) : void</panel_attributes><additional_attributes/></element></umlet_diagram>
