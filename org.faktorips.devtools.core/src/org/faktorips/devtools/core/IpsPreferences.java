@@ -17,6 +17,8 @@ import java.text.DateFormat;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.util.IPropertyChangeListener;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.util.XmlParseException;
 import org.faktorips.devtools.core.util.XmlUtil;
