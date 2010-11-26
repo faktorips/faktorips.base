@@ -191,7 +191,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         ipsEditorSettings.load(getStateLocation());
         IpsCompositeSaveParticipant saveParticipant = new IpsCompositeSaveParticipant();
         saveParticipant.addSaveParticipant(ipsEditorSettings);
-        ResourcesPlugin.getWorkspace().addSaveParticipant(PLUGIN_ID, saveParticipant);
+        ResourcesPlugin.getWorkspace().addSaveParticipant(this, saveParticipant);
         controlFactories = new ValueDatatypeControlFactory[] {
                 new BooleanControlFactory(IpsPlugin.getDefault().getIpsPreferences()),
                 new EnumDatatypeControlFactory(), new EnumTypeDatatypeControlFactory(),
