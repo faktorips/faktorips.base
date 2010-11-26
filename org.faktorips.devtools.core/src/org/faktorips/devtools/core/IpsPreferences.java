@@ -13,13 +13,10 @@
 
 package org.faktorips.devtools.core;
 
-import java.awt.im.InputContext;
 import java.text.DateFormat;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.util.IPropertyChangeListener;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.util.XmlParseException;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -171,7 +168,7 @@ public class IpsPreferences {
          * formatting. Users will then be able to use the Numpad's ./, Key when entering Decimal
          * numbers, as this key types "." or "," depending on the keyboard layout.
          */
-        prefStore.setDefault(DATATYPE_FORMATTING_LOCALE, InputContext.getInstance().getLocale().getCountry());
+        prefStore.setDefault(DATATYPE_FORMATTING_LOCALE, Locale.getDefault().getLanguage());
 
         if (IPreferenceStore.STRING_DEFAULT_DEFAULT.equals(prefStore.getString(WORKING_DATE))) {
             setWorkingDate(new GregorianCalendar());
