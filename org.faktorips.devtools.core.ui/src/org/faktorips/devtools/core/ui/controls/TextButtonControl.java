@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.controls;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -139,6 +140,14 @@ public abstract class TextButtonControl extends ControlComposite {
     @Override
     public boolean setFocus() {
         return text.setFocus();
+    }
+
+    public void setButtonImage(Image image) {
+        button.setImage(image);
+    }
+
+    protected Button getButtonControl() {
+        return button;
     }
 
     @Override

@@ -132,7 +132,7 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
                 getFieldEditorParent(), true);
         addField(refactoringMode);
 
-        // createDatatypeFormattingCombo();
+        createDatatypeFormattingCombo();
     }
 
     protected void createDatatypeFormattingCombo() {

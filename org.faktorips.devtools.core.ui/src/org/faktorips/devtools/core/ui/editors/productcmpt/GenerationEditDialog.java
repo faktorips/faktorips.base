@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 
@@ -29,7 +30,10 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.ui.controller.fields.GregorianCalendarField;
+import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
+import org.faktorips.devtools.core.ui.controller.fields.GregorianCalendarFormat;
+import org.faktorips.devtools.core.ui.controls.DateControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
 
 /**
@@ -37,7 +41,7 @@ import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
  */
 public class GenerationEditDialog extends IpsPartEditDialog implements ModifyListener {
 
-    private GregorianCalendarField dateField;
+    private EditField dateField;
 
     private IProductCmptGeneration previous;
     private IProductCmptGeneration next;
@@ -73,11 +77,12 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         uiToolkit.createFormLabel(workArea, Messages.GenerationEditDialog_labelValidFrom);
-        Text date = uiToolkit.createText(workArea);
+        // Text date = uiToolkit.createText(workArea);
+        DateControl dateControl = new DateControl(workArea, uiToolkit);
+        Text textControl = dateControl.getTextControl();
+        textControl.addModifyListener(this);
 
-        date.addModifyListener(this);
-
-        dateField = new GregorianCalendarField(date);
+        dateField = new FormattingTextField(textControl, new GregorianCalendarFormat());
         return c;
     }
 
@@ -93,8 +98,12 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
         // to be done during normal validation of a generation.
         GregorianCalendar value = (GregorianCalendar)dateField.getValue();
         if (value == null) {
-            SimpleDateFormat format = (SimpleDateFormat)SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM);
-            super.setErrorMessage(Messages.GenerationEditDialog_msgInvalidFormat + format.toPattern());
+            DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
+            String formatDescription = format.format(new GregorianCalendar().getTime());
+            if (format instanceof SimpleDateFormat) {
+                formatDescription = ((SimpleDateFormat)format).toPattern();
+            }
+            super.setErrorMessage(Messages.GenerationEditDialog_msgInvalidFormat + formatDescription);
             getButton(OK).setEnabled(false);
         } else if (previous != null && !value.after(previous.getValidFrom())) {
             String msg = NLS.bind(Messages.GenerationEditDialog_msgDateToEarly, IpsPlugin.getDefault()

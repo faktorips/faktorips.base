@@ -94,8 +94,11 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.controlfactories.BooleanControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
+import org.faktorips.devtools.core.ui.controlfactories.DoubleDecimalControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.EnumDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.EnumTypeDatatypeControlFactory;
+import org.faktorips.devtools.core.ui.controlfactories.GregorianCalendarControlFactory;
+import org.faktorips.devtools.core.ui.controlfactories.IntegerLongControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditFieldChangesBroadcaster;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog.IpsObjectSelectionHistory;
 import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
@@ -188,19 +191,12 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         ipsEditorSettings.load(getStateLocation());
         IpsCompositeSaveParticipant saveParticipant = new IpsCompositeSaveParticipant();
         saveParticipant.addSaveParticipant(ipsEditorSettings);
-        ResourcesPlugin.getWorkspace().addSaveParticipant(this, saveParticipant);
+        ResourcesPlugin.getWorkspace().addSaveParticipant(PLUGIN_ID, saveParticipant);
         controlFactories = new ValueDatatypeControlFactory[] {
                 new BooleanControlFactory(IpsPlugin.getDefault().getIpsPreferences()),
-                new EnumDatatypeControlFactory(), new EnumTypeDatatypeControlFactory(), /*
-                                                                                         * new
-                                                                                         * IntegerLongControlFactory
-                                                                                         * (), new
-                                                                                         * DoubleDecimalControlFactory
-                                                                                         * (), new
-                                                                                         * MoneyControlFactory
-                                                                                         * (),
-                                                                                         */
-                new DefaultControlFactory() };
+                new EnumDatatypeControlFactory(), new EnumTypeDatatypeControlFactory(),
+                new IntegerLongControlFactory(), new DoubleDecimalControlFactory(),
+                new GregorianCalendarControlFactory(), new DefaultControlFactory() };
         ipsElementWorkbenchAdapterAdapterFactory = new IpsElementWorkbenchAdapterAdapterFactory();
         Platform.getAdapterManager().registerAdapters(ipsElementWorkbenchAdapterAdapterFactory, IIpsElement.class);
     }

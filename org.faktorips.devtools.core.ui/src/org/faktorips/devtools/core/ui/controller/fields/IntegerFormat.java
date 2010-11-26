@@ -19,15 +19,26 @@ import java.util.Locale;
 
 import org.eclipse.swt.events.VerifyEvent;
 
-public class IntegerFormat extends Format {
+/**
+ * Format for integer number input.
+ * 
+ * @author Stefan Widmaier
+ */
+public class IntegerFormat extends InputFormat {
 
     private NumberFormat numberFormat;
+
+    /**
+     * String that is an example of a valid input string.
+     */
+    private String exampleString;
 
     @Override
     protected void initFormat(Locale locale) {
         numberFormat = NumberFormat.getIntegerInstance(locale);
         numberFormat.setGroupingUsed(false);
         numberFormat.setParseIntegerOnly(true);
+        exampleString = numberFormat.format(-100000000);
     }
 
     @Override
@@ -50,30 +61,10 @@ public class IntegerFormat extends Format {
     @Override
     protected void verifyInternal(VerifyEvent e, String resultingText) {
         if (resultingText.length() > 2) {
-            e.doit = isParsable(resultingText);
+            e.doit = isParsable(numberFormat, resultingText);
         } else {
-            e.doit = isParsableRegEx(resultingText);
-            // Fuer alle Datentypen Locale spezifisch machen! Wie?
+            e.doit = containsAllowedCharactersOnly(exampleString, resultingText);
         }
-    }
-
-    /**
-     * Returns <code>true</code> if the entire String was parsed to a number, else
-     * <code>false</code>.
-     * 
-     * @param resultingText the string to be parsed
-     * @return <code>true</code> if the entire String could be parsed to a number
-     */
-    private boolean isParsable(String resultingText) {
-        ParsePosition position = new ParsePosition(0);
-        numberFormat.parse(resultingText, position);
-        // System.out.println("ResultinText.length()=" + resultingText.length() + ", position=" +
-        // position.getIndex());
-        return position.getIndex() == resultingText.length();
-    }
-
-    private boolean isParsableRegEx(String resultingText) {
-        return resultingText.matches("-?[0-9]*"); //$NON-NLS-1$
     }
 
 }

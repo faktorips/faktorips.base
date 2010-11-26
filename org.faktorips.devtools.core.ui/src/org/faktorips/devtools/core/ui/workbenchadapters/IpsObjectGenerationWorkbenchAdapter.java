@@ -13,12 +13,15 @@
 
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
+import java.text.DateFormat;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -43,6 +46,21 @@ public class IpsObjectGenerationWorkbenchAdapter extends IpsObjectPartWorkbenchA
     protected ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
         // Image is independent of object
         return getDefaultImageDescriptor();
+    }
+
+    @Override
+    protected String getLabel(IIpsObjectPart ipsObjectPart) {
+        if (ipsObjectPart instanceof IIpsObjectGeneration) {
+            return getLabel((IIpsObjectGeneration)ipsObjectPart);
+        } else {
+            return null;
+        }
+    }
+
+    protected String getLabel(IIpsObjectGeneration ipsObjectGeneration) {
+        GregorianCalendar validFrom = ipsObjectGeneration.getValidFrom();
+        DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
+        return format.format(validFrom.getTime());
     }
 
     @Override

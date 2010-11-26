@@ -14,26 +14,26 @@
 package org.faktorips.devtools.core.ui.table;
 
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.ui.controller.fields.Format;
+import org.faktorips.devtools.core.ui.controller.fields.InputFormat;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * IpsCellEditor that adheres to a configurable {@link Format}.
+ * IpsCellEditor that adheres to a configurable {@link InputFormat}.
  * 
  * @author Stefan Widmaier
  */
 public class FormattingTextCellEditor extends TextCellEditor {
 
-    private Format format;
+    private InputFormat format;
 
     /**
      * Creates a {@link FormattingTextCellEditor} with the given {@link Text}-Control and the given
      * format. Both arguments must not be <code>null</code>.
      * 
      * @param text the {@link Text} control to be used by this {@link FormattingTextCellEditor}
-     * @param format the {@link Format} to be used by this {@link FormattingTextCellEditor}
+     * @param format the {@link InputFormat} to be used by this {@link FormattingTextCellEditor}
      */
-    public FormattingTextCellEditor(Text text, Format format) {
+    public FormattingTextCellEditor(Text text, InputFormat format) {
         super(text);
         ArgumentCheck.notNull(text);
         this.format = format;

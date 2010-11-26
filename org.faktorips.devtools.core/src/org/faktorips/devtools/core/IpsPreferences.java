@@ -15,9 +15,11 @@ package org.faktorips.devtools.core;
 
 import java.awt.im.InputContext;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
+import org.apache.commons.lang.LocaleUtils;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
@@ -171,7 +173,10 @@ public class IpsPreferences {
          * formatting. Users will then be able to use the Numpad's ./, Key when entering Decimal
          * numbers, as this key types "." or "," depending on the keyboard layout.
          */
-        prefStore.setDefault(DATATYPE_FORMATTING_LOCALE, InputContext.getInstance().getLocale().getCountry());
+        prefStore.setDefault(DATATYPE_FORMATTING_LOCALE, InputContext.getInstance().getLocale().toString());
+        prefStore.setValue(DATATYPE_FORMATTING_LOCALE, Locale.GERMANY.toString());
+        // System.out.println("Default Datatyp Formatting locale: " +
+        // getDatatypeFormattingLocale());
 
         if (IPreferenceStore.STRING_DEFAULT_DEFAULT.equals(prefStore.getString(WORKING_DATE))) {
             setWorkingDate(new GregorianCalendar());
@@ -237,10 +242,27 @@ public class IpsPreferences {
     }
 
     /**
-     * Returns a default locale date format for valid-from and effective dates.
+     * Returns date format for valid-from and effective dates.
+     * <p>
+     * To be consistent with other date formats and/or input fields this {@link DateFormat} uses the
+     * locale used for all data type specific formats/fields. This is not the default java locale
+     * but the locale of the current keyboard layout.
+     * 
+     * @see #getDatatypeFormattingLocale()
      */
     public DateFormat getDateFormat() {
-        return DateFormat.getDateInstance(DateFormat.MEDIUM);
+        /*
+         * Workaround to display the year in four digits when using UK/US locales. DateFormat.SHORT
+         * displays only two digits for the year number whereas DateFormat.MEDIUM displays Months as
+         * a word (e.g. "April 1st 2003"). For the german locale DateFormat.MEDIUM works just fine.
+         */
+        if (getDatatypeFormattingLocale().equals(Locale.UK)) {
+            return new SimpleDateFormat("dd/MM/yyyy"); //$NON-NLS-1$
+        } else if (getDatatypeFormattingLocale().equals(Locale.US)) {
+            return new SimpleDateFormat("MM/dd/yyyy"); //$NON-NLS-1$
+        } else {
+            return DateFormat.getDateInstance(DateFormat.MEDIUM, getDatatypeFormattingLocale());
+        }
     }
 
     /**
@@ -407,12 +429,15 @@ public class IpsPreferences {
     }
 
     /**
+     * The default value is the locale of the current keyboard layout instead of the default java
+     * locale. This enables the use of the "."/"," button on the numpad.
+     * 
      * @return the currently configured locale for formating values of the data types Integer,
      *         Double, Date.
      */
     public Locale getDatatypeFormattingLocale() {
-        String language = prefStore.getString(DATATYPE_FORMATTING_LOCALE);
-        return new Locale(language);
+        String localeString = prefStore.getString(DATATYPE_FORMATTING_LOCALE);
+        return LocaleUtils.toLocale(localeString);
     }
 
     /**
@@ -421,7 +446,7 @@ public class IpsPreferences {
      * @param locale the new locale to be used
      */
     public void setDatatypeFormattingLocale(Locale locale) {
-        prefStore.setValue(DATATYPE_FORMATTING_LOCALE, locale.getLanguage());
+        prefStore.setValue(DATATYPE_FORMATTING_LOCALE, locale.toString());
     }
 
     /**
