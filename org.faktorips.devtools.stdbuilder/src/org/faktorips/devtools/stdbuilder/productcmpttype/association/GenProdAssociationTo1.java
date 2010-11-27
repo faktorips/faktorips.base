@@ -21,6 +21,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -31,6 +32,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.runtime.internal.MethodNames;
@@ -43,12 +45,6 @@ import org.w3c.dom.Element;
  */
 public class GenProdAssociationTo1 extends GenProdAssociation {
 
-    /**
-     * @param part
-     * @param builder
-     * @param stringsSet
-     * @throws CoreException
-     */
     public GenProdAssociationTo1(GenProductCmptType genProductCmptType, IProductCmptTypeAssociation association)
             throws CoreException {
         super(genProductCmptType, association);
@@ -119,8 +115,6 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
      *      return mainCoverageType;
      *  }
      * </pre>
-     * 
-     * @throws CoreException
      */
     private void generateMethodGet1RelatedCmptLink(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
@@ -142,8 +136,6 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
      *      return productPart.getTargetId().equals(productComponent.getId()) ? productPart : null;
      *  }
      * </pre>
-     * 
-     * @throws CoreException
      */
     private void generateMethodGetRelatedCmptLink(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
@@ -164,8 +156,6 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
      * [Javadoc]
      * public ILink&lt;ICoverageType&gt; getLinkForMainCoverageType();
      * </pre>
-     * 
-     * @throws CoreException
      */
     private void generateMethodInterfaceGet1RelatedCmptLink(JavaCodeFragmentBuilder builder) throws CoreException {
         appendLocalizedJavaDoc("METHOD_GET_1_RELATED_CMPT_LINK", association.getTargetRoleSingular(), builder);
@@ -179,8 +169,6 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
      * <pre>
      * public ILink&lt;ICoverageType&gt; getLinkForMainCoverageType()
      * </pre>
-     * 
-     * @throws CoreException
      */
     private void generateSignatureGet1RelatedCmptLink(JavaCodeFragmentBuilder builder) throws CoreException {
         String methodName = getMethodNameGet1RelatedCmptLink();
@@ -188,7 +176,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
         builder.signature(Modifier.PUBLIC, returnType, methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
     }
 
-    private String getMethodNameGet1RelatedCmptLink() {
+    String getMethodNameGet1RelatedCmptLink() {
         return getJavaNamingConvention().getMultiValueGetterMethodName("LinkFor" + getPropertyNameTo1Association());
     }
 
@@ -458,7 +446,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
                 new String[] { Calendar.class.getName() });
     }
 
-    String getMethodNameGet1RelatedCmpt() throws CoreException {
+    String getMethodNameGet1RelatedCmpt() {
         return getJavaNamingConvention().getGetterMethodName(getPropertyNameTo1Association(), Datatype.INTEGER);
     }
 
@@ -565,6 +553,43 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
             IType generatedJavaType,
             IIpsElement ipsElement) {
 
+        addGet1RelatedCmptMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+        addGet1RelatedCmptGenMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+        addGet1RelatedCmptLinkMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+        addGetRelatedCmptLinkMethodToGeneratedJavaElements(javaElements, generatedJavaType);
     }
 
+    private void addGet1RelatedCmptMethodToGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        IMethod method = generatedJavaType.getMethod(getMethodNameGet1RelatedCmpt(), new String[0]);
+        javaElements.add(method);
+    }
+
+    private void addGet1RelatedCmptGenMethodToGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        IMethod method = generatedJavaType.getMethod(getMethodNameGet1RelatedCmpt(),
+                new String[] { "Ljava.util.Calendar;" });
+        javaElements.add(method);
+    }
+
+    private void addGet1RelatedCmptLinkMethodToGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        IMethod method = generatedJavaType.getMethod(getMethodNameGet1RelatedCmptLink(), new String[0]);
+        javaElements.add(method);
+    }
+
+    private void addGetRelatedCmptLinkMethodToGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        try {
+            IMethod method = generatedJavaType.getMethod(getMethodNameGet1RelatedCmptLink(), new String[] { "Q"
+                    + QNameUtil.getUnqualifiedName(getQualifiedInterfaceClassNameForTarget()) + ";" });
+            javaElements.add(method);
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

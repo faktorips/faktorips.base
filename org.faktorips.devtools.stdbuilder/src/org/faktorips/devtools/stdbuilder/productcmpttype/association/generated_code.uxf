@@ -46,7 +46,7 @@
 /+ getProduct2() : IProduct2/
 /+ getProduct2(Calendar) : IProduct2Gen/
 /+ getLinkForProduct2() : IProductComponentLink&lt;IProduct2&gt;/
-/+ getLinkForProduct2(IProduct2) : IProductComponentLink&lt;IProduct2&gt;/</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>570</x><y>450</y><w>480</w><h>160</h></coordinates><panel_attributes>IProduct1Gen
+/+ getLinkForProduct2(IProduct2) : IProductComponentLink&lt;IProduct2&gt;/</panel_attributes><additional_attributes/></element><element><type>com.umlet.element.base.Class</type><coordinates><x>570</x><y>450</y><w>480</w><h>160</h></coordinates><panel_attributes>Product1Gen
 --
 - product2 : IProductComponentLink&lt;IProduct2&gt;	
  

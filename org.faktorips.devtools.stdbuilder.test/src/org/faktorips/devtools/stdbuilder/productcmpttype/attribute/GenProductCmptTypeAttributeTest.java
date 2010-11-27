@@ -111,18 +111,18 @@ public class GenProductCmptTypeAttributeTest extends ProductCmptTypeBuilderTest 
         assertEquals(3, generatedJavaElements.size());
     }
 
-    private final void expectGetterMethod(IType javaType, GenAttribute genAttribute) {
+    private void expectGetterMethod(IType javaType, GenAttribute genAttribute) {
         IMethod expectedGetterMethod = javaType.getMethod(genAttribute.getGetterMethodName(), new String[] {});
         assertTrue(generatedJavaElements.contains(expectedGetterMethod));
     }
 
-    private final void expectSetterMethod(IType javaType, GenAttribute genAttribute) {
+    private void expectSetterMethod(IType javaType, GenAttribute genAttribute) {
         IMethod expectedSetterMethod = javaType.getMethod(genAttribute.getSetterMethodName(), new String[] { "Q"
                 + genAttribute.getDatatype().getName() + ";" });
         assertTrue(generatedJavaElements.contains(expectedSetterMethod));
     }
 
-    private final void expectMemberVar(IType javaType, GenAttribute genAttribute) {
+    private void expectMemberVar(IType javaType, GenAttribute genAttribute) {
         IField expectedMemberVar = javaType.getField(genAttribute.getMemberVarName());
         assertTrue(generatedJavaElements.contains(expectedMemberVar));
     }
