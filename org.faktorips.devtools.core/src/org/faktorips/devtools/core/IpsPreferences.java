@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core;
 
-import java.awt.im.InputContext;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
@@ -169,14 +168,15 @@ public class IpsPreferences {
         prefStore.setDefault(SECTIONS_IN_TYPE_EDITORS, TWO_SECTIONS_IN_TYPE_EDITOR_PAGE);
         prefStore.setDefault(RANGE_EDIT_FIELDS_IN_ONE_ROW, true);
         /*
-         * Use the system's keyboard-Layout locale and not the java default locale for data type
-         * formatting. Users will then be able to use the Numpad's ./, Key when entering Decimal
-         * numbers, as this key types "." or "," depending on the keyboard layout.
+         * Use the java default locale (and not the configured eclipse locale) for data type
+         * formatting. Users will then be able to use german data type formatting within an
+         * otherwise english eclipse.
+         * 
+         * Important: Do NOT use InputContext.getInstance().getLocale() at this point. As an
+         * AWT-Class InputContext causes the FIPS headless build to crash and thus renders all
+         * server-side FIPS-Systems unusable.
          */
-        prefStore.setDefault(DATATYPE_FORMATTING_LOCALE, InputContext.getInstance().getLocale().toString());
-        prefStore.setValue(DATATYPE_FORMATTING_LOCALE, Locale.GERMANY.toString());
-        // System.out.println("Default Datatyp Formatting locale: " +
-        // getDatatypeFormattingLocale());
+        prefStore.setDefault(DATATYPE_FORMATTING_LOCALE, Locale.getDefault().toString());
 
         if (IPreferenceStore.STRING_DEFAULT_DEFAULT.equals(prefStore.getString(WORKING_DATE))) {
             setWorkingDate(new GregorianCalendar());
@@ -245,8 +245,7 @@ public class IpsPreferences {
      * Returns date format for valid-from and effective dates.
      * <p>
      * To be consistent with other date formats and/or input fields this {@link DateFormat} uses the
-     * locale used for all data type specific formats/fields. This is not the default java locale
-     * but the locale of the current keyboard layout.
+     * locale used for all data type specific formats/fields.
      * 
      * @see #getDatatypeFormattingLocale()
      */
@@ -429,8 +428,8 @@ public class IpsPreferences {
     }
 
     /**
-     * The default value is the locale of the current keyboard layout instead of the default java
-     * locale. This enables the use of the "."/"," button on the numpad.
+     * The default value is the locale of the default java locale instead of the configured eclipse
+     * locale.
      * 
      * @return the currently configured locale for formating values of the data types Integer,
      *         Double, Date.
