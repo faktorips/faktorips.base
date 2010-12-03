@@ -80,9 +80,9 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
      */
     private void addTestCaseTypeParameters() {
         addPageElements(new TextPageElement(Messages.TestCaseContentPageElement_parameters, TextType.HEADING_2));
-        TreeNodePageElement root = new TreeNodePageElement(new WrapperPageElement(WrapperType.NONE).addPageElements(
-                new IpsElementImagePageElement(getDocumentedIpsObject())).addPageElements(
-                new TextPageElement(getDocumentedIpsObject().getQualifiedName())));
+        TreeNodePageElement root = new TreeNodePageElement(new WrapperPageElement(WrapperType.NONE)
+                .addIpsElementImagePageElement(getDocumentedIpsObject(), getContext()).addPageElements(
+                        new TextPageElement(getDocumentedIpsObject().getQualifiedName())));
 
         ITestObject[] testObjects = getDocumentedIpsObject().getTestObjects();
         for (ITestObject testObject : testObjects) {
@@ -153,7 +153,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
 
     private PageElement createTestRulePageElement(ITestRule testObject) {
         TreeNodePageElement testObjectPageElement = new TreeNodePageElement(new WrapperPageElement(WrapperType.BLOCK)
-                .addPageElements(new IpsElementImagePageElement(testObject)).addPageElements(
+                .addIpsElementImagePageElement(getDocumentedIpsObject(), getContext()).addPageElements(
                         new TextPageElement(testObject.getTestParameterName())));
 
         KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement();

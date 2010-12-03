@@ -14,6 +14,8 @@
 package org.faktorips.devtools.htmlexport.helper.filter;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
@@ -21,6 +23,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 
 /**
  * Filter, which checks, whether an {@link IpsObject} is within the given {@link IpsPackageFragment}
@@ -31,10 +34,12 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
  * 
  */
 public class IpsElementInIIpsPackageFilter implements IpsElementFilter {
-    private IIpsPackageFragment ipsPackageFragment;
+    private final IIpsPackageFragment ipsPackageFragment;
+    private final DocumentationContext context;
 
-    public IpsElementInIIpsPackageFilter(IIpsPackageFragment ipsPackageFragment) {
+    public IpsElementInIIpsPackageFilter(IIpsPackageFragment ipsPackageFragment, DocumentationContext context) {
         this.ipsPackageFragment = ipsPackageFragment;
+        this.context = context;
     }
 
     @Override
@@ -46,7 +51,7 @@ public class IpsElementInIIpsPackageFilter implements IpsElementFilter {
                 IIpsObject ipsObject = ((IIpsSrcFile)ipsElement).getIpsObject();
                 return acceptIpsObject(ipsObject);
             } catch (CoreException e) {
-                throw new RuntimeException(e);
+                context.addStatus(new IpsStatus(IStatus.WARNING, "Could not filter package", e)); //$NON-NLS-1$
             }
         }
         if (ipsElement instanceof IIpsObject) {

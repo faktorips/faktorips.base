@@ -18,7 +18,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
@@ -71,7 +73,8 @@ public class AttributesTablePageElement extends AbstractIpsObjectPartsContainerT
                     .formatValue(getContext().getIpsProject().findValueDatatype(attribute.getDatatype()),
                             attribute.getDefaultValue()));
         } catch (CoreException e) {
-            IpsPlugin.log(e);
+            getContext().addStatus(new IpsStatus(IStatus.WARNING, "Unable to find ValueDatatype for attribute " //$NON-NLS-1$
+                    + attribute.getName()));
             attributeData.add(attribute.getDefaultValue());
         }
 

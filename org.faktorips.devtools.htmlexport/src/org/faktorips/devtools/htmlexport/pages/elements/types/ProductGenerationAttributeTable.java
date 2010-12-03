@@ -345,7 +345,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         IAssociation[] associations = productCmptType.getAssociations();
         for (IAssociation association : associations) {
             TreeNodePageElement root = new TreeNodePageElement(PageElementUtils.createIpsElementRepresentation(
-                    association, context.getLabel(association), true));
+                    association, context, context.getLabel(association), true));
             IProductCmptLink[] links = productCmptGeneration.getLinks(association.getName());
             for (IProductCmptLink productCmptLink : links) {
                 try {

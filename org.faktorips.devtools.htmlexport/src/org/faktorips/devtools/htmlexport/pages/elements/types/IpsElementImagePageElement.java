@@ -47,7 +47,7 @@ public class IpsElementImagePageElement extends ImagePageElement {
         super(createImageDataByIpsElement(element), title, path);
     }
 
-    public IpsElementImagePageElement(IIpsElement element) {
+    public IpsElementImagePageElement(IIpsElement element) throws CoreException {
         super(createImageDataByIpsElement(element), element.getName(), getIpsElementImageName(element));
     }
 
@@ -55,7 +55,7 @@ public class IpsElementImagePageElement extends ImagePageElement {
         return IpsUIPlugin.getImageHandling().getImage(element, true).getImageData();
     }
 
-    private static String getIpsElementImageName(IIpsElement element) {
+    private static String getIpsElementImageName(IIpsElement element) throws CoreException {
         if (element instanceof IIpsPackageFragment) {
             return "ipspackage"; //$NON-NLS-1$
         }
@@ -121,40 +121,29 @@ public class IpsElementImagePageElement extends ImagePageElement {
         throw new RuntimeException("Unknown Type of ITestValue"); //$NON-NLS-1$
     }
 
-    private static String createImageNameByIpsSrcFile(IIpsElement element) {
+    private static String createImageNameByIpsSrcFile(IIpsElement element) throws CoreException {
         IIpsSrcFile srcFile = (IIpsSrcFile)element;
         if (srcFile.getIpsObjectType() != IpsObjectType.PRODUCT_CMPT) {
             return srcFile.getIpsObjectType().getFileExtension();
         }
-        try {
-            IProductCmpt ipsObject = (IProductCmpt)srcFile.getIpsObject();
-            return createImageNameByProductCmpt(ipsObject);
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        IProductCmpt ipsObject = (IProductCmpt)srcFile.getIpsObject();
+        return createImageNameByProductCmpt(ipsObject);
     }
 
-    private static String createImageNameByProductCmpt(IProductCmpt object) {
-        try {
-            IProductCmptType productCmptType = object.getIpsProject().findProductCmptType(object.getProductCmptType());
-            return getProductCmptImageNameByProductCmptType(productCmptType);
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+    private static String createImageNameByProductCmpt(IProductCmpt object) throws CoreException {
+        IProductCmptType productCmptType = object.getIpsProject().findProductCmptType(object.getProductCmptType());
+        return getProductCmptImageNameByProductCmptType(productCmptType);
     }
 
-    private static String getProductCmptImageNameByProductCmptType(IProductCmptType productCmptType) {
+    private static String getProductCmptImageNameByProductCmptType(IProductCmptType productCmptType)
+            throws CoreException {
         if (productCmptType.isUseCustomInstanceIcon()) {
             return productCmptType.getQualifiedName();
         }
 
         if (productCmptType.hasSupertype()) {
-            try {
-                return getProductCmptImageNameByProductCmptType(productCmptType
-                        .findSuperProductCmptType(productCmptType.getIpsProject()));
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+            return getProductCmptImageNameByProductCmptType(productCmptType.findSuperProductCmptType(productCmptType
+                    .getIpsProject()));
         }
 
         return IpsObjectType.PRODUCT_CMPT.getFileExtension();

@@ -23,6 +23,8 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
@@ -121,7 +123,7 @@ public class DocumentationContext {
             try {
                 ipsProject.findAllIpsSrcFiles(documentedSrcFiles, getDocumentedIpsObjectTypes());
             } catch (CoreException e) {
-                e.printStackTrace();
+                IpsPlugin.logAndShowErrorDialog(new IpsStatus("Error finding Objects", e)); //$NON-NLS-1$
             }
         }
 
@@ -142,7 +144,7 @@ public class DocumentationContext {
         try {
             ipsProject.findAllIpsSrcFiles(result, ipsObjectTypes);
         } catch (CoreException e) {
-            e.printStackTrace();
+            IpsPlugin.logAndShowErrorDialog(new IpsStatus("Error finding Objects", e)); //$NON-NLS-1$
         }
 
         return result;

@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -94,7 +97,7 @@ public class PageElementUtils {
             Style... styles) {
         IpsElementInDocumentedSourceFileFilter filter = new IpsElementInDocumentedSourceFileFilter(context);
 
-        PageElement element = createIpsElementRepresentation(to, text, useImage);
+        PageElement element = createIpsElementRepresentation(to, context, text, useImage);
 
         if (filter.accept(to)) {
             return createLinkPageElementToIpsElement(to, target, element).addStyles(styles);
@@ -102,21 +105,20 @@ public class PageElementUtils {
         return element.addStyles(Style.DEAD_LINK);
     }
 
-    public static PageElement createIpsElementRepresentation(IIpsElement ipsElement, String text, boolean useImage) {
+    public static PageElement createIpsElementRepresentation(IIpsElement ipsElement,
+            DocumentationContext context,
+            String text,
+            boolean useImage) {
         if (useImage) {
-            return new WrapperPageElement(WrapperType.NONE).addPageElements(new IpsElementImagePageElement(ipsElement))
-                    .addPageElements(new TextPageElement('\u00A0' + text));
+            try {
+                return new WrapperPageElement(WrapperType.NONE).addPageElements(
+                        new IpsElementImagePageElement(ipsElement)).addPageElements(
+                        new TextPageElement('\u00A0' + text));
+            } catch (CoreException e) {
+                context.addStatus(new IpsStatus(IStatus.WARNING, "Could not find image for " + ipsElement.getName())); //$NON-NLS-1$
+            }
         }
         return new TextPageElement(text);
-    }
-
-    /**
-     * creates a representation of the given {@link IIpsElement}. It uses the name of the ipselement
-     * and adds an image if useImage is true.
-     * 
-     */
-    public static PageElement createIpsElementRepresentation(IIpsElement ipsElement, boolean useImage) {
-        return createIpsElementRepresentation(ipsElement, ipsElement.getName(), useImage);
     }
 
     /**

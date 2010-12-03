@@ -18,6 +18,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
@@ -78,6 +80,8 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
             elements[linkElementIndex] = PageElementUtils.createLinkPageElement(context, target,
                     "content", target.getName(), true); //$NON-NLS-1$
         } catch (CoreException e) {
+            context.addStatus(new IpsStatus(IStatus.WARNING,
+                    "Error setting Link to target of " + association.getName(), e)); //$NON-NLS-1$
             elements[linkElementIndex] = new TextPageElement(""); //$NON-NLS-1$
         }
 

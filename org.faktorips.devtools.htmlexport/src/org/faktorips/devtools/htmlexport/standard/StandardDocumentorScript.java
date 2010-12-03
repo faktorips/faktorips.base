@@ -128,7 +128,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
             List<IIpsSrcFile> srcFiles) {
         boolean shownTypeChooser = false; // TODO auf true, wenn fertig
         IpsElementListPageElement allClassesPage = new IpsElementListPageElement(ipsPackageFragment, srcFiles,
-                new IpsElementInIIpsPackageFilter(ipsPackageFragment), context, shownTypeChooser);
+                new IpsElementInIIpsPackageFilter(ipsPackageFragment, context), context, shownTypeChooser);
         allClassesPage.setLinkTarget("content"); //$NON-NLS-1$
         allClassesPage.build();
         FileHandler.writeFile(

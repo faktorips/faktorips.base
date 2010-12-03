@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.htmlexport.pages.elements.core;
 
+import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 
 /**
@@ -34,4 +36,9 @@ public interface ICompositePageElement extends PageElement {
      * 
      */
     public ICompositePageElement addPageElements(PageElement... pageElements);
+
+    /**
+     * adds an image for the given IIpsElement
+     */
+    public ICompositePageElement addIpsElementImagePageElement(IIpsElement ipsElements, DocumentationContext context);
 }

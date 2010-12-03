@@ -40,7 +40,6 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TreeNodePageElement
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.RegexTablePageElementLayout;
 import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractIpsObjectPartsContainerTablePageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.types.IpsElementImagePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.KeyValueTablePageElement;
 
 /**
@@ -141,15 +140,20 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
      */
     private void addTestCaseTypeParameters() {
         addPageElements(new TextPageElement(Messages.TestCaseTypeContentPageElement_parameters, TextType.HEADING_2));
-        TreeNodePageElement root = new TreeNodePageElement(new WrapperPageElement(WrapperType.NONE).addPageElements(
-                new IpsElementImagePageElement(getDocumentedIpsObject())).addPageElements(
-                new TextPageElement(getDocumentedIpsObject().getQualifiedName())));
+        TreeNodePageElement root = createRootNode();
 
         ITestParameter[] testParameters = getDocumentedIpsObject().getTestParameters();
         for (ITestParameter testParameter : testParameters) {
             root.addPageElements(createTestParameterPageElement(testParameter));
         }
         addPageElements(root);
+    }
+
+    private TreeNodePageElement createRootNode() {
+        TreeNodePageElement root = new TreeNodePageElement(new WrapperPageElement(WrapperType.NONE)
+                .addIpsElementImagePageElement(getDocumentedIpsObject(), getContext()).addPageElements(
+                        new TextPageElement(getDocumentedIpsObject().getQualifiedName())));
+        return root;
     }
 
     /**
@@ -229,9 +233,8 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
     private PageElement createTestRuleParameterPageElement(TestRuleParameter testParameter) {
         String name = testParameter.getName() + " - " + testParameter.getTestParameterType().getName(); //$NON-NLS-1$
         TreeNodePageElement testParameterPageElement = new TreeNodePageElement(
-                new WrapperPageElement(WrapperType.BLOCK)
-                        .addPageElements(new IpsElementImagePageElement(testParameter)).addPageElements(
-                                new TextPageElement(name)));
+                new WrapperPageElement(WrapperType.BLOCK).addIpsElementImagePageElement(getDocumentedIpsObject(),
+                        getContext()).addPageElements(new TextPageElement(name)));
 
         KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement();
         keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_name, testParameter.getName());
@@ -247,9 +250,8 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
     private PageElement createTestValueParameterPageElement(TestValueParameter testParameter) {
         String name = testParameter.getName() + " - " + testParameter.getTestParameterType().getName(); //$NON-NLS-1$
         TreeNodePageElement testParameterPageElement = new TreeNodePageElement(
-                new WrapperPageElement(WrapperType.BLOCK)
-                        .addPageElements(new IpsElementImagePageElement(testParameter)).addPageElements(
-                                new TextPageElement(name)));
+                new WrapperPageElement(WrapperType.BLOCK).addIpsElementImagePageElement(getDocumentedIpsObject(),
+                        getContext()).addPageElements(new TextPageElement(name)));
 
         KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement();
         keyValueTable.addKeyValueRow(Messages.TestCaseTypeContentPageElement_name, testParameter.getName());

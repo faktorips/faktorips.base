@@ -61,7 +61,7 @@ public class HtmlExportOperation implements IWorkspaceRunnable {
     }
 
     /**
-     * Takes all scripts from the context and and executes them with the contexturation
+     * Takes all scripts from the context and and executes them with the context
      * 
      * {@inheritDoc}
      */
@@ -80,6 +80,11 @@ public class HtmlExportOperation implements IWorkspaceRunnable {
         refreshIfNecessary(new SubProgressMonitor(monitor, 1));
 
         monitor.done();
+
+        if (!getDocumentationContext().getExportProblems().isEmpty()) {
+            // TODO Verarbeiten der gesammelten Fehler
+            // ErrorDialog.
+        }
     }
 
     private void refreshIfNecessary(IProgressMonitor monitor) {
