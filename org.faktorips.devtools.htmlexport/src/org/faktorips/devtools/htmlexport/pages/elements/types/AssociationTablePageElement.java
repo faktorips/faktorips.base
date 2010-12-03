@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
@@ -36,16 +36,16 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
  */
 public class AssociationTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IAssociation> {
 
-    private final DocumentorConfiguration config;
+    private final DocumentationContext context;
     private final IType type;
 
     /**
      * Creates an {@link AssociationTablePageElement} for the specified {@link IType}
      * 
      */
-    public AssociationTablePageElement(IType type, DocumentorConfiguration config) {
-        super(Arrays.asList(type.getAssociations()), config);
-        this.config = config;
+    public AssociationTablePageElement(IType type, DocumentationContext context) {
+        super(Arrays.asList(type.getAssociations()), context);
+        this.context = context;
         this.type = type;
     }
 
@@ -54,13 +54,13 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
         List<String> values = new ArrayList<String>();
 
         values.add(association.getName());
-        values.add(getConfig().getLabel(association));
+        values.add(getContext().getLabel(association));
 
         // will be replaced with the link
         values.add(""); //$NON-NLS-1$
         int linkElementIndex = 2;
 
-        values.add(getConfig().getDescription(association));
+        values.add(getContext().getDescription(association));
         values.add(association.getAssociationType().getName());
         values.add(association.getAggregationKind().getName());
         values.add(association.getTargetRoleSingular());
@@ -75,7 +75,7 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
 
         try {
             IIpsObject target = type.getIpsProject().findIpsObject(type.getIpsObjectType(), association.getTarget());
-            elements[linkElementIndex] = PageElementUtils.createLinkPageElement(config, target,
+            elements[linkElementIndex] = PageElementUtils.createLinkPageElement(context, target,
                     "content", target.getName(), true); //$NON-NLS-1$
         } catch (CoreException e) {
             elements[linkElementIndex] = new TextPageElement(""); //$NON-NLS-1$

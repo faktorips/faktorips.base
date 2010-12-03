@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
@@ -43,11 +43,11 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.ProductGenerationA
 public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageElement<IProductCmpt> {
 
     /**
-     * creates a page for the given {@link IProductCmpt} with the given config
+     * creates a page for the given {@link IProductCmpt} with the given context
      * 
      */
-    protected ProductCmptContentPageElement(IProductCmpt object, DocumentorConfiguration config) {
-        super(object, config);
+    protected ProductCmptContentPageElement(IProductCmpt object, DocumentationContext context) {
+        super(object, context);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
 
         addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
                 new TextPageElement(IpsObjectType.PRODUCT_CMPT_TYPE.getDisplayName() + ": "), //$NON-NLS-1$
-                PageElementUtils.createLinkPageElement(getConfig(), productCmptType,
+                PageElementUtils.createLinkPageElement(getContext(), productCmptType,
                         "content", productCmptType.getName(), true) })); //$NON-NLS-1$
     }
 
@@ -66,7 +66,7 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
      */
     protected IProductCmptType getProductCmptType() {
         try {
-            return getConfig().getIpsProject().findProductCmptType(getDocumentedIpsObject().getProductCmptType());
+            return getContext().getIpsProject().findProductCmptType(getDocumentedIpsObject().getProductCmptType());
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
@@ -89,7 +89,7 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
         wrapper.addPageElements(new TextPageElement(Messages.ProductCmptContentPageElement_values, TextType.HEADING_2));
 
         wrapper.addPageElements(getTableOrAlternativeText(new ProductGenerationAttributeTable(getDocumentedIpsObject(),
-                getProductCmptType(), getConfig()), Messages.ProductCmptContentPageElement_noGenerationsOrAttributes));
+                getProductCmptType(), getContext()), Messages.ProductCmptContentPageElement_noGenerationsOrAttributes));
         addPageElements(wrapper);
     }
 
@@ -113,7 +113,7 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
 
         for (IIpsObjectGeneration ipsObjectGeneration : generations) {
             GregorianCalendar validFrom = ipsObjectGeneration.getValidFrom();
-            validFroms.add(getConfig().getSimpleDateFormat().format(validFrom.getTime()));
+            validFroms.add(getContext().getSimpleDateFormat().format(validFrom.getTime()));
         }
 
         wrapper.addPageElements(new ListPageElement(Arrays.asList(PageElementUtils.createTextPageElements(validFroms))));

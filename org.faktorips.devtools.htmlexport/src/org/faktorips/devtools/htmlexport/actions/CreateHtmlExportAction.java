@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.htmlexport.HtmlExportOperation;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.standard.StandardDocumentorScript;
 
@@ -93,18 +93,18 @@ public class CreateHtmlExportAction extends ActionDelegate {
 
     private void exportHtml(String selected) {
 
-        DocumentorConfiguration documentorConfig = new DocumentorConfiguration();
+        DocumentationContext context = new DocumentationContext();
 
-        documentorConfig.setPath(selected);
-        documentorConfig.setIpsProject(getIpsProject());
-        documentorConfig.setLayouter(new HtmlLayouter(".resource")); //$NON-NLS-1$
+        context.setPath(selected);
+        context.setIpsProject(getIpsProject());
+        context.setLayouter(new HtmlLayouter(".resource")); //$NON-NLS-1$
 
-        documentorConfig.addDocumentorScript(new StandardDocumentorScript());
-        documentorConfig
-                .setDocumentedIpsObjectTypes(documentorConfig.getIpsProject().getIpsModel().getIpsObjectTypes());
+        context.addDocumentorScript(new StandardDocumentorScript());
+        context
+                .setDocumentedIpsObjectTypes(context.getIpsProject().getIpsModel().getIpsObjectTypes());
 
         try {
-            new HtmlExportOperation(documentorConfig).run(new NullProgressMonitor());
+            new HtmlExportOperation(context).run(new NullProgressMonitor());
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }

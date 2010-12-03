@@ -22,7 +22,7 @@ import java.io.OutputStream;
 import java.net.URL;
 
 import org.eclipse.core.runtime.Platform;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.osgi.framework.Bundle;
 
 /**
@@ -35,11 +35,11 @@ public class FileHandler {
 
     /**
      * writes the content into a file. The filename is the path of the given
-     * {@link DocumentorConfiguration} and relativPath.
+     * {@link DocumentationContext} and relativPath.
      * 
      */
-    public static void writeFile(DocumentorConfiguration config, String relativPath, byte[] content) {
-        writeFile(config.getPath() + File.separator + relativPath, content);
+    public static void writeFile(DocumentationContext context, String relativPath, byte[] content) {
+        writeFile(context.getPath() + File.separator + relativPath, content);
     }
 
     /**

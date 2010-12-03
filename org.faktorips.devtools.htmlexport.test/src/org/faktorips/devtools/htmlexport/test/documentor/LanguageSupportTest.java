@@ -46,13 +46,13 @@ public class LanguageSupportTest extends AbstractHtmlExportTest {
         }
         enDescription.setText(enBeschreibung);
 
-        config.setDescriptionLocale(Locale.GERMANY);
+        context.setDescriptionLocale(Locale.GERMANY);
 
-        assertEquals(deBeschreibung, config.getDescription(policy));
+        assertEquals(deBeschreibung, context.getDescription(policy));
 
-        config.setDescriptionLocale(Locale.ENGLISH);
+        context.setDescriptionLocale(Locale.ENGLISH);
 
-        assertEquals(enBeschreibung, config.getDescription(policy));
+        assertEquals(enBeschreibung, context.getDescription(policy));
     }
 
     public void testLabelLanguage() throws Exception {
@@ -66,17 +66,17 @@ public class LanguageSupportTest extends AbstractHtmlExportTest {
         attribute.setName(name);
 
         IAttributeValue value = new AttributeValue(productCmpt.newGeneration(), "xxx", attribute.getName(), "yxz");
-        assertEquals(name, config.getCaption(value));
+        assertEquals(name, context.getCaption(value));
 
-        config.setDescriptionLocale(Locale.GERMAN);
+        context.setDescriptionLocale(Locale.GERMAN);
         attribute.setLabelValue(Locale.GERMAN, deLabel);
 
-        assertEquals(deLabel, config.getCaption(value));
+        assertEquals(deLabel, context.getCaption(value));
 
-        config.setDescriptionLocale(Locale.ENGLISH);
-        assertEquals(deLabel, config.getCaption(value));
+        context.setDescriptionLocale(Locale.ENGLISH);
+        assertEquals(deLabel, context.getCaption(value));
 
         attribute.setLabelValue(Locale.ENGLISH, enLabel);
-        assertEquals(enLabel, config.getCaption(value));
+        assertEquals(enLabel, context.getCaption(value));
     }
 }

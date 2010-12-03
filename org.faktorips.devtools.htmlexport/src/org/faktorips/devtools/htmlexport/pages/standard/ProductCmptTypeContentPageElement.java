@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
@@ -57,8 +57,8 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
      */
     private static class TableStructureTablePageElement extends
             AbstractIpsObjectPartsContainerTablePageElement<ITableStructureUsage> {
-        public TableStructureTablePageElement(IProductCmptType productCmptType, DocumentorConfiguration config) {
-            super(Arrays.asList(productCmptType.getTableStructureUsages()), config);
+        public TableStructureTablePageElement(IProductCmptType productCmptType, DocumentationContext context) {
+            super(Arrays.asList(productCmptType.getTableStructureUsages()), context);
         }
 
         @Override
@@ -66,10 +66,10 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
             List<PageElement> pageElements = new ArrayList<PageElement>();
 
             pageElements.add(new TextPageElement(tableStructureUsage.getRoleName()));
-            pageElements.add(new TextPageElement(getConfig().getLabel(tableStructureUsage)));
+            pageElements.add(new TextPageElement(getContext().getLabel(tableStructureUsage)));
             pageElements.add(getTableStructureLinks(tableStructureUsage));
             pageElements.add(new TextPageElement(tableStructureUsage.isMandatoryTableContent() ? "X" : "-")); //$NON-NLS-1$ //$NON-NLS-2$
-            pageElements.add(new TextPageElement(getConfig().getDescription(tableStructureUsage)));
+            pageElements.add(new TextPageElement(getContext().getDescription(tableStructureUsage)));
 
             return pageElements;
         }
@@ -85,7 +85,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
                 try {
                     IIpsObject ipsObject = tableStructureUsage.getIpsProject().findIpsObject(
                             IpsObjectType.TABLE_STRUCTURE, tableStructure);
-                    links.add(PageElementUtils.createLinkPageElement(getConfig(), ipsObject,
+                    links.add(PageElementUtils.createLinkPageElement(getContext(), ipsObject,
                             "content", tableStructure, true)); //$NON-NLS-1$
                 } catch (CoreException e) {
                     throw new RuntimeException(e);
@@ -117,11 +117,11 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
     }
 
     /**
-     * creates a page for the given {@link ProductCmptType} with the given config
+     * creates a page for the given {@link ProductCmptType} with the given context
      * 
      */
-    protected ProductCmptTypeContentPageElement(IProductCmptType productCmptType, DocumentorConfiguration config) {
-        super(productCmptType, config);
+    protected ProductCmptTypeContentPageElement(IProductCmptType productCmptType, DocumentationContext context) {
+        super(productCmptType, context);
     }
 
     @Override
@@ -141,7 +141,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
         wrapper.addPageElements(new TextPageElement(IpsObjectType.TABLE_STRUCTURE.getDisplayNamePlural(),
                 TextType.HEADING_2));
         wrapper.addPageElements((getTableOrAlternativeText(new TableStructureTablePageElement(getDocumentedIpsObject(),
-                config), Messages.ProductCmptTypeContentPageElement_noTableStructures)));
+                getContext()), Messages.ProductCmptTypeContentPageElement_noTableStructures)));
         addPageElements(wrapper);
     }
 
@@ -157,7 +157,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
             throw new RuntimeException(e);
         }
 
-        allProductCmptSrcFiles.retainAll(getConfig().getDocumentedSourceFiles());
+        allProductCmptSrcFiles.retainAll(getContext().getDocumentedSourceFiles());
 
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(IpsObjectType.PRODUCT_CMPT.getDisplayNamePlural(),
@@ -171,7 +171,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
         }
 
         List<PageElement> linkPageElements = PageElementUtils.createLinkPageElements(allProductCmptSrcFiles, "content", //$NON-NLS-1$
-                new LinkedHashSet<Style>(), getConfig());
+                new LinkedHashSet<Style>(), getContext());
         ListPageElement liste = new ListPageElement(linkPageElements);
 
         wrapper.addPageElements(liste);
@@ -193,7 +193,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
             addPageElements(new WrapperPageElement(
                     WrapperType.BLOCK,
                     new PageElement[] {
-                            new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": "), PageElementUtils.createLinkPageElement(getConfig(), to, "content", to.getName(), true) })); //$NON-NLS-1$ //$NON-NLS-2$
+                            new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": "), PageElementUtils.createLinkPageElement(getContext(), to, "content", to.getName(), true) })); //$NON-NLS-1$ //$NON-NLS-2$
         } catch (CoreException e) {
             e.printStackTrace();
         }
@@ -202,7 +202,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 
     @Override
     MethodsTablePageElement getMethodsTablePageElement() {
-        return new MethodsTablePageElement(getDocumentedIpsObject(), config) {
+        return new MethodsTablePageElement(getDocumentedIpsObject(), getContext()) {
 
             @Override
             protected List<String> getHeadlineWithIpsObjectPart() {

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.helper.path.LinkableIpsElementUtil;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
@@ -31,12 +31,12 @@ import org.faktorips.util.message.ObjectProperty;
 public class MessageListTablePageElement extends AbstractStandardTablePageElement {
 
     protected final MessageList messageList;
-    protected final DocumentorConfiguration config;
+    protected final DocumentationContext context;
 
-    public MessageListTablePageElement(MessageList messageList, DocumentorConfiguration config) {
+    public MessageListTablePageElement(MessageList messageList, DocumentationContext context) {
         super();
         this.messageList = messageList;
-        this.config = config;
+        this.context = context;
     }
 
     @Override
@@ -83,7 +83,7 @@ public class MessageListTablePageElement extends AbstractStandardTablePageElemen
     protected PageElement createInvalidObjectPropertiesItem(ObjectProperty objectProperty) {
         IIpsSrcFile srcFile = LinkableIpsElementUtil.getLinkableSrcFile(objectProperty.getObject());
         if (srcFile != null) {
-            return PageElementUtils.createLinkPageElement(config, srcFile, "content", //$NON-NLS-1$
+            return PageElementUtils.createLinkPageElement(context, srcFile, "content", //$NON-NLS-1$
                     srcFile.getIpsObjectName(), true);
         }
         return new TextPageElement(objectProperty.getObject().toString());

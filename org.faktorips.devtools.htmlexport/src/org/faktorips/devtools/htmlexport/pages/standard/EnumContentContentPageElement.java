@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
@@ -37,11 +37,11 @@ public class EnumContentContentPageElement extends AbstractIpsObjectContentPageE
 
     /**
      * 
-     * creates a page, which represents the given enumContent according to the given config
+     * creates a page, which represents the given enumContent according to the given context
      * 
      */
-    protected EnumContentContentPageElement(IEnumContent object, DocumentorConfiguration config) {
-        super(object, config);
+    protected EnumContentContentPageElement(IEnumContent object, DocumentationContext context) {
+        super(object, context);
         try {
             this.enumType = object.getIpsProject().findEnumType(object.getEnumType());
         } catch (CoreException e) {
@@ -55,7 +55,7 @@ public class EnumContentContentPageElement extends AbstractIpsObjectContentPageE
 
         addPageElements(new WrapperPageElement(WrapperType.BLOCK).addPageElements(
                 new TextPageElement(IpsObjectType.ENUM_TYPE.getDisplayName() + ": ")).addPageElements( //$NON-NLS-1$
-                PageElementUtils.createLinkPageElement(getConfig(), getEnumType(),
+                PageElementUtils.createLinkPageElement(getContext(), getEnumType(),
                         "content", getEnumType().getQualifiedName(), true))); //$NON-NLS-1$
 
         addValuesTable();
@@ -69,7 +69,7 @@ public class EnumContentContentPageElement extends AbstractIpsObjectContentPageE
         wrapper.addPageElements(new TextPageElement(Messages.EnumContentContentPageElement_values, TextType.HEADING_2));
 
         wrapper.addPageElements(getTableOrAlternativeText(new EnumValuesTablePageElement(getDocumentedIpsObject(),
-                config), Messages.EnumContentContentPageElement_noValues));
+                getContext()), Messages.EnumContentContentPageElement_noValues));
 
         addPageElements(wrapper);
     }

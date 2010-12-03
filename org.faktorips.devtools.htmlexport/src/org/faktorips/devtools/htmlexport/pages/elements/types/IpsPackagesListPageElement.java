@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementFilter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
@@ -55,8 +55,8 @@ public class IpsPackagesListPageElement extends AbstractListPageElement {
      * @see AbstractListPageElement
      */
     public IpsPackagesListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles, IpsElementFilter filter,
-            DocumentorConfiguration config) {
-        super(baseIpsElement, srcFiles, filter, config);
+            DocumentationContext context) {
+        super(baseIpsElement, srcFiles, filter, context);
         setTitle(Messages.IpsPackagesListPageElement_allPackages);
     }
 
@@ -64,8 +64,8 @@ public class IpsPackagesListPageElement extends AbstractListPageElement {
      * @see AbstractListPageElement
      */
     public IpsPackagesListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles,
-            DocumentorConfiguration config) {
-        this(baseIpsElement, srcFiles, ALL_FILTER, config);
+            DocumentationContext context) {
+        this(baseIpsElement, srcFiles, ALL_FILTER, context);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class IpsPackagesListPageElement extends AbstractListPageElement {
             }
 
             linkedPackagesNames.add(packageFragment.getName());
-            packageLinks.add(PageElementUtils.createLinkPageElement(getConfig(), packageFragment, getLinkTarget(),
+            packageLinks.add(PageElementUtils.createLinkPageElement(getContext(), packageFragment, getLinkTarget(),
                     IpsUIPlugin.getLabel(packageFragment), true));
         }
 

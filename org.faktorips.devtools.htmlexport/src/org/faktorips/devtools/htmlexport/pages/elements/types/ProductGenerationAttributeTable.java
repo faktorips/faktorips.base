@@ -41,7 +41,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
@@ -64,7 +64,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
     private final IProductCmpt productCmpt;
     private final IAttribute[] attributes;
-    private final DocumentorConfiguration config;
+    private final DocumentationContext context;
     private final IProductCmptType productCmptType;
 
     /**
@@ -72,11 +72,11 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
      * 
      */
     public ProductGenerationAttributeTable(IProductCmpt productCmpt, IProductCmptType productCmptType,
-            DocumentorConfiguration config) {
+            DocumentationContext context) {
         this.productCmpt = productCmpt;
         this.productCmptType = productCmptType;
         this.attributes = findAttributes(productCmptType);
-        this.config = config;
+        this.context = context;
     }
 
     /**
@@ -108,13 +108,13 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         try {
             List<IPolicyCmptTypeAttribute> policyCmptTypeAttributes = new ArrayList<IPolicyCmptTypeAttribute>();
 
-            IPolicyCmptType policyCmptType = productCmptType.findPolicyCmptType(config.getIpsProject());
+            IPolicyCmptType policyCmptType = productCmptType.findPolicyCmptType(context.getIpsProject());
 
             if (policyCmptType == null) {
                 return;
             }
 
-            for (IAttribute attribute : policyCmptType.findAllAttributes(config.getIpsProject())) {
+            for (IAttribute attribute : policyCmptType.findAllAttributes(context.getIpsProject())) {
                 if (!(attribute instanceof IPolicyCmptTypeAttribute)) {
                     continue;
                 }
@@ -278,13 +278,13 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
                 ITableContentUsage usage = productCmptGeneration
                         .getTableContentUsage(tableStructureUsage.getRoleName());
 
-                ITableContents tableContent = usage.findTableContents(config.getIpsProject());
+                ITableContents tableContent = usage.findTableContents(context.getIpsProject());
 
                 if (tableContent == null) {
                     cells[i + 1] = new TextPageElement("-"); //$NON-NLS-1$
                     continue;
                 }
-                PageElement linkPageElement = PageElementUtils.createLinkPageElement(config, tableContent, "content", //$NON-NLS-1$
+                PageElement linkPageElement = PageElementUtils.createLinkPageElement(context, tableContent, "content", //$NON-NLS-1$
                         tableContent.getName(), true);
 
                 cells[i + 1] = linkPageElement;
@@ -300,7 +300,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     private void addFormulaRow(IProductCmptTypeMethod formulaSignature) {
         PageElement[] cells = new PageElement[productCmpt.getNumOfGenerations() + 1];
 
-        String labelValue = formulaSignature.getLabelValue(config.getDescriptionLocale());
+        String labelValue = formulaSignature.getLabelValue(context.getDescriptionLocale());
         labelValue = labelValue != null ? labelValue : formulaSignature.getName();
 
         cells[0] = new TextPageElement(labelValue);
@@ -345,12 +345,12 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         IAssociation[] associations = productCmptType.getAssociations();
         for (IAssociation association : associations) {
             TreeNodePageElement root = new TreeNodePageElement(PageElementUtils.createIpsElementRepresentation(
-                    association, config.getLabel(association), true));
+                    association, context.getLabel(association), true));
             IProductCmptLink[] links = productCmptGeneration.getLinks(association.getName());
             for (IProductCmptLink productCmptLink : links) {
                 try {
                     IProductCmpt target = productCmptLink.findTarget(productCmpt.getIpsProject());
-                    PageElement targetLink = PageElementUtils.createLinkPageElement(config, target, "content", target //$NON-NLS-1$
+                    PageElement targetLink = PageElementUtils.createLinkPageElement(context, target, "content", target //$NON-NLS-1$
                             .getName(), true);
 
                     Set<Style> cardinalityStyles = new HashSet<Style>();
@@ -377,7 +377,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     private void addAttributeRow(IAttribute attribute) {
         PageElement[] cells = new PageElement[productCmpt.getNumOfGenerations() + 1];
 
-        String caption = config.getLabel(attribute);
+        String caption = context.getLabel(attribute);
         cells[0] = new TextPageElement(caption);
 
         for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
@@ -415,7 +415,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         headline.add(productGenerationAttributeTableGenerationFrom);
 
         for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
-            headline.add(config.getSimpleDateFormat().format(
+            headline.add(context.getSimpleDateFormat().format(
                     productCmpt.getProductCmptGeneration(i).getValidFrom().getTime()));
         }
         return headline;

@@ -15,7 +15,7 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import org.faktorips.devtools.core.internal.model.ipsobject.Description;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.util.message.Message;
@@ -34,8 +34,8 @@ public class IpsObjectMessageListTablePageElement extends MessageListTablePageEl
      * Creates a {@link IpsObjectMessageListTablePageElement} for the specified {@link MessageList}
      * 
      */
-    public IpsObjectMessageListTablePageElement(MessageList messageList, DocumentorConfiguration config) {
-        super(messageList, config);
+    public IpsObjectMessageListTablePageElement(MessageList messageList, DocumentationContext context) {
+        super(messageList, context);
     }
 
     @Override

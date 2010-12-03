@@ -22,6 +22,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
@@ -36,7 +37,7 @@ import org.faktorips.devtools.htmlexport.IDocumentorScript;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 
 /**
- * Configuration for the Documentator
+ * Context for the Documentation
  * 
  * 
  * This class contains options for the HtmlExport as well as a List of all data to be documented
@@ -45,12 +46,14 @@ import org.faktorips.devtools.htmlexport.generators.ILayouter;
  * @author dicker
  * 
  */
-public class DocumentorConfiguration {
+public class DocumentationContext {
 
     /**
      * related {@link IpsObjectType}s: Just {@link IIpsObject} of these types are documented
      */
     protected IpsObjectType[] documentedIpsObjectTypes = new IpsObjectType[0];
+
+    private List<IStatus> exportProblems = new ArrayList<IStatus>();
 
     /**
      * Path for output
@@ -84,7 +87,7 @@ public class DocumentorConfiguration {
      */
     private List<IIpsSrcFile> documentedSrcFiles;
 
-    public DocumentorConfiguration() {
+    public DocumentationContext() {
         super();
     }
 
@@ -221,5 +224,17 @@ public class DocumentorConfiguration {
             return getMultiLanguageSupport().getLocalizedCaption(ipsObjectPartContainer);
         }
         return getMultiLanguageSupport().getLocalizedPluralCaption(ipsObjectPartContainer);
+    }
+
+    public List<IStatus> getExportProblems() {
+        return exportProblems;
+    }
+
+    public void clearExportProblems() {
+        exportProblems.clear();
+    }
+
+    public void addStatus(IStatus status) {
+        exportProblems.add(status);
     }
 }

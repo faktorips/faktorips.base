@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractPageElement;
 
 /**
@@ -38,49 +38,49 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractPageElement
 public class ContentPageUtil {
 
     public static AbstractPageElement createObjectContentPageElement(IIpsSrcFile ipsSrcFile,
-            DocumentorConfiguration config) {
+            DocumentationContext context) {
 
         IIpsObject ipsObject;
         try {
             ipsObject = ipsSrcFile.getIpsObject();
-            return createObjectContentPageElement(ipsObject, config);
+            return createObjectContentPageElement(ipsObject, context);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
     }
 
     private static AbstractPageElement createObjectContentPageElement(IIpsObject ipsSrcFile,
-            DocumentorConfiguration config) {
+            DocumentationContext context) {
         if (ipsSrcFile.getIpsObjectType() == IpsObjectType.POLICY_CMPT_TYPE) {
-            return new PolicyCmptTypeContentPageElement((IPolicyCmptType)ipsSrcFile, config);
+            return new PolicyCmptTypeContentPageElement((IPolicyCmptType)ipsSrcFile, context);
         }
         if (ipsSrcFile.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT_TYPE) {
-            return new ProductCmptTypeContentPageElement((IProductCmptType)ipsSrcFile, config);
+            return new ProductCmptTypeContentPageElement((IProductCmptType)ipsSrcFile, context);
         }
         if (ipsSrcFile.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT) {
-            return new ProductCmptContentPageElement((IProductCmpt)ipsSrcFile, config);
+            return new ProductCmptContentPageElement((IProductCmpt)ipsSrcFile, context);
         }
         if (ipsSrcFile.getIpsObjectType() == IpsObjectType.ENUM_TYPE) {
-            return new EnumTypeContentPageElement((IEnumType)ipsSrcFile, config);
+            return new EnumTypeContentPageElement((IEnumType)ipsSrcFile, context);
         }
         if (ipsSrcFile.getIpsObjectType() == IpsObjectType.ENUM_CONTENT) {
-            return new EnumContentContentPageElement((IEnumContent)ipsSrcFile, config);
+            return new EnumContentContentPageElement((IEnumContent)ipsSrcFile, context);
         }
         if (ipsSrcFile.getIpsObjectType() == IpsObjectType.TABLE_STRUCTURE) {
-            return new TableStructureContentPageElement((ITableStructure)ipsSrcFile, config);
+            return new TableStructureContentPageElement((ITableStructure)ipsSrcFile, context);
         }
         if (ipsSrcFile.getIpsObjectType() == IpsObjectType.TABLE_CONTENTS) {
-            return new TableContentsContentPageElement((ITableContents)ipsSrcFile, config);
+            return new TableContentsContentPageElement((ITableContents)ipsSrcFile, context);
         }
         if (ipsSrcFile.getIpsObjectType() == IpsObjectType.TEST_CASE_TYPE) {
-            return new TestCaseTypeContentPageElement((ITestCaseType)ipsSrcFile, config);
+            return new TestCaseTypeContentPageElement((ITestCaseType)ipsSrcFile, context);
         }
         if (ipsSrcFile.getIpsObjectType() == IpsObjectType.TEST_CASE) {
-            return new TestCaseContentPageElement((ITestCase)ipsSrcFile, config);
+            return new TestCaseContentPageElement((ITestCase)ipsSrcFile, context);
         }
 
         // TODO Businessfunction && ORMEXT???
-        return new IpsObjectContentPageElement(ipsSrcFile, config);
+        return new IpsObjectContentPageElement(ipsSrcFile, context);
     }
 
 }

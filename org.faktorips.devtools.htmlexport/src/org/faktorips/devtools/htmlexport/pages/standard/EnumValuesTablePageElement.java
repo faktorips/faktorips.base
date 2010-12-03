@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractIpsObjectPartsContainerTablePageElement;
@@ -52,8 +52,8 @@ class EnumValuesTablePageElement extends AbstractIpsObjectPartsContainerTablePag
      * creates an EnumValuesTablePageElement basing on the given {@link IEnumType}
      * 
      */
-    public EnumValuesTablePageElement(IEnumType type, DocumentorConfiguration config) {
-        super(type.getEnumValues(), config);
+    public EnumValuesTablePageElement(IEnumType type, DocumentationContext context) {
+        super(type.getEnumValues(), context);
         initEnumAttributes(type);
     }
 
@@ -61,8 +61,8 @@ class EnumValuesTablePageElement extends AbstractIpsObjectPartsContainerTablePag
      * creates an EnumValuesTablePageElement basing on the given {@link IEnumContent}
      * 
      */
-    public EnumValuesTablePageElement(IEnumContent content, DocumentorConfiguration config) {
-        super(content.getEnumValues(), config);
+    public EnumValuesTablePageElement(IEnumContent content, DocumentationContext context) {
+        super(content.getEnumValues(), context);
         try {
             initEnumAttributes(content.findEnumType(content.getIpsProject()));
         } catch (CoreException e) {
@@ -89,7 +89,7 @@ class EnumValuesTablePageElement extends AbstractIpsObjectPartsContainerTablePag
         for (IEnumAttribute enumAttribute : enumAttributes) {
             String value = rowData.getEnumAttributeValue(enumAttribute).getValue();
             try {
-                ValueDatatype datatype = enumAttribute.findDatatype(getConfig().getIpsProject());
+                ValueDatatype datatype = enumAttribute.findDatatype(getContext().getIpsProject());
 
                 valueData.add(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
                         .formatValue(datatype, value));

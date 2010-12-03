@@ -20,7 +20,7 @@ import java.util.List;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementFilter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
@@ -42,13 +42,13 @@ public class IpsElementListPageElement extends AbstractListPageElement {
     private final boolean shownTypeChooser;
 
     public IpsElementListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles,
-            DocumentorConfiguration config) {
-        this(baseIpsElement, srcFiles, ALL_FILTER, config, false);
+            DocumentationContext context) {
+        this(baseIpsElement, srcFiles, ALL_FILTER, context, false);
     }
 
     public IpsElementListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles, IpsElementFilter filter,
-            DocumentorConfiguration config, boolean shownTypeChooser) {
-        super(baseIpsElement, srcFiles, filter, config);
+            DocumentationContext context, boolean shownTypeChooser) {
+        super(baseIpsElement, srcFiles, filter, context);
         this.shownTypeChooser = shownTypeChooser;
         setTitle(Messages.IpsObjectListPageElement_objects);
     }
@@ -60,7 +60,7 @@ public class IpsElementListPageElement extends AbstractListPageElement {
         addPageElements(new TextPageElement(getTitle(), TextType.HEADING_2));
 
         if (shownTypeChooser) {
-            addPageElements(new TypeChosePageElement(getConfig(), getRelatedObjectTypes()));
+            addPageElements(new TypeChosePageElement(getContext(), getRelatedObjectTypes()));
         }
 
         addPageElements(new WrapperPageElement(WrapperType.BLOCK).addPageElements(new LinkPageElement(
@@ -88,7 +88,7 @@ public class IpsElementListPageElement extends AbstractListPageElement {
             if (!filter.accept(srcFile)) {
                 continue;
             }
-            PageElement link = PageElementUtils.createLinkPageElement(getConfig(), srcFile, getLinkTarget(),
+            PageElement link = PageElementUtils.createLinkPageElement(getContext(), srcFile, getLinkTarget(),
                     srcFile.getIpsObjectName(), true);
             items.add(link);
         }

@@ -20,7 +20,7 @@ import java.util.Set;
 import org.eclipse.swt.graphics.ImageData;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
@@ -38,15 +38,15 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 public class TypeChosePageElement extends AbstractPageElement {
     private AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
     private final Collection<IpsObjectType> types;
-    private final DocumentorConfiguration config;
+    private final DocumentationContext context;
 
-    public TypeChosePageElement(DocumentorConfiguration config) {
-        this.config = config;
-        this.types = Arrays.asList(config.getDocumentedIpsObjectTypes());
+    public TypeChosePageElement(DocumentationContext context) {
+        this.context = context;
+        this.types = Arrays.asList(context.getDocumentedIpsObjectTypes());
     }
 
-    public TypeChosePageElement(DocumentorConfiguration config, Set<IpsObjectType> relatedObjectTypes) {
-        this.config = config;
+    public TypeChosePageElement(DocumentationContext context, Set<IpsObjectType> relatedObjectTypes) {
+        this.context = context;
         this.types = relatedObjectTypes;
     }
 
@@ -54,7 +54,7 @@ public class TypeChosePageElement extends AbstractPageElement {
     public void build() {
         wrapper = new WrapperPageElement(WrapperType.BLOCK);
 
-        for (IpsObjectType ipsObjectType : config.getDocumentedIpsObjectTypes()) {
+        for (IpsObjectType ipsObjectType : context.getDocumentedIpsObjectTypes()) {
             /*
              * Image image =
              * IpsUIPlugin.getImageHandling().getDefaultImage(ipsObjectType.getImplementingClass());

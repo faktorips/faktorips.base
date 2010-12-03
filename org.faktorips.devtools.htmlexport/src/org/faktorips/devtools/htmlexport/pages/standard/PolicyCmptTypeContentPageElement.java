@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
@@ -42,11 +42,11 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.ValidationRuleTabl
 public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageElement<IPolicyCmptType> {
 
     /**
-     * creates a page for the given object according to the given config
+     * creates a page for the given object according to the given context
      * 
      */
-    PolicyCmptTypeContentPageElement(IPolicyCmptType object, DocumentorConfiguration config) {
-        super(object, config);
+    PolicyCmptTypeContentPageElement(IPolicyCmptType object, DocumentationContext context) {
+        super(object, context);
     }
 
     @Override
@@ -61,14 +61,14 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
         wrapper.addPageElements(new TextPageElement(Messages.PolicyCmptTypeContentPageElement_rules, TextType.HEADING_2));
 
         wrapper.addPageElements(getTableOrAlternativeText(new ValidationRuleTablePageElement(getDocumentedIpsObject(),
-                config), Messages.PolicyCmptTypeContentPageElement_noValidationrules));
+                getContext()), Messages.PolicyCmptTypeContentPageElement_noValidationrules));
 
         addPageElements(wrapper);
     }
 
     @Override
     AttributesTablePageElement getAttributesTablePageElement() {
-        return new AttributesTablePageElement(getDocumentedIpsObject(), config) {
+        return new AttributesTablePageElement(getDocumentedIpsObject(), getContext()) {
 
             @Override
             protected List<String> getAttributeData(IAttribute attribute) {
@@ -118,7 +118,7 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
             }
             addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
                     new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": "), //$NON-NLS-1$
-                    PageElementUtils.createLinkPageElement(getConfig(), to, "content", to.getName(), true) })); //$NON-NLS-1$
+                    PageElementUtils.createLinkPageElement(getContext(), to, "content", to.getName(), true) })); //$NON-NLS-1$
         } catch (CoreException e) {
             e.printStackTrace();
         }

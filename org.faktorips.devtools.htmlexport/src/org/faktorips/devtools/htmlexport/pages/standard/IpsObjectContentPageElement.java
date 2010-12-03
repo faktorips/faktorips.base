@@ -15,7 +15,7 @@ package org.faktorips.devtools.htmlexport.pages.standard;
 
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 
 /**
  * A complete page representing an {@link IEnumContent}
@@ -25,8 +25,8 @@ import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
  */
 public class IpsObjectContentPageElement extends AbstractIpsObjectContentPageElement<IIpsObject> {
 
-    protected IpsObjectContentPageElement(IIpsObject documentedIpsObject, DocumentorConfiguration config) {
-        super(documentedIpsObject, config);
+    protected IpsObjectContentPageElement(IIpsObject documentedIpsObject, DocumentationContext context) {
+        super(documentedIpsObject, context);
     }
 
 }

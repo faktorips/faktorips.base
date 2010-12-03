@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementFilter;
 import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
@@ -42,7 +42,7 @@ public abstract class AbstractListPageElement extends AbstractRootPageElement {
     protected String linkTarget;
     protected List<IIpsSrcFile> srcFiles;
     protected IpsElementFilter filter = ALL_FILTER;
-    private DocumentorConfiguration config;
+    private DocumentationContext context;
 
     /**
      * {@link IpsElementFilter}, which accepts all {@link IIpsElement}s
@@ -74,12 +74,12 @@ public abstract class AbstractListPageElement extends AbstractRootPageElement {
      * @param filter for objects
      */
     public AbstractListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles, IpsElementFilter filter,
-            DocumentorConfiguration config) {
+            DocumentationContext context) {
         super();
         this.baseIpsElement = baseIpsElement;
         this.srcFiles = srcFiles;
         this.filter = filter;
-        this.config = config;
+        this.context = context;
     }
 
     /**
@@ -89,9 +89,8 @@ public abstract class AbstractListPageElement extends AbstractRootPageElement {
      *            the page
      * @param srcFiles objects to list on the page
      */
-    public AbstractListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles,
-            DocumentorConfiguration config) {
-        this(baseIpsElement, srcFiles, ALL_FILTER, config);
+    public AbstractListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles, DocumentationContext context) {
+        this(baseIpsElement, srcFiles, ALL_FILTER, context);
     }
 
     /**
@@ -148,8 +147,8 @@ public abstract class AbstractListPageElement extends AbstractRootPageElement {
         return PathUtilFactory.createPathUtil(baseIpsElement).getPathToRoot();
     }
 
-    public DocumentorConfiguration getConfig() {
-        return config;
+    public DocumentationContext getContext() {
+        return context;
     }
 
 }

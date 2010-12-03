@@ -14,7 +14,7 @@
 package org.faktorips.devtools.htmlexport;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 
 /**
  * A Script for Documenting
@@ -24,10 +24,10 @@ import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
  */
 public interface IDocumentorScript {
     /**
-     * executes the script using the given {@link DocumentorConfiguration} and the ProgressMonitor<br/>
+     * executes the script using the given {@link DocumentationContext} and the ProgressMonitor<br/>
      * 
      * should only called by the {@link HtmlExportOperation}
      * 
      */
-    public void execute(DocumentorConfiguration config, IProgressMonitor monitor);
+    public void execute(DocumentationContext context, IProgressMonitor monitor);
 }

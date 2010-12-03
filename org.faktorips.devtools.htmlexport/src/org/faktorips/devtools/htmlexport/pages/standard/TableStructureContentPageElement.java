@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IForeignKey;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
@@ -49,8 +49,8 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
      */
     private class ForeignKeysTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IForeignKey> {
 
-        public ForeignKeysTablePageElement(ITableStructure tableStructure, DocumentorConfiguration config) {
-            super(Arrays.asList(tableStructure.getForeignKeys()), config);
+        public ForeignKeysTablePageElement(ITableStructure tableStructure, DocumentationContext context) {
+            super(Arrays.asList(tableStructure.getForeignKeys()), context);
         }
 
         @Override
@@ -63,7 +63,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
             cells.add(new TextPageElement(StringUtils.join(foreignKey.getKeyItemNames(), ", "))); //$NON-NLS-1$
             cells.add(link);
             cells.add(new TextPageElement(foreignKey.getReferencedUniqueKey()));
-            cells.add(new TextPageElement(config.getDescription(foreignKey)));
+            cells.add(new TextPageElement(getContext().getDescription(foreignKey)));
 
             return cells;
         }
@@ -71,9 +71,9 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         private PageElement getLinkToReferencedTableStructure(IForeignKey foreignKey) {
             PageElement link = null;
             try {
-                ITableStructure findReferencedTableStructure = foreignKey.findReferencedTableStructure(getConfig()
+                ITableStructure findReferencedTableStructure = foreignKey.findReferencedTableStructure(getContext()
                         .getIpsProject());
-                link = PageElementUtils.createLinkPageElement(getConfig(), findReferencedTableStructure,
+                link = PageElementUtils.createLinkPageElement(getContext(), findReferencedTableStructure,
                         "content", foreignKey //$NON-NLS-1$
                                 .getReferencedTableStructure(), true);
             } catch (CoreException e) {
@@ -109,8 +109,8 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
      */
     private class ColumnsRangesTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IColumnRange> {
 
-        public ColumnsRangesTablePageElement(ITableStructure tableStructure, DocumentorConfiguration config) {
-            super(Arrays.asList(tableStructure.getRanges()), config);
+        public ColumnsRangesTablePageElement(ITableStructure tableStructure, DocumentationContext context) {
+            super(Arrays.asList(tableStructure.getRanges()), context);
         }
 
         protected List<String> getColumnRangeData(IColumnRange columnRange) {
@@ -121,7 +121,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
             columnData.add(columnRange.getColumnRangeType().getName());
             columnData.add(columnRange.getFromColumn());
             columnData.add(columnRange.getToColumn());
-            columnData.add(config.getDescription(columnRange));
+            columnData.add(getContext().getDescription(columnRange));
 
             return columnData;
 
@@ -155,8 +155,8 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
      */
     private static class ColumnsTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IColumn> {
 
-        public ColumnsTablePageElement(ITableStructure tableStructure, DocumentorConfiguration config) {
-            super(Arrays.asList(tableStructure.getColumns()), config);
+        public ColumnsTablePageElement(ITableStructure tableStructure, DocumentationContext context) {
+            super(Arrays.asList(tableStructure.getColumns()), context);
         }
 
         @Override
@@ -169,7 +169,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
 
             columnData.add(column.getName());
             columnData.add(column.getDatatype());
-            columnData.add(getConfig().getDescription(column));
+            columnData.add(getContext().getDescription(column));
 
             return columnData;
         }
@@ -194,8 +194,8 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
      */
     private static class UniqueKeysTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IUniqueKey> {
 
-        public UniqueKeysTablePageElement(ITableStructure tableStructure, DocumentorConfiguration config) {
-            super(Arrays.asList(tableStructure.getUniqueKeys()), config);
+        public UniqueKeysTablePageElement(ITableStructure tableStructure, DocumentationContext context) {
+            super(Arrays.asList(tableStructure.getUniqueKeys()), context);
         }
 
         @Override
@@ -207,7 +207,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
             List<String> columnData = new ArrayList<String>();
 
             columnData.add(uniqueKey.getName());
-            columnData.add(getConfig().getDescription(uniqueKey));
+            columnData.add(getContext().getDescription(uniqueKey));
 
             return columnData;
         }
@@ -225,11 +225,11 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
     }
 
     /**
-     * creates a page for the given {@link ITableStructure} with the config
+     * creates a page for the given {@link ITableStructure} with the context
      * 
      */
-    protected TableStructureContentPageElement(ITableStructure object, DocumentorConfiguration config) {
-        super(object, config);
+    protected TableStructureContentPageElement(ITableStructure object, DocumentationContext context) {
+        super(object, context);
     }
 
     @Override
@@ -259,9 +259,8 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         wrapper.addPageElements(new TextPageElement(Messages.TableStructureContentPageElement_columns,
                 TextType.HEADING_2));
 
-        wrapper.addPageElements(getTableOrAlternativeText(
-                new ColumnsTablePageElement(getDocumentedIpsObject(), config),
-                Messages.TableStructureContentPageElement_noColumns));
+        wrapper.addPageElements(getTableOrAlternativeText(new ColumnsTablePageElement(getDocumentedIpsObject(),
+                getContext()), Messages.TableStructureContentPageElement_noColumns));
         addPageElements(wrapper);
     }
 
@@ -274,7 +273,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
                 TextType.HEADING_2));
 
         wrapper.addPageElements(getTableOrAlternativeText(new UniqueKeysTablePageElement(getDocumentedIpsObject(),
-                config), Messages.TableStructureContentPageElement_noUniqueKeys));
+                getContext()), Messages.TableStructureContentPageElement_noUniqueKeys));
         addPageElements(wrapper);
     }
 
@@ -287,7 +286,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
                 TextType.HEADING_2));
 
         wrapper.addPageElements(getTableOrAlternativeText(new ColumnsRangesTablePageElement(getDocumentedIpsObject(),
-                config), Messages.TableStructureContentPageElement_noColumnRanges));
+                getContext()), Messages.TableStructureContentPageElement_noColumnRanges));
         addPageElements(wrapper);
     }
 
@@ -300,7 +299,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
                 TextType.HEADING_2));
 
         wrapper.addPageElements(getTableOrAlternativeText(new ForeignKeysTablePageElement(getDocumentedIpsObject(),
-                config), Messages.TableStructureContentPageElement_noForeignKeys));
+                getContext()), Messages.TableStructureContentPageElement_noForeignKeys));
         addPageElements(wrapper);
     }
 
@@ -316,7 +315,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
             throw new RuntimeException(e);
         }
 
-        tableContentsSrcFiles.retainAll(getConfig().getDocumentedSourceFiles());
+        tableContentsSrcFiles.retainAll(getContext().getDocumentedSourceFiles());
 
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(IpsObjectType.TABLE_CONTENTS.getDisplayNamePlural(),
@@ -329,7 +328,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         }
 
         List<PageElement> linkPageElements = PageElementUtils.createLinkPageElements(tableContentsSrcFiles,
-                "content", new LinkedHashSet<Style>(), getConfig()); //$NON-NLS-1$
+                "content", new LinkedHashSet<Style>(), getContext()); //$NON-NLS-1$
         ListPageElement liste = new ListPageElement(linkPageElements);
 
         wrapper.addPageElements(liste);

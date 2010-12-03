@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArchiveEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
@@ -43,14 +43,14 @@ import org.faktorips.util.message.MessageList;
 public class ProjectOverviewPageElement extends AbstractRootPageElement {
 
     private static final SimpleDateFormat CREATION_TIME_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm"); //$NON-NLS-1$
-    private DocumentorConfiguration config;
+    private DocumentationContext context;
 
     /**
-     * a page for the overview of an IpsProject, which is defined in the config
+     * a page for the overview of an IpsProject, which is defined in the context
      * 
      */
-    public ProjectOverviewPageElement(DocumentorConfiguration config) {
-        this.config = config;
+    public ProjectOverviewPageElement(DocumentationContext context) {
+        this.context = context;
         setTitle(Messages.ProjectOverviewPageElement_project + " " + getProject().getName()); //$NON-NLS-1$
     }
 
@@ -61,7 +61,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
 
         addIpsObjectPaths();
 
-        if (getConfig().isShowValidationErrors()) {
+        if (getContext().isShowValidationErrors()) {
             addValidationErrorsTable();
         }
 
@@ -179,7 +179,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
 
     private void addValidationErrorsTable() {
         MessageListTablePageElement messageListTablePageElement = new MessageListTablePageElement(
-                validateLinkedObjects(), getConfig());
+                validateLinkedObjects(), getContext());
         if (messageListTablePageElement.isEmpty()) {
             return;
         }
@@ -189,7 +189,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
     }
 
     private MessageList validateLinkedObjects() {
-        List<IIpsSrcFile> srcFiles = getConfig().getDocumentedSourceFiles();
+        List<IIpsSrcFile> srcFiles = getContext().getDocumentedSourceFiles();
         MessageList ml = new MessageList();
         for (IIpsSrcFile srcFile : srcFiles) {
             try {
@@ -208,18 +208,18 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
     }
 
     /**
-     * returns the configurated IpsProject
+     * returns the chosen IpsProject
      * 
      */
     protected IIpsProject getProject() {
-        return getConfig().getIpsProject();
+        return getContext().getIpsProject();
     }
 
     /**
-     * returns the config
+     * returns the context
      * 
      */
-    protected DocumentorConfiguration getConfig() {
-        return config;
+    protected DocumentationContext getContext() {
+        return context;
     }
 }

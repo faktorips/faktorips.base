@@ -49,7 +49,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportTest {
         PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Vertrag", "VertragProdukt");
 
         AbstractPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(),
-                config);
+                context);
         objectContentPage.build();
 
         String[] texts = new String[] { name, defaultValue };
@@ -68,7 +68,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportTest {
         PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Vertrag", "VertragProdukt");
 
         AbstractPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(),
-                config);
+                context);
         objectContentPage.build();
 
         String[] texts = new String[] { name, defaultValue };
@@ -90,7 +90,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportTest {
         policy.setExtPropertyValue(id, setValue);
 
         AbstractPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(),
-                config);
+                context);
         objectContentPage.build();
 
         String[] texts = new String[] { name, setValue };
@@ -110,7 +110,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportTest {
         policy.newPolicyCmptTypeAttribute();
 
         AbstractPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(),
-                config);
+                context);
         objectContentPage.build();
 
         String[] texts = new String[] { name, defaultValue };
@@ -130,7 +130,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportTest {
         policy.newPolicyCmptTypeAttribute();
 
         AbstractPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(),
-                config);
+                context);
         objectContentPage.build();
 
         String[] texts = new String[] { name, defaultValue };
@@ -153,7 +153,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportTest {
         attribute.setExtPropertyValue(id, setValue);
 
         AbstractPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(),
-                config);
+                context);
         objectContentPage.build();
 
         String[] texts = new String[] { name, setValue };

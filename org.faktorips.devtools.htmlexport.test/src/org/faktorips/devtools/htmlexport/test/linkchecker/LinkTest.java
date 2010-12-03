@@ -54,7 +54,7 @@ public class LinkTest extends AbstractHtmlExportTest {
         createMassivProjekt();
         operation.run(new NullProgressMonitor());
 
-        spider.addURL(new URL("file://" + config.getPath() + "/index.html"));
+        spider.addURL(new URL("file://" + context.getPath() + "/index.html"));
         spider.begin();
 
         // TODO test should be fixed

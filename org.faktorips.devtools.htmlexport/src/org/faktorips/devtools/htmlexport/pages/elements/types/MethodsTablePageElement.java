@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 
@@ -36,8 +36,8 @@ public class MethodsTablePageElement extends AbstractIpsObjectPartsContainerTabl
      * Creates a {@link MethodsTablePageElement} for the specified {@link IType}
      * 
      */
-    public MethodsTablePageElement(IType type, DocumentorConfiguration config) {
-        super(Arrays.asList(type.getMethods()), config);
+    public MethodsTablePageElement(IType type, DocumentationContext context) {
+        super(Arrays.asList(type.getMethods()), context);
         setId(type.getName() + "_methods"); //$NON-NLS-1$
     }
 
@@ -53,7 +53,7 @@ public class MethodsTablePageElement extends AbstractIpsObjectPartsContainerTabl
         methodData.add(method.getModifier().toString());
         methodData.add(method.getDatatype());
         methodData.add(method.getSignatureString());
-        methodData.add(getConfig().getDescription(method));
+        methodData.add(getContext().getDescription(method));
 
         return methodData;
     }

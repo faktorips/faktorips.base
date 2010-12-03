@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
 import org.faktorips.devtools.htmlexport.HtmlExportOperation;
 import org.faktorips.devtools.htmlexport.HtmlExportPlugin;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.standard.StandardDocumentorScript;
 
@@ -71,20 +71,19 @@ public class IpsProjectHtmlExportWizard extends Wizard implements IExportWizard 
     }
 
     private boolean exportHtml() {
-        DocumentorConfiguration documentorConfig = new DocumentorConfiguration();
+        DocumentationContext context = new DocumentationContext();
 
-        documentorConfig.setPath(ipsProjectHtmlExportWizardPage.getDestinationDirectory());
-        documentorConfig.setShowValidationErrors(ipsProjectHtmlExportWizardPage.getShowValidationErrors());
-        documentorConfig.setDescriptionLocale(ipsProjectHtmlExportWizardPage.getSupportedLanguage());
+        context.setPath(ipsProjectHtmlExportWizardPage.getDestinationDirectory());
+        context.setShowValidationErrors(ipsProjectHtmlExportWizardPage.getShowValidationErrors());
+        context.setDescriptionLocale(ipsProjectHtmlExportWizardPage.getSupportedLanguage());
 
-        documentorConfig.setIpsProject(ipsProjectHtmlExportWizardPage.getSelectedIpsProject());
-        documentorConfig.setLayouter(new HtmlLayouter(".resource")); //$NON-NLS-1$
+        context.setIpsProject(ipsProjectHtmlExportWizardPage.getSelectedIpsProject());
+        context.setLayouter(new HtmlLayouter(".resource")); //$NON-NLS-1$
 
-        documentorConfig.addDocumentorScript(new StandardDocumentorScript());
-        documentorConfig
-                .setDocumentedIpsObjectTypes(documentorConfig.getIpsProject().getIpsModel().getIpsObjectTypes());
+        context.addDocumentorScript(new StandardDocumentorScript());
+        context.setDocumentedIpsObjectTypes(context.getIpsProject().getIpsModel().getIpsObjectTypes());
 
-        IWorkspaceRunnable op = new HtmlExportOperation(documentorConfig);
+        IWorkspaceRunnable op = new HtmlExportOperation(context);
 
         WorkbenchRunnableAdapter workbenchRunnableAdapter = new WorkbenchRunnableAdapter(op);
         try {

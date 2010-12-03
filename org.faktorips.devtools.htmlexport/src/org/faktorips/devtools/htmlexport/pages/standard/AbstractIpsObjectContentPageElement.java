@@ -19,7 +19,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
@@ -48,15 +48,15 @@ import org.faktorips.util.message.MessageList;
 public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> extends AbstractRootPageElement {
 
     private T documentedIpsObject;
-    public DocumentorConfiguration config;
+    private final DocumentationContext context;
 
     /**
-     * creates a page, which represents the given documentedIpsObject according to the given config
+     * creates a page, which represents the given documentedIpsObject according to the given context
      * 
      */
-    protected AbstractIpsObjectContentPageElement(T documentedIpsObject, DocumentorConfiguration config) {
+    protected AbstractIpsObjectContentPageElement(T documentedIpsObject, DocumentationContext context) {
         this.documentedIpsObject = documentedIpsObject;
-        this.config = config;
+        this.context = context;
         setTitle(documentedIpsObject.getName());
     }
 
@@ -67,10 +67,10 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
         addPageElements(new WrapperPageElement(WrapperType.BLOCK,
                 new LinkPageElement("index", "_top", //$NON-NLS-1$ //$NON-NLS-2$
                         Messages.AbstractObjectContentPageElement_overviewProject
-                                + " " + getConfig().getIpsProject().getName()))); //$NON-NLS-1$
+                                + " " + getContext().getIpsProject().getName()))); //$NON-NLS-1$
 
-        addPageElements(PageElementUtils.createLinkPageElement(config,
-                getDocumentedIpsObject().getIpsPackageFragment(),
+        addPageElements(PageElementUtils.createLinkPageElement(getContext(), getDocumentedIpsObject()
+                .getIpsPackageFragment(),
                 "classes", IpsUIPlugin.getLabel(getDocumentedIpsObject().getIpsPackageFragment()), true)); //$NON-NLS-1$
         addPageElements(new TextPageElement(getDocumentedIpsObject().getIpsObjectType().getDisplayName() + " " //$NON-NLS-1$
                 + getDocumentedIpsObject().getName(), TextType.HEADING_1));
@@ -81,7 +81,7 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
 
         addStructureData();
 
-        if (!getDocumentedIpsObject().getIpsProject().equals(getConfig().getIpsProject())) {
+        if (!getDocumentedIpsObject().getIpsProject().equals(getContext().getIpsProject())) {
             addPageElements(TextPageElement.createParagraph(Messages.AbstractObjectContentPageElement_project + ": " //$NON-NLS-1$
                     + getDocumentedIpsObject().getIpsProject().getName()));
         }
@@ -90,10 +90,10 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
 
         addPageElements(new TextPageElement(Messages.AbstractObjectContentPageElement_description, TextType.HEADING_2));
         addPageElements(new TextPageElement(
-                StringUtils.isBlank(config.getDescription(getDocumentedIpsObject())) ? Messages.AbstractObjectContentPageElement_noDescription
-                        : config.getDescription(getDocumentedIpsObject()), TextType.BLOCK));
+                StringUtils.isBlank(getContext().getDescription(getDocumentedIpsObject())) ? Messages.AbstractObjectContentPageElement_noDescription
+                        : getContext().getDescription(getDocumentedIpsObject()), TextType.BLOCK));
 
-        if (getConfig().isShowValidationErrors()) {
+        if (getContext().isShowValidationErrors()) {
             addValidationErrorsTable();
         }
 
@@ -121,7 +121,7 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
         wrapper.addPageElements(new TextPageElement(Messages.AbstractObjectContentPageElement_validationErrors,
                 TextType.HEADING_2));
 
-        TablePageElement tablePageElement = new IpsObjectMessageListTablePageElement(messageList, getConfig());
+        TablePageElement tablePageElement = new IpsObjectMessageListTablePageElement(messageList, getContext());
 
         wrapper.addPageElements(tablePageElement);
 
@@ -168,11 +168,11 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
     }
 
     /**
-     * returns the config
+     * returns the context
      * 
      */
-    protected DocumentorConfiguration getConfig() {
-        return config;
+    protected DocumentationContext getContext() {
+        return context;
     }
 
     @Override

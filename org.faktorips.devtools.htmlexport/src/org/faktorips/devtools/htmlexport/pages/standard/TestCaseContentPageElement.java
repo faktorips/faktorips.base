@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
@@ -50,13 +50,13 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
     private ITestCaseType testCaseType;
 
     /**
-     * creates a page for the given {@link ITestCase} with the given config
+     * creates a page for the given {@link ITestCase} with the given context
      * 
      */
-    protected TestCaseContentPageElement(ITestCase object, DocumentorConfiguration config) {
-        super(object, config);
+    protected TestCaseContentPageElement(ITestCase object, DocumentationContext context) {
+        super(object, context);
         try {
-            testCaseType = object.findTestCaseType(config.getIpsProject());
+            testCaseType = object.findTestCaseType(context.getIpsProject());
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
@@ -69,7 +69,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
         addPageElements(new WrapperPageElement(WrapperType.BLOCK).addPageElements(
                 new TextPageElement(IpsObjectType.TEST_CASE_TYPE.getDisplayName() + ": ")) //$NON-NLS-1$
                 .addPageElements(
-                        PageElementUtils.createLinkPageElement(getConfig(), testCaseType,
+                        PageElementUtils.createLinkPageElement(getContext(), testCaseType,
                                 "content", testCaseType.getQualifiedName(), true))); //$NON-NLS-1$
 
         addTestCaseTypeParameters();
@@ -142,8 +142,8 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
         KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement();
         for (ITestAttributeValue testAttributeValue : testAttributeValues) {
             String value = testAttributeValue.getValue();
-            ITestAttribute attribute = testAttributeValue.findTestAttribute(config.getIpsProject());
-            ValueDatatype datatype = attribute.findDatatype(config.getIpsProject());
+            ITestAttribute attribute = testAttributeValue.findTestAttribute(getContext().getIpsProject());
+            ValueDatatype datatype = attribute.findDatatype(getContext().getIpsProject());
 
             keyValueTable.addKeyValueRow(testAttributeValue.getName(), IpsPlugin.getDefault().getIpsPreferences()
                     .getDatatypeFormatter().formatValue(datatype, value));
@@ -174,8 +174,8 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
         KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement();
         keyValueTable.addKeyValueRow(Messages.TestCaseContentPageElement_name, testObject.getName());
 
-        ITestValueParameter testValueParameter = testObject.findTestValueParameter(getConfig().getIpsProject());
-        ValueDatatype datatype = testValueParameter.findValueDatatype(getConfig().getIpsProject());
+        ITestValueParameter testValueParameter = testObject.findTestValueParameter(getContext().getIpsProject());
+        ValueDatatype datatype = testValueParameter.findValueDatatype(getContext().getIpsProject());
 
         String value = testObject.getValue();
         keyValueTable.addKeyValueRow(Messages.TestCaseContentPageElement_value, IpsPlugin.getDefault()

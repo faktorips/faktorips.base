@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
@@ -71,11 +71,11 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
     }
 
     /**
-     * creates a page, which represents the given type according to the given config
+     * creates a page, which represents the given type according to the given context
      * 
      */
-    public AbstractTypeContentPageElement(T object, DocumentorConfiguration config) {
-        super(object, config);
+    public AbstractTypeContentPageElement(T object, DocumentationContext context) {
+        super(object, context);
     }
 
     @Override
@@ -107,7 +107,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
      * 
      */
     MethodsTablePageElement getMethodsTablePageElement() {
-        return new MethodsTablePageElement(getDocumentedIpsObject(), config);
+        return new MethodsTablePageElement(getDocumentedIpsObject(), getContext());
     }
 
     @Override
@@ -126,14 +126,14 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 
         List<PageElement> subTypes = new ArrayList<PageElement>();
 
-        for (IIpsSrcFile srcFile : getConfig().getDocumentedSourceFiles(getDocumentedIpsObject().getIpsObjectType())) {
+        for (IIpsSrcFile srcFile : getContext().getDocumentedSourceFiles(getDocumentedIpsObject().getIpsObjectType())) {
             try {
                 IType type = (IType)srcFile.getIpsObject();
                 if (type == null) {
                     continue;
                 }
                 if (type.getSupertype().equals(getDocumentedIpsObject().getQualifiedName())) {
-                    subTypes.add(PageElementUtils.createLinkPageElement(getConfig(), type,
+                    subTypes.add(PageElementUtils.createLinkPageElement(getContext(), type,
                             "content", type.getQualifiedName(), true)); //$NON-NLS-1$
                 }
             } catch (CoreException e) {
@@ -166,7 +166,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
         }
 
         TreeNodePageElement baseElement = new TreeNodePageElement(new TreeNodePageElement(
-                PageElementUtils.createLinkPageElement(getConfig(), superTypes.get(0),
+                PageElementUtils.createLinkPageElement(getContext(), superTypes.get(0),
                         "content", superTypes.get(0).getQualifiedName(), true))); //$NON-NLS-1$
         TreeNodePageElement element = baseElement;
 
@@ -176,7 +176,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
                 break;
             }
             TreeNodePageElement subElement = new TreeNodePageElement(PageElementUtils.createLinkPageElement(
-                    getConfig(), superTypes.get(i), "content", superTypes.get(i).getName(), true)); //$NON-NLS-1$
+                    getContext(), superTypes.get(i), "content", superTypes.get(i).getName(), true)); //$NON-NLS-1$
             element.addPageElements(subElement);
             element = subElement;
         }
@@ -196,7 +196,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
             addPageElements(new WrapperPageElement(
                     WrapperType.BLOCK,
                     new PageElement[] {
-                            new TextPageElement(Messages.AbstractTypeContentPageElement_extends + " "), PageElementUtils.createLinkPageElement(getConfig(), to, "content", to.getName(), true) })); //$NON-NLS-1$//$NON-NLS-2$ 
+                            new TextPageElement(Messages.AbstractTypeContentPageElement_extends + " "), PageElementUtils.createLinkPageElement(getContext(), to, "content", to.getName(), true) })); //$NON-NLS-1$//$NON-NLS-2$ 
         } catch (CoreException e) {
             e.printStackTrace();
         }
@@ -211,7 +211,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
                 TextType.HEADING_2));
 
         wrapper.addPageElements(getTableOrAlternativeText(new AssociationTablePageElement(getDocumentedIpsObject(),
-                getConfig()), Messages.AbstractTypeContentPageElement_noAssociations));
+                getContext()), Messages.AbstractTypeContentPageElement_noAssociations));
 
         addPageElements(wrapper);
     }
@@ -235,6 +235,6 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
      * 
      */
     AttributesTablePageElement getAttributesTablePageElement() {
-        return new AttributesTablePageElement(getDocumentedIpsObject(), config);
+        return new AttributesTablePageElement(getDocumentedIpsObject(), getContext());
     }
 }

@@ -27,13 +27,13 @@ public class PageElementUtilsTest extends AbstractHtmlExportTest {
     public void testCreateLinkPageElementAllTypesDocumented() throws CoreException {
         createMassivProjekt();
 
-        config.setDocumentedIpsObjectTypes(ipsProject.getIpsModel().getIpsObjectTypes());
+        context.setDocumentedIpsObjectTypes(ipsProject.getIpsModel().getIpsObjectTypes());
 
         List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
         ipsProject.findAllIpsSrcFiles(srcFiles);
 
         for (IIpsSrcFile srcFile : srcFiles) {
-            PageElement pageElement = PageElementUtils.createLinkPageElement(config, srcFile, TARGET,
+            PageElement pageElement = PageElementUtils.createLinkPageElement(context, srcFile, TARGET,
                     srcFile.getName(), false);
             assertIsLink(pageElement);
         }
@@ -51,7 +51,7 @@ public class PageElementUtilsTest extends AbstractHtmlExportTest {
         ipsProject.findAllIpsSrcFiles(srcFiles);
 
         for (IIpsSrcFile srcFile : srcFiles) {
-            PageElement pageElement = PageElementUtils.createLinkPageElement(config, srcFile, TARGET,
+            PageElement pageElement = PageElementUtils.createLinkPageElement(context, srcFile, TARGET,
                     srcFile.getName(), false);
             assertIsDeadLink(pageElement);
         }
@@ -67,13 +67,13 @@ public class PageElementUtilsTest extends AbstractHtmlExportTest {
 
         IpsObjectType testedIpsObjectType = IpsObjectType.POLICY_CMPT_TYPE;
 
-        config.setDocumentedIpsObjectTypes(testedIpsObjectType);
+        context.setDocumentedIpsObjectTypes(testedIpsObjectType);
 
         List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
         ipsProject.findAllIpsSrcFiles(srcFiles);
 
         for (IIpsSrcFile srcFile : srcFiles) {
-            PageElement pageElement = PageElementUtils.createLinkPageElement(config, srcFile, TARGET,
+            PageElement pageElement = PageElementUtils.createLinkPageElement(context, srcFile, TARGET,
                     srcFile.getName(), false);
 
             if (srcFile.getIpsObjectType() == testedIpsObjectType) {

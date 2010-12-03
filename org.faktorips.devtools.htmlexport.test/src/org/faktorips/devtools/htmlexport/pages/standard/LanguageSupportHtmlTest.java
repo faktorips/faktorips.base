@@ -57,13 +57,13 @@ public class LanguageSupportHtmlTest extends AbstractXmlUnitHtmlExportTest {
         }
         enDescription.setText(enBeschreibung);
 
-        config.setDescriptionLocale(Locale.GERMANY);
+        context.setDescriptionLocale(Locale.GERMANY);
         AbstractPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(),
-                config);
+                context);
         assertXPathExists(objectContentPage, deXPath);
 
-        config.setDescriptionLocale(Locale.ENGLISH);
-        objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), config);
+        context.setDescriptionLocale(Locale.ENGLISH);
+        objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
         assertXPathExists(objectContentPage, enXPath);
     }
 
@@ -86,21 +86,21 @@ public class LanguageSupportHtmlTest extends AbstractXmlUnitHtmlExportTest {
         String enXPath = "//table[@id='" + productCmpt.getName() + "_ProductGenerationAttributeTable']//tr/td[1][.='"
                 + enLabel + "']";
 
-        config.setDescriptionLocale(Locale.GERMAN);
+        context.setDescriptionLocale(Locale.GERMAN);
         attribute.setLabelValue(Locale.GERMAN, deLabel);
 
         AbstractPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(
-                productCmpt.getIpsSrcFile(), config);
+                productCmpt.getIpsSrcFile(), context);
         assertXPathExists(objectContentPage, deXPath);
 
-        assertEquals(deLabel, config.getCaption(value));
+        assertEquals(deLabel, context.getCaption(value));
 
-        config.setDescriptionLocale(Locale.ENGLISH);
-        objectContentPage = ContentPageUtil.createObjectContentPageElement(productCmpt.getIpsSrcFile(), config);
+        context.setDescriptionLocale(Locale.ENGLISH);
+        objectContentPage = ContentPageUtil.createObjectContentPageElement(productCmpt.getIpsSrcFile(), context);
         assertXPathExists(objectContentPage, deXPath);
 
         attribute.setLabelValue(Locale.ENGLISH, enLabel);
-        objectContentPage = ContentPageUtil.createObjectContentPageElement(productCmpt.getIpsSrcFile(), config);
+        objectContentPage = ContentPageUtil.createObjectContentPageElement(productCmpt.getIpsSrcFile(), context);
         assertXPathExists(objectContentPage, enXPath);
     }
 

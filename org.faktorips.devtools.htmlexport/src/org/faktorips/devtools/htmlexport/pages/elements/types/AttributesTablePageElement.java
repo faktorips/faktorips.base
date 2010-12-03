@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 
@@ -40,8 +40,8 @@ public class AttributesTablePageElement extends AbstractIpsObjectPartsContainerT
      * Creates an {@link AttributesTablePageElement} for the specified {@link IType}
      * 
      */
-    public AttributesTablePageElement(IType type, DocumentorConfiguration config) {
-        super(Arrays.asList(type.getAttributes()), config);
+    public AttributesTablePageElement(IType type, DocumentationContext context) {
+        super(Arrays.asList(type.getAttributes()), context);
         this.type = type;
         setId(type.getName() + "_" + "attributes"); //$NON-NLS-1$//$NON-NLS-2$
     }
@@ -59,7 +59,7 @@ public class AttributesTablePageElement extends AbstractIpsObjectPartsContainerT
         List<String> attributeData = new ArrayList<String>();
 
         attributeData.add(attribute.getName());
-        attributeData.add(getConfig().getLabel(attribute));
+        attributeData.add(getContext().getLabel(attribute));
         attributeData.add(attribute.getDatatype());
         attributeData.add(attribute.getModifier().toString());
 
@@ -68,14 +68,14 @@ public class AttributesTablePageElement extends AbstractIpsObjectPartsContainerT
                     .getDefault()
                     .getIpsPreferences()
                     .getDatatypeFormatter()
-                    .formatValue(getConfig().getIpsProject().findValueDatatype(attribute.getDatatype()),
+                    .formatValue(getContext().getIpsProject().findValueDatatype(attribute.getDatatype()),
                             attribute.getDefaultValue()));
         } catch (CoreException e) {
             IpsPlugin.log(e);
             attributeData.add(attribute.getDefaultValue());
         }
 
-        attributeData.add(getConfig().getDescription(attribute));
+        attributeData.add(getContext().getDescription(attribute));
 
         return attributeData;
     }

@@ -9,23 +9,19 @@ public class HtmlExportOperationTest extends AbstractHtmlExportTest {
 
         try {
             new HtmlExportOperation(null);
-            fail("fehlende DocumentorConfiguration nicht moniert");
+            fail("fehlende DocumentationContext nicht moniert");
         } catch (IllegalArgumentException e) {
         }
-        new HtmlExportOperation(config);
+        new HtmlExportOperation(context);
     }
 
     public void testWriteOverview() throws Exception {
         createStandardProjekt();
 
-        config.setPath(zielpfad);
+        context.setPath(zielpfad);
 
-        config.setDocumentedIpsObjectTypes(config.getIpsProject().getIpsModel().getIpsObjectTypes());
+        context.setDocumentedIpsObjectTypes(context.getIpsProject().getIpsModel().getIpsObjectTypes());
 
-        try {
-            operation.run(new NullProgressMonitor());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        operation.run(new NullProgressMonitor());
     }
 }

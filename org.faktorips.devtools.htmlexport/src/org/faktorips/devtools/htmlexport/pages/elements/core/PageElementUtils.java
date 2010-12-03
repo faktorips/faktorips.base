@@ -20,7 +20,7 @@ import java.util.Set;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementInDocumentedSourceFileFilter;
 import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
@@ -70,11 +70,11 @@ public class PageElementUtils {
     public static List<PageElement> createLinkPageElements(List<? extends IIpsSrcFile> srcFiles,
             String target,
             Set<Style> styles,
-            DocumentorConfiguration config) {
+            DocumentationContext context) {
         List<PageElement> liste = new ArrayList<PageElement>();
 
         for (IIpsSrcFile srcFile : srcFiles) {
-            PageElement linkPageElement = createLinkPageElement(config, srcFile, target, srcFile.getIpsObjectName(),
+            PageElement linkPageElement = createLinkPageElement(context, srcFile, target, srcFile.getIpsObjectName(),
                     true, styles.toArray(new Style[styles.size()]));
             linkPageElement.addStyles(styles.toArray(new Style[styles.size()]));
             liste.add(linkPageElement);
@@ -86,13 +86,13 @@ public class PageElementUtils {
     /**
      * creates a LinkPageElement for an IpsElement
      */
-    public static PageElement createLinkPageElement(DocumentorConfiguration config,
+    public static PageElement createLinkPageElement(DocumentationContext context,
             IIpsElement to,
             String target,
             String text,
             boolean useImage,
             Style... styles) {
-        IpsElementInDocumentedSourceFileFilter filter = new IpsElementInDocumentedSourceFileFilter(config);
+        IpsElementInDocumentedSourceFileFilter filter = new IpsElementInDocumentedSourceFileFilter(context);
 
         PageElement element = createIpsElementRepresentation(to, text, useImage);
 
@@ -122,12 +122,12 @@ public class PageElementUtils {
     /**
      * creates a Link to the given {@link IIpsElement}
      */
-    public static PageElement createLinkPageElement(DocumentorConfiguration config,
+    public static PageElement createLinkPageElement(DocumentationContext context,
             IIpsElement to,
             String target,
             String text,
             boolean useImage) {
-        return createLinkPageElement(config, to, target, text, useImage, new Style[0]);
+        return createLinkPageElement(context, to, target, text, useImage, new Style[0]);
     }
 
     public static LinkPageElement createLinkPageElementToIpsElement(IIpsElement to, String target, PageElement element) {

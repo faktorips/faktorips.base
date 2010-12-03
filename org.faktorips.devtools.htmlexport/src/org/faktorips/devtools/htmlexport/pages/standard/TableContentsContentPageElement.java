@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
@@ -56,7 +56,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
         private ValueDatatype[] datatypes;
 
         public ContentTablePageElement(ITableContentsGeneration tableContentsGeneration) {
-            super(Arrays.asList(tableContentsGeneration.getRows()), config);
+            super(Arrays.asList(tableContentsGeneration.getRows()), TableContentsContentPageElement.this.getContext());
             this.tableStructure = findTableStructure();
             initDatatypes(tableContentsGeneration);
         }
@@ -104,11 +104,11 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
     }
 
     /**
-     * creates a page for the given {@link ITableContents} with the config
+     * creates a page for the given {@link ITableContents} with the context
      * 
      */
-    protected TableContentsContentPageElement(ITableContents object, DocumentorConfiguration config) {
-        super(object, config);
+    protected TableContentsContentPageElement(ITableContents object, DocumentationContext context) {
+        super(object, context);
     }
 
     @Override
@@ -118,7 +118,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
         ITableStructure tableStructure = findTableStructure();
         addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
                 new TextPageElement(IpsObjectType.TABLE_STRUCTURE.getDisplayName() + ": "), //$NON-NLS-1$
-                PageElementUtils.createLinkPageElement(getConfig(), tableStructure,
+                PageElementUtils.createLinkPageElement(getContext(), tableStructure,
                         "content", tableStructure.getName(), true) })); //$NON-NLS-1$
 
     }
@@ -166,7 +166,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
     private ITableStructure findTableStructure() {
         ITableStructure tableStructure;
         try {
-            tableStructure = getDocumentedIpsObject().findTableStructure(getConfig().getIpsProject());
+            tableStructure = getDocumentedIpsObject().findTableStructure(getContext().getIpsProject());
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }

@@ -21,7 +21,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
@@ -29,14 +29,14 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageE
 public abstract class AbstractIpsObjectPartsContainerTablePageElement<T extends IIpsObjectPartContainer> extends
         AbstractStandardTablePageElement {
 
-    private DocumentorConfiguration config;
+    private DocumentationContext context;
     protected final List<T> objectParts;
     private IExtensionPropertyDefinition[] propertyDefinitions;
 
-    public AbstractIpsObjectPartsContainerTablePageElement(List<T> objectParts, DocumentorConfiguration config) {
+    public AbstractIpsObjectPartsContainerTablePageElement(List<T> objectParts, DocumentationContext context) {
         super();
         this.objectParts = objectParts;
-        this.setConfig(config);
+        this.setContext(context);
     }
 
     @Override
@@ -103,11 +103,11 @@ public abstract class AbstractIpsObjectPartsContainerTablePageElement<T extends 
         return objectParts.isEmpty();
     }
 
-    public void setConfig(DocumentorConfiguration config) {
-        this.config = config;
+    public void setContext(DocumentationContext context) {
+        this.context = context;
     }
 
-    public DocumentorConfiguration getConfig() {
-        return config;
+    public DocumentationContext getContext() {
+        return context;
     }
 }

@@ -17,32 +17,32 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 
 /**
  * {@link IpsElementFilter}, which accepts an {@link IIpsElement}, if it is documented according to
- * the given {@link DocumentorConfiguration}
+ * the given {@link DocumentationContext}
  * 
  * @author dicker
  */
 public class IpsElementInDocumentedSourceFileFilter implements IpsElementFilter {
 
-    private final DocumentorConfiguration config;
+    private final DocumentationContext context;
 
-    public IpsElementInDocumentedSourceFileFilter(DocumentorConfiguration config) {
-        this.config = config;
+    public IpsElementInDocumentedSourceFileFilter(DocumentationContext context) {
+        this.context = context;
     }
 
     @Override
     public boolean accept(IIpsElement element) {
         if (element instanceof IIpsSrcFile) {
-            return config.getDocumentedSourceFiles().contains(element);
+            return context.getDocumentedSourceFiles().contains(element);
         }
         if (element instanceof IIpsObject) {
-            return config.getDocumentedSourceFiles().contains(((IIpsObject)element).getIpsSrcFile());
+            return context.getDocumentedSourceFiles().contains(((IIpsObject)element).getIpsSrcFile());
         }
         if (element instanceof IIpsPackageFragment) {
-            return config.getLinkedPackageFragments().contains(element);
+            return context.getLinkedPackageFragments().contains(element);
         }
         return false;
     }

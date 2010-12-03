@@ -24,14 +24,14 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.htmlexport.HtmlExportOperation;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 
 public abstract class AbstractHtmlExportTest extends AbstractIpsPluginTest {
 
     protected String zielpfad;
     protected IIpsProject ipsProject;
-    protected DocumentorConfiguration config;
+    protected DocumentationContext context;
     protected HtmlExportOperation operation;
 
     public AbstractHtmlExportTest() {
@@ -48,18 +48,18 @@ public abstract class AbstractHtmlExportTest extends AbstractIpsPluginTest {
 
         ipsProject = newIpsProject("TestProjekt");
 
-        config = new DocumentorConfiguration();
+        context = new DocumentationContext();
 
         File tmpFile = File.createTempFile("tmp", "tmp");
         String location = tmpFile.getParentFile() + File.separator + "fips";
         tmpFile.delete();
 
-        config.setPath(location + File.separator + "html");
-        config.setIpsProject(ipsProject);
-        config.setLayouter(new HtmlLayouter(".resource"));
-        config.setDescriptionLocale(Locale.GERMANY);
+        context.setPath(location + File.separator + "html");
+        context.setIpsProject(ipsProject);
+        context.setLayouter(new HtmlLayouter(".resource"));
+        context.setDescriptionLocale(Locale.GERMANY);
 
-        operation = new HtmlExportOperation(config);
+        operation = new HtmlExportOperation(context);
     }
 
     protected void createStandardProjekt() {
@@ -238,7 +238,7 @@ public abstract class AbstractHtmlExportTest extends AbstractIpsPluginTest {
     }
 
     protected void deletePreviousGeneratedFiles() {
-        File file = new File(config.getPath());
+        File file = new File(context.getPath());
         if (file.exists()) {
             file.delete();
         }

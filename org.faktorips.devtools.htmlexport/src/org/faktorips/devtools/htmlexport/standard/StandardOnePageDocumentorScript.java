@@ -15,7 +15,7 @@ package org.faktorips.devtools.htmlexport.standard;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.htmlexport.IDocumentorScript;
-import org.faktorips.devtools.htmlexport.documentor.DocumentorConfiguration;
+import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.helper.FileHandler;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractPageElement;
@@ -25,22 +25,22 @@ import org.faktorips.devtools.htmlexport.standard.pages.ProjectOverviewPageEleme
 public class StandardOnePageDocumentorScript implements IDocumentorScript {
 
     @Override
-    public void execute(DocumentorConfiguration config, IProgressMonitor monitor) {
-        writeProjectOverviewPage(config);
+    public void execute(DocumentationContext context, IProgressMonitor monitor) {
+        writeProjectOverviewPage(context);
 
         // TODO HIER WEITERMACHEN!!!;
 
-        FileHandler.writeFile("complete.html", config.getLayouter().generate()); //$NON-NLS-1$
+        FileHandler.writeFile("complete.html", context.getLayouter().generate()); //$NON-NLS-1$
     }
 
-    private void writeProjectOverviewPage(DocumentorConfiguration config) {
-        AbstractPageElement projectOverviewHtml = new ProjectOverviewPageElement(config);
-        createContent(config, projectOverviewHtml);
+    private void writeProjectOverviewPage(DocumentationContext context) {
+        AbstractPageElement projectOverviewHtml = new ProjectOverviewPageElement(context);
+        createContent(context, projectOverviewHtml);
     }
 
-    private void createContent(DocumentorConfiguration config, PageElement pageElement) {
+    private void createContent(DocumentationContext context, PageElement pageElement) {
         pageElement.build();
-        ILayouter layouter = config.getLayouter();
+        ILayouter layouter = context.getLayouter();
         pageElement.acceptLayouter(layouter);
     }
 

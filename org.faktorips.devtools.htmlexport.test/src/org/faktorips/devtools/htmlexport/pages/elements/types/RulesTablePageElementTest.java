@@ -43,7 +43,7 @@ public class RulesTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
         IValidationRule methodString = createRuleWithAttributes();
         IValidationRule methodInteger = createRuleWithoutAttributes();
 
-        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), config);
+        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
 
         assertXPathExists(objectContentPage, getXPathMethodTable());
 
@@ -56,7 +56,7 @@ public class RulesTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
 
     public void testMethodsTableNichtVorhandenOhneAttribute() throws Exception {
 
-        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), config);
+        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
 
         assertXPathNotExists(objectContentPage, getXPathMethodTable());
     }
@@ -64,7 +64,7 @@ public class RulesTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
     public void testMethodsTableAufbau() throws Exception {
         createRuleWithoutAttributes();
         createRuleWithAttributes();
-        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), config);
+        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
 
         int row = 2;
 
