@@ -476,13 +476,22 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             logMethodStarted("refresh"); //$NON-NLS-1$
         }
 
+        // check to enable all controls,
+        // note that this must be done before refresh the control states because
+        // maybe a control are disabled by the controls own enable/disable logic
+        updateDataChangeableStateIfChangeable();
+
+        // refresh the pages and control state
         IEditorPart editorPart = getActivePageInstance();
         if (editorPart instanceof IpsObjectEditorPage) {
             IpsObjectEditorPage page = (IpsObjectEditorPage)editorPart;
             page.refresh();
         }
 
-        updateDataChangeableState();
+        // check to disable all controls,
+        // note that this must be done after refresh the control states because
+        // maybe a control will be enabled by the controls own enable/disable logic
+        updateDataChangeableStateIfNotChangeable();
 
         if (TRACE) {
             logMethodFinished("refresh"); //$NON-NLS-1$
@@ -490,14 +499,38 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     }
 
     /**
-     * Evaluates the new data changeable state and updates it, if it has changed.
+     * Evaluates the new data changeable state and updates it, if it has changed and the new state
+     * is "changeable", if the new state is "not changeable" this method does nothing
      */
-    public void updateDataChangeableState() {
+    private void updateDataChangeableStateIfChangeable() {
+        updateDataChangeableState(true);
+    }
+
+    /**
+     * Evaluates the new data changeable state and updates it, if it has changed and the new state
+     * is "not changeable", if the new state is "changeable" this method does nothing
+     */
+    private void updateDataChangeableStateIfNotChangeable() {
+        updateDataChangeableState(false);
+    }
+
+    /**
+     * Evaluates the new data changeable state and updates it, if it has changed.
+     * 
+     * @param checkToEnable true if the state should be
+     */
+    public void updateDataChangeableState(boolean checkToEnable) {
         if (TRACE) {
             logMethodStarted("updateDataChangeable"); //$NON-NLS-1$
         }
 
         boolean newState = computeDataChangeableState();
+        if (checkToEnable != newState) {
+            if (TRACE) {
+                logMethodFinished("updateDataChangeable"); //$NON-NLS-1$
+            }
+            return;
+        }
 
         if (TRACE) {
             log("Next data changeable state=" + newState + ", oldState=" + isDataChangeable()); //$NON-NLS-1$ //$NON-NLS-2$
