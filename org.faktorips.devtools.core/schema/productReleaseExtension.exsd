@@ -6,7 +6,7 @@
          <meta.schema plugin="org.faktorips.devtools.core" id="releaseDeploymentExtension" name="Release Deployment Extension"/>
       </appInfo>
       <documentation>
-         With this extension point you could register an extension for the release deployment process. You have to implement the interface IDeploymentOperation that provides the available target platforms and the concrete implementation of the deployment process.
+         With this extension point you could register an extension for the release deployment process. You have to implement the interface IReleaseAndDeploymentOperation that provides the available target platforms and the concrete implementation of the deployment process.
 To validate the version format you have to specify the correct version format by a regular expression and a user readable representation of the format.
       </documentation>
    </annotation>
