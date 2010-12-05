@@ -22,15 +22,21 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.codegen.dthelpers.Java5ClassNames;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.util.QNameUtil;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.type.GenTypePart;
 import org.faktorips.util.LocalizedStringsSet;
@@ -48,14 +54,9 @@ public abstract class GenProdAssociation extends GenTypePart {
 
     protected IProductCmptType target;
 
-    /**
-     * @param part
-     * @param builder
-     * @param stringsSet
-     * @throws CoreException
-     */
     public GenProdAssociation(GenProductCmptType genProductCmptType, IProductCmptTypeAssociation association)
             throws CoreException {
+
         super(genProductCmptType, association, LOCALIZED_STRINGS);
         this.association = association;
         target = association.findTargetProductCmptType(association.getIpsProject());
@@ -100,6 +101,7 @@ public abstract class GenProdAssociation extends GenTypePart {
      */
     protected void generateMethodGetNumOfRelatedProductCmpts(List<IAssociation> implAssociations,
             JavaCodeFragmentBuilder builder) throws CoreException {
+
         if (!association.isDerivedUnion()) {
             throw new IllegalArgumentException("Association must be a container association.");
         }
@@ -175,7 +177,7 @@ public abstract class GenProdAssociation extends GenTypePart {
      * public int getNumOfCoverageTypes()
      * </pre>
      */
-    void generateSignatureGetNumOfRelatedCmpts(JavaCodeFragmentBuilder builder) throws CoreException {
+    void generateSignatureGetNumOfRelatedCmpts(JavaCodeFragmentBuilder builder) {
         String methodName = getMethodNameGetNumOfRelatedCmpts();
         builder.signature(Modifier.PUBLIC, "int", methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
     }
@@ -328,7 +330,7 @@ public abstract class GenProdAssociation extends GenTypePart {
                 methodsBuilder.append("<");
                 methodsBuilder.appendClassName(targetClass);
                 methodsBuilder.append("> superResult = super.");
-                methodsBuilder.appendln(getMethodNameGetManyRelatedCmpts(association) + "();");
+                methodsBuilder.appendln(getMethodNameGetManyRelatedCmpts() + "();");
                 methodsBuilder.appendln("result.addAll(superResult);");
             } else {
                 // ICoverage[] superResult = super.getCoverages();
@@ -336,7 +338,7 @@ public abstract class GenProdAssociation extends GenTypePart {
                 // int counter = superResult.length;
                 methodsBuilder.appendClassName(targetClass);
                 methodsBuilder.append("[] superResult = super.");
-                methodsBuilder.appendln(getMethodNameGetManyRelatedCmpts(association) + "();");
+                methodsBuilder.appendln(getMethodNameGetManyRelatedCmpts() + "();");
                 methodsBuilder.appendln("System.arraycopy(superResult, 0, result, 0, superResult.length);");
                 methodsBuilder.appendln("int index = superResult.length;");
             }
@@ -357,16 +359,16 @@ public abstract class GenProdAssociation extends GenTypePart {
     protected abstract void generateCodeGetRelatedCmptsInContainer(JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException;
 
-    String getPropertyNameToManyAssociation(IProductCmptTypeAssociation association) {
+    String getPropertyNameToManyAssociation() {
         String role = StringUtils.capitalize(association.getTargetRolePlural());
         return getLocalizedText("PROPERTY_TOMANY_ASSOCIATION_NAME", role);
     }
 
     void generateSignatureDerivedUnionAssociation(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        generateSignatureGetManyRelatedCmpts(association, methodsBuilder);
+        generateSignatureGetManyRelatedCmpts(methodsBuilder);
     }
 
-    protected String getFieldNameTo1Association() throws CoreException {
+    protected String getFieldNameTo1Association() {
         return getJavaNamingConvention().getMemberVarName(getPropertyNameTo1Association());
     }
 
@@ -388,9 +390,8 @@ public abstract class GenProdAssociation extends GenTypePart {
      * public List&lt;CoverageType&gt; getCoverageTypes()
      * </pre>
      */
-    void generateSignatureGetManyRelatedCmpts(IProductCmptTypeAssociation association, JavaCodeFragmentBuilder builder)
-            throws CoreException {
-        String methodName = getMethodNameGetManyRelatedCmpts(association);
+    void generateSignatureGetManyRelatedCmpts(JavaCodeFragmentBuilder builder) throws CoreException {
+        String methodName = getMethodNameGetManyRelatedCmpts();
         IProductCmptType target = association.findTargetProductCmptType(association.getIpsProject());
         String returnType;
         if (isUseTypesafeCollections()) {
@@ -416,9 +417,8 @@ public abstract class GenProdAssociation extends GenTypePart {
      * public List&lt;ICoverageTypeGen&gt; getCoverageTypeGens(Calendar effectiveDate)
      * </pre>
      */
-    void generateSignatureGetManyRelatedCmptGens(IProductCmptTypeAssociation association,
-            JavaCodeFragmentBuilder builder) throws CoreException {
-        String methodName = getMethodNameGetManyRelatedCmpts(association);
+    void generateSignatureGetManyRelatedCmptGens(JavaCodeFragmentBuilder builder) throws CoreException {
+        String methodName = getMethodNameGetManyRelatedCmpts();
         IProductCmptType target = association.findTargetProductCmptType(association.getIpsProject());
         String returnType;
         if (isUseTypesafeCollections()) {
@@ -435,8 +435,8 @@ public abstract class GenProdAssociation extends GenTypePart {
                 new String[] { "effectiveDate" }, new String[] { Calendar.class.getName() });
     }
 
-    String getMethodNameGetManyRelatedCmpts(IProductCmptTypeAssociation association) throws CoreException {
-        return getJavaNamingConvention().getMultiValueGetterMethodName(getPropertyNameToManyAssociation(association));
+    String getMethodNameGetManyRelatedCmpts() {
+        return getJavaNamingConvention().getMultiValueGetterMethodName(getPropertyNameToManyAssociation());
     }
 
     public void generateCodeForDerivedUnionAssociationImplementation(List<IAssociation> implAssociations,
@@ -456,9 +456,6 @@ public abstract class GenProdAssociation extends GenTypePart {
         methodsBuilder.append(';');
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void generateCodeForDerivedUnionAssociationDefinition(JavaCodeFragmentBuilder methodsBuilder)
             throws Exception {
         appendLocalizedJavaDoc("METHOD_GET_MANY_RELATED_CMPTS", association.getTargetRolePlural(), methodsBuilder);
@@ -466,30 +463,18 @@ public abstract class GenProdAssociation extends GenTypePart {
         methodsBuilder.appendln(";");
     }
 
-    /**
-     * @return
-     * @throws CoreException
-     */
     protected String getQualifiedInterfaceClassNameForTarget() throws CoreException {
         return getGenType().getBuilderSet()
                 .getGenerator((IProductCmptType)association.findTarget(association.getIpsProject()))
                 .getQualifiedName(true);
     }
 
-    /**
-     * @return
-     * @throws CoreException
-     */
     protected String getQualifiedInterfaceClassNameForTargetGen() throws CoreException {
         return getGenType().getBuilderSet()
                 .getGenerator((IProductCmptType)association.findTarget(association.getIpsProject()))
                 .getQualifiedClassNameForProductCmptTypeGen(true);
     }
 
-    /**
-     * @return
-     * @throws CoreException
-     */
     protected String getMethodNameGetProductCmptGenerationForTarget() throws CoreException {
         return getGenType().getBuilderSet()
                 .getGenerator((IProductCmptType)association.findTarget(association.getIpsProject()))
@@ -503,8 +488,6 @@ public abstract class GenProdAssociation extends GenTypePart {
      * [javadoc]
      * public ILink&lt;ICoverageType&gt; getLinkForCoverageType(ICoverageType productComponent);
      * </pre>
-     * 
-     * @throws CoreException
      */
     protected void generateMethodInterfaceGetRelatedCmptLink(JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
@@ -519,18 +502,16 @@ public abstract class GenProdAssociation extends GenTypePart {
      * <pre>
      * public ILink&lt;ICoverageType&gt; getLinkForCoverageType(ICoverageType productComponent)
      * </pre>
-     * 
-     * @throws CoreException
      */
     protected void generateSignatureGetRelatedCmptLink(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
-        String methodName = getMethodNameGetRelatedCmptLink();
+        String methodName = getMethodNameGet1RelatedCmptLink();
         String returnType = Java5ClassNames.ILink_QualifiedName + "<" + getQualifiedInterfaceClassNameForTarget() + ">";
         methodsBuilder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), returnType,
                 methodName, new String[] { "productComponent" },
                 new String[] { getQualifiedInterfaceClassNameForTarget() });
     }
 
-    private String getMethodNameGetRelatedCmptLink() {
+    String getMethodNameGet1RelatedCmptLink() {
         return getJavaNamingConvention().getMultiValueGetterMethodName(
                 "LinkFor" + StringUtils.capitalize(association.getTargetRoleSingular()));
     }
@@ -543,15 +524,13 @@ public abstract class GenProdAssociation extends GenTypePart {
      *     return getLinkForCoverageType((ICoverageType)target);
      * }
      * </pre>
-     * 
-     * @throws CoreException
      */
     public void generateCodeForGetLink(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.append("if (\"");
         methodsBuilder.append(association.getTargetRoleSingular());
         methodsBuilder.appendln("\".equals(linkName)){");
         methodsBuilder.append("return ");
-        methodsBuilder.append(getMethodNameGetRelatedCmptLink());
+        methodsBuilder.append(getMethodNameGet1RelatedCmptLink());
         methodsBuilder.append("((");
         methodsBuilder.appendClassName(getQualifiedInterfaceClassNameForTarget());
         methodsBuilder.appendln(")target);");
@@ -559,4 +538,36 @@ public abstract class GenProdAssociation extends GenTypePart {
     }
 
     public abstract void generateCodeForGetLinks(JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
+
+    protected final void addMethodGetRelatedCmptLinkToGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        try {
+            IMethod method = generatedJavaType.getMethod(getMethodNameGet1RelatedCmptLink(), new String[] { "Q"
+                    + QNameUtil.getUnqualifiedName(getQualifiedInterfaceClassNameForTarget()) + ";" });
+            javaElements.add(method);
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected final void addMethodGetCardinalityForAssociationToGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        try {
+            IMethod expectedMethod = generatedJavaType
+                    .getMethod(
+                            getMethodNameGetCardinalityForAssociation(),
+                            new String[] { "Q"
+                                    + QNameUtil.getUnqualifiedName(getQualifiedInterfaceClassNameForTarget()) + ";" });
+            javaElements.add(expectedMethod);
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected final boolean isUseTypesafeCollections(IIpsProject ipsProject) {
+        return Boolean.parseBoolean(ipsProject.getProperties().getBuilderSetConfig()
+                .getPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_USE_TYPESAFE_COLLECTIONS));
+    }
 }

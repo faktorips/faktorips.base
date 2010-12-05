@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 public class ProjectConfigurationUtil {
 
     private ProjectConfigurationUtil() {
-        // Cannot instantiate utility class.
+        // Cannot instantiate utility class
     }
 
     public static final void setUpUseJava5Enums(IIpsProject ipsProject, boolean useFeature) throws CoreException {
@@ -29,6 +29,17 @@ public class ProjectConfigurationUtil {
         IIpsArtefactBuilderSetConfigModel builderConfig = properties.getBuilderSetConfig();
         String booleanLiteral = useFeature ? "true" : "false";
         builderConfig.setPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_USE_ENUMS, booleanLiteral, null);
+        ipsProject.setProperties(properties);
+    }
+
+    public static final void setUpUseTypesafeCollections(IIpsProject ipsProject, boolean useFeature)
+            throws CoreException {
+
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        IIpsArtefactBuilderSetConfigModel builderConfig = properties.getBuilderSetConfig();
+        String booleanLiteral = useFeature ? "true" : "false";
+        builderConfig.setPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_USE_TYPESAFE_COLLECTIONS, booleanLiteral,
+                null);
         ipsProject.setProperties(properties);
     }
 

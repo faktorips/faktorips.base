@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
@@ -50,18 +51,12 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
         super(genProductCmptType, association);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateConstants(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
@@ -76,12 +71,10 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
+
         if (generatesInterface) {
             generateMethodInterfaceGet1RelatedCmpt(builder);
             generateMethodInterfaceGet1RelatedCmptGen(builder);
@@ -89,7 +82,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
                 generateMethodInterfaceGet1RelatedCmptLink(builder);
                 generateMethodInterfaceGetRelatedCmptLink(builder);
             }
-            if (association.findMatchingPolicyCmptTypeAssociation(ipsProject) != null) {
+            if (association.constrainsPolicyCmptTypeAssociation(ipsProject)) {
                 generateMethodGetCardinalityForAssociation(builder);
             }
         } else {
@@ -100,7 +93,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
                 generateMethodGet1RelatedCmptLink(builder);
                 generateMethodGetRelatedCmptLink(builder);
             }
-            if (association.findMatchingPolicyCmptTypeAssociation(ipsProject) != null) {
+            if (association.constrainsPolicyCmptTypeAssociation(ipsProject)) {
                 generateMethodGetCardinalityFor1To1Association(builder);
             }
         }
@@ -174,10 +167,6 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
         String methodName = getMethodNameGet1RelatedCmptLink();
         String returnType = Java5ClassNames.ILink_QualifiedName + "<" + getQualifiedInterfaceClassNameForTarget() + ">";
         builder.signature(Modifier.PUBLIC, returnType, methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
-    }
-
-    String getMethodNameGet1RelatedCmptLink() {
-        return getJavaNamingConvention().getMultiValueGetterMethodName("LinkFor" + getPropertyNameTo1Association());
     }
 
     private void generateMethodGetCardinalityFor1To1Association(JavaCodeFragmentBuilder methodsBuilder)
@@ -398,8 +387,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
 
         appendLocalizedJavaDoc("METHOD_SET_1_RELATED_CMPT", association.getTargetRoleSingular(), methodsBuilder);
 
-        String propName = getPropertyNameTo1Association();
-        String methodName = getJavaNamingConvention().getSetterMethodName(propName, Datatype.INTEGER);
+        String methodName = getMethodNameSet1RelatedCmpt();
         String[] argNames = new String[] { "target" };
         String[] argTypes = new String[] { getQualifiedInterfaceClassNameForTarget() };
         methodsBuilder.signature(Modifier.PUBLIC, "void", methodName, argNames, argTypes);
@@ -416,6 +404,11 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
             methodsBuilder.append(argNames[0] + "." + MethodNames.GET_PRODUCT_COMPONENT_ID + "() );");
         }
         methodsBuilder.closeBracket();
+    }
+
+    String getMethodNameSet1RelatedCmpt() {
+        String propertyName = getPropertyNameTo1Association();
+        return getJavaNamingConvention().getSetterMethodName(propertyName);
     }
 
     /**
@@ -542,31 +535,79 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
     }
 
     @Override
-    public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
-            IType generatedJavaType,
-            IIpsElement ipsElement) {
-
-    }
-
-    @Override
     public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
             IType generatedJavaType,
             IIpsElement ipsElement) {
 
-        addGet1RelatedCmptMethodToGeneratedJavaElements(javaElements, generatedJavaType);
-        addGet1RelatedCmptGenMethodToGeneratedJavaElements(javaElements, generatedJavaType);
-        addGet1RelatedCmptLinkMethodToGeneratedJavaElements(javaElements, generatedJavaType);
-        addGetRelatedCmptLinkMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodGet1RelatedCmptToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodGet1RelatedCmptGenToGeneratedJavaElements(javaElements, generatedJavaType);
+
+        if (isUseTypesafeCollections(ipsElement.getIpsProject())) {
+            addMethodGet1RelatedCmptLinkToGeneratedJavaElements(javaElements, generatedJavaType);
+            addMethodGetRelatedCmptLinkToGeneratedJavaElements(javaElements, generatedJavaType);
+        }
+
+        try {
+            if (association.constrainsPolicyCmptTypeAssociation(association.getIpsProject())) {
+                addMethodGetCardinalityForAssociationToGeneratedJavaElements(javaElements, generatedJavaType);
+            }
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private void addGet1RelatedCmptMethodToGeneratedJavaElements(List<IJavaElement> javaElements,
+    @Override
+    public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsElement ipsElement) {
+
+        addFieldTo1AssociationToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodGet1RelatedCmptToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodGet1RelatedCmptGenToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodSet1RelatedCmptToGeneratedJavaElements(javaElements, generatedJavaType);
+
+        if (isUseTypesafeCollections(ipsElement.getIpsProject())) {
+            addMethodGet1RelatedCmptLinkToGeneratedJavaElements(javaElements, generatedJavaType);
+            addMethodGetRelatedCmptLinkToGeneratedJavaElements(javaElements, generatedJavaType);
+        }
+
+        try {
+            if (association.constrainsPolicyCmptTypeAssociation(association.getIpsProject())) {
+                addMethodGetCardinalityForAssociationToGeneratedJavaElements(javaElements, generatedJavaType);
+            }
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void addFieldTo1AssociationToGeneratedJavaElements(List<IJavaElement> javaElements, IType generatedJavaType) {
+        IField field = generatedJavaType.getField(getFieldNameTo1Association());
+        javaElements.add(field);
+    }
+
+    private void addMethodSet1RelatedCmptToGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        try {
+            IMethod method = generatedJavaType
+                    .getMethod(
+                            getMethodNameSet1RelatedCmpt(),
+                            new String[] { "Q"
+                                    + QNameUtil.getUnqualifiedName(getQualifiedInterfaceClassNameForTarget()) + ";" });
+            javaElements.add(method);
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void addMethodGet1RelatedCmptToGeneratedJavaElements(List<IJavaElement> javaElements,
             IType generatedJavaType) {
 
         IMethod method = generatedJavaType.getMethod(getMethodNameGet1RelatedCmpt(), new String[0]);
         javaElements.add(method);
     }
 
-    private void addGet1RelatedCmptGenMethodToGeneratedJavaElements(List<IJavaElement> javaElements,
+    private void addMethodGet1RelatedCmptGenToGeneratedJavaElements(List<IJavaElement> javaElements,
             IType generatedJavaType) {
 
         IMethod method = generatedJavaType.getMethod(getMethodNameGet1RelatedCmpt(),
@@ -574,22 +615,11 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
         javaElements.add(method);
     }
 
-    private void addGet1RelatedCmptLinkMethodToGeneratedJavaElements(List<IJavaElement> javaElements,
+    private void addMethodGet1RelatedCmptLinkToGeneratedJavaElements(List<IJavaElement> javaElements,
             IType generatedJavaType) {
 
         IMethod method = generatedJavaType.getMethod(getMethodNameGet1RelatedCmptLink(), new String[0]);
         javaElements.add(method);
     }
 
-    private void addGetRelatedCmptLinkMethodToGeneratedJavaElements(List<IJavaElement> javaElements,
-            IType generatedJavaType) {
-
-        try {
-            IMethod method = generatedJavaType.getMethod(getMethodNameGet1RelatedCmptLink(), new String[] { "Q"
-                    + QNameUtil.getUnqualifiedName(getQualifiedInterfaceClassNameForTarget()) + ";" });
-            javaElements.add(method);
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
