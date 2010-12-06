@@ -19,6 +19,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
@@ -1190,6 +1192,63 @@ public abstract class GenAssociation extends GenTypePart {
 
     protected GenPolicyCmptType getGenPolicyCmptType() {
         return (GenPolicyCmptType)getGenType();
+    }
+
+    protected String getQualifiedInterfaceClassNameForTarget() throws CoreException {
+        return getGenType().getBuilderSet()
+                .getGenerator((IPolicyCmptType)association.findTarget(association.getIpsProject()))
+                .getQualifiedName(true);
+    }
+
+    protected String getUnqualifiedInterfaceClassNameForTarget() {
+        try {
+            return getGenType().getBuilderSet()
+                    .getGenerator((IPolicyCmptType)association.findTarget(association.getIpsProject()))
+                    .getUnqualifiedClassName(true);
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected final void addFieldGetMaxCardinalityForToGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        addFieldToGeneratedJavaElements(javaElements, generatedJavaType, getFieldNameGetMaxCardinalityFor());
+    }
+
+    protected final void addMethodNewChildToGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        addMethodToGeneratedJavaElements(javaElements, generatedJavaType, getMethodNameNewChild());
+    }
+
+    protected final void addMethodNewChildConfiguredToGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IProductCmptType targetConfiguringProductCmptType) {
+
+        try {
+            addMethodToGeneratedJavaElements(javaElements, generatedJavaType, getMethodNameNewChild(), "Q"
+                    + getGenType().getBuilderSet().getGenerator(targetConfiguringProductCmptType)
+                            .getUnqualifiedClassName(true) + ";");
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected final void addFieldAssociationToGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        try {
+            addFieldToGeneratedJavaElements(javaElements, generatedJavaType, getFieldNameForAssociation());
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected final void addFieldAssociationNameToGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        addFieldToGeneratedJavaElements(javaElements, generatedJavaType, getStaticConstantAssociationName());
     }
 
 }

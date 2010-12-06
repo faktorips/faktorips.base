@@ -25,8 +25,10 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
@@ -683,20 +685,6 @@ public class GenAssociationTo1 extends GenAssociation {
         builder.appendln("}");
     }
 
-    @Override
-    public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
-            IType generatedJavaType,
-            IIpsElement ipsElement) {
-        // may be overridden
-    }
-
-    @Override
-    public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
-            IType generatedJavaType,
-            IIpsElement ipsElement) {
-        // may be overridden
-    }
-
     /**
      * Code sample:
      * 
@@ -745,6 +733,127 @@ public class GenAssociationTo1 extends GenAssociation {
                 .append(PolicyCmptImplClassBuilder.METHOD_COPY_ASSOCIATIONS) //
                 .append('(').append(varCopyTarget).append(", ").append(varCopyMap).append(");");
         methodsBuilder.closeBracket();
+    }
+
+    @Override
+    public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsElement ipsElement) {
+
+        AssociationType associationType = association.getAssociationType();
+        if (associationType.equals(AssociationType.COMPOSITION_MASTER_TO_DETAIL)) {
+            getGeneratedJavaElementsForPublishedInterfaceMasterToDetail(javaElements, generatedJavaType);
+        } else if (associationType.equals(AssociationType.COMPOSITION_DETAIL_TO_MASTER)) {
+            getGeneratedJavaElementsForPublishedInterfaceDetailToMaster(javaElements, generatedJavaType);
+        } else if (associationType.equals(AssociationType.ASSOCIATION)) {
+            getGeneratedJavaElementsForPublishedInterfaceAssociation(javaElements, generatedJavaType);
+        }
+    }
+
+    private void getGeneratedJavaElementsForPublishedInterfaceMasterToDetail(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        addFieldAssociationNameToGeneratedJavaElements(javaElements, generatedJavaType);
+        addFieldGetMaxCardinalityForToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodGetRefObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodSetObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodNewChildToGeneratedJavaElements(javaElements, generatedJavaType);
+
+        if (target.isConfigurableByProductCmptType()) {
+            try {
+                IProductCmptType targetConfiguringProductCmptType = target.findProductCmptType(target.getIpsProject());
+                if (targetConfiguringProductCmptType != null) {
+                    addMethodNewChildConfiguredToGeneratedJavaElements(javaElements, generatedJavaType,
+                            targetConfiguringProductCmptType);
+                }
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private void getGeneratedJavaElementsForPublishedInterfaceDetailToMaster(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        addFieldAssociationNameToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodGetRefObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+    }
+
+    private void getGeneratedJavaElementsForPublishedInterfaceAssociation(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        addFieldAssociationNameToGeneratedJavaElements(javaElements, generatedJavaType);
+        addFieldGetMaxCardinalityForToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodGetRefObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodSetObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+    }
+
+    @Override
+    public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsElement ipsElement) {
+
+        AssociationType associationType = association.getAssociationType();
+        if (associationType.equals(AssociationType.COMPOSITION_MASTER_TO_DETAIL)) {
+            getGeneratedJavaElementsForImplementationMasterToDetail(javaElements, generatedJavaType);
+        } else if (associationType.equals(AssociationType.COMPOSITION_DETAIL_TO_MASTER)) {
+            getGeneratedJavaElementsForImplementationDetailToMaster(javaElements, generatedJavaType);
+        } else if (associationType.equals(AssociationType.ASSOCIATION)) {
+            getGeneratedJavaElementsForImplementationAssociation(javaElements, generatedJavaType);
+        }
+    }
+
+    private void getGeneratedJavaElementsForImplementationMasterToDetail(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        addFieldAssociationToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodGetRefObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodSetObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodSetObjectInternal(javaElements, generatedJavaType);
+        addMethodNewChildToGeneratedJavaElements(javaElements, generatedJavaType);
+
+        if (target.isConfigurableByProductCmptType()) {
+            try {
+                IProductCmptType targetConfiguringProductCmptType = target.findProductCmptType(target.getIpsProject());
+                if (targetConfiguringProductCmptType != null) {
+                    addMethodNewChildConfiguredToGeneratedJavaElements(javaElements, generatedJavaType,
+                            targetConfiguringProductCmptType);
+                }
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private void getGeneratedJavaElementsForImplementationDetailToMaster(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        addFieldAssociationToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodGetRefObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodSetObjectInternal(javaElements, generatedJavaType);
+    }
+
+    private void getGeneratedJavaElementsForImplementationAssociation(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        addFieldAssociationToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodGetRefObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodSetObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodSetObjectInternal(javaElements, generatedJavaType);
+    }
+
+    private void addMethodGetRefObjectToGeneratedJavaElements(List<IJavaElement> javaElements, IType generatedJavaType) {
+        addMethodToGeneratedJavaElements(javaElements, generatedJavaType, getMethodNameGetRefObject());
+    }
+
+    private void addMethodSetObjectToGeneratedJavaElements(List<IJavaElement> javaElements, IType generatedJavaType) {
+        addMethodToGeneratedJavaElements(javaElements, generatedJavaType, getMethodNameAddOrSetObject(), "Q"
+                + getUnqualifiedInterfaceClassNameForTarget() + ";");
+    }
+
+    private void addMethodSetObjectInternal(List<IJavaElement> javaElements, IType generatedJavaType) {
+        addMethodToGeneratedJavaElements(javaElements, generatedJavaType, getMethodNameAddOrSetObjectInternal(), "Q"
+                + getUnqualifiedInterfaceClassNameForTarget() + ";");
     }
 
 }

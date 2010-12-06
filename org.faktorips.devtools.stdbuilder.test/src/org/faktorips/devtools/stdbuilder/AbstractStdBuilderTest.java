@@ -18,7 +18,9 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
@@ -50,7 +52,9 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
         builderSet = (StandardBuilderSet)ipsProject.getIpsArtefactBuilderSet();
     }
 
-    /** Returns the generated Java type for the given <tt>IIpsObject</tt>. */
+    /**
+     * Returns the generated Java type for the given {@link IIpsObject}.
+     */
     protected final IType getGeneratedJavaType(IIpsObject ipsObject,
             boolean derivedSource,
             boolean internalSource,
@@ -72,6 +76,24 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
         ICompilationUnit javaCompilationUnit = javaPackage.getCompilationUnit(javaTypeName
                 + JavaSourceFileBuilder.JAVA_EXTENSION);
         return javaCompilationUnit.getType(javaTypeName);
+    }
+
+    /**
+     * Expects a field with the given name in the given Java type to be added to the list of
+     * generated Java elements.
+     */
+    protected final void expectField(IType javaType, String fieldName) {
+        IField field = javaType.getField(fieldName);
+        assertTrue(generatedJavaElements.contains(field));
+    }
+
+    /**
+     * Expects a method with the given name and parameter types in the given Java type to be added
+     * to the list of generated Java elements.
+     */
+    protected final void expectMethod(IType javaType, String methodName, String... parameterTypeSignatures) {
+        IMethod method = javaType.getMethod(methodName, parameterTypeSignatures);
+        assertTrue(generatedJavaElements.contains(method));
     }
 
 }

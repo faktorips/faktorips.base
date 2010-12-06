@@ -27,8 +27,10 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
@@ -229,14 +231,12 @@ public class GenAssociationToMany extends GenAssociation {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-
     @Override
     protected void generateMethods(JavaCodeFragmentBuilder builder, IIpsProject ipsProject, boolean generatesInterface)
             throws CoreException {
+
         super.generateMethods(builder, ipsProject, generatesInterface);
+
         if (generatesInterface) {
             generateMethodGetNumOfRefObjects(builder);
             generateMethodContainsObject(builder);
@@ -1086,20 +1086,6 @@ public class GenAssociationToMany extends GenAssociation {
         builder.appendln("}");
     }
 
-    @Override
-    public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
-            IType generatedJavaType,
-            IIpsElement ipsElement) {
-        // nothing to do
-    }
-
-    @Override
-    public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
-            IType generatedJavaType,
-            IIpsElement ipsElement) {
-        // nothing to do
-    }
-
     /**
      * Generates code for associations in the copyAssociations method. Sample:
      * 
@@ -1189,4 +1175,188 @@ public class GenAssociationToMany extends GenAssociation {
         return builder.getFragment();
     }
 
+    @Override
+    public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsElement ipsElement) {
+
+        AssociationType associationType = association.getAssociationType();
+        if (associationType.equals(AssociationType.COMPOSITION_MASTER_TO_DETAIL)) {
+            getGeneratedJavaElementsForPublishedInterfaceMasterToDetail(javaElements, generatedJavaType);
+        } else if (associationType.equals(AssociationType.ASSOCIATION)) {
+            getGeneratedJavaElementsForPublishedInterfaceAssociation(javaElements, generatedJavaType);
+        }
+    }
+
+    private void getGeneratedJavaElementsForPublishedInterfaceMasterToDetail(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        addFieldAssociationNameToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodGetNumOfRefObjectsToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodContainsObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodGetAllRefObjectsToGeneratedJavaElements(javaElements, generatedJavaType);
+
+        if (association.isDerivedUnion()) {
+            return;
+        }
+
+        addFieldGetMaxCardinalityForToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodAddObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodRemoveObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodNewChildToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodGetRefObjectAtIndexToGeneratedJavaElements(javaElements, generatedJavaType);
+
+        if (target.isConfigurableByProductCmptType()) {
+            try {
+                IProductCmptType targetConfiguringProductCmptType = target.findProductCmptType(target.getIpsProject());
+                if (targetConfiguringProductCmptType != null) {
+                    addMethodNewChildConfiguredToGeneratedJavaElements(javaElements, generatedJavaType,
+                            targetConfiguringProductCmptType);
+                }
+                if (association.isQualified()) {
+                    addMethodGetRefObjectByQualifierToGeneratedJavaElements(javaElements, generatedJavaType,
+                            targetConfiguringProductCmptType);
+                }
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private void getGeneratedJavaElementsForPublishedInterfaceAssociation(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        addFieldAssociationNameToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodGetNumOfRefObjectsToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodContainsObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodGetAllRefObjectsToGeneratedJavaElements(javaElements, generatedJavaType);
+
+        if (association.isDerivedUnion()) {
+            return;
+        }
+
+        addFieldGetMaxCardinalityForToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodAddObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodRemoveObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodGetRefObjectAtIndexToGeneratedJavaElements(javaElements, generatedJavaType);
+    }
+
+    @Override
+    public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsElement ipsElement) {
+
+        AssociationType associationType = association.getAssociationType();
+        if (associationType.equals(AssociationType.COMPOSITION_MASTER_TO_DETAIL)) {
+            getGeneratedJavaElementsForImplementationMasterToDetail(javaElements, generatedJavaType);
+        } else if (associationType.equals(AssociationType.ASSOCIATION)) {
+            getGeneratedJavaElementsForImplementationAssociation(javaElements, generatedJavaType);
+        }
+    }
+
+    private void getGeneratedJavaElementsForImplementationMasterToDetail(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        addMethodContainsObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+
+        if (association.isDerivedUnion()) {
+            return;
+        }
+
+        addFieldAssociationToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodGetNumOfRefObjectsToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodGetAllRefObjectsToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodGetRefObjectAtIndexToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodNewChildToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodAddObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodAddObjectInternalToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodRemoveObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+
+        if (target.isConfigurableByProductCmptType()) {
+            try {
+                IProductCmptType targetConfiguringProductCmptType = target.findProductCmptType(target.getIpsProject());
+                if (targetConfiguringProductCmptType != null) {
+                    addMethodNewChildConfiguredToGeneratedJavaElements(javaElements, generatedJavaType,
+                            targetConfiguringProductCmptType);
+                }
+                if (association.isQualified()) {
+                    addMethodGetRefObjectByQualifierToGeneratedJavaElements(javaElements, generatedJavaType,
+                            targetConfiguringProductCmptType);
+                }
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private void getGeneratedJavaElementsForImplementationAssociation(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        addMethodContainsObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+
+        if (association.isDerivedUnion()) {
+            return;
+        }
+
+        addFieldAssociationToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodGetNumOfRefObjectsToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodGetAllRefObjectsToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodGetRefObjectAtIndexToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodAddObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodAddObjectInternalToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodRemoveObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+    }
+
+    private void addMethodGetNumOfRefObjectsToGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        addMethodToGeneratedJavaElements(javaElements, generatedJavaType, getMethodNameGetNumOfRefObjects());
+    }
+
+    private void addMethodContainsObjectToGeneratedJavaElements(List<IJavaElement> javaElements, IType generatedJavaType) {
+        addMethodToGeneratedJavaElements(javaElements, generatedJavaType, getMethodNameContainsObject(), "Q"
+                + getUnqualifiedInterfaceClassNameForTarget() + ";");
+    }
+
+    private void addMethodGetAllRefObjectsToGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        addMethodToGeneratedJavaElements(javaElements, generatedJavaType, getMethodNameGetAllRefObjects());
+    }
+
+    private void addMethodAddObjectToGeneratedJavaElements(List<IJavaElement> javaElements, IType generatedJavaType) {
+        addMethodToGeneratedJavaElements(javaElements, generatedJavaType, getMethodNameAddObject(), "Q"
+                + getUnqualifiedInterfaceClassNameForTarget() + ";");
+    }
+
+    private void addMethodAddObjectInternalToGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        addMethodToGeneratedJavaElements(javaElements, generatedJavaType, getMethodNameAddObjectInternal(), "Q"
+                + getUnqualifiedInterfaceClassNameForTarget() + ";");
+    }
+
+    private void addMethodRemoveObjectToGeneratedJavaElements(List<IJavaElement> javaElements, IType generatedJavaType) {
+        addMethodToGeneratedJavaElements(javaElements, generatedJavaType, getMethodNameRemoveObject(), "Q"
+                + getUnqualifiedInterfaceClassNameForTarget() + ";");
+    }
+
+    private void addMethodGetRefObjectAtIndexToGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        addMethodToGeneratedJavaElements(javaElements, generatedJavaType, getMethodNameGetRefObjectAtIndex(), "I");
+    }
+
+    private void addMethodGetRefObjectByQualifierToGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IProductCmptType targetConfiguringProductCmptType) {
+
+        try {
+            addMethodToGeneratedJavaElements(javaElements, generatedJavaType, getMethodNameGetRefObject(), "Q"
+                    + getGenType().getBuilderSet().getGenerator(targetConfiguringProductCmptType)
+                            .getUnqualifiedClassName(true) + ";");
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

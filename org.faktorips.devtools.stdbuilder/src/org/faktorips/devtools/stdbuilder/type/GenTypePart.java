@@ -13,9 +13,14 @@
 
 package org.faktorips.devtools.stdbuilder.type;
 
+import java.util.List;
 import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IField;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.builder.DefaultJavaGeneratorForIpsPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -61,6 +66,23 @@ public abstract class GenTypePart extends DefaultJavaGeneratorForIpsPart {
 
     public String getUnqualifiedClassName(IPolicyCmptType target, boolean forInterface) throws CoreException {
         return genType.getBuilderSet().getGenerator(target).getUnqualifiedClassName(forInterface);
+    }
+
+    protected final void addFieldToGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            String fieldName) {
+
+        IField field = generatedJavaType.getField(fieldName);
+        javaElements.add(field);
+    }
+
+    protected final void addMethodToGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            String methodName,
+            String... parameterTypeSignatures) {
+
+        IMethod method = generatedJavaType.getMethod(methodName, parameterTypeSignatures);
+        javaElements.add(method);
     }
 
 }
