@@ -16,11 +16,13 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
@@ -232,6 +234,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
             if (element instanceof Row) {
                 Row row = (Row)element;
                 MessageList list = row.validateThis(tableStructure, datatypes, ipsProject);
+                execCustomValidations(row, result, ipsProject);
                 result.add(list);
             } else if (element instanceof IDescription) {
                 IDescription description = (IDescription)element;
@@ -243,6 +246,18 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         }
 
         validateUniqueKeys(result, tableStructure, datatypes);
+    }
+
+    /**
+     * Executes the custom validations for a single row. Has to be done here due to the performance
+     * optimized validation for table contents and their rows.
+     */
+    private void execCustomValidations(Row row, MessageList result, IIpsProject ipsProject) throws CoreException {
+        Set<ICustomValidation<Row>> customValidations = getIpsModel().getCustomModelExtensions().getCustomValidations(
+                Row.class);
+        for (ICustomValidation<Row> validation : customValidations) {
+            result.add(validation.validate(row, ipsProject)); // add can handle null!
+        }
     }
 
     //
