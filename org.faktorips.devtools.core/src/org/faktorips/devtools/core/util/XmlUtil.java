@@ -127,7 +127,7 @@ public class XmlUtil {
             int month = Integer.parseInt(tokenizer.nextToken());
             int date = Integer.parseInt(tokenizer.nextToken());
             return new GregorianCalendar(year, month - 1, date);
-        } catch (NumberFormatException e) {
+        } catch (RuntimeException e) {
             throw new XmlParseException("Can't parse " + s + " to a date!", e); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
