@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsRefactoringTest;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 
 /**
  * @author Alexander Weickmann
@@ -35,6 +36,8 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
 
     private IProductCmptTypeAssociation productToOtherProductAssociation;
 
+    private ITestPolicyCmptTypeParameter policyAssociationTestParameter;
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -50,6 +53,11 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
         productToOtherProductAssociation.setTarget(otherProductCmptType.getQualifiedName());
         productToOtherProductAssociation.setTargetRoleSingular(PRODUCT_ROLE_SINGULAR);
         productToOtherProductAssociation.setTargetRolePlural(PRODUCT_ROLE_PLURAL);
+
+        policyAssociationTestParameter = testPolicyCmptTypeParameter.newTestPolicyCmptTypeParamChild();
+        policyAssociationTestParameter.setAssociation(POLICY_ROLE_SINGULAR);
+        policyAssociationTestParameter.setName(POLICY_ROLE_SINGULAR);
+        policyAssociationTestParameter.setPolicyCmptType(policyCmptType.getQualifiedName());
     }
 
     public void testRenamePolicyCmptTypeAssociation() throws CoreException {
@@ -67,6 +75,12 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
 
         // Check for inverse association update
         assertEquals(newAssociationName, otherPolicyToPolicyAssociation.getInverseAssociation());
+
+        // Check for test parameter update
+        assertNull(testPolicyCmptTypeParameter.getTestPolicyCmptTypeParamChild(POLICY_ROLE_SINGULAR));
+        assertNotNull(testPolicyCmptTypeParameter.getTestPolicyCmptTypeParamChild(newAssociationName));
+        assertEquals(newAssociationName, policyAssociationTestParameter.getName());
+        assertEquals(newAssociationName, policyAssociationTestParameter.getAssociation());
     }
 
     public void testRenameProductCmptTypeAssociation() throws CoreException {
