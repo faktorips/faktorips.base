@@ -22,6 +22,10 @@ import org.faktorips.devtools.core.internal.refactor.IpsRenameProcessor;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -34,6 +38,8 @@ import org.faktorips.util.message.MessageList;
  * @author Alexander Weickmann
  */
 public final class RenameAssociationProcessor extends IpsRenameProcessor {
+
+    private Set<IIpsSrcFile> productCmptSrcFiles;
 
     private Set<IIpsSrcFile> testCaseTypeSrcFiles;
 
@@ -60,6 +66,12 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
             for (IIpsSrcFile ipsSrcFile : testCaseTypeSrcFiles) {
                 addIpsSrcFile(ipsSrcFile);
             }
+
+        } else if (getAssociation() instanceof IProductCmptTypeAssociation) {
+            productCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
+            for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
+                addIpsSrcFile(ipsSrcFile);
+            }
         }
     }
 
@@ -84,6 +96,8 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
         if (getAssociation() instanceof IPolicyCmptTypeAssociation) {
             updateInverseAssociation();
             updateTestCaseTypeParameters();
+        } else {
+            updateProductCmptLinks();
         }
     }
 
@@ -118,6 +132,26 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
 
                 updateTestCaseTypeParameterChildren(parameter);
                 updateTestCaseTypeParameterReference(parameter);
+            }
+        }
+    }
+
+    private void updateProductCmptLinks() throws CoreException {
+        for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
+            IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
+            /*
+             * Continue if the product component does not reference the product component type of
+             * the association to be renamed.
+             */
+            if (!(productCmpt.getProductCmptType().equals(getType().getQualifiedName()))) {
+                continue;
+            }
+
+            for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
+                IProductCmptGeneration generation = productCmpt.getProductCmptGeneration(i);
+                for (IProductCmptLink link : generation.getLinks(getOriginalName())) {
+                    link.setAssociation(getNewName());
+                }
             }
         }
     }

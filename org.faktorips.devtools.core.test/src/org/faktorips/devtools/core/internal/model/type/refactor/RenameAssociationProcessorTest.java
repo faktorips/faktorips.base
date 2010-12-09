@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.type.refactor;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsRefactoringTest;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 
@@ -38,6 +39,8 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
 
     private ITestPolicyCmptTypeParameter policyAssociationTestParameter;
 
+    private IProductCmptLink productCmptLink;
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -58,6 +61,8 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
         policyAssociationTestParameter.setAssociation(POLICY_ROLE_SINGULAR);
         policyAssociationTestParameter.setName(POLICY_ROLE_SINGULAR);
         policyAssociationTestParameter.setPolicyCmptType(policyCmptType.getQualifiedName());
+
+        productCmptLink = productCmptGeneration.newLink(productToOtherProductAssociation);
     }
 
     public void testRenamePolicyCmptTypeAssociation() throws CoreException {
@@ -95,6 +100,11 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
         assertNotNull(productCmptType.getAssociationByRoleNamePlural(newPluralAssociationName));
         assertTrue(productToOtherProductAssociation.getTargetRoleSingular().equals(newAssociationName));
         assertTrue(productToOtherProductAssociation.getTargetRolePlural().equals(newPluralAssociationName));
+
+        // Check for product component link update
+        assertEquals(0, productCmptGeneration.getLinks(PRODUCT_ROLE_SINGULAR).length);
+        assertEquals(1, productCmptGeneration.getLinks(newAssociationName).length);
+        assertEquals(newAssociationName, productCmptLink.getAssociation());
     }
 
 }
