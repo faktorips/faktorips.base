@@ -29,4 +29,6 @@ public class Messages extends NLS {
 
     public static String RenameAttributeProcessor_processorName;
 
+    public static String RenameAssociationProcessor_processorName;
+
 }

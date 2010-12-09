@@ -38,7 +38,7 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.MessageList;
 
 /**
- * This is the "Rename Attribute" - refactoring.
+ * Faktor-IPS "Rename Attribute" - refactoring.
  * 
  * @author Alexander Weickmann
  */
@@ -50,9 +50,6 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     /** Set containing all potentially referencing test case types. */
     private Set<IIpsSrcFile> testCaseTypeCmptSrcFiles;
 
-    /**
-     * @param attribute The <tt>IAttribute</tt> to be refactored.
-     */
     public RenameAttributeProcessor(IAttribute attribute) {
         super(attribute, attribute.getName());
         addIgnoredValidationMessageCodes();
@@ -217,12 +214,10 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
         getAttribute().setName(getNewName());
     }
 
-    /** Returns the <tt>IAttribute</tt> to be refactored. */
     private IAttribute getAttribute() {
         return (IAttribute)getIpsElement();
     }
 
-    /** Returns the <tt>IType</tt> of the <tt>IAttribute</tt> to be refactored. */
     private IType getType() {
         return getAttribute().getType();
     }

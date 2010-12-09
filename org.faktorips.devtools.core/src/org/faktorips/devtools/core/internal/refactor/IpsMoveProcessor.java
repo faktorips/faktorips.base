@@ -28,20 +28,20 @@ import org.faktorips.devtools.core.refactor.IIpsMoveProcessor;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * This is the abstract base class for all Faktor-IPS "Move" refactorings.
+ * Abstract base class for all Faktor-IPS "Move" refactorings.
  * 
  * @author Alexander Weickmann
  */
 public abstract class IpsMoveProcessor extends IpsRefactoringProcessor implements IIpsMoveProcessor {
 
-    /** The target <tt>IIpsPackageFragment</tt> to where the <tt>IIpsObject</tt> needs to be moved. */
+    /** Target {@link IIpsPackageFragment} to where the {@link IIpsObject} shall be moved. */
     private IIpsPackageFragment targetIpsPackageFragment;
 
-    /** The <tt>IIpsObject</tt>'s original <tt>IIpsPackageFragment</tt>. */
+    /** The {@link IIpsObject}'s original {@link IIpsPackageFragment}. */
     private IIpsPackageFragment originalIpsPackageFragment;
 
     /**
-     * @param ipsObject The <tt>IIpsObject</tt> to be moved.
+     * @param ipsObject The {@link IIpsObject} to be moved
      */
     protected IpsMoveProcessor(IIpsObject ipsObject) {
         super(ipsObject);
@@ -50,9 +50,9 @@ public abstract class IpsMoveProcessor extends IpsRefactoringProcessor implement
     }
 
     /**
-     * This implementation validates the target <tt>IIpsPackageFragment</tt> and returns a
-     * <tt>RefactoringStatus</tt> as result of the validation. It checks that it does not equal the
-     * <tt>IIpsObject</tt>'s original <tt>IIpsPackageFragment</tt>.
+     * This implementation validates the target {@link IIpsPackageFragment} and returns a
+     * {@link RefactoringStatus} as result of the validation. It checks that it does not equal the
+     * {@link IIpsObject}'s original {@link IIpsPackageFragment}.
      */
     @Override
     public RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreException {
@@ -66,13 +66,14 @@ public abstract class IpsMoveProcessor extends IpsRefactoringProcessor implement
     }
 
     /**
-     * This operation is called by <tt>validateUserInput</tt>. Subclasses must implement special
-     * user input validations here.
+     * Subclasses must implement this operation and provide special user input validations.
+     * <p>
+     * This operation is called by {@link #validateUserInput(IProgressMonitor)}.
      * 
-     * @param status The <tt>RefactoringStatus</tt> to report messages to.
-     * @param pm An <tt>IProgressMonitor</tt> to report progress to.
+     * @param status {@link RefactoringStatus} to report messages to
+     * @param pm {@link IProgressMonitor} to report progress to
      * 
-     * @throws CoreException May be thrown at any time.
+     * @throws CoreException May be thrown at any time
      */
     protected abstract void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException;
 

@@ -19,6 +19,7 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.ui.refactoring.UserInputWizardPage;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
@@ -26,49 +27,55 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * This is an abstract base class providing common functionality for <tt>UserInputWizardPage</tt>s
- * used by Faktor-IPS refactorings.
+ * Abstract base class providing common functionality for {@link UserInputWizardPage}s used by
+ * Faktor-IPS refactorings.
  * 
  * @author Alexander Weickmann
  */
 abstract class IpsRefactoringUserInputPage extends UserInputWizardPage {
 
-    /** The <tt>IIpsElement</tt> to be renamed. */
+    /** {@link IIpsElement} to be refactored. */
     private IIpsElement ipsElement;
 
-    /** The <tt>UIToolkit</tt> to create UI elements with. */
+    /** {@link UIToolkit} to create UI elements with. */
     private final UIToolkit uiToolkit;
 
     /**
-     * Creates a <tt>IpsRefactoringUserInputPage</tt>.
+     * @param pageName A name for this user input page
+     * @param ipsElement {@link IIpsElement} to be refactored
      * 
-     * @param pageName A name for this page.
-     * @param ipsElement The <tt>IIpsElement</tt> to be renamed.
-     * 
-     * @throws NullPointerException If any parameter is <tt>null</tt>.
+     * @throws NullPointerException If any parameter is null
      */
     IpsRefactoringUserInputPage(IIpsElement ipsElement, String pageName) {
         super(pageName);
         ArgumentCheck.notNull(ipsElement);
+
         this.ipsElement = ipsElement;
         uiToolkit = new UIToolkit(null);
+
         setPromptMessage();
     }
 
     /**
-     * Subclass implementation responsible for setting the prompt message. This operation is called
-     * by the constructor of <tt>IpsRefactoringUserInputPage</tt>.
+     * Subclass implementation responsible for setting the prompt message.
+     * <p>
+     * This operation is called by the constructor.
      */
+    // TODO AW: Overridable methods should not be called by constructor
     protected abstract void setPromptMessage();
 
-    /** Returns the name describing the <tt>IIpsElement</tt> to be refactored. */
-    // TODO AW: This should be moved to the core model -> IIpsElement#getElementName().
+    /**
+     * Returns the name describing the {@link IIpsElement} to be refactored.
+     */
+    // TODO AW: This should be moved to the core model
     protected final String getIpsElementName() {
         String ipsElementName = ""; //$NON-NLS-1$
         if (ipsElement instanceof IAttribute) {
             ipsElementName = Messages.ElementNames_Attribute;
         } else if (ipsElement instanceof IMethod) {
             ipsElementName = Messages.ElementNames_Method;
+        } else if (ipsElement instanceof IAssociation) {
+            ipsElementName = Messages.ElementNames_Association;
         } else if (ipsElement instanceof IType) {
             ipsElementName = Messages.ElementNames_Type;
         } else if (ipsElement instanceof IEnumLiteralNameAttributeValue) {
@@ -77,7 +84,9 @@ abstract class IpsRefactoringUserInputPage extends UserInputWizardPage {
         return ipsElementName;
     }
 
-    /** Operation that should be called when any user input has changed, triggers validation. */
+    /**
+     * Operation that should be called when any user input has changed, triggers validation.
+     */
     protected final void userInputChanged() {
         try {
             boolean userInputValid = validateUserInput();
@@ -88,8 +97,9 @@ abstract class IpsRefactoringUserInputPage extends UserInputWizardPage {
     }
 
     /**
-     * Validates the user input, manages page messages and calls a subclass implementation. Returns
-     * <tt>true</tt> if valid, <tt>false</tt> otherwise.
+     * Validates the user input, manages page messages and calls a subclass implementation.
+     * <p>
+     * Returns true if valid, false otherwise.
      */
     private final boolean validateUserInput() throws CoreException {
         resetPageMessages();
@@ -104,11 +114,13 @@ abstract class IpsRefactoringUserInputPage extends UserInputWizardPage {
     /**
      * Subclass implementation responsible for validating the user input.
      * 
-     * @param status A <tt>RefactoringStatus</tt> to add messages to.
+     * @param status {@link RefactoringStatus} to add messages to
      */
     protected abstract void validateUserInputThis(RefactoringStatus status) throws CoreException;
 
-    /** Evaluates the given <tt>RefactoringStatus</tt> by setting appropriate page messages. */
+    /**
+     * Evaluates the given {@link RefactoringStatus} by setting appropriate page messages.
+     */
     protected final void evaluateValidation(RefactoringStatus status) {
         for (RefactoringStatusEntry entry : status.getEntries()) {
             switch (entry.getSeverity()) {
@@ -128,7 +140,9 @@ abstract class IpsRefactoringUserInputPage extends UserInputWizardPage {
         }
     }
 
-    /** Resets any messages to the default, which means the prompt message is shown. */
+    /**
+     * Resets any messages to the default, which means the prompt message is shown.
+     */
     protected final void resetPageMessages() {
         setErrorMessage(null);
         setMessage(null, WARNING);
@@ -136,12 +150,16 @@ abstract class IpsRefactoringUserInputPage extends UserInputWizardPage {
         setPromptMessage();
     }
 
-    /** Returns the <tt>IIpsElement</tt> to be refactored. */
+    /**
+     * Returns the {@link IIpsElement} to be refactored.
+     */
     protected final IIpsElement getIpsElement() {
         return ipsElement;
     }
 
-    /** Returns the <tt>UIToolkit</tt> to create new UI elements with. */
+    /**
+     * Returns the {@link UIToolkit} to create new UI elements with.
+     */
     protected final UIToolkit getUiToolkit() {
         return uiToolkit;
     }

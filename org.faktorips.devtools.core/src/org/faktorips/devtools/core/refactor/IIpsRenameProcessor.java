@@ -13,26 +13,64 @@
 
 package org.faktorips.devtools.core.refactor;
 
+import org.faktorips.devtools.core.model.IIpsElement;
+
 /**
- * An <tt>IIpsRenameProcessor</tt> implements a specific Faktor-IPS "Rename" refactoring.
+ * Describes a specific Faktor-IPS "Rename" refactoring.
  * 
  * @author Alexander Weickmann
  */
 public interface IIpsRenameProcessor extends IIpsRefactoringProcessor {
 
     /**
-     * Sets the new name for the <tt>IIpsElement</tt> to be refactored.
+     * Sets the new name for the {@link IIpsElement} to be refactored.
      * 
-     * @param newName A new name for the <tt>IIpsElement</tt> to be refactored.
+     * @param newName New name for the {@link IIpsElement} to be refactored.
      * 
-     * @throws NullPointerException If <tt>newName</tt> is <tt>null</tt>.
+     * @throws NullPointerException If the parameter is null
      */
     public void setNewName(String newName);
 
-    /** Returns the element's original name. */
+    /**
+     * Sets the new plural name for the {@link IIpsElement} to be refactored.
+     * 
+     * @param newPluralName New plural name for the {@link IIpsElement} to be refactored
+     * 
+     * @throws NullPointerException If the parameter is null
+     */
+    public void setNewPluralName(String newPluralName);
+
+    /**
+     * Returns the element's original name.
+     */
     public String getOriginalName();
 
-    /** Returns the element's new name. */
+    /**
+     * Returns the element's original plural name.
+     */
+    public String getOriginalPluralName();
+
+    /**
+     * Returns the element's new name.
+     */
     public String getNewName();
+
+    /**
+     * Returns the element's new plural name.
+     */
+    public String getNewPluralName();
+
+    /**
+     * Sets whether a plural name refactoring is required.
+     * 
+     * @param pluralNameRefactoringRequired Flag indicating whether a plural name refactoring is
+     *            required
+     */
+    public void setPluralNameRefactoringRequired(boolean pluralNameRefactoringRequired);
+
+    /**
+     * Returns whether a plural name refactoring is required.
+     */
+    public boolean isPluralNameRefactoringRequired();
 
 }

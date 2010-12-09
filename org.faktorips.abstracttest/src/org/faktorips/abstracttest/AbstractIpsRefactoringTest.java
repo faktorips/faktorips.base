@@ -65,7 +65,6 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.refactor.IIpsMoveProcessor;
 import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -352,14 +351,22 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Performs the "Rename" refactoring for the given <tt>IIpsElement</tt> and provided new name.
-     * 
-     * @throws NullPointerException If any parameter is <tt>null</tt>.
+     * Performs the "Rename" refactoring for the given {@link IIpsObjectPartContainer} and provided
+     * new name.
      */
     protected final void performRenameRefactoring(IIpsObjectPartContainer ipsObjectPartContainer, String newName)
             throws CoreException {
 
-        ArgumentCheck.notNull(new Object[] { ipsObjectPartContainer, newName });
+        performRenameRefactoring(ipsObjectPartContainer, newName, null);
+    }
+
+    /**
+     * Performs the "Rename" refactoring for the given {@link IIpsObjectPartContainer}, provided new
+     * name and provided new plural name.
+     */
+    protected final void performRenameRefactoring(IIpsObjectPartContainer ipsObjectPartContainer,
+            String newName,
+            String newPluralName) throws CoreException {
 
         printValidationResult(ipsObjectPartContainer);
 
@@ -369,19 +376,20 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
         IIpsRenameProcessor processor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
         processor.setNewName(newName);
 
+        if (newPluralName != null) {
+            processor.setNewPluralName(newPluralName);
+            processor.setPluralNameRefactoringRequired(true);
+        }
+
         runRefactoring(renameRefactoring);
     }
 
     /**
-     * Performs the "Move" refactoring for the given <tt>IIpsElement</tt> and provided target
-     * <tt>IIpsPackageFragment</tt>.
-     * 
-     * @throws NullPointerException If any parameter is <tt>null</tt>.
+     * Performs the "Move" refactoring for the given {@link IIpsObjectPartContainer} and provided
+     * target {@link IIpsPackageFragment}.
      */
     protected final void performMoveRefactoring(IIpsObjectPartContainer ipsObjectPartContainer,
             IIpsPackageFragment targetIpsPackageFragment) throws CoreException {
-
-        ArgumentCheck.notNull(new Object[] { ipsObjectPartContainer, targetIpsPackageFragment });
 
         printValidationResult(ipsObjectPartContainer);
 
@@ -434,7 +442,7 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
     }
 
     protected final void performFullBuild() throws CoreException {
-        clearOutputFolders(); // To avoid code merging problems.
+        clearOutputFolders(); // To avoid code merging problems
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
     }
 

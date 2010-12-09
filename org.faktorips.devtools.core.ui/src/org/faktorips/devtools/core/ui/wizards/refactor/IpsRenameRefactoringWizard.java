@@ -35,10 +35,10 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 public final class IpsRenameRefactoringWizard extends IpsRefactoringWizard {
 
     /**
-     * @param refactoring The refactoring used by the wizard.
-     * @param ipsElement The <tt>IIpsElement</tt> to be renamed.
+     * @param refactoring The refactoring used by the wizard
+     * @param ipsElement The {@link IIpsElement} to be renamed
      * 
-     * @throws NullPointerException If any parameter is <tt>null</tt>.
+     * @throws NullPointerException If any parameter is null
      */
     public IpsRenameRefactoringWizard(Refactoring refactoring, IIpsElement ipsElement) {
         super(refactoring, ipsElement, WIZARD_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
@@ -57,21 +57,25 @@ public final class IpsRenameRefactoringWizard extends IpsRefactoringWizard {
     }
 
     /**
-     * The <tt>RenameUserInputPage</tt> provides a text field that allows the user to type a new
-     * name for <tt>IIpsElement</tt> to rename.
+     * Provides a text field that allows the user to type a new name (and optionally plural name)
+     * for the {@link IIpsElement} to rename.
      */
     private final static class RenameUserInputPage extends IpsRefactoringUserInputPage {
 
         /**
-         * Text field that enables the user to provide a new name for the <tt>IIpsElement</tt> to be
+         * Text field that enables the user to provide a new name for the {@link IIpsElement} to be
          * refactored.
          */
         private Text newNameTextField;
 
         /**
-         * Creates the <tt>RenameUserInputPage</tt>.
-         * 
-         * @param ipsElement The <tt>IIpsElement</tt> to be renamed.
+         * Text field that enables the user to provide a new plural name for the {@link IIpsElement}
+         * to be refactored.
+         */
+        private Text newPluralNameTextField;
+
+        /**
+         * @param ipsElement The {@link IIpsElement} to be renamed
          */
         RenameUserInputPage(IIpsElement ipsElement) {
             super(ipsElement, "RenameUserInputPage"); //$NON-NLS-1$
@@ -87,10 +91,11 @@ public final class IpsRenameRefactoringWizard extends IpsRefactoringWizard {
             Composite controlComposite = getUiToolkit().createGridComposite(parent, 1, false, false);
             setControl(controlComposite);
 
-            Composite newNameComposite = getUiToolkit().createLabelEditColumnComposite(controlComposite);
-            getUiToolkit().createLabel(newNameComposite, Messages.IpsRenameMovePage_labelNewName);
-            newNameTextField = getUiToolkit().createText(newNameComposite);
-            newNameTextField.setText(getIpsElement().getName());
+            Composite fieldsComposite = getUiToolkit().createLabelEditColumnComposite(controlComposite);
+
+            getUiToolkit().createLabel(fieldsComposite, Messages.IpsRenameMovePage_labelNewName);
+            newNameTextField = getUiToolkit().createText(fieldsComposite);
+            newNameTextField.setText(getIpsRenameProcessor().getOriginalName());
             newNameTextField.addModifyListener(new ModifyListener() {
                 @Override
                 public void modifyText(ModifyEvent event) {
@@ -98,11 +103,25 @@ public final class IpsRenameRefactoringWizard extends IpsRefactoringWizard {
                 }
             });
 
+            if (getIpsRenameProcessor().isPluralNameRefactoringRequired()) {
+                getUiToolkit().createLabel(fieldsComposite, Messages.IpsRenameMovePage_labelNewPluralName);
+                newPluralNameTextField = getUiToolkit().createText(fieldsComposite);
+                newPluralNameTextField.setText(getIpsRenameProcessor().getOriginalPluralName());
+                newPluralNameTextField.addModifyListener(new ModifyListener() {
+                    @Override
+                    public void modifyText(ModifyEvent event) {
+                        userInputChanged();
+                    }
+                });
+            }
+
             setFocus();
             setPageComplete(false);
         }
 
-        /** This operation is responsible for setting the initial focus. */
+        /**
+         * Responsible for setting the initial focus.
+         */
         private void setFocus() {
             newNameTextField.selectAll();
             newNameTextField.setFocus();
@@ -111,10 +130,10 @@ public final class IpsRenameRefactoringWizard extends IpsRefactoringWizard {
         @Override
         protected void validateUserInputThis(RefactoringStatus status) throws CoreException {
             getIpsRenameProcessor().setNewName(newNameTextField.getText());
+            getIpsRenameProcessor().setNewPluralName(newPluralNameTextField.getText());
             status.merge(getIpsRenameProcessor().validateUserInput(new NullProgressMonitor()));
         }
 
-        /** Returns the <tt>IIpsRenameProcessor</tt> this refactoring is working with. */
         private IIpsRenameProcessor getIpsRenameProcessor() {
             return (IIpsRenameProcessor)((ProcessorBasedRefactoring)getRefactoring()).getProcessor();
         }
