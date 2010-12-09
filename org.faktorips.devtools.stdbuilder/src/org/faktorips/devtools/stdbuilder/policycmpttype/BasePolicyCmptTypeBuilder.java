@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
@@ -170,6 +171,8 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
             type = (IType)ipsElement;
         } else if (ipsElement instanceof IAttribute) {
             type = ((IAttribute)ipsElement).getType();
+        } else if (ipsElement instanceof IAssociation) {
+            type = ((IAssociation)ipsElement).getType();
         } else if (ipsElement instanceof IMethod) {
             type = ((IMethod)ipsElement).getType();
         } else {
