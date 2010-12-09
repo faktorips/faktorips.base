@@ -43,7 +43,6 @@ public class AttributesSection extends SimpleIpsPartsSection {
     public AttributesSection(IpsObjectEditorPage page, IProductCmptType type, Composite parent, UIToolkit toolkit) {
         super(type, parent, Messages.AttributesSection_title, toolkit);
         ArgumentCheck.notNull(page);
-        ((AttributesComposite)getPartsComposite()).createContextMenu();
     }
 
     @Override
@@ -59,6 +58,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
 
         public AttributesComposite(IProductCmptType type, Composite parent, UIToolkit toolkit) {
             super(type, parent, toolkit);
+            createContextMenu();
         }
 
         private void createContextMenu() {

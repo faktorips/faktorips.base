@@ -52,7 +52,6 @@ public class AttributesSection extends SimpleIpsPartsSection {
     public AttributesSection(IpsObjectEditorPage page, IPolicyCmptType pcType, Composite parent, UIToolkit toolkit) {
         super(pcType, parent, Messages.AttributesSection_title, toolkit);
         ArgumentCheck.notNull(page);
-        ((AttributesComposite)getPartsComposite()).createContextMenu();
     }
 
     @Override
@@ -78,6 +77,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
         public AttributesComposite(IIpsObject pdObject, Composite parent, UIToolkit toolkit) {
             super(pdObject, parent, toolkit);
             addDeleteListener();
+            createContextMenu();
         }
 
         private void addDeleteListener() {

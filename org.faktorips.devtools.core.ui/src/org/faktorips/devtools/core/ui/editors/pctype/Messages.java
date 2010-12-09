@@ -340,5 +340,6 @@ public class Messages extends NLS {
     public static String ValidatedAttributesControl_label;
 
     public static String AttributesSection_submenuRefactor;
+    public static String AssociationsSection_submenuRefactor;
 
 }

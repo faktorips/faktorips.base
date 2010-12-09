@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -39,6 +40,9 @@ import org.faktorips.devtools.core.ui.editors.AssociationsLabelProvider;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
+import org.faktorips.devtools.core.ui.editors.pctype.Messages;
+import org.faktorips.devtools.core.ui.refactor.IpsRefactoringHandler;
+import org.faktorips.devtools.core.ui.refactor.IpsRenameHandler;
 
 /**
  * A section that shows a product component type's associations in a viewer and allows to edit
@@ -113,6 +117,14 @@ public class AssociationsSection extends SimpleIpsPartsSection {
                     if (selection.isEmpty()) {
                         return;
                     }
+
+                    MenuManager refactorSubmenu = new MenuManager(Messages.AssociationsSection_submenuRefactor);
+
+                    menuManager.add(refactorSubmenu);
+                    menuManager.add(new Separator());
+
+                    refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsRenameHandler.CONTRIBUTION_ID));
+
                     menuManager.add(openAction);
                 }
             });

@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -46,6 +47,8 @@ import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 import org.faktorips.devtools.core.ui.editors.pctype.associationwizard.NewPcTypeAssociationWizard;
+import org.faktorips.devtools.core.ui.refactor.IpsRefactoringHandler;
+import org.faktorips.devtools.core.ui.refactor.IpsRenameHandler;
 import org.faktorips.util.memento.Memento;
 
 /**
@@ -112,13 +115,14 @@ public class AssociationsSection extends SimpleIpsPartsSection {
             // because the new button will be overridden with wizard functionality
             super(pdObject, parent, false, true, true, true, true, toolkit);
             openAction = new OpenTargetPcTypeInEditorAction(getViewer());
-            buildContextMenu();
+            createContextMenu();
         }
 
-        private void buildContextMenu() {
+        private void createContextMenu() {
             final MenuManager menuManager = new MenuManager();
-            menuManager.setRemoveAllWhenShown(true);
+
             // display menu only if one element is selected
+            menuManager.setRemoveAllWhenShown(true);
             menuManager.addMenuListener(new IMenuListener() {
                 @Override
                 public void menuAboutToShow(IMenuManager manager) {
@@ -126,6 +130,14 @@ public class AssociationsSection extends SimpleIpsPartsSection {
                     if (selection.isEmpty()) {
                         return;
                     }
+
+                    MenuManager refactorSubmenu = new MenuManager(Messages.AssociationsSection_submenuRefactor);
+
+                    menuManager.add(refactorSubmenu);
+                    menuManager.add(new Separator());
+
+                    refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsRenameHandler.CONTRIBUTION_ID));
+
                     menuManager.add(openAction);
                 }
             });
