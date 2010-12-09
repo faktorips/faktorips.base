@@ -34,7 +34,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.refactor.PullUpArguments;
+import org.faktorips.devtools.core.refactor.IpsPullUpArguments;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 // There's no other way to perform the Java pull up refactoring.
@@ -43,7 +43,7 @@ public class PullUpRefactoringParticipant extends RefactoringParticipant {
 
     private PullUpParticipantHelper refactoringHelper;
 
-    private PullUpArguments arguments;
+    private IpsPullUpArguments arguments;
 
     public PullUpRefactoringParticipant() {
         refactoringHelper = new PullUpParticipantHelper();
@@ -73,7 +73,7 @@ public class PullUpRefactoringParticipant extends RefactoringParticipant {
 
     @Override
     protected void initialize(RefactoringArguments arguments) {
-        this.arguments = (PullUpArguments)arguments;
+        this.arguments = (IpsPullUpArguments)arguments;
     }
 
     private class PullUpParticipantHelper extends RefactoringParticipantHelper {

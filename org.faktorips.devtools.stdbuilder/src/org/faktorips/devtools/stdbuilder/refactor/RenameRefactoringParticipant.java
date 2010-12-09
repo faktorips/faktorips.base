@@ -34,7 +34,9 @@ import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.refactor.IpsRenameArguments;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 /**
@@ -48,10 +50,9 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
  */
 public class RenameRefactoringParticipant extends RenameParticipant {
 
-    /** A helper providing shared standard builder refactoring functionality. */
+    /** Helper providing shared standard builder refactoring functionality. */
     private RenameParticipantHelper refactoringHelper;
 
-    /** Creates a <tt>RenameRefactoringParticipant</tt>. */
     public RenameRefactoringParticipant() {
         refactoringHelper = new RenameParticipantHelper();
     }
@@ -78,7 +79,11 @@ public class RenameRefactoringParticipant extends RenameParticipant {
         return "StandardBuilder Rename Participant"; //$NON-NLS-1$
     }
 
-    /** The <tt>RefactoringParticipantHelper</tt> for this participant. */
+    @Override
+    public IpsRenameArguments getArguments() {
+        return (IpsRenameArguments)super.getArguments();
+    }
+
     private class RenameParticipantHelper extends RefactoringParticipantHelper {
 
         @Override
@@ -159,6 +164,9 @@ public class RenameRefactoringParticipant extends RenameParticipant {
             if (ipsElement instanceof IAttribute) {
                 return initializeTargetJavaElements((IAttribute)ipsElement, builderSet);
 
+            } else if (ipsElement instanceof IAssociation) {
+                return initializeTargetJavaElements((IAssociation)ipsElement, builderSet);
+
             } else if (ipsElement instanceof IIpsObject) {
                 IIpsObject ipsObject = (IIpsObject)ipsElement;
                 IIpsPackageFragment targetIpsPackageFragment = ipsObject.getIpsPackageFragment();
@@ -184,6 +192,20 @@ public class RenameRefactoringParticipant extends RenameParticipant {
             attribute.setName(getArguments().getNewName());
             setTargetJavaElements(builderSet.getGeneratedJavaElements(attribute));
             attribute.setName(oldName);
+            return true;
+        }
+
+        private boolean initializeTargetJavaElements(IAssociation association, StandardBuilderSet builderSet) {
+            String oldTargetRoleSingular = association.getTargetRoleSingular();
+            String oldTargetRolePlural = association.getTargetRolePlural();
+
+            association.setTargetRoleSingular(getArguments().getNewName());
+            association.setTargetRolePlural(getArguments().getNewPluralName());
+            setTargetJavaElements(builderSet.getGeneratedJavaElements(association));
+
+            association.setTargetRoleSingular(oldTargetRoleSingular);
+            association.setTargetRolePlural(oldTargetRolePlural);
+
             return true;
         }
 

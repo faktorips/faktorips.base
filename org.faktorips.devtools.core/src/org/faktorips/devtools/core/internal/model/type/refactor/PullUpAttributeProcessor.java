@@ -23,7 +23,7 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
 import org.faktorips.devtools.core.internal.refactor.IpsRefactoringProcessor;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.refactor.PullUpArguments;
+import org.faktorips.devtools.core.refactor.IpsPullUpArguments;
 
 public class PullUpAttributeProcessor extends IpsRefactoringProcessor {
 
@@ -61,7 +61,7 @@ public class PullUpAttributeProcessor extends IpsRefactoringProcessor {
         IConfigurationElement[] elements = registry
                 .getConfigurationElementsFor("org.faktorips.devtools.core.pullUpParticipants"); //$NON-NLS-1$
         participants[0] = (RefactoringParticipant)elements[0].createExecutableExtension("class"); //$NON-NLS-1$
-        participants[0].initialize(this, getIpsElement(), new PullUpArguments(true));
+        participants[0].initialize(this, getIpsElement(), new IpsPullUpArguments(true));
         return participants;
     }
 

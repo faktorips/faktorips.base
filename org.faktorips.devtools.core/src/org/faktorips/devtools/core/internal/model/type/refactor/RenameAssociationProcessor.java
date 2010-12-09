@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.devtools.core.internal.refactor.IpsRenameProcessor;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.MessageList;
@@ -31,6 +32,8 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
     public RenameAssociationProcessor(IAssociation association) {
         super(association, association.getName(), association.getTargetRolePlural());
         setPluralNameRefactoringRequired(true);
+
+        getIgnoredValidationMessageCodes().add(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_MISMATCH);
     }
 
     @Override
@@ -50,6 +53,19 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
     protected void refactorIpsModel(IProgressMonitor pm) throws CoreException {
         updateTargetRoleSingular();
         updateTargetRolePlural();
+
+        if (getAssociation() instanceof IPolicyCmptTypeAssociation) {
+            updateInverseAssociation();
+        }
+    }
+
+    private void updateInverseAssociation() throws CoreException {
+        IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)getAssociation();
+        IPolicyCmptTypeAssociation inverseAssociation = policyCmptTypeAssociation
+                .findInverseAssociation(policyCmptTypeAssociation.getIpsProject());
+        if (inverseAssociation != null) {
+            inverseAssociation.setInverseAssociation(getNewName());
+        }
     }
 
     private void updateTargetRoleSingular() {
@@ -63,6 +79,15 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
     @Override
     protected void addIpsSrcFiles() throws CoreException {
         addIpsSrcFile(getAssociation().getIpsSrcFile());
+
+        if (getAssociation() instanceof IPolicyCmptTypeAssociation) {
+            IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)getAssociation();
+            IPolicyCmptTypeAssociation inverseAssociation = policyCmptTypeAssociation
+                    .findInverseAssociation(policyCmptTypeAssociation.getIpsProject());
+            if (inverseAssociation != null) {
+                addIpsSrcFile(inverseAssociation.getIpsSrcFile());
+            }
+        }
     }
 
     private IAssociation getAssociation() {

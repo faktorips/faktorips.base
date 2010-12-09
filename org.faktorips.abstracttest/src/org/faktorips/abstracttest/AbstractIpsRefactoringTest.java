@@ -242,10 +242,12 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
         policyToSelfAssociation.setTargetRolePlural("plural");
         otherPolicyToPolicyAssociation = otherPolicyCmptType.newPolicyCmptTypeAssociation();
         otherPolicyToPolicyAssociation.setTarget(QUALIFIED_POLICY_CMPT_TYPE_NAME);
+        otherPolicyToPolicyAssociation.setTargetRoleSingular(POLICY_CMPT_TYPE_NAME);
 
         // Create product associations.
         otherProductToProductAssociation = otherProductCmptType.newProductCmptTypeAssociation();
         otherProductToProductAssociation.setTarget(QUALIFIED_PRODUCT_CMPT_TYPE_NAME);
+        otherProductToProductAssociation.setTargetRoleSingular(PRODUCT_CMPT_TYPE_NAME);
     }
 
     private void createTestModel() throws CoreException {

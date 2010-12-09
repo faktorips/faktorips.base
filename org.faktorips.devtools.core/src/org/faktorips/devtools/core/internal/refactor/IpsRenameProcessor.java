@@ -18,11 +18,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.ParticipantManager;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
-import org.eclipse.ltk.core.refactoring.participants.RenameArguments;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
+import org.faktorips.devtools.core.refactor.IpsRenameArguments;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -116,8 +116,8 @@ public abstract class IpsRenameProcessor extends IpsRefactoringProcessor impleme
     public final RefactoringParticipant[] loadParticipants(RefactoringStatus status,
             SharableParticipants sharedParticipants) throws CoreException {
 
-        return ParticipantManager.loadRenameParticipants(status, this, getIpsElement(), new RenameArguments(newName,
-                true), new String[] { IIpsProject.NATURE_ID }, sharedParticipants);
+        return ParticipantManager.loadRenameParticipants(status, this, getIpsElement(), new IpsRenameArguments(newName,
+                newPluralName, true), new String[] { IIpsProject.NATURE_ID }, sharedParticipants);
     }
 
     @Override
