@@ -348,6 +348,9 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
     @Override
     public void ipsSrcFilesChanged(IpsSrcFilesChangedEvent event) {
         Set<IIpsSrcFile> changedIpsSrcFiles = event.getChangedIpsSrcFiles();
+        if (treeViewer == null) {
+            return;
+        }
         ITypeHierarchy hierarchyTreeViewer = (ITypeHierarchy)treeViewer.getInput();
         if (hierarchyTreeViewer != null) {
             try {
