@@ -37,7 +37,7 @@ import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.runtime.internal.MethodNames;
-import org.faktorips.valueset.IntegerRange;
+import org.faktorips.valueset.CardinalityRange;
 import org.w3c.dom.Element;
 
 /**
@@ -192,7 +192,7 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
             frag.append(".getCardinality() : null;");
         } else {
             frag.append('(');
-            frag.appendClassName(IntegerRange.class);
+            frag.appendClassName(CardinalityRange.class);
             frag.append(')');
             frag.append(getFieldNameCardinalityForAssociation());
             frag.append(".get(");

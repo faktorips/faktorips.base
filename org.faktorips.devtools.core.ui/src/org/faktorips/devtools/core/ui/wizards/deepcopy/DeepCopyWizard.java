@@ -14,10 +14,7 @@
 package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
 import java.lang.reflect.InvocationTargetException;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -211,25 +208,17 @@ public class DeepCopyWizard extends ResizableWizard {
      */
     void applyWorkingDate() {
         IpsPreferences ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
-        DateFormat format = ipsPreferences.getDateFormat();
-        Date newDate;
         // apply working date in ips preferences
-        final String currentWorkingDate = sourcePage.getWorkingDate();
-
-        try {
-            newDate = format.parse(currentWorkingDate);
-        } catch (ParseException e) {
-            IpsPlugin.log(e);
+        GregorianCalendar currentWorkingDate = sourcePage.getWorkingDateAsGregorianCalendar();
+        if (currentWorkingDate == null) {
             return;
         }
-        final GregorianCalendar calendar = new GregorianCalendar();
-        calendar.setTime(newDate);
-        ipsPreferences.setWorkingDate(calendar);
+        ipsPreferences.setWorkingDate(currentWorkingDate);
 
         // apply working date in wizard pages
         try {
             structure = (ProductCmptTreeStructure)structure.getRoot().getProductCmpt()
-                    .getStructure(calendar, structure.getRoot().getProductCmpt().getIpsProject());
+                    .getStructure(currentWorkingDate, structure.getRoot().getProductCmpt().getIpsProject());
             sourcePage.refreshVersionId(structure);
         } catch (CycleInProductStructureException e) {
             IpsPlugin.logAndShowErrorDialog(e);
@@ -240,7 +229,7 @@ public class DeepCopyWizard extends ResizableWizard {
      * Returns the current structure date (the date the structure is valid) as formatted string
      */
     String getFormattedStructureDate() {
-        return sourcePage.getWorkingDate();
+        return sourcePage.getWorkingDateAsFormattedString();
     }
 
     /**

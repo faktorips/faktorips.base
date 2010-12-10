@@ -16,10 +16,16 @@ package org.faktorips.runtime.internal;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;
-import org.faktorips.valueset.IntegerRange;
+import org.faktorips.valueset.CardinalityRange;
 import org.w3c.dom.Element;
 
 /**
+ * Class that represents a link/relation between product components.
+ * <p/>
+ * As of FIPS 3.2 the cardinalities standard OPTIONAL, OBLIGATORY and FULL_RANGE are provided by the
+ * {@link CardinalityRange} class.
+ * 
+ * @see CardinalityRange
  * 
  * @author Daniel Hohenberger
  */
@@ -27,22 +33,9 @@ public class ProductComponentLink<E extends IProductComponent> extends RuntimeOb
         IProductComponentLink<E> {
 
     private final IProductComponentGeneration source;
-    private IntegerRange cardinality;
+    private CardinalityRange cardinality;
     private String targetId;
     private String associationName;
-
-    /**
-     * Cardinality (0,&#42;)
-     */
-    public static final IntegerRange CARDINALITY_FULL_RANGE = new IntegerRange(0, Integer.MAX_VALUE);
-    /**
-     * Cardinality (0,1)
-     */
-    public static final IntegerRange CARDINALITY_OPTIONAL = new IntegerRange(0, 1);
-    /**
-     * Cardinality (1,1)
-     */
-    public static final IntegerRange CARDINALITY_OBLIGATORY = new IntegerRange(1, 1);
 
     /**
      * Creates a new link for the given product component generation. Target and cardinality must be
@@ -59,7 +52,7 @@ public class ProductComponentLink<E extends IProductComponent> extends RuntimeOb
      * @throws NullPointerException if any of the parameters is {@code null}.
      */
     public ProductComponentLink(IProductComponentGeneration source, E target) {
-        this(source, target, CARDINALITY_FULL_RANGE);
+        this(source, target, CardinalityRange.FULL_RANGE);
     }
 
     /**
@@ -68,7 +61,7 @@ public class ProductComponentLink<E extends IProductComponent> extends RuntimeOb
      * 
      * @throws NullPointerException if any of the parameters is {@code null}.
      */
-    public ProductComponentLink(IProductComponentGeneration source, E target, IntegerRange cardinality) {
+    public ProductComponentLink(IProductComponentGeneration source, E target, CardinalityRange cardinality) {
         if (source == null) {
             throw new NullPointerException("The source for the ProductComponentLink may not be null.");
         }
@@ -86,7 +79,7 @@ public class ProductComponentLink<E extends IProductComponent> extends RuntimeOb
     /**
      * {@inheritDoc}
      */
-    public IntegerRange getCardinality() {
+    public CardinalityRange getCardinality() {
         return cardinality;
     }
 
@@ -105,7 +98,8 @@ public class ProductComponentLink<E extends IProductComponent> extends RuntimeOb
         }
 
         Integer minCardinality = Integer.valueOf(element.getAttribute("minCardinality"));
-        cardinality = new IntegerRange(minCardinality, maxCardinality);
+        Integer defaultCardinality = Integer.valueOf(element.getAttribute("defaultCardinality"));
+        cardinality = new CardinalityRange(minCardinality, maxCardinality, defaultCardinality);
         initExtensionPropertiesFromXml(element);
     }
 
@@ -146,6 +140,8 @@ public class ProductComponentLink<E extends IProductComponent> extends RuntimeOb
         sb.append("..");
         sb.append(new Integer(Integer.MAX_VALUE).equals(cardinality.getUpperBound()) ? "*" : cardinality
                 .getUpperBound());
+        sb.append(", default:");
+        sb.append(cardinality.getDefaultCardinality());
         sb.append(')');
         return sb.toString();
     }

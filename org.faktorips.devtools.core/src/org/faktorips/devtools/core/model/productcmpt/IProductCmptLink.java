@@ -31,6 +31,7 @@ public interface IProductCmptLink extends IIpsObjectPart, IDescribedElement {
     public final static String PROPERTY_TARGET = "target"; //$NON-NLS-1$
     public final static String PROPERTY_ASSOCIATION = "association"; //$NON-NLS-1$
     public final static String PROPERTY_MIN_CARDINALITY = "minCardinality"; //$NON-NLS-1$
+    public final static String PROPERTY_DEFAULT_CARDINALITY = "defaultCardinality"; //$NON-NLS-1$
     public final static String PROPERTY_MAX_CARDINALITY = "maxCardinality"; //$NON-NLS-1$
 
     public final static int CARDINALITY_MANY = IAssociation.CARDINALITY_MANY;
@@ -71,6 +72,20 @@ public interface IProductCmptLink extends IIpsObjectPart, IDescribedElement {
      */
     public final static String MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX = MSGCODE_PREFIX
             + "MaxCardinalityExceedsModelMax"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the minimum cardinality falls below the minimum
+     * cardinality defined in the model.
+     */
+    public final static String MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN = MSGCODE_PREFIX
+            + "MaxCardinalityFallsBelowModelMin"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the default cardinality is less than the min- or
+     * greater than the max cardinality.
+     */
+    public final static String MSGCODE_DEFAULT_CARDINALITY_OUT_OF_RANGE = MSGCODE_PREFIX
+            + "DefaultCardinalityOutOfRange"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the maximum cardinality is less than the minimum
@@ -151,6 +166,16 @@ public interface IProductCmptLink extends IIpsObjectPart, IDescribedElement {
      * Sets the minimum number of target instances required in this relation.
      */
     public void setMinCardinality(int newValue);
+
+    /**
+     * returns the default number of target instances in this relation.
+     */
+    public int getDefaultCardinality();
+
+    /**
+     * Sets the default number of target instances in this relation.
+     */
+    public void setDefaultCardinality(int newValue);
 
     /**
      * Returns the maximum number of target instances allowed in this relation. If the number is not

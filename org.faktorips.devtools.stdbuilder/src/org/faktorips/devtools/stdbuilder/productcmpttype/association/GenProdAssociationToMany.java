@@ -43,6 +43,7 @@ import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
 import org.faktorips.runtime.internal.MethodNames;
+import org.faktorips.valueset.CardinalityRange;
 import org.faktorips.valueset.IntegerRange;
 import org.w3c.dom.Element;
 
@@ -228,7 +229,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
             frag.append(".getId()).getCardinality() : null;");
         } else {
             frag.append('(');
-            frag.appendClassName(IntegerRange.class);
+            frag.appendClassName(CardinalityRange.class);
             frag.append(')');
             frag.append(getFieldNameCardinalityForAssociation());
             frag.append(".get(");
@@ -697,7 +698,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
                 methodsBuilder);
         String methodName = getMethodNameAddRelatedCmpt();
         String[] argNames = new String[] { "target", "cardinality" };
-        String[] argTypes = new String[] { getQualifiedInterfaceClassNameForTarget(), IntegerRange.class.getName() };
+        String[] argTypes = new String[] { getQualifiedInterfaceClassNameForTarget(), CardinalityRange.class.getName() };
         methodsBuilder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), "void", methodName,
                 argNames, argTypes);
         String fieldName = getFieldNameToManyAssociation();

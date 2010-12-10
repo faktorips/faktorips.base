@@ -27,7 +27,6 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
@@ -46,6 +45,7 @@ public class LinkEditDialog extends IpsPartEditDialog2 {
     private TextButtonField targetField;
     private CardinalityField minCardinalityField;
     private CardinalityField maxCardinalityField;
+    private CardinalityField defaultCardinalityField;
 
     private ProductCmptRefControl targetControl;
     private IProductCmpt[] toExclude = new IProductCmpt[0];
@@ -103,14 +103,20 @@ public class LinkEditDialog extends IpsPartEditDialog2 {
         Text maxCardinalityText = uiToolkit.createText(workArea);
         maxCardinalityText.setEnabled(cardinalityEnabled);
 
+        uiToolkit.createFormLabel(workArea, Messages.LinkEditDialog_cardinalityDefault);
+        Text defaultCardinalityText = uiToolkit.createText(workArea);
+        defaultCardinalityText.setEnabled(cardinalityEnabled);
+
         // create fields
         targetField = new TextButtonField(targetControl);
         minCardinalityField = new CardinalityField(minCardinalityText);
         maxCardinalityField = new CardinalityField(maxCardinalityText);
+        defaultCardinalityField = new CardinalityField(defaultCardinalityText);
 
-        bindingContext.bindContent(targetField, link, IAssociation.PROPERTY_TARGET);
-        bindingContext.bindContent(minCardinalityField, link, IAssociation.PROPERTY_MIN_CARDINALITY);
-        bindingContext.bindContent(maxCardinalityField, link, IAssociation.PROPERTY_MAX_CARDINALITY);
+        bindingContext.bindContent(targetField, link, IProductCmptLink.PROPERTY_TARGET);
+        bindingContext.bindContent(minCardinalityField, link, IProductCmptLink.PROPERTY_MIN_CARDINALITY);
+        bindingContext.bindContent(maxCardinalityField, link, IProductCmptLink.PROPERTY_MAX_CARDINALITY);
+        bindingContext.bindContent(defaultCardinalityField, link, IProductCmptLink.PROPERTY_DEFAULT_CARDINALITY);
 
         extFactory.createControls(workArea, uiToolkit, link);
         extFactory.bind(bindingContext);

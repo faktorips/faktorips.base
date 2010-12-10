@@ -13,7 +13,7 @@
 
 package org.faktorips.runtime;
 
-import org.faktorips.valueset.IntegerRange;
+import org.faktorips.valueset.CardinalityRange;
 
 /**
  * This class represents a link between two product components.
@@ -25,7 +25,7 @@ public interface IProductComponentLink<E extends IProductComponent> extends IRun
     /**
      * @return this link's min and max cardinality as a <code>IntegerRange</code>.
      */
-    public IntegerRange getCardinality();
+    public CardinalityRange getCardinality();
 
     /**
      * Returns the product component generation this link belongs to. This method never returns

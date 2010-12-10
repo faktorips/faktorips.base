@@ -280,7 +280,9 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
                 sb.append(Messages.ProductCmptCompareItem_RelationCardinalityOther_minimum).append(COLON)
                         .append(rel.getMinCardinality()).append(COMMA).append(BLANK);
                 sb.append(Messages.ProductCmptCompareItem_RelationCardinalityOther_maximum).append(COLON)
-                        .append(rel.getMaxCardinality());
+                        .append(rel.getMaxCardinality()).append(COMMA).append(BLANK);
+                sb.append(Messages.ProductCmptCompareItem_RelationCardinalityOther_default).append(COLON)
+                        .append(rel.getDefaultCardinality());
             }
             sb.append("]"); //$NON-NLS-1$
             sb.append(BLANK).append(BLANK).append("(").append(rel.getId()).append(")"); //$NON-NLS-1$ //$NON-NLS-2$

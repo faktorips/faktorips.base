@@ -13,14 +13,13 @@
 
 package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
+import java.beans.PropertyChangeEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -86,10 +85,15 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
+import org.faktorips.devtools.core.ui.controller.fields.DefaultEditField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
+import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
+import org.faktorips.devtools.core.ui.controller.fields.GregorianCalendarFormat;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
+import org.faktorips.devtools.core.ui.controls.DateControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 import org.faktorips.devtools.core.ui.controls.Radiobutton;
@@ -122,6 +126,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 
     // Controls
     private TextField workingDateField;
+    private DateControl workingDateControl;
     private IpsPckFragmentRootRefControl targetPackRootControl;
     private IpsPckFragmentRefControl targetPackageControl;
 
@@ -132,9 +137,6 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
     // The type of the deep copy wizard (see DeepCopyWizard):
     // DeepCopyWizard.TYPE_COPY_PRODUCT or TYPE_NEW_VERSION
     private int type;
-
-    // The working date format specified in the ips preferences
-    private DateFormat dateFormat;
 
     private Radiobutton copyTableContentsBtn;
     private Radiobutton createEmptyTableContentsBtn;
@@ -176,7 +178,6 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
             IpsPlugin.logAndShowErrorDialog(e);
         }
 
-        dateFormat = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
         setPageComplete(true);
     }
 
@@ -201,10 +202,14 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         Composite inputRoot = toolkit.createLabelEditColumnComposite(root);
 
         toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelValidFrom);
-        final Text workingDate = toolkit.createText(inputRoot);
-        String workingDateAsText = dateFormat.format(getDeepCopyWizard().getStructureDate().getTime());
-        workingDate.setText(workingDateAsText);
-        workingDateField = new TextField(workingDate);
+        // final Text workingDate = toolkit.createText(inputRoot);
+        // String workingDateAsText =
+        // dateFormat.format(getDeepCopyWizard().getStructureDate().getTime());
+        // workingDate.setText(workingDateAsText);
+        // workingDateField = new TextField(workingDate);
+        workingDateControl = new DateControl(inputRoot, toolkit);
+        workingDateField = new FormattingTextField(workingDateControl.getTextControl(), new GregorianCalendarFormat());
+        workingDateField.setValue(getDeepCopyWizard().getStructureDate());
 
         toolkit.createFormLabel(inputRoot, Messages.SourcePage_labelSourceFolder);
         targetPackRootControl = toolkit.createPdPackageFragmentRootRefControl(inputRoot, true);
@@ -276,7 +281,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         getShell().getDisplay().asyncExec(new Runnable() {
             @Override
             public void run() {
-                workingDate.setFocus();
+                workingDateControl.getTextControl().setFocus();
 
                 // run async to ensure that the buttons state (enabled/disabled)
                 // can be updated
@@ -289,7 +294,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
                     versionId.setText(""); //$NON-NLS-1$
                     prevValues.put(versionId, null);
                     // trigger a new validate after focus lost on workingDate text field
-                    prevValues.put(workingDate, null);
+                    prevValues.put(workingDateControl.getTextControl(), null);
                 } else {
                     refreshPageAferValueChange();
                 }
@@ -329,9 +334,9 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         // don't use value change event because of validation on every key pressed
         Text[] textCtrls;
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
-            textCtrls = new Text[] { workingDateField.getTextControl(), versionId, searchInput, replaceInput };
+            textCtrls = new Text[] { workingDateControl.getTextControl(), versionId, searchInput, replaceInput };
         } else {
-            textCtrls = new Text[] { workingDateField.getTextControl(), versionId };
+            textCtrls = new Text[] { workingDateControl.getTextControl(), versionId };
         }
         FocusListenerRefreshTreeOnValueChange focusListener = new FocusListenerRefreshTreeOnValueChange(textCtrls);
         for (Text textCtrl : textCtrls) {
@@ -340,10 +345,10 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         }
 
         // special listener for text button controls perform validate etc. if value changed
-        TextButtonField[] textButtonFields = new TextButtonField[] { new TextButtonField(targetPackRootControl),
+        DefaultEditField[] editFields = new DefaultEditField[] { new TextButtonField(targetPackRootControl),
                 new TextButtonField(targetPackageControl) };
-        for (TextButtonField textButtonField : textButtonFields) {
-            textButtonField.addChangeListener(new ValueChangeListener() {
+        for (DefaultEditField editField : editFields) {
+            editField.addChangeListener(new ValueChangeListener() {
                 @Override
                 public void valueChanged(FieldValueChangedEvent e) {
                     getShell().getDisplay().asyncExec(new Runnable() {
@@ -401,7 +406,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 
         public FocusListenerRefreshTreeOnValueChange(Text[] textControls) {
             this.textControls = textControls;
-            // store first values, to decide the value change later one
+            // store initial values, to notice the value change later on
             for (Text textControl : textControls) {
                 hasValueChanged(textControl);
             }
@@ -794,7 +799,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         setMessage(null);
         setErrorMessage(null);
 
-        if (!(tree != null && tree.getCheckedElements().length > 0)) {
+        if (tree == null || tree.getCheckedElements().length == 0) {
             // no elements checked
             setErrorMessage(Messages.SourcePage_msgNothingSelected);
             getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
@@ -920,16 +925,14 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
     }
 
     private void validateWorkingDate() {
-        try {
-            Date date = dateFormat.parse(workingDateField.getText());
-            Calendar calendar = new GregorianCalendar();
-            calendar.setTime(date);
-        } catch (ParseException e) {
+        Calendar calendar = (Calendar)workingDateField.getValue();
+        if (calendar == null) {
             String pattern;
+            DateFormat dateFormat = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
             if (dateFormat instanceof SimpleDateFormat) {
                 pattern = ((SimpleDateFormat)dateFormat).toLocalizedPattern();
             } else {
-                pattern = Messages.SourcePage_errorPrefixWorkingDateFormat;
+                pattern = "\"" + dateFormat.format(new GregorianCalendar().getTime()) + "\""; //$NON-NLS-1$//$NON-NLS-2$
             }
             setErrorMessage(NLS.bind(Messages.SourcePage_errorWorkingDateFormat, pattern));
         }
@@ -1009,8 +1012,16 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
     /**
      * Returns the working date entered in the text control
      */
-    public String getWorkingDate() {
+    public String getWorkingDateAsFormattedString() {
         return workingDateField.getText();
+    }
+
+    /**
+     * Returns the working date as a {@link GregorianCalendar}, <code>null</code> if no valid date
+     * was entered by the user.
+     */
+    public GregorianCalendar getWorkingDateAsGregorianCalendar() {
+        return (GregorianCalendar)workingDateField.getValue();
     }
 
     private DeepCopyWizard getDeepCopyWizard() {
@@ -1117,4 +1128,28 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         prevValues.put(text, text.getText());
         return true;
     }
+
+    public class DeepCopyPmo extends PresentationModelObject {
+
+        public static final String WORKING_DATE = "workingDate";
+
+        private GregorianCalendar workingDate;
+
+        public DeepCopyPmo() {
+            // DefaultEditField verwendet schon den EditFieldChangeBroadcaster für verzögerte
+            // Übertragung von Änderungen.
+        }
+
+        public void setWorkingDate(GregorianCalendar newValue) {
+            GregorianCalendar oldValue = workingDate;
+            workingDate = newValue;
+            notifyListeners(new PropertyChangeEvent(this, WORKING_DATE, oldValue, newValue));
+        }
+
+        public GregorianCalendar getWorkingDate() {
+            return workingDate;
+        }
+
+    }
+
 }

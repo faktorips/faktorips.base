@@ -67,6 +67,8 @@ public class Messages extends NLS {
 
     public static String ProductCmptCompareItem_Relation;
 
+    public static String ProductCmptCompareItem_RelationCardinalityOther_default;
+
     public static String ProductCmptCompareItem_RelationCardinalityOther_maximum;
 
     public static String ProductCmptCompareItem_RelationCardinalityOther_minimum;
@@ -144,6 +146,8 @@ public class Messages extends NLS {
     public static String ProductAttributesSection_valueGenerationValidToUnlimited;
 
     public static String RulesSection_title;
+
+    public static String CardinalityPanel_LabelDefaultCardinality;
 
     public static String CardinalityPanel_labelOptional;
 
@@ -252,6 +256,8 @@ public class Messages extends NLS {
     public static String FormulaTestInputValuesControl_ButtonLabel_Calculate;
 
     public static String FormulaTestInputValuesControl_Result_ObjectIsNotValid;
+
+    public static String LinkEditDialog_cardinalityDefault;
 
     public static String ProductAttributesSection_msgInvalidDate;
 

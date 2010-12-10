@@ -61,12 +61,9 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
-import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
-import org.faktorips.devtools.core.ui.controller.fields.CardinalityPaneEditField;
 import org.faktorips.devtools.core.ui.editors.ISelectionProviderActivation;
 import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
 import org.faktorips.devtools.core.ui.editors.pctype.ContentsChangeListenerForWidget;
@@ -89,10 +86,6 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 
     private CardinalityPanel cardinalityPanel;
 
-    private CardinalityPaneEditField cardMinField;
-
-    private CardinalityPaneEditField cardMaxField;
-
     /**
      * The tree viewer displaying all the relations.
      */
@@ -107,12 +100,6 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
      * Flag to indicate that the generation has changed (<code>true</code>)
      */
     private boolean generationDirty;
-
-    /**
-     * <code>true</code> if this section is enabled, <code>false</code> otherwise. This flag is used
-     * to control the enablement-state of the contained controlls.
-     */
-    private boolean enabled;
 
     /**
      * The popup-Menu for the treeview if enabled.
@@ -146,7 +133,6 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         this.generation = generation;
         this.site = site;
         generationDirty = true;
-        enabled = true;
         initControls();
         setText(Messages.PropertiesPage_relations);
     }
@@ -308,8 +294,8 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             generationDirty = false;
         }
 
-        if (selectionChangedListener != null && selectionChangedListener.uiController != null) {
-            selectionChangedListener.uiController.updateUI();
+        if (cardinalityPanel != null) {
+            cardinalityPanel.refresh();
         }
     }
 
@@ -346,66 +332,21 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
      * Listener for updating the cardinality triggerd by the selection of another link.
      */
     private class SelectionChangedListener implements ISelectionChangedListener {
-        IpsObjectUIController uiController;
 
         @Override
         public void selectionChanged(SelectionChangedEvent event) {
             Object selected = ((IStructuredSelection)event.getSelection()).getFirstElement();
-            if (selected instanceof IProductCmptLink) {
-                updateCardinalityPanel((IProductCmptLink)selected);
-            } else {
-                deactivateCardinalityPanel();
-            }
             if (!isDataChangeable()) {
-                deactivateCardinalityPanel();
+                cardinalityPanel.setProductCmptLinkToEdit(null);
+            } else {
+                if (selected instanceof IProductCmptLink) {
+                    cardinalityPanel.setProductCmptLinkToEdit((IProductCmptLink)selected);
+                } else {
+                    cardinalityPanel.setProductCmptLinkToEdit(null);
+                }
             }
         }
 
-        void updateCardinalityPanel(IProductCmptLink link) {
-            boolean cardinalityPanelEnabled;
-            try {
-                cardinalityPanelEnabled = link.constrainsPolicyCmptTypeAssociation(link.getIpsProject());
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-                cardinalityPanelEnabled = false;
-            }
-
-            if (!cardinalityPanelEnabled) {
-                deactivateCardinalityPanel();
-                return;
-            }
-
-            if (uiController != null) {
-                removeMinMaxFields();
-            }
-            if (uiController == null || !uiController.getIpsObjectPartContainer().equals(link)) {
-                uiController = new IpsObjectUIController(link);
-            }
-            addMinMaxFields(link);
-            uiController.updateUI();
-
-            // enable the fields for cardinality only, if this section is enabled.
-            cardinalityPanel.setEnabled(enabled);
-        }
-
-        void deactivateCardinalityPanel() {
-            cardinalityPanel.setEnabled(false);
-            removeMinMaxFields();
-        }
-
-        void removeMinMaxFields() {
-            if (uiController != null) {
-                uiController.remove(cardMinField);
-                uiController.remove(cardMaxField);
-            }
-        }
-
-        void addMinMaxFields(IProductCmptLink link) {
-            cardMinField = new CardinalityPaneEditField(cardinalityPanel, true);
-            cardMaxField = new CardinalityPaneEditField(cardinalityPanel, false);
-            uiController.add(cardMinField, link, IAssociation.PROPERTY_MIN_CARDINALITY);
-            uiController.add(cardMaxField, link, IAssociation.PROPERTY_MAX_CARDINALITY);
-        }
     }
 
     /**
@@ -450,8 +391,6 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
      */
     @Override
     public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-
         if (treeViewer == null) {
             // no relations defined, so no tree to disable.
             return;

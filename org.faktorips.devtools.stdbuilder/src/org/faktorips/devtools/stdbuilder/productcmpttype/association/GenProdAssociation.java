@@ -40,6 +40,7 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.type.GenTypePart;
 import org.faktorips.util.LocalizedStringsSet;
+import org.faktorips.valueset.CardinalityRange;
 import org.faktorips.valueset.IntegerRange;
 
 /**
@@ -238,7 +239,7 @@ public abstract class GenProdAssociation extends GenTypePart {
             throws CoreException {
         String methodName = getMethodNameGetCardinalityForAssociation();
         String[][] params = getParamGetCardinalityForAssociation();
-        methodsBuilder.signature(Modifier.PUBLIC, IntegerRange.class.getName(), methodName, params[0], params[1]);
+        methodsBuilder.signature(Modifier.PUBLIC, CardinalityRange.class.getName(), methodName, params[0], params[1]);
     }
 
     public String getMethodNameGetCardinalityForAssociation() throws CoreException {

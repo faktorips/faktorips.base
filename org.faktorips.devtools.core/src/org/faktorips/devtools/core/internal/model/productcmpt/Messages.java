@@ -77,6 +77,8 @@ public class Messages extends NLS {
     public static String DateBasedProductCmptNamingStrategy_msgWrongFormat;
 
     public static String ProductCmpt_msgInvalidTypeHierarchy;
+    public static String ProductCmptLink_msgDefaultCardinalityOutOfRange;
+    public static String ProductCmptLink_msgMinCardinalityFallsBelowModelMin;
 
     public static String FormulaTestInputValue_CoreException_WrongIdentifierForParameter;
     public static String FormulaTestInputValue_ValidationMessage_FormulaParameterNotFound;

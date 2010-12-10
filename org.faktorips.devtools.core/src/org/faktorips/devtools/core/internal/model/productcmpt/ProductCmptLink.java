@@ -66,6 +66,8 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
 
     private int minCardinality = 0;
 
+    private int defaultCardinality = minCardinality;
+
     private int maxCardinality = 1;
 
     public ProductCmptLink(IProductCmptGeneration generation, String id) {
@@ -143,6 +145,18 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     }
 
     @Override
+    public int getDefaultCardinality() {
+        return defaultCardinality;
+    }
+
+    @Override
+    public void setDefaultCardinality(int newValue) {
+        int oldValue = defaultCardinality;
+        defaultCardinality = newValue;
+        valueChanged(oldValue, newValue);
+    }
+
+    @Override
     public int getMaxCardinality() {
         return maxCardinality;
     }
@@ -188,25 +202,41 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     }
 
     private void validateCardinality(MessageList list, IPolicyCmptTypeAssociation associationObj) {
-        if (maxCardinality == 0) {
+        if (maxCardinality < 1) {
             String text = Messages.ProductCmptRelation_msgMaxCardinalityIsLessThan1;
             list.add(new Message(MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1, text, Message.ERROR, this,
                     PROPERTY_MAX_CARDINALITY));
-        } else if (maxCardinality != -1) {
+        } else {
             if (minCardinality > maxCardinality) {
                 String text = Messages.ProductCmptRelation_msgMaxCardinalityIsLessThanMin;
                 list.add(new Message(MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN, text, Message.ERROR, this, new String[] {
                         PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY }));
             }
-            if (associationObj.getMaxCardinality() != IProductCmptTypeAssociation.CARDINALITY_MANY) {
-                int maxType = associationObj.getMaxCardinality();
+            int maxType = associationObj.getMaxCardinality();
+            if (maxType != IProductCmptTypeAssociation.CARDINALITY_MANY) {
                 if (maxCardinality > maxType) {
-                    String text = NLS.bind(Messages.ProductCmptRelation_msgMaxCardinalityExceedsModelMax, "" //$NON-NLS-1$
-                            + (maxCardinality == IAssociation.CARDINALITY_MANY ? "*" : "" + maxCardinality), //$NON-NLS-1$ //$NON-NLS-2$
-                            "" + associationObj.getMaxCardinality()); //$NON-NLS-1$ 
+                    String text = NLS.bind(Messages.ProductCmptRelation_msgMaxCardinalityExceedsModelMax,
+                            maxCardinality == IAssociation.CARDINALITY_MANY ? "*" : Integer.toString(maxCardinality), //$NON-NLS-1$ 
+                            Integer.toString(maxType));
                     list.add(new Message(MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX, text, Message.ERROR, this,
                             PROPERTY_MAX_CARDINALITY));
                 }
+            }
+            int minType = associationObj.getMinCardinality();
+            if (minCardinality < minType) {
+                String text = NLS.bind(Messages.ProductCmptLink_msgMinCardinalityFallsBelowModelMin,
+                        Integer.toString(minCardinality), Integer.toString(minType));
+                list.add(new Message(MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN, text, Message.ERROR, this,
+                        PROPERTY_MIN_CARDINALITY));
+            }
+            if (defaultCardinality > maxCardinality || minCardinality > defaultCardinality
+                    || defaultCardinality == Integer.MAX_VALUE) {
+                String text = NLS.bind(Messages.ProductCmptLink_msgDefaultCardinalityOutOfRange, Integer
+                        .toString(minCardinality),
+                        maxCardinality == IAssociation.CARDINALITY_MANY ? "*" : Integer.toString(maxCardinality) //$NON-NLS-1$ 
+                        );
+                list.add(new Message(MSGCODE_DEFAULT_CARDINALITY_OUT_OF_RANGE, text, Message.ERROR, this,
+                        PROPERTY_DEFAULT_CARDINALITY));
             }
         }
     }
@@ -226,6 +256,11 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         } catch (NumberFormatException e) {
             minCardinality = 0;
         }
+        try {
+            defaultCardinality = Integer.parseInt(element.getAttribute(PROPERTY_DEFAULT_CARDINALITY));
+        } catch (NumberFormatException e) {
+            defaultCardinality = minCardinality;
+        }
         String max = element.getAttribute(PROPERTY_MAX_CARDINALITY);
         if (max.equals("*")) { //$NON-NLS-1$
             maxCardinality = CARDINALITY_MANY;
@@ -243,12 +278,13 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_ASSOCIATION, association);
         element.setAttribute(PROPERTY_TARGET, target);
-        element.setAttribute(PROPERTY_MIN_CARDINALITY, "" + minCardinality); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_MIN_CARDINALITY, Integer.toString(minCardinality));
+        element.setAttribute(PROPERTY_DEFAULT_CARDINALITY, Integer.toString(defaultCardinality));
 
         if (maxCardinality == CARDINALITY_MANY) {
             element.setAttribute(PROPERTY_MAX_CARDINALITY, "*"); //$NON-NLS-1$
         } else {
-            element.setAttribute(PROPERTY_MAX_CARDINALITY, "" + maxCardinality); //$NON-NLS-1$
+            element.setAttribute(PROPERTY_MAX_CARDINALITY, Integer.toString(maxCardinality));
         }
     }
 

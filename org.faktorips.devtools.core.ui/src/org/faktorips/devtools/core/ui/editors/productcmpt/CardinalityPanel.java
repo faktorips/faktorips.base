@@ -13,38 +13,47 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
+import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.controller.fields.MessageCueController;
 import org.faktorips.util.message.MessageList;
 
 /**
  * Panel to display cardinality. Note that this is <strong>NOT</strong> a control.
+ * <p>
+ * To edit a {@link IProductCmptLink} call {@link #setProductCmptLinkToEdit(IProductCmptLink)} and
+ * this panel will be updated with the links values. If <code>null</code> is passed to the method,
+ * this panel resets and disables itself.
+ * 
  * 
  * @author Thorsten Guenther
+ * @author Stefan Widmaier
  */
 public class CardinalityPanel implements IDataChangeableReadWriteAccess {
 
     private UIToolkit uiToolkit;
 
-    private Text minKard;
-    private Text maxKard;
-    private Label minKardLabel;
-    private Label maxKardLabel;
+    private Text minCard;
+    private Text maxCard;
+    private Text defaultCard;
+    private Label minCardLabel;
+    private Label maxCardLabel;
+    private Label defaultCardLabel;
     private Button optional;
     private Label optionalLabel;
     private Button mandatory;
@@ -53,8 +62,12 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
     private Label otherLabel;
     private Composite root;
 
-    private ModifyListener minListener;
-    private ModifyListener maxListener;
+    private IpsObjectUIController uiController;
+    private CardinalityField minCardField;
+    private CardinalityField maxCardField;
+    private CardinalityField defaultCardField;
+
+    private IProductCmptLink currentLink;
 
     private boolean dataChangeable;
 
@@ -102,62 +115,152 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         toolkit.createLabel(kardinalityPane, ""); //$NON-NLS-1$
         Composite specialPane = toolkit.createLabelEditColumnComposite(kardinalityPane);
         specialPane.setLayout(new GridLayout(2, false));
-        minKardLabel = toolkit.createFormLabel(specialPane, Messages.PolicyAttributesSection_minimum);
-        minKard = toolkit.createText(specialPane);
-        minKard.setLayoutData(new GridData(30, SWT.DEFAULT));
-        maxKardLabel = toolkit.createFormLabel(specialPane, Messages.PolicyAttributesSection_maximum);
-        maxKard = toolkit.createText(specialPane);
-        maxKard.setLayoutData(new GridData(30, SWT.DEFAULT));
+        minCardLabel = toolkit.createFormLabel(specialPane, Messages.PolicyAttributesSection_minimum);
+        minCard = toolkit.createText(specialPane);
+        minCard.setLayoutData(new GridData(30, SWT.DEFAULT));
+        maxCardLabel = toolkit.createFormLabel(specialPane, Messages.PolicyAttributesSection_maximum);
+        maxCard = toolkit.createText(specialPane);
+        maxCard.setLayoutData(new GridData(30, SWT.DEFAULT));
+        defaultCardLabel = toolkit.createFormLabel(specialPane, Messages.CardinalityPanel_LabelDefaultCardinality);
+        defaultCard = toolkit.createText(specialPane);
+        defaultCard.setLayoutData(new GridData(30, SWT.DEFAULT));
         toolkit.createVerticalSpacer(specialPane, 3).setBackground(kardinalityPane.getBackground());
+
+        // ModifyListener cardinalityChangedListener = new ModifyListener() {
+        // @Override
+        // public void modifyText(ModifyEvent e) {
+        // cardinalityChanged();
+        // }
+        // };
+        // minKard.addModifyListener(cardinalityChangedListener);
+        // maxKard.addModifyListener(cardinalityChangedListener);
+        // defaultKard.addModifyListener(cardinalityChangedListener);
 
         kardinalityPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
         toolkit.getFormToolkit().paintBordersFor(root);
     }
 
     /**
-     * Update values and enablement-state on cardinality changes
+     * Configures this {@link CardinalityPanel} to change the cardinality values of the given link
+     * when the user modifies the text controls. If the given {@link IProductCmptLink} is
+     * <code>null</code> this panel will be deactivated.
+     * 
+     * @param link the {@link IProductCmptLink} currently edited by this panel or <code>null</code>
+     *            if none.
      */
-    private void cardinalityChanged() {
-        String min = minKard.getText();
-        String max = maxKard.getText();
-        mandatory.setSelection(false);
-        optional.setSelection(false);
-        other.setSelection(false);
-        minKard.setEnabled(false);
-        maxKard.setEnabled(false);
-        maxKardLabel.setEnabled(false);
-        minKardLabel.setEnabled(false);
-
-        if (min.equals("1") && max.equals("1")) { //$NON-NLS-1$ //$NON-NLS-2$
-            mandatory.setSelection(true);
-        } else if (min.equals("0") && max.equals("1")) { //$NON-NLS-1$ //$NON-NLS-2$
-            optional.setSelection(true);
+    public void setProductCmptLinkToEdit(IProductCmptLink link) {
+        currentLink = link;
+        if (currentLink == null) {
+            deactivateCardinalityPanel();
         } else {
-            other.setSelection(true);
-            minKard.setEnabled(true);
-            maxKard.setEnabled(true);
-            maxKardLabel.setEnabled(true);
-            minKardLabel.setEnabled(true);
+
+            boolean cardinalityPanelEnabled;
+            try {
+                cardinalityPanelEnabled = currentLink.constrainsPolicyCmptTypeAssociation(currentLink.getIpsProject());
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+                cardinalityPanelEnabled = false;
+            }
+
+            if (!cardinalityPanelEnabled) {
+                deactivateCardinalityPanel();
+                return;
+            } else {
+                if (uiController != null) {
+                    removeFields();
+                }
+                if (uiController == null || !uiController.getIpsObjectPartContainer().equals(currentLink)) {
+                    uiController = new IpsObjectUIController(currentLink);
+                }
+                addFields(currentLink);
+                uiController.updateUI();
+
+                setEnabled(true);
+            }
+        }
+    }
+
+    private void deactivateCardinalityPanel() {
+        setEnabled(false);
+        removeFields();
+    }
+
+    private void removeFields() {
+        if (uiController != null) {
+            uiController.remove(minCardField);
+            uiController.remove(maxCardField);
+            uiController.remove(defaultCardField);
+        }
+    }
+
+    private void addFields(IProductCmptLink link) {
+        minCardField = new CardinalityField(getMinCardinalityTextControl());
+        maxCardField = new CardinalityField(getMaxCardinalityTextControl());
+        defaultCardField = new CardinalityField(getDefaultCardinalityTextControl());
+        uiController.add(minCardField, link, IProductCmptLink.PROPERTY_MIN_CARDINALITY);
+        uiController.add(maxCardField, link, IProductCmptLink.PROPERTY_MAX_CARDINALITY);
+        uiController.add(defaultCardField, link, IProductCmptLink.PROPERTY_DEFAULT_CARDINALITY);
+    }
+
+    public void refresh() {
+        if (uiController != null) {
+            uiController.updateUI();
         }
     }
 
     /**
-     * Method to enable or disable this panel.
+     * Method to enable or disable this panel. If no checkbox (optional, mandatory, other) is
+     * selected all controls will be disabled, regardless of the given value. This is the case if no
+     * ProdCmptLink is selected in the {@link LinksSection}s tree, thus this panel is disabled
+     * completely.
      */
     public void setEnabled(boolean enabled) {
-        boolean selected = optional.getSelection() || mandatory.getSelection() || other.getSelection();
+        mandatory.setEnabled(enabled);
+        mandatorylLabel.setEnabled(enabled);
+        optional.setEnabled(enabled);
+        optionalLabel.setEnabled(enabled);
+        other.setEnabled(enabled);
+        otherLabel.setEnabled(enabled);
 
-        mandatory.setEnabled(enabled && selected);
-        mandatorylLabel.setEnabled(enabled && selected);
-        optional.setEnabled(enabled && selected);
-        optionalLabel.setEnabled(enabled && selected);
-        other.setEnabled(enabled && selected);
-        otherLabel.setEnabled(enabled && selected);
-        if (other.getSelection() || !selected) {
-            minKard.setEnabled(enabled && selected);
-            minKardLabel.setEnabled(enabled && selected);
-            maxKard.setEnabled(enabled && selected);
-            maxKardLabel.setEnabled(enabled && selected);
+        minCard.setEnabled(false);
+        maxCard.setEnabled(false);
+        defaultCard.setEnabled(false);
+        maxCardLabel.setEnabled(false);
+        minCardLabel.setEnabled(false);
+        defaultCardLabel.setEnabled(false);
+
+        if (!enabled) {
+            mandatory.setSelection(false);
+            optional.setSelection(false);
+            other.setSelection(false);
+            setFieldValue(minCardField, new Integer(0), false);
+            setFieldValue(maxCardField, new Integer(0), false);
+            setFieldValue(defaultCardField, new Integer(0), false);
+        } else {
+            String min = minCard.getText();
+            String max = maxCard.getText();
+            String def = defaultCard.getText();
+
+            if (min.equals("1") && max.equals("1") && def.equals("1")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                mandatory.setSelection(true);
+                optional.setSelection(false);
+                other.setSelection(false);
+            } else if (min.equals("0") && max.equals("1") && def.equals("0")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                optional.setSelection(true);
+                mandatory.setSelection(false);
+                other.setSelection(false);
+            } else {
+                other.setSelection(true);
+                mandatory.setSelection(false);
+                optional.setSelection(false);
+
+                minCard.setEnabled(true);
+                maxCard.setEnabled(true);
+                defaultCard.setEnabled(true);
+                maxCardLabel.setEnabled(true);
+                minCardLabel.setEnabled(true);
+                defaultCardLabel.setEnabled(true);
+            }
         }
     }
 
@@ -165,24 +268,40 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
      * Listener to update on cardinality modifications.
      * 
      * @author Thorsten Guenther
+     * @author Stefan Widmaier
      */
     private class KardinalitySelectionListener implements SelectionListener {
 
         @Override
         public void widgetSelected(SelectionEvent e) {
+
             removeMessageCue();
             boolean enabled = e.getSource() == other;
-            minKard.setEnabled(enabled);
-            maxKard.setEnabled(enabled);
-            maxKardLabel.setEnabled(enabled);
-            minKardLabel.setEnabled(enabled);
+            minCard.setEnabled(enabled);
+            maxCard.setEnabled(enabled);
+            defaultCard.setEnabled(enabled);
+            maxCardLabel.setEnabled(enabled);
+            minCardLabel.setEnabled(enabled);
+            defaultCardLabel.setEnabled(enabled);
 
+            /*
+             * Setting the cardinality values using their fields causes an inconsistent GUI state
+             * and incorrect model data. This is due to the fact that edit fields update the model
+             * asynchronously (see EventBroadcaster). Following calls of setValue on other fields
+             * might be "too early" as the Text controls will also be updated by triggered
+             * modelChangeEvents that then write possibly incorrect or outdated data to the GUI.
+             * 
+             * Calling the model-setters directly forces synchronous processing and works around
+             * those problems.
+             */
             if (e.getSource() == optional) {
-                setText(minKard, "0", minListener); //$NON-NLS-1$
-                setText(maxKard, "1", maxListener); //$NON-NLS-1$
+                currentLink.setMinCardinality(0);
+                currentLink.setMaxCardinality(1);
+                currentLink.setDefaultCardinality(0);
             } else if (e.getSource() == mandatory) {
-                setText(minKard, "1", minListener); //$NON-NLS-1$
-                setText(maxKard, "1", maxListener); //$NON-NLS-1$
+                currentLink.setMinCardinality(1);
+                currentLink.setMaxCardinality(1);
+                currentLink.setDefaultCardinality(1);
             }
 
         }
@@ -192,25 +311,9 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
          */
         private void removeMessageCue() {
             MessageList emptyList = new MessageList();
-            MessageCueController.setMessageCue(minKard, emptyList);
-            MessageCueController.setMessageCue(maxKard, emptyList);
-        }
-
-        /**
-         * Set the text to the given control and updates the given listener.
-         */
-        private void setText(Text text, String newValue, ModifyListener listener) {
-            String oldValue = text.getText();
-            if (oldValue.equals(newValue)) {
-                return;
-            }
-
-            text.setText(newValue);
-
-            Event e = new Event();
-            e.widget = text;
-            e.text = newValue;
-            listener.modifyText(new ModifyEvent(e));
+            MessageCueController.setMessageCue(minCard, emptyList);
+            MessageCueController.setMessageCue(maxCard, emptyList);
+            MessageCueController.setMessageCue(defaultCard, emptyList);
         }
 
         @Override
@@ -220,64 +323,31 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
 
     }
 
-    /**
-     * Returns the control which displays the min cardinality
-     */
-    public Control getMinCardinalityControl() {
-        return minKard;
+    protected void setFieldValue(CardinalityField field, Integer integer, boolean triggerValueChanged) {
+        if (field != null) {
+            field.setValue(integer, triggerValueChanged);
+        }
     }
 
     /**
-     * Returns the control which displays the max cardinality
+     * Returns the Text control which displays the min cardinality
      */
-    public Control getMaxCardinalityControl() {
-        return maxKard;
+    private Text getMinCardinalityTextControl() {
+        return minCard;
     }
 
     /**
-     * Set the value for the min cardinality
+     * Returns the Text control which displays the max cardinality
      */
-    public void setMinCardinality(String newText) {
-        minKard.setText(newText);
-        cardinalityChanged();
+    private Text getMaxCardinalityTextControl() {
+        return maxCard;
     }
 
     /**
-     * Set the value for the max cardinality
+     * Returns the control which displays the default cardinality
      */
-    public void setMaxCardinality(String newText) {
-        maxKard.setText(newText);
-        cardinalityChanged();
-    }
-
-    /**
-     * Returns the value for the min cardinality
-     */
-    public String getMinCardinality() {
-        return minKard.getText();
-    }
-
-    /**
-     * Returns the value for the max cardinality
-     */
-    public String getMaxCardinality() {
-        return maxKard.getText();
-    }
-
-    /**
-     * Adds a modification listener to the min cardianlity control
-     */
-    public void addMinModifyListener(ModifyListener listener) {
-        minListener = listener;
-        minKard.addModifyListener(listener);
-    }
-
-    /**
-     * Adds a modification listener to the max cardianlity control
-     */
-    public void addMaxModifyListener(ModifyListener listener) {
-        maxListener = listener;
-        maxKard.addModifyListener(listener);
+    private Text getDefaultCardinalityTextControl() {
+        return defaultCard;
     }
 
     @Override
@@ -292,8 +362,10 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
             uiToolkit.setDataChangeable(optional, changeable);
             uiToolkit.setDataChangeable(mandatory, changeable);
             uiToolkit.setDataChangeable(other, changeable);
-            uiToolkit.setDataChangeable(minKard, changeable);
-            uiToolkit.setDataChangeable(maxKard, changeable);
+            uiToolkit.setDataChangeable(minCard, changeable);
+            uiToolkit.setDataChangeable(maxCard, changeable);
+            uiToolkit.setDataChangeable(defaultCard, changeable);
         }
     }
+
 }
