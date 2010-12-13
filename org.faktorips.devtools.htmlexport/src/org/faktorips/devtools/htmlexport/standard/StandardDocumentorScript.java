@@ -93,6 +93,9 @@ public class StandardDocumentorScript implements IDocumentorScript {
 
     private void writeClassContentPage(DocumentationContext context, IIpsSrcFile ipsSrcFile) {
         AbstractPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(ipsSrcFile, context);
+        if (objectContentPage == null) {
+            return;
+        }
         objectContentPage.build();
         FileHandler
                 .writeFile(

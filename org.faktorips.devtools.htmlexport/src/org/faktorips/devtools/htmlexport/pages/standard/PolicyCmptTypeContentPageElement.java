@@ -16,6 +16,8 @@ package org.faktorips.devtools.htmlexport.pages.standard;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -107,21 +109,23 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
         addPageElements(TextPageElement
                 .createParagraph("Abstract Type" + ": " + (getDocumentedIpsObject().isAbstract() ? "X" : "-"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
+        IProductCmptType to;
         try {
-
-            IProductCmptType to = getDocumentedIpsObject().getIpsProject().findProductCmptType(
+            to = getDocumentedIpsObject().getIpsProject().findProductCmptType(
                     getDocumentedIpsObject().getProductCmptType());
-            if (to == null) {
-                addPageElements(TextPageElement.createParagraph(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName()
-                        + ": " + Messages.PolicyCmptTypeContentPageElement_none)); //$NON-NLS-1$
-                return;
-            }
-            addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
-                    new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": "), //$NON-NLS-1$
-                    PageElementUtils.createLinkPageElement(getContext(), to, "content", to.getName(), true) })); //$NON-NLS-1$
         } catch (CoreException e) {
-            e.printStackTrace();
+            getContext().addStatus(
+                    new IpsStatus(IStatus.ERROR, "Error getting  " + getDocumentedIpsObject().getProductCmptType(), e)); //$NON-NLS-1$
+            return;
         }
+        if (to == null) {
+            addPageElements(TextPageElement.createParagraph(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName()
+                    + ": " + Messages.PolicyCmptTypeContentPageElement_none)); //$NON-NLS-1$
+            return;
+        }
+        addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
+                new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": "), //$NON-NLS-1$
+                PageElementUtils.createLinkPageElement(getContext(), to, "content", to.getName(), true) })); //$NON-NLS-1$
 
     }
 }

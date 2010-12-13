@@ -19,6 +19,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -52,24 +54,20 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
 
     @Override
     protected void addStructureData() {
-        IProductCmptType productCmptType = getProductCmptType();
+        IProductCmptType productCmptType;
+        try {
+            productCmptType = getContext().getIpsProject().findProductCmptType(
+                    getDocumentedIpsObject().getProductCmptType());
+        } catch (CoreException e) {
+            getContext().addStatus(
+                    new IpsStatus(IStatus.ERROR, "Error getting  " + getDocumentedIpsObject().getProductCmptType(), e)); //$NON-NLS-1$
+            return;
+        }
 
         addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
                 new TextPageElement(IpsObjectType.PRODUCT_CMPT_TYPE.getDisplayName() + ": "), //$NON-NLS-1$
                 PageElementUtils.createLinkPageElement(getContext(), productCmptType,
                         "content", productCmptType.getName(), true) })); //$NON-NLS-1$
-    }
-
-    /**
-     * returns the {@link IProductCmptType} for the productCmpt
-     * 
-     */
-    protected IProductCmptType getProductCmptType() {
-        try {
-            return getContext().getIpsProject().findProductCmptType(getDocumentedIpsObject().getProductCmptType());
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
@@ -85,11 +83,20 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
      * adds a table with the attributes of the generations
      */
     private void addGenerationAttributeTable() {
+        ProductGenerationAttributeTable productGenerationAttributeTable;
+        try {
+            productGenerationAttributeTable = new ProductGenerationAttributeTable(getDocumentedIpsObject(),
+                    getContext());
+        } catch (CoreException e) {
+            getContext().addStatus(
+                    new IpsStatus(IStatus.ERROR, "Error getting " + getDocumentedIpsObject().getProductCmptType(), e)); //$NON-NLS-1$
+            return;
+        }
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(Messages.ProductCmptContentPageElement_values, TextType.HEADING_2));
 
-        wrapper.addPageElements(getTableOrAlternativeText(new ProductGenerationAttributeTable(getDocumentedIpsObject(),
-                getProductCmptType(), getContext()), Messages.ProductCmptContentPageElement_noGenerationsOrAttributes));
+        wrapper.addPageElements(getTableOrAlternativeText(productGenerationAttributeTable,
+                Messages.ProductCmptContentPageElement_noGenerationsOrAttributes));
         addPageElements(wrapper);
     }
 

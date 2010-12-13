@@ -20,6 +20,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchiveEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
@@ -86,15 +88,16 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         IIpsObjectPath objectPath;
         try {
             objectPath = getProject().getIpsObjectPath();
-
-            wrapper.addPageElements(createArchiveEntriesList(objectPath));
-            wrapper.addPageElements(createReferencedIpsProjectList(objectPath));
-            wrapper.addPageElements(createReferencingIpsProjectList(objectPath));
-            wrapper.addPageElements(createSourceFolders(objectPath));
-
         } catch (CoreException e) {
-            throw new RuntimeException(e);
+            getContext().addStatus(new IpsStatus(IStatus.ERROR, "Error getting IpsObjectPath of project", e)); //$NON-NLS-1$
+            return;
         }
+
+        wrapper.addPageElements(createArchiveEntriesList(objectPath));
+        wrapper.addPageElements(createReferencedIpsProjectList(objectPath));
+        wrapper.addPageElements(createReferencingIpsProjectList(objectPath));
+        wrapper.addPageElements(createSourceFolders(objectPath));
+
         addPageElements(wrapper);
     }
 
@@ -139,7 +142,9 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         try {
             referencingProjectLeavesOrSelf = objectPath.getIpsProject().findReferencingProjectLeavesOrSelf();
         } catch (CoreException e) {
-            throw new RuntimeException(e);
+            context.addStatus(new IpsStatus(IStatus.ERROR, "Error getting referencing projects", e)); //$NON-NLS-1$
+            return wrapper.addPageElements(new TextPageElement(
+                    Messages.ProjectOverviewPageElement_noReferencingProjects));
         }
 
         List<String> referencingIpsProjectsName = new ArrayList<String>();

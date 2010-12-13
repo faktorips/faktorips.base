@@ -18,8 +18,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
@@ -55,21 +57,16 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
         private ITableStructure tableStructure;
         private ValueDatatype[] datatypes;
 
-        public ContentTablePageElement(ITableContentsGeneration tableContentsGeneration) {
+        public ContentTablePageElement(ITableContentsGeneration tableContentsGeneration) throws CoreException {
             super(Arrays.asList(tableContentsGeneration.getRows()), TableContentsContentPageElement.this.getContext());
-            this.tableStructure = findTableStructure();
+            this.tableStructure = getDocumentedIpsObject().findTableStructure(getContext().getIpsProject());
             initDatatypes(tableContentsGeneration);
         }
 
-        private void initDatatypes(ITableContentsGeneration tableContentsGeneration) {
-            try {
-                datatypes = new ValueDatatype[tableStructure.getNumOfColumns()];
-                for (int i = 0; i < tableStructure.getNumOfColumns(); i++) {
-                    datatypes[i] = tableStructure.getColumn(i).findValueDatatype(
-                            tableContentsGeneration.getIpsProject());
-                }
-            } catch (CoreException e) {
-                IpsPlugin.logAndShowErrorDialog(e);
+        private void initDatatypes(ITableContentsGeneration tableContentsGeneration) throws CoreException {
+            datatypes = new ValueDatatype[tableStructure.getNumOfColumns()];
+            for (int i = 0; i < tableStructure.getNumOfColumns(); i++) {
+                datatypes[i] = tableStructure.getColumn(i).findValueDatatype(tableContentsGeneration.getIpsProject());
             }
         }
 
@@ -115,12 +112,20 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
     protected void addStructureData() {
         super.addStructureData();
 
-        ITableStructure tableStructure = findTableStructure();
+        ITableStructure tableStructure;
+        try {
+            tableStructure = getDocumentedIpsObject().findTableStructure(getContext().getIpsProject());
+        } catch (CoreException e) {
+            getContext().addStatus(
+                    new IpsStatus(IStatus.ERROR,
+                            "Could not find TableStructure of " + getDocumentedIpsObject().getName(), e)); //$NON-NLS-1$
+            return;
+        }
+
         addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
                 new TextPageElement(IpsObjectType.TABLE_STRUCTURE.getDisplayName() + ": "), //$NON-NLS-1$
                 PageElementUtils.createLinkPageElement(getContext(), tableStructure,
                         "content", tableStructure.getName(), true) })); //$NON-NLS-1$
-
     }
 
     @Override
@@ -152,25 +157,20 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
             wrapper.addPageElements(new TextPageElement(Messages.TableContentsContentPageElement_generation
                     + " " + tableContentsGeneration.getName(), //$NON-NLS-1$
                     TextType.HEADING_3));
-            wrapper.addPageElements(getTableOrAlternativeText(new ContentTablePageElement(tableContentsGeneration),
+            ContentTablePageElement contentTablePageElement = null;
+            try {
+                contentTablePageElement = new ContentTablePageElement(tableContentsGeneration);
+            } catch (CoreException e) {
+                getContext().addStatus(
+                        new IpsStatus(IStatus.ERROR,
+                                "Could not create ContentTable of " + ipsObjectGeneration.getName(), e)); //$NON-NLS-1$
+            }
+
+            wrapper.addPageElements(getTableOrAlternativeText(contentTablePageElement,
                     Messages.TableContentsContentPageElement_noContent));
         }
         PageElement createContentTable = wrapper;
         addPageElements(createContentTable);
-    }
-
-    /**
-     * returns the {@link ITableStructure} for the tableContent
-     * 
-     */
-    private ITableStructure findTableStructure() {
-        ITableStructure tableStructure;
-        try {
-            tableStructure = getDocumentedIpsObject().findTableStructure(getContext().getIpsProject());
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
-        return tableStructure;
     }
 
     /**

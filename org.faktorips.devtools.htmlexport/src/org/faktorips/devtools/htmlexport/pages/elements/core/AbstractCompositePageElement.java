@@ -16,14 +16,8 @@ package org.faktorips.devtools.htmlexport.pages.elements.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
-import org.faktorips.devtools.htmlexport.pages.elements.types.IpsElementImagePageElement;
 
 /**
  * {@link AbstractCompositePageElement} provides basic functionality for implementations of the
@@ -110,14 +104,4 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
         this.wrapperType = wrapperType;
     }
 
-    @Override
-    public ICompositePageElement addIpsElementImagePageElement(IIpsElement ipsElements, DocumentationContext context) {
-        try {
-            IpsElementImagePageElement ipsElementImagePageElement = new IpsElementImagePageElement(ipsElements);
-            addPageElements(ipsElementImagePageElement);
-        } catch (CoreException e) {
-            context.addStatus(new IpsStatus(IStatus.WARNING, "Could not find image for " + ipsElements.getName())); //$NON-NLS-1$
-        }
-        return this;
-    }
 }

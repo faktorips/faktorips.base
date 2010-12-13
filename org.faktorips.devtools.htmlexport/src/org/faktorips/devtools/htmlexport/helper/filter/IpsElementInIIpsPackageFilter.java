@@ -52,6 +52,7 @@ public class IpsElementInIIpsPackageFilter implements IpsElementFilter {
                 return acceptIpsObject(ipsObject);
             } catch (CoreException e) {
                 context.addStatus(new IpsStatus(IStatus.WARNING, "Could not filter package", e)); //$NON-NLS-1$
+                return false;
             }
         }
         if (ipsElement instanceof IIpsObject) {

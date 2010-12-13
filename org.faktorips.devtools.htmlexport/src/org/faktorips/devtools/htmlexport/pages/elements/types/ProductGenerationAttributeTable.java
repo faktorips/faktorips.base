@@ -19,8 +19,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
@@ -70,25 +71,13 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     /**
      * Creates a {@link ProductGenerationAttributeTable} for the specified {@link IProductCmpt}
      * 
-     */
-    public ProductGenerationAttributeTable(IProductCmpt productCmpt, IProductCmptType productCmptType,
-            DocumentationContext context) {
-        this.productCmpt = productCmpt;
-        this.productCmptType = productCmptType;
-        this.attributes = findAttributes(productCmptType);
-        this.context = context;
-    }
-
-    /**
-     * returns the attributes of the given {@link ProductCmptType}
      * 
      */
-    private IAttribute[] findAttributes(IProductCmptType productCmptType) {
-        try {
-            return productCmptType.findAllAttributes(productCmpt.getIpsProject());
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+    public ProductGenerationAttributeTable(IProductCmpt productCmpt, DocumentationContext context) throws CoreException {
+        this.productCmpt = productCmpt;
+        this.context = context;
+        this.productCmptType = context.getIpsProject().findProductCmptType(productCmpt.getProductCmptType());
+        this.attributes = productCmptType.findAllAttributes(productCmpt.getIpsProject());
     }
 
     @Override
@@ -348,26 +337,33 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
                     association, context, context.getLabel(association), true));
             IProductCmptLink[] links = productCmptGeneration.getLinks(association.getName());
             for (IProductCmptLink productCmptLink : links) {
-                try {
-                    IProductCmpt target = productCmptLink.findTarget(productCmpt.getIpsProject());
-                    PageElement targetLink = PageElementUtils.createLinkPageElement(context, target, "content", target //$NON-NLS-1$
-                            .getName(), true);
-
-                    Set<Style> cardinalityStyles = new HashSet<Style>();
-                    cardinalityStyles.add(Style.INDENTION);
-
-                    int maxCardinality = productCmptLink.getMaxCardinality();
-                    PageElement cardinalities = new TextPageElement(productCmptLink.getMinCardinality() + ".." //$NON-NLS-1$
-                            + (maxCardinality == Integer.MAX_VALUE ? "*" : maxCardinality), cardinalityStyles); //$NON-NLS-1$
-
-                    root.addPageElements(new WrapperPageElement(WrapperType.BLOCK).addPageElements(targetLink,
-                            cardinalities));
-                } catch (CoreException e) {
-                    throw new RuntimeException(e);
-                }
+                addProductCmptLink(root, productCmptLink);
             }
             cellContent.addPageElements(root);
         }
+    }
+
+    private void addProductCmptLink(TreeNodePageElement treeNode, IProductCmptLink productCmptLink) {
+        IProductCmpt target;
+        try {
+            target = productCmptLink.findTarget(productCmpt.getIpsProject());
+        } catch (CoreException e) {
+            context.addStatus(new IpsStatus(IStatus.ERROR,
+                    "Could not get linked ProductCmpt within " + productCmptLink.getName(), e)); //$NON-NLS-1$
+            return;
+        }
+
+        PageElement targetLink = PageElementUtils.createLinkPageElement(context, target, "content", target //$NON-NLS-1$
+                .getName(), true);
+
+        Set<Style> cardinalityStyles = new HashSet<Style>();
+        cardinalityStyles.add(Style.INDENTION);
+
+        int maxCardinality = productCmptLink.getMaxCardinality();
+        PageElement cardinalities = new TextPageElement(productCmptLink.getMinCardinality() + ".." //$NON-NLS-1$
+                + (maxCardinality == Integer.MAX_VALUE ? "*" : maxCardinality), cardinalityStyles); //$NON-NLS-1$
+
+        treeNode.addPageElements(new WrapperPageElement(WrapperType.BLOCK).addPageElements(targetLink, cardinalities));
     }
 
     /**
@@ -381,27 +377,34 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         cells[0] = new TextPageElement(caption);
 
         for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
-
-            IAttributeValue attributeValue = productCmpt.getProductCmptGeneration(i).getAttributeValue(
-                    attribute.getName());
-
-            String value;
-            try {
-                value = IpsPlugin
-                        .getDefault()
-                        .getIpsPreferences()
-                        .getDatatypeFormatter()
-                        .formatValue(productCmpt.getIpsProject().findValueDatatype(attribute.getDatatype()),
-                                attributeValue.getValue());
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-                value = Messages.ProductGenerationAttributeTable_undefined;
-            }
+            IProductCmptGeneration productCmptGeneration = productCmpt.getProductCmptGeneration(i);
+            String value = getAttributeValueInProductCmptGeneration(productCmptGeneration, attribute);
             cells[i + 1] = new TextPageElement(value);
         }
 
         addSubElement(new TableRowPageElement(cells));
 
+    }
+
+    private String getAttributeValueInProductCmptGeneration(IProductCmptGeneration productCmptGeneration,
+            IAttribute attribute) {
+        IAttributeValue attributeValue = productCmptGeneration.getAttributeValue(attribute.getName());
+
+        String value;
+        try {
+            value = IpsPlugin
+                    .getDefault()
+                    .getIpsPreferences()
+                    .getDatatypeFormatter()
+                    .formatValue(productCmpt.getIpsProject().findValueDatatype(attribute.getDatatype()),
+                            attributeValue.getValue());
+        } catch (CoreException e) {
+            context.addStatus(new IpsStatus(IStatus.ERROR,
+                    "Error formating AttributeValue " + attributeValue.getName(), e)); //$NON-NLS-1$
+            value = attributeValue.getValue() == null ? Messages.ProductGenerationAttributeTable_undefined
+                    : attributeValue.getValue();
+        }
+        return value;
     }
 
     @Override

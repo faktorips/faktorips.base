@@ -16,7 +16,6 @@ package org.faktorips.devtools.htmlexport.actions;
 import java.io.File;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.jface.action.IAction;
@@ -100,14 +99,9 @@ public class CreateHtmlExportAction extends ActionDelegate {
         context.setLayouter(new HtmlLayouter(".resource")); //$NON-NLS-1$
 
         context.addDocumentorScript(new StandardDocumentorScript());
-        context
-                .setDocumentedIpsObjectTypes(context.getIpsProject().getIpsModel().getIpsObjectTypes());
+        context.setDocumentedIpsObjectTypes(context.getIpsProject().getIpsModel().getIpsObjectTypes());
 
-        try {
-            new HtmlExportOperation(context).run(new NullProgressMonitor());
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
+        new HtmlExportOperation(context).run(new NullProgressMonitor());
     }
 
     private String getDestinationFolder() {

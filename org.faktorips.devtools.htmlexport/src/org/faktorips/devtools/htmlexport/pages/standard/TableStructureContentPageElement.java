@@ -20,6 +20,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
@@ -69,21 +71,20 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         }
 
         private PageElement getLinkToReferencedTableStructure(IForeignKey foreignKey) {
-            PageElement link = null;
+            ITableStructure findReferencedTableStructure;
             try {
-                ITableStructure findReferencedTableStructure = foreignKey.findReferencedTableStructure(getContext()
-                        .getIpsProject());
-                link = PageElementUtils.createLinkPageElement(getContext(), findReferencedTableStructure,
-                        "content", foreignKey //$NON-NLS-1$
-                                .getReferencedTableStructure(), true);
+                findReferencedTableStructure = foreignKey.findReferencedTableStructure(getContext().getIpsProject());
             } catch (CoreException e) {
-                // TODO exception handeln
-            } finally {
-                if (link == null) {
-                    link = new TextPageElement(foreignKey.getReferencedTableStructure());
-                }
+                getContext().addStatus(
+                        new IpsStatus(IStatus.WARNING,
+                                "Could not find referenced TableStructure for foreignKey" + foreignKey.getName())); //$NON-NLS-1$
+
+                return new TextPageElement(foreignKey.getReferencedTableStructure());
             }
-            return link;
+
+            return PageElementUtils.createLinkPageElement(getContext(), findReferencedTableStructure,
+                    "content", foreignKey //$NON-NLS-1$
+                            .getReferencedTableStructure(), true);
         }
 
         @Override
@@ -312,7 +313,10 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
             tableContentsSrcFiles = new ArrayList<IIpsSrcFile>(Arrays.asList(getDocumentedIpsObject()
                     .searchMetaObjectSrcFiles(true)));
         } catch (CoreException e) {
-            throw new RuntimeException(e);
+            getContext().addStatus(
+                    new IpsStatus(IStatus.WARNING,
+                            "Could not find TableContents for " + getDocumentedIpsObject().getName(), e)); //$NON-NLS-1$
+            return;
         }
 
         tableContentsSrcFiles.retainAll(getContext().getDocumentedSourceFiles());

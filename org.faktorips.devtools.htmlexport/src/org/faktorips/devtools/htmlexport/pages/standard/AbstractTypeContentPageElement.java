@@ -18,6 +18,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IType;
@@ -127,18 +129,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
         List<PageElement> subTypes = new ArrayList<PageElement>();
 
         for (IIpsSrcFile srcFile : getContext().getDocumentedSourceFiles(getDocumentedIpsObject().getIpsObjectType())) {
-            try {
-                IType type = (IType)srcFile.getIpsObject();
-                if (type == null) {
-                    continue;
-                }
-                if (type.getSupertype().equals(getDocumentedIpsObject().getQualifiedName())) {
-                    subTypes.add(PageElementUtils.createLinkPageElement(getContext(), type,
-                            "content", type.getQualifiedName(), true)); //$NON-NLS-1$
-                }
-            } catch (CoreException e) {
-                e.printStackTrace();
-            }
+            addSubType(subTypes, srcFile);
         }
 
         if (subTypes.size() == 0) {
@@ -146,6 +137,27 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
         }
 
         addPageElements(new WrapperPageElement(WrapperType.BLOCK, new ListPageElement(subTypes)));
+    }
+
+    private void addSubType(List<PageElement> subTypes, IIpsSrcFile srcFile) {
+        IType type;
+        try {
+            type = (IType)srcFile.getIpsObject();
+        } catch (CoreException e) {
+            IpsStatus status = new IpsStatus(IStatus.WARNING,
+                    "Error finding Supertype of " + getDocumentedIpsObject().getQualifiedName(), e); //$NON-NLS-1$
+            getContext().addStatus(status);
+            return;
+        }
+
+        if (type == null) {
+            return;
+        }
+
+        if (type.getSupertype().equals(getDocumentedIpsObject().getQualifiedName())) {
+            subTypes.add(PageElementUtils.createLinkPageElement(getContext(), type,
+                    "content", type.getQualifiedName(), true)); //$NON-NLS-1$
+        }
     }
 
     /**
@@ -156,7 +168,10 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
         try {
             hier.start(getDocumentedIpsObject());
         } catch (CoreException e) {
-            e.printStackTrace();
+            getContext().addStatus(
+                    new IpsStatus(IStatus.ERROR,
+                            "Error getting Supertype Hierarchy of " + getDocumentedIpsObject().getQualifiedName(), e)); //$NON-NLS-1$
+            return;
         }
         List<IType> superTypes = hier.getSuperTypes();
 
@@ -187,19 +202,23 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
     protected void addStructureData() {
         super.addStructureData();
 
+        IType to;
         try {
-            IType to = getDocumentedIpsObject().findSupertype(getDocumentedIpsObject().getIpsProject());
-            if (to == null) {
-                return;
-            }
-
-            addPageElements(new WrapperPageElement(
-                    WrapperType.BLOCK,
-                    new PageElement[] {
-                            new TextPageElement(Messages.AbstractTypeContentPageElement_extends + " "), PageElementUtils.createLinkPageElement(getContext(), to, "content", to.getName(), true) })); //$NON-NLS-1$//$NON-NLS-2$ 
+            to = getDocumentedIpsObject().findSupertype(getDocumentedIpsObject().getIpsProject());
         } catch (CoreException e) {
-            e.printStackTrace();
+            IpsStatus status = new IpsStatus(IStatus.WARNING,
+                    "Error finding Supertype of " + getDocumentedIpsObject().getQualifiedName(), e); //$NON-NLS-1$
+            getContext().addStatus(status);
+            return;
         }
+        if (to == null) {
+            return;
+        }
+
+        addPageElements(new WrapperPageElement(
+                WrapperType.BLOCK,
+                new PageElement[] {
+                        new TextPageElement(Messages.AbstractTypeContentPageElement_extends + " "), PageElementUtils.createLinkPageElement(getContext(), to, "content", to.getName(), true) })); //$NON-NLS-1$//$NON-NLS-2$ 
     }
 
     /**

@@ -14,6 +14,8 @@
 package org.faktorips.devtools.htmlexport.pages.standard;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -45,12 +47,13 @@ public class ContentPageUtil {
             ipsObject = ipsSrcFile.getIpsObject();
             return createObjectContentPageElement(ipsObject, context);
         } catch (CoreException e) {
-            throw new RuntimeException(e);
+            context.addStatus(new IpsStatus(IStatus.ERROR, "Error getting IpsObject of " + ipsSrcFile.getName(), e)); //$NON-NLS-1$
+            return null;
         }
     }
 
     private static AbstractPageElement createObjectContentPageElement(IIpsObject ipsSrcFile,
-            DocumentationContext context) {
+            DocumentationContext context) throws CoreException {
         if (ipsSrcFile.getIpsObjectType() == IpsObjectType.POLICY_CMPT_TYPE) {
             return new PolicyCmptTypeContentPageElement((IPolicyCmptType)ipsSrcFile, context);
         }

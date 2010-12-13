@@ -64,10 +64,9 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
     public void build() {
         super.build();
 
-        addPageElements(new WrapperPageElement(WrapperType.BLOCK,
-                new LinkPageElement("index", "_top", //$NON-NLS-1$ //$NON-NLS-2$
-                        Messages.AbstractObjectContentPageElement_overviewProject
-                                + " " + getContext().getIpsProject().getName()))); //$NON-NLS-1$
+        addPageElements(new WrapperPageElement(WrapperType.BLOCK, new LinkPageElement("index", "_top", //$NON-NLS-1$ //$NON-NLS-2$
+                Messages.AbstractObjectContentPageElement_overviewProject
+                        + " " + getContext().getIpsProject().getName()))); //$NON-NLS-1$
 
         addPageElements(PageElementUtils.createLinkPageElement(getContext(), getDocumentedIpsObject()
                 .getIpsPackageFragment(),
@@ -153,7 +152,7 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
      * 
      */
     PageElement getTableOrAlternativeText(AbstractStandardTablePageElement tablePageElement, String alternativeText) {
-        if (tablePageElement.isEmpty()) {
+        if (tablePageElement == null || tablePageElement.isEmpty()) {
             return new TextPageElement(alternativeText);
         }
         return tablePageElement;

@@ -21,9 +21,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
@@ -52,34 +55,19 @@ class EnumValuesTablePageElement extends AbstractIpsObjectPartsContainerTablePag
      * creates an EnumValuesTablePageElement basing on the given {@link IEnumType}
      * 
      */
-    public EnumValuesTablePageElement(IEnumType type, DocumentationContext context) {
+    public EnumValuesTablePageElement(IEnumType type, DocumentationContext context) throws CoreException {
         super(type.getEnumValues(), context);
-        initEnumAttributes(type);
+        enumAttributes = type.findAllEnumAttributesIncludeSupertypeOriginals(true, type.getIpsProject());
     }
 
     /**
      * creates an EnumValuesTablePageElement basing on the given {@link IEnumContent}
      * 
      */
-    public EnumValuesTablePageElement(IEnumContent content, DocumentationContext context) {
+    public EnumValuesTablePageElement(IEnumContent content, DocumentationContext context) throws CoreException {
         super(content.getEnumValues(), context);
-        try {
-            initEnumAttributes(content.findEnumType(content.getIpsProject()));
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * finds the enumAttributes and initializes the List
-     * 
-     */
-    private void initEnumAttributes(IEnumType type) {
-        try {
-            enumAttributes = type.findAllEnumAttributesIncludeSupertypeOriginals(true, type.getIpsProject());
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        IEnumType type = content.findEnumType(content.getIpsProject());
+        enumAttributes = type.findAllEnumAttributesIncludeSupertypeOriginals(true, type.getIpsProject());
     }
 
     @Override
@@ -87,18 +75,26 @@ class EnumValuesTablePageElement extends AbstractIpsObjectPartsContainerTablePag
         List<String> valueData = new ArrayList<String>();
 
         for (IEnumAttribute enumAttribute : enumAttributes) {
-            String value = rowData.getEnumAttributeValue(enumAttribute).getValue();
-            try {
-                ValueDatatype datatype = enumAttribute.findDatatype(getContext().getIpsProject());
-
-                valueData.add(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
-                        .formatValue(datatype, value));
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+            addEnumAttributeValue(valueData, rowData, enumAttribute);
         }
 
         return Arrays.asList(PageElementUtils.createTextPageElements(valueData));
+    }
+
+    private void addEnumAttributeValue(List<String> valueData, IEnumValue rowData, IEnumAttribute enumAttribute) {
+        IEnumAttributeValue enumAttributeValue = rowData.getEnumAttributeValue(enumAttribute);
+        String value = enumAttributeValue.getValue();
+        try {
+            ValueDatatype datatype = enumAttribute.findDatatype(getContext().getIpsProject());
+            valueData.add(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
+                    .formatValue(datatype, value));
+        } catch (CoreException e) {
+            IpsStatus status = new IpsStatus(IStatus.WARNING,
+                    "Could not format " + enumAttributeValue.getName() + " " + value, e); //$NON-NLS-1$ //$NON-NLS-2$
+            getContext().addStatus(status);
+            valueData.add(value);
+        }
+
     }
 
     @Override

@@ -115,7 +115,7 @@ public class PageElementUtils {
                         new IpsElementImagePageElement(ipsElement)).addPageElements(
                         new TextPageElement('\u00A0' + text));
             } catch (CoreException e) {
-                context.addStatus(new IpsStatus(IStatus.WARNING, "Could not find image for " + ipsElement.getName())); //$NON-NLS-1$
+                context.addStatus(new IpsStatus(IStatus.WARNING, "Could not find image for " + ipsElement.getName(), e)); //$NON-NLS-1$
             }
         }
         return new TextPageElement(text);

@@ -14,8 +14,10 @@
 package org.faktorips.devtools.htmlexport.pages.standard;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
@@ -31,7 +33,6 @@ import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
-import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TreeNodePageElement;
@@ -52,14 +53,12 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
     /**
      * creates a page for the given {@link ITestCase} with the given context
      * 
+     * @throws CoreException if the ITestCaseType for the ITestCase could not be found
+     * 
      */
-    protected TestCaseContentPageElement(ITestCase object, DocumentationContext context) {
+    protected TestCaseContentPageElement(ITestCase object, DocumentationContext context) throws CoreException {
         super(object, context);
-        try {
-            testCaseType = object.findTestCaseType(context.getIpsProject());
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        testCaseType = object.findTestCaseType(context.getIpsProject());
     }
 
     @Override
@@ -80,9 +79,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
      */
     private void addTestCaseTypeParameters() {
         addPageElements(new TextPageElement(Messages.TestCaseContentPageElement_parameters, TextType.HEADING_2));
-        TreeNodePageElement root = new TreeNodePageElement(new WrapperPageElement(WrapperType.NONE)
-                .addIpsElementImagePageElement(getDocumentedIpsObject(), getContext()).addPageElements(
-                        new TextPageElement(getDocumentedIpsObject().getQualifiedName())));
+        TreeNodePageElement root = createRootNode();
 
         ITestObject[] testObjects = getDocumentedIpsObject().getTestObjects();
         for (ITestObject testObject : testObjects) {
@@ -107,11 +104,11 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
                 return createTestPolicyCmptPageElement((ITestPolicyCmpt)testObject);
             }
         } catch (CoreException e) {
-            throw new RuntimeException(e);
+            getContext().addStatus(
+                    new IpsStatus(IStatus.ERROR, "Error creating PageElement for " + testObject.getName(), e)); //$NON-NLS-1$
         }
 
-        return TextPageElement.createParagraph(testObject.getName() + " " + testObject.getClass()).addStyles(Style.BIG) //$NON-NLS-1$
-                .addStyles(Style.BOLD);
+        return TextPageElement.createParagraph(testObject.getName() + " " + testObject.getClass()); //$NON-NLS-1$
     }
 
     private PageElement createTestPolicyCmptPageElement(ITestPolicyCmpt testObject) throws CoreException {
@@ -152,9 +149,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
     }
 
     private PageElement createTestRulePageElement(ITestRule testObject) {
-        TreeNodePageElement testObjectPageElement = new TreeNodePageElement(new WrapperPageElement(WrapperType.BLOCK)
-                .addIpsElementImagePageElement(getDocumentedIpsObject(), getContext()).addPageElements(
-                        new TextPageElement(testObject.getTestParameterName())));
+        TreeNodePageElement testObjectPageElement = createRootNode(testObject.getTestParameterName());
 
         KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement();
         keyValueTable.addKeyValueRow(Messages.TestCaseContentPageElement_name, testObject.getValidationRule());
@@ -187,5 +182,24 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
         testObjectPageElement.addPageElements(keyValueTable);
 
         return testObjectPageElement;
+    }
+
+    private TreeNodePageElement createRootNode() {
+        return createRootNode(getDocumentedIpsObject().getQualifiedName());
+    }
+
+    private TreeNodePageElement createRootNode(String name) {
+        WrapperPageElement wrapperPageElement = new WrapperPageElement(WrapperType.NONE);
+        try {
+            IpsElementImagePageElement ipsElementImagePageElement = new IpsElementImagePageElement(
+                    getDocumentedIpsObject());
+            wrapperPageElement.addPageElements(ipsElementImagePageElement);
+        } catch (CoreException e) {
+            getContext().addStatus(
+                    new IpsStatus(IStatus.WARNING, "Could not find image for " + getDocumentedIpsObject().getName())); //$NON-NLS-1$
+        }
+        wrapperPageElement.addPageElements(new TextPageElement(name));
+
+        return new TreeNodePageElement(wrapperPageElement);
     }
 }

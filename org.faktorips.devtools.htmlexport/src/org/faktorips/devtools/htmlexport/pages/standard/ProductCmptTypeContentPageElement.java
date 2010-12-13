@@ -19,6 +19,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -82,14 +84,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 
             List<PageElement> links = new ArrayList<PageElement>();
             for (String tableStructure : tableStructures) {
-                try {
-                    IIpsObject ipsObject = tableStructureUsage.getIpsProject().findIpsObject(
-                            IpsObjectType.TABLE_STRUCTURE, tableStructure);
-                    links.add(PageElementUtils.createLinkPageElement(getContext(), ipsObject,
-                            "content", tableStructure, true)); //$NON-NLS-1$
-                } catch (CoreException e) {
-                    throw new RuntimeException(e);
-                }
+                addLinkToTableStructure(links, tableStructureUsage, tableStructure);
             }
 
             if (links.size() == 1) {
@@ -97,6 +92,23 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
             }
 
             return new ListPageElement(links);
+        }
+
+        private void addLinkToTableStructure(List<PageElement> links,
+                ITableStructureUsage tableStructureUsage,
+                String tableStructure) {
+            IIpsObject ipsObject;
+            try {
+                ipsObject = tableStructureUsage.getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE,
+                        tableStructure);
+            } catch (CoreException e) {
+                getContext().addStatus(
+                        new IpsStatus(IStatus.ERROR, "Could not find TableStructure " + tableStructure, e)); //$NON-NLS-1$
+                return;
+            }
+            PageElement link = PageElementUtils.createLinkPageElement(getContext(), ipsObject,
+                    "content", tableStructure, true); //$NON-NLS-1$
+            links.add(link);
         }
 
         @Override
@@ -154,7 +166,10 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
             allProductCmptSrcFiles = new ArrayList<IIpsSrcFile>(Arrays.asList(getDocumentedIpsObject()
                     .searchMetaObjectSrcFiles(true)));
         } catch (CoreException e) {
-            throw new RuntimeException(e);
+            IpsStatus status = new IpsStatus(IStatus.ERROR,
+                    "Error getting ProductCmpts of " + getDocumentedIpsObject().getQualifiedName(), e); //$NON-NLS-1$
+            getContext().addStatus(status);
+            return;
         }
 
         allProductCmptSrcFiles.retainAll(getContext().getDocumentedSourceFiles());
@@ -182,21 +197,27 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
     protected void addStructureData() {
         super.addStructureData();
 
+        IPolicyCmptType to = null;
         try {
-            IPolicyCmptType to = getDocumentedIpsObject().getIpsProject().findPolicyCmptType(
+            to = getDocumentedIpsObject().getIpsProject().findPolicyCmptType(
                     getDocumentedIpsObject().getPolicyCmptType());
-            if (to == null) {
-                addPageElements(TextPageElement.createParagraph(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName()
-                        + ": " + Messages.ProductCmptTypeContentPageElement_none)); //$NON-NLS-1$
-                return;
-            }
-            addPageElements(new WrapperPageElement(
-                    WrapperType.BLOCK,
-                    new PageElement[] {
-                            new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": "), PageElementUtils.createLinkPageElement(getContext(), to, "content", to.getName(), true) })); //$NON-NLS-1$ //$NON-NLS-2$
         } catch (CoreException e) {
-            e.printStackTrace();
+            getContext().addStatus(
+                    new IpsStatus(IStatus.ERROR,
+                            "Error getting PolicyCmptType of " + getDocumentedIpsObject().getQualifiedName(), e)); //$NON-NLS-1$
+            return;
         }
+
+        if (to == null) {
+            addPageElements(TextPageElement.createParagraph(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName()
+                    + ": " + Messages.ProductCmptTypeContentPageElement_none)); //$NON-NLS-1$
+            return;
+        }
+
+        addPageElements(new WrapperPageElement(
+                WrapperType.BLOCK,
+                new PageElement[] {
+                        new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": "), PageElementUtils.createLinkPageElement(getContext(), to, "content", to.getName(), true) })); //$NON-NLS-1$ //$NON-NLS-2$
 
     }
 

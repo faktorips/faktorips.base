@@ -66,7 +66,7 @@ public class HtmlExportOperation implements IWorkspaceRunnable {
      * {@inheritDoc}
      */
     @Override
-    public void run(IProgressMonitor monitor) throws CoreException {
+    public void run(IProgressMonitor monitor) {
         List<IDocumentorScript> scripts = getDocumentationContext().getScripts();
 
         int monitorScriptFaktor = 9;
