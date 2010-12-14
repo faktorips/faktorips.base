@@ -71,7 +71,8 @@ public class CardinalityRange extends IntegerRange {
     public boolean equals(Object obj) {
         if (obj != null && obj instanceof CardinalityRange) {
             boolean upperLowerAndStepEqual = super.equals(obj);
-            return upperLowerAndStepEqual && getDefaultCardinality() == ((CardinalityRange)obj).getDefaultCardinality();
+            return upperLowerAndStepEqual
+                    && getDefaultCardinality().equals(((CardinalityRange)obj).getDefaultCardinality());
         } else {
             return false;
         }
