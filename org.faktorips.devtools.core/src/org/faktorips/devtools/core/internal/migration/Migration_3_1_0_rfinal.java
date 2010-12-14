@@ -28,7 +28,7 @@ public class Migration_3_1_0_rfinal extends EmptyMigration {
 
     @Override
     public String getTargetVersion() {
-        return "3.1.0.aok"; //$NON-NLS-1$
+        return "3.1.0.raok"; //$NON-NLS-1$
     }
 
 }
