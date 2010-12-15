@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.type.refactor;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -39,6 +40,8 @@ import org.faktorips.util.message.MessageList;
  */
 public final class RenameAssociationProcessor extends IpsRenameProcessor {
 
+    private final Set<IAssociation> derivedUnionSubsets;
+
     private Set<IIpsSrcFile> productCmptSrcFiles;
 
     private Set<IIpsSrcFile> testCaseTypeSrcFiles;
@@ -48,6 +51,9 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
         setPluralNameRefactoringRequired(true);
 
         getIgnoredValidationMessageCodes().add(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_MISMATCH);
+        getIgnoredValidationMessageCodes().add(IAssociation.MSGCODE_DERIVED_UNION_NOT_FOUND);
+
+        derivedUnionSubsets = new HashSet<IAssociation>();
     }
 
     @Override
@@ -73,6 +79,21 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
                 addIpsSrcFile(ipsSrcFile);
             }
         }
+
+        if (getAssociation().isDerivedUnion()) {
+            Set<IIpsSrcFile> typeSrcFiles = findReferencingIpsSrcFiles(getAssociation() instanceof IPolicyCmptTypeAssociation ? IpsObjectType.POLICY_CMPT_TYPE
+                    : IpsObjectType.PRODUCT_CMPT_TYPE);
+            for (IIpsSrcFile ipsSrcFile : typeSrcFiles) {
+                IType type = (IType)ipsSrcFile.getIpsObject();
+                for (IAssociation association : type.getAssociations()) {
+                    if (association.getSubsettedDerivedUnion().equals(getOriginalName())) {
+                        derivedUnionSubsets.add(association);
+                        addIpsSrcFile(ipsSrcFile);
+                    }
+                }
+            }
+        }
+
     }
 
     @Override
@@ -98,6 +119,9 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
             updateTestCaseTypeParameters();
         } else {
             updateProductCmptLinks();
+        }
+        if (getAssociation().isDerivedUnion()) {
+            updateDerivedUnionSubsets();
         }
     }
 
@@ -169,6 +193,12 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
             if (parameter.getName().equals(getOriginalName())) {
                 parameter.setName(getNewName());
             }
+        }
+    }
+
+    private void updateDerivedUnionSubsets() {
+        for (IAssociation subset : derivedUnionSubsets) {
+            subset.setSubsettedDerivedUnion(getNewName());
         }
     }
 

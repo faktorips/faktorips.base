@@ -15,10 +15,13 @@ package org.faktorips.devtools.core.internal.model.type.refactor;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsRefactoringTest;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.model.type.IAssociation;
 
 /**
  * @author Alexander Weickmann
@@ -86,6 +89,51 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
         assertNotNull(testPolicyCmptTypeParameter.getTestPolicyCmptTypeParamChild(newAssociationName));
         assertEquals(newAssociationName, policyAssociationTestParameter.getName());
         assertEquals(newAssociationName, policyAssociationTestParameter.getAssociation());
+    }
+
+    public void testRenamePolicyCmptTypeAssociationDerivedUnion() throws CoreException {
+        IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "Policy");
+        policyCmptType.setConfigurableByProductCmptType(false);
+        policyCmptType.setAbstract(true);
+        IPolicyCmptType subtype = newPolicyCmptType(ipsProject, "SubType");
+        subtype.setConfigurableByProductCmptType(false);
+        subtype.setSupertype(policyCmptType.getQualifiedName());
+        IPolicyCmptType target = newPolicyCmptType(ipsProject, "Target");
+
+        IPolicyCmptTypeAssociation derivedUnion = policyCmptType.newPolicyCmptTypeAssociation();
+        derivedUnion.setTarget(target.getQualifiedName());
+        derivedUnion.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        derivedUnion.setMinCardinality(1);
+        derivedUnion.setMaxCardinality(IAssociation.CARDINALITY_MANY);
+        derivedUnion.setDerivedUnion(true);
+        derivedUnion.setTargetRoleSingular("foo");
+        derivedUnion.setTargetRolePlural("foos");
+
+        IPolicyCmptTypeAssociation subset = policyCmptType.newPolicyCmptTypeAssociation();
+        subset.setTarget(target.getQualifiedName());
+        subset.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        subset.setSubsettedDerivedUnion(derivedUnion.getName());
+        subset.setMinCardinality(1);
+        subset.setMaxCardinality(IAssociation.CARDINALITY_MANY);
+        subset.setTargetRoleSingular("hexadecimal");
+        subset.setTargetRolePlural("hexadecimals");
+
+        IPolicyCmptTypeAssociation subtypeSubset = subtype.newPolicyCmptTypeAssociation();
+        subtypeSubset.setTarget(target.getQualifiedName());
+        subtypeSubset.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        subtypeSubset.setSubsettedDerivedUnion(derivedUnion.getName());
+        subtypeSubset.setMinCardinality(1);
+        subtypeSubset.setMaxCardinality(IAssociation.CARDINALITY_MANY);
+        subtypeSubset.setTargetRoleSingular("bar");
+        subtypeSubset.setTargetRolePlural("bars");
+
+        String newName = "foobar";
+        String newPluralName = "foobars";
+        performRenameRefactoring(derivedUnion, newName, newPluralName);
+
+        // Check for subsetting associations update
+        assertEquals(newName, subset.getSubsettedDerivedUnion());
+        assertEquals(newName, subtypeSubset.getSubsettedDerivedUnion());
     }
 
     public void testRenameProductCmptTypeAssociation() throws CoreException {
