@@ -380,7 +380,6 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
 
         if (newPluralName != null) {
             processor.setNewPluralName(newPluralName);
-            processor.setPluralNameRefactoringRequired(true);
         }
 
         runRefactoring(renameRefactoring);

@@ -61,14 +61,6 @@ public interface IIpsRenameProcessor extends IIpsRefactoringProcessor {
     public String getNewPluralName();
 
     /**
-     * Sets whether a plural name refactoring is required.
-     * 
-     * @param pluralNameRefactoringRequired Flag indicating whether a plural name refactoring is
-     *            required
-     */
-    public void setPluralNameRefactoringRequired(boolean pluralNameRefactoringRequired);
-
-    /**
      * Returns whether a plural name refactoring is required.
      */
     public boolean isPluralNameRefactoringRequired();

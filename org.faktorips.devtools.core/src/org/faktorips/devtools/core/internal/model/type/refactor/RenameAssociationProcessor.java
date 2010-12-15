@@ -97,6 +97,29 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
     }
 
     @Override
+    public RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreException {
+        RefactoringStatus status = new RefactoringStatus();
+
+        if (getNewName().isEmpty()) {
+            status.addFatalError(Messages.RenameAssociationProcessor_msgNewNameMustNotBeEmpty);
+            return status;
+        }
+
+        if (getNewName().equals(getOriginalName()) && getNewPluralName().equals(getOriginalPluralName())) {
+            status.addFatalError(Messages.RenameAssociationProcessor_msgEitherNameOrPluralNameMustBeChanged);
+            return status;
+        }
+
+        if (getAssociation().is1ToMany() && getNewPluralName().isEmpty()) {
+            status.addFatalError(Messages.RenameAssociationProcessor_msgNewPluralNameMustNotBeEmptyForToManyAssociations);
+            return status;
+        }
+
+        validateUserInputThis(status, pm);
+        return status;
+    }
+
+    @Override
     protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
         getAssociation().setTargetRoleSingular(getNewName());
         getAssociation().setTargetRolePlural(getNewPluralName());

@@ -14,6 +14,8 @@
 package org.faktorips.devtools.core.internal.model.type.refactor;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.abstracttest.AbstractIpsRefactoringTest;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -22,6 +24,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
 
 /**
  * @author Alexander Weickmann
@@ -66,6 +69,42 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
         policyAssociationTestParameter.setPolicyCmptType(policyCmptType.getQualifiedName());
 
         productCmptLink = productCmptGeneration.newLink(productToOtherProductAssociation);
+    }
+
+    public void testValidateUserInputNewNameEmpty() throws CoreException {
+        IIpsRenameProcessor ipsRenameProcessor = (IIpsRenameProcessor)policyToOtherPolicyAssociation
+                .getRenameRefactoring().getProcessor();
+        ipsRenameProcessor.setNewName("");
+        ipsRenameProcessor.setNewPluralName("somePluralName");
+        RefactoringStatus status = ipsRenameProcessor.validateUserInput(new NullProgressMonitor());
+        assertTrue(status.hasFatalError());
+    }
+
+    public void testValidateUserInputNeitherNameNorPluralNameChanged() throws CoreException {
+        IIpsRenameProcessor ipsRenameProcessor = (IIpsRenameProcessor)policyToOtherPolicyAssociation
+                .getRenameRefactoring().getProcessor();
+        ipsRenameProcessor.setNewName(POLICY_ROLE_SINGULAR);
+        ipsRenameProcessor.setNewPluralName(POLICY_ROLE_PLURAL);
+        RefactoringStatus status = ipsRenameProcessor.validateUserInput(new NullProgressMonitor());
+        assertTrue(status.hasFatalError());
+    }
+
+    public void testValidateUserInputNoPluralNameForToManyAssociation() throws CoreException {
+        IIpsRenameProcessor ipsRenameProcessor = (IIpsRenameProcessor)policyToOtherPolicyAssociation
+                .getRenameRefactoring().getProcessor();
+        ipsRenameProcessor.setNewName("someNewName");
+        ipsRenameProcessor.setNewPluralName("");
+        RefactoringStatus status = ipsRenameProcessor.validateUserInput(new NullProgressMonitor());
+        assertTrue(status.hasFatalError());
+    }
+
+    public void testValidateUserInputValid() throws CoreException {
+        IIpsRenameProcessor ipsRenameProcessor = (IIpsRenameProcessor)policyToOtherPolicyAssociation
+                .getRenameRefactoring().getProcessor();
+        ipsRenameProcessor.setNewName("someNewName");
+        ipsRenameProcessor.setNewPluralName("someNewPluralName");
+        RefactoringStatus status = ipsRenameProcessor.validateUserInput(new NullProgressMonitor());
+        assertTrue(status.isOK());
     }
 
     public void testRenamePolicyCmptTypeAssociation() throws CoreException {

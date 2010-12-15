@@ -86,17 +86,6 @@ public abstract class IpsRenameProcessor extends IpsRefactoringProcessor impleme
             return status;
         }
 
-        if (isPluralNameRefactoringRequired()) {
-            if (newPluralName.length() < 1) {
-                status.addFatalError(Messages.IpsRenameProcessor_msgNewPluralNameEmpty);
-                return status;
-            }
-            if (newPluralName.equals(originalPluralName)) {
-                status.addFatalError(Messages.IpsRenameProcessor_msgNewPluralNameEqualsOriginalPluralName);
-                return status;
-            }
-        }
-
         validateUserInputThis(status, pm);
         return status;
     }
@@ -132,8 +121,7 @@ public abstract class IpsRenameProcessor extends IpsRefactoringProcessor impleme
         this.newPluralName = newPluralName;
     }
 
-    @Override
-    public void setPluralNameRefactoringRequired(boolean pluralNameRefactoringRequired) {
+    protected void setPluralNameRefactoringRequired(boolean pluralNameRefactoringRequired) {
         this.pluralNameRefactoringRequired = pluralNameRefactoringRequired;
     }
 
