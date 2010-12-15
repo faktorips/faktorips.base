@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
@@ -36,12 +37,13 @@ import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
+import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.FetchType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.FetchType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.binding.ButtonTextBinding;
@@ -54,6 +56,7 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.PcTypeRefControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.editors.type.DerivedUnionCompletionProcessor;
+import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.util.StringUtil;
 
@@ -61,6 +64,13 @@ import org.faktorips.util.StringUtil;
  * A dialog to edit an association.
  */
 public class AssociationEditDialog extends IpsPartEditDialog2 {
+
+    /**
+     * Keep track of the content of the name fields to be able to determine whether they have
+     * changed.
+     */
+    private final String initialName;
+    private final String initialPluralName;
 
     private IIpsProject ipsProject;
     private IPolicyCmptTypeAssociation association;
@@ -78,6 +88,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     public AssociationEditDialog(IPolicyCmptTypeAssociation relation2, Shell parentShell) {
         super(relation2, parentShell, Messages.AssociationEditDialog_title, true);
         association = relation2;
+        initialName = association.getName();
+        initialPluralName = association.getTargetRolePlural();
         ipsProject = association.getIpsProject();
         pmoAssociation = new PmoAssociation(association);
         extFactory = new ExtensionPropertyControlFactory(association.getClass());
@@ -627,6 +639,31 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             setMessage(text, IMessageProvider.WARNING);
             persistenceAssociationInfo.resetManuallyCodeFixNecessary();
         }
+    }
+
+    @Override
+    protected void okPressed() {
+        if (IpsPlugin.getDefault().getIpsPreferences().isRefactoringModeDirect()) {
+            String newName = association.getName();
+            String newPluralName = association.getTargetRolePlural();
+            if (!(newName.equals(initialName) && newPluralName.equals(initialPluralName))) {
+                applyRenameRefactoring(newName, newPluralName);
+            }
+        }
+        super.okPressed();
+    }
+
+    private void applyRenameRefactoring(String newName, String newPluralName) {
+        // First, reset the initial names as otherwise errors 'names must not equal' will occur
+        association.setTargetRoleSingular(initialName);
+        association.setTargetRolePlural(initialPluralName);
+
+        ProcessorBasedRefactoring renameRefactoring = association.getRenameRefactoring();
+        IIpsRenameProcessor renameProcessor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
+        renameProcessor.setNewName(newName);
+        renameProcessor.setNewPluralName(newPluralName);
+        IpsRefactoringOperation refactorOp = new IpsRefactoringOperation(renameRefactoring, getShell());
+        refactorOp.runDirectExecution();
     }
 
     private abstract class NotificationPropertyBinding extends ControlPropertyBinding {

@@ -223,9 +223,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     @Override
     protected void okPressed() {
-        String newName = attribute.getName();
-        if (!(newName.equals(initialName))) {
-            if (IpsPlugin.getDefault().getIpsPreferences().isRefactoringModeDirect()) {
+        if (IpsPlugin.getDefault().getIpsPreferences().isRefactoringModeDirect()) {
+            String newName = attribute.getName();
+            if (!(newName.equals(initialName))) {
                 applyRenameRefactoring(newName);
             }
         }

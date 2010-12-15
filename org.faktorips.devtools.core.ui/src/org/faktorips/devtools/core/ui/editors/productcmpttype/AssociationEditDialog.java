@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
@@ -26,10 +27,12 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.contentassist.ContentAssistHandler;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
@@ -38,11 +41,19 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.ProductCmptType2RefControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.editors.type.DerivedUnionCompletionProcessor;
+import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 
 /**
  * A dialog to edit an association.
  */
 public class AssociationEditDialog extends IpsPartEditDialog2 {
+
+    /**
+     * Keep track of the content of the name fields to be able to determine whether they have
+     * changed.
+     */
+    private final String initialName;
+    private final String initialPluralName;
 
     private IProductCmptTypeAssociation association;
     private PmoAssociation pmoAssociation;
@@ -51,6 +62,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     public AssociationEditDialog(IProductCmptTypeAssociation association, Shell parentShell) {
         super(association, parentShell, Messages.AssociationEditDialog_title, true);
         this.association = association;
+        initialName = association.getName();
+        initialPluralName = association.getTargetRolePlural();
         this.pmoAssociation = new PmoAssociation(association);
         extFactory = new ExtensionPropertyControlFactory(association.getClass());
     }
@@ -167,6 +180,31 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         completionProcessor.setComputeProposalForEmptyPrefix(true);
         ContentAssistHandler
                 .createHandlerForText(unionText, CompletionUtil.createContentAssistant(completionProcessor));
+    }
+
+    @Override
+    protected void okPressed() {
+        if (IpsPlugin.getDefault().getIpsPreferences().isRefactoringModeDirect()) {
+            String newName = association.getName();
+            String newPluralName = association.getTargetRolePlural();
+            if (!(newName.equals(initialName) && newPluralName.equals(initialPluralName))) {
+                applyRenameRefactoring(newName, newPluralName);
+            }
+        }
+        super.okPressed();
+    }
+
+    private void applyRenameRefactoring(String newName, String newPluralName) {
+        // First, reset the initial names as otherwise errors 'names must not equal' will occur
+        association.setTargetRoleSingular(initialName);
+        association.setTargetRolePlural(initialPluralName);
+
+        ProcessorBasedRefactoring renameRefactoring = association.getRenameRefactoring();
+        IIpsRenameProcessor renameProcessor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
+        renameProcessor.setNewName(newName);
+        renameProcessor.setNewPluralName(newPluralName);
+        IpsRefactoringOperation refactorOp = new IpsRefactoringOperation(renameRefactoring, getShell());
+        refactorOp.runDirectExecution();
     }
 
     public class PmoAssociation extends IpsObjectPartPmo {

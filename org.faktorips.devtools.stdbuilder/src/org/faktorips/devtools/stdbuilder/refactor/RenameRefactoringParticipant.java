@@ -93,7 +93,7 @@ public class RenameRefactoringParticipant extends RenameParticipant {
 
             String oldName = originalJavaElement.getElementName();
             String newName = targetJavaElement.getElementName();
-            if (newName.equals(oldName)) {
+            if (newName.equals(oldName) || newName.isEmpty()) {
                 return null;
             }
 

@@ -52,12 +52,12 @@ import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
+import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo.DateTimeMapping;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
-import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo.DateTimeMapping;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -962,9 +962,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     @Override
     protected void okPressed() {
-        String newName = attribute.getName();
-        if (!(newName.equals(initialName))) {
-            if (IpsPlugin.getDefault().getIpsPreferences().isRefactoringModeDirect()) {
+        if (IpsPlugin.getDefault().getIpsPreferences().isRefactoringModeDirect()) {
+            String newName = attribute.getName();
+            if (!(newName.equals(initialName))) {
                 applyRenameRefactoring(newName);
             }
         }
