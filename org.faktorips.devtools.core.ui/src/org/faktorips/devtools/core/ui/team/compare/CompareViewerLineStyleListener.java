@@ -62,7 +62,7 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
     public CompareViewerLineStyleListener() {
         // init patterns and map highlight colors for productCmpts
         Pattern productPattern = Pattern
-                .compile(org.faktorips.devtools.core.ui.team.compare.productcmpt.Messages.ProductCmptCompareItem_ProductComponent);
+                .compile(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductCmptEditor_productComponent);
         linePatternList.add(productPattern);
         highlightColorMap.put(productPattern, ipsObjectHighlight);
         Pattern attributesPattern = Pattern
