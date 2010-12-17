@@ -39,7 +39,7 @@ public class IpsPckFragmentRootRefControl extends TextButtonControl {
         this.onlySourceRoots = onlySourceRoots;
     }
 
-    public void setPdPckFragmentRoot(IIpsPackageFragmentRoot root) {
+    public void setIpsPackageFragmentRoot(IIpsPackageFragmentRoot root) {
         if (root == null) {
             setText(""); //$NON-NLS-1$
         } else {
@@ -48,7 +48,7 @@ public class IpsPckFragmentRootRefControl extends TextButtonControl {
         }
     }
 
-    public IIpsPackageFragmentRoot getIpsPckFragmentRoot() {
+    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() {
         IWorkspaceRoot wpRoot = ResourcesPlugin.getWorkspace().getRoot();
         String pathString = IPath.SEPARATOR + getText();
         try {
@@ -71,7 +71,7 @@ public class IpsPckFragmentRootRefControl extends TextButtonControl {
                     onlySourceRoots);
             if (dialog.open() == Window.OK) {
                 IIpsPackageFragmentRoot root = dialog.getSelectedRoot();
-                setPdPckFragmentRoot(root);
+                setIpsPackageFragmentRoot(root);
             }
         } catch (Exception e) {
             // TODO catch Exception needs to be documented properly or specialized

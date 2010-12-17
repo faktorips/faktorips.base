@@ -27,10 +27,10 @@ import org.faktorips.devtools.core.IpsPlugin;
  * 
  * @author Stefan Widmaier
  */
-public abstract class AbstractDateFormat extends InputFormat {
+public abstract class AbstractDateFormat extends AbstractInputFormat {
 
     /**
-     * {@link AbstractDateFormat} used internally by this {@link InputFormat} to validate given date
+     * {@link AbstractDateFormat} used internally by this {@link AbstractInputFormat} to validate given date
      * strings.
      */
     protected DateFormat dateFormat;

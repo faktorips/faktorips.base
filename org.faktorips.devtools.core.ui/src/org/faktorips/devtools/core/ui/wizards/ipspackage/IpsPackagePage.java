@@ -228,7 +228,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
      * Returns the package fragment root corresponding to the selected source folder.
      */
     public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() {
-        return sourceFolderControl.getIpsPckFragmentRoot();
+        return sourceFolderControl.getIpsPackageFragmentRoot();
     }
 
     protected void packageChanged() {
@@ -254,7 +254,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
     }
 
     private void setIpsPackageFragmentRoot(IIpsPackageFragmentRoot root) {
-        sourceFolderControl.setPdPckFragmentRoot(root);
+        sourceFolderControl.setIpsPackageFragmentRoot(root);
     }
 
     public IIpsProject getIpsProject() {
@@ -344,7 +344,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
      * The method validates the package.
      */
     private void validateSourceRoot() {
-        IIpsPackageFragmentRoot root = sourceFolderControl.getIpsPckFragmentRoot();
+        IIpsPackageFragmentRoot root = sourceFolderControl.getIpsPackageFragmentRoot();
         if (root != null) {
             if (!root.getCorrespondingResource().exists()) {
                 setErrorMessage(NLS.bind(Messages.IpsPackagePage_msgRootMissing, root.getName()));
@@ -416,7 +416,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
     }
 
     protected void sourceFolderChanged() {
-        IIpsPackageFragmentRoot root = sourceFolderControl.getIpsPckFragmentRoot();
+        IIpsPackageFragmentRoot root = sourceFolderControl.getIpsPackageFragmentRoot();
         setIpsPackageFragmentRoot(root);
     }
 

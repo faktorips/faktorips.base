@@ -164,7 +164,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
             }
         }
 
-        targetPackageRootControl.setPdPckFragmentRoot(packRoot);
+        targetPackageRootControl.setIpsPackageFragmentRoot(packRoot);
         targetPackageRootField = new TextButtonField(targetPackageRootControl);
         targetPackageRootField.addChangeListener(this);
 

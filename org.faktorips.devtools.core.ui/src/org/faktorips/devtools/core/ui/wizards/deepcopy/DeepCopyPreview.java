@@ -27,6 +27,7 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.wizard.WizardPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -118,7 +119,7 @@ public class DeepCopyPreview {
 
         MessageList validationResult = new MessageList();
         new SameOperationValidator(this, deepCopyWizard.getStructure()).validateSameOperation(validationResult);
-        int noOfMessages = validationResult.getNoOfMessages();
+        int noOfMessages = validationResult.size();
         for (int i = 0; i < noOfMessages; i++) {
             Message currMessage = validationResult.getMessage(i);
             final IProductCmptStructureReference object = (IProductCmptStructureReference)currMessage
@@ -283,7 +284,8 @@ public class DeepCopyPreview {
                 kindId = namingStrategy.getKindId(newName);
             }
             if (kindId != null) {
-                newName = namingStrategy.getProductCmptName(namingStrategy.getKindId(newName), sourcePage.getVersion());
+                newName = namingStrategy.getProductCmptName(namingStrategy.getKindId(newName), sourcePage
+                        .getVersionId());
             }
         }
         if (kindId == null && uniqueCopyOfCounter > 0) {
@@ -374,13 +376,14 @@ public class DeepCopyPreview {
      * point to non-existing resources or, if this condition can not be performed, a CoreException
      * is thrown.
      * 
-     * @param ipsPackageFragmentRoot
+     * @param ipsPackageFragmentRoot the {@link IIpsPackageFragmentRoot} in which the new
+     *            {@link IpsSrcFile} should be created.
      * 
      * @throws CoreException if any error exists (e.g. naming collisions).
      */
     public Map<IProductCmptStructureReference, IIpsSrcFile> getHandles(IIpsPackageFragmentRoot ipsPackageFragmentRoot)
             throws CoreException {
-        deepCopyWizard.logTraceStart("getHandles");
+        deepCopyWizard.logTraceStart("getHandles"); //$NON-NLS-1$
 
         if (!isValid()) {
             StringBuffer message = new StringBuffer();

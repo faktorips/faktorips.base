@@ -21,16 +21,16 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class FormattingTextField extends TextField {
 
-    private InputFormat format;
+    private AbstractInputFormat format;
 
     /**
      * Creates a {@link FormattingTextField} with the given {@link Text}-Control and the given
      * format. Both arguments must not be <code>null</code>.
      * 
      * @param text the {@link Text} control to be used by this {@link FormattingTextField}
-     * @param format the {@link InputFormat} to be used by this {@link FormattingTextField}
+     * @param format the {@link AbstractInputFormat} to be used by this {@link FormattingTextField}
      */
-    public FormattingTextField(Text text, InputFormat format) {
+    public FormattingTextField(Text text, AbstractInputFormat format) {
         super(text);
         ArgumentCheck.notNull(text);
         this.format = format;

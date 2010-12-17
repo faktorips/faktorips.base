@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.controller.fields;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.Locale;
 
@@ -26,9 +25,9 @@ import org.eclipse.swt.events.VerifyEvent;
  * 
  * @author Stefan Widmaier
  */
-public class DoubleFormat extends InputFormat {
+public class DoubleFormat extends AbstractInputFormat {
 
-    private NumberFormat numberFormat;
+    private DecimalFormat numberFormat;
 
     /**
      * String that is an example of a valid input string.
@@ -37,8 +36,9 @@ public class DoubleFormat extends InputFormat {
 
     @Override
     protected void initFormat(Locale locale) {
-        numberFormat = DecimalFormat.getNumberInstance(locale);
-        numberFormat.setGroupingUsed(false);
+        numberFormat = (DecimalFormat)DecimalFormat.getNumberInstance(locale);
+        numberFormat.setGroupingUsed(true);
+        numberFormat.setGroupingSize(3);
         numberFormat.setParseIntegerOnly(false);
         numberFormat.setMaximumFractionDigits(3);
         numberFormat.setRoundingMode(RoundingMode.HALF_UP);

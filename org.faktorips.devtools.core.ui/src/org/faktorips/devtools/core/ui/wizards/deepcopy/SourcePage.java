@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -21,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -58,8 +58,6 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -85,14 +83,13 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
-import org.faktorips.devtools.core.ui.controller.fields.DefaultEditField;
-import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 import org.faktorips.devtools.core.ui.controller.fields.GregorianCalendarFormat;
-import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
+import org.faktorips.devtools.core.ui.controller.fields.IpsPckFragmentRefField;
+import org.faktorips.devtools.core.ui.controller.fields.IpsPckFragmentRootRefField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
-import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.DateControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
@@ -107,6 +104,7 @@ import org.faktorips.util.message.MessageList;
  * @author Thorsten Guenther
  */
 public class SourcePage extends WizardPage implements ICheckStateListener {
+
     static final String PAGE_ID = "deepCopyWizard.source"; //$NON-NLS-1$
 
     private IProductCmptTreeStructure structure;
@@ -117,8 +115,6 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
     private Text searchInput;
     // Control for replace text
     private Text replaceInput;
-
-    private Map<Text, String> prevValues = new HashMap<Text, String>();
 
     // The input field for the user to enter a version id to be used for all newly created product
     // components.
@@ -201,6 +197,8 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 
         Composite inputRoot = toolkit.createLabelEditColumnComposite(root);
 
+        deepCopyModelObject = new DeepCopyPmo();
+
         toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelValidFrom);
         // final Text workingDate = toolkit.createText(inputRoot);
         // String workingDateAsText =
@@ -208,8 +206,6 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         // workingDate.setText(workingDateAsText);
         // workingDateField = new TextField(workingDate);
         workingDateControl = new DateControl(inputRoot, toolkit);
-        workingDateField = new FormattingTextField(workingDateControl.getTextControl(), new GregorianCalendarFormat());
-        workingDateField.setValue(getDeepCopyWizard().getStructureDate());
 
         toolkit.createFormLabel(inputRoot, Messages.SourcePage_labelSourceFolder);
         targetPackRootControl = toolkit.createPdPackageFragmentRootRefControl(inputRoot, true);
@@ -231,15 +227,8 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
                 packRoot = null;
             }
         }
-        targetPackRootControl.setPdPckFragmentRoot(packRoot);
-
         toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelTargetPackage);
         targetPackageControl = toolkit.createPdPackageFragmentRefControl(packRoot, inputRoot);
-
-        // sets the default package only if the corresponding package root is based on a source
-        // folder in other cases reset the default package (because maybe the target package is
-        // inside an ips archive)
-        targetPackageControl.setIpsPackageFragment(defaultPackageRoot == packRoot ? defaultPackage : null);
 
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
             toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelSearchPattern);
@@ -274,41 +263,68 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         tree.addCheckStateListener(this);
 
         refreshStructure(structure);
-        refreshVersionId(structure);
 
         initLinkElements();
+
+        createBindings(deepCopyModelObject, packRoot, defaultPackage, defaultPackageRoot == packRoot);
 
         getShell().getDisplay().asyncExec(new Runnable() {
             @Override
             public void run() {
                 workingDateControl.getTextControl().setFocus();
-
                 // run async to ensure that the buttons state (enabled/disabled)
                 // can be updated
                 if (isRootExists()) {
                     setPageComplete(false);
-
                     setMessagePleaseEnterWorkingDate();
-
-                    // clear version id because is user must first change the working date
-                    versionId.setText(""); //$NON-NLS-1$
-                    prevValues.put(versionId, null);
-                    // trigger a new validate after focus lost on workingDate text field
-                    prevValues.put(workingDateControl.getTextControl(), null);
-                } else {
-                    refreshPageAferValueChange();
                 }
-
-                // update column width only the first time
-                // otherwise the resize effect is to strange for the user
-                updateColumnWidth();
-
             }
         });
 
-        addListenerToAllControls();
+        updateColumnWidth();
 
         getDeepCopyWizard().logTraceEnd("SourcePage.createControl"); //$NON-NLS-1$
+
+    }
+
+    private void createBindings(DeepCopyPmo pmo,
+            IIpsPackageFragmentRoot packRoot,
+            IIpsPackageFragment defaultPackage,
+            boolean isDefaultRootSelected) {
+        pmo.addPropertyChangeListener(new PMOListener());
+        BindingContext binding = new BindingContext();
+
+        workingDateField = new FormattingTextField(workingDateControl.getTextControl(), new GregorianCalendarFormat());
+        binding.bindContent(workingDateField, pmo, DeepCopyPmo.WORKING_DATE);
+
+        IpsPckFragmentRootRefField packageRootField = new IpsPckFragmentRootRefField(targetPackRootControl);
+        IpsPckFragmentRefField packageField = new IpsPckFragmentRefField(targetPackageControl);
+        binding.bindContent(packageRootField, pmo, DeepCopyPmo.TARGET_PACKAGE_ROOT);
+        binding.bindContent(packageField, pmo, DeepCopyPmo.TARGET_PACKAGE);
+
+        if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
+            TextField searchInputField = new TextField(searchInput);
+            TextField replaceInputField = new TextField(replaceInput);
+            binding.bindContent(searchInputField, pmo, DeepCopyPmo.SEARCH_INPUT);
+            binding.bindContent(replaceInputField, pmo, DeepCopyPmo.REPLACE_INPUT);
+
+            searchInputField.setText(""); //$NON-NLS-1$
+            replaceInputField.setText(""); //$NON-NLS-1$
+        }
+        TextField versionField = new TextField(versionId);
+        binding.bindContent(versionField, pmo, DeepCopyPmo.VERSION_ID);
+
+        //        versionField.setText(""); //$NON-NLS-1$
+        // sets versionId/GenerationId as well
+        workingDateField.setValue(getDeepCopyWizard().getStructureDate());
+
+        deepCopyModelObject.setTargetPackageRoot(packRoot);
+        // sets the default package only if the corresponding package root is based on a source
+        // folder in other cases reset the default package (because maybe the target package is
+        // inside an ips archive)
+        deepCopyModelObject.setTargetPackage(isDefaultRootSelected ? defaultPackage : null);
+
+        binding.updateUI();
     }
 
     private void setMessagePleaseEnterWorkingDate() {
@@ -329,50 +345,11 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         return getDeepCopyWizard().getDeepCopyPreview().newTargetHasError(structure.getRoot());
     }
 
-    private void addListenerToAllControls() {
-        // add listener perform validate etc. if focus lost and value change
-        // don't use value change event because of validation on every key pressed
-        Text[] textCtrls;
-        if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
-            textCtrls = new Text[] { workingDateControl.getTextControl(), versionId, searchInput, replaceInput };
-        } else {
-            textCtrls = new Text[] { workingDateControl.getTextControl(), versionId };
-        }
-        FocusListenerRefreshTreeOnValueChange focusListener = new FocusListenerRefreshTreeOnValueChange(textCtrls);
-        for (Text textCtrl : textCtrls) {
-            // control may be null in case of copy type = TYPE_NEW_VERSION
-            textCtrl.addFocusListener(focusListener);
-        }
-
-        // special listener for text button controls perform validate etc. if value changed
-        DefaultEditField[] editFields = new DefaultEditField[] { new TextButtonField(targetPackRootControl),
-                new TextButtonField(targetPackageControl) };
-        for (DefaultEditField editField : editFields) {
-            editField.addChangeListener(new ValueChangeListener() {
-                @Override
-                public void valueChanged(FieldValueChangedEvent e) {
-                    getShell().getDisplay().asyncExec(new Runnable() {
-                        @Override
-                        public void run() {
-                            // run asyn otherwise there may be problem with the focus change
-                            // running in the same thread
-                            // e.g. if using key tab then focus jumps two instead of one control
-                            // forward or if using the mouse, to go into another control, then the
-                            // focus doesn't change
-                            refreshPageAferValueChange();
-                        }
-                    });
-                }
-            });
-        }
-    }
-
-    protected void refreshPageAferValueChange() {
+    protected void refreshPageAfterValueChange() {
         getDeepCopyWizard().logTraceStart("refreshPageAferValueChange"); //$NON-NLS-1$
 
         getDeepCopyWizard().getDeepCopyPreview().resetCacheAfterValueChange();
         refreshTree();
-        validate();
         updatePageComplete();
 
         getDeepCopyWizard().logTraceEnd("refreshPageAferValueChange"); //$NON-NLS-1$
@@ -397,56 +374,6 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
             }
             if (association != null && association.isAssoziation()) {
                 linkedElements.add(productCmptReference);
-            }
-        }
-    }
-
-    private class FocusListenerRefreshTreeOnValueChange implements FocusListener {
-        private Text textControls[];
-
-        public FocusListenerRefreshTreeOnValueChange(Text[] textControls) {
-            this.textControls = textControls;
-            // store initial values, to notice the value change later on
-            for (Text textControl : textControls) {
-                hasValueChanged(textControl);
-            }
-        }
-
-        @Override
-        public void focusGained(FocusEvent e) {
-            // ignored;
-        }
-
-        @Override
-        public void focusLost(FocusEvent e) {
-            boolean refreshDone = false;
-            for (int i = 0; i < textControls.length; i++) {
-                if (!refreshDone && hasValueChanged(textControls[i])) {
-                    // refresh has been performed
-                    // so we don't need to check the other controls
-                    refreshDone = true;
-                    final int idx = i;
-                    getShell().getDisplay().asyncExec(new Runnable() {
-                        @Override
-                        public void run() {
-                            // run async otherwise there may be problem with the focus change
-                            // running in the same thread
-                            // e.g. if using key tab then focus jumps two instead of one control
-                            // forward or if using the mouse, to go into another control, then the
-                            // focus doesn't change
-                            if (textControls[idx] == workingDateField.getTextControl()) {
-                                getDeepCopyWizard().applyWorkingDate();
-                                // set the version id text as previous value
-                                // to avoid second refresh
-                                hasValueChanged(versionId);
-                                refreshPageAferValueChange();
-                                updateColumnWidth();
-                            } else {
-                                refreshPageAferValueChange();
-                            }
-                        }
-                    });
-                }
             }
         }
     }
@@ -600,7 +527,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
                     }
                 }
                 if (doRefresh) {
-                    refreshPageAferValueChange();
+                    refreshPageAfterValueChange();
                 }
             }
 
@@ -714,11 +641,11 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
     /**
      * Refresh the structure in the tree and updates the version id
      */
-    void refreshVersionId(IProductCmptTreeStructure structure) {
+    void refreshVersionId() {
         if (namingStrategy != null && namingStrategy.supportsVersionId()) {
             String newVersionId = namingStrategy.getNextVersionId(structure.getRoot().getProductCmpt());
-            if (!newVersionId.equals(versionId.getText())) {
-                versionId.setText(newVersionId);
+            if (!newVersionId.equals(deepCopyModelObject.getVersionId())) {
+                deepCopyModelObject.setVersionId(newVersionId);
             }
         }
     }
@@ -793,158 +720,9 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         return pack;
     }
 
-    private void validate() {
-        getDeepCopyWizard().logTraceStart("validate"); //$NON-NLS-1$
-
-        setMessage(null);
-        setErrorMessage(null);
-
-        if (tree == null || tree.getCheckedElements().length == 0) {
-            // no elements checked
-            setErrorMessage(Messages.SourcePage_msgNothingSelected);
-            getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
-            return;
-        }
-
-        validateWorkingDate();
-        if (getErrorMessage() != null) {
-            getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
-            return;
-        }
-
-        if (namingStrategy != null && namingStrategy.supportsVersionId()) {
-            MessageList ml = namingStrategy.validateVersionId(versionId.getText());
-            if (!ml.isEmpty()) {
-                setErrorMessage(ml.getMessage(0).getText());
-                getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
-                return;
-            }
-        }
-
-        if (structure == null) {
-            setErrorMessage(Messages.SourcePage_msgCircleRelationShort);
-            getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
-            return;
-        }
-
-        IIpsPackageFragmentRoot ipsPckFragmentRoot = targetPackRootControl.getIpsPckFragmentRoot();
-        if (ipsPckFragmentRoot != null && !ipsPckFragmentRoot.exists()) {
-            setErrorMessage(NLS.bind(Messages.SourcePage_msgMissingSourceFolder, ipsPckFragmentRoot.getName()));
-            getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
-            return;
-        } else if (ipsPckFragmentRoot == null) {
-            setErrorMessage(Messages.SourcePage_msgSelectSourceFolder);
-            getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
-            return;
-        }
-
-        if (getTargetPackage() != null && !getTargetPackage().exists()) {
-            setMessage(NLS.bind(Messages.SourcePage_msgWarningTargetWillBeCreated, getTargetPackage().getName()),
-                    WARNING);
-        } else if (getTargetPackage() == null) {
-            setErrorMessage(Messages.SourcePage_msgBadTargetPackage);
-            getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
-            return;
-        }
-
-        if (getDeepCopyWizard().getDeepCopyPreview().getProductCmptStructRefToCopy().length == 0) {
-            setMessage(Messages.ReferenceAndPreviewPage_msgSelectAtLeastOneProduct, WARNING);
-            getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
-            return;
-        }
-
-        if (getDeepCopyWizard().getDeepCopyPreview().getErrorElements().size() != 0) {
-            setErrorMessage(Messages.SourcePage_msgCopyNotPossible + " " //$NON-NLS-1$
-                    + getDeepCopyWizard().getDeepCopyPreview().getFirstErrorText());
-            getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
-            return;
-        }
-
-        validateSearchPattern();
-        if (getErrorMessage() != null) {
-            getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
-            return;
-        }
-
-        setPageComplete(true);
-        getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
-    }
-
-    private void validateSearchPattern() {
-        if (type == DeepCopyWizard.TYPE_NEW_VERSION) {
-            return;
-        }
-        String searchPattern = getSearchPattern();
-        String replacePattern = getReplaceText();
-        if (searchPattern.length() == 0 && replacePattern.length() == 0) {
-            return;
-        }
-
-        if (searchPattern.length() == 0) {
-            setErrorMessage(Messages.SourcePage_msgSearchPatternNotFound);
-            return;
-        }
-
-        if (replacePattern.length() == 0) {
-            setErrorMessage(Messages.SourcePage_msgReplaceTextNotFound);
-            return;
-        }
-
-        if (!isSearchPatternFound(searchPattern)) {
-            setErrorMessage(NLS.bind(Messages.SourcePage_msgPatternNotFound, searchPattern));
-            return;
-        }
-    }
-
-    private boolean isSearchPatternFound(String searchPattern) {
-        List<IProductCmptStructureReference> childs = new ArrayList<IProductCmptStructureReference>();
-        IProductCmptTypeAssociationReference[] child = structure.getChildProductCmptTypeAssociationReferences(structure
-                .getRoot());
-
-        if (isSearchPatternMatch(structure.getRoot().getWrappedIpsObject().getName(), searchPattern)) {
-            return true;
-        }
-
-        for (IProductCmptTypeAssociationReference element : child) {
-            getAllChildElements(element, childs);
-        }
-        for (IProductCmptStructureReference reference : childs) {
-            if (!getDeepCopyWizard().getDeepCopyPreview().isCopy(reference)) {
-                continue;
-            }
-            if (isSearchPatternMatch(reference.getWrappedIpsObject().getName(), searchPattern)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isSearchPatternMatch(String name, String searchPattern) {
-        String newName = name.replaceAll(searchPattern, getReplaceText());
-        return !name.equals(newName);
-    }
-
-    private void validateWorkingDate() {
-        Calendar calendar = (Calendar)workingDateField.getValue();
-        if (calendar == null) {
-            String pattern;
-            DateFormat dateFormat = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
-            if (dateFormat instanceof SimpleDateFormat) {
-                pattern = ((SimpleDateFormat)dateFormat).toLocalizedPattern();
-            } else {
-                pattern = "\"" + dateFormat.format(new GregorianCalendar().getTime()) + "\""; //$NON-NLS-1$//$NON-NLS-2$
-            }
-            setErrorMessage(NLS.bind(Messages.SourcePage_errorWorkingDateFormat, pattern));
-        }
-    }
-
     public boolean isChecked(Object element) {
         List<Object> checkedElements = Arrays.asList(tree.getCheckedElements());
         return checkedElements.contains(element);
-    }
-
-    public IIpsPackageFragmentRoot getIIpsPackageFragmentRoot() {
-        return targetPackRootControl.getIpsPckFragmentRoot();
     }
 
     public IProductCmptStructureReference[] getCheckedNodes() {
@@ -964,7 +742,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
      * empty or a valid pattern for java.util.regex.Pattern.
      */
     public String getSearchPattern() {
-        String result = searchInput.getText();
+        String result = deepCopyModelObject.getSearchInput();
         try {
             Pattern.compile(result);
         } catch (PatternSyntaxException e) {
@@ -977,14 +755,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
      * Returns the text to replace the text found by the search pattern.
      */
     public String getReplaceText() {
-        return replaceInput.getText();
-    }
-
-    /**
-     * Returns the text to replace the text found by the search pattern.
-     */
-    public String getVersion() {
-        return versionId.getText();
+        return deepCopyModelObject.getReplaceInput();
     }
 
     /**
@@ -998,7 +769,15 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
      * Returns the package fragment which is to be used as target package for the copy.
      */
     public IIpsPackageFragment getTargetPackage() {
-        return targetPackageControl.getIpsPackageFragment();
+        return deepCopyModelObject.getTargetPackage();
+    }
+
+    public IIpsPackageFragmentRoot getIIpsPackageFragmentRoot() {
+        return deepCopyModelObject.getTargetPackageRoot();
+    }
+
+    public String getVersionId() {
+        return deepCopyModelObject.getVersionId();
     }
 
     protected void updatePageComplete() {
@@ -1006,7 +785,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
             setPageComplete(false);
             return;
         }
-        setPageComplete(!"".equals(targetPackRootControl.getText())); //$NON-NLS-1$
+        setPageComplete(deepCopyModelObject.getTargetPackageRoot() != null);
     }
 
     /**
@@ -1051,7 +830,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
             linkedElements.remove(element);
         }
 
-        refreshPageAferValueChange();
+        refreshPageAfterValueChange();
     }
 
     private void getAllChildElements(IProductCmptTypeAssociationReference element,
@@ -1083,6 +862,8 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
     }
 
     private boolean isRefreshing = false;
+
+    private DeepCopyPmo deepCopyModelObject;
 
     public void refreshTree() {
         if (isRefreshing) {
@@ -1121,33 +902,249 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         createEmptyTableContentsBtn.setEnabled(true);
     }
 
-    private boolean hasValueChanged(Text text) {
-        if (text.getText().equals(prevValues.get(text))) {
-            return false;
-        }
-        prevValues.put(text, text.getText());
-        return true;
-    }
-
     public class DeepCopyPmo extends PresentationModelObject {
 
-        public static final String WORKING_DATE = "workingDate";
+        public static final String WORKING_DATE = "workingDate"; //$NON-NLS-1$
+        public static final String VERSION_ID = "versionId"; //$NON-NLS-1$
+        public static final String SEARCH_INPUT = "searchInput"; //$NON-NLS-1$
+        public static final String REPLACE_INPUT = "replaceInput"; //$NON-NLS-1$
+        public static final String TARGET_PACKAGE = "targetPackage"; //$NON-NLS-1$
+        public static final String TARGET_PACKAGE_ROOT = "targetPackageRoot"; //$NON-NLS-1$
 
         private GregorianCalendar workingDate;
+        private String versionIdString;
+        private String searchInputString;
+        private String replaceInputString;
+        private IIpsPackageFragment targetPackage;
+        private IIpsPackageFragmentRoot targetPackageRoot;
 
         public DeepCopyPmo() {
             // DefaultEditField verwendet schon den EditFieldChangeBroadcaster für verzögerte
             // Übertragung von Änderungen.
         }
 
+        public GregorianCalendar getWorkingDate() {
+            return workingDate;
+        }
+
         public void setWorkingDate(GregorianCalendar newValue) {
             GregorianCalendar oldValue = workingDate;
             workingDate = newValue;
+            validate();
+            getDeepCopyWizard().applyWorkingDate();
             notifyListeners(new PropertyChangeEvent(this, WORKING_DATE, oldValue, newValue));
+            refreshVersionId();
         }
 
-        public GregorianCalendar getWorkingDate() {
-            return workingDate;
+        public String getVersionId() {
+            return versionIdString;
+        }
+
+        public void setVersionId(String newValue) {
+            String oldValue = versionIdString;
+            versionIdString = newValue;
+            validate();
+            notifyListeners(new PropertyChangeEvent(this, VERSION_ID, oldValue, newValue));
+        }
+
+        public String getSearchInput() {
+            return searchInputString;
+        }
+
+        public void setSearchInput(String newValue) {
+            String oldValue = searchInputString;
+            searchInputString = newValue;
+            validate();
+            notifyListeners(new PropertyChangeEvent(this, SEARCH_INPUT, oldValue, newValue));
+        }
+
+        public String getReplaceInput() {
+            return replaceInputString;
+        }
+
+        public void setReplaceInput(String newValue) {
+            String oldValue = replaceInputString;
+            replaceInputString = newValue;
+            validate();
+            notifyListeners(new PropertyChangeEvent(this, REPLACE_INPUT, oldValue, newValue));
+        }
+
+        public IIpsPackageFragment getTargetPackage() {
+            return targetPackage;
+        }
+
+        public void setTargetPackage(IIpsPackageFragment newValue) {
+            IIpsPackageFragment oldValue = targetPackage;
+            targetPackage = newValue;
+            validate();
+            notifyListeners(new PropertyChangeEvent(this, TARGET_PACKAGE, oldValue, newValue));
+        }
+
+        public IIpsPackageFragmentRoot getTargetPackageRoot() {
+            return targetPackageRoot;
+        }
+
+        public void setTargetPackageRoot(IIpsPackageFragmentRoot newValue) {
+            IIpsPackageFragmentRoot oldValue = targetPackageRoot;
+            targetPackageRoot = newValue;
+            validate();
+            notifyListeners(new PropertyChangeEvent(this, TARGET_PACKAGE_ROOT, oldValue, newValue));
+        }
+
+        private void validate() {
+            getDeepCopyWizard().logTraceStart("validate"); //$NON-NLS-1$
+
+            setMessage(null);
+            setErrorMessage(null);
+
+            if (tree == null || tree.getCheckedElements().length == 0) {
+                // no elements checked
+                setErrorMessage(Messages.SourcePage_msgNothingSelected);
+                getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
+                return;
+            }
+
+            validateWorkingDate();
+            if (getErrorMessage() != null) {
+                getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
+                return;
+            }
+
+            if (namingStrategy != null && namingStrategy.supportsVersionId()) {
+                MessageList ml = namingStrategy.validateVersionId(versionId.getText());
+                if (!ml.isEmpty()) {
+                    setErrorMessage(ml.getMessage(0).getText());
+                    getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
+                    return;
+                }
+            }
+
+            if (structure == null) {
+                setErrorMessage(Messages.SourcePage_msgCircleRelationShort);
+                getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
+                return;
+            }
+
+            IIpsPackageFragmentRoot ipsPckFragmentRoot = targetPackRootControl.getIpsPackageFragmentRoot();
+            if (ipsPckFragmentRoot != null && !ipsPckFragmentRoot.exists()) {
+                setErrorMessage(NLS.bind(Messages.SourcePage_msgMissingSourceFolder, ipsPckFragmentRoot.getName()));
+                getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
+                return;
+            } else if (ipsPckFragmentRoot == null) {
+                setErrorMessage(Messages.SourcePage_msgSelectSourceFolder);
+                getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
+                return;
+            }
+
+            if (SourcePage.this.getTargetPackage() != null && !SourcePage.this.getTargetPackage().exists()) {
+                setMessage(NLS.bind(Messages.SourcePage_msgWarningTargetWillBeCreated, SourcePage.this
+                        .getTargetPackage().getName()), WARNING);
+            } else if (SourcePage.this.getTargetPackage() == null) {
+                setErrorMessage(Messages.SourcePage_msgBadTargetPackage);
+                getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
+                return;
+            }
+
+            if (getDeepCopyWizard().getDeepCopyPreview().getProductCmptStructRefToCopy().length == 0) {
+                setMessage(Messages.ReferenceAndPreviewPage_msgSelectAtLeastOneProduct, WARNING);
+                getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
+                return;
+            }
+
+            if (getDeepCopyWizard().getDeepCopyPreview().getErrorElements().size() != 0) {
+                setErrorMessage(Messages.SourcePage_msgCopyNotPossible + " " //$NON-NLS-1$
+                        + getDeepCopyWizard().getDeepCopyPreview().getFirstErrorText());
+                getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
+                return;
+            }
+
+            validateSearchPattern();
+            if (getErrorMessage() != null) {
+                getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
+                return;
+            }
+
+            setPageComplete(true);
+            getDeepCopyWizard().logTraceEnd("validate"); //$NON-NLS-1$
+        }
+
+        private void validateSearchPattern() {
+            if (type == DeepCopyWizard.TYPE_NEW_VERSION) {
+                return;
+            }
+            String searchPattern = getSearchPattern();
+            String replacePattern = getReplaceText();
+            if (searchPattern.length() == 0 && replacePattern.length() == 0) {
+                return;
+            }
+
+            if (searchPattern.length() == 0) {
+                setErrorMessage(Messages.SourcePage_msgSearchPatternNotFound);
+                return;
+            }
+
+            if (replacePattern.length() == 0) {
+                setErrorMessage(Messages.SourcePage_msgReplaceTextNotFound);
+                return;
+            }
+
+            if (!isSearchPatternFound(searchPattern)) {
+                setErrorMessage(NLS.bind(Messages.SourcePage_msgPatternNotFound, searchPattern));
+                return;
+            }
+        }
+
+        private boolean isSearchPatternFound(String searchPattern) {
+            List<IProductCmptStructureReference> childs = new ArrayList<IProductCmptStructureReference>();
+            IProductCmptTypeAssociationReference[] child = structure
+                    .getChildProductCmptTypeAssociationReferences(structure.getRoot());
+
+            if (isSearchPatternMatch(structure.getRoot().getWrappedIpsObject().getName(), searchPattern)) {
+                return true;
+            }
+
+            for (IProductCmptTypeAssociationReference element : child) {
+                getAllChildElements(element, childs);
+            }
+            for (IProductCmptStructureReference reference : childs) {
+                if (!getDeepCopyWizard().getDeepCopyPreview().isCopy(reference)) {
+                    continue;
+                }
+                if (isSearchPatternMatch(reference.getWrappedIpsObject().getName(), searchPattern)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private boolean isSearchPatternMatch(String name, String searchPattern) {
+            String newName = name.replaceAll(searchPattern, getReplaceText());
+            return !name.equals(newName);
+        }
+
+        private void validateWorkingDate() {
+            Calendar calendar = (Calendar)workingDateField.getValue();
+            if (calendar == null) {
+                String pattern;
+                DateFormat dateFormat = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
+                if (dateFormat instanceof SimpleDateFormat) {
+                    pattern = ((SimpleDateFormat)dateFormat).toLocalizedPattern();
+                } else {
+                    pattern = "\"" + dateFormat.format(new GregorianCalendar().getTime()) + "\""; //$NON-NLS-1$//$NON-NLS-2$
+                }
+                setErrorMessage(NLS.bind(Messages.SourcePage_errorWorkingDateFormat, pattern));
+            }
+        }
+
+    }
+
+    public class PMOListener implements PropertyChangeListener {
+
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            if (!evt.getNewValue().equals(evt.getOldValue())) {
+                refreshPageAfterValueChange();
+            }
         }
 
     }

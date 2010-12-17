@@ -146,7 +146,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
 
     @Override
     protected void setIpsPackageFragmentRoot(IIpsPackageFragmentRoot root) {
-        sourceFolderControl.setPdPckFragmentRoot(root);
+        sourceFolderControl.setIpsPackageFragmentRoot(root);
     }
 
     private String getSourceFolder() {
@@ -161,7 +161,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
     }
 
     public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() {
-        return sourceFolderControl.getIpsPckFragmentRoot();
+        return sourceFolderControl.getIpsPackageFragmentRoot();
     }
 
     @Override
@@ -297,7 +297,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
 
     /** Validates the package. */
     private void validateSourceRoot() {
-        IIpsPackageFragmentRoot root = sourceFolderControl.getIpsPckFragmentRoot();
+        IIpsPackageFragmentRoot root = sourceFolderControl.getIpsPackageFragmentRoot();
         if (root != null) {
             if (!root.getCorrespondingResource().exists()) {
                 setErrorMessage(NLS.bind(org.faktorips.devtools.core.ui.wizards.Messages.IpsObjectPage_msgRootMissing,

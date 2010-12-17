@@ -24,7 +24,7 @@ import org.eclipse.swt.events.VerifyEvent;
  * 
  * @author Stefan Widmaier
  */
-public class IntegerFormat extends InputFormat {
+public class IntegerFormat extends AbstractInputFormat {
 
     private NumberFormat numberFormat;
 
@@ -36,7 +36,7 @@ public class IntegerFormat extends InputFormat {
     @Override
     protected void initFormat(Locale locale) {
         numberFormat = NumberFormat.getIntegerInstance(locale);
-        numberFormat.setGroupingUsed(false);
+        numberFormat.setGroupingUsed(true);
         numberFormat.setParseIntegerOnly(true);
         exampleString = numberFormat.format(-100000000);
     }

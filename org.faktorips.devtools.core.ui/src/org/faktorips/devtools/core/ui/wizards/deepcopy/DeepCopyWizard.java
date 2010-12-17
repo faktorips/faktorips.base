@@ -217,9 +217,9 @@ public class DeepCopyWizard extends ResizableWizard {
 
         // apply working date in wizard pages
         try {
-            structure = (ProductCmptTreeStructure)structure.getRoot().getProductCmpt()
-                    .getStructure(currentWorkingDate, structure.getRoot().getProductCmpt().getIpsProject());
-            sourcePage.refreshVersionId(structure);
+            structure = (ProductCmptTreeStructure)structure.getRoot().getProductCmpt().getStructure(currentWorkingDate,
+                    structure.getRoot().getProductCmpt().getIpsProject());
+            sourcePage.refreshVersionId();
         } catch (CycleInProductStructureException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }

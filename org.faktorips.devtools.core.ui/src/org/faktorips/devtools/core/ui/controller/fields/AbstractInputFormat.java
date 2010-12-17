@@ -17,6 +17,8 @@ import java.text.Format;
 import java.text.ParsePosition;
 import java.util.Locale;
 
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.widgets.Text;
@@ -25,34 +27,36 @@ import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.ui.table.FormattingTextCellEditor;
 
 /**
- * Base class for data type specific formats. {@link InputFormat}s provide three things:
+ * Base class for data type specific formats. {@link AbstractInputFormat}s provide three things:
  * <ul>
- * <li>Formating a value in the model to a locale specific string (i.e. "1.2" will be displayed as
- * "1,2" in the german locale) that will be displayed in the GUI</li>
+ * <li>Formating a value in the model to a locale specific string that will be displayed in the GUI
+ * (i.e. "1.2" will be displayed as "1,2" for the german locale)</li>
  * <li>Parsing a locale specific string to a value object, that can be written back to the model</li>
  * <li>Verifying user input to avoid mistakes. No invalid characters may be entered in a
  * {@link FormattingTextField} or {@link FormattingTextCellEditor} (i.e. no letters in an integer
  * field).</li>
  * </ul>
- * <p>
- * {@link InputFormat} supports the FIPS null-Presentation mechanism.
+ * <p/>
+ * {@link AbstractInputFormat} supports the FIPS null-Presentation mechanism.
+ * <p/>
+ * Instances of this class reconfigure themselves if the IpsPreference
+ * IpsPreferences.DATATYPE_FORMATTING_LOCALE changes. Subclasses need to implement
+ * {@link #initFormat(Locale)} for this.
  * 
  * @author Stefan Widmaier
  */
-public abstract class InputFormat implements VerifyListener {
+public abstract class AbstractInputFormat implements VerifyListener {
 
-    public InputFormat() {
+    public AbstractInputFormat() {
         initFormat(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormattingLocale());
-        // not required until the format-locale can be configured via the FIPS Preferences
-        // IpsPlugin.getDefault().getIpsPreferences().addChangeListener(new
-        // IPropertyChangeListener() {
-        // @Override
-        // public void propertyChange(PropertyChangeEvent event) {
-        // if (event.getProperty().equals(IpsPreferences.DATATYPE_FORMATTING_LOCALE)) {
-        // initFormat(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormattingLocale());
-        // }
-        // }
-        // });
+        IpsPlugin.getDefault().getIpsPreferences().addChangeListener(new IPropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent event) {
+                if (event.getProperty().equals(IpsPreferences.DATATYPE_FORMATTING_LOCALE)) {
+                    initFormat(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormattingLocale());
+                }
+            }
+        });
     }
 
     /**
@@ -191,7 +195,7 @@ public abstract class InputFormat implements VerifyListener {
      * {@link IpsPreferences#DATATYPE_FORMATTING_LOCALE} changes. {@link #initFormat(Locale)} is
      * always called with the currently configured locale.
      * <p>
-     * Subclasses can create helper objects for Formating and parsing in this method.
+     * Subclasses can create helper objects for formating and parsing in this method.
      * 
      * @param locale the currently configured locale.
      */

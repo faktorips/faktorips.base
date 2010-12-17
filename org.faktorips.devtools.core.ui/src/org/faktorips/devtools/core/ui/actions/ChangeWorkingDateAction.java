@@ -32,7 +32,6 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -41,6 +40,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
+import org.faktorips.devtools.core.ui.controls.DateControl;
 
 /**
  * Action that allows to modify the working date (which is a part of the ips preferences) with a
@@ -109,7 +109,8 @@ public class ChangeWorkingDateAction implements IWorkbenchWindowActionDelegate {
 
             toolkit.createLabel(composite, infoMessage);
 
-            Text text = toolkit.createText(composite);
+            // Text text = toolkit.createText(composite);
+            DateControl dateControl = new DateControl(composite, toolkit);
 
             String labelText = NLS.bind(Messages.ChangeWorkingDateAction_labelEditRecentGenerations, IpsPlugin
                     .getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
@@ -118,7 +119,7 @@ public class ChangeWorkingDateAction implements IWorkbenchWindowActionDelegate {
             WorkingDatePmo workingDatePmo = new WorkingDatePmo(this);
             bindingContext.bindContent(editRecentGenerationCheckBox, workingDatePmo,
                     WorkingDatePmo.CAN_EDIT_RECENT_GENERATION);
-            bindingContext.bindContent(text, workingDatePmo, WorkingDatePmo.WORKING_DATE);
+            bindingContext.bindContent(dateControl.getTextControl(), workingDatePmo, WorkingDatePmo.WORKING_DATE);
 
             bindingContext.updateUI();
             validate();
@@ -213,8 +214,8 @@ public class ChangeWorkingDateAction implements IWorkbenchWindowActionDelegate {
                 .getGenerationConceptNamePlural(true);
 
         WorkingDateInputDialog dialog = new WorkingDateInputDialog(shell, Messages.ChangeWorkingDateAction_title,
-                Messages.ChangeWorkingDateAction_description, ipsPreferences.getFormattedWorkingDate(),
-                ipsPreferences.canEditRecentGeneration());
+                Messages.ChangeWorkingDateAction_description, ipsPreferences.getFormattedWorkingDate(), ipsPreferences
+                        .canEditRecentGeneration());
 
         if (dialog.open() == InputDialog.OK) {
             try {

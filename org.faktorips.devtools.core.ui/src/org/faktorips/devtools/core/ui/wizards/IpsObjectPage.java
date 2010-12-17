@@ -236,11 +236,11 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
     }
 
     public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() {
-        return sourceFolderControl.getIpsPckFragmentRoot();
+        return sourceFolderControl.getIpsPackageFragmentRoot();
     }
 
     protected void sourceFolderChanged() {
-        IIpsPackageFragmentRoot root = sourceFolderControl.getIpsPckFragmentRoot();
+        IIpsPackageFragmentRoot root = sourceFolderControl.getIpsPackageFragmentRoot();
         packageControl.setIpsPckFragmentRoot(root);
     }
 
@@ -382,7 +382,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
      * The method validates the package.
      */
     private void validateSourceRoot() {
-        IIpsPackageFragmentRoot root = sourceFolderControl.getIpsPckFragmentRoot();
+        IIpsPackageFragmentRoot root = sourceFolderControl.getIpsPackageFragmentRoot();
         if (root != null) {
             if (!root.getCorrespondingResource().exists()) {
                 setErrorMessage(NLS.bind(Messages.IpsObjectPage_msgRootMissing, root.getName()));
@@ -522,7 +522,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
      */
     @Override
     protected void setIpsPackageFragmentRoot(IIpsPackageFragmentRoot root) {
-        sourceFolderControl.setPdPckFragmentRoot(root);
+        sourceFolderControl.setIpsPackageFragmentRoot(root);
     }
 
 }
