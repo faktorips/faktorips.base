@@ -92,7 +92,7 @@ public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
             return getProductCmptImageDescriptor(type);
         } catch (CoreException e) {
             IpsPlugin.log(e);
-            return null;
+            return getDefaultImageDescriptor();
         }
     }
 

@@ -216,7 +216,7 @@ public class ProductReleaseProcessor {
         for (IIpsPackageFragmentRoot root : ipsProject.getIpsPackageFragmentRoots()) {
             IFile tocFile = ipsProject.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root);
             if (tocFile != null) {
-                resources.add(ipsProject.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root));
+                resources.add(tocFile);
             }
         }
 

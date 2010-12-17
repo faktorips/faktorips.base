@@ -29,7 +29,6 @@ import org.eclipse.ltk.core.refactoring.NullChange;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.resource.DeleteResourceChange;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DependencyGraph;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
@@ -70,15 +69,15 @@ public final class MoveRenameIpsObjectHelper {
     public MoveRenameIpsObjectHelper(IpsObject toBeRefactored) {
         ArgumentCheck.notNull(new Object[] { toBeRefactored });
         this.toBeRefactored = toBeRefactored;
-        dependencies = collectDependcies();
+        dependencies = collectDependcies(toBeRefactored.getIpsProject());
     }
 
-    private IDependency[] collectDependcies() {
+    private IDependency[] collectDependcies(IIpsProject ipsProject) {
         dependencyToProject = new HashMap<IDependency, IIpsProject>();
         ArrayList<IDependency> dependencies = new ArrayList<IDependency>();
 
         try {
-            IIpsProject[] projects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
+            IIpsProject[] projects = ipsProject.findReferencingProjectLeavesOrSelf();
             for (IIpsProject project : projects) {
                 DependencyGraph graph = new DependencyGraph(project);
                 for (IDependency dependency : graph.getDependants(toBeRefactored.getQualifiedNameType())) {

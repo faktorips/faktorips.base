@@ -45,6 +45,7 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
     private InMemoryRuntimeRepository baseRepository;
 
     private final DateTime validFrom = new DateTime(2006, 1, 1);
+    private final DateTime validTo = new DateTime(2007, 1, 1);
     private final Calendar effectiveDate = new GregorianCalendar(2006, 6, 1);
 
     // one product component and generation residing in each repository
@@ -58,6 +59,8 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
     private ProductComponentGeneration mainPcGen;
 
     private final ITable testTable = new TestTable();
+    private TestProductComponent validToPc;
+    private TestProductCmptGeneration validToPcGen;
 
     /*
      * @see TestCase#setUp()
@@ -94,6 +97,12 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
         mainPcGen = new TestProductCmptGeneration(mainPc);
         mainPcGen.setValidFrom(validFrom);
         mainRepository.putProductCmptGeneration(mainPcGen);
+
+        validToPc = new TestProductComponent(mainRepository, "validToPc", "validToKind", "validToVersion");
+        validToPc.setValidTo(validTo);
+        validToPcGen = new TestProductCmptGeneration(validToPc);
+        validToPcGen.setValidFrom(validFrom);
+        mainRepository.putProductCmptGeneration(validToPcGen);
 
     }
 
@@ -208,15 +217,24 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
         assertEquals(inAPcGen, mainRepository.getProductComponentGeneration("inAPc", effectiveDate));
         assertEquals(inBPcGen, mainRepository.getProductComponentGeneration("inBPc", effectiveDate));
         assertEquals(basePcGen, mainRepository.getProductComponentGeneration("basePc", effectiveDate));
+        // Tests with validTo
+        assertEquals(validToPcGen, mainRepository.getProductComponentGeneration("validToPc", effectiveDate));
+        assertEquals(
+                validToPcGen,
+                mainRepository.getProductComponentGeneration("validToPc",
+                        validTo.toGregorianCalendar(effectiveDate.getTimeZone())));
+        GregorianCalendar tooLate = validTo.toGregorianCalendar(effectiveDate.getTimeZone());
+        tooLate.add(Calendar.MILLISECOND, 1);
+        assertNull(mainRepository.getProductComponentGeneration("validToPc", tooLate));
     }
 
     public void testGetAllProductComponents_ByClass() {
         List<IProductComponent> result = mainRepository.getAllProductComponents(TestProductComponent.class);
-        assertEquals(4, result.size());
+        assertEquals(5, result.size());
         assertEquals(mainPc, result.get(0));
-        assertEquals(inAPc, result.get(1));
-        assertEquals(inBPc, result.get(2));
-        assertEquals(basePc, result.get(3));
+        assertEquals(inAPc, result.get(2));
+        assertEquals(inBPc, result.get(3));
+        assertEquals(basePc, result.get(4));
 
         result = inBetweenRepositoryA.getAllProductComponents(TestProductComponent.class);
         assertEquals(2, result.size());
@@ -230,11 +248,11 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
 
     public void testGetAllProductComponents() {
         List<IProductComponent> result = mainRepository.getAllProductComponents();
-        assertEquals(4, result.size());
+        assertEquals(5, result.size());
         assertEquals(mainPc, result.get(0));
-        assertEquals(inAPc, result.get(1));
-        assertEquals(inBPc, result.get(2));
-        assertEquals(basePc, result.get(3));
+        assertEquals(inAPc, result.get(2));
+        assertEquals(inBPc, result.get(3));
+        assertEquals(basePc, result.get(4));
 
         result = inBetweenRepositoryA.getAllProductComponents();
         assertEquals(2, result.size());
@@ -248,11 +266,11 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
 
     public void testGetAllProductComponentIds() {
         List<String> result = mainRepository.getAllProductComponentIds();
-        assertEquals(4, result.size());
+        assertEquals(5, result.size());
         assertEquals(mainPc.getId(), result.get(0));
-        assertEquals(inAPc.getId(), result.get(1));
-        assertEquals(inBPc.getId(), result.get(2));
-        assertEquals(basePc.getId(), result.get(3));
+        assertEquals(inAPc.getId(), result.get(2));
+        assertEquals(inBPc.getId(), result.get(3));
+        assertEquals(basePc.getId(), result.get(4));
 
         result = inBetweenRepositoryA.getAllProductComponentIds();
         assertEquals(2, result.size());

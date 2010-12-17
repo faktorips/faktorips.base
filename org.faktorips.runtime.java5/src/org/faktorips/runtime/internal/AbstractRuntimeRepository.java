@@ -246,6 +246,12 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
         IProductComponentGeneration pcGen = getProductComponentGenerationInternal(id, effectiveDate);
         if (pcGen != null) {
+            DateTime validTo = pcGen.getProductComponent().getValidTo();
+            if (validTo != null
+                    && validTo.toTimeInMillisecs(effectiveDate.getTimeZone()) < effectiveDate.getTimeInMillis()) {
+                // If validTo is set and is before effectiveDate, the generation is invalid
+                return null;
+            }
             return pcGen;
         }
         for (IRuntimeRepository repository : repositories) {
