@@ -15,12 +15,14 @@ package org.faktorips.devtools.stdbuilder.type;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.util.ArgumentCheck;
@@ -133,4 +135,33 @@ public abstract class GenAttribute extends GenTypePart {
         javaElements.add(memberVar);
     }
 
+    /**
+     * 
+     * Convenience method that can be used by subclasses to add the attribute name constant to the
+     * generated Java elements.
+     * 
+     * Code sample:
+     * 
+     * <pre>
+     * [Javadoc]
+     * public final static String PROPERTY_PREMIUM = &quot;premium&quot;;
+     * </pre>
+     */
+    protected void generateAttributeNameConstant(JavaCodeFragmentBuilder builder) {
+        if (getAttribute().isOverwrite()) {
+            return;
+        }
+        appendLocalizedJavaDoc("FIELD_PROPERTY_NAME", getAttribute().getName(), builder);
+        builder.append("public final static ");
+        builder.appendClassName(String.class);
+        builder.append(' ');
+        builder.append(getStaticConstantPropertyName());
+        builder.append(" = ");
+        builder.appendQuoted(getAttribute().getName());
+        builder.appendln(";");
+    }
+
+    public String getStaticConstantPropertyName() {
+        return getLocalizedText("FIELD_PROPERTY_NAME", StringUtils.upperCase(getAttribute().getName()));
+    }
 }

@@ -76,28 +76,6 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
      * 
      * <pre>
      * [Javadoc]
-     * public final static String PROPERTY_PREMIUM = &quot;premium&quot;;
-     * </pre>
-     */
-    protected void generateAttributeNameConstant(JavaCodeFragmentBuilder builder) {
-        if (getAttribute().isOverwrite()) {
-            return;
-        }
-        appendLocalizedJavaDoc("FIELD_PROPERTY_NAME", getAttribute().getName(), builder);
-        builder.append("public final static ");
-        builder.appendClassName(String.class);
-        builder.append(' ');
-        builder.append(getStaticConstantPropertyName());
-        builder.append(" = ");
-        builder.appendQuoted(getAttribute().getName());
-        builder.appendln(";");
-    }
-
-    /**
-     * Code sample:
-     * 
-     * <pre>
-     * [Javadoc]
      * public Money getPremium();
      * </pre>
      */
@@ -331,10 +309,6 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
 
     public boolean isDerivedByExplicitMethodCall() {
         return ((IPolicyCmptTypeAttribute)getAttribute()).getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL;
-    }
-
-    public String getStaticConstantPropertyName() {
-        return getLocalizedText("FIELD_PROPERTY_NAME", StringUtils.upperCase(getAttribute().getName()));
     }
 
     @Override
