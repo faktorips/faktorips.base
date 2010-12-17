@@ -957,9 +957,9 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         return "IpsObjectEditor"; //$NON-NLS-1$
     }
 
-    @SuppressWarnings("unchecked")
-    // eclipse api is not generified
     @Override
+    // eclipse api is not generified
+    @SuppressWarnings("rawtypes")
     public Object getAdapter(Class adapter) {
         if (adapter.equals(IContentOutlinePage.class)) {
             if (null == outlinePage) {
@@ -1121,6 +1121,9 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         }
 
         private void postImageChange(final Image newImage) {
+            if (newImage == null) {
+                return;
+            }
             Shell shell = ipsObjectEditor.getEditorSite().getShell();
             if (shell != null && !shell.isDisposed()) {
                 shell.getDisplay().syncExec(new Runnable() {
