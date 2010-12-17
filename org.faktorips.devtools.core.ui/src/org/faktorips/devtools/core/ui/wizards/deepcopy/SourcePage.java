@@ -930,10 +930,10 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         public void setWorkingDate(GregorianCalendar newValue) {
             GregorianCalendar oldValue = workingDate;
             workingDate = newValue;
-            validate();
-            getDeepCopyWizard().applyWorkingDate();
-            notifyListeners(new PropertyChangeEvent(this, WORKING_DATE, oldValue, newValue));
             refreshVersionId();
+            getDeepCopyWizard().applyWorkingDate();
+            validate();
+            notifyListeners(new PropertyChangeEvent(this, WORKING_DATE, oldValue, newValue));
         }
 
         public String getVersionId() {
