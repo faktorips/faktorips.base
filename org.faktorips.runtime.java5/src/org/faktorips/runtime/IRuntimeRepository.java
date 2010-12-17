@@ -187,8 +187,7 @@ public interface IRuntimeRepository {
      * @param id The product component's id.
      * @param effectiveDate The process' effective date
      * @return The product component generation or <code>null</code>.
-     * @throws ProductCmptGenerationNotFoundException if the product component exists but no
-     *             generation for the given effectiveDate.
+     * @throws ProductCmptGenerationNotFoundException if no generation for the given effectiveDate.
      * 
      * @see #getProductComponentGeneration(String, Calendar)
      */
