@@ -53,7 +53,7 @@ public class GregorianCalendarControlFactory extends ValueDatatypeControlFactory
 
     @Override
     public boolean isFactoryFor(ValueDatatype datatype) {
-        return Datatype.GREGORIAN_CALENDAR.equals(datatype);
+        return Datatype.GREGORIAN_CALENDAR.equals(datatype) || Datatype.GREGORIAN_CALENDAR_DATE.equals(datatype);
     }
 
     @Override

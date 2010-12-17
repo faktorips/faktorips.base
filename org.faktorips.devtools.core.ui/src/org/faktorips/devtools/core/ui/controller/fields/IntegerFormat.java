@@ -61,7 +61,8 @@ public class IntegerFormat extends AbstractInputFormat {
     @Override
     protected void verifyInternal(VerifyEvent e, String resultingText) {
         if (resultingText.length() > 2) {
-            e.doit = isParsable(numberFormat, resultingText);
+            // allow valid numbers as well as numbers with a grouping separator at the end
+            e.doit = isParsable(numberFormat, resultingText) || isParsable(numberFormat, resultingText + "0"); //$NON-NLS-1$
         } else {
             e.doit = containsAllowedCharactersOnly(exampleString, resultingText);
         }
