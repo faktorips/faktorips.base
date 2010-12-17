@@ -219,10 +219,8 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
         assertEquals(basePcGen, mainRepository.getProductComponentGeneration("basePc", effectiveDate));
         // Tests with validTo
         assertEquals(validToPcGen, mainRepository.getProductComponentGeneration("validToPc", effectiveDate));
-        assertEquals(
-                validToPcGen,
-                mainRepository.getProductComponentGeneration("validToPc",
-                        validTo.toGregorianCalendar(effectiveDate.getTimeZone())));
+        assertEquals(validToPcGen, mainRepository.getProductComponentGeneration("validToPc", validTo
+                .toGregorianCalendar(effectiveDate.getTimeZone())));
         GregorianCalendar tooLate = validTo.toGregorianCalendar(effectiveDate.getTimeZone());
         tooLate.add(Calendar.MILLISECOND, 1);
         assertNull(mainRepository.getProductComponentGeneration("validToPc", tooLate));
@@ -231,7 +229,7 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
     public void testGetAllProductComponents_ByClass() {
         List<IProductComponent> result = mainRepository.getAllProductComponents(TestProductComponent.class);
         assertEquals(5, result.size());
-        assertEquals(mainPc, result.get(0));
+        assertEquals(mainPc, result.get(1));
         assertEquals(inAPc, result.get(2));
         assertEquals(inBPc, result.get(3));
         assertEquals(basePc, result.get(4));
@@ -249,7 +247,7 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
     public void testGetAllProductComponents() {
         List<IProductComponent> result = mainRepository.getAllProductComponents();
         assertEquals(5, result.size());
-        assertEquals(mainPc, result.get(0));
+        assertEquals(mainPc, result.get(1));
         assertEquals(inAPc, result.get(2));
         assertEquals(inBPc, result.get(3));
         assertEquals(basePc, result.get(4));
@@ -267,7 +265,7 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
     public void testGetAllProductComponentIds() {
         List<String> result = mainRepository.getAllProductComponentIds();
         assertEquals(5, result.size());
-        assertEquals(mainPc.getId(), result.get(0));
+        assertEquals(mainPc.getId(), result.get(1));
         assertEquals(inAPc.getId(), result.get(2));
         assertEquals(inBPc.getId(), result.get(3));
         assertEquals(basePc.getId(), result.get(4));
