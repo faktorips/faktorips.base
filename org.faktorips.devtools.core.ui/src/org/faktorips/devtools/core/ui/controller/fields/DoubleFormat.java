@@ -42,7 +42,7 @@ public class DoubleFormat extends AbstractInputFormat {
         numberFormat.setParseIntegerOnly(false);
         numberFormat.setMaximumFractionDigits(3);
         numberFormat.setRoundingMode(RoundingMode.HALF_UP);
-        exampleString = numberFormat.format(-1.2E12);
+        exampleString = numberFormat.format(-1000.2);
     }
 
     @Override

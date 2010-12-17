@@ -13,6 +13,9 @@
 
 package org.faktorips.datatype;
 
+import java.math.BigDecimal;
+
+import org.faktorips.datatype.classtypes.BigDecimalDatatype;
 import org.faktorips.datatype.classtypes.BooleanDatatype;
 import org.faktorips.datatype.classtypes.DecimalDatatype;
 import org.faktorips.datatype.classtypes.DoubleDatatype;
@@ -53,6 +56,11 @@ public interface Datatype extends Comparable<Datatype> {
      * Datatype representing {@link Decimal}.
      */
     public final static ValueDatatype DECIMAL = new DecimalDatatype();
+
+    /**
+     * Datatype representing {@link BigDecimal}.
+     */
+    public static final ValueDatatype BIG_DECIMAL = new BigDecimalDatatype();
 
     /**
      * Datatype representing {@link java.lang.Double}.

@@ -54,7 +54,8 @@ public class DoubleDecimalControlFactory extends ValueDatatypeControlFactory {
 
     @Override
     public boolean isFactoryFor(ValueDatatype datatype) {
-        return Datatype.DOUBLE.equals(datatype) || Datatype.DECIMAL.equals(datatype);
+        return Datatype.DOUBLE.equals(datatype) || Datatype.DECIMAL.equals(datatype)
+                || Datatype.BIG_DECIMAL.equals(datatype);
     }
 
     @Override

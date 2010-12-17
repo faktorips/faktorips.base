@@ -52,7 +52,8 @@ public class IntegerLongControlFactory extends ValueDatatypeControlFactory {
 
     @Override
     public boolean isFactoryFor(ValueDatatype datatype) {
-        return Datatype.INTEGER.equals(datatype) | Datatype.LONG.equals(datatype);
+        return Datatype.INTEGER.equals(datatype) || Datatype.PRIMITIVE_INT.equals(datatype)
+                || Datatype.LONG.equals(datatype) || Datatype.PRIMITIVE_LONG.equals(datatype);
     }
 
     @Override
