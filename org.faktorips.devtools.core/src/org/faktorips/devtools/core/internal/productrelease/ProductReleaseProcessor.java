@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.productrelease;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -213,7 +214,10 @@ public class ProductReleaseProcessor {
         List<IResource> resources = new ArrayList<IResource>();
         resources.add(ipsProject.getProject().getFile(IpsProject.PROPERTY_FILE_EXTENSION_INCL_DOT));
         for (IIpsPackageFragmentRoot root : ipsProject.getIpsPackageFragmentRoots()) {
-            resources.add(ipsProject.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root));
+            IFile tocFile = ipsProject.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root);
+            if (tocFile != null) {
+                resources.add(ipsProject.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root));
+            }
         }
 
         resources.addAll(releaseAndDeploymentOperation.additionalResourcesToCommit(ipsProject));
