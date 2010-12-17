@@ -14,17 +14,14 @@
 package org.faktorips.devtools.core.ui.controller.fields;
 
 import java.text.NumberFormat;
-import java.text.ParsePosition;
 import java.util.Locale;
-
-import org.eclipse.swt.events.VerifyEvent;
 
 /**
  * Format for integer number input.
  * 
  * @author Stefan Widmaier
  */
-public class IntegerFormat extends AbstractInputFormat {
+public class IntegerFormat extends AbstractNumberFormat {
 
     private NumberFormat numberFormat;
 
@@ -42,30 +39,19 @@ public class IntegerFormat extends AbstractInputFormat {
     }
 
     @Override
-    protected Object parseInternal(String stringToBeParsed) {
-        ParsePosition position = new ParsePosition(0);
-        Object value = numberFormat.parse(stringToBeParsed, position);
-        if (position.getIndex() == stringToBeParsed.length()) {
-            return value.toString();
-        } else {
-            return null;
-        }
-    }
-
-    @Override
     protected String formatInternal(Object value) {
         Integer integer = new Integer((String)value);
         return numberFormat.format(integer);
     }
 
     @Override
-    protected void verifyInternal(VerifyEvent e, String resultingText) {
-        if (resultingText.length() > 2) {
-            // allow valid numbers as well as numbers with a grouping separator at the end
-            e.doit = isParsable(numberFormat, resultingText) || isParsable(numberFormat, resultingText + "0"); //$NON-NLS-1$
-        } else {
-            e.doit = containsAllowedCharactersOnly(exampleString, resultingText);
-        }
+    protected String getExampleString() {
+        return exampleString;
+    }
+
+    @Override
+    protected NumberFormat getNumberFormat() {
+        return numberFormat;
     }
 
 }

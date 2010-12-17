@@ -15,17 +15,15 @@ package org.faktorips.devtools.core.ui.controller.fields;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.text.ParsePosition;
+import java.text.NumberFormat;
 import java.util.Locale;
-
-import org.eclipse.swt.events.VerifyEvent;
 
 /**
  * Format for floating point number input.
  * 
  * @author Stefan Widmaier
  */
-public class DoubleFormat extends AbstractInputFormat {
+public class DoubleFormat extends AbstractNumberFormat {
 
     private DecimalFormat numberFormat;
 
@@ -46,21 +44,6 @@ public class DoubleFormat extends AbstractInputFormat {
     }
 
     @Override
-    protected Object parseInternal(String stringToBeParsed) {
-        ParsePosition position = new ParsePosition(0);
-        Object value = numberFormat.parse(stringToBeParsed, position);
-        if (value != null && position.getIndex() == stringToBeParsed.length()) {
-            // System.out.println("String \"" + stringToBeParsed + "\" was parsed to value \"" +
-            // value.toString() + "\"");
-            return value.toString();
-        } else {
-            // System.out.println("String \"" + stringToBeParsed +
-            // "\" could not be parsed to a value. Returning null");
-            return null;
-        }
-    }
-
-    @Override
     protected String formatInternal(Object value) {
         Double d = new Double((String)value);
         // System.out.print("Value \"" + d + "\" is being parsed...");
@@ -70,14 +53,13 @@ public class DoubleFormat extends AbstractInputFormat {
     }
 
     @Override
-    protected void verifyInternal(VerifyEvent e, String resultingText) {
-        if (resultingText.length() > 2) {
-            // allow valid numbers as well as numbers with a grouping separator at the end (but only
-            // beore the decimal separator)
-            e.doit = isParsable(numberFormat, resultingText) || isParsable(numberFormat, resultingText + "0"); //$NON-NLS-1$
-        } else {
-            e.doit = containsAllowedCharactersOnly(exampleString, resultingText);
-        }
+    protected String getExampleString() {
+        return exampleString;
+    }
+
+    @Override
+    protected NumberFormat getNumberFormat() {
+        return numberFormat;
     }
 
 }
