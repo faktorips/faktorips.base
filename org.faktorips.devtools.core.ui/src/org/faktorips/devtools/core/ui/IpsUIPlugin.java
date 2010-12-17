@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.content.IContentType;
@@ -92,13 +93,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.ui.controlfactories.BooleanControlFactory;
 import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
-import org.faktorips.devtools.core.ui.controlfactories.DoubleDecimalControlFactory;
-import org.faktorips.devtools.core.ui.controlfactories.EnumDatatypeControlFactory;
-import org.faktorips.devtools.core.ui.controlfactories.EnumTypeDatatypeControlFactory;
-import org.faktorips.devtools.core.ui.controlfactories.GregorianCalendarControlFactory;
-import org.faktorips.devtools.core.ui.controlfactories.IntegerLongControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditFieldChangesBroadcaster;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog.IpsObjectSelectionHistory;
 import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
@@ -192,13 +187,39 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         IpsCompositeSaveParticipant saveParticipant = new IpsCompositeSaveParticipant();
         saveParticipant.addSaveParticipant(ipsEditorSettings);
         ResourcesPlugin.getWorkspace().addSaveParticipant(this, saveParticipant);
-        controlFactories = new ValueDatatypeControlFactory[] {
-                new BooleanControlFactory(IpsPlugin.getDefault().getIpsPreferences()),
-                new EnumDatatypeControlFactory(), new EnumTypeDatatypeControlFactory(),
-                new IntegerLongControlFactory(), new DoubleDecimalControlFactory(),
-                new GregorianCalendarControlFactory(), new DefaultControlFactory() };
+        controlFactories = initValueDatatypeControlFactories();
         ipsElementWorkbenchAdapterAdapterFactory = new IpsElementWorkbenchAdapterAdapterFactory();
         Platform.getAdapterManager().registerAdapters(ipsElementWorkbenchAdapterAdapterFactory, IIpsElement.class);
+    }
+
+    private ValueDatatypeControlFactory[] initValueDatatypeControlFactories() throws InvalidRegistryObjectException,
+            CoreException {
+        List<ValueDatatypeControlFactory> factories = new ArrayList<ValueDatatypeControlFactory>();
+
+        ExtensionPoints extensionPoints = new ExtensionPoints(registry, PLUGIN_ID);
+        IExtension[] extensions = extensionPoints.getExtension("valueDatatypeControlFactory"); //$NON-NLS-1$
+        for (IExtension extension : extensions) {
+            IConfigurationElement[] configElements = extension.getConfigurationElements();
+            for (IConfigurationElement configElement : configElements) {
+                String configElClass = configElement.getAttribute(CONFIG_PROPERTY_CLASS);
+                if (StringUtils.isEmpty(configElClass)) {
+                    throw new CoreException(new IpsStatus(IStatus.ERROR,
+                            "A problem occured while trying to load the extension: " //$NON-NLS-1$
+                                    + extension.getExtensionPointUniqueIdentifier()
+                                    + ". The attribute \"" + CONFIG_PROPERTY_CLASS + "\" is not specified.")); //$NON-NLS-1$ //$NON-NLS-2$
+                } else {
+                    ValueDatatypeControlFactory factory = ExtensionPoints.createExecutableExtension(extension,
+                            configElement, CONFIG_PROPERTY_CLASS, ValueDatatypeControlFactory.class);
+                    factories.add(factory);
+                }
+            }
+        }
+        /*
+         * Make sure defaultControlFactory is the last one registered, as it functions as a
+         * fallback.
+         */
+        factories.add(new DefaultControlFactory());
+        return factories.toArray(new ValueDatatypeControlFactory[factories.size()]);
     }
 
     @Override
@@ -481,9 +502,9 @@ public class IpsUIPlugin extends AbstractUIPlugin {
              * show information in the status bar about using the default text editor instead of
              * using the default IPS object editor.
              */
-            ((IEditorSite)editorPart.getSite()).getActionBars().getStatusLineManager()
-                    .setMessage(images.getSharedImage("size8/InfoMessage.gif", true), //$NON-NLS-1$
-                            Messages.IpsPlugin_infoDefaultTextEditorWasOpened);
+            ((IEditorSite)editorPart.getSite()).getActionBars().getStatusLineManager().setMessage(
+                    images.getSharedImage("size8/InfoMessage.gif", true), //$NON-NLS-1$
+                    Messages.IpsPlugin_infoDefaultTextEditorWasOpened);
             return editorPart;
         } catch (PartInitException e) {
             IpsPlugin.logAndShowErrorDialog(e);
@@ -676,8 +697,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     private IDialogSettings getHistorySettings() {
-        IDialogSettings settings = IpsUIPlugin.getDefault().getDialogSettings()
-                .getSection(OPEN_IPS_OBJECT_HISTORY_SETTINGS);
+        IDialogSettings settings = IpsUIPlugin.getDefault().getDialogSettings().getSection(
+                OPEN_IPS_OBJECT_HISTORY_SETTINGS);
         if (settings == null) {
             settings = IpsUIPlugin.getDefault().getDialogSettings().addNewSection(OPEN_IPS_OBJECT_HISTORY_SETTINGS);
         }
@@ -815,8 +836,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     /**
      * Images in eclipse is not so easy as it looks like. If you are not familiar with the basics of
-     * image handling in eclipse, read this short article <a href=
-     * "http://www.eclipse.org/articles/Article-Using%20Images%20In%20Eclipse/Using%20Images%20In%20Eclipse.html"
+     * image handling in eclipse, read this short article <a href="http://www.eclipse.org/articles/Article-Using%20Images%20In%20Eclipse/Using%20Images%20In%20Eclipse.html"
      * >Using Images in the Eclipse UI</a>
      * <p>
      * In Faktor IPS we have a two kinds of images handled by the image handling. The first kind of

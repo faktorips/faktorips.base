@@ -23,6 +23,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.PrimitiveBooleanDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.BooleanDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -34,7 +35,6 @@ import org.faktorips.devtools.core.ui.table.ComboCellEditor;
 import org.faktorips.devtools.core.ui.table.GridTableViewerTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
-import org.faktorips.util.ArgumentCheck;
 
 /**
  * A control factory for the datytpes boolean and primitve boolean.
@@ -45,10 +45,9 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
 
     private IpsPreferences preferences;
 
-    public BooleanControlFactory(IpsPreferences preferences) {
+    public BooleanControlFactory() {
         super();
-        ArgumentCheck.notNull(preferences, this);
-        this.preferences = preferences;
+        this.preferences = IpsPlugin.getDefault().getIpsPreferences();
     }
 
     @Override

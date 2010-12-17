@@ -7,6 +7,7 @@
    <extension-point id="extensionPropertyEditFieldFactory" name="Extension Property Edit Field Factory" schema="schema/extensionPropertyEditFieldFactory.exsd"/>
    
    <extension-point id="adapterprovider" name="Adapter Provider" schema="schema/adapterprovider.exsd" />
+   <extension-point id="valueDatatypeControlFactory" name="valueDatatypeControlFactory" schema="schema/valueDatatypeControlFactory.exsd"/>
    
 <!-- 
     Product Definition Perspective
@@ -1815,6 +1816,27 @@
                properties="isModelObject"
                type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
          </propertyTester>
+      </extension>
+      <extension
+            point="org.faktorips.devtools.core.ui.valueDatatypeControlFactory">
+         <ControlFactory
+               class="org.faktorips.devtools.core.ui.controlfactories.BooleanControlFactory">
+         </ControlFactory>
+         <ControlFactory
+               class="org.faktorips.devtools.core.ui.controlfactories.EnumDatatypeControlFactory">
+         </ControlFactory>
+         <ControlFactory
+               class="org.faktorips.devtools.core.ui.controlfactories.EnumTypeDatatypeControlFactory">
+         </ControlFactory>
+         <ControlFactory
+               class="org.faktorips.devtools.core.ui.controlfactories.IntegerLongControlFactory">
+         </ControlFactory>
+         <ControlFactory
+               class="org.faktorips.devtools.core.ui.controlfactories.DoubleDecimalControlFactory">
+         </ControlFactory>
+         <ControlFactory
+               class="org.faktorips.devtools.core.ui.controlfactories.GregorianCalendarControlFactory">
+         </ControlFactory>
       </extension>
 
 </plugin>

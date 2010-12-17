@@ -19,7 +19,7 @@ import java.text.ParsePosition;
 import org.eclipse.swt.events.VerifyEvent;
 
 /**
- * Format for integer number input.
+ * Base class or number formats.
  * 
  * @author Stefan Widmaier
  */
@@ -36,10 +36,6 @@ public abstract class AbstractNumberFormat extends AbstractInputFormat {
         }
     }
 
-    protected abstract NumberFormat getNumberFormat();
-
-    protected abstract String getExampleString();
-
     @Override
     protected void verifyInternal(VerifyEvent e, String resultingText) {
         if (resultingText.length() > 2) {
@@ -52,5 +48,9 @@ public abstract class AbstractNumberFormat extends AbstractInputFormat {
             e.doit = containsAllowedCharactersOnly(getExampleString(), resultingText);
         }
     }
+
+    protected abstract NumberFormat getNumberFormat();
+
+    protected abstract String getExampleString();
 
 }
