@@ -136,7 +136,6 @@ public abstract class GenAttribute extends GenTypePart {
     }
 
     /**
-     * 
      * Convenience method that can be used by subclasses to add the attribute name constant to the
      * generated Java elements.
      * 
