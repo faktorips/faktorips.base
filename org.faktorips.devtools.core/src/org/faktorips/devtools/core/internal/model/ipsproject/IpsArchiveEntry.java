@@ -100,7 +100,7 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
     }
 
     @Override
-    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() throws CoreException {
+    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() {
         return archive.getRoot();
     }
 
@@ -158,9 +158,8 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
     }
 
     private IIpsSrcFile getIpsSrcFile(QualifiedNameType qNameType) {
-        archive.getRoot().getIpsPackageFragment(qNameType.getPackageName());
         ArchiveIpsPackageFragment pack = new ArchiveIpsPackageFragment(
-                (ArchiveIpsPackageFragmentRoot)archive.getRoot(), qNameType.getPackageName());
+                (ArchiveIpsPackageFragmentRoot)getIpsPackageFragmentRoot(), qNameType.getPackageName());
         return new ArchiveIpsSrcFile(pack, qNameType.getFileName());
     }
 

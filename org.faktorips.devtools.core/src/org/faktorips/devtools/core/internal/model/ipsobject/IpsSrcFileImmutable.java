@@ -13,7 +13,11 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -38,6 +42,8 @@ import org.w3c.dom.Document;
 public class IpsSrcFileImmutable extends IpsSrcFile {
 
     private IpsObject ipsObject;
+
+    private String xmlContent;
 
     /**
      * Create a new IpsSrcFileImmutable with a content based on the provided InputStream. The
@@ -89,13 +95,32 @@ public class IpsSrcFileImmutable extends IpsSrcFile {
     }
 
     private void setContents(InputStream in) {
+        InputStreamReader inputStreamReader = new InputStreamReader(in);
+        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+        String line;
+        StringBuilder builder = new StringBuilder();
+        try {
+            while ((line = bufferedReader.readLine()) != null) {
+                builder.append(line);
+            }
+        } catch (IOException e) {
+            IpsPlugin.log(e);
+        }
+        xmlContent = builder.toString();
+
         try {
             ipsObject = (IpsObject)getIpsObjectType().newObject(this);
-            Document doc = IpsPlugin.getDefault().newDocumentBuilder().parse(in);
+            Document doc = IpsPlugin.getDefault().newDocumentBuilder().parse(getContentFromEnclosingResource());
             ipsObject.initFromXml(doc.getDocumentElement());
         } catch (Exception e) {
             IpsPlugin.log(new IpsStatus(e));
         }
+    }
+
+    @Override
+    public InputStream getContentFromEnclosingResource() throws CoreException {
+        ByteArrayInputStream content = new ByteArrayInputStream(xmlContent.getBytes());
+        return content;
     }
 
     /**

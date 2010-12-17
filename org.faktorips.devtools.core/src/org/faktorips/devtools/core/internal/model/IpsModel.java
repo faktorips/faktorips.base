@@ -1313,12 +1313,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (file == null) {
             return null;
         }
-        IResource enclResource = file.getEnclosingResource();
-        if (enclResource == null || !enclResource.exists()) {
-            return null;
-        }
         IpsSrcFileContent content = ipsObjectsMap.get(file);
-        long resourceModStamp = enclResource.getModificationStamp();
 
         // new content
         if (content == null) {
@@ -1327,6 +1322,12 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             return content;
         }
 
+        IResource enclResource = file.getEnclosingResource();
+        if (enclResource == null || !enclResource.exists()) {
+            return content;
+        }
+
+        long resourceModStamp = enclResource.getModificationStamp();
         // existing, synchronized content
         if (content.getModificationStamp() == resourceModStamp) {
             return checkSynchronizedContent(content, loadCompleteContent);
