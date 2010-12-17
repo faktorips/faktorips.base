@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core;
 
+import java.awt.im.InputContext;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
@@ -167,21 +168,36 @@ public class IpsPreferences {
         prefStore.setDefault(ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER, false);
         prefStore.setDefault(SECTIONS_IN_TYPE_EDITORS, TWO_SECTIONS_IN_TYPE_EDITOR_PAGE);
         prefStore.setDefault(RANGE_EDIT_FIELDS_IN_ONE_ROW, true);
-        /*
-         * Use the java default locale (and not the configured eclipse locale) for data type
-         * formatting. Users will then be able to use german data type formatting within an
-         * otherwise english eclipse.
-         * 
-         * Important: Do NOT use InputContext.getInstance().getLocale() at this point. As an
-         * AWT-Class InputContext causes the FIPS headless build to crash and thus renders all
-         * server-side FIPS-Systems unusable.
-         */
-        prefStore.setDefault(DATATYPE_FORMATTING_LOCALE, Locale.getDefault().toString());
+
+        setDefaultForDatatypeFormatting(prefStore);
 
         if (IPreferenceStore.STRING_DEFAULT_DEFAULT.equals(prefStore.getString(WORKING_DATE))) {
             setWorkingDate(new GregorianCalendar());
         }
         datatypeFormatter = new DatatypeFormatter(this);
+    }
+
+    /**
+     * Retrieves the locale of the currently used keyboard layout via {@link InputContext} or the
+     * java default locale if the inputContext is unavailable (e.g. in
+     * headless/server-environments). The retrieved locale is used for datatype formating.
+     * 
+     * @param prefStore
+     */
+    private void setDefaultForDatatypeFormatting(IPreferenceStore prefStore) {
+        Locale defaultLocale = null;
+        try {
+            InputContext inputContext = InputContext.getInstance();
+            if (inputContext != null) {
+                defaultLocale = inputContext.getLocale();
+            }
+        } catch (Throwable t) {
+            IpsPlugin.log(t);
+        }
+        if (defaultLocale == null) {
+            defaultLocale = Locale.getDefault();
+        }
+        prefStore.setDefault(DATATYPE_FORMATTING_LOCALE, defaultLocale.toString());
     }
 
     public void addChangeListener(IPropertyChangeListener listener) {

@@ -145,7 +145,7 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
         ComboFieldEditor datatypeFormattingLocaleCombo = new ComboFieldEditor(
                 IpsPreferences.DATATYPE_FORMATTING_LOCALE, Messages.FaktorIpsPreferencePage_LabelFormattingOfValues,
                 localeDisplayNameValues, getFieldEditorParent());
-        // datatypeFormattingLocaleCombo.getComboBoxControl(getFieldEditorParent()).setEnabled(false);
+        datatypeFormattingLocaleCombo.getComboBoxControl(getFieldEditorParent()).setEnabled(false);
 
         addField(datatypeFormattingLocaleCombo);
     }
