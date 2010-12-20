@@ -79,8 +79,8 @@ public class ProductReleaseProcessor {
         try {
             String tag = buildRelease(ipsProject, newVersion, new SubProgressMonitor(monitor, 50));
             // start extended release
-            boolean buildReleaseAndDeployment = getDeploymentOperation(ipsProject).buildReleaseAndDeployment(
-                    ipsProject, tag, selectedTargetSystems, new SubProgressMonitor(monitor, 50));
+            boolean buildReleaseAndDeployment = releaseAndDeploymentOperation.buildReleaseAndDeployment(ipsProject,
+                    tag, selectedTargetSystems, new SubProgressMonitor(monitor, 50));
             return buildReleaseAndDeployment;
         } finally {
             monitor.done();
@@ -142,8 +142,8 @@ public class ProductReleaseProcessor {
         if (releaseExtensionElement == null) {
             return null;
         }
-        IReleaseAndDeploymentOperation result = IReleaseAndDeploymentOperation.class.cast(releaseExtensionElement
-                .createExecutableExtension(EXTENSION_OPERATION_PROPERTY));
+        IReleaseAndDeploymentOperation result = (IReleaseAndDeploymentOperation)releaseExtensionElement
+                .createExecutableExtension(EXTENSION_OPERATION_PROPERTY);
         return result;
     }
 

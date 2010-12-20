@@ -82,7 +82,6 @@ public class ProductReleaserBuilderWizard extends Wizard {
             finished = true;
             getContainer().run(true, false, operation);
             setFinishStatus(!operation.returnState);
-            getContainer().updateButtons();
             return false;
         } catch (InvocationTargetException e) {
             observableProgressMessages.error("Invocation Exception: " + e.getTargetException().getMessage()); //$NON-NLS-1$
@@ -92,6 +91,8 @@ public class ProductReleaserBuilderWizard extends Wizard {
         } catch (InterruptedException e) {
             observableProgressMessages.error(e.getMessage());
             return false;
+        } finally {
+            getContainer().updateButtons();
         }
     }
 

@@ -27,6 +27,8 @@ public class TestDeploymentOperation extends AbstractReleaseAndDeploymentOperati
             String tag,
             List<ITargetSystem> selectedTargetSystems,
             IProgressMonitor progressMonitor) {
+        getObservableProgressMessages().info("Test Deployment Operation");
+        getObservableProgressMessages().warning("Nothing happens");
         return true;
     }
 

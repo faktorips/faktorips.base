@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 public abstract class AbstractReleaseAndDeploymentOperation implements IReleaseAndDeploymentOperation {
 
-    private ObservableProgressMessages observableProgressMessages = new ObservableProgressMessages();
+    private ObservableProgressMessages observableProgressMessages;
 
     @Override
     public List<ITargetSystem> getAvailableTargetSystems(IIpsProject ipsProject) {
