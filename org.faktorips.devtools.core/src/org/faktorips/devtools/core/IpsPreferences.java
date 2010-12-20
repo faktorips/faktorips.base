@@ -185,10 +185,6 @@ public class IpsPreferences {
      * @param prefStore
      */
     private void setDefaultForDatatypeFormatting(IPreferenceStore prefStore) {
-
-        // Test the hudson build - the integration test should fail without the x-server
-        InputContext.getInstance().getLocale();
-
         Locale defaultLocale = null;
         try {
             InputContext inputContext = InputContext.getInstance();
