@@ -77,7 +77,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
      * {@inheritDoc}
      */
     @Override
-    public final IProductComponent getProductComponentInternal(String kindId, String versionId) {
+    protected final IProductComponent getProductComponentInternal(String kindId, String versionId) {
         ProductCmptTocEntry entry = toc.getProductCmptTocEntry(kindId, versionId);
         if (entry == null) {
             return null;
@@ -163,7 +163,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
      * {@inheritDoc}
      */
     @Override
-    public IProductComponentGeneration getLatestProductComponentGenerationInternal(IProductComponent productCmpt) {
+    protected IProductComponentGeneration getLatestProductComponentGenerationInternal(IProductComponent productCmpt) {
         if (productCmpt == null) {
             throw new NullPointerException("The parameter productCmpt must not be null.");
         }
@@ -353,7 +353,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
      * change for every test creation.
      */
     @Override
-    public synchronized IpsTestCaseBase getIpsTestCaseInternal(String qName, IRuntimeRepository runtimeRepository) {
+    protected synchronized IpsTestCaseBase getIpsTestCaseInternal(String qName, IRuntimeRepository runtimeRepository) {
         TestCaseTocEntry tocEntry = toc.getTestCaseTocEntryByQName(qName);
         if (tocEntry == null) {
             return null;

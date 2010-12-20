@@ -68,58 +68,55 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
         initCaches(cl);
     }
 
-    @SuppressWarnings("unchecked")
     protected void initCaches(ClassLoader cl) {
-        Class<IProductComponent> productCmptClass;
-        Class<IProductComponentGeneration> productCmptGenClass;
-        Class<ITable> tableClass;
         try {
-            productCmptClass = (Class<IProductComponent>)cl.loadClass(IProductComponent.class.getName());
-            productCmptGenClass = (Class<IProductComponentGeneration>)cl.loadClass(IProductComponentGeneration.class
+            @SuppressWarnings("unchecked")
+            Class<IProductComponent> productCmptClass = (Class<IProductComponent>)cl.loadClass(IProductComponent.class
                     .getName());
-            tableClass = (Class<ITable>)cl.loadClass(ITable.class.getName());
+            IComputable<String, IProductComponent> productCmptComputer = new AbstractComputable<String, IProductComponent>(
+                    productCmptClass) {
+                public IProductComponent compute(String key) throws InterruptedException {
+                    return getNotCachedProductComponent(key);
+                }
+            };
+            productCmptCache = cacheFactory.createProductCmptCache(productCmptComputer);
+
+            @SuppressWarnings("unchecked")
+            Class<IProductComponentGeneration> productCmptGenClass = (Class<IProductComponentGeneration>)cl
+                    .loadClass(IProductComponentGeneration.class.getName());
+            IComputable<GenerationId, IProductComponentGeneration> productCmptGenComputer = new AbstractComputable<GenerationId, IProductComponentGeneration>(
+                    productCmptGenClass) {
+
+                public IProductComponentGeneration compute(GenerationId key) throws InterruptedException {
+                    return getNotCachedProductComponentGeneration(key);
+                }
+
+            };
+            productCmptGenerationCache = cacheFactory.createProductCmptGenerationCache(productCmptGenComputer);
+
+            @SuppressWarnings("unchecked")
+            Class<ITable> tableClass = (Class<ITable>)cl.loadClass(ITable.class.getName());
+            IComputable<String, ITable> tableComputer = new AbstractComputable<String, ITable>(tableClass) {
+
+                public ITable compute(String key) throws InterruptedException {
+                    return getNotCachedTable(key);
+                }
+
+            };
+            tableCacheByQName = cacheFactory.createTableCache(tableComputer);
+
+            IComputable<Class<?>, List<?>> enumValueComputer = new AbstractComputable<Class<?>, List<?>>(List.class) {
+
+                public List<?> compute(Class<?> key) throws InterruptedException {
+                    return getNotCachedEnumValues(key);
+                }
+            };
+            enumValuesCacheByClass = cacheFactory.createEnumCache(enumValueComputer);
+
+            enumXmlAdapters = new CopyOnWriteArrayList<XmlAdapter<?, ?>>();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-        IComputable<String, IProductComponent> productCmptComputer = new AbstractComputable<String, IProductComponent>(
-                productCmptClass) {
-            public IProductComponent compute(String key) throws InterruptedException {
-                return getNotCachedProductComponent(key);
-            }
-        };
-        productCmptCache = cacheFactory.createProductCmptCache(productCmptComputer);
-
-        IComputable<GenerationId, IProductComponentGeneration> productCmptGenComputer = new AbstractComputable<GenerationId, IProductComponentGeneration>(
-                productCmptGenClass) {
-
-            public IProductComponentGeneration compute(GenerationId key) throws InterruptedException {
-                return getNotCachedProductComponentGeneration(key);
-            }
-
-        };
-
-        productCmptGenerationCache = cacheFactory.createProductCmptGenerationCache(productCmptGenComputer);
-
-        IComputable<String, ITable> tableComputer = new AbstractComputable<String, ITable>(ITable.class) {
-
-            public ITable compute(String key) throws InterruptedException {
-                return getNotCachedTable(key);
-            }
-
-        };
-
-        tableCacheByQName = cacheFactory.createTableCache(tableComputer);
-
-        IComputable<Class<?>, List<?>> enumValueComputer = new AbstractComputable<Class<?>, List<?>>(List.class) {
-
-            public List<?> compute(Class<?> key) throws InterruptedException {
-                return getNotCachedEnumValues(key);
-            }
-        };
-
-        enumValuesCacheByClass = cacheFactory.createEnumCache(enumValueComputer);
-
-        enumXmlAdapters = new CopyOnWriteArrayList<XmlAdapter<?, ?>>();
     }
 
     @Override
@@ -161,7 +158,7 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
      * {@inheritDoc}
      */
     @Override
-    public ITable getTableInternal(String qualifiedTableName) {
+    protected ITable getTableInternal(String qualifiedTableName) {
         try {
             return tableCacheByQName.compute(qualifiedTableName);
         } catch (InterruptedException e) {

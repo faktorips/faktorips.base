@@ -290,7 +290,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      * @param productCmptClass The class you want to search product components for
      * @param result adding the found product components to result list
      */
-    public void getAllProductComponentsInternal(Class<?> productCmptClass, List<IProductComponent> result) {
+    protected void getAllProductComponentsInternal(Class<?> productCmptClass, List<IProductComponent> result) {
         List<IProductComponent> allPCmpsOfThisRepos = new ArrayList<IProductComponent>();
         getAllProductComponents(allPCmpsOfThisRepos);
         for (IProductComponent productCmpt : allPCmpsOfThisRepos) {

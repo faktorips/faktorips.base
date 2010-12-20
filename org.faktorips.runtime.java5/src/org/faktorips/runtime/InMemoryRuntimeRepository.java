@@ -72,12 +72,12 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     }
 
     @Override
-    public IProductComponent getProductComponentInternal(String id) {
+    protected IProductComponent getProductComponentInternal(String id) {
         return productCmpts.get(id);
     }
 
     @Override
-    public IProductComponent getProductComponentInternal(String kindId, String versionId) {
+    protected IProductComponent getProductComponentInternal(String kindId, String versionId) {
         if (kindId == null) {
             return null;
         }
@@ -132,7 +132,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
      * {@inheritDoc}
      */
     @Override
-    public ITable getTableInternal(Class<?> tableClass) {
+    protected ITable getTableInternal(Class<?> tableClass) {
         for (ITable table : tables) {
             if (tableClass.isAssignableFrom(table.getClass())) {
                 return table;
@@ -182,7 +182,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     }
 
     @Override
-    public ITable getTableInternal(String qualifiedTableName) {
+    protected ITable getTableInternal(String qualifiedTableName) {
         return multipleContentTables.get(qualifiedTableName);
     }
 
@@ -217,7 +217,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     }
 
     @Override
-    public IProductComponentGeneration getProductComponentGenerationInternal(String productCmptId,
+    protected IProductComponentGeneration getProductComponentGenerationInternal(String productCmptId,
             Calendar effectiveDate) {
         if (productCmptId == null) {
             return null;
@@ -305,7 +305,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     }
 
     @Override
-    public IProductComponentGeneration getNextProductComponentGenerationInternal(IProductComponentGeneration generation) {
+    protected IProductComponentGeneration getNextProductComponentGenerationInternal(IProductComponentGeneration generation) {
         SortedSet<IProductComponentGeneration> genSet = getLoadedProductCmptGenerations(generation
                 .getProductComponent().getId());
         SortedSet<IProductComponentGeneration> successor = genSet.tailSet(generation);
@@ -328,7 +328,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     }
 
     @Override
-    public IProductComponentGeneration getPreviousProductComponentGenerationInternal(IProductComponentGeneration generation) {
+    protected IProductComponentGeneration getPreviousProductComponentGenerationInternal(IProductComponentGeneration generation) {
         SortedSet<IProductComponentGeneration> genSet = getLoadedProductCmptGenerations(generation
                 .getProductComponent().getId());
         SortedSet<IProductComponentGeneration> predecessors = genSet.headSet(generation);
@@ -339,7 +339,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     }
 
     @Override
-    public IProductComponentGeneration getLatestProductComponentGenerationInternal(IProductComponent productCmpt) {
+    protected IProductComponentGeneration getLatestProductComponentGenerationInternal(IProductComponent productCmpt) {
         if (productCmpt == null) {
             throw new NullPointerException("The parameter productCmpt cannot be null.");
         }
@@ -368,9 +368,9 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
 
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     protected <T> List<T> getEnumValuesInternal(Class<T> clazz) {
+        @SuppressWarnings("unchecked")
         List<T> values = (List<T>)enumValuesMap.get(clazz);
         if (values == null) {
             return null;
