@@ -231,15 +231,15 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
     public void testGetAllProductComponents_ByClass() {
         List<IProductComponent> result = mainRepository.getAllProductComponents(TestProductComponent.class);
         assertEquals(5, result.size());
-        assertEquals(mainPc, result.get(0));
-        assertEquals(inAPc, result.get(2));
-        assertEquals(inBPc, result.get(3));
-        assertEquals(basePc, result.get(4));
+        assertTrue(mainPc + " not exists", result.contains(mainPc));
+        assertTrue(inAPc + " not exists", result.contains(inAPc));
+        assertTrue(inBPc + " not exists", result.contains(inBPc));
+        assertTrue(basePc + " not exists", result.contains(basePc));
 
         result = inBetweenRepositoryA.getAllProductComponents(TestProductComponent.class);
         assertEquals(2, result.size());
-        assertEquals(inAPc, result.get(0));
-        assertEquals(basePc, result.get(1));
+        assertTrue(inAPc + " not exists", result.contains(inAPc));
+        assertTrue(basePc + " not exists", result.contains(basePc));
 
         result = baseRepository.getAllProductComponents(TestProductComponent.class);
         assertEquals(1, result.size());
@@ -249,15 +249,15 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
     public void testGetAllProductComponents() {
         List<IProductComponent> result = mainRepository.getAllProductComponents();
         assertEquals(5, result.size());
-        assertEquals(mainPc, result.get(0));
-        assertEquals(inAPc, result.get(2));
-        assertEquals(inBPc, result.get(3));
-        assertEquals(basePc, result.get(4));
+        assertTrue(mainPc + " not exists", result.contains(mainPc));
+        assertTrue(inAPc + " not exists", result.contains(inAPc));
+        assertTrue(inBPc + " not exists", result.contains(inBPc));
+        assertTrue(basePc + " not exists", result.contains(basePc));
 
         result = inBetweenRepositoryA.getAllProductComponents();
         assertEquals(2, result.size());
-        assertEquals(inAPc, result.get(0));
-        assertEquals(basePc, result.get(1));
+        assertTrue(inAPc + " not exists", result.contains(inAPc));
+        assertTrue(basePc + " not exists", result.contains(basePc));
 
         result = baseRepository.getAllProductComponents();
         assertEquals(1, result.size());
@@ -267,15 +267,15 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
     public void testGetAllProductComponentIds() {
         List<String> result = mainRepository.getAllProductComponentIds();
         assertEquals(5, result.size());
-        assertEquals(mainPc.getId(), result.get(0));
-        assertEquals(inAPc.getId(), result.get(2));
-        assertEquals(inBPc.getId(), result.get(3));
-        assertEquals(basePc.getId(), result.get(4));
+        assertTrue(mainPc + " not exists", result.contains(mainPc.getId()));
+        assertTrue(inAPc + " not exists", result.contains(inAPc.getId()));
+        assertTrue(inBPc + " not exists", result.contains(inBPc.getId()));
+        assertTrue(basePc + " not exists", result.contains(basePc.getId()));
 
         result = inBetweenRepositoryA.getAllProductComponentIds();
         assertEquals(2, result.size());
-        assertEquals(inAPc.getId(), result.get(0));
-        assertEquals(basePc.getId(), result.get(1));
+        assertTrue(inAPc + " not exists", result.contains(inAPc.getId()));
+        assertTrue(basePc + " not exists", result.contains(basePc.getId()));
 
         result = baseRepository.getAllProductComponentIds();
         assertEquals(1, result.size());
