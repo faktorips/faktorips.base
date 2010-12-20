@@ -39,7 +39,6 @@ public class Messages extends NLS {
     public static String PersistentAssociationInfo_msgOwningSideManyToManyNotAllowed;
     public static String PersistentAssociationInfo_msgOwningSideMissing;
     public static String PersistentAssociationInfo_msgTransientMismatch;
-    public static String PersistentAssociationInfo_msgWarningManualyCodeMergeNecessary;
     public static String PersistentAssociationInfo_sourceColumnName;
     public static String PersistentAssociationInfo_tagetColumnName;
     public static String PersistentAttributeInfo_msgColumnNameLengthExceedsMaximumLength;
