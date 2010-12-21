@@ -72,7 +72,7 @@ public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListe
     @Override
     public void logging(IStatus status, String plugin) {
         // never ever should a logentry appear...
-        fail();
+        fail("Status: " + status.toString() + " (Plugin: " + plugin + ")");
     }
 
     @Override
