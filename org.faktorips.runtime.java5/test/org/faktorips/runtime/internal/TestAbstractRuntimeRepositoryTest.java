@@ -270,7 +270,7 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
         List<String> result = mainRepository.getAllProductComponentIds();
         assertEquals(5, result.size());
         assertTrue(mainPc + " not exists", result.contains(mainPc.getId()));
-        assertTrue(validToPc + " not exists", result.contains(validToPc));
+        assertTrue(validToPc + " not exists", result.contains(validToPc.getId()));
         assertTrue(inAPc + " not exists", result.contains(inAPc.getId()));
         assertTrue(inBPc + " not exists", result.contains(inBPc.getId()));
         assertTrue(basePc + " not exists", result.contains(basePc.getId()));
