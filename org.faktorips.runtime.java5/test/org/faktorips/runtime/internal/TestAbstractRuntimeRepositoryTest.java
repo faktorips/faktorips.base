@@ -219,8 +219,10 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
         assertEquals(basePcGen, mainRepository.getProductComponentGeneration("basePc", effectiveDate));
         // Tests with validTo
         assertEquals(validToPcGen, mainRepository.getProductComponentGeneration("validToPc", effectiveDate));
-        assertEquals(validToPcGen, mainRepository.getProductComponentGeneration("validToPc", validTo
-                .toGregorianCalendar(effectiveDate.getTimeZone())));
+        assertEquals(
+                validToPcGen,
+                mainRepository.getProductComponentGeneration("validToPc",
+                        validTo.toGregorianCalendar(effectiveDate.getTimeZone())));
         GregorianCalendar tooLate = validTo.toGregorianCalendar(effectiveDate.getTimeZone());
         tooLate.add(Calendar.MILLISECOND, 1);
         assertNull(mainRepository.getProductComponentGeneration("validToPc", tooLate));
@@ -230,6 +232,7 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
         List<IProductComponent> result = mainRepository.getAllProductComponents(TestProductComponent.class);
         assertEquals(5, result.size());
         assertTrue(mainPc + " not exists", result.contains(mainPc));
+        assertTrue(validToPc + " not exists", result.contains(validToPc));
         assertTrue(inAPc + " not exists", result.contains(inAPc));
         assertTrue(inBPc + " not exists", result.contains(inBPc));
         assertTrue(basePc + " not exists", result.contains(basePc));
@@ -248,6 +251,7 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
         List<IProductComponent> result = mainRepository.getAllProductComponents();
         assertEquals(5, result.size());
         assertTrue(mainPc + " not exists", result.contains(mainPc));
+        assertTrue(validToPc + " not exists", result.contains(validToPc));
         assertTrue(inAPc + " not exists", result.contains(inAPc));
         assertTrue(inBPc + " not exists", result.contains(inBPc));
         assertTrue(basePc + " not exists", result.contains(basePc));
@@ -266,6 +270,7 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
         List<String> result = mainRepository.getAllProductComponentIds();
         assertEquals(5, result.size());
         assertTrue(mainPc + " not exists", result.contains(mainPc.getId()));
+        assertTrue(validToPc + " not exists", result.contains(validToPc));
         assertTrue(inAPc + " not exists", result.contains(inAPc.getId()));
         assertTrue(inBPc + " not exists", result.contains(inBPc.getId()));
         assertTrue(basePc + " not exists", result.contains(basePc.getId()));
