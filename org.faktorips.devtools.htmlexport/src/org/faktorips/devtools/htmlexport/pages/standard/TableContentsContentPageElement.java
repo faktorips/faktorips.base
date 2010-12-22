@@ -162,7 +162,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
                 contentTablePageElement = new ContentTablePageElement(tableContentsGeneration);
             } catch (CoreException e) {
                 getContext().addStatus(
-                        new IpsStatus(IStatus.ERROR,
+                        new IpsStatus(IStatus.WARNING,
                                 "Could not create ContentTable of " + ipsObjectGeneration.getName(), e)); //$NON-NLS-1$
             }
 

@@ -23,6 +23,8 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
@@ -54,7 +56,7 @@ public class DocumentationContext {
      */
     protected IpsObjectType[] documentedIpsObjectTypes = new IpsObjectType[0];
 
-    private List<IStatus> exportProblems = new ArrayList<IStatus>();
+    private List<IStatus> exportStatus = new ArrayList<IStatus>();
 
     /**
      * Path for output
@@ -181,7 +183,7 @@ public class DocumentationContext {
         return dateFormat;
     }
 
-    public boolean isShowValidationErrors() {
+    public boolean showsValidationErrors() {
         return showValidationErrors;
     }
 
@@ -228,15 +230,19 @@ public class DocumentationContext {
         return getMultiLanguageSupport().getLocalizedPluralCaption(ipsObjectPartContainer);
     }
 
-    public List<IStatus> getExportProblems() {
-        return exportProblems;
-    }
-
-    public void clearExportProblems() {
-        exportProblems.clear();
+    public IStatus getExportStatus() {
+        if (exportStatus.size() == 0) {
+            return new IpsStatus(IStatus.OK, "No problems"); //$NON-NLS-1$
+        }
+        if (exportStatus.size() == 1) {
+            return exportStatus.get(0);
+        }
+        return new MultiStatus(IpsPlugin.PLUGIN_ID, 0, exportStatus.toArray(new IStatus[exportStatus.size()]),
+                Messages.DocumentationContext_multipleErrorsMessage, null);
     }
 
     public void addStatus(IStatus status) {
-        exportProblems.add(status);
+        IpsPlugin.log(status);
+        exportStatus.add(status);
     }
 }

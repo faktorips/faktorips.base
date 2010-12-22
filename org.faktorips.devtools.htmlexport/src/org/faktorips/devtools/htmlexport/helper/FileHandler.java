@@ -37,27 +37,25 @@ public class FileHandler {
      * writes the content into a file. The filename is the path of the given
      * {@link DocumentationContext} and relativPath.
      * 
+     * 
      */
-    public static void writeFile(DocumentationContext context, String relativPath, byte[] content) {
+    public void writeFile(DocumentationContext context, String relativPath, byte[] content) throws IOException {
         writeFile(context.getPath() + File.separator + relativPath, content);
     }
 
     /**
      * writes the content into a file with the given filename.
      * 
+     * 
      */
-    public static void writeFile(String filename, byte[] content) {
-        try {
-            File file = new File((filename));
-            if (!file.getParentFile().exists()) {
-                file.getParentFile().mkdirs();
-            }
-            OutputStream outputStream = new FileOutputStream(file);
-            outputStream.write(content);
-            outputStream.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    public void writeFile(String filename, byte[] content) throws IOException {
+        File file = new File((filename));
+        if (!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
         }
+        OutputStream outputStream = new FileOutputStream(file);
+        outputStream.write(content);
+        outputStream.close();
     }
 
     /**
@@ -68,7 +66,7 @@ public class FileHandler {
      * @return content of the file
      * @throws IOException if an IOException occurs
      */
-    public static byte[] readFile(String bundleName, String fileName) throws IOException {
+    public byte[] readFile(String bundleName, String fileName) throws IOException {
         if (Platform.getBundle(bundleName) == null) {
             throw new IOException("Bundle not found"); //$NON-NLS-1$
         }

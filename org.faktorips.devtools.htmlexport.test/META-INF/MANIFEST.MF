@@ -6,7 +6,8 @@ Bundle-Version: 0.0.0
 Fragment-Host: org.faktorips.devtools.htmlexport
 Require-Bundle: org.eclipse.core.runtime,
  org.faktorips.abstracttest;bundle-version="0.0.0",
- org.faktorips.devtools.core
+ org.faktorips.devtools.core,
+ org.eclipse.ltk.core.refactoring;bundle-version="3.4.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.faktorips.devtools.htmlexport.test.documentor,
  org.faktorips.devtools.htmlexport.test.helper.html

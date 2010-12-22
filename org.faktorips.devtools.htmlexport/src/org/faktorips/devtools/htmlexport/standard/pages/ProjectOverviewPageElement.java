@@ -63,7 +63,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
 
         addIpsObjectPaths();
 
-        if (getContext().isShowValidationErrors()) {
+        if (getContext().showsValidationErrors()) {
             addValidationErrorsTable();
         }
 
@@ -199,9 +199,8 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         for (IIpsSrcFile srcFile : srcFiles) {
             try {
                 ml.add(srcFile.getIpsObject().validate(getProject()));
-            } catch (Exception e) {
-                System.out.println(srcFile);
-                e.printStackTrace();
+            } catch (CoreException e) {
+                getContext().addStatus(new IpsStatus(IStatus.WARNING, "Error validating " + srcFile.getName(), e)); //$NON-NLS-1$
             }
         }
         return ml;

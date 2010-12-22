@@ -23,5 +23,6 @@ public class HtmlExportOperationTest extends AbstractHtmlExportTest {
         context.setDocumentedIpsObjectTypes(context.getIpsProject().getIpsModel().getIpsObjectTypes());
 
         operation.run(new NullProgressMonitor());
+        assertTrue(context.getExportStatus().isOK());
     }
 }

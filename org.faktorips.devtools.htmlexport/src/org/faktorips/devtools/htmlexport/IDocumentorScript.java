@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.htmlexport;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
 
@@ -29,5 +30,5 @@ public interface IDocumentorScript {
      * should only called by the {@link HtmlExportOperation}
      * 
      */
-    public void execute(DocumentationContext context, IProgressMonitor monitor);
+    public void execute(DocumentationContext context, IProgressMonitor monitor) throws CoreException;
 }

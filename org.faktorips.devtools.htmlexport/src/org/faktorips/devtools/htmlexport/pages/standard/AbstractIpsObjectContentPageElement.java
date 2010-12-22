@@ -15,6 +15,9 @@ package org.faktorips.devtools.htmlexport.pages.standard;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -92,7 +95,7 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
                 StringUtils.isBlank(getContext().getDescription(getDocumentedIpsObject())) ? Messages.AbstractObjectContentPageElement_noDescription
                         : getContext().getDescription(getDocumentedIpsObject()), TextType.BLOCK));
 
-        if (getContext().isShowValidationErrors()) {
+        if (getContext().showsValidationErrors()) {
             addValidationErrorsTable();
         }
 
@@ -106,12 +109,14 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
     private void addValidationErrorsTable() {
 
         MessageList messageList = new MessageList();
+
         try {
             messageList = getDocumentedIpsObject().validate(getDocumentedIpsObject().getIpsProject());
-        } catch (Exception e) {
-            System.out.println(getDocumentedIpsObject().getName());
-            e.printStackTrace();
+        } catch (CoreException e) {
+            context.addStatus(new IpsStatus(IStatus.ERROR, "Error validating " //$NON-NLS-1$
+                    + getDocumentedIpsObject().getQualifiedName(), e));
         }
+
         if (messageList.isEmpty()) {
             return;
         }

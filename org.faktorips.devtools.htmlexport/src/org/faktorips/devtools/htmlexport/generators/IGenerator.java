@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.htmlexport.generators;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  * generates data of the documentation
  * 
@@ -24,7 +26,7 @@ public interface IGenerator {
      * returns generated data as byte[]
      * 
      */
-    public byte[] generate();
+    public byte[] generate() throws UnsupportedEncodingException;
 
     public final String CHARSET = "UTF-8"; //$NON-NLS-1$
 }

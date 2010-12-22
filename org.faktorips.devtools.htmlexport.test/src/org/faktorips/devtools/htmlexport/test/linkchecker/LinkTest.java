@@ -24,7 +24,7 @@ import org.faktorips.devtools.htmlexport.test.documentor.AbstractHtmlExportTest;
 
 public class LinkTest extends AbstractHtmlExportTest {
 
-    public void testCheckLinks() throws CoreException, MalformedURLException {
+    public void testCheckLinks() throws MalformedURLException, CoreException {
 
         final List<URL> errorUrls = new ArrayList<URL>();
         final List<URL> searchUrlsWithError = new ArrayList<URL>();

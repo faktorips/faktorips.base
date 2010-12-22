@@ -13,12 +13,16 @@
 
 package org.faktorips.devtools.htmlexport.standard;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.htmlexport.IDocumentorScript;
@@ -42,9 +46,10 @@ public class StandardDocumentorScript implements IDocumentorScript {
 
     private static final String STANDARD_PATH = ""; //$NON-NLS-1$
     private final HtmlUtil htmlUtil = new HtmlUtil();
+    private FileHandler fileHandler = new FileHandler();
 
     @Override
-    public void execute(DocumentationContext context, IProgressMonitor monitor) {
+    public void execute(DocumentationContext context, IProgressMonitor monitor) throws CoreException {
         List<IIpsSrcFile> srcFiles = context.getDocumentedSourceFiles();
         Set<IIpsPackageFragment> relatedPackageFragments = getRelatedPackageFragments(srcFiles);
 
@@ -52,34 +57,40 @@ public class StandardDocumentorScript implements IDocumentorScript {
 
         // Reihenfolge fuer anlauf des balkens im exportwizard ungemein wichtig
 
-        writeBaseFrameDefinition(context, new SubProgressMonitor(monitor, 1));
-        writeClassesContentPages(context, srcFiles, new SubProgressMonitor(monitor, srcFiles.size()));
-        writeOverviewPage(context, srcFiles, new SubProgressMonitor(monitor, 1));
-        writeAllClassesPage(context, srcFiles, new SubProgressMonitor(monitor, 1));
+        try {
+            writeBaseFrameDefinition(context, new SubProgressMonitor(monitor, 1));
+            writeClassesContentPages(context, srcFiles, new SubProgressMonitor(monitor, srcFiles.size()));
+            writeOverviewPage(context, srcFiles, new SubProgressMonitor(monitor, 1));
+            writeAllClassesPage(context, srcFiles, new SubProgressMonitor(monitor, 1));
 
-        writeProjectOverviewPage(context, new SubProgressMonitor(monitor, 1));
-        writePackagesClassesPages(context, srcFiles, relatedPackageFragments, new SubProgressMonitor(monitor,
-                relatedPackageFragments.size()));
+            writeProjectOverviewPage(context, new SubProgressMonitor(monitor, 1));
+            writePackagesClassesPages(context, srcFiles, relatedPackageFragments, new SubProgressMonitor(monitor,
+                    relatedPackageFragments.size()));
 
-        writeResources(context, new SubProgressMonitor(monitor, 1));
+            writeResources(context, new SubProgressMonitor(monitor, 1));
+        } catch (IOException e) {
+            throw new CoreException(new IpsStatus(e));
+        }
 
-        monitor.done();
+        finally {
+            monitor.done();
+        }
     }
 
-    private void writeResources(DocumentationContext context, IProgressMonitor monitor) {
+    private void writeResources(DocumentationContext context, IProgressMonitor monitor) throws IOException {
         monitor.beginTask("", 1); //$NON-NLS-1$
 
         ILayouter layouter = context.getLayouter();
         Set<LayoutResource> resources = layouter.getLayoutResources();
         for (LayoutResource layoutResource : resources) {
-            FileHandler.writeFile(context, STANDARD_PATH + layoutResource.getName(), layoutResource.getContent());
+            fileHandler.writeFile(context, STANDARD_PATH + layoutResource.getName(), layoutResource.getContent());
         }
         monitor.done();
     }
 
     private void writeClassesContentPages(DocumentationContext context,
             List<IIpsSrcFile> srcFiles,
-            IProgressMonitor monitor) {
+            IProgressMonitor monitor) throws IOException, CoreException {
 
         monitor.beginTask("Classes", srcFiles.size()); //$NON-NLS-1$
 
@@ -91,13 +102,14 @@ public class StandardDocumentorScript implements IDocumentorScript {
         monitor.done();
     }
 
-    private void writeClassContentPage(DocumentationContext context, IIpsSrcFile ipsSrcFile) {
+    private void writeClassContentPage(DocumentationContext context, IIpsSrcFile ipsSrcFile) throws IOException,
+            CoreException {
         AbstractPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(ipsSrcFile, context);
         if (objectContentPage == null) {
             return;
         }
         objectContentPage.build();
-        FileHandler
+        fileHandler
                 .writeFile(
                         context,
                         STANDARD_PATH
@@ -106,7 +118,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
                         getPageContent(context, objectContentPage));
     }
 
-    private byte[] getPageContent(DocumentationContext context, PageElement page) {
+    private byte[] getPageContent(DocumentationContext context, PageElement page) throws UnsupportedEncodingException {
         ILayouter layouter = context.getLayouter();
         page.acceptLayouter(layouter);
         return layouter.generate();
@@ -115,7 +127,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
     private void writePackagesClassesPages(DocumentationContext context,
             List<IIpsSrcFile> srcFiles,
             Set<IIpsPackageFragment> relatedPackageFragments,
-            IProgressMonitor monitor) {
+            IProgressMonitor monitor) throws IOException {
 
         monitor.beginTask("Packages Overview", relatedPackageFragments.size()); //$NON-NLS-1$
         for (IIpsPackageFragment ipsPackageFragment : relatedPackageFragments) {
@@ -128,13 +140,13 @@ public class StandardDocumentorScript implements IDocumentorScript {
 
     private void writePackagesClassesPage(DocumentationContext context,
             IIpsPackageFragment ipsPackageFragment,
-            List<IIpsSrcFile> srcFiles) {
+            List<IIpsSrcFile> srcFiles) throws IOException {
         boolean shownTypeChooser = false; // TODO auf true, wenn fertig
         IpsElementListPageElement allClassesPage = new IpsElementListPageElement(ipsPackageFragment, srcFiles,
                 new IpsElementInIIpsPackageFilter(ipsPackageFragment, context), context, shownTypeChooser);
         allClassesPage.setLinkTarget("content"); //$NON-NLS-1$
         allClassesPage.build();
-        FileHandler.writeFile(
+        fileHandler.writeFile(
                 context,
                 STANDARD_PATH
                         + htmlUtil.getPathFromRoot(ipsPackageFragment,
@@ -150,19 +162,21 @@ public class StandardDocumentorScript implements IDocumentorScript {
         return relatedPackageFragments;
     }
 
-    private void writeAllClassesPage(DocumentationContext context, List<IIpsSrcFile> srcFiles, IProgressMonitor monitor) {
+    private void writeAllClassesPage(DocumentationContext context, List<IIpsSrcFile> srcFiles, IProgressMonitor monitor)
+            throws IOException {
         monitor.beginTask("", 1); //$NON-NLS-1$
 
         IpsElementListPageElement allClassesPage = new IpsElementListPageElement(context.getIpsProject(), srcFiles,
                 context);
         allClassesPage.setLinkTarget("content"); //$NON-NLS-1$
         allClassesPage.build();
-        FileHandler.writeFile(context, STANDARD_PATH + "classes.html", getPageContent(context, allClassesPage)); //$NON-NLS-1$
+        fileHandler.writeFile(context, STANDARD_PATH + "classes.html", getPageContent(context, allClassesPage)); //$NON-NLS-1$
 
         monitor.done();
     }
 
-    private void writeOverviewPage(DocumentationContext context, List<IIpsSrcFile> srcFiles, IProgressMonitor monitor) {
+    private void writeOverviewPage(DocumentationContext context, List<IIpsSrcFile> srcFiles, IProgressMonitor monitor)
+            throws IOException {
         monitor.beginTask("", 1); //$NON-NLS-1$
 
         IpsPackagesListPageElement allPackagesPage = new IpsPackagesListPageElement(context.getIpsProject(), srcFiles,
@@ -174,28 +188,27 @@ public class StandardDocumentorScript implements IDocumentorScript {
         monitor.done();
     }
 
-    private void writeFileWithOutput(DocumentationContext context, AbstractPageElement allPackagesPage, String filePath) {
-        byte[] pageContent = getPageContent(context, allPackagesPage);
-
-        FileHandler.writeFile(context, filePath, pageContent);
+    private void writeFileWithOutput(DocumentationContext context, AbstractPageElement allPackagesPage, String filePath)
+            throws IOException {
+        fileHandler.writeFile(context, filePath, getPageContent(context, allPackagesPage));
     }
 
-    private void writeBaseFrameDefinition(DocumentationContext context, IProgressMonitor monitor) {
+    private void writeBaseFrameDefinition(DocumentationContext context, IProgressMonitor monitor) throws IOException {
         monitor.beginTask("", 1); //$NON-NLS-1$
 
         IGenerator baseFrameHtml = new BaseFrameHtmlGenerator(Messages.StandardDocumentorScript_documentation
                 + " " + context.getIpsProject().getName(), "20%, 80%", "30%, 70%"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ 
-        FileHandler.writeFile(context, STANDARD_PATH + "index.html", baseFrameHtml.generate()); //$NON-NLS-1$
+        fileHandler.writeFile(context, STANDARD_PATH + "index.html", baseFrameHtml.generate()); //$NON-NLS-1$
 
         monitor.done();
     }
 
-    private void writeProjectOverviewPage(DocumentationContext context, IProgressMonitor monitor) {
+    private void writeProjectOverviewPage(DocumentationContext context, IProgressMonitor monitor) throws IOException {
         monitor.beginTask("", 1); //$NON-NLS-1$
 
         AbstractPageElement projectOverviewHtml = new ProjectOverviewPageElement(context);
         projectOverviewHtml.build();
-        FileHandler.writeFile(context, STANDARD_PATH + "summary.html", getPageContent(context, projectOverviewHtml)); //$NON-NLS-1$
+        fileHandler.writeFile(context, STANDARD_PATH + "summary.html", getPageContent(context, projectOverviewHtml)); //$NON-NLS-1$
 
         monitor.done();
     }

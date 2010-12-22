@@ -92,6 +92,42 @@ public class IpsElementImagePageElementTest extends AbstractHtmlExportTest {
         assertFalse("Bilder stimmen ueberein!", gleich);
     }
 
+    public void testPathProductCmptMitEigenemBildUndCoreException() throws CoreException {
+        String productCmptTypeName = "xxx.BVB";
+        ProductCmptType productCmptType = newProductCmptType(ipsProject, productCmptTypeName);
+        ProductCmpt productCmpt = newProductCmpt(productCmptType, "yyy.BVB"); //$NON-NLS-1$
+
+        productCmptType.setInstancesIcon("icons/sample.gif");
+
+        assertImagePathWorksWithIpsObjectAndIpsSrcFile(productCmpt);
+
+        assertEquals(productCmptTypeName, new IpsElementImagePageElement(productCmpt).getFileName());
+        assertEquals(productCmptTypeName, new IpsElementImagePageElement(productCmpt.getIpsSrcFile()).getFileName());
+
+        ProductCmptType productCmptTypeOhneEigenesBild = newProductCmptType(ipsProject, "xxx.BVBOhneEigenesBild"); //$NON-NLS-1$
+        ProductCmpt productCmptOhneEigenesBild = newProductCmpt(productCmptTypeOhneEigenesBild,
+                "yyy.BVBOhneEigenesBild"); //$NON-NLS-1$
+        assertImagePathWorksWithIpsObjectAndIpsSrcFile(productCmptOhneEigenesBild);
+
+        ImageData imagePageElementOhneEigenesBild = new IpsElementImagePageElement(productCmptOhneEigenesBild)
+                .getImageData();
+        ImageData imagePageElement = new IpsElementImagePageElement(productCmpt).getImageData();
+
+        assertNotNull(imagePageElement);
+        assertNotNull(imagePageElementOhneEigenesBild);
+
+        assertTrue(imagePageElement.data.length > 0);
+        assertTrue(imagePageElementOhneEigenesBild.data.length > 0);
+
+        boolean gleich = true;
+        for (int x = 0; x < imagePageElement.width; x++) {
+            for (int y = 0; y < imagePageElement.height; y++) {
+                gleich &= imagePageElement.getPixel(x, y) == imagePageElementOhneEigenesBild.getPixel(x, y);
+            }
+        }
+        assertFalse("Bilder stimmen ueberein!", gleich);
+    }
+
     public void testPathProductCmptMitEigenemBildAusSuperProductCmpt() throws CoreException {
         String productCmptTypeName = "xxx.BVB";
         String superProductCmptTypeName = "xxx.SuperBVB";

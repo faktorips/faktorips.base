@@ -17,6 +17,10 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.faktorips.devtools.htmlexport.wizards.messages"; //$NON-NLS-1$
+    public static String IpsProjectHtmlExportWizard_errorHtmlExport;
+    public static String IpsProjectHtmlExportWizard_messageErrorHtmlExport;
+    public static String IpsProjectHtmlExportWizard_messageWarningHtmlExport;
+    public static String IpsProjectHtmlExportWizard_warningHtmlExport;
     public static String IpsProjectHtmlExportWizard_windowTitle;
     public static String IpsProjectHtmlExportWizardPage_browse;
     public static String IpsProjectHtmlExportWizardPage_description;

@@ -156,7 +156,11 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
 
         ITestParameter[] testParameters = getDocumentedIpsObject().getTestParameters();
         for (ITestParameter testParameter : testParameters) {
-            root.addPageElements(createTestParameterPageElement(testParameter));
+            try {
+                root.addPageElements(createTestParameterPageElement(testParameter));
+            } catch (CoreException e) {
+                getContext().addStatus(new IpsStatus(IStatus.WARNING, "Error adding TestParameter", e)); //$NON-NLS-1$
+            }
         }
         addPageElements(root);
     }
@@ -185,7 +189,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
      * creates a PageElement representing the given testParameter
      * 
      */
-    private PageElement createTestParameterPageElement(ITestParameter testParameter) {
+    private PageElement createTestParameterPageElement(ITestParameter testParameter) throws CoreException {
         if (testParameter instanceof TestValueParameter) {
             return createTestValueParameterPageElement((TestValueParameter)testParameter);
         }
@@ -200,13 +204,9 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
                 Style.BIG).addStyles(Style.BOLD);
     }
 
-    private PageElement createTestPolicyCmptTypePageElement(ITestPolicyCmptTypeParameter testParameter) {
-        IPolicyCmptType policyCmptType;
-        try {
-            policyCmptType = testParameter.findPolicyCmptType(testParameter.getIpsProject());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    private PageElement createTestPolicyCmptTypePageElement(ITestPolicyCmptTypeParameter testParameter)
+            throws CoreException {
+        IPolicyCmptType policyCmptType = testParameter.findPolicyCmptType(testParameter.getIpsProject());
 
         PageElement linkPageElement = PageElementUtils.createLinkPageElement(getContext(), policyCmptType,
                 "content", policyCmptType.getName(), true); //$NON-NLS-1$

@@ -13,13 +13,19 @@
 
 package org.faktorips.devtools.htmlexport.wizards;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
 import org.faktorips.devtools.htmlexport.HtmlExportOperation;
 import org.faktorips.devtools.htmlexport.HtmlExportPlugin;
@@ -55,7 +61,9 @@ public class IpsProjectHtmlExportWizard extends Wizard implements IExportWizard 
 
     @Override
     public boolean performFinish() {
-        exportHtml();
+        if (!exportHtml()) {
+            return false;
+        }
 
         // save the dialog settings
         if (hasNewDialogSettings) {
@@ -89,13 +97,38 @@ public class IpsProjectHtmlExportWizard extends Wizard implements IExportWizard 
         try {
             getContainer().run(true, true, workbenchRunnableAdapter);
         } catch (InterruptedException e) {
+            IpsPlugin.logAndShowErrorDialog(new IpsStatus(e));
             return false;
-        } catch (Exception e) {
-            IpsPlugin.logAndShowErrorDialog(e);
+        } catch (InvocationTargetException e) {
+            IpsPlugin.logAndShowErrorDialog(new IpsStatus(e.getTargetException()));
             return false;
         }
-        return true;
 
+        IStatus exportStatus = context.getExportStatus();
+
+        switch (exportStatus.getSeverity()) {
+            case IStatus.ERROR:
+                ErrorDialog
+                        .openError(
+                                Display.getDefault().getActiveShell(),
+                                Messages.IpsProjectHtmlExportWizard_errorHtmlExport,
+                                Messages.IpsProjectHtmlExportWizard_messageErrorHtmlExport,
+                                exportStatus);
+                return false;
+
+            case IStatus.WARNING:
+                ErrorDialog
+                        .openError(
+                                Display.getDefault().getActiveShell(),
+                                Messages.IpsProjectHtmlExportWizard_warningHtmlExport,
+                                Messages.IpsProjectHtmlExportWizard_messageWarningHtmlExport,
+                                exportStatus);
+
+                return true;
+
+            default:
+                return true;
+        }
     }
 
     @Override

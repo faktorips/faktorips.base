@@ -100,7 +100,6 @@ public class HtmlLayouterPluginTest extends AbstractIpsPluginTest {
         byte[] generate = layouter.generate();
 
         String html = new String(generate, "UTF-8").trim();
-        System.out.println(html);
         return html;
     }
 

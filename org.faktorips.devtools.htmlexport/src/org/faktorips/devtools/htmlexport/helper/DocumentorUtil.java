@@ -31,7 +31,7 @@ public class DocumentorUtil {
      * converts {@link ImageData} to a byte[] using the given image format (e.g. png)
      * 
      */
-    public static byte[] convertImageDataToByteArray(ImageData imageData, int format) {
+    public byte[] convertImageDataToByteArray(ImageData imageData, int format) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         ImageLoader imageLoader = new ImageLoader();

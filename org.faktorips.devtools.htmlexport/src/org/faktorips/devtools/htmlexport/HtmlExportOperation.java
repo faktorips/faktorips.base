@@ -38,7 +38,7 @@ public class HtmlExportOperation implements IWorkspaceRunnable {
     private DocumentationContext context;
 
     /**
-     * Instantiates a Documentor.
+     * Instantiates a HtmlExportOperation.
      * 
      * @throws IllegalArgumentException thrown if context is null.
      */
@@ -66,7 +66,7 @@ public class HtmlExportOperation implements IWorkspaceRunnable {
      * {@inheritDoc}
      */
     @Override
-    public void run(IProgressMonitor monitor) {
+    public void run(IProgressMonitor monitor) throws CoreException {
         List<IDocumentorScript> scripts = getDocumentationContext().getScripts();
 
         int monitorScriptFaktor = 9;
@@ -80,11 +80,6 @@ public class HtmlExportOperation implements IWorkspaceRunnable {
         refreshIfNecessary(new SubProgressMonitor(monitor, 1));
 
         monitor.done();
-
-        if (!getDocumentationContext().getExportProblems().isEmpty()) {
-            // TODO Verarbeiten der gesammelten Fehler
-            // ErrorDialog.
-        }
     }
 
     private void refreshIfNecessary(IProgressMonitor monitor) {

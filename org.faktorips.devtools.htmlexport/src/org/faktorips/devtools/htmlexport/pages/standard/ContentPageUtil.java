@@ -14,8 +14,6 @@
 package org.faktorips.devtools.htmlexport.pages.standard;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -40,16 +38,10 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractPageElement
 public class ContentPageUtil {
 
     public static AbstractPageElement createObjectContentPageElement(IIpsSrcFile ipsSrcFile,
-            DocumentationContext context) {
+            DocumentationContext context) throws CoreException {
 
-        IIpsObject ipsObject;
-        try {
-            ipsObject = ipsSrcFile.getIpsObject();
-            return createObjectContentPageElement(ipsObject, context);
-        } catch (CoreException e) {
-            context.addStatus(new IpsStatus(IStatus.ERROR, "Error getting IpsObject of " + ipsSrcFile.getName(), e)); //$NON-NLS-1$
-            return null;
-        }
+        IIpsObject ipsObject = ipsSrcFile.getIpsObject();
+        return createObjectContentPageElement(ipsObject, context);
     }
 
     private static AbstractPageElement createObjectContentPageElement(IIpsObject ipsSrcFile,

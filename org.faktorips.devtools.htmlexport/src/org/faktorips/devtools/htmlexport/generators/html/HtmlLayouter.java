@@ -61,6 +61,8 @@ public class HtmlLayouter extends AbstractLayouter {
     private String pathToRoot;
     private HtmlUtil htmlUtil = new HtmlUtil();
 
+    private FileHandler fileHandler = new FileHandler();
+
     public HtmlLayouter(String resourcePath) {
         super();
         this.resourcePath = resourcePath;
@@ -205,7 +207,7 @@ public class HtmlLayouter extends AbstractLayouter {
      */
     void initBaseResources() {
         try {
-            LayoutResource cssResource = new LayoutResource(getStyleDefinitionPath(), FileHandler.readFile(
+            LayoutResource cssResource = new LayoutResource(getStyleDefinitionPath(), fileHandler.readFile(
                     "org.faktorips.devtools.htmlexport", HTML_BASE_CSS)); //$NON-NLS-1$
 
             addLayoutResource(cssResource);
@@ -226,7 +228,7 @@ public class HtmlLayouter extends AbstractLayouter {
     public void layoutImagePageElement(ImagePageElement imagePageElement) {
 
         String path = resourcePath + "/images/" + imagePageElement.getFileName() + ".png"; //$NON-NLS-1$ //$NON-NLS-2$
-        addLayoutResource(new LayoutResource(path, DocumentorUtil.convertImageDataToByteArray(
+        addLayoutResource(new LayoutResource(path, new DocumentorUtil().convertImageDataToByteArray(
                 imagePageElement.getImageData(), SWT.IMAGE_PNG)));
 
         append(htmlUtil.createImage(getPathToRoot() + path, imagePageElement.getTitle()));

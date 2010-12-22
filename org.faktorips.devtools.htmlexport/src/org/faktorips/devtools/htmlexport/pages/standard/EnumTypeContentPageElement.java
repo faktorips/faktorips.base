@@ -240,7 +240,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
             enumAttributesTable = new EnumAttributesTablePageElement(findAllEnumAttributes(), getContext());
         } catch (CoreException e) {
             getContext().addStatus(
-                    new IpsStatus(IStatus.ERROR,
+                    new IpsStatus(IStatus.WARNING,
                             "Could not find EnumAttributes of " + getDocumentedIpsObject().getQualifiedName(), e)); //$NON-NLS-1$
             return;
         }

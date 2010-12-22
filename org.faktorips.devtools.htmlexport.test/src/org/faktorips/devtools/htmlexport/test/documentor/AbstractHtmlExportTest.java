@@ -1,6 +1,7 @@
 package org.faktorips.devtools.htmlexport.test.documentor;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
@@ -49,7 +50,12 @@ public abstract class AbstractHtmlExportTest extends AbstractIpsPluginTest {
         ipsProject = newIpsProject("TestProjekt");
 
         context = new DocumentationContext();
+        initContext();
 
+        operation = new HtmlExportOperation(context);
+    }
+
+    protected void initContext() throws IOException {
         File tmpFile = File.createTempFile("tmp", "tmp");
         String location = tmpFile.getParentFile() + File.separator + "fips";
         tmpFile.delete();
@@ -58,8 +64,6 @@ public abstract class AbstractHtmlExportTest extends AbstractIpsPluginTest {
         context.setIpsProject(ipsProject);
         context.setLayouter(new HtmlLayouter(".resource"));
         context.setDescriptionLocale(Locale.GERMANY);
-
-        operation = new HtmlExportOperation(context);
     }
 
     protected void createStandardProjekt() {
