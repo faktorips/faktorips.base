@@ -299,17 +299,21 @@ public class UIToolkit {
      * Creates a new label.
      */
     public Label createLabel(Composite parent, String text) {
+        return createLabel(parent, text, SWT.NONE);
+    }
+
+    public Label createLabel(Composite parent, String text, int swtFlags) {
         Label newLabel;
         if (formToolkit != null) {
-            newLabel = formToolkit.createLabel(parent, text);
+            newLabel = formToolkit.createLabel(parent, text, swtFlags);
         } else {
-            newLabel = new Label(parent, SWT.NONE);
+            newLabel = new Label(parent, swtFlags);
             // newLabel.setBackground(parent.getBackground());
             if (text != null) {
                 newLabel.setText(text);
             }
         }
-        GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_END);
+        GridData gridData = new GridData(SWT.FILL, SWT.END, false, false);
         newLabel.setLayoutData(gridData);
         return newLabel;
     }
@@ -319,7 +323,7 @@ public class UIToolkit {
      */
     public Label createFormLabel(Composite parent, String text) {
         Composite c = createComposite(parent);
-        c.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_END));
+        c.setLayoutData(new GridData(GridData.FILL, GridData.END, false, false));
         GridLayout layout = new GridLayout();
         layout.verticalSpacing = 0;
         layout.horizontalSpacing = 0;
@@ -327,7 +331,7 @@ public class UIToolkit {
         layout.marginWidth = 0;
         c.setLayout(layout);
         Label newLabel = this.createLabel(c, text);
-        GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_END);
+        GridData gridData = new GridData(GridData.FILL, GridData.END, false, false);
         newLabel.setLayoutData(gridData);
         return newLabel;
     }

@@ -51,8 +51,7 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
     private Text minCard;
     private Text maxCard;
     private Text defaultCard;
-    private Label minCardLabel;
-    private Label maxCardLabel;
+    private Label minMaxCardLabel;
     private Label defaultCardLabel;
     private Button optional;
     private Label optionalLabel;
@@ -92,49 +91,155 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         layoutData = new GridData(SWT.FILL, SWT.FILL, false, false);
         layoutData.verticalAlignment = SWT.TOP;
         kardinalityPane.setLayoutData(layoutData);
+        GridLayout kardinalityPaneLayout = (GridLayout)kardinalityPane.getLayout();
+        kardinalityPaneLayout.numColumns = 3;
+        kardinalityPaneLayout.horizontalSpacing = 1;
 
         // create header
-        layoutData = ((GridData)toolkit.createLabel(kardinalityPane, Messages.RelationsSection_cardinality)
-                .getLayoutData());
-        layoutData.horizontalSpan = 2;
-        layoutData.horizontalAlignment = SWT.CENTER;
+        Label headerLabel = toolkit.createLabel(kardinalityPane, Messages.RelationsSection_cardinality);
+        toolkit.setHorizontalSpan(headerLabel, 3);
+        ((GridData)headerLabel.getLayoutData()).horizontalAlignment = SWT.CENTER;
 
         // create radio buttons
         KardinalitySelectionListener listener = new KardinalitySelectionListener();
         optional = toolkit.createRadioButton(kardinalityPane, ""); //$NON-NLS-1$
         optional.addSelectionListener(listener);
         optionalLabel = toolkit.createLabel(kardinalityPane, Messages.CardinalityPanel_labelOptional);
+        toolkit.setHorizontalSpan(optionalLabel, 2);
         mandatory = toolkit.createRadioButton(kardinalityPane, ""); //$NON-NLS-1$
         mandatory.addSelectionListener(listener);
         mandatorylLabel = toolkit.createLabel(kardinalityPane, Messages.CardinalityPanel_labelMandatory);
+        toolkit.setHorizontalSpan(mandatorylLabel, 2);
         other = toolkit.createRadioButton(kardinalityPane, ""); //$NON-NLS-1$
         other.addSelectionListener(listener);
         otherLabel = toolkit.createLabel(kardinalityPane, Messages.CardinalityPanel_labelOther);
 
-        // create other input controls
-        toolkit.createLabel(kardinalityPane, ""); //$NON-NLS-1$
+        // Min/Max bei Other, Default zentriert darunter
         Composite specialPane = toolkit.createLabelEditColumnComposite(kardinalityPane);
-        specialPane.setLayout(new GridLayout(2, false));
-        minCardLabel = toolkit.createFormLabel(specialPane, Messages.PolicyAttributesSection_minimum);
+        GridLayout specialPaneLayout = (GridLayout)specialPane.getLayout();
+        specialPaneLayout.marginLeft = 4;
+        specialPaneLayout.numColumns = 3;
+        specialPaneLayout.horizontalSpacing = 2;
         minCard = toolkit.createText(specialPane);
-        minCard.setLayoutData(new GridData(30, SWT.DEFAULT));
-        maxCardLabel = toolkit.createFormLabel(specialPane, Messages.PolicyAttributesSection_maximum);
+        GridData gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
+        gd.widthHint = 20;
+        minCard.setLayoutData(gd);
+        minMaxCardLabel = toolkit.createLabel(specialPane, ".."); //$NON-NLS-1$
         maxCard = toolkit.createText(specialPane);
-        maxCard.setLayoutData(new GridData(30, SWT.DEFAULT));
-        defaultCardLabel = toolkit.createFormLabel(specialPane, Messages.CardinalityPanel_LabelDefaultCardinality);
-        defaultCard = toolkit.createText(specialPane);
-        defaultCard.setLayoutData(new GridData(30, SWT.DEFAULT));
-        toolkit.createVerticalSpacer(specialPane, 3).setBackground(kardinalityPane.getBackground());
+        gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
+        gd.widthHint = 20;
+        maxCard.setLayoutData(gd);
 
-        // ModifyListener cardinalityChangedListener = new ModifyListener() {
-        // @Override
-        // public void modifyText(ModifyEvent e) {
-        // cardinalityChanged();
-        // }
-        // };
-        // minKard.addModifyListener(cardinalityChangedListener);
-        // maxKard.addModifyListener(cardinalityChangedListener);
-        // defaultKard.addModifyListener(cardinalityChangedListener);
+        Composite defaultPane = toolkit.createLabelEditColumnComposite(kardinalityPane);
+        GridLayout defaultPaneLayout = (GridLayout)defaultPane.getLayout();
+        defaultPaneLayout.marginWidth = 2;
+        GridData defaultGridData = new GridData(GridData.FILL, GridData.BEGINNING, true, true);
+        defaultGridData.horizontalSpan = 3;
+        defaultPane.setLayoutData(defaultGridData);
+        defaultCardLabel = toolkit.createLabel(defaultPane, Messages.CardinalityPanel_LabelDefaultCardinality);
+        defaultCard = toolkit.createText(defaultPane);
+        defaultCard.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
+
+        // kardinalityPane.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
+        // specialPane.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
+        // defaultPane.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
+
+        // Default zentriert und mit Abstand
+        // // create other input controls
+        //        toolkit.createLabel(kardinalityPane, ""); //$NON-NLS-1$
+        // Composite specialPane = toolkit.createLabelEditColumnComposite(kardinalityPane);
+        // specialPane.setLayout(new GridLayout(2, false));
+        // minCardLabel = toolkit.createFormLabel(specialPane,
+        // Messages.PolicyAttributesSection_minimum);
+        // minCard = toolkit.createText(specialPane);
+        // GridData gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
+        // gd.widthHint = 40;
+        // minCard.setLayoutData(gd);
+        // maxCardLabel = toolkit.createFormLabel(specialPane,
+        // Messages.PolicyAttributesSection_maximum);
+        // maxCard = toolkit.createText(specialPane);
+        // gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
+        // gd.widthHint = 40;
+        // maxCard.setLayoutData(gd);
+        // Composite defaultPane = toolkit.createLabelEditColumnComposite(kardinalityPane);
+        // GridLayout defaultPaneLayout = (GridLayout)defaultPane.getLayout();
+        // defaultPaneLayout.marginHeight = 0;
+        // GridData defaultGridData = new GridData(GridData.FILL, GridData.BEGINNING, true, true);
+        // defaultGridData.horizontalSpan = 2;
+        // defaultPane.setLayoutData(defaultGridData);
+        // defaultPane.setLayout(new GridLayout(2, false));
+        // defaultCardLabel = toolkit.createFormLabel(defaultPane,
+        // Messages.CardinalityPanel_LabelDefaultCardinality);
+        // defaultCard = toolkit.createText(defaultPane);
+        // defaultCard.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
+
+        // Default mit min/max ausgerichtet
+        // create other input controls
+        //        toolkit.createLabel(kardinalityPane, ""); //$NON-NLS-1$
+        // Composite specialPane = toolkit.createLabelEditColumnComposite(kardinalityPane);
+        // specialPane.setLayout(new GridLayout(2, false));
+        // minCardLabel = toolkit.createFormLabel(specialPane,
+        // Messages.PolicyAttributesSection_minimum);
+        // minCard = toolkit.createText(specialPane);
+        // GridData gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
+        // gd.widthHint = 40;
+        // minCard.setLayoutData(gd);
+        // maxCardLabel = toolkit.createFormLabel(specialPane,
+        // Messages.PolicyAttributesSection_maximum);
+        // maxCard = toolkit.createText(specialPane);
+        // gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
+        // gd.widthHint = 40;
+        // maxCard.setLayoutData(gd);
+        // defaultCardLabel = toolkit.createFormLabel(specialPane,
+        // Messages.CardinalityPanel_LabelDefaultCardinality);
+        // defaultCard = toolkit.createText(specialPane);
+        // gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
+        // gd.widthHint = 40;
+        // defaultCard.setLayoutData(gd);
+
+        // Default rechtsbuendig mit min/max ausgerichtet
+        // create other input controls
+        //        toolkit.createLabel(kardinalityPane, ""); //$NON-NLS-1$
+        // Composite specialPane = toolkit.createLabelEditColumnComposite(kardinalityPane);
+        // GridData specialData = new GridData(GridData.FILL, GridData.FILL, true, false);
+        // // specialData.horizontalSpan = 2;
+        // specialPane.setLayoutData(specialData);
+        //
+        // // minCardLabel = toolkit.createFormLabel(specialPane,
+        // // Messages.PolicyAttributesSection_minimum);
+        // minCardLabel = toolkit.createLabel(specialPane, Messages.PolicyAttributesSection_minimum,
+        // SWT.RIGHT);
+        //
+        // minCard = toolkit.createText(specialPane);
+        // GridData gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
+        // gd.widthHint = 40;
+        // minCard.setLayoutData(gd);
+        //
+        // // maxCardLabel = toolkit.createFormLabel(specialPane,
+        // // Messages.PolicyAttributesSection_maximum);
+        // maxCardLabel = toolkit.createLabel(specialPane, Messages.PolicyAttributesSection_maximum,
+        // SWT.RIGHT);
+        //
+        // maxCard = toolkit.createText(specialPane);
+        // gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
+        // gd.widthHint = 40;
+        // maxCard.setLayoutData(gd);
+        //
+        // // defaultCardLabel = toolkit.createFormLabel(specialPane,
+        // // Messages.CardinalityPanel_LabelDefaultCardinality);
+        // defaultCardLabel = toolkit.createLabel(specialPane,
+        // Messages.CardinalityPanel_LabelDefaultCardinality,
+        // SWT.RIGHT);
+        // gd = (GridData)defaultCardLabel.getLayoutData();
+        // gd.grabExcessHorizontalSpace = true;
+        // defaultCardLabel.setLayoutData(gd);
+        //
+        // defaultCard = toolkit.createText(specialPane);
+        // gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
+        // gd.widthHint = 40;
+        // defaultCard.setLayoutData(gd);
+
+        toolkit.createVerticalSpacer(kardinalityPane, 3).setBackground(kardinalityPane.getBackground());
 
         kardinalityPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
         toolkit.getFormToolkit().paintBordersFor(root);
@@ -225,8 +330,7 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         minCard.setEnabled(false);
         maxCard.setEnabled(false);
         defaultCard.setEnabled(false);
-        maxCardLabel.setEnabled(false);
-        minCardLabel.setEnabled(false);
+        minMaxCardLabel.setEnabled(false);
         defaultCardLabel.setEnabled(false);
 
         if (!enabled) {
@@ -245,10 +349,12 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
                 mandatory.setSelection(true);
                 optional.setSelection(false);
                 other.setSelection(false);
-            } else if (min.equals("0") && max.equals("1") && def.equals("0")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            } else if (min.equals("0") && max.equals("1")) { //$NON-NLS-1$ //$NON-NLS-2$ 
                 optional.setSelection(true);
                 mandatory.setSelection(false);
                 other.setSelection(false);
+                defaultCard.setEnabled(true);
+                defaultCardLabel.setEnabled(true);
             } else {
                 other.setSelection(true);
                 mandatory.setSelection(false);
@@ -256,9 +362,8 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
 
                 minCard.setEnabled(true);
                 maxCard.setEnabled(true);
+                minMaxCardLabel.setEnabled(true);
                 defaultCard.setEnabled(true);
-                maxCardLabel.setEnabled(true);
-                minCardLabel.setEnabled(true);
                 defaultCardLabel.setEnabled(true);
             }
         }
@@ -276,13 +381,13 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         public void widgetSelected(SelectionEvent e) {
 
             removeMessageCue();
-            boolean enabled = e.getSource() == other;
-            minCard.setEnabled(enabled);
-            maxCard.setEnabled(enabled);
-            defaultCard.setEnabled(enabled);
-            maxCardLabel.setEnabled(enabled);
-            minCardLabel.setEnabled(enabled);
-            defaultCardLabel.setEnabled(enabled);
+            boolean otherEnabled = e.getSource() == other;
+            boolean optionalEnabled = e.getSource() == optional;
+            minCard.setEnabled(otherEnabled);
+            maxCard.setEnabled(otherEnabled);
+            minMaxCardLabel.setEnabled(otherEnabled);
+            defaultCard.setEnabled(otherEnabled | optionalEnabled);
+            defaultCardLabel.setEnabled(otherEnabled | optionalEnabled);
 
             /*
              * Setting the cardinality values using their fields causes an inconsistent GUI state
@@ -297,7 +402,6 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
             if (e.getSource() == optional) {
                 currentLink.setMinCardinality(0);
                 currentLink.setMaxCardinality(1);
-                currentLink.setDefaultCardinality(0);
             } else if (e.getSource() == mandatory) {
                 currentLink.setMinCardinality(1);
                 currentLink.setMaxCardinality(1);
