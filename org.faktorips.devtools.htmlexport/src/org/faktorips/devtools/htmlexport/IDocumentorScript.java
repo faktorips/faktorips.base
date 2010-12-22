@@ -15,7 +15,7 @@ package org.faktorips.devtools.htmlexport;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.htmlexport.documentor.DocumentationContext;
+import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 
 /**
  * A Script for Documenting

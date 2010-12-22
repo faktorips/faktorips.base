@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.htmlexport.documentor;
+package org.faktorips.devtools.htmlexport.context;
 
 import org.eclipse.osgi.util.NLS;
 

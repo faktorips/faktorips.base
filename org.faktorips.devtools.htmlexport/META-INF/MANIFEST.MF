@@ -15,7 +15,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.faktorips.devtools.htmlexport,
  org.faktorips.devtools.htmlexport.actions,
- org.faktorips.devtools.htmlexport.documentor,
+ org.faktorips.devtools.htmlexport.context,
  org.faktorips.devtools.htmlexport.generators,
  org.faktorips.devtools.htmlexport.generators.html,
  org.faktorips.devtools.htmlexport.helper,
