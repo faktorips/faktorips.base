@@ -11,7 +11,9 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.valueset;
+package org.faktorips.runtime.internal;
+
+import org.faktorips.valueset.IntegerRange;
 
 /**
  * A Range class for cardinalities. A {@link CardinalityRange} is defined by a lower and an upper
@@ -29,7 +31,7 @@ public class CardinalityRange extends IntegerRange {
     /**
      * A cardinality that describes the obligatory range 1 to 1 with default 1.
      */
-    public static final CardinalityRange OBLIGATORY = new CardinalityRange(1, 1, 1);
+    public static final CardinalityRange MANDATORY = new CardinalityRange(1, 1, 1);
 
     /**
      * A cardinality that describes the full range from 0 to * with default 0.

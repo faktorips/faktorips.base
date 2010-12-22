@@ -13,7 +13,7 @@
 
 package org.faktorips.runtime;
 
-import org.faktorips.valueset.CardinalityRange;
+import org.faktorips.runtime.internal.CardinalityRange;
 
 /**
  * This class represents a link between two product components.
