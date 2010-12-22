@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.valueset.CardinalityRange;
+import org.faktorips.runtime.internal.CardinalityRange;
 import org.faktorips.valueset.IntegerRange;
 
 /**
