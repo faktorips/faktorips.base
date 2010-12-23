@@ -77,5 +77,6 @@ public class Messages extends NLS {
     public static String IpsProjectProperties_msgUnknownBuilderSetId;
     public static String IpsProjectProperties_msgSupportedLanguageUnknownLocale;
     public static String IpsProjectProperties_msgMoreThanOneDefaultLanguage;
+    public static String IpsProjectProperties_unknownNamingStrategy;
 
 }

@@ -171,7 +171,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private void validateProductCmptNamingStrategy(MessageList msgList) {
         if (productCmptNamingStrategy == null) {
-            String text = NLS.bind("Unknown product component naming strategy, ID={0}", productCmptNamingStrategyId);
+            String text = NLS.bind(Messages.IpsProjectProperties_unknownNamingStrategy, productCmptNamingStrategyId);
             msgList.add(new Message(IIpsProjectProperties.MSGCODE_INVALID_PRODUCT_CMPT_NAMING_STRATEGY, text,
                     Message.ERROR, this));
         }
@@ -432,8 +432,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         builderSetEl.appendChild(builderSetConfig.toXml(doc));
 
         // naming strategy
-        createProductCmptNamingStrategyDescriptionComment(projectEl);
-        projectEl.appendChild(productCmptNamingStrategy.toXml(doc));
+        if (productCmptNamingStrategy != null) {
+            createProductCmptNamingStrategyDescriptionComment(projectEl);
+            projectEl.appendChild(productCmptNamingStrategy.toXml(doc));
+        }
 
         // object path
         createDescriptionComment(IpsObjectPath.getXmlFormatDescription(), projectEl);
