@@ -13,13 +13,15 @@
 
 package org.faktorips.devtools.htmlexport.helper.html;
 
+import java.io.UnsupportedEncodingException;
+
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 
 public class HtmlLayouterStyleTest extends AbstractTestHtmlLayouter {
 
-    public void testStyleBold() {
+    public void testStyleBold() throws UnsupportedEncodingException {
         String text = "text beispiel"; //$NON-NLS-1$
         TextPageElement pageElement = new TextPageElement(text);
         pageElement.addStyles(Style.BOLD);
@@ -27,7 +29,7 @@ public class HtmlLayouterStyleTest extends AbstractTestHtmlLayouter {
         assertEquals("<span class=\"BOLD\">" + text + "</span>", layout(pageElement)); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    public void testStyleItalic() {
+    public void testStyleItalic() throws UnsupportedEncodingException {
         String text = "text beispiel"; //$NON-NLS-1$
         TextPageElement pageElement = new TextPageElement(text);
         pageElement.addStyles(Style.ITALIC);
@@ -35,7 +37,7 @@ public class HtmlLayouterStyleTest extends AbstractTestHtmlLayouter {
         assertEquals("<span class=\"ITALIC\">" + text + "</span>", layout(pageElement)); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    public void testStyleBoldAndItalic() {
+    public void testStyleBoldAndItalic() throws UnsupportedEncodingException {
         String text = "text beispiel"; //$NON-NLS-1$
         TextPageElement pageElement = new TextPageElement(text);
         pageElement.addStyles(Style.ITALIC);
@@ -44,7 +46,7 @@ public class HtmlLayouterStyleTest extends AbstractTestHtmlLayouter {
         assertTrue(layout(pageElement).matches("<span class=\"(ITALIC BOLD|BOLD ITALIC)\">" + text + "</span>")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    public void testStyleCenter() {
+    public void testStyleCenter() throws UnsupportedEncodingException {
         String text = "text beispiel"; //$NON-NLS-1$
         TextPageElement pageElement = new TextPageElement(text, TextType.BLOCK);
         pageElement.addStyles(Style.CENTER);

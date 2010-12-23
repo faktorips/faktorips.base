@@ -89,15 +89,9 @@ public class FileHandler {
                 out.write(buffer, 0, count);
             }
             in.close();
-        } catch (IOException e) {
-            throw e;
         } finally {
             if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    throw e;
-                }
+                in.close();
             }
         }
         return out.toByteArray();

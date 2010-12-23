@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.htmlexport.helper.html;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
@@ -46,28 +47,28 @@ public class HtmlLayouterTest extends AbstractTestHtmlLayouter {
         assertContains(layout(pageElement), containments);
     }
 
-    public void testHtmlLayouterTextPageElementEinfach() {
+    public void testHtmlLayouterTextPageElementEinfach() throws UnsupportedEncodingException {
         String text = "text beispiel"; //$NON-NLS-1$
         TextPageElement pageElement = new TextPageElement(text);
 
         assertEquals(text, layout(pageElement));
     }
 
-    public void testHtmlLayouterTextPageElementInline() {
+    public void testHtmlLayouterTextPageElementInline() throws UnsupportedEncodingException {
         String text = "text beispiel"; //$NON-NLS-1$
         TextPageElement pageElement = new TextPageElement(text, TextType.INLINE);
 
         assertEquals("<span>" + text + "</span>", layout(pageElement)); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    public void testHtmlLayouterTextPageElementBlock() {
+    public void testHtmlLayouterTextPageElementBlock() throws UnsupportedEncodingException {
         String text = "text beispiel"; //$NON-NLS-1$
         TextPageElement pageElement = new TextPageElement(text, TextType.BLOCK);
 
         assertEquals("<div>" + text + "</div>", layout(pageElement)); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    public void testHtmlLayouterListPageElement() {
+    public void testHtmlLayouterListPageElement() throws UnsupportedEncodingException {
 
         String[] texte = { "Item 1", "Punkt 2", "blablabla", "letzter Punkt" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         List<PageElement> elementListe = createPageElementListe(texte);
@@ -81,7 +82,7 @@ public class HtmlLayouterTest extends AbstractTestHtmlLayouter {
         assertContains(html, tags);
     }
 
-    public void testHtmlLayouterListPageElementUngeordnet() {
+    public void testHtmlLayouterListPageElementUngeordnet() throws UnsupportedEncodingException {
 
         String[] texte = { "Item 1", "Punkt 2", "blablabla", "letzter Punkt" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         List<PageElement> elementListe = createPageElementListe(texte);
@@ -96,7 +97,7 @@ public class HtmlLayouterTest extends AbstractTestHtmlLayouter {
         assertContains(html, tags);
     }
 
-    public void testHtmlLayouterTablePageElement() {
+    public void testHtmlLayouterTablePageElement() throws UnsupportedEncodingException {
         int rows = 3;
         int cols = 4;
 

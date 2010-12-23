@@ -64,6 +64,7 @@ public class ListPageElement extends AbstractCompositePageElement {
     @Override
     public void visitSubElements(ILayouter layouter) {
         for (PageElement subElement : getSubElements()) {
+            // TODO HIER DIE KLASSE HOCHSCHIEBEN!!!!
             layouter.layoutWrapperPageElement(new WrapperPageElement(WrapperType.LISTITEM, subElement));
         }
     }

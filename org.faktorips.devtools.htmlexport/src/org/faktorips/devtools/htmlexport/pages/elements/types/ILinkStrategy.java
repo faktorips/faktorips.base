@@ -6,26 +6,16 @@
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- * http://www.faktorzehn.org/fips:lizenz eingesehen werden kann.
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
  * 
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.htmlexport.helper.path;
+package org.faktorips.devtools.htmlexport.pages.elements.types;
 
-import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 
-/**
- * Utility, which is used for links und relative links for {@link IIpsElement}s
- * 
- * @author dicker
- * 
- */
-public interface IpsElementPathUtil extends PathUtil {
-
-    /**
-     * @return {@link IIpsElement}
-     */
-    public IIpsElement getIpsElement();
-
+public interface ILinkStrategy {
+    public LinkPageElement createLink(PageElement... containedPageElements);
 }

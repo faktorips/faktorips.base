@@ -32,6 +32,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
+import org.faktorips.devtools.htmlexport.pages.elements.types.chooser.TypeChooserPageElement;
 
 /**
  * Lists and links the packages of the given {@link IpsObject}s in a page
@@ -39,7 +40,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
  * @author dicker
  * 
  */
-public class IpsPackagesListPageElement extends AbstractListPageElement {
+public class IpsPackagesListPageElement extends AbstractIpsElementListPageElement {
 
     /**
      * Comparator, which support the sorting of packages by name
@@ -52,7 +53,7 @@ public class IpsPackagesListPageElement extends AbstractListPageElement {
     };
 
     /**
-     * @see AbstractListPageElement
+     * @see AbstractIpsElementListPageElement
      */
     public IpsPackagesListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles, IpsElementFilter filter,
             DocumentationContext context) {
@@ -61,7 +62,7 @@ public class IpsPackagesListPageElement extends AbstractListPageElement {
     }
 
     /**
-     * @see AbstractListPageElement
+     * @see AbstractIpsElementListPageElement
      */
     public IpsPackagesListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles,
             DocumentationContext context) {
@@ -71,6 +72,10 @@ public class IpsPackagesListPageElement extends AbstractListPageElement {
     @Override
     public void build() {
         super.build();
+        addPageElements(new TextPageElement(Messages.IpsPackagesListPageElement_headlineObjectTypes, TextType.HEADING_2));
+
+        addPageElements(new TypeChooserPageElement(getContext()));
+
         addPageElements(new TextPageElement(getTitle(), TextType.HEADING_2));
 
         List<PageElement> list = createPackageList();

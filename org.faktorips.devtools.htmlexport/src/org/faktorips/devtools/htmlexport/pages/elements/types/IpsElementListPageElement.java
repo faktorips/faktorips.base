@@ -30,6 +30,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.chooser.TypeChooserPageElement;
 
 /**
  * Lists and links given {@link IpsObject}s in a page
@@ -37,7 +38,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
  * @author dicker
  * 
  */
-public class IpsElementListPageElement extends AbstractListPageElement {
+public class IpsElementListPageElement extends AbstractIpsElementListPageElement {
 
     private final boolean shownTypeChooser;
 
@@ -60,7 +61,7 @@ public class IpsElementListPageElement extends AbstractListPageElement {
         addPageElements(new TextPageElement(getTitle(), TextType.HEADING_2));
 
         if (shownTypeChooser) {
-            addPageElements(new TypeChosePageElement(getContext(), getRelatedObjectTypes()));
+            addPageElements(new TypeChooserPageElement(getContext(), getRelatedObjectTypes()));
         }
 
         addPageElements(new WrapperPageElement(WrapperType.BLOCK).addPageElements(new LinkPageElement(

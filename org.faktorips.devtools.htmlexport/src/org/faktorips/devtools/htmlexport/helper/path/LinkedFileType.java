@@ -23,8 +23,10 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
  * 
  */
 public class LinkedFileType {
-    private static LinkedFileType PACKAGE_CLASSES_OVERVIEW = new LinkedFileType("package_classes_", "", "classes"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    private static LinkedFileType ELEMENT_CONTENT = new LinkedFileType("element_", "", "content"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    public static final LinkedFileType PACKAGE_CLASSES_OVERVIEW = new LinkedFileType("package_classes_", "", "classes"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    public static final LinkedFileType OBJECT_TYPE_CLASSES_OVERVIEW = new LinkedFileType(
+            "object_type_classes_", "", "classes"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    public static final LinkedFileType ELEMENT_CONTENT = new LinkedFileType("element_", "", "content"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
     private LinkedFileType(String prefix, String suffix, String target) {
         this.prefix = prefix;

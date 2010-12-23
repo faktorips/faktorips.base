@@ -32,13 +32,9 @@ public abstract class AbstractLayouter implements ILayouter {
     }
 
     @Override
-    public byte[] generate() {
+    public byte[] generate() throws UnsupportedEncodingException {
         if (Charset.isSupported(CHARSET)) {
-            try {
-                return content.toString().getBytes(CHARSET);
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-            }
+            return content.toString().getBytes(CHARSET);
         }
         return content.toString().getBytes();
     }

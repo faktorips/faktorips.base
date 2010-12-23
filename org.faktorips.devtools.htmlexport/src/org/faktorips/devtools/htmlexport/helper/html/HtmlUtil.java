@@ -22,8 +22,9 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.htmlexport.helper.path.IpsElementPathUtil;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
+import org.faktorips.devtools.htmlexport.helper.path.PathUtil;
 import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
 
 /**
@@ -186,11 +187,19 @@ public class HtmlUtil {
      * 
      */
     public String createLinkOpenTag(String href, String target, String classes) {
+        return createLinkOpenTag(href, target, classes, null);
+    }
+
+    public String createLinkOpenTag(String href, String target, String classes, String title) {
         List<HtmlAttribute> attributes = new ArrayList<HtmlAttribute>();
 
         attributes.add(new HtmlAttribute("href", href)); //$NON-NLS-1$
         if (StringUtils.isNotBlank(target)) {
             attributes.add(new HtmlAttribute("target", target)); //$NON-NLS-1$
+        }
+
+        if (StringUtils.isNotBlank(title)) {
+            attributes.add(new HtmlAttribute("title", title)); //$NON-NLS-1$
         }
 
         if (StringUtils.isNotBlank(classes)) {
@@ -205,7 +214,16 @@ public class HtmlUtil {
      * 
      */
     public String getPathFromRoot(IIpsElement ipsElement, LinkedFileType linkedFileType) {
-        IpsElementPathUtil pathUtil = PathUtilFactory.createPathUtil(ipsElement);
+        PathUtil pathUtil = PathUtilFactory.createPathUtil(ipsElement);
+        return pathUtil.getPathFromRoot(linkedFileType) + ".html"; //$NON-NLS-1$
+    }
+
+    /**
+     * returns relative link from root to the page for the <code>IpsObjectType</code>
+     * 
+     */
+    public String getPathFromRoot(IpsObjectType ipsObjectType, LinkedFileType linkedFileType) {
+        PathUtil pathUtil = PathUtilFactory.createPathUtil(ipsObjectType);
         return pathUtil.getPathFromRoot(linkedFileType) + ".html"; //$NON-NLS-1$
     }
 

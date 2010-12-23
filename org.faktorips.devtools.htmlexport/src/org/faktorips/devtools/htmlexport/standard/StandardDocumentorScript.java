@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.htmlexport.IDocumentorScript;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
@@ -38,6 +39,7 @@ import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsElementListPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.IpsObjectTypeListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsPackagesListPageElement;
 import org.faktorips.devtools.htmlexport.pages.standard.ContentPageUtil;
 import org.faktorips.devtools.htmlexport.standard.pages.ProjectOverviewPageElement;
@@ -52,8 +54,10 @@ public class StandardDocumentorScript implements IDocumentorScript {
     public void execute(DocumentationContext context, IProgressMonitor monitor) throws CoreException {
         List<IIpsSrcFile> srcFiles = context.getDocumentedSourceFiles();
         Set<IIpsPackageFragment> relatedPackageFragments = getRelatedPackageFragments(srcFiles);
+        IpsObjectType[] documentedIpsObjectTypes = context.getDocumentedIpsObjectTypes();
 
-        monitor.beginTask("Write Html Export", 5 + srcFiles.size() + relatedPackageFragments.size()); //$NON-NLS-1$
+        monitor.beginTask(
+                "Write Html Export", 5 + srcFiles.size() + relatedPackageFragments.size() + documentedIpsObjectTypes.length); //$NON-NLS-1$
 
         // Reihenfolge fuer anlauf des balkens im exportwizard ungemein wichtig
 
@@ -66,6 +70,9 @@ public class StandardDocumentorScript implements IDocumentorScript {
             writeProjectOverviewPage(context, new SubProgressMonitor(monitor, 1));
             writePackagesClassesPages(context, srcFiles, relatedPackageFragments, new SubProgressMonitor(monitor,
                     relatedPackageFragments.size()));
+
+            writeObjectTypesClassesPages(context, documentedIpsObjectTypes, new SubProgressMonitor(monitor,
+                    documentedIpsObjectTypes.length));
 
             writeResources(context, new SubProgressMonitor(monitor, 1));
         } catch (IOException e) {
@@ -124,6 +131,34 @@ public class StandardDocumentorScript implements IDocumentorScript {
         return layouter.generate();
     }
 
+    private void writeObjectTypesClassesPages(DocumentationContext context,
+            IpsObjectType[] documentedIpsObjectTypes,
+            SubProgressMonitor monitor) throws IOException {
+        monitor.beginTask("Object Types Overview", 1); //$NON-NLS-1$
+        for (IpsObjectType ipsObjectType : documentedIpsObjectTypes) {
+            writeObjectTypesClassesPage(context, ipsObjectType);
+            monitor.worked(1);
+        }
+        monitor.done();
+
+    }
+
+    private void writeObjectTypesClassesPage(DocumentationContext context, IpsObjectType ipsObjectType)
+            throws IOException {
+        List<IIpsSrcFile> documentedSourceFiles = context.getDocumentedSourceFiles(ipsObjectType);
+        if (documentedSourceFiles.size() == 0) {
+            return;
+        }
+        IpsObjectTypeListPageElement allClassesPage = new IpsObjectTypeListPageElement(ipsObjectType,
+                documentedSourceFiles, context);
+        allClassesPage.setLinkTarget("content"); //$NON-NLS-1$
+        allClassesPage.build();
+        fileHandler.writeFile(context,
+                STANDARD_PATH + htmlUtil.getPathFromRoot(ipsObjectType, LinkedFileType.OBJECT_TYPE_CLASSES_OVERVIEW),
+                getPageContent(context, allClassesPage));
+
+    }
+
     private void writePackagesClassesPages(DocumentationContext context,
             List<IIpsSrcFile> srcFiles,
             Set<IIpsPackageFragment> relatedPackageFragments,
@@ -141,7 +176,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
     private void writePackagesClassesPage(DocumentationContext context,
             IIpsPackageFragment ipsPackageFragment,
             List<IIpsSrcFile> srcFiles) throws IOException {
-        boolean shownTypeChooser = false; // TODO auf true, wenn fertig
+        boolean shownTypeChooser = false;
         IpsElementListPageElement allClassesPage = new IpsElementListPageElement(ipsPackageFragment, srcFiles,
                 new IpsElementInIIpsPackageFilter(ipsPackageFragment, context), context, shownTypeChooser);
         allClassesPage.setLinkTarget("content"); //$NON-NLS-1$

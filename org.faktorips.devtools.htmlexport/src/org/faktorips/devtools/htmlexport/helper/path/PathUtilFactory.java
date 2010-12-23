@@ -17,6 +17,7 @@ import org.apache.commons.lang.NotImplementedException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
@@ -33,7 +34,7 @@ public class PathUtilFactory {
      * returns {@link IpsElementPathUtil} for the given {@link IIpsElement}
      * 
      */
-    public static IpsElementPathUtil createPathUtil(IIpsElement ipsElement) {
+    public static PathUtil createPathUtil(IIpsElement ipsElement) {
         if (ipsElement instanceof IIpsProject) {
             return new IpsProjectPathUtil((IIpsProject)ipsElement);
         }
@@ -48,5 +49,9 @@ public class PathUtilFactory {
         }
         throw new NotImplementedException(
                 "There is no IpsElementPathUtil for the IIpsElement of the type " + ipsElement.getClass().getCanonicalName()); //$NON-NLS-1$
+    }
+
+    public static PathUtil createPathUtil(IpsObjectType ipsObjectType) {
+        return new IpsObjectTypePathUtil(ipsObjectType);
     }
 }

@@ -74,8 +74,8 @@ public class HtmlLayouter extends AbstractLayouter {
         if (pageElement.hasStyle(Style.BLOCK)) {
             append(htmlUtil.createHtmlElementOpenTag("div")); //$NON-NLS-1$
         }
-        append(htmlUtil
-                .createLinkOpenTag(createLinkBase(pageElement), pageElement.getTarget(), getClasses(pageElement)));
+        append(htmlUtil.createLinkOpenTag(createLinkBase(pageElement), pageElement.getTarget(),
+                getClasses(pageElement), pageElement.getTitle()));
         visitSubElements(pageElement);
         append(htmlUtil.createHtmlElementCloseTag("a")); //$NON-NLS-1$
         if (pageElement.hasStyle(Style.BLOCK)) {

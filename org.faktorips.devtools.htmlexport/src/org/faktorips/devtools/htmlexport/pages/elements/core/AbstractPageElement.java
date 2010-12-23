@@ -29,6 +29,7 @@ import org.faktorips.devtools.htmlexport.generators.ILayouter;
 public abstract class AbstractPageElement implements PageElement {
 
     protected Set<Style> styles = new LinkedHashSet<Style>();
+
     private String id;
 
     public AbstractPageElement() {

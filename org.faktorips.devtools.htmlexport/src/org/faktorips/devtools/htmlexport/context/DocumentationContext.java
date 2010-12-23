@@ -149,6 +149,8 @@ public class DocumentationContext {
             addStatus(new IpsStatus(IStatus.ERROR, "Error finding IpsSrcFiles of types " + ipsObjectTypes, e)); //$NON-NLS-1$
         }
 
+        result.retainAll(getDocumentedSourceFiles());
+
         return result;
     }
 

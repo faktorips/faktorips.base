@@ -36,7 +36,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageEle
  * @author dicker
  * 
  */
-public abstract class AbstractListPageElement extends AbstractRootPageElement {
+public abstract class AbstractIpsElementListPageElement extends AbstractRootPageElement {
 
     protected IIpsElement baseIpsElement;
     protected String linkTarget;
@@ -66,15 +66,15 @@ public abstract class AbstractListPageElement extends AbstractRootPageElement {
     };
 
     /**
-     * creates an {@link AbstractListPageElement}
+     * creates an {@link AbstractIpsElementListPageElement}
      * 
      * @param baseIpsElement ipsElement, which represents the location of the page for links from
      *            the page
      * @param srcFiles unfiltered and unsorted objects to list on the page
      * @param filter for objects
      */
-    public AbstractListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles, IpsElementFilter filter,
-            DocumentationContext context) {
+    public AbstractIpsElementListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles,
+            IpsElementFilter filter, DocumentationContext context) {
         super();
         this.baseIpsElement = baseIpsElement;
         this.srcFiles = srcFiles;
@@ -83,13 +83,14 @@ public abstract class AbstractListPageElement extends AbstractRootPageElement {
     }
 
     /**
-     * creates an {@link AbstractListPageElement}
+     * creates an {@link AbstractIpsElementListPageElement}
      * 
      * @param baseIpsElement ipsElement, which represents the location of the page for links from
      *            the page
      * @param srcFiles objects to list on the page
      */
-    public AbstractListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles, DocumentationContext context) {
+    public AbstractIpsElementListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles,
+            DocumentationContext context) {
         this(baseIpsElement, srcFiles, ALL_FILTER, context);
     }
 

@@ -39,6 +39,7 @@ public class Messages extends NLS {
     public static String IpsObjectListPageElement_allObjects;
     public static String IpsObjectListPageElement_objects;
     public static String IpsPackagesListPageElement_allPackages;
+    public static String IpsPackagesListPageElement_headlineObjectTypes;
     public static String IpsPackagesListPageElement_packages;
     public static String KeyValueTablePageElement_headlineProperty;
     public static String KeyValueTablePageElement_headlineValue;
