@@ -13,6 +13,7 @@
 
 package org.faktorips.runtime.internal;
 
+import org.faktorips.runtime.CardinalityRange;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;

@@ -42,7 +42,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptGenImplClassBuilder;
-import org.faktorips.runtime.internal.CardinalityRange;
+import org.faktorips.runtime.CardinalityRange;
 import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.valueset.IntegerRange;
 import org.w3c.dom.Element;

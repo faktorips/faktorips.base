@@ -39,7 +39,7 @@ import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
 import org.faktorips.devtools.stdbuilder.type.GenTypePart;
-import org.faktorips.runtime.internal.CardinalityRange;
+import org.faktorips.runtime.CardinalityRange;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.valueset.IntegerRange;
 

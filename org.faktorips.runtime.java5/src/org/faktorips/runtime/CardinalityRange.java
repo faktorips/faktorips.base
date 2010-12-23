@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.runtime.internal;
+package org.faktorips.runtime;
 
 import org.faktorips.valueset.IntegerRange;
 
