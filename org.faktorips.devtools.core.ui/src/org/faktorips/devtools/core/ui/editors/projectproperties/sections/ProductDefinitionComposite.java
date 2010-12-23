@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.editors.projectproperties.sections;
 
+import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFolder;
@@ -21,11 +22,16 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -33,7 +39,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
+import org.eclipse.ui.model.WorkbenchContentProvider;
+import org.eclipse.ui.model.WorkbenchLabelProvider;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArchiveEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -95,7 +105,7 @@ public class ProductDefinitionComposite extends IpsSection {
         table = new Table(parent, SWT.BORDER | SWT.SINGLE);
         tableViewer = new TableViewer(table);
         tableViewer.setContentProvider(new ArrayContentProvider());
-        resourcesPathExcludedFromTheProductDefiniton.add("aaa");
+        resourcesPathExcludedFromTheProductDefiniton.add("IpsPackageContentProvider");
         tableViewer.setInput(resourcesPathExcludedFromTheProductDefiniton);
         // treeViewer.setLabelProvider();
         // IpsPlugin
@@ -106,7 +116,8 @@ public class ProductDefinitionComposite extends IpsSection {
     private void createButtons(Composite buttons, UIToolkit toolkit) {
         addSrcFolderButton = toolkit.createButton(buttons, Messages.ProductDefinitionComposite_add_folder_text);
         addSrcFolderButton.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, false));
-        addSrcFolderButton.addMouseListener(new AddMouseHandler());
+        addSrcFolderButton.addSelectionListener(new IpsArchiveAdapter());
+        // addSrcFolderButton.addMouseListener(new AddMouseHandler());
 
         removeSrcFolderButton = toolkit.createButton(buttons, Messages.ProductDefinitionComposite_remove_folder_text);
         removeSrcFolderButton.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, false));
@@ -331,6 +342,54 @@ public class ProductDefinitionComposite extends IpsSection {
 
         }
 
+    }
+
+    private class IpsArchiveAdapter implements SelectionListener, ISelectionChangedListener {
+
+        @Override
+        public void selectionChanged(SelectionChangedEvent event) {
+            if (event.getSelection().isEmpty()) {
+                removeSrcFolderButton.setEnabled(false);
+            } else {
+                removeSrcFolderButton.setEnabled(true);
+            }
+        }
+
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+            if (e.getSource() == addSrcFolderButton) {
+                addIpsSourceFolder();
+            }
+            if (e.getSource() == removeSrcFolderButton) {
+                removeIpsSourceFolder();
+            }
+        }
+
+        @Override
+        public void widgetDefaultSelected(SelectionEvent e) {
+            // nothing to do
+        }
+    }
+
+    private void addIpsSourceFolder() {
+        ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(null, new WorkbenchLabelProvider(),
+                new WorkbenchContentProvider());
+        // dialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
+        dialog.setMessage("afdgg");
+        dialog.setTitle("fdd");
+    }
+
+    private void removeIpsSourceFolder() {
+        IStructuredSelection selection = (IStructuredSelection)tableViewer.getSelection();
+        if (selection.size() > 0) {
+            dataChanged = true;
+            for (Iterator<?> it = selection.iterator(); it.hasNext();) {
+                IIpsArchiveEntry archiveEntry = (IIpsArchiveEntry)it.next();
+
+                ipsObjectPath.removeArchiveEntry(archiveEntry.getIpsArchive());
+            }
+            tableViewer.refresh(false);
+        }
     }
 
 }

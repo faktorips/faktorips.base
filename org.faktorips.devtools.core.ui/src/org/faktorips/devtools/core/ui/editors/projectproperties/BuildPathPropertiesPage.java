@@ -20,10 +20,7 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.TabFolder;
@@ -73,17 +70,6 @@ public class BuildPathPropertiesPage extends ProjectPropertyPage {
         reinitComposites();
     }
 
-    // formBody.setLayout(createPageLayout(1, false));
-    // TabFolder tf = new TabFolder(parent, SWT.NONE);
-    // TabItem quellverzeichnis = new TabItem(tf, SWT.NONE);
-    // quellverzeichnis.setText(Messages.BuildPathPropertiesPage_source);
-    // quellverzeichnis.setControl(new Quellverzeichnis(tf, toolkit));
-    // TabItem projects = new TabItem(tf, SWT.NONE);
-    // projects.setText(Messages.BuildPathPropertiesPage_projects);
-    // TabItem archive = new TabItem(tf, SWT.NONE);
-    // archive.setText(Messages.BuildPathPropertiesPage_archive);
-    // TabItem reihenfolge = new TabItem(tf, SWT.NONE);
-    // reihenfolge.setText(Messages.BuildPathPropertiesPage_reihenfolge);
     private void tabChanged(Widget widget) {
         if (widget instanceof TabItem) {
             TabItem tabItem = (TabItem)widget;
@@ -150,7 +136,7 @@ public class BuildPathPropertiesPage extends ProjectPropertyPage {
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         formBody.setLayout(createPageLayout(1, false));
-        Composite members = createGridComposite(toolkit, formBody, 1, true, GridData.FILL_BOTH);
+        // Composite members = createGridComposite(toolkit, formBody, 1, true, GridData.FILL_BOTH);
         // Composite composite = new Composite(formBody, SWT.NONE);
         // composite.setFont(formBody.getFont());
         //
@@ -160,39 +146,41 @@ public class BuildPathPropertiesPage extends ProjectPropertyPage {
         // layout.numColumns = 1;
         // composite.setLayout(layout);
 
-        TabFolder folder = new TabFolder(members, SWT.NONE);
-        folder.setLayoutData(new GridData(GridData.FILL_BOTH));
-        folder.setFont(members.getFont());
+        // TabFolder folder = new TabFolder(members, SWT.NONE);
+        // folder.setLayoutData(new GridData(GridData.FILL_BOTH));
+        // folder.setFont(members.getFont());
 
-        srcFolderComposite = new SrcFolderComposite(folder);
-        refProjectsComposite = new ReferencedProjectsComposite(folder);
-        archiveComposite = new ArchiveComposite(folder);
-        orderComposite = new ObjectPathOrderComposite(folder);
+        srcFolderComposite = new SrcFolderComposite(formBody);
+        // refProjectsComposite = new ReferencedProjectsComposite(folder);
+        // archiveComposite = new ArchiveComposite(folder);
+        // orderComposite = new ObjectPathOrderComposite(folder);
         //
-        addTabItem(folder, Messages.BuildPathPropertiesPage_source,
-                (Image)resourceManager.get(packageFragmentRootImage), srcFolderComposite);
-        addTabItem(folder, Messages.BuildPathPropertiesPage_projects, (Image)resourceManager.get(projectImage),
-                refProjectsComposite);
-        addTabItem(folder, Messages.BuildPathPropertiesPage_archive, (Image)resourceManager.get(archiveImage),
-                archiveComposite);
-        addTabItem(folder, Messages.BuildPathPropertiesPage_path_order, (Image)resourceManager.get(objectPathImage),
-                orderComposite);
+        // addTabItem(folder, Messages.BuildPathPropertiesPage_source, (Image)resourceManager
+        // .get(packageFragmentRootImage), srcFolderComposite);
+        // addTabItem(folder, Messages.BuildPathPropertiesPage_projects,
+        // (Image)resourceManager.get(projectImage),
+        // refProjectsComposite);
+        // addTabItem(folder, Messages.BuildPathPropertiesPage_archive,
+        // (Image)resourceManager.get(archiveImage),
+        // archiveComposite);
+        // addTabItem(folder, Messages.BuildPathPropertiesPage_path_order,
+        // (Image)resourceManager.get(objectPathImage),
+        // orderComposite);
         //
         srcFolderComposite.init(ipsObjectPath);
-        refProjectsComposite.init(ipsObjectPath);
-        archiveComposite.init(ipsObjectPath);
-        orderComposite.init(ipsObjectPath);
+        // refProjectsComposite.init(ipsObjectPath);
+        // archiveComposite.init(ipsObjectPath);
+        // orderComposite.init(ipsObjectPath);
+        //
+        // folder.setSelection(pageIndex);
+        // folder.addSelectionListener(new SelectionAdapter() {
+        // @Override
+        // public void widgetSelected(SelectionEvent e) {
+        // tabChanged(e.item);
+        // }
+        // });
 
-        folder.setSelection(pageIndex);
-        folder.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                tabChanged(e.item);
-            }
-        });
-
-        Dialog.applyDialogFont(members);
-        // return composite;
+        Dialog.applyDialogFont(formBody);
 
     }
 }

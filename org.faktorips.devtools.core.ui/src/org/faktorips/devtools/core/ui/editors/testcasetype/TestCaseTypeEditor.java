@@ -13,19 +13,23 @@
 
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
+import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
+import org.faktorips.devtools.core.ui.views.modeldescription.TestCaseDescriptionPage;
 
 /**
  * The editor to edit test case types.
  * 
  * @author Joerg Ortmann
  */
-public class TestCaseTypeEditor extends IpsObjectEditor {
+public class TestCaseTypeEditor extends IpsObjectEditor implements IModelDescriptionSupport {
 
     TestCaseTypeEditorPage editorPage;
 
@@ -45,7 +49,7 @@ public class TestCaseTypeEditor extends IpsObjectEditor {
     /**
      * Returns the test case type the editor belongs to.
      */
-    ITestCaseType getTestCaseType() {
+    public ITestCaseType getTestCaseType() {
         try {
             return (ITestCaseType)getIpsSrcFile().getIpsObject();
         } catch (Exception e) {
@@ -63,5 +67,10 @@ public class TestCaseTypeEditor extends IpsObjectEditor {
     @Override
     protected void refreshInclStructuralChanges() {
         editorPage.refreshInclStructuralChanges();
+    }
+
+    @Override
+    public IPage createModelDescriptionPage() throws CoreException {
+        return new TestCaseDescriptionPage(this);
     }
 }

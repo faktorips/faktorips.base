@@ -137,14 +137,11 @@ public class ProjectPropertyEditor extends FormEditor implements ContentsChangeL
             IFile file = ((IFileEditorInput)input).getFile();
             ipsProject = model.getIpsProject(file.getProject());
             iipsProjectProperties = ipsProject.getProperties();
-            if (iipsProjectProperties != null) {
 
-            }
-            // ipsSrcFile = (IIpsSrcFile)model.getIpsElement(file);
+            String title = file.getProject().getName() + file.getName();
+            setPartName(title);
         }
 
-        String title = iipsProjectProperties.getBuilderSetId(); // ipsSrcFile.getIpsObjectName();
-        setPartName(title);
         // setContentDescription(ipsSrcFile.getParent().getEnclosingResource().getFullPath().toOSString());
 
         // if (ipsSrcFile.isMutable() && !ipsSrcFile.getEnclosingResource().isSynchronized(0)) {
@@ -202,6 +199,9 @@ public class ProjectPropertyEditor extends FormEditor implements ContentsChangeL
             addPage(new DatatypesPropertiesPage(this));
             addPage(new OverviewPropertiesPage(this));
             addPage(new BuildPathPropertiesPage(this));
+            addPage(new ProjectPropertiesPage(this));
+            addPage(new LibrariesPropertiesPage(this));
+            addPage(new OrderExportPropertiesPage(this));
             addPage(new ProductDefinitionPropertiesPage(this));
             addPage(new ModelPropertiesPage(this));
         } catch (PartInitException e) {

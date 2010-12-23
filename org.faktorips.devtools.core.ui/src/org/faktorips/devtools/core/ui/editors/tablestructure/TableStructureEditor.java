@@ -13,14 +13,18 @@
 
 package org.faktorips.devtools.core.ui.editors.tablestructure;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
+import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
+import org.faktorips.devtools.core.ui.views.modeldescription.TableDescriptionPage;
 
 /**
  * Editor to edit table structures.
  */
-public class TableStructureEditor extends IpsObjectEditor {
+public class TableStructureEditor extends IpsObjectEditor implements IModelDescriptionSupport {
 
     protected ITableStructure getTableStructure() {
         return (ITableStructure)getIpsObject();
@@ -36,4 +40,8 @@ public class TableStructureEditor extends IpsObjectEditor {
         return Messages.TableStructureEditor_title + getIpsObject().getName();
     }
 
+    @Override
+    public IPage createModelDescriptionPage() throws CoreException {
+        return new TableDescriptionPage(this);
+    }
 }

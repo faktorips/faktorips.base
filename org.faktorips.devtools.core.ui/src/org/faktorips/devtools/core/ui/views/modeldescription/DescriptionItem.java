@@ -13,10 +13,16 @@
 
 package org.faktorips.devtools.core.ui.views.modeldescription;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DescriptionItem {
 
-    private String description;
     private String name;
+
+    private String description;
+
+    private List<DescriptionItem> children = new ArrayList<DescriptionItem>(0);
 
     public DescriptionItem() {
         // Empty default constructor
@@ -25,6 +31,12 @@ public class DescriptionItem {
     public DescriptionItem(String name, String description) {
         this.description = description;
         this.name = name;
+    }
+
+    public DescriptionItem(String name, List<DescriptionItem> children) {
+        this.description = ""; //$NON-NLS-1$
+        this.name = name;
+        this.children = children;
     }
 
     public String getDescription() {
@@ -41,6 +53,21 @@ public class DescriptionItem {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setChildren(List<DescriptionItem> children) {
+        if (children == null) {
+            this.children = new ArrayList<DescriptionItem>(0);
+        }
+        this.children = children;
+    }
+
+    public List<DescriptionItem> getChildren() {
+        return children;
+    }
+
+    public boolean hasChildren() {
+        return !children.isEmpty();
     }
 
 }

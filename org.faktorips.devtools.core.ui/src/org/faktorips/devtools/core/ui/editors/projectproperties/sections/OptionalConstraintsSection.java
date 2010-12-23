@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
@@ -51,7 +52,8 @@ public class OptionalConstraintsSection extends IpsSection {
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
 
         client.setLayout(new GridLayout(1, false));
-        Composite composite = toolkit.createLabelEditColumnComposite(client);
+        Composite composite = toolkit.createGridComposite(client, 2, false, false);
+        // toolkit.createLabelEditColumnComposite(client);
 
         // ProductCmptType2RefControl supertypeRefControl = new ProductCmptType2RefControl(
         // productCmptType.getIpsProject(), composite, toolkit, false);
@@ -59,37 +61,31 @@ public class OptionalConstraintsSection extends IpsSection {
         // IType.PROPERTY_SUPERTYPE);
 
         toolkit.createLabel(composite, Messages.OptionalConstraints_derivedUnionIsImplemented);
-        Combo derivedUnionIsImplementedCombo = toolkit.createCombo(composite);
-        derivedUnionIsImplementedComboViewer = createComboViewer(derivedUnionIsImplementedCombo);
+        Checkbox derivedUnionIsImplementedCheckbox = toolkit.createCheckbox(composite);
         if (iIpsProjectProperties.isDerivedUnionIsImplementedRuleEnabled()) {
-            derivedUnionIsImplementedComboViewer.setSelection(new StructuredSelection(true), true);
-        } else {
-            derivedUnionIsImplementedComboViewer.setSelection(new StructuredSelection(false), true);
+            derivedUnionIsImplementedCheckbox.setChecked(true);
         }
         // Checkbox abstractCheckbox = toolkit.createCheckbox(composite);
         // bindingContext.bindContent(abstractCheckbox, productCmptType, IType.PROPERTY_ABSTRACT);
 
         toolkit.createFormLabel(composite,
                 Messages.OptionalConstraints_referencedProductComponentsAreValidOnThisGenerationsValidFromDate);
-        Combo referencedProductComponentsAreValidOnThisGenerationsValidFromDateCombo = toolkit.createCombo(composite);
-        referencedProductComponentsAreValidOnThisGenerationsValidFromDateComboViewer = createComboViewer(referencedProductComponentsAreValidOnThisGenerationsValidFromDateCombo);
+        Checkbox referencedProductComponentsAreValidOnThisGenerationsValidFromDateCheckbox = toolkit
+                .createCheckbox(composite);
+        // referencedProductComponentsAreValidOnThisGenerationsValidFromDateComboViewer =
+        // createComboViewer(referencedProductComponentsAreValidOnThisGenerationsValidFromDateCombo);
         if (iIpsProjectProperties.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled()) {
-            referencedProductComponentsAreValidOnThisGenerationsValidFromDateComboViewer.setSelection(
-                    new StructuredSelection(true), true);
-        } else {
-            referencedProductComponentsAreValidOnThisGenerationsValidFromDateComboViewer.setSelection(
-                    new StructuredSelection(false), true);
+            referencedProductComponentsAreValidOnThisGenerationsValidFromDateCheckbox.setChecked(true);
         }
         // Checkbox configuratedCheckbox = toolkit.createCheckbox(composite);
         // bindingContext.bindContent(configuratedCheckbox, productCmptType,
         // IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE);
         toolkit.createFormLabel(composite, Messages.OptionalConstraints_rulesWithoutReferencesAllowed);
-        Combo rulesWithoutReferencesAllowedCombo = toolkit.createCombo(composite);
-        rulesWithoutReferencesAllowedComboViewer = createComboViewer(rulesWithoutReferencesAllowedCombo);
+        Checkbox rulesWithoutReferencesAllowedCheckbox = toolkit.createCheckbox(composite);
+        // rulesWithoutReferencesAllowedComboViewer =
+        // createComboViewer(rulesWithoutReferencesAllowedCombo);
         if (iIpsProjectProperties.isRulesWithoutReferencesAllowedEnabled()) {
-            rulesWithoutReferencesAllowedComboViewer.setSelection(new StructuredSelection(true), true);
-        } else {
-            rulesWithoutReferencesAllowedComboViewer.setSelection(new StructuredSelection(false), true);
+            rulesWithoutReferencesAllowedCheckbox.setChecked(true);
         }
     }
 

@@ -17,13 +17,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.projectproperties.sections.ProductDefinitionComposite;
+import org.faktorips.devtools.core.ui.editors.projectproperties.sections.ProductDefinitionSection;
 
 public class ProductDefinitionPropertiesPage extends ProjectPropertyPage {
     final static String PAGEID = "ProductDefinitionProperties";
 
     public ProductDefinitionPropertiesPage(FormEditor editor, String id, String title) {
         super(editor, id, title);
-        // TODO Auto-generated constructor stub
     }
 
     public ProductDefinitionPropertiesPage(ProjectPropertyEditor projectPropertyEditor) {
@@ -34,6 +34,7 @@ public class ProductDefinitionPropertiesPage extends ProjectPropertyPage {
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         formBody.setLayout(createPageLayout(1, false));
         new ProductDefinitionComposite(formBody, getIIpsProjectProperties(), toolkit);
+        new ProductDefinitionSection(getIIpsProjectProperties(), formBody, toolkit);
     }
 
     @Override

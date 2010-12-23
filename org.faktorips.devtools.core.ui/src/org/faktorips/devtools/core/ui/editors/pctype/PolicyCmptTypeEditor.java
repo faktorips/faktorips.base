@@ -13,15 +13,19 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
+import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
+import org.faktorips.devtools.core.ui.views.modeldescription.PolicyCmtTypeDescriptionPage;
 
 /**
  * The editor to edit policy component types.
  */
-public class PolicyCmptTypeEditor extends TypeEditor {
+public class PolicyCmptTypeEditor extends TypeEditor implements IModelDescriptionSupport {
 
     public PolicyCmptTypeEditor() {
         super();
@@ -56,6 +60,11 @@ public class PolicyCmptTypeEditor extends TypeEditor {
         if (getIpsProject().isPersistenceSupportEnabled()) {
             addPage(new PersistencePage(this));
         }
+    }
+
+    @Override
+    public IPage createModelDescriptionPage() throws CoreException {
+        return new PolicyCmtTypeDescriptionPage(this);
     }
 
 }

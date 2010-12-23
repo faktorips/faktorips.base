@@ -11,31 +11,31 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.views.ipshierarchy;
+package org.faktorips.devtools.core.ui.views.instanceexplorer;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.type.TypeHierarchy;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.model.IIpsMetaClass;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 
-public class IpsHierarchyViewTest extends AbstractIpsPluginTest {
+public class InstanceExplorerTest extends AbstractIpsPluginTest {
+
     private IIpsProject pdProject;
     private IIpsPackageFragmentRoot pdRootFolder;
     private IIpsPackageFragment pdFolder;
     private IIpsSrcFile pdSrcFile;
-    private PolicyCmptType pcType;
-    private IPolicyCmptType supertype;
-    private IPolicyCmptType supersupertype;
+    private ProductCmptType pcType;
+    private IIpsSrcFile pdSrcFile2;
+    private ProductCmptType pcType2;
 
     @Override
     protected void setUp() throws Exception {
@@ -43,36 +43,46 @@ public class IpsHierarchyViewTest extends AbstractIpsPluginTest {
         pdProject = this.newIpsProject("TestProject");
         pdRootFolder = pdProject.getIpsPackageFragmentRoots()[0];
         pdFolder = pdRootFolder.createPackageFragment("products.folder", true, null);
-        pdSrcFile = pdFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
-        pcType = (PolicyCmptType)pdSrcFile.getIpsObject();
+        pdSrcFile = pdFolder.createIpsFile(IpsObjectType.PRODUCT_CMPT_TYPE, "TestProduct", true, null);
+        pcType = (ProductCmptType)pdSrcFile.getIpsObject();
 
-        // create two more types that act as supertype and supertype's supertype
-        IIpsSrcFile file1 = pdFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Supertype", true, null);
-        supertype = (PolicyCmptType)file1.getIpsObject();
-        IIpsSrcFile file2 = pdFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Supersupertype", true, null);
-        supersupertype = (PolicyCmptType)file2.getIpsObject();
-        pcType.setSupertype(supertype.getQualifiedName());
-        supertype.setSupertype(supersupertype.getQualifiedName());
+        pdSrcFile2 = pdFolder.createIpsFile(IpsObjectType.PRODUCT_CMPT_TYPE, "TestProduct2", true, null);
+        pcType2 = (ProductCmptType)pdSrcFile2.getIpsObject();
     }
 
     public void testSupport() {
-        assertTrue(IpsHierarchyView.supports(pcType));
+        assertTrue(InstanceExplorer.supports(pcType));
     }
 
-    public void testIsNodeOfHierarchy() throws CoreException {
-        IpsHierarchyViewMock testMock = new IpsHierarchyViewMock();
+    public void testIsChanged() {
+        InstanceExplorer test = new InstanceExplorer();
 
         Set<IIpsSrcFile> ipsSrcFiles = new HashSet<IIpsSrcFile>();
         ipsSrcFiles.add(pcType.getIpsSrcFile());
-        testMock.isNodeOfHierarchy(ipsSrcFiles, TypeHierarchy.getTypeHierarchy(pcType));
-        assertEquals(pcType, testMock.element);
+        try {
+            assertTrue(test.isChanged(pcType, ipsSrcFiles));
+            assertFalse(test.isChanged(pcType2, ipsSrcFiles));
+        } catch (CoreException e) {
+            e.printStackTrace();
+        }
     }
 
-    private class IpsHierarchyViewMock extends IpsHierarchyView {
+    public void testShowInstancesOf() {
+        InstanceExplorerMock testMock = new InstanceExplorerMock();
+        try {
+            testMock.showInstancesOf(pcType);
+            assertEquals(pcType, testMock.element);
+        } catch (CoreException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private class InstanceExplorerMock extends InstanceExplorer {
         private IIpsObject element;
 
         @Override
-        public void showHierarchy(IIpsObject element) {
+        protected void setInputData(final IIpsMetaClass element) {
             this.element = element;
         }
 

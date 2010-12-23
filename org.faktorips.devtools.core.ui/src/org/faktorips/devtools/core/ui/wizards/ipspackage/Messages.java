@@ -40,5 +40,6 @@ public class Messages extends NLS {
     public static String IpsPackagePage_PackageNameMustNotContainBlanks;
     public static String IpsPackagePage_InvalidPackageName;
     public static String IpsPackagePage_PackageAllreadyExists;
+    public static String IpsPackagePage_packagePath;
 
 }

@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.ipspackage;
 
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
@@ -48,7 +47,7 @@ public class NewIpsPackageWizard extends Wizard implements INewWizard {
         }
     }
 
-    protected IpsPackagePage createFirstPage(IStructuredSelection selection) throws JavaModelException {
+    protected IpsPackagePage createFirstPage(IStructuredSelection selection) {
         return new IpsPackagePage(selection);
     }
 
@@ -59,8 +58,10 @@ public class NewIpsPackageWizard extends Wizard implements INewWizard {
     @Override
     public final boolean performFinish() {
         try {
-            IIpsPackageFragment pack = packagePage.getParentPackageFragment();
-            pack.createSubPackage(packagePage.getIpsPackageName(), true, null);
+            // IIpsPackageFragment pack = packagePage.getParentPackageFragment();
+            IIpsPackageFragment pack = packagePage.getIpsPackageFragmentRoot().getDefaultIpsPackageFragment();
+            String path = packagePage.getIpsPackagePath() + "." + packagePage.getIpsPackageName(); //$NON-NLS-1$
+            pack.createSubPackage(path, true, null);
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }

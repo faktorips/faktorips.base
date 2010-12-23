@@ -13,14 +13,18 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
+import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
+import org.faktorips.devtools.core.ui.views.modeldescription.ProductCmptTypeDescriptionPage;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class ProductCmptTypeEditor extends TypeEditor {
+public class ProductCmptTypeEditor extends TypeEditor implements IModelDescriptionSupport {
 
     @Override
     protected String getUniformPageTitle() {
@@ -38,5 +42,10 @@ public class ProductCmptTypeEditor extends TypeEditor {
         addPage(new ProductCmptTypeStructurePage(this, true));
         addPage(new ProductCmptTypeBehaviourPage(this));
         addPage(new CustomIconPage(this));
+    }
+
+    @Override
+    public IPage createModelDescriptionPage() throws CoreException {
+        return new ProductCmptTypeDescriptionPage(this);
     }
 }

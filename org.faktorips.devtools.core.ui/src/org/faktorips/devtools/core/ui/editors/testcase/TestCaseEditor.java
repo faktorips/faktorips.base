@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.testcase.deltapresentation.TestCaseDeltaDialog;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
+import org.faktorips.devtools.core.ui.views.modeldescription.TestCaseDescriptionPage;
 
 /**
  * The editor to edit test cases based on test case types.
@@ -80,7 +81,7 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
     /**
      * Returns the test case the editor belongs to.
      */
-    ITestCase getTestCase() {
+    public ITestCase getTestCase() {
         try {
             return (ITestCase)getIpsSrcFile().getIpsObject();
         } catch (Exception e) {
@@ -126,7 +127,7 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
 
     @Override
     public IPage createModelDescriptionPage() throws CoreException {
-        return new TestCaseModelDescriptionPage(this);
+        return new TestCaseDescriptionPage(this);
     }
 
     public void addDetailAreaRedrawListener(ITestCaseDetailAreaRedrawListener listener) {

@@ -32,5 +32,8 @@ public class Messages extends NLS {
     public static String DefaultModelDescriptionPage_SortText;
     public static String DefaultModelDescriptionPage_SortTooltipText;
     public static String ModelDescriptionView_notSupported;
+    public static String DefaultModelDescriptionPage_FilterEmptyDescription;
+    public static String DefaultModelDescriptionPage_FilterEmptyText;
+    public static String DefaultModelDescriptionPage_FilterEmptyTooltipText;
 
 }

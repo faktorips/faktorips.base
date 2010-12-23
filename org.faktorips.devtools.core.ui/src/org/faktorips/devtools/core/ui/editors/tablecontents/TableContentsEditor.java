@@ -20,6 +20,7 @@ import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
+import org.faktorips.devtools.core.ui.views.modeldescription.TableDescriptionPage;
 
 /**
  * Editor for a table content.
@@ -58,12 +59,7 @@ public class TableContentsEditor extends TimedIpsObjectEditor implements IModelD
 
     @Override
     public IPage createModelDescriptionPage() throws CoreException {
-        ITableContents tableContents = getTableContents();
-        if (tableContents == null) {
-            return null;
-        }
-        TableModelDescriptionPage fModelDescriptionPage = new TableModelDescriptionPage(tableContents);
-        return fModelDescriptionPage;
+        return new TableDescriptionPage(this);
     }
 
 }

@@ -13,19 +13,19 @@
 
 package org.faktorips.devtools.core.ui.editors.projectproperties.sections;
 
-import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Section;
-import org.faktorips.devtools.core.internal.model.ipsproject.SupportedLanguage;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
@@ -42,7 +42,7 @@ public class LanguageSection {
         this.iIpsProjectProperties = iIpsProjectProperties;
         section = toolkit.getFormToolkit().createSection(parent, style);
         section.setLayoutData(layoutData);
-        section.setText("aaa");
+        section.setText(Messages.LanguageEditDialog_label);
         create(parent, toolkit);
     }
 
@@ -57,6 +57,7 @@ public class LanguageSection {
                 boolean canEdit, boolean canDelete, boolean canMove, boolean showEditButton, UIToolkit toolkit) {
             super(iIpsProjectProperties, parent, canCreate, canEdit, canDelete, canMove, showEditButton, toolkit,
                     ExpandableComposite.TITLE_BAR);
+            input = iIpsProjectProperties.getSupportedLanguages();
             initControls(toolkit);
             // setText(Messages.Language_title);
         }
@@ -67,7 +68,7 @@ public class LanguageSection {
 
         @Override
         protected IStructuredContentProvider createContentProvider() {
-            return new ArrayContentProvider();
+            return new LanguageProvider();
         }
 
         @Override
@@ -83,22 +84,54 @@ public class LanguageSection {
 
         @Override
         protected void fillViewer() {
-            // input = iIpsProjectProperties.getSupportedLanguages();
-            input = new HashSet<ISupportedLanguage>();
-            ISupportedLanguage selection = new SupportedLanguage();
-            input.add(selection);
             viewer.setInput(input);
         }
 
         @Override
         public void deleteItem() {
-            ISupportedLanguage selection = getSelectedPart();
-            input.remove(selection);
+            String selection = getSelectedPart();
+            for (ISupportedLanguage supportLanguage : input) {
+                if (selection.equals(supportLanguage.getLocale().getLanguage())) {
+                    input.remove(supportLanguage);
+                }
+            }
 
         }
 
-        public final ISupportedLanguage getSelectedPart() {
-            return (ISupportedLanguage)getSelectedObject();
+        public final String getSelectedPart() {
+            return (String)getSelectedObject();
         }
+    }
+
+    public class LanguageProvider implements IStructuredContentProvider {
+
+        @Override
+        public Object[] getElements(Object inputElement) {
+            if (inputElement instanceof LinkedHashSet<?>) {
+                LinkedHashSet<ISupportedLanguage> new_name = (LinkedHashSet<ISupportedLanguage>)inputElement;
+                String[] locale = new String[new_name.size()];
+                Iterator<ISupportedLanguage> itor = new_name.iterator();
+                int i = 0;
+                while (itor.hasNext()) {
+                    ISupportedLanguage language = itor.next();
+                    locale[i] = language.getLocale().getLanguage();
+                    i++;
+                }
+                return locale;
+            }
+            return new Object[0];
+        }
+
+        @Override
+        public void dispose() {
+            // TODO Auto-generated method stub
+        }
+
+        @Override
+        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            // TODO Auto-generated method stub
+
+        }
+
     }
 }

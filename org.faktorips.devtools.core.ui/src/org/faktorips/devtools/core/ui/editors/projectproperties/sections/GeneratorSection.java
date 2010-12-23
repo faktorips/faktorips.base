@@ -18,25 +18,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.ColumnViewerEditor;
-import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
-import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
-import org.eclipse.jface.viewers.FocusCellOwnerDrawHighlighter;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.TableViewerEditor;
-import org.eclipse.jface.viewers.TableViewerFocusCellManager;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetInfo;
@@ -50,10 +41,8 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.preferencepages.BuilderSetPropertyEditingSupport;
-import org.faktorips.devtools.core.ui.preferencepages.BuilderSetPropertyLabelProvider;
-import org.faktorips.devtools.core.ui.preferencepages.BuilderSetContainer.BuilderSetContentProvider;
-import org.faktorips.devtools.core.util.StringUtils;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.StringUtil;
 
 public class GeneratorSection extends IpsSection {
     private IIpsArtefactBuilderSetConfigModel builderSetConfig;
@@ -77,6 +66,7 @@ public class GeneratorSection extends IpsSection {
         this.builderSetConfigModel = iIpsProjectProperties.getBuilderSetConfig();
         this.builderSetId = ipsProject.getProperties().getBuilderSetId();
         this.iIpsProjectProperties = iIpsProjectProperties;
+
         initControls();
         setText(Messages.Generator_title);
     }
@@ -120,112 +110,162 @@ public class GeneratorSection extends IpsSection {
     }
 
     @Override
-    protected void initClientComposite(Composite composite, UIToolkit toolkit) {
-        createBuilderSetCombo(composite);
-        Label label = new Label(composite, SWT.NONE);
-        label.setText(Messages.Generator_tableViewerLabel);
-        final Table table = new Table(composite, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.SINGLE
-                | SWT.FULL_SELECTION);
-        table.setLinesVisible(true);
-        table.setHeaderVisible(true);
-        GridData gridData = new GridData(GridData.FILL_BOTH);
-        gridData.grabExcessHorizontalSpace = true;
-        gridData.grabExcessVerticalSpace = true;
-        gridData.horizontalSpan = 3;
-        table.setLayoutData(gridData);
-
-        tableViewer = new TableViewer(table);
-        tableViewer.setContentProvider(new BuilderSetContentProvider());
-
-        String[] columnNames = new String[COLUMNS_COUNT];
-        columnNames[PROPERTY_NAME_COLUMN_INDEX] = Messages.Generator_tableColumnLabel_Property;
-        columnNames[PROPERTY_VALUE_COLUMN_INDEX] = Messages.Generator_tableColumnLabel_Value;
-        columnNames[PROPERTY_DESCRIPTION_COLUMN_INDEX] = Messages.Generator_title;
-
-        columns = new TableViewerColumn[columnNames.length];
-        for (int i = 0; i < columnNames.length; i++) {
-            columns[i] = new TableViewerColumn(tableViewer, SWT.LEFT, i);
-            columns[i].getColumn().setText(columnNames[i]);
-        }
-
-        columns[PROPERTY_NAME_COLUMN_INDEX].setLabelProvider(new ColumnLabelProvider() {
-            @Override
-            public String getText(Object element) {
-                return ((IIpsBuilderSetPropertyDef)element).getLabel();
-            }
-        });
-        columns[PROPERTY_VALUE_COLUMN_INDEX].setLabelProvider(new BuilderSetPropertyLabelProvider(ipsProject,
-                builderSetConfigModel));
-        columns[PROPERTY_DESCRIPTION_COLUMN_INDEX].setLabelProvider(new ColumnLabelProvider() {
-            private static final int TOOLTIP_LINE_LENGTH = 75;
-
-            @Override
-            public String getText(Object element) {
-                return ((IIpsBuilderSetPropertyDef)element).getDescription();
-            }
-
-            @Override
-            public String getToolTipText(Object element) {
-                if (element instanceof IIpsBuilderSetPropertyDef) {
-                    IIpsBuilderSetPropertyDef propertyDef = (IIpsBuilderSetPropertyDef)element;
-                    String description = propertyDef.getDescription();
-                    String wrappedText = StringUtils.wrapText(description, TOOLTIP_LINE_LENGTH, "\n"); //$NON-NLS-1$
-                    return wrappedText;
-                }
-                return ""; //$NON-NLS-1$
-            }
-
-            @Override
-            public Point getToolTipShift(Object object) {
-                return new Point(5, 5);
-            }
-
-            @Override
-            public int getToolTipDisplayDelayTime(Object object) {
-                return 200;
-            }
-
-            @Override
-            public int getToolTipTimeDisplayed(Object object) {
-                return 10000;
-            }
-        });
-
-        TableViewerFocusCellManager focusCellManager = new TableViewerFocusCellManager(tableViewer,
-                new FocusCellOwnerDrawHighlighter(tableViewer));
-
-        ColumnViewerEditorActivationStrategy actSupport = new ColumnViewerEditorActivationStrategy(tableViewer) {
-            @Override
-            protected boolean isEditorActivationEvent(ColumnViewerEditorActivationEvent event) {
-                return event.eventType == ColumnViewerEditorActivationEvent.TRAVERSAL
-                        || event.eventType == ColumnViewerEditorActivationEvent.MOUSE_CLICK_SELECTION
-                        || event.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED
-                        || event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC;
-            }
-        };
-        TableViewerEditor.create(tableViewer, focusCellManager, actSupport, ColumnViewerEditor.TABBING_HORIZONTAL
-                | ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR | ColumnViewerEditor.TABBING_VERTICAL
-                | ColumnViewerEditor.KEYBOARD_ACTIVATION);
+    protected void initClientComposite(Composite client, UIToolkit toolkit) {
+        createBuilderSetCombo(client);
+        Composite composite = toolkit.createGridComposite(client, 2, false, false);
+        // Label label = new Label(composite, SWT.NONE);
+        // label.setText(Messages.Generator_tableViewerLabel);
+        //
+        // final Table table = new Table(composite, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL |
+        // SWT.SINGLE
+        // | SWT.FULL_SELECTION);
+        // table.setLinesVisible(true);
+        // table.setHeaderVisible(true);
+        // GridData gridData = new GridData(GridData.FILL_BOTH);
+        // gridData.grabExcessHorizontalSpace = true;
+        // gridData.grabExcessVerticalSpace = true;
+        // gridData.horizontalSpan = 3;
+        // table.setLayoutData(gridData);
+        //
+        // tableViewer = new TableViewer(table);
+        // tableViewer.setContentProvider(new BuilderSetContentProvider());
+        //
+        // String[] columnNames = new String[COLUMNS_COUNT];
+        // columnNames[PROPERTY_NAME_COLUMN_INDEX] = Messages.Generator_tableColumnLabel_Property;
+        // columnNames[PROPERTY_VALUE_COLUMN_INDEX] = Messages.Generator_tableColumnLabel_Value;
+        // columnNames[PROPERTY_DESCRIPTION_COLUMN_INDEX] = Messages.Generator_title;
+        //
+        // columns = new TableViewerColumn[columnNames.length];
+        // for (int i = 0; i < columnNames.length; i++) {
+        // columns[i] = new TableViewerColumn(tableViewer, SWT.LEFT, i);
+        // columns[i].getColumn().setText(columnNames[i]);
+        // }
+        //
+        // columns[PROPERTY_NAME_COLUMN_INDEX].setLabelProvider(new ColumnLabelProvider() {
+        // @Override
+        // public String getText(Object element) {
+        // return ((IIpsBuilderSetPropertyDef)element).getLabel();
+        // }
+        // });
+        // columns[PROPERTY_VALUE_COLUMN_INDEX].setLabelProvider(new
+        // BuilderSetPropertyLabelProvider(ipsProject,
+        // builderSetConfigModel));
+        // columns[PROPERTY_DESCRIPTION_COLUMN_INDEX].setLabelProvider(new ColumnLabelProvider() {
+        // private static final int TOOLTIP_LINE_LENGTH = 75;
+        //
+        // @Override
+        // public String getText(Object element) {
+        // return ((IIpsBuilderSetPropertyDef)element).getDescription();
+        // }
+        //
+        // @Override
+        // public String getToolTipText(Object element) {
+        // if (element instanceof IIpsBuilderSetPropertyDef) {
+        // IIpsBuilderSetPropertyDef propertyDef = (IIpsBuilderSetPropertyDef)element;
+        // String description = propertyDef.getDescription();
+        //                    String wrappedText = StringUtils.wrapText(description, TOOLTIP_LINE_LENGTH, "\n"); //$NON-NLS-1$
+        // return wrappedText;
+        // }
+        //                return ""; //$NON-NLS-1$
+        // }
+        //
+        // @Override
+        // public Point getToolTipShift(Object object) {
+        // return new Point(5, 5);
+        // }
+        //
+        // @Override
+        // public int getToolTipDisplayDelayTime(Object object) {
+        // return 200;
+        // }
+        //
+        // @Override
+        // public int getToolTipTimeDisplayed(Object object) {
+        // return 10000;
+        // }
+        // });
+        //
+        // TableViewerFocusCellManager focusCellManager = new
+        // TableViewerFocusCellManager(tableViewer,
+        // new FocusCellOwnerDrawHighlighter(tableViewer));
+        //
+        // ColumnViewerEditorActivationStrategy actSupport = new
+        // ColumnViewerEditorActivationStrategy(tableViewer) {
+        // @Override
+        // protected boolean isEditorActivationEvent(ColumnViewerEditorActivationEvent event) {
+        // return event.eventType == ColumnViewerEditorActivationEvent.TRAVERSAL
+        // || event.eventType == ColumnViewerEditorActivationEvent.MOUSE_CLICK_SELECTION
+        // || event.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED
+        // || event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC;
+        // }
+        // };
+        // TableViewerEditor.create(tableViewer, focusCellManager, actSupport,
+        // ColumnViewerEditor.TABBING_HORIZONTAL
+        // | ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR | ColumnViewerEditor.TABBING_VERTICAL
+        // | ColumnViewerEditor.KEYBOARD_ACTIVATION);
 
         // sort property name column if clicked on column header
         // columns[PROPERTY_NAME_COLUMN_INDEX].getColumn().addSelectionListener(adapter);
 
-        updateBuilderSet();
-        // String[] propertyNames = builderSetConfig.getPropertyNames();
-        // for (String propertyName : propertyNames) {
-        // String propertyDescription = builderSetConfig.getPropertyDescription(propertyName);
-        // String propertyValue = builderSetConfig.getPropertyValue(propertyName);
-        //
-        // Label label = toolkit.createFormLabel(composite, propertyName);
-        // label.setToolTipText(propertyDescription);
-        // if (propertyValue.equals("true") || propertyValue.equals("false")) {
-        // createCombo(propertyValue, composite, toolkit);
-        // } else {
-        // createText(propertyValue, composite, toolkit);
-        // }
-        // }
-
+        // updateBuilderSet();
+        IIpsArtefactBuilderSetInfo builderSetInfo = IpsPlugin.getDefault().getIpsModel().getIpsArtefactBuilderSetInfo(
+                builderSetId);
+        if (builderSetInfo != null) {
+            IIpsBuilderSetPropertyDef[] propertyDefinitions = builderSetInfo.getPropertyDefinitions();
+            for (IIpsBuilderSetPropertyDef propertyDef : propertyDefinitions) {
+                Label label = toolkit.createLabel(composite, propertyDef.getLabel());
+                label.setToolTipText(propertyDef.getDescription());
+                String propertyValue = builderSetConfigModel.getPropertyValue(propertyDef.getName());
+                if (propertyValue == null || "".equals(propertyValue)) { //$NON-NLS-1$
+                    // value not set in .ipsproject file, use default
+                    propertyValue = propertyDef.getDefaultValue(ipsProject);
+                } else if (propertyDef.getName().equals("loggingFrameworkConnector")) { //$NON-NLS-1$
+                    // Special treatment of qualified names:
+                    // Prevent the table column to be too wide by removing package information from
+                    // the following type. The full qualified name is shown only when the combo box
+                    // is opened.
+                    propertyValue = StringUtil.unqualifiedName(propertyValue);
+                }
+                String[] values = propertyDef.getDiscreteValues();
+                if (values.length != 0) {
+                    Combo combo = toolkit.createCombo(composite);
+                    combo.setItems(values);
+                    int index = getIndex(propertyValue, values);
+                    if (index >= 0) {
+                        combo.select(index);
+                    }
+                } else {
+                    Combo combo = toolkit.createComboForBoolean(composite, false, "true", "false");
+                    if ("true".equals(propertyValue)) {
+                        combo.select(0);
+                    } else {
+                        combo.select(1);
+                    }
+                }
+                // ComboViewer dd = new ComboViewer(combo);
+                // propertyValue
+            }
+        }
     }
+
+    private int getIndex(String propertyname, String[] propertynames) {
+        int index = -1;
+        int i = 0;
+        for (String name : propertynames) {
+            if (propertyname.equals(name)) {
+                index = i;
+            }
+            i++;
+        }
+        return index;
+    }
+
+    // if (propertyValue.equals("true") || propertyValue.equals("false")) {
+    // createCombo(propertyValue, composite, toolkit);
+    // } else {
+    // createText(propertyValue, composite, toolkit);
+    // }
+    // }
 
     @Override
     protected void performRefresh() {
@@ -307,7 +347,7 @@ public class GeneratorSection extends IpsSection {
             if (viewer.getTable().getSortColumn() == columns[PROPERTY_NAME_COLUMN_INDEX].getColumn()) {
                 return propertyDef.getName();
             }
-            return ""; //$NON-NLS-1$
+            return "";
         }
     }
     /**

@@ -14,13 +14,13 @@
 package org.faktorips.devtools.core.ui.views.modeldescription;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -29,7 +29,6 @@ import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
@@ -40,17 +39,22 @@ import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.Page;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
- * A page for presenting {@link DescriptionItem}s similiar to the outline view.
+ * A page for presenting {@link DescriptionItem}s similar to the outline view.
  * 
  * The attributes and their description are presented within a ExpandableComposite.
  * 
  * @author Markus Blum
  * 
  */
-abstract public class DefaultModelDescriptionPage extends Page {
+abstract public class DefaultModelDescriptionPage extends Page implements ContentsChangeListener {
 
     private FormToolkit toolkit;
 
@@ -58,14 +62,75 @@ abstract public class DefaultModelDescriptionPage extends Page {
     private Composite expandableContainer;
 
     private List<DescriptionItem> defaultList; // List of DescriptionItems sorted by parent.
-    private List<DescriptionItem> activeList; // defaultList sorted lexical or not.
+    private List<DescriptionItem> activeList; // defaultList
+    // sorted lexical
+    // or not.
     private String title;
 
     private Color colorGray;
 
+    private IIpsObject ipsObject;
+
+    private FilterEmptyDescriptionsAction filterEmptyDescriptionsAction;
+
+    private LexicalSortingAction lexicalSortingAction;
+
     public DefaultModelDescriptionPage() {
         defaultList = new ArrayList<DescriptionItem>();
         activeList = new ArrayList<DescriptionItem>();
+        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
+
+    }
+
+    /**
+     * Initialize the DescriptionPage
+     */
+    protected void setDescriptionData() {
+        try {
+            if (getIpsObject() instanceof ILabeledElement) {
+                setTitle(IpsPlugin.getMultiLanguageSupport().getLocalizedLabel((ILabeledElement)getIpsObject()));
+            } else {
+                setTitle(getIpsObject().getName());
+            }
+            setDescriptionItems(createDescriptions());
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
+
+    }
+
+    /**
+     * Creates a List of DescriptionItems
+     * 
+     */
+    protected abstract List<DescriptionItem> createDescriptions() throws CoreException;
+
+    /**
+     * Creates DescriptionItems
+     */
+    protected void createDescriptionItem(IDescribedElement describedElement, List<DescriptionItem> descriptions) {
+        String label;
+        if (describedElement instanceof ILabeledElement) {
+            label = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(((ILabeledElement)describedElement));
+        } else {
+            label = describedElement.getName();
+        }
+        String description = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(describedElement);
+        DescriptionItem item = new DescriptionItem(label, description);
+        descriptions.add(item);
+    }
+
+    @Override
+    public void contentsChanged(ContentChangeEvent event) {
+        setDescriptionData();
+    }
+
+    public void setIpsObject(IIpsObject ipsObject) {
+        this.ipsObject = ipsObject;
+    }
+
+    public IIpsObject getIpsObject() {
+        return ipsObject;
     }
 
     /**
@@ -94,7 +159,13 @@ abstract public class DefaultModelDescriptionPage extends Page {
     private void registerToolbarActions() {
         // register sorting action
         IToolBarManager toolBarManager = getSite().getActionBars().getToolBarManager();
-        toolBarManager.add(new LexicalSortingAction());
+        filterEmptyDescriptionsAction = new FilterEmptyDescriptionsAction();
+        lexicalSortingAction = new LexicalSortingAction();
+        toolBarManager.add(filterEmptyDescriptionsAction);
+        toolBarManager.add(lexicalSortingAction);
+        // if (lexicalSortingAction.isChecked()) {
+        // sortLexical();
+        // }
     }
 
     /**
@@ -109,18 +180,17 @@ abstract public class DefaultModelDescriptionPage extends Page {
         expandableContainer = toolkit.createComposite(form.getBody());
 
         TableWrapLayout layout = new TableWrapLayout();
-        layout.verticalSpacing = 0;
+        layout.verticalSpacing = 10;
         layout.horizontalSpacing = 0;
         layout.numColumns = 1;
 
         expandableContainer.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
         expandableContainer.setLayout(layout);
 
-        int index = 2; // simple mechanism for color coding for lines
-        // in alternating colors: odd/even
-
         for (int i = 0; i < activeList.size(); i++) {
-            createExpandableControl(expandableContainer, activeList.get(i), index++);
+            // i simple mechanism for color coding for lines
+            // in alternating colors: odd/even
+            createExpandableControl(expandableContainer, activeList.get(i), i);
         }
     }
 
@@ -132,14 +202,12 @@ abstract public class DefaultModelDescriptionPage extends Page {
      * @param index flag for switching the background colour
      */
     private void createExpandableControl(Composite parent, DescriptionItem item, int index) {
-
         ExpandableComposite excomposite = toolkit.createExpandableComposite(parent, ExpandableComposite.TWISTIE
                 | ExpandableComposite.COMPACT | ExpandableComposite.EXPANDED);
 
         // Set faktorips.attribute name
         excomposite.setText(StringUtils.capitalize(item.getName()));
-
-        if ((index % 2) == 0) {
+        if ((index % 2) == 0 && !item.hasChildren()) {
             excomposite.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
         }
 
@@ -151,38 +219,51 @@ abstract public class DefaultModelDescriptionPage extends Page {
             }
         });
 
-        // Set faktorips.attribute description
-        FormText client = toolkit.createFormText(excomposite, true);
-
-        // don't ignore whitespaces and newlines
-        client.setWhitespaceNormalized(false);
+        Composite clientGroup = toolkit.createComposite(excomposite);
+        clientGroup.setBackground(excomposite.getBackground());
+        clientGroup.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+        TableWrapLayout layout = new TableWrapLayout();
+        layout.verticalSpacing = 7;
+        layout.horizontalSpacing = 0;
+        layout.numColumns = 1;
+        layout.leftMargin = 20;
+        clientGroup.setLayout(layout);
 
         StringBuffer sb = new StringBuffer();
         String description = item.getDescription().trim();
-        if (StringUtils.isEmpty(description)) {
-            client.setColor("gray", colorGray); //$NON-NLS-1$
-            sb.append("<form>"); //$NON-NLS-1$
-            // if no description is given show the default text in gray foreground color
-            sb.append("<p><span color=\"gray\">"); //$NON-NLS-1$
-            sb.append(Messages.DefaultModelDescriptionPage_NoDescriptionAvailable);
-            sb.append("</span></p>"); //$NON-NLS-1$
-            sb.append("</form>"); //$NON-NLS-1$
-            client.setText(sb.toString(), true, true);
-        } else {
-            sb.append(description);
-            client.setText(sb.toString(), false, true);
+
+        // Set faktorips.attribute description
+        if ((!item.hasChildren() && StringUtils.isEmpty(description)) || !StringUtils.isEmpty(description)) {
+            FormText client = toolkit.createFormText(clientGroup, true);
+            client.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+            client.setBackground(excomposite.getBackground());
+            if (StringUtils.isEmpty(description) && !item.hasChildren()) {
+                client.setColor("gray", colorGray); //$NON-NLS-1$
+                sb.append("<form>"); //$NON-NLS-1$
+                // if no description is given show the default text in gray foreground color
+                sb.append("<p><span color=\"gray\">"); //$NON-NLS-1$
+                sb.append(Messages.DefaultModelDescriptionPage_NoDescriptionAvailable);
+                sb.append("</span></p>"); //$NON-NLS-1$
+                sb.append("</form>"); //$NON-NLS-1$
+                client.setText(sb.toString(), true, true);
+            } else {
+                sb.append(description);
+                client.setText(sb.toString(), false, true);
+            }
+            // don't ignore whitespaces and newlines
+            client.setWhitespaceNormalized(false);
         }
 
-        client.setBackground(excomposite.getBackground());
-        client.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
-        // client.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_RED));
+        if (item.hasChildren()) {
+            List<DescriptionItem> children = item.getChildren();
+            int i = 0;
+            for (DescriptionItem child : children) {
+                createExpandableControl(clientGroup, child, i);
+                i++;
+            }
+        }
 
-        excomposite.setClient(client);
-        Label spacer = toolkit.createLabel(parent, ""); //$NON-NLS-1$
-        TableWrapData layoutData = new TableWrapData();
-        layoutData.heightHint = 10;
-        spacer.setLayoutData(layoutData);
-        // client.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_BLUE));
+        excomposite.setClient(clientGroup);
     }
 
     /**
@@ -190,7 +271,7 @@ abstract public class DefaultModelDescriptionPage extends Page {
      */
     @Override
     public void dispose() {
-
+        IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
         if (toolkit != null) {
             toolkit.dispose();
         }
@@ -198,7 +279,6 @@ abstract public class DefaultModelDescriptionPage extends Page {
         if (form != null) {
             form.dispose();
         }
-
         super.dispose();
     }
 
@@ -210,7 +290,6 @@ abstract public class DefaultModelDescriptionPage extends Page {
         if (form == null) {
             return null;
         }
-
         return form;
     }
 
@@ -222,7 +301,6 @@ abstract public class DefaultModelDescriptionPage extends Page {
         if (form == null) {
             return;
         }
-
         form.setFocus();
     }
 
@@ -243,6 +321,24 @@ abstract public class DefaultModelDescriptionPage extends Page {
         form.reflow(true);
     }
 
+    private void sortAndFilterDescriptionList() {
+        final boolean filter = filterEmptyDescriptionsAction != null && filterEmptyDescriptionsAction.isChecked();
+        final boolean sort = lexicalSortingAction != null && lexicalSortingAction.isChecked();
+        BusyIndicator.showWhile(form.getDisplay(), new Runnable() {
+            @Override
+            public void run() {
+                activeList = copyDescriptionItems(defaultList);
+                if (filter) {
+                    deleteEmptyDescriptions();
+                }
+                if (sort) {
+                    sortRecursive(activeList);
+                }
+                refresh();
+            }
+        });
+    }
+
     /**
      * "sort" action for DescriptionItems.
      * 
@@ -251,9 +347,8 @@ abstract public class DefaultModelDescriptionPage extends Page {
     class LexicalSortingAction extends Action {
 
         public LexicalSortingAction() {
-            super();
+            super(Messages.DefaultModelDescriptionPage_SortText, SWT.TOGGLE);
 
-            setText(Messages.DefaultModelDescriptionPage_SortText);
             setToolTipText(Messages.DefaultModelDescriptionPage_SortTooltipText);
             setDescription(Messages.DefaultModelDescriptionPage_SortDescription);
 
@@ -263,38 +358,47 @@ abstract public class DefaultModelDescriptionPage extends Page {
             setHoverImageDescriptor(descriptor);
             setImageDescriptor(descriptor);
 
-            boolean checked = IpsPlugin.getDefault().getPreferenceStore()
-                    .getBoolean("DefaultModelDescriptionPage.LexicalSortingAction.isChecked"); //$NON-NLS-1$
-            sortItems(checked);
+            boolean checked = IpsPlugin.getDefault().getPreferenceStore().getBoolean(
+                    "DefaultModelDescriptionPage.LexicalSortingAction.isChecked"); //$NON-NLS-1$
+            setChecked(checked);
+            sortAndFilterDescriptionList();
         }
 
         @Override
         public void run() {
-            sortItems(isChecked());
-            IpsPlugin.getDefault().getPreferenceStore()
-                    .setValue("DefaultModelDescriptionPage.LexicalSortingAction.isChecked", isChecked()); //$NON-NLS-1$
+            sortAndFilterDescriptionList();
+            IpsPlugin.getDefault().getPreferenceStore().setValue(
+                    "DefaultModelDescriptionPage.LexicalSortingAction.isChecked", isChecked()); //$NON-NLS-1$
         }
 
-        /**
-         * Set toggle and sort the DescritpionItems.
-         * 
-         * @param on sort lexical if on is <code>true</code>.
-         */
-        private void sortItems(final boolean on) {
-            setChecked(on);
+    }
 
-            BusyIndicator.showWhile(form.getDisplay(), new Runnable() {
-                @Override
-                public void run() {
-                    if (on) {
-                        sortLexical();
-                    } else {
-                        sortDefault();
-                    }
+    /**
+     * "filter" action for DescriptionItems.
+     * 
+     * @author Quirin Stoll
+     */
+    class FilterEmptyDescriptionsAction extends Action {
+        public FilterEmptyDescriptionsAction() {
+            super(Messages.DefaultModelDescriptionPage_FilterEmptyText, SWT.TOGGLE);
 
-                    refresh();
-                }
-            });
+            setToolTipText(Messages.DefaultModelDescriptionPage_FilterEmptyTooltipText);
+            setDescription(Messages.DefaultModelDescriptionPage_FilterEmptyDescription);
+            ImageDescriptor descriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/cfilter.gif"); //$NON-NLS-1$
+            setHoverImageDescriptor(descriptor);
+            setImageDescriptor(descriptor);
+
+            boolean checked = IpsPlugin.getDefault().getPreferenceStore().getBoolean(
+                    "DefaultModelDescriptionPage.LexicalSortingAction.isChecked"); //$NON-NLS-1$
+            setChecked(checked);
+            sortAndFilterDescriptionList();
+        }
+
+        @Override
+        public void run() {
+            sortAndFilterDescriptionList();
+            IpsPlugin.getDefault().getPreferenceStore().setValue(
+                    "DefaultModelDescriptionPage.LexicalSortingAction.isChecked", isChecked()); //$NON-NLS-1$
         }
     }
 
@@ -313,17 +417,40 @@ abstract public class DefaultModelDescriptionPage extends Page {
     }
 
     /**
-     * Restore default order given by the parent class.
+     * Delete empty descriptions
+     * 
      */
-    private void sortDefault() {
-        Collections.copy(activeList, defaultList);
+    private void deleteEmptyDescriptions() {
+        List<DescriptionItem> copyActiveList = copyDescriptionItems(activeList);
+        activeList.clear();
+        for (DescriptionItem item : copyActiveList) {
+            if (item.getChildren().size() > 0) {
+                List<DescriptionItem> items = item.getChildren();
+                List<DescriptionItem> newItems = new ArrayList<DescriptionItem>();
+                for (DescriptionItem item2 : items) {
+                    if (!item2.getDescription().isEmpty()) {
+                        newItems.add(item2);
+                    }
+                }
+                if (newItems.size() > 0) {
+                    item.setChildren(newItems);
+                    activeList.add(item);
+                }
+            } else {
+                if (!item.getDescription().isEmpty()) {
+                    activeList.add(item);
+                }
+            }
+        }
     }
 
-    /**
-     * Sort the active list lexical.
-     */
-    private void sortLexical() {
-        Collections.sort(activeList, new DescriptionItemComparator());
+    private void sortRecursive(List<DescriptionItem> list) {
+        Collections.sort(list, new DescriptionItemComparator());
+        for (DescriptionItem item : list) {
+            if (item.hasChildren()) {
+                sortRecursive(item.getChildren());
+            }
+        }
     }
 
     /**
@@ -341,11 +468,30 @@ abstract public class DefaultModelDescriptionPage extends Page {
      * 
      * The caller defines the default sort order.
      * 
-     * @param itemList List with DescriptionItems.
+     * @param items List with DescriptionItems.
      */
-    public void setDescriptionItems(DescriptionItem[] itemList) {
-        defaultList = Arrays.asList(itemList);
-        activeList = Arrays.asList(itemList);
+    public void setDescriptionItems(List<DescriptionItem> items) {
+        defaultList = items;
+        activeList = copyDescriptionItems(defaultList);
         refresh();
     }
+
+    public List<DescriptionItem> copyDescriptionItems(List<DescriptionItem> original) {
+        List<DescriptionItem> copy = new ArrayList<DescriptionItem>();
+        for (DescriptionItem item : original) {
+            DescriptionItem itemCopy = copyItem(item);
+            copy.add(itemCopy);
+        }
+        return copy;
+
+    }
+
+    private DescriptionItem copyItem(DescriptionItem item) {
+        DescriptionItem copyItem = new DescriptionItem();
+        copyItem.setName(item.getName());
+        copyItem.setDescription(item.getDescription());
+        copyItem.setChildren(copyDescriptionItems(item.getChildren()));
+        return copyItem;
+    }
+
 }

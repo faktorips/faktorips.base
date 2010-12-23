@@ -77,30 +77,31 @@ public class DefinedDatatypesSection extends Buttons {
         // saveDefinedDatatypes();
     }
 
-    // private void setDatatypeInformation(Datatype definedDatatype) {
-    // definedDatatype.getJavaClassName();
-    // definedDatatype.getQualifiedName();
-    // definedDatatype.isValueDatatype();
-    // if (definedDatatype.isValueDatatype()) {
-    // ValueDatatype valueDatatype = (ValueDatatype)definedDatatype;
-    // valueDatatype.isEnum();
-    // valueDatatype.hasNullObject();
-    // valueDatatype.toString();
-    // if (valueDatatype.isEnum()) {
-    // EnumDatatype enumDatatype = (EnumDatatype)valueDatatype;
-    // enumDatatype.isSupportingNames();
-    // String[] enumIds = enumDatatype.getAllValueIds(false);
-    // String[] enumValueName = new String[enumIds.length];
-    // int i = 0;
-    // for (String enumId : enumIds) {
-    // enumValueName[i] = enumDatatype.getValueName(enumId);
-    // i++;
-    // }
-    // }
-    //
-    // }
 
-    // }
+//    private void setDatatypeInformation(Datatype definedDatatype) {
+//        definedDatatype.getJavaClassName();
+//        definedDatatype.getQualifiedName();
+//        definedDatatype.isValueDatatype();
+//        if (definedDatatype.isValueDatatype()) {
+//            ValueDatatype valueDatatype = (ValueDatatype)definedDatatype;
+//            valueDatatype.isEnum();
+//            valueDatatype.hasNullObject();
+//            valueDatatype.toString();
+//            if (valueDatatype.isEnum()) {
+//                EnumDatatype enumDatatype = (EnumDatatype)valueDatatype;
+//                enumDatatype.isSupportingNames();
+//                String[] enumIds = enumDatatype.getAllValueIds(false);
+//                String[] enumValueName = new String[enumIds.length];
+//                int i = 0;
+//                for (String enumId : enumIds) {
+//                    enumValueName[i] = enumDatatype.getValueName(enumId);
+//                    i++;
+//                }
+//            }
+//
+//        }
+
+//    }
 
     private void newPart() throws CoreException {
         Datatype newDatatype = null;

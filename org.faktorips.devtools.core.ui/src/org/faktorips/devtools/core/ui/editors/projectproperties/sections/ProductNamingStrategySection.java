@@ -52,8 +52,9 @@ public class ProductNamingStrategySection extends IpsSection {
         Composite composite = toolkit.createLabelEditColumnComposite(client);
         IProductCmptNamingStrategy requiredIpsFeatureIds = iIpsProjectProperties.getProductCmptNamingStrategy();
         if (requiredIpsFeatureIds instanceof DateBasedProductCmptNamingStrategy) {
-            DateBasedProductCmptNamingStrategy new_name = (DateBasedProductCmptNamingStrategy)requiredIpsFeatureIds;
-            String dateFormatPattern = new_name.getDateFormatPattern();
+            DateBasedProductCmptNamingStrategy dataBasedProductCmptNamingStrategy = (DateBasedProductCmptNamingStrategy)requiredIpsFeatureIds;
+            String dateFormatPattern = dataBasedProductCmptNamingStrategy.getDateFormatPattern();
+            System.out.println("aa");
         }
 
         String namingConvention = iIpsProjectProperties.getChangesOverTimeNamingConventionIdForGeneratedCode();
@@ -70,8 +71,8 @@ public class ProductNamingStrategySection extends IpsSection {
         toolkit.createFormLabel(composite, Messages.Overview_javaProjectContainsClassesForDynamicDatatypes);
         Combo javaProjectContainsClassesForDynamicDatatypesCombo = toolkit.createCombo(composite);
         javaProjectContainsClassesForDynamicDatatypesComboViewer = createComboViewer(javaProjectContainsClassesForDynamicDatatypesCombo);
-        setComboViewer(javaProjectContainsClassesForDynamicDatatypesComboViewer,
-                iIpsProjectProperties.isJavaProjectContainsClassesForDynamicDatatypes());
+        setComboViewer(javaProjectContainsClassesForDynamicDatatypesComboViewer, iIpsProjectProperties
+                .isJavaProjectContainsClassesForDynamicDatatypes());
 
         // IIpsArtefactBuilderSetConfigModel aaa3 = iIpsProjectProperties.getBuilderSetConfig();
         toolkit.createFormLabel(composite, Messages.Overview_modelProject);

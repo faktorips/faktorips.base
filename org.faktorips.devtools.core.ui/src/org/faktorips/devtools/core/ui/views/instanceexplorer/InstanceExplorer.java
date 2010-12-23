@@ -67,10 +67,10 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.internal.MenuAdditionsCleaner;
+import org.faktorips.devtools.core.ui.views.AbstractShowInSupportingViewPart;
 import org.faktorips.devtools.core.ui.views.InstanceIpsSrcFileViewItem;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
-import org.faktorips.devtools.core.ui.views.AbstractShowInSupportingViewPart;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
 import org.w3c.dom.Element;
 
@@ -269,7 +269,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
         }
     }
 
-    private void setInputData(final IIpsMetaClass element) {
+    protected void setInputData(final IIpsMetaClass element) {
         display.asyncExec(new Runnable() {
             @Override
             public void run() {
@@ -369,7 +369,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
         }
     }
 
-    private boolean isChanged(IIpsMetaClass element, Set<IIpsSrcFile> ipsSrcFiles) throws CoreException {
+    protected boolean isChanged(IIpsMetaClass element, Set<IIpsSrcFile> ipsSrcFiles) throws CoreException {
         for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
             if (ipsSrcFile.exists()) {
                 IDependency[] dependencys = ipsSrcFile.getIpsObject().dependsOn();

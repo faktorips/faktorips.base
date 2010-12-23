@@ -24,14 +24,15 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 public class OverviewSection extends IpsSection {
     private IIpsProjectProperties iIpsProjectProperties;
     private ComboViewer productDefinitionProjectComboViewer;
-    private ComboViewer persistenceSupportEnabledComboViewer;
+    private Checkbox persistenceSupportEnabledCheckbox;
     private ComboViewer modelProjectComboViewer;
-    private ComboViewer javaProjectContainsClassesForDynamicDatatypesComboViewer;
+    private Checkbox javaProjectContainsClassesForDynamicDatatypesCheckbox;
     private ComboViewer changesOverTimeNamingConventionIdForGeneratedCodeComboViewer;
     private Text productCmptNamingStrategyText;
     private Text runtimeIdPrefixText;
@@ -76,26 +77,17 @@ public class OverviewSection extends IpsSection {
                 namingConvention), true);
 
         toolkit.createFormLabel(composite, Messages.Overview_javaProjectContainsClassesForDynamicDatatypes);
-        Combo javaProjectContainsClassesForDynamicDatatypesCombo = toolkit.createCombo(composite);
-        javaProjectContainsClassesForDynamicDatatypesComboViewer = createComboViewer(javaProjectContainsClassesForDynamicDatatypesCombo);
-        setComboViewer(javaProjectContainsClassesForDynamicDatatypesComboViewer,
-                iIpsProjectProperties.isJavaProjectContainsClassesForDynamicDatatypes());
-
+        javaProjectContainsClassesForDynamicDatatypesCheckbox = toolkit.createCheckbox(composite);
+        if (iIpsProjectProperties.isJavaProjectContainsClassesForDynamicDatatypes()) {
+            javaProjectContainsClassesForDynamicDatatypesCheckbox.setChecked(true);
+        }
         // IIpsArtefactBuilderSetConfigModel aaa3 = iIpsProjectProperties.getBuilderSetConfig();
-        toolkit.createFormLabel(composite, Messages.Overview_modelProject);
-        Combo modelProjectCombo = toolkit.createCombo(composite);
-        modelProjectComboViewer = createComboViewer(modelProjectCombo);
-        setComboViewer(modelProjectComboViewer, iIpsProjectProperties.isModelProject());
 
         toolkit.createFormLabel(composite, Messages.Overview_persistenceSupportEnabled);
-        Combo persistenceSupportEnabledCombo = toolkit.createCombo(composite);
-        persistenceSupportEnabledComboViewer = createComboViewer(persistenceSupportEnabledCombo);
-        setComboViewer(persistenceSupportEnabledComboViewer, iIpsProjectProperties.isPersistenceSupportEnabled());
-
-        toolkit.createFormLabel(composite, Messages.Overview_productDefinitionProject);
-        Combo productDefinitionProjectCombo = toolkit.createCombo(composite);
-        productDefinitionProjectComboViewer = createComboViewer(productDefinitionProjectCombo);
-        setComboViewer(productDefinitionProjectComboViewer, iIpsProjectProperties.isProductDefinitionProject());
+        persistenceSupportEnabledCheckbox = toolkit.createCheckbox(composite);
+        if (iIpsProjectProperties.isPersistenceSupportEnabled()) {
+            persistenceSupportEnabledCheckbox.setChecked(true);
+        }
 
         String runtimeIdPrefix = iIpsProjectProperties.getRuntimeIdPrefix();
         toolkit.createFormLabel(composite, Messages.Overview_runtimeIdPrefix);
@@ -125,14 +117,6 @@ public class OverviewSection extends IpsSection {
 
     }
 
-    private void setComboViewer(ComboViewer cv, boolean selected) {
-        if (selected) {
-            cv.setSelection(new StructuredSelection(true), true);
-        } else {
-            cv.setSelection(new StructuredSelection(false), true);
-        }
-    }
-
     public ComboViewer createComboViewer(Combo combo) {
         ComboViewer comboViewer = new ComboViewer(combo);
         comboViewer.setContentProvider(new ArrayContentProvider());
@@ -146,18 +130,9 @@ public class OverviewSection extends IpsSection {
         Boolean qqq = (Boolean)bbb.getFirstElement();
         iIpsProjectProperties.setProductDefinitionProject(qqq);
 
-        StructuredSelection bbbbb = (StructuredSelection)persistenceSupportEnabledComboViewer.getSelection();
-        Boolean qqqqq = (Boolean)bbbbb.getFirstElement();
-        iIpsProjectProperties.setPersistenceSupport(qqqqq);
-
         StructuredSelection bbbb = (StructuredSelection)modelProjectComboViewer.getSelection();
         Boolean qqqq = (Boolean)bbbb.getFirstElement();
         iIpsProjectProperties.setModelProject(qqqq);
-
-        StructuredSelection b = (StructuredSelection)javaProjectContainsClassesForDynamicDatatypesComboViewer
-                .getSelection();
-        Boolean q = (Boolean)b.getFirstElement();
-        iIpsProjectProperties.setJavaProjectContainsClassesForDynamicDatatypes(q);
 
         StructuredSelection bb = (StructuredSelection)changesOverTimeNamingConventionIdForGeneratedCodeComboViewer
                 .getSelection();

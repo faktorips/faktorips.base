@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation.ProductCmptDeltaDialog;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
+import org.faktorips.devtools.core.ui.views.modeldescription.ProductCmptTypeDescriptionPage;
 import org.faktorips.values.DateUtil;
 
 /**
@@ -107,7 +108,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     /**
      * Returns the product component for the source file edited with this editor.
      */
-    IProductCmpt getProductCmpt() {
+    public IProductCmpt getProductCmpt() {
         try {
             return (IProductCmpt)getIpsObject();
         } catch (Exception e) {
@@ -439,7 +440,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 
     @Override
     public IPage createModelDescriptionPage() throws CoreException {
-        return new ProductCmptModelDescriptionPage(this);
+        return new ProductCmptTypeDescriptionPage(this);
     }
 
     /**
