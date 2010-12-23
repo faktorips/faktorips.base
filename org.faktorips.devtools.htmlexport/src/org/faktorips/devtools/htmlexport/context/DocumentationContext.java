@@ -15,7 +15,9 @@ package org.faktorips.devtools.htmlexport.context;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -95,6 +97,29 @@ public class DocumentationContext {
     }
 
     public void setDocumentedIpsObjectTypes(IpsObjectType... ipsObjectTypes) {
+        Comparator<IpsObjectType> comparator = new Comparator<IpsObjectType>() {
+
+            @Override
+            public int compare(IpsObjectType o1, IpsObjectType o2) {
+                if (o1.isProductDefinitionType() && !o2.isProductDefinitionType()) {
+                    return 1;
+                }
+                if (!o1.isProductDefinitionType() && o2.isProductDefinitionType()) {
+                    return -1;
+                }
+
+                if (o1.isDatatype() && !o2.isDatatype()) {
+                    return -1;
+                }
+                if (!o1.isDatatype() && o2.isDatatype()) {
+                    return 1;
+                }
+
+                return 0;
+            }
+
+        };
+        Arrays.sort(ipsObjectTypes, comparator);
         documentedIpsObjectTypes = ipsObjectTypes;
     }
 
