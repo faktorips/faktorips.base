@@ -53,7 +53,8 @@ public class IpsSrcFileImmutable extends IpsSrcFile {
      * @param content the content of this IpsSrcFile
      */
     public IpsSrcFileImmutable(String name, InputStream content) {
-        super(new IpsProject(IpsPlugin.getDefault().getIpsModel(), "IpsSrcFileImmutableIpsProject"), name); //$NON-NLS-1$
+        super(new IpsProject(IpsPlugin.getDefault().getIpsModel(), "IpsSrcFileImmutableIpsProject") //$NON-NLS-1$
+                .getIpsPackageFragmentRoot("immutablePackageFragmentRoot").getDefaultIpsPackageFragment(), name); //$NON-NLS-1$
         setContents(content);
     }
 
