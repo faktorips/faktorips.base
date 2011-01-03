@@ -196,6 +196,8 @@ public class IpsPreferences {
                     defaultLocale = inputContext.getLocale();
                 }
             } catch (Throwable t) {
+                // We also want to catch errors because on a linux system without a X-Server the
+                // virtual mashine throws an InternalError!
                 IpsPlugin.log(t);
             }
             if (defaultLocale == null) {
