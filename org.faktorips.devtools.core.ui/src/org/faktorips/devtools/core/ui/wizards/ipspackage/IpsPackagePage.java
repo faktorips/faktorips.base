@@ -81,10 +81,6 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
     // page control as defined by the wizard page class
     private Composite pageControl;
 
-    // composite holding the control for the object's name.
-    // subclasses can add their own controls.
-    private Composite nameComposite;
-
     private TreeViewer treeViewer;
 
     private TextField packagePathTextfield;
@@ -139,21 +135,18 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         Label line = new Label(pageControl, SWT.SEPARATOR | SWT.HORIZONTAL);
         line.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        nameComposite = toolkit.createLabelEditColumnComposite(pageControl);
+        Composite pathComposite = toolkit.createLabelEditColumnComposite(pageControl);
 
-        GridData gridData = (GridData)nameComposite.getLayoutData();
+        toolkit.createFormLabel(pathComposite, Messages.IpsPackagePage_packagePath);
+        Text parentPackageText = toolkit.createText(pathComposite);
+        packagePathTextfield = new TextField(parentPackageText);
+        packagePathTextfield.addChangeListener(this);
+
+        treeViewer = new TreeViewer(pageControl);
+        GridData gridData = new GridData(SWT.FILL);
         gridData.grabExcessVerticalSpace = true;
-        gridData.verticalAlignment = SWT.FILL;
+        treeViewer.getControl().setLayoutData(gridData);
 
-        fillNameComposite(toolkit);
-
-        setDefaults(selectedResource);
-
-        validateInput = true;
-    }
-
-    private void createTreeViewer() {
-        treeViewer = new TreeViewer(nameComposite);
         treeViewer.setContentProvider(new IpsPackageContentProvider());
         ModelLabelProvider labelProvider = new ModelLabelProvider();
         IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
@@ -165,6 +158,17 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         layoutData.horizontalSpan = 2;
         layoutData.heightHint = 250;
         treeViewer.getTree().setLayoutData(layoutData);
+
+        Composite nameComposite = toolkit.createLabelEditColumnComposite(pageControl);
+        toolkit.createFormLabel(nameComposite, Messages.IpsPackagePage_labelName);
+        Text nameText = toolkit.createText(nameComposite);
+        packageNameField = new TextField(nameText);
+        packageNameField.addChangeListener(this);
+        nameText.setFocus();
+
+        setDefaults(selectedResource);
+
+        validateInput = true;
     }
 
     public IIpsPackageFragment getSelectedIIpsPackageFragment() {
@@ -213,19 +217,6 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
                 setDefaults(project);
             }
         }
-    }
-
-    protected void fillNameComposite(UIToolkit toolkit) {
-        toolkit.createFormLabel(nameComposite, Messages.IpsPackagePage_packagePath);
-        Text parentPackageText = toolkit.createText(nameComposite);
-        packagePathTextfield = new TextField(parentPackageText);
-        packagePathTextfield.addChangeListener(this);
-        createTreeViewer();
-        toolkit.createFormLabel(nameComposite, Messages.IpsPackagePage_labelName);
-        Text nameText = toolkit.createText(nameComposite);
-        packageNameField = new TextField(nameText);
-        packageNameField.addChangeListener(this);
-        nameText.setFocus();
     }
 
     /**
@@ -329,10 +320,6 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
             return ((IIpsSrcFile)el).getIpsObject();
         }
         return null;
-    }
-
-    protected Composite getNameComposite() {
-        return nameComposite;
     }
 
     @Override
