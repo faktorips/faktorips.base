@@ -122,7 +122,12 @@ abstract public class DefaultModelDescriptionPage extends Page implements Conten
 
     @Override
     public void contentsChanged(ContentChangeEvent event) {
-        setDescriptionData();
+        if (ipsObject == null) {
+            return;
+        }
+        if (event.getIpsSrcFile().equals(ipsObject.getIpsSrcFile())) {
+            setDescriptionData();
+        }
     }
 
     public void setIpsObject(IIpsObject ipsObject) {
@@ -358,8 +363,8 @@ abstract public class DefaultModelDescriptionPage extends Page implements Conten
             setHoverImageDescriptor(descriptor);
             setImageDescriptor(descriptor);
 
-            boolean checked = IpsPlugin.getDefault().getPreferenceStore().getBoolean(
-                    "DefaultModelDescriptionPage.LexicalSortingAction.isChecked"); //$NON-NLS-1$
+            boolean checked = IpsPlugin.getDefault().getPreferenceStore()
+                    .getBoolean("DefaultModelDescriptionPage.LexicalSortingAction.isChecked"); //$NON-NLS-1$
             setChecked(checked);
             sortAndFilterDescriptionList();
         }
@@ -367,8 +372,8 @@ abstract public class DefaultModelDescriptionPage extends Page implements Conten
         @Override
         public void run() {
             sortAndFilterDescriptionList();
-            IpsPlugin.getDefault().getPreferenceStore().setValue(
-                    "DefaultModelDescriptionPage.LexicalSortingAction.isChecked", isChecked()); //$NON-NLS-1$
+            IpsPlugin.getDefault().getPreferenceStore()
+                    .setValue("DefaultModelDescriptionPage.LexicalSortingAction.isChecked", isChecked()); //$NON-NLS-1$
         }
 
     }
@@ -388,8 +393,8 @@ abstract public class DefaultModelDescriptionPage extends Page implements Conten
             setHoverImageDescriptor(descriptor);
             setImageDescriptor(descriptor);
 
-            boolean checked = IpsPlugin.getDefault().getPreferenceStore().getBoolean(
-                    "DefaultModelDescriptionPage.LexicalSortingAction.isChecked"); //$NON-NLS-1$
+            boolean checked = IpsPlugin.getDefault().getPreferenceStore()
+                    .getBoolean("DefaultModelDescriptionPage.LexicalSortingAction.isChecked"); //$NON-NLS-1$
             setChecked(checked);
             sortAndFilterDescriptionList();
         }
@@ -397,8 +402,8 @@ abstract public class DefaultModelDescriptionPage extends Page implements Conten
         @Override
         public void run() {
             sortAndFilterDescriptionList();
-            IpsPlugin.getDefault().getPreferenceStore().setValue(
-                    "DefaultModelDescriptionPage.LexicalSortingAction.isChecked", isChecked()); //$NON-NLS-1$
+            IpsPlugin.getDefault().getPreferenceStore()
+                    .setValue("DefaultModelDescriptionPage.LexicalSortingAction.isChecked", isChecked()); //$NON-NLS-1$
         }
     }
 

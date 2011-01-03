@@ -64,7 +64,7 @@ public class PolicyCmptTypeEditor extends TypeEditor implements IModelDescriptio
 
     @Override
     public IPage createModelDescriptionPage() throws CoreException {
-        return new PolicyCmtTypeDescriptionPage(this);
+        return new PolicyCmtTypeDescriptionPage(getPolicyCmptType());
     }
 
 }

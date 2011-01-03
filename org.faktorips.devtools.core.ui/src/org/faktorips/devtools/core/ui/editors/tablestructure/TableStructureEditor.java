@@ -42,6 +42,6 @@ public class TableStructureEditor extends IpsObjectEditor implements IModelDescr
 
     @Override
     public IPage createModelDescriptionPage() throws CoreException {
-        return new TableDescriptionPage(this);
+        return new TableDescriptionPage(getTableStructure());
     }
 }

@@ -71,6 +71,6 @@ public class TestCaseTypeEditor extends IpsObjectEditor implements IModelDescrip
 
     @Override
     public IPage createModelDescriptionPage() throws CoreException {
-        return new TestCaseDescriptionPage(this);
+        return new TestCaseDescriptionPage(getTestCaseType());
     }
 }

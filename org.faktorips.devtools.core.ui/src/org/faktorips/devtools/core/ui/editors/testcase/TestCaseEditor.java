@@ -20,6 +20,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.testcase.deltapresentation.TestCaseDeltaDialog;
@@ -127,7 +128,12 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
 
     @Override
     public IPage createModelDescriptionPage() throws CoreException {
-        return new TestCaseDescriptionPage(this);
+        ITestCaseType testCaseType = getTestCase().findTestCaseType(getIpsProject());
+        if (testCaseType != null) {
+            return new TestCaseDescriptionPage(testCaseType);
+        } else {
+            return null;
+        }
     }
 
     public void addDetailAreaRedrawListener(ITestCaseDetailAreaRedrawListener listener) {

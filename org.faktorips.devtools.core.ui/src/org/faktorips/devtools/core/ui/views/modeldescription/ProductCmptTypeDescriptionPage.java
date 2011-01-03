@@ -18,14 +18,13 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.pctype.Messages;
 
 /**
@@ -36,18 +35,9 @@ import org.faktorips.devtools.core.ui.editors.pctype.Messages;
  */
 public class ProductCmptTypeDescriptionPage extends DefaultModelDescriptionPage {
 
-    public ProductCmptTypeDescriptionPage(IpsObjectEditor editor) {
+    public ProductCmptTypeDescriptionPage(IProductCmptType productCmptType) {
         super();
-        IIpsObject ipsObject = editor.getIpsObject();
-        if (ipsObject instanceof IProductCmptType) {
-            setIpsObject(ipsObject);
-        } else if (ipsObject instanceof IProductCmpt) {
-            try {
-                setIpsObject(((IProductCmpt)ipsObject).findProductCmptType(ipsObject.getIpsProject()));
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
-        }
+        setIpsObject(productCmptType);
         IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
         setDescriptionData();
     }
@@ -58,16 +48,18 @@ public class ProductCmptTypeDescriptionPage extends DefaultModelDescriptionPage 
         IIpsProject ipsProject = getIpsObject().getIpsProject();
         if (getIpsObject() != null) {
             IAttribute[] attributes = getIpsObject().findAllAttributes(ipsProject);
-            IAttribute[] policyCmptAttributes = getIpsObject().findPolicyCmptType(ipsProject).findAllAttributes(
-                    ipsProject);
             List<DescriptionItem> attributeDescriptions = new ArrayList<DescriptionItem>();
             for (IAttribute attribute : attributes) {
                 createDescriptionItem(attribute, attributeDescriptions);
             }
-            for (IAttribute attribute : policyCmptAttributes) {
-                IPolicyCmptTypeAttribute pcAttribute = (IPolicyCmptTypeAttribute)attribute;
-                if (pcAttribute.isProductRelevant()) {
-                    createDescriptionItem(attribute, attributeDescriptions);
+            IPolicyCmptType policyCmptType = getIpsObject().findPolicyCmptType(ipsProject);
+            if (policyCmptType != null) {
+                IAttribute[] policyCmptAttributes = policyCmptType.findAllAttributes(ipsProject);
+                for (IAttribute attribute : policyCmptAttributes) {
+                    IPolicyCmptTypeAttribute pcAttribute = (IPolicyCmptTypeAttribute)attribute;
+                    if (pcAttribute.isProductRelevant()) {
+                        createDescriptionItem(attribute, attributeDescriptions);
+                    }
                 }
             }
             descriptions.add(new DescriptionItem(Messages.AttributesSection_title, attributeDescriptions));

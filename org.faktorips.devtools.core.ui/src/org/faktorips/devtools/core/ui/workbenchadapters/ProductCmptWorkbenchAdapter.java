@@ -88,12 +88,14 @@ public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
     protected ImageDescriptor getImageDescriptor(IIpsSrcFile ipsSrcFile) {
         try {
             String typeName = ipsSrcFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
-            IProductCmptType type = ipsSrcFile.getIpsProject().findProductCmptType(typeName);
-            return getProductCmptImageDescriptor(type);
+            if (typeName != null) {
+                IProductCmptType type = ipsSrcFile.getIpsProject().findProductCmptType(typeName);
+                return getProductCmptImageDescriptor(type);
+            }
         } catch (CoreException e) {
             IpsPlugin.log(e);
-            return getDefaultImageDescriptor();
         }
+        return getDefaultImageDescriptor();
     }
 
     @Override

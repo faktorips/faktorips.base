@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.views.modeldescription.EnumsDescriptionPage;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
@@ -49,7 +50,12 @@ public class EnumContentEditor extends IpsObjectEditor implements IModelDescript
 
     @Override
     public IPage createModelDescriptionPage() throws CoreException {
-        return new EnumsDescriptionPage(this);
+        IEnumType enumType = getEnumContent().findEnumType(getIpsProject());
+        if (enumType != null) {
+            return new EnumsDescriptionPage(enumType);
+        } else {
+            return null;
+        }
     }
 
 }

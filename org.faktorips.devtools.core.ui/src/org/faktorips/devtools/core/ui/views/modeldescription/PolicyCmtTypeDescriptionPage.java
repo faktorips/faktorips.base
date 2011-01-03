@@ -18,11 +18,9 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.pctype.Messages;
 
 /**
@@ -33,12 +31,9 @@ import org.faktorips.devtools.core.ui.editors.pctype.Messages;
  */
 public class PolicyCmtTypeDescriptionPage extends DefaultModelDescriptionPage {
 
-    public PolicyCmtTypeDescriptionPage(IpsObjectEditor editor) {
+    public PolicyCmtTypeDescriptionPage(IPolicyCmptType policyCmptType) {
         super();
-        IIpsObject ipsObject = editor.getIpsObject();
-        if (ipsObject instanceof IPolicyCmptType) {
-            setIpsObject(ipsObject);
-        }
+        setIpsObject(policyCmptType);
         IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
         setDescriptionData();
     }

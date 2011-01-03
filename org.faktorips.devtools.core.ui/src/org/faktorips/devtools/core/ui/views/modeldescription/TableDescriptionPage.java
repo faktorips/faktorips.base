@@ -18,11 +18,9 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.tablecontents.Messages;
 
 /**
@@ -33,19 +31,9 @@ import org.faktorips.devtools.core.ui.editors.tablecontents.Messages;
  */
 public class TableDescriptionPage extends DefaultModelDescriptionPage {
 
-    public TableDescriptionPage(IpsObjectEditor editor) {
+    public TableDescriptionPage(ITableStructure tableStructure) {
         super();
-        IIpsObject ipsObject = editor.getIpsObject();
-        if (ipsObject instanceof ITableStructure) {
-            setIpsObject(ipsObject);
-        } else if (ipsObject instanceof ITableContents) {
-            ITableContents tableContents = (ITableContents)ipsObject;
-            try {
-                setIpsObject(tableContents.findTableStructure(tableContents.getIpsProject()));
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
-        }
+        setIpsObject(tableStructure);
         IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
         setDescriptionData();
     }

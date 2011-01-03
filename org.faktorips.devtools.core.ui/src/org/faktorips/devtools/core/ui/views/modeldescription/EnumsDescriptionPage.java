@@ -21,8 +21,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 
 /**
  * A page for presenting the properties of a {@link IEnumType} or {@link IEnumContent} . This page
@@ -32,18 +30,9 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
  */
 public class EnumsDescriptionPage extends DefaultModelDescriptionPage {
 
-    public EnumsDescriptionPage(IpsObjectEditor editor) {
+    public EnumsDescriptionPage(IEnumType enumType) {
         super();
-        IIpsObject ipsObject = editor.getIpsObject();
-        if (ipsObject instanceof IEnumType) {
-            setIpsObject(ipsObject);
-        } else if (ipsObject instanceof IEnumContent) {
-            try {
-                setIpsObject(((IEnumContent)ipsObject).findEnumType(ipsObject.getIpsProject()));
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
-        }
+        setIpsObject(enumType);
         IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
         setDescriptionData();
     }

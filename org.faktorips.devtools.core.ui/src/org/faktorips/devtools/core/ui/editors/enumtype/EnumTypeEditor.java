@@ -49,7 +49,7 @@ public class EnumTypeEditor extends IpsObjectEditor implements IModelDescription
 
     @Override
     public IPage createModelDescriptionPage() throws CoreException {
-        return new EnumsDescriptionPage(this);
+        return new EnumsDescriptionPage(getEnumType());
     }
 
 }
