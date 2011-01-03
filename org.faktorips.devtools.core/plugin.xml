@@ -268,17 +268,6 @@
       </product>
    </extension>
 
-	<!--
-   <extension
-         point="org.faktorips.devtools.core.faktorIpsFeatureVersionManager">
-      <faktorIpsFeatureVersionManager
-            class="org.faktorips.devtools.core.internal.model.versionmanager.CoreVersionManager"
-            featureId="org.faktorips.feature"
-            id="org.faktorips.feature.manager"
-            basedOnFeatureManager=""/>
-   </extension>
-	-->
-
 <!-- Extensions for running and debugging ips tests -->
    <extension
          id="javaUtilLoggingConnector"
