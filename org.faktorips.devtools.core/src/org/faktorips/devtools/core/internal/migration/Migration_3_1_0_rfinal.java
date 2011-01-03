@@ -83,7 +83,7 @@ public class Migration_3_1_0_rfinal extends DefaultMigration {
 
     @Override
     public String getTargetVersion() {
-        return "3.2.0"; //$NON-NLS-1$
+        return "3.2.0.rc1"; //$NON-NLS-1$
     }
 
 }
