@@ -299,7 +299,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             for (IIpsPackageFragment pack : packs) {
                 IIpsElement[] elements = pack.getChildren();
                 for (IIpsElement element : elements) {
-                    if (element instanceof IIpsSrcFile) {
+                    if (element instanceof IIpsSrcFile && element.exists()) {
                         allIpsSrcFiles.add((IIpsSrcFile)element);
                     }
                 }
