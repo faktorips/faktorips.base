@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core;
 
+import java.awt.GraphicsEnvironment;
 import java.awt.im.InputContext;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -182,20 +183,24 @@ public class IpsPreferences {
      * java default locale if the inputContext is unavailable (e.g. in
      * headless/server-environments). The retrieved locale is used for datatype formating.
      * 
-     * @param prefStore
+     * @param prefStore the preference store
      */
     private void setDefaultForDatatypeFormatting(IPreferenceStore prefStore) {
         Locale defaultLocale = null;
-        try {
-            InputContext inputContext = InputContext.getInstance();
-            if (inputContext != null) {
-                defaultLocale = inputContext.getLocale();
-            }
-        } catch (Throwable t) {
-            IpsPlugin.log(t);
-        }
-        if (defaultLocale == null) {
+        if (GraphicsEnvironment.isHeadless()) {
             defaultLocale = Locale.getDefault();
+        } else {
+            try {
+                InputContext inputContext = InputContext.getInstance();
+                if (inputContext != null) {
+                    defaultLocale = inputContext.getLocale();
+                }
+            } catch (Throwable t) {
+                IpsPlugin.log(t);
+            }
+            if (defaultLocale == null) {
+                defaultLocale = Locale.getDefault();
+            }
         }
         prefStore.setDefault(DATATYPE_FORMATTING_LOCALE, defaultLocale.toString());
     }
