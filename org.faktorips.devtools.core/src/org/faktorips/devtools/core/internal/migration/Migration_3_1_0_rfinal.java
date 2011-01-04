@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -55,20 +56,26 @@ public class Migration_3_1_0_rfinal extends DefaultMigration {
 
     @Override
     protected void migrate(IIpsSrcFile srcFile) throws CoreException {
-        IIpsObject ipsObject = srcFile.getIpsObject();
-        if (ipsObject instanceof IProductCmpt) {
-            migrateProdCmpt((IProductCmpt)ipsObject);
+        if (srcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
+            IIpsObject ipsObject = srcFile.getIpsObject();
+            if (migrateProdCmpt((IProductCmpt)ipsObject)) {
+                srcFile.markAsDirty();
+                srcFile.save(true, null);
+            }
         }
     }
 
-    private void migrateProdCmpt(IProductCmpt prodCmpt) {
+    private boolean migrateProdCmpt(IProductCmpt prodCmpt) {
         List<IIpsObjectGeneration> gens = prodCmpt.getGenerations();
+        boolean result = false;
         for (IIpsObjectGeneration gen : gens) {
             IProductCmptLink[] links = ((IProductCmptGeneration)gen).getLinks();
             for (IProductCmptLink link : links) {
                 link.setDefaultCardinality(link.getMinCardinality());
+                result = true;
             }
         }
+        return result;
     }
 
     @Override
