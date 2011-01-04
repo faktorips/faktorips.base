@@ -250,7 +250,7 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
             } else {
                 ml = namingConventions.validateUnqualifiedIpsObjectName(type, validName);
             }
-            assertEquals("\"" + validName + "\"" + " is invalid, expected was valid!", 0, ml.getNoOfMessages());
+            assertEquals("\"" + validName + "\"" + " is invalid, expected was valid!", 0, ml.size());
         }
 
         for (int i = 0; i < invalidNames.size(); i++) {

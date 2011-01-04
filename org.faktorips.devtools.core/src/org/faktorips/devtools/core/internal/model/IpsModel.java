@@ -1310,7 +1310,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      *            <code>false</code> if only the properties will be read
      */
     synchronized public IpsSrcFileContent getIpsSrcFileContent(IIpsSrcFile file, boolean loadCompleteContent) {
-        if (file == null) {
+        if (file == null || !file.exists()) {
             return null;
         }
         IpsSrcFileContent content = ipsObjectsMap.get(file);

@@ -307,7 +307,7 @@ public class UniqueKeyValidator {
         validateUniqueKeysRange(validationErrors, uniqueKeyValidatorForTwoColumnRange);
 
         list.add(validationErrors);
-        currentErrorStatus = validationErrors.getNoOfMessages() > 0;
+        currentErrorStatus = validationErrors.containsErrorMsg();
     }
 
     private void printCachedContent() {

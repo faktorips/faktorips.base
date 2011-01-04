@@ -259,7 +259,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
             return;
         }
 
-        if (msgList.getNoOfMessages() > 0) {
+        if (msgList.size() > 0) {
             Message msg = msgList.getFirstMessage(Message.ERROR);
             if (msg != null) {
                 setMessage(msg.getText(), IMessageProvider.ERROR);

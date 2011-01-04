@@ -564,7 +564,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
             ml = formulaTestCase.validate(null);
             // don't calculate preview if there are messages, e.g. warnings because of missing
             // values
-            if (ml.getNoOfMessages() > 0) {
+            if (ml.size() > 0) {
                 showFormulaResult(Messages.FormulaTestInputValuesControl_Result_ObjectIsNotValid);
                 return null;
             }

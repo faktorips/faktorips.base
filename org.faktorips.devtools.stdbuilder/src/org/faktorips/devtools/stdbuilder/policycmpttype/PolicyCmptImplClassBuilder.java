@@ -933,7 +933,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         body.appendCloseBracket();
         IValidationRule[] rules = getPcType().getRules();
         for (IValidationRule r : rules) {
-            if (r.validate(getIpsProject()).isEmpty()) {
+            if (!r.validate(getIpsProject()).containsErrorMsg()) {
                 body.append("if(!");
                 body.append(getMethodExpressionExecRule(r, "ml", parameterNameContext));
                 body.append(')');
@@ -997,7 +997,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     private void generateInitializationForOverrideAttributes(JavaCodeFragmentBuilder builder) throws CoreException {
         IPolicyCmptTypeAttribute[] attributes = getPcType().getPolicyCmptTypeAttributes();
         for (IPolicyCmptTypeAttribute attribute : attributes) {
-            if (attribute.isChangeable() && attribute.isOverwrite() && attribute.validate(getIpsProject()).isEmpty()) {
+            if (attribute.isChangeable() && attribute.isOverwrite()
+                    && !attribute.validate(getIpsProject()).containsErrorMsg()) {
                 ((GenChangeableAttribute)getGenerator().getGenerator(attribute))
                         .generateInitializationForOverrideAttributes(builder, getPcType().getIpsProject());
             }

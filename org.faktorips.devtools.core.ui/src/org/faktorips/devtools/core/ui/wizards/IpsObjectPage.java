@@ -427,7 +427,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
         MessageList ml;
         try {
             ml = namingConventions.validateUnqualifiedIpsObjectName(getIpsObjectType(), name);
-            if (ml.getNoOfMessages() > 0) {
+            if (ml.size() > 0) {
                 String msgText = ml.getFirstMessage(ml.getSeverity()).getText();
                 if (ml.getSeverity() == Message.ERROR) {
                     setErrorMessage(msgText);

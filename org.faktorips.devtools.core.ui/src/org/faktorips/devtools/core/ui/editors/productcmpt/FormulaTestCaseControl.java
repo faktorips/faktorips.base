@@ -672,7 +672,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
                         MessageList mlformula = formula.validate(formula.getIpsProject());
                         if (formula.isValid()) {
                             MessageList ml = element.validate();
-                            if (ml.getNoOfMessages() == 0) {
+                            if (!ml.containsErrorMsg()) {
                                 result = element.execute();
                             }
                         } else {

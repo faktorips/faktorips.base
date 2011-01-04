@@ -276,8 +276,6 @@ public class ProductCmptPage extends IpsObjectPage {
         updateEnableState();
     }
 
-    @SuppressWarnings("null")
-    // warning about namingStrategy is wrong
     private void updateEnableState() {
         IProductCmptNamingStrategy namingStrategy = getNamingStrategy();
         boolean enabled = namingStrategy != null && namingStrategy.supportsVersionId();
@@ -285,8 +283,8 @@ public class ProductCmptPage extends IpsObjectPage {
         this.versionId.setEnabled(enabled);
         this.fullName.setEnabled(!enabled);
 
-        if (enabled) {
-            if (namingStrategy.validate(fullName.getText()).isEmpty()) {
+        if (enabled && namingStrategy != null) {
+            if (!namingStrategy.validate(fullName.getText()).containsErrorMsg()) {
                 versionId.setText(namingStrategy.getVersionId(fullName.getText()));
                 constName.setText(namingStrategy.getKindId(fullName.getText()));
             }

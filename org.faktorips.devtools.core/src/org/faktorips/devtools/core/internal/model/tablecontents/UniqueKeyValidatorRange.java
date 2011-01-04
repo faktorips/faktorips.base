@@ -19,10 +19,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.tablestructure.ColumnRange;
@@ -297,8 +297,8 @@ public class UniqueKeyValidatorRange {
             // there are rows with same 'from'-value
             if (keyValueObject instanceof List) {
                 // cleanup list, maybe there are rows which are not valid anymore
-                List<Row> validRows = new ArrayList();
-                for (Iterator<Row> iterator = ((List)keyValueObject).iterator(); iterator.hasNext();) {
+                List<Row> validRows = new ArrayList<Row>();
+                for (Iterator<Row> iterator = ((List<Row>)keyValueObject).iterator(); iterator.hasNext();) {
                     Row row = iterator.next();
                     // check if the key value is valid for the row
                     // and check if the key value from is valid
@@ -330,8 +330,8 @@ public class UniqueKeyValidatorRange {
                 continue;
             }
 
-            List rowsChecked = validateKeyValueRange(rowsUniqueKeyViolation, uniqueKey, prevKeyValueFrom, keyValueFrom,
-                    keyValueObject, invalidkeyValues);
+            List<Row> rowsChecked = validateKeyValueRange(rowsUniqueKeyViolation, uniqueKey, prevKeyValueFrom,
+                    keyValueFrom, keyValueObject, invalidkeyValues);
 
             if (rowsChecked != null) {
                 // update the valid rows for the key value entry
@@ -350,7 +350,7 @@ public class UniqueKeyValidatorRange {
     }
 
     private boolean isMaxNoOfUniqueKeyViolationsReached(MessageList list) {
-        if (list.getNoOfMessages() >= MAX_NO_OF_UNIQUE_KEY_VALIDATION_ERRORS) {
+        if (list.size() >= MAX_NO_OF_UNIQUE_KEY_VALIDATION_ERRORS) {
             createValidationErrorToManyUniqueKeyViolations(list, uniqueKey, 10);
             return true;
         }
@@ -392,7 +392,8 @@ public class UniqueKeyValidatorRange {
             validateKeyValueRangeFor(rowsUniqueKeyViolation, uniqueKey, prevFrom, keyValue, currentRow);
         } else if (keyValueObject instanceof List) {
             // TODO AW: Refactor, provide 2 methods instead of parameter instanceof switching
-            List<Row> rows = (List)keyValueObject;
+            @SuppressWarnings("unchecked")
+            List<Row> rows = (List<Row>)keyValueObject;
             List<Row> rowsChecked = new ArrayList<Row>();
 
             // first check if all rows are 'valid' for the key value

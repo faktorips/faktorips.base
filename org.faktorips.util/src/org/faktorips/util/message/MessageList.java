@@ -41,7 +41,7 @@ public class MessageList implements Iterable<Message> {
             return list;
         }
         MessageList newList = new MessageList();
-        int numOfMsg = list.getNoOfMessages();
+        int numOfMsg = list.size();
         for (int i = 0; i < numOfMsg; i++) {
             newList.add(Message.createCopy(list.getMessage(i), oldObject, newObject));
         }
@@ -190,7 +190,7 @@ public class MessageList implements Iterable<Message> {
      * the list does not contain such a message.
      */
     public Message getMessageByCode(String code) {
-        for (int i = 0; i < getNoOfMessages(); i++) {
+        for (int i = 0; i < size(); i++) {
             if (getMessage(i).getCode().equals(code)) {
                 return getMessage(i);
             }
@@ -204,7 +204,7 @@ public class MessageList implements Iterable<Message> {
      */
     public int getSeverity() {
         int severity = 0;
-        for (int i = 0; i < getNoOfMessages(); i++) {
+        for (int i = 0; i < size(); i++) {
             if (getMessage(i).getSeverity() > severity) {
                 severity = getMessage(i).getSeverity();
                 if (severity == Message.ERROR) {
@@ -221,7 +221,7 @@ public class MessageList implements Iterable<Message> {
      */
     public String getText() {
         StringBuffer s = new StringBuffer();
-        for (int i = 0; i < getNoOfMessages(); i++) {
+        for (int i = 0; i < size(); i++) {
             if (i > 0) {
                 s.append(SystemUtils.LINE_SEPARATOR);
             }
@@ -235,7 +235,7 @@ public class MessageList implements Iterable<Message> {
      * Returns true if one the messages in the list is an error message, otherwise false.
      */
     public boolean containsErrorMsg() {
-        for (int i = 0; i < getNoOfMessages(); i++) {
+        for (int i = 0; i < size(); i++) {
             if (getMessage(i).getSeverity() == Message.ERROR) {
                 return true;
             }
@@ -258,7 +258,7 @@ public class MessageList implements Iterable<Message> {
      */
     public MessageList getMessagesFor(Object object, String property, int index) {
         MessageList result = new MessageList();
-        for (int i = 0; i < getNoOfMessages(); i++) {
+        for (int i = 0; i < size(); i++) {
             Message msg = getMessage(i);
             ObjectProperty[] op = msg.getInvalidObjectProperties();
             for (ObjectProperty element : op) {
@@ -308,7 +308,7 @@ public class MessageList implements Iterable<Message> {
     @Override
     public String toString() {
         StringBuffer s = new StringBuffer();
-        for (int i = 0; i < getNoOfMessages(); i++) {
+        for (int i = 0; i < size(); i++) {
             s.append(getMessage(i).toString() + SystemUtils.LINE_SEPARATOR);
         }
         return s.toString();
@@ -326,11 +326,11 @@ public class MessageList implements Iterable<Message> {
 
         MessageList other = (MessageList)o;
 
-        if (this.getNoOfMessages() != other.getNoOfMessages()) {
+        if (this.size() != other.size()) {
             return false;
         }
 
-        for (int i = 0; i < other.getNoOfMessages(); i++) {
+        for (int i = 0; i < other.size(); i++) {
             Message message = messages.get(i);
             Message otherMessage = other.messages.get(i);
             if (!((message == null) ? otherMessage == null : message.equals(otherMessage))) {
@@ -344,7 +344,7 @@ public class MessageList implements Iterable<Message> {
     @Override
     public int hashCode() {
         int result = 17;
-        result = 31 * result + getNoOfMessages();
+        result = 31 * result + size();
         for (Message message : messages) {
             int c = (message == null) ? 0 : message.hashCode();
             result = 31 * result + c;

@@ -375,7 +375,7 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         CompilationResult result = compiler.compile(expression);
         if (!result.successfull()) {
             MessageList compilerMessageList = result.getMessages();
-            for (int i = 0; i < compilerMessageList.getNoOfMessages(); i++) {
+            for (int i = 0; i < compilerMessageList.size(); i++) {
                 Message msg = compilerMessageList.getMessage(i);
                 list.add(new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, PROPERTY_EXPRESSION));
             }

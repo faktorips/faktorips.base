@@ -107,7 +107,7 @@ public class FormulaEditDialog extends IpsPartEditDialog {
      */
     private MessageList validateAndUpdateDialogUI(MessageList messages) {
         MessageList relevantMessages = new MessageList();
-        if (messages.getNoOfMessages() > 0) {
+        if (messages.size() > 0) {
             // get only message wich are not for the dummy formula test case
             // (getTransientFormulaTestCases)
             for (Message msg : messages) {

@@ -460,9 +460,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         EnumTypeValidations.validateSuperTypeHierarchy(list, this, ipsProject);
 
         if (hasSuperEnumType()) {
-            if (list.getNoOfMessages() == 0) {
-                validateInheritedAttributes(list, ipsProject);
+            if (list.containsErrorMsg()) {
+                return;
             }
+            validateInheritedAttributes(list, ipsProject);
         }
 
         validateLiteralNameAttribute(list);

@@ -299,7 +299,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             for (IIpsPackageFragment pack : packs) {
                 IIpsElement[] elements = pack.getChildren();
                 for (IIpsElement element : elements) {
-                    if (element instanceof IIpsSrcFile && element.exists()) {
+                    if (element instanceof IIpsSrcFile) {
                         allIpsSrcFiles.add((IIpsSrcFile)element);
                     }
                 }
@@ -569,7 +569,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             throws CoreException {
 
         resource.deleteMarkers(IpsPlugin.PROBLEM_MARKER, true, IResource.DEPTH_ZERO);
-        for (int i = 0; i < list.getNoOfMessages(); i++) {
+        for (int i = 0; i < list.size(); i++) {
             Message msg = list.getMessage(i);
             IMarker marker = resource.createMarker(markerType);
             updateMarker(marker, msg.getText(), getMarkerSeverity(msg));
@@ -620,7 +620,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     }
 
     private void fillMultiStatusWithMessageList(MultiStatus status, MessageList list) {
-        for (int i = 0; i < list.getNoOfMessages(); i++) {
+        for (int i = 0; i < list.size(); i++) {
             Message msg = list.getMessage(i);
             status.add(new IpsStatus(getMarkerSeverity(msg), msg.getText(), null));
         }

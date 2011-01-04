@@ -93,7 +93,7 @@ public class StatusPage extends WizardPage implements Observer {
         @Override
         public Object[] getElements(Object inputElement) {
             if (messageList != null) {
-                Object[] result = new Object[messageList.getNoOfMessages()];
+                Object[] result = new Object[messageList.size()];
                 int i = 0;
                 for (Iterator<Message> iterator = messageList.iterator(); iterator.hasNext();) {
                     Message msg = iterator.next();

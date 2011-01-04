@@ -87,9 +87,10 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
         validateIsNeeded(list);
-        if (list.getNoOfMessages() == 0) {
-            validateDefaultValueProviderAttribute(list, ipsProject);
+        if (list.containsErrorMsg()) {
+            return;
         }
+        validateDefaultValueProviderAttribute(list, ipsProject);
     }
 
     /**

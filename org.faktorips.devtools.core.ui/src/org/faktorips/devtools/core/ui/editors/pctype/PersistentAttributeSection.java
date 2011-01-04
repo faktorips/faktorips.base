@@ -206,7 +206,7 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
             }
 
             private Image getOverlayImageFor(MessageList messages) {
-                if (messages.getNoOfMessages() > 0) {
+                if (messages.size() > 0) {
                     ImageDescriptor descriptor = IpsProblemOverlayIcon.getOverlay(messages.getSeverity());
                     if (descriptor != null) {
                         return (Image)getResourceManager().get(descriptor);

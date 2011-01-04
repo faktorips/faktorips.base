@@ -295,9 +295,9 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
             fragment.append("// "); //$NON-NLS-1$
             fragment.appendln(expression);
             MessageList messages = result.getMessages();
-            for (int i = 0; i < messages.getNoOfMessages(); i++) {
+            for (int i = 0; i < messages.size(); i++) {
                 fragment.append("// "); //$NON-NLS-1$
-                fragment.append(messages.getText());
+                fragment.append(messages.getMessage(i).getText());
             }
             return fragment;
         } catch (CoreException e) {

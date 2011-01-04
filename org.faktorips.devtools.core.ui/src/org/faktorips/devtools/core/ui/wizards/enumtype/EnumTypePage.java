@@ -327,7 +327,7 @@ public class EnumTypePage extends IpsObjectPage {
                 valuesDeferredToContentField.getCheckbox().isChecked(), enumContentQualifiedNameField.getText());
 
         // Display the first error message if any.
-        if (validationMessages.getNoOfMessages() > 0) {
+        if (validationMessages.size() > 0) {
             Message msg = validationMessages.getMessage(0);
             int severity = msg.getSeverity();
             int msgLevel = Message.NONE;

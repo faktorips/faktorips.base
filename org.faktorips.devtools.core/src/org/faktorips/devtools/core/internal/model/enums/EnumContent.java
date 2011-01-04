@@ -157,7 +157,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         super.validateThis(list, ipsProject);
 
         EnumContentValidations.validateEnumType(list, this, enumType, ipsProject);
-        if (list.getNoOfMessages() > 0) {
+        if (list.containsErrorMsg()) {
             return;
         }
 
@@ -169,14 +169,14 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     /** Validates the <tt>IEnumAttributeReference</tt>s. */
     private void validateEnumAttributeReferences(MessageList validationMessageList, IEnumType enumType) {
         validateEnumAttributeReferencesCount(validationMessageList, enumType);
-        if (validationMessageList.getNoOfMessages() > 0) {
+        if (validationMessageList.containsErrorMsg()) {
             return;
         }
 
         List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(false);
 
         validateEnumAttributeReferenceNames(validationMessageList, enumType, enumAttributes);
-        if (validationMessageList.getNoOfMessages() > 0) {
+        if (validationMessageList.containsErrorMsg()) {
             return;
         }
 
