@@ -777,7 +777,6 @@ schutz” abgerufen und ausgedruckt werden.
       <import plugin="org.eclipse.ltk.core.refactoring" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jdt.launching"/>
       <import plugin="org.eclipse.core.resources" version="3.4.2" match="greaterOrEqual"/>
-      <import plugin="org.mockito" version="1.8.3" match="greaterOrEqual"/>
       <import plugin="org.faktorips.valuetypes.java5"/>
       <import plugin="org.eclipse.gef"/>
       <import plugin="org.apache.ant"/>
