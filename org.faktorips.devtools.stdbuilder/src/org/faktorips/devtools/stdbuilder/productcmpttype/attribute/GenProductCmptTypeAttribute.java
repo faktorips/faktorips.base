@@ -19,6 +19,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
@@ -295,6 +296,14 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
             IIpsElement ipsElement) {
 
         addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+        addStaticConstantToGeneratedJavaElements(javaElements, generatedJavaType);
+    }
+
+    private void addStaticConstantToGeneratedJavaElements(List<IJavaElement> javaElements, IType generatedJavaType) {
+        if (isPublished()) {
+            IField constantMember = generatedJavaType.getField(getStaticConstantPropertyName());
+            javaElements.add(constantMember);
+        }
     }
 
     /**
