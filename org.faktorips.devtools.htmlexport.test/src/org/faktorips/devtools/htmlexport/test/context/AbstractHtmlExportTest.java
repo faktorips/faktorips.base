@@ -1,4 +1,4 @@
-package org.faktorips.devtools.htmlexport.test.documentor;
+package org.faktorips.devtools.htmlexport.test.context;
 
 import java.io.File;
 import java.io.IOException;

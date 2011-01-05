@@ -1,4 +1,4 @@
-package org.faktorips.devtools.htmlexport.test.documentor;
+package org.faktorips.devtools.htmlexport.test.context;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.htmlexport.HtmlExportOperation;

@@ -87,12 +87,12 @@ public class AttributesTablePageElement extends AbstractIpsObjectPartsContainerT
     protected List<String> getHeadlineWithIpsObjectPart() {
         List<String> headline = new ArrayList<String>();
 
-        headline.add(Messages.AttributesTablePageElement_headlineName);
-        headline.add(Messages.AttributesTablePageElement_headlineLabel);
-        headline.add(Messages.AttributesTablePageElement_headlineDatatype);
-        headline.add(Messages.AttributesTablePageElement_headlineModifier);
-        headline.add(Messages.AttributesTablePageElement_headlineDefaultValue);
-        headline.add(Messages.AttributesTablePageElement_headlineDescription);
+        headline.add(getContext().getMessage("AttributesTablePageElement_headlineName")); //$NON-NLS-1$
+        headline.add(getContext().getMessage("AttributesTablePageElement_headlineLabel")); //$NON-NLS-1$
+        headline.add(getContext().getMessage("AttributesTablePageElement_headlineDatatype")); //$NON-NLS-1$
+        headline.add(getContext().getMessage("AttributesTablePageElement_headlineModifier")); //$NON-NLS-1$
+        headline.add(getContext().getMessage("AttributesTablePageElement_headlineDefaultValue")); //$NON-NLS-1$
+        headline.add(getContext().getMessage("AttributesTablePageElement_headlineDescription")); //$NON-NLS-1$
 
         return headline;
     }

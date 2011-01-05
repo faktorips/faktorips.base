@@ -73,10 +73,11 @@ public class EnumContentContentPageElement extends AbstractIpsObjectContentPageE
             return;
         }
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-        wrapper.addPageElements(new TextPageElement(Messages.EnumContentContentPageElement_values, TextType.HEADING_2));
+        wrapper.addPageElements(new TextPageElement(
+                getContext().getMessage("EnumContentContentPageElement_values"), TextType.HEADING_2)); //$NON-NLS-1$
 
         wrapper.addPageElements(getTableOrAlternativeText(tablePageElement,
-                Messages.EnumContentContentPageElement_noValues));
+                getContext().getMessage("EnumContentContentPageElement_noValues"))); //$NON-NLS-1$
 
         addPageElements(wrapper);
     }

@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.htmlexport.pages.elements.types;
 
+import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
@@ -24,16 +25,20 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageE
 
 public class KeyValueTablePageElement extends TablePageElement {
 
-    public KeyValueTablePageElement() {
-        this(Messages.KeyValueTablePageElement_headlineProperty, Messages.KeyValueTablePageElement_headlineValue);
+    private final DocumentationContext context;
+
+    public KeyValueTablePageElement(DocumentationContext context) {
+        this(context, context.getMessage("KeyValueTablePageElement_headlineProperty"), context //$NON-NLS-1$
+                .getMessage("KeyValueTablePageElement_headlineValue")); //$NON-NLS-1$
     }
 
     /**
      * Creates an KeyValueTablePageElement with a headline
      * 
      */
-    public KeyValueTablePageElement(String keyHeadline, String valueHeadline) {
+    public KeyValueTablePageElement(DocumentationContext context, String keyHeadline, String valueHeadline) {
         super(true);
+        this.context = context;
         addLayouts(RowTablePageElementLayout.HEADLINE);
         addLayouts(new AlternateRowTablePageElementLayout(true));
         addLayouts(new RegexTablePageElementLayout(".{1,3}", Style.CENTER)); //$NON-NLS-1$
@@ -52,7 +57,8 @@ public class KeyValueTablePageElement extends TablePageElement {
     @Override
     public KeyValueTablePageElement addPageElements(PageElement... pageElements) {
         if (pageElements.length % 2 == 1) {
-            throw new IllegalArgumentException(Messages.KeyValueTablePageElement_justEvenNumberOfPageElementsAllowed);
+            throw new IllegalArgumentException(getContext().getMessage(
+                    "KeyValueTablePageElement_justEvenNumberOfPageElementsAllowed")); //$NON-NLS-1$
         }
         if (pageElements.length == 0) {
             return this;
@@ -89,5 +95,9 @@ public class KeyValueTablePageElement extends TablePageElement {
     public KeyValueTablePageElement addKeyValueRow(PageElement keyPageElement, PageElement valuePageElement) {
         addSubElement(new TableRowPageElement(new PageElement[] { keyPageElement, valuePageElement }));
         return this;
+    }
+
+    public DocumentationContext getContext() {
+        return context;
     }
 }

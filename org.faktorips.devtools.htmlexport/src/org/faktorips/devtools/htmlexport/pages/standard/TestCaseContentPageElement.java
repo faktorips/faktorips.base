@@ -78,7 +78,8 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
      * adds a treeview of the parameters of the testcase
      */
     private void addTestCaseTypeParameters() {
-        addPageElements(new TextPageElement(Messages.TestCaseContentPageElement_parameters, TextType.HEADING_2));
+        addPageElements(new TextPageElement(getContext().getMessage("TestCaseContentPageElement_parameters"), //$NON-NLS-1$
+                TextType.HEADING_2));
         TreeNodePageElement root = createRootNode();
 
         ITestObject[] testObjects = getDocumentedIpsObject().getTestObjects();
@@ -133,10 +134,10 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
     private PageElement createTestPolicyCmptTestAttributesTable(ITestPolicyCmpt testObject) throws CoreException {
         ITestAttributeValue[] testAttributeValues = testObject.getTestAttributeValues();
         if (testAttributeValues.length == 0) {
-            return new TextPageElement(Messages.TestCaseContentPageElement_noTestAttributes);
+            return new TextPageElement(getContext().getMessage("TestCaseContentPageElement_noTestAttributes")); //$NON-NLS-1$
         }
 
-        KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement();
+        KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement(getContext());
         for (ITestAttributeValue testAttributeValue : testAttributeValues) {
             String value = testAttributeValue.getValue();
             ITestAttribute attribute = testAttributeValue.findTestAttribute(getContext().getIpsProject());
@@ -151,10 +152,11 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
     private PageElement createTestRulePageElement(ITestRule testObject) {
         TreeNodePageElement testObjectPageElement = createRootNode(testObject.getTestParameterName());
 
-        KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement();
-        keyValueTable.addKeyValueRow(Messages.TestCaseContentPageElement_name, testObject.getValidationRule());
-        keyValueTable.addKeyValueRow(Messages.TestCaseContentPageElement_violationType, testObject.getViolationType()
-                .getName());
+        KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement(getContext());
+        keyValueTable.addKeyValueRow(getContext().getMessage("TestCaseContentPageElement_name"), //$NON-NLS-1$
+                testObject.getValidationRule());
+        keyValueTable.addKeyValueRow(getContext().getMessage("TestCaseContentPageElement_violationType"), testObject //$NON-NLS-1$
+                .getViolationType().getName());
 
         testObjectPageElement.addPageElements(keyValueTable);
 
@@ -166,18 +168,18 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
                 .addPageElements(new IpsElementImagePageElement(testObject)).addPageElements(
                         new TextPageElement(testObject.getTestParameterName())));
 
-        KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement();
-        keyValueTable.addKeyValueRow(Messages.TestCaseContentPageElement_name, testObject.getName());
+        KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement(getContext());
+        keyValueTable.addKeyValueRow(getContext().getMessage("TestCaseContentPageElement_name"), testObject.getName()); //$NON-NLS-1$
 
         ITestValueParameter testValueParameter = testObject.findTestValueParameter(getContext().getIpsProject());
         ValueDatatype datatype = testValueParameter.findValueDatatype(getContext().getIpsProject());
 
         String value = testObject.getValue();
-        keyValueTable.addKeyValueRow(Messages.TestCaseContentPageElement_value, IpsPlugin.getDefault()
-                .getIpsPreferences().getDatatypeFormatter().formatValue(datatype, value));
+        keyValueTable.addKeyValueRow(getContext().getMessage("TestCaseContentPageElement_value"), IpsPlugin //$NON-NLS-1$
+                .getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(datatype, value));
 
-        keyValueTable.addKeyValueRow(Messages.TestCaseContentPageElement_testParameterType, testValueParameter
-                .getTestParameterType().getName());
+        keyValueTable.addKeyValueRow(getContext().getMessage("TestCaseContentPageElement_testParameterType"), //$NON-NLS-1$
+                testValueParameter.getTestParameterType().getName());
 
         testObjectPageElement.addPageElements(keyValueTable);
 

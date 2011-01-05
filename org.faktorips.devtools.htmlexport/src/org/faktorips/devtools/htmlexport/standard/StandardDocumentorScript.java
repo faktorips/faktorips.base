@@ -231,8 +231,8 @@ public class StandardDocumentorScript implements IDocumentorScript {
     private void writeBaseFrameDefinition(DocumentationContext context, IProgressMonitor monitor) throws IOException {
         monitor.beginTask("", 1); //$NON-NLS-1$
 
-        IGenerator baseFrameHtml = new BaseFrameHtmlGenerator(Messages.StandardDocumentorScript_documentation
-                + " " + context.getIpsProject().getName(), "20%, 80%", "30%, 70%"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ 
+        IGenerator baseFrameHtml = new BaseFrameHtmlGenerator(
+                context.getMessage("StandardDocumentorScript_documentation") + " " + context.getIpsProject().getName(), "20%, 80%", "30%, 70%"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ 
         fileHandler.writeFile(context, STANDARD_PATH + "index.html", baseFrameHtml.generate()); //$NON-NLS-1$
 
         monitor.done();

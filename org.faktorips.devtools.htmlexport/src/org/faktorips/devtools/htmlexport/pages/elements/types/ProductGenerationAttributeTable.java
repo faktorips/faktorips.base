@@ -132,7 +132,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             return;
         }
 
-        addSubHeadline(Messages.ProductGenerationAttributeTable_defaultsAndValueSets);
+        addSubHeadline(getContext().getMessage("ProductGenerationAttributeTable_defaultsAndValueSets")); //$NON-NLS-1$
 
         for (IPolicyCmptTypeAttribute policyCmptTypeAttribute : policyCmptTypeAttributes) {
             addPolicyCmptTypeAttibutesRow(policyCmptTypeAttribute);
@@ -167,7 +167,8 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     private WrapperPageElement createValueSetCell(IValueSet valueSet, String defaultValue) {
         WrapperPageElement pageElement = new WrapperPageElement(WrapperType.BLOCK);
 
-        pageElement.addPageElements(new TextPageElement(Messages.ProductGenerationAttributeTable_defaultValue
+        pageElement.addPageElements(new TextPageElement(getContext().getMessage(
+                "ProductGenerationAttributeTable_defaultValue") //$NON-NLS-1$
                 + ": " //$NON-NLS-1$
                 + IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
                         .formatValue(((ValueSet)valueSet).getValueDatatype(), defaultValue), TextType.BLOCK));
@@ -184,7 +185,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
     private TextPageElement createRangeValueSetCell(RangeValueSet rangeValueSet) {
         StringBuilder builder = new StringBuilder();
-        builder.append(Messages.ProductGenerationAttributeTable_minMaxStep);
+        builder.append(getContext().getMessage("ProductGenerationAttributeTable_minMaxStep")); //$NON-NLS-1$
         builder.append(": "); //$NON-NLS-1$
         builder.append(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
                 .formatValue(rangeValueSet.getValueDatatype(), rangeValueSet.getLowerBound()));
@@ -200,8 +201,8 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     }
 
     private TextPageElement createUnrestrictedEnumValueCell() {
-        TextPageElement textPageElement = new TextPageElement(
-                Messages.ProductGenerationAttributeTable_valueSetUnrestricted, TextType.BLOCK);
+        TextPageElement textPageElement = new TextPageElement(getContext().getMessage(
+                "ProductGenerationAttributeTable_valueSetUnrestricted"), TextType.BLOCK); //$NON-NLS-1$
         return textPageElement;
     }
 
@@ -216,7 +217,8 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
                     .formatValue(enumValueSet.getValueDatatype(), enumValue));
 
         }
-        TextPageElement textPageElement = new TextPageElement(Messages.ProductGenerationAttributeTable_valueSet
+        TextPageElement textPageElement = new TextPageElement(getContext().getMessage(
+                "ProductGenerationAttributeTable_valueSet") //$NON-NLS-1$
                 + ": " + builder.toString()); //$NON-NLS-1$
         return textPageElement;
     }
@@ -238,7 +240,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             return;
         }
 
-        addSubHeadline(Messages.ProductGenerationAttributeTable_tables);
+        addSubHeadline(getContext().getMessage("ProductGenerationAttributeTable_tables")); //$NON-NLS-1$
 
         for (ITableStructureUsage tableStructureUsage : tableStructureUsages) {
             addTableStructureUsageRow(tableStructureUsage);
@@ -252,7 +254,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             return;
         }
 
-        addSubHeadline(Messages.ProductGenerationAttributeTable_formulas);
+        addSubHeadline(getContext().getMessage("ProductGenerationAttributeTable_formulas")); //$NON-NLS-1$
 
         for (IProductCmptTypeMethod formulaSignature : formulaSignatures) {
             addFormulaRow(formulaSignature);
@@ -319,9 +321,9 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     private void addChildProductCmptTypes() {
         PageElement[] cells = new PageElement[productCmpt.getNumOfGenerations() + 1];
 
-        addSubHeadline(Messages.ProductGenerationAttributeTable_structure);
+        addSubHeadline(getContext().getMessage("ProductGenerationAttributeTable_structure")); //$NON-NLS-1$
 
-        cells[0] = new TextPageElement(Messages.ProductGenerationAttributeTable_associatedComponents);
+        cells[0] = new TextPageElement(getContext().getMessage("ProductGenerationAttributeTable_associatedComponents")); //$NON-NLS-1$
 
         for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
             IProductCmptGeneration productCmptGeneration = productCmpt.getProductCmptGeneration(i);
@@ -344,25 +346,32 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     private void addAssociatedProductCmpts(IProductCmptGeneration productCmptGeneration,
             AbstractCompositePageElement cellContent) {
         IAssociation[] associations = productCmptType.getAssociations();
+
+        boolean productCmptLinksShown = false;
         for (IAssociation association : associations) {
             TreeNodePageElement root = new TreeNodePageElement(PageElementUtils.createIpsElementRepresentation(
                     association, context, context.getLabel(association), true));
             IProductCmptLink[] links = productCmptGeneration.getLinks(association.getName());
             for (IProductCmptLink productCmptLink : links) {
-                addProductCmptLink(root, productCmptLink);
+                productCmptLinksShown |= addProductCmptLink(root, productCmptLink);
             }
             cellContent.addPageElements(root);
         }
+        if (productCmptLinksShown) {
+            cellContent.addPageElements(TextPageElement.createParagraph(
+                    getContext().getMessage("ProductGenerationAttributeTable_cardinalityExplanation")).addStyles( //$NON-NLS-1$
+                    Style.SMALL));
+        }
     }
 
-    private void addProductCmptLink(TreeNodePageElement treeNode, IProductCmptLink productCmptLink) {
+    private boolean addProductCmptLink(TreeNodePageElement treeNode, IProductCmptLink productCmptLink) {
         IProductCmpt target;
         try {
             target = productCmptLink.findTarget(productCmpt.getIpsProject());
         } catch (CoreException e) {
             context.addStatus(new IpsStatus(IStatus.ERROR,
                     "Could not get linked ProductCmpt within " + productCmptLink.getName(), e)); //$NON-NLS-1$
-            return;
+            return false;
         }
 
         PageElement targetLink = PageElementUtils.createLinkPageElement(context, target, "content", target //$NON-NLS-1$
@@ -371,11 +380,16 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         Set<Style> cardinalityStyles = new HashSet<Style>();
         cardinalityStyles.add(Style.INDENTION);
 
-        int maxCardinality = productCmptLink.getMaxCardinality();
         PageElement cardinalities = new TextPageElement(productCmptLink.getMinCardinality() + ".." //$NON-NLS-1$
-                + (maxCardinality == Integer.MAX_VALUE ? "*" : maxCardinality), cardinalityStyles); //$NON-NLS-1$
+                + getCardinalityRepresentation(productCmptLink.getMaxCardinality()) + " (" //$NON-NLS-1$
+                + getCardinalityRepresentation(productCmptLink.getDefaultCardinality()) + ")", cardinalityStyles); //$NON-NLS-1$
 
         treeNode.addPageElements(new WrapperPageElement(WrapperType.BLOCK).addPageElements(targetLink, cardinalities));
+        return true;
+    }
+
+    private String getCardinalityRepresentation(int cardinality) {
+        return cardinality == Integer.MAX_VALUE ? "*" : Integer.toString(cardinality); //$NON-NLS-1$
     }
 
     /**
@@ -413,15 +427,15 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         } catch (CoreException e) {
             context.addStatus(new IpsStatus(IStatus.ERROR,
                     "Error formating AttributeValue " + attributeValue.getName(), e)); //$NON-NLS-1$
-            value = attributeValue.getValue() == null ? Messages.ProductGenerationAttributeTable_undefined
-                    : attributeValue.getValue();
+            value = attributeValue.getValue() == null ? getContext().getMessage(
+                    "ProductGenerationAttributeTable_undefined") : attributeValue.getValue(); //$NON-NLS-1$
         }
         return value;
     }
 
     @Override
     protected List<String> getHeadline() {
-        return getHeadlineWithCategory(Messages.ProductGenerationAttributeTable_attributes);
+        return getHeadlineWithCategory(getContext().getMessage("ProductGenerationAttributeTable_attributes")); //$NON-NLS-1$
     }
 
     private List<String> getHeadlineWithCategory(String productGenerationAttributeTableGenerationFrom) {
@@ -444,6 +458,10 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     @Override
     protected void createId() {
         setId(productCmpt.getName() + "_ProductGenerationAttributeTable"); //$NON-NLS-1$
+    }
+
+    protected DocumentationContext getContext() {
+        return context;
     }
 
 }

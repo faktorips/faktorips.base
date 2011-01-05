@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.htmlexport.test.documentor;
+package org.faktorips.devtools.htmlexport.test.context;
 
 import java.util.Locale;
 

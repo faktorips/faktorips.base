@@ -68,7 +68,7 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
         super.build();
 
         addPageElements(new WrapperPageElement(WrapperType.BLOCK, new LinkPageElement("index", "_top", //$NON-NLS-1$ //$NON-NLS-2$
-                Messages.AbstractObjectContentPageElement_overviewProject
+                getContext().getMessage("AbstractObjectContentPageElement_overviewProject") //$NON-NLS-1$
                         + " " + getContext().getIpsProject().getName()))); //$NON-NLS-1$
 
         addPageElements(PageElementUtils.createLinkPageElement(getContext(), getDocumentedIpsObject()
@@ -84,16 +84,20 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
         addStructureData();
 
         if (!getDocumentedIpsObject().getIpsProject().equals(getContext().getIpsProject())) {
-            addPageElements(TextPageElement.createParagraph(Messages.AbstractObjectContentPageElement_project + ": " //$NON-NLS-1$
+            addPageElements(TextPageElement.createParagraph(getContext().getMessage(
+                    "AbstractObjectContentPageElement_project") + ": " //$NON-NLS-1$ //$NON-NLS-2$
                     + getDocumentedIpsObject().getIpsProject().getName()));
         }
-        addPageElements(TextPageElement.createParagraph(Messages.AbstractObjectContentPageElement_projectFolder + ": " //$NON-NLS-1$
+        addPageElements(TextPageElement.createParagraph(getContext().getMessage(
+                "AbstractObjectContentPageElement_projectFolder") + ": " //$NON-NLS-1$ //$NON-NLS-2$
                 + getDocumentedIpsObject().getIpsSrcFile().getIpsPackageFragment()));
 
-        addPageElements(new TextPageElement(Messages.AbstractObjectContentPageElement_description, TextType.HEADING_2));
+        addPageElements(new TextPageElement(getContext().getMessage("AbstractObjectContentPageElement_description"), //$NON-NLS-1$
+                TextType.HEADING_2));
         addPageElements(new TextPageElement(
-                StringUtils.isBlank(getContext().getDescription(getDocumentedIpsObject())) ? Messages.AbstractObjectContentPageElement_noDescription
-                        : getContext().getDescription(getDocumentedIpsObject()), TextType.BLOCK));
+                StringUtils.isBlank(getContext().getDescription(getDocumentedIpsObject())) ? getContext().getMessage(
+                        "AbstractObjectContentPageElement_noDescription") : getContext().getDescription( //$NON-NLS-1$
+                        getDocumentedIpsObject()), TextType.BLOCK));
 
         if (getContext().showsValidationErrors()) {
             addValidationErrorsTable();
@@ -122,8 +126,8 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
         }
 
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-        wrapper.addPageElements(new TextPageElement(Messages.AbstractObjectContentPageElement_validationErrors,
-                TextType.HEADING_2));
+        wrapper.addPageElements(new TextPageElement(getContext().getMessage(
+                "AbstractObjectContentPageElement_validationErrors"), TextType.HEADING_2)); //$NON-NLS-1$
 
         TablePageElement tablePageElement = new IpsObjectMessageListTablePageElement(messageList, getContext());
 
@@ -192,9 +196,9 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
             return;
         }
 
-        KeyValueTablePageElement extensionPropertiesTable = new KeyValueTablePageElement(
-                Messages.AbstractIpsObjectContentPageElement_extensionPropertyKeyHeadline,
-                Messages.AbstractIpsObjectContentPageElement_extensionPropertyValueHeadline);
+        KeyValueTablePageElement extensionPropertiesTable = new KeyValueTablePageElement(getContext(), getContext()
+                .getMessage("AbstractIpsObjectContentPageElement_extensionPropertyKeyHeadline"), getContext() //$NON-NLS-1$
+                .getMessage("AbstractIpsObjectContentPageElement_extensionPropertyValueHeadline")); //$NON-NLS-1$
 
         for (IExtensionPropertyDefinition iExtensionPropertyDefinition : properties) {
             Object extPropertyValue = getDocumentedIpsObject().getExtPropertyValue(
@@ -204,8 +208,8 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
         }
 
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-        wrapper.addPageElements(new TextPageElement(Messages.AbstractIpsObjectContentPageElement_extensionProperties,
-                TextType.HEADING_2));
+        wrapper.addPageElements(new TextPageElement(getContext().getMessage(
+                "AbstractIpsObjectContentPageElement_extensionProperties"), TextType.HEADING_2)); //$NON-NLS-1$
 
         wrapper.addPageElements(extensionPropertiesTable);
 

@@ -55,10 +55,12 @@ public class MessageListTablePageElement extends AbstractStandardTablePageElemen
         addSubElement(new TableRowPageElement(new PageElement[] {
                 createInvalidObjectPropertiesPageElement(message),
                 new TextPageElement(message.getText()),
-                new TextPageElement(severity == Message.ERROR ? Messages.MessageListTablePageElement_error
-                        : severity == Message.WARNING ? Messages.MessageListTablePageElement_warning
-                                : severity == Message.INFO ? Messages.MessageListTablePageElement_info
-                                        : Messages.MessageListTablePageElement_severity + severity) }));
+                new TextPageElement(severity == Message.ERROR ? getContext().getMessage(
+                        "MessageListTablePageElement_error") : severity == Message.WARNING ? getContext().getMessage( //$NON-NLS-1$
+                        "MessageListTablePageElement_warning") : severity == Message.INFO ? getContext().getMessage( //$NON-NLS-1$
+                        "MessageListTablePageElement_info") : getContext().getMessage( //$NON-NLS-1$
+                        "MessageListTablePageElement_severity") //$NON-NLS-1$
+                        + severity) }));
     }
 
     protected PageElement createInvalidObjectPropertiesPageElement(Message message) {
@@ -93,9 +95,9 @@ public class MessageListTablePageElement extends AbstractStandardTablePageElemen
     protected List<String> getHeadline() {
         List<String> headline = new ArrayList<String>();
 
-        headline.add(Messages.MessageListTablePageElement_headlineProperties);
-        headline.add(Messages.MessageListTablePageElement_headlineMessage);
-        headline.add(Messages.MessageListTablePageElement_headlineSeverity);
+        headline.add(getContext().getMessage("MessageListTablePageElement_headlineProperties")); //$NON-NLS-1$
+        headline.add(getContext().getMessage("MessageListTablePageElement_headlineMessage")); //$NON-NLS-1$
+        headline.add(getContext().getMessage("MessageListTablePageElement_headlineSeverity")); //$NON-NLS-1$
 
         return headline;
     }
@@ -103,6 +105,10 @@ public class MessageListTablePageElement extends AbstractStandardTablePageElemen
     @Override
     public boolean isEmpty() {
         return messageList.isEmpty();
+    }
+
+    protected DocumentationContext getContext() {
+        return context;
     }
 
 }

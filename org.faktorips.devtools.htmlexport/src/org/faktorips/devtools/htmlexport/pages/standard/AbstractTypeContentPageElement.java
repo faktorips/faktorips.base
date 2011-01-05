@@ -96,10 +96,11 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
      */
     protected void addMethodsTable() {
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-        wrapper.addPageElements(new TextPageElement(Messages.AbstractTypeContentPageElement_methods, TextType.HEADING_2));
+        wrapper.addPageElements(new TextPageElement(
+                getContext().getMessage("AbstractTypeContentPageElement_methods"), TextType.HEADING_2)); //$NON-NLS-1$
 
         wrapper.addPageElements(getTableOrAlternativeText(getMethodsTablePageElement(),
-                Messages.AbstractTypeContentPageElement_noMethods));
+                getContext().getMessage("AbstractTypeContentPageElement_noMethods"))); //$NON-NLS-1$
 
         addPageElements(wrapper);
     }
@@ -114,10 +115,13 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 
     @Override
     protected void addTypeHierarchy() {
-        addPageElements(new TextPageElement(Messages.AbstractTypeContentPageElement_hierarchy, TextType.HEADING_2));
-        addPageElements(new TextPageElement(Messages.AbstractTypeContentPageElement_superclass, TextType.HEADING_3));
+        addPageElements(new TextPageElement(
+                getContext().getMessage("AbstractTypeContentPageElement_hierarchy"), TextType.HEADING_2)); //$NON-NLS-1$
+        addPageElements(new TextPageElement(
+                getContext().getMessage("AbstractTypeContentPageElement_superclass"), TextType.HEADING_3)); //$NON-NLS-1$
         addSuperTypeHierarchy();
-        addPageElements(new TextPageElement(Messages.AbstractTypeContentPageElement_subclass, TextType.HEADING_3));
+        addPageElements(new TextPageElement(
+                getContext().getMessage("AbstractTypeContentPageElement_subclass"), TextType.HEADING_3)); //$NON-NLS-1$
         addSubTypeHierarchy();
     }
 
@@ -176,7 +180,8 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
         List<IType> superTypes = hier.getSuperTypes();
 
         if (superTypes.size() == 1) {
-            addPageElements(new TextPageElement(Messages.AbstractTypeContentPageElement_noSuperclasses));
+            addPageElements(new TextPageElement(getContext()
+                    .getMessage("AbstractTypeContentPageElement_noSuperclasses"))); //$NON-NLS-1$
             return;
         }
 
@@ -218,7 +223,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
         addPageElements(new WrapperPageElement(
                 WrapperType.BLOCK,
                 new PageElement[] {
-                        new TextPageElement(Messages.AbstractTypeContentPageElement_extends + " "), PageElementUtils.createLinkPageElement(getContext(), to, "content", to.getName(), true) })); //$NON-NLS-1$//$NON-NLS-2$ 
+                        new TextPageElement(getContext().getMessage("AbstractTypeContentPageElement_extends") + " "), PageElementUtils.createLinkPageElement(getContext(), to, "content", to.getName(), true) })); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ 
     }
 
     /**
@@ -226,11 +231,12 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
      */
     protected void addAssociationsTable() {
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-        wrapper.addPageElements(new TextPageElement(Messages.AbstractTypeContentPageElement_associations,
+        wrapper.addPageElements(new TextPageElement(getContext().getMessage(
+                "AbstractTypeContentPageElement_associations"), //$NON-NLS-1$
                 TextType.HEADING_2));
 
         wrapper.addPageElements(getTableOrAlternativeText(new AssociationTablePageElement(getDocumentedIpsObject(),
-                getContext()), Messages.AbstractTypeContentPageElement_noAssociations));
+                getContext()), getContext().getMessage("AbstractTypeContentPageElement_noAssociations"))); //$NON-NLS-1$
 
         addPageElements(wrapper);
     }
@@ -240,11 +246,12 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
      */
     protected void addAttributesTable() {
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-        wrapper.addPageElements(new TextPageElement(Messages.AbstractTypeContentPageElement_attributes,
+        wrapper.addPageElements(new TextPageElement(getContext()
+                .getMessage("AbstractTypeContentPageElement_attributes"), //$NON-NLS-1$
                 TextType.HEADING_2));
 
         wrapper.addPageElements(getTableOrAlternativeText(getAttributesTablePageElement(),
-                Messages.AbstractTypeContentPageElement_noAttributes));
+                getContext().getMessage("AbstractTypeContentPageElement_noAttributes"))); //$NON-NLS-1$
 
         addPageElements(wrapper);
     }

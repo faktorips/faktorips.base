@@ -140,11 +140,12 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
      */
     private void addContentTable() {
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-        wrapper.addPageElements(new TextPageElement(Messages.TableContentsContentPageElement_content,
+        wrapper.addPageElements(new TextPageElement(getContext().getMessage("TableContentsContentPageElement_content"), //$NON-NLS-1$
                 TextType.HEADING_2));
 
         if (getTableContent().getNumOfGenerations() == 0) {
-            wrapper.addPageElements(new TextPageElement(Messages.TableContentsContentPageElement_noGenerations));
+            wrapper.addPageElements(new TextPageElement(getContext().getMessage(
+                    "TableContentsContentPageElement_noGenerations"))); //$NON-NLS-1$
             addPageElements(wrapper);
             return;
         }
@@ -154,7 +155,8 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
         for (IIpsObjectGeneration ipsObjectGeneration : objectGenerations) {
             ITableContentsGeneration tableContentsGeneration = (ITableContentsGeneration)ipsObjectGeneration;
 
-            wrapper.addPageElements(new TextPageElement(Messages.TableContentsContentPageElement_generation
+            wrapper.addPageElements(new TextPageElement(getContext().getMessage(
+                    "TableContentsContentPageElement_generation") //$NON-NLS-1$
                     + " " + tableContentsGeneration.getName(), //$NON-NLS-1$
                     TextType.HEADING_3));
             ContentTablePageElement contentTablePageElement = null;
@@ -167,7 +169,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
             }
 
             wrapper.addPageElements(getTableOrAlternativeText(contentTablePageElement,
-                    Messages.TableContentsContentPageElement_noContent));
+                    getContext().getMessage("TableContentsContentPageElement_noContent"))); //$NON-NLS-1$
         }
         PageElement createContentTable = wrapper;
         addPageElements(createContentTable);

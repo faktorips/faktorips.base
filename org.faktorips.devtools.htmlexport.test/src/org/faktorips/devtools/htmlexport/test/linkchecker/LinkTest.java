@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.faktorips.devtools.htmlexport.test.documentor.AbstractHtmlExportTest;
+import org.faktorips.devtools.htmlexport.test.context.AbstractHtmlExportTest;
 
 public class LinkTest extends AbstractHtmlExportTest {
 

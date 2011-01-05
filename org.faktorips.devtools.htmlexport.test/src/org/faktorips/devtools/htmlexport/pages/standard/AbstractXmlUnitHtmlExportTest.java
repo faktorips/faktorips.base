@@ -22,7 +22,7 @@ import org.faktorips.devtools.htmlexport.generators.IGenerator;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
-import org.faktorips.devtools.htmlexport.test.documentor.AbstractHtmlExportTest;
+import org.faktorips.devtools.htmlexport.test.context.AbstractHtmlExportTest;
 import org.xml.sax.SAXException;
 
 public abstract class AbstractXmlUnitHtmlExportTest extends AbstractHtmlExportTest {

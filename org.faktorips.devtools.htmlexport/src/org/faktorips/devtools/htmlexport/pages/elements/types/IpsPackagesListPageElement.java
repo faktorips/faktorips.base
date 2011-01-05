@@ -58,7 +58,7 @@ public class IpsPackagesListPageElement extends AbstractIpsElementListPageElemen
     public IpsPackagesListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles, IpsElementFilter filter,
             DocumentationContext context) {
         super(baseIpsElement, srcFiles, filter, context);
-        setTitle(Messages.IpsPackagesListPageElement_allPackages);
+        setTitle(getContext().getMessage("IpsPackagesListPageElement_allPackages")); //$NON-NLS-1$
     }
 
     /**
@@ -72,7 +72,8 @@ public class IpsPackagesListPageElement extends AbstractIpsElementListPageElemen
     @Override
     public void build() {
         super.build();
-        addPageElements(new TextPageElement(Messages.IpsPackagesListPageElement_headlineObjectTypes, TextType.HEADING_2));
+        addPageElements(new TextPageElement(
+                getContext().getMessage("IpsPackagesListPageElement_headlineObjectTypes"), TextType.HEADING_2)); //$NON-NLS-1$
 
         addPageElements(new TypeChooserPageElement(getContext()));
 
@@ -80,8 +81,8 @@ public class IpsPackagesListPageElement extends AbstractIpsElementListPageElemen
 
         List<PageElement> list = createPackageList();
 
-        addPageElements(new TextPageElement(
-                list.size() + " " + Messages.IpsPackagesListPageElement_packages, TextType.BLOCK)); //$NON-NLS-1$
+        addPageElements(new TextPageElement(list.size()
+                + " " + getContext().getMessage("IpsPackagesListPageElement_packages"), TextType.BLOCK)); //$NON-NLS-1$ //$NON-NLS-2$
 
         if (list.size() > 0) {
             addPageElements(new ListPageElement(list));

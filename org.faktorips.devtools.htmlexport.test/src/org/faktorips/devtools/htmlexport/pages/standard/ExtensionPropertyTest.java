@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefiniti
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractPageElement;
-import org.faktorips.devtools.htmlexport.test.documentor.AbstractHtmlExportTest;
+import org.faktorips.devtools.htmlexport.test.context.AbstractHtmlExportTest;
 import org.faktorips.devtools.htmlexport.test.helper.AbstractTestLayouter;
 import org.faktorips.devtools.htmlexport.test.helper.ContainsTextTestLayouter;
 

@@ -17,12 +17,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -40,6 +40,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.htmlexport.IDocumentorScript;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
+import org.faktorips.devtools.htmlexport.helper.IpsObjectTypeComparator;
 
 /**
  * Context for the Documentation
@@ -56,7 +57,7 @@ public class DocumentationContext {
     /**
      * related {@link IpsObjectType}s: Just {@link IIpsObject} of these types are documented
      */
-    protected IpsObjectType[] documentedIpsObjectTypes = new IpsObjectType[0];
+    protected IpsObjectType[] documentedIpsObjectTypes = IpsPlugin.getDefault().getIpsModel().getIpsObjectTypes();
 
     private List<IStatus> exportStatus = new ArrayList<IStatus>();
 
@@ -68,6 +69,8 @@ public class DocumentationContext {
     private boolean showValidationErrors = true;
 
     private Locale descriptionLocale;
+
+    private MessagesManager messagesManager;
     private MultiLanguageSupport multiLanguageSupport;
 
     /**
@@ -92,34 +95,11 @@ public class DocumentationContext {
      */
     private List<IIpsSrcFile> documentedSrcFiles;
 
-    public DocumentationContext() {
-        super();
-    }
-
     public void setDocumentedIpsObjectTypes(IpsObjectType... ipsObjectTypes) {
-        Comparator<IpsObjectType> comparator = new Comparator<IpsObjectType>() {
-
-            @Override
-            public int compare(IpsObjectType o1, IpsObjectType o2) {
-                if (o1.isProductDefinitionType() && !o2.isProductDefinitionType()) {
-                    return 1;
-                }
-                if (!o1.isProductDefinitionType() && o2.isProductDefinitionType()) {
-                    return -1;
-                }
-
-                if (o1.isDatatype() && !o2.isDatatype()) {
-                    return -1;
-                }
-                if (!o1.isDatatype() && o2.isDatatype()) {
-                    return 1;
-                }
-
-                return 0;
-            }
-
-        };
-        Arrays.sort(ipsObjectTypes, comparator);
+        if (ArrayUtils.isEmpty(ipsObjectTypes)) {
+            throw new IllegalArgumentException("ipsObjectTypes must not be empty"); //$NON-NLS-1$
+        }
+        Arrays.sort(ipsObjectTypes, new IpsObjectTypeComparator());
         documentedIpsObjectTypes = ipsObjectTypes;
     }
 
@@ -219,8 +199,12 @@ public class DocumentationContext {
     }
 
     public void setDescriptionLocale(Locale descriptionLocale) {
+        if (this.descriptionLocale == descriptionLocale) {
+            return;
+        }
         this.descriptionLocale = descriptionLocale;
         multiLanguageSupport = new MultiLanguageSupport(descriptionLocale);
+        messagesManager = new MessagesManager(this);
     }
 
     public Locale getDescriptionLocale() {
@@ -271,5 +255,9 @@ public class DocumentationContext {
     public void addStatus(IStatus status) {
         IpsPlugin.log(status);
         exportStatus.add(status);
+    }
+
+    public String getMessage(String messageId) {
+        return messagesManager.getMessage(messageId);
     }
 }

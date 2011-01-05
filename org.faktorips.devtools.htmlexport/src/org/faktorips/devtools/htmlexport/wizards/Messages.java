@@ -28,6 +28,9 @@ public class Messages extends NLS {
     public static String IpsProjectHtmlExportWizardPage_directoryDialogText;
     public static String IpsProjectHtmlExportWizardPage_htmlExport;
     public static String IpsProjectHtmlExportWizardPage_noProjectSelected;
+    public static String IpsProjectHtmlExportWizardPage_objectTypes;
+    public static String IpsProjectHtmlExportWizardPage_policy;
+    public static String IpsProjectHtmlExportWizardPage_product;
     public static String IpsProjectHtmlExportWizardPage_project;
     public static String IpsProjectHtmlExportWizardPage_projectName;
     public static String IpsProjectHtmlExportWizardPage_showValidationErrors;

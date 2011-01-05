@@ -99,21 +99,26 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
     protected List<String> getHeadlineWithIpsObjectPart() {
         List<String> headline = new ArrayList<String>();
 
-        headline.add(Messages.AssociationTablePageElement_headlineName);
-        headline.add(Messages.AssociationTablePageElement_headlineLabel);
-        headline.add(Messages.AssociationTablePageElement_headlineTarget);
-        headline.add(Messages.AssociationTablePageElement_headlineDescription);
-        headline.add(Messages.AssociationTablePageElement_headlineAssociationType);
-        headline.add(Messages.AssociationTablePageElement_headlineAggregationKind);
-        headline.add(Messages.AssociationTablePageElement_headlineTargetRoleSingular);
-        headline.add(Messages.AssociationTablePageElement_headlineTargetRolePlural);
+        headline.add(getContext().getMessage("AssociationTablePageElement_headlineName")); //$NON-NLS-1$
+        headline.add(getContext().getMessage("AssociationTablePageElement_headlineLabel")); //$NON-NLS-1$
+        headline.add(getContext().getMessage("AssociationTablePageElement_headlineTarget")); //$NON-NLS-1$
+        headline.add(getContext().getMessage("AssociationTablePageElement_headlineDescription")); //$NON-NLS-1$
+        headline.add(getContext().getMessage("AssociationTablePageElement_headlineAssociationType")); //$NON-NLS-1$
+        headline.add(getContext().getMessage("AssociationTablePageElement_headlineAggregationKind")); //$NON-NLS-1$
+        headline.add(getContext().getMessage("AssociationTablePageElement_headlineTargetRoleSingular")); //$NON-NLS-1$
+        headline.add(getContext().getMessage("AssociationTablePageElement_headlineTargetRolePlural")); //$NON-NLS-1$
 
-        addHeadlineAndColumnLayout(headline, Messages.AssociationTablePageElement_headlineMinCardinality, Style.CENTER);
-        addHeadlineAndColumnLayout(headline, Messages.AssociationTablePageElement_headlineMaxCardinality, Style.CENTER);
-        addHeadlineAndColumnLayout(headline, Messages.AssociationTablePageElement_headlineDerivedUnion, Style.CENTER);
-        addHeadlineAndColumnLayout(headline, Messages.AssociationTablePageElement_headlineSubsettedDerivedUnion,
+        addHeadlineAndColumnLayout(headline,
+                getContext().getMessage("AssociationTablePageElement_headlineMinCardinality"), Style.CENTER); //$NON-NLS-1$
+        addHeadlineAndColumnLayout(headline,
+                getContext().getMessage("AssociationTablePageElement_headlineMaxCardinality"), Style.CENTER); //$NON-NLS-1$
+        addHeadlineAndColumnLayout(headline, getContext()
+                .getMessage("AssociationTablePageElement_headlineDerivedUnion"), Style.CENTER); //$NON-NLS-1$
+        addHeadlineAndColumnLayout(headline,
+                getContext().getMessage("AssociationTablePageElement_headlineSubsettedDerivedUnion"), //$NON-NLS-1$
                 Style.CENTER);
-        addHeadlineAndColumnLayout(headline, Messages.AssociationTablePageElement_headlineQualified, Style.CENTER);
+        addHeadlineAndColumnLayout(headline,
+                getContext().getMessage("AssociationTablePageElement_headlineQualified"), Style.CENTER); //$NON-NLS-1$
 
         return headline;
     }

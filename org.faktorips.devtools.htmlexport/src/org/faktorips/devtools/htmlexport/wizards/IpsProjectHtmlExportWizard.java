@@ -89,7 +89,7 @@ public class IpsProjectHtmlExportWizard extends Wizard implements IExportWizard 
         context.setLayouter(new HtmlLayouter(".resource")); //$NON-NLS-1$
 
         context.addDocumentorScript(new StandardDocumentorScript());
-        context.setDocumentedIpsObjectTypes(context.getIpsProject().getIpsModel().getIpsObjectTypes());
+        context.setDocumentedIpsObjectTypes(ipsProjectHtmlExportWizardPage.getSelectedIpsObjectTypes());
 
         IWorkspaceRunnable op = new HtmlExportOperation(context);
 
@@ -108,21 +108,15 @@ public class IpsProjectHtmlExportWizard extends Wizard implements IExportWizard 
 
         switch (exportStatus.getSeverity()) {
             case IStatus.ERROR:
-                ErrorDialog
-                        .openError(
-                                Display.getDefault().getActiveShell(),
-                                Messages.IpsProjectHtmlExportWizard_errorHtmlExport,
-                                Messages.IpsProjectHtmlExportWizard_messageErrorHtmlExport,
-                                exportStatus);
+                ErrorDialog.openError(Display.getDefault().getActiveShell(),
+                        Messages.IpsProjectHtmlExportWizard_errorHtmlExport,
+                        Messages.IpsProjectHtmlExportWizard_messageErrorHtmlExport, exportStatus);
                 return false;
 
             case IStatus.WARNING:
-                ErrorDialog
-                        .openError(
-                                Display.getDefault().getActiveShell(),
-                                Messages.IpsProjectHtmlExportWizard_warningHtmlExport,
-                                Messages.IpsProjectHtmlExportWizard_messageWarningHtmlExport,
-                                exportStatus);
+                ErrorDialog.openError(Display.getDefault().getActiveShell(),
+                        Messages.IpsProjectHtmlExportWizard_warningHtmlExport,
+                        Messages.IpsProjectHtmlExportWizard_messageWarningHtmlExport, exportStatus);
 
                 return true;
 

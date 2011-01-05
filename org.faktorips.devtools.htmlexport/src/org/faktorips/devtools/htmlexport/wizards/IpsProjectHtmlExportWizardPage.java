@@ -14,6 +14,8 @@
 package org.faktorips.devtools.htmlexport.wizards;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
@@ -24,14 +26,20 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
+import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -40,12 +48,15 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
@@ -67,6 +78,143 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
     private Combo ipsProjectsCombo;
 
     private Checkbox showValidationErrorsCheckBox;
+
+    private CheckboxTreeViewer objectTypesTreeViewer;
+
+    private final class IpsObjectLabelProvider implements ILabelProvider {
+
+        @Override
+        public void addListener(ILabelProviderListener listener) {
+            // nothing to do
+        }
+
+        @Override
+        public void dispose() {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public boolean isLabelProperty(Object element, String property) {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
+        public void removeListener(ILabelProviderListener listener) {
+            // nothing to do
+        }
+
+        @Override
+        public Image getImage(Object element) {
+            if (!(element instanceof IpsObjectType)) {
+                return null;
+            }
+            IpsObjectType ipsObjectType = (IpsObjectType)element;
+            return IpsUIPlugin.getImageHandling().getDefaultImage(ipsObjectType.getImplementingClass());
+        }
+
+        @Override
+        public String getText(Object element) {
+            if (element == IpsObjectTypeTreeViewBaseNodes.POLICY) {
+                return Messages.IpsProjectHtmlExportWizardPage_policy;
+            }
+            if (element == IpsObjectTypeTreeViewBaseNodes.PRODUCT) {
+                return Messages.IpsProjectHtmlExportWizardPage_product;
+            }
+            if (element instanceof IpsObjectType) {
+                IpsObjectType ipsObjectType = (IpsObjectType)element;
+                return ipsObjectType.getDisplayNamePlural();
+            }
+            return null;
+        }
+
+    }
+
+    private final class IpsObjectTreeContentProvider implements ITreeContentProvider {
+        public IpsObjectTreeContentProvider() {
+            createIpsObjectTypesArrays();
+        }
+
+        private final Object[] EMPTY_ARRAY = new Object[0];
+        private IpsObjectType[] IPS_OBJECT_TYPES_POLICY;
+        private IpsObjectType[] IPS_OBJECT_TYPES_PRODUCT;
+        private final IpsObjectTypeTreeViewBaseNodes[] OBJECT_TYPES_ARRAY = { IpsObjectTypeTreeViewBaseNodes.POLICY,
+                IpsObjectTypeTreeViewBaseNodes.PRODUCT };
+
+        @Override
+        public Object[] getElements(Object inputElement) {
+            return getChildren(inputElement);
+        }
+
+        @Override
+        public void dispose() {
+            // nothing to do
+        }
+
+        @Override
+        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            // nothing to do
+        }
+
+        @Override
+        public Object[] getChildren(Object parentElement) {
+            if (parentElement == IpsObjectTypeTreeViewBaseNodes.ROOT) {
+                return OBJECT_TYPES_ARRAY;
+            }
+            if (parentElement == IpsObjectTypeTreeViewBaseNodes.POLICY) {
+                return IPS_OBJECT_TYPES_POLICY;
+            }
+            if (parentElement == IpsObjectTypeTreeViewBaseNodes.PRODUCT) {
+                return IPS_OBJECT_TYPES_PRODUCT;
+            }
+
+            return EMPTY_ARRAY;
+        }
+
+        private void createIpsObjectTypesArrays() {
+            IpsObjectType[] ipsObjectTypes = IpsPlugin.getDefault().getIpsModel().getIpsObjectTypes();
+            List<IpsObjectType> ipsObjectTypesPolicy = new ArrayList<IpsObjectType>();
+            List<IpsObjectType> ipsObjectTypesProduct = new ArrayList<IpsObjectType>();
+
+            for (IpsObjectType ipsObjectType : ipsObjectTypes) {
+                if (ipsObjectType.isProductDefinitionType()) {
+                    ipsObjectTypesProduct.add(ipsObjectType);
+                } else {
+                    ipsObjectTypesPolicy.add(ipsObjectType);
+                }
+            }
+            IPS_OBJECT_TYPES_POLICY = ipsObjectTypesPolicy.toArray(new IpsObjectType[ipsObjectTypesPolicy.size()]);
+            IPS_OBJECT_TYPES_PRODUCT = ipsObjectTypesProduct.toArray(new IpsObjectType[ipsObjectTypesProduct.size()]);
+        }
+
+        @Override
+        public Object getParent(Object element) {
+            if (element == IpsObjectTypeTreeViewBaseNodes.ROOT) {
+                return null;
+            }
+            if (element instanceof IpsObjectTypeTreeViewBaseNodes) {
+                return IpsObjectTypeTreeViewBaseNodes.ROOT;
+            }
+            if (!(element instanceof IpsObjectType)) {
+                return null;
+            }
+            IpsObjectType type = (IpsObjectType)element;
+            return type.isProductDefinitionType() ? IpsObjectTypeTreeViewBaseNodes.PRODUCT
+                    : IpsObjectTypeTreeViewBaseNodes.POLICY;
+        }
+
+        @Override
+        public boolean hasChildren(Object element) {
+            return element instanceof IpsObjectTypeTreeViewBaseNodes;
+        }
+    }
+
+    private enum IpsObjectTypeTreeViewBaseNodes {
+        ROOT,
+        POLICY,
+        PRODUCT
+    }
 
     private IIpsProject[] ipsProjects;
 
@@ -133,6 +281,8 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
 
         createSupportedLanguageGroup(grid);
 
+        createIpsObjectTypesGroup(composite);
+
         showValidationErrorsCheckBox = toolkit.createCheckbox(composite,
                 Messages.IpsProjectHtmlExportWizardPage_showValidationErrors);
 
@@ -141,6 +291,19 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
         setControl(composite);
 
         updateSelectedProject();
+
+    }
+
+    private void createIpsObjectTypesGroup(Composite parent) {
+        new Label(parent, SWT.NONE).setText(Messages.IpsProjectHtmlExportWizardPage_objectTypes);
+
+        objectTypesTreeViewer = new ContainerCheckedTreeViewer(parent);
+        objectTypesTreeViewer.setContentProvider(new IpsObjectTreeContentProvider());
+        objectTypesTreeViewer.setLabelProvider(new IpsObjectLabelProvider());
+        objectTypesTreeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        objectTypesTreeViewer.setInput(IpsObjectTypeTreeViewBaseNodes.ROOT);
+        objectTypesTreeViewer.setCheckedElements(IpsPlugin.getDefault().getIpsModel().getIpsObjectTypes());
+        // objectTypesTreeViewer.expandAll();
 
     }
 
@@ -295,6 +458,16 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
 
     public String getDestinationDirectory() {
         return destinationNamesCombo.getText().trim();
+    }
+
+    public IpsObjectType[] getSelectedIpsObjectTypes() {
+        List<IpsObjectType> checkedElements = new ArrayList<IpsObjectType>();
+        for (Object checkedObject : objectTypesTreeViewer.getCheckedElements()) {
+            if (checkedObject instanceof IpsObjectType) {
+                checkedElements.add((IpsObjectType)checkedObject);
+            }
+        }
+        return checkedElements.toArray(new IpsObjectType[checkedElements.size()]);
     }
 
     public boolean getShowValidationErrors() {

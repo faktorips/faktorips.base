@@ -91,12 +91,12 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         protected List<String> getHeadlineWithIpsObjectPart() {
             List<String> headline = new ArrayList<String>();
 
-            headline.add(Messages.TableStructureContentPageElement_name);
-            headline.add(Messages.TableStructureContentPageElement_keyItems);
-            headline.add(Messages.TableStructureContentPageElement_referenced
+            headline.add(getContext().getMessage("TableStructureContentPageElement_name")); //$NON-NLS-1$
+            headline.add(getContext().getMessage("TableStructureContentPageElement_keyItems")); //$NON-NLS-1$
+            headline.add(getContext().getMessage("TableStructureContentPageElement_referenced") //$NON-NLS-1$
                     + IpsObjectType.TABLE_STRUCTURE.getDisplayName());
-            headline.add(Messages.TableStructureContentPageElement_referencedUniqueKey);
-            headline.add(Messages.TableStructureContentPageElement_description);
+            headline.add(getContext().getMessage("TableStructureContentPageElement_referencedUniqueKey")); //$NON-NLS-1$
+            headline.add(getContext().getMessage("TableStructureContentPageElement_description")); //$NON-NLS-1$
 
             return headline;
         }
@@ -137,12 +137,12 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         protected List<String> getHeadlineWithIpsObjectPart() {
             List<String> headline = new ArrayList<String>();
 
-            headline.add(Messages.TableStructureContentPageElement_name);
-            headline.add(Messages.TableStructureContentPageElement_parameterName);
-            headline.add(Messages.TableStructureContentPageElement_columnRangeName);
-            headline.add(Messages.TableStructureContentPageElement_fromColumn);
-            headline.add(Messages.TableStructureContentPageElement_toColumn);
-            headline.add(Messages.TableStructureContentPageElement_description);
+            headline.add(getContext().getMessage("TableStructureContentPageElement_name")); //$NON-NLS-1$
+            headline.add(getContext().getMessage("TableStructureContentPageElement_parameterName")); //$NON-NLS-1$
+            headline.add(getContext().getMessage("TableStructureContentPageElement_columnRangeName")); //$NON-NLS-1$
+            headline.add(getContext().getMessage("TableStructureContentPageElement_fromColumn")); //$NON-NLS-1$
+            headline.add(getContext().getMessage("TableStructureContentPageElement_toColumn")); //$NON-NLS-1$
+            headline.add(getContext().getMessage("TableStructureContentPageElement_description")); //$NON-NLS-1$
 
             return headline;
         }
@@ -179,9 +179,9 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         protected List<String> getHeadlineWithIpsObjectPart() {
             List<String> headline = new ArrayList<String>();
 
-            headline.add(Messages.TableStructureContentPageElement_name);
-            headline.add(Messages.TableStructureContentPageElement_datatype);
-            headline.add(Messages.TableStructureContentPageElement_description);
+            headline.add(getContext().getMessage("TableStructureContentPageElement_name")); //$NON-NLS-1$
+            headline.add(getContext().getMessage("TableStructureContentPageElement_datatype")); //$NON-NLS-1$
+            headline.add(getContext().getMessage("TableStructureContentPageElement_description")); //$NON-NLS-1$
 
             return headline;
         }
@@ -217,8 +217,8 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         protected List<String> getHeadlineWithIpsObjectPart() {
             List<String> headline = new ArrayList<String>();
 
-            headline.add(Messages.TableStructureContentPageElement_name);
-            headline.add(Messages.TableStructureContentPageElement_description);
+            headline.add(getContext().getMessage("TableStructureContentPageElement_name")); //$NON-NLS-1$
+            headline.add(getContext().getMessage("TableStructureContentPageElement_description")); //$NON-NLS-1$
 
             return headline;
         }
@@ -257,11 +257,12 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
      */
     private void addColumnTable() {
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-        wrapper.addPageElements(new TextPageElement(Messages.TableStructureContentPageElement_columns,
+        wrapper.addPageElements(new TextPageElement(
+                getContext().getMessage("TableStructureContentPageElement_columns"), //$NON-NLS-1$
                 TextType.HEADING_2));
 
         wrapper.addPageElements(getTableOrAlternativeText(new ColumnsTablePageElement(getDocumentedIpsObject(),
-                getContext()), Messages.TableStructureContentPageElement_noColumns));
+                getContext()), getContext().getMessage("TableStructureContentPageElement_noColumns"))); //$NON-NLS-1$
         addPageElements(wrapper);
     }
 
@@ -270,11 +271,12 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
      */
     private void addUniqueKeysTable() {
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-        wrapper.addPageElements(new TextPageElement(Messages.TableStructureContentPageElement_uniqueKeys,
+        wrapper.addPageElements(new TextPageElement(getContext().getMessage(
+                "TableStructureContentPageElement_uniqueKeys"), //$NON-NLS-1$
                 TextType.HEADING_2));
 
         wrapper.addPageElements(getTableOrAlternativeText(new UniqueKeysTablePageElement(getDocumentedIpsObject(),
-                getContext()), Messages.TableStructureContentPageElement_noUniqueKeys));
+                getContext()), getContext().getMessage("TableStructureContentPageElement_noUniqueKeys"))); //$NON-NLS-1$
         addPageElements(wrapper);
     }
 
@@ -283,11 +285,12 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
      */
     private void addColumnRangesTable() {
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-        wrapper.addPageElements(new TextPageElement(Messages.TableStructureContentPageElement_columnRanges,
+        wrapper.addPageElements(new TextPageElement(getContext().getMessage(
+                "TableStructureContentPageElement_columnRanges"), //$NON-NLS-1$
                 TextType.HEADING_2));
 
         wrapper.addPageElements(getTableOrAlternativeText(new ColumnsRangesTablePageElement(getDocumentedIpsObject(),
-                getContext()), Messages.TableStructureContentPageElement_noColumnRanges));
+                getContext()), getContext().getMessage("TableStructureContentPageElement_noColumnRanges"))); //$NON-NLS-1$
         addPageElements(wrapper);
     }
 
@@ -296,11 +299,12 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
      */
     private void addForeignKeyTable() {
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-        wrapper.addPageElements(new TextPageElement(Messages.TableStructureContentPageElement_foreignKeys,
+        wrapper.addPageElements(new TextPageElement(getContext().getMessage(
+                "TableStructureContentPageElement_foreignKeys"), //$NON-NLS-1$
                 TextType.HEADING_2));
 
         wrapper.addPageElements(getTableOrAlternativeText(new ForeignKeysTablePageElement(getDocumentedIpsObject(),
-                getContext()), Messages.TableStructureContentPageElement_noForeignKeys));
+                getContext()), getContext().getMessage("TableStructureContentPageElement_noForeignKeys"))); //$NON-NLS-1$
         addPageElements(wrapper);
     }
 

@@ -13,7 +13,9 @@
 
 package org.faktorips.devtools.htmlexport;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
@@ -25,6 +27,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 
@@ -36,6 +39,7 @@ import org.faktorips.devtools.htmlexport.context.DocumentationContext;
  */
 public class HtmlExportOperation implements IWorkspaceRunnable {
     private DocumentationContext context;
+    private final static Set<Class<? extends NLS>> MESSAGE_CLAZZES = new HashSet<Class<? extends NLS>>();
 
     /**
      * Instantiates a HtmlExportOperation.
@@ -101,5 +105,9 @@ public class HtmlExportOperation implements IWorkspaceRunnable {
         } catch (CoreException e) {
             context.addStatus(new IpsStatus(IStatus.WARNING, "Could not refresh after Html Export", e)); //$NON-NLS-1$
         }
+    }
+
+    public static void registerMessageClazz(Class<? extends NLS> clazz) {
+        MESSAGE_CLAZZES.add(clazz);
     }
 }

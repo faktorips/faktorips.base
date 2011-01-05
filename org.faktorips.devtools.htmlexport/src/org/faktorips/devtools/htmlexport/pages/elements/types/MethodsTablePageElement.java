@@ -62,12 +62,12 @@ public class MethodsTablePageElement extends AbstractIpsObjectPartsContainerTabl
     protected List<String> getHeadlineWithIpsObjectPart() {
         ArrayList<String> headline = new ArrayList<String>();
 
-        headline.add(Messages.MethodsTablePageElement_headlineName);
-        headline.add(Messages.MethodsTablePageElement_headlineAbstract);
-        headline.add(Messages.MethodsTablePageElement_headlineModifier);
-        headline.add(Messages.MethodsTablePageElement_headlineDatatype);
-        headline.add(Messages.MethodsTablePageElement_headlineSignature);
-        headline.add(Messages.MethodsTablePageElement_headlineDescription);
+        headline.add(getContext().getMessage("MethodsTablePageElement_headlineName")); //$NON-NLS-1$
+        headline.add(getContext().getMessage("MethodsTablePageElement_headlineAbstract")); //$NON-NLS-1$
+        headline.add(getContext().getMessage("MethodsTablePageElement_headlineModifier")); //$NON-NLS-1$
+        headline.add(getContext().getMessage("MethodsTablePageElement_headlineDatatype")); //$NON-NLS-1$
+        headline.add(getContext().getMessage("MethodsTablePageElement_headlineSignature")); //$NON-NLS-1$
+        headline.add(getContext().getMessage("MethodsTablePageElement_headlineDescription")); //$NON-NLS-1$
 
         return headline;
     }

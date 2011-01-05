@@ -51,7 +51,7 @@ public class IpsElementListPageElement extends AbstractIpsElementListPageElement
             DocumentationContext context, boolean shownTypeChooser) {
         super(baseIpsElement, srcFiles, filter, context);
         this.shownTypeChooser = shownTypeChooser;
-        setTitle(Messages.IpsObjectListPageElement_objects);
+        setTitle(getContext().getMessage("IpsObjectListPageElement_objects")); //$NON-NLS-1$
     }
 
     @Override
@@ -65,11 +65,12 @@ public class IpsElementListPageElement extends AbstractIpsElementListPageElement
         }
 
         addPageElements(new WrapperPageElement(WrapperType.BLOCK).addPageElements(new LinkPageElement(
-                "classes", "classes", Messages.IpsObjectListPageElement_allObjects))); //$NON-NLS-1$ //$NON-NLS-2$
+                "classes", "classes", getContext().getMessage("IpsObjectListPageElement_allObjects")))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         List<PageElement> classes = createClassesList();
 
-        addPageElements(new TextPageElement(classes.size() + " " + Messages.IpsObjectListPageElement_objects)); //$NON-NLS-1$
+        addPageElements(new TextPageElement(classes.size()
+                + " " + getContext().getMessage("IpsObjectListPageElement_objects"))); //$NON-NLS-1$ //$NON-NLS-2$
 
         if (classes.size() > 0) {
             addPageElements(new ListPageElement(classes));

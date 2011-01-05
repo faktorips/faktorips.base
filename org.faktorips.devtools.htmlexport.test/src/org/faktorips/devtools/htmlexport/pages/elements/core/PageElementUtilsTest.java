@@ -19,7 +19,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.htmlexport.test.documentor.AbstractHtmlExportTest;
+import org.faktorips.devtools.htmlexport.test.context.AbstractHtmlExportTest;
 
 public class PageElementUtilsTest extends AbstractHtmlExportTest {
     private static final String TARGET = "target"; //$NON-NLS-1$
@@ -42,19 +42,6 @@ public class PageElementUtilsTest extends AbstractHtmlExportTest {
 
     private void assertIsLink(PageElement pageElement) {
         assertEquals(LinkPageElement.class, pageElement.getClass());
-    }
-
-    public void testCreateLinkPageElementNoTypesDocumented() throws CoreException {
-        createMassivProjekt();
-
-        List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
-        ipsProject.findAllIpsSrcFiles(srcFiles);
-
-        for (IIpsSrcFile srcFile : srcFiles) {
-            PageElement pageElement = PageElementUtils.createLinkPageElement(context, srcFile, TARGET,
-                    srcFile.getName(), false);
-            assertIsDeadLink(pageElement);
-        }
     }
 
     private void assertIsDeadLink(PageElement pageElement) {

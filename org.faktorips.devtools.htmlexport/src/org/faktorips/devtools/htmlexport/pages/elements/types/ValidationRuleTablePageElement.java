@@ -62,12 +62,12 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
     protected List<String> getHeadlineWithIpsObjectPart() {
         List<String> headline = new ArrayList<String>();
 
-        headline.add(Messages.ValidationRuleTablePageElement_headlineName);
-        headline.add(Messages.ValidationRuleTablePageElement_headlineMessageCode);
-        headline.add(Messages.ValidationRuleTablePageElement_headlineMessageSeverity);
-        headline.add(Messages.ValidationRuleTablePageElement_headlineMessageText);
-        headline.add(Messages.ValidationRuleTablePageElement_headlineValidatedAttributes);
-        headline.add(Messages.ValidationRuleTablePageElement_headlineDescription);
+        headline.add(getContext().getMessage("ValidationRuleTablePageElement_headlineName")); //$NON-NLS-1$
+        headline.add(getContext().getMessage("ValidationRuleTablePageElement_headlineMessageCode")); //$NON-NLS-1$
+        headline.add(getContext().getMessage("ValidationRuleTablePageElement_headlineMessageSeverity")); //$NON-NLS-1$
+        headline.add(getContext().getMessage("ValidationRuleTablePageElement_headlineMessageText")); //$NON-NLS-1$
+        headline.add(getContext().getMessage("ValidationRuleTablePageElement_headlineValidatedAttributes")); //$NON-NLS-1$
+        headline.add(getContext().getMessage("ValidationRuleTablePageElement_headlineDescription")); //$NON-NLS-1$
 
         return headline;
     }
