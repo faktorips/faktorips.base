@@ -22,10 +22,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.osgi.util.NLS;
@@ -56,7 +53,7 @@ public class ProductReleaseProcessor {
         this.ipsProject = ipsProject;
         teamOperation = new CvsTeamOperations(observableProgressMessages);
         this.observableProgressMessages = observableProgressMessages;
-        releaseAndDeploymentOperation = getDeploymentOperation(ipsProject);
+        releaseAndDeploymentOperation = loadReleaseDeploymentOperation(ipsProject);
         if (releaseAndDeploymentOperation != null) {
             releaseAndDeploymentOperation.setObservableProgressMessages(observableProgressMessages);
         }
@@ -69,7 +66,7 @@ public class ProductReleaseProcessor {
     public boolean startReleaseBuilder(String newVersion,
             List<ITargetSystem> selectedTargetSystems,
             IProgressMonitor monitor) throws InterruptedException, CoreException {
-        if (releaseAndDeploymentOperation == null) {
+        if (getReleaseAndDeploymentOperation() == null) {
             observableProgressMessages.error(Messages.ReleaseAndDeploymentOperation_exception_noDeploymentExtension);
             return false;
         }
@@ -79,8 +76,8 @@ public class ProductReleaseProcessor {
         try {
             String tag = buildRelease(ipsProject, newVersion, new SubProgressMonitor(monitor, 50));
             // start extended release
-            boolean buildReleaseAndDeployment = releaseAndDeploymentOperation.buildReleaseAndDeployment(ipsProject,
-                    tag, selectedTargetSystems, new SubProgressMonitor(monitor, 50));
+            boolean buildReleaseAndDeployment = getReleaseAndDeploymentOperation().buildReleaseAndDeployment(
+                    ipsProject, tag, selectedTargetSystems, new SubProgressMonitor(monitor, 50));
             return buildReleaseAndDeployment;
         } finally {
             monitor.done();
@@ -121,7 +118,8 @@ public class ProductReleaseProcessor {
             checkProblemMarkers(ipsProject);
             monitor.worked(1);
 
-            if (!releaseAndDeploymentOperation.customReleaseSettings(ipsProject, new SubProgressMonitor(monitor, 5))) {
+            if (!getReleaseAndDeploymentOperation().customReleaseSettings(ipsProject,
+                    new SubProgressMonitor(monitor, 5))) {
                 throw new InterruptedException(Messages.ProductReleaseProcessor_error_custom_validation_failed);
             }
 
@@ -137,7 +135,7 @@ public class ProductReleaseProcessor {
         }
     }
 
-    public static IReleaseAndDeploymentOperation getDeploymentOperation(IIpsProject ipsProject) throws CoreException {
+    public IReleaseAndDeploymentOperation loadReleaseDeploymentOperation(IIpsProject ipsProject) throws CoreException {
         IConfigurationElement releaseExtensionElement = getReleaseExtensionElement(ipsProject);
         if (releaseExtensionElement == null) {
             return null;
@@ -145,22 +143,6 @@ public class ProductReleaseProcessor {
         IReleaseAndDeploymentOperation result = (IReleaseAndDeploymentOperation)releaseExtensionElement
                 .createExecutableExtension(EXTENSION_OPERATION_PROPERTY);
         return result;
-    }
-
-    public static IConfigurationElement getReleaseExtensionElement(IIpsProject ipsProject) {
-        String releasaeExtensionId = ipsProject.getProperties().getReleaseExtensionId();
-        IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(IpsPlugin.PLUGIN_ID,
-                RELEASE_EXTENSION_POINT_NAME);
-        IExtension[] extensions = extensionPoint.getExtensions();
-        for (IExtension extension : extensions) {
-            IConfigurationElement[] configElements = extension.getConfigurationElements();
-            for (IConfigurationElement confElement : configElements) {
-                if (confElement.getAttribute("id").equals(releasaeExtensionId)) { //$NON-NLS-1$
-                    return confElement;
-                }
-            }
-        }
-        return null;
     }
 
     private void saveAll(IIpsProject ipsProject) throws JavaModelException, InterruptedException {
@@ -220,7 +202,7 @@ public class ProductReleaseProcessor {
             }
         }
 
-        resources.addAll(releaseAndDeploymentOperation.additionalResourcesToCommit(ipsProject));
+        resources.addAll(getReleaseAndDeploymentOperation().additionalResourcesToCommit(ipsProject));
 
         teamOperation
                 .commitFiles(ipsProject.getProject(), resources.toArray(new IResource[0]),
@@ -242,4 +224,15 @@ public class ProductReleaseProcessor {
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, monitor);
     }
 
+    public static IConfigurationElement getReleaseExtensionElement(IIpsProject ipsProject) {
+        String releasaeExtensionId = ipsProject.getProperties().getReleaseExtensionId();
+        IConfigurationElement[] configElements = IpsPlugin.getDefault().getExtensionRegistry()
+                .getConfigurationElementsFor(IpsPlugin.PLUGIN_ID, RELEASE_EXTENSION_POINT_NAME);
+        for (IConfigurationElement confElement : configElements) {
+            if (confElement.getAttribute("id").equals(releasaeExtensionId)) { //$NON-NLS-1$
+                return confElement;
+            }
+        }
+        return null;
+    }
 }
