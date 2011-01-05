@@ -540,12 +540,13 @@ showParameter()
 
 assertBundleVersionAndMigrationClass()
 {
-  # MIGRATION_STRATEGY_CLASS="Migration_"$(echo $FETCH_TAG | sed 's|v||g')".java"
-  MIGRATION_STRATEGY_PATH=$FAKTORIPS_CORE_PLUGIN_NAME"/src/org/faktorips/devtools/core/internal/migration/"
+ ### NEW in Version 3.2:
+ ### Migration Strategy has changed in version 3.2! We do not need a migration strategy for every version anymore
+ ### So the migration check have been removed!
 
-  # assert correct bundle version in core plugin and existing migration strategy
+
+  # assert correct bundle version in core plugin
   #   the bundle version stored in the core plugin must be equal to the given version
-  #   the migration strategy java class must be exists see MIGRATION_STRATEGY_PATH
   if [ ! "$NOCVS" = "true" ] ; then
       # Note: if skipTaggingCvs is used then this assert may be check the wrong versions
       #       because only the latest file will be checked, because the tagging will be performed later
@@ -554,30 +555,13 @@ assertBundleVersionAndMigrationClass()
       TMP_CHECKOUTDIR2=$PROJECTSROOTDIR/tmp_release_build2
       
       checkoutModule $TMP_CHECKOUTDIR1 $FETCH_TAG $FAKTORIPS_CORE_PLUGIN_NAME/META-INF $BRANCH
-      checkoutModule $TMP_CHECKOUTDIR2 $FETCH_TAG $MIGRATION_STRATEGY_PATH/ $BRANCH
       
       CORE_BUNDLE_VERSION=$(cat $TMP_CHECKOUTDIR1/MANIFEST.MF | grep Bundle-Version | sed -r "s/.*:\ *(.*)/\1/g")
 
-      MIGRATION_EXISTS=false
-      if [ $(cat $TMP_CHECKOUTDIR2/*.java | grep "\"$BUILD_VERSION\"" | wc -l ) -gt 0 ] ; then
-    	  MIGRATION_EXISTS=true
-      fi
       rm -r $TMP_CHECKOUTDIR1
-      rm -r $TMP_CHECKOUTDIR2
   else
-      if [ $(cat $PROJECTSROOTDIR/$MIGRATION_STRATEGY_PATH/*.java | grep "\"$BUILD_VERSION\"" | wc -l ) -gt 0 ] ; then
-    	  MIGRATION_EXISTS=true
-      fi
       #  read bundle version from the core project stored in the projectsrootdir
       CORE_BUNDLE_VERSION=$(cat $PROJECTSROOTDIR/$FAKTORIPS_CORE_PLUGIN_NAME//META-INF/MANIFEST.MF | grep Bundle-Version | sed -r "s/.*:\ *(.*)/\1/g")
-  fi
-
-  if [ "$MIGRATION_EXISTS" = "false" ] ; then
-    echo "=> Cancel build: Migrationstrategy not exists (wrong branch name or migration class not tagged)! "
-    echo "   no class found in $MIGRATION_STRATEGY_PATH with target version = $BUILD_VERSION"
-    exit 1
-  else
-    echo "Ok migration strategy class found"
   fi
 
   # compare bundle version with given release version
