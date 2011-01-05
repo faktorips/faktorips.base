@@ -66,7 +66,7 @@ public class AddIpsNatureAction extends ActionDelegate {
                 prj = (IProject)selected;
             }
 
-            if (prj == null) {
+            if (prj == null || !prj.isOpen()) {
                 action.setEnabled(false);
                 return;
             }
