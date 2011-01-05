@@ -14,8 +14,10 @@
 package org.faktorips.devtools.core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -26,6 +28,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -43,6 +46,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
+import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOperationFactory;
 import org.faktorips.devtools.core.model.versionmanager.IpsFeatureVersionManagerSorter;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.devtools.tableconversion.IValueConverter;
@@ -60,6 +64,17 @@ public class IpsPlugin extends AbstractUIPlugin {
     public final static String PLUGIN_ID = "org.faktorips.devtools.core"; //$NON-NLS-1$
 
     public final static String PROBLEM_MARKER = PLUGIN_ID + ".problemmarker"; //$NON-NLS-1$
+
+    /**
+     * The extension point id of the extension point <tt>ipsMigrationOperation</tt>.
+     */
+    public final static String EXTENSION_POINT_ID_MIGRATION_OPERATION = "org.faktorips.devtools.core.ipsMigrationOperation"; //$NON-NLS-1$
+
+    /**
+     * The extension point id of the extension point property <tt>migrationOperation</tt> in the
+     * extension point ipsMigrationOperation.
+     */
+    public final static String CONFIG_ELEMENT_ID_MIGRATION_OPERATION = "migrationOperation"; //$NON-NLS-1$
 
     public final static boolean TRACE_UI = Boolean.valueOf(
             Platform.getDebugOption("org.faktorips.devtools.core/trace/ui")).booleanValue(); //$NON-NLS-1$
@@ -250,6 +265,14 @@ public class IpsPlugin extends AbstractUIPlugin {
                         status);
             }
         });
+    }
+
+    /**
+     * Getting the platform extension registry. Use this method instead of the static method of
+     * {@link Platform} to have the ability to overwrite or mock the extension registry.
+     */
+    public IExtensionRegistry getExtensionRegistry() {
+        return Platform.getExtensionRegistry();
     }
 
     /**
@@ -590,6 +613,35 @@ public class IpsPlugin extends AbstractUIPlugin {
             operation.addMigrationPath(manager.getMigrationOperations(projectToMigrate));
         }
         return operation;
+    }
+
+    /**
+     * Get all registered migration operations. MigrationOperations are registered for the core
+     * feature since Faktor-IPS 3.2.0. For previous versions we used the CoreVersionManager that
+     * needs to find a migration operation via classname convention for every version.
+     * 
+     * @return A map containing all registered migration operations. The key of the map is the
+     *         target version of the oparation
+     */
+    public Map<Version, IIpsProjectMigrationOperationFactory> getRegisteredMigrationOperations() {
+        Map<Version, IIpsProjectMigrationOperationFactory> result = new HashMap<Version, IIpsProjectMigrationOperationFactory>();
+        IConfigurationElement[] configurationElements = Platform.getExtensionRegistry().getConfigurationElementsFor(
+                EXTENSION_POINT_ID_MIGRATION_OPERATION);
+        for (IConfigurationElement configElement : configurationElements) {
+            if (configElement == null || !configElement.getName().equals(CONFIG_ELEMENT_ID_MIGRATION_OPERATION)) {
+                continue;
+            }
+            try {
+                IIpsProjectMigrationOperationFactory operation = (IIpsProjectMigrationOperationFactory)configElement
+                        .createExecutableExtension("class");//$NON-NLS-1$
+                String targetVersion = configElement.getAttribute("targetVersion"); //$NON-NLS-1$
+                result.put(Version.parseVersion(targetVersion), operation);
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+        }
+
+        return result;
     }
 
     /**

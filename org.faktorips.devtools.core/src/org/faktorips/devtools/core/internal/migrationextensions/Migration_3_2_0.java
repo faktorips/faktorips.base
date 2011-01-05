@@ -11,12 +11,13 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.migration;
+package org.faktorips.devtools.core.internal.migrationextensions;
 
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.migration.DefaultMigration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -25,6 +26,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
+import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOperationFactory;
 import org.faktorips.runtime.CardinalityRange;
 import org.faktorips.valueset.IntegerRange;
 
@@ -48,9 +51,9 @@ import org.faktorips.valueset.IntegerRange;
  * 
  * @author Stefan Widmaier
  */
-public class Migration_3_1_0_rfinal extends DefaultMigration {
+public class Migration_3_2_0 extends DefaultMigration {
 
-    public Migration_3_1_0_rfinal(IIpsProject projectToMigrate, String featureId) {
+    public Migration_3_2_0(IIpsProject projectToMigrate, String featureId) {
         super(projectToMigrate, featureId);
     }
 
@@ -60,7 +63,6 @@ public class Migration_3_1_0_rfinal extends DefaultMigration {
             IIpsObject ipsObject = srcFile.getIpsObject();
             if (migrateProdCmpt((IProductCmpt)ipsObject)) {
                 srcFile.markAsDirty();
-                srcFile.save(true, null);
             }
         }
     }
@@ -90,7 +92,17 @@ public class Migration_3_1_0_rfinal extends DefaultMigration {
 
     @Override
     public String getTargetVersion() {
-        return "3.2.0.rc1"; //$NON-NLS-1$
+        return "3.2.0"; //$NON-NLS-1$
+    }
+
+    public static class Factory implements IIpsProjectMigrationOperationFactory {
+
+        @Override
+        public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOpertation(IIpsProject ipsProject,
+                String featureId) {
+            return new Migration_3_2_0(ipsProject, featureId);
+        }
+
     }
 
 }

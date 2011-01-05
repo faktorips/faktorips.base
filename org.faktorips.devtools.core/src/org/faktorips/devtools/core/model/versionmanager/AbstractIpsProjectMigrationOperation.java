@@ -17,9 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -32,7 +30,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Thorsten Guenther
  */
-public abstract class AbstractIpsProjectMigrationOperation extends WorkspaceModifyOperation {
+public abstract class AbstractIpsProjectMigrationOperation {
 
     private IIpsProject project;
     private String featureId;
@@ -40,23 +38,6 @@ public abstract class AbstractIpsProjectMigrationOperation extends WorkspaceModi
     public AbstractIpsProjectMigrationOperation(IIpsProject projectToMigrate, String featureId) {
         project = projectToMigrate;
         this.featureId = featureId;
-    }
-
-    /**
-     * Note that it is essential <strong>NOT TO SAVE ANY CHANGES</strong> made by this migration
-     * operation. This is because we need the ability to rollback all changes if any error occurs
-     * later on in the migration process. This might change if we start to support working copies.
-     */
-    @Override
-    protected final void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
-            InterruptedException {
-
-        migrate(monitor);
-        if (!isEmpty()) {
-            IIpsProjectProperties props = project.getProperties();
-            props.setMinRequiredVersionNumber(getFeatureId(), getTargetVersion());
-            project.setProperties(props);
-        }
     }
 
     /**

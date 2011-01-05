@@ -11,6 +11,7 @@
    <extension-point id="externalTableFormat" name="ExternalTableFormat" schema="schema/externalTableFormat.exsd"/>
    <extension-point id="externalValueConverter" name="ExternalValueConverter" schema="schema/externalValueConverter.exsd"/>
    <extension-point id="faktorIpsFeatureVersionManager" name="FaktorIpsFeatureVersionManager" schema="schema/faktorIpsFeatureVersionManager.exsd"/>
+   <extension-point id="ipsMigrationOperation" name="ipsMigrationOperation" schema="schema/ipsMigrationOperation.exsd"/>
    <extension-point id="loggingFrameworkConnector" name="Logging Framework Connector" schema="schema/loggingFrameworkConnector.exsd"/>
    <extension-point id="ipsobjecttype" name="ipsObjectType" schema="schema/ipsobjecttype.exsd"/>
    <extension-point id="flFunctionResolverFactory" name="factory for formula language function resolvers" schema="schema/flFunctionResolverFactory.exsd"/>
@@ -292,10 +293,11 @@
    <extension
          point="org.faktorips.devtools.core.faktorIpsFeatureVersionManager">
       <faktorIpsFeatureVersionManager
-            class="org.faktorips.devtools.core.internal.migration.CoreVersionManager"
+            basedOnFeatureManager="org.faktorips.feature.versionmanagerv2"
+            class="org.faktorips.devtools.core.internal.migrationextensions.IpsExtendableVersionManager"
             featureId="org.faktorips.feature"
-            id="org.faktorips.feature.versionmanagerv2"
-            basedOnFeatureManager=""/>
+            id="org.faktorips.feature.versionmanagerV3">
+      </faktorIpsFeatureVersionManager>
    </extension>
    <extension
          point="org.faktorips.devtools.core.ipsobjecttype">
@@ -403,5 +405,12 @@
       <productComponentNamingStrategy
             factoryClass="org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategyFactory">
       </productComponentNamingStrategy>
+   </extension>
+   <extension
+         point="org.faktorips.devtools.core.ipsMigrationOperation">
+      <migrationOperation
+            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_2_0$Factory"
+            targetVersion="3.2.0">
+      </migrationOperation>
    </extension>
 </plugin>

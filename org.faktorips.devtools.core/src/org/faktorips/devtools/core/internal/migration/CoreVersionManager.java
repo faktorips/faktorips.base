@@ -127,7 +127,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
             while (compareToCurrentVersion(version) < 0) {
                 String underscoreVersion = version.replace('.', '_');
                 underscoreVersion = underscoreVersion.replace('-', '_');
-                String packageName = QNameUtil.getPackageName(getClass().getName());
+                String packageName = QNameUtil.getPackageName(CoreVersionManager.class.getName());
                 migrationClassName = packageName + ".Migration_" + underscoreVersion; //$NON-NLS-1$
                 Class<?> clazz = Class.forName(migrationClassName, true, loader);
                 Constructor<?> constructor = clazz.getConstructor(new Class[] { IIpsProject.class, String.class });
@@ -136,6 +136,11 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
                 operations.add(migrationOperation);
                 version = migrationOperation.getTargetVersion();
             }
+        } catch (ClassNotFoundException e) {
+            // there is no migration strategy for the expected version.
+            // however we have to migrate as much we found and should not throw any exception
+            // because maybe other migration managers fix this problem
+            // If any migration is still missing, the validation should report the problem!
         } catch (Exception e) {
             throw new CoreException(new IpsStatus(e));
         }
