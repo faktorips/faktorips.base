@@ -64,7 +64,7 @@ public class GenProductCmptTypeAttributeTest extends ProductCmptTypeBuilderTest 
         genPublishedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
                 javaInterfaceGeneration, publishedAttribute);
         expectGetterMethod(javaInterfaceGeneration, genPublishedAttribute);
-        assertEquals(1, generatedJavaElements.size());
+        assertEquals(2, generatedJavaElements.size());
 
         generatedJavaElements.clear();
         genPublicAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
