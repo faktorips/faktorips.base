@@ -345,6 +345,9 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
     @Override
     public void ipsSrcFilesChanged(IpsSrcFilesChangedEvent event) {
         Set<IIpsSrcFile> changedIpsSrcFiles = event.getChangedIpsSrcFiles();
+        if (tableViewer == null) {
+            return;
+        }
         try {
             if (changedIpsSrcFiles.size() > 0) {
                 Object input = tableViewer.getInput();
@@ -355,7 +358,8 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
                         contentProvider.removeActualElement();
                         return;
                     }
-                    if (containsRootElement(changedIpsSrcFiles) || isDependendObjectChanged(element, changedIpsSrcFiles)
+                    if (containsRootElement(changedIpsSrcFiles)
+                            || isDependendObjectChanged(element, changedIpsSrcFiles)
                             || containsElement(changedIpsSrcFiles)) {
                         showInstancesOf(contentProvider.getActualElement());
                     }
@@ -366,7 +370,8 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
         }
     }
 
-    protected boolean isDependendObjectChanged(IIpsMetaClass element, Set<IIpsSrcFile> ipsSrcFiles) throws CoreException {
+    protected boolean isDependendObjectChanged(IIpsMetaClass element, Set<IIpsSrcFile> ipsSrcFiles)
+            throws CoreException {
         for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
             if (ipsSrcFile.exists()) {
                 IDependency[] dependencys = ipsSrcFile.getIpsObject().dependsOn();
