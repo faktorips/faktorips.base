@@ -54,27 +54,19 @@ public class InstanceExplorerTest extends AbstractIpsPluginTest {
         assertTrue(InstanceExplorer.supports(pcType));
     }
 
-    public void testIsChanged() {
+    public void testIsChanged() throws CoreException {
         InstanceExplorer test = new InstanceExplorer();
 
         Set<IIpsSrcFile> ipsSrcFiles = new HashSet<IIpsSrcFile>();
         ipsSrcFiles.add(pcType.getIpsSrcFile());
-        try {
-            assertTrue(test.isChanged(pcType, ipsSrcFiles));
-            assertFalse(test.isChanged(pcType2, ipsSrcFiles));
-        } catch (CoreException e) {
-            e.printStackTrace();
-        }
+        assertTrue(test.isDependendObjectChanged(pcType, ipsSrcFiles));
+        assertFalse(test.isDependendObjectChanged(pcType2, ipsSrcFiles));
     }
 
-    public void testShowInstancesOf() {
+    public void testShowInstancesOf() throws Exception {
         InstanceExplorerMock testMock = new InstanceExplorerMock();
-        try {
-            testMock.showInstancesOf(pcType);
-            assertEquals(pcType, testMock.element);
-        } catch (CoreException e) {
-            e.printStackTrace();
-        }
+        testMock.showInstancesOf(pcType);
+        assertEquals(pcType, testMock.element);
 
     }
 

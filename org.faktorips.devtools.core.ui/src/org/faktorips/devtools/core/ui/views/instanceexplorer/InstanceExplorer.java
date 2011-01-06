@@ -55,6 +55,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsMetaClass;
 import org.faktorips.devtools.core.model.IIpsMetaObject;
 import org.faktorips.devtools.core.model.IIpsSrcFilesChangeListener;
+import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -344,40 +345,38 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
     @Override
     public void ipsSrcFilesChanged(IpsSrcFilesChangedEvent event) {
         Set<IIpsSrcFile> changedIpsSrcFiles = event.getChangedIpsSrcFiles();
-        if (selectedElementLink.getImage() != null) {
-            try {
-
-                if (changedIpsSrcFiles.size() > 0) {
-                    selectedFile(changedIpsSrcFiles);
+        try {
+            if (changedIpsSrcFiles.size() > 0) {
+                Object input = tableViewer.getInput();
+                if (input instanceof IIpsMetaClass) {
+                    IIpsMetaClass element = (IIpsMetaClass)input;
+                    if (!element.getIpsSrcFile().exists()) {
+                        setInputData(null);
+                        contentProvider.removeActualElement();
+                        return;
+                    }
+                    if (containsRootElement(changedIpsSrcFiles) || isDependendObjectChanged(element, changedIpsSrcFiles)
+                            || containsElement(changedIpsSrcFiles)) {
+                        showInstancesOf(contentProvider.getActualElement());
+                    }
                 }
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
             }
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
         }
     }
 
-    private void selectedFile(Set<IIpsSrcFile> ipsSrcFiles) throws CoreException {
-        Object input = tableViewer.getInput();
-        if (input instanceof IIpsMetaClass) {
-            IIpsMetaClass element = (IIpsMetaClass)input;
-            if (isRootElement(ipsSrcFiles)) {
-                setInputData(null);
-                contentProvider.removeActualElement();
-            } else if (isChanged(element, ipsSrcFiles) || deletedElement(ipsSrcFiles)) {
-                showInstancesOf(contentProvider.getActualElement());
-            }
-        }
-    }
-
-    protected boolean isChanged(IIpsMetaClass element, Set<IIpsSrcFile> ipsSrcFiles) throws CoreException {
+    protected boolean isDependendObjectChanged(IIpsMetaClass element, Set<IIpsSrcFile> ipsSrcFiles) throws CoreException {
         for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
             if (ipsSrcFile.exists()) {
                 IDependency[] dependencys = ipsSrcFile.getIpsObject().dependsOn();
                 for (IDependency dependency : dependencys) {
-                    String target = dependency.getTarget().toString();
-                    String qualifiedName = target.substring(target.indexOf(":") + 2);//$NON-NLS-1$
-                    if (element.getQualifiedName().equals(qualifiedName)) {
-                        return true;
+                    if (dependency instanceof IpsObjectDependency) {
+                        IpsObjectDependency ipsObjectDependency = (IpsObjectDependency)dependency;
+                        String qualifiedName = ipsObjectDependency.getTargetAsQNameType().getName();
+                        if (element.getQualifiedName().equals(qualifiedName)) {
+                            return true;
+                        }
                     }
                 }
             }
@@ -385,18 +384,20 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
         return false;
     }
 
-    private boolean isRootElement(Set<IIpsSrcFile> ipsSrcFiles) {
-
+    private boolean containsRootElement(Set<IIpsSrcFile> ipsSrcFiles) {
         for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
-            String qName = contentProvider.getActualElement().getQualifiedName();
-            if (qName.equals(ipsSrcFile.getQualifiedNameType().getName())) {
+            IIpsSrcFile rootIpsSrcFile = contentProvider.getActualElement().getIpsSrcFile();
+            if (rootIpsSrcFile == null) {
+                return false;
+            }
+            if (rootIpsSrcFile.equals(ipsSrcFile)) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean deletedElement(Set<IIpsSrcFile> ipsSrcFiles) throws CoreException {
+    private boolean containsElement(Set<IIpsSrcFile> ipsSrcFiles) throws CoreException {
         Object[] elements = contentProvider.getElements(null);
         for (Object anElement : elements) {
             if (anElement instanceof InstanceIpsSrcFileViewItem) {
