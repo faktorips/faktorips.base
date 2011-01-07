@@ -16,9 +16,11 @@ package org.faktorips.devtools.core.internal.model.tablestructure;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.TreeSet;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.ipsobject.Description;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -303,40 +305,51 @@ public class TableStructure extends IpsObject implements ITableStructure {
     }
 
     @Override
-    public ITableAccessFunction[] getAccessFunctions() {
+    public ITableAccessFunction[] getAccessFunctions(Locale locale) {
+        ArgumentCheck.notNull(locale);
+
         if (getUniqueKeys().length == 0) {
             return new ITableAccessFunction[0];
         }
+
         List<ITableAccessFunction> functions = new ArrayList<ITableAccessFunction>();
+
         IUniqueKey[] keys = getUniqueKeys();
         // add functions for each key and column which is not in the key
         for (IUniqueKey key : keys) {
             IColumn[] columns = getColumnsNotInKey(key);
             for (int j = 0; j < columns.length; j++) {
                 // add function for each column which is not included in the key
-                functions.add(createFunction("" + j, key, columns[j])); //$NON-NLS-1$
+                functions.add(createFunction("" + j, key, columns[j], locale)); //$NON-NLS-1$
             }
         }
+
         return functions.toArray(new ITableAccessFunction[functions.size()]);
     }
 
-    private ITableAccessFunction createFunction(String id, IUniqueKey key, IColumn column) {
+    private ITableAccessFunction createFunction(String id, IUniqueKey key, IColumn column, Locale locale) {
         TableAccessFunction fct = new TableAccessFunction(this, id);
         fct.setAccessedColumn(column.getName());
         fct.setType(column.getDatatype());
-        StringBuffer description = new StringBuffer(Messages.TableStructure_descriptionStart);
+
+        // TODO AW: MBT #490
+        StringBuffer descriptionText = new StringBuffer(Messages.TableStructure_descriptionStart);
         IKeyItem[] items = key.getKeyItems();
         String[] argTypes = new String[items.length];
         for (int i = 0; i < items.length; i++) {
             argTypes[i] = items[i].getDatatype();
             if (i > 0) {
-                description.append(", "); //$NON-NLS-1$
+                descriptionText.append(", "); //$NON-NLS-1$
             }
-            description.append(items[i].getAccessParameterName());
+            descriptionText.append(items[i].getAccessParameterName());
         }
         fct.setArgTypes(argTypes);
-        description.append(Messages.TableStructure_descriptionEnd + column.getName());
-        fct.setDescription(description.toString());
+        // TODO AW: MBT #490
+        descriptionText.append(Messages.TableStructure_descriptionEnd + column.getName());
+
+        Description description = (Description)fct.getDescription(locale);
+        description.setTextWithoutChangeEvent(descriptionText.toString());
+
         return fct;
     }
 

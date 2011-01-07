@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -44,7 +43,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        project = newIpsProject("TestProject", new ArrayList<Locale>());
+        project = newIpsProject("TestProject");
         table = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "TestTable");
     }
 
@@ -54,12 +53,11 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         IUniqueKey uk0 = table.newUniqueKey();
         IForeignKey fk0 = table.newForeignKey();
 
-        IIpsElement[] children = table.getChildren();
-        assertEquals(4, children.length);
-        assertEquals(c0, children[0]);
-        assertEquals(r0, children[1]);
-        assertEquals(uk0, children[2]);
-        assertEquals(fk0, children[3]);
+        List<IIpsElement> children = Arrays.asList(table.getChildren());
+        assertTrue(children.contains(c0));
+        assertTrue(children.contains(r0));
+        assertTrue(children.contains(uk0));
+        assertTrue(children.contains(fk0));
     }
 
     public void testGetColumns() {
@@ -132,7 +130,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
     }
 
     public void testGetAccessFunctions() {
-        ITableAccessFunction[] fcts = table.getAccessFunctions();
+        ITableAccessFunction[] fcts = table.getAccessFunctions(Locale.GERMAN);
         assertEquals(0, fcts.length);
 
         IColumn gender = table.newColumn();
@@ -156,7 +154,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         IUniqueKey key = table.newUniqueKey();
         key.setKeyItems(new String[] { gender.getName(), range.getName() });
 
-        fcts = table.getAccessFunctions();
+        fcts = table.getAccessFunctions(Locale.GERMAN);
         assertEquals(2, fcts.length);
         assertSame(table, fcts[0].getTableStructure());
         assertEquals("TestTable.rate", fcts[0].getName());
@@ -169,6 +167,14 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         assertEquals(range.getDatatype(), argTypes[1]);
 
         assertEquals("TestTable.minPremium", fcts[1].getName());
+    }
+
+    public void testGetAccessFunctionsNullPointer() {
+        try {
+            table.getAccessFunctions(null);
+            fail();
+        } catch (NullPointerException e) {
+        }
     }
 
     public void testInitFromXml() {
