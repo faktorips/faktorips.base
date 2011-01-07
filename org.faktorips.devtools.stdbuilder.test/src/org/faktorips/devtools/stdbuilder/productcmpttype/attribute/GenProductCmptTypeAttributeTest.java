@@ -64,6 +64,7 @@ public class GenProductCmptTypeAttributeTest extends ProductCmptTypeBuilderTest 
         genPublishedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
                 javaInterfaceGeneration, publishedAttribute);
         expectGetterMethod(javaInterfaceGeneration, genPublishedAttribute);
+        expectStaticConstant(javaInterfaceGeneration, genPublishedAttribute);
         assertEquals(2, generatedJavaElements.size());
 
         generatedJavaElements.clear();
@@ -109,6 +110,11 @@ public class GenProductCmptTypeAttributeTest extends ProductCmptTypeBuilderTest 
         expectGetterMethod(javaClassGeneration, genPublicAttribute);
         expectSetterMethod(javaClassGeneration, genPublicAttribute);
         assertEquals(3, generatedJavaElements.size());
+    }
+
+    private void expectStaticConstant(IType javaType, GenProductCmptTypeAttribute genAttribute) {
+        IField field = javaType.getField(genAttribute.getStaticConstantPropertyName());
+        assertTrue(generatedJavaElements.contains(field));
     }
 
     private void expectGetterMethod(IType javaType, GenAttribute genAttribute) {
