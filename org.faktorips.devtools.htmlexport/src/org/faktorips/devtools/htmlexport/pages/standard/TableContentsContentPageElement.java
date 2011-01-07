@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
@@ -140,7 +141,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
      */
     private void addContentTable() {
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-        wrapper.addPageElements(new TextPageElement(getContext().getMessage("TableContentsContentPageElement_content"), //$NON-NLS-1$
+        wrapper.addPageElements(new TextPageElement(getContext().getMessage(HtmlExportMessages.TableContentsContentPageElement_content), 
                 TextType.HEADING_2));
 
         if (getTableContent().getNumOfGenerations() == 0) {
@@ -169,7 +170,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
             }
 
             wrapper.addPageElements(getTableOrAlternativeText(contentTablePageElement,
-                    getContext().getMessage("TableContentsContentPageElement_noContent"))); //$NON-NLS-1$
+                    getContext().getMessage(HtmlExportMessages.TableContentsContentPageElement_noContent))); 
         }
         PageElement createContentTable = wrapper;
         addPageElements(createContentTable);

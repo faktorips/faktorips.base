@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTyp
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.test.context.LanguageSupportTest;
 
 /**
@@ -58,7 +58,7 @@ public class LanguageSupportHtmlTest extends AbstractXmlUnitHtmlExportTest {
         enDescription.setText(enBeschreibung);
 
         context.setDescriptionLocale(Locale.GERMANY);
-        AbstractPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(),
+        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(),
                 context);
         assertXPathExists(objectContentPage, deXPath);
 
@@ -89,7 +89,7 @@ public class LanguageSupportHtmlTest extends AbstractXmlUnitHtmlExportTest {
         context.setDescriptionLocale(Locale.GERMAN);
         attribute.setLabelValue(Locale.GERMAN, deLabel);
 
-        AbstractPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(
+        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(
                 productCmpt.getIpsSrcFile(), context);
         assertXPathExists(objectContentPage, deXPath);
 

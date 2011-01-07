@@ -36,7 +36,6 @@ import org.faktorips.devtools.htmlexport.helper.FileHandler;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementInIIpsPackageFilter;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
 import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
-import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsElementListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsObjectTypeListPageElement;
@@ -111,7 +110,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
 
     private void writeClassContentPage(DocumentationContext context, IIpsSrcFile ipsSrcFile) throws IOException,
             CoreException {
-        AbstractPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(ipsSrcFile, context);
+        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(ipsSrcFile, context);
         if (objectContentPage == null) {
             return;
         }
@@ -223,7 +222,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
         monitor.done();
     }
 
-    private void writeFileWithOutput(DocumentationContext context, AbstractPageElement allPackagesPage, String filePath)
+    private void writeFileWithOutput(DocumentationContext context, PageElement allPackagesPage, String filePath)
             throws IOException {
         fileHandler.writeFile(context, filePath, getPageContent(context, allPackagesPage));
     }
@@ -241,7 +240,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
     private void writeProjectOverviewPage(DocumentationContext context, IProgressMonitor monitor) throws IOException {
         monitor.beginTask("", 1); //$NON-NLS-1$
 
-        AbstractPageElement projectOverviewHtml = new ProjectOverviewPageElement(context);
+        PageElement projectOverviewHtml = new ProjectOverviewPageElement(context);
         projectOverviewHtml.build();
         fileHandler.writeFile(context, STANDARD_PATH + "summary.html", getPageContent(context, projectOverviewHtml)); //$NON-NLS-1$
 

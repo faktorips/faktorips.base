@@ -18,7 +18,7 @@ import java.util.Locale;
 import junit.framework.TestCase;
 
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
-import org.faktorips.devtools.htmlexport.context.MessagesManager;
+import org.faktorips.devtools.htmlexport.context.messages.MessagesManager;
 
 public class MessagesManagerTest extends TestCase {
     private DocumentationContext context;
@@ -58,8 +58,7 @@ public class MessagesManagerTest extends TestCase {
 
         assertFalse(context.getExportStatus().isOK());
 
-        // result depends on PlatformLanguage (English or German)
-        String expectedResult = manager.getPlatformLanguage().equals("en") ? "Project" : "Projekt";
+        String expectedResult = "Project";
 
         assertEquals(expectedResult, manager.getMessage(key));
     }

@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.LinkableIpsElementUtil;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
@@ -95,9 +96,9 @@ public class MessageListTablePageElement extends AbstractStandardTablePageElemen
     protected List<String> getHeadline() {
         List<String> headline = new ArrayList<String>();
 
-        headline.add(getContext().getMessage("MessageListTablePageElement_headlineProperties")); //$NON-NLS-1$
-        headline.add(getContext().getMessage("MessageListTablePageElement_headlineMessage")); //$NON-NLS-1$
-        headline.add(getContext().getMessage("MessageListTablePageElement_headlineSeverity")); //$NON-NLS-1$
+        headline.add(getContext().getMessage(HtmlExportMessages.MessageListTablePageElement_headlineProperties)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.MessageListTablePageElement_headlineMessage)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.MessageListTablePageElement_headlineSeverity)); 
 
         return headline;
     }

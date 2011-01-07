@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 
@@ -50,7 +51,9 @@ public class AttributesTablePageElement extends AbstractIpsObjectPartsContainerT
 
     @Override
     protected List<? extends PageElement> createRowWithIpsObjectPart(IAttribute attribute) {
-        return Arrays.asList(PageElementUtils.createTextPageElements(getAttributeData(attribute)));
+        PageElement[] textPageElements = PageElementUtils.createTextPageElements(getAttributeData(attribute));
+        textPageElements[0].setAnchor(PageElementUtils.createAnchorId(attribute));
+        return Arrays.asList(textPageElements);
     }
 
     /**
@@ -87,12 +90,12 @@ public class AttributesTablePageElement extends AbstractIpsObjectPartsContainerT
     protected List<String> getHeadlineWithIpsObjectPart() {
         List<String> headline = new ArrayList<String>();
 
-        headline.add(getContext().getMessage("AttributesTablePageElement_headlineName")); //$NON-NLS-1$
-        headline.add(getContext().getMessage("AttributesTablePageElement_headlineLabel")); //$NON-NLS-1$
-        headline.add(getContext().getMessage("AttributesTablePageElement_headlineDatatype")); //$NON-NLS-1$
-        headline.add(getContext().getMessage("AttributesTablePageElement_headlineModifier")); //$NON-NLS-1$
-        headline.add(getContext().getMessage("AttributesTablePageElement_headlineDefaultValue")); //$NON-NLS-1$
-        headline.add(getContext().getMessage("AttributesTablePageElement_headlineDescription")); //$NON-NLS-1$
+        headline.add(getContext().getMessage(HtmlExportMessages.AttributesTablePageElement_headlineName)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.AttributesTablePageElement_headlineLabel)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.AttributesTablePageElement_headlineDatatype)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.AttributesTablePageElement_headlineModifier)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.AttributesTablePageElement_headlineDefaultValue)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.AttributesTablePageElement_headlineDescription)); 
 
         return headline;
     }

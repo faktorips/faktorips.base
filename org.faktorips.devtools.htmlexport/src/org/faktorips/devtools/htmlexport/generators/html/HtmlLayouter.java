@@ -16,14 +16,16 @@ package org.faktorips.devtools.htmlexport.generators.html;
 import java.io.IOException;
 import java.util.Set;
 
-import org.eclipse.swt.SWT;
 import org.faktorips.devtools.htmlexport.generators.AbstractLayouter;
 import org.faktorips.devtools.htmlexport.generators.LayoutResource;
-import org.faktorips.devtools.htmlexport.generators.WrapperType;
-import org.faktorips.devtools.htmlexport.helper.DocumentorUtil;
+import org.faktorips.devtools.htmlexport.generators.html.elements.HtmlCompositePageElementLayouter;
+import org.faktorips.devtools.htmlexport.generators.html.elements.HtmlImagePageElementLayouter;
+import org.faktorips.devtools.htmlexport.generators.html.elements.HtmlLinkPageElementLayouter;
+import org.faktorips.devtools.htmlexport.generators.html.elements.HtmlListPageElementLayouter;
+import org.faktorips.devtools.htmlexport.generators.html.elements.HtmlRootPageElementLayouter;
+import org.faktorips.devtools.htmlexport.generators.html.elements.HtmlTablePageElementLayouter;
+import org.faktorips.devtools.htmlexport.generators.html.elements.HtmlTextPageElementLayouter;
 import org.faktorips.devtools.htmlexport.helper.FileHandler;
-import org.faktorips.devtools.htmlexport.helper.html.HtmlTextType;
-import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
@@ -33,7 +35,6 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
 
 /**
@@ -53,14 +54,12 @@ public class HtmlLayouter extends AbstractLayouter {
      * path to the resource in the generated site
      */
 
-    private String resourcePath;
+    private final String resourcePath;
 
     /**
      * path from the actual RootPageElement to the root-folder of the site
      */
     private String pathToRoot;
-    private HtmlUtil htmlUtil = new HtmlUtil();
-
     private FileHandler fileHandler = new FileHandler();
 
     public HtmlLayouter(String resourcePath) {
@@ -71,107 +70,60 @@ public class HtmlLayouter extends AbstractLayouter {
 
     @Override
     public void layoutLinkPageElement(LinkPageElement pageElement) {
-        if (pageElement.hasStyle(Style.BLOCK)) {
-            append(htmlUtil.createHtmlElementOpenTag("div")); //$NON-NLS-1$
-        }
-        append(htmlUtil.createLinkOpenTag(createLinkBase(pageElement), pageElement.getTarget(),
-                getClasses(pageElement), pageElement.getTitle()));
-        visitSubElements(pageElement);
-        append(htmlUtil.createHtmlElementCloseTag("a")); //$NON-NLS-1$
-        if (pageElement.hasStyle(Style.BLOCK)) {
-            append(htmlUtil.createHtmlElementCloseTag("div")); //$NON-NLS-1$
-        }
+        new HtmlLinkPageElementLayouter(pageElement, this).layout();
+    }
+
+    @Override
+    public void layoutListPageElement(ListPageElement pageElement) {
+        new HtmlListPageElementLayouter(pageElement, this).layout();
+    }
+
+    @Override
+    public void layoutTablePageElement(TablePageElement pageElement) {
+        new HtmlTablePageElementLayouter(pageElement, this).layout();
+    }
+
+    @Override
+    public void layoutWrapperPageElement(AbstractCompositePageElement pageElement) {
+        new HtmlCompositePageElementLayouter(pageElement, this).layout();
+    }
+
+    @Override
+    public void layoutRootPageElement(AbstractRootPageElement pageElement) {
+        new HtmlRootPageElementLayouter(pageElement, this).layout();
+    }
+
+    @Override
+    public void layoutTextPageElement(TextPageElement pageElement) {
+        new HtmlTextPageElementLayouter(pageElement, this).layout();
+    }
+
+    @Override
+    public void layoutImagePageElement(ImagePageElement pageElement) {
+        new HtmlImagePageElementLayouter(pageElement, this).layout();
     }
 
     /**
      * creates the relative href from the actual page to the linked page
      */
-    String createLinkBase(LinkPageElement pageElement) {
+    public String createLinkBase(LinkPageElement pageElement) {
         return getPathToRoot() + pageElement.getPathFromRoot() + ".html"; //$NON-NLS-1$
-    }
-
-    @Override
-    public void layoutListPageElement(ListPageElement pageElement) {
-        String listBaseHtmlTag = pageElement.isOrdered() ? "ul" : "ol"; //$NON-NLS-1$ //$NON-NLS-2$
-        append(htmlUtil.createHtmlElementOpenTag(listBaseHtmlTag, pageElement.getId(), getClasses(pageElement)));
-        visitSubElements(pageElement);
-        append(htmlUtil.createHtmlElementCloseTag(listBaseHtmlTag));
-    }
-
-    @Override
-    public void layoutTablePageElement(TablePageElement pageElement) {
-        append(htmlUtil.createHtmlElementOpenTag("table", pageElement.getId(), getClasses(pageElement))); //$NON-NLS-1$
-        visitSubElements(pageElement);
-        append(htmlUtil.createHtmlElementCloseTag("table")); //$NON-NLS-1$
-    }
-
-    @Override
-    public void layoutWrapperPageElement(AbstractCompositePageElement wrapperPageElement) {
-        WrapperType wrapperType = wrapperPageElement.getWrapperType();
-        if (wrapperType == WrapperType.NONE && wrapperPageElement.getStyles().isEmpty()) {
-            visitSubElements(wrapperPageElement);
-            return;
-        }
-        String wrappingElement = getHtmlElementByWrappingType(wrapperType);
-        append(htmlUtil.createHtmlElementOpenTag(wrappingElement, wrapperPageElement.getId(),
-                getClasses(wrapperPageElement)));
-        visitSubElements(wrapperPageElement);
-        append(htmlUtil.createHtmlElementCloseTag(wrappingElement));
-    }
-
-    /**
-     * returns name of the html-element for the given {@link WrapperType}
-     * 
-     */
-    private String getHtmlElementByWrappingType(WrapperType wrapper) {
-        if (wrapper == WrapperType.LISTITEM) {
-            return "li"; //$NON-NLS-1$
-        }
-        if (wrapper == WrapperType.TABLEROW) {
-            return "tr"; //$NON-NLS-1$
-        }
-        if (wrapper == WrapperType.TABLECELL) {
-            return "td"; //$NON-NLS-1$
-        }
-        if (wrapper == WrapperType.BLOCK) {
-            return "div"; //$NON-NLS-1$
-        }
-        return "span"; //$NON-NLS-1$
-    }
-
-    @Override
-    public void layoutRootPageElement(AbstractRootPageElement pageElement) {
-        initRootPage(pageElement);
-
-        append(htmlUtil.createHtmlHead(pageElement.getTitle(), getPathToRoot() + getStyleDefinitionPath()));
-        visitSubElements(pageElement);
-
-        append(htmlUtil.createHtmlFoot());
     }
 
     /**
      * sets the pathToRoot and clears the content
      * 
      */
-    void initRootPage(AbstractRootPageElement pageElement) {
+    public void initRootPage(AbstractRootPageElement pageElement) {
         setPathToRoot(pageElement.getPathToRoot());
         clear();
-    }
-
-    @Override
-    public void layoutTextPageElement(TextPageElement pageElement) {
-        if (pageElement.getType() == TextType.WITHOUT_TYPE && pageElement.getStyles().isEmpty()) {
-            append(htmlUtil.getHtmlText(pageElement.getText()));
-            return;
-        }
-        append(htmlUtil.createHtmlElement(identifyTagName(pageElement), pageElement.getText(), getClasses(pageElement)));
     }
 
     /**
      * puts all {@link Style}s of the {@link PageElement} in a String for the html-class-attribute.
      * 
      */
-    private String getClasses(PageElement pageElement) {
+    public String getClasses(PageElement pageElement) {
 
         Set<Style> styles = pageElement.getStyles();
         if (styles == null || styles.isEmpty()) {
@@ -188,17 +140,10 @@ public class HtmlLayouter extends AbstractLayouter {
     }
 
     /**
-     * returns the name of an html-element according to the given {@link TextPageElement}
-     */
-    private String identifyTagName(TextPageElement textPageElement) {
-        return HtmlTextType.getHtmlTextTypeByTextType(textPageElement.getType()).getTagName();
-    }
-
-    /**
      * The Layouter visits the subelements of the given {@link ICompositePageElement}
      * 
      */
-    protected void visitSubElements(ICompositePageElement compositePageElement) {
+    public void visitSubElements(ICompositePageElement compositePageElement) {
         compositePageElement.visitSubElements(this);
     }
 
@@ -220,18 +165,8 @@ public class HtmlLayouter extends AbstractLayouter {
     /**
      * returns the relative path from root to the external css-stylesheet-definitions
      */
-    String getStyleDefinitionPath() {
+    public String getStyleDefinitionPath() {
         return resourcePath + '/' + HTML_BASE_CSS;
-    }
-
-    @Override
-    public void layoutImagePageElement(ImagePageElement imagePageElement) {
-
-        String path = resourcePath + "/images/" + imagePageElement.getFileName() + ".png"; //$NON-NLS-1$ //$NON-NLS-2$
-        addLayoutResource(new LayoutResource(path, new DocumentorUtil().convertImageDataToByteArray(
-                imagePageElement.getImageData(), SWT.IMAGE_PNG)));
-
-        append(htmlUtil.createImage(getPathToRoot() + path, imagePageElement.getTitle()));
     }
 
     public String getPathToRoot() {
@@ -240,5 +175,9 @@ public class HtmlLayouter extends AbstractLayouter {
 
     public void setPathToRoot(String pathToRoot) {
         this.pathToRoot = pathToRoot;
+    }
+
+    public String getResourcePath() {
+        return resourcePath;
     }
 }

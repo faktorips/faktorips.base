@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
@@ -61,10 +62,10 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
     private void addValidationRuleTable() {
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(
-                getContext().getMessage("PolicyCmptTypeContentPageElement_rules"), TextType.HEADING_2)); //$NON-NLS-1$
+                getContext().getMessage(HtmlExportMessages.PolicyCmptTypeContentPageElement_rules), TextType.HEADING_2)); 
 
         wrapper.addPageElements(getTableOrAlternativeText(new ValidationRuleTablePageElement(getDocumentedIpsObject(),
-                getContext()), getContext().getMessage("PolicyCmptTypeContentPageElement_noValidationrules"))); //$NON-NLS-1$
+                getContext()), getContext().getMessage(HtmlExportMessages.PolicyCmptTypeContentPageElement_noValidationrules))); 
 
         addPageElements(wrapper);
     }
@@ -91,13 +92,13 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
                 List<String> headline = super.getHeadlineWithIpsObjectPart();
 
                 addHeadlineAndColumnLayout(headline,
-                        getContext().getMessage("PolicyCmptTypeContentPageElement_productRelevant"), //$NON-NLS-1$
+                        getContext().getMessage(HtmlExportMessages.PolicyCmptTypeContentPageElement_productRelevant), 
                         Style.CENTER);
 
-                headline.add(getContext().getMessage("PolicyCmptTypeContentPageElement_attributeType")); //$NON-NLS-1$
+                headline.add(getContext().getMessage(HtmlExportMessages.PolicyCmptTypeContentPageElement_attributeType)); 
 
                 addHeadlineAndColumnLayout(headline,
-                        getContext().getMessage("PolicyCmptTypeContentPageElement_overwrite"), Style.CENTER); //$NON-NLS-1$
+                        getContext().getMessage(HtmlExportMessages.PolicyCmptTypeContentPageElement_overwrite), Style.CENTER); 
 
                 return headline;
             }
@@ -123,7 +124,7 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
         }
         if (to == null) {
             addPageElements(TextPageElement.createParagraph(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName()
-                    + ": " + getContext().getMessage("PolicyCmptTypeContentPageElement_none"))); //$NON-NLS-1$ //$NON-NLS-2$
+                    + ": " + getContext().getMessage(HtmlExportMessages.PolicyCmptTypeContentPageElement_none))); //$NON-NLS-1$ 
             return;
         }
         addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {

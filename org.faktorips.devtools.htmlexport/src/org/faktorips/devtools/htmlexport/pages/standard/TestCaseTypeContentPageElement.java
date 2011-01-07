@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
@@ -121,12 +122,12 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
         protected List<String> getHeadlineWithIpsObjectPart() {
             List<String> headline = new ArrayList<String>();
 
-            headline.add(getContext().getMessage("TestCaseTypeContentPageElement_name")); //$NON-NLS-1$
-            headline.add(getContext().getMessage("TestCaseTypeContentPageElement_testAttributeType")); //$NON-NLS-1$
-            headline.add(getContext().getMessage("TestCaseTypeContentPageElement_attribute")); //$NON-NLS-1$
+            headline.add(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_name)); 
+            headline.add(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_testAttributeType)); 
+            headline.add(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_attribute)); 
             headline.add(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName());
-            headline.add(getContext().getMessage("TestCaseTypeContentPageElement_datatype")); //$NON-NLS-1$
-            headline.add(getContext().getMessage("TestCaseTypeContentPageElement_description")); //$NON-NLS-1$
+            headline.add(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_datatype)); 
+            headline.add(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_description)); 
 
             return headline;
         }
@@ -151,7 +152,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
      * adds a treeview with the Parameters of the {@link ITestCaseType}
      */
     private void addTestCaseTypeParameters() {
-        addPageElements(new TextPageElement(getContext().getMessage("TestCaseTypeContentPageElement_parameters"), //$NON-NLS-1$
+        addPageElements(new TextPageElement(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_parameters), 
                 TextType.HEADING_2));
         TreeNodePageElement root = createRootNode();
 
@@ -230,7 +231,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
     private PageElement createTestAttributeTable(ITestPolicyCmptTypeParameter testParameter) {
 
         ICompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK).addPageElements(TextPageElement
-                .createParagraph(getContext().getMessage("TestCaseTypeContentPageElement_testAttributes")).addStyles( //$NON-NLS-1$
+                .createParagraph(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_testAttributes)).addStyles( 
                         Style.BOLD));
 
         TestAttributesTablePageElement testAttributesTablePageElement = new TestAttributesTablePageElement(
@@ -245,15 +246,15 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
 
     private KeyValueTablePageElement createKeyValueTableForTestPolicyCmptTypeParameter(ITestPolicyCmptTypeParameter testParameter) {
         KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement(getContext());
-        keyValueTable.addKeyValueRow(getContext().getMessage("TestCaseTypeContentPageElement_name"), //$NON-NLS-1$
+        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_name), 
                 testParameter.getName());
-        keyValueTable.addKeyValueRow(getContext().getMessage("TestCaseTypeContentPageElement_testParameterType"), //$NON-NLS-1$
+        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_testParameterType), 
                 testParameter.getTestParameterType().getName());
-        keyValueTable.addKeyValueRow(getContext().getMessage("TestCaseTypeContentPageElement_requiresProductCmpt"), //$NON-NLS-1$
+        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_requiresProductCmpt), 
                 testParameter.isRequiresProductCmpt() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
-        keyValueTable.addKeyValueRow(getContext().getMessage("TestCaseTypeContentPageElement_minInstances"), //$NON-NLS-1$
+        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_minInstances), 
                 Integer.toString(testParameter.getMinInstances()));
-        keyValueTable.addKeyValueRow(getContext().getMessage("TestCaseTypeContentPageElement_maxInstances"), //$NON-NLS-1$
+        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_maxInstances), 
                 Integer.toString(testParameter.getMaxInstances()));
         return keyValueTable;
     }
@@ -263,11 +264,11 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
         TreeNodePageElement testParameterPageElement = createRootNode(name);
 
         KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement(getContext());
-        keyValueTable.addKeyValueRow(getContext().getMessage("TestCaseTypeContentPageElement_name"), //$NON-NLS-1$
+        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_name), 
                 testParameter.getName());
-        keyValueTable.addKeyValueRow(getContext().getMessage("TestCaseTypeContentPageElement_testParameterType"), //$NON-NLS-1$
+        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_testParameterType), 
                 testParameter.getTestParameterType().getName());
-        keyValueTable.addKeyValueRow(getContext().getMessage("TestCaseTypeContentPageElement_description"), //$NON-NLS-1$
+        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_description), 
                 getContext().getDescription(testParameter));
 
         testParameterPageElement.addPageElements(keyValueTable);
@@ -279,13 +280,13 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
         TreeNodePageElement testParameterPageElement = createRootNode(name);
 
         KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement(getContext());
-        keyValueTable.addKeyValueRow(getContext().getMessage("TestCaseTypeContentPageElement_name"), //$NON-NLS-1$
+        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_name), 
                 testParameter.getName());
-        keyValueTable.addKeyValueRow(getContext().getMessage("TestCaseTypeContentPageElement_valueDatatype"), //$NON-NLS-1$
+        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_valueDatatype), 
                 testParameter.getValueDatatype());
-        keyValueTable.addKeyValueRow(getContext().getMessage("TestCaseTypeContentPageElement_testParameterType"), //$NON-NLS-1$
+        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_testParameterType), 
                 testParameter.getTestParameterType().getName());
-        keyValueTable.addKeyValueRow(getContext().getMessage("TestCaseTypeContentPageElement_description"), //$NON-NLS-1$
+        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_description), 
                 getContext().getDescription(testParameter));
 
         testParameter.getTestParameterType();

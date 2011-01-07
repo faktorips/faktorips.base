@@ -43,6 +43,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
@@ -50,7 +51,6 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
-import org.faktorips.devtools.htmlexport.pages.elements.core.TreeNodePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
 
@@ -132,7 +132,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             return;
         }
 
-        addSubHeadline(getContext().getMessage("ProductGenerationAttributeTable_defaultsAndValueSets")); //$NON-NLS-1$
+        addSubHeadline(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_defaultsAndValueSets)); 
 
         for (IPolicyCmptTypeAttribute policyCmptTypeAttribute : policyCmptTypeAttributes) {
             addPolicyCmptTypeAttibutesRow(policyCmptTypeAttribute);
@@ -185,7 +185,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
     private TextPageElement createRangeValueSetCell(RangeValueSet rangeValueSet) {
         StringBuilder builder = new StringBuilder();
-        builder.append(getContext().getMessage("ProductGenerationAttributeTable_minMaxStep")); //$NON-NLS-1$
+        builder.append(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_minMaxStep)); 
         builder.append(": "); //$NON-NLS-1$
         builder.append(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
                 .formatValue(rangeValueSet.getValueDatatype(), rangeValueSet.getLowerBound()));
@@ -240,7 +240,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             return;
         }
 
-        addSubHeadline(getContext().getMessage("ProductGenerationAttributeTable_tables")); //$NON-NLS-1$
+        addSubHeadline(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_tables)); 
 
         for (ITableStructureUsage tableStructureUsage : tableStructureUsages) {
             addTableStructureUsageRow(tableStructureUsage);
@@ -254,7 +254,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             return;
         }
 
-        addSubHeadline(getContext().getMessage("ProductGenerationAttributeTable_formulas")); //$NON-NLS-1$
+        addSubHeadline(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_formulas)); 
 
         for (IProductCmptTypeMethod formulaSignature : formulaSignatures) {
             addFormulaRow(formulaSignature);
@@ -319,60 +319,53 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     }
 
     private void addChildProductCmptTypes() {
-        PageElement[] cells = new PageElement[productCmpt.getNumOfGenerations() + 1];
+        addSubHeadline(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_associatedComponents)); 
 
-        addSubHeadline(getContext().getMessage("ProductGenerationAttributeTable_structure")); //$NON-NLS-1$
-
-        cells[0] = new TextPageElement(getContext().getMessage("ProductGenerationAttributeTable_associatedComponents")); //$NON-NLS-1$
-
-        for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
-            IProductCmptGeneration productCmptGeneration = productCmpt.getProductCmptGeneration(i);
-
-            if (productCmptGeneration.getLinks().length == 0) {
-                cells[i + 1] = new TextPageElement("-"); //$NON-NLS-1$
-                continue;
-            }
-
-            AbstractCompositePageElement cellContent = new WrapperPageElement(WrapperType.BLOCK);
-
-            addAssociatedProductCmpts(productCmptGeneration, cellContent);
-
-            cells[i + 1] = cellContent;
-        }
-
-        addSubElement(new TableRowPageElement(cells));
-    }
-
-    private void addAssociatedProductCmpts(IProductCmptGeneration productCmptGeneration,
-            AbstractCompositePageElement cellContent) {
-        IAssociation[] associations = productCmptType.getAssociations();
-
-        boolean productCmptLinksShown = false;
+        IAssociation[] associations = getAllAssociations();
         for (IAssociation association : associations) {
-            TreeNodePageElement root = new TreeNodePageElement(PageElementUtils.createIpsElementRepresentation(
-                    association, context, context.getLabel(association), true));
-            IProductCmptLink[] links = productCmptGeneration.getLinks(association.getName());
-            for (IProductCmptLink productCmptLink : links) {
-                productCmptLinksShown |= addProductCmptLink(root, productCmptLink);
+            PageElement[] cells = new PageElement[productCmpt.getNumOfGenerations() + 1];
+            cells[0] = PageElementUtils.createIpsElementRepresentation(association, context,
+                    context.getLabel(association), true);
+            for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
+                IProductCmptGeneration productCmptGeneration = productCmpt.getProductCmptGeneration(i);
+
+                if (productCmptGeneration.getLinks().length == 0) {
+                    cells[i + 1] = new TextPageElement("-"); //$NON-NLS-1$
+                    continue;
+                }
+
+                cells[i + 1] = createAssociatedProductCmpts(productCmptGeneration, association);
             }
-            cellContent.addPageElements(root);
+            addSubElement(new TableRowPageElement(cells));
         }
-        if (productCmptLinksShown) {
-            cellContent.addPageElements(TextPageElement.createParagraph(
-                    getContext().getMessage("ProductGenerationAttributeTable_cardinalityExplanation")).addStyles( //$NON-NLS-1$
-                    Style.SMALL));
-        }
+
     }
 
-    private boolean addProductCmptLink(TreeNodePageElement treeNode, IProductCmptLink productCmptLink) {
-        IProductCmpt target;
-        try {
-            target = productCmptLink.findTarget(productCmpt.getIpsProject());
-        } catch (CoreException e) {
-            context.addStatus(new IpsStatus(IStatus.ERROR,
-                    "Could not get linked ProductCmpt within " + productCmptLink.getName(), e)); //$NON-NLS-1$
-            return false;
+    private PageElement createAssociatedProductCmpts(IProductCmptGeneration productCmptGeneration,
+            IAssociation association) {
+        AbstractCompositePageElement cellContent = new WrapperPageElement(WrapperType.BLOCK);
+
+        IProductCmptLink[] links = productCmptGeneration.getLinks(association.getName());
+
+        for (IProductCmptLink productCmptLink : links) {
+            try {
+                cellContent.addPageElements(createProductCmptLink(productCmptLink));
+            } catch (CoreException e) {
+                context.addStatus(new IpsStatus(IStatus.ERROR,
+                        "Could not get linked ProductCmpt within " + productCmptLink.getName(), e)); //$NON-NLS-1$
+            }
         }
+
+        if (cellContent.isEmpty()) {
+            cellContent.addPageElements(new TextPageElement("-")); //$NON-NLS-1$
+        }
+
+        return cellContent;
+    }
+
+    private PageElement createProductCmptLink(IProductCmptLink productCmptLink) throws CoreException {
+        IProductCmpt target;
+        target = productCmptLink.findTarget(productCmpt.getIpsProject());
 
         PageElement targetLink = PageElementUtils.createLinkPageElement(context, target, "content", target //$NON-NLS-1$
                 .getName(), true);
@@ -384,8 +377,19 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
                 + getCardinalityRepresentation(productCmptLink.getMaxCardinality()) + " (" //$NON-NLS-1$
                 + getCardinalityRepresentation(productCmptLink.getDefaultCardinality()) + ")", cardinalityStyles); //$NON-NLS-1$
 
-        treeNode.addPageElements(new WrapperPageElement(WrapperType.BLOCK).addPageElements(targetLink, cardinalities));
-        return true;
+        return new WrapperPageElement(WrapperType.BLOCK).addPageElements(targetLink, cardinalities);
+    }
+
+    private IAssociation[] getAllAssociations() {
+        IAssociation[] associations;
+        try {
+            associations = productCmptType.findAllAssociations(productCmptType.getIpsProject());
+        } catch (CoreException e) {
+            getContext().addStatus(new IpsStatus(IStatus.WARNING, "Error finding all associations of " //$NON-NLS-1$
+                    + productCmptType.getQualifiedName(), e));
+            associations = new IAssociation[0];
+        }
+        return associations;
     }
 
     private String getCardinalityRepresentation(int cardinality) {
@@ -435,7 +439,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
     @Override
     protected List<String> getHeadline() {
-        return getHeadlineWithCategory(getContext().getMessage("ProductGenerationAttributeTable_attributes")); //$NON-NLS-1$
+        return getHeadlineWithCategory(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_attributes)); 
     }
 
     private List<String> getHeadlineWithCategory(String productGenerationAttributeTableGenerationFrom) {

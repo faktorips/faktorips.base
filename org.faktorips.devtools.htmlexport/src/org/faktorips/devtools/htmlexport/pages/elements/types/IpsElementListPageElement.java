@@ -21,6 +21,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementFilter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
@@ -51,7 +52,7 @@ public class IpsElementListPageElement extends AbstractIpsElementListPageElement
             DocumentationContext context, boolean shownTypeChooser) {
         super(baseIpsElement, srcFiles, filter, context);
         this.shownTypeChooser = shownTypeChooser;
-        setTitle(getContext().getMessage("IpsObjectListPageElement_objects")); //$NON-NLS-1$
+        setTitle(getContext().getMessage(HtmlExportMessages.IpsObjectListPageElement_objects));
     }
 
     @Override
@@ -65,12 +66,12 @@ public class IpsElementListPageElement extends AbstractIpsElementListPageElement
         }
 
         addPageElements(new WrapperPageElement(WrapperType.BLOCK).addPageElements(new LinkPageElement(
-                "classes", "classes", getContext().getMessage("IpsObjectListPageElement_allObjects")))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                "classes", "classes", getContext().getMessage(HtmlExportMessages.IpsObjectListPageElement_allObjects)))); //$NON-NLS-1$ //$NON-NLS-2$ 
 
         List<PageElement> classes = createClassesList();
 
         addPageElements(new TextPageElement(classes.size()
-                + " " + getContext().getMessage("IpsObjectListPageElement_objects"))); //$NON-NLS-1$ //$NON-NLS-2$
+                + " " + getContext().getMessage(HtmlExportMessages.IpsObjectListPageElement_objects))); //$NON-NLS-1$ 
 
         if (classes.size() > 0) {
             addPageElements(new ListPageElement(classes));

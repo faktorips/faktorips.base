@@ -31,6 +31,7 @@ public abstract class AbstractPageElement implements PageElement {
     protected Set<Style> styles = new LinkedHashSet<Style>();
 
     private String id;
+    private String anchor;
 
     public AbstractPageElement() {
         super();
@@ -101,5 +102,15 @@ public abstract class AbstractPageElement implements PageElement {
 
     public boolean hasId() {
         return StringUtils.isNotBlank(getId());
+    }
+
+    @Override
+    public String getAnchor() {
+        return anchor;
+    }
+
+    @Override
+    public void setAnchor(String anchor) {
+        this.anchor = anchor;
     }
 }

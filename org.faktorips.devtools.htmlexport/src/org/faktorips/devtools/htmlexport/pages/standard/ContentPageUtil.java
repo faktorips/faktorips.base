@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
-import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 
 /**
  * Utility for Content-Pages
@@ -37,14 +37,14 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractPageElement
  */
 public class ContentPageUtil {
 
-    public static AbstractPageElement createObjectContentPageElement(IIpsSrcFile ipsSrcFile,
+    public static PageElement createObjectContentPageElement(IIpsSrcFile ipsSrcFile,
             DocumentationContext context) throws CoreException {
 
         IIpsObject ipsObject = ipsSrcFile.getIpsObject();
         return createObjectContentPageElement(ipsObject, context);
     }
 
-    private static AbstractPageElement createObjectContentPageElement(IIpsObject ipsSrcFile,
+    private static PageElement createObjectContentPageElement(IIpsObject ipsSrcFile,
             DocumentationContext context) throws CoreException {
         if (ipsSrcFile.getIpsObjectType() == IpsObjectType.POLICY_CMPT_TYPE) {
             return new PolicyCmptTypeContentPageElement((IPolicyCmptType)ipsSrcFile, context);

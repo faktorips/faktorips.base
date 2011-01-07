@@ -20,6 +20,7 @@ import java.util.List;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 
@@ -62,18 +63,20 @@ public class MethodsTablePageElement extends AbstractIpsObjectPartsContainerTabl
     protected List<String> getHeadlineWithIpsObjectPart() {
         ArrayList<String> headline = new ArrayList<String>();
 
-        headline.add(getContext().getMessage("MethodsTablePageElement_headlineName")); //$NON-NLS-1$
-        headline.add(getContext().getMessage("MethodsTablePageElement_headlineAbstract")); //$NON-NLS-1$
-        headline.add(getContext().getMessage("MethodsTablePageElement_headlineModifier")); //$NON-NLS-1$
-        headline.add(getContext().getMessage("MethodsTablePageElement_headlineDatatype")); //$NON-NLS-1$
-        headline.add(getContext().getMessage("MethodsTablePageElement_headlineSignature")); //$NON-NLS-1$
-        headline.add(getContext().getMessage("MethodsTablePageElement_headlineDescription")); //$NON-NLS-1$
+        headline.add(getContext().getMessage(HtmlExportMessages.MethodsTablePageElement_headlineName)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.MethodsTablePageElement_headlineAbstract)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.MethodsTablePageElement_headlineModifier)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.MethodsTablePageElement_headlineDatatype)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.MethodsTablePageElement_headlineSignature)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.MethodsTablePageElement_headlineDescription)); 
 
         return headline;
     }
 
     @Override
-    protected List<? extends PageElement> createRowWithIpsObjectPart(IMethod rowData) {
-        return Arrays.asList(PageElementUtils.createTextPageElements(getMethodData(rowData)));
+    protected List<? extends PageElement> createRowWithIpsObjectPart(IMethod method) {
+        PageElement[] textPageElements = PageElementUtils.createTextPageElements(getMethodData(method));
+        textPageElements[0].setAnchor(PageElementUtils.createAnchorId(method));
+        return Arrays.asList(textPageElements);
     }
 }

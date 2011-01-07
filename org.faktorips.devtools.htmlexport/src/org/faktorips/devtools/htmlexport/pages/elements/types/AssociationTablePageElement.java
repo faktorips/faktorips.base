@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
@@ -99,26 +100,26 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
     protected List<String> getHeadlineWithIpsObjectPart() {
         List<String> headline = new ArrayList<String>();
 
-        headline.add(getContext().getMessage("AssociationTablePageElement_headlineName")); //$NON-NLS-1$
-        headline.add(getContext().getMessage("AssociationTablePageElement_headlineLabel")); //$NON-NLS-1$
-        headline.add(getContext().getMessage("AssociationTablePageElement_headlineTarget")); //$NON-NLS-1$
-        headline.add(getContext().getMessage("AssociationTablePageElement_headlineDescription")); //$NON-NLS-1$
-        headline.add(getContext().getMessage("AssociationTablePageElement_headlineAssociationType")); //$NON-NLS-1$
-        headline.add(getContext().getMessage("AssociationTablePageElement_headlineAggregationKind")); //$NON-NLS-1$
-        headline.add(getContext().getMessage("AssociationTablePageElement_headlineTargetRoleSingular")); //$NON-NLS-1$
-        headline.add(getContext().getMessage("AssociationTablePageElement_headlineTargetRolePlural")); //$NON-NLS-1$
+        headline.add(getContext().getMessage(HtmlExportMessages.AssociationTablePageElement_headlineName)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.AssociationTablePageElement_headlineLabel)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.AssociationTablePageElement_headlineTarget)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.AssociationTablePageElement_headlineDescription)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.AssociationTablePageElement_headlineAssociationType)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.AssociationTablePageElement_headlineAggregationKind)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.AssociationTablePageElement_headlineTargetRoleSingular)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.AssociationTablePageElement_headlineTargetRolePlural)); 
 
         addHeadlineAndColumnLayout(headline,
-                getContext().getMessage("AssociationTablePageElement_headlineMinCardinality"), Style.CENTER); //$NON-NLS-1$
+                getContext().getMessage(HtmlExportMessages.AssociationTablePageElement_headlineMinCardinality), Style.CENTER); 
         addHeadlineAndColumnLayout(headline,
-                getContext().getMessage("AssociationTablePageElement_headlineMaxCardinality"), Style.CENTER); //$NON-NLS-1$
+                getContext().getMessage(HtmlExportMessages.AssociationTablePageElement_headlineMaxCardinality), Style.CENTER); 
         addHeadlineAndColumnLayout(headline, getContext()
                 .getMessage("AssociationTablePageElement_headlineDerivedUnion"), Style.CENTER); //$NON-NLS-1$
         addHeadlineAndColumnLayout(headline,
-                getContext().getMessage("AssociationTablePageElement_headlineSubsettedDerivedUnion"), //$NON-NLS-1$
+                getContext().getMessage(HtmlExportMessages.AssociationTablePageElement_headlineSubsettedDerivedUnion), 
                 Style.CENTER);
         addHeadlineAndColumnLayout(headline,
-                getContext().getMessage("AssociationTablePageElement_headlineQualified"), Style.CENTER); //$NON-NLS-1$
+                getContext().getMessage(HtmlExportMessages.AssociationTablePageElement_headlineQualified), Style.CENTER); 
 
         return headline;
     }

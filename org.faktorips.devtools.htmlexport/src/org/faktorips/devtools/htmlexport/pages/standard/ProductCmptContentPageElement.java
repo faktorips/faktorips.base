@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
@@ -94,10 +95,10 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
         }
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(
-                getContext().getMessage("ProductCmptContentPageElement_values"), TextType.HEADING_2)); //$NON-NLS-1$
+                getContext().getMessage(HtmlExportMessages.ProductCmptContentPageElement_values), TextType.HEADING_2)); 
 
         wrapper.addPageElements(getTableOrAlternativeText(productGenerationAttributeTable,
-                getContext().getMessage("ProductCmptContentPageElement_noGenerationsOrAttributes"))); //$NON-NLS-1$
+                getContext().getMessage(HtmlExportMessages.ProductCmptContentPageElement_noGenerationsOrAttributes))); 
         addPageElements(wrapper);
     }
 

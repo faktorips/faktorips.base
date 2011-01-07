@@ -47,7 +47,7 @@ public abstract class AbstractLayouter implements ILayouter {
     /**
      * adds text to the content.
      */
-    protected void append(String value) {
+    public void append(String value) {
         content.append(value);
     }
 
@@ -56,7 +56,7 @@ public abstract class AbstractLayouter implements ILayouter {
         return layoutResources;
     }
 
-    protected void addLayoutResource(LayoutResource layoutResource) {
+    public void addLayoutResource(LayoutResource layoutResource) {
         layoutResources.add(layoutResource);
     }
 }

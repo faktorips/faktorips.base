@@ -20,6 +20,7 @@ import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
@@ -74,10 +75,10 @@ public class EnumContentContentPageElement extends AbstractIpsObjectContentPageE
         }
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(
-                getContext().getMessage("EnumContentContentPageElement_values"), TextType.HEADING_2)); //$NON-NLS-1$
+                getContext().getMessage(HtmlExportMessages.EnumContentContentPageElement_values), TextType.HEADING_2)); 
 
         wrapper.addPageElements(getTableOrAlternativeText(tablePageElement,
-                getContext().getMessage("EnumContentContentPageElement_noValues"))); //$NON-NLS-1$
+                getContext().getMessage(HtmlExportMessages.EnumContentContentPageElement_noValues))); 
 
         addPageElements(wrapper);
     }

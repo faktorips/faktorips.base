@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
@@ -115,14 +116,14 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
         protected List<String> getHeadlineWithIpsObjectPart() {
             List<String> headline = new ArrayList<String>();
 
-            headline.add(getContext().getMessage("ProductCmptTypeContentPageElement_roleName")); //$NON-NLS-1$
-            headline.add(getContext().getMessage("ProductCmptTypeContentPageElement_headlineLabel")); //$NON-NLS-1$
+            headline.add(getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_roleName)); 
+            headline.add(getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_headlineLabel)); 
             headline.add(IpsObjectType.TABLE_STRUCTURE.getDisplayName());
 
             addHeadlineAndColumnLayout(headline, IpsObjectType.TABLE_CONTENTS.getDisplayName()
-                    + getContext().getMessage("ProductCmptTypeContentPageElement_mandatory"), Style.CENTER); //$NON-NLS-1$
+                    + getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_mandatory), Style.CENTER); 
 
-            headline.add(getContext().getMessage("ProductCmptTypeContentPageElement_description")); //$NON-NLS-1$
+            headline.add(getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_description)); 
 
             return headline;
         }
@@ -153,7 +154,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
         wrapper.addPageElements(new TextPageElement(IpsObjectType.TABLE_STRUCTURE.getDisplayNamePlural(),
                 TextType.HEADING_2));
         wrapper.addPageElements((getTableOrAlternativeText(new TableStructureTablePageElement(getDocumentedIpsObject(),
-                getContext()), getContext().getMessage("ProductCmptTypeContentPageElement_noTableStructures")))); //$NON-NLS-1$
+                getContext()), getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_noTableStructures)))); 
         addPageElements(wrapper);
     }
 
@@ -179,7 +180,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
                 TextType.HEADING_2));
 
         if (allProductCmptSrcFiles.size() == 0) {
-            wrapper.addPageElements(new TextPageElement(getContext().getMessage("ProductCmptTypeContentPageElement_no") //$NON-NLS-1$
+            wrapper.addPageElements(new TextPageElement(getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_no) 
                     + IpsObjectType.PRODUCT_CMPT.getDisplayNamePlural()));
             addPageElements(wrapper);
             return;
@@ -210,7 +211,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 
         if (to == null) {
             addPageElements(TextPageElement.createParagraph(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName()
-                    + ": " + getContext().getMessage("ProductCmptTypeContentPageElement_none"))); //$NON-NLS-1$ //$NON-NLS-2$
+                    + ": " + getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_none))); //$NON-NLS-1$ 
             return;
         }
 
@@ -229,7 +230,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
             protected List<String> getHeadlineWithIpsObjectPart() {
 
                 List<String> headline = super.getHeadlineWithIpsObjectPart();
-                headline.add(getContext().getMessage("ProductCmptTypeContentPageElement_formulaName")); //$NON-NLS-1$
+                headline.add(getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_formulaName)); 
 
                 return headline;
             }

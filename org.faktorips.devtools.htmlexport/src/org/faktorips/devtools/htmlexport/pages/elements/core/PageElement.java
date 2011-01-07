@@ -70,4 +70,7 @@ public interface PageElement {
 
     public void setId(String id);
 
+    public String getAnchor();
+
+    public void setAnchor(String anchor);
 }

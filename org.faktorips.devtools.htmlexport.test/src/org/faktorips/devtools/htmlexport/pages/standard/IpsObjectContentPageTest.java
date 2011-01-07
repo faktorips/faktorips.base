@@ -14,7 +14,7 @@
 package org.faktorips.devtools.htmlexport.pages.standard;
 
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 
 public class IpsObjectContentPageTest extends AbstractXmlUnitHtmlExportTest {
 
@@ -25,7 +25,7 @@ public class IpsObjectContentPageTest extends AbstractXmlUnitHtmlExportTest {
 
         String xPath = "//h1[. = '" + expectedHeadline + "']";
 
-        AbstractPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(),
+        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(),
                 context);
         assertXPathExists(objectContentPage, xPath);
     }

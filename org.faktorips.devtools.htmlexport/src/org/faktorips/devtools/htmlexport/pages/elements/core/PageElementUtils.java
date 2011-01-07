@@ -22,7 +22,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
+import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementInDocumentedSourceFileFilter;
@@ -37,6 +41,8 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.IpsElementImagePag
  * 
  */
 public class PageElementUtils {
+
+    private static final String ANCHOR_SEPARATOR = "."; //$NON-NLS-1$
 
     /**
      * creates {@link PageElement}s from the given {@link String}s with {@link Style}s and
@@ -105,6 +111,39 @@ public class PageElementUtils {
         return element.addStyles(Style.DEAD_LINK);
     }
 
+    /**
+     * creates a LinkPageElement for an IpsElement
+     */
+    public static PageElement createLinkPageElement(DocumentationContext context,
+            IIpsObjectPartContainer to,
+            String target,
+            Style... styles) {
+        IpsElementInDocumentedSourceFileFilter filter = new IpsElementInDocumentedSourceFileFilter(context);
+
+        String text = getIpsObjectPartContainerText(context, to);
+
+        PageElement element = createIpsElementRepresentation(to, context, text, false);
+
+        if (filter.accept(to.getIpsSrcFile())) {
+            LinkPageElement linkToIpsObjectPart = createLinkPageElementToIpsElement(to.getIpsSrcFile(),
+                    createAnchorId(to), target, element);
+            linkToIpsObjectPart.addStyles(styles);
+
+            return linkToIpsObjectPart;
+        }
+        return element.addStyles(Style.DEAD_LINK);
+    }
+
+    public static String getIpsObjectPartContainerText(DocumentationContext context, IIpsObjectPartContainer to) {
+        if (to instanceof ILabeledElement) {
+            return to.getName() + " (" + context.getLabel((ILabeledElement)to) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        if (to instanceof IMethod) {
+            return ((IMethod)to).getSignatureString();
+        }
+        return to.getName();
+    }
+
     public static PageElement createIpsElementRepresentation(IIpsElement ipsElement,
             DocumentationContext context,
             String text,
@@ -133,9 +172,32 @@ public class PageElementUtils {
     }
 
     public static LinkPageElement createLinkPageElementToIpsElement(IIpsElement to, String target, PageElement element) {
+        return createLinkPageElementToIpsElement(to, null, target, element);
+    }
+
+    public static LinkPageElement createLinkPageElementToIpsElement(IIpsElement to,
+            String anchor,
+            String target,
+            PageElement element) {
         String path = PathUtilFactory.createPathUtil(to).getPathFromRoot(
                 LinkedFileType.getLinkedFileTypeByIpsElement(to));
         LinkPageElement linkPageElement = new LinkPageElement(path, target, element);
+        linkPageElement.setAnchor(anchor);
         return linkPageElement;
+    }
+
+    public static String createAnchorId(IIpsElement element) {
+        if (element instanceof IIpsObjectPart) {
+
+            IIpsObjectPart part = (IIpsObjectPart)element;
+
+            String objectPartContainerName = part.getIpsSrcFile().getQualifiedNameType().getName();
+            String objectPartClassName = part.getClass().getSimpleName();
+
+            return objectPartContainerName + ANCHOR_SEPARATOR + objectPartClassName + ANCHOR_SEPARATOR
+                    + element.getName();
+        }
+
+        return element.getName();
     }
 }

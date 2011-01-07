@@ -104,4 +104,8 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
         this.wrapperType = wrapperType;
     }
 
+    public boolean isEmpty() {
+        return subElements.isEmpty();
+    }
+
 }

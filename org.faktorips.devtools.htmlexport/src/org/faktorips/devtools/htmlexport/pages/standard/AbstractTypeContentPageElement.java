@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
@@ -36,6 +37,9 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TreeNodePageElement
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.AssociationTablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.AttributesTablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.InheritedTypeAssociationsPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.InheritedTypeAttributesPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.InheritedTypeMethodsPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.MethodsTablePageElement;
 
 /**
@@ -46,6 +50,8 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.MethodsTablePageEl
  */
 public abstract class AbstractTypeContentPageElement<T extends IType> extends AbstractIpsObjectContentPageElement<T> {
 
+    private List<IType> superTypes;
+
     /**
      * Visitor for superclass hierarchy
      * 
@@ -53,7 +59,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
      * 
      */
     private class SupertypeHierarchyVisitor extends TypeHierarchyVisitor {
-        List<IType> superTypes = new ArrayList<IType>();
+        List<IType> hierSuperTypes = new ArrayList<IType>();
 
         public SupertypeHierarchyVisitor(IIpsProject ipsProject) {
             super(ipsProject);
@@ -61,12 +67,12 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 
         @Override
         protected boolean visit(IType currentType) throws CoreException {
-            superTypes.add(currentType);
+            hierSuperTypes.add(currentType);
             return true;
         }
 
         public List<IType> getSuperTypes() {
-            ArrayList<IType> revertedList = new ArrayList<IType>(superTypes);
+            ArrayList<IType> revertedList = new ArrayList<IType>(hierSuperTypes);
             Collections.reverse(revertedList);
             return revertedList;
         }
@@ -78,6 +84,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
      */
     public AbstractTypeContentPageElement(T object, DocumentationContext context) {
         super(object, context);
+        initSuperTypes();
     }
 
     @Override
@@ -97,12 +104,21 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
     protected void addMethodsTable() {
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(
-                getContext().getMessage("AbstractTypeContentPageElement_methods"), TextType.HEADING_2)); //$NON-NLS-1$
+                getContext().getMessage(HtmlExportMessages.AbstractTypeContentPageElement_methods), TextType.HEADING_2)); 
 
         wrapper.addPageElements(getTableOrAlternativeText(getMethodsTablePageElement(),
-                getContext().getMessage("AbstractTypeContentPageElement_noMethods"))); //$NON-NLS-1$
+                getContext().getMessage(HtmlExportMessages.AbstractTypeContentPageElement_noMethods))); 
+
+        addInheritedMethods(wrapper);
 
         addPageElements(wrapper);
+    }
+
+    protected void addInheritedMethods(AbstractCompositePageElement wrapper) {
+        List<IType> revertedSuperTypes = new ArrayList<IType>(superTypes);
+        Collections.reverse(revertedSuperTypes);
+        wrapper.addPageElements(new InheritedTypeMethodsPageElement(getContext(), getDocumentedIpsObject(),
+                revertedSuperTypes));
     }
 
     /**
@@ -116,12 +132,12 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
     @Override
     protected void addTypeHierarchy() {
         addPageElements(new TextPageElement(
-                getContext().getMessage("AbstractTypeContentPageElement_hierarchy"), TextType.HEADING_2)); //$NON-NLS-1$
+                getContext().getMessage(HtmlExportMessages.AbstractTypeContentPageElement_hierarchy), TextType.HEADING_2)); 
         addPageElements(new TextPageElement(
-                getContext().getMessage("AbstractTypeContentPageElement_superclass"), TextType.HEADING_3)); //$NON-NLS-1$
+                getContext().getMessage(HtmlExportMessages.AbstractTypeContentPageElement_superclass), TextType.HEADING_3)); 
         addSuperTypeHierarchy();
         addPageElements(new TextPageElement(
-                getContext().getMessage("AbstractTypeContentPageElement_subclass"), TextType.HEADING_3)); //$NON-NLS-1$
+                getContext().getMessage(HtmlExportMessages.AbstractTypeContentPageElement_subclass), TextType.HEADING_3)); 
         addSubTypeHierarchy();
     }
 
@@ -168,17 +184,6 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
      * adds a block with superclasses
      */
     protected void addSuperTypeHierarchy() {
-        SupertypeHierarchyVisitor hier = new SupertypeHierarchyVisitor(getDocumentedIpsObject().getIpsProject());
-        try {
-            hier.start(getDocumentedIpsObject());
-        } catch (CoreException e) {
-            getContext().addStatus(
-                    new IpsStatus(IStatus.ERROR,
-                            "Error getting Supertype Hierarchy of " + getDocumentedIpsObject().getQualifiedName(), e)); //$NON-NLS-1$
-            return;
-        }
-        List<IType> superTypes = hier.getSuperTypes();
-
         if (superTypes.size() == 1) {
             addPageElements(new TextPageElement(getContext()
                     .getMessage("AbstractTypeContentPageElement_noSuperclasses"))); //$NON-NLS-1$
@@ -203,6 +208,20 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
         addPageElements(baseElement);
     }
 
+    protected void initSuperTypes() {
+        SupertypeHierarchyVisitor hier = new SupertypeHierarchyVisitor(getDocumentedIpsObject().getIpsProject());
+        try {
+            hier.start(getDocumentedIpsObject());
+        } catch (CoreException e) {
+            getContext().addStatus(
+                    new IpsStatus(IStatus.ERROR,
+                            "Error getting Supertype Hierarchy of " + getDocumentedIpsObject().getQualifiedName(), e)); //$NON-NLS-1$
+            superTypes = Collections.emptyList();
+            return;
+        }
+        superTypes = hier.getSuperTypes();
+    }
+
     @Override
     protected void addStructureData() {
         super.addStructureData();
@@ -223,7 +242,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
         addPageElements(new WrapperPageElement(
                 WrapperType.BLOCK,
                 new PageElement[] {
-                        new TextPageElement(getContext().getMessage("AbstractTypeContentPageElement_extends") + " "), PageElementUtils.createLinkPageElement(getContext(), to, "content", to.getName(), true) })); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ 
+                        new TextPageElement(getContext().getMessage(HtmlExportMessages.AbstractTypeContentPageElement_extends) + " "), PageElementUtils.createLinkPageElement(getContext(), to, "content", to.getName(), true) })); //$NON-NLS-1$//$NON-NLS-2$ 
     }
 
     /**
@@ -236,9 +255,18 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
                 TextType.HEADING_2));
 
         wrapper.addPageElements(getTableOrAlternativeText(new AssociationTablePageElement(getDocumentedIpsObject(),
-                getContext()), getContext().getMessage("AbstractTypeContentPageElement_noAssociations"))); //$NON-NLS-1$
+                getContext()), getContext().getMessage(HtmlExportMessages.AbstractTypeContentPageElement_noAssociations))); 
+
+        addInheritedAssociations(wrapper);
 
         addPageElements(wrapper);
+    }
+
+    protected void addInheritedAssociations(AbstractCompositePageElement wrapper) {
+        List<IType> revertedSuperTypes = new ArrayList<IType>(superTypes);
+        Collections.reverse(revertedSuperTypes);
+        wrapper.addPageElements(new InheritedTypeAssociationsPageElement(getContext(), getDocumentedIpsObject(),
+                revertedSuperTypes));
     }
 
     /**
@@ -246,14 +274,24 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
      */
     protected void addAttributesTable() {
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+
         wrapper.addPageElements(new TextPageElement(getContext()
                 .getMessage("AbstractTypeContentPageElement_attributes"), //$NON-NLS-1$
                 TextType.HEADING_2));
 
         wrapper.addPageElements(getTableOrAlternativeText(getAttributesTablePageElement(),
-                getContext().getMessage("AbstractTypeContentPageElement_noAttributes"))); //$NON-NLS-1$
+                getContext().getMessage(HtmlExportMessages.AbstractTypeContentPageElement_noAttributes))); 
+
+        addInheritedAttributes(wrapper);
 
         addPageElements(wrapper);
+    }
+
+    protected void addInheritedAttributes(AbstractCompositePageElement wrapper) {
+        List<IType> revertedSuperTypes = new ArrayList<IType>(superTypes);
+        Collections.reverse(revertedSuperTypes);
+        wrapper.addPageElements(new InheritedTypeAttributesPageElement(getContext(), getDocumentedIpsObject(),
+                revertedSuperTypes));
     }
 
     /**

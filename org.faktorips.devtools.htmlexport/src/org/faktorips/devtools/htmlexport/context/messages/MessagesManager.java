@@ -11,33 +11,40 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.htmlexport.context;
+package org.faktorips.devtools.htmlexport.context.messages;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.htmlexport.HtmlExportPlugin;
+import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 
 public class MessagesManager {
 
-    private final static String MESSAGES_FOLDER = "org/faktorips/devtools/htmlexport/context/messages/"; //$NON-NLS-1$
     private final Properties messages = new Properties();
     private final DocumentationContext context;
+    private final List<String> notFoundMessages;
+
+    private final Class<?>[] importMessagesClasses = { IpsObjectType.class };
 
     public MessagesManager(DocumentationContext context) {
         this.context = context;
+        this.notFoundMessages = new ArrayList<String>();
         initialize(context.getDescriptionLocale());
     }
 
     private void initialize(Locale locale) {
         initializeStandardMessages();
 
-        if (equalsPlatformLocale(locale)) {
+        if (isEnglish(locale)) {
             return;
         }
 
@@ -48,22 +55,27 @@ public class MessagesManager {
         initializeLocalizedMessages(Locale.UK);
     }
 
-    private boolean equalsPlatformLocale(Locale locale) {
-        return locale.getLanguage().equals(getPlatformLanguage());
-    }
-
-    public String getPlatformLanguage() {
-        String nl = Platform.getNL();
+    private boolean isEnglish(Locale locale) {
+        String nl = locale.getLanguage();
         if (nl.length() > 2) {
             nl = nl.substring(0, 2);
         }
-        return nl;
+        return "en".equals(nl); //$NON-NLS-1$
     }
 
     private void initializeLocalizedMessages(Locale locale) {
-        String fileName = getMessagesFileName(locale);
+        loadMessages(getClass(), locale);
 
-        String resourceName = MESSAGES_FOLDER + fileName;
+        for (Class<?> clazz : importMessagesClasses) {
+            loadMessages(clazz, locale);
+        }
+
+    }
+
+    protected void loadMessages(Class<?> clazz, Locale locale) {
+        String resourceName = clazz.getPackage().getName().replace('.', File.separatorChar) + File.separatorChar
+                + getMessagesFileName(locale);
+
         final InputStream inputStream = HtmlExportPlugin.getDefault().getClass().getClassLoader()
                 .getResourceAsStream(resourceName);
 
@@ -96,7 +108,10 @@ public class MessagesManager {
         if (messages.containsKey(messageId)) {
             return messages.getProperty(messageId);
         }
-        context.addStatus(new IpsStatus(IStatus.WARNING, "Message with Id " + messageId + " not found.")); //$NON-NLS-1$ //$NON-NLS-2$
+        if (!notFoundMessages.contains(messageId)) {
+            context.addStatus(new IpsStatus(IStatus.INFO, "Message with Id " + messageId + " not found.")); //$NON-NLS-1$ //$NON-NLS-2$
+            notFoundMessages.add(messageId);
+        }
         return messageId;
     }
 }

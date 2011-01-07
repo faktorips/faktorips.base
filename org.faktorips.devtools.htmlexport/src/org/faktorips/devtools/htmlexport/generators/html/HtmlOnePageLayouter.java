@@ -33,12 +33,12 @@ public class HtmlOnePageLayouter extends HtmlLayouter {
     }
 
     @Override
-    protected void initRootPage(AbstractRootPageElement pageElement) {
+    public void initRootPage(AbstractRootPageElement pageElement) {
         setPathToRoot(""); //$NON-NLS-1$
     }
 
     @Override
-    String createLinkBase(LinkPageElement pageElement) {
+    public String createLinkBase(LinkPageElement pageElement) {
         return '.' + createInternalPath(pageElement.getPathFromRoot());
     }
 

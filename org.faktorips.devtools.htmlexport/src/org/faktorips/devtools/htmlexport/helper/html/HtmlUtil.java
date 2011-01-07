@@ -182,18 +182,15 @@ public class HtmlUtil {
         return builder.toString();
     }
 
-    /**
-     * creates opening link-tag
-     * 
-     */
-    public String createLinkOpenTag(String href, String target, String classes) {
-        return createLinkOpenTag(href, target, classes, null);
-    }
-
-    public String createLinkOpenTag(String href, String target, String classes, String title) {
+    public String createLinkOpenTag(String href, String anchor, String target, String classes, String title) {
         List<HtmlAttribute> attributes = new ArrayList<HtmlAttribute>();
 
-        attributes.add(new HtmlAttribute("href", href)); //$NON-NLS-1$
+        if (StringUtils.isBlank(anchor)) {
+            attributes.add(new HtmlAttribute("href", href)); //$NON-NLS-1$
+        } else {
+            attributes.add(new HtmlAttribute("href", href + "#" + anchor)); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+
         if (StringUtils.isNotBlank(target)) {
             attributes.add(new HtmlAttribute("target", target)); //$NON-NLS-1$
         }
@@ -245,5 +242,12 @@ public class HtmlUtil {
      */
     public String createHtmlFoot() {
         return createHtmlElementCloseTag("body") + createHtmlElementCloseTag("html"); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
+    /**
+     * creates an anchor
+     */
+    public String createAnchor(String id) {
+        return "<a id=\"" + id + "\"/>"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

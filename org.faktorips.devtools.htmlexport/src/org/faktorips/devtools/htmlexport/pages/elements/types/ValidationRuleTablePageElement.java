@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.internal.model.pctype.ValidationRule;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 
@@ -62,12 +63,12 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
     protected List<String> getHeadlineWithIpsObjectPart() {
         List<String> headline = new ArrayList<String>();
 
-        headline.add(getContext().getMessage("ValidationRuleTablePageElement_headlineName")); //$NON-NLS-1$
-        headline.add(getContext().getMessage("ValidationRuleTablePageElement_headlineMessageCode")); //$NON-NLS-1$
-        headline.add(getContext().getMessage("ValidationRuleTablePageElement_headlineMessageSeverity")); //$NON-NLS-1$
-        headline.add(getContext().getMessage("ValidationRuleTablePageElement_headlineMessageText")); //$NON-NLS-1$
-        headline.add(getContext().getMessage("ValidationRuleTablePageElement_headlineValidatedAttributes")); //$NON-NLS-1$
-        headline.add(getContext().getMessage("ValidationRuleTablePageElement_headlineDescription")); //$NON-NLS-1$
+        headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineName)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineMessageCode)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineMessageSeverity)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineMessageText)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineValidatedAttributes)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineDescription)); 
 
         return headline;
     }

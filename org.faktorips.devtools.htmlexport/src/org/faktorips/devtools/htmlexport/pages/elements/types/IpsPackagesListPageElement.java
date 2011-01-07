@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementFilter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
@@ -58,7 +59,7 @@ public class IpsPackagesListPageElement extends AbstractIpsElementListPageElemen
     public IpsPackagesListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles, IpsElementFilter filter,
             DocumentationContext context) {
         super(baseIpsElement, srcFiles, filter, context);
-        setTitle(getContext().getMessage("IpsPackagesListPageElement_allPackages")); //$NON-NLS-1$
+        setTitle(getContext().getMessage(HtmlExportMessages.IpsPackagesListPageElement_allPackages)); 
     }
 
     /**
@@ -73,7 +74,7 @@ public class IpsPackagesListPageElement extends AbstractIpsElementListPageElemen
     public void build() {
         super.build();
         addPageElements(new TextPageElement(
-                getContext().getMessage("IpsPackagesListPageElement_headlineObjectTypes"), TextType.HEADING_2)); //$NON-NLS-1$
+                getContext().getMessage(HtmlExportMessages.IpsPackagesListPageElement_headlineObjectTypes), TextType.HEADING_2)); 
 
         addPageElements(new TypeChooserPageElement(getContext()));
 
@@ -82,7 +83,7 @@ public class IpsPackagesListPageElement extends AbstractIpsElementListPageElemen
         List<PageElement> list = createPackageList();
 
         addPageElements(new TextPageElement(list.size()
-                + " " + getContext().getMessage("IpsPackagesListPageElement_packages"), TextType.BLOCK)); //$NON-NLS-1$ //$NON-NLS-2$
+                + " " + getContext().getMessage(HtmlExportMessages.IpsPackagesListPageElement_packages), TextType.BLOCK)); //$NON-NLS-1$ 
 
         if (list.size() > 0) {
             addPageElements(new ListPageElement(list));

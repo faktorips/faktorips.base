@@ -23,7 +23,6 @@ import org.faktorips.devtools.htmlexport.IDocumentorScript;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.helper.FileHandler;
-import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.standard.pages.ProjectOverviewPageElement;
 
@@ -47,7 +46,7 @@ public class StandardOnePageDocumentorScript implements IDocumentorScript {
     }
 
     private void writeProjectOverviewPage(DocumentationContext context) {
-        AbstractPageElement projectOverviewHtml = new ProjectOverviewPageElement(context);
+        PageElement projectOverviewHtml = new ProjectOverviewPageElement(context);
         createContent(context, projectOverviewHtml);
     }
 

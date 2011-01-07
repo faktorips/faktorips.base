@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
@@ -68,13 +69,13 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
         super.build();
 
         addPageElements(new WrapperPageElement(WrapperType.BLOCK, new LinkPageElement("index", "_top", //$NON-NLS-1$ //$NON-NLS-2$
-                getContext().getMessage("AbstractObjectContentPageElement_overviewProject") //$NON-NLS-1$
+                getContext().getMessage(HtmlExportMessages.AbstractObjectContentPageElement_overviewProject)
                         + " " + getContext().getIpsProject().getName()))); //$NON-NLS-1$
 
         addPageElements(PageElementUtils.createLinkPageElement(getContext(), getDocumentedIpsObject()
                 .getIpsPackageFragment(),
                 "classes", IpsUIPlugin.getLabel(getDocumentedIpsObject().getIpsPackageFragment()), true)); //$NON-NLS-1$
-        addPageElements(new TextPageElement(getDocumentedIpsObject().getIpsObjectType().getDisplayName() + " " //$NON-NLS-1$
+        addPageElements(new TextPageElement(getIpsObjectTypeDisplayName() + " " //$NON-NLS-1$
                 + getDocumentedIpsObject().getName(), TextType.HEADING_1));
 
         addTypeHierarchy();
@@ -92,8 +93,8 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
                 "AbstractObjectContentPageElement_projectFolder") + ": " //$NON-NLS-1$ //$NON-NLS-2$
                 + getDocumentedIpsObject().getIpsSrcFile().getIpsPackageFragment()));
 
-        addPageElements(new TextPageElement(getContext().getMessage("AbstractObjectContentPageElement_description"), //$NON-NLS-1$
-                TextType.HEADING_2));
+        addPageElements(new TextPageElement(getContext().getMessage(
+                HtmlExportMessages.AbstractObjectContentPageElement_description), TextType.HEADING_2));
         addPageElements(new TextPageElement(
                 StringUtils.isBlank(getContext().getDescription(getDocumentedIpsObject())) ? getContext().getMessage(
                         "AbstractObjectContentPageElement_noDescription") : getContext().getDescription( //$NON-NLS-1$
@@ -104,6 +105,26 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
         }
 
         addExtensionPropertiesTable();
+    }
+
+    /**
+     * Fetches the displayName of the IpsObjectType
+     * <p>
+     * The method getDisplayName is not useful, because it depends on the platform language and not
+     * the chosen one.
+     * <p>
+     * If the IpsObjectType of the documented IpsObject is a subclass of IpsObjectType the method
+     * getDisplayName is used with the possibility of using a wrong language
+     * 
+     */
+    private String getIpsObjectTypeDisplayName() {
+        String id = getDocumentedIpsObject().getIpsObjectType().getId();
+        String messageId = "IpsObjectType_name" + id; //$NON-NLS-1$
+        String message = getContext().getMessage(messageId);
+        if (StringUtils.isNotBlank(message) && !messageId.equals(message)) {
+            return message;
+        }
+        return getDocumentedIpsObject().getIpsObjectType().getDisplayName();
     }
 
     /**
