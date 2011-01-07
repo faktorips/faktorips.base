@@ -17,6 +17,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -59,6 +60,7 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.AbstractCheckbox;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 import org.faktorips.devtools.core.util.BeanUtil;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -98,6 +100,8 @@ public class BindingContext {
     private List<IIpsObject> ipsObjects = new ArrayList<IIpsObject>(1);
 
     private List<ControlPropertyBinding> controlBindings = new ArrayList<ControlPropertyBinding>(2);
+
+    private Set<String> ignoredMessageCodes = new HashSet<String>(2);
 
     /**
      * Updates the UI with information from the model.
@@ -447,11 +451,15 @@ public class BindingContext {
                     continue;
                 }
 
-                MessageList fieldMessages;
+                MessageList fieldMessages = new MessageList();
                 if (mapping.getField().isTextContentParsable()) {
-                    fieldMessages = list.getMessagesFor(mapping.getObject(), mapping.getPropertyName());
+                    for (Message message : list.getMessagesFor(mapping.getObject(), mapping.getPropertyName())) {
+                        if (!(ignoredMessageCodes.contains(message.getCode()))) {
+                            fieldMessages.add(message);
+                        }
+                    }
+
                 } else {
-                    fieldMessages = new MessageList();
                     fieldMessages.add(Message.newError(EditField.INVALID_VALUE,
                             Messages.IpsObjectPartContainerUIController_invalidValue));
                 }
@@ -553,7 +561,53 @@ public class BindingContext {
 
             applyControlBindings();
         }
+    }
 
+    /**
+     * Adds the given message code to the set of message codes that will be ignored during
+     * validation.
+     * <p>
+     * Returns true if the message code was not already ignored, false otherwise.
+     * 
+     * @param messageCode The message code to ignore during validation
+     * 
+     * @throws NullPointerException If the parameter is null
+     */
+    public final boolean addIgnoredMessageCode(String messageCode) {
+        ArgumentCheck.notNull(messageCode);
+        return ignoredMessageCodes.add(messageCode);
+    }
+
+    /**
+     * Removes the given message code from the set of messages that will be ignored during
+     * validation.
+     * <p>
+     * Returns true if the message code was really ignored, false otherwise.
+     * 
+     * @param messageCode The message code to no longer ignore during validation
+     * 
+     */
+    public final boolean removeIgnoredMessageCode(String messageCode) {
+        return ignoredMessageCodes.remove(messageCode);
+    }
+
+    /**
+     * Returns an unmodifiable view on the set of message codes that are ignored during validation.
+     */
+    public final Set<String> getIgnoredMessageCodes() {
+        return Collections.unmodifiableSet(ignoredMessageCodes);
+    }
+
+    /**
+     * Returns whether the given message code is ignored during validation.
+     * 
+     * @param messageCode The message code to check whether it is ignored
+     * 
+     * @throws NullPointerException If the parameter is null
+     */
+    public final boolean isIgnoredMessageCode(String messageCode) {
+        ArgumentCheck.notNull(messageCode);
+        return ignoredMessageCodes.contains(messageCode);
     }
 
     @Override

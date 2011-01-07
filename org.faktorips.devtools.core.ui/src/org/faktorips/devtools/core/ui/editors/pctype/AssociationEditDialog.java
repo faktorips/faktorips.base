@@ -94,6 +94,14 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         pmoAssociation = new PmoAssociation(association);
         extFactory = new ExtensionPropertyControlFactory(association.getClass());
         searchInverseAssociation();
+
+        /*
+         * In case direct refactoring is activated the inverse relation will be updated by the
+         * refactoring
+         */
+        if (IpsPlugin.getDefault().getIpsPreferences().isRefactoringModeDirect()) {
+            bindingContext.addIgnoredMessageCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_MISMATCH);
+        }
     }
 
     private void searchInverseAssociation() {

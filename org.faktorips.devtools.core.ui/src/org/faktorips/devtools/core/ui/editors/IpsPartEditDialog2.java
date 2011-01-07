@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -260,21 +262,21 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         }
 
         if (msgList.size() > 0) {
-            Message msg = msgList.getFirstMessage(Message.ERROR);
-            if (msg != null) {
-                setMessage(msg.getText(), IMessageProvider.ERROR);
+            Message firstErrorMsg = getFirstMessage(msgList, Message.ERROR, bindingContext.getIgnoredMessageCodes());
+            if (firstErrorMsg != null) {
+                setMessage(firstErrorMsg.getText(), IMessageProvider.ERROR);
                 return;
             }
 
-            msg = msgList.getFirstMessage(Message.WARNING);
-            if (msg != null) {
-                setMessage(msg.getText(), IMessageProvider.WARNING);
+            Message firstWarningMsg = getFirstMessage(msgList, Message.WARNING, bindingContext.getIgnoredMessageCodes());
+            if (firstWarningMsg != null) {
+                setMessage(firstWarningMsg.getText(), IMessageProvider.WARNING);
                 return;
             }
 
-            msg = msgList.getFirstMessage(Message.INFO);
-            if (msg != null) {
-                setMessage(msg.getText(), IMessageProvider.INFORMATION);
+            Message firstInfoMsg = getFirstMessage(msgList, Message.INFO, bindingContext.getIgnoredMessageCodes());
+            if (firstInfoMsg != null) {
+                setMessage(firstInfoMsg.getText(), IMessageProvider.INFORMATION);
                 return;
             }
         }
@@ -289,6 +291,16 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         }
 
         setMessage(null);
+    }
+
+    private Message getFirstMessage(MessageList messageList, int severity, Set<String> ignoredMessageCodes) {
+        for (int i = 0; i < messageList.size(); i++) {
+            Message message = messageList.getMessage(i);
+            if (message.getSeverity() == severity && !(ignoredMessageCodes.contains(message.getCode()))) {
+                return message;
+            }
+        }
+        return null;
     }
 
     /**
