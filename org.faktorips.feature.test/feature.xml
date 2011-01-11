@@ -800,6 +800,7 @@ schutz” abgerufen und ausgedruckt werden.
       <import plugin="org.faktorips.devtools.tableconversion"/>
       <import plugin="org.eclipse.ltk.core.refactoring" version="3.4.2" match="greaterOrEqual"/>
       <import plugin="org.faktorips.devtools.htmlexport"/>
+      <import plugin="org.mockito" version="1.8.3" match="greaterOrEqual"/>
    </requires>
 
    <plugin
