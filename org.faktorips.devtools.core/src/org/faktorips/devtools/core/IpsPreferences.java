@@ -21,6 +21,8 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import org.apache.commons.lang.LocaleUtils;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
@@ -198,7 +200,9 @@ public class IpsPreferences {
             } catch (Throwable t) {
                 // We also want to catch errors because on a linux system without a X-Server the
                 // virtual mashine throws an InternalError!
-                IpsPlugin.log(t);
+                IpsPlugin
+                        .log(new Status(IStatus.WARNING, IpsPlugin.PLUGIN_ID,
+                                "Cannot load default locale from input context. Use system default locale. (Maybe there is no X Server)")); //$NON-NLS-1$
             }
             if (defaultLocale == null) {
                 defaultLocale = Locale.getDefault();
