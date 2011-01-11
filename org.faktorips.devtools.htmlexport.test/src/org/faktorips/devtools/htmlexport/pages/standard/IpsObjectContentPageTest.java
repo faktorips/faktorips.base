@@ -21,12 +21,11 @@ public class IpsObjectContentPageTest extends AbstractXmlUnitHtmlExportTest {
     public void testPolicyCmptType() throws Exception {
         PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Vertrag", "VertragProdukt");
 
-        String expectedHeadline = policy.getIpsObjectType().getDisplayName() + " " + policy.getName();
+        String expectedHeadline = context.getMessage(policy.getIpsObjectType()) + " " + policy.getName();
 
         String xPath = "//h1[. = '" + expectedHeadline + "']";
 
-        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(),
-                context);
+        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
         assertXPathExists(objectContentPage, xPath);
     }
 }

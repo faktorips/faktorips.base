@@ -261,4 +261,8 @@ public class DocumentationContext {
     public String getMessage(String messageId) {
         return messagesManager.getMessage(messageId);
     }
+
+    public String getMessage(Object object) {
+        return messagesManager.getMessage(object);
+    }
 }

@@ -114,4 +114,14 @@ public class MessagesManager {
         }
         return messageId;
     }
+
+    public String getMessage(Object object) {
+        if (object instanceof IpsObjectType) {
+            IpsObjectType objectType = (IpsObjectType)object;
+            String messageId = "IpsObjectType_name" + objectType.getId(); //$NON-NLS-1$
+            String message = getMessage(messageId);
+            return messageId.equals(message) ? objectType.getDisplayName() : message;
+        }
+        return object.toString();
+    }
 }

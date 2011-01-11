@@ -16,7 +16,7 @@ package org.faktorips.devtools.htmlexport.context;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
-    private static final String BUNDLE_NAME = "org.faktorips.devtools.htmlexport.documentor.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.faktorips.devtools.htmlexport.documentor"; //$NON-NLS-1$
     public static String DocumentationContext_multipleErrorsMessage;
     static {
         // initialize resource bundle

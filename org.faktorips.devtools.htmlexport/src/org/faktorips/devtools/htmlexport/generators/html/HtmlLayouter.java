@@ -158,6 +158,7 @@ public class HtmlLayouter extends AbstractLayouter {
             addLayoutResource(cssResource);
 
         } catch (IOException e) {
+
             System.out.println("Resources aren't loaded correctly: " + e.getMessage()); //$NON-NLS-1$
         }
     }
