@@ -30,8 +30,9 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.editors.IIpsProblemChangedListener;
 
 /**
- * Listens to resource deltas and filters for marker changes of type IpsPlugin.PROBLEM_MARKER
- * Viewers or editors showing error ticks should register as listener to this type.
+ * Listens to resource deltas and filters for marker changes of type
+ * {@link IpsPlugin#PROBLEM_MARKER} Viewers or editors showing error ticks should register as
+ * listener to this type.
  * 
  * @author Joerg Ortmann
  */
