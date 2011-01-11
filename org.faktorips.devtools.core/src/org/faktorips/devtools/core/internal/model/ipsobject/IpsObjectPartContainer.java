@@ -700,8 +700,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         if (descriptionCount != languageCount) {
             String text = NLS.bind(Messages.IpsObjectPartContainer_msgInvalidDescriptionCount, descriptionCount,
                     languageCount);
-            Message message = new Message(IIpsObjectPartContainer.MSGCODE_INVALID_DESCRIPTION_COUNT, text,
-                    Message.WARNING);
+            Message message = Message.newWarning(IIpsObjectPartContainer.MSGCODE_INVALID_DESCRIPTION_COUNT, text, this);
             result.add(message);
         }
     }
@@ -710,7 +709,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         int labelCount = labels.size();
         if (labelCount != languageCount) {
             String text = NLS.bind(Messages.IpsObjectPartContainer_msgInvalidLabelCount, labelCount, languageCount);
-            Message message = new Message(IIpsObjectPartContainer.MSGCODE_INVALID_LABEL_COUNT, text, Message.WARNING);
+            Message message = Message.newWarning(IIpsObjectPartContainer.MSGCODE_INVALID_LABEL_COUNT, text, this);
             result.add(message);
         }
     }
