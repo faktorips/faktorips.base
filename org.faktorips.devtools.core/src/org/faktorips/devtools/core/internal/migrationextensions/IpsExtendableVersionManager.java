@@ -31,7 +31,10 @@ import org.osgi.framework.Version;
 /**
  * This is the new version manager for the Faktor-IPS core feature. It uses the old
  * {@link CoreVersionManager} for compatibility to old projects. The new Version manager is
- * introduced with Faktor-IPS 3.2.0
+ * introduced with Faktor-IPS 3.2.0.
+ * <p>
+ * Read {@link org.faktorips.devtools.core.internal.migrationextensions} (or pacakge.html) for
+ * instructions creating a new migration strategy!
  * 
  * @author dirmeier
  */
