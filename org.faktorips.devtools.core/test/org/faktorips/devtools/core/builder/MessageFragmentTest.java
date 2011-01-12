@@ -39,7 +39,6 @@ public class MessageFragmentTest extends TestCase {
         buf.append(sep);
         buf.append("text.append(param1);"); //$NON-NLS-1$
         buf.append(sep);
-        System.out.print(msgFrag.getFrag().toString());
 
         assertEquals(buf.toString(), msgFrag.getFrag().toString());
         String[] paraNames = msgFrag.getParameterNames();
@@ -67,7 +66,6 @@ public class MessageFragmentTest extends TestCase {
         buf.append(sep);
         buf.append("text.append(attribute2);"); //$NON-NLS-1$
         buf.append(sep);
-        System.out.print(msgFrag.getFrag().toString());
 
         assertEquals(buf.toString(), msgFrag.getFrag().toString());
         String[] paraNames = msgFrag.getParameterNames();
@@ -95,7 +93,6 @@ public class MessageFragmentTest extends TestCase {
         buf.append(sep);
         buf.append("text.append(p1);"); //$NON-NLS-1$
         buf.append(sep);
-        System.out.print(msgFrag.getFrag().toString());
 
         assertEquals(buf.toString(), msgFrag.getFrag().toString());
         String[] paraNames = msgFrag.getParameterNames();
