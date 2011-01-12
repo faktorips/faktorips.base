@@ -91,7 +91,7 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
             Element modelTypeAssociations = doc.createElement("ModelTypeAssociations");
             modelType.appendChild(modelTypeAssociations);
             for (IAssociation association : associations) {
-                if (association.isValid()) {
+                if (association.isValid(model.getIpsProject())) {
                     Element modelTypeAssociation = doc.createElement("ModelTypeAssociation");
                     modelTypeAssociations.appendChild(modelTypeAssociation);
                     modelTypeAssociation.setAttribute("name", association.getTargetRoleSingular());
@@ -133,6 +133,12 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
                     } catch (CoreException e) {
                         // don't bother
                     }
+
+                    if (association instanceof IPolicyCmptTypeAssociation) {
+                        IPolicyCmptTypeAssociation pcTypeAsso = (IPolicyCmptTypeAssociation)association;
+                        modelTypeAssociation.setAttribute("inverseAssociation", pcTypeAsso.getInverseAssociation());
+                    }
+
                     addExtensionProperties(modelTypeAssociation, association);
                 }
             }
@@ -145,7 +151,7 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
             Element modelTypeAttributes = doc.createElement("ModelTypeAttributes");
             modelType.appendChild(modelTypeAttributes);
             for (IAttribute attribute : attributes) {
-                if (attribute.isValid()) {
+                if (attribute.isValid(model.getIpsProject())) {
                     Element modelTypeAttribute = doc.createElement("ModelTypeAttribute");
                     modelTypeAttributes.appendChild(modelTypeAttribute);
                     modelTypeAttribute.setAttribute("name", attribute.getName());

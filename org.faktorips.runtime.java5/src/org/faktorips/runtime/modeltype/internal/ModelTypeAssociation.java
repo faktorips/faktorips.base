@@ -35,6 +35,7 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
     private boolean isDerivedUnion = false;
     private boolean isSubsetOfADerivedUnion = false;
     private Boolean isTargetRolePluralRequired = false;
+    private String inverseAssociation;
 
     public ModelTypeAssociation(ModelType modelType) {
         super(modelType.getAbstractRepository());
@@ -123,6 +124,8 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
                 isSubsetOfADerivedUnion = Boolean.valueOf(parser.getAttributeValue(i));
             } else if (parser.getAttributeLocalName(i).equals("isTargetRolePluralRequired")) {
                 isTargetRolePluralRequired = Boolean.valueOf(parser.getAttributeValue(i));
+            } else if (parser.getAttributeLocalName(i).equals("inverseAssociation")) {
+                inverseAssociation = parser.getAttributeValue(i);
             }
         }
         initExtPropertiesFromXml(parser);
@@ -166,6 +169,14 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
 
     public boolean isSubsetOfADerivedUnion() {
         return isSubsetOfADerivedUnion;
+    }
+
+    public void setInverseAssociation(String inverseAssociation) {
+        this.inverseAssociation = inverseAssociation;
+    }
+
+    public String getInverseAssociation() {
+        return inverseAssociation;
     }
 
 }
