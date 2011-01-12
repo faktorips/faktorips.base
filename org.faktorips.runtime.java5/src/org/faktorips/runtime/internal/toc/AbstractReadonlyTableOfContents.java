@@ -41,7 +41,7 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
     /**
      * Initializes the table of contents with data stored in the xml element.
      */
-    public final void initFromXml(Element tocElement) {
+    public void initFromXml(Element tocElement) {
         productDataVersion = tocElement.getAttribute(PRODUCT_DATA_VERSION_XML_ELEMENT);
         if (productDataVersion == null) {
             productDataVersion = "0";

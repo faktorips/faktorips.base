@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.w3c.dom.Element;
+
 /**
  * Default implementation of <code>ReadonlyTableOfContents</code>.
  * 
@@ -30,57 +32,71 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
     /**
      * A map that contains the runtime id of product components as key and the toc entry as value.
      */
-    protected Map<String, ProductCmptTocEntry> pcIdTocEntryMap = new HashMap<String, ProductCmptTocEntry>(1000);
+    protected Map<String, ProductCmptTocEntry> pcIdTocEntryMap;
 
     /**
      * A map that contains the fully qualified name of product components as key and the toc entry
      * as value.
      */
-    protected Map<String, ProductCmptTocEntry> pcNameTocEntryMap = new HashMap<String, ProductCmptTocEntry>(1000);
+    protected Map<String, ProductCmptTocEntry> pcNameTocEntryMap;
 
     /** A map that contains per kindId the list of product component ids that are of the kind. */
-    protected Map<String, List<VersionIdTocEntry>> kindIdTocEntryListMap = new HashMap<String, List<VersionIdTocEntry>>(
-            500);
+    protected Map<String, List<VersionIdTocEntry>> kindIdTocEntryListMap;
 
     /**
      * Maps a table class to the toc entry that contains information about a table object
      * represented by this class.
      */
-    protected Map<String, TableContentTocEntry> tableImplClassTocEntryMap = new HashMap<String, TableContentTocEntry>(
-            100);
+    protected Map<String, TableContentTocEntry> tableImplClassTocEntryMap;
 
     /** Maps a qualified table name to the toc entry that contains information about a table object. */
-    protected Map<String, TableContentTocEntry> tableContentNameTocEntryMap = new HashMap<String, TableContentTocEntry>(
-            100);
+    protected Map<String, TableContentTocEntry> tableContentNameTocEntryMap;
 
     /**
      * Maps a qualified test case name to the toc entry that contains information about a test case
      * object.
      */
-    protected Map<String, TestCaseTocEntry> testCaseNameTocEntryMap = new HashMap<String, TestCaseTocEntry>(10);
+    protected Map<String, TestCaseTocEntry> testCaseNameTocEntryMap;
 
     /**
      * Maps a qualified model type name to the toc entry that contains information about the model
      * type.
      */
-    protected Map<String, ModelTypeTocEntry> modelTypeNameTocEntryMap = new HashMap<String, ModelTypeTocEntry>(100);
+    protected Map<String, ModelTypeTocEntry> modelTypeNameTocEntryMap;
 
     /** A map that contains the runtime id of enum contents as key and the toc entry as value. */
-    protected Map<String, EnumContentTocEntry> enumContentImplClassTocEntryMap = new HashMap<String, EnumContentTocEntry>(
-            100);
+    protected Map<String, EnumContentTocEntry> enumContentImplClassTocEntryMap;
 
     /**
      * Maps the qualified name of an enumtype to a toc entry of an XmlAdapter. Only for enum type
      * that defer their content XmlAdapters and hence entries into this map are created.
      */
-    protected Map<String, EnumXmlAdapterTocEntry> enumXmlAdapterTocEntryMap = new HashMap<String, EnumXmlAdapterTocEntry>(
-            100);
+    protected Map<String, EnumXmlAdapterTocEntry> enumXmlAdapterTocEntryMap;
 
     /**
      * Creats a new toc.
      */
     public ReadonlyTableOfContents() {
         super();
+    }
+
+    @Override
+    public void initFromXml(Element tocElement) {
+        int size = tocElement.getChildNodes().getLength();
+        /*
+         * The size of the HashMaps is set to estimated values depending on the maximum size of the
+         * table of contents
+         */
+        pcIdTocEntryMap = new HashMap<String, ProductCmptTocEntry>(size);
+        pcNameTocEntryMap = new HashMap<String, ProductCmptTocEntry>(size);
+        kindIdTocEntryListMap = new HashMap<String, List<VersionIdTocEntry>>(size);
+        tableImplClassTocEntryMap = new HashMap<String, TableContentTocEntry>(size / 4);
+        tableContentNameTocEntryMap = new HashMap<String, TableContentTocEntry>(size / 4);
+        testCaseNameTocEntryMap = new HashMap<String, TestCaseTocEntry>();
+        modelTypeNameTocEntryMap = new HashMap<String, ModelTypeTocEntry>(size / 4);
+        enumContentImplClassTocEntryMap = new HashMap<String, EnumContentTocEntry>(size / 4);
+        enumXmlAdapterTocEntryMap = new HashMap<String, EnumXmlAdapterTocEntry>(size / 4);
+        super.initFromXml(tocElement);
     }
 
     /**
