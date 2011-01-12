@@ -119,8 +119,10 @@ public class DateControl extends TextButtonControl {
     }
 
     private void closeCalendarShell(Shell calendarShell) {
-        calendarShell.setVisible(false);
-        calendarShell.dispose();
+        if (calendarShell != null && !calendarShell.isDisposed()) {
+            calendarShell.setVisible(false);
+            calendarShell.dispose();
+        }
     }
 
     protected void setFieldValueToSelectedDate(final DateTime dateWidget) {
