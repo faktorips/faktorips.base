@@ -1849,14 +1849,10 @@ public class IpsProject extends IpsElement implements IIpsProject {
         IpsProjectProperties props = getPropertiesInternal();
         String projectPath = getProject().getLocation().toString();
         String resourcePath = resource.getLocation().toString();
-        // if (!resourcePath.startsWith(projectPath)) {
-        //            throw new RuntimeException("Invalid project path " + projectPath + " of resource: " + resourcePath); //$NON-NLS-1$ //$NON-NLS-2$
-        // }
         if (resourcePath.length() <= projectPath.length()) {
             return false;
         }
-        String location = resourcePath.substring(projectPath.length() + 1);
-
+        String location = resource.getProjectRelativePath().toString();
         return props.isResourceExcludedFromProductDefinition(location);
     }
 
