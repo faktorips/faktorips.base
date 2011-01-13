@@ -70,7 +70,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         newPolicyCmptTypeWithoutProductCmptType(project, "home.base.HomePolicy");
 
         archiveFile = project.getProject().getFile("test.ipsar");
-        archivePath = archiveFile.getProjectRelativePath();
+        archivePath = archiveFile.getFullPath();
         createArchive(project, archiveFile);
         archive = new IpsArchive(project, archivePath);
 

@@ -855,7 +855,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         createArchive(archiveProject, archiveFile);
 
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
-        path.newArchiveEntry(archiveFile.getProjectRelativePath());
+        path.newArchiveEntry(archiveFile.getFullPath());
         ipsProject.setIpsObjectPath(path);
 
         IIpsSrcFile foundFile = ipsProject.findIpsSrcFile(type.getQualifiedNameType());
