@@ -388,8 +388,11 @@ public class MoveOperation implements IRunnableWithProgress {
                 currMonitor.done();
             }
         };
-
-        BusyIndicator.showWhile(getDisplay(), run);
+        if (getDisplay() == null) {
+            Display.getDefault().asyncExec(run);
+        } else {
+            BusyIndicator.showWhile(getDisplay(), run);
+        }
     }
 
     private void moveIpsObject(IIpsObject ipsObject,
@@ -432,15 +435,8 @@ public class MoveOperation implements IRunnableWithProgress {
 
     private void moveNoneIpsElement(final IFile sourceFile, String targetName) {
         final IContainer targetFolder = getTargetContainer(targetName);
-        final Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
-        display.asyncExec(new Runnable() {
-
-            @Override
-            public void run() {
-                MoveFilesAndFoldersOperation operation = new MoveFilesAndFoldersOperation(display.getActiveShell());
-                operation.copyResources(new IResource[] { sourceFile }, targetFolder);
-            }
-        });
+        MoveFilesAndFoldersOperation operation = new MoveFilesAndFoldersOperation(getShell());
+        operation.copyResources(new IResource[] { sourceFile }, targetFolder);
     }
 
     private IContainer getTargetContainer(String targetName) {
