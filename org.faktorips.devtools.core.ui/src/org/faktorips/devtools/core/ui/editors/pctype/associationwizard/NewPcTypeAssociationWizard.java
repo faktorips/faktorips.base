@@ -258,7 +258,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     /**
      * Returns <code>true</code> if the page can flip to the next page. Only if the given page is
      * valid then the user can flip to the next page. If there is no next page then this method
-     * returns always <code>null</code>. If there is a validation error then the error will be
+     * returns always <code>false</code>. If there is a validation error then the error will be
      * displayed in the message area of the given page.
      */
     public boolean canPageFlipToNextPage(IBlockedValidationWizardPage page) {
@@ -334,7 +334,8 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     private IAssociation getAssociationFor(IBlockedValidationWizardPage page) {
         if (page instanceof InverseAssociationPropertyPage) {
             return inverseAssociation;
-        } else if (page instanceof PropertyPage || page instanceof AssociationTargetPage) {
+        } else if (page instanceof PropertyPage || page instanceof AssociationTargetPage
+                || page instanceof InverseAssociationPage) {
             return association;
         } else if (page instanceof ConfProdCmptTypePropertyPage) {
             return productCmptTypeAssociation;
