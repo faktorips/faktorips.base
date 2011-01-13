@@ -102,7 +102,9 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
 
     public void testGetBasePackageNameForDerivedArtefacts() throws CoreException {
         String expPackage = motorPolicyType.getIpsSrcFile().getBasePackageNameForDerivedArtefacts();
-        assertEquals(expPackage, archive.getBasePackageNameForDerivedArtefacts(motorPolicyType.getQualifiedNameType()));
+        QualifiedNameType qualifiedNameType = motorPolicyType.getQualifiedNameType();
+        assertNotNull(qualifiedNameType);
+        assertEquals(expPackage, archive.getBasePackageNameForDerivedArtefacts(qualifiedNameType));
     }
 
     public void testContains() throws CoreException {
