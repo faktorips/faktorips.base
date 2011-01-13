@@ -324,7 +324,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
 
         IFile dummyArchiveFile = dummyProject.getProject().getFile("test.ipsar");
 
-        IPath dummyArchivePath = dummyArchiveFile.getProjectRelativePath();
+        IPath dummyArchivePath = dummyArchiveFile.getFullPath();
         createArchive(dummyProject, dummyArchiveFile);
 
         IIpsObjectPath ipsObjectPath = dummyProject.getIpsObjectPath();
