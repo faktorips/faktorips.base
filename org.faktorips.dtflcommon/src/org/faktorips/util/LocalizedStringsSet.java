@@ -68,7 +68,7 @@ public class LocalizedStringsSet {
         this.loader = loader;
     }
 
-    public String getString(String key, Locale locale, Object[] replacements) {
+    public String getString(String key, Locale locale, Object... replacements) {
         String s = ResourceBundle.getBundle(name, locale, loader).getString(key);
         MessageFormat mf = new MessageFormat(s, locale);
         return mf.format(replacements);
@@ -82,7 +82,7 @@ public class LocalizedStringsSet {
         return ResourceBundle.getBundle(name, locale, loader).getString(key);
     }
 
-    public String getString(String key, Object[] replacements) {
+    public String getString(String key, Object... replacements) {
         return getString(key, Locale.getDefault(), replacements);
     }
 
