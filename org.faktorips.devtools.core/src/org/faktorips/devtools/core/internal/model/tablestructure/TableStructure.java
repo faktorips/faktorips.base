@@ -348,7 +348,9 @@ public class TableStructure extends IpsObject implements ITableStructure {
         descriptionText.append(Messages.TableStructure_descriptionEnd + column.getName());
 
         Description description = (Description)fct.getDescription(locale);
-        description.setTextWithoutChangeEvent(descriptionText.toString());
+        if (description != null) {
+            description.setTextWithoutChangeEvent(descriptionText.toString());
+        }
 
         return fct;
     }
