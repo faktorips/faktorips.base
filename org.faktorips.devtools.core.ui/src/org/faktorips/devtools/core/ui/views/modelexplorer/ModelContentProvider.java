@@ -223,9 +223,8 @@ public class ModelContentProvider implements ITreeContentProvider {
                 IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project.getName());
                 IIpsArchiveEntry[] archiveEntries = ipsProject.getIpsObjectPath().getArchiveEntries();
                 for (IIpsArchiveEntry archiveEntrie : archiveEntries) {
-                    // TODO pk archivelocation not valid for external files 25-09-2008
-                    IPath archivePath = archiveEntrie.getArchivePath();
-                    IFile archiveFile = ResourcesPlugin.getWorkspace().getRoot().getFile(archivePath);
+                    IPath archivePath = archiveEntrie.getArchiveLocation();
+                    IFile archiveFile = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(archivePath);
                     if (resource.equals(archiveFile)) {
                         return true;
                     }

@@ -61,7 +61,7 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         createArchive(archiveProject, archiveFile);
 
         IIpsObjectPath path = project.getIpsObjectPath();
-        entry = (IpsArchiveEntry)path.newArchiveEntry(archiveFile.getProjectRelativePath());
+        entry = (IpsArchiveEntry)path.newArchiveEntry(archiveFile.getFullPath());
         project.setIpsObjectPath(path);
         root = (ArchiveIpsPackageFragmentRoot)project.getIpsPackageFragmentRoots()[1];
     }
@@ -104,7 +104,7 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
 
     public void testGetIpsObjectPathEntry() throws CoreException {
-        assertEquals(entry.getArchivePath(), root.getIpsArchive().getArchivePath());
+        assertEquals(entry.getArchiveLocation(), root.getIpsArchive().getLocation());
     }
 
     public void testGetParent() {

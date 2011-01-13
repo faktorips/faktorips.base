@@ -58,7 +58,7 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
         createArchive(archiveProject, archiveFile);
 
         IIpsObjectPath path = project.getIpsObjectPath();
-        path.newArchiveEntry(archiveFile.getProjectRelativePath());
+        path.newArchiveEntry(archiveFile.getFullPath());
         project.setIpsObjectPath(path);
         root = (ArchiveIpsPackageFragmentRoot)project.getIpsPackageFragmentRoots()[1];
         pack = (ArchiveIpsPackageFragment)root.getIpsPackageFragment("mycompany.motor");

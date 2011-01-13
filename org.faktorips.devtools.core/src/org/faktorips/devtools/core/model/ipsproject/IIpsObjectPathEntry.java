@@ -50,9 +50,14 @@ public interface IIpsObjectPathEntry {
     public final static String MSGCODE_MISSING_PROJECT = MSGCODE_PREFIX + "MissingProject"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that a related folder is missing.
+     * Validation message code to indicate that a related archive is missing.
      */
     public final static String MSGCODE_MISSING_ARCHVE = MSGCODE_PREFIX + "MissingArchive"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that a related archive is invalid.
+     */
+    public final static String MSGCODE_INVALID_ARCHVE = MSGCODE_PREFIX + "InvalidArchive"; //$NON-NLS-1$
 
     /**
      * Type constant indicating a source folder entry.

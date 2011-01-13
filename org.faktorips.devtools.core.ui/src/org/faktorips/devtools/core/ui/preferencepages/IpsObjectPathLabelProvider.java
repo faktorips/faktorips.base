@@ -59,12 +59,13 @@ public class IpsObjectPathLabelProvider extends LabelProvider {
             text = ((IIpsProjectRefEntry)element).getReferencedIpsProject().getName();
         } else if (element instanceof IIpsArchiveEntry) {
             IIpsArchiveEntry entry = (IIpsArchiveEntry)element;
-            IPath archivePath = entry.getArchivePath();
+            IPath archivePath = entry.getArchiveLocation();
             IFile archiveFileInWorkspace = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(archivePath);
-            boolean isExternal = (archiveFileInWorkspace == null);
 
-            text = archivePath.lastSegment() + " - " //$NON-NLS-1$
-                    + (isExternal ? archivePath.toOSString() : archiveFileInWorkspace.getFullPath().toOSString());
+            text = archivePath.lastSegment()
+                    + " - " //$NON-NLS-1$
+                    + (archiveFileInWorkspace != null ? archiveFileInWorkspace.getParent().getFullPath().toString()
+                            : archivePath.removeLastSegments(1).toString());
         } else if (element instanceof IIpsObjectPathEntryAttribute) {
             IIpsObjectPathEntryAttribute att = (IIpsObjectPathEntryAttribute)element;
             String label = getLabelFromAttributeType(att);

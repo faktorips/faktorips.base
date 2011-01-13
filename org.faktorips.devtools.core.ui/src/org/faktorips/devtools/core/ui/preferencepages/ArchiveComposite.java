@@ -174,10 +174,10 @@ public class ArchiveComposite extends Composite {
         dialog.setMessage(Messages.ArchiveComposite_dialog_message_add);
         dialog.setTitle(Messages.ArchiveComposite_dialog_title_add);
 
-        List<IPath> alreadyRefArchives = new ArrayList<IPath>();
+        List<String> alreadyRefArchives = new ArrayList<String>();
         IIpsArchiveEntry[] entries = ipsObjectPath.getArchiveEntries();
         for (IIpsArchiveEntry entrie : entries) {
-            alreadyRefArchives.add(entrie.getArchivePath());
+            alreadyRefArchives.add(entrie.getArchiveLocation().toString());
         }
 
         dialog.addFilter(new IpsarViewerFilter(alreadyRefArchives, true));
@@ -205,15 +205,8 @@ public class ArchiveComposite extends Composite {
 
                 for (Object selectedArchive : selectedArchives) {
                     IFile archiveFile = (IFile)selectedArchive;
-                    IPath archivePath = null;
-                    if (ipsObjectPath.getIpsProject().getProject().equals(archiveFile.getProject())) {
-                        archivePath = archiveFile.getProjectRelativePath();
-                    } else {
-                        archivePath = archiveFile.getFullPath();
-                    }
-                    IIpsArchiveEntry newEntry = ipsObjectPath.newArchiveEntry(archivePath);
-                    alreadyRefArchives.add(newEntry.getArchivePath());
-
+                    IPath archivePath = archiveFile.getFullPath();
+                    ipsObjectPath.newArchiveEntry(archivePath);
                     tableViewer.refresh(false);
                 }
                 dataChanged = true;

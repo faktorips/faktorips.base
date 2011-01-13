@@ -93,7 +93,9 @@ public interface IIpsObjectPath {
     public IIpsSrcFolderEntry newSourceFolderEntry(IFolder srcFolder);
 
     /**
-     * Factory method that creates a new archive entry and adds it to the list of entries.
+     * Factory method that creates a new archive entry and adds it to the list of entries. If there
+     * is already an archive entry with the given path no entry is created but the existing entry is
+     * returned.
      */
     public IIpsArchiveEntry newArchiveEntry(IPath archivePath) throws CoreException;
 

@@ -30,6 +30,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
@@ -45,7 +47,6 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
@@ -120,6 +121,22 @@ public class IpsArchive implements IIpsArchive {
             return extFile.exists();
         }
         return resource.exists();
+    }
+
+    @Override
+    public boolean isValid() {
+        if (!exists()) {
+            return false;
+        }
+        File file = getFileFromPath();
+        try {
+            new ZipFile(file);
+        } catch (ZipException e) {
+            return false;
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -214,23 +231,6 @@ public class IpsArchive implements IIpsArchive {
     }
 
     @Override
-    public InputStream getSortDefinitionContent(String packName) throws CoreException {
-        if (packName == null) {
-            return null;
-        }
-        if (!containsPackage(packName)) {
-            return null;
-        }
-        StringBuffer buf = new StringBuffer();
-        buf.append(packName);
-        buf.append('.');
-        buf.append(IIpsPackageFragment.SORT_ORDER_FILE_NAME);
-        // TODO pk 2007-11-11 intermedia state
-        // return getResource(buf.toString());
-        return null;
-    }
-
-    @Override
     public InputStream getContent(QualifiedNameType qnt) throws CoreException {
         if (qnt == null) {
             return null;
@@ -245,7 +245,7 @@ public class IpsArchive implements IIpsArchive {
 
     private void readArchiveContentIfNecessary() throws CoreException {
         synchronized (this) {
-            if (!exists()) {
+            if (!isValid()) {
                 packs = new HashMap<String, Set<QualifiedNameType>>();
                 qNameTypes = new LinkedHashMap<QualifiedNameType, IpsObjectProperties>();
                 return;

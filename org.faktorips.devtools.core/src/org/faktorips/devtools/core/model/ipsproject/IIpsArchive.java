@@ -48,7 +48,8 @@ public interface IIpsArchive {
 
     /**
      * Returns the path to the underlying file. Note that the file might exists outside the
-     * workspace or might not exists at all.
+     * workspace or might not exists at all. Do not use this method to locate the archive because
+     * this path may be project relative or workspace relative. Use {@link #getLocation()} instead!
      */
     public IPath getArchivePath();
 
@@ -122,8 +123,6 @@ public interface IIpsArchive {
      */
     public InputStream getResourceAsStream(String path) throws CoreException;
 
-    public InputStream getSortDefinitionContent(String packName) throws CoreException;
-
     /**
      * Returns the name of the base package for the mergable artifacts (XML-Files, Java source
      * files). All mergable artifacts are contained in this package or one of the child packages.
@@ -135,5 +134,13 @@ public interface IIpsArchive {
      * files). All derived artifacts are contained in this package or one of the child packages.
      */
     public String getBasePackageNameForDerivedArtefacts(QualifiedNameType qnt) throws CoreException;
+
+    /**
+     * Check weather this archive is valid or not. A archive is valid if the corresponding file
+     * exists and the file is a readable ips archive.
+     * 
+     * @return true if the archive exists and is readable
+     */
+    public boolean isValid();
 
 }

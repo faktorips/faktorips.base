@@ -98,7 +98,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
 
         addIpsSrcFiles();
         for (IIpsSrcFile ipsSrcFile : affectedIpsSrcFiles) {
-            if (!(ipsSrcFile.getCorrespondingResource().isSynchronized(IResource.DEPTH_ZERO))) {
+            if (!(ipsSrcFile.getEnclosingResource().isSynchronized(IResource.DEPTH_ZERO))) {
                 status.addFatalError(NLS.bind(Messages.IpsRefactoringProcessor_errorIpsSrcFileOutOfSync, ipsSrcFile
                         .getCorrespondingResource().getFullPath()));
             }

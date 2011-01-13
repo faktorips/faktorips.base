@@ -22,7 +22,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.SystemUtils;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -224,8 +226,25 @@ public class IpsObjectPath implements IIpsObjectPath {
 
     @Override
     public IIpsArchiveEntry newArchiveEntry(IPath archivePath) throws CoreException {
+        IFile fileForLocation = ResourcesPlugin.getWorkspace().getRoot().getFile(archivePath);
+        if (fileForLocation == null) {
+            return null;
+        }
+
+        for (IIpsArchiveEntry archiveEntry : getArchiveEntries()) {
+            if (archiveEntry.getArchiveLocation().equals(fileForLocation.getLocation())) {
+                // entry already exists.
+                return archiveEntry;
+            }
+        }
+
+        IPath relativeArchivePath = fileForLocation.getFullPath();
+        if (fileForLocation.getProject().equals(getIpsProject().getProject())) {
+            relativeArchivePath = fileForLocation.getProjectRelativePath();
+        }
+
         IIpsArchiveEntry newEntry = new IpsArchiveEntry(this);
-        newEntry.setArchivePath(ipsProject, archivePath);
+        newEntry.setArchivePath(ipsProject, relativeArchivePath);
         IIpsObjectPathEntry[] newEntries = new IIpsObjectPathEntry[entries.length + 1];
         System.arraycopy(entries, 0, newEntries, 0, entries.length);
         newEntries[newEntries.length - 1] = newEntry;

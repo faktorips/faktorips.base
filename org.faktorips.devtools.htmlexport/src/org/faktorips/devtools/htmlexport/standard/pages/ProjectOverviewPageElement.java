@@ -114,7 +114,8 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         }
         ListPageElement archiveEntriesList = new ListPageElement();
         for (IIpsArchiveEntry ipsArchiveEntry : objectPath.getArchiveEntries()) {
-            archiveEntriesList.addPageElements(new TextPageElement(ipsArchiveEntry.getArchivePath().toString()));
+            archiveEntriesList.addPageElements(new TextPageElement(ipsArchiveEntry.getIpsArchive().getArchivePath()
+                    .toString()));
         }
         return wrapper.addPageElements(archiveEntriesList);
     }

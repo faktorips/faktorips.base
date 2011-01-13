@@ -430,10 +430,17 @@ public class MoveOperation implements IRunnableWithProgress {
         operation.copyFiles(new String[] { fileName }, targetFolder);
     }
 
-    private void moveNoneIpsElement(IFile sourceFile, String targetName) {
-        IContainer targetFolder = getTargetContainer(targetName);
-        MoveFilesAndFoldersOperation operation = new MoveFilesAndFoldersOperation(Display.getCurrent().getActiveShell());
-        operation.copyResources(new IResource[] { sourceFile }, targetFolder);
+    private void moveNoneIpsElement(final IFile sourceFile, String targetName) {
+        final IContainer targetFolder = getTargetContainer(targetName);
+        final Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
+        display.asyncExec(new Runnable() {
+
+            @Override
+            public void run() {
+                MoveFilesAndFoldersOperation operation = new MoveFilesAndFoldersOperation(display.getActiveShell());
+                operation.copyResources(new IResource[] { sourceFile }, targetFolder);
+            }
+        });
     }
 
     private IContainer getTargetContainer(String targetName) {
@@ -814,6 +821,11 @@ public class MoveOperation implements IRunnableWithProgress {
                 } else if (toTest instanceof IIpsPackageFragment) {
                     currTargetRoot = ((IIpsPackageFragment)toTest).getRoot();
                 }
+            }
+
+            if (currTargetRoot == null) {
+                // seems to be no ips object to refactor - only move.
+                return;
             }
 
             if (toTest instanceof IIpsPackageFragment) {

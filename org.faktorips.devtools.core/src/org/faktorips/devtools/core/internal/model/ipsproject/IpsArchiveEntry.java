@@ -70,11 +70,11 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
     }
 
     @Override
-    public IPath getArchivePath() {
+    public IPath getArchiveLocation() {
         if (archive == null) {
             return null;
         }
-        return archive.getArchivePath();
+        return archive.getLocation();
     }
 
     @Override
@@ -190,13 +190,18 @@ public class IpsArchiveEntry extends IpsObjectPathEntry implements IIpsArchiveEn
                     .getArchivePath().toString());
             Message msg = new Message(IIpsObjectPathEntry.MSGCODE_MISSING_ARCHVE, text, Message.ERROR, this);
             result.add(msg);
+        } else if (archive != null && !archive.isValid()) {
+            String text = NLS.bind(Messages.IpsArchiveEntry_archiveIsInvalid, archive == null ? null : archive
+                    .getArchivePath().toString());
+            Message msg = new Message(IIpsObjectPathEntry.MSGCODE_INVALID_ARCHVE, text, Message.ERROR, this);
+            result.add(msg);
         }
         return result;
     }
 
     @Override
     public String toString() {
-        return "ArchiveEntry[" + getArchivePath().toString() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+        return "ArchiveEntry[" + getArchiveLocation().toString() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override

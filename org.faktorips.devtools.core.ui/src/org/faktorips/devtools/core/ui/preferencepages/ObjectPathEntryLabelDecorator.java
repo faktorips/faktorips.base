@@ -77,6 +77,8 @@ public class ObjectPathEntryLabelDecorator implements ILightweightLabelDecorator
 
         if (errorCode.equals(IIpsObjectPathEntry.MSGCODE_MISSING_ARCHVE)) {
             decoratedShortMessage = Messages.ObjectPathEntryLabelDecorator_suffix_missing;
+        } else if (errorCode.equals(IIpsObjectPathEntry.MSGCODE_INVALID_ARCHVE)) {
+            decoratedShortMessage = Messages.ObjectPathEntryLabelDecorator_suffix_invalid;
         } else if (errorCode.equals(IIpsObjectPathEntry.MSGCODE_MISSING_FOLDER)) {
             decoratedShortMessage = Messages.ObjectPathEntryLabelDecorator_suffix_missing_folder;
         } else if (errorCode.equals(IIpsObjectPathEntry.MSGCODE_MISSING_PROJECT)) {

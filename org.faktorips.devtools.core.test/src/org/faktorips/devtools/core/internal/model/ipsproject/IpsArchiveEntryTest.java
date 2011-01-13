@@ -133,10 +133,10 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         entry.initFromXml(XmlUtil.getElement(docEl, 0), project.getProject());
         IFile archiveFile = project.getProject().getFolder("lib").getFile("test.ipsar");
         IPath archivePath = archiveFile.getFullPath();
-        assertEquals(archivePath, entry.getArchivePath());
+        assertEquals(archivePath, entry.getIpsArchive().getArchivePath());
 
         entry.initFromXml(XmlUtil.getElement(docEl, 1), project.getProject());
-        assertNull(entry.getArchivePath());
+        assertNull(entry.getArchiveLocation());
     }
 
     public void testGetIpsArchive() {
@@ -145,11 +145,11 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         assertEquals(archivePath, archive.getArchivePath());
     }
 
-    public void testGetIpsPackageFragementRootName() throws CoreException {
+    public void testGetIpsPackageFragementRootName() {
         assertEquals(entry.getIpsPackageFragmentRoot().getName(), entry.getIpsPackageFragmentRootName());
     }
 
-    public void testGetIpsPackageFragementRoot() throws CoreException {
+    public void testGetIpsPackageFragementRoot() {
         IIpsPackageFragmentRoot root = entry.getIpsPackageFragmentRoot();
         assertNotNull(root);
         assertEquals(archiveFile.getName(), root.getName());
@@ -161,18 +161,18 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         IPath dummyArchivePath = project.getIpsProjectPropertiesFile().getLocation();
         IpsArchiveEntry newEntry = (IpsArchiveEntry)project.getIpsObjectPath().newArchiveEntry(dummyArchivePath);
         newEntry.initFromXml(el, project.getProject());
-        assertEquals(archivePath, newEntry.getArchivePath());
+        assertEquals(archivePath, newEntry.getArchiveLocation());
     }
 
     public void testValidate() throws CoreException {
         MessageList ml = entry.validate();
-        assertEquals(0, ml.getNoOfMessages());
+        assertEquals(0, ml.size());
 
         IIpsProjectProperties props = project.getProperties();
         IIpsObjectPath path = props.getIpsObjectPath();
         IIpsArchiveEntry[] archiveEntries = path.getArchiveEntries();
         assertEquals(1, archiveEntries.length);
-        assertEquals(entry.getArchivePath(), archiveEntries[0].getArchivePath());
+        assertEquals(entry.getArchiveLocation(), archiveEntries[0].getArchiveLocation());
 
         entry.setArchivePath(project, project.getProject().getFile("NoneExistingFile").getLocation());
         ml = entry.validate();

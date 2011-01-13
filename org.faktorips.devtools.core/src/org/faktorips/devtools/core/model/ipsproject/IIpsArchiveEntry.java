@@ -31,10 +31,10 @@ public interface IIpsArchiveEntry extends IIpsObjectPathEntry {
     public IIpsArchive getIpsArchive();
 
     /**
-     * Returns the archive path. Note that the underlying file might not exist and the file might
-     * exists outside the workspace.
+     * Returns the archive location. Note that the underlying file might not exist and the file
+     * might exists outside the workspace.
      */
-    public IPath getArchivePath();
+    public IPath getArchiveLocation();
 
     /**
      * Sets the new archive path.

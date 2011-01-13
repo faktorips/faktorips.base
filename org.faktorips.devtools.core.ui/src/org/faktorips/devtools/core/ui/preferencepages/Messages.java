@@ -79,6 +79,7 @@ public class Messages extends NLS {
     public static String ObjectPathEntryLabelDecorator_suffix_mergable_folder_not_existing;
     public static String ObjectPathEntryLabelDecorator_suffix_mergable_folder_undefined;
     public static String ObjectPathEntryLabelDecorator_suffix_missing;
+    public static String ObjectPathEntryLabelDecorator_suffix_invalid;
     public static String ObjectPathEntryLabelDecorator_suffix_missing_folder;
     public static String ObjectPathEntryLabelDecorator_suffix_missing_project;
     public static String ObjectPathEntryLabelDecorator_suffix_not_child_of_root;

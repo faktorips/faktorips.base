@@ -32,10 +32,10 @@ import org.faktorips.devtools.core.IpsPlugin;
  */
 public class IpsarViewerFilter extends ViewerFilter {
 
-    private List<IPath> excluded;
+    private List<String> excluded;
     private boolean recursive;
 
-    public IpsarViewerFilter(List<IPath> excluded, boolean recursive) {
+    public IpsarViewerFilter(List<String> excluded, boolean recursive) {
         this.excluded = excluded;
         this.recursive = recursive;
     }
@@ -43,10 +43,11 @@ public class IpsarViewerFilter extends ViewerFilter {
     @Override
     public boolean select(Viewer viewer, Object parentElement, Object element) {
         if (element instanceof IFile) {
-            if (excluded != null && excluded.contains(element)) {
+            IPath fullPath = ((IFile)element).getLocation();
+            if (excluded != null && excluded.contains(fullPath.toOSString())) {
                 return false;
             }
-            return isArchiveFile(((IFile)element).getFullPath());
+            return isArchiveFile(fullPath);
         } else if (element instanceof IContainer) { // IProject, IFolder
             if (!recursive) {
                 return true;
