@@ -42,6 +42,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.util.message.MessageList;
 
 /**
  * 
@@ -97,6 +98,8 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
 
     public void testGetBasePackageNameForMergableArtefacts() throws CoreException {
         String expPackage = motorPolicyType.getIpsSrcFile().getBasePackageNameForMergableArtefacts();
+        MessageList msgList = project.validate();
+        assertFalse(msgList.toString(), msgList.containsErrorMsg());
         assertEquals(expPackage, archive.getBasePackageNameForMergableArtefacts(motorPolicyType.getQualifiedNameType()));
     }
 
@@ -104,6 +107,8 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         String expPackage = motorPolicyType.getIpsSrcFile().getBasePackageNameForDerivedArtefacts();
         QualifiedNameType qualifiedNameType = motorPolicyType.getQualifiedNameType();
         assertNotNull(qualifiedNameType);
+        MessageList msgList = project.validate();
+        assertFalse(msgList.toString(), msgList.containsErrorMsg());
         assertEquals(expPackage, archive.getBasePackageNameForDerivedArtefacts(qualifiedNameType));
     }
 
