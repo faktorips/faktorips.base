@@ -86,7 +86,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
         // fake content, this is not a valid gif-file
         iconFile.create(new ByteArrayInputStream("test".getBytes()), true, new NullProgressMonitor());
 
-        IFile archiveFile = project.getProject().getFile("test.ipsar");
+        IFile archiveFile = project.getProject().getFile("test123.ipsar");
         File file = archiveFile.getLocation().toFile();
         CreateIpsArchiveOperation operation = new CreateIpsArchiveOperation(project.getIpsPackageFragmentRoots(), file);
         operation.run(new NullProgressMonitor());
