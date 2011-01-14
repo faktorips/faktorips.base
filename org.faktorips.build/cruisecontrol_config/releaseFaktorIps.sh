@@ -286,7 +286,7 @@ parseArgs()
 	  -skipTaggingCvs) SKIPTAGCVS=true ;;
 	  -forceTaggingCvs) FORCE_TAGCVS=true ;;
 	  -buildProduct)  BUILDPRODUCT=$2 ; shift ;;
-	  -custom-build   CUSTOM_BUILD=$2 ; shift ;;
+	  -custom-build)  CUSTOM_BUILD=$2 ; shift ;;
 	  -resultDir)     PUBLISH_DOWNLOAD_DIR=$2 ; shift ;;
 	  -updatesiteDir) PUBLISH_UPDATESITE_DIR=$2 ; shift ;;
 	  -updatesiteFile) PUBLISH_UPDATESITE_FILE=$2 ; shift ;;
