@@ -313,15 +313,9 @@
     	
     	<antcall inheritall="true" target="-delete.eclipse.configuration.log"/>
     	
-    	<!-- if only the creating of the plugin and features should be tested, runtests=false -->
-        <condition property="isIgnoreTests" value="true">
-             <equals arg1="${runtests}" arg2="false"/>
-         </condition>
-        <antcall inheritall="true" target="-disable.automated.test" />
-        <antcall inheritall="true" target="-enable.automated.test" />
-
         <!-- delegate to the pluginbuilder target -->
     	<ant dir="${projectsRootDir}/${pluginbuildermodule}/" antfile="build.xml" target="main-ci">
+    		<property name="runtests" value="${runtests}"/>
             <property name="label" value="${label}"/>
             <property name="buildDirectory" value="${buildDirectory}"/>
         </ant>
@@ -434,7 +428,7 @@
            -Doverwrite=true -> to overwrite previous build version or throw a build fail if version exists
            -Druntests=false -> run or ignore junit plugin tests 
            -DskipPublish=true -> don't publish the result to the download and updatesite
-           -custom-build -> custom build (e.g. aok or ergo)
+           -DcustomBuild -> custom build (e.g. aok or ergo)
         optional parameter for a local build:   
            -DnoCvs=true -> no cvs support (the features and plugins will be copied from the workspace
            -DnoBranch=false -> branch support, in this case the all_cvs_branch.map must exists in the map 
@@ -511,17 +505,13 @@
         <condition property="isUseBranch" value="true">
           <equals arg1="${noBranch}" arg2="false"/>
         </condition>
-
-        <condition property="isIgnoreTests" value="true">
-          <equals arg1="${runtests}" arg2="false"/>
-        </condition>
 		
 	    <condition property="isSkipPublish" value="true">
 	    	 <equals arg1="${skipPublish}" arg2="true"/>
 	    </condition>
 
 	    <condition property="isCustomBuild" value="true">
-	    	 <not><equals arg1="${custom-build}" arg2="NONE"/></not>
+	    	 <not><equals arg1="${customBuild}" arg2="NONE"/></not>
 	    </condition>
 	    	 	
         <condition property="is.product.build" value="true">
@@ -563,16 +553,14 @@
 		
     	<!-- checkout pluginbuilder with correct build.version -->
     	<antcall inheritall="true" target="-checkout.pluginbuilder.build.version"/>
-    	<!-- patch run test property -->
-    	<antcall inheritall="true" target="-disable.automated.test" />
-    	<antcall inheritall="true" target="-enable.automated.test" />
     	
         <!--checkout updatesite-->
     	<antcall inheritall="true" target="-checkout.updatesite"/>
         
         <!--build release unsing pluginbuilder main target-->
 		<ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="main">
-            <property name="custom-build" value="${custom-build}"/>
+            <property name="runtests" value="${runtests}"/>
+            <property name="customBuild" value="${customBuild}"/>
             <property name="build.version" value="${build.version}"/>
             <property name="buildDirectory" value="${buildDirectory}"/>
             <property name="pluginbuilder.is.rcpbuild" value="${is.product.build}"/>
@@ -580,7 +568,7 @@
             <property name="updateSiteCategoryName" value="Faktor-IPS ${build.category}"/>
             <property name="updateSiteCategoryLabel" value="Faktor-IPS ${build.category}"/>
             <property name="updateSiteDescription" value="FaktorIPS update site"/>
-            <property name="updateSiteUrl" value="http://update.faktorzehn.org/faktorips"/>    		
+            <property name="updateSiteUrl" value="http://update.faktorzehn.org/faktorips"/> 
         </ant>
 		
 	    <!-- build runtime and valuetypes separately,
@@ -684,10 +672,10 @@ ${faktoripsProductLinuxZipPath}
 	
 	
 	<target name="-assert.custom-build.exists" if="isCustomBuild">
-      <fail message="Custom build file doesn't exists: ${custom-build}">
+      <fail message="Custom build file doesn't exists: ${customBuild}">
         <condition>
           <and>
-            <not><available file="${projectsRootDir}/org.faktorips.pluginbuilder/custom-build/${custom-build}/all.map"/></not>
+            <not><available file="${projectsRootDir}/org.faktorips.pluginbuilder/custom-build/${customBuild}/all.map"/></not>
           </and>
         </condition>
       </fail>
@@ -1024,12 +1012,6 @@ ${faktoripsProductLinuxZipPath}
         <copy file="${buildDirectory}/javaoutput.txt" 
                      todir="${ccProjectDir}/${cctimestamp}"
                      failonerror="false" verbose="true"/>
-    </target>
-    <target name="-disable.automated.test" if="isIgnoreTests">
-    	<replace file="${pluginbuilder.config}" token="pluginbuilder.is.runtests=true" value="pluginbuilder.is.runtests=false"/>
-    </target>
-    <target name="-enable.automated.test" unless="isIgnoreTests">
-    	<replace file="${pluginbuilder.config}" token="pluginbuilder.is.runtests=false" value="pluginbuilder.is.runtests=true"/>
     </target>
     
     <target name="-fail.if.file.exists" unless="isSkipPublish">

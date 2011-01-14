@@ -17,7 +17,7 @@
 #
 # optional input parameters: 
 # --------------------------
-#           -custom-build [name]   : to use a special set of plugins or features (e.g. name=aok or ergo)
+#           -customBuild [name]   : to use a special set of plugins or features (e.g. name=aok or ergo)
 #           -category [category]   : the feature category used on the update site, 
 #                                    default = the first two numbers from the build version (e.g. 2.2)
 #           -overwrite             : to overwrite a previous version 
@@ -287,7 +287,7 @@ parseArgs()
 	  -skipTaggingCvs) SKIPTAGCVS=true ;;
 	  -forceTaggingCvs) FORCE_TAGCVS=true ;;
 	  -buildProduct)  BUILDPRODUCT=$2 ; shift ;;
-	  -custom-build)  CUSTOM_BUILD=$2 ; shift ;;
+	  -customBuild)  CUSTOM_BUILD=$2 ; shift ;;
 	  -resultDir)     PUBLISH_DOWNLOAD_DIR=$2 ; shift ;;
 	  -updatesiteDir) PUBLISH_UPDATESITE_DIR=$2 ; shift ;;
 	  -updatesiteFile) PUBLISH_UPDATESITE_FILE=$2 ; shift ;;
@@ -327,7 +327,7 @@ showUsageAndExit()
   echo 'mandatory:'
   echo '  -version [version]     the version which should be generated and published (e.g. "-version 2.2.0.rc1")'
   echo 'optional:'
-  echo '  -custom-build [name]   to use a special set of plugins or features (e.g. name=aok or ergo)'
+  echo '  -customBuild [name]   to use a special set of plugins or features (e.g. name=aok or ergo)'
   echo '  -category [category]   the feature category used on the update site,'
   echo '                         default = the first two numbers from the build version (e.g. "-category 2.2")'
   echo '  -overwrite             overwrite previous version (otherwise if the release exists then the release build fails)'
@@ -526,7 +526,7 @@ showParameter()
     echo -e "  -buildProduct    : Build product \e[35m$BUILDPRODUCT\e[0m"
   fi
   if [ ! "$CUSTOM_BUILD" = "NONE" ] ; then
-    echo -e "  -custom-build    : Custom build \e[35m$CUSTOM_BUILD\e[0m"
+    echo -e "  -customBuild    : Custom build \e[35m$CUSTOM_BUILD\e[0m"
   fi
   echo -e "  -projectsrootdir : Checkout/source directory \e[35m$PROJECTSROOTDIR\e[0m"
   echo -e "  -workingdir      : Work directory \e[35m$WORKINGDIR\e[0m"
@@ -848,7 +848,7 @@ EXEC="$ANT_HOME/bin/ant -buildfile $BUILDFILE release \
  -Dupdatesite.path=$PUBLISH_UPDATESITE_DIR \
  -DsiteXmlFileName=$PUBLISH_UPDATESITE_FILE \
  -DproductProject=$BUILDPRODUCT \
- -Dcustom-build=$CUSTOM_BUILD \
+ -DcustomBuild=$CUSTOM_BUILD \
  -DnoBranch=$NOBRANCH \
  -Dcvsroot=$CVS_ROOT \
  -DminVersion3=$MIN_VERSION_3
