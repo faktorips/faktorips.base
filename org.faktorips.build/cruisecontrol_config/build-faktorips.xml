@@ -523,11 +523,24 @@
         <condition property="is.product.build" value="true">
          <length string="${productProject}" when="greater" length="0" />
 	    </condition>
+
+    	<!-- check if the branch all.map should be used, if a branch is given 
+    		     otherwise the cvs all.map is used to fetch the sources from cvs -->
+	    <condition property="all.map" value="all_branch.map">
+           <isset property="${isUseBranch}"/>
+        </condition>
+    	<!-- special case if an other cvs root is used, e.g. skript testing  -->
+	    <condition property="all.map" value="all_cvs_different_cvsroot.map">
+          <available file="${projectsRootDir}/org.faktorips.pluginbuilder/maps/all_different_cvsroot.map"/>
+        </condition>
 		
     	<!--checkout pluginbuilder, build project -->
     	<antcall inheritall="true" target="-checkout.pluginbuilder"/>
     	<antcall inheritall="true" target="-checkout.build"/>
     	
+		<!-- overwrite all.map e.g. if using branch or different cvsroot -->
+		<copy file="${projectsRootDir}/org.faktorips.pluginbuilder/maps/${all.map}" tofile="${projectsRootDir}/org.faktorips.pluginbuilder/maps/all.map" overwrite="true"/>
+		
     	<!--asserts-->
         <!--1. check if the build.version property is given-->
         <fail unless="build.version" message="Please specify the build.version, e.g. ant ... -Dbuild.version=2.2.0.rfinal"/>

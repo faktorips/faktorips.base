@@ -613,8 +613,9 @@ tagProjects()
   tagProject $FETCH_TAG $CUSTOMER_PRODUCT_PROJECT $BRANCH
 
   # d) tag all projects specified in the pluginbuilder map file (all necessary plugin and feature projects)
-  checkoutModule $PLUGINBUILDER_PROJECT_DIR/maps $FETCH_TAG $PLUGINBUILDER_PROJECT_NAME/maps $BRANCH
-  for project in $( cat $PLUGINBUILDER_PROJECT_DIR/maps/all_cvs.map | sed -r "s/.*HEAD,\/usr\/local\/cvsroot,,(.*)/\1/g" ) ; do
+  # use custom-build/copy/all.map, because this map file contains all features and plugins
+  checkoutModule $PLUGINBUILDER_PROJECT_DIR/custom-build $FETCH_TAG $PLUGINBUILDER_PROJECT_NAME/custom-build $BRANCH
+  for project in $( cat $PLUGINBUILDER_PROJECT_DIR/custom-build/copy/all.map | sed -r "s/.*HEAD,\/usr\/local\/cvsroot,,(.*)/\1/g" ) ; do
     tagProject $FETCH_TAG $project $BRANCH
   done
 }
@@ -652,8 +653,8 @@ createAndAddLicensePdf()
 
 patchAllCvsMap()
 {
-  if [ ! -f $PLUGINBUILDER_PROJECT_DIR/maps/all_cvs.map ] ; then
-  	echo "Error map file not exists: "$PLUGINBUILDER_PROJECT_DIR/maps/all_cvs.map
+  if [ ! -f $PLUGINBUILDER_PROJECT_DIR/maps/all.map ] ; then
+  	echo "Error map file not exists: "$PLUGINBUILDER_PROJECT_DIR/maps/all.map
   	exit 1
   fi
   # if using a branch then the all_cvs.map file must be patched (the branch name must be used instead of HEAD), 
@@ -663,14 +664,14 @@ patchAllCvsMap()
     # replace HEAD with given BRANCH
     echo "patch all_cvs.map: add branch"
     NOBRANCH=false
-    cat $PLUGINBUILDER_PROJECT_DIR/maps/all_cvs.map | sed -r "s|(.*)HEAD(.*)|\1$BRANCH\2|g" > $PLUGINBUILDER_PROJECT_DIR/maps/all_cvs_branch.map
+    cat $PLUGINBUILDER_PROJECT_DIR/maps/all.map | sed -r "s|(.*)HEAD(.*)|\1$BRANCH\2|g" > $PLUGINBUILDER_PROJECT_DIR/maps/all_branch.map
   fi
 
   # if using a different cvs root
   if [ ! "$DEFAULT_CVS_ROOT" = "$CVS_ROOT" ] ; then
     # patch cvs root in map file
-    echo "patch all_cvs.map: change cvs root"
-    cat $PLUGINBUILDER_PROJECT_DIR/maps/all_cvs.map | sed -r "s|(.*)$DEFAULT_CVS_ROOT(.*)|\1$CVS_ROOT\2|g" > $PLUGINBUILDER_PROJECT_DIR/maps/all_cvs_different_cvsroot.map  
+    echo "patch all.map: change cvs root"
+    cat $PLUGINBUILDER_PROJECT_DIR/maps/all.map | sed -r "s|(.*)$DEFAULT_CVS_ROOT(.*)|\1$CVS_ROOT\2|g" > $PLUGINBUILDER_PROJECT_DIR/maps/all_different_cvsroot.map  
   fi
 }
 
