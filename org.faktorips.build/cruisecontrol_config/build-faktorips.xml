@@ -555,7 +555,7 @@
 		</antcall>
     	<antcall inheritall="true" target="-assert.custom-build.exists">
 		</antcall>
-
+		
     	<!-- checkout pluginbuilder with correct build.version -->
     	<antcall inheritall="true" target="-checkout.pluginbuilder.build.version"/>
     	<!-- patch run test property -->
@@ -678,12 +678,11 @@ ${faktoripsProductLinuxZipPath}
 
 	
 	
-	
 	<target name="-assert.custom-build.exists" if="custom-build">
       <fail message="Custom build file doesn't exists: ${custom-build}">
         <condition>
           <and>
-            <not><available file="${projectsRootDir}/org.faktorips.pluginbuilder/custom-build/${custom-build}"/></not>
+            <not><available file="${projectsRootDir}/org.faktorips.pluginbuilder/custom-build/${custom-build}/all.map"/></not>
           </and>
         </condition>
       </fail>
