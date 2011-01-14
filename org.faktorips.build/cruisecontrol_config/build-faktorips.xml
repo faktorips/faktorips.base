@@ -526,6 +526,7 @@
 
     	<!-- check if the branch all.map should be used, if a branch is given 
     		     otherwise the cvs all.map is used to fetch the sources from cvs -->
+		<property name="all.map" value="all.map"/> <!-- default -->
 	    <condition property="all.map" value="all_branch.map">
            <isset property="${isUseBranch}"/>
         </condition>
