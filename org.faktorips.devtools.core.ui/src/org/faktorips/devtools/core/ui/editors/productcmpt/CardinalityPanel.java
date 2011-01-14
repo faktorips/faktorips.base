@@ -256,7 +256,7 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
     public void setProductCmptLinkToEdit(IProductCmptLink link) {
         currentLink = link;
         if (currentLink == null) {
-            deactivateCardinalityPanel();
+            deactivate();
         } else {
 
             boolean cardinalityPanelEnabled;
@@ -268,7 +268,7 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
             }
 
             if (!cardinalityPanelEnabled) {
-                deactivateCardinalityPanel();
+                deactivate();
                 return;
             } else {
                 if (uiController != null) {
@@ -278,16 +278,27 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
                     uiController = new IpsObjectUIController(currentLink);
                 }
                 addFields(currentLink);
-                uiController.updateUI();
 
+                uiController.updateUI();
                 setEnabled(true);
             }
         }
     }
 
-    private void deactivateCardinalityPanel() {
+    /**
+     * Disables this panel (as in setEnabled(false)) and removes all values and selection from its
+     * controls. The panel then displays no data.
+     */
+    public void deactivate() {
         setEnabled(false);
+
         removeFields();
+        mandatory.setSelection(false);
+        optional.setSelection(false);
+        other.setSelection(false);
+        minCard.setText(""); //$NON-NLS-1$
+        maxCard.setText(""); //$NON-NLS-1$
+        defaultCard.setText(""); //$NON-NLS-1$
     }
 
     private void removeFields() {
@@ -320,12 +331,15 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
      * completely.
      */
     public void setEnabled(boolean enabled) {
-        mandatory.setEnabled(enabled);
-        mandatorylLabel.setEnabled(enabled);
-        optional.setEnabled(enabled);
-        optionalLabel.setEnabled(enabled);
-        other.setEnabled(enabled);
-        otherLabel.setEnabled(enabled);
+
+        boolean doEnable = enabled & isDataChangeable();
+
+        mandatorylLabel.setEnabled(doEnable);
+        optionalLabel.setEnabled(doEnable);
+        otherLabel.setEnabled(doEnable);
+        mandatory.setEnabled(doEnable);
+        optional.setEnabled(doEnable);
+        other.setEnabled(doEnable);
 
         minCard.setEnabled(false);
         maxCard.setEnabled(false);
@@ -333,39 +347,30 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         minMaxCardLabel.setEnabled(false);
         defaultCardLabel.setEnabled(false);
 
-        if (!enabled) {
-            mandatory.setSelection(false);
+        String min = minCard.getText();
+        String max = maxCard.getText();
+        String def = defaultCard.getText();
+
+        if (min.equals("1") && max.equals("1") && def.equals("1")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            mandatory.setSelection(true);
             optional.setSelection(false);
             other.setSelection(false);
-            setFieldValue(minCardField, new Integer(0), false);
-            setFieldValue(maxCardField, new Integer(0), false);
-            setFieldValue(defaultCardField, new Integer(0), false);
+        } else if (min.equals("0") && max.equals("1")) { //$NON-NLS-1$ //$NON-NLS-2$ 
+            optional.setSelection(true);
+            mandatory.setSelection(false);
+            other.setSelection(false);
+            defaultCard.setEnabled(doEnable);
+            defaultCardLabel.setEnabled(doEnable);
         } else {
-            String min = minCard.getText();
-            String max = maxCard.getText();
-            String def = defaultCard.getText();
+            other.setSelection(true);
+            mandatory.setSelection(false);
+            optional.setSelection(false);
 
-            if (min.equals("1") && max.equals("1") && def.equals("1")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                mandatory.setSelection(true);
-                optional.setSelection(false);
-                other.setSelection(false);
-            } else if (min.equals("0") && max.equals("1")) { //$NON-NLS-1$ //$NON-NLS-2$ 
-                optional.setSelection(true);
-                mandatory.setSelection(false);
-                other.setSelection(false);
-                defaultCard.setEnabled(true);
-                defaultCardLabel.setEnabled(true);
-            } else {
-                other.setSelection(true);
-                mandatory.setSelection(false);
-                optional.setSelection(false);
-
-                minCard.setEnabled(true);
-                maxCard.setEnabled(true);
-                minMaxCardLabel.setEnabled(true);
-                defaultCard.setEnabled(true);
-                defaultCardLabel.setEnabled(true);
-            }
+            minCard.setEnabled(doEnable);
+            maxCard.setEnabled(doEnable);
+            minMaxCardLabel.setEnabled(doEnable);
+            defaultCard.setEnabled(doEnable);
+            defaultCardLabel.setEnabled(doEnable);
         }
     }
 
@@ -380,14 +385,14 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         @Override
         public void widgetSelected(SelectionEvent e) {
 
-            removeMessageCue();
-            boolean otherEnabled = e.getSource() == other;
-            boolean optionalEnabled = e.getSource() == optional;
-            minCard.setEnabled(otherEnabled);
-            maxCard.setEnabled(otherEnabled);
-            minMaxCardLabel.setEnabled(otherEnabled);
-            defaultCard.setEnabled(otherEnabled | optionalEnabled);
-            defaultCardLabel.setEnabled(otherEnabled | optionalEnabled);
+            // removeMessageCue();
+            boolean otherSelected = e.getSource() == other;
+            boolean optionalSelected = e.getSource() == optional;
+            minCard.setEnabled(otherSelected);
+            maxCard.setEnabled(otherSelected);
+            minMaxCardLabel.setEnabled(otherSelected);
+            defaultCard.setEnabled(otherSelected | optionalSelected);
+            defaultCardLabel.setEnabled(otherSelected | optionalSelected);
 
             /*
              * Setting the cardinality values using their fields causes an inconsistent GUI state
@@ -462,14 +467,7 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
     @Override
     public void setDataChangeable(boolean changeable) {
         dataChangeable = changeable;
-        if (!isDataChangeable()) {
-            uiToolkit.setDataChangeable(optional, changeable);
-            uiToolkit.setDataChangeable(mandatory, changeable);
-            uiToolkit.setDataChangeable(other, changeable);
-            uiToolkit.setDataChangeable(minCard, changeable);
-            uiToolkit.setDataChangeable(maxCard, changeable);
-            uiToolkit.setDataChangeable(defaultCard, changeable);
-        }
+        setEnabled(changeable);
     }
 
 }

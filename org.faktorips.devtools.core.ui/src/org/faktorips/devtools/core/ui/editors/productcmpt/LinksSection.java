@@ -192,7 +192,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 
             cardinalityPanel = new CardinalityPanel(relationRootPane, toolkit);
             cardinalityPanel.setDataChangeable(isDataChangeable());
-            cardinalityPanel.setEnabled(false);
+            cardinalityPanel.deactivate();
 
             addFocusControl(treeViewer.getTree());
             registerDoubleClickListener();
@@ -336,14 +336,12 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         @Override
         public void selectionChanged(SelectionChangedEvent event) {
             Object selected = ((IStructuredSelection)event.getSelection()).getFirstElement();
-            if (!isDataChangeable()) {
-                cardinalityPanel.setProductCmptLinkToEdit(null);
+
+            cardinalityPanel.setDataChangeable(isDataChangeable());
+            if (selected instanceof IProductCmptLink) {
+                cardinalityPanel.setProductCmptLinkToEdit((IProductCmptLink)selected);
             } else {
-                if (selected instanceof IProductCmptLink) {
-                    cardinalityPanel.setProductCmptLinkToEdit((IProductCmptLink)selected);
-                } else {
-                    cardinalityPanel.setProductCmptLinkToEdit(null);
-                }
+                cardinalityPanel.setProductCmptLinkToEdit(null);
             }
         }
 
