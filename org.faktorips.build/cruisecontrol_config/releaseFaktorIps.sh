@@ -326,7 +326,7 @@ showUsageAndExit()
   echo 'mandatory:'
   echo '  -version [version]     the version which should be generated and published (e.g. "-version 2.2.0.rc1")'
   echo 'optional:'
-  echo '  -custom-build [name]   to use a special set of plugins or features (e.g. name=aok or ergo)
+  echo '  -custom-build [name]   to use a special set of plugins or features (e.g. name=aok or ergo)'
   echo '  -category [category]   the feature category used on the update site,'
   echo '                         default = the first two numbers from the build version (e.g. "-category 2.2")'
   echo '  -overwrite             overwrite previous version (otherwise if the release exists then the release build fails)'
