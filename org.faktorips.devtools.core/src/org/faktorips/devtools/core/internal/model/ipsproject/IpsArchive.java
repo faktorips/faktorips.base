@@ -30,8 +30,6 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
@@ -128,14 +126,14 @@ public class IpsArchive implements IIpsArchive {
         if (!exists()) {
             return false;
         }
-        File file = getFileFromPath();
-        try {
-            new ZipFile(file);
-        } catch (ZipException e) {
-            return false;
-        } catch (IOException e) {
-            return false;
-        }
+        // File file = getFileFromPath();
+        // try {
+        // new ZipFile(file);
+        // } catch (ZipException e) {
+        // return false;
+        // } catch (IOException e) {
+        // return false;
+        // }
         return true;
     }
 
