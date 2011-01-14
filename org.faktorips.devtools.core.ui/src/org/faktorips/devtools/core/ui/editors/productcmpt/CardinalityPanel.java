@@ -30,8 +30,6 @@ import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
-import org.faktorips.devtools.core.ui.controller.fields.MessageCueController;
-import org.faktorips.util.message.MessageList;
 
 /**
  * Panel to display cardinality. Note that this is <strong>NOT</strong> a control.
@@ -46,19 +44,14 @@ import org.faktorips.util.message.MessageList;
  */
 public class CardinalityPanel implements IDataChangeableReadWriteAccess {
 
-    private UIToolkit uiToolkit;
-
     private Text minCard;
     private Text maxCard;
     private Text defaultCard;
     private Label minMaxCardLabel;
     private Label defaultCardLabel;
     private Button optional;
-    private Label optionalLabel;
     private Button mandatory;
-    private Label mandatorylLabel;
     private Button other;
-    private Label otherLabel;
     private Composite root;
 
     private IpsObjectUIController uiController;
@@ -74,8 +67,6 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
      * Creates a new Cardinality panel
      */
     public CardinalityPanel(Composite parent, UIToolkit toolkit) {
-        uiToolkit = toolkit;
-
         // first create a composite to fill the complete space
         root = toolkit.createComposite(parent);
         GridLayout layout = new GridLayout(1, false);
@@ -92,7 +83,7 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         layoutData.verticalAlignment = SWT.TOP;
         kardinalityPane.setLayoutData(layoutData);
         GridLayout kardinalityPaneLayout = (GridLayout)kardinalityPane.getLayout();
-        kardinalityPaneLayout.numColumns = 3;
+        kardinalityPaneLayout.numColumns = 2;
         kardinalityPaneLayout.horizontalSpacing = 1;
 
         // create header
@@ -102,30 +93,29 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
 
         // create radio buttons
         KardinalitySelectionListener listener = new KardinalitySelectionListener();
-        optional = toolkit.createRadioButton(kardinalityPane, ""); //$NON-NLS-1$
+        optional = toolkit.createRadioButton(kardinalityPane, Messages.CardinalityPanel_labelOptional);
         optional.addSelectionListener(listener);
-        optionalLabel = toolkit.createLabel(kardinalityPane, Messages.CardinalityPanel_labelOptional);
-        toolkit.setHorizontalSpan(optionalLabel, 2);
-        mandatory = toolkit.createRadioButton(kardinalityPane, ""); //$NON-NLS-1$
+        optional.setLayoutData(new GridData());
+        toolkit.setHorizontalSpan(optional, 2);
+        mandatory = toolkit.createRadioButton(kardinalityPane, Messages.CardinalityPanel_labelMandatory);
         mandatory.addSelectionListener(listener);
-        mandatorylLabel = toolkit.createLabel(kardinalityPane, Messages.CardinalityPanel_labelMandatory);
-        toolkit.setHorizontalSpan(mandatorylLabel, 2);
-        other = toolkit.createRadioButton(kardinalityPane, ""); //$NON-NLS-1$
+        mandatory.setLayoutData(new GridData());
+        toolkit.setHorizontalSpan(mandatory, 2);
+        other = toolkit.createRadioButton(kardinalityPane, Messages.CardinalityPanel_labelOther);
         other.addSelectionListener(listener);
-        otherLabel = toolkit.createLabel(kardinalityPane, Messages.CardinalityPanel_labelOther);
 
         // Min/Max bei Other, Default zentriert darunter
-        Composite specialPane = toolkit.createLabelEditColumnComposite(kardinalityPane);
-        GridLayout specialPaneLayout = (GridLayout)specialPane.getLayout();
+        Composite otherPane = toolkit.createLabelEditColumnComposite(kardinalityPane);
+        GridLayout specialPaneLayout = (GridLayout)otherPane.getLayout();
         specialPaneLayout.marginLeft = 4;
         specialPaneLayout.numColumns = 3;
         specialPaneLayout.horizontalSpacing = 2;
-        minCard = toolkit.createText(specialPane);
+        minCard = toolkit.createText(otherPane);
         GridData gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
         gd.widthHint = 20;
         minCard.setLayoutData(gd);
-        minMaxCardLabel = toolkit.createLabel(specialPane, ".."); //$NON-NLS-1$
-        maxCard = toolkit.createText(specialPane);
+        minMaxCardLabel = toolkit.createLabel(otherPane, ".."); //$NON-NLS-1$
+        maxCard = toolkit.createText(otherPane);
         gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
         gd.widthHint = 20;
         maxCard.setLayoutData(gd);
@@ -138,106 +128,13 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         defaultPane.setLayoutData(defaultGridData);
         defaultCardLabel = toolkit.createLabel(defaultPane, Messages.CardinalityPanel_LabelDefaultCardinality);
         defaultCard = toolkit.createText(defaultPane);
-        defaultCard.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
-
-        // kardinalityPane.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
-        // specialPane.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
-        // defaultPane.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
-
-        // Default zentriert und mit Abstand
-        // // create other input controls
-        //        toolkit.createLabel(kardinalityPane, ""); //$NON-NLS-1$
-        // Composite specialPane = toolkit.createLabelEditColumnComposite(kardinalityPane);
-        // specialPane.setLayout(new GridLayout(2, false));
-        // minCardLabel = toolkit.createFormLabel(specialPane,
-        // Messages.PolicyAttributesSection_minimum);
-        // minCard = toolkit.createText(specialPane);
-        // GridData gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
-        // gd.widthHint = 40;
-        // minCard.setLayoutData(gd);
-        // maxCardLabel = toolkit.createFormLabel(specialPane,
-        // Messages.PolicyAttributesSection_maximum);
-        // maxCard = toolkit.createText(specialPane);
-        // gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
-        // gd.widthHint = 40;
-        // maxCard.setLayoutData(gd);
-        // Composite defaultPane = toolkit.createLabelEditColumnComposite(kardinalityPane);
-        // GridLayout defaultPaneLayout = (GridLayout)defaultPane.getLayout();
-        // defaultPaneLayout.marginHeight = 0;
-        // GridData defaultGridData = new GridData(GridData.FILL, GridData.BEGINNING, true, true);
-        // defaultGridData.horizontalSpan = 2;
-        // defaultPane.setLayoutData(defaultGridData);
-        // defaultPane.setLayout(new GridLayout(2, false));
-        // defaultCardLabel = toolkit.createFormLabel(defaultPane,
-        // Messages.CardinalityPanel_LabelDefaultCardinality);
-        // defaultCard = toolkit.createText(defaultPane);
-        // defaultCard.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
-
-        // Default mit min/max ausgerichtet
-        // create other input controls
-        //        toolkit.createLabel(kardinalityPane, ""); //$NON-NLS-1$
-        // Composite specialPane = toolkit.createLabelEditColumnComposite(kardinalityPane);
-        // specialPane.setLayout(new GridLayout(2, false));
-        // minCardLabel = toolkit.createFormLabel(specialPane,
-        // Messages.PolicyAttributesSection_minimum);
-        // minCard = toolkit.createText(specialPane);
-        // GridData gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
-        // gd.widthHint = 40;
-        // minCard.setLayoutData(gd);
-        // maxCardLabel = toolkit.createFormLabel(specialPane,
-        // Messages.PolicyAttributesSection_maximum);
-        // maxCard = toolkit.createText(specialPane);
-        // gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
-        // gd.widthHint = 40;
-        // maxCard.setLayoutData(gd);
-        // defaultCardLabel = toolkit.createFormLabel(specialPane,
-        // Messages.CardinalityPanel_LabelDefaultCardinality);
-        // defaultCard = toolkit.createText(specialPane);
-        // gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
-        // gd.widthHint = 40;
-        // defaultCard.setLayoutData(gd);
-
-        // Default rechtsbuendig mit min/max ausgerichtet
-        // create other input controls
-        //        toolkit.createLabel(kardinalityPane, ""); //$NON-NLS-1$
-        // Composite specialPane = toolkit.createLabelEditColumnComposite(kardinalityPane);
-        // GridData specialData = new GridData(GridData.FILL, GridData.FILL, true, false);
-        // // specialData.horizontalSpan = 2;
-        // specialPane.setLayoutData(specialData);
-        //
-        // // minCardLabel = toolkit.createFormLabel(specialPane,
-        // // Messages.PolicyAttributesSection_minimum);
-        // minCardLabel = toolkit.createLabel(specialPane, Messages.PolicyAttributesSection_minimum,
-        // SWT.RIGHT);
-        //
-        // minCard = toolkit.createText(specialPane);
-        // GridData gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
-        // gd.widthHint = 40;
-        // minCard.setLayoutData(gd);
-        //
-        // // maxCardLabel = toolkit.createFormLabel(specialPane,
-        // // Messages.PolicyAttributesSection_maximum);
-        // maxCardLabel = toolkit.createLabel(specialPane, Messages.PolicyAttributesSection_maximum,
-        // SWT.RIGHT);
-        //
-        // maxCard = toolkit.createText(specialPane);
-        // gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
-        // gd.widthHint = 40;
-        // maxCard.setLayoutData(gd);
-        //
-        // // defaultCardLabel = toolkit.createFormLabel(specialPane,
-        // // Messages.CardinalityPanel_LabelDefaultCardinality);
-        // defaultCardLabel = toolkit.createLabel(specialPane,
-        // Messages.CardinalityPanel_LabelDefaultCardinality,
-        // SWT.RIGHT);
-        // gd = (GridData)defaultCardLabel.getLayoutData();
-        // gd.grabExcessHorizontalSpace = true;
-        // defaultCardLabel.setLayoutData(gd);
-        //
-        // defaultCard = toolkit.createText(specialPane);
-        // gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
-        // gd.widthHint = 40;
-        // defaultCard.setLayoutData(gd);
+        gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
+        /*
+         * Layout optimization for GTK Linux. Indent makes the textField one pixel smaller on the
+         * left side to align it with the min-cardinality field above. TODO Test Layout in Windows.
+         */
+        gd.horizontalIndent = 1;
+        defaultCard.setLayoutData(gd);
 
         toolkit.createVerticalSpacer(kardinalityPane, 3).setBackground(kardinalityPane.getBackground());
 
@@ -334,9 +231,6 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
 
         boolean doEnable = enabled & isDataChangeable();
 
-        mandatorylLabel.setEnabled(doEnable);
-        optionalLabel.setEnabled(doEnable);
-        otherLabel.setEnabled(doEnable);
         mandatory.setEnabled(doEnable);
         optional.setEnabled(doEnable);
         other.setEnabled(doEnable);
@@ -385,7 +279,6 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         @Override
         public void widgetSelected(SelectionEvent e) {
 
-            // removeMessageCue();
             boolean otherSelected = e.getSource() == other;
             boolean optionalSelected = e.getSource() == optional;
             minCard.setEnabled(otherSelected);
@@ -413,16 +306,6 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
                 currentLink.setDefaultCardinality(1);
             }
 
-        }
-
-        /**
-         * Removes the message cue by setting empty lists
-         */
-        private void removeMessageCue() {
-            MessageList emptyList = new MessageList();
-            MessageCueController.setMessageCue(minCard, emptyList);
-            MessageCueController.setMessageCue(maxCard, emptyList);
-            MessageCueController.setMessageCue(defaultCard, emptyList);
         }
 
         @Override
