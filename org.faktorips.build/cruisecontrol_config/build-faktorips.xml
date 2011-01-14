@@ -520,6 +520,10 @@
 	    	 <equals arg1="${skipPublish}" arg2="true"/>
 	    </condition>
 
+	    <condition property="isCustomBuild" value="true">
+	    	 <not><equals arg1="${custom-build}" arg2="NONE"/></not>
+	    </condition>
+	    	 	
         <condition property="is.product.build" value="true">
          <length string="${productProject}" when="greater" length="0" />
 	    </condition>
@@ -679,7 +683,7 @@ ${faktoripsProductLinuxZipPath}
 
 	
 	
-	<target name="-assert.custom-build.exists" if="custom-build">
+	<target name="-assert.custom-build.exists" if="isCustomBuild">
       <fail message="Custom build file doesn't exists: ${custom-build}">
         <condition>
           <and>

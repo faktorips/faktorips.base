@@ -91,6 +91,7 @@ NOCVS=false
 CREATE_BRANCH=false
 FORCE_BUILD=false
 FORCE_TAGCVS=false
+CUSTOM_BUILD="NONE"
 
 FAKTORIPS_CORE_PLUGIN_NAME=org.faktorips.devtools.core
 PLUGINBUILDER_PROJECT_NAME=org.faktorips.pluginbuilder
@@ -524,7 +525,7 @@ showParameter()
   if [ -n "$BUILDPRODUCT" ] ; then
     echo -e "  -buildProduct    : Build product \e[35m$BUILDPRODUCT\e[0m"
   fi
-  if [ -n "$CUSTOM_BUILD" ] ; then
+  if [ ! "$CUSTOM_BUILD" = "NONE" ] ; then
     echo -e "  -custom-build    : Custom build \e[35m$CUSTOM_BUILD\e[0m"
   fi
   echo -e "  -projectsrootdir : Checkout/source directory \e[35m$PROJECTSROOTDIR\e[0m"
@@ -847,14 +848,11 @@ EXEC="$ANT_HOME/bin/ant -buildfile $BUILDFILE release \
  -Dupdatesite.path=$PUBLISH_UPDATESITE_DIR \
  -DsiteXmlFileName=$PUBLISH_UPDATESITE_FILE \
  -DproductProject=$BUILDPRODUCT \
+ -Dcustom-build=$CUSTOM_BUILD \
  -DnoBranch=$NOBRANCH \
  -Dcvsroot=$CVS_ROOT \
  -DminVersion3=$MIN_VERSION_3
  "
-if [ -n "$CUSTOM_BUILD" ] ; then 
- EXEC=$EXEC" -Dcustom-build=$CUSTOM_BUILD"
-fi
- 
 echo $EXEC
 eval $EXEC
 RC=$(echo $?)
