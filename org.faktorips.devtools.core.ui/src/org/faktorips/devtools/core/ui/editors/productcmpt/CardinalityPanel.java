@@ -110,6 +110,7 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         specialPaneLayout.marginLeft = 4;
         specialPaneLayout.numColumns = 3;
         specialPaneLayout.horizontalSpacing = 2;
+        specialPaneLayout.marginHeight = 0;
         minCard = toolkit.createText(otherPane);
         GridData gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
         gd.widthHint = 20;

@@ -337,7 +337,9 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         public void selectionChanged(SelectionChangedEvent event) {
             Object selected = ((IStructuredSelection)event.getSelection()).getFirstElement();
 
-            cardinalityPanel.setDataChangeable(isDataChangeable());
+            if (!isDataChangeable()) {
+                cardinalityPanel.setDataChangeable(false);
+            }
             if (selected instanceof IProductCmptLink) {
                 cardinalityPanel.setProductCmptLinkToEdit((IProductCmptLink)selected);
             } else {
