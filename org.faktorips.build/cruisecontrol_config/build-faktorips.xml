@@ -321,7 +321,7 @@
         <antcall inheritall="true" target="-enable.automated.test" />
 
         <!-- delegate to the pluginbuilder target -->
-    	<ant dir="${projectsRootDir}/${pluginbuildermodule}/" antfile="build.xml" target="main-cc">
+    	<ant dir="${projectsRootDir}/${pluginbuildermodule}/" antfile="build.xml" target="main-ci">
             <property name="label" value="${label}"/>
             <property name="buildDirectory" value="${buildDirectory}"/>
         </ant>
@@ -434,6 +434,7 @@
            -Doverwrite=true -> to overwrite previous build version or throw a build fail if version exists
            -Druntests=false -> run or ignore junit plugin tests 
            -DskipPublish=true -> don't publish the result to the download and updatesite
+           -custom-build -> custom build (e.g. aok or ergo)
         optional parameter for a local build:   
            -DnoCvs=true -> no cvs support (the features and plugins will be copied from the workspace
            -DnoBranch=false -> branch support, in this case the all_cvs_branch.map must exists in the map 
@@ -490,7 +491,7 @@
     	<property name="pluginbuilder.features.uml" value="org.faktorips.uml.feature,org.faktorips.uml.feature.nls1,org.faktorips.uml.feature.source"/>
     	<property name="pluginbuilder.features.ormext" value="org.faktorips.ormext.feature,org.faktorips.ormext.feature.nls1,org.faktorips.ormext.feature.source"/>
 
-
+		
 		<condition property="isMinVersion3" value="true" >
 			<not>
 				<!-- by checking NOT FALSE we get isMinVersion3=true if minVersion3 is not set -->
@@ -503,40 +504,25 @@
 			</not>
 		</condition>
 		
-      <condition property="isUseCvs" value="true">
-        <equals arg1="${noCvs}" arg2="false"/>
-      </condition>
+        <condition property="isUseCvs" value="true">
+          <equals arg1="${noCvs}" arg2="false"/>
+        </condition>
 
-      <condition property="isUseBranch" value="true">
-        <equals arg1="${noBranch}" arg2="false"/>
-      </condition>
+        <condition property="isUseBranch" value="true">
+          <equals arg1="${noBranch}" arg2="false"/>
+        </condition>
 
-    	<condition property="isIgnoreTests" value="true">
-            <equals arg1="${runtests}" arg2="false"/>
+        <condition property="isIgnoreTests" value="true">
+          <equals arg1="${runtests}" arg2="false"/>
         </condition>
 		
 	    <condition property="isSkipPublish" value="true">
 	    	 <equals arg1="${skipPublish}" arg2="true"/>
 	    </condition>
 
-      <condition property="is.product.build" value="true">
+        <condition property="is.product.build" value="true">
          <length string="${productProject}" when="greater" length="0" />
 	    </condition>
-
-      <!-- check if the copy all.map should be used, if useCvs is false 
-		     otherwise the cvs all.map is used to fetch the sources from cvs -->
-      <condition property="all.map" value="all_copy.map">
-         <not><equals arg1="${isUseCvs}" arg2="true"/></not>
-      </condition>
-    	<!-- check if the branch all.map should be used, if a branch is given 
-    		     otherwise the cvs all.map is used to fetch the sources from cvs -->
-	    <condition property="all.map" value="all_cvs_branch.map">
-         <isset property="${isUseBranch}"/>
-      </condition>
-    	<!-- special case if an other cvs root is used, e.g. skript testing  -->
-	  <condition property="all.map" value="all_cvs_different_cvsroot.map">
-         <available file="${projectsRootDir}/org.faktorips.pluginbuilder/maps/all_cvs_different_cvsroot.map"/>
-      </condition>
 		
     	<!--checkout pluginbuilder, build project -->
     	<antcall inheritall="true" target="-checkout.pluginbuilder"/>
@@ -554,6 +540,8 @@
 		</antcall>
     	<antcall inheritall="true" target="-assert.product.exists">
 		</antcall>
+    	<antcall inheritall="true" target="-assert.custom-build.exists">
+		</antcall>
 
     	<!-- checkout pluginbuilder with correct build.version -->
     	<antcall inheritall="true" target="-checkout.pluginbuilder.build.version"/>
@@ -566,6 +554,7 @@
         
         <!--build release unsing pluginbuilder main target-->
 		<ant dir="${projectsRootDir}/org.faktorips.pluginbuilder/" antfile="build.xml" target="main">
+            <property name="custom-build" value="${custom-build}"/>
             <property name="build.version" value="${build.version}"/>
             <property name="buildDirectory" value="${buildDirectory}"/>
             <property name="pluginbuilder.is.rcpbuild" value="${is.product.build}"/>
@@ -677,6 +666,15 @@ ${faktoripsProductLinuxZipPath}
 	
 	
 	
+	<target name="-assert.custom-build.exists" if="custom-build">
+      <fail message="Custom build file doesn't exists: ${custom-build}">
+        <condition>
+          <and>
+            <not><available file="${projectsRootDir}/org.faktorips.pluginbuilder/custom-build/${custom-build}"/></not>
+          </and>
+        </condition>
+      </fail>
+	</target>
 	<target name="-assert.product.exists" if="is.product.build">
         <antcall inheritall="true" target="-fail.if.file.exists">
              <param name="file" value="${faktoripsProductLinuxZipPath}"/>
