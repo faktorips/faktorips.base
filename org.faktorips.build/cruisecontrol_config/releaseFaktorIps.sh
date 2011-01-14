@@ -17,6 +17,7 @@
 #
 # optional input parameters: 
 # --------------------------
+#           -custom-build [name]   : to use a special set of plugins or features (e.g. name=aok or ergo)
 #           -category [category]   : the feature category used on the update site, 
 #                                    default = the first two numbers from the build version (e.g. 2.2)
 #           -overwrite             : to overwrite a previous version 
