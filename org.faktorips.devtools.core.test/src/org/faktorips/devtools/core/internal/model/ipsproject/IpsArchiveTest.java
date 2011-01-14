@@ -97,6 +97,8 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     }
 
     public void testGetBasePackageNameForMergableArtefacts() throws CoreException {
+        archiveFile.refreshLocal(0, null);
+        project.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
         String expPackage = motorPolicyType.getIpsSrcFile().getBasePackageNameForMergableArtefacts();
         MessageList msgList = project.validate();
         assertFalse(msgList.toString(), msgList.containsErrorMsg());
@@ -104,6 +106,8 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     }
 
     public void testGetBasePackageNameForDerivedArtefacts() throws CoreException {
+        archiveFile.refreshLocal(0, null);
+        project.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
         String expPackage = motorPolicyType.getIpsSrcFile().getBasePackageNameForDerivedArtefacts();
         QualifiedNameType qualifiedNameType = motorPolicyType.getQualifiedNameType();
         assertNotNull(qualifiedNameType);
