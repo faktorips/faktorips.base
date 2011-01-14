@@ -613,9 +613,9 @@ tagProjects()
   tagProject $FETCH_TAG $CUSTOMER_PRODUCT_PROJECT $BRANCH
 
   # d) tag all projects specified in the pluginbuilder map file (all necessary plugin and feature projects)
-  # use custom-build/copy/all.map, because this map file contains all features and plugins
+  # use custom-build/ci/all.map, because this map file contains all features and plugins
   checkoutModule $PLUGINBUILDER_PROJECT_DIR/custom-build $FETCH_TAG $PLUGINBUILDER_PROJECT_NAME/custom-build $BRANCH
-  for project in $( cat $PLUGINBUILDER_PROJECT_DIR/custom-build/copy/all.map | sed -r "s/.*HEAD,\/usr\/local\/cvsroot,,(.*)/\1/g" ) ; do
+  for project in $( cat $PLUGINBUILDER_PROJECT_DIR/custom-build/ci/all.map | sed -r "s/.*HEAD,\/usr\/local\/cvsroot,,(.*)/\1/g" ) ; do
     tagProject $FETCH_TAG $project $BRANCH
   done
 }
