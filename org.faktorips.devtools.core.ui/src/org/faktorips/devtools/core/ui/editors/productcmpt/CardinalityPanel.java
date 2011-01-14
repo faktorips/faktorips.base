@@ -106,13 +106,19 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
 
         // Min/Max bei Other, Default zentriert darunter
         Composite otherPane = toolkit.createLabelEditColumnComposite(kardinalityPane);
+        GridData gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
+        otherPane.setLayoutData(gd);
         GridLayout specialPaneLayout = (GridLayout)otherPane.getLayout();
         specialPaneLayout.marginLeft = 4;
         specialPaneLayout.numColumns = 3;
         specialPaneLayout.horizontalSpacing = 2;
-        specialPaneLayout.marginHeight = 0;
+        /*
+         * Layout optimization for Windows: minimize space between radio buttons "Mandatory" and
+         * "Optional"
+         */
+        specialPaneLayout.marginHeight = 2;
         minCard = toolkit.createText(otherPane);
-        GridData gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
+        gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
         gd.widthHint = 20;
         minCard.setLayoutData(gd);
         minMaxCardLabel = toolkit.createLabel(otherPane, ".."); //$NON-NLS-1$
@@ -130,11 +136,6 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         defaultCardLabel = toolkit.createLabel(defaultPane, Messages.CardinalityPanel_LabelDefaultCardinality);
         defaultCard = toolkit.createText(defaultPane);
         gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
-        /*
-         * Layout optimization for GTK Linux. Indent makes the textField one pixel smaller on the
-         * left side to align it with the min-cardinality field above. TODO Test Layout in Windows.
-         */
-        gd.horizontalIndent = 1;
         defaultCard.setLayoutData(gd);
 
         toolkit.createVerticalSpacer(kardinalityPane, 3).setBackground(kardinalityPane.getBackground());
