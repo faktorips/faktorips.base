@@ -847,11 +847,14 @@ EXEC="$ANT_HOME/bin/ant -buildfile $BUILDFILE release \
  -Dupdatesite.path=$PUBLISH_UPDATESITE_DIR \
  -DsiteXmlFileName=$PUBLISH_UPDATESITE_FILE \
  -DproductProject=$BUILDPRODUCT \
- -Dcustom-build=$CUSTOM_BUILD \
  -DnoBranch=$NOBRANCH \
  -Dcvsroot=$CVS_ROOT \
  -DminVersion3=$MIN_VERSION_3
  "
+if [ -n "$CUSTOM_BUILD" ] ; then 
+ EXEC=$EXEC" -Dcustom-build=$CUSTOM_BUILD"
+fi
+ 
 echo $EXEC
 eval $EXEC
 RC=$(echo $?)
