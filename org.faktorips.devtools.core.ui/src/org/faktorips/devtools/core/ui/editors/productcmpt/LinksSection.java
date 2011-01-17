@@ -156,6 +156,8 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         } else {
             relationRootPane.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
             GridLayout layout = new GridLayout(2, false);
+            layout.marginWidth = 1;
+            layout.marginHeight = 1;
             relationRootPane.setLayout(layout);
 
             Tree tree = toolkit.getFormToolkit().createTree(relationRootPane, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);

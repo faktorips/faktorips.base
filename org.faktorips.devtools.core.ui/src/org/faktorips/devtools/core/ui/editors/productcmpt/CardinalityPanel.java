@@ -53,7 +53,6 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
     private Button optional;
     private Button mandatory;
     private Button other;
-    private Composite root;
 
     private IpsObjectUIController uiController;
     private CardinalityField minCardField;
@@ -68,24 +67,13 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
      * Creates a new Cardinality panel
      */
     public CardinalityPanel(Composite parent, UIToolkit toolkit) {
-        // first create a composite to fill the complete space
-        root = toolkit.createComposite(parent);
-        GridLayout layout = new GridLayout(1, false);
-        layout.marginHeight = 1;
-        root.setLayout(layout);
-
-        GridData layoutData = new GridData(SWT.FILL, SWT.FILL, false, false);
-        root.setLayoutData(layoutData);
-
-        // then, create a composite to be put at to and this
-        // composite becomes the border!
-        Composite kardinalityPane = toolkit.createLabelEditColumnComposite(root);
+        Composite kardinalityPane = toolkit.createLabelEditColumnComposite(parent);
         ((GridLayout)kardinalityPane.getLayout()).numColumns = 4;
         ((GridLayout)kardinalityPane.getLayout()).horizontalSpacing = 9;
         ((GridLayout)kardinalityPane.getLayout()).marginWidth = 5;
         ((GridLayout)kardinalityPane.getLayout()).marginHeight = 8;
 
-        layoutData = new GridData(SWT.FILL, SWT.FILL, false, false);
+        GridData layoutData = new GridData(SWT.FILL, SWT.TOP, false, false);
         kardinalityPane.setLayoutData(layoutData);
 
         // create header
@@ -131,7 +119,7 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         toolkit.setHorizontalSpan(defaultCard, 3);
 
         kardinalityPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
-        toolkit.getFormToolkit().paintBordersFor(root);
+        toolkit.getFormToolkit().paintBordersFor(parent);
     }
 
     /**
