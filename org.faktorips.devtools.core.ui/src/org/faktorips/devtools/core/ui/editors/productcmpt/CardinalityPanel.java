@@ -21,6 +21,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -80,15 +81,11 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         // composite becomes the border!
         Composite kardinalityPane = toolkit.createLabelEditColumnComposite(root);
         layoutData = new GridData(SWT.FILL, SWT.FILL, false, false);
-        layoutData.verticalAlignment = SWT.TOP;
         kardinalityPane.setLayoutData(layoutData);
-        GridLayout kardinalityPaneLayout = (GridLayout)kardinalityPane.getLayout();
-        kardinalityPaneLayout.numColumns = 2;
-        kardinalityPaneLayout.horizontalSpacing = 1;
 
         // create header
         Label headerLabel = toolkit.createLabel(kardinalityPane, Messages.RelationsSection_cardinality);
-        toolkit.setHorizontalSpan(headerLabel, 3);
+        toolkit.setHorizontalSpan(headerLabel, 2);
         ((GridData)headerLabel.getLayoutData()).horizontalAlignment = SWT.CENTER;
 
         // create radio buttons
@@ -106,17 +103,15 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
 
         // Min/Max bei Other, Default zentriert darunter
         Composite otherPane = toolkit.createLabelEditColumnComposite(kardinalityPane);
-        GridData gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
+        GridData gd = new GridData(SWT.FILL, SWT.BOTTOM, true, false);
         otherPane.setLayoutData(gd);
         GridLayout specialPaneLayout = (GridLayout)otherPane.getLayout();
-        specialPaneLayout.marginLeft = 4;
         specialPaneLayout.numColumns = 3;
-        specialPaneLayout.horizontalSpacing = 2;
+        specialPaneLayout.horizontalSpacing = 9;
         /*
          * Layout optimization for Windows: minimize space between radio buttons "Mandatory" and
          * "Optional"
          */
-        specialPaneLayout.marginHeight = 2;
         minCard = toolkit.createText(otherPane);
         gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
         gd.widthHint = 20;
@@ -127,16 +122,21 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         gd.widthHint = 20;
         maxCard.setLayoutData(gd);
 
-        Composite defaultPane = toolkit.createLabelEditColumnComposite(kardinalityPane);
-        GridLayout defaultPaneLayout = (GridLayout)defaultPane.getLayout();
-        defaultPaneLayout.marginWidth = 2;
-        GridData defaultGridData = new GridData(GridData.FILL, GridData.BEGINNING, true, true);
-        defaultGridData.horizontalSpan = 3;
-        defaultPane.setLayoutData(defaultGridData);
-        defaultCardLabel = toolkit.createLabel(defaultPane, Messages.CardinalityPanel_LabelDefaultCardinality);
-        defaultCard = toolkit.createText(defaultPane);
-        gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
-        defaultCard.setLayoutData(gd);
+        /*
+         * Default Input Field
+         */
+
+        Control verticalSpacer = toolkit.createVerticalSpacer(kardinalityPane, 3);
+        toolkit.setHorizontalSpan(verticalSpacer, 2);
+
+        defaultCardLabel = toolkit.createLabel(kardinalityPane, Messages.CardinalityPanel_LabelDefaultCardinality);
+
+        // used to get equal layout as min-max fields
+        Composite defaultInputPane = toolkit.createLabelEditColumnComposite(kardinalityPane);
+        ((GridLayout)defaultInputPane.getLayout()).numColumns = 1;
+
+        defaultCard = toolkit.createText(defaultInputPane);
+        ((GridData)defaultCard.getLayoutData()).widthHint = 20;
 
         toolkit.createVerticalSpacer(kardinalityPane, 3).setBackground(kardinalityPane.getBackground());
 
