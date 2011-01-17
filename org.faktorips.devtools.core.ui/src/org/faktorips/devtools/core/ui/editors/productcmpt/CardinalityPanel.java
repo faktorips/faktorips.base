@@ -82,8 +82,8 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         Composite kardinalityPane = toolkit.createLabelEditColumnComposite(root);
         ((GridLayout)kardinalityPane.getLayout()).numColumns = 4;
         ((GridLayout)kardinalityPane.getLayout()).horizontalSpacing = 9;
-        ((GridLayout)kardinalityPane.getLayout()).marginRight = 5;
-        ((GridLayout)kardinalityPane.getLayout()).marginBottom = 8;
+        ((GridLayout)kardinalityPane.getLayout()).marginWidth = 5;
+        ((GridLayout)kardinalityPane.getLayout()).marginHeight = 8;
 
         layoutData = new GridData(SWT.FILL, SWT.FILL, false, false);
         kardinalityPane.setLayoutData(layoutData);
@@ -107,16 +107,6 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         other.addSelectionListener(listener);
 
         // Min/Max bei Other, Default darunter
-        // Composite otherPane = toolkit.createLabelEditColumnComposite(kardinalityPane);
-        // GridData gd = new GridData(SWT.FILL, SWT.BOTTOM, true, false);
-        // otherPane.setLayoutData(gd);
-        // GridLayout specialPaneLayout = (GridLayout)otherPane.getLayout();
-        // specialPaneLayout.numColumns = 3;
-        // specialPaneLayout.horizontalSpacing = 8;
-        /*
-         * Layout optimization for Windows: minimize space between radio buttons "Mandatory" and
-         * "Optional"
-         */
         minCard = toolkit.createText(kardinalityPane);
         GridData gd = new GridData(GridData.FILL, GridData.BEGINNING, true, false);
         gd.widthHint = 15;
@@ -136,16 +126,9 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
 
         defaultCardLabel = toolkit.createLabel(kardinalityPane, Messages.CardinalityPanel_LabelDefaultCardinality);
 
-        // used to get equal layout as min-max fields
-        // Composite defaultInputPane = toolkit.createLabelEditColumnComposite(kardinalityPane);
-        // ((GridLayout)defaultInputPane.getLayout()).numColumns = 1;
-
         defaultCard = toolkit.createText(kardinalityPane);
         ((GridData)defaultCard.getLayoutData()).widthHint = 20;
         toolkit.setHorizontalSpan(defaultCard, 3);
-
-        // toolkit.createVerticalSpacer(kardinalityPane,
-        // 3).setBackground(kardinalityPane.getBackground());
 
         kardinalityPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
         toolkit.getFormToolkit().paintBordersFor(root);
