@@ -327,7 +327,7 @@ showUsageAndExit()
   echo 'mandatory:'
   echo '  -version [version]     the version which should be generated and published (e.g. "-version 2.2.0.rc1")'
   echo 'optional:'
-  echo '  -customBuild [name]   to use a special set of plugins or features (e.g. name=aok or ergo)'
+  echo '  -customBuild [name]    to use a special set of plugins or features (e.g. name=aok or ergo)'
   echo '  -category [category]   the feature category used on the update site,'
   echo '                         default = the first two numbers from the build version (e.g. "-category 2.2")'
   echo '  -overwrite             overwrite previous version (otherwise if the release exists then the release build fails)'
@@ -517,7 +517,7 @@ showParameter()
     fi
   else
     if [ "$SKIPTAGCVS" = "true" ] ; then
-      echo -e "  -useBranch       : use previous tagged sources (tag: \e[35m$FETCH_TAG\e[0m)"
+      echo -e "  -useBranch       : Use previous tagged sources (tag: \e[35m$FETCH_TAG\e[0m)"
     else 
       echo -e "  -useBranch       : None, use \e[35mHEAD\e[0m"
     fi
@@ -526,7 +526,7 @@ showParameter()
     echo -e "  -buildProduct    : Build product \e[35m$BUILDPRODUCT\e[0m"
   fi
   if [ ! "$CUSTOM_BUILD" = "NONE" ] ; then
-    echo -e "  -customBuild    : Custom build \e[35m$CUSTOM_BUILD\e[0m"
+    echo -e "  -customBuild     : Custom build \e[35m$CUSTOM_BUILD\e[0m"
   fi
   echo -e "  -projectsrootdir : Checkout/source directory \e[35m$PROJECTSROOTDIR\e[0m"
   echo -e "  -workingdir      : Work directory \e[35m$WORKINGDIR\e[0m"
