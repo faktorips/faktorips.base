@@ -580,6 +580,7 @@
 		<antcall inheritall="true" target="-publish.product"/>
 		
 		<!-- store archiv results, to add the license file later -->
+		<!--  note that ${buildDirectory}/results contains all zip files -->
 		<echo file="${basedir}/archives_features">
 ${faktoripsReleaseDownloadZipPath}
 ${faktoripsNls1ReleaseDownloadZipPath}
@@ -590,10 +591,12 @@ ${faktoripsOrmextNls1ReleaseDownloadZipPath}
 ${faktoripsUpdateSiteZipPath}
 ${faktoripsRuntimeAndValuetypesZipPath}
 ${faktoripsRuntimeAddonsZipPath}
+${buildDirectory}/results
 		</echo>
 		<echo file="${basedir}/archives_products">
 ${faktoripsProductWinZipPath}
 ${faktoripsProductLinuxZipPath}
+${buildDirectory}/results			
 		</echo>
 	</target>
 	

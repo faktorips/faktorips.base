@@ -633,23 +633,41 @@ createIndexHtml()
   echo "  finished, result: "$LINK_PREFIX"/"$BUILD_CATEGORY_PATH"/index.html"
 }
 
-createAndAddLicensePdf()
-{
-  # $1 archive file
-  local ARCHIV_FILE=$1
-   if [ ! "$SKIPPUBLISH" = "true" -a -f $ARCHIV_FILE ] ; then
+createAndAddLicensePdf(){
+  # $1 text file containing filenames or direcory names of all archives files 
+  local ARCHIV_FILES=$1
+  if [ ! "$SKIPPUBLISH" = "true" -a -f $ARCHIV_FILES ] ; then
     $PROJECTSROOTDIR/$CREATE_LIZENZ_SCRIPT $BUILD_VERSION
-    for i in $(cat $ARCHIV_FILE) ; do
-      if [ ! -f $i ] ; then continue ; fi 
-      echo "add license to: "$i
-      zip -ujD $i $PROJECTSROOTDIR/$LIZENZ_PDF > /dev/null 2>&1
-      ## note: the Datenschutzbestimmung is not necessary in the archive file
-      ## zip -ujD $i $PROJECTSROOTDIR/$DATENSCHUTZ_PDF > /dev/null 2>&1
-      if [ ! $? -eq 0 ] ; then
-        echo "error adding lizenz.pdf or datenschutz.pdf to archive: "$i
-        exit 1
+    for i in $(cat $ARCHIV_FILES) ; do
+      if [ -d $i ] ; then
+        # special case add license to all files in given directory
+        for j in $(find $i -iname "*.zip") ; do
+          addLicensePdfTo $j $PROJECTSROOTDIR/$LIZENZ_PDF 
+        done
       fi
+      addLicensePdfTo $i $PROJECTSROOTDIR/$LIZENZ_PDF 
     done
+  fi
+}
+
+addLicensePdfTo(){
+  # $1 archive filename
+  # $2 license pdf
+  local ARCHIVE_FILE=$1
+  local PDF_FILE=$2
+  if [ ! -f $ARCHIVE_FILE ] ; then 
+    # file not found 
+    # maybe because of skiped publish step
+    return
+  fi
+  echo "add license to: "$ARCHIVE_FILE
+  zip -ujD $ARCHIVE_FILE $PDF_FILE > /dev/null 2>&1
+  local RC=$?
+  ## note: the Datenschutzbestimmung is not necessary in the archive file
+  ## zip -ujD $i $PROJECTSROOTDIR/$DATENSCHUTZ_PDF > /dev/null 2>&1
+  if [ ! $RC -eq 0 ] ; then
+    echo "error adding lizenz.pdf or datenschutz.pdf to archive: "$i
+    exit 1
   fi
 }
 
