@@ -212,46 +212,47 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
                 list.add(new Message(MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN, text, Message.ERROR, this, new String[] {
                         PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY }));
             }
-            // MTB#515 sum of all minCardinality of the same association (all links) <= maximum of
-            // policy cmpt type
+            // MTB#515
+            // this.maxCardinality + ForAllOtherOfSameAssociation(Sum(other.minCardinality)) <=
+            // policyCmptAssociation.maxCardinality
             int maxType = associationObj.getMaxCardinality();
             if (maxType != IProductCmptTypeAssociation.CARDINALITY_MANY) {
-                int sumMinCardinality = 0;
+                int sumMinCardinality = this.getMaxCardinality();
                 IProductCmptLink[] links = getProductCmptGeneration().getLinks(getAssociation());
-                for (IProductCmptLink productCmptLink : links) {
-                    sumMinCardinality += productCmptLink.getMinCardinality();
+                if (sumMinCardinality < IProductCmptLink.CARDINALITY_MANY) {
+                    for (IProductCmptLink productCmptLink : links) {
+                        if (!productCmptLink.equals(this)) {
+                            sumMinCardinality += productCmptLink.getMinCardinality();
+                        }
+                    }
                 }
                 if (sumMinCardinality > maxType) {
-                    String text = NLS.bind(Messages.ProductCmptLink_msgMinCardinalityExceedsModelMax,
-                            Integer.toString(sumMinCardinality), Integer.toString(maxType));
-                    list.add(new Message(MSGCODE_MIN_CARDINALITY_EXCEEDS_MODEL_MAX, text, Message.ERROR, this,
-                            PROPERTY_MIN_CARDINALITY));
-                }
-                if (maxCardinality > maxType) {
                     String text = NLS.bind(Messages.ProductCmptLink_msgMaxCardinalityExceedsModelMax,
-                            Integer.toString(maxCardinality), Integer.toString(maxType));
+                            Integer.toString(sumMinCardinality), Integer.toString(maxType));
                     list.add(new Message(MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX, text, Message.ERROR, this,
                             PROPERTY_MAX_CARDINALITY));
                 }
-
             }
-            // MTB#515 sum of all maxCardinality of the same association (all links) >= minimum of
-            // policy cmpt type
+            // MTB#515
+            // this.minCardinality + ForAllOtherOfSameAssociation(Sum(other.maxCardinality)) <=
+            // policyCmptAssociation.minCardinality
             int minType = associationObj.getMinCardinality();
-            int sumMaxCardinality = 0;
+            int sumMaxCardinality = this.getMinCardinality();
             IProductCmptLink[] links = getProductCmptGeneration().getLinks(getAssociation());
             for (IProductCmptLink productCmptLink : links) {
-                if (productCmptLink.getMaxCardinality() == IProductCmptLink.CARDINALITY_MANY) {
-                    sumMaxCardinality = IProductCmptLink.CARDINALITY_MANY;
-                    break;
+                if (!productCmptLink.equals(this)) {
+                    if (productCmptLink.getMaxCardinality() == IProductCmptLink.CARDINALITY_MANY) {
+                        sumMaxCardinality = IProductCmptLink.CARDINALITY_MANY;
+                        break;
+                    }
+                    sumMaxCardinality += productCmptLink.getMaxCardinality();
                 }
-                sumMaxCardinality += productCmptLink.getMaxCardinality();
             }
             if (sumMaxCardinality < minType) {
-                String text = NLS.bind(Messages.ProductCmptLink_msgMaxCardinalityExceedsModelMin,
+                String text = NLS.bind(Messages.ProductCmptLink_msgMinCardinalityExceedsModelMin,
                         Integer.toString(sumMaxCardinality), Integer.toString(minType));
-                list.add(new Message(MSGCODE_MAX_CARDINALITY_FALLS_BELOW_MODEL_MIN, text, Message.ERROR, this,
-                        PROPERTY_MAX_CARDINALITY));
+                list.add(new Message(MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN, text, Message.ERROR, this,
+                        PROPERTY_MIN_CARDINALITY));
             }
 
             if (defaultCardinality > maxCardinality || minCardinality > defaultCardinality

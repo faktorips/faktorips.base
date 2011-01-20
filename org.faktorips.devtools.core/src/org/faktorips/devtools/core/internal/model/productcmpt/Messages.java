@@ -66,7 +66,7 @@ public class Messages extends NLS {
     public static String ProductCmptRelation_msgMaxCardinalityIsLessThan1;
     public static String ProductCmptRelation_msgMaxCardinalityIsLessThanMin;
     public static String ProductCmptLink_msgMaxCardinalityExceedsModelMax;
-    public static String ProductCmptLink_msgMinCardinalityExceedsModelMax;
+    public static String ProductCmptLink_msgMinCardinalityExceedsModelMin;
     public static String ProductCmptRelation_msgInvalidTarget;
 
     public static String DeepCopyOperation_taskTitle;
@@ -79,7 +79,6 @@ public class Messages extends NLS {
 
     public static String ProductCmpt_msgInvalidTypeHierarchy;
     public static String ProductCmptLink_msgDefaultCardinalityOutOfRange;
-    public static String ProductCmptLink_msgMaxCardinalityExceedsModelMin;
 
     public static String FormulaTestInputValue_CoreException_WrongIdentifierForParameter;
     public static String FormulaTestInputValue_ValidationMessage_FormulaParameterNotFound;

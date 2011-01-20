@@ -74,17 +74,10 @@ public interface IProductCmptLink extends IIpsObjectPart, IDescribedElement {
             + "MaxCardinalityExceedsModelMax"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the sum of all minimum cardinality exceeds the
-     * maximum cardinality defined in the model.
+     * Validation message code to indicate minimum cardinality falls below the minimum cardinality
+     * defined in the model.
      */
-    public final static String MSGCODE_MIN_CARDINALITY_EXCEEDS_MODEL_MAX = MSGCODE_PREFIX
-            + "MinCardinalityExceedsModelMax"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the sum of all maximum cardinality falls below the
-     * minimum cardinality defined in the model.
-     */
-    public final static String MSGCODE_MAX_CARDINALITY_FALLS_BELOW_MODEL_MIN = MSGCODE_PREFIX
+    public final static String MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN = MSGCODE_PREFIX
             + "MinCardinalityFallsBelowModelMin"; //$NON-NLS-1$
 
     /**
