@@ -50,7 +50,7 @@ public class AlternateRowTablePageElementLayout extends DefaultTablePageElementL
     }
 
     private Style getStyle(int row) {
-        if (row % 2 == (ignoreFirstRow ? 1 : 0)) {
+        if (row % 2 == 1) {
             return Style.TABLE_ROW_EVEN;
         }
         return Style.TABLE_ROW_UNEVEN;

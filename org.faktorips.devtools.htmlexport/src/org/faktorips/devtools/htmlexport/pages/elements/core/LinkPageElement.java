@@ -32,6 +32,8 @@ public class LinkPageElement extends AbstractCompositePageElement {
      */
     private String path;
 
+    private String linkAnchor;
+
     public LinkPageElement(String path, String target, PageElement... pageElements) {
         this(path, target);
         addPageElements(pageElements);
@@ -77,5 +79,13 @@ public class LinkPageElement extends AbstractCompositePageElement {
      */
     public void setTarget(String target) {
         this.target = target;
+    }
+
+    public String getLinkAnchor() {
+        return linkAnchor;
+    }
+
+    public void setLinkAnchor(String linkAnchor) {
+        this.linkAnchor = linkAnchor;
     }
 }

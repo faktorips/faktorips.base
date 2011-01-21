@@ -14,6 +14,7 @@
 package org.faktorips.devtools.htmlexport.generators;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 
 /**
  * AbstractTextGenerator generates Text without using an {@link ILayouter}
@@ -28,9 +29,13 @@ public abstract class AbstractTextGenerator implements IGenerator {
 
     @Override
     public final byte[] generate() {
+        if (!Charset.isSupported(CHARSET)) {
+            return generateText().getBytes();
+        }
         try {
             return generateText().getBytes(CHARSET);
         } catch (UnsupportedEncodingException e) {
+            // should never be reached
             return generateText().getBytes();
         }
     }

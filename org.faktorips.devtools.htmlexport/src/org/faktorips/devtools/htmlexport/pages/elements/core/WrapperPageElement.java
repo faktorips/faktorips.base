@@ -16,7 +16,6 @@ package org.faktorips.devtools.htmlexport.pages.elements.core;
 import java.util.Set;
 
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
-import org.faktorips.devtools.htmlexport.generators.WrapperType;
 
 /**
  * {@link WrapperPageElement} represents element in complex structures like tables, lists, trees

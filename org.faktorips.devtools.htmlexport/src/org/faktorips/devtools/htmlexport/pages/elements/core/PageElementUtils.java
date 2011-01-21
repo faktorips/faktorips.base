@@ -28,7 +28,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
-import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementInDocumentedSourceFileFilter;
 import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
 import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
@@ -176,13 +175,13 @@ public class PageElementUtils {
     }
 
     public static LinkPageElement createLinkPageElementToIpsElement(IIpsElement to,
-            String anchor,
+            String linkAnchor,
             String target,
             PageElement element) {
         String path = PathUtilFactory.createPathUtil(to).getPathFromRoot(
                 LinkedFileType.getLinkedFileTypeByIpsElement(to));
         LinkPageElement linkPageElement = new LinkPageElement(path, target, element);
-        linkPageElement.setAnchor(anchor);
+        linkPageElement.setLinkAnchor(linkAnchor);
         return linkPageElement;
     }
 

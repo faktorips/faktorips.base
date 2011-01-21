@@ -13,10 +13,14 @@
 
 package org.faktorips.devtools.htmlexport.generators.html.elements;
 
+import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.htmlexport.generators.AbstractPageElementLayouter;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 
 public abstract class AbstractHtmlPageElementLayouter<T extends PageElement> extends AbstractPageElementLayouter<T> {
 
@@ -35,5 +39,14 @@ public abstract class AbstractHtmlPageElementLayouter<T extends PageElement> ext
 
     protected void append(String text) {
         layouter.append(text);
+    }
+
+    protected String getClasses() {
+        Set<Style> styles = pageElement.getStyles();
+        if (styles == null || styles.isEmpty()) {
+            return null;
+        }
+        
+        return StringUtils.join(styles, ' ');
     }
 }

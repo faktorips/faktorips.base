@@ -33,5 +33,5 @@ public enum Style {
     INDENTION,
     SMALL,
     BIG,
-    DEAD_LINK
+    DEAD_LINK;
 }

@@ -27,8 +27,6 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageE
 /**
  * Test fuer das HTML-Layout
  * 
- * <div>Achtung: Für die Generierung der Links sind momentan noch IPS-Objekte notwendig und werden
- * daher im Plugin-Test-Projekt getestet</div>
  */
 public class HtmlLayouterTest extends AbstractTestHtmlLayouter {
     public void testHtmlLayouterRootPageElement() throws Exception {
@@ -88,7 +86,7 @@ public class HtmlLayouterTest extends AbstractTestHtmlLayouter {
         List<PageElement> elementListe = createPageElementListe(texte);
 
         ListPageElement pageElement = new ListPageElement(elementListe);
-        pageElement.setOrdered(false);
+        pageElement.setOrdered(true);
 
         String html = layout(pageElement);
         assertContains(html, texte);

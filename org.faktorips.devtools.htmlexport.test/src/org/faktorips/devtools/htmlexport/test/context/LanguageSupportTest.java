@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.type.IAttribute;
 
-public class LanguageSupportTest extends AbstractHtmlExportTest {
+public class LanguageSupportTest extends AbstractHtmlExportPluginTest {
 
     public void testDescriptionLanguage() throws Exception {
 

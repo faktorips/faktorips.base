@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.htmlexport.pages.elements.core;
 
-import org.faktorips.devtools.htmlexport.generators.WrapperType;
 
 /**
  * A {@link TreeNodePageElement} represents a node in a tree. The children are shown within an

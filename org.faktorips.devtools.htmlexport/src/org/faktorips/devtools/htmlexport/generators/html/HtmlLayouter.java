@@ -14,7 +14,6 @@
 package org.faktorips.devtools.htmlexport.generators.html;
 
 import java.io.IOException;
-import java.util.Set;
 
 import org.faktorips.devtools.htmlexport.generators.AbstractLayouter;
 import org.faktorips.devtools.htmlexport.generators.LayoutResource;
@@ -32,8 +31,6 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageEleme
 import org.faktorips.devtools.htmlexport.pages.elements.core.ImagePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
 
@@ -117,26 +114,6 @@ public class HtmlLayouter extends AbstractLayouter {
     public void initRootPage(AbstractRootPageElement pageElement) {
         setPathToRoot(pageElement.getPathToRoot());
         clear();
-    }
-
-    /**
-     * puts all {@link Style}s of the {@link PageElement} in a String for the html-class-attribute.
-     * 
-     */
-    public String getClasses(PageElement pageElement) {
-
-        Set<Style> styles = pageElement.getStyles();
-        if (styles == null || styles.isEmpty()) {
-            return null;
-        }
-
-        StringBuilder classes = new StringBuilder();
-
-        for (Style style : styles) {
-            classes.append(style);
-            classes.append(' ');
-        }
-        return classes.toString().trim();
     }
 
     /**

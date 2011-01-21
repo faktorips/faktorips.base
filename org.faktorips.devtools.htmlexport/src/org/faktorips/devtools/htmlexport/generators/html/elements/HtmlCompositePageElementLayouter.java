@@ -13,9 +13,9 @@
 
 package org.faktorips.devtools.htmlexport.generators.html.elements;
 
-import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperType;
 
 public class HtmlCompositePageElementLayouter extends AbstractHtmlPageElementLayouter<AbstractCompositePageElement> {
 
@@ -31,8 +31,7 @@ public class HtmlCompositePageElementLayouter extends AbstractHtmlPageElementLay
             return;
         }
         String wrappingElement = getHtmlElementByWrappingType(wrapperType);
-        append(htmlUtil
-                .createHtmlElementOpenTag(wrappingElement, pageElement.getId(), layouter.getClasses(pageElement)));
+        append(htmlUtil.createHtmlElementOpenTag(wrappingElement, pageElement.getId(), getClasses()));
         layouter.visitSubElements(pageElement);
         append(htmlUtil.createHtmlElementCloseTag(wrappingElement));
     }

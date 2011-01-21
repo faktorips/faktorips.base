@@ -13,19 +13,21 @@
 
 package org.faktorips.devtools.htmlexport.helper.html;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import org.custommonkey.xmlunit.XMLTestCase;
+import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
+import org.xml.sax.SAXException;
 
-public abstract class AbstractTestHtmlLayouter extends TestCase {
+public abstract class AbstractTestHtmlLayouter extends XMLTestCase {
 
-    HtmlLayouter layouter = new HtmlLayouter(".resources"); //$NON-NLS-1$
+    protected HtmlLayouter layouter = new HtmlLayouter(".resources"); //$NON-NLS-1$
 
     public AbstractTestHtmlLayouter() {
         super();
@@ -67,4 +69,29 @@ public abstract class AbstractTestHtmlLayouter extends TestCase {
         return html;
     }
 
+    @Override
+    public void assertXpathExists(String xml, String xPath) throws IOException, SAXException {
+        String xmlWithoutDoctypeDeclaration = prepareXml(xml);
+
+        try {
+            super.assertXpathExists(xPath, xmlWithoutDoctypeDeclaration);
+        } catch (XpathException e) {
+            throw new RuntimeException("Fehler bei XPath: " + xPath, e); //$NON-NLS-1$
+        }
+    }
+
+    @Override
+    public void assertXpathNotExists(String xml, String xPath) throws IOException, SAXException {
+        String xmlWithoutDoctypeDeclaration = prepareXml(xml);
+
+        try {
+            super.assertXpathNotExists(xPath, xmlWithoutDoctypeDeclaration);
+        } catch (XpathException e) {
+            throw new RuntimeException("Fehler bei XPath: " + xPath, e); //$NON-NLS-1$
+        }
+    }
+
+    private String prepareXml(String xml) {
+        return xml.replaceFirst("<html .+>", "<html>").replaceFirst("<!DOCTYPE .+\n", "").trim(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    }
 }

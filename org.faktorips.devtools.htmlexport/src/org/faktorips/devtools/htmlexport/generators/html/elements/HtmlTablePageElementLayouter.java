@@ -24,7 +24,10 @@ public class HtmlTablePageElementLayouter extends AbstractHtmlPageElementLayoute
 
     @Override
     protected void layoutInternal() {
-        append(htmlUtil.createHtmlElementOpenTag("table", pageElement.getId(), layouter.getClasses(pageElement))); //$NON-NLS-1$
+        if (pageElement.isEmpty()) {
+            return;
+        }
+        append(htmlUtil.createHtmlElementOpenTag("table", pageElement.getId(), getClasses())); //$NON-NLS-1$
         layouter.visitSubElements(pageElement);
         append(htmlUtil.createHtmlElementCloseTag("table")); //$NON-NLS-1$
     }

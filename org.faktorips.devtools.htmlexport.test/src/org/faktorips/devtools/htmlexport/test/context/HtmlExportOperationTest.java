@@ -3,7 +3,7 @@ package org.faktorips.devtools.htmlexport.test.context;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.htmlexport.HtmlExportOperation;
 
-public class HtmlExportOperationTest extends AbstractHtmlExportTest {
+public class HtmlExportOperationTest extends AbstractHtmlExportPluginTest {
 
     public void testConstructorParameters() {
 

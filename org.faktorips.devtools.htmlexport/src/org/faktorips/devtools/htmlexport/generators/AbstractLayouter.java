@@ -13,12 +13,10 @@
 
 package org.faktorips.devtools.htmlexport.generators;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class AbstractLayouter implements ILayouter {
+public abstract class AbstractLayouter extends AbstractTextGenerator implements ILayouter {
 
     /**
      * content of a page
@@ -32,11 +30,8 @@ public abstract class AbstractLayouter implements ILayouter {
     }
 
     @Override
-    public byte[] generate() throws UnsupportedEncodingException {
-        if (Charset.isSupported(CHARSET)) {
-            return content.toString().getBytes(CHARSET);
-        }
-        return content.toString().getBytes();
+    public String generateText() {
+        return content.toString().trim();
     }
 
     @Override

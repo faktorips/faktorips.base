@@ -68,7 +68,7 @@ public class FileHandler {
      */
     public byte[] readFile(String bundleName, String fileName) throws IOException {
         if (Platform.getBundle(bundleName) == null) {
-            throw new IOException("Bundle not found"); //$NON-NLS-1$
+            throw new IOException("Bundle " + bundleName + " not found (Loading file " + fileName + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
 
         BufferedInputStream in = null;

@@ -14,9 +14,9 @@
 package org.faktorips.devtools.htmlexport.pages.elements.core.table;
 
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
-import org.faktorips.devtools.htmlexport.generators.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperType;
 
 /**
  * {@link TableCellPageElement} represents a cell in a table

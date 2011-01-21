@@ -28,6 +28,7 @@ public class HtmlRootPageElementLayouter extends AbstractHtmlPageElementLayouter
 
         append(htmlUtil.createHtmlHead(pageElement.getTitle(),
                 layouter.getPathToRoot() + layouter.getStyleDefinitionPath()));
+
         layouter.visitSubElements(pageElement);
 
         append(htmlUtil.createHtmlFoot());

@@ -26,7 +26,7 @@ import org.faktorips.devtools.htmlexport.HtmlExportOperation;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.standard.StandardDocumentorScript;
 
-public class HtmlExportOperationErrorHandlingTest extends AbstractHtmlExportTest {
+public class HtmlExportOperationErrorHandlingTest extends AbstractHtmlExportPluginTest {
 
     public class MockIpsSrcFile extends IpsSrcFile {
 

@@ -13,48 +13,16 @@
 
 package org.faktorips.devtools.htmlexport.pages.standard;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-import org.custommonkey.xmlunit.XMLTestCase;
-import org.custommonkey.xmlunit.exceptions.XpathException;
+import org.faktorips.devtools.htmlexport.AbstractHtmlExportXmlUnitLayouterTest;
 import org.faktorips.devtools.htmlexport.generators.IGenerator;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
-import org.faktorips.devtools.htmlexport.test.context.AbstractHtmlExportTest;
-import org.xml.sax.SAXException;
+import org.faktorips.devtools.htmlexport.test.context.AbstractHtmlExportPluginTest;
 
-public abstract class AbstractXmlUnitHtmlExportTest extends AbstractHtmlExportTest {
-
-    private static class HtmlExportXmlUnitTest extends XMLTestCase {
-        @Override
-        public void assertXpathExists(String xml, String xPath) throws IOException, SAXException {
-            String xmlWithoutDoctypeDeclaration = prepareXml(xml);
-
-            try {
-                System.out.println(xmlWithoutDoctypeDeclaration);
-                super.assertXpathExists(xPath, xmlWithoutDoctypeDeclaration);
-            } catch (XpathException e) {
-                throw new RuntimeException("Fehler bei XPath: " + xPath, e);
-            }
-        }
-
-        @Override
-        public void assertXpathNotExists(String xml, String xPath) throws IOException, SAXException {
-            String xmlWithoutDoctypeDeclaration = prepareXml(xml);
-
-            try {
-                super.assertXpathNotExists(xPath, xmlWithoutDoctypeDeclaration);
-            } catch (XpathException e) {
-                throw new RuntimeException("Fehler bei XPath: " + xPath, e);
-            }
-        }
-
-        private String prepareXml(String xml) {
-            return xml.replaceFirst("<html .+\n", "<html>\n").replaceFirst("<!DOCTYPE .+\n", "").trim();
-        }
-    }
+public abstract class AbstractXmlUnitHtmlExportTest extends AbstractHtmlExportPluginTest {
 
     private ILayouter layouter;
 
@@ -73,11 +41,13 @@ public abstract class AbstractXmlUnitHtmlExportTest extends AbstractHtmlExportTe
     }
 
     protected void assertXPathExists(PageElement pageElement, String xPath) throws Exception {
-        new HtmlExportXmlUnitTest().assertXpathExists(createXml(pageElement), xPath);
+        new AbstractHtmlExportXmlUnitLayouterTest() {
+        }.assertXpathExists(createXml(pageElement), xPath);
     }
 
     protected void assertXPathNotExists(PageElement pageElement, String xPath) throws Exception {
-        new HtmlExportXmlUnitTest().assertXpathNotExists(createXml(pageElement), xPath);
+        new AbstractHtmlExportXmlUnitLayouterTest() {
+        }.assertXpathNotExists(createXml(pageElement), xPath);
     }
 
     private String createXml(PageElement pageElement) throws UnsupportedEncodingException {

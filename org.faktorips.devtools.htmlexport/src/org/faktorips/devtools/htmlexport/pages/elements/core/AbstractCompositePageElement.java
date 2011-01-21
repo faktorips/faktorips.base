@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
-import org.faktorips.devtools.htmlexport.generators.WrapperType;
 
 /**
  * {@link AbstractCompositePageElement} provides basic functionality for implementations of the
@@ -96,6 +95,14 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
         return subElements;
     }
 
+    /**
+     * returns the subelement t the spedified position
+     * 
+     */
+    public PageElement getSubElement(int index) {
+        return subElements.get(index);
+    }
+
     public WrapperType getWrapperType() {
         return wrapperType;
     }
@@ -108,4 +115,7 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
         return subElements.isEmpty();
     }
 
+    public int size() {
+        return subElements.size();
+    }
 }

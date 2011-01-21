@@ -11,9 +11,9 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.htmlexport.generators;
+package org.faktorips.devtools.htmlexport.pages.elements.core;
 
-import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
+import org.faktorips.devtools.htmlexport.generators.ILayouter;
 
 /**
  * Classifies the kind of a {@link WrapperPageElement} for the {@link ILayouter}

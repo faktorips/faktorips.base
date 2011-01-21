@@ -16,7 +16,6 @@ package org.faktorips.devtools.htmlexport.pages.elements.core;
 import java.util.List;
 
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
-import org.faktorips.devtools.htmlexport.generators.WrapperType;
 
 /**
  * A {@link PageElement} representing a list.
@@ -25,7 +24,7 @@ import org.faktorips.devtools.htmlexport.generators.WrapperType;
  * 
  */
 public class ListPageElement extends AbstractCompositePageElement {
-    private boolean ordered = true;
+    private boolean ordered = false;
 
     public ListPageElement() {
         super();

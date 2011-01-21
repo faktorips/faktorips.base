@@ -30,8 +30,7 @@ public class HtmlTextPageElementLayouter extends AbstractHtmlPageElementLayouter
             append(htmlUtil.getHtmlText(pageElement.getText()));
             return;
         }
-        append(htmlUtil.createHtmlElement(identifyTagName(pageElement), pageElement.getText(),
-                layouter.getClasses(pageElement)));
+        append(htmlUtil.createHtmlElement(identifyTagName(pageElement), pageElement.getText(), getClasses()));
 
     }
 

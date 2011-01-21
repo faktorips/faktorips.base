@@ -28,12 +28,18 @@ public class HtmlLinkPageElementLayouter extends AbstractHtmlPageElementLayouter
         if (pageElement.hasStyle(Style.BLOCK)) {
             append(htmlUtil.createHtmlElementOpenTag("div")); //$NON-NLS-1$
         }
-        append(htmlUtil.createLinkOpenTag(layouter.createLinkBase(pageElement), pageElement.getAnchor(),
-                pageElement.getTarget(), layouter.getClasses(pageElement), pageElement.getTitle()));
+        append(htmlUtil.createLinkOpenTag(createLinkBase(), pageElement.getLinkAnchor(), pageElement.getTarget(),
+                getClasses(), pageElement.getTitle()));
+
         layouter.visitSubElements(pageElement);
+
         append(htmlUtil.createHtmlElementCloseTag("a")); //$NON-NLS-1$
         if (pageElement.hasStyle(Style.BLOCK)) {
             append(htmlUtil.createHtmlElementCloseTag("div")); //$NON-NLS-1$
         }
+    }
+
+    protected String createLinkBase() {
+        return layouter.createLinkBase(pageElement);
     }
 }

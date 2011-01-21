@@ -58,15 +58,15 @@ public class RegexTablePageElementLayout extends DefaultTablePageElementLayout {
     }
 
     private boolean cellMatches(TableCellPageElement cellPageElement) {
-        if (cellPageElement.getSubElements().size() != 1) {
+        if (cellPageElement.size() != 1) {
             return false;
         }
 
-        if (!(cellPageElement.getSubElements().get(0) instanceof TextPageElement)) {
+        if (!(cellPageElement.getSubElement(0) instanceof TextPageElement)) {
             return false;
         }
 
-        TextPageElement element = (TextPageElement)cellPageElement.getSubElements().get(0);
+        TextPageElement element = (TextPageElement)cellPageElement.getSubElement(0);
 
         if (element.getText() == null) {
             return false;

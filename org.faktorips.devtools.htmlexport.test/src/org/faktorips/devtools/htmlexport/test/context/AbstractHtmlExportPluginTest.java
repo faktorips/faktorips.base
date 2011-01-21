@@ -28,18 +28,18 @@ import org.faktorips.devtools.htmlexport.HtmlExportOperation;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 
-public abstract class AbstractHtmlExportTest extends AbstractIpsPluginTest {
+public abstract class AbstractHtmlExportPluginTest extends AbstractIpsPluginTest {
 
     protected String zielpfad;
     protected IIpsProject ipsProject;
     protected DocumentationContext context;
     protected HtmlExportOperation operation;
 
-    public AbstractHtmlExportTest() {
+    public AbstractHtmlExportPluginTest() {
         super();
     }
 
-    public AbstractHtmlExportTest(String name) {
+    public AbstractHtmlExportPluginTest(String name) {
         super(name);
     }
 

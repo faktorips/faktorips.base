@@ -21,11 +21,11 @@ import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefiniti
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
-import org.faktorips.devtools.htmlexport.test.context.AbstractHtmlExportTest;
+import org.faktorips.devtools.htmlexport.test.context.AbstractHtmlExportPluginTest;
 import org.faktorips.devtools.htmlexport.test.helper.AbstractTestLayouter;
 import org.faktorips.devtools.htmlexport.test.helper.ContainsTextTestLayouter;
 
-public class ExtensionPropertyTest extends AbstractHtmlExportTest {
+public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
 
     private void addExtensionProperty(String id, String name, Class<?> type, String defaultValue) {
         IpsModel ipsModel = (IpsModel)ipsProject.getIpsModel();
