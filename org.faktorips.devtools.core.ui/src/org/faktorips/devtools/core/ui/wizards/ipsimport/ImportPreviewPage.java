@@ -161,7 +161,9 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
     @Override
     public void dispose() {
         super.dispose();
-        configCompositeFactory.removeValueChangedListener(this);
+        if (configCompositeFactory != null) {
+            configCompositeFactory.removeValueChangedListener(this);
+        }
     }
 
     private void fillPreview() {
