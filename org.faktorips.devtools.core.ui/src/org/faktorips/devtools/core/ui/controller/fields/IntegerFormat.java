@@ -33,7 +33,6 @@ public class IntegerFormat extends AbstractNumberFormat {
     @Override
     protected void initFormat(Locale locale) {
         numberFormat = NumberFormat.getIntegerInstance(locale);
-        numberFormat.setGroupingUsed(true);
         numberFormat.setParseIntegerOnly(true);
         exampleString = numberFormat.format(-100000000);
     }
@@ -41,6 +40,12 @@ public class IntegerFormat extends AbstractNumberFormat {
     @Override
     protected String formatInternal(Object value) {
         Integer integer = new Integer((String)value);
+        // MTB#524: Thousand-separator only if the number has at least 5 digits.
+        if (integer > 9999) {
+            numberFormat.setGroupingUsed(true);
+        } else {
+            numberFormat.setGroupingUsed(false);
+        }
         return numberFormat.format(integer);
     }
 
