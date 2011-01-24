@@ -66,7 +66,9 @@ public class ProductCmptTypeDescriptionPage extends DefaultModelDescriptionPage 
             IAssociation[] associations = getIpsObject().findAllAssociations(ipsProject);
             List<DescriptionItem> aDescriptions = new ArrayList<DescriptionItem>();
             for (IAssociation association : associations) {
-                createDescriptionItem(association, aDescriptions);
+                if (!association.isDerivedUnion()) {
+                    createDescriptionItem(association, aDescriptions);
+                }
             }
             descriptions.add(new DescriptionItem(Messages.AssociationsSection_title, aDescriptions));
         }
