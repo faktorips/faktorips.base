@@ -17,6 +17,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -65,6 +66,14 @@ public class TextField extends DefaultEditField {
     public void setText(String newText) {
         immediatelyNotifyListener = true;
         try {
+            if (newText == null) {
+                // AbstractNumberFormats call this method with null values
+                if (supportsNull()) {
+                    newText = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+                } else {
+                    newText = ""; //$NON-NLS-1$
+                }
+            }
             text.setText(newText);
         } finally {
             immediatelyNotifyListener = false;

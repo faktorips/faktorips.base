@@ -69,6 +69,9 @@ public class TextCellEditor extends IpsCellEditor {
     }
 
     protected void setText(String newText) {
+        if (newText == null) {
+            newText = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+        }
         textControl.setText(newText);
     }
 

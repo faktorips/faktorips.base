@@ -26,6 +26,11 @@ import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.util.ArgumentCheck;
 
+/**
+ * Note that this class is to be moved to the IpsIUPlugin. Wherever possible call
+ * IpsUIPlugin.getDatatypeFormatter() and use it instead of this class.
+ * 
+ */
 public class DatatypeFormatter {
 
     private IpsPreferences preferences;

@@ -29,7 +29,7 @@ public abstract class AbstractNumberFormat extends AbstractInputFormat {
     protected Object parseInternal(String stringToBeParsed) {
         ParsePosition position = new ParsePosition(0);
         Object value = getNumberFormat().parse(stringToBeParsed, position);
-        if (position.getIndex() == stringToBeParsed.length()) {
+        if (position.getIndex() == stringToBeParsed.length() && value != null) {
             return value.toString();
         } else {
             return null;
