@@ -29,8 +29,6 @@ public class Messages extends NLS {
 
     public static String ColumnRange_msgMissingColumn;
 
-    public static String TableStructure_descriptionStart;
-    public static String TableStructure_descriptionEnd;
     public static String TableStructure_msgMoreThanOneKeyNotAdvisableInFormulas;
 
     public static String ForeignKey_msgMissingUniqueKey;

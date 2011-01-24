@@ -38,11 +38,23 @@ import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.devtools.core.util.TreeSetHelper;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.LocalizedStringsSet;
+import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
 public class TableStructure extends IpsObject implements ITableStructure {
+
+    private static final String KEY_TABLE_ACCESS_FUNCTION_DESCRIPTION_END = "TableAccessFunctionDescriptionEnd"; //$NON-NLS-1$
+
+    private static final String KEY_TABLE_ACCESS_FUNCTION_DESCRIPTION_START = "TableAccessFunctionDescriptionStart"; //$NON-NLS-1$
+
+    private final static String packageName = StringUtil.getPackageName(TableStructure.class.getName());
+
+    private final static String unqualifiedClassName = StringUtil.unqualifiedName(TableStructure.class.getName());
+
+    private final LocalizedStringsSet localizedStringSet;
 
     private TableStructureType type = TableStructureType.SINGLE_CONTENT;
 
@@ -56,6 +68,8 @@ public class TableStructure extends IpsObject implements ITableStructure {
 
     public TableStructure(IIpsSrcFile file) {
         super(file);
+        localizedStringSet = new LocalizedStringsSet(packageName + '.' + unqualifiedClassName,
+                TableStructure.class.getClassLoader());
     }
 
     /**
@@ -63,6 +77,8 @@ public class TableStructure extends IpsObject implements ITableStructure {
      */
     public TableStructure() {
         super();
+        localizedStringSet = new LocalizedStringsSet(packageName + '.' + unqualifiedClassName,
+                TableStructure.class.getClassLoader());
     }
 
     @Override
@@ -332,8 +348,8 @@ public class TableStructure extends IpsObject implements ITableStructure {
         fct.setAccessedColumn(column.getName());
         fct.setType(column.getDatatype());
 
-        // TODO AW: MBT #490
-        StringBuffer descriptionText = new StringBuffer(Messages.TableStructure_descriptionStart);
+        StringBuffer descriptionText = new StringBuffer(
+                localizedStringSet.getString(KEY_TABLE_ACCESS_FUNCTION_DESCRIPTION_START));
         IKeyItem[] items = key.getKeyItems();
         String[] argTypes = new String[items.length];
         for (int i = 0; i < items.length; i++) {
@@ -344,8 +360,8 @@ public class TableStructure extends IpsObject implements ITableStructure {
             descriptionText.append(items[i].getAccessParameterName());
         }
         fct.setArgTypes(argTypes);
-        // TODO AW: MBT #490
-        descriptionText.append(Messages.TableStructure_descriptionEnd + column.getName());
+        descriptionText.append(localizedStringSet.getString(KEY_TABLE_ACCESS_FUNCTION_DESCRIPTION_END
+                + column.getName()));
 
         Description description = (Description)fct.getDescription(locale);
         if (description != null) {
