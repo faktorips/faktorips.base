@@ -65,7 +65,7 @@ public class PresentationModelObject {
             try {
                 listener.propertyChange(event);
             } catch (Exception e) {
-                // TODO catch Exception needs to be documented properly or specialized
+                // catch all exception and only log them to notify the other listeners
                 IpsPlugin.log(e);
             }
         }
