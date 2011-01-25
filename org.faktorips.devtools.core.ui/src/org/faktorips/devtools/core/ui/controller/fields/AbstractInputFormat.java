@@ -89,7 +89,11 @@ public abstract class AbstractInputFormat implements VerifyListener {
         if (objectValue == null && supportNull) {
             return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
         } else {
-            return formatInternal(objectValue);
+            try {
+                return formatInternal(objectValue);
+            } catch (Exception e) {
+                return objectValue == null ? "" : objectValue.toString(); //$NON-NLS-1$
+            }
         }
     }
 
