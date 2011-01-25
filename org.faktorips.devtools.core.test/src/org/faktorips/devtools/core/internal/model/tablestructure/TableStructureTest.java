@@ -167,6 +167,31 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         assertEquals(range.getDatatype(), argTypes[1]);
 
         assertEquals("TestTable.minPremium", fcts[1].getName());
+
+        IColumn newKeyColumn = table.newColumn();
+        newKeyColumn.setName("newKeyColumn");
+        newKeyColumn.setDatatype(Datatype.INTEGER.getQualifiedName());
+        IUniqueKey secondKey = table.newUniqueKey();
+        secondKey.setKeyItems(new String[] { gender.getName(), newKeyColumn.getName() });
+
+        fcts = table.getAccessFunctions(Locale.GERMAN);
+        assertEquals(7, fcts.length);
+        assertSame(table, fcts[0].getTableStructure());
+        assertEquals("TestTable.rate", fcts[0].getName());
+        assertEquals("rate", fcts[0].getAccessedColumn());
+        assertSame(rate, fcts[0].findAccessedColumn());
+        assertEquals(rate.getDatatype(), fcts[0].getType());
+        argTypes = fcts[0].getArgTypes();
+        assertEquals(2, argTypes.length);
+        assertEquals(gender.getDatatype(), argTypes[0]);
+        assertEquals(range.getDatatype(), argTypes[1]);
+        assertEquals("TestTable.minPremium", fcts[1].getName());
+        assertEquals("TestTable.newKeyColumn", fcts[2].getName());
+        assertEquals("TestTable.ageFrom", fcts[3].getName());
+        assertEquals("TestTable.ageTo", fcts[4].getName());
+        assertEquals("TestTable.rate", fcts[5].getName());
+        assertEquals("TestTable.minPremium", fcts[6].getName());
+
     }
 
     public void testGetAccessFunctionsNullPointer() {
