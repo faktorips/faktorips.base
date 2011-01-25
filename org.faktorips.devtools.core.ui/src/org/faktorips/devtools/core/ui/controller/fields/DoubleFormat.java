@@ -38,7 +38,7 @@ public class DoubleFormat extends AbstractNumberFormat {
         numberFormat.setGroupingUsed(true);
         numberFormat.setGroupingSize(3);
         numberFormat.setParseIntegerOnly(false);
-        numberFormat.setMaximumFractionDigits(3);
+        numberFormat.setMaximumFractionDigits(Integer.MAX_VALUE);
         numberFormat.setRoundingMode(RoundingMode.HALF_UP);
         exampleString = numberFormat.format(-1000.2);
     }
