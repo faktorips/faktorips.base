@@ -170,12 +170,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     private AttributeType currentAttributeType;
 
-    /**
-     * placeholder for the default edit field, the edit field for the default value depends on the
-     * attributes datatype
-     */
-    private Composite defaultEditFieldPlaceholder;
-
     private Group ruleGroup;
 
     private IntegerField sizeField;
@@ -191,6 +185,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     private Checkbox uniqueCheckbox;
 
     private Checkbox nullableCheckbox;
+
+    private Composite valueSetWorkArea;
 
     public AttributeEditDialog(IPolicyCmptTypeAttribute attribute, Shell parentShell) {
         super(attribute, parentShell, Messages.AttributeEditDialog_title, true);
@@ -538,13 +534,10 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     private Control createValueSetPage(TabFolder folder) throws CoreException {
         Composite pageControl = createTabItemComposite(folder, 1, false);
 
-        Composite workArea = uiToolkit.createLabelEditColumnComposite(pageControl);
-        labelDefaultValue = uiToolkit.createLabel(workArea, Messages.AttributeEditDialog_labelDefaultValue);
+        valueSetWorkArea = uiToolkit.createLabelEditColumnComposite(pageControl);
+        labelDefaultValue = uiToolkit.createLabel(valueSetWorkArea, Messages.AttributeEditDialog_labelDefaultValue);
 
-        defaultEditFieldPlaceholder = uiToolkit.createComposite(workArea);
-        defaultEditFieldPlaceholder.setLayout(uiToolkit.createNoMarginGridLayout(1, true));
-        defaultEditFieldPlaceholder.setLayoutData(new GridData(GridData.FILL_BOTH));
-        createDefaultValueEditField();
+        createDefaultValueEditField(valueSetWorkArea);
 
         IpsObjectUIController uiController = new IpsObjectUIController(attribute);
         List<ValueSetType> valueSetTypes = attribute.getAllowedValueSetTypes(attribute.getIpsProject());
@@ -586,19 +579,15 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         }
     }
 
-    private void createDefaultValueEditField() {
+    private void createDefaultValueEditField(Composite workArea) {
         ValueDatatypeControlFactory datatypeCtrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                 currentDatatype);
-        defaultValueField = datatypeCtrlFactory.createEditField(uiToolkit, defaultEditFieldPlaceholder,
-                currentDatatype, null, ipsProject);
+        defaultValueField = datatypeCtrlFactory.createEditField(uiToolkit, workArea, currentDatatype, null, ipsProject);
         if (defaultValueField instanceof EnumTypeDatatypeField) {
             ((EnumTypeDatatypeField)defaultValueField).setEnableEnumContentDisplay(false);
         }
-        defaultValueField.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
         adjustLabelWidth();
 
-        defaultEditFieldPlaceholder.layout();
-        defaultEditFieldPlaceholder.getParent().getParent().layout();
         bindingContext.bindContent(defaultValueField, attribute, IAttribute.PROPERTY_DEFAULT_VALUE);
     }
 
@@ -633,7 +622,10 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             bindingContext.removeBindings(defaultValueField.getControl());
             defaultValueField.getControl().dispose();
         }
-        createDefaultValueEditField();
+        if (valueSetWorkArea != null && !valueSetWorkArea.isDisposed()) {
+            createDefaultValueEditField(valueSetWorkArea);
+            valueSetWorkArea.layout();
+        }
         updateAllowedValueSetTypes();
     }
 
