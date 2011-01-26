@@ -13,6 +13,10 @@
 
 package org.faktorips.abstracttest;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
 import java.beans.PropertyDescriptor;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -57,7 +61,7 @@ import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.core.search.TypeNameRequestor;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.faktorips.abstracttest.builder.TestArtefactBuilderSetInfo;
-import org.faktorips.abstracttest.test.XmlAbstractTestCase;
+import org.faktorips.abstracttest.test.XmlAbstractTestCase4;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.Util;
@@ -100,6 +104,8 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.util.BeanUtil;
 import org.faktorips.util.StringUtil;
+import org.junit.After;
+import org.junit.Before;
 import org.w3c.dom.Document;
 
 /**
@@ -108,23 +114,19 @@ import org.w3c.dom.Document;
  * 
  * @author Jan Ortmann
  */
-public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
+public abstract class AbstractIpsPluginTest4 extends XmlAbstractTestCase4 {
 
     protected static final String OUTPUT_FOLDER_NAME_DERIVED = "extension"; //$NON-NLS-1$
     protected static final String OUTPUT_FOLDER_NAME_MERGABLE = "src"; //$NON-NLS-1$
     protected static final String BASE_PACKAGE_NAME_DERIVED = "org.faktorips.sample.model"; //$NON-NLS-1$
     protected static final String BASE_PACKAGE_NAME_MERGABLE = "org.faktorips.sample.model"; //$NON-NLS-1$
 
-    public AbstractIpsPluginTest() {
+    public AbstractIpsPluginTest4() {
         super();
     }
 
-    public AbstractIpsPluginTest(String name) {
-        super(name);
-    }
-
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         IpsPlugin.getDefault().setSuppressLoggingDuringTest(false);
         ((IpsModel)IpsPlugin.getDefault().getIpsModel()).stopListeningToResourceChanges();
         IpsPlugin.getDefault().setFeatureVersionManagers(
@@ -155,8 +157,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
     }
 
-    @Override
-    protected final void tearDown() throws Exception {
+    @After
+    public final void tearDown() throws Exception {
         IpsPlugin.getDefault().setSuppressLoggingDuringTest(false);
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
         for (IProject project : projects) {
