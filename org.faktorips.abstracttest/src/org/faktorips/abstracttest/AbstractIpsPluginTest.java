@@ -26,12 +26,18 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -138,12 +144,12 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
                 if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                     System.out.println("AbstractIpsPlugin.setUp(): Start deleting projects.");
                 }
-                waitForIndexer();
-                IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-                for (IProject project : projects) {
-                    project.close(null);
-                    project.delete(true, true, null);
-                }
+                // waitForIndexer();
+                // IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+                // for (IProject project : projects) {
+                // project.close(null);
+                // project.delete(true, true, null);
+                // }
                 if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                     System.out.println("AbstractIpsPlugin.setUp(): Projects deleted.");
                 }
@@ -160,7 +166,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         IpsPlugin.getDefault().setSuppressLoggingDuringTest(false);
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
         for (IProject project : projects) {
-            project.close(null);
+            // project.close(null);
             project.delete(true, true, null);
         }
         tearDownExtension();
@@ -1153,6 +1159,27 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         if (!file.exists()) {
             file.create(new ByteArrayInputStream(content.getBytes()), true, null);
         }
+    }
+
+    protected boolean refreshAndWait(final IResource resource, int depth) throws Exception {
+        final FutureTask<Boolean> refreshTask = new FutureTask<Boolean>(new Callable<Boolean>() {
+
+            @Override
+            public Boolean call() throws Exception {
+                EFS.getLocalFileSystem().getStore(resource.getLocationURI()).toLocalFile(EFS.CACHE, null);
+                return true;
+            }
+        });
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(new IResourceChangeListener() {
+
+            @Override
+            public void resourceChanged(IResourceChangeEvent event) {
+                refreshTask.run();
+            }
+
+        }, IResourceChangeEvent.PRE_REFRESH);
+        resource.refreshLocal(depth, null);
+        return refreshTask.get();
     }
 
 }
