@@ -44,11 +44,6 @@ public class TextFieldTest extends TestCase {
         assertEquals(null, field.getValue());
         assertTrue(field.isTextContentParsable());
 
-        try {
-            field.setText(null);
-            fail();
-        } catch (IllegalArgumentException e) {
-        }
     }
 
     public void testSetValue() {
