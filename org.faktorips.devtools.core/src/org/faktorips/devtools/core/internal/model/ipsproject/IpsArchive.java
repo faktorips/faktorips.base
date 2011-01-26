@@ -32,6 +32,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -41,6 +43,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -126,14 +129,6 @@ public class IpsArchive implements IIpsArchive {
         if (!exists()) {
             return false;
         }
-        // File file = getFileFromPath();
-        // try {
-        // new ZipFile(file);
-        // } catch (ZipException e) {
-        // return false;
-        // } catch (IOException e) {
-        // return false;
-        // }
         return true;
     }
 
@@ -262,7 +257,7 @@ public class IpsArchive implements IIpsArchive {
     private long getActualFileModificationStamp() {
         IResource resource = getCorrespondingResource();
         if (resource == null) {
-            return getLocation().toFile().lastModified();
+            return getFileFromPath().lastModified();
         } else {
             return resource.getModificationStamp();
         }
@@ -270,7 +265,7 @@ public class IpsArchive implements IIpsArchive {
 
     private void readArchiveContent() throws CoreException {
         if (!exists()) {
-            throw new CoreException(new IpsStatus("IpsArchive file " + archivePath + " does not exist!")); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new CoreException(new IpsStatus("IpsArchive file " + getLocation() + " does not exist!")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("Reading archive content from disk: " + this); //$NON-NLS-1$
@@ -328,6 +323,24 @@ public class IpsArchive implements IIpsArchive {
     }
 
     private File getFileFromPath() {
+        // accessing the file on local file system is tricky in eclipse. At least we have to refresh
+        IResource resource = getCorrespondingResource();
+        if (resource != null) {
+            try {
+                resource.refreshLocal(IResource.DEPTH_ZERO, null);
+                // this part is copied from org.eclipse.jdt.internal.core.util.Util.toLocalFile(URI,
+                // IProgressMonitor)
+                IFileStore fileStore = EFS.getStore(resource.getLocationURI());
+                File localFile = fileStore.toLocalFile(EFS.NONE, null);
+                if (localFile == null) {
+                    // non local file system
+                    localFile = fileStore.toLocalFile(EFS.CACHE, null);
+                }
+                return localFile;
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+        }
         return getLocation().toFile();
     }
 
@@ -335,7 +348,7 @@ public class IpsArchive implements IIpsArchive {
         JarEntry entry = archive.getJarEntry(IIpsArchive.JAVA_MAPPING_ENTRY_NAME);
         if (entry == null) {
             throw new CoreException(new IpsStatus(
-                    "Entry " + IIpsArchive.JAVA_MAPPING_ENTRY_NAME + " not found in archive for " + this)); //$NON-NLS-1$ //$NON-NLS-2$
+                    "Entry " + JAVA_MAPPING_ENTRY_NAME + " not found in archive " + archivePath)); //$NON-NLS-1$ //$NON-NLS-2$
         }
         InputStream is = null;
         try {
@@ -344,7 +357,8 @@ public class IpsArchive implements IIpsArchive {
             props.load(is);
             return props;
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus("Error reading ipsobjects.properties from archive for " + this, e)); //$NON-NLS-1$
+            throw new CoreException(new IpsStatus(
+                    "Error reading " + JAVA_MAPPING_ENTRY_NAME + " from archive " + archivePath, e)); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
@@ -462,21 +476,22 @@ public class IpsArchive implements IIpsArchive {
             File archiveFile = getFileFromPath();
             archive = new JarFile(archiveFile);
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus("Error opening jar for " + this, e)); //$NON-NLS-1$
+            throw new CoreException(new IpsStatus("Error opening jarfile " + archivePath, e)); //$NON-NLS-1$
         }
         JarEntry entry = archive.getJarEntry(path);
         if (entry == null) {
-            throw new CoreException(new IpsStatus("Entry not found in archive for " + this)); //$NON-NLS-1$
+            throw new CoreException(new IpsStatus("Entry " + path + " not found in archive " + archivePath)); //$NON-NLS-1$ //$NON-NLS-2$
         }
         try {
             return StreamUtil.copy(archive.getInputStream(entry), 1024);
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus("Error reading data from archive for " + this, e)); //$NON-NLS-1$
+            throw new CoreException(new IpsStatus("Error reading data for " + path + " from archive " + archivePath, e)); //$NON-NLS-1$ //$NON-NLS-2$
         } finally {
             try {
                 archive.close();
             } catch (Exception e) {
-                throw new CoreException(new IpsStatus("Error closing stream or archive for " + this, e)); //$NON-NLS-1$
+                throw new CoreException(new IpsStatus(
+                        "Error closing stream reading " + path + " from archive " + this, e)); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
     }
