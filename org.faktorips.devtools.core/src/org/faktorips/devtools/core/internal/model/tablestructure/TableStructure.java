@@ -360,8 +360,8 @@ public class TableStructure extends IpsObject implements ITableStructure {
             descriptionText.append(items[i].getAccessParameterName());
         }
         fct.setArgTypes(argTypes);
-        descriptionText.append(localizedStringSet.getString(KEY_TABLE_ACCESS_FUNCTION_DESCRIPTION_END)
-                + column.getName());
+        descriptionText.append(localizedStringSet.getString(KEY_TABLE_ACCESS_FUNCTION_DESCRIPTION_END)).append(
+                column.getName());
 
         Description description = (Description)fct.getDescription(locale);
         if (description != null) {
