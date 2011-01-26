@@ -292,8 +292,16 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
         return runtimeId1.equals(runtimeId2);
     }
 
-    // TODO AW: This seems to be a pretty odd equals method to me, is this really necessary /
-    // correct?
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((ipsProject == null) ? 0 : ipsProject.hashCode());
+        result = prime * result + ((separator == null) ? 0 : separator.hashCode());
+        result = prime * result + ((specialCharReplacements == null) ? 0 : specialCharReplacements.hashCode());
+        return result;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -302,7 +310,32 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
         if (obj == null) {
             return false;
         }
-        return obj.getClass().isAssignableFrom(this.getClass());
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        AbstractProductCmptNamingStrategy other = (AbstractProductCmptNamingStrategy)obj;
+        if (ipsProject == null) {
+            if (other.ipsProject != null) {
+                return false;
+            }
+        } else if (!ipsProject.equals(other.ipsProject)) {
+            return false;
+        }
+        if (separator == null) {
+            if (other.separator != null) {
+                return false;
+            }
+        } else if (!separator.equals(other.separator)) {
+            return false;
+        }
+        if (specialCharReplacements == null) {
+            if (other.specialCharReplacements != null) {
+                return false;
+            }
+        } else if (!specialCharReplacements.equals(other.specialCharReplacements)) {
+            return false;
+        }
+        return true;
     }
 
     @Override

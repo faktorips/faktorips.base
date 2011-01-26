@@ -314,6 +314,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     @Override
     public IProductCmptNamingStrategy getProductCmptNamingStrategy() {
+        if (productCmptNamingStrategy == null) {
+            return new NoVersionIdProductCmptNamingStrategy();
+        }
         return productCmptNamingStrategy;
     }
 

@@ -1785,15 +1785,16 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
             if (all) {
                 // because we process the same array with index j as with index
-                // i, index j can start allways with i+1 without overlooking some product
+                // i, index j can start allways with i+1 without missing some product
                 // component combinations.
                 for (int j = i + 1; j < cmptsToCheck.length; j++) {
                     ArgumentCheck.equals(cmptsToCheck[j].getIpsObjectType(), IpsObjectType.PRODUCT_CMPT_TYPE);
                     IIpsSrcFile productCmptToCheckB = cmptsToCheck[j];
                     strategyJ = productCmptToCheckB.getIpsProject().getProductCmptNamingStrategy();
-                    checkRuntimeId(strategyI, productCmptToCheck, productCmptToCheckB, result, true);
-                    if (!strategyI.equals(strategyJ)) {
-                        checkRuntimeId(strategyJ, productCmptToCheck, productCmptToCheckB, result, true);
+                    boolean duplicate = checkSameRuntimeId(strategyI, productCmptToCheck, productCmptToCheckB, result,
+                            true);
+                    if (!duplicate && !strategyI.equals(strategyJ)) {
+                        checkSameRuntimeId(strategyJ, productCmptToCheck, productCmptToCheckB, result, true);
                     }
                 }
             } else {
@@ -1802,9 +1803,10 @@ public class IpsProject extends IpsElement implements IIpsProject {
                     IIpsSrcFile productCmptToCheckB = element;
                     if (!productCmptToCheck.getQualifiedNameType().equals((productCmptToCheckB.getQualifiedNameType()))) {
                         strategyJ = productCmptToCheckB.getIpsProject().getProductCmptNamingStrategy();
-                        checkRuntimeId(strategyI, productCmptToCheck, productCmptToCheckB, result, false);
-                        if (!strategyI.equals(strategyJ)) {
-                            checkRuntimeId(strategyJ, productCmptToCheck, productCmptToCheckB, result, false);
+                        boolean duplicate = checkSameRuntimeId(strategyI, productCmptToCheck, productCmptToCheckB,
+                                result, false);
+                        if (!duplicate && !strategyI.equals(strategyJ)) {
+                            checkSameRuntimeId(strategyJ, productCmptToCheck, productCmptToCheckB, result, false);
                         }
                     }
                 }
@@ -1814,7 +1816,22 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return result;
     }
 
-    private void checkRuntimeId(IProductCmptNamingStrategy strategy,
+    /**
+     * Checking whether the runtime IDs of the to product component source files are the same
+     * according to the rules implemented in the given strategy. If they are same, the method
+     * returns true and adding a message to the message list.
+     * 
+     * @param strategy the naming strategy to check the runtime IDs
+     * @param cmpt1 the {@link IIpsSrcFile} of the first product component
+     * @param cmpt2 the {@link IIpsSrcFile} of the second product component
+     * @param list the message list to add the message
+     * @param addBoth true when the first and the second product component should be added to the
+     *            {@link ObjectProperty}s of the {@link Message}
+     * @return true if the runtime IDs are duplicated
+     * @throws CoreException When properties or objects of the {@link IIpsSrcFile} are not
+     *             accessible
+     */
+    private boolean checkSameRuntimeId(IProductCmptNamingStrategy strategy,
             IIpsSrcFile cmpt1,
             IIpsSrcFile cmpt2,
             MessageList list,
@@ -1838,7 +1855,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
             String msg = NLS.bind(Messages.IpsProject_msgRuntimeIDCollision, new String[] {
                     cmpt1.getQualifiedNameType().getName(), cmpt2.getQualifiedNameType().getName(), projectName });
             list.add(new Message(MSGCODE_RUNTIME_ID_COLLISION, msg, Message.ERROR, objects));
+            return true;
         }
+        return false;
     }
 
     @Override

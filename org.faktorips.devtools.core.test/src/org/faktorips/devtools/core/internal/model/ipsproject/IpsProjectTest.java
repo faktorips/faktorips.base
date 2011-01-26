@@ -445,7 +445,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         file.delete(true, false, null);
         MessageList list = ipsProject.validate();
         assertNotNull(list.getMessageByCode(IIpsProject.MSGCODE_MISSING_PROPERTY_FILE));
-        assertEquals(1, list.getNoOfMessages());
+        assertEquals(1, list.size());
     }
 
     public void testValidate_UnparsablePropertyFile() throws CoreException {
@@ -455,7 +455,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         suppressLoggingDuringExecutionOfThisTestCase();
         MessageList list = ipsProject.validate();
         assertNotNull(list.getMessageByCode(IIpsProject.MSGCODE_UNPARSABLE_PROPERTY_FILE));
-        assertEquals(1, list.getNoOfMessages());
+        assertEquals(1, list.size());
     }
 
     public void testGetProperties() {
@@ -1766,12 +1766,12 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(cmpt1.getRuntimeId(), cmpt2.getRuntimeId());
 
         MessageList ml = prj.checkForDuplicateRuntimeIds();
-        assertEquals(1, ml.getNoOfMessages());
+        assertEquals(1, ml.size());
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
 
         cmpt2.setRuntimeId("Hugo");
         ml = prj.checkForDuplicateRuntimeIds();
-        assertEquals(0, ml.getNoOfMessages());
+        assertEquals(0, ml.size());
         assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
 
         // test that not linked projects are not checked against each other
@@ -1779,7 +1779,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         cmpt3.setRuntimeId("Egon");
         cmpt2.setRuntimeId("Egon");
         ml = prj.checkForDuplicateRuntimeIds();
-        assertEquals(1, ml.getNoOfMessages());
+        assertEquals(1, ml.size());
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
 
         // test that linked projects will be checked against each other
@@ -1787,15 +1787,15 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         objectPath.newIpsProjectRefEntry(ipsProject);
         prj.setIpsObjectPath(objectPath);
         ml = prj.checkForDuplicateRuntimeIds();
-        assertEquals(3, ml.getNoOfMessages());
+        assertEquals(ml.toString(), 3, ml.size());
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
 
         ml = prj.checkForDuplicateRuntimeIds(new IIpsSrcFile[] { cmpt3.getIpsSrcFile() });
-        assertEquals(2, ml.getNoOfMessages());
+        assertEquals(2, ml.size());
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
 
         ml = prj.checkForDuplicateRuntimeIds(new IIpsSrcFile[] { cmpt1.getIpsSrcFile(), cmpt3.getIpsSrcFile() });
-        assertEquals(4, ml.getNoOfMessages());
+        assertEquals(4, ml.size());
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
     }
 
