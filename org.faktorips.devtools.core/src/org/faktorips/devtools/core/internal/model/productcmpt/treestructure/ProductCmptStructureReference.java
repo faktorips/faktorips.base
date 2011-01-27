@@ -121,4 +121,10 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
         }
         return hash;
     }
+
+    @Override
+    public String toString() {
+        return "ProductCmptStructureReference [ipsObject=" + getWrappedIpsObject() + "," + "wrappedPart=" + getWrapped() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
 }

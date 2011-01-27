@@ -45,7 +45,7 @@ import org.faktorips.util.message.MessageList;
 public class DeepCopyPreview {
 
     private Integer segmentsToIgnoreCached = null;
-    private Object[] nonLinkElementsCached = null;
+    private List<IProductCmptStructureReference> nonLinkElementsCached = null;
 
     private DeepCopyWizard deepCopyWizard;
     private SourcePage sourcePage;
@@ -56,7 +56,7 @@ public class DeepCopyPreview {
     private Hashtable<String, IProductCmptStructureReference> filename2productMap;
     // Mapping of product references to filenames. Used for error-handling.
     private Hashtable<IProductCmptStructureReference, String> product2filenameMap;
-    private Map<Object, String> oldObject2newNameMap;
+    private Map<IProductCmptStructureReference, String> oldObject2newNameMap;
 
     public DeepCopyPreview(DeepCopyWizard deepCopyWizard, SourcePage sourcePage) {
         this.deepCopyWizard = deepCopyWizard;
@@ -72,7 +72,7 @@ public class DeepCopyPreview {
     private void initCaches() {
         filename2productMap = new Hashtable<String, IProductCmptStructureReference>();
         product2filenameMap = new Hashtable<IProductCmptStructureReference, String>();
-        oldObject2newNameMap = new Hashtable<Object, String>();
+        oldObject2newNameMap = new Hashtable<IProductCmptStructureReference, String>();
         errorElements = new Hashtable<IProductCmptStructureReference, String>();
     }
 
@@ -210,11 +210,10 @@ public class DeepCopyPreview {
      * and table contents are returned.
      */
     private List<IProductCmptStructureReference> getProductCmptStructRefToCopyInternal() {
-        List<Object> allChecked = Arrays.asList(getNonLinkElements());
+        List<IProductCmptStructureReference> allChecked = getNonLinkElements();
         List<IProductCmptStructureReference> result = new ArrayList<IProductCmptStructureReference>();
 
-        for (Object object : allChecked) {
-            IProductCmptStructureReference element = (IProductCmptStructureReference)object;
+        for (IProductCmptStructureReference element : allChecked) {
             if (element instanceof IProductCmptReference) {
                 result.add(element);
             } else if (element instanceof IProductCmptStructureTblUsageReference) {
@@ -224,21 +223,23 @@ public class DeepCopyPreview {
         return result;
     }
 
-    private Object[] getNonLinkElements() {
+    private List<IProductCmptStructureReference> getNonLinkElements() {
         deepCopyWizard.logTraceStart("getNonLinkElements"); //$NON-NLS-1$
         if (nonLinkElementsCached != null) {
             return nonLinkElementsCached;
         }
-        List<Object> result = new ArrayList<Object>();
-        Set<Object> linkedElements = sourcePage.getLinkedElements();
+        List<IProductCmptStructureReference> result = new ArrayList<IProductCmptStructureReference>();
+        Set<IProductCmptStructureReference> linkedElements = sourcePage.getLinkedElements();
         List<Object> allChecked = Arrays.asList(sourcePage.getTree().getCheckedElements());
         for (Object currElement : allChecked) {
             if (linkedElements.contains(currElement)) {
                 continue;
             }
-            result.add(currElement);
+            if (currElement instanceof IProductCmptStructureReference) {
+                result.add((IProductCmptStructureReference)currElement);
+            }
         }
-        nonLinkElementsCached = result.toArray(new Object[result.size()]);
+        nonLinkElementsCached = result;
         deepCopyWizard.logTraceEnd("getNonLinkElements"); //$NON-NLS-1$
         return nonLinkElementsCached;
     }
@@ -284,8 +285,8 @@ public class DeepCopyPreview {
                 kindId = namingStrategy.getKindId(newName);
             }
             if (kindId != null) {
-                newName = namingStrategy.getProductCmptName(namingStrategy.getKindId(newName), sourcePage
-                        .getVersionId());
+                newName = namingStrategy.getProductCmptName(namingStrategy.getKindId(newName),
+                        sourcePage.getVersionId());
             }
         }
         if (kindId == null && uniqueCopyOfCounter > 0) {
@@ -355,7 +356,7 @@ public class DeepCopyPreview {
         return product2filenameMap;
     }
 
-    public Map<Object, String> getOldObject2newNameMap() {
+    public Map<IProductCmptStructureReference, String> getOldObject2newNameMap() {
         return oldObject2newNameMap;
     }
 
@@ -426,24 +427,24 @@ public class DeepCopyPreview {
         return targetPackage.getIpsSrcFile(correspondingIpsObject.getIpsObjectType().getFileName(newName));
     }
 
-    public boolean isLinked(Object element) {
+    public boolean isLinked(IProductCmptStructureReference element) {
         return sourcePage.getLinkedElements().contains(element);
     }
 
-    public boolean isCopy(Object element) {
+    public boolean isCopy(IProductCmptStructureReference element) {
         // we don't use: getProductCmptStructRefToCopyInternal().contains(element)
         // because of performance reason
         return !isLinked(element);
     }
 
-    public boolean isChecked(Object element) {
+    public boolean isChecked(IProductCmptStructureReference element) {
         return sourcePage.isChecked(element);
     }
 
     public IProductCmptStructureReference[] getProductsOrtTableContentsToRefer() {
         deepCopyWizard.logTraceStart("getProductsOrtTableContentsToRefer"); //$NON-NLS-1$
 
-        Set<Object> linkedElements = sourcePage.getLinkedElements();
+        Set<IProductCmptStructureReference> linkedElements = sourcePage.getLinkedElements();
         IProductCmptStructureReference[] result = new IProductCmptStructureReference[linkedElements.size()];
         int idx = 0;
         for (Object object : linkedElements) {

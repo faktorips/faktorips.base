@@ -137,7 +137,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
     private Radiobutton copyTableContentsBtn;
     private Radiobutton createEmptyTableContentsBtn;
 
-    private Set<Object> linkedElements = new HashSet<Object>();
+    private Set<IProductCmptStructureReference> linkedElements = new HashSet<IProductCmptStructureReference>();
 
     private DeepCopyContentProvider contentProvider;
 
@@ -393,7 +393,8 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         // column!
         int columnSizeOperation = gc.stringExtent(Messages.SourcePage_columnNameOperation).x + 30;
         int columnSizeNewName = gc.stringExtent(Messages.SourcePage_columnNameNewName).x + 20;
-        Map<Object, String> oldObject2newNameMap = getDeepCopyWizard().getDeepCopyPreview().getOldObject2newNameMap();
+        Map<IProductCmptStructureReference, String> oldObject2newNameMap = getDeepCopyWizard().getDeepCopyPreview()
+                .getOldObject2newNameMap();
         for (String newName : oldObject2newNameMap.values()) {
             int columnSizeNewNameCandidate = gc.stringExtent(newName).x + 40;
             columnSizeNewName = Math.max(columnSizeNewName, columnSizeNewNameCandidate);
@@ -432,14 +433,17 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
             @Override
             public void update(ViewerCell cell) {
                 Object element = cell.getElement();
-                boolean linked = getDeepCopyWizard().getDeepCopyPreview().isLinked(element);
-                if (element instanceof ProductCmptTypeAssociationReference) {
-                    cell.setText(""); //$NON-NLS-1$
-                } else if (linked) {
-                    cell.setText(Messages.SourcePage_operationLink);
-                } else {
-                    // if this is no link then it must be a copy
-                    cell.setText(Messages.SourcePage_operationCopy);
+                if (element instanceof IProductCmptStructureReference) {
+                    boolean linked = getDeepCopyWizard().getDeepCopyPreview().isLinked(
+                            (IProductCmptStructureReference)element);
+                    if (element instanceof ProductCmptTypeAssociationReference) {
+                        cell.setText(""); //$NON-NLS-1$
+                    } else if (linked) {
+                        cell.setText(Messages.SourcePage_operationLink);
+                    } else {
+                        // if this is no link then it must be a copy
+                        cell.setText(Messages.SourcePage_operationCopy);
+                    }
                 }
             }
         });
@@ -478,15 +482,16 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
                     return false;
                 }
 
-                return getDeepCopyWizard().getDeepCopyPreview().isCopy(element)
-                        || getDeepCopyWizard().getDeepCopyPreview().isLinked(element);
+                return getDeepCopyWizard().getDeepCopyPreview().isCopy((IProductCmptStructureReference)element)
+                        || getDeepCopyWizard().getDeepCopyPreview().isLinked((IProductCmptStructureReference)element);
             }
 
             private boolean isParentAndCurrentReference(Object element) {
                 if (element instanceof IProductCmptStructureReference) {
                     IProductCmptStructureReference parent = ((IProductCmptStructureReference)element).getParent();
                     if (getDeepCopyWizard().getDeepCopyPreview().isLinked(parent)
-                            && getDeepCopyWizard().getDeepCopyPreview().isLinked(element)) {
+                            && getDeepCopyWizard().getDeepCopyPreview().isLinked(
+                                    (IProductCmptStructureReference)element)) {
                         return true;
                     }
                 } else {
@@ -507,13 +512,16 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
 
             @Override
             protected void setValue(Object element, Object value) {
+                if (!(element instanceof IProductCmptStructureReference)) {
+                    return;
+                }
                 Integer index = (Integer)value;
                 boolean doRefresh = false;
                 if (!(element instanceof IProductCmptTypeAssociationReference)) {
                     boolean linkElement = index == 1;
                     if (linkElement) {
                         if (!linkedElements.contains(element)) {
-                            linkedElements.add(element);
+                            linkedElements.add((IProductCmptStructureReference)element);
                             doRefresh = true;
                         }
                     } else {
@@ -857,7 +865,7 @@ public class SourcePage extends WizardPage implements ICheckStateListener {
         return tree;
     }
 
-    public Set<Object> getLinkedElements() {
+    public Set<IProductCmptStructureReference> getLinkedElements() {
         return linkedElements;
     }
 

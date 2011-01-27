@@ -142,9 +142,9 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
             IProductCmpt productCmptNew = (IProductCmpt)ipsObject.getIpsObject();
             IProductCmpt productCmptTemplate = productNew2ProductOld.get(productCmptNew);
 
-            fixRelationsToTableContents(productCmptNew, productCmptTemplate, tblContentData2newTableContentQName,
+            fixLinksToTableContents(productCmptNew, productCmptTemplate, tblContentData2newTableContentQName,
                     objectsToRefer);
-            fixRelationsToProductCmpt(productCmptNew, productCmptTemplate, linkData2newProductCmptQName, objectsToRefer);
+            fixLinksToProductCmpt(productCmptNew, productCmptTemplate, linkData2newProductCmptQName, objectsToRefer);
         }
 
         // save all ipsSource files
@@ -273,7 +273,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
      *            tableContentUsage
      * @param objectsToRefer A set containing the not copied objects
      */
-    private void fixRelationsToTableContents(IProductCmpt productCmptNew,
+    private void fixLinksToTableContents(IProductCmpt productCmptNew,
             IProductCmpt productCmptTemplate,
             HashMap<TblContentUsageData, String> tblContentData2newTableContentQName,
             Set<Object> objectsToRefer) {
@@ -303,7 +303,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
      *            created productCmpt which was initiated by the key link
      * @param objectsToRefer A set containing the not copied objects
      */
-    private void fixRelationsToProductCmpt(IProductCmpt productCmptNew,
+    private void fixLinksToProductCmpt(IProductCmpt productCmptNew,
             IProductCmpt productCmptTemplate,
             HashMap<LinkData, String> linkData2newProductCmptQName,
             Set<Object> objectsToRefer) {
@@ -326,7 +326,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
                 link.setTarget(newTarget);
             } else {
                 if (objectsToRefer.contains(linkData)) {
-                    // keep table usage to old table contents
+                    // keep link to old component
                     continue;
                 }
                 link.delete();

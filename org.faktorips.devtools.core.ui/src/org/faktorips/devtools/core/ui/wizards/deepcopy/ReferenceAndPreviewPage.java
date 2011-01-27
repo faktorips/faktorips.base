@@ -24,7 +24,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
@@ -174,8 +173,6 @@ public class ReferenceAndPreviewPage extends WizardPage {
         super.setVisible(visible);
         structure = sourcePage.getStructure();
         if (visible) {
-            ProgressMonitorDialog pmd = new ProgressMonitorDialog(getShell());
-            pmd.setOpenOnRun(true);
             try {
                 getWizard().getContainer().run(false, false, new IRunnableWithProgress() {
                     @Override
@@ -185,9 +182,9 @@ public class ReferenceAndPreviewPage extends WizardPage {
                         if (monitor == null) {
                             monitor = new NullProgressMonitor();
                         }
+                        monitor.beginTask(Messages.ReferenceAndPreviewPage_msgValidateCopy, 6);
 
                         ContentProvider contentProvider = (ContentProvider)tree.getContentProvider();
-                        monitor.beginTask(Messages.ReferenceAndPreviewPage_msgValidateCopy, 6);
                         contentProvider.setCheckedNodes(sourcePage.getCheckedNodes());
                         monitor.worked(1);
                         tree.setInput(structure);
@@ -198,6 +195,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
                         monitor.worked(1);
                         monitor.worked(1);
                     }
+
                 });
             } catch (InvocationTargetException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
@@ -297,19 +295,20 @@ public class ReferenceAndPreviewPage extends WizardPage {
 
         public Image getImage(Object element) {
             if (element instanceof IProductCmptStructureReference) {
-                IProductCmptStructureReference structureReference = (IProductCmptStructureReference)element;
+                IProductCmptStructureReference reference = (IProductCmptStructureReference)element;
+                IProductCmptStructureReference structureReference = reference;
                 if (isInError(structureReference)) {
                     return IpsUIPlugin.getImageHandling().getSharedImage("structureReference", true); //$NON-NLS-1$
                 }
                 IIpsElement wrapped = getWrapped(structureReference);
                 if (wrapped instanceof IProductCmpt) {
-                    if (getDeepCopyWizard().getDeepCopyPreview().isLinked(element)) {
+                    if (getDeepCopyWizard().getDeepCopyPreview().isLinked(reference)) {
                         ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
                                 "LinkProductCmpt.gif"); //$NON-NLS-1$
                         return (Image)resourceManager.get(imageDescriptor);
                     }
                 } else if (wrapped instanceof ITableContentUsage) {
-                    if (getDeepCopyWizard().getDeepCopyPreview().isLinked(element)) {
+                    if (getDeepCopyWizard().getDeepCopyPreview().isLinked(reference)) {
                         ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
                                 "LinkTableContents.gif"); //$NON-NLS-1$
                         return (Image)resourceManager.get(imageDescriptor);
@@ -325,14 +324,14 @@ public class ReferenceAndPreviewPage extends WizardPage {
         public String getText(Object element) {
             if (element instanceof IProductCmptStructureReference) {
                 IProductCmptStructureReference structureReference = (IProductCmptStructureReference)element;
-                Object wrapped = getWrapped(structureReference);
+                IIpsElement wrapped = getWrapped(structureReference);
                 if (wrapped instanceof IProductCmpt) {
-                    String name = ((IProductCmpt)wrapped).getName();
+                    String name = wrapped.getName();
                     if (!getDeepCopyWizard().getDeepCopyPreview().isLinked(structureReference)) {
                         name = getDeepCopyWizard().getDeepCopyPreview().getOldObject2newNameMap()
                                 .get(structureReference);
                         if (name == null) {
-                            name = getNewName(null, (IIpsObject)wrapped);
+                            name = getNewName(null, (IProductCmpt)wrapped);
                         }
                     }
                     if (isInError(structureReference)) {
