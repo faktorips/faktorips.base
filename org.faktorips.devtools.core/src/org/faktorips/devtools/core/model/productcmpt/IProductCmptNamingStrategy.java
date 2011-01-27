@@ -14,6 +14,8 @@
 package org.faktorips.devtools.core.model.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -121,7 +123,18 @@ public interface IProductCmptNamingStrategy {
     public String getVersionId(String productCmptName);
 
     /**
-     * Returns the next version id.
+     * Returns the next version id given the previous product component version. A concrete naming
+     * strategy might for example just increase a version number or ignore the given previous
+     * version and return a UUID.
+     * <p>
+     * The {@link DateBasedProductCmptNamingStrategy} ignores the previous version and takes the
+     * {@link IpsPreferences#getWorkingDate()} and returns it in a format defined by
+     * {@link DateBasedProductCmptNamingStrategy#setDateFormatPattern(String)}.
+     * 
+     * @param productCmpt The previous product component version.
+     * 
+     * @see DateBasedProductCmptNamingStrategy
+     * @see IpsPreferences#getWorkingDate()
      */
     public String getNextVersionId(IProductCmpt productCmpt);
 
