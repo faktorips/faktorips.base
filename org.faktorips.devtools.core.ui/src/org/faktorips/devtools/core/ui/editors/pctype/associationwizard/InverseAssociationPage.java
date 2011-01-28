@@ -13,15 +13,11 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype.associationwizard;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
 /**
@@ -37,7 +33,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  * 
  * @author Joerg Ortmann
  */
-public class InverseAssociationPage extends WizardPage implements IBlockedValidationWizardPage {
+public class InverseAssociationPage extends WizardPage {
 
     private NewPcTypeAssociationWizard wizard;
     private UIToolkit toolkit;
@@ -52,16 +48,12 @@ public class InverseAssociationPage extends WizardPage implements IBlockedValida
      * visible
      */
     private boolean detailToMasterState = false;
-    private List<String> validationProperties;
 
     public InverseAssociationPage(NewPcTypeAssociationWizard wizard, UIToolkit toolkit) {
         super(Messages.InverseAssociationPage_pageName, Messages.InverseAssociationPage_pageTitle, null);
         setDescription(Messages.InverseAssociationPage_pageDescription);
         this.wizard = wizard;
         this.toolkit = toolkit;
-
-        validationProperties = new ArrayList<String>();
-        validationProperties.add(IPolicyCmptTypeAssociation.PROPERTY_INVERSE_ASSOCIATION);
 
         setPageComplete(true);
     }
@@ -135,28 +127,4 @@ public class InverseAssociationPage extends WizardPage implements IBlockedValida
             // wizard.handleInverseAssociationSelectionState();
         }
     }
-
-    @Override
-    public boolean canFlipToNextPage() {
-        return wizard.canPageFlipToNextPage(this);
-    }
-
-    @Override
-    public List<String> getProperties() {
-        if (isValidationNeeded()) {
-            return validationProperties;
-        } else {
-            return new ArrayList<String>();
-        }
-    }
-
-    private boolean isValidationNeeded() {
-        if (getWizard().getContainer().getCurrentPage().equals(this)) {
-            // if the user is in this wizard, he is willing to create a inverse association, if one
-            // of the first two radio buttons is selected
-            return (noInverseAssociation.getSelection());
-        }
-        return getWizard().getContainer().getCurrentPage().equals(wizard.getPreviousPage(this));
-    }
-
 }
