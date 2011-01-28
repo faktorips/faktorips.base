@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
@@ -69,12 +68,9 @@ public class AttributesTablePageElement extends AbstractIpsObjectPartsContainerT
         attributeData.add(attribute.getModifier().toString());
 
         try {
-            attributeData.add(IpsPlugin
-                    .getDefault()
-                    .getIpsPreferences()
-                    .getDatatypeFormatter()
-                    .formatValue(getContext().getIpsProject().findValueDatatype(attribute.getDatatype()),
-                            attribute.getDefaultValue()));
+            attributeData.add(getContext().getDatatypeFormatter().formatValue(
+                    getContext().getIpsProject().findValueDatatype(attribute.getDatatype()),
+                    attribute.getDefaultValue()));
         } catch (CoreException e) {
             getContext().addStatus(new IpsStatus(IStatus.WARNING, "Unable to find ValueDatatype for attribute " //$NON-NLS-1$
                     + attribute.getName()));
@@ -90,12 +86,12 @@ public class AttributesTablePageElement extends AbstractIpsObjectPartsContainerT
     protected List<String> getHeadlineWithIpsObjectPart() {
         List<String> headline = new ArrayList<String>();
 
-        headline.add(getContext().getMessage(HtmlExportMessages.AttributesTablePageElement_headlineName)); 
-        headline.add(getContext().getMessage(HtmlExportMessages.AttributesTablePageElement_headlineLabel)); 
-        headline.add(getContext().getMessage(HtmlExportMessages.AttributesTablePageElement_headlineDatatype)); 
-        headline.add(getContext().getMessage(HtmlExportMessages.AttributesTablePageElement_headlineModifier)); 
-        headline.add(getContext().getMessage(HtmlExportMessages.AttributesTablePageElement_headlineDefaultValue)); 
-        headline.add(getContext().getMessage(HtmlExportMessages.AttributesTablePageElement_headlineDescription)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.AttributesTablePageElement_headlineName));
+        headline.add(getContext().getMessage(HtmlExportMessages.AttributesTablePageElement_headlineLabel));
+        headline.add(getContext().getMessage(HtmlExportMessages.AttributesTablePageElement_headlineDatatype));
+        headline.add(getContext().getMessage(HtmlExportMessages.AttributesTablePageElement_headlineModifier));
+        headline.add(getContext().getMessage(HtmlExportMessages.AttributesTablePageElement_headlineDefaultValue));
+        headline.add(getContext().getMessage(HtmlExportMessages.AttributesTablePageElement_headlineDescription));
 
         return headline;
     }

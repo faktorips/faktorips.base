@@ -23,7 +23,6 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
@@ -86,8 +85,7 @@ class EnumValuesTablePageElement extends AbstractIpsObjectPartsContainerTablePag
         String value = enumAttributeValue.getValue();
         try {
             ValueDatatype datatype = enumAttribute.findDatatype(getContext().getIpsProject());
-            valueData.add(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
-                    .formatValue(datatype, value));
+            valueData.add(getContext().getDatatypeFormatter().formatValue(datatype, value));
         } catch (CoreException e) {
             IpsStatus status = new IpsStatus(IStatus.WARNING,
                     "Could not format " + enumAttributeValue.getName() + " " + value, e); //$NON-NLS-1$ //$NON-NLS-2$

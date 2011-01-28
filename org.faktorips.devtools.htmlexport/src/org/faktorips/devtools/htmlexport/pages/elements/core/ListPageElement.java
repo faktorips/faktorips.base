@@ -64,7 +64,24 @@ public class ListPageElement extends AbstractCompositePageElement {
     public void visitSubElements(ILayouter layouter) {
         for (PageElement subElement : getSubElements()) {
             // TODO HIER DIE KLASSE HOCHSCHIEBEN!!!!
-            layouter.layoutWrapperPageElement(new WrapperPageElement(WrapperType.LISTITEM, subElement));
+            layouter.layoutWrapperPageElement(createListItem(subElement));
         }
     }
+
+    private WrapperPageElement createListItem(PageElement subElement) {
+        if (isListItem(subElement)) {
+            return (WrapperPageElement)subElement;
+        }
+        return new WrapperPageElement(WrapperType.LISTITEM, subElement);
+    }
+
+    private boolean isListItem(PageElement pageElement) {
+        if (!(pageElement instanceof WrapperPageElement)) {
+            return false;
+        }
+
+        WrapperPageElement wrapper = (WrapperPageElement)pageElement;
+        return wrapper.getWrapperType() == WrapperType.LISTITEM;
+    }
+
 }

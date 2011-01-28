@@ -16,20 +16,18 @@ package org.faktorips.devtools.htmlexport.helper.path;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.faktorips.devtools.core.IpsPlugin;
+import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsobject.Description;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 
 public class LinkableIpsElementUtil {
     private final static Collection<Class<? extends Object>> notLinkableClasses = Arrays
             .asList(new Class<?>[] { String.class });
 
-    private LinkableIpsElementUtil() {
-        // no instances
-    }
-
-    public static IIpsSrcFile getLinkableSrcFile(Object object) {
+    public IIpsSrcFile getLinkableSrcFile(Object object, DocumentationContext context) {
         if (notLinkableClasses.contains(object.getClass())) {
             return null;
         }
@@ -37,13 +35,13 @@ public class LinkableIpsElementUtil {
             return (IIpsSrcFile)object;
         }
         if (object instanceof Description) {
-            return getLinkableSrcFile(((Description)object).getParent());
+            return getLinkableSrcFile(((Description)object).getParent(), context);
         }
         if (object instanceof IIpsObjectPartContainer) {
             return ((IIpsObjectPartContainer)object).getIpsSrcFile();
         }
 
-        IpsPlugin.log(new RuntimeException(object.getClass() + " kann nicht gebildet werden")); //$NON-NLS-1$
+        context.addStatus(new IpsStatus(IStatus.WARNING, "No IpsSrcFile for class " + object.getClass())); //$NON-NLS-1$
         return null;
     }
 }

@@ -84,7 +84,7 @@ public class MessageListTablePageElement extends AbstractStandardTablePageElemen
     }
 
     protected PageElement createInvalidObjectPropertiesItem(ObjectProperty objectProperty) {
-        IIpsSrcFile srcFile = LinkableIpsElementUtil.getLinkableSrcFile(objectProperty.getObject());
+        IIpsSrcFile srcFile = new LinkableIpsElementUtil().getLinkableSrcFile(objectProperty.getObject(), getContext());
         if (srcFile != null) {
             return PageElementUtils.createLinkPageElement(context, srcFile, "content", //$NON-NLS-1$
                     srcFile.getIpsObjectName(), true);
@@ -96,9 +96,9 @@ public class MessageListTablePageElement extends AbstractStandardTablePageElemen
     protected List<String> getHeadline() {
         List<String> headline = new ArrayList<String>();
 
-        headline.add(getContext().getMessage(HtmlExportMessages.MessageListTablePageElement_headlineProperties)); 
-        headline.add(getContext().getMessage(HtmlExportMessages.MessageListTablePageElement_headlineMessage)); 
-        headline.add(getContext().getMessage(HtmlExportMessages.MessageListTablePageElement_headlineSeverity)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.MessageListTablePageElement_headlineProperties));
+        headline.add(getContext().getMessage(HtmlExportMessages.MessageListTablePageElement_headlineMessage));
+        headline.add(getContext().getMessage(HtmlExportMessages.MessageListTablePageElement_headlineSeverity));
 
         return headline;
     }

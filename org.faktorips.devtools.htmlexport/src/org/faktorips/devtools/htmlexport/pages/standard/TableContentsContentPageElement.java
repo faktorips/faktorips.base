@@ -20,7 +20,6 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -81,8 +80,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
 
             for (int i = 0; i < tableStructure.getNumOfColumns(); i++) {
                 String value = row.getValue(i);
-                rowData.add(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
-                        .formatValue(datatypes[i], value));
+                rowData.add(getContext().getDatatypeFormatter().formatValue(datatypes[i], value));
             }
 
             return rowData;
@@ -141,8 +139,8 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
      */
     private void addContentTable() {
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-        wrapper.addPageElements(new TextPageElement(getContext().getMessage(HtmlExportMessages.TableContentsContentPageElement_content), 
-                TextType.HEADING_2));
+        wrapper.addPageElements(new TextPageElement(getContext().getMessage(
+                HtmlExportMessages.TableContentsContentPageElement_content), TextType.HEADING_2));
 
         if (getTableContent().getNumOfGenerations() == 0) {
             wrapper.addPageElements(new TextPageElement(getContext().getMessage(
@@ -170,7 +168,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
             }
 
             wrapper.addPageElements(getTableOrAlternativeText(contentTablePageElement,
-                    getContext().getMessage(HtmlExportMessages.TableContentsContentPageElement_noContent))); 
+                    getContext().getMessage(HtmlExportMessages.TableContentsContentPageElement_noContent)));
         }
         PageElement createContentTable = wrapper;
         addPageElements(createContentTable);

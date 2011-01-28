@@ -11,26 +11,36 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.htmlexport.test.context;
+package org.faktorips.devtools.htmlexport.context;
 
 import java.util.Locale;
+import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.devtools.htmlexport.FakePluginResourcesFacade;
 import org.faktorips.devtools.htmlexport.context.messages.MessagesManager;
 
 public class MessagesManagerTest extends TestCase {
     private DocumentationContext context;
-    private String key;
+    private static final String KEY = "ProjectOverviewPageElement_project";
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
 
-        context = new DocumentationContext();
+        FakePluginResourcesFacade pluginResources = new FakePluginResourcesFacade();
+        Properties enMessages = new Properties();
+        enMessages.put(KEY, "Project");
+        pluginResources.putMessageProperties("org/faktorips/devtools/htmlexport/context/messages/messages.properties",
+                enMessages);
 
-        key = "ProjectOverviewPageElement_project";
+        Properties deMessages = new Properties();
+        deMessages.put(KEY, "Projekt");
+        pluginResources.putMessageProperties(
+                "org/faktorips/devtools/htmlexport/context/messages/messages_de.properties", deMessages);
+
+        context = new DocumentationContext(pluginResources);
     }
 
     public void testProjectOverviewPageElementProjectEn() {
@@ -38,7 +48,7 @@ public class MessagesManagerTest extends TestCase {
 
         MessagesManager manager = new MessagesManager(context);
 
-        assertEquals("Project", manager.getMessage(key));
+        assertEquals("Project", manager.getMessage(KEY));
         assertTrue(context.getExportStatus().isOK());
     }
 
@@ -47,7 +57,7 @@ public class MessagesManagerTest extends TestCase {
 
         MessagesManager manager = new MessagesManager(context);
 
-        assertEquals("Projekt", manager.getMessage(key));
+        assertEquals("Projekt", manager.getMessage(KEY));
         assertTrue(context.getExportStatus().isOK());
     }
 
@@ -60,7 +70,7 @@ public class MessagesManagerTest extends TestCase {
 
         String expectedResult = "Project";
 
-        assertEquals(expectedResult, manager.getMessage(key));
+        assertEquals(expectedResult, manager.getMessage(KEY));
     }
 
     public void testProjectOverviewPageElementProjectNotUsedKey() {
@@ -69,8 +79,8 @@ public class MessagesManagerTest extends TestCase {
 
         MessagesManager manager = new MessagesManager(context);
 
-        assertTrue(context.getExportStatus().isOK());
+        assertTrue(context.getExportStatus().getMessage(), context.getExportStatus().isOK());
         assertEquals(wrongKey, manager.getMessage(wrongKey));
-        assertFalse(context.getExportStatus().isOK());
+        assertFalse(context.getExportStatus().getMessage(), context.getExportStatus().isOK());
     }
 }

@@ -20,13 +20,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.DatatypeFormatter;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
@@ -58,9 +59,11 @@ public class DocumentationContext {
     /**
      * related {@link IpsObjectType}s: Just {@link IIpsObject} of these types are documented
      */
-    protected IpsObjectType[] documentedIpsObjectTypes = IpsPlugin.getDefault().getIpsModel().getIpsObjectTypes();
+    protected IpsObjectType[] documentedIpsObjectTypes;
 
     private List<IStatus> exportStatus = new ArrayList<IStatus>();
+
+    private final IPluginResourceFacade pluginResources;
 
     /**
      * Path for output
@@ -95,6 +98,15 @@ public class DocumentationContext {
      * All {@link IIpsSrcFile}s, which should be documented within the Export
      */
     private List<IIpsSrcFile> documentedSrcFiles;
+
+    public DocumentationContext() {
+        this(new PluginResourceFacade());
+    }
+
+    public DocumentationContext(IPluginResourceFacade pluginResources) {
+        this.pluginResources = pluginResources;
+        setDocumentedIpsObjectTypes(pluginResources.getDefaultIpsObjectTypes());
+    }
 
     public void setDocumentedIpsObjectTypes(IpsObjectType... ipsObjectTypes) {
         if (ArrayUtils.isEmpty(ipsObjectTypes)) {
@@ -249,12 +261,12 @@ public class DocumentationContext {
         if (exportStatus.size() == 1) {
             return exportStatus.get(0);
         }
-        return new MultiStatus(IpsPlugin.PLUGIN_ID, 0, exportStatus.toArray(new IStatus[exportStatus.size()]),
-                Messages.DocumentationContext_multipleErrorsMessage, null);
+        return new MultiStatus(pluginResources.getIpsPluginPluginId(), 0, exportStatus.toArray(new IStatus[exportStatus
+                .size()]), Messages.DocumentationContext_multipleErrorsMessage, null);
     }
 
     public void addStatus(IStatus status) {
-        IpsPlugin.log(status);
+        pluginResources.log(status);
         exportStatus.add(status);
     }
 
@@ -264,5 +276,18 @@ public class DocumentationContext {
 
     public String getMessage(Object object) {
         return messagesManager.getMessage(object);
+    }
+
+    public DatatypeFormatter getDatatypeFormatter() {
+        return pluginResources.getDatatypeFormatter();
+    }
+
+    public Properties getMessageProperties(String resourceName) {
+        try {
+            return pluginResources.getMessageProperties(resourceName);
+        } catch (CoreException e) {
+            addStatus(e.getStatus());
+            return new Properties();
+        }
     }
 }

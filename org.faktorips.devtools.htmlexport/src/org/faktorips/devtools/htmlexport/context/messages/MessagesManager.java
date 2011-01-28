@@ -14,8 +14,6 @@
 package org.faktorips.devtools.htmlexport.context.messages;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -24,7 +22,6 @@ import java.util.Properties;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.htmlexport.HtmlExportPlugin;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 
 public class MessagesManager {
@@ -32,8 +29,6 @@ public class MessagesManager {
     private final Properties messages = new Properties();
     private final DocumentationContext context;
     private final List<String> notFoundMessages;
-
-    private final Class<?>[] importMessagesClasses = { IpsObjectType.class };
 
     public MessagesManager(DocumentationContext context) {
         this.context = context;
@@ -65,36 +60,15 @@ public class MessagesManager {
 
     private void initializeLocalizedMessages(Locale locale) {
         loadMessages(getClass(), locale);
-
-        for (Class<?> clazz : importMessagesClasses) {
-            loadMessages(clazz, locale);
-        }
-
     }
 
     protected void loadMessages(Class<?> clazz, Locale locale) {
         String resourceName = clazz.getPackage().getName().replace('.', File.separatorChar) + File.separatorChar
                 + getMessagesFileName(locale);
 
-        final InputStream inputStream = HtmlExportPlugin.getDefault().getClass().getClassLoader()
-                .getResourceAsStream(resourceName);
+        Properties messageProperties = context.getMessageProperties(resourceName);
 
-        if (inputStream == null) {
-            context.addStatus(new IpsStatus(IStatus.WARNING, "Messages for Locale " + locale + " not found")); //$NON-NLS-1$ //$NON-NLS-2$
-            return;
-        }
-
-        try {
-            messages.load(inputStream);
-        } catch (IOException e) {
-            context.addStatus(new IpsStatus(IStatus.WARNING, "Messages for Locale " + locale + " couldn't be loaded")); //$NON-NLS-1$ //$NON-NLS-2$
-        } finally {
-            try {
-                inputStream.close();
-            } catch (IOException e) {
-                // nothing to do
-            }
-        }
+        messages.putAll(messageProperties);
     }
 
     private String getMessagesFileName(Locale locale) {

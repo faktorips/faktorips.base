@@ -20,7 +20,6 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
@@ -132,7 +131,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             return;
         }
 
-        addSubHeadline(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_defaultsAndValueSets)); 
+        addSubHeadline(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_defaultsAndValueSets));
 
         for (IPolicyCmptTypeAttribute policyCmptTypeAttribute : policyCmptTypeAttributes) {
             addPolicyCmptTypeAttibutesRow(policyCmptTypeAttribute);
@@ -170,7 +169,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         pageElement.addPageElements(new TextPageElement(getContext().getMessage(
                 "ProductGenerationAttributeTable_defaultValue") //$NON-NLS-1$
                 + ": " //$NON-NLS-1$
-                + IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
+                + getContext().getDatatypeFormatter()
                         .formatValue(((ValueSet)valueSet).getValueDatatype(), defaultValue), TextType.BLOCK));
 
         if (valueSet.isEnum()) {
@@ -185,16 +184,16 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
     private TextPageElement createRangeValueSetCell(RangeValueSet rangeValueSet) {
         StringBuilder builder = new StringBuilder();
-        builder.append(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_minMaxStep)); 
+        builder.append(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_minMaxStep));
         builder.append(": "); //$NON-NLS-1$
-        builder.append(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
-                .formatValue(rangeValueSet.getValueDatatype(), rangeValueSet.getLowerBound()));
+        builder.append(getContext().getDatatypeFormatter().formatValue(rangeValueSet.getValueDatatype(),
+                rangeValueSet.getLowerBound()));
         builder.append(", "); //$NON-NLS-1$
-        builder.append(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
-                .formatValue(rangeValueSet.getValueDatatype(), rangeValueSet.getUpperBound()));
+        builder.append(getContext().getDatatypeFormatter().formatValue(rangeValueSet.getValueDatatype(),
+                rangeValueSet.getUpperBound()));
         builder.append(", "); //$NON-NLS-1$
-        builder.append(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
-                .formatValue(rangeValueSet.getValueDatatype(), rangeValueSet.getStep()));
+        builder.append(getContext().getDatatypeFormatter().formatValue(rangeValueSet.getValueDatatype(),
+                rangeValueSet.getStep()));
 
         TextPageElement textPageElement = new TextPageElement(builder.toString(), TextType.BLOCK);
         return textPageElement;
@@ -213,8 +212,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             if (builder.length() > 0) {
                 builder.append(", "); //$NON-NLS-1$
             }
-            builder.append(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
-                    .formatValue(enumValueSet.getValueDatatype(), enumValue));
+            builder.append(getContext().getDatatypeFormatter().formatValue(enumValueSet.getValueDatatype(), enumValue));
 
         }
         TextPageElement textPageElement = new TextPageElement(getContext().getMessage(
@@ -240,7 +238,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             return;
         }
 
-        addSubHeadline(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_tables)); 
+        addSubHeadline(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_tables));
 
         for (ITableStructureUsage tableStructureUsage : tableStructureUsages) {
             addTableStructureUsageRow(tableStructureUsage);
@@ -254,7 +252,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             return;
         }
 
-        addSubHeadline(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_formulas)); 
+        addSubHeadline(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_formulas));
 
         for (IProductCmptTypeMethod formulaSignature : formulaSignatures) {
             addFormulaRow(formulaSignature);
@@ -319,7 +317,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     }
 
     private void addChildProductCmptTypes() {
-        addSubHeadline(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_associatedComponents)); 
+        addSubHeadline(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_associatedComponents));
 
         IAssociation[] associations = getAllAssociations();
         for (IAssociation association : associations) {
@@ -422,12 +420,8 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
         String value;
         try {
-            value = IpsPlugin
-                    .getDefault()
-                    .getIpsPreferences()
-                    .getDatatypeFormatter()
-                    .formatValue(productCmpt.getIpsProject().findValueDatatype(attribute.getDatatype()),
-                            attributeValue.getValue());
+            value = getContext().getDatatypeFormatter().formatValue(
+                    productCmpt.getIpsProject().findValueDatatype(attribute.getDatatype()), attributeValue.getValue());
         } catch (CoreException e) {
             context.addStatus(new IpsStatus(IStatus.ERROR,
                     "Error formating AttributeValue " + attributeValue.getName(), e)); //$NON-NLS-1$
@@ -439,7 +433,8 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
     @Override
     protected List<String> getHeadline() {
-        return getHeadlineWithCategory(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_attributes)); 
+        return getHeadlineWithCategory(getContext().getMessage(
+                HtmlExportMessages.ProductGenerationAttributeTable_attributes));
     }
 
     private List<String> getHeadlineWithCategory(String productGenerationAttributeTableGenerationFrom) {

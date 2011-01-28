@@ -20,8 +20,11 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 /**
  * Comparator for IpsObjectTypes.
  * 
- * Node: The ordering by this Comparator is inconsistent with equals
+ * the order is: - non productdefinitiontypes first -
  * 
+ * Note: The ordering by this Comparator is inconsistent with equals, because the comparator just
+ * uses the fields productDefinitionType and datatype. If the values of to fields are equal in the
+ * compared IpsObjectTypes, then there is no clear ordering.
  * 
  * @author dicker
  */

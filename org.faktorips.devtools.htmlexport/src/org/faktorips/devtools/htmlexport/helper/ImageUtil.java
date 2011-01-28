@@ -25,7 +25,7 @@ import org.eclipse.swt.graphics.ImageLoader;
  * @author dicker
  * 
  */
-public class DocumentorUtil {
+public class ImageUtil {
 
     /**
      * converts {@link ImageData} to a byte[] using the given image format (e.g. png)

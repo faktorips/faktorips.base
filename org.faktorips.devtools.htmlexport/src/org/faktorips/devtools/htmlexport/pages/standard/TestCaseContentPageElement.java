@@ -16,7 +16,6 @@ package org.faktorips.devtools.htmlexport.pages.standard;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
@@ -79,8 +78,8 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
      * adds a treeview of the parameters of the testcase
      */
     private void addTestCaseTypeParameters() {
-        addPageElements(new TextPageElement(getContext().getMessage(HtmlExportMessages.TestCaseContentPageElement_parameters), 
-                TextType.HEADING_2));
+        addPageElements(new TextPageElement(getContext().getMessage(
+                HtmlExportMessages.TestCaseContentPageElement_parameters), TextType.HEADING_2));
         TreeNodePageElement root = createRootNode();
 
         ITestObject[] testObjects = getDocumentedIpsObject().getTestObjects();
@@ -135,7 +134,8 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
     private PageElement createTestPolicyCmptTestAttributesTable(ITestPolicyCmpt testObject) throws CoreException {
         ITestAttributeValue[] testAttributeValues = testObject.getTestAttributeValues();
         if (testAttributeValues.length == 0) {
-            return new TextPageElement(getContext().getMessage(HtmlExportMessages.TestCaseContentPageElement_noTestAttributes)); 
+            return new TextPageElement(getContext().getMessage(
+                    HtmlExportMessages.TestCaseContentPageElement_noTestAttributes));
         }
 
         KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement(getContext());
@@ -144,8 +144,8 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
             ITestAttribute attribute = testAttributeValue.findTestAttribute(getContext().getIpsProject());
             ValueDatatype datatype = attribute.findDatatype(getContext().getIpsProject());
 
-            keyValueTable.addKeyValueRow(testAttributeValue.getName(), IpsPlugin.getDefault().getIpsPreferences()
-                    .getDatatypeFormatter().formatValue(datatype, value));
+            keyValueTable.addKeyValueRow(testAttributeValue.getName(),
+                    getContext().getDatatypeFormatter().formatValue(datatype, value));
         }
         return keyValueTable;
     }
@@ -154,10 +154,11 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
         TreeNodePageElement testObjectPageElement = createRootNode(testObject.getTestParameterName());
 
         KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement(getContext());
-        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseContentPageElement_name), 
+        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseContentPageElement_name),
                 testObject.getValidationRule());
-        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseContentPageElement_violationType), testObject 
-                .getViolationType().getName());
+        keyValueTable.addKeyValueRow(
+                getContext().getMessage(HtmlExportMessages.TestCaseContentPageElement_violationType), testObject
+                        .getViolationType().getName());
 
         testObjectPageElement.addPageElements(keyValueTable);
 
@@ -170,16 +171,18 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
                         new TextPageElement(testObject.getTestParameterName())));
 
         KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement(getContext());
-        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseContentPageElement_name), testObject.getName()); 
+        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseContentPageElement_name),
+                testObject.getName());
 
         ITestValueParameter testValueParameter = testObject.findTestValueParameter(getContext().getIpsProject());
         ValueDatatype datatype = testValueParameter.findValueDatatype(getContext().getIpsProject());
 
         String value = testObject.getValue();
-        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseContentPageElement_value), IpsPlugin 
-                .getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(datatype, value));
+        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseContentPageElement_value),
+                getContext().getDatatypeFormatter().formatValue(datatype, value));
 
-        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseContentPageElement_testParameterType), 
+        keyValueTable.addKeyValueRow(
+                getContext().getMessage(HtmlExportMessages.TestCaseContentPageElement_testParameterType),
                 testValueParameter.getTestParameterType().getName());
 
         testObjectPageElement.addPageElements(keyValueTable);

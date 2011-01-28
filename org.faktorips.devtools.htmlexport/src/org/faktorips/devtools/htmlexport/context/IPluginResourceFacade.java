@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005-2009 Faktor Zehn AG und andere.
+ * Copyright (c) 2005-2010 Faktor Zehn AG und andere.
  * 
  * Alle Rechte vorbehalten.
  * 
@@ -11,8 +11,25 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.htmlexport.test.linkchecker;
+package org.faktorips.devtools.htmlexport.context;
 
-public class Linkchecker {
+import java.util.Properties;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.core.DatatypeFormatter;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+
+public interface IPluginResourceFacade {
+
+    public IpsObjectType[] getDefaultIpsObjectTypes();
+
+    public void log(IStatus status);
+
+    public String getIpsPluginPluginId();
+
+    public DatatypeFormatter getDatatypeFormatter();
+
+    public Properties getMessageProperties(String resourceName) throws CoreException;
 
 }
