@@ -171,7 +171,8 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
         }
 
         if (StringUtils.isNotEmpty(persistenceAssociatonInfo.getJoinColumnName())) {
-            appendJoinColumn(fragment, persistenceAssociatonInfo.getJoinColumnName());
+            appendJoinColumn(fragment, persistenceAssociatonInfo.getJoinColumnName(), persistenceAssociatonInfo
+                    .isJoinColumnNullable());
         }
     }
 
@@ -224,14 +225,23 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
         }
         String lhs = inverse ? "inverseJoinColumns = " : "joinColumns = ";
         fragment.append(lhs);
-        appendJoinColumn(fragment, columnName);
+        appendJoinColumn(fragment, columnName, false);
         return true;
     }
 
-    private void appendJoinColumn(JavaCodeFragment fragment, String columnName) {
+    /**
+     * Appends a String with the following structure to the given fragment:
+     * <p/>
+     * XX=@JoinColumn(name = "columnName"[, nullable = false])
+     */
+    private void appendJoinColumn(JavaCodeFragment fragment, String columnName, boolean nullable) {
         fragment.addImport(IMPORT_JOIN_COLUMN);
         fragment.append(ANNOTATION_JOIN_COLUMN).append('(');
-        appendName(fragment, columnName).append(")");
+        appendName(fragment, columnName);
+        if (!nullable) {
+            fragment.append(", nullable = false");
+        }
+        fragment.append(")");
     }
 
     private void appendAllAttributes(JavaCodeFragment fragment, List<String> attributesToAppend) {
@@ -395,8 +405,8 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
             IPolicyCmptTypeAssociation pcTypeAssociation) {
         GenAssociation pcTypeAssociationGenerator;
         try {
-            pcTypeAssociationGenerator = generator.getStandardBuilderSet()
-                    .getGenerator(pcTypeAssociation.getPolicyCmptType()).getGenerator(pcTypeAssociation);
+            pcTypeAssociationGenerator = generator.getStandardBuilderSet().getGenerator(
+                    pcTypeAssociation.getPolicyCmptType()).getGenerator(pcTypeAssociation);
             return pcTypeAssociationGenerator.getTargetPolicyCmptType().isPersistentEnabled();
         } catch (CoreException e) {
             // in some cases the getGenerator method could throw a CoreException e.g. if the

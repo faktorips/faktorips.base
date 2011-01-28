@@ -57,6 +57,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     private String sourceColumnName = ""; //$NON-NLS-1$
 
     private String joinColumnName = ""; //$NON-NLS-1$
+    private boolean joinColumnNullable = true;
 
     private FetchType fetchType = FetchType.LAZY;
 
@@ -98,6 +99,11 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     @Override
     public String getJoinColumnName() {
         return joinColumnName;
+    }
+
+    @Override
+    public boolean isJoinColumnNullable() {
+        return joinColumnNullable;
     }
 
     @Override
@@ -302,6 +308,14 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         joinColumnName = newJoinColumnName;
         checkIfManuallyCodeFixIsNecessary(oldValue, joinColumnName);
         valueChanged(oldValue, joinColumnName);
+    }
+
+    @Override
+    public void setJoinColumnNullable(boolean nullable) {
+        boolean oldValue = joinColumnNullable;
+        joinColumnNullable = nullable;
+        checkIfManuallyCodeFixIsNecessary(oldValue, joinColumnNullable);
+        valueChanged(oldValue, joinColumnNullable);
     }
 
     @Override
@@ -545,6 +559,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         joinTableName = element.getAttribute(PROPERTY_JOIN_TABLE_NAME);
         fetchType = FetchType.valueOf(element.getAttribute(PROPERTY_FETCH_TYPE));
         joinColumnName = element.getAttribute(PROPERTY_JOIN_COLUMN_NAME);
+        joinColumnNullable = Boolean.valueOf(element.getAttribute(PROPERTY_JOIN_COLUMN_NULLABLE));
         orphanRemoval = Boolean.valueOf(element.getAttribute(PROPERTY_ORPHAN_REMOVAL));
 
         cascadeTypeOverwriteDefault = Boolean.valueOf(element.getAttribute(PROPERTY_CASCADE_TYPE_OVERWRITE_DEFAULT));
@@ -565,6 +580,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         element.setAttribute(PROPERTY_JOIN_TABLE_NAME, "" + joinTableName);//$NON-NLS-1$
         element.setAttribute(PROPERTY_FETCH_TYPE, "" + fetchType);//$NON-NLS-1$
         element.setAttribute(PROPERTY_JOIN_COLUMN_NAME, "" + joinColumnName);//$NON-NLS-1$
+        element.setAttribute(PROPERTY_JOIN_COLUMN_NULLABLE, Boolean.toString(joinColumnNullable));
         element.setAttribute(PROPERTY_ORPHAN_REMOVAL, Boolean.toString(orphanRemoval));
 
         element.setAttribute(PROPERTY_CASCADE_TYPE_OVERWRITE_DEFAULT, Boolean.toString(cascadeTypeOverwriteDefault));

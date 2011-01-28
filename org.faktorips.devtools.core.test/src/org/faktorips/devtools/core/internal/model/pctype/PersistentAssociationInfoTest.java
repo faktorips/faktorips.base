@@ -124,7 +124,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
 
         ml = sourcePersistenceAssociatonInfo.validate(ipsProject);
         assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TRANSIENT_MISMATCH));
-        assertEquals(0, ml.getNoOfMessages());
+        assertEquals(0, ml.size());
 
         ml = targetPersistenceAssociatonInfo.validate(ipsProject);
 
@@ -267,6 +267,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         assertEquals("sourceColumn1", persistenceAssociatonInfo.getSourceColumnName());
         assertEquals(FetchType.LAZY, persistenceAssociatonInfo.getFetchType());
         assertEquals("joinColumn1", persistenceAssociatonInfo.getJoinColumnName());
+        assertTrue(persistenceAssociatonInfo.isJoinColumnNullable());
     }
 
     public void testToXml() throws CoreException {
@@ -283,6 +284,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         persistenceAssociatonInfo.setSourceColumnName("sourceColumn0");
         persistenceAssociatonInfo.setFetchType(FetchType.EAGER);
         persistenceAssociatonInfo.setJoinColumnName("joinColumn0");
+        persistenceAssociatonInfo.setJoinColumnNullable(true);
         persistenceAssociatonInfo.setOrphanRemoval(true);
         Element element = persistenceAssociatonInfo.toXml(newDocument());
 
@@ -304,6 +306,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         assertEquals("sourceColumn0", copyOfPersistenceAssociatonInfo.getSourceColumnName());
         assertEquals(FetchType.EAGER, copyOfPersistenceAssociatonInfo.getFetchType());
         assertEquals("joinColumn0", copyOfPersistenceAssociatonInfo.getJoinColumnName());
+        assertTrue(copyOfPersistenceAssociatonInfo.isJoinColumnNullable());
         assertTrue(copyOfPersistenceAssociatonInfo.isOrphanRemoval());
     }
 
@@ -511,28 +514,28 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         pcAssociation.setMaxCardinality(1);
         targetPcAssociation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
         targetPcAssociation.setMaxCardinality(1);
-        assertEquals(RelationshipType.ONE_TO_ONE,
-                persistenceAssociatonInfo.evalBidirectionalRelationShipType(targetPcAssociation));
-        assertEquals(RelationshipType.ONE_TO_ONE,
-                inversePersistenceAssociatonInfo.evalBidirectionalRelationShipType(pcAssociation));
+        assertEquals(RelationshipType.ONE_TO_ONE, persistenceAssociatonInfo
+                .evalBidirectionalRelationShipType(targetPcAssociation));
+        assertEquals(RelationshipType.ONE_TO_ONE, inversePersistenceAssociatonInfo
+                .evalBidirectionalRelationShipType(pcAssociation));
 
         pcAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         pcAssociation.setMaxCardinality(2);
         targetPcAssociation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
         targetPcAssociation.setMaxCardinality(1);
-        assertEquals(RelationshipType.ONE_TO_MANY,
-                persistenceAssociatonInfo.evalBidirectionalRelationShipType(targetPcAssociation));
-        assertEquals(RelationshipType.MANY_TO_ONE,
-                inversePersistenceAssociatonInfo.evalBidirectionalRelationShipType(pcAssociation));
+        assertEquals(RelationshipType.ONE_TO_MANY, persistenceAssociatonInfo
+                .evalBidirectionalRelationShipType(targetPcAssociation));
+        assertEquals(RelationshipType.MANY_TO_ONE, inversePersistenceAssociatonInfo
+                .evalBidirectionalRelationShipType(pcAssociation));
 
         pcAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         pcAssociation.setMaxCardinality(2);
         targetPcAssociation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
         targetPcAssociation.setMaxCardinality(2);
-        assertEquals(RelationshipType.MANY_TO_MANY,
-                persistenceAssociatonInfo.evalBidirectionalRelationShipType(targetPcAssociation));
-        assertEquals(RelationshipType.MANY_TO_MANY,
-                inversePersistenceAssociatonInfo.evalBidirectionalRelationShipType(pcAssociation));
+        assertEquals(RelationshipType.MANY_TO_MANY, persistenceAssociatonInfo
+                .evalBidirectionalRelationShipType(targetPcAssociation));
+        assertEquals(RelationshipType.MANY_TO_MANY, inversePersistenceAssociatonInfo
+                .evalBidirectionalRelationShipType(pcAssociation));
 
         // now test with qualified asociation (max=1) but is to-many
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "productTyp");
@@ -542,10 +545,10 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         pcAssociation.setMaxCardinality(1);
         targetPcAssociation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
         targetPcAssociation.setMaxCardinality(1);
-        assertEquals(RelationshipType.ONE_TO_MANY,
-                persistenceAssociatonInfo.evalBidirectionalRelationShipType(targetPcAssociation));
-        assertEquals(RelationshipType.MANY_TO_ONE,
-                inversePersistenceAssociatonInfo.evalBidirectionalRelationShipType(pcAssociation));
+        assertEquals(RelationshipType.ONE_TO_MANY, persistenceAssociatonInfo
+                .evalBidirectionalRelationShipType(targetPcAssociation));
+        assertEquals(RelationshipType.MANY_TO_ONE, inversePersistenceAssociatonInfo
+                .evalBidirectionalRelationShipType(pcAssociation));
 
         // unidirectional
         pcAssociation.setInverseAssociation("");

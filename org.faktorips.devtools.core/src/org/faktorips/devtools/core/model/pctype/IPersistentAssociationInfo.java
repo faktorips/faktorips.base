@@ -81,6 +81,11 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
     public final static String PROPERTY_JOIN_COLUMN_NAME = "joinColumnName"; //$NON-NLS-1$
 
     /**
+     * The name of the "join column is nullable" property, allowing NULL values in the database.
+     */
+    public final static String PROPERTY_JOIN_COLUMN_NULLABLE = "joinColumnNullable"; //$NON-NLS-1$
+
+    /**
      * Specifies if the orphan removal (private owned) annotation should be used or not. The
      * property make only sense on the master to detail side of an one to many composition.
      */
@@ -436,4 +441,13 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
      */
     public void initDefaultsCascadeTypes() throws CoreException;
 
+    /**
+     * Returns <code>true</code> if the join column / foreign key column is nullable.
+     */
+    public boolean isJoinColumnNullable();
+
+    /**
+     * Sets the nullable property for the join column / foreign key column.
+     */
+    public void setJoinColumnNullable(boolean nullable);
 }

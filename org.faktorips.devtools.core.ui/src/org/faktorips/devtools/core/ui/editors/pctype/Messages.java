@@ -91,6 +91,8 @@ public class Messages extends NLS {
 
     public static String AssociationEditDialog_labelForeignKeyJoinColumn;
 
+    public static String AssociationEditDialog_labelJoinColumnNameNullable;
+
     public static String AssociationEditDialog_labelJoinTable;
 
     public static String AssociationEditDialog_labelJoinTableName;
