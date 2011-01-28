@@ -86,7 +86,7 @@ public interface IModelTypeAssociation extends IModelElement {
     /**
      * Returns the name of the inverse association if it is defined.
      * 
-     * @return The name of the inverse association or null if no inverse association is defined
+     * @return The name of the inverse association or null for product component associations
      */
     public String getInverseAssociation();
 
