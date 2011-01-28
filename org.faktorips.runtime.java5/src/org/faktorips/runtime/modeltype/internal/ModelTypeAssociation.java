@@ -171,10 +171,6 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
         return isSubsetOfADerivedUnion;
     }
 
-    public void setInverseAssociation(String inverseAssociation) {
-        this.inverseAssociation = inverseAssociation;
-    }
-
     public String getInverseAssociation() {
         return inverseAssociation;
     }

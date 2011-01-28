@@ -83,4 +83,11 @@ public interface IModelTypeAssociation extends IModelElement {
      */
     public boolean isSubsetOfADerivedUnion();
 
+    /**
+     * Returns the name of the inverse association if it is defined.
+     * 
+     * @return The name of the inverse association or null if no inverse association is defined
+     */
+    public String getInverseAssociation();
+
 }
