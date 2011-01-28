@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.controller;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -61,9 +62,13 @@ public class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMa
         try {
             Method setter = property.getWriteMethod();
             setter.invoke(object, new Object[] { field.getValue() });
-        } catch (Exception e) {
-            // TODO catch Exception needs to be documented properly or specialized
-            throw new RuntimeException("Error setting property value " + property.getName(), e); //$NON-NLS-1$
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Error setting property value " + property.getName() + ": Illegal Access", e); //$NON-NLS-1$ //$NON-NLS-2$
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Error setting property value " + property.getName() + ": Illegal Argument", e); //$NON-NLS-1$ //$NON-NLS-2$
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(
+                    "Error setting property value " + property.getName() + ": Setter throws an exception", e); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
