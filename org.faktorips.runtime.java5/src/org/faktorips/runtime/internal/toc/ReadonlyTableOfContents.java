@@ -83,20 +83,24 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
     @Override
     public void initFromXml(Element tocElement) {
         int size = tocElement.getChildNodes().getLength();
+        initHashMaps(size);
+        super.initFromXml(tocElement);
+    }
+
+    protected void initHashMaps(int tocSize) {
         /*
          * The size of the HashMaps is set to estimated values depending on the maximum size of the
          * table of contents
          */
-        pcIdTocEntryMap = new HashMap<String, ProductCmptTocEntry>(size);
-        pcNameTocEntryMap = new HashMap<String, ProductCmptTocEntry>(size);
-        kindIdTocEntryListMap = new HashMap<String, List<VersionIdTocEntry>>(size);
-        tableImplClassTocEntryMap = new HashMap<String, TableContentTocEntry>(size / 4);
-        tableContentNameTocEntryMap = new HashMap<String, TableContentTocEntry>(size / 4);
+        pcIdTocEntryMap = new HashMap<String, ProductCmptTocEntry>(tocSize);
+        pcNameTocEntryMap = new HashMap<String, ProductCmptTocEntry>(tocSize);
+        kindIdTocEntryListMap = new HashMap<String, List<VersionIdTocEntry>>(tocSize);
+        tableImplClassTocEntryMap = new HashMap<String, TableContentTocEntry>(tocSize / 4);
+        tableContentNameTocEntryMap = new HashMap<String, TableContentTocEntry>(tocSize / 4);
         testCaseNameTocEntryMap = new HashMap<String, TestCaseTocEntry>();
-        modelTypeNameTocEntryMap = new HashMap<String, ModelTypeTocEntry>(size / 4);
-        enumContentImplClassTocEntryMap = new HashMap<String, EnumContentTocEntry>(size / 4);
-        enumXmlAdapterTocEntryMap = new HashMap<String, EnumXmlAdapterTocEntry>(size / 4);
-        super.initFromXml(tocElement);
+        modelTypeNameTocEntryMap = new HashMap<String, ModelTypeTocEntry>(tocSize / 4);
+        enumContentImplClassTocEntryMap = new HashMap<String, EnumContentTocEntry>(tocSize / 4);
+        enumXmlAdapterTocEntryMap = new HashMap<String, EnumXmlAdapterTocEntry>(tocSize / 4);
     }
 
     /**
