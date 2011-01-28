@@ -311,8 +311,10 @@ public class Row extends AtomicIpsObjectPart implements IRow {
             IColumn column = structure.getColumn(i);
 
             ValueDatatype dataType = datatypes[i];
-            if (dataType == null || !dataType.isParsable(getValue(i))) {
-                String text = NLS.bind(Messages.Row_ValueNotParsable, column.getName(), dataType);
+            String value = getValue(i);
+            if (dataType == null || !dataType.isParsable(value)) {
+                String text = NLS.bind(Messages.Row_ValueNotParsable,
+                        new Object[] { value, dataType, column.getName() });
                 Message message = new Message(MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR, new ObjectProperty(this,
                         IRow.PROPERTY_VALUE, i));
                 list.add(message);
