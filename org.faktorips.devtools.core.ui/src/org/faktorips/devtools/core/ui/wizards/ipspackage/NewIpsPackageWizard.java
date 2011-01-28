@@ -60,7 +60,12 @@ public class NewIpsPackageWizard extends Wizard implements INewWizard {
         try {
             // IIpsPackageFragment pack = packagePage.getParentPackageFragment();
             IIpsPackageFragment pack = packagePage.getIpsPackageFragmentRoot().getDefaultIpsPackageFragment();
-            String path = packagePage.getIpsPackagePath() + "." + packagePage.getIpsPackageName(); //$NON-NLS-1$
+            String path = packagePage.getIpsPackagePath();
+            if (!path.isEmpty()) {
+                // do not add the when adding a new package in the root directory (default package)
+                path += "."; //$NON-NLS-1$
+            }
+            path += packagePage.getIpsPackageName();
             pack.createSubPackage(path, true, null);
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
