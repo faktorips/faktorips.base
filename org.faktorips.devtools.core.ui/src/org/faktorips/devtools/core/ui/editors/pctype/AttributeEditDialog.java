@@ -796,7 +796,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_labelTemporalType);
         Combo temporalMappingCombo = uiToolkit.createCombo(workArea);
-        setComboItemsForEnum(temporalMappingCombo, DateTimeMapping.class);
         temporalMappingField = new EnumField<DateTimeMapping>(temporalMappingCombo, DateTimeMapping.class);
         bindingContext.bindContent(temporalMappingField, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TEMPORAL_MAPPING);
