@@ -61,6 +61,9 @@ public class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMa
         }
         try {
             Method setter = property.getWriteMethod();
+            if (setter == null) {
+                throw new RuntimeException("Error setting property value " + property.getName() + ": No such field"); //$NON-NLS-1$ //$NON-NLS-2$
+            }
             setter.invoke(object, new Object[] { field.getValue() });
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Error setting property value " + property.getName() + ": Illegal Access", e); //$NON-NLS-1$ //$NON-NLS-2$
