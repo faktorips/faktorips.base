@@ -32,17 +32,14 @@ import org.faktorips.runtime.modeltype.IModelElement;
  */
 public class AbstractModelElement implements IModelElement {
 
-    private Map<String, Object> extPropertyValues = null;
-    private String name = null;
+    private Map<String, Object> extPropertyValues;
+    private String name;
     private AbstractRuntimeRepository repository;
 
     public AbstractModelElement(AbstractRuntimeRepository repository) {
         this.repository = repository;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Object getExtensionPropertyValue(String propertyId) {
         if (extPropertyValues == null) {
             return null;
@@ -60,16 +57,10 @@ public class AbstractModelElement implements IModelElement {
         extPropertyValues.put(propertyId, value);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void initFromXml(XMLStreamReader parser) throws XMLStreamException {
         for (int i = 0; i < parser.getAttributeCount(); i++) {
             if (parser.getAttributeLocalName(i).equals("name")) {
@@ -78,9 +69,6 @@ public class AbstractModelElement implements IModelElement {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Set<String> getExtensionPropertyIds() {
         if (extPropertyValues == null) {
             return new HashSet<String>(0);
@@ -88,9 +76,6 @@ public class AbstractModelElement implements IModelElement {
         return extPropertyValues.keySet();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void initExtPropertiesFromXml(XMLStreamReader parser) throws XMLStreamException {
         for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
             switch (event) {
@@ -141,10 +126,6 @@ public class AbstractModelElement implements IModelElement {
         }
     }
 
-    /**
-     * 
-     * {@inheritDoc}
-     */
     public IRuntimeRepository getRepository() {
         return repository;
     }
@@ -163,4 +144,5 @@ public class AbstractModelElement implements IModelElement {
             throw new RuntimeException(e);
         }
     }
+
 }

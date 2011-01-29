@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.stdbuilder;
 
+import java.util.List;
+import java.util.Locale;
+
 import javax.xml.transform.TransformerException;
 
 import org.eclipse.core.runtime.CoreException;
@@ -23,6 +26,7 @@ import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDe
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
@@ -77,6 +81,7 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
         addExtensionProperties(modelTypeEl, type);
         addAssociations(type, modelTypeEl);
         addAttributes(type, modelTypeEl);
+        addLabels(type, modelTypeEl);
 
         try {
             super.build(ipsSrcFile, XmlUtil.nodeToString(modelTypeEl, ipsSrcFile.getIpsProject().getXmlFileCharset()));
@@ -181,6 +186,23 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
                     addExtensionProperties(modelTypeAttribute, attribute);
                 }
             }
+        }
+    }
+
+    private void addLabels(IType model, Element modelType) {
+        List<ILabel> labels = model.getLabels();
+        if (labels.size() == 0) {
+            return;
+        }
+        Element modelTypeLabels = doc.createElement("ModelTypeLabels");
+        modelType.appendChild(modelTypeLabels);
+        for (ILabel label : labels) {
+            Element modelTypeLabel = doc.createElement("ModelTypeLabel");
+            modelTypeLabels.appendChild(modelTypeLabel);
+            Locale locale = label.getLocale();
+            modelTypeLabel.setAttribute(ILabel.PROPERTY_LOCALE, locale == null ? "" : locale.getLanguage());
+            modelTypeLabel.setAttribute(ILabel.PROPERTY_VALUE, label.getValue());
+            modelTypeLabel.setAttribute(ILabel.PROPERTY_PLURAL_VALUE, label.getPluralValue());
         }
     }
 

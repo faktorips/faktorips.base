@@ -14,6 +14,7 @@
 package org.faktorips.runtime.modeltype;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * 
@@ -47,8 +48,8 @@ public interface IModelType extends IModelElement {
     public List<IModelTypeAttribute> getDeclaredAttributes();
 
     /**
-     * Returns a list containing the type's attributes including those defined in the type's
-     * supertypes.
+     * Returns a list containing the type's attributes including those defined in the type's super
+     * types.
      */
     public List<IModelTypeAttribute> getAttributes();
 
@@ -77,7 +78,7 @@ public interface IModelType extends IModelElement {
 
     /**
      * Returns a list containing all associations declared in this model type. Associations defined
-     * in the type's supertypes are not returned.
+     * in the type's super types are not returned.
      */
     public List<IModelTypeAssociation> getDeclaredAssociations();
 
@@ -101,4 +102,27 @@ public interface IModelType extends IModelElement {
      * @throws IllegalArgumentException if no association with the given <code>name</code> exists.
      */
     public IModelTypeAssociation getDeclaredAssociation(String name);
+
+    /**
+     * Returns a list containing all labels declared in this model type. Labels defined in the
+     * type's super types are not returned.
+     */
+    public List<IModelTypeLabel> getDeclaredLabels();
+
+    /**
+     * Returns the label at the given index. Labels defined in the type's super types are not
+     * returned.
+     * 
+     * @throws IndexOutOfBoundsException If no label exists for the given index
+     */
+    public IModelTypeLabel getDeclaredLabel(int index);
+
+    /**
+     * Returns the label for the given locale. Labels defined in the type's super types are not
+     * considered.
+     * 
+     * @throws IllegalArgumentException If no label with the given locale exists
+     */
+    public IModelTypeLabel getDeclaredLabel(Locale locale);
+
 }

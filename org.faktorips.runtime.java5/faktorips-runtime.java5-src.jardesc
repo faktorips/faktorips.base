@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <jardesc>
-    <jar path="/home/dirmeier/runtime-FaktorIps/org.faktorips.integrationtest.java5/lib/faktorips-runtime.java5-src.zip"/>
-    <options buildIfNeeded="true" compress="true" descriptionLocation="/org.faktorips.runtime.java5/faktorips-runtime.java5-src.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
-    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
-    <selectedProjects/>
-    <selectedElements exportClassFiles="false" exportJavaFiles="true" exportOutputFolder="false">
-        <javaElement handleIdentifier="=org.faktorips.runtime.java5/src"/>
-        <file path="/org.faktorips.runtime.java5/description.txt"/>
-    </selectedElements>
+<jar path="C:/Dokumente und Einstellungen/admin/Eigene Dateien/Workspaces/FIPS Workspace/org.faktorips.tutorial.de.Grundmodell/lib/faktorips-runtime.java5-src.zip"/>
+<options buildIfNeeded="true" compress="true" descriptionLocation="/org.faktorips.runtime.java5/faktorips-runtime.java5-src.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+<storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+<selectedProjects/>
+<selectedElements exportClassFiles="false" exportJavaFiles="true" exportOutputFolder="false">
+<javaElement handleIdentifier="=org.faktorips.runtime.java5/src"/>
+<file path="/org.faktorips.runtime.java5/description.txt"/>
+</selectedElements>
 </jardesc>
