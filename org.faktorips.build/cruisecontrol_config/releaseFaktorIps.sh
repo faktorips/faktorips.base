@@ -636,7 +636,8 @@ createIndexHtml()
 createAndAddLicensePdf(){
   # $1 text file containing filenames or direcory names of all archives files 
   local ARCHIV_FILES=$1
-  if [ ! "$SKIPPUBLISH" = "true" -a -f $ARCHIV_FILES ] ; then
+  # ! "$SKIPPUBLISH" = "true" -a
+  if [ -f $ARCHIV_FILES ] ; then
     $PROJECTSROOTDIR/$CREATE_LIZENZ_SCRIPT $BUILD_VERSION
     for i in $(cat $ARCHIV_FILES) ; do
       if [ -d $i ] ; then
