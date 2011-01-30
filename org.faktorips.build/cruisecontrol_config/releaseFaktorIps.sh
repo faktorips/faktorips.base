@@ -644,8 +644,9 @@ createAndAddLicensePdf(){
         for j in $(find $i -iname "*.zip") ; do
           addLicensePdfTo $j $PROJECTSROOTDIR/$LIZENZ_PDF 
         done
+      else
+        addLicensePdfTo $i $PROJECTSROOTDIR/$LIZENZ_PDF 
       fi
-      addLicensePdfTo $i $PROJECTSROOTDIR/$LIZENZ_PDF 
     done
   fi
 }
