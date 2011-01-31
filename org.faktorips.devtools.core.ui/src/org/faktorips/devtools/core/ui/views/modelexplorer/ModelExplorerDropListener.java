@@ -92,6 +92,9 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
         try {
             Object target = getTarget(event);
             Object[] sources = getTransferedElements(event.currentDataType);
+            if (sources == null) {
+                return;
+            }
 
             // The new refactoring support goes from here.
             if (target instanceof IIpsPackageFragment) {
