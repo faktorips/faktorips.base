@@ -15,10 +15,10 @@ package org.faktorips.devtools.core.ui.binding;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.faktorips.devtools.core.IpsPlugin;
 
@@ -59,7 +59,8 @@ public class PresentationModelObject {
      * method continues to notify the remaining listeners.
      */
     protected void notifyListeners(PropertyChangeEvent event) {
-        List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>(propertyChangeListeners); // copy
+        List<PropertyChangeListener> listeners = new CopyOnWriteArrayList<PropertyChangeListener>(
+                propertyChangeListeners); // copy
         // to be thread-safe
         for (PropertyChangeListener listener : listeners) {
             try {
