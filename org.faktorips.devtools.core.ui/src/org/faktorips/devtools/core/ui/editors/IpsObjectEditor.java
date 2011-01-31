@@ -645,7 +645,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
     @Override
     public void doSaveAs() {
-
+        // empty implementation. save as not supported @see #isSaveAsAllowed
     }
 
     @Override
@@ -1121,7 +1121,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         }
 
         private void postImageChange(final Image newImage) {
-            if (newImage == null) {
+            if (newImage == null || newImage.isDisposed()) {
                 return;
             }
             Shell shell = ipsObjectEditor.getEditorSite().getShell();
