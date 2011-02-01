@@ -37,6 +37,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -88,8 +89,8 @@ import org.faktorips.devtools.core.ui.internal.ICollectorFinishedListener;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateContentProvider;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateViewer;
-import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 import org.faktorips.devtools.core.ui.views.AbstractShowInSupportingViewPart;
+import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
@@ -291,7 +292,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         return new Action(Messages.ProductStructureExplorer_menuShowAssociationNodes_name, IAction.AS_CHECK_BOX) {
             @Override
             public ImageDescriptor getImageDescriptor() {
-                return IpsUIPlugin.getImageHandling().createImageDescriptor("ShowAssociationTypeNodes.gif");
+                return IpsUIPlugin.getImageHandling().createImageDescriptor("ShowAssociationTypeNodes.gif"); //$NON-NLS-1$
             }
 
             @Override
@@ -312,7 +313,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
 
             @Override
             public ImageDescriptor getImageDescriptor() {
-                return IpsUIPlugin.getImageHandling().createImageDescriptor("AssociationType-Association.gif");
+                return IpsUIPlugin.getImageHandling().createImageDescriptor("AssociationType-Association.gif"); //$NON-NLS-1$
             }
 
             @Override
@@ -357,7 +358,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         toolBarManager.add(collapseAllAction);
 
         // clear action
-        clearAction = new Action("", IpsUIPlugin.getImageHandling().createImageDescriptor("Clear.gif")) {
+        clearAction = new Action("", IpsUIPlugin.getImageHandling().createImageDescriptor("Clear.gif")) { //$NON-NLS-1$//$NON-NLS-2$
             @Override
             public void run() {
                 productComponent = null;
@@ -427,13 +428,13 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         });
 
         prevButton = new Button(adjustmentDatePanel, SWT.NONE);
-        prevButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft_small.gif", true));
+        prevButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft_small.gif", true)); //$NON-NLS-1$
         prevButton.setToolTipText(NLS.bind(Messages.ProductStructureExplorer_prevAdjustmentToolTip,
                 generationConceptName));
         prevButton.setEnabled(false);
 
         nextButton = new Button(adjustmentDatePanel, SWT.NONE);
-        nextButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight_small.gif", true));
+        nextButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight_small.gif", true)); //$NON-NLS-1$
         nextButton.setToolTipText(NLS.bind(Messages.ProductStructureExplorer_nextAdjustmentToolTip,
                 generationConceptName));
         nextButton.setEnabled(false);
@@ -507,16 +508,16 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
 
         MenuManager menumanager = new MenuManager();
         menumanager.setRemoveAllWhenShown(false);
-        menumanager.add(new Separator("open"));
+        menumanager.add(new Separator("open")); //$NON-NLS-1$
         final IAction openAction = new OpenEditorAction(treeViewer);
         menumanager.add(openAction);
 
-        menumanager.add(new Separator("edit"));
+        menumanager.add(new Separator("edit")); //$NON-NLS-1$
         final IAction addAction = new AddLinkAction(treeViewer);
         menumanager.add(addAction);
         menumanager.add(ActionFactory.DELETE.create(getSite().getWorkbenchWindow()));
 
-        menumanager.add(new Separator("copy"));
+        menumanager.add(new Separator("copy")); //$NON-NLS-1$
         final IpsDeepCopyAction copyNewVersionAction = new IpsDeepCopyAction(getSite().getShell(), treeViewer,
                 DeepCopyWizard.TYPE_NEW_VERSION);
         menumanager.add(copyNewVersionAction);
@@ -614,24 +615,30 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
      * 
      * @param product The product to show the structure from
      */
-    public void showStructure(IProductCmpt product) {
-        if (product == null) {
-            return;
-        }
+    public void showStructure(final IProductCmpt product) {
+        BusyIndicator.showWhile(getSite().getShell().getDisplay(), new Runnable() {
 
-        if (errormsg == null) {
-            // return if called before the explorer is shown
-            return;
-        }
+            @Override
+            public void run() {
+                if (product == null) {
+                    return;
+                }
 
-        productComponent = product;
-        file = product.getIpsSrcFile();
-        generationDateViewer.setInput(product);
-        generationDateViewer.setSelection(0);
-        // TODO
-        // setting the adjustment date to null updates the treeViewer content with latest adjustment
-        // until the valid adjustment dates are collected
-        setAdjustmentDate(null);
+                if (errormsg == null) {
+                    // return if called before the explorer is shown
+                    return;
+                }
+
+                productComponent = product;
+                file = product.getIpsSrcFile();
+                generationDateViewer.setInput(product);
+                generationDateViewer.setSelection(0);
+                // setting the adjustment date to null updates the treeViewer content with latest
+                // adjustment
+                // until the valid adjustment dates are collected
+                setAdjustmentDate(null);
+            }
+        });
     }
 
     public void setAdjustmentDate(GenerationDate generationDate) {
@@ -645,6 +652,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
             updateButtons();
             labelProvider.setAdjustmentDate(generationDate);
             showTreeInput(structure);
+            treeViewer.expandToLevel(2);
         } catch (CycleInProductStructureException e) {
             handleCircle(e);
         }
@@ -734,11 +742,11 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         }
 
         for (int i = cyclePathCpy.length - 1; i >= 0; i--) {
-            path.append(cyclePathCpy[i] == null ? "" : cyclePathCpy[i].getName());
+            path.append(cyclePathCpy[i] == null ? "" : cyclePathCpy[i].getName()); //$NON-NLS-1$
             if (i % 2 != 0) {
-                path.append(" -> ");
+                path.append(" -> "); //$NON-NLS-1$
             } else if (i % 2 == 0 && i > 0) {
-                path.append(":");
+                path.append(":"); //$NON-NLS-1$
             }
         }
 
@@ -801,7 +809,6 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
             } else if (element instanceof IProductCmptTreeStructure) {
                 showMessgeOrTableView(MessageTableSwitch.TABLE);
                 enableButtons(true);
-                treeViewer.expandToLevel(2);
                 treeViewer.refresh();
             }
         }

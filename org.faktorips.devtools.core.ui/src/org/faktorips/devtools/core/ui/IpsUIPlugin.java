@@ -22,6 +22,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.RunnableFuture;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
@@ -54,6 +58,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
+import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -415,28 +420,45 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * 
      * @see IDE#openEditor(org.eclipse.ui.IWorkbenchPage, org.eclipse.core.resources.IFile)
      */
-    public IEditorPart openEditor(IFile fileToEdit) {
+    public IEditorPart openEditor(final IFile fileToEdit) {
         if (fileToEdit == null) {
             return null;
         }
-        /*
-         * Check if the file can be edit with a corresponding IPS object editor, if the file is
-         * outside an IPS package then the IPS object editor couldn't be used - the IPS object could
-         * not be retrieved from the IPS source file - therefore open the default text editor (to
-         * edit the IPS source file as XML).
-         */
-        IIpsModel model = IpsPlugin.getDefault().getIpsModel();
-        IIpsElement ipsElement = model.getIpsElement(fileToEdit);
-        if (ipsElement instanceof IIpsSrcFile && !((IIpsSrcFile)ipsElement).exists()) {
-            try {
-                return openWithDefaultIpsSrcTextEditor(fileToEdit);
-            } catch (CoreException e) {
-                IpsPlugin.logAndShowErrorDialog(e);
-            }
-        } else {
-            return openEditor(new FileEditorInput(fileToEdit));
-        }
+        RunnableFuture<IEditorPart> runnable = new FutureTask<IEditorPart>(new Callable<IEditorPart>() {
 
+            @Override
+            public IEditorPart call() throws Exception {
+                /*
+                 * Check if the file can be edit with a corresponding IPS object editor, if the file
+                 * is outside an IPS package then the IPS object editor couldn't be used - the IPS
+                 * object could not be retrieved from the IPS source file - therefore open the
+                 * default text editor (to edit the IPS source file as XML).
+                 */
+                IIpsModel model = IpsPlugin.getDefault().getIpsModel();
+                IIpsElement ipsElement = model.getIpsElement(fileToEdit);
+                if (ipsElement instanceof IIpsSrcFile && !((IIpsSrcFile)ipsElement).exists()) {
+                    try {
+                        return openWithDefaultIpsSrcTextEditor(fileToEdit);
+                    } catch (CoreException e) {
+                        IpsPlugin.logAndShowErrorDialog(e);
+                    }
+                } else {
+                    return openEditor(new FileEditorInput(fileToEdit));
+                }
+
+                return null;
+
+            }
+
+        });
+        BusyIndicator.showWhile(Display.getDefault(), runnable);
+        try {
+            return runnable.get();
+        } catch (InterruptedException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        } catch (ExecutionException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
         return null;
     }
 
