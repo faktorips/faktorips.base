@@ -20,9 +20,8 @@ import org.faktorips.devtools.core.util.BeanUtil;
 
 /**
  * Abstract base class for a binding between a property of a SWT control and a property of an
- * abitrary object, usually a domain model object or presentation model object.
+ * arbitrary object, usually a domain model object or presentation model object.
  * 
- * @author dirmeier
  */
 public abstract class ControlPropertyBinding {
 
