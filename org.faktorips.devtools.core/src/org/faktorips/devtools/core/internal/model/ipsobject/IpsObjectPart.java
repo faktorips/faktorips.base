@@ -161,7 +161,6 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
         } else if (!id.equals(other.id)) {
             return false;
         }
-        // TODO AW: Is the id not sufficient?
         if (parent == null) {
             if (other.parent != null) {
                 return false;
@@ -172,8 +171,8 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
         return true;
     }
 
-    @SuppressWarnings("unchecked")
     // ok, to suppress unchecked warnings, because the method signature is defined by Eclipse
+    @SuppressWarnings("rawtypes")
     @Override
     public Object getAdapter(Class adapterType) {
         if (IResource.class.isAssignableFrom(adapterType) | ResourceMapping.class.isAssignableFrom(adapterType)) {
