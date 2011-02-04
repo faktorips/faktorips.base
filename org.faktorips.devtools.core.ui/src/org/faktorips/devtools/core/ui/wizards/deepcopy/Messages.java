@@ -37,10 +37,11 @@ public class Messages extends NLS {
     public static String SourcePage_columnNameSourceStructure;
     public static String SourcePage_errorPrefixWorkingDateFormat;
     public static String SourcePage_errorWorkingDateFormat;
+    public static String SourcePage_labelSourceValidFrom;
     public static String SourcePage_labelGroupTableContents;
     public static String SourcePage_labelRadioBtnCopyTableContents;
     public static String SourcePage_labelRadioBtnCreateEmptyTableContents;
-    public static String SourcePage_labelSourceFolder;
+    public static String SourcePage_labelTargetRoot;
     public static String SourcePage_msgBadTargetPackage;
     public static String SourcePage_msgCopyNotPossible;
     public static String SourcePage_msgMissingSourceFolder;
@@ -66,6 +67,7 @@ public class Messages extends NLS {
     public static String SourcePage_msgCircleRelation;
     public static String SourcePage_msgCircleRelationShort;
     public static String SourcePage_msgPatternNotFound;
+    public static String SourcePage_msgInvalidPattern;
     public static String SourcePage_msgPleaseEnterNewWorkingDateNewCopy;
     public static String SourcePage_msgPleaseEnterNewWorkingDateNewGeneration;
     public static String SourcePage_msgReplaceTextNotFound;

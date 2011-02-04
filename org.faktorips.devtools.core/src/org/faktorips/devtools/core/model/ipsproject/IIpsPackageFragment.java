@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 
 /**
@@ -193,8 +194,10 @@ public interface IIpsPackageFragment extends IIpsElement {
      * 
      * @param name the file name
      * @param template the source for the contents to copy from
-     * @param date the date to find the generation effective on if template is instance of
+     * @param oldDate the date to find the generation effective on if template is instance of
      *            ITimedIpsObject). Otherwise this parameter is ignored.
+     * @param newDate the date the new generation is effective from, if the template is an instance
+     *            of {@link ITimedIpsObject}
      * @param force a flag controlling how to deal with resources that are not in sync with the
      *            local file system
      * @param monitor the given progress monitor
@@ -210,7 +213,8 @@ public interface IIpsPackageFragment extends IIpsElement {
      */
     public IIpsSrcFile createIpsFileFromTemplate(String name,
             IIpsObject template,
-            GregorianCalendar date,
+            GregorianCalendar oldDate,
+            GregorianCalendar newDate,
             boolean force,
             IProgressMonitor monitor) throws CoreException;
 

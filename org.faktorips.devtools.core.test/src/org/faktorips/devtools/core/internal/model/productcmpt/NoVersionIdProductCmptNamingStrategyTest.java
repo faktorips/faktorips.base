@@ -44,7 +44,7 @@ public class NoVersionIdProductCmptNamingStrategyTest extends AbstractIpsPluginT
 
     public void testGetNextVersionId() throws CoreException {
         IProductCmpt pc = newProductCmpt(project, "TestProduct");
-        assertEquals("", strategy.getNextVersionId(pc));
+        assertEquals("", strategy.getNextVersionId(pc, null));
     }
 
     public void testGetConstantPart() {

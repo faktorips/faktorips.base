@@ -15,8 +15,10 @@ package org.faktorips.devtools.core.internal.model.productcmpt.treestructure;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -53,14 +55,86 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
     /**
      * Creates a new ProductCmptStructure for the given product component. Instead of a specified
      * working date this constructor uses the latest adjustment (generation).
+     * <p>
+     * Do not use this constructor anymore! This builds a structure with the latest generation of
+     * every product component. This could lead to invalid structures containing invalid generation
+     * pairs.
+     * <p>
      * 
      * @param root The product component to create a structure for.
      * 
      * @throws CycleInProductStructureException if a cycle is detected.
      * @throws NullPointerException if the given product component is <code>null</code>.
      */
+    @Deprecated
     public ProductCmptTreeStructure(IProductCmpt root, IIpsProject project) throws CycleInProductStructureException {
         this(root, null, project);
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((ipsProject == null) ? 0 : ipsProject.hashCode());
+        /*
+         * We do not use the hash code of root directly but the hash of the wrapped
+         * IIpsObjectPartContainer because the hash code of the root uses the hash code of this
+         * structure leading to a recursive call.
+         */
+        if (root == null || root.getWrapped() == null) {
+            result = prime * result;
+        } else {
+            result = prime * result + root.getWrapped().hashCode();
+        }
+        result = prime * result + ((workingDate == null) ? 0 : workingDate.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        ProductCmptTreeStructure other = (ProductCmptTreeStructure)obj;
+        if (ipsProject == null) {
+            if (other.ipsProject != null) {
+                return false;
+            }
+        } else if (!ipsProject.equals(other.ipsProject)) {
+            return false;
+        }
+        /*
+         * We do not use the equals method of root directly but the equals method the wrapped
+         * IIpsObjectPartContainer because the equals method of the root uses the equals method of
+         * this structure leading to a recursive call.
+         */
+        if (root == null) {
+            if (other.root != null) {
+                return false;
+            }
+        } else {
+            if (root.getWrapped() == null) {
+                if (other.getRoot().getWrapped() != null) {
+                    return false;
+                }
+            } else if (!root.getWrapped().equals(other.root.getWrapped())) {
+                return false;
+            }
+        }
+        if (workingDate == null) {
+            if (other.workingDate != null) {
+                return false;
+            }
+        } else if (!workingDate.equals(other.workingDate)) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -102,30 +176,30 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
     }
 
     @Override
-    public IProductCmptStructureReference[] toArray(boolean productCmptOnly) {
-        List<IProductCmptStructureReference> result = new ArrayList<IProductCmptStructureReference>();
+    public Set<IProductCmptStructureReference> toSet(boolean productCmptOnly) {
+        Set<IProductCmptStructureReference> result = new HashSet<IProductCmptStructureReference>();
         result.add(root);
         addChildrenToList(root, result, productCmptOnly);
-        return result.toArray(new IProductCmptStructureReference[result.size()]);
+        return result;
     }
 
     /**
      * Requests all children from the given parent and add them to the given list.
      * 
      * @param parent The parent to get the children from.
-     * @param list The list to add the children to.
+     * @param set The set to add the children to.
      * @param productCmptOnly <code>true</code> to only get references to <code>IProductCmpt</code>
      *            s.
      */
     private void addChildrenToList(IProductCmptStructureReference parent,
-            List<IProductCmptStructureReference> list,
+            Set<IProductCmptStructureReference> set,
             boolean productCmptOnly) {
 
         if (!productCmptOnly) {
-            addChildrenToList(getChildProductCmptTypeAssociationReferences(parent), list, productCmptOnly);
+            addChildrenToList(getChildProductCmptTypeAssociationReferences(parent), set, productCmptOnly);
         }
-        addChildrenToList(getChildProductCmptReferences(parent), list, productCmptOnly);
-        addChildrenToList(getChildProductCmptStructureTblUsageReference(parent), list, productCmptOnly);
+        addChildrenToList(getChildProductCmptReferences(parent), set, productCmptOnly);
+        addChildrenToList(getChildProductCmptStructureTblUsageReference(parent), set, productCmptOnly);
     }
 
     /**
@@ -133,16 +207,16 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
      * revursively.
      * 
      * @param children The array of child-references to add to the list.
-     * @param list The list to add the chlidren to.
+     * @param set The list to add the chlidren to.
      * @param productCmptOnly <code>true</code> to only get references to <code>IProductCmpt</code>
      *            s.
      */
     private void addChildrenToList(IProductCmptStructureReference[] children,
-            List<IProductCmptStructureReference> list,
+            Set<IProductCmptStructureReference> set,
             boolean productCmptOnly) {
         for (IProductCmptStructureReference element : children) {
-            list.add(element);
-            addChildrenToList(element, list, productCmptOnly);
+            set.add(element);
+            addChildrenToList(element, set, productCmptOnly);
         }
     }
 
@@ -223,7 +297,6 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
             // new ArrayList<IProductCmptTypeAssociation>();
             for (IProductCmptLink link : links) {
                 try {
-                    // TODO check for JAVA5 for iteration
                     IProductCmptTypeAssociation association = link.findAssociation(ipsProject);
                     if (association == null) {
                         // no relation type found - inconsinstent model or product definition -

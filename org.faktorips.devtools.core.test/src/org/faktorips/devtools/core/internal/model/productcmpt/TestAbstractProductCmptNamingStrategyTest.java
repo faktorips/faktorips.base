@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.util.GregorianCalendar;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -60,7 +62,7 @@ public class TestAbstractProductCmptNamingStrategyTest extends AbstractIpsPlugin
 
     public void testGetNextName() throws CoreException {
         IProductCmpt pc = newProductCmpt(ipsProject, "TestProduct - id");
-        assertEquals("TestProduct - nextId", namingStrategy.getNextName(pc));
+        assertEquals("TestProduct - nextId", namingStrategy.getNextName(pc, null));
     }
 
     public void testValidate() {
@@ -114,7 +116,7 @@ public class TestAbstractProductCmptNamingStrategyTest extends AbstractIpsPlugin
         }
 
         @Override
-        public String getNextVersionId(IProductCmpt pc) {
+        public String getNextVersionId(IProductCmpt pc, GregorianCalendar validFrom) {
             return "nextId";
         }
 

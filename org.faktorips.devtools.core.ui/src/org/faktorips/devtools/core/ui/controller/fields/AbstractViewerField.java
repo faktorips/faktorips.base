@@ -55,4 +55,8 @@ public abstract class AbstractViewerField extends DefaultEditField {
         });
     }
 
+    protected Viewer getViewer() {
+        return viewer;
+    }
+
 }

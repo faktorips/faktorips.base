@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 public class ProductCmptTypeAssociationReference extends ProductCmptStructureReference implements
         IProductCmptTypeAssociationReference {
 
-    private IProductCmptTypeAssociation association;
+    private final IProductCmptTypeAssociation association;
 
     public ProductCmptTypeAssociationReference(IProductCmptTreeStructure structure,
             ProductCmptStructureReference parent, IProductCmptTypeAssociation association)
@@ -43,7 +43,7 @@ public class ProductCmptTypeAssociationReference extends ProductCmptStructureRef
     }
 
     @Override
-    protected IIpsObjectPartContainer getWrapped() {
+    public IIpsObjectPartContainer getWrapped() {
         return association;
     }
 

@@ -13,12 +13,14 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.util.Arrays;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -63,7 +65,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         assertNotNull(productCmpt);
 
         IProductCmptTreeStructure structure = productCmpt.getStructure(ipsProject);
-        IProductCmptStructureReference[] toCopy = structure.toArray(true);
+        Set<IProductCmptStructureReference> toCopy = structure.toSet(true);
 
         Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
 
@@ -76,7 +78,9 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
             assertFalse(handles.get(element).exists());
         }
 
-        DeepCopyOperation dco = new DeepCopyOperation(toCopy, new IProductCmptReference[0], handles);
+        DeepCopyOperation dco = new DeepCopyOperation(structure.getRoot(), toCopy,
+                new HashSet<IProductCmptStructureReference>(), handles, new GregorianCalendar(),
+                new GregorianCalendar());
         dco.setIpsPackageFragmentRoot(productCmpt.getIpsPackageFragment().getRoot());
         dco.run(null);
 
@@ -152,7 +156,9 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
             assertFalse(handles.get(element).exists());
         }
 
-        DeepCopyOperation dco = new DeepCopyOperation(toCopy, toRefer, handles);
+        DeepCopyOperation dco = new DeepCopyOperation(structure.getRoot(), new HashSet<IProductCmptStructureReference>(
+                Arrays.asList(toCopy)), new HashSet<IProductCmptStructureReference>(Arrays.asList(toRefer)), handles,
+                new GregorianCalendar(), new GregorianCalendar());
         dco.setIpsPackageFragmentRoot(comfortMotorProduct.getIpsPackageFragment().getRoot());
         dco.run(null);
         for (IProductCmptReference element : toCopy) {
@@ -181,7 +187,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     public void testCopyWithNoGeneration() throws Exception {
         product = newProductCmpt(ipsProject, "EmptyProduct");
         IProductCmptTreeStructure structure = product.getStructure(ipsProject);
-        IProductCmptStructureReference[] toCopy = structure.toArray(true);
+        Set<IProductCmptStructureReference> toCopy = structure.toSet(true);
 
         Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
 
@@ -194,9 +200,9 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
             assertFalse(handles.get(element).exists());
         }
 
-        IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(1990, 1, 1));
-
-        DeepCopyOperation dco = new DeepCopyOperation(toCopy, new IProductCmptReference[0], handles);
+        DeepCopyOperation dco = new DeepCopyOperation(structure.getRoot(), toCopy,
+                new HashSet<IProductCmptStructureReference>(), handles, new GregorianCalendar(), new GregorianCalendar(
+                        1990, 1, 1));
         dco.setIpsPackageFragmentRoot(product.getIpsPackageFragment().getRoot());
         dco.run(null);
 

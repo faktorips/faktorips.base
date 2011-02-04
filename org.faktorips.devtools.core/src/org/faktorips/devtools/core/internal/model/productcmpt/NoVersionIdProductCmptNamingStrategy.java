@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.util.GregorianCalendar;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -57,12 +59,12 @@ public class NoVersionIdProductCmptNamingStrategy extends AbstractProductCmptNam
     }
 
     @Override
-    public String getNextVersionId(IProductCmpt productCmpt) {
+    public String getNextVersionId(IProductCmpt productCmpt, GregorianCalendar validFrom) {
         return ""; //$NON-NLS-1$
     }
 
     @Override
-    public String getNextName(IProductCmpt productCmpt) {
+    public String getNextName(IProductCmpt productCmpt, GregorianCalendar validFrom) {
         return productCmpt.getName() + "1"; //$NON-NLS-1$
     }
 

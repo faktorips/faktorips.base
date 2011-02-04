@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.model.productcmpt;
 import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.IIpsMetaObject;
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -143,11 +144,16 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject {
      * it's links to other components. This method uses the latest adjustment instead of specific
      * date.
      * 
+     * @deprecated use {@link #getStructure(GregorianCalendar, IIpsProject)} instead. Have a look at
+     *             {@link ProductCmptTreeStructure#ProductCmptTreeStructure(IProductCmpt, IIpsProject)}
+     * 
+     * 
      * @param ipsProject The project which IPS object path is used for the searched. This is not
      *            necessarily the project this component is part of.
      * 
      * @throws CycleInProductStructureException If a circle is detected.
      */
+    @Deprecated
     public IProductCmptTreeStructure getStructure(IIpsProject ipsProject) throws CycleInProductStructureException;
 
     /**

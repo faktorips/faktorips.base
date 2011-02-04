@@ -17,7 +17,6 @@ import java.util.ArrayList;
 
 import org.eclipse.core.runtime.PlatformObject;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
@@ -56,7 +55,8 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
         return parent;
     }
 
-    ProductCmptStructureReference[] getChildren() {
+    @Override
+    public ProductCmptStructureReference[] getChildren() {
         return children;
     }
 
@@ -77,11 +77,6 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
         }
     }
 
-    /**
-     * @return The <code>IIpsObject</code> referenced by this object.
-     */
-    protected abstract IIpsObjectPartContainer getWrapped();
-
     @Override
     public IIpsSrcFile getWrappedIpsSrcFile() {
         if (getWrappedIpsObject() != null) {
@@ -92,6 +87,14 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
     }
 
     @Override
+    public String toString() {
+        return "ProductCmptStructureReference [ipsObject=" + getWrappedIpsObject() + "," + "wrappedPart=" + getWrapped() + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    }
+
+    /**
+     * /** {@inheritDoc}
+     */
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
@@ -99,12 +102,39 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
         if (obj == null) {
             return false;
         }
-        if (!this.getClass().equals(obj.getClass())) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
         ProductCmptStructureReference other = (ProductCmptStructureReference)obj;
-        return getWrapped() == other.getWrapped() && getWrappedIpsObject() == other.getWrappedIpsObject()
-                && getStructure() == other.getStructure();
+        if (parent == null) {
+            if (other.parent != null) {
+                return false;
+            }
+        } else if (parent != (other.parent)) {
+            return false;
+        }
+        if (structure == null) {
+            if (other.structure != null) {
+                return false;
+            }
+        } else if (!structure.equals(other.structure)) {
+            return false;
+        }
+        if (getWrapped() == null) {
+            if (other.getWrapped() != null) {
+                return false;
+            }
+        } else if (!getWrapped().equals(other.getWrapped())) {
+            return false;
+        }
+        if (getWrappedIpsObject() == null) {
+            if (other.getWrappedIpsObject() != null) {
+                return false;
+            }
+        } else if (!getWrappedIpsObject().equals(other.getWrappedIpsObject())) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -119,12 +149,11 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
         if (getStructure() != null) {
             hash = 31 * hash + getStructure().hashCode();
         }
+        /*
+         * Hash of parent is ignored because its calculation is too inefficient. It would calculate
+         * the hash code of all parents recursively. Same parent is not very often case.
+         */
         return hash;
-    }
-
-    @Override
-    public String toString() {
-        return "ProductCmptStructureReference [ipsObject=" + getWrappedIpsObject() + "," + "wrappedPart=" + getWrapped() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
 }

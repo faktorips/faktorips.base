@@ -127,7 +127,8 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment {
     @Override
     public IIpsSrcFile createIpsFileFromTemplate(String name,
             IIpsObject template,
-            GregorianCalendar date,
+            GregorianCalendar olddate,
+            GregorianCalendar newdate,
             boolean force,
             IProgressMonitor monitor) throws CoreException {
 

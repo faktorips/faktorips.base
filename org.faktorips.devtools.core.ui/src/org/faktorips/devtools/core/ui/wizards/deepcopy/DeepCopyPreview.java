@@ -13,26 +13,27 @@
 
 package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
@@ -44,107 +45,105 @@ import org.faktorips.util.message.MessageList;
 
 public class DeepCopyPreview {
 
-    private Integer segmentsToIgnoreCached = null;
-    private List<IProductCmptStructureReference> nonLinkElementsCached = null;
-
-    private DeepCopyWizard deepCopyWizard;
-    private SourcePage sourcePage;
-
     // Collection of error messages indexed by product components.
-    private Hashtable<IProductCmptStructureReference, String> errorElements;
+    private Map<IProductCmptStructureReference, String> errorElements;
     // Mapping of filenames to product references. Used for error-handling.
-    private Hashtable<String, IProductCmptStructureReference> filename2productMap;
-    // Mapping of product references to filenames. Used for error-handling.
-    private Hashtable<IProductCmptStructureReference, String> product2filenameMap;
-    private Map<IProductCmptStructureReference, String> oldObject2newNameMap;
+    private Map<String, IProductCmptStructureReference> filename2referenceMap;
+    private Map<IIpsObject, String> oldObject2newNameMap;
 
-    public DeepCopyPreview(DeepCopyWizard deepCopyWizard, SourcePage sourcePage) {
-        this.deepCopyWizard = deepCopyWizard;
-        this.sourcePage = sourcePage;
+    private final DeepCopyPresentationModel presentationModel;
+
+    private boolean patternMatched;
+
+    public DeepCopyPreview(DeepCopyPresentationModel presentationModel) {
+        this.presentationModel = presentationModel;
         initCaches();
     }
 
-    public void resetCacheAfterValueChange() {
-        segmentsToIgnoreCached = null;
-        nonLinkElementsCached = null;
-    }
-
     private void initCaches() {
-        filename2productMap = new Hashtable<String, IProductCmptStructureReference>();
-        product2filenameMap = new Hashtable<IProductCmptStructureReference, String>();
-        oldObject2newNameMap = new Hashtable<IProductCmptStructureReference, String>();
-        errorElements = new Hashtable<IProductCmptStructureReference, String>();
-    }
-
-    public int getSegmentsToIgnore() {
-        if (segmentsToIgnoreCached != null) {
-            return segmentsToIgnoreCached;
-        }
-        segmentsToIgnoreCached = sourcePage.getSegmentsToIgnore(getProductCmptStructRefToCopy());
-        return segmentsToIgnoreCached;
-    }
-
-    public boolean newTargetHasError(IProductCmptStructureReference ref) {
-        IProductCmptStructureReference[] toCopy = getProductCmptStructRefToCopy();
-        int segmentsToIgnore = sourcePage.getSegmentsToIgnore(toCopy);
-        IIpsPackageFragment base = sourcePage.getTargetPackage();
-        IIpsPackageFragmentRoot root = sourcePage.getIIpsPackageFragmentRoot();
-
-        Hashtable<IProductCmptStructureReference, String> errors = new Hashtable<IProductCmptStructureReference, String>(
-                1);
-        validateTarget(ref, segmentsToIgnore, root, base, errors);
-        return errors.size() == 1;
+        filename2referenceMap = new HashMap<String, IProductCmptStructureReference>();
+        oldObject2newNameMap = new HashMap<IIpsObject, String>();
+        errorElements = new HashMap<IProductCmptStructureReference, String>();
     }
 
     /**
      * Checks for invalid targets (target names that does not allow to create a new product
      * component with this name) and refreshes the map of error messages.
+     * 
+     * @param progressMonitor a progress monitor to show state of work
      */
-    public void checkForInvalidTargets() {
-        deepCopyWizard.logTraceStart("checkForInvalidTargets"); //$NON-NLS-1$
-
+    public void checkForInvalidTargets(IProgressMonitor progressMonitor) {
         errorElements.clear();
-        filename2productMap.clear();
-        product2filenameMap.clear();
+        filename2referenceMap.clear();
         oldObject2newNameMap.clear();
+        patternMatched = false;
 
-        IProductCmptStructureReference[] toCopy = getProductCmptStructRefToCopy();
-        int segmentsToIgnore = sourcePage.getSegmentsToIgnore(toCopy);
-        IIpsPackageFragment base = sourcePage.getTargetPackage();
-        IIpsPackageFragmentRoot root = sourcePage.getIIpsPackageFragmentRoot();
+        Set<IProductCmptStructureReference> toCopy = presentationModel.getAllCopyElements();
+        progressMonitor.beginTask("", toCopy.size() + 5); //$NON-NLS-1$
+        int segmentsToIgnore = getSegmentsToIgnore(toCopy);
+        IIpsPackageFragment base = presentationModel.getTargetPackage();
+        IIpsPackageFragmentRoot root = presentationModel.getTargetPackageRoot();
 
         for (IProductCmptStructureReference element : toCopy) {
-            validateTarget(element, segmentsToIgnore, root, base, errorElements);
+            try {
+                validateTarget(element, segmentsToIgnore, root, base);
+            } catch (PatternSyntaxException e) {
+                errorElements.put(
+                        element,
+                        NLS.bind(Messages.SourcePage_msgInvalidPattern, getPresentationModel().getSearchInput())
+                                + e.getLocalizedMessage());
+                progressMonitor.done();
+                return;
+            } catch (IllegalArgumentException e) {
+                errorElements.put(element, e.getMessage());
+                progressMonitor.done();
+                return;
+            }
+            progressMonitor.worked(1);
+        }
+
+        String searchInput = presentationModel.getSearchInput();
+        String replaceInput = presentationModel.getReplaceInput();
+        if (!searchInput.isEmpty() && !replaceInput.isEmpty() && !searchInput.equals(replaceInput) && !patternMatched) {
+            addMessage(presentationModel.getStructure().getRoot(),
+                    NLS.bind(Messages.SourcePage_msgPatternNotFound, searchInput));
         }
 
         MessageList validationResult = new MessageList();
-        new SameOperationValidator(this, deepCopyWizard.getStructure()).validateSameOperation(validationResult);
         int noOfMessages = validationResult.size();
+        SubProgressMonitor subProgress = new SubProgressMonitor(progressMonitor, 5);
+        subProgress.beginTask("", noOfMessages); //$NON-NLS-1$
         for (int i = 0; i < noOfMessages; i++) {
             Message currMessage = validationResult.getMessage(i);
             final IProductCmptStructureReference object = (IProductCmptStructureReference)currMessage
                     .getInvalidObjectProperties()[0].getObject();
-            addMessage(object, currMessage.getText(), errorElements);
+            addMessage(object, currMessage.getText());
+            subProgress.worked(1);
         }
-
-        deepCopyWizard.logTraceEnd("checkForInvalidTargets"); //$NON-NLS-1$
+        subProgress.done();
+        progressMonitor.done();
     }
 
     private void validateTarget(IProductCmptStructureReference modified,
             int segmentsToIgnore,
             IIpsPackageFragmentRoot root,
-            IIpsPackageFragment base,
-            Hashtable<IProductCmptStructureReference, String> errorElements) {
+            IIpsPackageFragment base) {
         if (base == null || !base.getRoot().exists()) {
             return;
         }
-        IIpsObject correspondingIpsObject = sourcePage.getCorrespondingIpsObject(modified);
+        IIpsObject correspondingIpsObject = modified.getWrappedIpsObject();
 
         StringBuffer message = new StringBuffer();
         String packageName = buildTargetPackageName(base, correspondingIpsObject, segmentsToIgnore);
         IIpsPackageFragment targetPackage = root.getIpsPackageFragment(packageName);
+
         String newName = getNewName(targetPackage, correspondingIpsObject);
-        oldObject2newNameMap.put(modified, newName);
+        if (isNameChanged(correspondingIpsObject, newName)) {
+            // this only indicates, that there is at least one pattern matched
+            patternMatched = true;
+        }
+        // we put all new names to this map to preview also names that have not changed
+        oldObject2newNameMap.put(correspondingIpsObject, newName);
         if (targetPackage.exists()) {
             IpsObjectType ipsObjectType;
             if (modified instanceof IProductCmptReference) {
@@ -162,99 +161,95 @@ public class DeepCopyPreview {
                     message.append("."); //$NON-NLS-1$
                 }
                 message.append(newName).append(Messages.ReferenceAndPreviewPage_msgFileAllreadyExists);
-                addMessage(modified, message.toString(), errorElements);
+                addMessage(modified, message.toString());
             }
             String name = file.getEnclosingResource().getFullPath().toString();
-            IProductCmptStructureReference node = filename2productMap.get(name);
+            IProductCmptStructureReference node = filename2referenceMap.get(name);
             if (node instanceof IProductCmptReference) {
                 if (((IProductCmptReference)node).getProductCmpt() != correspondingIpsObject) {
-                    addMessage(modified, Messages.ReferenceAndPreviewPage_msgNameCollision, errorElements);
-                    addMessage(filename2productMap.get(name), Messages.ReferenceAndPreviewPage_msgNameCollision,
-                            errorElements);
+                    addMessage(modified, Messages.ReferenceAndPreviewPage_msgNameCollision);
+                    addMessage(filename2referenceMap.get(name), Messages.ReferenceAndPreviewPage_msgNameCollision);
                 }
             } else if (node instanceof IProductCmptStructureTblUsageReference) {
                 ITableContentUsage tableContentUsage = ((IProductCmptStructureTblUsageReference)node)
                         .getTableContentUsage();
                 ITableContents tableContents;
                 try {
-                    tableContents = tableContentUsage.findTableContents(deepCopyWizard.getIpsProject());
+                    tableContents = tableContentUsage.findTableContents(presentationModel.getIpsProject());
                     if ((tableContents != correspondingIpsObject)) {
-                        addMessage(modified, Messages.ReferenceAndPreviewPage_msgNameCollision, errorElements);
-                        addMessage(filename2productMap.get(name), Messages.ReferenceAndPreviewPage_msgNameCollision,
-                                errorElements);
+                        addMessage(modified, Messages.ReferenceAndPreviewPage_msgNameCollision);
+                        addMessage(filename2referenceMap.get(name), Messages.ReferenceAndPreviewPage_msgNameCollision);
                     }
                 } catch (CoreException e) {
                     // should be displayed as validation error before
                     IpsPlugin.log(e);
                 }
             } else {
-                filename2productMap.put(name, modified);
-                product2filenameMap.put(modified, name);
+                filename2referenceMap.put(name, modified);
             }
         }
     }
 
-    /**
-     * Returns all product cmpt structure reference components to copy. References to product cmpts
-     * and table contents are returned.
-     */
-    IProductCmptStructureReference[] getProductCmptStructRefToCopy() {
-        deepCopyWizard.logTraceStart("getProductCmptStructRefToCopy"); //$NON-NLS-1$
-        List<IProductCmptStructureReference> result = getProductCmptStructRefToCopyInternal();
-        deepCopyWizard.logTraceEnd("getProductCmptStructRefToCopy"); //$NON-NLS-1$
-        return result.toArray(new IProductCmptStructureReference[result.size()]);
+    private boolean isNameChanged(IIpsObject correspondingIpsObject, String newName) {
+        String oldName = correspondingIpsObject.getName();
+        if (correspondingIpsObject instanceof IProductCmpt) {
+            IProductCmptNamingStrategy namingStrategy = presentationModel.getIpsProject()
+                    .getProductCmptNamingStrategy();
+            String oldKindId = namingStrategy.getKindId(oldName);
+            String newKindId = namingStrategy.getKindId(newName);
+            return !oldKindId.equals(newKindId);
+        } else {
+            return !oldName.equals(newName);
+        }
+    }
+
+    public int getSegmentsToIgnore() {
+        return getSegmentsToIgnore(presentationModel.getAllCopyElements());
     }
 
     /**
-     * Returns all product cmpt structure reference components to copy. References to product cmpts
-     * and table contents are returned.
+     * Calculate the number of <code>IPath</code>-segements which are equal for all product
+     * component structure refences to copy.
+     * 
+     * @return 0 if no elements are contained in toCopy, number of all segments, if only one product
+     *         component is contained in toCopy and the calculated value as described above for all
+     *         other cases.
      */
-    private List<IProductCmptStructureReference> getProductCmptStructRefToCopyInternal() {
-        List<IProductCmptStructureReference> allChecked = getNonLinkElements();
-        List<IProductCmptStructureReference> result = new ArrayList<IProductCmptStructureReference>();
+    int getSegmentsToIgnore(Set<IProductCmptStructureReference> toCopy) {
+        if (toCopy.size() == 0) {
+            return 0;
+        }
 
-        for (IProductCmptStructureReference element : allChecked) {
-            if (element instanceof IProductCmptReference) {
-                result.add(element);
-            } else if (element instanceof IProductCmptStructureTblUsageReference) {
-                result.add(element);
+        IPath refPath = null;
+        int ignore = Integer.MAX_VALUE;
+        for (IProductCmptStructureReference reference : toCopy) {
+            IIpsObject ipsObject = reference.getWrappedIpsObject();
+            if (refPath == null) {
+                refPath = ipsObject.getIpsPackageFragment().getRelativePath();
             }
-        }
-        return result;
-    }
-
-    private List<IProductCmptStructureReference> getNonLinkElements() {
-        deepCopyWizard.logTraceStart("getNonLinkElements"); //$NON-NLS-1$
-        if (nonLinkElementsCached != null) {
-            return nonLinkElementsCached;
-        }
-        List<IProductCmptStructureReference> result = new ArrayList<IProductCmptStructureReference>();
-        Set<IProductCmptStructureReference> linkedElements = sourcePage.getLinkedElements();
-        List<Object> allChecked = Arrays.asList(sourcePage.getTree().getCheckedElements());
-        for (Object currElement : allChecked) {
-            if (linkedElements.contains(currElement)) {
+            int tmpIgnore;
+            if (ipsObject == null) {
                 continue;
             }
-            if (currElement instanceof IProductCmptStructureReference) {
-                result.add((IProductCmptStructureReference)currElement);
-            }
+            IPath nextPath = ipsObject.getIpsPackageFragment().getRelativePath();
+            tmpIgnore = nextPath.matchingFirstSegments(refPath);
+            ignore = Math.min(ignore, tmpIgnore);
         }
-        nonLinkElementsCached = result;
-        deepCopyWizard.logTraceEnd("getNonLinkElements"); //$NON-NLS-1$
-        return nonLinkElementsCached;
+
+        return ignore;
     }
 
     /**
      * Constructs the name of the target package
      */
-    private String buildTargetPackageName(IIpsPackageFragment targetBase, IIpsObject source, int segmentsToIgnore) {
+    String buildTargetPackageName(IIpsPackageFragment targetBase, IIpsObject source, int segmentsToIgnore) {
         if (targetBase == null || !targetBase.getRoot().exists()) {
             return ""; //$NON-NLS-1$
         }
         IPath subPath = source.getIpsPackageFragment().getRelativePath().removeFirstSegments(segmentsToIgnore);
         String toAppend = subPath.toString().replace('/', '.');
 
-        String base = targetBase.getRelativePath().toString().replace('/', '.');
+        String base = targetBase.getName();
 
         if (!base.equals("") && !toAppend.equals("")) { //$NON-NLS-1$ //$NON-NLS-2$
             base = base + "."; //$NON-NLS-1$
@@ -268,6 +263,10 @@ public class DeepCopyPreview {
      * name is the old name.
      */
     public String getNewName(IIpsPackageFragment targetPackage, IIpsObject correspondingIpsObject) {
+        String alreadyMappedName = oldObject2newNameMap.get(correspondingIpsObject);
+        if (alreadyMappedName != null) {
+            return alreadyMappedName;
+        }
         String newName = getNewNameInternal(targetPackage, correspondingIpsObject, 0);
         return newName;
     }
@@ -277,7 +276,7 @@ public class DeepCopyPreview {
             int uniqueCopyOfCounter) {
         String oldName = correspondingIpsObject.getName();
         String newName = oldName;
-        IProductCmptNamingStrategy namingStrategy = sourcePage.getNamingStrategy();
+        IProductCmptNamingStrategy namingStrategy = presentationModel.getIpsProject().getProductCmptNamingStrategy();
         String kindId = null;
         if (namingStrategy != null && namingStrategy.supportsVersionId()) {
             MessageList list = namingStrategy.validate(newName);
@@ -285,23 +284,14 @@ public class DeepCopyPreview {
                 kindId = namingStrategy.getKindId(newName);
             }
             if (kindId != null) {
-                newName = namingStrategy.getProductCmptName(namingStrategy.getKindId(newName),
-                        sourcePage.getVersionId());
+                kindId = searchReplace(kindId);
+                newName = namingStrategy.getProductCmptName(kindId, presentationModel.getVersionId());
             }
         }
         if (kindId == null && uniqueCopyOfCounter > 0) {
             // could't determine kind id, thus add copy of in front of the name
             // to get an unique new name
             newName = org.faktorips.devtools.core.util.StringUtils.computeCopyOfName(uniqueCopyOfCounter - 1, newName);
-        }
-
-        if (deepCopyWizard.getType() == DeepCopyWizard.TYPE_COPY_PRODUCT) {
-            // the copy product feature supports pattern replace
-            String searchPattern = sourcePage.getSearchPattern();
-            String replaceText = sourcePage.getReplaceText();
-            if (!replaceText.equals("") && !searchPattern.equals("")) { //$NON-NLS-1$ //$NON-NLS-2$
-                newName = newName.replaceAll(searchPattern, replaceText);
-            }
         }
 
         if (namingStrategy == null && oldName.equals(newName)) {
@@ -323,13 +313,29 @@ public class DeepCopyPreview {
         return newName;
     }
 
+    private String searchReplace(String newName) {
+        // the copy product feature supports pattern replace
+        String searchPattern = presentationModel.getSearchInput();
+        String replaceText = presentationModel.getReplaceInput();
+        if (!"".equals(replaceText) && !"".equals(searchPattern)) { //$NON-NLS-1$ //$NON-NLS-2$
+
+            Pattern pattern = presentationModel.getSearchPattern();
+            try {
+                Matcher matcher = pattern.matcher(newName);
+                newName = matcher.replaceAll(replaceText);
+            } catch (Exception e) {
+                throw new IllegalArgumentException(NLS.bind(Messages.SourcePage_msgInvalidPattern, replaceText)
+                        + e.getLocalizedMessage());
+            }
+        }
+        return newName;
+    }
+
     /**
      * Adds an error message for the given product. If a message allready exists, the new message is
      * appended.
      */
-    private void addMessage(IProductCmptStructureReference product,
-            String msg,
-            Hashtable<IProductCmptStructureReference, String> errorElements) {
+    private void addMessage(IProductCmptStructureReference product, String msg) {
         if (msg == null || msg.length() == 0) {
             return;
         }
@@ -344,49 +350,32 @@ public class DeepCopyPreview {
         errorElements.put(product, newMessage.toString());
     }
 
-    public Hashtable<IProductCmptStructureReference, String> getErrorElements() {
+    public Map<IProductCmptStructureReference, String> getErrorElements() {
         return errorElements;
     }
 
-    public Hashtable<String, IProductCmptStructureReference> getFilename2productMap() {
-        return filename2productMap;
+    public String getNewName(IIpsObject ipsObject) {
+        return oldObject2newNameMap.get(ipsObject);
     }
 
-    public Hashtable<IProductCmptStructureReference, String> getProduct2filenameMap() {
-        return product2filenameMap;
+    public Collection<String> getNewNames() {
+        return oldObject2newNameMap.values();
     }
 
-    public Map<IProductCmptStructureReference, String> getOldObject2newNameMap() {
-        return oldObject2newNameMap;
-    }
-
-    private boolean isValid() {
-        checkForInvalidTargets();
-
-        if (getProductCmptStructRefToCopy().length == 0) {
-            ((WizardPage)deepCopyWizard.getContainer().getCurrentPage()).setMessage(
-                    Messages.ReferenceAndPreviewPage_msgSelectAtLeastOneProduct, IMessageProvider.WARNING);
-            return false;
-        }
-
+    private boolean isValid(IProgressMonitor progressMonitor) {
+        checkForInvalidTargets(progressMonitor);
         return getErrorElements().isEmpty();
     }
 
     /**
      * Returns the handles for all files to be created to do the deep copy. Note that all handles
-     * point to non-existing resources or, if this condition can not be performed, a CoreException
-     * is thrown.
-     * 
-     * @param ipsPackageFragmentRoot the {@link IIpsPackageFragmentRoot} in which the new
-     *            {@link IpsSrcFile} should be created.
+     * point to non-existing resources
      * 
      * @throws CoreException if any error exists (e.g. naming collisions).
      */
-    public Map<IProductCmptStructureReference, IIpsSrcFile> getHandles(IIpsPackageFragmentRoot ipsPackageFragmentRoot)
+    public Map<IProductCmptStructureReference, IIpsSrcFile> getHandles(IProgressMonitor progressMonitor)
             throws CoreException {
-        deepCopyWizard.logTraceStart("getHandles"); //$NON-NLS-1$
-
-        if (!isValid()) {
+        if (!isValid(progressMonitor)) {
             StringBuffer message = new StringBuffer();
             Collection<String> errors = getErrorElements().values();
             for (String element : errors) {
@@ -396,14 +385,15 @@ public class DeepCopyPreview {
             throw new CoreException(status);
         }
 
-        IProductCmptStructureReference[] toCopy = getProductCmptStructRefToCopy();
-        Map<IProductCmptStructureReference, IIpsSrcFile> result = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
+        Set<IProductCmptStructureReference> toCopy = presentationModel.getAllCopyElements();
+        Map<IProductCmptStructureReference, IIpsSrcFile> result = new HashMap<IProductCmptStructureReference, IIpsSrcFile>();
 
-        int segmentsToIgnore = sourcePage.getSegmentsToIgnore(toCopy);
-        IIpsPackageFragment base = sourcePage.getTargetPackage();
+        int segmentsToIgnore = getSegmentsToIgnore(toCopy);
+        IIpsPackageFragmentRoot ipsPackageFragmentRoot = presentationModel.getTargetPackageRoot();
+        IIpsPackageFragment base = presentationModel.getTargetPackage();
 
         for (IProductCmptStructureReference element : toCopy) {
-            IIpsObject correspondingIpsObject = sourcePage.getCorrespondingIpsObject(element);
+            IIpsObject correspondingIpsObject = element.getWrappedIpsObject();
 
             String packageName = buildTargetPackageName(base, correspondingIpsObject, segmentsToIgnore);
             IIpsPackageFragment targetPackage = ipsPackageFragmentRoot.getIpsPackageFragment(packageName);
@@ -413,13 +403,7 @@ public class DeepCopyPreview {
             result.put(element, file);
         }
 
-        deepCopyWizard.logTraceEnd("getHandles"); //$NON-NLS-1$
         return result;
-    }
-
-    public String getPackageName(IProductCmptStructureReference toCopy) {
-        return buildTargetPackageName(sourcePage.getTargetPackage(), sourcePage.getCorrespondingIpsObject(toCopy),
-                getSegmentsToIgnore());
     }
 
     private IIpsSrcFile getNewIpsSrcFile(IIpsPackageFragment targetPackage, IIpsObject correspondingIpsObject) {
@@ -427,47 +411,22 @@ public class DeepCopyPreview {
         return targetPackage.getIpsSrcFile(correspondingIpsObject.getIpsObjectType().getFileName(newName));
     }
 
-    public boolean isLinked(IProductCmptStructureReference element) {
-        return sourcePage.getLinkedElements().contains(element);
-    }
-
-    public boolean isCopy(IProductCmptStructureReference element) {
-        // we don't use: getProductCmptStructRefToCopyInternal().contains(element)
-        // because of performance reason
-        return !isLinked(element);
-    }
-
-    public boolean isChecked(IProductCmptStructureReference element) {
-        return sourcePage.isChecked(element);
-    }
-
-    public IProductCmptStructureReference[] getProductsOrtTableContentsToRefer() {
-        deepCopyWizard.logTraceStart("getProductsOrtTableContentsToRefer"); //$NON-NLS-1$
-
-        Set<IProductCmptStructureReference> linkedElements = sourcePage.getLinkedElements();
-        IProductCmptStructureReference[] result = new IProductCmptStructureReference[linkedElements.size()];
-        int idx = 0;
-        for (Object object : linkedElements) {
-            result[idx++] = (IProductCmptStructureReference)object;
-
-        }
-
-        deepCopyWizard.logTraceEnd("getProductsOrtTableContentsToRefer"); //$NON-NLS-1$
-        return result;
-    }
-
     /**
-     * Returns the error text of the first error element, returns <code>null</code> if no error
-     * exists.
+     * Returns the error text either of the root element or of the 'first' error found. As far the
+     * error messages are stored in a map there is not really any order.
      */
     String getFirstErrorText() {
         if (errorElements.size() == 0) {
             return null;
         }
-        return errorElements.get(errorElements.keys().nextElement());
+        String rootMessage = errorElements.get(presentationModel.getStructure().getRoot());
+        if (rootMessage != null) {
+            return rootMessage;
+        }
+        return errorElements.get(errorElements.keySet().iterator().next());
     }
 
-    public IIpsPackageFragment getTargetPackage() {
-        return sourcePage.getTargetPackage();
+    public DeepCopyPresentationModel getPresentationModel() {
+        return presentationModel;
     }
 }

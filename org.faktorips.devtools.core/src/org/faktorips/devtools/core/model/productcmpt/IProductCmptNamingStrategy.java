@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.model.productcmpt;
 
+import java.util.GregorianCalendar;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategy;
@@ -99,7 +101,7 @@ public interface IProductCmptNamingStrategy {
 
     /**
      * Returns the unqualified product component name defined by the kind id and the version id.
-     * Returns <code>null</code> if kind id and version id are <code>null</code>. If only of the two
+     * Returns <code>null</code> if kind id and version id are <code>null</code>. If one of the two
      * arguments is <code>null</code>, the method returns the other.
      */
     public String getProductCmptName(String kindId, String versionId);
@@ -123,26 +125,22 @@ public interface IProductCmptNamingStrategy {
     public String getVersionId(String productCmptName);
 
     /**
-     * Returns the next version id given the previous product component version. A concrete naming
-     * strategy might for example just increase a version number or ignore the given previous
-     * version and return a UUID.
-     * <p>
-     * The {@link DateBasedProductCmptNamingStrategy} ignores the previous version and takes the
-     * {@link IpsPreferences#getWorkingDate()} and returns it in a format defined by
-     * {@link DateBasedProductCmptNamingStrategy#setDateFormatPattern(String)}.
+     * Returns the next version id given the previous product component version and a date the new
+     * version should be valid from. A concrete naming strategy might for example just increase a
+     * version number or ignore the given previous version and return a UUID.
      * 
      * @param productCmpt The previous product component version.
      * 
      * @see DateBasedProductCmptNamingStrategy
      * @see IpsPreferences#getWorkingDate()
      */
-    public String getNextVersionId(IProductCmpt productCmpt);
+    public String getNextVersionId(IProductCmpt productCmpt, GregorianCalendar validFrom);
 
     /**
      * Returns the name that is constructed from the given product component's name's constant part
      * and the next version id.
      */
-    public String getNextName(IProductCmpt productCmpt);
+    public String getNextName(IProductCmpt productCmpt, GregorianCalendar validFrom);
 
     /**
      * Checks if the version id and the constant part can be derived from the given product

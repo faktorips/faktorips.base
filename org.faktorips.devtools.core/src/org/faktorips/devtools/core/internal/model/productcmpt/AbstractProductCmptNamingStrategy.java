@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -161,9 +162,9 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
     }
 
     @Override
-    public String getNextName(IProductCmpt productCmpt) {
+    public String getNextName(IProductCmpt productCmpt, GregorianCalendar validFrom) {
         String part = getKindId(productCmpt.getName());
-        return part + separator + getNextVersionId(productCmpt);
+        return part + separator + getNextVersionId(productCmpt, validFrom);
     }
 
     @Override

@@ -326,7 +326,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         TestContentsChangeListener listener = new TestContentsChangeListener();
         template.getIpsModel().addChangeListener(listener);
 
-        IIpsSrcFile file = pack.createIpsFileFromTemplate("copy", template, date, true, null);
+        IIpsSrcFile file = pack.createIpsFileFromTemplate("copy", template, date, date, true, null);
         assertEquals(1, listener.getNumOfEventsReceived());
         assertEquals(file, listener.getLastEvent().getIpsSrcFile());
         assertEquals(ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED, listener.getLastEvent().getEventType());

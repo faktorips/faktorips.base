@@ -337,7 +337,8 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     @Override
     public IIpsSrcFile createIpsFileFromTemplate(String name,
             IIpsObject template,
-            GregorianCalendar date,
+            GregorianCalendar oldDate,
+            GregorianCalendar newDate,
             boolean force,
             IProgressMonitor monitor) throws CoreException {
 
@@ -347,7 +348,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
         Element element;
 
         if (template instanceof IProductCmpt) {
-            return createProductCmptFromTemplateGeneration(name, (IProductCmpt)template, date, force, null);
+            return createProductCmptFromTemplateGeneration(name, (IProductCmpt)template, oldDate, newDate, force, null);
         } else {
             IIpsSrcFile ipsSrcFile;
             element = template.toXml(doc);
@@ -376,17 +377,18 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
 
     private IIpsSrcFile createProductCmptFromTemplateGeneration(String name,
             IProductCmpt template,
-            GregorianCalendar date,
+            GregorianCalendar oldDate,
+            GregorianCalendar newDate,
             boolean force,
             IProgressMonitor monitor) throws CoreException {
 
-        IIpsObjectGeneration source = ((ITimedIpsObject)template).findGenerationEffectiveOn(date);
+        IIpsObjectGeneration source = template.findGenerationEffectiveOn(oldDate);
         if (source == null) {
-            source = getFirstGeneration(template, date);
+            source = getFirstGeneration(template, oldDate);
             if (source == null) {
                 throw new CoreException(
                         new IpsStatus(
-                                "No generation found for the given date " + date.getTime().toString() + " in " + template.getQualifiedName())); //$NON-NLS-1$ //$NON-NLS-2$
+                                "No generation found for the given date " + oldDate.getTime().toString() + " in " + template.getQualifiedName())); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         IIpsSrcFile file = createIpsFile(template.getIpsObjectType(), name, force, monitor);
@@ -400,7 +402,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
                 IDescription newDescription = newProductCmpt.getDescription(description.getLocale());
                 newDescription.setText(description.getText());
             }
-            newProductCmpt.newGeneration(source, IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
+            newProductCmpt.newGeneration(source, newDate);
             file.save(true, null);
         } finally {
             model.resumeBroadcastingChangesMadeByCurrentThread();

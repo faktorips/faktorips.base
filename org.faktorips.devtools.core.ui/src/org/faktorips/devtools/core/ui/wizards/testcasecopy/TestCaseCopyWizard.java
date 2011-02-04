@@ -124,8 +124,9 @@ public class TestCaseCopyWizard extends ResizableWizard {
             IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
                 @Override
                 public void run(IProgressMonitor monitor) throws CoreException {
-                    IIpsSrcFile targetTestCaseSrcFile = targetIpsPackageFragment.createIpsFileFromTemplate(
-                            testCaseCopyDestinationPage.getTargetTestCaseName(), sourceTestCase, null, true, null);
+                    IIpsSrcFile targetTestCaseSrcFile = targetIpsPackageFragment
+                            .createIpsFileFromTemplate(testCaseCopyDestinationPage.getTargetTestCaseName(),
+                                    sourceTestCase, null, null, true, null);
                     targetTestCase = (ITestCase)targetTestCaseSrcFile.getIpsObject();
                     // replace product cmpts of root objetcs
                     ITestObject[] testObjects = sourceTestCase.getTestObjects();

@@ -22,15 +22,18 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureExplorer;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
 
@@ -77,26 +80,30 @@ public class IpsDeepCopyAction extends IpsAction {
 
     @Override
     public void run(IStructuredSelection selection) {
-        IIpsObject selected = getIpsObjectForSelection(selection);
-        if (selected instanceof IProductCmpt) {
-            IProductCmpt root = (IProductCmpt)selected;
-            GregorianCalendar validFrom = root.getGeneration(root.getGenerations().size() - 1).getValidFrom();
-            runCopyWizard(root, validFrom);
-        } else if (selected instanceof IProductCmptGeneration) {
-            IProductCmptGeneration selGeneration = (IProductCmptGeneration)selected;
-            IProductCmpt root = selGeneration.getProductCmpt();
-            GregorianCalendar validFrom = selGeneration.getValidFrom();
-            runCopyWizard(root, validFrom);
-        }
+        final TypedSelection<IIpsObjectPartContainer> typedSelection = new TypedSelection<IIpsObjectPartContainer>(
+                IIpsObjectPartContainer.class, selection, 1);
+
+        BusyIndicator.showWhile(shell.getDisplay(), new Runnable() {
+
+            @Override
+            public void run() {
+                if (typedSelection.getElement() instanceof IProductCmpt) {
+                    IProductCmpt root = (IProductCmpt)typedSelection.getElement();
+                    GregorianCalendar validFrom = root.getGeneration(root.getGenerations().size() - 1).getValidFrom();
+                    runCopyWizard(root, validFrom);
+                } else if (typedSelection.getElement() instanceof IProductCmptGeneration) {
+                    IProductCmptGeneration selGeneration = (IProductCmptGeneration)typedSelection.getElement();
+                    IProductCmpt root = selGeneration.getProductCmpt();
+                    GregorianCalendar validFrom = selGeneration.getValidFrom();
+                    runCopyWizard(root, validFrom);
+                }
+            }
+        });
     }
 
     protected void runCopyWizard(IProductCmpt root, GregorianCalendar validFrom) {
         IProductCmptNamingStrategy ns = null;
-        try {
-            ns = root.getIpsProject().getProductCmptNamingStrategy();
-        } catch (CoreException e1) {
-            IpsPlugin.log(e1);
-        }
+        ns = root.getIpsProject().getProductCmptNamingStrategy();
         if (type == DeepCopyWizard.TYPE_NEW_VERSION && ns == null) {
             String title = NLS.bind(Messages.IpsDeepCopyAction_titleNoVersion, IpsPlugin.getDefault()
                     .getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
@@ -104,7 +111,13 @@ public class IpsDeepCopyAction extends IpsAction {
             return;
         }
 
-        DeepCopyWizard dcw = new DeepCopyWizard(root, validFrom, type);
+        DeepCopyWizard dcw;
+        try {
+            dcw = new DeepCopyWizard(root, validFrom, type);
+        } catch (CycleInProductStructureException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+            return;
+        }
         WizardDialog wd = new WizardDialog(shell, dcw);
         wd.setBlockOnOpen(true);
         wd.open();
@@ -130,7 +143,7 @@ public class IpsDeepCopyAction extends IpsAction {
                     return;
                 }
 
-                ((ProductStructureExplorer)pe).showStructure(dcw.getCopiedRoot());
+                ((ProductStructureExplorer)pe).showStructure(dcw.getCopyResultRoot());
 
             } catch (CoreException e) {
                 IpsPlugin.log(e);

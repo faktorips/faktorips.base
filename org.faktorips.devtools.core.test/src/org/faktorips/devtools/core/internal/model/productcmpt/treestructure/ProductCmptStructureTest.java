@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt.treestructure;
 
+import java.util.Set;
+
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
@@ -138,9 +140,9 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
         assertEquals("tableContent2", tcu.getTableContentName());
     }
 
-    public void testToArray() throws Exception {
-        IProductCmptStructureReference[] array = structure.toArray(true);
-        assertEquals(6, array.length);
+    public void testToSet() throws Exception {
+        Set<IProductCmptStructureReference> array = structure.toSet(true);
+        assertEquals(6, array.size());
         // -> 3 table references: two different tables, with one in two different links
     }
 }

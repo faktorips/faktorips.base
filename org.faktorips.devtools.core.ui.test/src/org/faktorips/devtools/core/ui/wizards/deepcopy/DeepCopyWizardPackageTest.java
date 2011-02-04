@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
@@ -85,32 +86,19 @@ public class DeepCopyWizardPackageTest extends AbstractIpsPluginTest {
         String oldName = "tableContentsWithoutKindId";
         usage.setTableContentName(oldName);
 
-        ReferenceAndPreviewPage referenceAndPreviewPage = getReferenceAndPreviewPageFor(inside,
-                DeepCopyWizard.TYPE_NEW_VERSION);
-        String newName = referenceAndPreviewPage.getNewName(null, usage.getIpsObject());
-        assertFalse(newName.equals(oldName));
-
-        referenceAndPreviewPage = getReferenceAndPreviewPageFor(inside, DeepCopyWizard.TYPE_COPY_PRODUCT);
-        newName = referenceAndPreviewPage.getNewName(null, usage.getIpsObject());
+        DeepCopyPreview deepCopyPreview = new DeepCopyPreview(new DeepCopyPresentationModel(inside.getStructure(inside
+                .getProductCmptGeneration(0).getValidFrom(), project)));
+        String newName = deepCopyPreview.getNewName(null, usage.getIpsObject());
         assertFalse(newName.equals(oldName));
     }
 
-    private SourcePage getSourcePageFor(IProductCmpt cmpt) {
+    private SourcePage getSourcePageFor(IProductCmpt cmpt) throws IllegalArgumentException,
+            CycleInProductStructureException {
         DeepCopyWizard wizard = new DeepCopyWizard(cmpt, null, DeepCopyWizard.TYPE_COPY_PRODUCT);
         WizardDialog d = new WizardDialog(new Shell(), wizard);
         d.setBlockOnOpen(false);
         d.open();
         SourcePage page = (SourcePage)wizard.getPage(SourcePage.PAGE_ID);
-        d.showPage(page);
-        return page;
-    }
-
-    private ReferenceAndPreviewPage getReferenceAndPreviewPageFor(IProductCmpt cmpt, int type) {
-        DeepCopyWizard wizard = new DeepCopyWizard(cmpt, null, type);
-        WizardDialog d = new WizardDialog(new Shell(), wizard);
-        d.setBlockOnOpen(false);
-        d.open();
-        ReferenceAndPreviewPage page = (ReferenceAndPreviewPage)wizard.getPage(ReferenceAndPreviewPage.PAGE_ID);
         d.showPage(page);
         return page;
     }

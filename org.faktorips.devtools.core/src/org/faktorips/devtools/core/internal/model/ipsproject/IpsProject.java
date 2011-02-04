@@ -1552,7 +1552,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public IProductCmptNamingStrategy getProductCmptNamingStrategy() throws CoreException {
+    public IProductCmptNamingStrategy getProductCmptNamingStrategy() {
         return getPropertiesInternal().getProductCmptNamingStrategy();
     }
 

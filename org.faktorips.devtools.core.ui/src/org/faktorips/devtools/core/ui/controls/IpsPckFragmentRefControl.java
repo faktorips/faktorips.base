@@ -28,7 +28,9 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  */
 public class IpsPckFragmentRefControl extends TextButtonControl {
 
-    private IIpsPackageFragmentRoot root;
+    public static final String PACKAGE_FRAGMENT_ROOT = "ipsPckFragmentRoot"; //$NON-NLS-1$
+
+    private IIpsPackageFragmentRoot ipsPckFragmentRoot;
 
     private IpsPckFragmenCompletionProcessor completionProcessor;
 
@@ -40,19 +42,19 @@ public class IpsPckFragmentRefControl extends TextButtonControl {
     }
 
     public void setIpsPckFragmentRoot(IIpsPackageFragmentRoot root) {
-        this.root = root;
+        this.ipsPckFragmentRoot = root;
         setButtonEnabled(root != null && root.exists());
     }
 
     public IIpsPackageFragmentRoot getIpsPckFragmentRoot() {
-        return root;
+        return ipsPckFragmentRoot;
     }
 
     public IIpsPackageFragment getIpsPackageFragment() {
-        if (root == null) {
+        if (ipsPckFragmentRoot == null) {
             return null;
         }
-        return root.getIpsPackageFragment(text.getText());
+        return ipsPckFragmentRoot.getIpsPackageFragment(text.getText());
     }
 
     public void setIpsPackageFragment(IIpsPackageFragment newPack) {
@@ -67,8 +69,8 @@ public class IpsPckFragmentRefControl extends TextButtonControl {
     protected void buttonClicked() {
         try {
             IpsPackageSelectionDialog dialog = new IpsPackageSelectionDialog(getShell());
-            if (root != null) {
-                dialog.setElements(root.getIpsPackageFragments());
+            if (ipsPckFragmentRoot != null) {
+                dialog.setElements(ipsPckFragmentRoot.getIpsPackageFragments());
             }
             if (dialog.open() == Window.OK) {
                 if (dialog.getSelectedPackage() != null) {

@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptT
  */
 public class ProductCmptReference extends ProductCmptStructureReference implements IProductCmptReference {
 
-    private IProductCmpt cmpt;
+    private final IProductCmpt cmpt;
     private final IProductCmptLink link;
 
     public ProductCmptReference(IProductCmptTreeStructure structure, ProductCmptStructureReference parent,
@@ -48,7 +48,7 @@ public class ProductCmptReference extends ProductCmptStructureReference implemen
     }
 
     @Override
-    protected IIpsObjectPartContainer getWrapped() {
+    public IIpsObjectPartContainer getWrapped() {
         return link;
     }
 

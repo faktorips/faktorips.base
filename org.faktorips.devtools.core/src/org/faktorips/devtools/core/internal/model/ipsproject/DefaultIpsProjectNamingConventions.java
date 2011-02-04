@@ -220,7 +220,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
      * Special validation for product cmpt, the validation will be delegated to the
      * IProductCmptNamingStrategy
      */
-    private MessageList validateNameForProductCmpt(String name, boolean qualifiedCheck) throws CoreException {
+    private MessageList validateNameForProductCmpt(String name, boolean qualifiedCheck) {
         IProductCmptNamingStrategy pns = ipsProject.getProductCmptNamingStrategy();
         // the validate will be delegated to the product cmpt naming strategy, only if the given
         // name is unqualified

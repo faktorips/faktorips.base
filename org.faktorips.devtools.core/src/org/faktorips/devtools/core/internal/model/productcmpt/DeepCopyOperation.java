@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -51,27 +50,34 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 
 public class DeepCopyOperation implements IWorkspaceRunnable {
 
-    private IProductCmptStructureReference[] toCopy;
-    private IProductCmptStructureReference[] toRefer;
-    private Map<IProductCmptStructureReference, IIpsSrcFile> handleMap;
-    private IProductCmpt copiedRoot;
+    private final Set<IProductCmptStructureReference> copyElements;
+    private final Set<IProductCmptStructureReference> linkElements;
+    private final Map<IProductCmptStructureReference, IIpsSrcFile> handleMap;
     private boolean createEmptyTableContents = false;
     private IIpsPackageFragmentRoot ipsPackageFragmentRoot;
+    private final IProductCmptReference structureRoot;
+    private final GregorianCalendar oldValidFrom;
+    private final GregorianCalendar newValidFrom;
 
     /**
      * Creates a new operation to copy the given product components.
      * 
-     * @param toCopy All product components and table contents that should be copied.
-     * @param toRefer All product components and table contents which should be referred from the
-     *            copied ones.
+     * @param copyElements All product components and table contents that should be copied.
+     * @param linkElements All product components and table contents which should be referred from
+     *            the copied ones.
      * @param handleMap All <code>IIpsSrcFiles</code> (which are all handles to non-existing
      *            resources!). Keys are the nodes given in <code>toCopy</code>.
      */
-    public DeepCopyOperation(IProductCmptStructureReference[] toCopy, IProductCmptStructureReference[] toRefer,
-            Map<IProductCmptStructureReference, IIpsSrcFile> handleMap) {
-        this.toCopy = toCopy;
-        this.toRefer = toRefer;
+    public DeepCopyOperation(IProductCmptReference structureRoot, Set<IProductCmptStructureReference> copyElements,
+            Set<IProductCmptStructureReference> linkElements,
+            Map<IProductCmptStructureReference, IIpsSrcFile> handleMap, GregorianCalendar oldValidFrom,
+            GregorianCalendar newValidFrom) {
+        this.structureRoot = structureRoot;
+        this.copyElements = copyElements;
+        this.linkElements = linkElements;
         this.handleMap = handleMap;
+        this.oldValidFrom = oldValidFrom;
+        this.newValidFrom = newValidFrom;
     }
 
     public void setIpsPackageFragmentRoot(IIpsPackageFragmentRoot ipsPackageFragmentRoot) {
@@ -91,7 +97,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
         if (monitor == null) {
             monitor = new NullProgressMonitor();
         }
-        monitor.beginTask(Messages.DeepCopyOperation_taskTitle, 2 + toCopy.length * 2 + toRefer.length);
+        monitor.beginTask(Messages.DeepCopyOperation_taskTitle, 2 + copyElements.size() * 2 + linkElements.size());
 
         monitor.worked(1);
 
@@ -105,8 +111,9 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
         Hashtable<IProductCmpt, IProductCmpt> productNew2ProductOld = new Hashtable<IProductCmpt, IProductCmpt>();
         List<IIpsObject> newIpsObjects = new ArrayList<IIpsObject>();
 
-        for (IProductCmptStructureReference element : toCopy) {
-            IIpsObject newIpsObject = createNewIpsObjectIfNecessary(element, productNew2ProductOld, monitor);
+        for (IProductCmptStructureReference element : copyElements) {
+            IIpsObject newIpsObject = createNewIpsObjectIfNecessary(element, productNew2ProductOld, oldValidFrom,
+                    newValidFrom, monitor);
             newIpsObjects.add(newIpsObject);
 
             // stores the link or tableUsage which indicates the creation of the new object
@@ -157,12 +164,13 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
         if (newIpsObjects.size() == 0) {
             throw new RuntimeException("No copied root found!"); //$NON-NLS-1$
         }
-        copiedRoot = (IProductCmpt)newIpsObjects.get(0);
         monitor.done();
     }
 
     private IIpsObject createNewIpsObjectIfNecessary(final IProductCmptStructureReference toCopyProductCmptStructureReference,
             Hashtable<IProductCmpt, IProductCmpt> productNew2ProductOld,
+            GregorianCalendar oldValidFrom,
+            GregorianCalendar newValidFrom,
             IProgressMonitor monitor) throws CoreException {
 
         IIpsObject templateObject = toCopyProductCmptStructureReference.getWrappedIpsObject();
@@ -171,7 +179,6 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
         // if the file already exists, we can do nothing because the file was created already
         // caused by another reference to the same product component.
         if (!file.exists()) {
-            GregorianCalendar date = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
             IIpsPackageFragment targetPackage = createTargetPackage(file, monitor);
             String newName = file.getName().substring(0, file.getName().lastIndexOf('.'));
 
@@ -184,7 +191,8 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
             if (!createEmptyFile) {
                 // try to create the file as copy
                 try {
-                    file = targetPackage.createIpsFileFromTemplate(newName, templateObject, date, false, monitor);
+                    file = targetPackage.createIpsFileFromTemplate(newName, templateObject, oldValidFrom, newValidFrom,
+                            false, monitor);
                 } catch (CoreException e) {
                     // exception occurred thus create empty file below
                     createEmptyFile = true;
@@ -197,7 +205,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
                 file = targetPackage.createIpsFile(templateObject.getIpsObjectType(), newName, false, monitor);
                 TimedIpsObject ipsObject = (TimedIpsObject)file.getIpsObject();
                 IIpsObjectGeneration generation = ipsObject.newGeneration();
-                generation.setValidFrom(date);
+                generation.setValidFrom(newValidFrom);
                 setPropertiesFromTemplate(templateObject, ipsObject);
             }
         }
@@ -235,12 +243,11 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
 
     private Set<Object> collectObjectsToRefer() {
         Set<Object> tblContentUsageAndLinkDataRefer = new HashSet<Object>();
-        List<IProductCmptStructureReference> toReferList = Arrays.asList(toRefer);
-        for (IProductCmptStructureReference productCmptStructureReference : toRefer) {
+        for (IProductCmptStructureReference productCmptStructureReference : linkElements) {
             if (productCmptStructureReference instanceof IProductCmptStructureTblUsageReference) {
                 final IProductCmptStructureTblUsageReference productCmptStructureTblUsageReference = (IProductCmptStructureTblUsageReference)productCmptStructureReference;
                 IProductCmptStructureReference parent = productCmptStructureTblUsageReference.getParent();
-                if (toReferList.contains(parent)) {
+                if (linkElements.contains(parent)) {
                     /*
                      * the tableContents should be linked, check if the productCmpt for this
                      * tableContentUsage is also a link and if true, don't store this table because
@@ -354,8 +361,8 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
         return result;
     }
 
-    public IProductCmpt getCopiedRoot() {
-        return copiedRoot;
+    public IIpsSrcFile getCopiedRoot() {
+        return handleMap.get(structureRoot);
     }
 
     /**

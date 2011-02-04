@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.model.productcmpt.treestructure;
 
 import java.util.GregorianCalendar;
+import java.util.Set;
 
 /**
  * A product component tree structure provides a tree view for product components starting with a
@@ -53,13 +54,12 @@ public interface IProductCmptTreeStructure {
     public GregorianCalendar getValidAt();
 
     /**
-     * Returns all references contained in this structure as plain array. The order of the nodes is
-     * unspecified.
+     * Returns all references contained in this structure as plain list.
      * 
      * @param productCmptOnly <code>true</code> to get only references to <code>IProductCmpt</code>
      *            s.
      */
-    public IProductCmptStructureReference[] toArray(boolean productCmptOnly);
+    public Set<IProductCmptStructureReference> toSet(boolean productCmptOnly);
 
     /**
      * Returns the parent reference to the given one which refers to a <code>IProductCmpt</code>.
@@ -89,7 +89,7 @@ public interface IProductCmptTreeStructure {
 
     /**
      * Get all product component type association references from the parent structure reference.
-     * Empty associations are not included
+     * Empty associations are included.
      * 
      * 
      * @param parent The parent-reference to start the search for child-references.

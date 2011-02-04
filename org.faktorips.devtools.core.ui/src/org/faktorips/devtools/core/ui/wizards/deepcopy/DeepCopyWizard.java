@@ -14,26 +14,25 @@
 package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.productcmpt.DeepCopyOperation;
-import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
@@ -50,31 +49,17 @@ public class DeepCopyWizard extends ResizableWizard {
 
     public static final int TYPE_COPY_PRODUCT = 10;
     public static final int TYPE_NEW_VERSION = 100;
+    private final static int DEFAULT_WIDTH = 800;
+    private final static int DEFAULT_HEIGHT = 800;
 
     private static final String SECTION_NAME = "DeepCopyWizard"; //$NON-NLS-1$
 
-    private static boolean TRACE = IpsPlugin.TRACE_UI;
+    private final DeepCopyPreview deepCopyPreview;
 
-    private Map<String, Long> traceTimer;
+    private final DeepCopyPresentationModel presentationModel;
 
-    private ProductCmptTreeStructure structure;
-    private SourcePage sourcePage;
-    private ReferenceAndPreviewPage previewPage;
-
-    private DeepCopyPreview deepCopyPreview;
-
-    private IProductCmpt copiedRoot;
-    private ISchedulingRule schedulingRule;
+    private IIpsSrcFile copyResultRoot;
     private int type;
-    private GregorianCalendar usedWorkingDate;
-
-    // contains the previous working date,
-    // in case of cancel the working date will be set to the old value
-    private GregorianCalendar prevWorkingDate;
-    private IIpsProject ipsProject;
-
-    private final static int DEFAULT_WIDTH = 800;
-    private final static int DEFAULT_HEIGHT = 800;
 
     /**
      * Creates a new wizard which can make a deep copy of the given product.
@@ -93,16 +78,11 @@ public class DeepCopyWizard extends ResizableWizard {
      *            rename-pattern.
      * 
      * @throws IllegalArgumentException if the given type is not valid.
+     * @throws CycleInProductStructureException when the structure have a cyle
      */
     public DeepCopyWizard(IProductCmpt product, GregorianCalendar validFromOfGenerationSource, int type)
-            throws IllegalArgumentException {
+            throws IllegalArgumentException, CycleInProductStructureException {
         super(SECTION_NAME, IpsPlugin.getDefault().getDialogSettings(), DEFAULT_WIDTH, DEFAULT_HEIGHT);
-
-        String logText = "Constructor DeepCopyWizard() " + product; //$NON-NLS-1$
-        if (TRACE) {
-            traceTimer = new HashMap<String, Long>();
-        }
-        logTraceStart(logText);
 
         setNeedsProgressMonitor(true);
 
@@ -110,21 +90,15 @@ public class DeepCopyWizard extends ResizableWizard {
             throw new IllegalArgumentException("The given type is neither TYPE_COPY_PRODUCT nor TYPE_NEW_VERSION."); //$NON-NLS-1$
         }
         this.type = type;
-        ipsProject = product.getIpsProject();
 
-        prevWorkingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
-        usedWorkingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
-        try {
-            GregorianCalendar structureDate = null;
-            if (validFromOfGenerationSource == null) {
-                structureDate = product.getGeneration(product.getNumOfGenerations() - 1).getValidFrom();
-            } else {
-                structureDate = product.getGenerationByEffectiveDate(validFromOfGenerationSource).getValidFrom();
-            }
-            structure = (ProductCmptTreeStructure)product.getStructure(structureDate, product.getIpsProject());
-        } catch (CycleInProductStructureException e) {
-            IpsPlugin.log(e);
+        GregorianCalendar structureDate = null;
+        if (validFromOfGenerationSource == null) {
+            structureDate = product.getGeneration(product.getNumOfGenerations() - 1).getValidFrom();
+        } else {
+            structureDate = product.getGenerationByEffectiveDate(validFromOfGenerationSource).getValidFrom();
         }
+        presentationModel = new DeepCopyPresentationModel(product.getStructure(structureDate, product.getIpsProject()));
+        deepCopyPreview = new DeepCopyPreview(presentationModel);
 
         if (type == TYPE_COPY_PRODUCT) {
             super.setWindowTitle(Messages.DeepCopyWizard_title);
@@ -137,58 +111,96 @@ public class DeepCopyWizard extends ResizableWizard {
             super.setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                     "wizards/NewVersionWizard.png")); //$NON-NLS-1$
         }
+        settingDefaults();
 
-        logTraceEnd(logText);
     }
 
     @Override
     public void addPages() {
-        sourcePage = new SourcePage(structure, type);
+        SourcePage sourcePage = new SourcePage(type);
         super.addPage(sourcePage);
-        previewPage = new ReferenceAndPreviewPage(structure, sourcePage, type);
+        ReferenceAndPreviewPage previewPage = new ReferenceAndPreviewPage(type);
         super.addPage(previewPage);
 
-        deepCopyPreview = new DeepCopyPreview(this, sourcePage);
+    }
+
+    private void settingDefaults() {
+        // set target default
+        IIpsPackageFragment defaultPackage = getDefaultPackage();
+        IIpsPackageFragmentRoot defaultPackageRoot = getDefaultPackage().getRoot();
+        IIpsPackageFragmentRoot packRoot = defaultPackageRoot;
+        if (!packRoot.isBasedOnSourceFolder()) {
+            IIpsPackageFragmentRoot srcRoots[];
+            try {
+                srcRoots = getPresentationModel().getIpsProject().getSourceIpsPackageFragmentRoots();
+                if (srcRoots.length > 0) {
+                    packRoot = srcRoots[0];
+                } else {
+                    packRoot = null;
+                }
+            } catch (CoreException e1) {
+                packRoot = null;
+            }
+        }
+        getPresentationModel().setNewValidFrom(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
+
+        getPresentationModel().setTargetPackageRoot(packRoot);
+        // sets the default package only if the corresponding package root is based on a source
+        // folder in other cases reset the default package (because maybe the target package is
+        // inside an ips archive)
+        getPresentationModel().setTargetPackage(defaultPackageRoot == packRoot ? defaultPackage : null);
+    }
+
+    IIpsPackageFragment getDefaultPackage() {
+        int ignore = deepCopyPreview.getSegmentsToIgnore(getStructure().toSet(true));
+        IIpsPackageFragment pack = getStructure().getRoot().getProductCmpt().getIpsPackageFragment();
+        int segments = pack.getRelativePath().segmentCount();
+        if (segments - ignore > 0) {
+            IPath path = pack.getRelativePath().removeLastSegments(segments - ignore);
+            pack = pack.getRoot().getIpsPackageFragment(path.toString().replace('/', '.'));
+        }
+        return pack;
     }
 
     @Override
     public boolean performCancel() {
         // maybe the working date has changed, thus restore the old working date
-        IpsPreferences ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
-        ipsPreferences.setWorkingDate(prevWorkingDate);
         return super.performCancel();
     }
 
     @Override
     public boolean performFinish() {
         try {
-            final IProductCmptStructureReference[] toCopy = deepCopyPreview.getProductCmptStructRefToCopy();
-            final IProductCmptStructureReference[] toRefer = deepCopyPreview.getProductsOrtTableContentsToRefer();
+            final Set<IProductCmptStructureReference> toCopy = presentationModel.getAllCopyElements();
+            final Set<IProductCmptStructureReference> toLink = presentationModel.getLinkedElements();
 
-            final IIpsPackageFragmentRoot ipsPackageFragmentRoot = sourcePage.getIIpsPackageFragmentRoot();
-            final Map<IProductCmptStructureReference, IIpsSrcFile> handles = deepCopyPreview
-                    .getHandles(ipsPackageFragmentRoot);
-            final boolean createEmptyTableContents = sourcePage.isCreateEmptyTableContents();
+            final boolean createEmptyTableContents = presentationModel.isCreateEmptyTable();
 
-            schedulingRule = structure.getRoot().getProductCmpt().getIpsProject().getCorrespondingResource()
-                    .getWorkspace().getRoot();
+            final IWorkspaceRoot schedulingRule = getStructure().getRoot().getProductCmpt().getIpsProject()
+                    .getCorrespondingResource().getWorkspace().getRoot();
             WorkspaceModifyOperation operation = new WorkspaceModifyOperation(schedulingRule) {
+
                 @Override
                 protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
                         InterruptedException {
-                    logTraceStart("DeepCopyOperation.run"); //$NON-NLS-1$
-                    DeepCopyOperation dco = new DeepCopyOperation(toCopy, toRefer, handles);
-                    dco.setIpsPackageFragmentRoot(ipsPackageFragmentRoot);
+                    monitor.beginTask("", 2); //$NON-NLS-1$
+                    final Map<IProductCmptStructureReference, IIpsSrcFile> handles = deepCopyPreview
+                            .getHandles(new SubProgressMonitor(monitor, 1));
+                    DeepCopyOperation dco = new DeepCopyOperation(getStructure().getRoot(), toCopy, toLink, handles,
+                            getStructure().getValidAt(), presentationModel.getNewValidFrom());
+                    dco.setIpsPackageFragmentRoot(presentationModel.getTargetPackageRoot());
                     dco.setCreateEmptyTableContents(createEmptyTableContents);
-                    dco.run(monitor);
-                    copiedRoot = dco.getCopiedRoot();
-                    logTraceEnd("DeepCopyOperation.run"); //$NON-NLS-1$
+                    dco.run(new SubProgressMonitor(monitor, 1));
+                    copyResultRoot = dco.getCopiedRoot();
                 }
             };
             getContainer().run(true, true, operation);
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(new IpsStatus("An error occurred during the copying process.", e)); //$NON-NLS-1$
         }
+
+        // Setting the new working date of the created product component
+        IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(getPresentationModel().getNewValidFrom());
 
         // this implementation of this method should always return true since this causes the wizard
         // dialog to close.
@@ -197,57 +209,22 @@ public class DeepCopyWizard extends ResizableWizard {
     }
 
     /**
-     * Returns the root product component which was copied.
+     * Returns the root product component which was copied. Is null until {@link #performFinish()}
+     * was performed successfully
      */
-    public IProductCmpt getCopiedRoot() {
-        return copiedRoot;
-    }
-
-    /**
-     * Updates the wizards working date
-     */
-    void applyWorkingDate() {
-        IpsPreferences ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
-        // apply working date in ips preferences
-        GregorianCalendar currentWorkingDate = sourcePage.getWorkingDateAsGregorianCalendar();
-        if (currentWorkingDate == null) {
-            return;
+    public IProductCmpt getCopyResultRoot() {
+        if (copyResultRoot.exists()) {
+            try {
+                return (IProductCmpt)copyResultRoot.getIpsObject();
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
         }
-        ipsPreferences.setWorkingDate(currentWorkingDate);
-
-        // apply working date in wizard pages
-        try {
-            structure = (ProductCmptTreeStructure)structure.getRoot().getProductCmpt().getStructure(currentWorkingDate,
-                    structure.getRoot().getProductCmpt().getIpsProject());
-            sourcePage.refreshVersionId();
-        } catch (CycleInProductStructureException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
-    }
-
-    /**
-     * Returns the current structure date (the date the structure is valid) as formatted string
-     */
-    String getFormattedStructureDate() {
-        return sourcePage.getWorkingDateAsFormattedString();
-    }
-
-    /**
-     * Returns the current structure date (the date the structure is valid)
-     */
-    Calendar getStructureDate() {
-        return usedWorkingDate;
+        return null;
     }
 
     public IProductCmptTreeStructure getStructure() {
-        return structure;
-    }
-
-    /**
-     * Returns the ips project which created this wizard
-     */
-    public IIpsProject getIpsProject() {
-        return ipsProject;
+        return getPresentationModel().getStructure();
     }
 
     /**
@@ -286,43 +263,7 @@ public class DeepCopyWizard extends ResizableWizard {
         return size;
     }
 
-    void logTraceStart(String methodName) {
-        if (!TRACE) {
-            return;
-        }
-        logTraceStartInternal(methodName);
-    }
-
-    private synchronized void logTraceStartInternal(String methodName) {
-        trace(methodName + " - start"); //$NON-NLS-1$
-        traceTimer.put(methodName, System.nanoTime());
-    }
-
-    void logTraceEnd(String methodName) {
-        if (!TRACE) {
-            return;
-        }
-        logTraceEndIntenal(methodName);
-    }
-
-    private synchronized void logTraceEndIntenal(String methodName) {
-        if (traceTimer.get(methodName) == null) {
-            throw new RuntimeException(methodName + " timer not started!"); //$NON-NLS-1$
-        }
-        long durration = System.nanoTime() - traceTimer.get(methodName);
-        traceTimer.remove(methodName);
-        trace(methodName + " - end: " + ((double)durration) / 1000 / 1000 / 1000 + " s"); //$NON-NLS-1$ //$NON-NLS-2$
-    }
-
-    private void trace(String text) {
-        System.out.println(getTracePrefix() + text);
-    }
-
-    private String getTracePrefix() {
-        String offset = ""; //$NON-NLS-1$
-        for (int i = 0; i < traceTimer.size(); i++) {
-            offset += " "; //$NON-NLS-1$
-        }
-        return offset;
+    public DeepCopyPresentationModel getPresentationModel() {
+        return presentationModel;
     }
 }

@@ -158,7 +158,8 @@ public class ProductCmptPage extends IpsObjectPage {
         IProductCmptNamingStrategy namingStrategy = getNamingStrategy();
         if (!(obj instanceof IProductCmpt)) {
             if (namingStrategy != null && namingStrategy.supportsVersionId()) {
-                versionId.setText(namingStrategy.getNextVersionId(null));
+                GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
+                versionId.setText(namingStrategy.getNextVersionId(null, workingDate));
             }
             if (obj instanceof IProductCmptType) {
                 // set default product cmpt type only if the selected obj is configurable by product
@@ -177,8 +178,9 @@ public class ProductCmptPage extends IpsObjectPage {
             IProductCmpt productCmpt = (IProductCmpt)obj;
             if (namingStrategy != null) {
                 if (namingStrategy.supportsVersionId()) {
-                    versionId.setText(namingStrategy.getNextVersionId(productCmpt));
-                    constName.setText(namingStrategy.getKindId(namingStrategy.getNextName(productCmpt)));
+                    GregorianCalendar workingDate = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
+                    versionId.setText(namingStrategy.getNextVersionId(productCmpt, workingDate));
+                    constName.setText(namingStrategy.getKindId(namingStrategy.getNextName(productCmpt, workingDate)));
                 }
             } else {
                 setIpsObjectName(productCmpt.getName());
@@ -253,16 +255,12 @@ public class ProductCmptPage extends IpsObjectPage {
     }
 
     /**
-     * Returns the currentyl active naming strategy.
+     * Returns the currently active naming strategy.
      */
     private IProductCmptNamingStrategy getNamingStrategy() {
         IIpsProject project = getIpsProject();
         if (project != null) {
-            try {
-                return project.getProductCmptNamingStrategy();
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
+            return project.getProductCmptNamingStrategy();
         }
         return null;
     }

@@ -20,7 +20,6 @@ import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.util.ArgumentCheck;
@@ -142,10 +141,15 @@ public class DateBasedProductCmptNamingStrategy extends AbstractProductCmptNamin
         return Message.newError(MSGCODE_ILLEGAL_VERSION_ID, text);
     }
 
+    /**
+     * This implementation ignores the previous version and returns the validFrom in a format
+     * defined by {@link DateBasedProductCmptNamingStrategy#setDateFormatPattern(String)}.
+     * 
+     * {@inheritDoc}
+     */
     @Override
-    public String getNextVersionId(IProductCmpt pc) {
-        GregorianCalendar date = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
-        return dateFormat.format(date.getTime());
+    public String getNextVersionId(IProductCmpt pc, GregorianCalendar validFrom) {
+        return dateFormat.format(validFrom.getTime());
     }
 
     @Override

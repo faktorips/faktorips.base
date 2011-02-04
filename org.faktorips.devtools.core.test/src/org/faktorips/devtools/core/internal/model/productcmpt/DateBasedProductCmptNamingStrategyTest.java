@@ -17,7 +17,6 @@ import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -75,9 +74,9 @@ public class DateBasedProductCmptNamingStrategyTest extends AbstractIpsPluginTes
     }
 
     public void testGetNextVersionId() throws CoreException {
-        IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(2006, 0, 31));
+        GregorianCalendar workingDate = new GregorianCalendar(2006, 0, 31);
         IProductCmpt pc = newProductCmpt(ipsProject, "TestProduct 2005-01-01");
-        assertEquals("2006-01-31", strategy.getNextVersionId(pc));
+        assertEquals("2006-01-31", strategy.getNextVersionId(pc, workingDate));
     }
 
     public void testInitFromXml() {

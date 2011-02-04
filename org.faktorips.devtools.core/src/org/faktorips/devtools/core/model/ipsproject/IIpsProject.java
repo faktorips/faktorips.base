@@ -815,7 +815,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns the strategy used to name product components. This method never returns
      * <code>null</code>.
      */
-    public IProductCmptNamingStrategy getProductCmptNamingStrategy() throws CoreException;
+    public IProductCmptNamingStrategy getProductCmptNamingStrategy();
 
     /**
      * Returns the strategy used to name database tables used for persisting policy component types.

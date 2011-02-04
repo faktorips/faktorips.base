@@ -21,6 +21,7 @@ import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 
 /**
  * A reference to a <code>ITableContentUsage</code>. Used by <code>ProductCmptStructure</code>.
@@ -30,7 +31,12 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptT
 public class ProductCmptStructureTblUsageReference extends ProductCmptStructureReference implements
         IProductCmptStructureTblUsageReference {
 
-    private ITableContentUsage tableContentUsage;
+    private final ITableContentUsage tableContentUsage;
+
+    /**
+     * Not final for lazy load
+     */
+    private ITableContents tableContent;
 
     public ProductCmptStructureTblUsageReference(IProductCmptTreeStructure structure,
             ProductCmptStructureReference parent, ITableContentUsage tableContentUsage)
@@ -41,7 +47,7 @@ public class ProductCmptStructureTblUsageReference extends ProductCmptStructureR
     }
 
     @Override
-    protected IIpsObjectPartContainer getWrapped() {
+    public IIpsObjectPartContainer getWrapped() {
         return tableContentUsage;
     }
 
@@ -52,11 +58,19 @@ public class ProductCmptStructureTblUsageReference extends ProductCmptStructureR
 
     @Override
     public IIpsObject getWrappedIpsObject() {
+        if (tableContent != null) {
+            return tableContent;
+        }
+        if (tableContentUsage == null) {
+            return null;
+        }
+        /*
+         * This lazy-load is not thread safe. But it doesn't matter when we have to find it twice.
+         * However there is nearly no multi-threading access to this method.
+         */
         try {
-            if (tableContentUsage == null) {
-                return null;
-            }
-            return tableContentUsage.findTableContents(tableContentUsage.getIpsProject());
+            tableContent = tableContentUsage.findTableContents(tableContentUsage.getIpsProject());
+            return tableContent;
         } catch (CoreException e) {
             // will be handled as validation error
             IpsPlugin.log(e);

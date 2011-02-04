@@ -240,6 +240,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
+    @Deprecated
     public IProductCmptTreeStructure getStructure(IIpsProject ipsProject) throws CycleInProductStructureException {
         return new ProductCmptTreeStructure(this, ipsProject);
     }

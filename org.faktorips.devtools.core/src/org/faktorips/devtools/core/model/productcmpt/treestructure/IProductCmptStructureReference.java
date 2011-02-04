@@ -13,9 +13,9 @@
 
 package org.faktorips.devtools.core.model.productcmpt.treestructure;
 
-import org.eclipse.core.runtime.IAdaptable;
 import org.faktorips.devtools.core.internal.model.adapter.IIpsSrcFileWrapper;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 
 /**
  * A reference to unspecified objects (see subi nterfaces / -classes for further details) for used
@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
  * 
  * @author Thorsten Guenther
  */
-public interface IProductCmptStructureReference extends IAdaptable, IIpsSrcFileWrapper {
+public interface IProductCmptStructureReference extends IIpsSrcFileWrapper {
 
     /**
      * @return The <code>IProductCmptStructure</code> this reference belongs to.
@@ -41,4 +41,15 @@ public interface IProductCmptStructureReference extends IAdaptable, IIpsSrcFileW
      */
     public IProductCmptStructureReference getParent();
 
+    /**
+     * @return The {@link IIpsObjectPartContainer} referenced by this object.
+     */
+    public abstract IIpsObjectPartContainer getWrapped();
+
+    /**
+     * Getting the direct children of this {@link IProductCmptStructureReference}.
+     * 
+     * @return The children of this reference
+     */
+    public abstract IProductCmptStructureReference[] getChildren();
 }
