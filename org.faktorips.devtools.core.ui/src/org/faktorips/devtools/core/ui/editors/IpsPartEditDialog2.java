@@ -22,7 +22,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
@@ -310,16 +309,6 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
      */
     protected void contentsChangedInternal(ContentChangeEvent event) {
         // Empty default implementation
-    }
-
-    // TODO: code duplication in PersistentTypeInfoSection
-    protected <E extends Enum<E>> void setComboItemsForEnum(Combo combo, Class<E> clazz) {
-        Enum<E>[] allEnumConstants = clazz.getEnumConstants();
-        String[] allEnumValues = new String[allEnumConstants.length];
-        for (int i = 0; i < allEnumConstants.length; i++) {
-            allEnumValues[i] = allEnumConstants[i].toString();
-        }
-        combo.setItems(allEnumValues);
     }
 
     /**

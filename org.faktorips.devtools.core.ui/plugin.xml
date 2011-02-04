@@ -1827,6 +1827,9 @@
          <ControlFactory
                class="org.faktorips.devtools.core.ui.controlfactories.GregorianCalendarControlFactory">
          </ControlFactory>
+         <ControlFactory
+               class="org.faktorips.devtools.core.ui.controlfactories.MoneyControlFactory">
+         </ControlFactory>
       </extension>
 
 </plugin>

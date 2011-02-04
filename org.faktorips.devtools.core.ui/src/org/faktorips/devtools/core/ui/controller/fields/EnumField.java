@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Combo;
@@ -23,36 +22,42 @@ import org.eclipse.swt.widgets.Combo;
  * 5.0).
  * 
  * @author Roman Grutza
+ * @author Stefan Widmaier
  */
 public class EnumField<T extends Enum<T>> extends ComboField {
 
     private List<T> usedEnumValues;
     private final Class<? extends T> javaEnumClass;
 
-    public EnumField(Combo combo, Class<? extends T> javaEnum) {
+    public EnumField(Combo combo, Class<T> javaEnum) {
         super(combo);
         this.javaEnumClass = javaEnum;
-        String[] items = combo.getItems();
-        T[] allEnumConstants = javaEnum.getEnumConstants();
-
-        usedEnumValues = new ArrayList<T>();
-        for (String item : items) {
-            T enumValue = getEnumValue(allEnumConstants, item);
-            if (enumValue == null) {
-                throw new RuntimeException("Not enum value for combo box item " + enumValue); //$NON-NLS-1$
-            } else {
-                usedEnumValues.add(enumValue);
-            }
-        }
+        initComboItems(combo, javaEnum);
     }
 
-    private T getEnumValue(T[] allEnumConstants, String name) {
-        for (T allEnumConstant : allEnumConstants) {
-            if (allEnumConstant.toString().equals(name)) {
-                return allEnumConstant;
-            }
+    public EnumField(Combo combo, T[] enumValues) {
+        super(combo);
+        @SuppressWarnings("unchecked")
+        /*
+         * getComponentType() is native. Thus it can't return the correct type. At this point we
+         * know that the arrays elements must be of type T. The cast can be made without problems.
+         */
+        Class<T> clazz = (Class<T>)enumValues.getClass().getComponentType();
+        javaEnumClass = clazz;
+        initComboItems(combo, enumValues);
+    }
+
+    protected void initComboItems(Combo combo, Class<T> clazz) {
+        T[] enumConstants = clazz.getEnumConstants();
+        initComboItems(combo, enumConstants);
+    }
+
+    protected void initComboItems(Combo combo, T[] enumConstants) {
+        String[] allEnumValues = new String[enumConstants.length];
+        for (int i = 0; i < enumConstants.length; i++) {
+            allEnumValues[i] = enumConstants[i].toString();
         }
-        return null;
+        combo.setItems(allEnumValues);
     }
 
     public T getEnumValue() {

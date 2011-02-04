@@ -28,10 +28,10 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.DiscriminatorDatatype;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceStrategy;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.PersistentType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
@@ -108,13 +108,11 @@ public class PersistentTypeInfoSection extends IpsSection {
         Composite detailComposite = toolkit.createLabelEditColumnComposite(client);
         toolkit.createLabel(detailComposite, Messages.PersistentTypeInfoSection_labelPersistentType);
         Combo persistentTypeCombo = toolkit.createCombo(detailComposite);
-        setComboItems(persistentTypeCombo, PersistentType.class);
         ComboField persistentTypeField = new EnumField<PersistentType>(persistentTypeCombo, PersistentType.class);
 
         Label inheritanceStrateyLabel = toolkit.createLabel(detailComposite,
                 Messages.PersistentTypeInfoSection_labelInheritanceStrategy);
         Combo inheritanceStrategyCombo = toolkit.createCombo(detailComposite);
-        setComboItems(inheritanceStrategyCombo, InheritanceStrategy.class);
         ComboField inheritanceStrategyField = new EnumField<InheritanceStrategy>(inheritanceStrategyCombo,
                 InheritanceStrategy.class);
         persistentComposites.add(inheritanceStrateyLabel);
@@ -148,7 +146,6 @@ public class PersistentTypeInfoSection extends IpsSection {
 
         toolkit.createLabel(discriminatorDefComposite, Messages.PersistentTypeInfoSection_labelDatatype);
         Combo descriminatorDatatypeCombo = toolkit.createCombo(discriminatorDefComposite);
-        setComboItems(descriminatorDatatypeCombo, DiscriminatorDatatype.class);
         ComboField descriminatorDatatypeField = new EnumField<DiscriminatorDatatype>(descriminatorDatatypeCombo,
                 DiscriminatorDatatype.class);
 
@@ -230,15 +227,6 @@ public class PersistentTypeInfoSection extends IpsSection {
      */
     public void setExpanded(boolean expanded) {
         getSectionControl().setExpanded(expanded);
-    }
-
-    private <E extends Enum<E>> void setComboItems(Combo combo, Class<E> class1) {
-        Enum<E>[] allEnumConstants = class1.getEnumConstants();
-        String[] allEnumValues = new String[allEnumConstants.length];
-        for (int i = 0; i < allEnumConstants.length; i++) {
-            allEnumValues[i] = allEnumConstants[i].toString();
-        }
-        combo.setItems(allEnumValues);
     }
 
     @Override
