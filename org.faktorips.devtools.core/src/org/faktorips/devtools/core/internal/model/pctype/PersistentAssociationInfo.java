@@ -559,7 +559,11 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         joinTableName = element.getAttribute(PROPERTY_JOIN_TABLE_NAME);
         fetchType = FetchType.valueOf(element.getAttribute(PROPERTY_FETCH_TYPE));
         joinColumnName = element.getAttribute(PROPERTY_JOIN_COLUMN_NAME);
-        joinColumnNullable = Boolean.valueOf(element.getAttribute(PROPERTY_JOIN_COLUMN_NULLABLE));
+        // joinColumnNullable default is true
+        String strJoinColumnNullable = element.getAttribute(PROPERTY_JOIN_COLUMN_NULLABLE);
+        joinColumnNullable = strJoinColumnNullable == null || strJoinColumnNullable.length() == 0 ? true : Boolean
+                .valueOf(strJoinColumnNullable);
+
         orphanRemoval = Boolean.valueOf(element.getAttribute(PROPERTY_ORPHAN_REMOVAL));
 
         cascadeTypeOverwriteDefault = Boolean.valueOf(element.getAttribute(PROPERTY_CASCADE_TYPE_OVERWRITE_DEFAULT));
