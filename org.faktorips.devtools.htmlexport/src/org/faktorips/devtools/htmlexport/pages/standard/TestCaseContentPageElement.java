@@ -68,7 +68,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
         addPageElements(new WrapperPageElement(WrapperType.BLOCK).addPageElements(
                 new TextPageElement(IpsObjectType.TEST_CASE_TYPE.getDisplayName() + ": ")) //$NON-NLS-1$
                 .addPageElements(
-                        PageElementUtils.createLinkPageElement(getContext(), testCaseType,
+                        new PageElementUtils().createLinkPageElement(getContext(), testCaseType,
                                 "content", testCaseType.getQualifiedName(), true))); //$NON-NLS-1$
 
         addTestCaseTypeParameters();

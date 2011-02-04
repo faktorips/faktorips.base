@@ -113,7 +113,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
                 throw e;
             }
 
-            attributeData.add(PageElementUtils.createLinkPageElement(getContext(), policyCmptType,
+            attributeData.add(new PageElementUtils().createLinkPageElement(getContext(), policyCmptType,
                     "content", correspondingPolicyCmptType, true)); //$NON-NLS-1$
             attributeData.add(new TextPageElement(policyCmptType.getAttribute(attribute.getAttribute()).getDatatype()));
         }
@@ -210,7 +210,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
             throws CoreException {
         IPolicyCmptType policyCmptType = testParameter.findPolicyCmptType(testParameter.getIpsProject());
 
-        PageElement linkPageElement = PageElementUtils.createLinkPageElement(getContext(), policyCmptType,
+        PageElement linkPageElement = new PageElementUtils().createLinkPageElement(getContext(), policyCmptType,
                 "content", policyCmptType.getName(), true); //$NON-NLS-1$
         TreeNodePageElement testParameterPageElement = new TreeNodePageElement(
                 new WrapperPageElement(WrapperType.BLOCK).addPageElements(linkPageElement).addPageElements(

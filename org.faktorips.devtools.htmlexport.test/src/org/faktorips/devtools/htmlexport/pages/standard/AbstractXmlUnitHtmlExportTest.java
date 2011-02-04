@@ -16,11 +16,11 @@ package org.faktorips.devtools.htmlexport.pages.standard;
 import java.io.UnsupportedEncodingException;
 
 import org.faktorips.devtools.htmlexport.AbstractHtmlExportXmlUnitLayouterTest;
+import org.faktorips.devtools.htmlexport.context.AbstractHtmlExportPluginTest;
 import org.faktorips.devtools.htmlexport.generators.IGenerator;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
-import org.faktorips.devtools.htmlexport.test.context.AbstractHtmlExportPluginTest;
 
 public abstract class AbstractXmlUnitHtmlExportTest extends AbstractHtmlExportPluginTest {
 

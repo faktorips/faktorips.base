@@ -134,8 +134,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         for (IIpsProject ipsProject : objectPath.getReferencedIpsProjects()) {
             referencedIpsProjectsName.add(ipsProject.getName());
         }
-        ListPageElement referencedProjects = new ListPageElement(Arrays.asList(PageElementUtils
-                .createTextPageElements(referencedIpsProjectsName)));
+        ListPageElement referencedProjects = new ListPageElement(Arrays.asList(new PageElementUtils().createTextPageElements(referencedIpsProjectsName)));
         return wrapper.addPageElements(referencedProjects);
     }
 
@@ -166,8 +165,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
                     .getMessage("ProjectOverviewPageElement_noReferencingProjects"))); //$NON-NLS-1$
         }
 
-        ListPageElement referencingProjects = new ListPageElement(Arrays.asList(PageElementUtils
-                .createTextPageElements(referencingIpsProjectsName)));
+        ListPageElement referencingProjects = new ListPageElement(Arrays.asList(new PageElementUtils().createTextPageElements(referencingIpsProjectsName)));
         return wrapper.addPageElements(referencingProjects);
     }
 
@@ -184,8 +182,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         for (IIpsSrcFolderEntry folderEntry : objectPath.getSourceFolderEntries()) {
             sourceFolder.add(folderEntry.getSourceFolder().getName());
         }
-        ListPageElement referencedProjects = new ListPageElement(Arrays.asList(PageElementUtils
-                .createTextPageElements(sourceFolder)));
+        ListPageElement referencedProjects = new ListPageElement(Arrays.asList(new PageElementUtils().createTextPageElements(sourceFolder)));
         return wrapper.addPageElements(referencedProjects);
     }
 

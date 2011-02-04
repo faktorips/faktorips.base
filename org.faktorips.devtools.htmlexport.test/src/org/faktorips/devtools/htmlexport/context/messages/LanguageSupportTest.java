@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.htmlexport.test.context;
+package org.faktorips.devtools.htmlexport.context.messages;
 
 import java.util.Locale;
 
@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTyp
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.htmlexport.context.AbstractHtmlExportPluginTest;
 
 public class LanguageSupportTest extends AbstractHtmlExportPluginTest {
 

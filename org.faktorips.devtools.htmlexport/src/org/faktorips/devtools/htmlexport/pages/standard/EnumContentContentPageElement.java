@@ -54,7 +54,7 @@ public class EnumContentContentPageElement extends AbstractIpsObjectContentPageE
 
         addPageElements(new WrapperPageElement(WrapperType.BLOCK).addPageElements(
                 new TextPageElement(IpsObjectType.ENUM_TYPE.getDisplayName() + ": ")).addPageElements( //$NON-NLS-1$
-                PageElementUtils.createLinkPageElement(getContext(), getEnumType(),
+                new PageElementUtils().createLinkPageElement(getContext(), getEnumType(),
                         "content", getEnumType().getQualifiedName(), true))); //$NON-NLS-1$
 
         addValuesTable();

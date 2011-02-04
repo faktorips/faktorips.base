@@ -22,8 +22,8 @@ import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTyp
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.htmlexport.context.messages.LanguageSupportTest;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
-import org.faktorips.devtools.htmlexport.test.context.LanguageSupportTest;
 
 /**
  * Testet die Ausgabe der Labels und Descriptions in Html, die prinzipielle Funktion testet der

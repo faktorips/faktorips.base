@@ -72,7 +72,7 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
                 getContext().getMessage(HtmlExportMessages.AbstractObjectContentPageElement_overviewProject)
                         + " " + getContext().getIpsProject().getName()))); //$NON-NLS-1$
 
-        addPageElements(PageElementUtils.createLinkPageElement(getContext(), getDocumentedIpsObject()
+        addPageElements(new PageElementUtils().createLinkPageElement(getContext(), getDocumentedIpsObject()
                 .getIpsPackageFragment(),
                 "classes", IpsUIPlugin.getLabel(getDocumentedIpsObject().getIpsPackageFragment()), true)); //$NON-NLS-1$
         addPageElements(new TextPageElement(getIpsObjectTypeDisplayName() + " " //$NON-NLS-1$

@@ -19,7 +19,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.htmlexport.test.context.AbstractHtmlExportPluginTest;
+import org.faktorips.devtools.htmlexport.context.AbstractHtmlExportPluginTest;
 
 public class PageElementUtilsTest extends AbstractHtmlExportPluginTest {
     private static final String TARGET = "target"; //$NON-NLS-1$
@@ -33,7 +33,7 @@ public class PageElementUtilsTest extends AbstractHtmlExportPluginTest {
         ipsProject.findAllIpsSrcFiles(srcFiles);
 
         for (IIpsSrcFile srcFile : srcFiles) {
-            PageElement pageElement = PageElementUtils.createLinkPageElement(context, srcFile, TARGET,
+            PageElement pageElement = new PageElementUtils().createLinkPageElement(context, srcFile, TARGET,
                     srcFile.getName(), false);
             assertIsLink(pageElement);
         }
@@ -60,7 +60,7 @@ public class PageElementUtilsTest extends AbstractHtmlExportPluginTest {
         ipsProject.findAllIpsSrcFiles(srcFiles);
 
         for (IIpsSrcFile srcFile : srcFiles) {
-            PageElement pageElement = PageElementUtils.createLinkPageElement(context, srcFile, TARGET,
+            PageElement pageElement = new PageElementUtils().createLinkPageElement(context, srcFile, TARGET,
                     srcFile.getName(), false);
 
             if (srcFile.getIpsObjectType() == testedIpsObjectType) {
@@ -78,7 +78,7 @@ public class PageElementUtilsTest extends AbstractHtmlExportPluginTest {
         texts.add("text 3");
         texts.add("text 4");
 
-        PageElement[] textPageElements = PageElementUtils.createTextPageElements(texts);
+        PageElement[] textPageElements = new PageElementUtils().createTextPageElements(texts);
 
         assertEquals(texts.size(), textPageElements.length);
 

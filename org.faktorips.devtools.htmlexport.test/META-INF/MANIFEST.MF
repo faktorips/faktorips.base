@@ -9,7 +9,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.faktorips.devtools.core,
  org.eclipse.ltk.core.refactoring;bundle-version="3.4.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: org.faktorips.devtools.htmlexport.test.context,
- org.faktorips.devtools.htmlexport.test.helper.html
+Export-Package: org.faktorips.devtools.htmlexport.context
 Bundle-ClassPath: lib/xmlunit-1.3.jar,
  .

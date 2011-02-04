@@ -67,7 +67,7 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
 
         addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
                 new TextPageElement(IpsObjectType.PRODUCT_CMPT_TYPE.getDisplayName() + ": "), //$NON-NLS-1$
-                PageElementUtils.createLinkPageElement(getContext(), productCmptType,
+                new PageElementUtils().createLinkPageElement(getContext(), productCmptType,
                         "content", productCmptType.getName(), true) })); //$NON-NLS-1$
     }
 
@@ -126,7 +126,7 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
             validFroms.add(getContext().getSimpleDateFormat().format(validFrom.getTime()));
         }
 
-        wrapper.addPageElements(new ListPageElement(Arrays.asList(PageElementUtils.createTextPageElements(validFroms))));
+        wrapper.addPageElements(new ListPageElement(Arrays.asList(new PageElementUtils().createTextPageElements(validFroms))));
         addPageElements(wrapper);
     }
 }

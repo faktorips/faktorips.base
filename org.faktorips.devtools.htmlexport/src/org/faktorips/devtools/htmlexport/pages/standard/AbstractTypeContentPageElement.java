@@ -175,7 +175,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
         }
 
         if (type.getSupertype().equals(getDocumentedIpsObject().getQualifiedName())) {
-            subTypes.add(PageElementUtils.createLinkPageElement(getContext(), type,
+            subTypes.add(new PageElementUtils().createLinkPageElement(getContext(), type,
                     "content", type.getQualifiedName(), true)); //$NON-NLS-1$
         }
     }
@@ -191,7 +191,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
         }
 
         TreeNodePageElement baseElement = new TreeNodePageElement(new TreeNodePageElement(
-                PageElementUtils.createLinkPageElement(getContext(), superTypes.get(0),
+                new PageElementUtils().createLinkPageElement(getContext(), superTypes.get(0),
                         "content", superTypes.get(0).getQualifiedName(), true))); //$NON-NLS-1$
         TreeNodePageElement element = baseElement;
 
@@ -200,7 +200,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
                 element.addPageElements(new TextPageElement(getDocumentedIpsObject().getName()));
                 break;
             }
-            TreeNodePageElement subElement = new TreeNodePageElement(PageElementUtils.createLinkPageElement(
+            TreeNodePageElement subElement = new TreeNodePageElement(new PageElementUtils().createLinkPageElement(
                     getContext(), superTypes.get(i), "content", superTypes.get(i).getName(), true)); //$NON-NLS-1$
             element.addPageElements(subElement);
             element = subElement;
@@ -242,7 +242,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
         addPageElements(new WrapperPageElement(
                 WrapperType.BLOCK,
                 new PageElement[] {
-                        new TextPageElement(getContext().getMessage(HtmlExportMessages.AbstractTypeContentPageElement_extends) + " "), PageElementUtils.createLinkPageElement(getContext(), to, "content", to.getName(), true) })); //$NON-NLS-1$//$NON-NLS-2$ 
+                        new TextPageElement(getContext().getMessage(HtmlExportMessages.AbstractTypeContentPageElement_extends) + " "), new PageElementUtils().createLinkPageElement(getContext(), to, "content", to.getName(), true) })); //$NON-NLS-1$//$NON-NLS-2$ 
     }
 
     /**

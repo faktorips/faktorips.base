@@ -28,8 +28,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.testcase.ITestValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
+import org.faktorips.devtools.htmlexport.context.AbstractHtmlExportPluginTest;
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsElementImagePageElement;
-import org.faktorips.devtools.htmlexport.test.context.AbstractHtmlExportPluginTest;
 
 public class IpsElementImagePageElementTest extends AbstractHtmlExportPluginTest {
 

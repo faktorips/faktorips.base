@@ -98,7 +98,7 @@ public abstract class AbstractInheritedIpsObjectPartsPageElement<S extends IIpsE
     protected abstract List<T> getIpsObjectParts(S ipsElement);
 
     protected PageElement createRepresentation(T objectPart) {
-        return PageElementUtils.createLinkPageElement(context, objectPart, "content", new Style[0]); //$NON-NLS-1$
+        return new PageElementUtils().createLinkPageElement(context, objectPart, "content", new Style[0]); //$NON-NLS-1$
     }
 
     protected S getParentIpsElement() {

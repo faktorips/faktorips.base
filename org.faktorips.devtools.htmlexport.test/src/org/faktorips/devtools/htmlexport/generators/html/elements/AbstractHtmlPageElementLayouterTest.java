@@ -11,34 +11,23 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.htmlexport.test.helper;
+package org.faktorips.devtools.htmlexport.generators.html.elements;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import org.faktorips.devtools.htmlexport.AbstractHtmlExportXmlUnitLayouterTest;
+import org.faktorips.devtools.htmlexport.TestUtil;
+import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 
-import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
+public abstract class AbstractHtmlPageElementLayouterTest extends AbstractHtmlExportXmlUnitLayouterTest {
 
-public class ContainsTextTestLayouter extends AbstractTestLayouter {
-    private List<String> textList;
+    protected HtmlLayouter layouter = new HtmlLayouter("", new TestUtil().createMockIoHandler());
 
-    public ContainsTextTestLayouter(String... texts) {
+    public AbstractHtmlPageElementLayouterTest() {
         super();
-        textList = new ArrayList<String>(Arrays.asList(texts));
     }
 
     @Override
-    public void layoutTextPageElement(TextPageElement pageElement) {
-        String text = pageElement.getText();
-
-        if (textList.contains(text)) {
-            textList.remove(text);
-        }
-    }
-
-    @Override
-    public void assertTest() {
-        assertTrue("Not all texts found:\n" + textList, textList.isEmpty());
+    protected void setUp() throws Exception {
+        layouter.clear();
     }
 
 }

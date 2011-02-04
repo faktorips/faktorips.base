@@ -63,20 +63,20 @@ public class MethodsTablePageElement extends AbstractIpsObjectPartsContainerTabl
     protected List<String> getHeadlineWithIpsObjectPart() {
         ArrayList<String> headline = new ArrayList<String>();
 
-        headline.add(getContext().getMessage(HtmlExportMessages.MethodsTablePageElement_headlineName)); 
-        headline.add(getContext().getMessage(HtmlExportMessages.MethodsTablePageElement_headlineAbstract)); 
-        headline.add(getContext().getMessage(HtmlExportMessages.MethodsTablePageElement_headlineModifier)); 
-        headline.add(getContext().getMessage(HtmlExportMessages.MethodsTablePageElement_headlineDatatype)); 
-        headline.add(getContext().getMessage(HtmlExportMessages.MethodsTablePageElement_headlineSignature)); 
-        headline.add(getContext().getMessage(HtmlExportMessages.MethodsTablePageElement_headlineDescription)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.MethodsTablePageElement_headlineName));
+        headline.add(getContext().getMessage(HtmlExportMessages.MethodsTablePageElement_headlineAbstract));
+        headline.add(getContext().getMessage(HtmlExportMessages.MethodsTablePageElement_headlineModifier));
+        headline.add(getContext().getMessage(HtmlExportMessages.MethodsTablePageElement_headlineDatatype));
+        headline.add(getContext().getMessage(HtmlExportMessages.MethodsTablePageElement_headlineSignature));
+        headline.add(getContext().getMessage(HtmlExportMessages.MethodsTablePageElement_headlineDescription));
 
         return headline;
     }
 
     @Override
     protected List<? extends PageElement> createRowWithIpsObjectPart(IMethod method) {
-        PageElement[] textPageElements = PageElementUtils.createTextPageElements(getMethodData(method));
-        textPageElements[0].setAnchor(PageElementUtils.createAnchorId(method));
+        PageElement[] textPageElements = new PageElementUtils().createTextPageElements(getMethodData(method));
+        textPageElements[0].setAnchor(new PageElementUtils().createAnchorId(method));
         return Arrays.asList(textPageElements);
     }
 }

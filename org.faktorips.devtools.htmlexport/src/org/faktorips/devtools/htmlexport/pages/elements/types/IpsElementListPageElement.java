@@ -91,7 +91,7 @@ public class IpsElementListPageElement extends AbstractIpsElementListPageElement
             if (!filter.accept(srcFile)) {
                 continue;
             }
-            PageElement link = PageElementUtils.createLinkPageElement(getContext(), srcFile, getLinkTarget(),
+            PageElement link = new PageElementUtils().createLinkPageElement(getContext(), srcFile, getLinkTarget(),
                     srcFile.getIpsObjectName(), true);
             items.add(link);
         }

@@ -74,11 +74,11 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
         values.add(association.isSubsetOfADerivedUnion() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
         values.add(association.isQualified() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
 
-        PageElement[] elements = PageElementUtils.createTextPageElements(values);
+        PageElement[] elements = new PageElementUtils().createTextPageElements(values);
 
         try {
             IIpsObject target = type.getIpsProject().findIpsObject(type.getIpsObjectType(), association.getTarget());
-            elements[linkElementIndex] = PageElementUtils.createLinkPageElement(context, target,
+            elements[linkElementIndex] = new PageElementUtils().createLinkPageElement(context, target,
                     "content", target.getName(), true); //$NON-NLS-1$
         } catch (CoreException e) {
             context.addStatus(new IpsStatus(IStatus.WARNING,

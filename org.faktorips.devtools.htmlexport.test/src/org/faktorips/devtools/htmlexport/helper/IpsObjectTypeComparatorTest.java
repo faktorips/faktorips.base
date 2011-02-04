@@ -18,6 +18,7 @@ import static org.mockito.Mockito.when;
 import junit.framework.TestCase;
 
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.htmlexport.helper.IpsObjectTypeComparator;
 
 public class IpsObjectTypeComparatorTest extends TestCase {
 

@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.htmlexport.context;
+package org.faktorips.devtools.htmlexport.context.messages;
 
 import java.util.Locale;
 import java.util.Properties;
@@ -19,6 +19,7 @@ import java.util.Properties;
 import junit.framework.TestCase;
 
 import org.faktorips.devtools.htmlexport.FakePluginResourcesFacade;
+import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.MessagesManager;
 
 public class MessagesManagerTest extends TestCase {

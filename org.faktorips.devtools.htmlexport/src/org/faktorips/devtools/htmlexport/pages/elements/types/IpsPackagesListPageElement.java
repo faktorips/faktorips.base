@@ -108,7 +108,7 @@ public class IpsPackagesListPageElement extends AbstractIpsElementListPageElemen
             }
 
             linkedPackagesNames.add(packageFragment.getName());
-            packageLinks.add(PageElementUtils.createLinkPageElement(getContext(), packageFragment, getLinkTarget(),
+            packageLinks.add(new PageElementUtils().createLinkPageElement(getContext(), packageFragment, getLinkTarget(),
                     IpsUIPlugin.getLabel(packageFragment), true));
         }
 

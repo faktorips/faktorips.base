@@ -11,19 +11,19 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.htmlexport.test.context;
+package org.faktorips.devtools.htmlexport.context;
+
+import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
-import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.devtools.htmlexport.FakePluginResourcesFacade;
 
-// TODO direkt von TestCase ableiten, wenn fakeobjekte fertig sind
-public class DocumentationContextTest extends AbstractIpsPluginTest {
+public class DocumentationContextTest extends TestCase {
 
     public void testExportStatus() {
-        DocumentationContext context = new DocumentationContext();
+        DocumentationContext context = new DocumentationContext(new FakePluginResourcesFacade());
 
         assertEquals(IStatus.OK, context.getExportStatus().getSeverity());
 

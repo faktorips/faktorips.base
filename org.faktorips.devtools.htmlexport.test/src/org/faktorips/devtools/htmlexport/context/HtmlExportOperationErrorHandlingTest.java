@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.htmlexport.test.context;
+package org.faktorips.devtools.htmlexport.context;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.htmlexport.HtmlExportOperation;
-import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.devtools.htmlexport.TestUtil;
 import org.faktorips.devtools.htmlexport.standard.StandardDocumentorScript;
 
 public class HtmlExportOperationErrorHandlingTest extends AbstractHtmlExportPluginTest {
@@ -74,7 +74,7 @@ public class HtmlExportOperationErrorHandlingTest extends AbstractHtmlExportPlug
         createStandardProjekt();
 
         context.setPath(zielpfad);
-        context.addDocumentorScript(new StandardDocumentorScript());
+        context.addDocumentorScript(new StandardDocumentorScript(new TestUtil().createMockIoHandler()));
 
         context.setDocumentedIpsObjectTypes(context.getIpsProject().getIpsModel().getIpsObjectTypes());
 

@@ -107,7 +107,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
                         new IpsStatus(IStatus.ERROR, "Could not find TableStructure " + tableStructure, e)); //$NON-NLS-1$
                 return;
             }
-            PageElement link = PageElementUtils.createLinkPageElement(getContext(), ipsObject,
+            PageElement link = new PageElementUtils().createLinkPageElement(getContext(), ipsObject,
                     "content", tableStructure, true); //$NON-NLS-1$
             links.add(link);
         }
@@ -116,14 +116,15 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
         protected List<String> getHeadlineWithIpsObjectPart() {
             List<String> headline = new ArrayList<String>();
 
-            headline.add(getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_roleName)); 
-            headline.add(getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_headlineLabel)); 
+            headline.add(getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_roleName));
+            headline.add(getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_headlineLabel));
             headline.add(IpsObjectType.TABLE_STRUCTURE.getDisplayName());
 
             addHeadlineAndColumnLayout(headline, IpsObjectType.TABLE_CONTENTS.getDisplayName()
-                    + getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_mandatory), Style.CENTER); 
+                    + getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_mandatory),
+                    Style.CENTER);
 
-            headline.add(getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_description)); 
+            headline.add(getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_description));
 
             return headline;
         }
@@ -154,7 +155,8 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
         wrapper.addPageElements(new TextPageElement(IpsObjectType.TABLE_STRUCTURE.getDisplayNamePlural(),
                 TextType.HEADING_2));
         wrapper.addPageElements((getTableOrAlternativeText(new TableStructureTablePageElement(getDocumentedIpsObject(),
-                getContext()), getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_noTableStructures)))); 
+                getContext()),
+                getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_noTableStructures))));
         addPageElements(wrapper);
     }
 
@@ -180,13 +182,15 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
                 TextType.HEADING_2));
 
         if (allProductCmptSrcFiles.size() == 0) {
-            wrapper.addPageElements(new TextPageElement(getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_no) 
+            wrapper.addPageElements(new TextPageElement(getContext().getMessage(
+                    HtmlExportMessages.ProductCmptTypeContentPageElement_no)
                     + IpsObjectType.PRODUCT_CMPT.getDisplayNamePlural()));
             addPageElements(wrapper);
             return;
         }
 
-        List<PageElement> linkPageElements = PageElementUtils.createLinkPageElements(allProductCmptSrcFiles, "content", //$NON-NLS-1$
+        List<PageElement> linkPageElements = new PageElementUtils().createLinkPageElements(allProductCmptSrcFiles,
+                "content", //$NON-NLS-1$
                 new LinkedHashSet<Style>(), getContext());
         ListPageElement liste = new ListPageElement(linkPageElements);
 
@@ -218,7 +222,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
         addPageElements(new WrapperPageElement(
                 WrapperType.BLOCK,
                 new PageElement[] {
-                        new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": "), PageElementUtils.createLinkPageElement(getContext(), to, "content", to.getName(), true) })); //$NON-NLS-1$ //$NON-NLS-2$
+                        new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": "), new PageElementUtils().createLinkPageElement(getContext(), to, "content", to.getName(), true) })); //$NON-NLS-1$ //$NON-NLS-2$
 
     }
 
@@ -230,7 +234,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
             protected List<String> getHeadlineWithIpsObjectPart() {
 
                 List<String> headline = super.getHeadlineWithIpsObjectPart();
-                headline.add(getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_formulaName)); 
+                headline.add(getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_formulaName));
 
                 return headline;
             }

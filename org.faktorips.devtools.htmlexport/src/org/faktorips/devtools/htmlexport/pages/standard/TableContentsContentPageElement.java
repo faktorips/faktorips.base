@@ -72,7 +72,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
 
         @Override
         protected List<? extends PageElement> createRowWithIpsObjectPart(IRow rowData) {
-            return Arrays.asList(PageElementUtils.createTextPageElements(getRowData(rowData)));
+            return Arrays.asList(new PageElementUtils().createTextPageElements(getRowData(rowData)));
         }
 
         private List<String> getRowData(IRow row) {
@@ -123,7 +123,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
 
         addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
                 new TextPageElement(IpsObjectType.TABLE_STRUCTURE.getDisplayName() + ": "), //$NON-NLS-1$
-                PageElementUtils.createLinkPageElement(getContext(), tableStructure,
+                new PageElementUtils().createLinkPageElement(getContext(), tableStructure,
                         "content", tableStructure.getName(), true) })); //$NON-NLS-1$
     }
 

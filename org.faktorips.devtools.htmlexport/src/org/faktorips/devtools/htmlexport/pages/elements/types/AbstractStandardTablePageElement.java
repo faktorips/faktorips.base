@@ -78,8 +78,7 @@ public abstract class AbstractStandardTablePageElement extends TablePageElement 
      * adds the headline to the table and uses the values returned by the method getHeadline
      */
     protected void addHeadline() {
-        PageElement[] pageElements = PageElementUtils
-                .createTextPageElements(getHeadline(), null, TextType.WITHOUT_TYPE);
+        PageElement[] pageElements = new PageElementUtils().createTextPageElements(getHeadline(), null, TextType.WITHOUT_TYPE);
 
         addSubElement(new TableRowPageElement(pageElements));
     }

@@ -71,8 +71,8 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
     }
 
     /**
-     * adds a {@link PageElement}. Overwrite to check restrictions for subelements (e.g. a table
-     * just should take tableRows)
+     * adds a {@link PageElement}. Override to check restrictions for subelements (e.g. a table just
+     * should take tableRows)
      * 
      */
     protected void addSubElement(PageElement pageElement) {

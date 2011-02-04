@@ -86,7 +86,7 @@ public class MessageListTablePageElement extends AbstractStandardTablePageElemen
     protected PageElement createInvalidObjectPropertiesItem(ObjectProperty objectProperty) {
         IIpsSrcFile srcFile = new LinkableIpsElementUtil().getLinkableSrcFile(objectProperty.getObject(), getContext());
         if (srcFile != null) {
-            return PageElementUtils.createLinkPageElement(context, srcFile, "content", //$NON-NLS-1$
+            return new PageElementUtils().createLinkPageElement(context, srcFile, "content", //$NON-NLS-1$
                     srcFile.getIpsObjectName(), true);
         }
         return new TextPageElement(objectProperty.getObject().toString());

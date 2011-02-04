@@ -56,7 +56,7 @@ public class HtmlLayouterListTest extends AbstractTestHtmlLayouter {
 
     protected ListPageElement createList() {
         items = new String[] { "Item 1", "Item 2", "Item 3" };
-        PageElement[] pageElements = PageElementUtils.createTextPageElements(Arrays.asList(items));
+        PageElement[] pageElements = new PageElementUtils().createTextPageElements(Arrays.asList(items));
 
         ListPageElement liste = new ListPageElement(Arrays.asList(pageElements));
         return liste;

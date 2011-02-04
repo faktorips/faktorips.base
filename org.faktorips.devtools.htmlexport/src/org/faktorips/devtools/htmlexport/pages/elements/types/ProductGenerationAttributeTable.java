@@ -260,8 +260,8 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     }
 
     private void addSubHeadline(String category) {
-        PageElement[] pageElements = PageElementUtils.createTextPageElements(getHeadlineWithCategory(category), null,
-                TextType.WITHOUT_TYPE);
+        PageElement[] pageElements = new PageElementUtils().createTextPageElements(getHeadlineWithCategory(category),
+                null, TextType.WITHOUT_TYPE);
 
         addSubElement(new TableRowPageElement(pageElements).addStyles(Style.TABLE_HEADLINE));
     }
@@ -288,7 +288,8 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
                 cells[i + 1] = new TextPageElement("-"); //$NON-NLS-1$
                 continue;
             }
-            PageElement linkPageElement = PageElementUtils.createLinkPageElement(context, tableContent, "content", //$NON-NLS-1$
+            PageElement linkPageElement = new PageElementUtils().createLinkPageElement(context, tableContent,
+                    "content", //$NON-NLS-1$
                     tableContent.getName(), true);
 
             cells[i + 1] = linkPageElement;
@@ -322,7 +323,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         IAssociation[] associations = getAllAssociations();
         for (IAssociation association : associations) {
             PageElement[] cells = new PageElement[productCmpt.getNumOfGenerations() + 1];
-            cells[0] = PageElementUtils.createIpsElementRepresentation(association, context,
+            cells[0] = new PageElementUtils().createIpsElementRepresentation(association, context,
                     context.getLabel(association), true);
             for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
                 IProductCmptGeneration productCmptGeneration = productCmpt.getProductCmptGeneration(i);
@@ -365,7 +366,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         IProductCmpt target;
         target = productCmptLink.findTarget(productCmpt.getIpsProject());
 
-        PageElement targetLink = PageElementUtils.createLinkPageElement(context, target, "content", target //$NON-NLS-1$
+        PageElement targetLink = new PageElementUtils().createLinkPageElement(context, target, "content", target //$NON-NLS-1$
                 .getName(), true);
 
         Set<Style> cardinalityStyles = new HashSet<Style>();

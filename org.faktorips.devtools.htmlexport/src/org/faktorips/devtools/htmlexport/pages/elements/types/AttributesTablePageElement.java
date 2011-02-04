@@ -50,8 +50,8 @@ public class AttributesTablePageElement extends AbstractIpsObjectPartsContainerT
 
     @Override
     protected List<? extends PageElement> createRowWithIpsObjectPart(IAttribute attribute) {
-        PageElement[] textPageElements = PageElementUtils.createTextPageElements(getAttributeData(attribute));
-        textPageElements[0].setAnchor(PageElementUtils.createAnchorId(attribute));
+        PageElement[] textPageElements = new PageElementUtils().createTextPageElements(getAttributeData(attribute));
+        textPageElements[0].setAnchor(new PageElementUtils().createAnchorId(attribute));
         return Arrays.asList(textPageElements);
     }
 

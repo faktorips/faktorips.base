@@ -1,7 +1,11 @@
-package org.faktorips.devtools.htmlexport.test.context;
+package org.faktorips.devtools.htmlexport.context;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.htmlexport.HtmlExportOperation;
+import org.faktorips.devtools.htmlexport.IDocumentorScript;
+import org.faktorips.devtools.htmlexport.TestUtil;
+import org.faktorips.devtools.htmlexport.helper.IoHandler;
+import org.faktorips.devtools.htmlexport.standard.StandardDocumentorScript;
 
 public class HtmlExportOperationTest extends AbstractHtmlExportPluginTest {
 
@@ -19,6 +23,9 @@ public class HtmlExportOperationTest extends AbstractHtmlExportPluginTest {
         createStandardProjekt();
 
         context.setPath(zielpfad);
+
+        IDocumentorScript script = new StandardDocumentorScript(new TestUtil().createMockIoHandler());
+        context.addDocumentorScript(script);
 
         context.setDocumentedIpsObjectTypes(context.getIpsProject().getIpsModel().getIpsObjectTypes());
 

@@ -33,6 +33,7 @@ import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.generators.LayoutResource;
 import org.faktorips.devtools.htmlexport.generators.html.BaseFrameHtmlGenerator;
 import org.faktorips.devtools.htmlexport.helper.FileHandler;
+import org.faktorips.devtools.htmlexport.helper.IoHandler;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementInIIpsPackageFilter;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
 import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
@@ -47,7 +48,15 @@ public class StandardDocumentorScript implements IDocumentorScript {
 
     private static final String STANDARD_PATH = ""; //$NON-NLS-1$
     private final HtmlUtil htmlUtil = new HtmlUtil();
-    private FileHandler fileHandler = new FileHandler();
+    private final IoHandler ioHandler;
+
+    public StandardDocumentorScript() {
+        this(new FileHandler());
+    }
+
+    public StandardDocumentorScript(IoHandler ioHandler) {
+        this.ioHandler = ioHandler;
+    }
 
     @Override
     public void execute(DocumentationContext context, IProgressMonitor monitor) throws CoreException {
@@ -89,7 +98,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
         ILayouter layouter = context.getLayouter();
         Set<LayoutResource> resources = layouter.getLayoutResources();
         for (LayoutResource layoutResource : resources) {
-            fileHandler.writeFile(context, STANDARD_PATH + layoutResource.getName(), layoutResource.getContent());
+            ioHandler.writeFile(context, STANDARD_PATH + layoutResource.getName(), layoutResource.getContent());
         }
         monitor.done();
     }
@@ -115,7 +124,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
             return;
         }
         objectContentPage.build();
-        fileHandler
+        ioHandler
                 .writeFile(
                         context,
                         STANDARD_PATH
@@ -152,7 +161,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
                 documentedSourceFiles, context);
         allClassesPage.setLinkTarget("content"); //$NON-NLS-1$
         allClassesPage.build();
-        fileHandler.writeFile(context,
+        ioHandler.writeFile(context,
                 STANDARD_PATH + htmlUtil.getPathFromRoot(ipsObjectType, LinkedFileType.OBJECT_TYPE_CLASSES_OVERVIEW),
                 getPageContent(context, allClassesPage));
 
@@ -180,7 +189,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
                 new IpsElementInIIpsPackageFilter(ipsPackageFragment, context), context, shownTypeChooser);
         allClassesPage.setLinkTarget("content"); //$NON-NLS-1$
         allClassesPage.build();
-        fileHandler.writeFile(
+        ioHandler.writeFile(
                 context,
                 STANDARD_PATH
                         + htmlUtil.getPathFromRoot(ipsPackageFragment,
@@ -204,7 +213,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
                 context);
         allClassesPage.setLinkTarget("content"); //$NON-NLS-1$
         allClassesPage.build();
-        fileHandler.writeFile(context, STANDARD_PATH + "classes.html", getPageContent(context, allClassesPage)); //$NON-NLS-1$
+        ioHandler.writeFile(context, STANDARD_PATH + "classes.html", getPageContent(context, allClassesPage)); //$NON-NLS-1$
 
         monitor.done();
     }
@@ -224,7 +233,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
 
     private void writeFileWithOutput(DocumentationContext context, PageElement allPackagesPage, String filePath)
             throws IOException {
-        fileHandler.writeFile(context, filePath, getPageContent(context, allPackagesPage));
+        ioHandler.writeFile(context, filePath, getPageContent(context, allPackagesPage));
     }
 
     private void writeBaseFrameDefinition(DocumentationContext context, IProgressMonitor monitor) throws IOException {
@@ -232,7 +241,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
 
         IGenerator baseFrameHtml = new BaseFrameHtmlGenerator(
                 context.getMessage("StandardDocumentorScript_documentation") + " " + context.getIpsProject().getName(), "20%, 80%", "30%, 70%"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ 
-        fileHandler.writeFile(context, STANDARD_PATH + "index.html", baseFrameHtml.generate()); //$NON-NLS-1$
+        ioHandler.writeFile(context, STANDARD_PATH + "index.html", baseFrameHtml.generate()); //$NON-NLS-1$
 
         monitor.done();
     }
@@ -242,7 +251,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
 
         PageElement projectOverviewHtml = new ProjectOverviewPageElement(context);
         projectOverviewHtml.build();
-        fileHandler.writeFile(context, STANDARD_PATH + "summary.html", getPageContent(context, projectOverviewHtml)); //$NON-NLS-1$
+        ioHandler.writeFile(context, STANDARD_PATH + "summary.html", getPageContent(context, projectOverviewHtml)); //$NON-NLS-1$
 
         monitor.done();
     }

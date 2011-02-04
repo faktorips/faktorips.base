@@ -39,7 +39,7 @@ public class HtmlLinkPageElementLayouterTest extends AbstractHtmlPageElementLayo
         elementLayouter.layout();
 
         String generateText = layouter.generateText();
-        System.out.println(generateText);
+
         assertXpathExists(generateText, "/a[@target='" + target + "'][@href='" + PATH_TO_ROOT + path + FILE_EXTENSION
                 + "'][.='" + text + "']");
     }
@@ -88,8 +88,6 @@ public class HtmlLinkPageElementLayouterTest extends AbstractHtmlPageElementLayo
         elementLayouter.layout();
 
         String generateText = layouter.generateText();
-
-        System.out.println(generateText);
 
         assertXpathExists(generateText, "/a[.='" + text + "'][@href='" + PATH_TO_ROOT + path + FILE_EXTENSION + "#"
                 + linkAnchor + "']");

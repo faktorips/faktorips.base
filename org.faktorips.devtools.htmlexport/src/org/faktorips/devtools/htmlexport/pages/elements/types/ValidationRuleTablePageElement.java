@@ -55,7 +55,7 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
         ruleData.add(StringUtils.join(rule.getValidatedAttributes(), '\n'));
         ruleData.add(getContext().getDescription(rule));
 
-        return Arrays.asList(PageElementUtils.createTextPageElements(ruleData));
+        return Arrays.asList(new PageElementUtils().createTextPageElements(ruleData));
 
     }
 

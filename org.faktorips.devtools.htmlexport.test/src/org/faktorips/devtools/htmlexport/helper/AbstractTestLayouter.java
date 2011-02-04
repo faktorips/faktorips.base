@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.htmlexport.test.helper;
+package org.faktorips.devtools.htmlexport.helper;
 
 import java.util.Set;
 

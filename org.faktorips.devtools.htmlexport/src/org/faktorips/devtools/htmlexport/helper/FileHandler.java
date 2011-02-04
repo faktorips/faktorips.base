@@ -31,23 +31,20 @@ import org.osgi.framework.Bundle;
  * @author dicker
  * 
  */
-public class FileHandler {
+public class FileHandler implements IoHandler {
 
     /**
-     * writes the content into a file. The filename is the path of the given
-     * {@link DocumentationContext} and relativPath.
-     * 
-     * 
+     * {@inheritDoc}
      */
+    @Override
     public void writeFile(DocumentationContext context, String relativPath, byte[] content) throws IOException {
         writeFile(context.getPath() + File.separator + relativPath, content);
     }
 
     /**
-     * writes the content into a file with the given filename.
-     * 
-     * 
+     * {@inheritDoc}
      */
+    @Override
     public void writeFile(String filename, byte[] content) throws IOException {
         File file = new File((filename));
         if (!file.getParentFile().exists()) {
@@ -59,13 +56,9 @@ public class FileHandler {
     }
 
     /**
-     * Reads the content of a file from the given bundle
-     * 
-     * @param bundleName name of the bundle
-     * @param fileName name of the file
-     * @return content of the file
-     * @throws IOException if an IOException occurs
+     * {@inheritDoc}
      */
+    @Override
     public byte[] readFile(String bundleName, String fileName) throws IOException {
         if (Platform.getBundle(bundleName) == null) {
             throw new IOException("Bundle " + bundleName + " not found (Loading file " + fileName + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

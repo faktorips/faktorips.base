@@ -25,6 +25,7 @@ import org.faktorips.devtools.htmlexport.generators.html.elements.HtmlRootPageEl
 import org.faktorips.devtools.htmlexport.generators.html.elements.HtmlTablePageElementLayouter;
 import org.faktorips.devtools.htmlexport.generators.html.elements.HtmlTextPageElementLayouter;
 import org.faktorips.devtools.htmlexport.helper.FileHandler;
+import org.faktorips.devtools.htmlexport.helper.IoHandler;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
@@ -57,10 +58,14 @@ public class HtmlLayouter extends AbstractLayouter {
      * path from the actual RootPageElement to the root-folder of the site
      */
     private String pathToRoot;
-    private FileHandler fileHandler = new FileHandler();
+    private final IoHandler ioHandler;
 
     public HtmlLayouter(String resourcePath) {
-        super();
+        this(resourcePath, new FileHandler());
+    }
+
+    public HtmlLayouter(String resourcePath, IoHandler ioHandler) {
+        this.ioHandler = ioHandler;
         this.resourcePath = resourcePath;
         initBaseResources();
     }
@@ -129,7 +134,7 @@ public class HtmlLayouter extends AbstractLayouter {
      */
     void initBaseResources() {
         try {
-            LayoutResource cssResource = new LayoutResource(getStyleDefinitionPath(), fileHandler.readFile(
+            LayoutResource cssResource = new LayoutResource(getStyleDefinitionPath(), ioHandler.readFile(
                     "org.faktorips.devtools.htmlexport", HTML_BASE_CSS)); //$NON-NLS-1$
 
             addLayoutResource(cssResource);

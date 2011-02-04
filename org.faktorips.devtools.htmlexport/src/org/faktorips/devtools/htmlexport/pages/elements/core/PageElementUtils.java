@@ -50,7 +50,7 @@ public class PageElementUtils {
      * @return array of {@link PageElement}s. To enable storing of other types of PageElements like
      *         LinkPageElement, the return type is not TextPageElement[]
      */
-    public static PageElement[] createTextPageElements(List<String> texts, Set<Style> styles, TextType type) {
+    public PageElement[] createTextPageElements(List<String> texts, Set<Style> styles, TextType type) {
         PageElement[] textPageElements = new PageElement[texts.size()];
 
         for (int i = 0; i < textPageElements.length; i++) {
@@ -65,7 +65,7 @@ public class PageElementUtils {
      * 
      * @return array of {@link PageElement}s
      */
-    public static PageElement[] createTextPageElements(List<String> texts) {
+    public PageElement[] createTextPageElements(List<String> texts) {
         return createTextPageElements(texts, null, TextType.WITHOUT_TYPE);
     }
 
@@ -75,7 +75,7 @@ public class PageElementUtils {
      * 
      * @return {@link List} of {@link LinkPageElement}s
      */
-    public static List<PageElement> createLinkPageElements(List<? extends IIpsSrcFile> srcFiles,
+    public List<PageElement> createLinkPageElements(List<? extends IIpsSrcFile> srcFiles,
             String target,
             Set<Style> styles,
             DocumentationContext context) {
@@ -94,7 +94,7 @@ public class PageElementUtils {
     /**
      * creates a LinkPageElement for an IpsElement
      */
-    public static PageElement createLinkPageElement(DocumentationContext context,
+    public PageElement createLinkPageElement(DocumentationContext context,
             IIpsElement to,
             String target,
             String text,
@@ -113,7 +113,7 @@ public class PageElementUtils {
     /**
      * creates a LinkPageElement for an IpsElement
      */
-    public static PageElement createLinkPageElement(DocumentationContext context,
+    public PageElement createLinkPageElement(DocumentationContext context,
             IIpsObjectPartContainer to,
             String target,
             Style... styles) {
@@ -133,7 +133,7 @@ public class PageElementUtils {
         return element.addStyles(Style.DEAD_LINK);
     }
 
-    public static String getIpsObjectPartContainerText(DocumentationContext context, IIpsObjectPartContainer to) {
+    private String getIpsObjectPartContainerText(DocumentationContext context, IIpsObjectPartContainer to) {
         if (to instanceof ILabeledElement) {
             return to.getName() + " (" + context.getLabel((ILabeledElement)to) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
@@ -143,7 +143,7 @@ public class PageElementUtils {
         return to.getName();
     }
 
-    public static PageElement createIpsElementRepresentation(IIpsElement ipsElement,
+    public PageElement createIpsElementRepresentation(IIpsElement ipsElement,
             DocumentationContext context,
             String text,
             boolean useImage) {
@@ -162,7 +162,7 @@ public class PageElementUtils {
     /**
      * creates a Link to the given {@link IIpsElement}
      */
-    public static PageElement createLinkPageElement(DocumentationContext context,
+    public PageElement createLinkPageElement(DocumentationContext context,
             IIpsElement to,
             String target,
             String text,
@@ -170,11 +170,11 @@ public class PageElementUtils {
         return createLinkPageElement(context, to, target, text, useImage, new Style[0]);
     }
 
-    public static LinkPageElement createLinkPageElementToIpsElement(IIpsElement to, String target, PageElement element) {
+    private LinkPageElement createLinkPageElementToIpsElement(IIpsElement to, String target, PageElement element) {
         return createLinkPageElementToIpsElement(to, null, target, element);
     }
 
-    public static LinkPageElement createLinkPageElementToIpsElement(IIpsElement to,
+    public LinkPageElement createLinkPageElementToIpsElement(IIpsElement to,
             String linkAnchor,
             String target,
             PageElement element) {
@@ -185,7 +185,7 @@ public class PageElementUtils {
         return linkPageElement;
     }
 
-    public static String createAnchorId(IIpsElement element) {
+    public String createAnchorId(IIpsElement element) {
         if (element instanceof IIpsObjectPart) {
 
             IIpsObjectPart part = (IIpsObjectPart)element;

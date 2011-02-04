@@ -63,11 +63,18 @@ public class TableRowPageElement extends WrapperPageElement {
         for (int column = 0; column < subElements.size(); column++) {
             PageElement subElement = subElements.get(column);
 
-            TableCellPageElement columnPageElement = new TableCellPageElement(subElement);
+            TableCellPageElement columnPageElement = getTableCellElement(subElement);
             layoutTableCell(row, column, columnPageElement);
 
             layouter.layoutWrapperPageElement(columnPageElement);
         }
+    }
+
+    protected TableCellPageElement getTableCellElement(PageElement pageElement) {
+        if (pageElement instanceof TableCellPageElement) {
+            return (TableCellPageElement)pageElement;
+        }
+        return new TableCellPageElement(pageElement);
     }
 
     /**

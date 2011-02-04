@@ -81,7 +81,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
             attributeData1.add(isInheritedEnumAttribute(rowData) ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
             attributeData1.add(getContext().getDescription(rowData));
             List<String> attributeData = attributeData1;
-            return Arrays.asList(PageElementUtils.createTextPageElements(attributeData));
+            return Arrays.asList(new PageElementUtils().createTextPageElements(attributeData));
         }
 
         protected boolean isInheritedEnumAttribute(IEnumAttribute rowData) {
@@ -184,7 +184,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
         }
 
         if (type.getSuperEnumType().equals(getDocumentedIpsObject().getQualifiedName())) {
-            subTypes.add(PageElementUtils.createLinkPageElement(getContext(), type,
+            subTypes.add(new PageElementUtils().createLinkPageElement(getContext(), type,
                     "content", type.getQualifiedName(), true)); //$NON-NLS-1$
         }
     }
@@ -211,7 +211,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
         }
 
         TreeNodePageElement baseElement = new TreeNodePageElement(new TreeNodePageElement(
-                PageElementUtils.createLinkPageElement(getContext(), superTypes.get(0),
+                new PageElementUtils().createLinkPageElement(getContext(), superTypes.get(0),
                         "content", superTypes.get(0).getQualifiedName(), true))); //$NON-NLS-1$
         TreeNodePageElement element = baseElement;
 
@@ -220,7 +220,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
                 element.addPageElements(new TextPageElement(getDocumentedIpsObject().getName()));
                 break;
             }
-            TreeNodePageElement subElement = new TreeNodePageElement(PageElementUtils.createLinkPageElement(
+            TreeNodePageElement subElement = new TreeNodePageElement(new PageElementUtils().createLinkPageElement(
                     getContext(), superTypes.get(i), "content", superTypes.get(i).getName(), true)); //$NON-NLS-1$
             element.addPageElements(subElement);
             element = subElement;
@@ -287,7 +287,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
                     + IpsObjectType.ENUM_CONTENT.getDisplayName())));
             return;
         }
-        addPageElements(wrapper.addPageElements(PageElementUtils.createLinkPageElement(getContext(), enumContent,
+        addPageElements(wrapper.addPageElements(new PageElementUtils().createLinkPageElement(getContext(), enumContent,
                 "content", enumContent //$NON-NLS-1$
                         .getQualifiedName(), true)));
 

@@ -14,9 +14,7 @@
 package org.faktorips.devtools.htmlexport.pages.elements.core;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 
 /**
@@ -26,11 +24,6 @@ import org.faktorips.devtools.htmlexport.generators.ILayouter;
  * 
  */
 public abstract class AbstractRootPageElement extends AbstractCompositePageElement {
-
-    /*
-     * TODO Liste fuellen in abgeleiteten Seiten
-     */
-    private final List<IpsStatus> ipsStatusList = new ArrayList<IpsStatus>();
 
     @Override
     public void build() {
@@ -47,12 +40,4 @@ public abstract class AbstractRootPageElement extends AbstractCompositePageEleme
      * @return path to the root (used for setting the right relative path in links from the page
      */
     public abstract String getPathToRoot();
-
-    protected void addIpsStatus(IpsStatus ipsStatus) {
-        ipsStatusList.add(ipsStatus);
-    }
-
-    protected List<IpsStatus> getIpsStatusList() {
-        return ipsStatusList;
-    }
 }
