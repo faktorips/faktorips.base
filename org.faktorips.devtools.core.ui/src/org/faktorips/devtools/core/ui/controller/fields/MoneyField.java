@@ -24,7 +24,12 @@ import org.faktorips.devtools.core.ui.controls.TextComboControl;
 import org.faktorips.util.message.MessageList;
 
 /**
- * This class is a {@link EditField} for money values.
+ * This class is a {@link EditField} for money values. The combo control is populated with the
+ * currency objects returned by IpsUIPlugin#getCurrencies(). The text control is managed by a
+ * FormattedTextField with decimal format.
+ * <p/>
+ * This field in essence is a "composite" field. It uses a field for each the text and the combo
+ * control and forwards events sent by them to its own listeners.
  * 
  * @author Stefan Widmaier, FaktorZehn AG
  */

@@ -81,8 +81,10 @@ public class TextComboControl extends ControlComposite {
             d.widthHint = 35;
         }
         combo.setLayoutData(d);
-        // must be called after text and combo controls were created
-        toolkit.getFormToolkit().adapt(this);
+        if (toolkit.getFormToolkit() != null) {
+            // must be called after text and combo controls were created
+            toolkit.getFormToolkit().adapt(this);
+        }
     }
 
     /**

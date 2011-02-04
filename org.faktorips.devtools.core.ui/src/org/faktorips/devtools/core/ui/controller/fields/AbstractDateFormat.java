@@ -30,8 +30,8 @@ import org.faktorips.devtools.core.IpsPlugin;
 public abstract class AbstractDateFormat extends AbstractInputFormat {
 
     /**
-     * {@link AbstractDateFormat} used internally by this {@link AbstractInputFormat} to validate given date
-     * strings.
+     * {@link AbstractDateFormat} used internally by this {@link AbstractInputFormat} to validate
+     * given date strings.
      */
     protected DateFormat dateFormat;
 
@@ -85,7 +85,7 @@ public abstract class AbstractDateFormat extends AbstractInputFormat {
     }
 
     /**
-     * Maps a value object to a date.
+     * Maps a value object (as provided by the model) to a {@link Date} object.
      * 
      * @param value a non-<code>null</code> object
      * @return the Date represented by the given value object

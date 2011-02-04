@@ -1233,7 +1233,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         }
         available.remove(eur);
         available.remove(usd);
-        List<Currency> sortedCurrencies = new ArrayList<Currency>();
+        List<Currency> sortedCurrencies = new ArrayList<Currency>(available);
         // arrange alphabetically by ISO code
         Collections.sort(sortedCurrencies, new Comparator<Currency>() {
             @Override
