@@ -70,9 +70,11 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
                 Messages.PersistentAssociationSection_labelTargetColumnName));
         columnProperties.put(4, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME,
                 Messages.PersistentAssociationSection_labelJoinColumnName));
-        columnProperties.put(5, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_FETCH_TYPE,
+        columnProperties.put(5, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NULLABLE,
+                Messages.PersistentAssociationSection_labelJoinColumnNullable));
+        columnProperties.put(6, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_FETCH_TYPE,
                 Messages.PersistentAssociationSection_labelFetchType));
-        columnProperties.put(6, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_ORPHAN_REMOVAL,
+        columnProperties.put(7, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_ORPHAN_REMOVAL,
                 Messages.PersistentAssociationSection_labelOrphanRemoval));
     }
 
@@ -243,6 +245,10 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
                 } else if (IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME.equals(property)) {
                     if (!joinTableReq && foreignKeyColumnReq) {
                         result = jpaAssociationInfo.getJoinColumnName();
+                    }
+                } else if (IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NULLABLE.equals(property)) {
+                    if (!joinTableReq && foreignKeyColumnReq) {
+                        result = Boolean.valueOf(jpaAssociationInfo.isJoinColumnNullable()).toString();
                     }
                 } else if (IPersistentAssociationInfo.PROPERTY_FETCH_TYPE.equals(property)) {
                     result = jpaAssociationInfo.getFetchType().toString();

@@ -188,6 +188,8 @@ public class Messages extends NLS {
 
     public static String PersistentAssociationSection_labelJoinColumnName;
 
+    public static String PersistentAssociationSection_labelJoinColumnNullable;
+
     public static String PersistentAssociationSection_labelJoinTableName;
 
     public static String PersistentAssociationSection_labelOrphanRemoval;
