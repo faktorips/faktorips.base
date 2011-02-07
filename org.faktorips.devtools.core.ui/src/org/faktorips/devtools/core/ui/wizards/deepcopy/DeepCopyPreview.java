@@ -78,7 +78,7 @@ public class DeepCopyPreview {
         oldObject2newNameMap.clear();
         patternMatched = false;
 
-        Set<IProductCmptStructureReference> toCopy = presentationModel.getAllCopyElements();
+        Set<IProductCmptStructureReference> toCopy = presentationModel.getAllCopyElements(false);
         progressMonitor.beginTask("", toCopy.size() + 5); //$NON-NLS-1$
         int segmentsToIgnore = getSegmentsToIgnore(toCopy);
         IIpsPackageFragment base = presentationModel.getTargetPackage();
@@ -204,7 +204,7 @@ public class DeepCopyPreview {
     }
 
     public int getSegmentsToIgnore() {
-        return getSegmentsToIgnore(presentationModel.getAllCopyElements());
+        return getSegmentsToIgnore(presentationModel.getAllCopyElements(false));
     }
 
     /**
@@ -385,7 +385,7 @@ public class DeepCopyPreview {
             throw new CoreException(status);
         }
 
-        Set<IProductCmptStructureReference> toCopy = presentationModel.getAllCopyElements();
+        Set<IProductCmptStructureReference> toCopy = presentationModel.getAllCopyElements(true);
         Map<IProductCmptStructureReference, IIpsSrcFile> result = new HashMap<IProductCmptStructureReference, IIpsSrcFile>();
 
         int segmentsToIgnore = getSegmentsToIgnore(toCopy);

@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 /**
  * This is a container for the status of a product component link in the tree of a deep copy wizard.
@@ -28,8 +30,12 @@ public class LinkStatus {
     private boolean checked;
 
     private CopyOrLink copyOrLink;
+    private final IIpsObjectPart ipsObjectPart;
+    private final IIpsObject target;
 
-    public LinkStatus(boolean checked, CopyOrLink copyOrLink) {
+    public LinkStatus(IIpsObjectPart ipsObjectPart, IIpsObject target, boolean checked, CopyOrLink copyOrLink) {
+        this.ipsObjectPart = ipsObjectPart;
+        this.target = target;
         this.setChecked(checked);
         this.setCopyOrLink(copyOrLink);
     }
@@ -52,6 +58,14 @@ public class LinkStatus {
 
     public CopyOrLink getCopyOrLink() {
         return copyOrLink;
+    }
+
+    public IIpsObject getTarget() {
+        return target;
+    }
+
+    public IIpsObjectPart getIpsObjectPart() {
+        return ipsObjectPart;
     }
 
     public enum CopyOrLink {

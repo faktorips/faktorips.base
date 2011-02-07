@@ -171,7 +171,7 @@ public class DeepCopyWizard extends ResizableWizard {
     @Override
     public boolean performFinish() {
         try {
-            final Set<IProductCmptStructureReference> toCopy = presentationModel.getAllCopyElements();
+            final Set<IProductCmptStructureReference> toCopy = presentationModel.getAllCopyElements(true);
             final Set<IProductCmptStructureReference> toLink = presentationModel.getLinkedElements();
 
             final boolean createEmptyTableContents = presentationModel.isCreateEmptyTable();

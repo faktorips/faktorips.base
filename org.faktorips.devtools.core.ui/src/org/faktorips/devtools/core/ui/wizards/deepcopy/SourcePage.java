@@ -593,7 +593,7 @@ public class SourcePage extends WizardPage {
         setMessage(null);
         setErrorMessage(null);
 
-        if (getPresentationModel().getAllCopyElements().size() == 0) {
+        if (getPresentationModel().getAllCopyElements(false).size() == 0) {
             // no elements checked
             setErrorMessage(Messages.SourcePage_msgNothingSelected);
             return;
@@ -732,10 +732,13 @@ public class SourcePage extends WizardPage {
                     || evt.getPropertyName().equals(LinkStatus.COPY_OR_LINK)) {
                 if (evt.getSource() instanceof IProductCmptStructureReference) {
                     IProductCmptStructureReference reference = (IProductCmptStructureReference)evt.getSource();
-                    if (evt.getNewValue().equals(true) || evt.getNewValue() == CopyOrLink.COPY) {
-                        tree.expandToLevel(reference, CheckboxTreeViewer.ALL_LEVELS);
-                    } else {
-                        tree.collapseToLevel(reference, CheckboxTreeViewer.ALL_LEVELS);
+                    if (reference.getParent() != null) {
+                        // do not expand/collapse for root node
+                        if (evt.getNewValue().equals(true) || evt.getNewValue() == CopyOrLink.COPY) {
+                            tree.expandToLevel(reference, CheckboxTreeViewer.ALL_LEVELS);
+                        } else {
+                            tree.collapseToLevel(reference, CheckboxTreeViewer.ALL_LEVELS);
+                        }
                     }
                 }
                 updateCheckedAndGrayedStatus(getStructure());

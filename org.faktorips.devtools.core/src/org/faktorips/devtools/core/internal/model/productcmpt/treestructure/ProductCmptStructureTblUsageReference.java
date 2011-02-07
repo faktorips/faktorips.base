@@ -16,7 +16,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt.treestructure;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
@@ -47,7 +47,7 @@ public class ProductCmptStructureTblUsageReference extends ProductCmptStructureR
     }
 
     @Override
-    public IIpsObjectPartContainer getWrapped() {
+    public IIpsObjectPart getWrapped() {
         return tableContentUsage;
     }
 

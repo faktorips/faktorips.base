@@ -15,17 +15,14 @@ package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
 import java.beans.PropertyChangeEvent;
 import java.util.GregorianCalendar;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.LinkStatus.CopyOrLink;
@@ -219,10 +216,13 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
     /**
      * Get all enabled elements, that are marked to copy.
      * 
+     * @param includingAssociations true to include associations, false to collect only
+     *            compositions/aggregations
+     * 
      * @see DeepCopyTreeStatus#isEnabled(IProductCmptStructureReference)
      */
-    public Set<IProductCmptStructureReference> getAllCopyElements() {
-        return getAllCheckedElements(CopyOrLink.COPY);
+    public Set<IProductCmptStructureReference> getAllCopyElements(boolean includingAssociations) {
+        return treeStatus.getAllEnabledElements(CopyOrLink.COPY, structure, includingAssociations);
     }
 
     /**
@@ -231,22 +231,6 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
      * @see DeepCopyTreeStatus#isEnabled(IProductCmptStructureReference)
      */
     public Set<IProductCmptStructureReference> getLinkedElements() {
-        return getAllCheckedElements(CopyOrLink.LINK);
+        return treeStatus.getAllEnabledElements(CopyOrLink.LINK, structure, true);
     }
-
-    private Set<IProductCmptStructureReference> getAllCheckedElements(CopyOrLink copyOrLink) {
-        HashSet<IProductCmptStructureReference> result = new HashSet<IProductCmptStructureReference>();
-        Set<IProductCmptStructureReference> set = structure.toSet(false);
-        for (IProductCmptStructureReference reference : set) {
-            if (reference instanceof IProductCmptTypeAssociationReference) {
-                continue;
-            }
-            LinkStatus status = treeStatus.getStatus((IIpsObjectPart)reference.getWrapped());
-            if (treeStatus.isEnabled(reference) && status.getCopyOrLink() == copyOrLink) {
-                result.add(reference);
-            }
-        }
-        return result;
-    }
-
 }

@@ -14,7 +14,9 @@ package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
 import java.beans.PropertyChangeEvent;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -42,21 +44,37 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
 
     private Map<IProductCmpt, Map<IIpsObjectPart, LinkStatus>> treeStatus;
 
+    /**
+     * A map of {@link IProductCmptLink} caching all associations (not composition or aggregations).
+     * The value of {@link IProductCmpt} is the target of the link, hold in the map for performance
+     * use.
+     */
+    private Map<IProductCmptLink, IProductCmpt> associationLinks;
+
+    /**
+     * Initializes the tree status for all references in the structure with default values
+     * 
+     * @param structure the structure containing all references a status should be initialized for
+     */
     public void initialize(IProductCmptTreeStructure structure) {
         treeStatus = new HashMap<IProductCmpt, Map<IIpsObjectPart, LinkStatus>>();
+        associationLinks = new HashMap<IProductCmptLink, IProductCmpt>();
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
             if (reference instanceof IProductCmptTypeAssociationReference) {
                 // no status for associations is needed
                 continue;
             } else {
-                LinkStatus status = getStatus((IIpsObjectPart)reference.getWrapped());
+                LinkStatus status = getStatus(reference);
                 if (reference instanceof IProductCmptReference) {
                     IProductCmptReference cmptReference = (IProductCmptReference)reference;
                     IProductCmptTypeAssociationReference parent = (IProductCmptTypeAssociationReference)cmptReference
                             .getParent();
                     if (parent != null && parent.getAssociation().isAssoziation()) {
                         // default for associated product components is linked, not copy
+                        // in the getter method the status is verified: due to FIPS-3, we want to
+                        // copy references that target a product component which is also copied
                         status.setCopyOrLink(CopyOrLink.LINK);
+                        associationLinks.put(cmptReference.getLink(), cmptReference.getProductCmpt());
                     }
                 }
             }
@@ -64,28 +82,46 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
 
     }
 
-    public boolean isCheckedStatus(IIpsObjectPart part) {
-        return getStatus(part).isChecked();
-    }
-
-    public CopyOrLink getCopyOrLinkStatus(IIpsObjectPart part) {
-        return getStatus(part).getCopyOrLink();
+    public CopyOrLink getCopyOrLinkStatus(IProductCmptStructureReference reference) {
+        return getStatus(reference).getCopyOrLink();
     }
 
     /**
-     * Getting the status for a {@link IProductCmptLink}. If there is no such status, a new status
-     * with default values is created. Never returns null.
+     * Getting the status for a {@link IProductCmptStructureReference}. If there is no such status,
+     * a new status with default values is created. Never returns null.
      * 
-     * @param part the link you want to get the status for
+     * @param reference the link you want to get the status for
      * @return The status for the link maybe a new one with default values
      */
-    public LinkStatus getStatus(IIpsObjectPart part) {
+    private LinkStatus getStatus(IProductCmptStructureReference reference) {
+        IIpsObjectPart part = reference.getWrapped();
         IProductCmpt parent = getProductCmpt(part);
         Map<IIpsObjectPart, LinkStatus> statusMap = getStatusMap(parent);
         LinkStatus linkStatus = statusMap.get(part);
         if (linkStatus == null) {
             // if there is no status yet, create a new one with default values and return it
-            return setStatusInternal(part, null, null);
+            return setStatusInternal(reference, null, null);
+        }
+        if (associationLinks.containsKey(part)) {
+            // FIPS-3: Associations which target is copied by this deep copy operation should also
+            // be copied instead of linked
+            return getStatusForAssociation(part, linkStatus, reference.getStructure());
+        }
+        return linkStatus;
+    }
+
+    private LinkStatus getStatusForAssociation(IIpsObjectPart part,
+            LinkStatus linkStatus,
+            IProductCmptTreeStructure structure) {
+        IProductCmpt target = associationLinks.get(part);
+        Set<IProductCmptStructureReference> allEnabledElements = getAllEnabledElements(CopyOrLink.COPY, structure,
+                false);
+        for (IProductCmptStructureReference copyReference : allEnabledElements) {
+            if (copyReference.getWrappedIpsObject().equals(target)) {
+                // found the same product component that is copied
+                return new LinkStatus(linkStatus.getIpsObjectPart(), linkStatus.getTarget(), linkStatus.isChecked(),
+                        CopyOrLink.COPY);
+            }
         }
         return linkStatus;
     }
@@ -104,11 +140,14 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
      * If checked or copyOrLink is null and there is previous value for this status, the old status
      * is preserved. If there was no previous status, the defaults (true, COPY) are set.
      * 
-     * @param part The {@link IProductCmptLink} the status should be set for
+     * @param reference The {@link IIpsObjectPart} the status should be set for
      * @param checked the checked status or null to preserve the previous value (if any)
      * @param copyOrLink the copy or link status or null to preserve the previous value (if any)
      */
-    private LinkStatus setStatusInternal(IIpsObjectPart part, Boolean checked, CopyOrLink copyOrLink) {
+    private LinkStatus setStatusInternal(IProductCmptStructureReference reference,
+            Boolean checked,
+            CopyOrLink copyOrLink) {
+        IIpsObjectPart part = reference.getWrapped();
         IProductCmpt parent = getProductCmpt(part);
         Map<IIpsObjectPart, LinkStatus> statusMap = getStatusMap(parent);
         LinkStatus linkStatus = statusMap.get(part);
@@ -119,10 +158,15 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
             if (copyOrLink == null) {
                 copyOrLink = CopyOrLink.COPY;
             }
-            linkStatus = new LinkStatus(checked, copyOrLink);
+            linkStatus = new LinkStatus(reference.getWrapped(), reference.getWrappedIpsObject(), checked, copyOrLink);
         }
         if (checked != null) {
-            linkStatus.setChecked(checked);
+            if (reference.getParent() == null) {
+                // root node must be checked
+                linkStatus.setChecked(true);
+            } else {
+                linkStatus.setChecked(checked);
+            }
         }
         if (copyOrLink != null) {
             linkStatus.setCopyOrLink(copyOrLink);
@@ -160,11 +204,10 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
      */
     public boolean isChecked(IProductCmptStructureReference reference) {
         if (reference instanceof IProductCmptReference || reference instanceof IProductCmptStructureTblUsageReference) {
-            if (reference.getWrapped() != null) {
-                IIpsObjectPart part = (IIpsObjectPart)reference.getWrapped();
-                return isCheckedStatus(part);
+            if (reference.getParent() != null) {
+                return getStatus(reference).isChecked();
             } else {
-                // cmptReference.getWrapped() is null --> Root node
+                // getParent() is null --> Root node
                 return true;
             }
         } else if (reference instanceof IProductCmptTypeAssociationReference) {
@@ -198,7 +241,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
             oldValue = false;
             for (IProductCmptReference child : associationReference.getStructure().getChildProductCmptReferences(
                     associationReference)) {
-                oldValue = oldValue || setCheckedInternal(child, value);
+                oldValue = setCheckedInternal(child, value) || oldValue;
             }
         } else {
             throw new IllegalArgumentException();
@@ -210,10 +253,9 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
 
     private boolean setCheckedInternal(IProductCmptStructureReference reference, boolean value) {
         boolean oldValue;
-        IIpsObjectPart part = (IIpsObjectPart)reference.getWrapped();
-        LinkStatus status = getStatus(part);
+        LinkStatus status = getStatus(reference);
         oldValue = status.isChecked();
-        status.setChecked(value);
+        setStatusInternal(reference, value, null);
         return oldValue;
     }
 
@@ -226,10 +268,9 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
      */
     public void setCopOrLink(IProductCmptStructureReference reference, CopyOrLink value) {
         if (reference instanceof IProductCmptReference || reference instanceof IProductCmptStructureTblUsageReference) {
-            IIpsObjectPart part = (IIpsObjectPart)reference.getWrapped();
-            LinkStatus status = getStatus(part);
+            LinkStatus status = getStatus(reference);
             CopyOrLink oldValue = status.getCopyOrLink();
-            status.setCopyOrLink(value);
+            setStatusInternal(reference, null, value);
             if (oldValue != null && !oldValue.equals(value)) {
                 notifyListeners(new PropertyChangeEvent(reference, LinkStatus.COPY_OR_LINK, oldValue, value));
             }
@@ -270,7 +311,40 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
             // looks like the root node.
             return CopyOrLink.COPY;
         }
-        return getStatus((IIpsObjectPart)reference.getWrapped()).getCopyOrLink();
+        return getCopyOrLinkStatus(reference);
+    }
+
+    /**
+     * Getting all {@link IProductCmptStructureReference} of the given structure that should be
+     * copied or linked. By the boolean includeAssociations you could specify whether to check the
+     * status of associations (in contrary to compositions/aggregations) or not.
+     * 
+     * @param copyOrLink Whether to get only references that are marked as copied or linked
+     * @param structure the structure to get the references from
+     * @param includeAssociations whether to include associations or only include
+     *            compositions/aggregations
+     * 
+     * @return a set of {@link IProductCmptReference}s that are marked to be copied or linked
+     */
+    public Set<IProductCmptStructureReference> getAllEnabledElements(CopyOrLink copyOrLink,
+            IProductCmptTreeStructure structure,
+            boolean includeAssociations) {
+        HashSet<IProductCmptStructureReference> result = new HashSet<IProductCmptStructureReference>();
+        Set<IProductCmptStructureReference> set = structure.toSet(false);
+        for (IProductCmptStructureReference reference : set) {
+            if (reference instanceof IProductCmptTypeAssociationReference) {
+                continue;
+            }
+            if (!includeAssociations && reference instanceof IProductCmptReference
+                    && associationLinks.containsKey(reference.getWrapped())) {
+                continue;
+            }
+            LinkStatus status = getStatus(reference);
+            if (isEnabled(reference) && status.getCopyOrLink() == copyOrLink) {
+                result.add(reference);
+            }
+        }
+        return result;
     }
 
 }
