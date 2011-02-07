@@ -13,8 +13,6 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import java.util.List;
-
 import org.eclipse.swt.widgets.Combo;
 
 /**
@@ -26,7 +24,7 @@ import org.eclipse.swt.widgets.Combo;
  */
 public class EnumField<T extends Enum<T>> extends ComboField {
 
-    private List<T> usedEnumValues;
+    private T[] usedEnumValues;
     private final Class<? extends T> javaEnumClass;
 
     public EnumField(Combo combo, Class<T> javaEnum) {
@@ -53,6 +51,7 @@ public class EnumField<T extends Enum<T>> extends ComboField {
     }
 
     protected void initComboItems(Combo combo, T[] enumConstants) {
+        usedEnumValues = enumConstants;
         String[] allEnumValues = new String[enumConstants.length];
         for (int i = 0; i < enumConstants.length; i++) {
             allEnumValues[i] = enumConstants[i].toString();
@@ -65,7 +64,7 @@ public class EnumField<T extends Enum<T>> extends ComboField {
         if (index == -1) {
             return null;
         }
-        return usedEnumValues.get(index);
+        return usedEnumValues[index];
     }
 
     @Override
