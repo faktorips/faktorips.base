@@ -7,7 +7,7 @@ Bundle-Activator: org.faktorips.devtools.core.IpsPlugin
 Bundle-Vendor: Faktor Zehn AG
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui;visibility:=reexport,
- org.eclipse.core.runtime,
+ org.eclipse.core.runtime;visibility:=reexport,
  org.eclipse.core.resources;visibility:=reexport,
  org.eclipse.jdt.core,
  org.eclipse.jdt.launching,
