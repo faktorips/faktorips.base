@@ -13,9 +13,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
-import java.beans.PropertyChangeEvent;
-
-import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 
 /**
  * This is a container for the status of a product component link in the tree of a deep copy wizard.
@@ -23,7 +20,7 @@ import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
  * 
  * @author dirmeier
  */
-public class LinkStatus extends PresentationModelObject {
+public class LinkStatus {
 
     public static final String CHECKED = "checked"; //$NON-NLS-1$
     public static final String COPY_OR_LINK = "copyOrLink"; //$NON-NLS-1$
@@ -38,9 +35,7 @@ public class LinkStatus extends PresentationModelObject {
     }
 
     public void setChecked(boolean newValue) {
-        boolean oldValue = checked;
         this.checked = newValue;
-        notifyListeners(new PropertyChangeEvent(this, CHECKED, oldValue, newValue));
     }
 
     public boolean isChecked() {
@@ -48,9 +43,7 @@ public class LinkStatus extends PresentationModelObject {
     }
 
     public void setCopyOrLink(CopyOrLink newValue) {
-        CopyOrLink oldValue = copyOrLink;
         setCopyOrLinkInternal(newValue);
-        notifyListeners(new PropertyChangeEvent(this, COPY_OR_LINK, oldValue, newValue));
     }
 
     void setCopyOrLinkInternal(CopyOrLink newValue) {

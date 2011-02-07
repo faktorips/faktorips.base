@@ -26,13 +26,21 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
+import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.ITreeViewerListener;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableLayout;
+import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.TreeViewerEditor;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
@@ -52,18 +60,23 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 import org.faktorips.devtools.core.ui.controller.fields.GregorianCalendarFormat;
 import org.faktorips.devtools.core.ui.controller.fields.IpsPckFragmentRefField;
 import org.faktorips.devtools.core.ui.controller.fields.IpsPckFragmentRootRefField;
+import org.faktorips.devtools.core.ui.controller.fields.StructuredViewerField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.DateControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 import org.faktorips.devtools.core.ui.controls.Radiobutton;
 import org.faktorips.devtools.core.ui.controls.RadiobuttonGroup;
+import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
+import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateContentProvider;
+import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateViewer;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.LinkStatus.CopyOrLink;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
@@ -107,10 +120,8 @@ public class SourcePage extends WizardPage {
 
     private CopyLinkEditingSupport copyLinkColumneditingSupport;
 
-    private DeepCopyTreeStatusBindings deepCopyTreeViewerFieldHandler;
-
     // XXX
-    // private GenerationDateViewer generationDateViewer;
+    private GenerationDateViewer generationDateViewer;
 
     private static String getTitle(int type) {
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
@@ -161,42 +172,7 @@ public class SourcePage extends WizardPage {
         Composite inputRoot = toolkit.createLabelEditColumnComposite(root);
 
         // XXX
-        // toolkit.createFormLabel(inputRoot, Messages.SourcePage_labelSourceValidFrom);
-        // generationDateViewer = new GenerationDateViewer(inputRoot);
-        // generationDateViewer.getCombo().setLayoutData(new GridData(SWT.FILL, SWT.TOP, true,
-        // false));
-        // GenerationDateContentProvider generationContentProvider = new
-        // GenerationDateContentProvider();
-        // generationContentProvider.addCollectorFinishedListener(new ICollectorFinishedListener() {
-        //
-        // @Override
-        // public void update(Observable o, Object arg) {
-        // GregorianCalendar validAt = getStructure().getValidAt();
-        // Object[] elements = (Object[])arg;
-        // for (Object obj : elements) {
-        // GenerationDate generationDate = (GenerationDate)obj;
-        // if (!validAt.before(generationDate.getValidFrom())) {
-        // // elements are sorted, newest generation first, so we only have to check
-        // // the validFrom date
-        // generationDateViewer.setSelection(new StructuredSelection(generationDate));
-        // return;
-        // }
-        // }
-        // generationDateViewer.setSelection(0);
-        // }
-        //
-        // });
-        // generationDateViewer.setContentProvider(generationContentProvider);
-        // generationDateViewer.setLabelProvider(new LabelProvider() {
-        // @Override
-        // public String getText(Object element) {
-        // if (element instanceof GenerationDate) {
-        // return ((GenerationDate)element).getText();
-        // }
-        // return super.getText(element);
-        // }
-        // });
-        // generationDateViewer.setInput(getPresentationModel().getStructure().getRoot().getProductCmpt());
+        createOldValidFromControl(toolkit, inputRoot);
 
         toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelValidFrom);
         newWorkingDateControl = new DateControl(inputRoot, toolkit);
@@ -244,6 +220,55 @@ public class SourcePage extends WizardPage {
 
     }
 
+    private void createOldValidFromControl(UIToolkit toolkit, Composite inputRoot) {
+        toolkit.createFormLabel(inputRoot, Messages.SourcePage_labelSourceValidFrom);
+        generationDateViewer = new GenerationDateViewer(inputRoot);
+        generationDateViewer.getCombo().setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+        IStructuredContentProvider generationContentProvider = new IStructuredContentProvider() {
+
+            private GenerationDateContentProvider internalContentProvider = new GenerationDateContentProvider();
+            private Object[] collectElements;
+
+            @Override
+            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+                collectElements = internalContentProvider.collectElements(newInput, new NullProgressMonitor());
+            }
+
+            @Override
+            public void dispose() {
+                // nothing to do
+            }
+
+            @Override
+            public Object[] getElements(Object inputElement) {
+                return collectElements;
+            }
+        };
+        generationDateViewer.setContentProvider(generationContentProvider);
+        generationDateViewer.setLabelProvider(new LabelProvider() {
+            @Override
+            public String getText(Object element) {
+                if (element instanceof GenerationDate) {
+                    return ((GenerationDate)element).getText();
+                }
+                return super.getText(element);
+            }
+        });
+        generationDateViewer.setInput(getPresentationModel().getStructure().getRoot().getProductCmpt());
+
+        GregorianCalendar validAt = getStructure().getValidAt();
+        Object[] elements = generationContentProvider.getElements(null);
+        for (Object obj : elements) {
+            GenerationDate generationDate = (GenerationDate)obj;
+            if (!validAt.before(generationDate.getValidFrom())) {
+                // elements are sorted, newest generation first, so we only have to check
+                // the validFrom date
+                generationDateViewer.setSelection(new StructuredSelection(generationDate));
+                break;
+            }
+        }
+    }
+
     protected void initBindingsAndRefresh() {
         tree.expandAll();
         createBindings();
@@ -255,6 +280,7 @@ public class SourcePage extends WizardPage {
                 // run async to ensure that the buttons state (enabled/disabled)
                 // can be updated
                 refreshPageAfterValueChange();
+                updateCheckedAndGrayedStatus(getStructure());
                 setMessagePleaseEnterWorkingDate();
                 updateColumnWidth();
             }
@@ -265,13 +291,10 @@ public class SourcePage extends WizardPage {
         final BindingContext binding = new BindingContext();
         ChangeListener propertyChangeListener = new ChangeListener();
         getPresentationModel().addPropertyChangeListener(propertyChangeListener);
-        getPresentationModel().getTreeStatus().addAllPropertyChangeListener(propertyChangeListener);
 
         // XXX
-        // StructuredViewerField generationDateField = new
-        // StructuredViewerField(generationDateViewer);
-        // binding.bindContent(generationDateField, getPresentationModel(),
-        // DeepCopyPresentationModel.OLD_VALID_FROM);
+        StructuredViewerField generationDateField = new StructuredViewerField(generationDateViewer);
+        binding.bindContent(generationDateField, getPresentationModel(), DeepCopyPresentationModel.OLD_VALID_FROM);
 
         FormattingTextField newWorkingDateField = new FormattingTextField(newWorkingDateControl.getTextControl(),
                 new GregorianCalendarFormat());
@@ -299,13 +322,87 @@ public class SourcePage extends WizardPage {
         binding.bindContent(createEmptyTableContentsBtn, getPresentationModel(),
                 DeepCopyPresentationModel.CREATE_EMPTY_TABLE);
 
-        deepCopyTreeViewerFieldHandler = new DeepCopyTreeStatusBindings(tree, getPresentationModel().getTreeStatus());
+        tree.addCheckStateListener(new ICheckStateListener() {
 
-        deepCopyTreeViewerFieldHandler.createAndBindFields(getStructure(), binding);
+            @Override
+            public void checkStateChanged(CheckStateChangedEvent event) {
+                if (event.getElement() instanceof IProductCmptStructureReference) {
+                    IProductCmptStructureReference reference = (IProductCmptStructureReference)event.getElement();
+                    getTreeStatus().setChecked(reference, event.getChecked());
+                }
+            }
+        });
 
-        copyLinkColumneditingSupport.createAndBindFields(getStructure(), binding);
+        tree.addTreeListener(new ITreeViewerListener() {
+
+            @Override
+            public void treeExpanded(TreeExpansionEvent event) {
+                IProductCmptStructureReference reference = (IProductCmptStructureReference)event.getElement();
+                updateAfterExpansion(reference, false);
+            }
+
+            @Override
+            public void treeCollapsed(TreeExpansionEvent event) {
+                // do nothing
+            }
+        });
+
+        getTreeStatus().addPropertyChangeListener(propertyChangeListener);
 
         binding.updateUI();
+    }
+
+    /**
+     * An Element is grayed if not all children or itself is checked. That means, an element is also
+     * gray if none of its children is checked or itself is unchecked.
+     * 
+     */
+    public void updateCheckedAndGrayedStatus(IProductCmptTreeStructure structure) {
+        updateCheckedAndGrayStatus(structure.getRoot());
+    }
+
+    /**
+     * updating the checked and gayed state of the specified element and returns the grayed state
+     * for recursive use.
+     * 
+     */
+    private boolean updateCheckedAndGrayStatus(IProductCmptStructureReference reference) {
+        if (reference instanceof IProductCmptTypeAssociationReference) {
+            IProductCmptTypeAssociationReference associationReference = (IProductCmptTypeAssociationReference)reference;
+            if (associationReference.getChildren().length == 0 || associationReference.getAssociation().isAssoziation()) {
+                // these elements are not visible so should never change gray state
+                return false;
+            }
+        }
+        boolean atLeastOneChildIsGrayed = false;
+        for (IProductCmptStructureReference child : reference.getChildren()) {
+            boolean grayedChild = updateCheckedAndGrayStatus(child);
+            atLeastOneChildIsGrayed = atLeastOneChildIsGrayed || grayedChild;
+        }
+        boolean thisIsChecked = getTreeStatus().isChecked(reference);
+        boolean grayed = atLeastOneChildIsGrayed || !thisIsChecked;
+        tree.setGrayed(reference, grayed || !getTreeStatus().isEnabled(reference));
+        tree.setChecked(reference, getTreeStatus().isChecked(reference));
+        return grayed;
+    }
+
+    /**
+     * For any reason, the check state of collapsed elements is not updated. So we have to update
+     * the correct state when expanding the tree
+     */
+    private void updateAfterExpansion(IProductCmptStructureReference reference, boolean recursive) {
+        for (IProductCmptStructureReference child : reference.getChildren()) {
+            boolean checked = getTreeStatus().isChecked(child);
+            tree.setChecked(child, checked);
+            tree.setGrayed(child, !getTreeStatus().isEnabled(child));
+            if (recursive) {
+                updateAfterExpansion(child, recursive);
+            }
+        }
+    }
+
+    public DeepCopyTreeStatus getTreeStatus() {
+        return getPresentationModel().getTreeStatus();
     }
 
     private void setMessagePleaseEnterWorkingDate() {
@@ -496,7 +593,7 @@ public class SourcePage extends WizardPage {
         setMessage(null);
         setErrorMessage(null);
 
-        if (tree == null || tree.getCheckedElements().length == 0) {
+        if (getPresentationModel().getAllCopyElements().size() == 0) {
             // no elements checked
             setErrorMessage(Messages.SourcePage_msgNothingSelected);
             return;
@@ -633,22 +730,32 @@ public class SourcePage extends WizardPage {
             }
             if (evt.getPropertyName().equals(LinkStatus.CHECKED)
                     || evt.getPropertyName().equals(LinkStatus.COPY_OR_LINK)) {
-                deepCopyTreeViewerFieldHandler.updateGrayedStatus(getStructure());
+                if (evt.getSource() instanceof IProductCmptStructureReference) {
+                    IProductCmptStructureReference reference = (IProductCmptStructureReference)evt.getSource();
+                    if (evt.getNewValue().equals(true) || evt.getNewValue() == CopyOrLink.COPY) {
+                        tree.expandToLevel(reference, CheckboxTreeViewer.ALL_LEVELS);
+                    } else {
+                        tree.collapseToLevel(reference, CheckboxTreeViewer.ALL_LEVELS);
+                    }
+                }
+                updateCheckedAndGrayedStatus(getStructure());
             }
             if (evt.getPropertyName().equals(DeepCopyPresentationModel.OLD_VALID_FROM)) {
                 IProductCmpt productCmpt = getStructure().getRoot().getProductCmpt();
                 try {
-                    getPresentationModel().initialize(
-                            productCmpt.getStructure(getPresentationModel().getOldValidFrom().getValidFrom(),
-                                    productCmpt.getIpsProject()));
-                    tree.setInput(getPresentationModel().getStructure());
+                    IProductCmptTreeStructure structure = productCmpt.getStructure(getPresentationModel()
+                            .getOldValidFrom().getValidFrom(), productCmpt.getIpsProject());
+                    getPresentationModel().initialize(structure);
+                    tree.setInput(structure);
+                    tree.expandAll();
+                    updateCheckedAndGrayedStatus(getStructure());
                 } catch (CycleInProductStructureException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
+                    getPresentationModel().setOldValidFrom((GenerationDate)evt.getOldValue());
                 }
-                initBindingsAndRefresh();
-            } else {
-                refreshPageAfterValueChange();
             }
+
+            refreshPageAfterValueChange();
         }
 
     }

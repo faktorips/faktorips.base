@@ -12,7 +12,7 @@
 
 package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
-import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +24,9 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
+import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.LinkStatus.CopyOrLink;
 
 /**
@@ -36,9 +38,31 @@ import org.faktorips.devtools.core.ui.wizards.deepcopy.LinkStatus.CopyOrLink;
  * 
  * @author dirmeier
  */
-public class DeepCopyTreeStatus {
+public class DeepCopyTreeStatus extends PresentationModelObject {
 
-    private Map<IProductCmpt, Map<IIpsObjectPart, LinkStatus>> treeStatus = new HashMap<IProductCmpt, Map<IIpsObjectPart, LinkStatus>>();
+    private Map<IProductCmpt, Map<IIpsObjectPart, LinkStatus>> treeStatus;
+
+    public void initialize(IProductCmptTreeStructure structure) {
+        treeStatus = new HashMap<IProductCmpt, Map<IIpsObjectPart, LinkStatus>>();
+        for (IProductCmptStructureReference reference : structure.toSet(false)) {
+            if (reference instanceof IProductCmptTypeAssociationReference) {
+                // no status for associations is needed
+                continue;
+            } else {
+                LinkStatus status = getStatus((IIpsObjectPart)reference.getWrapped());
+                if (reference instanceof IProductCmptReference) {
+                    IProductCmptReference cmptReference = (IProductCmptReference)reference;
+                    IProductCmptTypeAssociationReference parent = (IProductCmptTypeAssociationReference)cmptReference
+                            .getParent();
+                    if (parent != null && parent.getAssociation().isAssoziation()) {
+                        // default for associated product components is linked, not copy
+                        status.setCopyOrLink(CopyOrLink.LINK);
+                    }
+                }
+            }
+        }
+
+    }
 
     public boolean isCheckedStatus(IIpsObjectPart part) {
         return getStatus(part).isChecked();
@@ -73,18 +97,6 @@ public class DeepCopyTreeStatus {
             treeStatus.put(parent, statusMap);
         }
         return statusMap;
-    }
-
-    public LinkStatus setStatus(IIpsObjectPart part, CopyOrLink copyOrLink) {
-        return setStatusInternal(part, null, copyOrLink);
-    }
-
-    public LinkStatus setStatus(IIpsObjectPart part, boolean checked) {
-        return setStatusInternal(part, checked, null);
-    }
-
-    public LinkStatus setStatus(IIpsObjectPart part, LinkStatus linkStatus) {
-        return setStatusInternal(part, linkStatus.isChecked(), linkStatus.getCopyOrLink());
     }
 
     /**
@@ -170,6 +182,61 @@ public class DeepCopyTreeStatus {
     }
 
     /**
+     * Setting the checked status for the give {@link IProductCmptStructureReference}. If the
+     * reference is a {@link IProductCmptTypeAssociationReference} the status is set for all
+     * children.
+     * 
+     * @param reference the reference you want to change the status for
+     * @param value the new status of the reference
+     */
+    public void setChecked(IProductCmptStructureReference reference, boolean value) {
+        boolean oldValue;
+        if (reference instanceof IProductCmptReference || reference instanceof IProductCmptStructureTblUsageReference) {
+            oldValue = setCheckedInternal(reference, value);
+        } else if (reference instanceof IProductCmptTypeAssociationReference) {
+            IProductCmptTypeAssociationReference associationReference = (IProductCmptTypeAssociationReference)reference;
+            oldValue = false;
+            for (IProductCmptReference child : associationReference.getStructure().getChildProductCmptReferences(
+                    associationReference)) {
+                oldValue = oldValue || setCheckedInternal(child, value);
+            }
+        } else {
+            throw new IllegalArgumentException();
+        }
+        if (oldValue != value) {
+            notifyListeners(new PropertyChangeEvent(reference, LinkStatus.CHECKED, oldValue, value));
+        }
+    }
+
+    private boolean setCheckedInternal(IProductCmptStructureReference reference, boolean value) {
+        boolean oldValue;
+        IIpsObjectPart part = (IIpsObjectPart)reference.getWrapped();
+        LinkStatus status = getStatus(part);
+        oldValue = status.isChecked();
+        status.setChecked(value);
+        return oldValue;
+    }
+
+    /**
+     * Setting the copy or link status for the give {@link IProductCmptStructureReference}. If the
+     * reference is a {@link IProductCmptTypeAssociationReference} this method do nothing
+     * 
+     * @param reference the reference you want to change the status for
+     * @param value the new status of the reference
+     */
+    public void setCopOrLink(IProductCmptStructureReference reference, CopyOrLink value) {
+        if (reference instanceof IProductCmptReference || reference instanceof IProductCmptStructureTblUsageReference) {
+            IIpsObjectPart part = (IIpsObjectPart)reference.getWrapped();
+            LinkStatus status = getStatus(part);
+            CopyOrLink oldValue = status.getCopyOrLink();
+            status.setCopyOrLink(value);
+            if (oldValue != null && !oldValue.equals(value)) {
+                notifyListeners(new PropertyChangeEvent(reference, LinkStatus.COPY_OR_LINK, oldValue, value));
+            }
+        }
+    }
+
+    /**
      * Returns true if this reference is enabled. A Reference is enabled when itself and all the
      * parent elements are checked and all parent elements are marked to copy. Returns false if this
      * reference or one of its parents is not checked or any parent is linked.
@@ -204,14 +271,6 @@ public class DeepCopyTreeStatus {
             return CopyOrLink.COPY;
         }
         return getStatus((IIpsObjectPart)reference.getWrapped()).getCopyOrLink();
-    }
-
-    public synchronized void addAllPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
-        for (Map<IIpsObjectPart, LinkStatus> linkStatusMap : treeStatus.values()) {
-            for (LinkStatus linkStatus : linkStatusMap.values()) {
-                linkStatus.addPropertyChangeListener(propertyChangeListener);
-            }
-        }
     }
 
 }

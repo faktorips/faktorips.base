@@ -23,7 +23,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
@@ -42,7 +41,7 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
     public static final String PACKAGE_FRAGMENT_ROOT = "ipsPckFragmentRoot"; //$NON-NLS-1$
     public static final String TARGET_PACKAGE_ROOT = "targetPackageRoot"; //$NON-NLS-1$
     public static final String COPY_TABLE = "copyTable"; //$NON-NLS-1$
-    // this is the negation of copy table but is modeled in two values to have binding with radio
+    // this is the negation of copy table but it is modeled in two values to have binding with radio
     // buttons for better usability
     public static final String CREATE_EMPTY_TABLE = "createEmptyTable"; //$NON-NLS-1$
 
@@ -62,33 +61,13 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
     private DeepCopyTreeStatus treeStatus;
 
     public DeepCopyPresentationModel(IProductCmptTreeStructure structure) {
+        treeStatus = new DeepCopyTreeStatus();
         initialize(structure);
     }
 
     protected void initialize(IProductCmptTreeStructure structure) {
         this.structure = structure;
-        initTreeStatusDefaults();
-    }
-
-    private void initTreeStatusDefaults() {
-        treeStatus = new DeepCopyTreeStatus();
-        for (IProductCmptStructureReference reference : structure.toSet(false)) {
-            if (reference instanceof IProductCmptTypeAssociationReference) {
-                // no status for associations is needed
-                continue;
-            } else {
-                LinkStatus status = treeStatus.getStatus((IIpsObjectPart)reference.getWrapped());
-                if (reference instanceof IProductCmptReference) {
-                    IProductCmptReference cmptReference = (IProductCmptReference)reference;
-                    IProductCmptTypeAssociationReference parent = (IProductCmptTypeAssociationReference)cmptReference
-                            .getParent();
-                    if (parent != null && parent.getAssociation().isAssoziation()) {
-                        // default for associated product components is linked, not copy
-                        status.setCopyOrLink(CopyOrLink.LINK);
-                    }
-                }
-            }
-        }
+        treeStatus.initialize(structure);
     }
 
     public GenerationDate getOldValidFrom() {

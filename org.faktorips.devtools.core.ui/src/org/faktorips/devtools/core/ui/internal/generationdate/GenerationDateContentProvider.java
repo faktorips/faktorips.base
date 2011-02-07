@@ -46,7 +46,7 @@ import org.faktorips.devtools.core.ui.views.productstructureexplorer.Messages;
 public class GenerationDateContentProvider extends DeferredStructuredContentProvider {
 
     @Override
-    protected Object[] collectElements(Object inputElement, IProgressMonitor monitor) {
+    public Object[] collectElements(Object inputElement, IProgressMonitor monitor) {
         if (inputElement instanceof IProductCmpt) {
             IProductCmpt productCmpt = (IProductCmpt)inputElement;
             try {
