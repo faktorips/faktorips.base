@@ -34,7 +34,6 @@ public class Messages extends NLS {
     public static String ReleaseAndDeploymentOperation_exception_noLongerSynchron;
     public static String ReleaseAndDeploymentOperation_exception_notSynchron;
     public static String ReleaseAndDeploymentOperation_exception_refreshFilesystem;
-    public static String ReleaseAndDeploymentOperation_exception_unsavedChanges;
     public static String ReleaseAndDeploymentOperation_taskName_release;
     static {
         // initialize resource bundle

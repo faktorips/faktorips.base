@@ -93,8 +93,6 @@ public class ProductReleaseProcessor {
             throws JavaModelException, InterruptedException, CoreException, TeamException {
         monitor.beginTask(null, 95);
         try {
-            // save all
-            saveAll(ipsProject);
             monitor.worked(1);
 
             // check project is synchrony with filesystem
@@ -143,13 +141,6 @@ public class ProductReleaseProcessor {
         IReleaseAndDeploymentOperation result = (IReleaseAndDeploymentOperation)releaseExtensionElement
                 .createExecutableExtension(EXTENSION_OPERATION_PROPERTY);
         return result;
-    }
-
-    private void saveAll(IIpsProject ipsProject) throws JavaModelException, InterruptedException {
-        if (!IpsPlugin.getDefault().getWorkbench().saveAllEditors(true)
-                || ipsProject.getJavaProject().hasUnsavedChanges()) {
-            throw new InterruptedException(Messages.ReleaseAndDeploymentOperation_exception_unsavedChanges);
-        }
     }
 
     private void checkSyncWithFilesystem(IIpsProject ipsProject, IProgressMonitor monitor) throws CoreException {
@@ -235,4 +226,5 @@ public class ProductReleaseProcessor {
         }
         return null;
     }
+
 }

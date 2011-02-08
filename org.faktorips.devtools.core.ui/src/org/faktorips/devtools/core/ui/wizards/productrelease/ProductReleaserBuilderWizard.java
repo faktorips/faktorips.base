@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -128,6 +129,12 @@ public class ProductReleaserBuilderWizard extends Wizard {
         operation = new Operation(selectionPage.getNewVersion(), selectionPage.getSelectedTargetSystems(),
                 selectionPage.getProductReleaseProcessor());
         try {
+            // save all
+            if (!IpsPlugin.getDefault().getWorkbench().saveAllEditors(true)
+                    || selectionPage.getSelectedProject().getJavaProject().hasUnsavedChanges()) {
+                throw new InterruptedException(Messages.ProductReleaserBuilderWizard_exception_unsavedChanges);
+            }
+
             getContainer().run(true, false, operation);
             setFinishStatus(!operation.returnState);
             return false;
@@ -137,6 +144,9 @@ public class ProductReleaserBuilderWizard extends Wizard {
             IpsPlugin.log(e);
             return false;
         } catch (InterruptedException e) {
+            observableProgressMessages.error(e.getMessage());
+            return false;
+        } catch (JavaModelException e) {
             observableProgressMessages.error(e.getMessage());
             return false;
         } finally {
