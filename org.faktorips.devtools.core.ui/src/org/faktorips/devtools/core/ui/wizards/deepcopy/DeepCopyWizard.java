@@ -145,10 +145,7 @@ public class DeepCopyWizard extends ResizableWizard {
         getPresentationModel().setNewValidFrom(IpsPlugin.getDefault().getIpsPreferences().getWorkingDate());
 
         getPresentationModel().setTargetPackageRoot(packRoot);
-        // sets the default package only if the corresponding package root is based on a source
-        // folder in other cases reset the default package (because maybe the target package is
-        // inside an ips archive)
-        getPresentationModel().setTargetPackage(defaultPackageRoot == packRoot ? defaultPackage : null);
+        getPresentationModel().setTargetPackage(defaultPackage);
     }
 
     IIpsPackageFragment getDefaultPackage() {

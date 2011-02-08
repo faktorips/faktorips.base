@@ -28,8 +28,6 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  */
 public class IpsPckFragmentRefControl extends TextButtonControl {
 
-    public static final String PACKAGE_FRAGMENT_ROOT = "ipsPckFragmentRoot"; //$NON-NLS-1$
-
     private IIpsPackageFragmentRoot ipsPckFragmentRoot;
 
     private IpsPckFragmenCompletionProcessor completionProcessor;

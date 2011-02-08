@@ -120,7 +120,6 @@ public class SourcePage extends WizardPage {
 
     private CopyLinkEditingSupport copyLinkColumneditingSupport;
 
-    // XXX
     private GenerationDateViewer generationDateViewer;
 
     private static String getTitle(int type) {
@@ -171,7 +170,6 @@ public class SourcePage extends WizardPage {
 
         Composite inputRoot = toolkit.createLabelEditColumnComposite(root);
 
-        // XXX
         createOldValidFromControl(toolkit, inputRoot);
 
         toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelValidFrom);
@@ -292,7 +290,6 @@ public class SourcePage extends WizardPage {
         ChangeListener propertyChangeListener = new ChangeListener();
         getPresentationModel().addPropertyChangeListener(propertyChangeListener);
 
-        // XXX
         StructuredViewerField generationDateField = new StructuredViewerField(generationDateViewer);
         binding.bindContent(generationDateField, getPresentationModel(), DeepCopyPresentationModel.OLD_VALID_FROM);
 
@@ -304,7 +301,6 @@ public class SourcePage extends WizardPage {
         IpsPckFragmentRefField packageField = new IpsPckFragmentRefField(targetPackageControl);
         binding.bindContent(packageRootField, getPresentationModel(), DeepCopyPresentationModel.TARGET_PACKAGE_ROOT);
         binding.bindContent(packageField, getPresentationModel(), DeepCopyPresentationModel.TARGET_PACKAGE);
-        binding.bindContent(packageRootField, targetPackageControl, IpsPckFragmentRefControl.PACKAGE_FRAGMENT_ROOT);
 
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
             TextField searchInputField = new TextField(searchInput);
@@ -725,6 +721,9 @@ public class SourcePage extends WizardPage {
 
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
+            if (evt.getPropertyName().equals(DeepCopyPresentationModel.TARGET_PACKAGE_ROOT)) {
+                targetPackageControl.setIpsPckFragmentRoot((IIpsPackageFragmentRoot)evt.getNewValue());
+            }
             if (evt.getPropertyName().equals(DeepCopyPresentationModel.NEW_VALID_FROM)) {
                 refreshVersionId();
             }
