@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -223,7 +224,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * removed the resource of another test running before.
      */
     protected IIpsProject newIpsProject() throws CoreException {
-        return newIpsProject("UUID.randomUUID()");
+        return newIpsProject(UUID.randomUUID().toString());
     }
 
     /**
