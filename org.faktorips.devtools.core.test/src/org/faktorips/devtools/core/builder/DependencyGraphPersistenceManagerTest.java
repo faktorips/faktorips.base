@@ -28,7 +28,7 @@ public class DependencyGraphPersistenceManagerTest extends AbstractIpsPluginTest
 
     public final void testGetDependencyGraph() throws Exception {
 
-        IIpsProject ipsProject = newIpsProject("Testproject");
+        IIpsProject ipsProject = newIpsProject();
         IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
         IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
         IAssociation bToA = b.newAssociation();

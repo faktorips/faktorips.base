@@ -218,10 +218,12 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Creates a new IpsProject.
+     * Creates a new IpsProject with a random name. If you need a static name for your test, use
+     * {@link #newIpsProject(String)} but choose a unique name because it is not save that eclipse
+     * removed the resource of another test running before.
      */
     protected IIpsProject newIpsProject() throws CoreException {
-        return newIpsProject("TestProject");
+        return newIpsProject("UUID.randomUUID()");
     }
 
     /**

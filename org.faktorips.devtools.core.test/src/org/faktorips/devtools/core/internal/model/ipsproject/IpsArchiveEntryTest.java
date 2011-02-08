@@ -61,7 +61,7 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
                 .getQualifiedNameType();
         newPolicyCmptTypeWithoutProductCmptType(archiveProject, "pack3.HomePolicy").getQualifiedNameType();
 
-        project = newIpsProject();
+        project = newIpsProject("TestProject");
         archiveFile = project.getProject().getFile("test.ipsar");
         archivePath = archiveFile.getLocation();
 
