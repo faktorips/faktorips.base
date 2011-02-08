@@ -39,8 +39,8 @@ import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.Page;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.IIpsSrcFilesChangeListener;
+import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
@@ -54,7 +54,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
  * @author Markus Blum
  * 
  */
-abstract public class DefaultModelDescriptionPage extends Page implements ContentsChangeListener {
+abstract public class DefaultModelDescriptionPage extends Page implements IIpsSrcFilesChangeListener {
 
     private FormToolkit toolkit;
 
@@ -78,7 +78,7 @@ abstract public class DefaultModelDescriptionPage extends Page implements Conten
     public DefaultModelDescriptionPage() {
         defaultList = new ArrayList<DescriptionItem>();
         activeList = new ArrayList<DescriptionItem>();
-        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
+        IpsPlugin.getDefault().getIpsModel().addIpsSrcFilesChangedListener(this);
 
     }
 
@@ -121,11 +121,11 @@ abstract public class DefaultModelDescriptionPage extends Page implements Conten
     }
 
     @Override
-    public void contentsChanged(ContentChangeEvent event) {
+    public void ipsSrcFilesChanged(IpsSrcFilesChangedEvent event) {
         if (ipsObject == null) {
             return;
         }
-        if (event.getIpsSrcFile().equals(ipsObject.getIpsSrcFile())) {
+        if (event.getChangedIpsSrcFiles().contains(ipsObject.getIpsSrcFile())) {
             setDescriptionData();
         }
     }
@@ -276,7 +276,7 @@ abstract public class DefaultModelDescriptionPage extends Page implements Conten
      */
     @Override
     public void dispose() {
-        IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
+        IpsPlugin.getDefault().getIpsModel().removeIpsSrcFilesChangedListener(this);
         if (toolkit != null) {
             toolkit.dispose();
         }

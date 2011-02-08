@@ -35,7 +35,6 @@ public class TestCaseDescriptionPage extends DefaultModelDescriptionPage {
     public TestCaseDescriptionPage(ITestCaseType testCaseType) {
         super();
         setIpsObject(testCaseType);
-        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
         setDescriptionData();
     }
 

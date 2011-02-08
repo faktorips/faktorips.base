@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -38,7 +37,6 @@ public class ProductCmptTypeDescriptionPage extends DefaultModelDescriptionPage 
     public ProductCmptTypeDescriptionPage(IProductCmptType productCmptType) {
         super();
         setIpsObject(productCmptType);
-        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
         setDescriptionData();
     }
 

@@ -34,7 +34,6 @@ public class TableDescriptionPage extends DefaultModelDescriptionPage {
     public TableDescriptionPage(ITableStructure tableStructure) {
         super();
         setIpsObject(tableStructure);
-        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
         setDescriptionData();
     }
 

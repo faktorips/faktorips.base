@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -34,7 +33,6 @@ public class PolicyCmtTypeDescriptionPage extends DefaultModelDescriptionPage {
     public PolicyCmtTypeDescriptionPage(IPolicyCmptType policyCmptType) {
         super();
         setIpsObject(policyCmptType);
-        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
         setDescriptionData();
     }
 

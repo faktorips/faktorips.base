@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -33,7 +32,6 @@ public class EnumsDescriptionPage extends DefaultModelDescriptionPage {
     public EnumsDescriptionPage(IEnumType enumType) {
         super();
         setIpsObject(enumType);
-        IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
         setDescriptionData();
     }
 
