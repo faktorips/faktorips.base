@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.enums.DefaultEnumType;
 import org.faktorips.devtools.core.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategy;
+import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategyFactory;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -130,6 +131,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     /** The set of natural languages supported by the IPS project. */
     private Set<ISupportedLanguage> supportedLanguages = new LinkedHashSet<ISupportedLanguage>(2);
+
+    private IProductCmptNamingStrategy defaultCmptNamingStrategy;
 
     public IpsProjectProperties() {
         super();
@@ -315,7 +318,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     @Override
     public IProductCmptNamingStrategy getProductCmptNamingStrategy() {
         if (productCmptNamingStrategy == null) {
-            return new NoVersionIdProductCmptNamingStrategy();
+            return defaultCmptNamingStrategy;
+
         }
         return productCmptNamingStrategy;
     }
@@ -600,8 +604,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     private void initProductCmptNamingStrategyFromXml(IIpsProject ipsProject, Element el) {
-        productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
-        productCmptNamingStrategyId = productCmptNamingStrategy.getExtensionId();
+        defaultCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategyFactory()
+                .newProductCmptNamingStrategy(ipsProject);
         if (el != null) {
             productCmptNamingStrategyId = el.getAttribute("id"); //$NON-NLS-1$
             if (StringUtils.isEmpty(productCmptNamingStrategyId)) {
@@ -612,8 +616,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             if (factory != null) {
                 productCmptNamingStrategy = factory.newProductCmptNamingStrategy(ipsProject);
                 productCmptNamingStrategy.initFromXml(el);
-            } else {
-                productCmptNamingStrategy = null;
             }
         }
     }
