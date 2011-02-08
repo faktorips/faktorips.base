@@ -18,6 +18,8 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
@@ -26,6 +28,7 @@ import org.faktorips.devtools.core.internal.productrelease.ProductReleaseProcess
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.productrelease.ITargetSystem;
 import org.faktorips.devtools.core.productrelease.ObservableProgressMessages;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
  * The deployment wizard provides the basic ui for deployments of product definition projects. On
@@ -35,6 +38,8 @@ import org.faktorips.devtools.core.productrelease.ObservableProgressMessages;
  */
 public class ProductReleaserBuilderWizard extends Wizard {
 
+    public static final String DIALOG_SETTINGS = "org.faktorips.devtools.core.ui.wizards.productrelease.ProductReleaserBuilderWizard"; //$NON-NLS-1$
+
     private ProductReleaserBuilderWizardPage selectionPage;
 
     private StatusPage statusPage;
@@ -43,6 +48,8 @@ public class ProductReleaserBuilderWizard extends Wizard {
 
     private boolean finished;
 
+    private Operation operation;
+
     public ProductReleaserBuilderWizard() {
         observableProgressMessages = new ObservableProgressMessages();
         selectionPage = new ProductReleaserBuilderWizardPage(observableProgressMessages);
@@ -50,6 +57,15 @@ public class ProductReleaserBuilderWizard extends Wizard {
         observableProgressMessages.addObserver(statusPage);
         setNeedsProgressMonitor(true);
         setWindowTitle(Messages.ReleaserBuilderWizard_title);
+    }
+
+    @Override
+    public IDialogSettings getDialogSettings() {
+        IDialogSettings settings = IpsUIPlugin.getDefault().getDialogSettings().getSection(DIALOG_SETTINGS);
+        if (settings == null) {
+            settings = IpsUIPlugin.getDefault().getDialogSettings().addNewSection(DIALOG_SETTINGS);
+        }
+        return settings;
     }
 
     @Override
@@ -69,17 +85,49 @@ public class ProductReleaserBuilderWizard extends Wizard {
 
     @Override
     public boolean performFinish() {
+        saveSettings();
+        finished = true;
         addPage(statusPage);
         getContainer().showPage(statusPage);
+        if (!authenticateTargetSystems()) {
+            observableProgressMessages.error(Messages.ProductReleaserBuilderWizard_complete_aborted);
+            return false;
+        }
         runProgress();
         return false;
     }
 
+    private void saveSettings() {
+        String selectedProject = selectionPage.getSelectedProject().getName();
+        getDialogSettings().put(ProductReleaserBuilderWizardPage.SELECTED_PROJECT_SETTING, selectedProject);
+        String[] selectedTargetSystems = new String[selectionPage.getSelectedTargetSystems().size()];
+        int i = 0;
+        for (ITargetSystem targetSystem : selectionPage.getSelectedTargetSystems()) {
+            selectedTargetSystems[i] = targetSystem.getName();
+            i++;
+        }
+        getDialogSettings().put(
+                ProductReleaserBuilderWizardPage.SELECTED_TARGET_SYSTEMS_SETTING + "@" + selectedProject, //$NON-NLS-1$
+                selectedTargetSystems);
+    }
+
+    private boolean authenticateTargetSystems() {
+        List<ITargetSystem> selectedTargetSystems = selectionPage.getSelectedTargetSystems();
+        for (ITargetSystem targetSystem : selectedTargetSystems) {
+            while (!targetSystem.isValidAuthentication()) {
+                UsernamePasswordDialog usernamePasswordDialog = new UsernamePasswordDialog(getShell(), targetSystem);
+                if (usernamePasswordDialog.open() != Dialog.OK) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     private boolean runProgress() {
-        Operation operation = new Operation(selectionPage.getNewVersion(), selectionPage.getSelectedTargetSystems(),
+        operation = new Operation(selectionPage.getNewVersion(), selectionPage.getSelectedTargetSystems(),
                 selectionPage.getProductReleaseProcessor());
         try {
-            finished = true;
             getContainer().run(true, false, operation);
             setFinishStatus(!operation.returnState);
             return false;
@@ -98,7 +146,7 @@ public class ProductReleaserBuilderWizard extends Wizard {
 
     private void setFinishStatus(boolean errorWhileFinished) {
         if (errorWhileFinished) {
-            observableProgressMessages.error(Messages.ProductReleaserBuilderWizard_ccomplete_error);
+            observableProgressMessages.error(Messages.ProductReleaserBuilderWizard_complete_error);
         } else {
             observableProgressMessages.info(Messages.ProductReleaserBuilderWizard_complete_success);
         }

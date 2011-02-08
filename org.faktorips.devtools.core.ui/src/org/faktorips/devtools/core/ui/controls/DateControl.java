@@ -69,7 +69,7 @@ public class DateControl extends TextButtonControl {
         calendarShell.setLayout(new FillLayout());
         new MainShellListener(getTextControl().getShell(), calendarShell);
 
-        final DateTime dateWidget = new DateTime(calendarShell, SWT.CALENDAR | SWT.MEDIUM);
+        final DateTime dateWidget = new DateTime(calendarShell, SWT.CALENDAR | SWT.MEDIUM | SWT.BORDER);
         dateWidget.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {

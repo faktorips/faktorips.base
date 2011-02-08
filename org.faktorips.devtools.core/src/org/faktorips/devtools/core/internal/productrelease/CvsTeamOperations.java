@@ -160,8 +160,8 @@ public class CvsTeamOperations implements ITeamOperations {
         TagOperation tagOperation = new TagOperation(null, resourceMappers);
         tagOperation.setTag(new CVSTag(tag, CVSTag.VERSION));
         tagOperation.setInvolvesMultipleResources(true);
+        // tagOperation.moveTag();
         IStatus status = tagOperation.tag((CVSTeamProvider)repositoryProvider, resources, true, monitor);
-        // tagOperation.execute(monitor);
         if (status.getException() != null) {
             throw new InterruptedException("Error while tagging: " + status.getException().getMessage()); //$NON-NLS-1$
         } else if (status.getSeverity() == IStatus.ERROR) {

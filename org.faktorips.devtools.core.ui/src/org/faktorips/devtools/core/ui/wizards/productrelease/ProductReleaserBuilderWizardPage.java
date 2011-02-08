@@ -54,6 +54,10 @@ import org.faktorips.devtools.core.ui.util.TypedSelection;
 
 public class ProductReleaserBuilderWizardPage extends WizardPage {
 
+    static final String SELECTED_PROJECT_SETTING = "selectedProject"; //$NON-NLS-1$
+
+    static final String SELECTED_TARGET_SYSTEMS_SETTING = "selectedTargetSystems"; //$NON-NLS-1$
+
     private IIpsProject ipsProject;
     private Label currentVersionLabel;
     private Text newVersionText;
@@ -155,7 +159,7 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
             }
         });
 
-        IIpsProject[] projects;
+        IIpsProject[] projects = new IIpsProject[0];
         try {
             projects = IpsPlugin.getDefault().getIpsModel().getIpsProductDefinitionProjects();
             ArrayList<IIpsProject> sortedProjectList = new ArrayList<IIpsProject>(Arrays.asList(projects));
@@ -170,14 +174,21 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
         } catch (CoreException e) {
             IpsPlugin.log(e);
         }
-        if (ipsProject != null) {
-            projectSelectComboViewer.setSelection(new StructuredSelection(ipsProject));
+
+        if (ipsProject == null) {
+            String lastProject = getDialogSettings().get(SELECTED_PROJECT_SETTING);
+            for (IIpsProject aProject : projects) {
+                if (aProject.getName().equals(lastProject)) {
+                    ipsProject = aProject;
+                }
+            }
         }
+        if (ipsProject == null && projects.length > 0) {
+            ipsProject = projects[0];
+        }
+        projectSelectComboViewer.setSelection(new StructuredSelection(ipsProject));
 
         setControl(pageControl);
-        // if (getMessageType() != DialogPage.INFORMATION) {
-        //            setMessage("", DialogPage.NONE); //$NON-NLS-1$
-        // }
     }
 
     public void setIpsProject(IIpsProject ipsProject) {
@@ -228,6 +239,17 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
                         targetSystemViewer.setInput(availableTargetSystems);
                         showTargetSystems = true;
                     }
+                    List<ITargetSystem> selected = new ArrayList<ITargetSystem>();
+                    String[] prevSelected = getDialogSettings().getArray(
+                            SELECTED_TARGET_SYSTEMS_SETTING + "@" + getSelectedProject().getName()); //$NON-NLS-1$
+                    for (String name : prevSelected) {
+                        for (ITargetSystem aTargetSystem : availableTargetSystems) {
+                            if (aTargetSystem.getName().equals(name)) {
+                                selected.add(aTargetSystem);
+                            }
+                        }
+                    }
+                    targetSystemViewer.setCheckedElements(selected.toArray());
                 }
             }
             if (targetSystemWasVisible != showTargetSystems) {
@@ -295,6 +317,10 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
             }
         }
         return result;
+    }
+
+    public IIpsProject getSelectedProject() {
+        return ipsProject;
     }
 
 }

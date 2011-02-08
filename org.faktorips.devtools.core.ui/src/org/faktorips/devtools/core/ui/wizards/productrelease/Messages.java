@@ -17,7 +17,8 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.productrelease.messages"; //$NON-NLS-1$
-    public static String ProductReleaserBuilderWizard_ccomplete_error;
+    public static String ProductReleaserBuilderWizard_complete_error;
+    public static String ProductReleaserBuilderWizard_complete_aborted;
     public static String ProductReleaserBuilderWizard_complete_success;
     public static String ReleaserBuilderWizard_title;
     public static String ReleaserBuilderWizard_exception_NotReady;
@@ -34,6 +35,10 @@ public class Messages extends NLS {
     public static String ReleaserBuilderWizardSelectionPage_select_project;
     public static String ReleaserBuilderWizardSelectionPage_title;
     public static String ReleaserBuilderWizardSelectionPage_warning_sameVersion;
+    public static String UsernamePasswordDialog_password;
+    public static String UsernamePasswordDialog_prompt;
+    public static String UsernamePasswordDialog_savePassword;
+    public static String UsernamePasswordDialog_username;
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

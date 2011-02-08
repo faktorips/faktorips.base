@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.productrelease;
 
+import java.net.PasswordAuthentication;
+
 import org.faktorips.devtools.core.productrelease.ITargetSystem;
 
 /**
@@ -23,6 +25,7 @@ import org.faktorips.devtools.core.productrelease.ITargetSystem;
 public class DefaultTargetSystem implements ITargetSystem {
 
     private final String name;
+    private PasswordAuthentication passwordAuthentication;
 
     public DefaultTargetSystem(String name) {
         this.name = name;
@@ -36,6 +39,20 @@ public class DefaultTargetSystem implements ITargetSystem {
     @Override
     public String toString() {
         return getName();
+    }
+
+    @Override
+    public boolean isValidAuthentication() {
+        return true;
+    }
+
+    @Override
+    public void setPasswordAuthentication(PasswordAuthentication passwordAuthentication) {
+        this.passwordAuthentication = passwordAuthentication;
+    }
+
+    protected PasswordAuthentication getPasswordAuthentication() {
+        return passwordAuthentication;
     }
 
 }

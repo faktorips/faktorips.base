@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.productrelease;
 
+import java.net.PasswordAuthentication;
+
 /**
  * This object represents a target system for the release and deployment extension. It is used by
  * the {@link IReleaseAndDeploymentOperation}.
@@ -30,5 +32,22 @@ public interface ITargetSystem {
      * return the name of the target system
      */
     public String getName();
+
+    /**
+     * Setting the {@link PasswordAuthentication} for this target system.
+     * 
+     * @param passwordAuthentication the {@link PasswordAuthentication} containing the username and
+     *            password
+     */
+    public void setPasswordAuthentication(PasswordAuthentication passwordAuthentication);
+
+    /**
+     * Whether the {@link PasswordAuthentication} is valid. If the target system does not need any
+     * authentication this method should always return true. As far this method returns false, the
+     * system will ask the user for name and password.
+     * 
+     * @return true if the {@link PasswordAuthentication} is valid
+     */
+    public boolean isValidAuthentication();
 
 }
