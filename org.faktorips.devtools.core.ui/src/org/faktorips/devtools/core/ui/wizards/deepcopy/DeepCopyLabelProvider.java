@@ -41,10 +41,13 @@ public abstract class DeepCopyLabelProvider extends StyledCellLabelProvider {
     private final ResourceManager resourceManager;
     private ImageDescriptor overlay = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("LinkOverlay.gif", true); //$NON-NLS-1$
     private final DeepCopyPreview deepCopyPreview;
+    private final int segmentsToIgnore;
 
     public DeepCopyLabelProvider(DeepCopyPreview deepCopyPreview) {
         this.deepCopyPreview = deepCopyPreview;
         resourceManager = new LocalResourceManager(JFaceResources.getResources());
+        segmentsToIgnore = deepCopyPreview.getSegmentsToIgnore(deepCopyPreview.getPresentationModel()
+                .getAllCopyElements(false));
     }
 
     @Override
@@ -154,8 +157,7 @@ public abstract class DeepCopyLabelProvider extends StyledCellLabelProvider {
             String packageName = ""; //$NON-NLS-1$
             if (deepCopyPreview.getPresentationModel().getTreeStatus().getCopyOrLink(productCmptReference) == CopyOrLink.COPY) {
                 packageName = deepCopyPreview.buildTargetPackageName(deepCopyPreview.getPresentationModel()
-                        .getTargetPackage(), productCmptReference.getWrappedIpsObject(), deepCopyPreview
-                        .getSegmentsToIgnore());
+                        .getTargetPackage(), productCmptReference.getWrappedIpsObject(), segmentsToIgnore);
             } else {
                 packageName = productCmptReference.getProductCmpt().getIpsPackageFragment().getName();
             }
@@ -166,7 +168,7 @@ public abstract class DeepCopyLabelProvider extends StyledCellLabelProvider {
         } else if (item instanceof IProductCmptStructureTblUsageReference) {
             String packageName = deepCopyPreview.buildTargetPackageName(deepCopyPreview.getPresentationModel()
                     .getTargetPackage(), ((IProductCmptStructureTblUsageReference)item).getWrappedIpsObject(),
-                    deepCopyPreview.getSegmentsToIgnore());
+                    segmentsToIgnore);
             return " - " + packageName; //$NON-NLS-1$
         }
         return ""; //$NON-NLS-1$

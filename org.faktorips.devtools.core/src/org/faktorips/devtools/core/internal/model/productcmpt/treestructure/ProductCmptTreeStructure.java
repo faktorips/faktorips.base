@@ -48,9 +48,15 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
 
-    private IIpsProject ipsProject;
+    private final IIpsProject ipsProject;
+
     private ProductCmptReference root;
-    private GregorianCalendar workingDate;
+
+    private final GregorianCalendar workingDate;
+
+    private Set<IProductCmptStructureReference> setWithProductCmptsOnly;
+
+    private Set<IProductCmptStructureReference> setWithAll;
 
     /**
      * Creates a new ProductCmptStructure for the given product component. Instead of a specified
@@ -172,14 +178,31 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
 
     @Override
     public void refresh() throws CycleInProductStructureException {
+        setWithAll = null;
+        setWithProductCmptsOnly = null;
         root = buildNode(root.getProductCmpt(), null, null);
     }
 
     @Override
     public Set<IProductCmptStructureReference> toSet(boolean productCmptOnly) {
+        if (productCmptOnly) {
+            if (setWithProductCmptsOnly != null) {
+                return setWithProductCmptsOnly;
+            }
+        } else if (setWithAll != null) {
+            return setWithAll;
+        }
+
         Set<IProductCmptStructureReference> result = new HashSet<IProductCmptStructureReference>();
         result.add(root);
         addChildrenToList(root, result, productCmptOnly);
+
+        if (productCmptOnly) {
+            setWithProductCmptsOnly = result;
+        } else {
+            setWithAll = result;
+        }
+
         return result;
     }
 

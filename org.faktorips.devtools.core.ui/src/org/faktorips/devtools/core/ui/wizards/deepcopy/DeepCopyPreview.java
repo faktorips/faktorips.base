@@ -203,10 +203,6 @@ public class DeepCopyPreview {
         }
     }
 
-    public int getSegmentsToIgnore() {
-        return getSegmentsToIgnore(presentationModel.getAllCopyElements(false));
-    }
-
     /**
      * Calculate the number of <code>IPath</code>-segements which are equal for all product
      * component structure refences to copy.

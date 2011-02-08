@@ -59,6 +59,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
     public void initialize(IProductCmptTreeStructure structure) {
         treeStatus = new HashMap<IProductCmpt, Map<IIpsObjectPart, LinkStatus>>();
         associationLinks = new HashMap<IProductCmptLink, IProductCmpt>();
+        HashMap<IProductCmptLink, IProductCmpt> associationLinksCopy = new HashMap<IProductCmptLink, IProductCmpt>();
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
             if (reference instanceof IProductCmptTypeAssociationReference) {
                 // no status for associations is needed
@@ -74,12 +75,15 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
                         // in the getter method the status is verified: due to FIPS-3, we want to
                         // copy references that target a product component which is also copied
                         status.setCopyOrLink(CopyOrLink.LINK);
-                        associationLinks.put(cmptReference.getLink(), cmptReference.getProductCmpt());
+                        // do not add to real associationLinks map while initialization because
+                        // checking for association copy is not very efficient and we do not have to
+                        // check here
+                        associationLinksCopy.put(cmptReference.getLink(), cmptReference.getProductCmpt());
                     }
                 }
             }
         }
-
+        associationLinks = associationLinksCopy;
     }
 
     public CopyOrLink getCopyOrLinkStatus(IProductCmptStructureReference reference) {
@@ -113,17 +117,33 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
     private LinkStatus getStatusForAssociation(IIpsObjectPart part,
             LinkStatus linkStatus,
             IProductCmptTreeStructure structure) {
-        IProductCmpt target = associationLinks.get(part);
-        Set<IProductCmptStructureReference> allEnabledElements = getAllEnabledElements(CopyOrLink.COPY, structure,
-                false);
-        for (IProductCmptStructureReference copyReference : allEnabledElements) {
-            if (copyReference.getWrappedIpsObject().equals(target)) {
-                // found the same product component that is copied
-                return new LinkStatus(linkStatus.getIpsObjectPart(), linkStatus.getTarget(), linkStatus.isChecked(),
-                        CopyOrLink.COPY);
-            }
+        if (isProductCmptCopied(part, structure)) {
+            // found the same product component that is copied
+            return new LinkStatus(linkStatus.getIpsObjectPart(), linkStatus.getTarget(), linkStatus.isChecked(),
+                    CopyOrLink.COPY);
         }
         return linkStatus;
+    }
+
+    private boolean isProductCmptCopied(IIpsObjectPart part, IProductCmptTreeStructure structure) {
+        IProductCmpt target = associationLinks.get(part);
+        Set<IProductCmptStructureReference> set = structure.toSet(false);
+        for (IProductCmptStructureReference reference : set) {
+            if (reference instanceof IProductCmptTypeAssociationReference) {
+                continue;
+            }
+            if (reference instanceof IProductCmptReference && associationLinks.containsKey(reference.getWrapped())) {
+                continue;
+            }
+            IProductCmpt parent = getProductCmpt(reference.getWrapped());
+            LinkStatus linkStatus = getStatusMap(parent).get(reference.getWrapped());
+            if (isEnabled(reference) && linkStatus.getCopyOrLink() == CopyOrLink.COPY) {
+                if (reference.getWrappedIpsObject().equals(target)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private Map<IIpsObjectPart, LinkStatus> getStatusMap(IProductCmpt parent) {
@@ -289,8 +309,13 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
         boolean enabled = isChecked(reference);
         IProductCmptStructureReference parent = reference;
         while (enabled && (parent = parent.getParent()) != null) {
-            // use != LINK because associations are UNDEFINED
-            enabled = enabled && isChecked(parent) && getCopyOrLink(parent) != CopyOrLink.LINK;
+            if (parent instanceof IProductCmptTypeAssociationReference) {
+                parent = parent.getParent();
+                continue;
+            } else {
+                LinkStatus status = getStatus(parent);
+                enabled = enabled && status.isChecked() && status.getCopyOrLink() == CopyOrLink.COPY;
+            }
         }
         return enabled;
     }

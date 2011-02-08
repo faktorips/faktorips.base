@@ -30,9 +30,9 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptT
  */
 public abstract class ProductCmptStructureReference extends PlatformObject implements IProductCmptStructureReference {
 
-    private IProductCmptTreeStructure structure;
+    private final IProductCmptTreeStructure structure;
 
-    private ProductCmptStructureReference parent;
+    private final ProductCmptStructureReference parent;
 
     private ProductCmptStructureReference[] children;
 
