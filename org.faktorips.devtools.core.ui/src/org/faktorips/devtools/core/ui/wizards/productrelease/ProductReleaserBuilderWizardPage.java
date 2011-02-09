@@ -284,7 +284,8 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
                     setMessage(NLS.bind(Messages.ReleaserBuilderWizardSelectionPage_error_illegalVersion, newVersion,
                             ipsProject.getVersionFormat().getVersionFormat()), DialogPage.ERROR);
                 } else if (newVersion.equals(ipsProject.getProperties().getVersion())) {
-                    setMessage(Messages.ReleaserBuilderWizardSelectionPage_warning_sameVersion, DialogPage.WARNING);
+                    setMessage(Messages.ReleaserBuilderWizardSelectionPage_warning_sameVersion, DialogPage.ERROR);
+                    return;
                 }
             } catch (CoreException e) {
                 setMessage(Messages.ReleaserBuilderWizardSelectionPage_error_versionFormat + e.getMessage(),
@@ -296,7 +297,8 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
 
     private void updatePageComplete() {
         boolean complete = ipsProject != null && correctVersionFormat && productReleaseProcessor != null
-                && productReleaseProcessor.getReleaseAndDeploymentOperation() != null;
+                && productReleaseProcessor.getReleaseAndDeploymentOperation() != null
+                && !newVersionText.getText().equals(ipsProject.getProperties().getVersion());
         setPageComplete(complete);
     }
 
