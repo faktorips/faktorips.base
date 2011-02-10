@@ -50,7 +50,8 @@ public class AssociationRefControl extends TextButtonControl {
         AssociationCompletionProcessor completionProcessor = new AssociationCompletionProcessor(parentPolicyCmptType,
                 true);
         completionProcessor.setComputeProposalForEmptyPrefix(true);
-        ContentAssistHandler.createHandlerForText(text, CompletionUtil.createContentAssistant(completionProcessor));
+        ContentAssistHandler.createHandlerForText(getTextControl(),
+                CompletionUtil.createContentAssistant(completionProcessor));
     }
 
     @Override

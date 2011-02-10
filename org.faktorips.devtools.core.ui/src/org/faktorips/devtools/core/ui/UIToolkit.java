@@ -472,6 +472,18 @@ public class UIToolkit {
         return newButton;
     }
 
+    /**
+     * Creates a new toggle button.
+     */
+    public Button createToggleButton(Composite parent, String text) {
+        if (formToolkit != null) {
+            return formToolkit.createButton(parent, text, SWT.TOGGLE);
+        }
+        Button newButton = new Button(parent, SWT.TOGGLE);
+        newButton.setText(text);
+        return newButton;
+    }
+
     public Button createRadioButton(Composite parent, String text) {
         if (formToolkit != null) {
             return formToolkit.createButton(parent, text, SWT.RADIO);

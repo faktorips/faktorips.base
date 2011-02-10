@@ -240,6 +240,9 @@ public class DefaultsAndRangesSection extends IpsSection {
         } else {
             toolkit.createFormLabel(rootPane, Messages.DefaultsAndRangesSection_minMaxStepLabel);
             Composite rangeComposite = toolkit.createGridComposite(rootPane, 3, false, false);
+            // need to see boarders
+            ((GridLayout)rangeComposite.getLayout()).marginWidth = 1;
+            ((GridLayout)rangeComposite.getLayout()).marginHeight = 2;
 
             lower = toolkit.createText(rangeComposite);
             initTextField(lower, 50);
@@ -249,6 +252,8 @@ public class DefaultsAndRangesSection extends IpsSection {
 
             step = toolkit.createText(rangeComposite);
             initTextField(step, 50);
+
+            toolkit.getFormToolkit().paintBordersFor(rangeComposite);
         }
 
         editControls.add(lower);

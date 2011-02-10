@@ -332,7 +332,7 @@
                minimized="false"
                moveable="true"
                relationship="bottom"
-               relative="org.faktorips.devtools.core.ui.views.modelExplorer"
+               relative="org.eclipse.jdt.ui.PackageExplorer"
                showTitle="true"
                standalone="false"
                visible="true">
@@ -481,6 +481,17 @@
          <showInPart
                id="org.faktorips.devtools.core.ui.views.productStructureExplorer">
          </showInPart>
+         <view
+               closeable="true"
+               id="org.eclipse.pde.runtime.LogView"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="org.eclipse.ui.views.ProblemView"
+               showTitle="true"
+               standalone="false"
+               visible="false">
+         </view>
       </perspectiveExtension>
    </extension>
    <extension point="org.eclipse.ui.popupMenus">

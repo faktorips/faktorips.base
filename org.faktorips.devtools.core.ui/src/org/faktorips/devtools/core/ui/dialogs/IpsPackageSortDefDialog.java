@@ -307,7 +307,8 @@ public class IpsPackageSortDefDialog extends TrayDialog {
             settings.load(settingsFilename);
         } catch (IOException e) {
             // cant read the settings, use defaults.
-            IpsPlugin.log(e);
+            // do not log the error - could be the first time we read the settings.
+            /* IpsPlugin.log(e); */
         }
     }
 

@@ -98,7 +98,7 @@ public class DatatypeRefControl extends TextButtonControl {
                 }
                 try {
                     immediatelyNotifyListener = true;
-                    text.setText(textToSet);
+                    getTextControl().setText(textToSet);
                 } finally {
                     immediatelyNotifyListener = false;
                 }

@@ -42,7 +42,8 @@ public class DatatypeRefControl extends TextButtonControl {
         completionProcessor = new DatatypeCompletionProcessor();
         completionProcessor.setIpsProject(project);
         CompletionUtil.createContentAssistant(completionProcessor);
-        ContentAssistHandler.createHandlerForText(text, CompletionUtil.createContentAssistant(completionProcessor));
+        ContentAssistHandler.createHandlerForText(getTextControl(),
+                CompletionUtil.createContentAssistant(completionProcessor));
     }
 
     public void setVoidAllowed(boolean includeVoid) {
@@ -104,7 +105,7 @@ public class DatatypeRefControl extends TextButtonControl {
                 }
                 try {
                     immediatelyNotifyListener = true;
-                    text.setText(textToSet);
+                    getTextControl().setText(textToSet);
                 } finally {
                     immediatelyNotifyListener = false;
                 }

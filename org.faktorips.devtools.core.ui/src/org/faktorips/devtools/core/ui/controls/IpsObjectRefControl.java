@@ -58,7 +58,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
         if (handler != null) {
             handler.setEnabled(false);
         }
-        handler = ContentAssistHandler.createHandlerForText(text,
+        handler = ContentAssistHandler.createHandlerForText(getTextControl(),
                 CompletionUtil.createContentAssistant(new IpsObjectCompletionProcessor(this)));
     }
 

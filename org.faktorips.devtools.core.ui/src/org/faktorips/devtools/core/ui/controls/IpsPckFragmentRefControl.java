@@ -36,7 +36,8 @@ public class IpsPckFragmentRefControl extends TextButtonControl {
         super(parent, toolkit, Messages.IpsPckFragmentRefControl_titleBrowse);
 
         completionProcessor = new IpsPckFragmenCompletionProcessor(this);
-        ContentAssistHandler.createHandlerForText(text, CompletionUtil.createContentAssistant(completionProcessor));
+        ContentAssistHandler.createHandlerForText(getTextControl(),
+                CompletionUtil.createContentAssistant(completionProcessor));
     }
 
     public void setIpsPckFragmentRoot(IIpsPackageFragmentRoot root) {
@@ -52,12 +53,12 @@ public class IpsPckFragmentRefControl extends TextButtonControl {
         if (ipsPckFragmentRoot == null) {
             return null;
         }
-        return ipsPckFragmentRoot.getIpsPackageFragment(text.getText());
+        return ipsPckFragmentRoot.getIpsPackageFragment(getTextControl().getText());
     }
 
     public void setIpsPackageFragment(IIpsPackageFragment newPack) {
         if (newPack == null) {
-            text.setText(""); //$NON-NLS-1$
+            getTextControl().setText(""); //$NON-NLS-1$
         } else {
             setText(newPack.getName());
         }

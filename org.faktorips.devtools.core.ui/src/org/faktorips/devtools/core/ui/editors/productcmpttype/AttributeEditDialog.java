@@ -176,8 +176,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         if (defaultValueField instanceof EnumTypeDatatypeField) {
             ((EnumTypeDatatypeField)defaultValueField).setEnableEnumContentDisplay(false);
         }
-        defaultValueField.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
-
         defaultEditFieldPlaceholder.layout();
         defaultEditFieldPlaceholder.getParent().getParent().layout();
         bindingContext.bindContent(defaultValueField, attribute, IAttribute.PROPERTY_DEFAULT_VALUE);

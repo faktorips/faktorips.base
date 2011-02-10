@@ -22,13 +22,11 @@ import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.ShellEvent;
-import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -49,45 +47,45 @@ public class DateControl extends TextButtonControl {
 
     private AbstractDateFormat dateFormat;
 
+    private Shell calendarShell;
+
+    private DateTime dateWidget;
+
+    private GregorianCalendar oldCalendar;
+
     public DateControl(Composite parent, UIToolkit toolkit) {
         super(parent, toolkit, "", true, 25); //$NON-NLS-1$
         setButtonImage(IpsUIPlugin.getImageHandling().getSharedImage("Calendar.png", true)); //$NON-NLS-1$
-        if (toolkit.getFormToolkit() != null) {
-            // Forms: Rahmen fuer Text-Control zeichnen lassen
-            toolkit.getFormToolkit().paintBordersFor(this);
-        }
         dateFormat = new DateISOStringFormat();
     }
 
     @Override
     protected void buttonClicked() {
         showClendarShell();
+        getButtonControl().setSelection(true);
     }
 
     private void showClendarShell() {
-        final Shell calendarShell = new Shell(getTextControl().getShell(), SWT.ON_TOP | SWT.NO_TRIM | SWT.NO_FOCUS);
+        calendarShell = new Shell(getTextControl().getShell(), SWT.NONE);
         calendarShell.setLayout(new FillLayout());
-        new MainShellListener(getTextControl().getShell(), calendarShell);
 
-        final DateTime dateWidget = new DateTime(calendarShell, SWT.CALENDAR | SWT.MEDIUM | SWT.BORDER);
-        dateWidget.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                // as of now only Doubleclick should apply the selected date to the textControl
-                // setFieldValueToSelectedDate(dateWidget);
-            }
-        });
+        dateWidget = new DateTime(calendarShell, SWT.CALENDAR | SWT.MEDIUM);
+        initWidgetWithCurretDate(dateWidget);
+
         dateWidget.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseDoubleClick(MouseEvent e) {
-                if (e.y > 20) {
-                    /*
-                     * Ignore double-clicks on arrow-buttons (for changing month and year) in the
-                     * upper part of DateTime, as they would close the widget.
-                     */
-                    setFieldValueToSelectedDate(dateWidget);
-                    closeCalendarShell(calendarShell);
+            public void mouseUp(MouseEvent e) {
+                GregorianCalendar newCalendar = new GregorianCalendar(dateWidget.getYear(), dateWidget.getMonth(),
+                        dateWidget.getDay());
+                if ((oldCalendar.get(Calendar.MONTH) != newCalendar.get(Calendar.MONTH) || oldCalendar
+                        .get(Calendar.YEAR) != newCalendar.get(Calendar.YEAR))
+                        && oldCalendar.get(Calendar.DAY_OF_MONTH) == newCalendar.get(Calendar.DAY_OF_MONTH)) {
+                    // only month or year changed --> the user did not selected a date
+                    oldCalendar = newCalendar;
+                    return;
                 }
+                setFieldValueToSelectedDate(dateWidget);
+                closeCalendarShell(calendarShell);
             }
         });
         dateWidget.addFocusListener(new FocusAdapter() {
@@ -97,31 +95,35 @@ public class DateControl extends TextButtonControl {
             }
         });
         Point absoluteButtonLocation = getButtonControl().toDisplay(new Point(0, 0));
-        calendarShell.setBounds(absoluteButtonLocation.x - 200, absoluteButtonLocation.y + 25, 225, 190);
-        dateWidget.setSize(225, 190);
+        calendarShell.setBounds(absoluteButtonLocation.x - 155, absoluteButtonLocation.y + 25, 180, 170);
         dateWidget.setVisible(true);
         calendarShell.setVisible(true);
         calendarShell.setFocus();
-
-        initWidgetWithCurretDate(dateWidget);
     }
 
     protected void initWidgetWithCurretDate(final DateTime dateWidget) {
-        GregorianCalendar calendar = new GregorianCalendar();
+        oldCalendar = new GregorianCalendar();
         Date date = dateFormat.parseToDate(getText());
         if (date != null) {
-            calendar.setTime(date);
+            oldCalendar.setTime(date);
         }
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int year = oldCalendar.get(Calendar.YEAR);
+        int month = oldCalendar.get(Calendar.MONTH);
+        int day = oldCalendar.get(Calendar.DAY_OF_MONTH);
         dateWidget.setDate(year, month, day);
+    }
+
+    @Override
+    protected Control createSecondControl(UIToolkit toolkit) {
+        Button toggleButton = toolkit.createToggleButton(this, ""); //$NON-NLS-1$
+        return toggleButton;
     }
 
     private void closeCalendarShell(Shell calendarShell) {
         if (calendarShell != null && !calendarShell.isDisposed()) {
             calendarShell.setVisible(false);
             calendarShell.dispose();
+            getButtonControl().setSelection(false);
         }
     }
 
@@ -131,48 +133,11 @@ public class DateControl extends TextButtonControl {
         setText(dateFormat.formatDate(calendar.getTime()));
     }
 
-    private class MainShellListener implements ShellListener {
-        private Shell shellToListenTo;
-        private Shell calendarShell;
-
-        public MainShellListener(Shell shell, Shell calShell) {
-            shellToListenTo = shell;
-            calendarShell = calShell;
-            shellToListenTo.addShellListener(this);
+    @Override
+    public void dispose() {
+        if (calendarShell != null) {
+            calendarShell.dispose();
         }
-
-        @Override
-        public void shellIconified(ShellEvent e) {
-            unregisterIfShellCalendarWasDisposedOf();
-            closeCalendarShell(calendarShell);
-        }
-
-        @Override
-        public void shellDeiconified(ShellEvent e) {
-            // nothing to do
-        }
-
-        @Override
-        public void shellDeactivated(ShellEvent e) {
-            // nothing to do
-        }
-
-        @Override
-        public void shellClosed(ShellEvent e) {
-            unregisterIfShellCalendarWasDisposedOf();
-            closeCalendarShell(calendarShell);
-        }
-
-        @Override
-        public void shellActivated(ShellEvent e) {
-            // nothing to do
-        }
-
-        protected void unregisterIfShellCalendarWasDisposedOf() {
-            if (calendarShell.isDisposed() && !shellToListenTo.isDisposed()) {
-                shellToListenTo.removeShellListener(this);
-            }
-        }
-
+        super.dispose();
     }
 }

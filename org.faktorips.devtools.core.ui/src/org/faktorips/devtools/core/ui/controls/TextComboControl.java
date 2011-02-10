@@ -14,12 +14,10 @@
 package org.faktorips.devtools.core.ui.controls;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
 
@@ -32,12 +30,7 @@ import org.faktorips.devtools.core.ui.controller.EditField;
  * 
  * @author Stefan Widmaier, FaktorZehn AG
  */
-public class TextComboControl extends ControlComposite {
-
-    /** text and combo controls */
-    protected Text text;
-
-    private Combo combo;
+public class TextComboControl extends TextAndSecondControlComposite {
 
     /**
      * Creates a textfield and a combo. The given comboHeightHint is used to set the heightHint for
@@ -49,42 +42,7 @@ public class TextComboControl extends ControlComposite {
      * @param buttonHeightHint The preferred height or -1.
      */
     public TextComboControl(Composite parent, UIToolkit toolkit, boolean smallMargins, int buttonHeightHint) {
-
-        super(parent, SWT.NONE);
-        setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
-        GridLayout layout = new GridLayout(2, false);
-        layout.marginHeight = 0;
-        layout.marginWidth = 0;
-        setLayout(layout);
-        if (toolkit.getFormToolkit() == null) {
-            text = toolkit.createText(this);
-        } else {
-            Composite c = toolkit.getFormToolkit().createComposite(this);
-            GridLayout layout2 = new GridLayout(2, false);
-            if (smallMargins) {
-                layout2.marginHeight = 2;
-                layout2.marginWidth = 1;
-            } else {
-                layout2.marginHeight = 3;
-                layout2.marginWidth = 1;
-            }
-            c.setLayout(layout2);
-            c.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
-            toolkit.getFormToolkit().paintBordersFor(c);
-            text = toolkit.createText(c);
-        }
-        text.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
-        combo = toolkit.createCombo(this);
-        GridData d = new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_VERTICAL);
-        if (buttonHeightHint > -1) {
-            d.heightHint = buttonHeightHint;
-            d.widthHint = 35;
-        }
-        combo.setLayoutData(d);
-        if (toolkit.getFormToolkit() != null) {
-            // must be called after text and combo controls were created
-            toolkit.getFormToolkit().adapt(this);
-        }
+        super(parent, toolkit, smallMargins, buttonHeightHint);
     }
 
     /**
@@ -99,39 +57,31 @@ public class TextComboControl extends ControlComposite {
     }
 
     @Override
-    public void setEnabled(boolean value) {
-        text.setEnabled(value);
-        combo.setEnabled(value);
-    }
-
-    public void setText(String newText) {
-        text.setText(newText);
-    }
-
-    public String getText() {
-        return text.getText();
-    }
-
-    public Text getTextControl() {
-        return text;
-    }
-
-    public Combo getComboControl() {
-        return combo;
+    protected Control createSecondControl(UIToolkit toolkit) {
+        return toolkit.createCombo(this);
     }
 
     @Override
-    public boolean setFocus() {
-        return text.setFocus();
+    protected Combo getSecondControl() {
+        return (Combo)super.getSecondControl();
+    }
+
+    public Combo getComboControl() {
+        return getSecondControl();
     }
 
     @Override
     public void addListener(int eventType, Listener listener) {
         super.addListener(eventType, listener);
         if (eventType != SWT.Paint && eventType != SWT.Dispose) {
-            listenToControl(text, eventType);
-            listenToControl(combo, eventType);
+            listenToControl(getTextControl(), eventType);
+            listenToControl(getComboControl(), eventType);
         }
+    }
+
+    @Override
+    protected void addListeners() {
+        // do nothing
     }
 
 }

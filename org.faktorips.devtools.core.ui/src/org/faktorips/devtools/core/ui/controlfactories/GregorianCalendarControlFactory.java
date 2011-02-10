@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.devtools.core.ui.controller.fields.DateControlField;
 import org.faktorips.devtools.core.ui.controller.fields.DateISOStringFormat;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 import org.faktorips.devtools.core.ui.controls.DateControl;
@@ -64,8 +65,7 @@ public class GregorianCalendarControlFactory extends ValueDatatypeControlFactory
             IIpsProject ipsProject) {
 
         DateControl dateControl = new DateControl(parent, toolkit);
-        FormattingTextField formatField = new FormattingTextField(dateControl.getTextControl(),
-                new DateISOStringFormat());
+        FormattingTextField formatField = new DateControlField(dateControl, new DateISOStringFormat());
         return formatField;
     }
 
