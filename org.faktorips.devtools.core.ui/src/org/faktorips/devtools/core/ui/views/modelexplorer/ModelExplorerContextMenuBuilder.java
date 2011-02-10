@@ -35,9 +35,9 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.actions.CloseResourceAction;
-import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -373,17 +373,22 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
             IIpsProject ipsProject = (IIpsProject)selected;
             manager.add(openCloseAction((IProject)ipsProject.getCorrespondingResource()));
 
-            if (modelExplorer.isModelExplorer()) {
-                try {
-                    AbstractIpsFeatureMigrationOperation migrationOperation = IpsPlugin.getDefault()
-                            .getMigrationOperation(ipsProject);
-                    MigrateProjectAction migrateAction = new MigrateProjectAction(viewSite.getWorkbenchWindow(),
-                            selection);
-                    migrateAction.setEnabled(!(migrationOperation.isEmpty()));
+            try {
+                AbstractIpsFeatureMigrationOperation migrationOperation = IpsPlugin.getDefault().getMigrationOperation(
+                        ipsProject);
+                MigrateProjectAction migrateAction = new MigrateProjectAction(viewSite.getWorkbenchWindow(), selection);
+                migrateAction.setEnabled(!(migrationOperation.isEmpty()));
+                if (modelExplorer.isModelExplorer()) {
+                    // in model explorer the action is always added
                     manager.add(migrateAction);
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
+                } else {
+                    // in product explorer only if it is enabled
+                    if (!migrationOperation.isEmpty()) {
+                        manager.add(migrateAction);
+                    }
                 }
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
             }
         } else {
             if (selected instanceof IProject) {
