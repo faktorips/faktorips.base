@@ -77,19 +77,24 @@ public final class MoveRenameIpsObjectHelper {
         ArrayList<IDependency> dependencies = new ArrayList<IDependency>();
 
         try {
-            IIpsProject[] projects = ipsProject.findReferencingProjectLeavesOrSelf();
+            addDependencies(dependencies, ipsProject);
+            IIpsProject[] projects = ipsProject.findReferencingProjects(true);
             for (IIpsProject project : projects) {
-                DependencyGraph graph = new DependencyGraph(project);
-                for (IDependency dependency : graph.getDependants(toBeRefactored.getQualifiedNameType())) {
-                    dependencies.add(dependency);
-                    dependencyToProject.put(dependency, project);
-                }
+                addDependencies(dependencies, project);
             }
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
 
         return dependencies.toArray(new IDependency[dependencies.size()]);
+    }
+
+    private void addDependencies(ArrayList<IDependency> dependencies, IIpsProject project) throws CoreException {
+        DependencyGraph graph = new DependencyGraph(project);
+        for (IDependency dependency : graph.getDependants(toBeRefactored.getQualifiedNameType())) {
+            dependencies.add(dependency);
+            dependencyToProject.put(dependency, project);
+        }
     }
 
     /**
