@@ -12,7 +12,7 @@ createBranch()
   # remove tag example: cvs -d /usr/local/cvsroot rtag -d branchname module/project
   # remove branch example: cvs -d /usr/local/cvsroot rtag -d -B tagname module/project
   ###############################################################################
-  # a) all plugin projects: for project in $( cat $PLUGINBUILDER_PROJECT_DIR/maps/all_copy.map | \
+  # a) all plugin projects: for project in $( cat $PLUGINBUILDER_PROJECT_DIR/custom-build/ci/all.map | \
   #                         sed -r "s/.*COPY,@WORKSPACE@,(.*)/\1/g" ) ; \ 
   #                         do cvs -d /usr/local/cvsroot rtag -d <tag> $project ; done
   # b) org.faktorips.integration*
@@ -70,8 +70,8 @@ createBranch()
   branchProject $DEVTARGET_PLUGIN_NAME
 
   # branch all projects specified in the pluginbuilder map file (all necessary plugin and feature projects)
-  cvs -d $CVS_ROOT co -d $PLUGINBUILDER_PROJECT_DIR/maps $PLUGINBUILDER_PROJECT_NAME/maps/all_copy.map
-  for project in $( cat $PLUGINBUILDER_PROJECT_DIR/maps/all_copy.map | sed -r "s/.*COPY,@WORKSPACE@,(.*)/\1/g" ) ; do
+  cvs -d $CVS_ROOT co -d $PLUGINBUILDER_PROJECT_DIR/custom-build/ci $PLUGINBUILDER_PROJECT_NAME/custom-build/ci/all.map
+  for project in $( cat $PLUGINBUILDER_PROJECT_DIR/custom-build/ci/all.map | sed -r "s/.*COPY,@WORKSPACE@,(.*)/\1/g" ) ; do
     branchProject $project
   done	
 }
