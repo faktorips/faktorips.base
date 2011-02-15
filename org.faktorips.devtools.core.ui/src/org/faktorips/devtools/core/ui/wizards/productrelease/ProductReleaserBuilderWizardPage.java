@@ -242,10 +242,12 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
                     List<ITargetSystem> selected = new ArrayList<ITargetSystem>();
                     String[] prevSelected = getDialogSettings().getArray(
                             SELECTED_TARGET_SYSTEMS_SETTING + "@" + getSelectedProject().getName()); //$NON-NLS-1$
-                    for (String name : prevSelected) {
-                        for (ITargetSystem aTargetSystem : availableTargetSystems) {
-                            if (aTargetSystem.getName().equals(name)) {
-                                selected.add(aTargetSystem);
+                    if (prevSelected != null) {
+                        for (String name : prevSelected) {
+                            for (ITargetSystem aTargetSystem : availableTargetSystems) {
+                                if (aTargetSystem.getName().equals(name)) {
+                                    selected.add(aTargetSystem);
+                                }
                             }
                         }
                     }
