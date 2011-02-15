@@ -30,6 +30,9 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Item;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.IpsModel;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
@@ -108,31 +111,52 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
 
     @Override
     public boolean performDrop(Object data) {
-        if (getCurrentOperation() == DND.DROP_MOVE && movedCmptLinks != null) {
-            Object target = getCurrentTarget();
-            List<IProductCmptLink> listCopy = new ArrayList<IProductCmptLink>(movedCmptLinks);
-            // if you drop a set of components you aspect them in the same order as the selection
-            // to get this, we need to inverse the list, if insertion is after a component
-            if (getCurrentLocation() == LOCATION_AFTER) {
-                Collections.reverse(listCopy);
-            }
-            return moveLinks(listCopy, target);
-        } else if (getCurrentOperation() == DND.DROP_LINK && data instanceof String[]) {
-            List<IProductCmpt> droppedCmpts = getProductCmpts((String[])data);
-            // if you drop a set of components you aspect them in the same order as the selection
-            // to get this, we need to inverse the list, if insertion is after a component
-            if (getCurrentLocation() == LOCATION_AFTER) {
-                Collections.reverse(droppedCmpts);
-            }
-
-            try {
-                return createLinks(droppedCmpts, getCurrentTarget());
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
+        if (IpsPlugin.getDefault().getIpsModel() instanceof IpsModel) {
+            // MTB#528: fire only one change event after all links added
+            IpsModel ipsModel = (IpsModel)IpsPlugin.getDefault().getIpsModel();
+            ipsModel.stopBroadcastingChangesMadeByCurrentThread();
+        }
+        try {
+            if (getCurrentOperation() == DND.DROP_MOVE && movedCmptLinks != null) {
+                Object target = getCurrentTarget();
+                List<IProductCmptLink> listCopy = new ArrayList<IProductCmptLink>(movedCmptLinks);
+                // if you drop a set of components you aspect them in the same order as the
+                // selection to get this, we need to inverse the list, if insertion is after a
+                // component
+                if (getCurrentLocation() == LOCATION_AFTER) {
+                    Collections.reverse(listCopy);
+                }
+                return moveLinks(listCopy, target);
+            } else if (getCurrentOperation() == DND.DROP_LINK && data instanceof String[]) {
+                List<IProductCmpt> droppedCmpts = getProductCmpts((String[])data);
+                // if you drop a set of components you aspect them in the same order as the
+                // selection to get this, we need to inverse the list, if insertion is after a
+                // component
+                if (getCurrentLocation() == LOCATION_AFTER) {
+                    Collections.reverse(droppedCmpts);
+                }
+                try {
+                    return createLinks(droppedCmpts, getCurrentTarget());
+                } catch (CoreException e) {
+                    IpsPlugin.log(e);
+                    return false;
+                }
+            } else {
                 return false;
             }
-        } else {
-            return false;
+        } finally {
+            if (IpsPlugin.getDefault().getIpsModel() instanceof IpsModel) {
+                IpsModel ipsModel = (IpsModel)IpsPlugin.getDefault().getIpsModel();
+                ipsModel.resumeBroadcastingChangesMadeByCurrentThread();
+                IIpsSrcFile ipsSrcFile = generation.getIpsSrcFile();
+                if (ipsSrcFile.isDirty()) {
+                    // we have to mark as clean first because content already changed without
+                    // triggering the listeners
+                    ipsSrcFile.markAsClean();
+                    ipsSrcFile.markAsDirty();
+                    ipsModel.notifyChangeListeners(ContentChangeEvent.newWholeContentChangedEvent(ipsSrcFile));
+                }
+            }
         }
     }
 
