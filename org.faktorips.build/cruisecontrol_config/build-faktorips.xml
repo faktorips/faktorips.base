@@ -582,6 +582,17 @@
 		<!-- store archiv results, to add the license file later -->
 		<!--  note that ${buildDirectory}/results contains all zip files -->
 		<echo file="${basedir}/archives_features">
+${buildDirectory}/results
+		</echo>
+		<echo file="${basedir}/archives_products">
+${buildDirectory}/results			
+		</echo>
+		<antcall inheritall="true" target="-storePublishedArchiveNames"></antcall>
+	</target>
+	
+    <!--helper targets-->
+	<target name="-storePublishedArchiveNames" unless="isSkipPublish">
+		<echo file="${basedir}/archives_features" append="true">
 ${faktoripsReleaseDownloadZipPath}
 ${faktoripsNls1ReleaseDownloadZipPath}
 ${faktoripsUmlReleaseDownloadZipPath}
@@ -591,16 +602,12 @@ ${faktoripsOrmextNls1ReleaseDownloadZipPath}
 ${faktoripsUpdateSiteZipPath}
 ${faktoripsRuntimeAndValuetypesZipPath}
 ${faktoripsRuntimeAddonsZipPath}
-${buildDirectory}/results
 		</echo>
-		<echo file="${basedir}/archives_products">
+		<echo file="${basedir}/archives_products" append="true">
 ${faktoripsProductWinZipPath}
 ${faktoripsProductLinuxZipPath}
-${buildDirectory}/results			
 		</echo>
 	</target>
-	
-    <!--helper targets-->
     <target name="-buildAndPublish.release.runtimeAndValuetypesJars" unless="is.product.build">
     	<antcall target="-buildAndPublish.release.OLD_runtimeAndValuetypesJars" />
     	<ant dir="${buildDirectory}/plugins/org.faktorips.valuetypes.java5/build" antfile="build.xml" target="buildAllsJars">
