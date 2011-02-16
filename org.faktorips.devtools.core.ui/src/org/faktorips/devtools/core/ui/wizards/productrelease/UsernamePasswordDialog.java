@@ -41,6 +41,8 @@ public class UsernamePasswordDialog extends Dialog {
 
     public static final String PASSWORD_SETTINGS = "password"; //$NON-NLS-1$
 
+    public static final String SAVE_PASSWD_SETTINGS = "savePassword"; //$NON-NLS-1$
+
     private Text usernameField;
 
     private Text passwordField;
@@ -124,6 +126,8 @@ public class UsernamePasswordDialog extends Dialog {
         if (username != null) {
             passwordAuthentication = new PasswordAuthentication(username, password.toCharArray());
         }
+        boolean savePW = dialogSettings.getBoolean(SAVE_PASSWD_SETTINGS);
+        savePassworField.setChecked(savePW);
 
     }
 
@@ -139,6 +143,7 @@ public class UsernamePasswordDialog extends Dialog {
         } catch (StorageException e) {
             IpsPlugin.log(e);
         }
+        dialogSettings.put(SAVE_PASSWD_SETTINGS, savePassworField.isChecked());
     }
 
 }
