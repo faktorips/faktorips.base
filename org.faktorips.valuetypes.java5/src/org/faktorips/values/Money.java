@@ -162,13 +162,15 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      * (e.g. Euro or US Dollar) and minor units (e.g. Cents).
      */
     public final static Money valueOf(long majorUnits, int minorUnits, Currency currency) {
-
-        if (minorUnits > 99) {
-            throw new IllegalArgumentException("minorUnits > 99 (is " + minorUnits + ")not allowed");
+        // the first check is for currencies like Yen which does not have minor units at all
+        // the second check verify that the count of digits of the minor units is smaller than the
+        // default fraction digits
+        if (minorUnits == currency.getDefaultFractionDigits()
+                || Math.log10(Math.abs(minorUnits)) <= currency.getDefaultFractionDigits()) {
+            long intAmount = majorUnits * power10[currency.getDefaultFractionDigits()] + minorUnits;
+            return new Money(intAmount, currency);
         }
-
-        long intAmount = majorUnits * power10[currency.getDefaultFractionDigits()] + minorUnits;
-        return new Money(intAmount, currency);
+        throw new IllegalArgumentException("Too much fraction digits (is " + minorUnits + ")");
     }
 
     /**

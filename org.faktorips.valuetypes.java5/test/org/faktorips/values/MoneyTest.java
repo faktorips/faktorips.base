@@ -112,6 +112,19 @@ public class MoneyTest extends TestCase {
         money = Money.valueOf(-123, -74, Currency.getInstance("EUR"));
         assertEquals(Currency.getInstance("EUR"), money.getCurrency());
         assertEquals(Decimal.valueOf("-123.74"), money.getAmount());
+
+        try {
+            money = Money.valueOf(123, 74123, Currency.getInstance("EUR"));
+            fail();
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+        try {
+            money = Money.valueOf(-123, -74123, Currency.getInstance("EUR"));
+            fail();
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
     }
 
     public void testSymmetryOfToStringAndValueOfForNull() {

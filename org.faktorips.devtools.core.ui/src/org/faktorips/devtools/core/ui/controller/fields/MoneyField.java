@@ -18,10 +18,12 @@ import java.util.Currency;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Control;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controls.TextComboControl;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.values.Money;
 
 /**
  * This class is a {@link EditField} for money values. The combo control is populated with the
@@ -71,7 +73,6 @@ public class MoneyField extends DefaultEditField {
     @Override
     public void setMessages(MessageList list) {
         MessageCueController.setMessageCue(control.getTextControl(), list);
-        MessageCueController.setMessageCue(control.getComboControl(), list);
     }
 
     @Override
@@ -89,7 +90,7 @@ public class MoneyField extends DefaultEditField {
      */
     @Override
     public String getText() {
-        return valueField.getText() + " " + currencyField.getText(); //$NON-NLS-1$        
+        return valueField.getValue() + " " + currencyField.getValue(); //$NON-NLS-1$        
     }
 
     /**
@@ -116,17 +117,12 @@ public class MoneyField extends DefaultEditField {
     }
 
     private void setTextInternal(String newText) {
-        if (newText == null) {
+        if (newText == null || newText.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) {
             valueField.setText(""); //$NON-NLS-1$
         } else {
-            String[] values = newText.split(" "); //$NON-NLS-1$
-            if (values.length == 2) {
-                valueField.setText(values[0]);
-                currencyField.setText(values[1]);
-            } else {
-                valueField.setText(""); //$NON-NLS-1$
-                currencyField.getCombo().select(0);
-            }
+            Money money = Money.valueOf(newText);
+            valueField.setValue(money.getAmount().toString());
+            currencyField.setValue(money.getCurrency().toString());
         }
     }
 
