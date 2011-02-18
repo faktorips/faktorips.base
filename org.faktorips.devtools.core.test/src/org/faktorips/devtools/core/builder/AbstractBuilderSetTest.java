@@ -13,23 +13,19 @@
 
 package org.faktorips.devtools.core.builder;
 
-import static org.junit.Assert.assertEquals;
-
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.abstracttest.AbstractIpsPluginTest4;
+import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.builder.DumyJavaSourceFileBuilder;
 import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.util.LocalizedStringsSet;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * 
  * @author Cornelius.Dirmeier
  */
-public class AbstractBuilderSetTest extends AbstractIpsPluginTest4 {
+public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
 
     private TestIpsArtefactBuilderSet builderSet;
     private A a;
@@ -39,8 +35,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest4 {
     private EExtendsC e;
 
     @Override
-    @Before
-    public void setUp() throws Exception {
+    protected void setUp() throws Exception {
         super.setUp();
         a = new A();
         b = new B();
@@ -50,7 +45,6 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest4 {
         builderSet = new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { a, b, c, d, e });
     }
 
-    @Test
     public void testGetBuilderByClass() {
         assertEquals(0, builderSet.getBuildersByClass(NotInBuilderSer.class).size());
         assertEquals(5, builderSet.getBuildersByClass(DumyJavaSourceFileBuilder.class).size());
