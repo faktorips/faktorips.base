@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
 
 /**
  * Base test for all enumeration tests providing a simple enumeration model with a gender
@@ -70,6 +71,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
     protected ContentsChangeCounter contentsChangeCounter;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("EnumTestProject");

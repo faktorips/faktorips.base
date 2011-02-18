@@ -19,10 +19,12 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IPersistenceOptions;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo.DateTimeMapping;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.PersistentType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -31,7 +33,8 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
     private IPolicyCmptTypeAttribute pcAttribute;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         policyCmptType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
@@ -40,6 +43,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         pcAttribute.setName("attr1");
     }
 
+    @Test
     public void testTransient() throws CoreException {
         IPersistentAttributeInfo pAttInfo = pcAttribute.getPersistenceAttributeInfo();
         int maxColumnNameLenght = ipsProject.getProperties().getPersistenceOptions().getMaxColumnNameLenght();
@@ -54,6 +58,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         assertNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_COLUMN_NAME_EXCEEDS_MAX_LENGTH));
     }
 
+    @Test
     public void testInitFromXml() {
         NodeList nodeList = getTestDocument().getElementsByTagName(IPersistentAttributeInfo.XML_TAG);
         assertEquals(1, nodeList.getLength());
@@ -74,6 +79,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         assertEquals("converterQualifiedClassName1", persistenceAttributeInfo.getConverterQualifiedClassName());
     }
 
+    @Test
     public void testToXml() throws CoreException {
         IPersistentAttributeInfo persistenceAttributeInfo = pcAttribute.getPersistenceAttributeInfo();
         persistenceAttributeInfo.setTableColumnName("TEST_COLUMN");
@@ -107,6 +113,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         assertEquals("converterQualifiedClassName0", persistenceAttributeInfo.getConverterQualifiedClassName());
     }
 
+    @Test
     public void testValidateSizeScalePrecision() throws CoreException {
         IPersistentAttributeInfo pAttInfo = pcAttribute.getPersistenceAttributeInfo();
         MessageList ml = null;
@@ -155,6 +162,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         ipsProject.setProperties(properties);
     }
 
+    @Test
     public void testValidateMaxColumnNameLength() throws CoreException {
         IPersistentAttributeInfo pAttInfo = pcAttribute.getPersistenceAttributeInfo();
         int maxColumnNameLenght = ipsProject.getProperties().getPersistenceOptions().getMaxColumnNameLenght();
@@ -170,6 +178,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         assertNotNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_COLUMN_NAME_EXCEEDS_MAX_LENGTH));
     }
 
+    @Test
     public void testEmptyTableName() throws CoreException {
         IPersistentAttributeInfo pAttInfo = pcAttribute.getPersistenceAttributeInfo();
         pAttInfo.setTableColumnName("a");
@@ -181,6 +190,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         assertNotNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_EMPTY_COLNAME));
     }
 
+    @Test
     public void testColumnNameIfOverwrittenAttribute() throws CoreException {
         MessageList ml;
         PolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "SubPolicy");

@@ -27,6 +27,8 @@ import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.bf.edit.BusinessFunctionEditPart;
 import org.faktorips.devtools.core.ui.bf.edit.ParameterEditPart;
+import org.junit.Before;
+import org.junit.Test;
 
 public class BusinessFunctionEditPartTest extends AbstractIpsPluginTest {
 
@@ -38,6 +40,7 @@ public class BusinessFunctionEditPartTest extends AbstractIpsPluginTest {
     private Shell shell;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
 
@@ -70,12 +73,14 @@ public class BusinessFunctionEditPartTest extends AbstractIpsPluginTest {
         shell.dispose();
     }
 
+    @Test
     public void testActivate() {
         editPart.activate();
         businessFunction.newControlFlow();
         assertTrue(refreshChildrenCalled);
     }
 
+    @Test
     public void testDeactivate() {
         editPart.activate();
         businessFunction.newControlFlow();
@@ -87,6 +92,7 @@ public class BusinessFunctionEditPartTest extends AbstractIpsPluginTest {
         assertFalse(refreshChildrenCalled);
     }
 
+    @Test
     public void testContentsChanged() throws Exception {
         editPart.activate();
         IControlFlow cf = businessFunction.newControlFlow();
@@ -104,6 +110,7 @@ public class BusinessFunctionEditPartTest extends AbstractIpsPluginTest {
     }
 
     @SuppressWarnings("unchecked")
+    @Test
     public void testRefreshChildren() {
         List<EditPart> childs = editPart.getChildren();
         assertEquals(0, childs.size());

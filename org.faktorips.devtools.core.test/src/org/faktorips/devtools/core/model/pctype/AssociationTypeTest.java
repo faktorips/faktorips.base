@@ -17,13 +17,16 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.junit.Before;
+import org.junit.Test;
 
 public class AssociationTypeTest extends AbstractIpsPluginTest {
 
     private IAssociation association;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         IIpsProject project = newIpsProject();
         PolicyCmptType policyCmptType = newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy",
@@ -31,6 +34,7 @@ public class AssociationTypeTest extends AbstractIpsPluginTest {
         association = policyCmptType.newAssociation();
     }
 
+    @Test
     public void testGetCorrespondingAssociationType() throws Exception {
         association.setAssociationType(AssociationType.ASSOCIATION);
         assertEquals(AssociationType.ASSOCIATION, association.getAssociationType().getCorrespondingAssociationType());

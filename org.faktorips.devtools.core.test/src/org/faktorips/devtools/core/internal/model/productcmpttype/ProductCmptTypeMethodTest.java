@@ -24,6 +24,8 @@ import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
@@ -36,13 +38,15 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
         pcType = newProductCmptType(ipsProject, "Type");
         method = pcType.newProductCmptTypeMethod();
     }
 
+    @Test
     public void testValidate_FormulaMustntBeAbstract() throws CoreException {
         method.setFormulaSignatureDefinition(true);
         method.setAbstract(true);
@@ -63,6 +67,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT));
     }
 
+    @Test
     public void testValidate_FormulaNameIsMissing() throws CoreException {
         method.setFormulaSignatureDefinition(false);
         method.setFormulaName("someName");
@@ -82,6 +87,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         assertNull(result.getMessageByCode(IProductCmptTypeMethod.MSGCODE_FORMULA_NAME_IS_EMPTY));
     }
 
+    @Test
     public void testValidate_DatatypeMustBeAValueDatatypeForFormulaSignature() throws CoreException {
         method.setDatatype("void");
         method.setFormulaSignatureDefinition(false);
@@ -109,6 +115,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
                 .getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
     }
 
+    @Test
     public void testInitFromXml() {
         Element docElement = getTestDocument().getDocumentElement();
         method.setFormulaSignatureDefinition(false);
@@ -126,6 +133,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     /*
      * Class under test for Element toXml(Document)
      */
+    @Test
     public void testToXmlDocument() {
         method = pcType.newProductCmptTypeMethod(); // => id=1, because it's the second method
         method.setName("getAge");
@@ -162,6 +170,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         assertTrue(copy.isOverloadsFormula());
     }
 
+    @Test
     public void testFindOverloadedFormulaMethod() throws CoreException {
         IProductCmptType aType = newProductCmptType(ipsProject, "AType");
         IProductCmptTypeMethod aMethod = aType.newProductCmptTypeMethod();
@@ -200,6 +209,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         assertNull(overloadedFormulaMethod);
     }
 
+    @Test
     public void testOverloadsFormula() throws CoreException {
 
         IProductCmptType bType = newProductCmptType(ipsProject, "BType");
@@ -218,6 +228,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         assertTrue(bMethod.isOverloadsFormula());
     }
 
+    @Test
     public void testValidateOverLoadedFormulaSignatureNotInSupertypeHierarchy() throws CoreException {
         IProductCmptType aType = newProductCmptType(ipsProject, "AType");
         IProductCmptTypeMethod aMethod = aType.newProductCmptTypeMethod();

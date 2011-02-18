@@ -23,6 +23,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
@@ -39,7 +41,8 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     private IProductCmptTypeAttribute productAttribute;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
         policyCmptType = newPolicyCmptType(ipsProject, "Policy");
@@ -54,12 +57,14 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         productAttribute.setName("productAttribute");
     }
 
+    @Test
     public void testDelete() {
         productAttribute.delete();
         assertNull(productCmptType.getProductCmptTypeAttribute(productAttribute.getName()));
         assertEquals(0, productCmptType.getNumOfAttributes());
     }
 
+    @Test
     public void testInitFromXml() {
         IProductCmptTypeAttribute attr = productCmptType.newProductCmptTypeAttribute();
         Element rootEl = getTestDocument().getDocumentElement();
@@ -72,6 +77,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         assertEquals("Integer", attr.getDatatype());
     }
 
+    @Test
     public void testToXml_ProductAttribute() {
         Element el = productAttribute.toXml(newDocument());
 
@@ -86,6 +92,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
      * Tests if a attributes with properties containing null can be transformed to xml without
      * exceptions as null handling can be a problem especially transforming the xml to strings.
      */
+    @Test
     public void testToXml_NullHandlng() throws TransformerException {
         IProductCmptTypeAttribute a = productCmptType.newProductCmptTypeAttribute();
         Element el = a.toXml(newDocument());

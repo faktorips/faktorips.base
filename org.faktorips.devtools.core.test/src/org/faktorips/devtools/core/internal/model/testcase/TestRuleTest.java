@@ -28,6 +28,8 @@ import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParamet
 import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
@@ -41,7 +43,8 @@ public class TestRuleTest extends AbstractIpsPluginTest {
     private ITestRule testRule;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
 
@@ -56,12 +59,14 @@ public class TestRuleTest extends AbstractIpsPluginTest {
         testRule.setTestRuleParameter("testValueParameter1");
     }
 
+    @Test
     public void testIsRoot() {
         // a test rule parameter is always a root element, no childs are supported by the test rule
         // parameter
         assertTrue(testRule.isRoot());
     }
 
+    @Test
     public void testInitFromXml() {
         Element docEl = getTestDocument().getDocumentElement();
         Element paramEl = XmlUtil.getElement(docEl, "RuleObject", 0);
@@ -86,6 +91,7 @@ public class TestRuleTest extends AbstractIpsPluginTest {
         assertEquals(TestRuleViolationType.UNKNOWN, testRule.getViolationType());
     }
 
+    @Test
     public void testToXml() {
         testRule.setValidationRule("validationRule0");
         testRule.setTestRuleParameter("testRuleParameter0");
@@ -103,6 +109,7 @@ public class TestRuleTest extends AbstractIpsPluginTest {
         assertEquals(TestRuleViolationType.VIOLATED, testRule.getViolationType());
     }
 
+    @Test
     public void testValidateRuleNotExists() throws Exception {
         // create policy cmpts with validation rules
         IPolicyCmptType policyCmptTypeA = newPolicyAndProductCmptType(project, "PolicyCmptA", "ProductCmptA");
@@ -187,6 +194,7 @@ public class TestRuleTest extends AbstractIpsPluginTest {
         assertEquals(0, ml.getNoOfMessages());
     }
 
+    @Test
     public void testValidateDuplicateValidationRule() throws Exception {
         testRule.setValidationRule("validationRule1");
         ITestRule rule2 = testCase.newTestRule();
@@ -200,6 +208,7 @@ public class TestRuleTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(ITestRule.MSGCODE_DUPLICATE_VALIDATION_RULE));
     }
 
+    @Test
     public void testValidateTestValueParamNotFound() throws Exception {
         MessageList ml = testRule.validate(project);
         assertNull(ml.getMessageByCode(ITestRule.MSGCODE_TEST_RULE_PARAM_NOT_FOUND));

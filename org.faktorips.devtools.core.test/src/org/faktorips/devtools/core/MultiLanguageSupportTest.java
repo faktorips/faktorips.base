@@ -28,6 +28,8 @@ import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -65,7 +67,8 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
     private TestContainer testContainer;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         support = IpsPlugin.getMultiLanguageSupport();
@@ -87,17 +90,20 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         usLabel.setPluralValue(US_PLURAL_LABEL);
     }
 
+    @Test
     public void testGetLocalizedCaption() {
         String localizedCaption = support.getLocalizedCaption(testContainer);
         assertEquals("Caption for " + support.getLocalizationLocale().getLanguage(), localizedCaption);
     }
 
+    @Test
     public void testGetLocalizedCaptionLocalizedCaptionMissing() {
         testContainer.missingCaptionLocale1 = support.getLocalizationLocale();
         String localizedCaption = support.getLocalizedCaption(testContainer);
         assertEquals("Caption for " + Locale.GERMAN.getLanguage(), localizedCaption);
     }
 
+    @Test
     public void testGetLocalizedCaptionLocalizedCaptionMissingEmptyString() {
         testContainer.missingCaptionLocale1 = support.getLocalizationLocale();
         testContainer.emptyCaptionLocale1 = true;
@@ -105,12 +111,14 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         assertEquals("Caption for " + Locale.GERMAN.getLanguage(), localizedCaption);
     }
 
+    @Test
     public void testGetLocalizedCaptionEvenDefaultCaptionMissing() {
         testContainer.missingCaptionLocale1 = support.getLocalizationLocale();
         testContainer.missingCaptionLocale2 = Locale.GERMAN;
         assertEquals(TestContainer.LAST_RESORT_CAPTION, support.getLocalizedCaption(testContainer));
     }
 
+    @Test
     public void testGetLocalizedCaptionEvenDefaultCaptionMissingEmptyString() {
         testContainer.missingCaptionLocale1 = support.getLocalizationLocale();
         testContainer.missingCaptionLocale2 = Locale.GERMAN;
@@ -118,6 +126,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         assertEquals(TestContainer.LAST_RESORT_CAPTION, support.getLocalizedCaption(testContainer));
     }
 
+    @Test
     public void testGetLocalizedCaptionNullPointer() {
         try {
             support.getLocalizedCaption(null);
@@ -126,17 +135,20 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetLocalizedPluralCaption() {
         String localizedPluralCaption = support.getLocalizedPluralCaption(testContainer);
         assertEquals("Plural Caption for " + support.getLocalizationLocale().getLanguage(), localizedPluralCaption);
     }
 
+    @Test
     public void testGetLocalizedPluralCaptionLocalizedCaptionMissing() {
         testContainer.missingCaptionLocale1 = support.getLocalizationLocale();
         String localizedPluralCaption = support.getLocalizedPluralCaption(testContainer);
         assertEquals("Plural Caption for " + Locale.GERMAN.getLanguage(), localizedPluralCaption);
     }
 
+    @Test
     public void testGetLocalizedPluralCaptionLocalizedCaptionMissingEmptyString() {
         testContainer.missingCaptionLocale1 = support.getLocalizationLocale();
         testContainer.emptyCaptionLocale1 = true;
@@ -144,12 +156,14 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         assertEquals("Plural Caption for " + Locale.GERMAN.getLanguage(), localizedPluralCaption);
     }
 
+    @Test
     public void testGetLocalizedPluralCaptionEvenDefaultCaptionMissing() {
         testContainer.missingCaptionLocale1 = support.getLocalizationLocale();
         testContainer.missingCaptionLocale2 = Locale.GERMAN;
         assertEquals(TestContainer.LAST_RESORT_PLURAL_CAPTION, support.getLocalizedPluralCaption(testContainer));
     }
 
+    @Test
     public void testGetLocalizedPluralCaptionEvenDefaultCaptionMissingEmptyString() {
         testContainer.missingCaptionLocale1 = support.getLocalizationLocale();
         testContainer.missingCaptionLocale2 = Locale.GERMAN;
@@ -157,6 +171,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         assertEquals(TestContainer.LAST_RESORT_PLURAL_CAPTION, support.getLocalizedPluralCaption(testContainer));
     }
 
+    @Test
     public void testGetLocalizedPluralCaptionNullPointer() {
         try {
             support.getLocalizedPluralCaption(null);
@@ -165,21 +180,25 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetDefaultCaption() {
         assertEquals("Caption for " + Locale.GERMAN.getLanguage(), support.getDefaultCaption(testContainer));
     }
 
+    @Test
     public void testGetDefaultCaptionNotExisting() {
         testContainer.missingCaptionLocale1 = Locale.GERMAN;
         assertEquals(TestContainer.LAST_RESORT_CAPTION, support.getDefaultCaption(testContainer));
     }
 
+    @Test
     public void testGetDefaultCaptionNotExistingEmptyString() {
         testContainer.missingCaptionLocale1 = Locale.GERMAN;
         testContainer.emptyCaptionLocale1 = true;
         assertEquals(TestContainer.LAST_RESORT_CAPTION, support.getDefaultCaption(testContainer));
     }
 
+    @Test
     public void testGetDefaultCaptionNullPointer() {
         try {
             support.getDefaultCaption(null);
@@ -188,27 +207,32 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetDefaultCaptionNoDefaultLanguage() throws CoreException {
         removeDefaultLanguage();
         assertEquals(TestContainer.LAST_RESORT_CAPTION, support.getDefaultCaption(testContainer));
     }
 
+    @Test
     public void testGetDefaultPluralCaption() {
         assertEquals("Plural Caption for " + Locale.GERMAN.getLanguage(),
                 support.getDefaultPluralCaption(testContainer));
     }
 
+    @Test
     public void testGetDefaultPluralCaptionNotExisting() {
         testContainer.missingCaptionLocale1 = Locale.GERMAN;
         assertEquals(TestContainer.LAST_RESORT_PLURAL_CAPTION, support.getDefaultPluralCaption(testContainer));
     }
 
+    @Test
     public void testGetDefaultPluralCaptionNotExistingEmptyString() {
         testContainer.missingCaptionLocale1 = Locale.GERMAN;
         testContainer.emptyCaptionLocale1 = true;
         assertEquals(TestContainer.LAST_RESORT_PLURAL_CAPTION, support.getDefaultPluralCaption(testContainer));
     }
 
+    @Test
     public void testGetDefaultPluralCaptionNullPointer() {
         try {
             support.getDefaultPluralCaption(null);
@@ -217,17 +241,20 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetDefaultPluralCaptionNoDefaultLanguage() throws CoreException {
         removeDefaultLanguage();
         assertEquals(TestContainer.LAST_RESORT_PLURAL_CAPTION, support.getDefaultPluralCaption(testContainer));
     }
 
+    @Test
     public void testGetLocalizedLabel() {
         ILabel localizedLabel = getLocalizedLabel();
         localizedLabel.setValue("foo");
         assertEquals("foo", support.getLocalizedLabel(testContainer));
     }
 
+    @Test
     public void testGetLocalizedLabelLocalizedLabelMissing() {
         deleteLocalizedLabel();
         if (germanLabel.isDeleted()) {
@@ -237,6 +264,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetLocalizedLabelLocalizedLabelMissingEmptyString() {
         ILabel localizedLabel = getLocalizedLabel();
         localizedLabel.setValue("");
@@ -247,6 +275,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetLocalizedLabelEvenDefaultLabelMissing() {
         deleteLocalizedLabel();
         if (!(germanLabel.isDeleted())) {
@@ -255,6 +284,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         assertEquals(StringUtils.capitalize(testContainer.getName()), support.getLocalizedLabel(testContainer));
     }
 
+    @Test
     public void testGetLocalizedLabelEvenDefaultLabelMissingEmptyString() {
         ILabel localizedLabel = getLocalizedLabel();
         localizedLabel.setValue("");
@@ -262,6 +292,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         assertEquals(StringUtils.capitalize(testContainer.getName()), support.getLocalizedLabel(testContainer));
     }
 
+    @Test
     public void testGetLocalizedLabelNullPointer() {
         try {
             support.getLocalizedLabel(null);
@@ -270,12 +301,14 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetLocalizedPluralLabel() {
         ILabel localizedLabel = getLocalizedLabel();
         localizedLabel.setPluralValue("foos");
         assertEquals("foos", support.getLocalizedPluralLabel(testContainer));
     }
 
+    @Test
     public void testGetLocalizedPluralLabelLocalizedLabelMissing() {
         deleteLocalizedLabel();
         if (germanLabel.isDeleted()) {
@@ -286,6 +319,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetLocalizedPluralLabelLocalizedLabelMissingEmptyString() {
         ILabel localizedLabel = getLocalizedLabel();
         localizedLabel.setPluralValue("");
@@ -297,6 +331,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetLocalizedPluralLabelEvenDefaultLabelMissing() {
         deleteLocalizedLabel();
         if (!(germanLabel.isDeleted())) {
@@ -305,6 +340,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         assertEquals(StringUtils.capitalize(testContainer.getName()), support.getLocalizedPluralLabel(testContainer));
     }
 
+    @Test
     public void testGetLocalizedPluralLabelEvenDefaultLabelMissingEmptyString() {
         ILabel localizedLabel = getLocalizedLabel();
         localizedLabel.setPluralValue("");
@@ -312,6 +348,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         assertEquals(StringUtils.capitalize(testContainer.getName()), support.getLocalizedPluralLabel(testContainer));
     }
 
+    @Test
     public void testGetLocalizedPluralLabelNullPointer() {
         try {
             support.getLocalizedPluralLabel(null);
@@ -320,6 +357,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetLocalizedPluralLabelNotSupported() {
         try {
             support.getLocalizedPluralLabel(productCmptType.newAttribute());
@@ -328,20 +366,24 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetDefaultLabel() {
         assertEquals(GERMAN_LABEL, support.getDefaultLabel(testContainer));
     }
 
+    @Test
     public void testGetDefaultLabelNotExistent() {
         germanLabel.delete();
         assertEquals(StringUtils.capitalize(testContainer.getName()), support.getDefaultLabel(testContainer));
     }
 
+    @Test
     public void testGetDefaultLabelNotExistentEmptyString() {
         germanLabel.setValue("");
         assertEquals(StringUtils.capitalize(testContainer.getName()), support.getDefaultLabel(testContainer));
     }
 
+    @Test
     public void testGetDefaultLabelNullPointer() {
         try {
             support.getDefaultLabel(null);
@@ -350,25 +392,30 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetDefaultLabelNoDefaultLanguage() throws CoreException {
         removeDefaultLanguage();
         assertEquals(StringUtils.capitalize(testContainer.getName()), support.getDefaultLabel(testContainer));
     }
 
+    @Test
     public void testGetDefaultPluralLabel() {
         assertEquals(GERMAN_PLURAL_LABEL, support.getDefaultPluralLabel(testContainer));
     }
 
+    @Test
     public void testGetDefaultPluralLabelNotExistent() {
         germanLabel.delete();
         assertEquals(StringUtils.capitalize(testContainer.getName()), support.getDefaultPluralLabel(testContainer));
     }
 
+    @Test
     public void testGetDefaultPluralLabelNotExistentEmptyString() {
         germanLabel.setPluralValue("");
         assertEquals(StringUtils.capitalize(testContainer.getName()), support.getDefaultPluralLabel(testContainer));
     }
 
+    @Test
     public void testGetDefaultPluralLabelNullPointer() {
         try {
             support.getDefaultPluralLabel(null);
@@ -377,6 +424,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetDefaultPluralLabelNotSupported() {
         try {
             support.getDefaultPluralLabel(productCmptType.newAttribute());
@@ -385,16 +433,19 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetDefaultPluralLabelNoDefaultLanguage() throws CoreException {
         removeDefaultLanguage();
         assertEquals(StringUtils.capitalize(testContainer.getName()), support.getDefaultPluralLabel(testContainer));
     }
 
+    @Test
     public void testSetDefaultLabel() {
         support.setDefaultLabel(testContainer, "foo");
         assertEquals("foo", germanLabel.getValue());
     }
 
+    @Test
     public void testSetDefaultLabelNullPointer1() {
         try {
             support.setDefaultLabel(null, "foo");
@@ -403,11 +454,13 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testSetDefaultLabelNullPointer2() {
         support.setDefaultLabel(testContainer, null);
         assertEquals("", germanLabel.getValue());
     }
 
+    @Test
     public void testSetDefaultLabelNotExistent() {
         germanLabel.delete();
         support.setDefaultLabel(testContainer, "foo");
@@ -415,6 +468,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         assertEquals(US_LABEL, usLabel.getValue());
     }
 
+    @Test
     public void testSetDefaultLabelNoDefaultLanguage() throws CoreException {
         removeDefaultLanguage();
         support.setDefaultLabel(testContainer, "foo");
@@ -422,11 +476,13 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         assertEquals(US_LABEL, usLabel.getValue());
     }
 
+    @Test
     public void testSetDefaultPluralLabel() {
         support.setDefaultPluralLabel(testContainer, "foos");
         assertEquals("foos", germanLabel.getPluralValue());
     }
 
+    @Test
     public void testSetDefaultPluralLabelNullPointer1() {
         try {
             support.setDefaultPluralLabel(null, "foos");
@@ -435,11 +491,13 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testSetDefaultPluralLabelNullPointer2() {
         support.setDefaultPluralLabel(testContainer, null);
         assertEquals("", germanLabel.getPluralValue());
     }
 
+    @Test
     public void testSetDefaultPluralLabelNotSupported() {
         try {
             support.setDefaultPluralLabel(productCmptType.newAttribute(), "foos");
@@ -448,6 +506,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testSetDefaultPluralLabelNotExistent() {
         germanLabel.delete();
         support.setDefaultPluralLabel(testContainer, "foos");
@@ -455,6 +514,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         assertEquals(US_PLURAL_LABEL, usLabel.getPluralValue());
     }
 
+    @Test
     public void testSetDefaultPluralLabelNoDefaultLanguage() throws CoreException {
         removeDefaultLanguage();
         support.setDefaultLabel(testContainer, "foos");
@@ -462,12 +522,14 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         assertEquals(US_PLURAL_LABEL, usLabel.getPluralValue());
     }
 
+    @Test
     public void testGetLocalizedDescription() {
         IDescription localizedDescription = getLocalizedDescription();
         localizedDescription.setText("foo");
         assertEquals("foo", support.getLocalizedDescription(testContainer));
     }
 
+    @Test
     public void testGetLocalizedDescriptionLocalizedDescriptionMissing() {
         deleteLocalizedDescription();
         if (germanDescription.isDeleted()) {
@@ -477,6 +539,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetLocalizedDescriptionLocalizedDescriptionMissingEmptyString() {
         IDescription localizedDescription = getLocalizedDescription();
         localizedDescription.setText("");
@@ -487,6 +550,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetLocalizedDescriptionEvenDefaultDescriptionMissing() {
         deleteLocalizedDescription();
         if (!(germanDescription.isDeleted())) {
@@ -495,6 +559,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         assertEquals("", support.getLocalizedDescription(testContainer));
     }
 
+    @Test
     public void testGetLocalizedDescriptionEvenDefaultDescriptionMissingEmptyString() {
         IDescription localizedDescription = getLocalizedDescription();
         localizedDescription.setText("");
@@ -502,6 +567,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         assertEquals("", support.getLocalizedDescription(testContainer));
     }
 
+    @Test
     public void testGetLocalizedDescriptionNullPointer() {
         try {
             support.getLocalizedDescription(null);
@@ -510,10 +576,12 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetDefaultDescription() {
         assertEquals(GERMAN_DESCRIPTION, support.getDefaultDescription(testContainer));
     }
 
+    @Test
     public void testGetDefaultDescriptionNullPointer() {
         try {
             support.getDefaultDescription(null);
@@ -522,27 +590,32 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetDefaultDescriptionNotExsitent() {
         germanDescription.delete();
         assertEquals("", support.getDefaultDescription(testContainer));
     }
 
+    @Test
     public void testGetDefaultDescriptionNotExsitentEmptyString() {
         germanDescription.setText("");
         assertEquals("", support.getDefaultDescription(testContainer));
     }
 
+    @Test
     public void testGetDefaultDescriptionNoDefaultLanguage() throws CoreException {
         removeDefaultLanguage();
         assertEquals("", support.getDefaultDescription(testContainer));
     }
 
+    @Test
     public void testSetDefaultDescription() {
         support.setDefaultDescription(testContainer, "foo");
         assertEquals("foo", germanDescription.getText());
         assertEquals(US_DESCRIPTION, usDescription.getText());
     }
 
+    @Test
     public void testSetDefaultDescriptionNullPointer1() {
         try {
             support.setDefaultDescription(null, "foo");
@@ -551,6 +624,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testSetDefaultDescriptionNullPointer2() {
         try {
             support.setDefaultDescription(testContainer, null);
@@ -559,6 +633,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testSetDefaultDescriptionNotExistent() {
         germanDescription.delete();
         support.setDefaultDescription(testContainer, "foo");
@@ -566,6 +641,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         assertEquals(US_DESCRIPTION, usDescription.getText());
     }
 
+    @Test
     public void testSetDefaultDescriptionNoDefaultLanguage() throws CoreException {
         removeDefaultLanguage();
         support.setDefaultDescription(testContainer, "foo");
@@ -573,6 +649,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         assertEquals(US_DESCRIPTION, usDescription.getText());
     }
 
+    @Test
     public void testGetLocalizationLocale() {
         Locale localizationLocale = support.getLocalizationLocale();
         String nl = Platform.getNL();

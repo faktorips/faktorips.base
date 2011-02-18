@@ -36,6 +36,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 
 public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificationStatusChangeListener,
         ContentsChangeListener {
@@ -53,7 +55,8 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     private PrintStream errorStream;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         ipsProject = this.newIpsProject("TestProject");
@@ -85,10 +88,12 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
         parsableFile.getIpsModel().removeChangeListener(this);
     }
 
+    @Test
     public void testGetIpsObjectName() {
         assertEquals("ParsableFile", parsableFile.getIpsObjectName());
     }
 
+    @Test
     public void testSave() throws CoreException {
         policyCmptType.newPolicyCmptTypeAttribute();
         assertTrue(parsableFile.isDirty());
@@ -101,11 +106,13 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
         assertEquals(parsableFile, lastModStatusEvent.getIpsSrcFile());
     }
 
+    @Test
     public void testIsContentParsable() throws CoreException {
         assertFalse(unparsableFile.isContentParsable());
         assertTrue(parsableFile.isContentParsable());
     }
 
+    @Test
     public void testDiscardChanges_ParsableContents() throws Exception {
         IPolicyCmptType type = newPolicyCmptType(ipsProject, "Policy");
         IIpsSrcFile file = type.getIpsSrcFile();
@@ -125,18 +132,21 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
         assertFalse(file.isDirty());
     }
 
+    @Test
     public void testGetCorrespondingResource() {
         IResource resource = parsableFile.getCorrespondingResource();
         assertTrue(resource.exists());
         assertEquals(parsableFile.getName(), resource.getName());
     }
 
+    @Test
     public void testGetCorrespondingFile() {
         IFile file = parsableFile.getCorrespondingFile();
         assertTrue(file.exists());
         assertEquals(parsableFile.getName(), file.getName());
     }
 
+    @Test
     public void testGetIpsObject() throws CoreException {
         IIpsObject ipsObject = parsableFile.getIpsObject();
         assertNotNull(ipsObject);
@@ -162,29 +172,35 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
         assertFalse(ipsObject.isFromParsableFile());
     }
 
+    @Test
     public void testGetElementName() {
         String expectedName = IpsObjectType.POLICY_CMPT_TYPE.getFileName("ParsableFile");
         assertEquals(expectedName, parsableFile.getName());
     }
 
+    @Test
     public void testGetParent() {
     }
 
+    @Test
     public void testGetChildren() throws CoreException {
         assertEquals(0, unparsableFile.getChildren().length);
         assertEquals(1, parsableFile.getChildren().length);
         assertEquals(parsableFile.getIpsObject(), parsableFile.getChildren()[0]);
     }
 
+    @Test
     public void testHasChildren() throws CoreException {
         assertFalse(unparsableFile.hasChildren());
         assertTrue(parsableFile.hasChildren());
     }
 
+    @Test
     public void testIsHistoric() {
         assertFalse(parsableFile.isHistoric());
     }
 
+    @Test
     public void testNewMemento() throws CoreException {
         policyCmptType.newPolicyCmptTypeAttribute();
         IIpsSrcFileMemento memento = parsableFile.newMemento();
@@ -192,6 +208,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
         assertEquals(parsableFile, memento.getIpsSrcFile());
     }
 
+    @Test
     public void testSetMemento() throws CoreException {
         IIpsSrcFileMemento memento = parsableFile.newMemento();
         policyCmptType.newPolicyCmptTypeAttribute();

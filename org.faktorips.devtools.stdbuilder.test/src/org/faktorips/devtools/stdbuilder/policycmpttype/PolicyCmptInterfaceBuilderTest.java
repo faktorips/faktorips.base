@@ -14,6 +14,8 @@
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -25,12 +27,14 @@ public class PolicyCmptInterfaceBuilderTest extends PolicyCmptTypeBuilderTest {
     private PolicyCmptInterfaceBuilder builder;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         builder = new PolicyCmptInterfaceBuilder(builderSet, DefaultBuilderSet.KIND_POLICY_CMPT_TYPE_INTERFACE);
     }
 
+    @Test
     public void testGetGeneratedJavaElements() {
         generatedJavaElements = builder.getGeneratedJavaElements(policyCmptType);
         assertTrue(generatedJavaElements.contains(javaInterface));

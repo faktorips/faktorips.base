@@ -14,19 +14,23 @@
 package org.faktorips.devtools.stdbuilder.productcmpttype;
 
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ProductCmptGenInterfaceBuilderTest extends ProductCmptTypeBuilderTest {
 
     private ProductCmptGenInterfaceBuilder builder;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         builder = new ProductCmptGenInterfaceBuilder(builderSet,
                 DefaultBuilderSet.KIND_PRODUCT_CMPT_TYPE_GENERATION_INTERFACE);
     }
 
+    @Test
     public void testGetGeneratedJavaElements() {
         generatedJavaElements = builder.getGeneratedJavaElements(productCmptType);
         assertTrue(generatedJavaElements.contains(javaInterfaceGeneration));

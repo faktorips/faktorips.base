@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.htmlexport.context.messages.LanguageSupportTest;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.junit.Test;
 
 /**
  * Testet die Ausgabe der Labels und Descriptions in Html, die prinzipielle Funktion testet der
@@ -33,6 +34,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
  */
 public class LanguageSupportHtmlTest extends AbstractXmlUnitHtmlExportTest {
 
+    @Test
     public void testDescriptionLanguage() throws Exception {
 
         String deBeschreibung = "Deutsche Beschreibung";
@@ -58,8 +60,7 @@ public class LanguageSupportHtmlTest extends AbstractXmlUnitHtmlExportTest {
         enDescription.setText(enBeschreibung);
 
         context.setDescriptionLocale(Locale.GERMANY);
-        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(),
-                context);
+        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
         assertXPathExists(objectContentPage, deXPath);
 
         context.setDescriptionLocale(Locale.ENGLISH);
@@ -67,6 +68,7 @@ public class LanguageSupportHtmlTest extends AbstractXmlUnitHtmlExportTest {
         assertXPathExists(objectContentPage, enXPath);
     }
 
+    @Test
     public void testLabelLanguage() throws Exception {
         String deLabel = "Currywurst";
         String enLabel = "Haggis";
@@ -89,8 +91,8 @@ public class LanguageSupportHtmlTest extends AbstractXmlUnitHtmlExportTest {
         context.setDescriptionLocale(Locale.GERMAN);
         attribute.setLabelValue(Locale.GERMAN, deLabel);
 
-        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(
-                productCmpt.getIpsSrcFile(), context);
+        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(productCmpt.getIpsSrcFile(),
+                context);
         assertXPathExists(objectContentPage, deXPath);
 
         assertEquals(deLabel, context.getCaption(value));

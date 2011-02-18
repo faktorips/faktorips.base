@@ -20,6 +20,8 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TestCaseBuilderTest extends AbstractIpsPluginTest {
 
@@ -27,7 +29,8 @@ public class TestCaseBuilderTest extends AbstractIpsPluginTest {
     private ITestCaseType testCaseType;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
         testCaseType = (ITestCaseType)newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "testCaseType");
@@ -36,6 +39,7 @@ public class TestCaseBuilderTest extends AbstractIpsPluginTest {
         testCaseType.getIpsSrcFile().save(true, null);
     }
 
+    @Test
     public void testBuildInvalidTestCase() throws CoreException {
         ITestCase testCase = (ITestCase)newIpsObject(project, IpsObjectType.TEST_CASE, "testCase");
         testCase.setTestCaseType(testCaseType.getQualifiedName());

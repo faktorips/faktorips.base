@@ -26,6 +26,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.ui.bf.commands.ConnectionCommand;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ConnectionCommandTest extends AbstractIpsPluginTest {
 
@@ -34,6 +36,7 @@ public class ConnectionCommandTest extends AbstractIpsPluginTest {
     private IBusinessFunction bf;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
@@ -43,6 +46,7 @@ public class ConnectionCommandTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testCanExecute() throws Exception {
         assertFalse(command.canExecute());
 
@@ -134,6 +138,7 @@ public class ConnectionCommandTest extends AbstractIpsPluginTest {
         assertFalse(command.canExecute());
     }
 
+    @Test
     public void testExecute() {
         IBFElement source = bf.newOpaqueAction(new Point(10, 10));
         IBFElement target = bf.newOpaqueAction(new Point(100, 100));
@@ -146,6 +151,7 @@ public class ConnectionCommandTest extends AbstractIpsPluginTest {
         assertEquals(target, source.getOutgoingControlFlow().get(0).getTarget());
     }
 
+    @Test
     public void testSetDefaultConditionValueForBooleanDecisionSourceNode() throws Exception {
         // by default a new decision is created with the datatype set to boolean
         IDecisionBFE source = bf.newDecision(new Point(10, 10));
@@ -205,6 +211,7 @@ public class ConnectionCommandTest extends AbstractIpsPluginTest {
         assertEquals("", command.getControlFlow().getConditionValue());
     }
 
+    @Test
     public void testExecuteReconnect() {
         command = new ConnectionCommand(true);
         command.setBusinessFunction(bf);
@@ -237,6 +244,7 @@ public class ConnectionCommandTest extends AbstractIpsPluginTest {
         assertTrue(target.getOutgoingControlFlow().isEmpty());
     }
 
+    @Test
     public void testUndoRedo() {
         IBFElement source = bf.newOpaqueAction(new Point(10, 10));
         IBFElement target = bf.newOpaqueAction(new Point(100, 100));
@@ -257,6 +265,7 @@ public class ConnectionCommandTest extends AbstractIpsPluginTest {
         assertEquals(target, source.getOutgoingControlFlow().get(0).getTarget());
     }
 
+    @Test
     public void testExecuteWithBooleanDecisionSourceNode() {
         IDecisionBFE decision = bf.newDecision(new Point(10, 10));
         decision.setName("decision");

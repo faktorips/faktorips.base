@@ -17,12 +17,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import junit.framework.TestCase;
 
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
+import org.junit.Test;
 
-public class ColumnTablePageElementLayoutTest extends TestCase {
+public class ColumnTablePageElementLayoutTest {
 
+    @Test
     public void testSetStylesInChosenColumns() {
         TableCellPageElement cellPageElement = mock(TableCellPageElement.class);
 
@@ -38,6 +39,7 @@ public class ColumnTablePageElementLayoutTest extends TestCase {
         verify(cellPageElement, times(3)).addStyles(styles);
     }
 
+    @Test
     public void testSetNoStylesInChosenColumns() {
         TableCellPageElement cellPageElement = mock(TableCellPageElement.class);
 

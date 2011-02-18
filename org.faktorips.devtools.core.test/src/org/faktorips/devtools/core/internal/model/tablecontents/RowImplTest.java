@@ -19,6 +19,8 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 public class RowImplTest extends AbstractIpsPluginTest {
@@ -30,7 +32,8 @@ public class RowImplTest extends AbstractIpsPluginTest {
     private Row row2;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         IIpsProject project = newIpsProject("TestProject");
         table = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "TestTable");
@@ -43,6 +46,7 @@ public class RowImplTest extends AbstractIpsPluginTest {
         ipsSrcFile = table.getIpsSrcFile();
     }
 
+    @Test
     public void testSetValue() {
         row.setValue(0, "newValue0");
         assertEquals("newValue0", row.getValue(0));
@@ -57,6 +61,7 @@ public class RowImplTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testRemove() {
         // Rownumbers before delete
         assertEquals(0, row.getRowNumber());
@@ -70,6 +75,7 @@ public class RowImplTest extends AbstractIpsPluginTest {
         assertEquals(0, row2.getRowNumber());
     }
 
+    @Test
     public void testToXml() {
         row.setValue(0, "value0");
         row.setValue(1, "");
@@ -85,6 +91,7 @@ public class RowImplTest extends AbstractIpsPluginTest {
         assertNull(row.getValue(2));
     }
 
+    @Test
     public void testInitFromXml() {
         row.initFromXml(getTestDocument().getDocumentElement());
         assertEquals("42", row.getId());
@@ -93,6 +100,7 @@ public class RowImplTest extends AbstractIpsPluginTest {
         assertNull(row.getValue(2));
     }
 
+    @Test
     public void testGetRowNumber() {
         assertEquals(0, row.getRowNumber());
         assertEquals(1, row2.getRowNumber());

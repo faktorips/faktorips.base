@@ -13,26 +13,27 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.ui.controller.fields.BooleanComboField;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class BooleanComboFieldTest extends TestCase {
+public class BooleanComboFieldTest {
 
     private Shell shell;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-
+    @Before
+    public void setUp() throws Exception {
         this.shell = new Shell(Display.getCurrent());
     }
 
@@ -40,6 +41,7 @@ public class BooleanComboFieldTest extends TestCase {
         shell.dispose();
     }
 
+    @Test
     public void testSetText() {
         Combo c = new Combo(shell, SWT.READ_ONLY);
         c.setItems(new String[] { "true", "false" });
@@ -74,6 +76,7 @@ public class BooleanComboFieldTest extends TestCase {
         assertEquals(null, field.getValue());
     }
 
+    @Test
     public void testSetValue() {
         Combo c = new Combo(shell, SWT.READ_ONLY);
         c.setItems(new String[] { "true", "false" });

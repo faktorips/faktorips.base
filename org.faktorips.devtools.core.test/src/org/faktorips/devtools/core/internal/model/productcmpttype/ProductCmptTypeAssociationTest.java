@@ -24,6 +24,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
@@ -41,7 +43,8 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
      * {@inheritDoc}
      */
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
         productType = newProductCmptType(ipsProject, "Product");
@@ -49,6 +52,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
         association = productType.newProductCmptTypeAssociation();
     }
 
+    @Test
     public void testFindPolicyCmptTypeAssociation() throws CoreException {
         assertNull(association.findMatchingPolicyCmptTypeAssociation(ipsProject));
 
@@ -83,6 +87,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
      * {@link org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer#toXml(org.w3c.dom.Document)}
      * .
      */
+    @Test
     public void testToXml() {
         association.setTarget("pack1.CoverageType");
         association.setTargetRoleSingular("CoverageType");
@@ -112,6 +117,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
      * {@link org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer#initFromXml(org.w3c.dom.Element)}
      * .
      */
+    @Test
     public void testInitFromXmlElement() {
         Element docEl = getTestDocument().getDocumentElement();
         Element el = XmlUtil.getElement(docEl, 0);
@@ -132,6 +138,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
      * {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#findTarget(IIpsProject)
      * )} .
      */
+    @Test
     public void testFindTarget() throws CoreException {
         association.setTarget("");
         assertNull(association.findTarget(ipsProject));
@@ -148,6 +155,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
      * {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#setTarget(java.lang.String)}
      * .
      */
+    @Test
     public void testSetTarget() {
         super.testPropertyAccessReadWrite(ProductCmptTypeAssociation.class,
                 IProductCmptTypeAssociation.PROPERTY_TARGET, association, "newTarget");
@@ -158,6 +166,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
      * {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#setTargetRoleSingular(java.lang.String)}
      * .
      */
+    @Test
     public void testSetTargetRoleSingular() {
         super.testPropertyAccessReadWrite(ProductCmptTypeAssociation.class,
                 IProductCmptTypeAssociation.PROPERTY_TARGET_ROLE_SINGULAR, association, "newRole");
@@ -168,6 +177,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
      * {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#setTargetRolePlural(java.lang.String)}
      * .
      */
+    @Test
     public void testSetTargetRolePlural() {
         super.testPropertyAccessReadWrite(ProductCmptTypeAssociation.class,
                 IProductCmptTypeAssociation.PROPERTY_TARGET_ROLE_PLURAL, association, "newRoles");
@@ -178,6 +188,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
      * {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#setMinCardinality(int)}
      * .
      */
+    @Test
     public void testSetMinCardinality() {
         super.testPropertyAccessReadWrite(ProductCmptTypeAssociation.class,
                 IProductCmptTypeAssociation.PROPERTY_MIN_CARDINALITY, association, new Integer(42));
@@ -188,6 +199,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
      * {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#setMaxCardinality(int)}
      * .
      */
+    @Test
     public void testSetMaxCardinality() {
         super.testPropertyAccessReadWrite(ProductCmptTypeAssociation.class,
                 IProductCmptTypeAssociation.PROPERTY_MAX_CARDINALITY, association, new Integer(42));
@@ -198,6 +210,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
      * {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#isSubsetOfADerivedUnion()}
      * .
      */
+    @Test
     public void testIsSubsetOfADerivedUnion() {
         association.setSubsettedDerivedUnion("");
         assertFalse(association.isSubsetOfADerivedUnion());
@@ -210,6 +223,7 @@ public class ProductCmptTypeAssociationTest extends AbstractIpsPluginTest {
      * {@link org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation#setSubsettedDerivedUnion(java.lang.String)}
      * .
      */
+    @Test
     public void testSetSubsettedDerivedUnion() {
         super.testPropertyAccessReadWrite(ProductCmptTypeAssociation.class,
                 IProductCmptTypeAssociation.PROPERTY_SUBSETTED_DERIVED_UNION, association, "SomeUnion");

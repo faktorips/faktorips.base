@@ -16,6 +16,8 @@ package org.faktorips.devtools.core.internal.model;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 public class DynamicValueDatatypeTest extends AbstractIpsPluginTest {
@@ -23,11 +25,13 @@ public class DynamicValueDatatypeTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
     }
 
+    @Test
     public void testCreateFromXml_NoneEnumType() {
         Element docEl = getTestDocument().getDocumentElement();
         Element el = XmlUtil.getElement(docEl, "Datatype", 0);
@@ -38,6 +42,7 @@ public class DynamicValueDatatypeTest extends AbstractIpsPluginTest {
         assertFalse(type.hasNullObject());
     }
 
+    @Test
     public void testCreateFromXml_EnumType() {
         Element docEl = getTestDocument().getDocumentElement();
         Element el = XmlUtil.getElement(docEl, "Datatype", 1);
@@ -52,6 +57,7 @@ public class DynamicValueDatatypeTest extends AbstractIpsPluginTest {
         assertFalse(type.hasNullObject());
     }
 
+    @Test
     public void testCreateFromXml_NullObjectWithIdNotNull() {
         Element docEl = getTestDocument().getDocumentElement();
         Element el = XmlUtil.getElement(docEl, "Datatype", 2);
@@ -60,6 +66,7 @@ public class DynamicValueDatatypeTest extends AbstractIpsPluginTest {
         assertEquals("n", type.getNullObjectId());
     }
 
+    @Test
     public void testCreateFromXml_NullObjectWithIdNull() {
         Element docEl = getTestDocument().getDocumentElement();
         Element el = XmlUtil.getElement(docEl, "Datatype", 3);

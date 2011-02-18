@@ -28,6 +28,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.junit.Before;
 
 /**
  * Abstract base class that can be used by tests for the standard builder.
@@ -44,7 +45,8 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
     protected StandardBuilderSet builderSet;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         ipsProject = newIpsProject();

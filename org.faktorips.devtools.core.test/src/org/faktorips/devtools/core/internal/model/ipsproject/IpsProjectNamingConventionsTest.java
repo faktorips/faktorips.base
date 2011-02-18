@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.businessfct.BusinessFunction;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions;
@@ -31,6 +32,8 @@ import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -42,7 +45,8 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
     private IIpsProjectNamingConventions namingConventions;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = (IpsProject)this.newIpsProject("TestProject");
         namingConventions = ipsProject.getNamingConventions();
@@ -53,6 +57,7 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
      * {@link org.faktorips.devtools.core.internal.model.ipsproject.DefaultIpsProjectNamingConventions#validateIpsPackageName(java.lang.String)}
      * .
      */
+    @Test
     public void testValidateIpsPackageName() throws CoreException {
         MessageList ml = namingConventions.validateIpsPackageName("validName");
         assertFalse(ml.containsErrorMsg());
@@ -83,26 +88,31 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
         assertEquals(IIpsProjectNamingConventions.DISCOURAGED_NAME, ml.getMessage(0).getCode());
     }
 
+    @Test
     public void testValidateNameForBusinessFunction() throws CoreException {
         IpsObjectType type = IpsObjectType.BUSINESS_FUNCTION;
         testCommonJavaTypeNameValidation(type);
     }
 
+    @Test
     public void testValidateNameForPolicyCmptType() throws CoreException {
         IpsObjectType type = IpsObjectType.POLICY_CMPT_TYPE;
         testCommonJavaTypeNameValidation(type);
     }
 
+    @Test
     public void testValidateNameForProductCmptType() throws CoreException {
         IpsObjectType type = IpsObjectType.PRODUCT_CMPT_TYPE;
         testCommonJavaTypeNameValidation(type);
     }
 
+    @Test
     public void testValidateNameForTableStructure() throws CoreException {
         IpsObjectType type = IpsObjectType.TABLE_STRUCTURE;
         testCommonJavaTypeNameValidation(type);
     }
 
+    @Test
     public void testValidateNameForProductCmpt() throws CoreException {
         IpsObjectType type = IpsObjectType.PRODUCT_CMPT;
 
@@ -131,16 +141,19 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
         validateAndAssertNames(type, true, validNames, invalidNames, invalidNamesMsgCodes);
     }
 
+    @Test
     public void testValidateNameForTableContents() throws CoreException {
         IpsObjectType type = IpsObjectType.TABLE_CONTENTS;
         testCommonOSNameValidation(type);
     }
 
+    @Test
     public void testValidateNameForTestCaseType() throws CoreException {
         IpsObjectType type = IpsObjectType.TEST_CASE_TYPE;
         testCommonJavaTypeNameValidation(type);
     }
 
+    @Test
     public void testValidateNameForTestCase() throws CoreException {
         IpsObjectType type = IpsObjectType.TEST_CASE;
         testCommonOSNameValidation(type);
@@ -270,6 +283,7 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
     /**
      * Test if the validate method of the ips objects includes the naming validation.
      */
+    @Test
     public void testValidateNameWithIpsObjects() throws Exception {
         int testTypesCount = 0;
 
@@ -288,7 +302,7 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "test.1Product");
         ml = productCmptType.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME));
-        assertEquals(IProductCmptType.PROPERTY_NAME, ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME)
+        assertEquals(IIpsElement.PROPERTY_NAME, ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME)
                 .getInvalidObjectProperties()[0].getProperty());
         // testTypesCount ++; is currently no ips object type
 

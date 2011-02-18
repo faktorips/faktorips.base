@@ -33,6 +33,8 @@ import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 public class TableStructureTest extends AbstractIpsPluginTest {
@@ -41,12 +43,14 @@ public class TableStructureTest extends AbstractIpsPluginTest {
     private IIpsProject project;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
         table = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "TestTable");
     }
 
+    @Test
     public void testGetChildren() {
         IColumn c0 = table.newColumn();
         IColumnRange r0 = table.newRange();
@@ -60,6 +64,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         assertTrue(children.contains(fk0));
     }
 
+    @Test
     public void testGetColumns() {
         assertEquals(0, table.getColumns().length);
         IColumn c1 = table.newColumn();
@@ -69,6 +74,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         assertEquals(c2, table.getColumns()[1]);
     }
 
+    @Test
     public void testGetNumOfColumns() {
         assertEquals(0, table.getNumOfColumns());
         table.newColumn();
@@ -77,12 +83,14 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         assertEquals(2, table.getNumOfColumns());
     }
 
+    @Test
     public void testNewColumn() {
         IColumn c = table.newColumn();
         assertEquals(table, c.getParent());
         assertEquals(c, table.getColumns()[0]);
     }
 
+    @Test
     public void testGetRanges() {
         assertEquals(0, table.getRanges().length);
         IColumnRange r1 = table.newRange();
@@ -92,6 +100,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         assertEquals(r2, table.getRanges()[1]);
     }
 
+    @Test
     public void testGetNumOfRanges() {
         assertEquals(0, table.getNumOfRanges());
         table.newRange();
@@ -100,12 +109,14 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         assertEquals(2, table.getNumOfRanges());
     }
 
+    @Test
     public void testNewRange() {
         IColumnRange r = table.newRange();
         assertEquals(table, r.getParent());
         assertEquals(r, table.getRanges()[0]);
     }
 
+    @Test
     public void testGetColumnsNotInKey() {
         IColumn gender = table.newColumn();
         gender.setName("gender");
@@ -129,6 +140,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         assertEquals(premium, columns[1]);
     }
 
+    @Test
     public void testGetAccessFunctions() {
         ITableAccessFunction[] fcts = table.getAccessFunctions(Locale.GERMAN);
         assertEquals(0, fcts.length);
@@ -194,6 +206,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testGetAccessFunctionsNullPointer() {
         try {
             table.getAccessFunctions(null);
@@ -202,6 +215,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testInitFromXml() {
         table.initFromXml(getTestDocument().getDocumentElement());
         assertTrue(table.isMultipleContentsAllowed());
@@ -214,6 +228,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         assertEquals("ageFrom-ageTo", table.getRanges()[0].getName());
     }
 
+    @Test
     public void testToXmlDocument() {
         table.setTableStructureType(TableStructureType.MULTIPLE_CONTENTS);
         IColumn column1 = table.newColumn();
@@ -243,6 +258,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         assertEquals(2, copyKey.getKeyItemNames().length);
     }
 
+    @Test
     public void testNewPart() {
         assertTrue(table.newPart(IColumn.class) instanceof IColumn);
         assertTrue(table.newPart(IColumnRange.class) instanceof IColumnRange);
@@ -250,6 +266,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         assertTrue(table.newPart(IForeignKey.class) instanceof IForeignKey);
     }
 
+    @Test
     public void testGetColumn() {
         IColumn column1 = table.newColumn();
         table.newColumn();
@@ -261,6 +278,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         assertEquals(column2, table.getColumn(3));
     }
 
+    @Test
     public void testGetColumnIndex() {
         IColumn column1 = table.newColumn();
         table.newColumn();
@@ -272,6 +290,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         assertEquals(3, table.getColumnIndex(column2));
     }
 
+    @Test
     public void testValidateMoreThanOneKeyNotAdvisableInFormulas() throws Exception {
         TableStructure structure = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "table");
 
@@ -302,6 +321,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         assertNull(msgList.getMessageByCode(ITableStructure.MSGCODE_MORE_THAN_ONE_KEY_NOT_ADVISABLE_IN_FORMULAS));
     }
 
+    @Test
     public void testFindAllMetaObjects() throws CoreException {
         String tableStructureQName = "pack.MyTableStructure";
         String tableStructureProj2QName = "otherpack.MyTableStructureProj2";

@@ -20,10 +20,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.htmlexport.context.AbstractHtmlExportPluginTest;
+import org.junit.Test;
 
 public class PageElementUtilsTest extends AbstractHtmlExportPluginTest {
     private static final String TARGET = "target"; //$NON-NLS-1$
 
+    @Test
     public void testCreateLinkPageElementAllTypesDocumented() throws CoreException {
         createMassivProjekt();
 
@@ -49,6 +51,7 @@ public class PageElementUtilsTest extends AbstractHtmlExportPluginTest {
         assertTrue(pageElement.hasStyle(Style.DEAD_LINK));
     }
 
+    @Test
     public void testCreateLinkPageElementSomeTypesDocumented() throws CoreException {
         createMassivProjekt();
 
@@ -71,6 +74,7 @@ public class PageElementUtilsTest extends AbstractHtmlExportPluginTest {
         }
     }
 
+    @Test
     public void testCreateTextPageElements() {
         List<String> texts = new ArrayList<String>();
         texts.add("text 1");

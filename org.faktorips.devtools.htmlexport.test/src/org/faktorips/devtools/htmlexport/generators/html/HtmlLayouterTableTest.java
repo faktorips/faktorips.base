@@ -17,15 +17,18 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.RowTablePageElementLayout;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
+import org.junit.Test;
 
 public class HtmlLayouterTableTest extends AbstractHtmlLayouterTableTest {
 
+    @Test
     public void testLeereTabelle() throws Exception {
         TablePageElement table = new TablePageElement();
 
         assertTrue(StringUtils.isEmpty(layout(table)));
     }
 
+    @Test
     public void testTabelle() throws Exception {
         int rows = 3;
         int cols = 4;
@@ -43,6 +46,7 @@ public class HtmlLayouterTableTest extends AbstractHtmlLayouterTableTest {
         }
     }
 
+    @Test
     public void testTabelleHeadline() throws Exception {
         int rows = 3;
         int cols = 4;
@@ -59,6 +63,7 @@ public class HtmlLayouterTableTest extends AbstractHtmlLayouterTableTest {
         }
     }
 
+    @Test
     public void testTabelleBorder() throws Exception {
         int rows = 3;
         int cols = 4;

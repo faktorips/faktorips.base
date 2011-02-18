@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
+import org.junit.Test;
 
 /**
  * 
@@ -33,6 +34,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
 
     private static final String NEW_OBJECT_NAME = "NewObjectName";
 
+    @Test
     public void testCheckFinalConditionsValid() throws CoreException {
         ProcessorBasedRefactoring refactoring = policyCmptType.getRenameRefactoring();
         IIpsRenameProcessor renameProcessor = (IIpsRenameProcessor)refactoring.getProcessor();
@@ -42,6 +44,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
         assertFalse(status.hasError());
     }
 
+    @Test
     public void testCheckFinalConditionsFileAlreadyExists() throws CoreException {
         ProcessorBasedRefactoring refactoring = policyCmptType.getRenameRefactoring();
         IIpsRenameProcessor renameProcessor = (IIpsRenameProcessor)refactoring.getProcessor();
@@ -51,6 +54,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
         assertTrue(status.hasFatalError());
     }
 
+    @Test
     public void testCheckFinalConditionsInvalidTypeName() throws CoreException {
         ProcessorBasedRefactoring refactoring = policyCmptType.getRenameRefactoring();
         IIpsRenameProcessor renameProcessor = (IIpsRenameProcessor)refactoring.getProcessor();
@@ -60,16 +64,19 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
         assertTrue(status.hasFatalError());
     }
 
+    @Test
     public void testRenamePolicyCmptType() throws CoreException {
         performRenamePolicyCmptType(NEW_OBJECT_NAME);
     }
 
+    @Test
     public void testRenameSuperPolicyCmptType() throws CoreException {
         performRenameRefactoring(superPolicyCmptType, NEW_OBJECT_NAME);
 
         checkSuperPolicyCmptTypeReferences(NEW_OBJECT_NAME);
     }
 
+    @Test
     public void testRenamePolicyCmptTypeWithInverseAssociation() throws CoreException {
         IPolicyCmptTypeAssociation association = policyCmptType.newPolicyCmptTypeAssociation();
         association.setInverseAssociation(otherPolicyToPolicyAssociation.getName());
@@ -90,6 +97,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
         checkPolicyCmptTypeReferences(PACKAGE_NAME + "." + newName);
     }
 
+    @Test
     public void testRenameProductCmptType() throws CoreException {
         performRenameRefactoring(productCmptType, NEW_OBJECT_NAME);
 
@@ -99,12 +107,14 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
         checkProductCmptTypeReferences(PACKAGE_NAME + "." + NEW_OBJECT_NAME);
     }
 
+    @Test
     public void testRenameSuperProductCmptType() throws CoreException {
         performRenameRefactoring(superProductCmptType, NEW_OBJECT_NAME);
 
         checkSuperProductCmptTypeReferences(NEW_OBJECT_NAME);
     }
 
+    @Test
     public void testRenameTestCaseType() throws CoreException {
         performRenameRefactoring(testCaseType, NEW_OBJECT_NAME);
 
@@ -114,6 +124,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
         checkTestCaseTypeReferences(NEW_OBJECT_NAME);
     }
 
+    @Test
     public void testRenameEnumType() throws CoreException {
         performRenameRefactoring(enumType, NEW_OBJECT_NAME);
 
@@ -123,6 +134,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
         checkEnumTypeReferences(NEW_OBJECT_NAME);
     }
 
+    @Test
     public void testRenameTableStructure() throws CoreException {
         performRenameRefactoring(tableStructure, NEW_OBJECT_NAME);
 
@@ -132,6 +144,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
         checkTableStructureReferences(NEW_OBJECT_NAME);
     }
 
+    @Test
     public void testRenameBusinessFunction() throws CoreException {
         performRenameRefactoring(businessFunction, NEW_OBJECT_NAME);
 
@@ -141,6 +154,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
         checkBusinessFunctionReferences(NEW_OBJECT_NAME);
     }
 
+    @Test
     public void testRenameProductCmpt() throws CoreException {
         performRenameRefactoring(productCmpt, NEW_OBJECT_NAME);
 
@@ -150,6 +164,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
         checkProductCmptReferences(NEW_OBJECT_NAME);
     }
 
+    @Test
     public void testRenameTestCase() throws CoreException {
         performRenameRefactoring(testCase, NEW_OBJECT_NAME);
 
@@ -159,6 +174,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
         checkTestCaseReferences(NEW_OBJECT_NAME);
     }
 
+    @Test
     public void testRenameEnumContent() throws CoreException {
         performRenameRefactoring(enumContent, NEW_OBJECT_NAME);
 
@@ -168,6 +184,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
         checkEnumContentReferences(NEW_OBJECT_NAME);
     }
 
+    @Test
     public void testRenameTableContent() throws CoreException {
         performRenameRefactoring(tableContents, NEW_OBJECT_NAME);
 
@@ -177,6 +194,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
         checkTableContentsReferences(NEW_OBJECT_NAME);
     }
 
+    @Test
     public void testRenameOnlyLetterCaseChanged() throws CoreException {
         String newName = POLICY_CMPT_TYPE_NAME.toLowerCase();
         performRenamePolicyCmptType(newName);

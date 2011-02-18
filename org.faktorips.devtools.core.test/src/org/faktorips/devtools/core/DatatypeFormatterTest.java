@@ -23,9 +23,11 @@ import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.junit.Test;
 
 public class DatatypeFormatterTest extends AbstractIpsPluginTest {
 
+    @Test
     public void testFormatValueIEnumTypeIEnumContentString() throws Exception {
         IIpsProject ipsProject = newIpsProject("TestProject");
 

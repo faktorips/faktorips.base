@@ -18,6 +18,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.junit.Before;
 
 /**
  * 
@@ -49,7 +50,8 @@ public abstract class ProductCmptTypeBuilderTest extends AbstractStdBuilderTest 
     protected IType javaInterface;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         productCmptType = newProductCmptType(ipsProject, PRODUCT_NAME);

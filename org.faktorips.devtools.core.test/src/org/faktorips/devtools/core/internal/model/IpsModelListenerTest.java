@@ -24,6 +24,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Test for the listener support.
@@ -48,7 +50,8 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
     }
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject();
         type = newPolicyCmptType(project, "Policy");
@@ -68,6 +71,7 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
         IpsPlugin.getDefault().getIpsModel().removeModificationStatusChangeListener(statusChangeListener);
     }
 
+    @Test
     public void testChangeIpsObjectProperty() {
         type.setSupertype("Super");
         assertEquals(1, contentChangeListener.count);
@@ -82,6 +86,7 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
         assertEquals(1, statusChangeListener.count);
     }
 
+    @Test
     public void testChangeIpsPartProperty() throws CoreException {
         IPolicyCmptTypeAttribute attribute = type.newPolicyCmptTypeAttribute();
         file.save(true, null);
@@ -103,6 +108,7 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
         assertEquals(1, statusChangeListener.count);
     }
 
+    @Test
     public void testAddPart() {
         IPolicyCmptTypeAttribute attribute = type.newPolicyCmptTypeAttribute();
 
@@ -119,6 +125,7 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
         assertEquals(1, statusChangeListener.count);
     }
 
+    @Test
     public void testDeletePart() throws CoreException {
         IPolicyCmptTypeAttribute attribute1 = type.newPolicyCmptTypeAttribute();
         IPolicyCmptTypeAttribute attribute2 = type.newPolicyCmptTypeAttribute();
@@ -162,6 +169,7 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
      * } finally { IpsPlugin.getDefault().getIpsModel().removeChangeListener(listener); } }
      */
 
+    @Test
     public void testStopRestartBroadcasting() throws Exception {
         type.setSupertype("Super");
         assertEquals(1, contentChangeListener.count);

@@ -25,8 +25,6 @@ import org.faktorips.devtools.core.internal.model.DynamicEnumDatatype;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.pctype.CamelCaseToUpperUnderscoreColumnNamingStrategy;
 import org.faktorips.devtools.core.internal.model.pctype.CamelCaseToUpperUnderscoreTableNamingStrategy;
-import org.faktorips.devtools.core.internal.model.pctype.CamelCaseToUpperUnderscoreColumnNamingStrategy;
-import org.faktorips.devtools.core.internal.model.pctype.CamelCaseToUpperUnderscoreTableNamingStrategy;
 import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.core.internal.model.productcmpt.NoVersionIdProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
@@ -34,6 +32,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -44,7 +44,8 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     private IIpsProjectProperties properties;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
         properties = new IpsProjectProperties();
@@ -52,6 +53,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         properties.addSupportedLanguage(Locale.GERMAN);
     }
 
+    @Test
     public void testValidate_ProductCmptNamingStrategy() throws CoreException {
         ((IpsProjectProperties)properties).setProductCmptNamingStrategyInternal(null, "UnknownStrategy-ID");
         MessageList result = properties.validate(ipsProject);
@@ -62,6 +64,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertNull(result.getMessageByCode(IIpsProjectProperties.MSGCODE_INVALID_PRODUCT_CMPT_NAMING_STRATEGY));
     }
 
+    @Test
     public void testValidate_DefinedDatatypes() throws CoreException {
         IpsProjectProperties props = new IpsProjectProperties();
         MessageList list = props.validate(ipsProject);
@@ -76,6 +79,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertTrue(list.getNoOfMessages() > numOfMessages);
     }
 
+    @Test
     public void testValidate_PredefinedDatatypes() throws CoreException {
         IpsProjectProperties props = new IpsProjectProperties();
         MessageList list = props.validate(ipsProject);
@@ -92,6 +96,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertTrue(list.getMessageByCode(IIpsProjectProperties.MSGCODE_UNKNOWN_PREDEFINED_DATATYPE) != null);
     }
 
+    @Test
     public void testValidate_SupportedLanguagesIsoConformity() throws CoreException {
         IpsProjectProperties props = new IpsProjectProperties();
         MessageList list = props.validate(ipsProject);
@@ -109,6 +114,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertNotNull(list.getMessageByCode(IIpsProjectProperties.MSGCODE_SUPPORTED_LANGUAGE_UNKNOWN_LOCALE));
     }
 
+    @Test
     public void testValidate_SupportedLanguagesDefaultLanguage() throws CoreException {
         IpsProjectProperties props = new IpsProjectProperties();
         MessageList list = props.validate(ipsProject);
@@ -129,6 +135,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertNotNull(list.getMessageByCode(IIpsProjectProperties.MSGCODE_MORE_THAN_ONE_DEFAULT_LANGUAGE));
     }
 
+    @Test
     public void testOptionalConstraints() {
         IpsProjectProperties props = new IpsProjectProperties();
 
@@ -151,6 +158,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testToXml() {
         // 1) Create a properties object ...
         IpsProjectProperties props = new IpsProjectProperties();
@@ -255,6 +263,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertEquals(102, props.getPersistenceOptions().getMaxTableColumnPrecision());
     }
 
+    @Test
     public void testAddDefinedDatatype() {
         IpsProjectProperties props = new IpsProjectProperties();
 
@@ -285,6 +294,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertEquals(type4, props.getDefinedDatatypes().get(3));
     }
 
+    @Test
     public void testInitFromXml() {
         Element docEl = getTestDocument().getDocumentElement();
         IpsProjectProperties props = new IpsProjectProperties();
@@ -354,18 +364,21 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertTrue(supportedLanguages.contains(new SupportedLanguage(Locale.GERMAN)));
     }
 
+    @Test
     public void testAddSupportedLanguage() {
         properties.addSupportedLanguage(Locale.TAIWAN);
         assertEquals(3, properties.getSupportedLanguages().size());
         assertTrue(properties.getSupportedLanguages().contains(new SupportedLanguage(Locale.TAIWAN)));
     }
 
+    @Test
     public void testRemoveSupportedLanguage() {
         properties.removeSupportedLanguage(properties.getSupportedLanguage(Locale.ENGLISH));
         assertEquals(1, properties.getSupportedLanguages().size());
         assertFalse(properties.getSupportedLanguages().contains(new SupportedLanguage(Locale.ENGLISH)));
     }
 
+    @Test
     public void testRemoveSupportedLanguageNullPointer() {
         try {
             properties.removeSupportedLanguage((ISupportedLanguage)null);
@@ -374,12 +387,14 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testRemoveSupportedLanguageUsingLocale() {
         properties.removeSupportedLanguage(Locale.ENGLISH);
         assertEquals(1, properties.getSupportedLanguages().size());
         assertFalse(properties.getSupportedLanguages().contains(new SupportedLanguage(Locale.ENGLISH)));
     }
 
+    @Test
     public void testRemoveSupportedLanguageUsingLocaleNullPointer() {
         try {
             properties.removeSupportedLanguage((Locale)null);
@@ -388,6 +403,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testSetDefaultLanguage() {
         ISupportedLanguage englishLanguage = properties.getSupportedLanguage(Locale.ENGLISH);
         properties.setDefaultLanguage(englishLanguage);
@@ -395,6 +411,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertEquals(englishLanguage, properties.getDefaultLanguage());
     }
 
+    @Test
     public void testSetDefaultLanguageNullPointer() {
         try {
             properties.setDefaultLanguage((ISupportedLanguage)null);
@@ -403,11 +420,13 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testSetDefaultLanguageUsingLocale() {
         properties.setDefaultLanguage(Locale.ENGLISH);
         assertEquals(properties.getSupportedLanguage(Locale.ENGLISH), properties.getDefaultLanguage());
     }
 
+    @Test
     public void testSetDefaultLanguageUsingLocaleNullPointer() {
         try {
             properties.setDefaultLanguage((Locale)null);
@@ -416,6 +435,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testSetDefaultLanguageUsingLocaleIllegalLocale() {
         try {
             properties.setDefaultLanguage(Locale.TAIWAN);
@@ -424,12 +444,14 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testIsSupportedLanguage() {
         assertTrue(properties.isSupportedLanguage(Locale.ENGLISH));
         assertTrue(properties.isSupportedLanguage(Locale.US));
         assertFalse(properties.isSupportedLanguage(Locale.JAPANESE));
     }
 
+    @Test
     public void testIsSupportedLanguageNullPointer() {
         try {
             properties.isSupportedLanguage(null);

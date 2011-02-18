@@ -30,19 +30,23 @@ import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParamet
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.htmlexport.context.AbstractHtmlExportPluginTest;
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsElementImagePageElement;
+import org.junit.Test;
 
 public class IpsElementImagePageElementTest extends AbstractHtmlExportPluginTest {
 
+    @Test
     public void testPathPolicyCmptType() throws CoreException {
         PolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "xxx.BVB"); //$NON-NLS-1$
         assertImagePathWorksWithIpsObjectAndIpsSrcFile(policyCmptType);
     }
 
+    @Test
     public void testPathProductCmptType() throws CoreException {
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "xxx.BVB"); //$NON-NLS-1$
         assertImagePathWorksWithIpsObjectAndIpsSrcFile(productCmptType);
     }
 
+    @Test
     public void testPathProductCmptTypeAssociation() throws CoreException {
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "xxx.BVB"); //$NON-NLS-1$
         ProductCmptTypeAssociation association = new ProductCmptTypeAssociation(productCmptType, "xxx.BVBAsso");
@@ -50,12 +54,14 @@ public class IpsElementImagePageElementTest extends AbstractHtmlExportPluginTest
         assertEquals("aggregation", new IpsElementImagePageElement(association).getFileName());
     }
 
+    @Test
     public void testPathPolicyCmpt() throws CoreException {
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "xxx.BVB"); //$NON-NLS-1$
         ProductCmpt productCmpt = newProductCmpt(productCmptType, "yyy.BVB"); //$NON-NLS-1$
         assertImagePathWorksWithIpsObjectAndIpsSrcFile(productCmpt);
     }
 
+    @Test
     public void testPathProductCmptMitEigenemBild() throws CoreException {
         String productCmptTypeName = "xxx.BVB";
         ProductCmptType productCmptType = newProductCmptType(ipsProject, productCmptTypeName);
@@ -92,6 +98,7 @@ public class IpsElementImagePageElementTest extends AbstractHtmlExportPluginTest
         assertFalse("Bilder stimmen ueberein!", gleich);
     }
 
+    @Test
     public void testPathProductCmptMitEigenemBildUndCoreException() throws CoreException {
         String productCmptTypeName = "xxx.BVB";
         ProductCmptType productCmptType = newProductCmptType(ipsProject, productCmptTypeName);
@@ -128,6 +135,7 @@ public class IpsElementImagePageElementTest extends AbstractHtmlExportPluginTest
         assertFalse("Bilder stimmen ueberein!", gleich);
     }
 
+    @Test
     public void testPathProductCmptMitEigenemBildAusSuperProductCmpt() throws CoreException {
         String productCmptTypeName = "xxx.BVB";
         String superProductCmptTypeName = "xxx.SuperBVB";
@@ -144,6 +152,7 @@ public class IpsElementImagePageElementTest extends AbstractHtmlExportPluginTest
         assertEquals(superProductCmptTypeName, new IpsElementImagePageElement(productCmpt).getFileName());
     }
 
+    @Test
     public void testPathTestObject() throws CoreException {
         TestCaseType testCaseType = newTestCaseType(ipsProject, "xxx.TestCaseType");
         TestCase testCase = newTestCase(testCaseType, "xxxTest"); //$NON-NLS-1$
@@ -164,6 +173,7 @@ public class IpsElementImagePageElementTest extends AbstractHtmlExportPluginTest
         assertEquals("testvalue", new IpsElementImagePageElement(newTestValue).getFileName());
     }
 
+    @Test
     public void testPathTestParameter() throws CoreException {
         TestCaseType testCaseType = newTestCaseType(ipsProject, "xxx.TestCaseType");
 

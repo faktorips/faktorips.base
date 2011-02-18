@@ -23,6 +23,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
+import org.junit.Before;
+import org.junit.Test;
 
 public class IpsObjectPartStateTest extends AbstractIpsPluginTest {
 
@@ -30,7 +32,8 @@ public class IpsObjectPartStateTest extends AbstractIpsPluginTest {
     IPolicyCmptType pcType;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         IIpsProject project = this.newIpsProject("TestProject");
@@ -42,6 +45,7 @@ public class IpsObjectPartStateTest extends AbstractIpsPluginTest {
         attribute = pcType.newPolicyCmptTypeAttribute();
     }
 
+    @Test
     public void testAll() {
         IpsObjectPartState state = new IpsObjectPartState(attribute);
         IpsObjectPartState stringState = new IpsObjectPartState(state.toString());

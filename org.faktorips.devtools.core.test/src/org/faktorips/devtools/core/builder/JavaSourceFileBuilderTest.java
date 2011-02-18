@@ -22,6 +22,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.LocalizedStringsSet;
+import org.junit.Before;
+import org.junit.Test;
 
 public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
 
@@ -30,6 +32,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
     private IIpsSrcFile ipsSrcFile;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject();
@@ -41,17 +44,20 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         builder.beforeBuildProcess(project, IncrementalProjectBuilder.INCREMENTAL_BUILD);
     }
 
+    @Test
     public void testBeforeBuild() throws Exception {
         builder.beforeBuild(ipsSrcFile, null);
         assertEquals(ipsSrcFile, builder.getIpsSrcFile());
     }
 
+    @Test
     public void testAfterBuild() throws Exception {
         builder.beforeBuild(ipsSrcFile, null);
         builder.afterBuild(ipsSrcFile);
         assertNull(builder.getIpsObject());
     }
 
+    @Test
     public void testBuild() throws Exception {
         builder.beforeBuild(ipsSrcFile, null);
         builder.isBuilderFor = true;
@@ -77,6 +83,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         builder.build(ipsSrcFile);
     }
 
+    @Test
     public void testDelete() throws Exception {
         builder.beforeBuild(ipsSrcFile, null);
         builder.isBuilderFor = true;
@@ -92,6 +99,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         assertFalse(file.exists());
     }
 
+    @Test
     public void testGetLocalizedText() throws Exception {
         builder.beforeBuild(ipsSrcFile, null);
         String value = builder.getLocalizedText(ipsSrcFile, "key");

@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptTypeBuilderTest;
 import org.faktorips.devtools.stdbuilder.type.GenAttribute;
 import org.faktorips.util.ArgumentCheck;
+import org.junit.Before;
 
 /**
  * Abstract base class for tests concerning the generators for <tt>IPolicyCmptTypeAttribute</tt>s.
@@ -56,7 +57,8 @@ public abstract class GenPolicyCmptTypeAttributeTest extends PolicyCmptTypeBuild
     }
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         publishedAttribute = policyCmptType.newPolicyCmptTypeAttribute();

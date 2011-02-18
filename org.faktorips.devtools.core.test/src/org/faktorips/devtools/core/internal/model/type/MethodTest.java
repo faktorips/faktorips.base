@@ -24,6 +24,8 @@ import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
@@ -37,13 +39,15 @@ public class MethodTest extends AbstractIpsPluginTest {
     private IMethod method;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
         type = newProductCmptType(ipsProject, "Product");
         method = type.newMethod();
     }
 
+    @Test
     public void testGetSignatureString() {
         method.setName("calc");
         assertEquals("calc()", method.getSignatureString());
@@ -55,6 +59,7 @@ public class MethodTest extends AbstractIpsPluginTest {
         assertEquals("calc(base.Vertrag, Integer)", method.getSignatureString());
     }
 
+    @Test
     public void testGetMethodBySignature() {
         assertNull(type.getMethod("calc()"));
 
@@ -71,6 +76,7 @@ public class MethodTest extends AbstractIpsPluginTest {
         assertNull(type.getMethod("unknown()"));
     }
 
+    @Test
     public void testFindMethodBySignature() throws CoreException {
         assertNull(type.findMethod("calc()", ipsProject));
 
@@ -89,6 +95,7 @@ public class MethodTest extends AbstractIpsPluginTest {
         assertNull(type.findMethod("unknown()", ipsProject));
     }
 
+    @Test
     public void testInitFromXml() {
         Element docElement = getTestDocument().getDocumentElement();
 
@@ -109,6 +116,7 @@ public class MethodTest extends AbstractIpsPluginTest {
         assertEquals(0, method.getNumOfParameters());
     }
 
+    @Test
     public void testToXmlDocument() {
         method = type.newMethod(); // => id=1, because it's the second method
         method.setName("getAge");
@@ -140,6 +148,7 @@ public class MethodTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testNewParameter() {
         IParameter param = method.newParameter();
         assertEquals(1, method.getParameters().length);
@@ -147,22 +156,27 @@ public class MethodTest extends AbstractIpsPluginTest {
         assertTrue(method.getIpsSrcFile().isDirty());
     }
 
+    @Test
     public void testSetName() {
         testPropertyAccessReadWrite(Method.class, IIpsElement.PROPERTY_NAME, method, "calcPremium");
     }
 
+    @Test
     public void testSetDatatype() {
         testPropertyAccessReadWrite(Method.class, IMethod.PROPERTY_DATATYPE, method, "Integer");
     }
 
+    @Test
     public void testSetAbstract() {
         testPropertyAccessReadWrite(Method.class, IMethod.PROPERTY_ABSTRACT, method, Boolean.TRUE);
     }
 
+    @Test
     public void testSetModifier() {
         testPropertyAccessReadWrite(Method.class, IMethod.PROPERTY_MODIFIER, method, Modifier.PUBLIC);
     }
 
+    @Test
     public void testIsSameSignature() {
         method.setName("calc");
         method.setDatatype("void");
@@ -201,6 +215,7 @@ public class MethodTest extends AbstractIpsPluginTest {
         assertFalse(method.isSameSignature(other));
     }
 
+    @Test
     public void testOverrides() throws CoreException {
         method.setName("calc");
         method.setDatatype("void");
@@ -232,6 +247,7 @@ public class MethodTest extends AbstractIpsPluginTest {
         assertTrue(otherTypeMethod.overrides(method));
     }
 
+    @Test
     public void testValidate() throws Exception {
         IType pcType = newPolicyCmptType(ipsProject, "aType");
         method = pcType.newMethod();
@@ -255,6 +271,7 @@ public class MethodTest extends AbstractIpsPluginTest {
         assertNotNull(msgList.getMessageByCode(IMethod.MSGCODE_DUBLICATE_SIGNATURE));
     }
 
+    @Test
     public void testValidateInconsistentReturnType() throws Exception {
         IType pcType = newPolicyCmptType(ipsProject, "AType");
         method = pcType.newMethod();
@@ -297,6 +314,7 @@ public class MethodTest extends AbstractIpsPluginTest {
         assertNull(msgList.getMessageByCode(IMethod.MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE));
     }
 
+    @Test
     public void testValidateMultipleParameterNames() throws CoreException {
         IType pcType = newPolicyCmptType(ipsProject, "aType");
         method = pcType.newMethod();
@@ -319,6 +337,7 @@ public class MethodTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testFindOverridingMethod() throws CoreException {
         IType superType = newPolicyCmptType(ipsProject, "superType");
         IType thisType = newPolicyCmptType(ipsProject, "thisType");
@@ -343,6 +362,7 @@ public class MethodTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testFindOverriddenMethod() throws CoreException {
         IType superSuperType = newPolicyCmptType(ipsProject, "superSuperType");
         IType superType = newPolicyCmptType(ipsProject, "superType");

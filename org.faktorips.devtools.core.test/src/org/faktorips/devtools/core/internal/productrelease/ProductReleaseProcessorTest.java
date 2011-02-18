@@ -38,6 +38,8 @@ import org.faktorips.devtools.core.productrelease.ITargetSystem;
 import org.faktorips.devtools.core.productrelease.ObservableProgressMessages;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ProductReleaseProcessorTest extends AbstractIpsPluginTest {
 
@@ -47,7 +49,8 @@ public class ProductReleaseProcessorTest extends AbstractIpsPluginTest {
     private IReleaseAndDeploymentOperation releaseAndDeploymentOperation;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         ipsProject = mock(IIpsProject.class, withSettings().defaultAnswer(RETURNS_DEEP_STUBS));
@@ -77,6 +80,7 @@ public class ProductReleaseProcessorTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testStartReleaseBuilder() throws Exception {
         productReleaseProcessor.startReleaseBuilder("abc", null, new NullProgressMonitor());
         assertTrue(messageList.containsErrorMsg());

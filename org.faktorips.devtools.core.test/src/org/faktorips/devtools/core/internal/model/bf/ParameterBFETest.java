@@ -16,9 +16,12 @@ package org.faktorips.devtools.core.internal.model.bf;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
+import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IParameterBFE;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -29,6 +32,7 @@ public class ParameterBFETest extends AbstractIpsPluginTest {
     private BusinessFunction bf;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
@@ -37,6 +41,7 @@ public class ParameterBFETest extends AbstractIpsPluginTest {
         bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf");
     }
 
+    @Test
     public void testInitPropertiesFromXml() throws Exception {
         IParameterBFE p = bf.newParameter();
         p.setDatatype(Datatype.INTEGER.getName());
@@ -48,6 +53,7 @@ public class ParameterBFETest extends AbstractIpsPluginTest {
         assertEquals(Datatype.INTEGER.getName(), p2.getDatatype());
     }
 
+    @Test
     public void testPropertiesToXml() {
         Document doc = getTestDocument();
         IParameterBFE p = bf.newParameter();
@@ -55,6 +61,7 @@ public class ParameterBFETest extends AbstractIpsPluginTest {
         assertEquals("String", p.getDatatype());
     }
 
+    @Test
     public void testGetDisplayString() {
         IParameterBFE p = bf.newParameter();
         p.setDatatype("String");
@@ -62,6 +69,7 @@ public class ParameterBFETest extends AbstractIpsPluginTest {
         assertEquals("String:p1", p.getDisplayString());
     }
 
+    @Test
     public void testSetDatatype() {
         IParameterBFE p = bf.newParameter();
         listener.clear();
@@ -80,6 +88,7 @@ public class ParameterBFETest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testFindDatatype() throws Exception {
         IParameterBFE p = bf.newParameter();
         p.setDatatype(Datatype.STRING.getName());
@@ -92,27 +101,30 @@ public class ParameterBFETest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testValidateNameSpecified() throws Exception {
         IParameterBFE p = bf.newParameter();
         MessageList msgList = p.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IParameterBFE.MSGCODE_NAME_NOT_SPECIFIED));
+        assertNotNull(msgList.getMessageByCode(IBFElement.MSGCODE_NAME_NOT_SPECIFIED));
 
         p.setName("policy");
         msgList = p.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IParameterBFE.MSGCODE_NAME_NOT_SPECIFIED));
+        assertNull(msgList.getMessageByCode(IBFElement.MSGCODE_NAME_NOT_SPECIFIED));
     }
 
+    @Test
     public void testValidateNameValidIdenifier() throws Exception {
         IParameterBFE p = bf.newParameter();
         p.setName("policy");
         MessageList msgList = p.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IParameterBFE.MSGCODE_NAME_NOT_VALID));
+        assertNull(msgList.getMessageByCode(IBFElement.MSGCODE_NAME_NOT_VALID));
 
         p.setName("policy-");
         msgList = p.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IParameterBFE.MSGCODE_NAME_NOT_VALID));
+        assertNotNull(msgList.getMessageByCode(IBFElement.MSGCODE_NAME_NOT_VALID));
     }
 
+    @Test
     public void testValidateDatatypeSpecified() throws Exception {
         IParameterBFE p = bf.newParameter();
         p.setName("policy");
@@ -124,6 +136,7 @@ public class ParameterBFETest extends AbstractIpsPluginTest {
         assertNull(msgList.getMessageByCode(IParameterBFE.MSGCODE_DATATYPE_NOT_SPECIFIED));
     }
 
+    @Test
     public void testValidateDatatypeExists() throws Exception {
         IParameterBFE p = bf.newParameter();
         p.setName("policy");
@@ -136,6 +149,7 @@ public class ParameterBFETest extends AbstractIpsPluginTest {
         assertNotNull(msgList.getMessageByCode(IParameterBFE.MSGCODE_DATATYPE_DOES_NOT_EXISIT));
     }
 
+    @Test
     public void testValidateDuplicateNames() throws Exception {
         IParameterBFE p1 = bf.newParameter();
         p1.setName("p1");

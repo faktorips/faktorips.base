@@ -23,6 +23,8 @@ import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IKey;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 public class UniqueKeyTest extends AbstractIpsPluginTest {
@@ -33,7 +35,8 @@ public class UniqueKeyTest extends AbstractIpsPluginTest {
     private UniqueKey key;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject();
         table = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "TestTable");
@@ -42,12 +45,14 @@ public class UniqueKeyTest extends AbstractIpsPluginTest {
         ipsSrcFile.save(true, null);
     }
 
+    @Test
     public void testRemove() {
         key.delete();
         assertEquals(0, table.getNumOfUniqueKeys());
         assertTrue(ipsSrcFile.isDirty());
     }
 
+    @Test
     public void testGetName() {
         assertEquals("", key.getName());
         key.setKeyItems(new String[] { "age" });
@@ -56,6 +61,7 @@ public class UniqueKeyTest extends AbstractIpsPluginTest {
         assertEquals("age, gender", key.getName());
     }
 
+    @Test
     public void testGetKeyItemNames() {
         assertEquals(0, key.getKeyItemNames().length);
         String[] items = new String[] { "age", "gender" };
@@ -66,6 +72,7 @@ public class UniqueKeyTest extends AbstractIpsPluginTest {
         assertEquals("gender", key.getKeyItemNames()[1]);
     }
 
+    @Test
     public void testGetKeyItems() {
         assertEquals(0, key.getKeyItems().length);
         IColumn c0 = table.newColumn();
@@ -82,12 +89,14 @@ public class UniqueKeyTest extends AbstractIpsPluginTest {
         assertEquals(range, keyItems[1]);
     }
 
+    @Test
     public void testSetKeyItems() {
         String[] items = new String[] { "age", "gender" };
         key.setKeyItems(items);
         assertTrue(ipsSrcFile.isDirty());
     }
 
+    @Test
     public void testGetKeyItemAt() {
         IColumn c0 = table.newColumn();
         c0.setName("c0");
@@ -110,6 +119,7 @@ public class UniqueKeyTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testGetNameOfKeyItemAt() {
         IColumn c0 = table.newColumn();
         c0.setName("c0");
@@ -130,6 +140,7 @@ public class UniqueKeyTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testGetIndexForKeyItem() throws Exception {
         IColumn c0 = table.newColumn();
         c0.setName("c0");
@@ -153,6 +164,7 @@ public class UniqueKeyTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testGetIndexForKeyItemName() {
         IColumn c0 = table.newColumn();
         c0.setName("c0");
@@ -172,6 +184,7 @@ public class UniqueKeyTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetItemCandidates() {
         assertEquals(0, key.getItemCandidates().length);
         IColumn columnGender = table.newColumn();
@@ -193,6 +206,7 @@ public class UniqueKeyTest extends AbstractIpsPluginTest {
         assertEquals(columnSmoker, key.getItemCandidates()[0]);
     }
 
+    @Test
     public void testToXml() {
         key = (UniqueKey)table.newUniqueKey();
         String[] items = new String[] { "age", "gender" };
@@ -206,6 +220,7 @@ public class UniqueKeyTest extends AbstractIpsPluginTest {
         assertEquals("gender", copy.getKeyItemNames()[1]);
     }
 
+    @Test
     public void testInitFromXml() {
         key.initFromXml(getTestDocument().getDocumentElement());
         assertEquals("42", key.getId());
@@ -214,6 +229,7 @@ public class UniqueKeyTest extends AbstractIpsPluginTest {
         assertEquals("gender", key.getKeyItemNames()[1]);
     }
 
+    @Test
     public void testContainsTwoColumnRanges() {
         key.getTableStructure().newColumn().setName("a");
         key.getTableStructure().newColumn().setName("b");
@@ -236,6 +252,7 @@ public class UniqueKeyTest extends AbstractIpsPluginTest {
         assertFalse(key.containsTwoColumnRanges());
     }
 
+    @Test
     public void testValidateThis() throws Exception {
         assertEquals(0, key.getKeyItems().length);
         IColumn c0 = table.newColumn();

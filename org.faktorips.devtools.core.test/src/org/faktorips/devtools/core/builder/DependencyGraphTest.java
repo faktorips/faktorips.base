@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.builder.DependencyGraph;
 import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
@@ -35,6 +34,8 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.util.CollectionUtil;
+import org.junit.Before;
+import org.junit.Test;
 
 public class DependencyGraphTest extends AbstractIpsPluginTest {
 
@@ -52,6 +53,7 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
     private IMethod cMethod;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
@@ -98,6 +100,7 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
         graph = new DependencyGraph(ipsProject);
     }
 
+    @Test
     public void testGetDependants2() throws CoreException {
         // c has a datatype dependency to e and a reference dependency to e
         IAssociation aToE = a.newAssociation();
@@ -113,12 +116,14 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
         assertEquals(2, dependants.length);
     }
 
+    @Test
     public void testDatatypeDependencyOfEnumType() {
         IDependency[] dependants = graph.getDependants(enum1.getQualifiedNameType());
         assertEquals(1, dependants.length);
         assertEquals(a.getQualifiedNameType(), dependants[0].getSource());
     }
 
+    @Test
     public void testGetDependants() {
         IDependency[] dependants = graph.getDependants(a.getQualifiedNameType());
         List<IDependency> dependsOnList = CollectionUtil.toArrayList(dependants);
@@ -148,6 +153,7 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
         assertEquals(1, dependants.length);
     }
 
+    @Test
     public void testUpdate() throws Exception {
         a.getPolicyCmptTypeAssociations()[0].delete();
         a.getIpsSrcFile().save(true, null);

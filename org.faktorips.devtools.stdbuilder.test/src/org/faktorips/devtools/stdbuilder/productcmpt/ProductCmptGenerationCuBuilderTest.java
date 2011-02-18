@@ -20,6 +20,8 @@ import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ProductCmptGenerationCuBuilderTest extends AbstractStdBuilderTest {
 
@@ -34,7 +36,8 @@ public class ProductCmptGenerationCuBuilderTest extends AbstractStdBuilderTest {
     private IProductCmptGeneration secondGeneration;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         productCmpt = newProductCmpt(ipsProject, PRODUCT_CMPT_NAME);
@@ -56,6 +59,7 @@ public class ProductCmptGenerationCuBuilderTest extends AbstractStdBuilderTest {
         return getGeneratedJavaType(productCmpt, true, true, PRODUCT_CMPT_NAME + generationNamePart);
     }
 
+    @Test
     public void testGetGeneratedJavaElements() {
         generatedJavaElements = builder.getGeneratedJavaElements(productCmpt);
         assertTrue(generatedJavaElements.contains(getGeneratedJavaClass("___20100320")));

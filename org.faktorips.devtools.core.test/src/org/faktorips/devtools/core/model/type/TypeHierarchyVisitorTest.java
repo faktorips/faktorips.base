@@ -16,6 +16,8 @@ package org.faktorips.devtools.core.model.type;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -29,7 +31,8 @@ public class TypeHierarchyVisitorTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
         type = newProductCmptType(ipsProject, "Type");
@@ -40,6 +43,7 @@ public class TypeHierarchyVisitorTest extends AbstractIpsPluginTest {
         supertype.setSupertype("SuperSupertype");
     }
 
+    @Test
     public void test_NoCycle() throws CoreException {
         MyVisitor visitor = new MyVisitor(ipsProject);
         visitor.start(type);
@@ -71,6 +75,7 @@ public class TypeHierarchyVisitorTest extends AbstractIpsPluginTest {
         assertFalse(visitor.cycleDetected());
     }
 
+    @Test
     public void test_WithCycle() throws CoreException {
         superSupertype.setSupertype("Type");
         MyVisitor visitor = new MyVisitor(ipsProject);

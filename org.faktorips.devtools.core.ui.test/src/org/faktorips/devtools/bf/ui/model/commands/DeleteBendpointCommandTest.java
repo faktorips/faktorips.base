@@ -22,6 +22,8 @@ import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.bf.commands.BendpointCommand;
 import org.faktorips.devtools.core.ui.bf.commands.DeleteBendpointCommand;
+import org.junit.Before;
+import org.junit.Test;
 
 public class DeleteBendpointCommandTest extends AbstractIpsPluginTest {
 
@@ -31,6 +33,7 @@ public class DeleteBendpointCommandTest extends AbstractIpsPluginTest {
     private IControlFlow cf;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
@@ -39,6 +42,7 @@ public class DeleteBendpointCommandTest extends AbstractIpsPluginTest {
         command = new DeleteBendpointCommand(0, cf);
     }
 
+    @Test
     public void testExecute() {
         try {
             command.execute();

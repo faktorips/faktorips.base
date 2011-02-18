@@ -27,17 +27,21 @@ import org.faktorips.devtools.core.ui.bf.edit.DecisionEditPart;
 import org.faktorips.devtools.core.ui.bf.edit.EndEditPart;
 import org.faktorips.devtools.core.ui.bf.edit.MergeEditPart;
 import org.faktorips.devtools.core.ui.bf.edit.StartEditPart;
+import org.junit.Before;
+import org.junit.Test;
 
 public class BusinessFunctionEditPartFactoryTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
     }
 
+    @Test
     public void testCreateEditPart() throws Exception {
         BusinessFunctionEditPartFactory factory = new BusinessFunctionEditPartFactory();
         IBusinessFunction bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),

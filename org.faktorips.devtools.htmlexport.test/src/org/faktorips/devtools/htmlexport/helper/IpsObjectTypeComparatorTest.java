@@ -13,17 +13,19 @@
 
 package org.faktorips.devtools.htmlexport.helper;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import junit.framework.TestCase;
 
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.htmlexport.helper.IpsObjectTypeComparator;
+import org.junit.Test;
 
-public class IpsObjectTypeComparatorTest extends TestCase {
+public class IpsObjectTypeComparatorTest {
 
     private IpsObjectTypeComparator comparator = new IpsObjectTypeComparator();
 
+    @Test
     public void testComparatorProductDefinition() {
         IpsObjectType nonProductDefinitionIpsObjectType = mock(IpsObjectType.class);
         when(nonProductDefinitionIpsObjectType.isProductDefinitionType()).thenReturn(false);
@@ -35,6 +37,7 @@ public class IpsObjectTypeComparatorTest extends TestCase {
         assertTrue(comparator.compare(productDefinitionIpsObjectType, nonProductDefinitionIpsObjectType) > 0);
     }
 
+    @Test
     public void testComparatorDatatype() {
         IpsObjectType nonDatatypeIpsObjectType = mock(IpsObjectType.class);
         when(nonDatatypeIpsObjectType.isProductDefinitionType()).thenReturn(false);
@@ -48,6 +51,7 @@ public class IpsObjectTypeComparatorTest extends TestCase {
         assertTrue(comparator.compare(datatypeIpsObjectType, nonDatatypeIpsObjectType) > 0);
     }
 
+    @Test
     public void testComparatorEqual() {
         IpsObjectType firstIpsObjectType = mock(IpsObjectType.class);
         when(firstIpsObjectType.isProductDefinitionType()).thenReturn(false);

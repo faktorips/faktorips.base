@@ -19,13 +19,16 @@ import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.standard.AbstractXmlUnitHtmlExportTest;
 import org.faktorips.devtools.htmlexport.pages.standard.ContentPageUtil;
+import org.junit.Before;
+import org.junit.Test;
 
 public class MethodsTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
 
     private PolicyCmptType policy;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         policy = newPolicyCmptType(ipsProject, "Vertrag");
     }
@@ -38,6 +41,7 @@ public class MethodsTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
         return "//table[@id= '" + policy.getName() + "_methods" + "']";
     }
 
+    @Test
     public void testMethodsTableVorhanden() throws Exception {
 
         IMethod methodString = createStringMethod();
@@ -54,6 +58,7 @@ public class MethodsTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
         assertXPathFromTable(objectContentPage, "//tr[3][td='" + methodInteger.getName() + "']");
     }
 
+    @Test
     public void testMethodsTableNichtVorhandenOhneAttribute() throws Exception {
 
         PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
@@ -61,6 +66,7 @@ public class MethodsTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
         assertXPathNotExists(objectContentPage, getXPathMethodTable());
     }
 
+    @Test
     public void testMethodsTableAufbau() throws Exception {
         createIntegerMethod();
         createStringMethod();

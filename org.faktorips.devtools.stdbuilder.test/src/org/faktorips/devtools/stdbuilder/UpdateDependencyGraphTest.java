@@ -21,6 +21,7 @@ import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.junit.Test;
 
 /**
  * 
@@ -37,6 +38,7 @@ public class UpdateDependencyGraphTest extends AbstractIpsPluginTest {
      * 
      * @throws CoreException
      */
+    @Test
     public void test() throws CoreException {
         IIpsProject project = newIpsProject();
         IPolicyCmptType typeA = newPolicyCmptTypeWithoutProductCmptType(project, "A");

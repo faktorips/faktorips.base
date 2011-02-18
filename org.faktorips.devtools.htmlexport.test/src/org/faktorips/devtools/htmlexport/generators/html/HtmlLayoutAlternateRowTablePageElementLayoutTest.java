@@ -16,9 +16,11 @@ package org.faktorips.devtools.htmlexport.generators.html;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.AlternateRowTablePageElementLayout;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
+import org.junit.Test;
 
 public class HtmlLayoutAlternateRowTablePageElementLayoutTest extends AbstractHtmlLayouterTableTest {
 
+    @Test
     public void testAlternateRows() throws Exception {
         int rows = 5;
         TablePageElement table = createTable(rows, 2);
@@ -34,6 +36,7 @@ public class HtmlLayoutAlternateRowTablePageElementLayoutTest extends AbstractHt
         }
     }
 
+    @Test
     public void testAlternateRowsIgnoreFirstRow() throws Exception {
         int rows = 5;
         TablePageElement table = createTable(rows, 2);

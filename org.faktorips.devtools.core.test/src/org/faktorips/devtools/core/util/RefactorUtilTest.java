@@ -20,6 +20,8 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -31,13 +33,15 @@ public class RefactorUtilTest extends AbstractIpsPluginTest {
     private IPolicyCmptType policyCmptType;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         IIpsProject ipsProject = newIpsProject();
         policyCmptType = newPolicyCmptType(ipsProject, "test.Policy");
     }
 
+    @Test
     public void testCopyIpsSrcFile() throws CoreException {
         IIpsPackageFragment targetIpsPackage = policyCmptType.getIpsPackageFragment();
         IIpsSrcFile fileToBeCopied = policyCmptType.getIpsSrcFile();

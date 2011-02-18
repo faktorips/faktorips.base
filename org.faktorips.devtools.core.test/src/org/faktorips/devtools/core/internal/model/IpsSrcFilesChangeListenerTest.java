@@ -27,6 +27,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.junit.Before;
+import org.junit.Test;
 
 public class IpsSrcFilesChangeListenerTest extends AbstractIpsPluginTest implements IIpsSrcFilesChangeListener {
     private IIpsProject pdProject;
@@ -39,7 +41,8 @@ public class IpsSrcFilesChangeListenerTest extends AbstractIpsPluginTest impleme
     private IpsSrcFilesChangedEvent event;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         pdProject = this.newIpsProject("TestProject");
         pdRootFolder = pdProject.getIpsPackageFragmentRoots()[0];
@@ -57,6 +60,7 @@ public class IpsSrcFilesChangeListenerTest extends AbstractIpsPluginTest impleme
         IpsPlugin.getDefault().getIpsModel().addIpsSrcFilesChangedListener(this);
     }
 
+    @Test
     public void testIpsSrcFilesChanged() throws CoreException {
         // TODO: Gibt es eine Möglichkeit zwei save-Event gleichzeitig zu testen (saveAll)
         pcType.getIpsSrcFile().save(true, null);

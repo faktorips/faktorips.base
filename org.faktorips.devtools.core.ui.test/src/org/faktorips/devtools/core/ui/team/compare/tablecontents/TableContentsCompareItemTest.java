@@ -28,6 +28,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
 
@@ -42,7 +44,8 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
     private IRow row1;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         IIpsProject proj = newIpsProject("TestProject");
@@ -69,6 +72,7 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         compareItemRoot = (TableContentsCompareItem)structureCreator.getStructure(new ResourceNode(correspondingFile));
     }
 
+    @Test
     public void testInit() {
         // create uninitialized tree of compareitems
         TableContentsCompareItem compareItemSrcFile = new TableContentsCompareItem(null, srcFile);
@@ -98,10 +102,12 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         assertNotNull(compareItemRow1.getDocument());
     }
 
+    @Test
     public void testGetType() {
         assertEquals("ipstablecontents", compareItemRoot.getType());
     }
 
+    @Test
     public void testEqualsObject() throws CoreException {
         // set Row values of default Table
         row1.setValue(0, "65");
@@ -178,6 +184,7 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         assertFalse(rowItem1.equals(rowItem2));
     }
 
+    @Test
     public void testHashCode() throws CoreException {
         // set Row values of default Table
         row1.setValue(0, "65");

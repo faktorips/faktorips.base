@@ -21,6 +21,8 @@ import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.bf.commands.DeleteConnectionCommand;
+import org.junit.Before;
+import org.junit.Test;
 
 public class DeleteConnectionCommandTest extends AbstractIpsPluginTest {
 
@@ -28,18 +30,21 @@ public class DeleteConnectionCommandTest extends AbstractIpsPluginTest {
     private IBusinessFunction bf;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
         bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf");
     }
 
+    @Test
     public void testCanExecute() {
         IControlFlow cf = bf.newControlFlow();
         DeleteConnectionCommand command = new DeleteConnectionCommand(bf, cf);
         assertTrue(command.canExecute());
     }
 
+    @Test
     public void testExecute() {
         IActionBFE source = bf.newOpaqueAction(new Point(10, 10));
         IActionBFE target = bf.newOpaqueAction(new Point(10, 10));
@@ -55,6 +60,7 @@ public class DeleteConnectionCommandTest extends AbstractIpsPluginTest {
         assertTrue(cf.isDeleted());
     }
 
+    @Test
     public void testRedoUndo() {
         IActionBFE source = bf.newOpaqueAction(new Point(10, 10));
         IActionBFE target = bf.newOpaqueAction(new Point(10, 10));

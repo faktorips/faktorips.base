@@ -22,6 +22,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.tableconversion.AbstractTableTest;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ExcelEnumExportOperationTest extends AbstractTableTest {
 
@@ -30,7 +32,8 @@ public class ExcelEnumExportOperationTest extends AbstractTableTest {
     private IIpsProject ipsProject;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         this.ipsProject = newIpsProject("test");
@@ -59,6 +62,7 @@ public class ExcelEnumExportOperationTest extends AbstractTableTest {
         new File(filename).delete();
     }
 
+    @Test
     public void testExportValid() throws Exception {
         IEnumType enumType = createValidEnumTypeWithValues(ipsProject);
 

@@ -23,6 +23,8 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
 import org.faktorips.abstracttest.AbstractIpsRefactoringTest;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -34,22 +36,26 @@ public class IpsRefactoringProcessorTest extends AbstractIpsRefactoringTest {
     private TestProcessor testProcessor;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         testProcessor = new TestProcessor(policyCmptType);
     }
 
+    @Test
     public void testCheckInitialConditionsValid() throws OperationCanceledException, CoreException {
         RefactoringStatus status = testProcessor.checkInitialConditions(new NullProgressMonitor());
         assertFalse(status.hasError());
     }
 
+    @Test
     public void testCheckInitialConditionsInvalid() throws OperationCanceledException, CoreException {
         policyCmptType.getIpsSrcFile().getCorrespondingResource().delete(true, null);
         RefactoringStatus status = testProcessor.checkInitialConditions(new NullProgressMonitor());
         assertTrue(status.hasError());
     }
 
+    @Test
     public void testCheckFinalConditions() throws OperationCanceledException, CoreException {
         testProcessor.checkFinalConditions(new NullProgressMonitor(), new CheckConditionsContext());
         assertTrue(testProcessor.validateUserInputCalled);

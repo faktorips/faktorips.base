@@ -52,6 +52,8 @@ import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -80,7 +82,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     private ContentChangeEvent lastEvent;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         ipsProject = newIpsProject();
@@ -103,6 +106,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     // OK to suppress deprecation warnings as this is a test for a deprecated method.
     @SuppressWarnings("deprecation")
+    @Test
     public void testSetDescription() throws CoreException {
         IPolicyCmptType policyContainer = newPolicyCmptType(ipsProject, "TestPolicy");
         container.getIpsModel().addChangeListener(new ContentsChangeListener() {
@@ -127,6 +131,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     // OK to suppress deprecation warnings as this is a test for a deprecated method.
     @SuppressWarnings("deprecation")
+    @Test
     public void testGetDescriptionDeprecatedVersion() throws CoreException {
         IPolicyCmptType policyContainer = newPolicyCmptType(ipsProject, "TestPolicy");
         assertEquals("", policyContainer.getDescription());
@@ -143,10 +148,12 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     // OK to suppress deprecation warnings as this is a test for a deprecated method.
     @SuppressWarnings("deprecation")
+    @Test
     public void testIsDescriptionChangeable() {
         assertTrue(container.isDescriptionChangable());
     }
 
+    @Test
     public void testGetExtProperty() {
         ExtensionPropertyDefinition extProperty0 = new StringExtensionPropertyDefinition();
         extProperty0.setPropertyId("org.foo.prop0");
@@ -166,6 +173,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testSetExtProperty() {
         // define ext property
         TestExtProperty extProperty0 = new TestExtProperty();
@@ -202,6 +210,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertEquals("blabla", container.getExtPropertyValue("org.foo.prop0"));
     }
 
+    @Test
     public void testIsExtPropertyDefinitionAvailable() {
         ExtensionPropertyDefinition extProperty0 = new StringExtensionPropertyDefinition();
         extProperty0.setPropertyId("org.foo.prop0");
@@ -212,6 +221,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertFalse(container.isExtPropertyDefinitionAvailable("org.foo.prop1"));
     }
 
+    @Test
     public void testToXml_ExtensionProperties() {
         // no extension properties
         Element el = container.toXml(newDocument());
@@ -260,6 +270,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertNull(valueSection);
     }
 
+    @Test
     public void testInitFromXml() {
         ExtensionPropertyDefinition extProp0 = new StringExtensionPropertyDefinition();
         extProp0.setPropertyId("org.foo.prop0");
@@ -304,6 +315,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertEquals("defaultValue", container.getExtPropertyValue("org.foo.newProp"));
     }
 
+    @Test
     public void testInitFromXmlMissingExtPropDefinition() {
         ExtensionPropertyDefinition extProp0 = new StringExtensionPropertyDefinition();
         extProp0.setPropertyId("org.foo.prop0");
@@ -338,11 +350,13 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testNewMemento() {
         Memento memento = container.newMemento();
         assertEquals(container, memento.getOriginator());
     }
 
+    @Test
     public void testSetState() throws CoreException {
         germanDescription.setText("blabla");
         Memento memento = container.newMemento();
@@ -372,6 +386,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
      * Test method for IpsObjectPartContainer#validate(). Tests whether the validation is performed
      * on <code>IpsObjectPartContainer</code>s contained in historic <code>IIpsSrcFile</code>s.
      */
+    @Test
     public void testValidate() throws CoreException {
         // create srcfile with contents
         IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
@@ -398,11 +413,13 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertTrue(messagesImmutable.isEmpty());
     }
 
+    @Test
     public void testValidateDescriptionCountOk() throws CoreException {
         MessageList validationMessageList = container.validate(ipsProject);
         assertNull(validationMessageList.getMessageByCode(IIpsObjectPartContainer.MSGCODE_INVALID_DESCRIPTION_COUNT));
     }
 
+    @Test
     public void testValidateDescriptionCountTooFewDescriptions() throws CoreException {
         usDescription.delete();
         MessageList validationMessageList = container.validate(ipsProject);
@@ -412,6 +429,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertEquals(Message.WARNING, expectedMessage.getSeverity());
     }
 
+    @Test
     public void testValidateDescriptionCountTooManyDescriptions() throws CoreException {
         container.newDescription();
         MessageList validationMessageList = container.validate(ipsProject);
@@ -421,11 +439,13 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertEquals(Message.WARNING, expectedMessage.getSeverity());
     }
 
+    @Test
     public void testValidateLabelCountOk() throws CoreException {
         MessageList validationMessageList = container.validate(ipsProject);
         assertNull(validationMessageList.getMessageByCode(IIpsObjectPartContainer.MSGCODE_INVALID_LABEL_COUNT));
     }
 
+    @Test
     public void testValidateLabelCountTooFewLabels() throws CoreException {
         usLabel.delete();
         MessageList validationMessageList = container.validate(ipsProject);
@@ -435,6 +455,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertEquals(Message.WARNING, expectedMessage.getSeverity());
     }
 
+    @Test
     public void testValidateLabelCountTooManyLabels() throws CoreException {
         container.newLabel();
         MessageList validationMessageList = container.validate(ipsProject);
@@ -444,6 +465,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertEquals(Message.WARNING, expectedMessage.getSeverity());
     }
 
+    @Test
     public void testGetChildren() {
         IIpsElement[] children = container.getChildren();
         assertEquals(4, children.length);
@@ -455,6 +477,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertTrue(childrenList.contains(germanLabel));
     }
 
+    @Test
     public void testReinitPartCollections() {
         assertEquals(2, container.getLabels().size());
         assertEquals(2, container.getDescriptions().size());
@@ -463,6 +486,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertEquals(0, container.getDescriptions().size());
     }
 
+    @Test
     public void testAddRemovePart() {
         ILabel labelToAdd = container.newLabel();
         assertEquals(3, container.getLabels().size());
@@ -479,6 +503,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertEquals(3, container.getDescriptions().size());
     }
 
+    @Test
     public void testNewPartXml() throws DOMException, ParserConfigurationException {
         Document xmlDoc = createXmlDocument("Blub");
         Element element = xmlDoc.createElement(ILabel.XML_TAG_NAME);
@@ -493,6 +518,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertNull(container.newPartAccessor(element, "xyz"));
     }
 
+    @Test
     public void testNewPartReflection() {
         assertTrue(container.newPartAccessor(Label.class) instanceof ILabel);
         assertEquals(3, container.getLabels().size());
@@ -501,11 +527,13 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertEquals(3, container.getDescriptions().size());
     }
 
+    @Test
     public void testNewDescription() {
         assertNotNull(container.newDescription());
         assertEquals(3, container.getDescriptions().size());
     }
 
+    @Test
     public void testSetDescriptionText() {
         container.setDescriptionText(Locale.US, "foo");
         container.setDescriptionText(Locale.GERMAN, "bar");
@@ -513,6 +541,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertEquals("bar", container.getDescriptionText(Locale.GERMAN));
     }
 
+    @Test
     public void testSetDescriptionTextNullPointerLocale() {
         try {
             container.setDescriptionText(null, "foo");
@@ -521,11 +550,13 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testSetDescriptionTextNullPointerText() {
         container.setDescriptionText(Locale.US, null);
         assertEquals("", container.getDescriptionText(Locale.US));
     }
 
+    @Test
     public void testSetDescriptionTextNotExistent() {
         try {
             container.setDescriptionText(Locale.TAIWAN, "foo");
@@ -534,20 +565,24 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testNewLabel() {
         assertNotNull(container.newLabel());
         assertEquals(3, container.getLabels().size());
     }
 
+    @Test
     public void testGetLabelValue() {
         assertEquals(germanLabel.getValue(), container.getLabelValue(Locale.GERMAN));
         assertEquals(usLabel.getValue(), container.getLabelValue(Locale.US));
     }
 
+    @Test
     public void testGetLabelValueNotExistent() {
         assertNull(container.getLabelValue(Locale.TAIWAN));
     }
 
+    @Test
     public void testGetLabelValueNullPointer() {
         try {
             container.getLabelValue(null);
@@ -556,15 +591,18 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetPluralLabelValue() {
         assertEquals(germanLabel.getPluralValue(), container.getPluralLabelValue(Locale.GERMAN));
         assertEquals(usLabel.getPluralValue(), container.getPluralLabelValue(Locale.US));
     }
 
+    @Test
     public void testGetPluralLabelValueNotExistent() {
         assertNull(container.getPluralLabelValue(Locale.TAIWAN));
     }
 
+    @Test
     public void testGetPluralLabelValueNullPointer() {
         try {
             container.getPluralLabelValue(null);
@@ -573,11 +611,13 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testSetLabelValue() {
         container.setLabelValue(Locale.US, "foo");
         assertEquals("foo", container.getLabelValue(Locale.US));
     }
 
+    @Test
     public void testSetLabelValueNullPointerLocale() {
         try {
             container.setLabelValue(null, "foo");
@@ -586,11 +626,13 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testSetLabelValueNullPointerValue() {
         container.setLabelValue(Locale.US, null);
         assertEquals("", container.getLabelValue(Locale.US));
     }
 
+    @Test
     public void testSetLabelValueNotExistent() {
         try {
             container.setLabelValue(Locale.TAIWAN, "foo");
@@ -599,11 +641,13 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testSetPluralLabelValue() {
         container.setPluralLabelValue(Locale.US, "foos");
         assertEquals("foos", container.getPluralLabelValue(Locale.US));
     }
 
+    @Test
     public void testSetPluralLabelValueNullPointerLocale() {
         try {
             container.setPluralLabelValue(null, "foos");
@@ -612,11 +656,13 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testSetPluralLabelValueNullPointerPluralValue() {
         container.setPluralLabelValue(Locale.US, null);
         assertEquals("", container.getPluralLabelValue(Locale.US));
     }
 
+    @Test
     public void testSetPluralLabelValueNotExistent() {
         try {
             container.setPluralLabelValue(Locale.TAIWAN, "foos");
@@ -625,15 +671,18 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetDescription() {
         assertEquals(usDescription, container.getDescription(Locale.US));
         assertEquals(germanDescription, container.getDescription(Locale.GERMAN));
     }
 
+    @Test
     public void testGetDescriptionNotExistent() {
         assertNull(container.getDescription(Locale.KOREAN));
     }
 
+    @Test
     public void testGetDescriptionNullPointer() {
         try {
             container.getDescription(null);
@@ -642,15 +691,18 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetDescriptionText() {
         assertEquals(usDescription.getText(), container.getDescriptionText(Locale.US));
         assertEquals(germanDescription.getText(), container.getDescriptionText(Locale.GERMAN));
     }
 
+    @Test
     public void testGetDescriptionTextNotExistent() {
         assertEquals("", container.getDescriptionText(Locale.KOREAN));
     }
 
+    @Test
     public void testGetDescriptionTextNullPointer() {
         try {
             container.getDescriptionText(null);
@@ -659,12 +711,14 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetLabel() {
         assertEquals(usLabel, container.getLabel(Locale.US));
         assertEquals(germanLabel, container.getLabel(Locale.GERMAN));
         assertNull(container.getLabel(Locale.KOREAN));
     }
 
+    @Test
     public void testGetDescriptions() throws CoreException {
         changeSupportedLanguagesOrder();
         List<IDescription> descriptionList = container.getDescriptions();
@@ -672,6 +726,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertEquals(descriptionList.get(1), germanDescription);
     }
 
+    @Test
     public void testGetDescriptionsDefensiveCopy() {
         List<IDescription> descriptions = container.getDescriptions();
         int descriptionCount = descriptions.size();
@@ -679,6 +734,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertEquals(descriptionCount, container.getDescriptions().size());
     }
 
+    @Test
     public void testGetLabels() throws CoreException {
         changeSupportedLanguagesOrder();
         List<ILabel> labelList = container.getLabels();
@@ -686,6 +742,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertEquals(labelList.get(1), germanLabel);
     }
 
+    @Test
     public void testGetLabelsDefensiveCopy() {
         List<ILabel> labels = container.getLabels();
         int labelCount = labels.size();
@@ -693,6 +750,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertEquals(labelCount, container.getLabels().size());
     }
 
+    @Test
     public void testGetCaption() throws CoreException {
         assertEquals("", container.getCaption(Locale.US));
         try {
@@ -702,6 +760,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetPluralCaption() throws CoreException {
         assertEquals("", container.getPluralCaption(Locale.US));
         try {
@@ -711,10 +770,12 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetLastResortCaption() {
         assertEquals("", container.getLastResortCaption());
     }
 
+    @Test
     public void testGetLastResortPluralCaption() {
         assertEquals("", container.getLastResortPluralCaption());
     }

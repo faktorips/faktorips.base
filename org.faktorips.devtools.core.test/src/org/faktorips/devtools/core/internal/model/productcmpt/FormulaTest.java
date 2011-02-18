@@ -46,6 +46,8 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
@@ -62,7 +64,8 @@ public class FormulaTest extends AbstractIpsPluginTest {
     private IProductCmptTypeMethod formulaSignature;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
@@ -83,6 +86,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
         formula.setFormulaSignature(formulaSignature.getFormulaName());
     }
 
+    @Test
     public void testValidate_MissingExpression() throws CoreException {
         formula.setExpression("");
         MessageList ml = formula.validate(ipsProject);
@@ -93,6 +97,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IFormula.MSGCODE_EXPRESSION_IS_EMPTY));
     }
 
+    @Test
     public void testValidate_SyntaxErrorInFormula() throws CoreException {
         formula.setExpression("42EUR12");
         MessageList list = formula.validate(ipsProject);
@@ -103,6 +108,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
         assertEquals(IFormula.PROPERTY_EXPRESSION, msg.getInvalidObjectProperties()[0].getProperty());
     }
 
+    @Test
     public void testValidate_UnknownDatatypeFormula() throws CoreException {
         IProductCmptTypeMethod method = productCmptType.newProductCmptTypeMethod();
         method.setFormulaName("CalcPremium");
@@ -120,6 +126,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IFormula.MSGCODE_UNKNOWN_DATATYPE_FORMULA));
     }
 
+    @Test
     public void testValidate_WrongFormulaDatatype() throws CoreException {
         IProductCmptTypeMethod method = productCmptType.newProductCmptTypeMethod();
         method.setFormulaName("CalcPremium");
@@ -142,6 +149,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IFormula.MSGCODE_WRONG_FORMULA_DATATYPE));
     }
 
+    @Test
     public void testFindFormulaSignature() throws CoreException {
         assertSame(formulaSignature, formula.findFormulaSignature(ipsProject));
 
@@ -152,6 +160,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
         assertNull(formula.findFormulaSignature(ipsProject));
     }
 
+    @Test
     public void testInitFromXml() {
         Element el = getTestDocument().getDocumentElement();
         formula.initFromXml(el);
@@ -160,6 +169,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
         assertEquals(1, formula.getFormulaTestCases().length);
     }
 
+    @Test
     public void testGetEnumDatatypesAllowedInFormula() throws Exception {
         newDefinedEnumDatatype(ipsProject, new Class[] { TestEnumType.class });
         EnumDatatype testType = (EnumDatatype)ipsProject.findDatatype("TestEnumType");
@@ -218,6 +228,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
         assertEquals(0, enumtypes.length);
     }
 
+    @Test
     public void testGetEnumDatatypesAllowedInFormulaWithProductCmptTypeAttributes() throws Exception {
         newDefinedEnumDatatype(ipsProject, new Class[] { TestEnumType.class });
         EnumDatatype testType = (EnumDatatype)ipsProject.findDatatype("TestEnumType");
@@ -235,6 +246,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
         assertEquals(testType, enumtypes[0]);
     }
 
+    @Test
     public void testGetParameterIdentifiersUsedInFormula() throws Exception {
         newDefinedEnumDatatype(ipsProject, new Class[] { TestEnumType.class });
 
@@ -358,6 +370,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
         assertEquals(0, identifierInFormula.size());
     }
 
+    @Test
     public void testMoveFormulaTestCases() {
         IFormulaTestCase ftc0 = formula.newFormulaTestCase();
         IFormulaTestCase ftc1 = formula.newFormulaTestCase();
@@ -378,6 +391,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
         assertEquals(ftc3, ftcs[3]);
     }
 
+    @Test
     public void testFormulaNewDeleteTest() throws Exception {
         // tests for creating and deleting of the formula test case
         assertEquals(0, formula.getFormulaTestCases().length);
@@ -397,28 +411,34 @@ public class FormulaTest extends AbstractIpsPluginTest {
         assertNull(formula.getFormulaTestCase(formulaTest1.getName()));
     }
 
+    @Test
     public void testGetExprCompiler() throws CoreException {
         assertNotNull(formula.newExprCompiler(ipsProject));
     }
 
+    @Test
     public void testSetFormulaSignature() {
         testPropertyAccessReadWrite(IFormula.class, IFormula.PROPERTY_FORMULA_SIGNATURE_NAME, formula, "ComputePremium");
     }
 
+    @Test
     public void testSetExpression() {
         testPropertyAccessReadWrite(IFormula.class, IFormula.PROPERTY_EXPRESSION, formula, "a + b");
     }
 
+    @Test
     public void testGetCaption() throws CoreException {
         ILabel label = formulaSignature.getLabel(Locale.GERMAN);
         label.setValue("foo");
         assertEquals("foo", formula.getCaption(Locale.GERMAN));
     }
 
+    @Test
     public void testGetCaptionNotExistent() throws CoreException {
         assertNull(formula.getCaption(Locale.TAIWAN));
     }
 
+    @Test
     public void testGetCaptionNullPointer() throws CoreException {
         try {
             formulaSignature.getCaption(null);
@@ -427,6 +447,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetLastResortCaption() {
         formula.setFormulaSignature("blub");
         assertEquals("Blub", formula.getLastResortCaption());

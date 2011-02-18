@@ -31,6 +31,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.junit.Before;
+import org.junit.Test;
 
 public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
 
@@ -54,7 +56,8 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
     private TreeViewer treeViewer;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         ipsProject = newIpsProject();
@@ -92,6 +95,7 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
         dropListener = new TestDropListener(treeViewer, cmptAGeneration);
     }
 
+    @Test
     public void testValidateDropNewLink() {
         int operation = DND.DROP_LINK;
 
@@ -109,6 +113,7 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testValidateDropMoveLink() {
         IProductCmptLink b1Link1 = cmptAGeneration.newLink(associationToB1);
         b1Link1.setTarget(cmptB1.getQualifiedName());
@@ -173,6 +178,7 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
         assertEquals((bitmask & 1 << 4) == 1 << 4, dropListener.validateDrop(cLink2, DND.DROP_MOVE, getTransfer(cmptA)));
     }
 
+    @Test
     public void testPerformDropNewLink() {
         IProductCmptLink link = cmptAGeneration.newLink(associationToC);
         link.setTarget(cmptC3.getQualifiedName());
@@ -232,6 +238,7 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
         links[1 + linksBeforeTarget].delete();
     }
 
+    @Test
     public void testPerformDropMoveLink() {
         IProductCmptLink b1Link1 = cmptAGeneration.newLink(associationToB1);
         b1Link1.setTarget(cmptB1.getQualifiedName());

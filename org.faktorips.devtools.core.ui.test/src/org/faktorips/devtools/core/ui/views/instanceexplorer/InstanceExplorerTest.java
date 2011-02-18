@@ -26,6 +26,8 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.junit.Before;
+import org.junit.Test;
 
 public class InstanceExplorerTest extends AbstractIpsPluginTest {
 
@@ -38,7 +40,8 @@ public class InstanceExplorerTest extends AbstractIpsPluginTest {
     private ProductCmptType pcType2;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         pdProject = this.newIpsProject("TestProject");
         pdRootFolder = pdProject.getIpsPackageFragmentRoots()[0];
@@ -50,10 +53,12 @@ public class InstanceExplorerTest extends AbstractIpsPluginTest {
         pcType2 = (ProductCmptType)pdSrcFile2.getIpsObject();
     }
 
+    @Test
     public void testSupport() {
         assertTrue(InstanceExplorer.supports(pcType));
     }
 
+    @Test
     public void testIsChanged() throws CoreException {
         InstanceExplorer test = new InstanceExplorer();
 
@@ -63,6 +68,7 @@ public class InstanceExplorerTest extends AbstractIpsPluginTest {
         assertFalse(test.isDependendObjectChanged(pcType2, ipsSrcFiles));
     }
 
+    @Test
     public void testShowInstancesOf() throws Exception {
         InstanceExplorerMock testMock = new InstanceExplorerMock();
         testMock.showInstancesOf(pcType);

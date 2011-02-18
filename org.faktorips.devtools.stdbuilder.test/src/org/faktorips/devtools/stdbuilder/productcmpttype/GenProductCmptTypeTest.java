@@ -17,9 +17,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.builder.JavaGeneratiorHelper;
+import org.junit.Test;
 
 public class GenProductCmptTypeTest extends ProductCmptTypeBuilderTest {
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterfaceConfiguring() throws CoreException {
         genProductCmptType.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
                 javaInterfaceConfiguredPolicy, productCmptType);
@@ -30,6 +32,7 @@ public class GenProductCmptTypeTest extends ProductCmptTypeBuilderTest {
         assertEquals(3, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementationConfiguring() throws CoreException {
         genProductCmptType.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassConfiguredPolicy,
                 productCmptType);

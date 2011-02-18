@@ -13,10 +13,13 @@
 
 package org.faktorips.devtools.core.model.testcasetype;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertTrue;
 
-public class TestParameterTypeTest extends TestCase {
+import org.junit.Test;
 
+public class TestParameterTypeTest {
+
+    @Test
     public void testIsTypeMatching() {
         assertTrue(TestParameterType.isTypeMatching(TestParameterType.INPUT, TestParameterType.COMBINED));
         assertTrue(TestParameterType.isTypeMatching(TestParameterType.EXPECTED_RESULT, TestParameterType.COMBINED));

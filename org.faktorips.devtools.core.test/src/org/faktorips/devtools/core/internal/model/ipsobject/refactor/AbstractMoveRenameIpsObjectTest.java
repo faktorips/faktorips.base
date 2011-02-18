@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
+import org.junit.Before;
 
 /**
  * Provides test model for <tt>RenameTypeProcessorTest</tt> and <tt>MoveTypeProcessorTest</tt>.
@@ -51,7 +52,8 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractIpsRefacto
     protected ITestAttribute superTestAttribute;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         // Setup policy method.

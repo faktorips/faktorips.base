@@ -20,6 +20,8 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.junit.Before;
+import org.junit.Test;
 
 public class NewFolderActionTest extends AbstractIpsPluginTest {
 
@@ -35,7 +37,8 @@ public class NewFolderActionTest extends AbstractIpsPluginTest {
     private IFile file;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         proj = newIpsProject("TestProject");
 
@@ -52,6 +55,7 @@ public class NewFolderActionTest extends AbstractIpsPluginTest {
         file.create(null, true, null);
     }
 
+    @Test
     public void testCreateFolder() {
         // --- Tests for IpsPackageFragments ---
         IFolder targetFolder = ((IFolder)emptyPackage.getCorrespondingResource()).getFolder("toBeCreated");
@@ -107,6 +111,7 @@ public class NewFolderActionTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testGetFolder() {
         // --- Tests for IpsPackageFragments ---
         IFolder targetFolder = ((IFolder)emptyPackage.getCorrespondingResource()).getFolder("toBeCreated");

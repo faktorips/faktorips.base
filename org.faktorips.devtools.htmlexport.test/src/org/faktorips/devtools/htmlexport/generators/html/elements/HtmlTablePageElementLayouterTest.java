@@ -17,9 +17,11 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableCellPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
+import org.junit.Test;
 
 public class HtmlTablePageElementLayouterTest extends AbstractHtmlPageElementLayouterTest {
 
+    @Test
     public void testLeereTabelle() {
 
         TablePageElement pageElement = new TablePageElement(true);
@@ -33,6 +35,7 @@ public class HtmlTablePageElementLayouterTest extends AbstractHtmlPageElementLay
         assertEquals(0, generateText.length());
     }
 
+    @Test
     public void testTabelle() throws Exception {
 
         int rows = 5;

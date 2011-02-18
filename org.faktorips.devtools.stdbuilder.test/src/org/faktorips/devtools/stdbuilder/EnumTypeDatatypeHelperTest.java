@@ -21,11 +21,13 @@ import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.junit.Test;
 
 public class EnumTypeDatatypeHelperTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
 
+    @Test
     public void testHelper() throws Exception {
         ipsProject = newIpsProject("TestProject");
         IEnumType paymentMode = newEnumType(ipsProject, "PaymentMode");
@@ -72,6 +74,7 @@ public class EnumTypeDatatypeHelperTest extends AbstractIpsPluginTest {
         assertEquals(packageName + ".PaymentMode", enumHelper.getJavaClassName());
     }
 
+    @Test
     public void testConstructor() {
         try {
             new EnumTypeDatatypeHelper(null, null);

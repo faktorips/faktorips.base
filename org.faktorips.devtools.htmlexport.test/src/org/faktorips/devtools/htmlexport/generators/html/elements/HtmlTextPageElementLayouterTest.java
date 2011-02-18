@@ -16,10 +16,12 @@ package org.faktorips.devtools.htmlexport.generators.html.elements;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
+import org.junit.Test;
 
 public class HtmlTextPageElementLayouterTest extends AbstractHtmlPageElementLayouterTest {
     private static final String TESTTEXT = "Ich bin der Testtext";
 
+    @Test
     public void testEinfacherText() {
         TextPageElement pageElement = new TextPageElement(TESTTEXT);
 
@@ -30,6 +32,7 @@ public class HtmlTextPageElementLayouterTest extends AbstractHtmlPageElementLayo
         assertEquals(TESTTEXT, layouter.generateText());
     }
 
+    @Test
     public void testMitStyle() {
         TextPageElement pageElement = new TextPageElement(TESTTEXT);
         pageElement.addStyles(Style.BOLD);
@@ -41,6 +44,7 @@ public class HtmlTextPageElementLayouterTest extends AbstractHtmlPageElementLayo
         assertEquals("<span class=\"BOLD\">" + TESTTEXT + "</span>", layouter.generateText());
     }
 
+    @Test
     public void testMitTextType() {
         TextPageElement pageElement = new TextPageElement(TESTTEXT);
         pageElement.setType(TextType.HEADING_4);
@@ -52,6 +56,7 @@ public class HtmlTextPageElementLayouterTest extends AbstractHtmlPageElementLayo
         assertEquals("<h4>" + TESTTEXT + "</h4>", layouter.generateText());
     }
 
+    @Test
     public void testMitTextTypeUndStyle() {
         TextPageElement pageElement = new TextPageElement(TESTTEXT);
         pageElement.setType(TextType.HEADING_3);
@@ -64,6 +69,7 @@ public class HtmlTextPageElementLayouterTest extends AbstractHtmlPageElementLayo
         assertEquals("<h3 class=\"ITALIC\">" + TESTTEXT + "</h3>", layouter.generateText());
     }
 
+    @Test
     public void testAnchor() {
         TextPageElement pageElement = new TextPageElement(TESTTEXT);
         pageElement.setAnchor("anker");

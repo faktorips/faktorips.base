@@ -25,8 +25,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
-import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateContentProvider;
+import org.junit.Before;
+import org.junit.Test;
 
 public class GenerationDateContentProviderTest extends AbstractIpsPluginTest {
 
@@ -41,7 +41,8 @@ public class GenerationDateContentProviderTest extends AbstractIpsPluginTest {
     private IProductCmptTypeAssociation association;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         contentProvider = new MyTestContentProvider();
@@ -104,6 +105,7 @@ public class GenerationDateContentProviderTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testCollectElements() {
         checkAdjustmentDates(5, 3, 1);
 

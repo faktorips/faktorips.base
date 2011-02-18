@@ -13,22 +13,24 @@
 
 package org.faktorips.devtools.core.model;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import junit.framework.TestCase;
-
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+import org.junit.Before;
+import org.junit.Test;
 
-public class DatatypeDependencyTest extends TestCase {
+public class DatatypeDependencyTest {
 
     private QualifiedNameType source;
     private DatatypeDependency dependency;
 
-    @Override
+    @Before
     public void setUp() {
         source = new QualifiedNameType("a.b.c", IpsObjectType.POLICY_CMPT_TYPE);
         dependency = new DatatypeDependency(source, "a.b.e");
@@ -68,6 +70,7 @@ public class DatatypeDependencyTest extends TestCase {
         assertEquals(dependency, dependency2);
     }
 
+    @Test
     public void testSerializable() throws Exception {
         ByteArrayOutputStream bos = new ByteArrayOutputStream(10);
         ObjectOutputStream oos = new ObjectOutputStream(bos);
@@ -79,6 +82,7 @@ public class DatatypeDependencyTest extends TestCase {
         assertEquals(this.dependency, dependency);
     }
 
+    @Test
     public void testToString() {
         QualifiedNameType source = new QualifiedNameType("a.b.c", IpsObjectType.POLICY_CMPT_TYPE);
         DatatypeDependency dependency = new DatatypeDependency(source, "a.b.e");

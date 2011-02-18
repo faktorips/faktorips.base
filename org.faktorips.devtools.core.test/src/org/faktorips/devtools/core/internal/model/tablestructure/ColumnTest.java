@@ -23,6 +23,8 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
@@ -35,7 +37,8 @@ public class ColumnTest extends AbstractIpsPluginTest {
     private IColumn column;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         IIpsProject project = newIpsProject();
         table = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "TestTable");
@@ -44,18 +47,21 @@ public class ColumnTest extends AbstractIpsPluginTest {
         ipsSrcFile.save(true, null);
     }
 
+    @Test
     public void testSetName() {
         column.setName("newName");
         assertEquals("newName", column.getName());
         assertTrue(ipsSrcFile.isDirty());
     }
 
+    @Test
     public void testSetDatatype() {
         column.setDatatype("newType");
         assertEquals("newType", column.getDatatype());
         assertTrue(ipsSrcFile.isDirty());
     }
 
+    @Test
     public void testRemove() {
         IColumn c0 = column;
         IColumn c1 = table.newColumn();
@@ -72,6 +78,7 @@ public class ColumnTest extends AbstractIpsPluginTest {
         assertTrue(ipsSrcFile.isDirty());
     }
 
+    @Test
     public void testToXml() {
         column = table.newColumn();
         column.setName("premium");
@@ -83,6 +90,7 @@ public class ColumnTest extends AbstractIpsPluginTest {
         assertEquals("Money", element.getAttribute(IColumn.PROPERTY_DATATYPE));
     }
 
+    @Test
     public void testInitFromXml() {
         column.initFromXml(getTestDocument().getDocumentElement());
         assertEquals("42", column.getId());
@@ -90,6 +98,7 @@ public class ColumnTest extends AbstractIpsPluginTest {
         assertEquals("Money", column.getDatatype());
     }
 
+    @Test
     public void testValidateName() throws Exception {
         column.setName("Boolean");
         column.setDatatype(Datatype.STRING.getQualifiedName());
@@ -101,6 +110,7 @@ public class ColumnTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IColumn.MSGCODE_INVALID_NAME));
     }
 
+    @Test
     public void testFindValueDatatype() throws CoreException {
         column.setDatatype(Datatype.BOOLEAN.getQualifiedName());
         assertEquals(Datatype.BOOLEAN, column.findValueDatatype(column.getIpsProject()));

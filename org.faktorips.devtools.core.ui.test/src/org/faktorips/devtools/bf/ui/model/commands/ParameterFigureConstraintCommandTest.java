@@ -20,6 +20,8 @@ import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.bf.commands.ParameterFigureConstraintCommand;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ParameterFigureConstraintCommandTest extends AbstractIpsPluginTest {
 
@@ -27,12 +29,14 @@ public class ParameterFigureConstraintCommandTest extends AbstractIpsPluginTest 
     private IBusinessFunction bf;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
         bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf");
     }
 
+    @Test
     public void testExecute() {
         bf.setParameterRectangleSize(new Dimension(0, 0));
         Rectangle bounds = new Rectangle(-1, -1, 30, 40);
@@ -41,6 +45,7 @@ public class ParameterFigureConstraintCommandTest extends AbstractIpsPluginTest 
         assertEquals(new Dimension(30, 40), bf.getParameterRectangleSize());
     }
 
+    @Test
     public void testUndo() {
         bf.setParameterRectangleSize(new Dimension(0, 0));
         Rectangle bounds = new Rectangle(-1, -1, 30, 40);

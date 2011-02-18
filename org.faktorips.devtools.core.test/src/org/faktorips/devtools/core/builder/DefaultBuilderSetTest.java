@@ -21,6 +21,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -31,7 +33,8 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
     private IIpsProject project;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject();
         IIpsObjectPath path = project.getIpsObjectPath();
@@ -42,6 +45,7 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
         project.setIpsObjectPath(path);
     }
 
+    @Test
     public void testGetRuntimeRepositoryTocFile() throws CoreException {
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
         DefaultBuilderSet builderSet = new TestBuilderSet();
@@ -50,6 +54,7 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
         assertEquals("extension/org/faktorips/sample/internal/motor/toc.xml", file.getProjectRelativePath().toString());
     }
 
+    @Test
     public void testGetRuntimeRepositoryTocResourceName() throws CoreException {
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
         DefaultBuilderSet builderSet = new TestBuilderSet();

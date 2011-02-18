@@ -24,6 +24,8 @@ import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 public class ColumnRangeTest extends AbstractIpsPluginTest {
@@ -33,7 +35,8 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
     private ColumnRange range;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         IIpsProject project = newIpsProject();
         table = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "TestTable");
@@ -42,6 +45,7 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         ipsSrcFile.save(true, null);
     }
 
+    @Test
     public void testRemove() {
         IColumnRange r1 = table.newRange();
         IColumnRange r2 = table.newRange();
@@ -53,6 +57,7 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         assertTrue(ipsSrcFile.isDirty());
     }
 
+    @Test
     public void testToXml() {
         range = (ColumnRange)table.newRange();
         range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
@@ -66,6 +71,7 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         assertEquals("ageTo", element.getAttribute(IColumnRange.PROPERTY_TO_COLUMN));
     }
 
+    @Test
     public void testInitFromXml() {
         range.initFromXml(getTestDocument().getDocumentElement());
         assertEquals("42", range.getId());
@@ -74,6 +80,7 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         assertEquals("ageTo", range.getToColumn());
     }
 
+    @Test
     public void testGetDatatype() {
         range.initFromXml(getTestDocument().getDocumentElement());
         IColumn column = table.newColumn();
@@ -88,6 +95,7 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         assertEquals("int", dataType);
     }
 
+    @Test
     public void testGetColumns() {
         IColumn c0 = table.newColumn();
         c0.setName("c0");
@@ -139,6 +147,7 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
      * validate().
      * 
      */
+    @Test
     public void testValidate() {
         try {
             // the empty range will signal an error for the missing parameter name
@@ -169,6 +178,7 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testValidateRangeDatatype() throws CoreException {
         range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
         range.setParameterName("egon");
@@ -209,6 +219,7 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IColumnRange.MSGCODE_INVALID_DATATYPE_FOR_TO));
     }
 
+    @Test
     public void testValidateTwoColumnRangeWithSameDatatype() throws CoreException {
         // test two column rage with same datatypes
         IColumn c0 = table.newColumn();

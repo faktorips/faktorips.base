@@ -13,12 +13,15 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -28,7 +31,8 @@ public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
     private IIpsObjectGeneration generation;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         // we use the ProductCmptImpl to test the TimedIpsObject class
         // because TimedIpsObject is abstract.
@@ -37,6 +41,7 @@ public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
         generation = timedObj.newGeneration();
     }
 
+    @Test
     public void testGetGenerationNo() {
         assertEquals(1, generation.getGenerationNo());
 
@@ -50,6 +55,7 @@ public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
         assertEquals(1, gen2.getGenerationNo());
     }
 
+    @Test
     public void testSetValidFrom() {
         GregorianCalendar date = new GregorianCalendar(2005, 0, 1);
         generation.setValidFrom(date);
@@ -57,13 +63,14 @@ public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
         assertTrue(timedObj.getIpsSrcFile().isDirty());
     }
 
+    @Test
     public void testIsValidFromInPast() {
         GregorianCalendar now = new GregorianCalendar();
         generation.setValidFrom(now);
         assertFalse(generation.isValidFromInPast().booleanValue());
 
         GregorianCalendar yesterday = now;
-        yesterday.set(GregorianCalendar.DATE, now.get(GregorianCalendar.DATE) - 1);
+        yesterday.set(Calendar.DATE, now.get(Calendar.DATE) - 1);
         generation.setValidFrom(yesterday);
         assertTrue(generation.isValidFromInPast().booleanValue());
 
@@ -71,17 +78,20 @@ public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
         assertNull(generation.isValidFromInPast());
     }
 
+    @Test
     public void testRemove() {
         generation.delete();
         assertEquals(0, timedObj.getNumOfGenerations());
     }
 
+    @Test
     public void testInitFromXml() {
         Document doc = this.getTestDocument();
         generation.initFromXml(doc.getDocumentElement());
         assertEquals(new GregorianCalendar(2005, 0, 1), generation.getValidFrom());
     }
 
+    @Test
     public void testToXmlDocument() {
         generation.setValidFrom(new GregorianCalendar(2005, 0, 1));
         Element element = generation.toXml(newDocument());
@@ -91,6 +101,7 @@ public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
         assertEquals(new GregorianCalendar(2005, 0, 1), generation.getValidFrom());
     }
 
+    @Test
     public void testGetValidTo() {
         generation.setValidFrom(new GregorianCalendar(2005, 1, 1));
         GregorianCalendar validTo = generation.getValidTo();
@@ -110,6 +121,7 @@ public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
         assertEquals(date, validTo);
     }
 
+    @Test
     public void testGetNext() throws Exception {
         IIpsObjectGeneration gen1 = timedObj.newGeneration();
         IIpsObjectGeneration gen2 = timedObj.newGeneration();
@@ -120,6 +132,7 @@ public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
         assertNull(gen3.getNextByValidDate());
     }
 
+    @Test
     public void testGetPrevious() throws Exception {
         IIpsObjectGeneration gen1 = timedObj.newGeneration();
         IIpsObjectGeneration gen2 = timedObj.newGeneration();

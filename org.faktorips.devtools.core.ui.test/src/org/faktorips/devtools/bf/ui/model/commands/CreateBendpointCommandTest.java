@@ -21,6 +21,8 @@ import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.bf.commands.BendpointCommand;
 import org.faktorips.devtools.core.ui.bf.commands.CreateBendpointCommand;
+import org.junit.Before;
+import org.junit.Test;
 
 public class CreateBendpointCommandTest extends AbstractIpsPluginTest {
 
@@ -30,6 +32,7 @@ public class CreateBendpointCommandTest extends AbstractIpsPluginTest {
     private IControlFlow cf;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
@@ -38,6 +41,7 @@ public class CreateBendpointCommandTest extends AbstractIpsPluginTest {
         command = new CreateBendpointCommand(0, new Point(10, 10), cf);
     }
 
+    @Test
     public void testExecute() {
         assertTrue(cf.getBendpoints().isEmpty());
         command.execute();
@@ -45,6 +49,7 @@ public class CreateBendpointCommandTest extends AbstractIpsPluginTest {
         assertEquals(new Point(10, 10), cf.getBendpoints().get(0));
     }
 
+    @Test
     public void testRedo() {
         command.execute();
         assertEquals(1, cf.getBendpoints().size());
@@ -57,6 +62,7 @@ public class CreateBendpointCommandTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testUndo() {
         command.execute();
         assertEquals(1, cf.getBendpoints().size());

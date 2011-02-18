@@ -21,6 +21,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -34,13 +36,15 @@ public class TestAbstractProductCmptNamingStrategyTest extends AbstractIpsPlugin
     private AbstractProductCmptNamingStrategy namingStrategy;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
         namingStrategy = new TestNamingStrategy();
         namingStrategy.setIpsProject(ipsProject);
     }
 
+    @Test
     public void testGetReplacedCharacters() {
         assertEquals(2, namingStrategy.getReplacedCharacters().length);
 
@@ -48,23 +52,28 @@ public class TestAbstractProductCmptNamingStrategyTest extends AbstractIpsPlugin
         assertEquals(3, namingStrategy.getReplacedCharacters().length);
     }
 
+    @Test
     public void testGetProductCmptName() {
         assertEquals("abc - id", namingStrategy.getProductCmptName("abc", "id"));
     }
 
+    @Test
     public void testGetKindId() {
         assertEquals("abc", namingStrategy.getKindId("abc - id"));
     }
 
+    @Test
     public void testGetVersionId() {
         assertEquals("id", namingStrategy.getVersionId("abc - id"));
     }
 
+    @Test
     public void testGetNextName() throws CoreException {
         IProductCmpt pc = newProductCmpt(ipsProject, "TestProduct - id");
         assertEquals("TestProduct - nextId", namingStrategy.getNextName(pc, null));
     }
 
+    @Test
     public void testValidate() {
         MessageList list = namingStrategy.validate("abc");
         assertNotNull(list.getMessageByCode(IProductCmptNamingStrategy.MSGCODE_MISSING_VERSION_SEPARATOR));
@@ -80,6 +89,7 @@ public class TestAbstractProductCmptNamingStrategyTest extends AbstractIpsPlugin
         assertFalse(list.containsErrorMsg());
     }
 
+    @Test
     public void testValidateKindId() {
         MessageList list = namingStrategy.validateKindId("abc%");
         assertNotNull(list.getMessageByCode(IProductCmptNamingStrategy.MSGCODE_ILLEGAL_CHARACTERS));
@@ -91,6 +101,7 @@ public class TestAbstractProductCmptNamingStrategyTest extends AbstractIpsPlugin
         assertFalse(list.containsErrorMsg());
     }
 
+    @Test
     public void testValidateRuntimeId() {
         MessageList list = namingStrategy.validateRuntimeId("x");
         assertNull(list.getMessageByCode(IProductCmptNamingStrategy.MSGCODE_INVALID_RUNTIME_ID_FORMAT));
@@ -99,6 +110,7 @@ public class TestAbstractProductCmptNamingStrategyTest extends AbstractIpsPlugin
         assertNotNull(list.getMessageByCode(IProductCmptNamingStrategy.MSGCODE_INVALID_RUNTIME_ID_FORMAT));
     }
 
+    @Test
     public void testGetJavaClassIdentifier() {
         assertEquals("abc", namingStrategy.getJavaClassIdentifier("abc"));
         assertEquals("abc___def__", namingStrategy.getJavaClassIdentifier("abc def-"));

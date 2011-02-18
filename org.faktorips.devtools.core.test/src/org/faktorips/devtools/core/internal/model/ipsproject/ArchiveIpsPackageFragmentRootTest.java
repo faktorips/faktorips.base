@@ -32,6 +32,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -46,7 +48,8 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     private IPolicyCmptType type;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         IIpsProject archiveProject = newIpsProject("ArchiveProject");
         type = newPolicyCmptType(archiveProject, "motor.Policy");
@@ -66,12 +69,14 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         root = (ArchiveIpsPackageFragmentRoot)project.getIpsPackageFragmentRoots()[1];
     }
 
+    @Test
     public void testExists_ArchiveInSameProject() throws CoreException {
         assertTrue(root.exists());
         archiveFile.delete(true, null);
         assertFalse(root.exists());
     }
 
+    @Test
     public void testExists_ArchiveInWorkspaceButDifferentProject() throws CoreException {
         IIpsProject project2 = newIpsProject("Project2");
         IIpsObjectPath path2 = project2.getIpsObjectPath();
@@ -84,6 +89,7 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertFalse(root.exists());
     }
 
+    @Test
     public void testExists_ArchiveOutsideWorkspace() throws Exception {
 
         File externalArchiveFile = File.createTempFile("externalArchiveFile", ".ipsar");
@@ -103,14 +109,17 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertFalse(root.exists());
     }
 
+    @Test
     public void testGetIpsObjectPathEntry() throws CoreException {
         assertEquals(entry.getArchiveLocation(), root.getIpsArchive().getLocation());
     }
 
+    @Test
     public void testGetParent() {
         assertEquals(project, root.getParent());
     }
 
+    @Test
     public void testGetIpsPackageFragments() throws CoreException {
         IIpsPackageFragment[] packs = root.getIpsPackageFragments();
         assertEquals(2, packs.length);
@@ -118,19 +127,23 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertEquals("motor.collision", packs[1].getName());
     }
 
+    @Test
     public void testGetNonIpsResources() throws CoreException {
         IResource[] res = root.getNonIpsResources();
         assertEquals(0, res.length);
     }
 
+    @Test
     public void testGetCorrespondingResource() {
         assertEquals(archiveFile, root.getCorrespondingResource());
     }
 
+    @Test
     public void testGetEnclosingResource() {
         assertEquals(archiveFile, root.getEnclosingResource());
     }
 
+    @Test
     public void testGetSortedIpsPackageFragments() throws CoreException {
         IIpsPackageFragment[] packs = root.getSortedIpsPackageFragments();
         assertEquals(2, packs.length);
@@ -138,6 +151,7 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertEquals("motor.collision", packs[1].getName());
     }
 
+    @Test
     public void testFindIpsSourceFiles() throws CoreException {
         List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         root.findIpsSourceFiles(IpsObjectType.POLICY_CMPT_TYPE, null, result);

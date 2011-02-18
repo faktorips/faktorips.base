@@ -31,6 +31,8 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.team.compare.tablecontents.TableContentsCompareItem;
 import org.faktorips.devtools.core.ui.team.compare.tablecontents.TableContentsCompareItemCreator;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TestAbstractCompareItemTest extends AbstractIpsPluginTest {
 
@@ -48,7 +50,8 @@ public class TestAbstractCompareItemTest extends AbstractIpsPluginTest {
     private IRow row4;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         IIpsProject proj = newIpsProject("TestProject");
@@ -75,10 +78,12 @@ public class TestAbstractCompareItemTest extends AbstractIpsPluginTest {
         compareItemRoot = (TableContentsCompareItem)structureCreator.getStructure(new ResourceNode(correspondingFile));
     }
 
+    @Test
     public void testGetContents() throws CoreException {
         assertNull(compareItemRoot.getContents());
     }
 
+    @Test
     public void testGetChildren() {
         assertEquals(1, compareItemRoot.getChildren().length);
         TableContentsCompareItem tableItem = (TableContentsCompareItem)compareItemRoot.getChildren()[0];
@@ -87,6 +92,7 @@ public class TestAbstractCompareItemTest extends AbstractIpsPluginTest {
         assertEquals(4, genItem.getChildren().length);
     }
 
+    @Test
     public void testEqualsObject() {
         TableContentsCompareItem secondCompareItemRoot = (TableContentsCompareItem)structureCreator
                 .getStructure(new ResourceNode(correspondingFile));
@@ -100,11 +106,13 @@ public class TestAbstractCompareItemTest extends AbstractIpsPluginTest {
         assertFalse(rowItem1.equals(rowItem2));
     }
 
+    @Test
     public void testGetImage() {
         assertEquals(IpsUIPlugin.getImageHandling().getImage(compareItemRoot.getIpsElement()),
                 compareItemRoot.getImage());
     }
 
+    @Test
     public void testIsRoot() {
         TableContentsCompareItem tableItem = (TableContentsCompareItem)compareItemRoot.getChildren()[0];
         TableContentsCompareItem genItem = (TableContentsCompareItem)tableItem.getChildren()[0];
@@ -118,6 +126,7 @@ public class TestAbstractCompareItemTest extends AbstractIpsPluginTest {
         assertTrue(compareItem.isRoot());
     }
 
+    @Test
     public void testGetParent() {
         TableContentsCompareItem tableItem = (TableContentsCompareItem)compareItemRoot.getChildren()[0];
         TableContentsCompareItem genItem = (TableContentsCompareItem)tableItem.getChildren()[0];
@@ -137,6 +146,7 @@ public class TestAbstractCompareItemTest extends AbstractIpsPluginTest {
         assertNull(compareItem.getParent());
     }
 
+    @Test
     public void testGetIpsElement() {
         TableContentsCompareItem tableItem = (TableContentsCompareItem)compareItemRoot.getChildren()[0];
         TableContentsCompareItem genItem = (TableContentsCompareItem)tableItem.getChildren()[0];
@@ -156,6 +166,7 @@ public class TestAbstractCompareItemTest extends AbstractIpsPluginTest {
         assertEquals(row4, rowItem4.getIpsElement());
     }
 
+    @Test
     public void testGetDocument() {
         IDocument doc = compareItemRoot.getDocument();
         TableContentsCompareItem tableItem = (TableContentsCompareItem)compareItemRoot.getChildren()[0];
@@ -174,6 +185,7 @@ public class TestAbstractCompareItemTest extends AbstractIpsPluginTest {
         assertSame(doc, rowItem2.getDocument());
     }
 
+    @Test
     public void testGetRange() {
         // Position range= new Position(23, 42);
         // compareItemRoot.setRange(23, 42);
@@ -183,6 +195,7 @@ public class TestAbstractCompareItemTest extends AbstractIpsPluginTest {
         assertNotSame(compareItemRoot.getRange(), compareItemRoot.getRange());
     }
 
+    @Test
     public void testInit() {
         // create uninitialized compareItem
         TableContentsCompareItem compareItem = new TableContentsCompareItem(null, srcFile);

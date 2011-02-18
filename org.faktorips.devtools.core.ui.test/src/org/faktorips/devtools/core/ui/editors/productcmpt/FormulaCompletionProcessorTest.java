@@ -41,6 +41,8 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.util.StringUtil;
+import org.junit.Before;
+import org.junit.Test;
 
 public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
 
@@ -54,6 +56,7 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
     private EnumDatatype enumDatatype;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = (IpsProject)newIpsProject();
@@ -73,6 +76,7 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         processor = new FormulaCompletionProcessor(configElement);
     }
 
+    @Test
     public void testDoComputeCompletionProposals() throws Exception {
         ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
         processor.doComputeCompletionProposals("Test", 0, results);
@@ -95,6 +99,7 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         assertTrue(expectedValues.contains("3"));
     }
 
+    @Test
     public void testDoComputeCompletionProposalsForMultipleTableContentsWithDateFormatName() throws Exception {
 
         ITableStructure table = (ITableStructure)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0],
@@ -128,6 +133,7 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         assertEquals(1, results.size());
     }
 
+    @Test
     public void testDoComputeCompletionProposalsForSingleTableContents() throws Exception {
         ITableStructure table = (ITableStructure)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0],
                 IpsObjectType.TABLE_STRUCTURE, "Testtable");
@@ -163,6 +169,7 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         assertEquals(1, results.size());
     }
 
+    @Test
     public void testDoComputeCompletionProposalsForParam() throws Exception {
         formulaSignature.newParameter(Datatype.DECIMAL.getQualifiedName(), "abcparam");
 
@@ -175,6 +182,7 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         assertEquals("abcparam", document.get());
     }
 
+    @Test
     public void testDoComputeCompletionProposalsForProductCmptTypeAttributes() throws Exception {
         IAttribute firstAttr = productCmptType.newAttribute();
         firstAttr.setName("firstAttr");
@@ -206,6 +214,7 @@ public class FormulaCompletionProcessorTest extends AbstractIpsPluginTest {
         assertEquals(0, results.size());
     }
 
+    @Test
     public void testDoComputeCompletionProposalsForPolicyCmptTypeAndProductCmptTypeParams() throws Exception {
         PolicyCmptType a = newPolicyAndProductCmptType(ipsProject, "a", "aConfigtype");
         ProductCmptType aConfig = (ProductCmptType)a.findProductCmptType(ipsProject);

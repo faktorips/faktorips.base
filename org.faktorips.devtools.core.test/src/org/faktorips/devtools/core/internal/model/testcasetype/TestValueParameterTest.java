@@ -21,6 +21,8 @@ import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
@@ -33,19 +35,22 @@ public class TestValueParameterTest extends AbstractIpsPluginTest {
     private IIpsProject project;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
         ITestCaseType type = (ITestCaseType)newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
         valueParamInput = type.newInputTestValueParameter();
     }
 
+    @Test
     public void testIsRoot() {
         // a test value parameter is always a root element, no childs are supported by the test
         // value parameter
         assertTrue(valueParamInput.isRoot());
     }
 
+    @Test
     public void testInitFromXml() {
         Element docEl = getTestDocument().getDocumentElement();
         Element paramEl = XmlUtil.getElement(docEl, "ValueParameter", 0);
@@ -57,6 +62,7 @@ public class TestValueParameterTest extends AbstractIpsPluginTest {
         assertFalse(valueParamInput.isCombinedParameter());
     }
 
+    @Test
     public void testToXml() {
         valueParamInput.setValueDatatype("Money");
         valueParamInput.setName("newSumInsured");
@@ -75,6 +81,7 @@ public class TestValueParameterTest extends AbstractIpsPluginTest {
         assertFalse(valueParamInput.isCombinedParameter());
     }
 
+    @Test
     public void testValidateWrongType() throws Exception {
         MessageList ml = valueParamInput.validate(project);
         assertNull(ml.getMessageByCode(ITestValueParameter.MSGCODE_WRONG_TYPE));
@@ -90,6 +97,7 @@ public class TestValueParameterTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(ITestValueParameter.MSGCODE_WRONG_TYPE));
     }
 
+    @Test
     public void testValidateValueDatatypeNotFound() throws Exception {
         valueParamInput.setDatatype("String");
         MessageList ml = valueParamInput.validate(project);

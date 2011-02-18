@@ -25,12 +25,14 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnecto
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
+import org.junit.Test;
 
 public class StdBuilderSetTest extends AbstractIpsPluginTest {
 
     /*
      * #bug 1460
      */
+    @Test
     public void testBasePackageNamesWithUpperCaseLetters() throws CoreException {
         IIpsProject ipsProject = newIpsProject();
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
@@ -43,6 +45,7 @@ public class StdBuilderSetTest extends AbstractIpsPluginTest {
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
     }
 
+    @Test
     public void testStdBuilderSetPropertyDefinitions() throws CoreException {
         IIpsProject ipsProject = newIpsProject();
         IIpsArtefactBuilderSetInfo builderSetInfo = IpsPlugin.getDefault().getIpsModel()

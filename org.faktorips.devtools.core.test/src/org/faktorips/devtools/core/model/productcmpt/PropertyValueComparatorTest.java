@@ -20,6 +20,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -37,7 +39,8 @@ public class PropertyValueComparatorTest extends AbstractIpsPluginTest {
     private PropertyValueComparator comparator;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = super.newIpsProject();
         policySupertype = newPolicyAndProductCmptType(ipsProject, "SuperPolicy", "SuperProduct");
@@ -52,11 +55,13 @@ public class PropertyValueComparatorTest extends AbstractIpsPluginTest {
         generation = product.getProductCmptGeneration(0);
     }
 
+    @Test
     public void testConstructor_QName() {
         comparator = new PropertyValueComparator(productType.getQualifiedName(), ipsProject);
         assertEquals(productType, comparator.getProductCmptType());
     }
 
+    @Test
     public void testAttributeValueOrder() {
         IProductCmptTypeAttribute a1 = productType.newProductCmptTypeAttribute("a1");
         IProductCmptTypeAttribute a2 = productType.newProductCmptTypeAttribute("a2");

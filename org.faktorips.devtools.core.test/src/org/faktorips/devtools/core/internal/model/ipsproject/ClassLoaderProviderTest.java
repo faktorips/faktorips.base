@@ -29,6 +29,8 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -41,7 +43,8 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
     private ClassLoaderProvider provider;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
         javaProject = ipsProject.getJavaProject();
@@ -53,6 +56,7 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
      * the provider. This needn't result in a Exception because of a concurrent modification
      * exception in the provider.
      */
+    @Test
     public void testRemoveListenerDuringNotification() throws Exception {
         createClassFile();
 
@@ -74,6 +78,7 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
         deleteClassFile();
     }
 
+    @Test
     public void testGetClassLoader() throws Exception {
         createClassFile();
         createJarFileAndAppendToClasspath();
@@ -88,6 +93,7 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testListenerMechnism_ClassFile() throws Exception {
         createClassFile();
         ClassLoader cl = provider.getClassLoader();

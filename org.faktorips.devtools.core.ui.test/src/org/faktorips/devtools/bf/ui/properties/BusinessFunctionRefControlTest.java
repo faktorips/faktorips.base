@@ -25,12 +25,15 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.bf.properties.BusinessFunctionRefControl;
+import org.junit.Before;
+import org.junit.Test;
 
 public class BusinessFunctionRefControlTest extends AbstractIpsPluginTest {
 
     private Shell shell;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         shell = new Shell(Display.getCurrent());
@@ -41,6 +44,7 @@ public class BusinessFunctionRefControlTest extends AbstractIpsPluginTest {
         shell.dispose();
     }
 
+    @Test
     public void testGetIpsSrcFiles() throws Exception {
         UIToolkit toolkit = new UIToolkit(null);
         BusinessFunctionRefControl control = new BusinessFunctionRefControl(shell, toolkit);

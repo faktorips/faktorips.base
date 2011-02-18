@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.htmlexport.HtmlExportOperation;
 import org.faktorips.devtools.htmlexport.TestUtil;
 import org.faktorips.devtools.htmlexport.standard.StandardDocumentorScript;
+import org.junit.Test;
 
 public class HtmlExportOperationErrorHandlingTest extends AbstractHtmlExportPluginTest {
 
@@ -40,6 +41,7 @@ public class HtmlExportOperationErrorHandlingTest extends AbstractHtmlExportPlug
         }
     }
 
+    @Test
     public void testSrcFileWithoutIpsObject() throws IOException {
         context = new DocumentationContext() {
             private boolean alreadyAdded = false;

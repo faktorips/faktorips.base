@@ -18,13 +18,16 @@ import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.junit.Before;
+import org.junit.Test;
 
 public class GenAssociationToManyTest extends GenAssociationTest {
 
     private GenAssociationToMany genAssociationToMany;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         association.setMaxCardinality(IAssociation.CARDINALITY_MANY);
@@ -32,6 +35,7 @@ public class GenAssociationToManyTest extends GenAssociationTest {
         genAssociationToMany = new GenAssociationToMany(genPolicyCmptType, association);
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterfaceMasterToDetail() {
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
@@ -49,6 +53,7 @@ public class GenAssociationToManyTest extends GenAssociationTest {
         assertEquals(9, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterfaceMasterToDetailTargetConfigurable()
             throws CoreException {
 
@@ -65,6 +70,7 @@ public class GenAssociationToManyTest extends GenAssociationTest {
                         getPublishedInterfaceName(configurationForTarget.getName())));
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterfaceMasterToDetailQualified() throws CoreException {
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
@@ -79,6 +85,7 @@ public class GenAssociationToManyTest extends GenAssociationTest {
                         getPublishedInterfaceName(configurationForTarget.getName())));
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterfaceMasterToDetailDefinesDerivedUnion() {
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         association.setDerivedUnion(true);
@@ -92,6 +99,7 @@ public class GenAssociationToManyTest extends GenAssociationTest {
         assertEquals(4, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementationMasterToDetail() {
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
@@ -108,6 +116,7 @@ public class GenAssociationToManyTest extends GenAssociationTest {
         assertEquals(9, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementationMasterToDetailTargetConfigurable() throws CoreException {
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
@@ -121,6 +130,7 @@ public class GenAssociationToManyTest extends GenAssociationTest {
                         getPublishedInterfaceName(configurationForTarget.getName())));
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementationMasterToDetailQualified() throws CoreException {
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
@@ -134,6 +144,7 @@ public class GenAssociationToManyTest extends GenAssociationTest {
                         getPublishedInterfaceName(configurationForTarget.getName())));
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementationMasterToDetailDefinesDerivedUnion() {
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         association.setDerivedUnion(true);
@@ -143,6 +154,7 @@ public class GenAssociationToManyTest extends GenAssociationTest {
         assertEquals(1, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterfaceAssociation() {
         association.setAssociationType(AssociationType.ASSOCIATION);
 
@@ -159,6 +171,7 @@ public class GenAssociationToManyTest extends GenAssociationTest {
         assertEquals(8, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterfaceAssociationDefinesDerivedUnion() {
         association.setAssociationType(AssociationType.ASSOCIATION);
         association.setDerivedUnion(true);
@@ -172,6 +185,7 @@ public class GenAssociationToManyTest extends GenAssociationTest {
         assertEquals(4, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementationAssociation() {
         association.setAssociationType(AssociationType.ASSOCIATION);
 
@@ -187,6 +201,7 @@ public class GenAssociationToManyTest extends GenAssociationTest {
         assertEquals(8, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementationAssociationDefinesDerivedUnion() {
         association.setAssociationType(AssociationType.ASSOCIATION);
         association.setDerivedUnion(true);

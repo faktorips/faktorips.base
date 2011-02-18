@@ -33,6 +33,8 @@ import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -49,7 +51,8 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
     private IProductCmptGeneration generation;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
         superPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "SuperPolicy", "SuperProduct");
@@ -62,6 +65,7 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         generation = productCmpt.getProductCmptGeneration(0);
     }
 
+    @Test
     public void testEmpty() throws CoreException {
         IGenerationToTypeDelta delta = generation.computeDeltaToModel(ipsProject);
         assertEquals(0, delta.getEntries().length);
@@ -80,6 +84,7 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         assertEquals(0, delta.getEntries(DeltaType.VALUE_SET_MISMATCH).length);
     }
 
+    @Test
     public void testLinksWithMissingAssociation() throws CoreException {
         IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
         IProductCmptLink link = generation.newLink(association.getName());
@@ -98,6 +103,7 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         assertTrue(link.isDeleted());
     }
 
+    @Test
     public void testAttributes() throws CoreException {
         IProductCmptTypeAttribute attribute1 = productCmptType.newProductCmptTypeAttribute("a1");
         IProductCmptTypeAttribute attribute2 = superProductCmptType.newProductCmptTypeAttribute("a2");
@@ -141,6 +147,7 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         assertNotNull(generation.getAttributeValue("a3"));
     }
 
+    @Test
     public void testTypeMismatch() throws CoreException {
         IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute("premium");
         IGenerationToTypeDelta delta = generation.computeDeltaToModel(ipsProject);
@@ -161,6 +168,7 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         assertNotNull(generation.getFormula("premium"));
     }
 
+    @Test
     public void testValueSetTypeMismatch() throws CoreException {
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setProductRelevant(true);

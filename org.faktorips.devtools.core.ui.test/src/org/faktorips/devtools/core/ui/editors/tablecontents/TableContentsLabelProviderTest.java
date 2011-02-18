@@ -24,6 +24,8 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TableContentsLabelProviderTest extends AbstractIpsPluginTest {
     private IRow rowValid;
@@ -33,7 +35,8 @@ public class TableContentsLabelProviderTest extends AbstractIpsPluginTest {
     private String nullPresentation = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         IIpsProject proj = newIpsProject("TableContentsLabelProviderProject");
         IIpsPackageFragmentRoot root = proj.getIpsPackageFragmentRoots()[0];
@@ -76,6 +79,7 @@ public class TableContentsLabelProviderTest extends AbstractIpsPluginTest {
                         column2.findValueDatatype(column2.getIpsProject()) });
     }
 
+    @Test
     public void testGetColumnImage() {
         assertNull(labelProvider.getColumnImage(rowValid, 0));
         assertNull(labelProvider.getColumnImage(rowValid, 1));
@@ -88,6 +92,7 @@ public class TableContentsLabelProviderTest extends AbstractIpsPluginTest {
         assertNull(labelProvider.getColumnImage(rowNull, 2));
     }
 
+    @Test
     public void testGetColumnText() {
         assertEquals("1", labelProvider.getColumnText(rowValid, 0));
         assertEquals("2", labelProvider.getColumnText(rowValid, 1));

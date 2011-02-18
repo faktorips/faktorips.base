@@ -25,6 +25,8 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
+import org.junit.Before;
+import org.junit.Test;
 
 public class FormulaTestBuilderTest extends AbstractStdBuilderTest {
 
@@ -43,7 +45,8 @@ public class FormulaTestBuilderTest extends AbstractStdBuilderTest {
     private FormulaTestBuilder builder;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, POLICY_TYPE_NAME, PRODUCT_TYPE_NAME);
@@ -61,6 +64,7 @@ public class FormulaTestBuilderTest extends AbstractStdBuilderTest {
         builder = new FormulaTestBuilder(builderSet, DefaultBuilderSet.KIND_FORMULA_TEST_CASE);
     }
 
+    @Test
     public void testDelete() throws CoreException {
         productCmpt.getIpsSrcFile().save(true, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
@@ -82,6 +86,7 @@ public class FormulaTestBuilderTest extends AbstractStdBuilderTest {
         return getGeneratedJavaType(productCmpt, true, true, PRODUCT_NAME + FormulaTestBuilder.RUNTIME_EXTENSION);
     }
 
+    @Test
     public void testGetGeneratedJavaElements() {
         generatedJavaElements = builder.getGeneratedJavaElements(productCmpt);
         assertTrue(generatedJavaElements.contains(getGeneratedJavaClass()));

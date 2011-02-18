@@ -24,6 +24,7 @@ import org.faktorips.devtools.htmlexport.context.AbstractHtmlExportPluginTest;
 import org.faktorips.devtools.htmlexport.helper.AbstractTestLayouter;
 import org.faktorips.devtools.htmlexport.helper.ContainsTextTestLayouter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.junit.Test;
 
 public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
 
@@ -38,6 +39,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
         ipsModel.addIpsObjectExtensionProperty(property);
     }
 
+    @Test
     public void testExtensionPropertyAtIpsObjectWithDefaultValue() throws CoreException {
         Class<PolicyCmptType> type = PolicyCmptType.class;
         String defaultValue = "defaultPolicy";
@@ -48,8 +50,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
 
         PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Vertrag", "VertragProdukt");
 
-        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(),
-                context);
+        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
         objectContentPage.build();
 
         String[] texts = new String[] { name, defaultValue };
@@ -57,6 +58,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
         assertTextContained(objectContentPage, texts);
     }
 
+    @Test
     public void testExtensionPropertyAtIpsObjectWithoutDefaultValue() throws CoreException {
         Class<PolicyCmptType> type = PolicyCmptType.class;
         String defaultValue = null;
@@ -67,8 +69,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
 
         PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Vertrag", "VertragProdukt");
 
-        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(),
-                context);
+        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
         objectContentPage.build();
 
         String[] texts = new String[] { name, defaultValue };
@@ -76,6 +77,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
         assertTextContained(objectContentPage, texts);
     }
 
+    @Test
     public void testExtensionPropertyAtIpsObjectWithSetValue() throws CoreException {
         Class<PolicyCmptType> type = PolicyCmptType.class;
         String defaultValue = null;
@@ -89,8 +91,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
         String setValue = "SetValueIpsObject";
         policy.setExtPropertyValue(id, setValue);
 
-        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(),
-                context);
+        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
         objectContentPage.build();
 
         String[] texts = new String[] { name, setValue };
@@ -98,6 +99,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
         assertTextContained(objectContentPage, texts);
     }
 
+    @Test
     public void testExtensionPropertyAtIpsObjectPartWithDefaultValue() throws CoreException {
         Class<PolicyCmptTypeAttribute> type = PolicyCmptTypeAttribute.class;
         String defaultValue = "defaultAttribut";
@@ -109,8 +111,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
         PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Vertrag", "VertragProdukt");
         policy.newPolicyCmptTypeAttribute();
 
-        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(),
-                context);
+        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
         objectContentPage.build();
 
         String[] texts = new String[] { name, defaultValue };
@@ -118,6 +119,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
         assertTextContained(objectContentPage, texts);
     }
 
+    @Test
     public void testExtensionPropertyAtIpsObjectPartWithoutDefaultValue() throws CoreException {
         Class<PolicyCmptTypeAttribute> type = PolicyCmptTypeAttribute.class;
         String defaultValue = null;
@@ -129,8 +131,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
         PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Vertrag", "VertragProdukt");
         policy.newPolicyCmptTypeAttribute();
 
-        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(),
-                context);
+        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
         objectContentPage.build();
 
         String[] texts = new String[] { name, defaultValue };
@@ -138,6 +139,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
         assertTextContained(objectContentPage, texts);
     }
 
+    @Test
     public void testExtensionPropertyAtIpsObjectPartWithSetValue() throws CoreException {
         Class<PolicyCmptTypeAttribute> type = PolicyCmptTypeAttribute.class;
         String defaultValue = null;
@@ -152,8 +154,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
         String setValue = "SetValueIpsObjectPart";
         attribute.setExtPropertyValue(id, setValue);
 
-        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(),
-                context);
+        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
         objectContentPage.build();
 
         String[] texts = new String[] { name, setValue };

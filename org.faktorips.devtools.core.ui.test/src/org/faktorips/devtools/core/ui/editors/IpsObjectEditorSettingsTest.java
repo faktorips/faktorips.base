@@ -20,6 +20,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -32,13 +34,15 @@ public class IpsObjectEditorSettingsTest extends AbstractIpsPluginTest {
     private IIpsSrcFile srcFile;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         settings = new IpsObjectEditorSettings();
         project = newIpsProject();
         srcFile = newPolicyCmptType(project, "motor.Policy").getIpsSrcFile();
     }
 
+    @Test
     public void testPut() throws CoreException {
         settings.put(srcFile, "KEY1", "value1");
         assertEquals("value1", settings.get(srcFile, "KEY1"));
@@ -72,18 +76,21 @@ public class IpsObjectEditorSettingsTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGet() {
         assertNull(settings.get(srcFile, "KEY1"));
         settings.put(srcFile, "KEY1", "value1");
         assertEquals("value1", settings.get(srcFile, "KEY1"));
     }
 
+    @Test
     public void testGetBoolean() {
         assertFalse(settings.getBoolean(srcFile, "KEY1"));
         settings.put(srcFile, "KEY1", true);
         assertTrue(settings.getBoolean(srcFile, "KEY1"));
     }
 
+    @Test
     public void testRemoveIIpsSrcFile() {
         settings.remove(srcFile);
 
@@ -95,6 +102,7 @@ public class IpsObjectEditorSettingsTest extends AbstractIpsPluginTest {
         assertNull(settings.get(srcFile, "KEY2"));
     }
 
+    @Test
     public void testRemoveIIpsSrcFileString() {
         settings.remove(srcFile, "KEY1");
 
@@ -106,6 +114,7 @@ public class IpsObjectEditorSettingsTest extends AbstractIpsPluginTest {
         assertNull(settings.get(srcFile, "KEY2"));
     }
 
+    @Test
     public void testLoadSave() throws CoreException, IOException {
         settings.put(srcFile, "KEY1", "value1");
         settings.put(srcFile, "KEY2", "value2");

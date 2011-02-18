@@ -13,11 +13,12 @@
 
 package org.faktorips.devtools.htmlexport.helper.filter;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -26,11 +27,13 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.junit.Test;
 
-public class IpsElementInIIpsPackageFilterTest extends TestCase {
+public class IpsElementInIIpsPackageFilterTest {
 
     DocumentationContext context = mock(DocumentationContext.class);
 
+    @Test
     public void testIpsObject() {
         IIpsPackageFragment ipsPackageFragment = mock(IIpsPackageFragment.class);
         IIpsPackageFragment anotherIpsPackageFragment = mock(IIpsPackageFragment.class);
@@ -50,6 +53,7 @@ public class IpsElementInIIpsPackageFilterTest extends TestCase {
         assertFalse(filter.accept(filteredObject));
     }
 
+    @Test
     public void testIpsObjectInPackageWithSameName() {
         IIpsPackageFragment ipsPackageFragment = mock(IIpsPackageFragment.class);
         IIpsPackageFragment anotherIpsPackageFragment = mock(IIpsPackageFragment.class);
@@ -65,6 +69,7 @@ public class IpsElementInIIpsPackageFilterTest extends TestCase {
         assertTrue(filter.accept(object));
     }
 
+    @Test
     public void testIpsSrcFile() throws CoreException {
         IIpsPackageFragment ipsPackageFragment = mock(IIpsPackageFragment.class);
         IIpsPackageFragment anotherIpsPackageFragment = mock(IIpsPackageFragment.class);
@@ -90,6 +95,7 @@ public class IpsElementInIIpsPackageFilterTest extends TestCase {
         assertFalse(filter.accept(filteredSrcFile));
     }
 
+    @Test
     public void testIpsSrcFileException() throws CoreException {
         IIpsPackageFragment ipsPackageFragment = mock(IIpsPackageFragment.class);
 

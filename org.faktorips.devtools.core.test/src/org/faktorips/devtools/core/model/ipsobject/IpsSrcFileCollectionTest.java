@@ -20,14 +20,11 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.junit.Test;
 
 public class IpsSrcFileCollectionTest extends AbstractIpsPluginTest {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
+    @Test
     public void testCreateItems() throws CoreException {
         IIpsProject ipsProject = newIpsProject();
 

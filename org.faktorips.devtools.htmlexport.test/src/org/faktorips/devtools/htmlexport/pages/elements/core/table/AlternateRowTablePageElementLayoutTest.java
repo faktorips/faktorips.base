@@ -19,13 +19,14 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import junit.framework.TestCase;
 
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
+import org.junit.Test;
 import org.mockito.InOrder;
 
-public class AlternateRowTablePageElementLayoutTest extends TestCase {
+public class AlternateRowTablePageElementLayoutTest {
 
+    @Test
     public void testHeadlineIsIgnored() {
         TableRowPageElement rowPageElement = mock(TableRowPageElement.class);
 
@@ -46,6 +47,7 @@ public class AlternateRowTablePageElementLayoutTest extends TestCase {
         verify(rowPageElement, never()).addStyles(any(Style[].class));
     }
 
+    @Test
     public void testFirstLineIsIgnored() {
         TableRowPageElement rowPageElement = mock(TableRowPageElement.class);
 
@@ -66,6 +68,7 @@ public class AlternateRowTablePageElementLayoutTest extends TestCase {
         inOrder.verify(rowPageElement, never()).addStyles(Style.TABLE_ROW_UNEVEN);
     }
 
+    @Test
     public void testFirstLineIsNotIgnored() {
         TableRowPageElement rowPageElement = mock(TableRowPageElement.class);
 

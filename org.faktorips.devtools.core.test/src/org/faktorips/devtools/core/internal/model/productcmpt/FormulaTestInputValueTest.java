@@ -29,6 +29,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -42,7 +44,8 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
     private IFormulaTestInputValue formulaTestInputValue;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = super.newIpsProject("TestProject");
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
@@ -54,6 +57,7 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
         formulaTestInputValue = formulaTestCase.newFormulaTestInputValue();
     }
 
+    @Test
     public void testValidate_relatedAttributeNotFound_datatypeOfRelatedAttributeNotFound() throws CoreException {
         IProductCmptTypeMethod method = productCmptType.newProductCmptTypeMethod();
         method.setDatatype(Datatype.STRING.getQualifiedName());
@@ -91,6 +95,7 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IFormulaTestInputValue.MSGCODE_RELATED_ATTRIBUTE_NOT_FOUND));
     }
 
+    @Test
     public void testInitFromXml() {
         Document doc = this.getTestDocument();
         formulaTestInputValue.initFromXml(doc.getDocumentElement());
@@ -99,6 +104,7 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
         assertEquals("4711", formulaTestInputValue.getValue());
     }
 
+    @Test
     public void testToXmlDocument() {
         formulaTestInputValue.setIdentifier("foo1");
         formulaTestInputValue.setValue("value1");
@@ -111,6 +117,7 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
         assertEquals("value1", formulaTestInputValue.getValue());
     }
 
+    @Test
     public void testFindFormulaParameter() throws Exception {
         IProductCmptTypeMethod method = productCmptType.newProductCmptTypeMethod();
         method.setDatatype(Datatype.INTEGER.getQualifiedName());
@@ -126,6 +133,7 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
         assertEquals(param, parameterFound);
     }
 
+    @Test
     public void testFindDatatypeOfFormulaParameter() throws CoreException {
         IPolicyCmptType pcTypeInput = newPolicyCmptType(ipsProject, "policyCmptTypeInput");
         IPolicyCmptTypeAttribute attributeInput = pcTypeInput.newPolicyCmptTypeAttribute();
@@ -198,6 +206,7 @@ public class FormulaTestInputValueTest extends AbstractIpsPluginTest {
         assertEquals(null, formulaTestInputValue.findDatatypeOfFormulaParameter(ipsProject));
     }
 
+    @Test
     public void testValidate_formulaParameterNotFound() throws CoreException {
         IProductCmptTypeMethod method = productCmptType.newProductCmptTypeMethod();
         method.setDatatype(Datatype.STRING.getQualifiedName());

@@ -26,6 +26,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.editors.productcmpt.GenerationSelectionDialog;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Testcase to test some simple GUI-functions like opening an editor.
@@ -38,6 +40,7 @@ public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListe
     private int answer = GenerationSelectionDialog.CHOICE_BROWSE;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         plugin = IpsPlugin.getDefault();
@@ -51,6 +54,7 @@ public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListe
         plugin.getLog().removeLogListener(this);
     }
 
+    @Test
     public void testOpenProductCmptEditor() throws Exception {
         IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar(2003, 7, 1));
 

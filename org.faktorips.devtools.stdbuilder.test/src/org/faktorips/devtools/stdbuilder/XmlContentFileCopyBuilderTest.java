@@ -26,6 +26,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.junit.Before;
+import org.junit.Test;
 
 public class XmlContentFileCopyBuilderTest extends AbstractIpsPluginTest {
 
@@ -36,7 +38,8 @@ public class XmlContentFileCopyBuilderTest extends AbstractIpsPluginTest {
     private String filePath;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
         IIpsProjectProperties props = project.getProperties();
@@ -55,6 +58,7 @@ public class XmlContentFileCopyBuilderTest extends AbstractIpsPluginTest {
         return destination.getFile(new Path(filePath));
     }
 
+    @Test
     public void testBuild() throws CoreException {
         assertFalse(getContentsFile().exists());
         project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
@@ -65,6 +69,7 @@ public class XmlContentFileCopyBuilderTest extends AbstractIpsPluginTest {
         return project.getIpsArtefactBuilderSet();
     }
 
+    @Test
     public void testDelete() throws CoreException {
         assertFalse(getContentsFile().exists());
         project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);

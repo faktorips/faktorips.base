@@ -21,6 +21,8 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -31,7 +33,8 @@ public class PolicyCmptImplClassBuilderTest extends PolicyCmptTypeBuilderTest {
     private PolicyCmptImplClassBuilder builder;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         IIpsProjectProperties props = ipsProject.getProperties();
@@ -40,6 +43,7 @@ public class PolicyCmptImplClassBuilderTest extends PolicyCmptTypeBuilderTest {
         builder = new PolicyCmptImplClassBuilder(builderSet, DefaultBuilderSet.KIND_POLICY_CMPT_TYPE_IMPL);
     }
 
+    @Test
     public void testBuild() throws CoreException {
         /*
          * The supertype of this subtype is missing on purpose for this testcase. This subtype
@@ -61,6 +65,7 @@ public class PolicyCmptImplClassBuilderTest extends PolicyCmptTypeBuilderTest {
         }
     }
 
+    @Test
     public void testGetGeneratedJavaElements() {
         generatedJavaElements = builder.getGeneratedJavaElements(policyCmptType);
         assertTrue(generatedJavaElements.contains(javaClass));

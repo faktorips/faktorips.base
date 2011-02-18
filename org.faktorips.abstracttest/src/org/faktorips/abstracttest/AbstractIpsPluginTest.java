@@ -101,6 +101,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.util.BeanUtil;
 import org.faktorips.util.StringUtil;
+import org.junit.Before;
 import org.w3c.dom.Document;
 
 /**
@@ -125,7 +126,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         IpsPlugin.getDefault().setSuppressLoggingDuringTest(false);
         ((IpsModel)IpsPlugin.getDefault().getIpsModel()).stopListeningToResourceChanges();
         IpsPlugin.getDefault().setFeatureVersionManagers(

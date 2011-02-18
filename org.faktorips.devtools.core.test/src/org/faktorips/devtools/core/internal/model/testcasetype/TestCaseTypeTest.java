@@ -36,6 +36,8 @@ import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.util.CollectionUtil;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -50,13 +52,15 @@ public class TestCaseTypeTest extends AbstractDependencyTest {
     private IIpsPackageFragmentRoot root;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = super.newIpsProject("TestProject");
         root = ipsProject.getIpsPackageFragmentRoots()[0];
         type = (ITestCaseType)newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculationTest");
     }
 
+    @Test
     public void testNewParameter() {
         ITestValueParameter param = type.newInputTestValueParameter();
         assertNotNull(param);
@@ -117,6 +121,7 @@ public class TestCaseTypeTest extends AbstractDependencyTest {
         assertEquals(param5, type.getInputTestParameters()[2]);
     }
 
+    @Test
     public void testGetParameters() {
         assertEquals(0, type.getInputTestParameters().length);
         ITestValueParameter param = type.newInputTestValueParameter();
@@ -143,6 +148,7 @@ public class TestCaseTypeTest extends AbstractDependencyTest {
         assertEquals(param9, type.getExpectedResultTestParameters()[4]);
     }
 
+    @Test
     public void testInitFromXml() {
         Element docEl = getTestDocument().getDocumentElement();
         Element typeEl = XmlUtil.getFirstElement(docEl);
@@ -151,6 +157,7 @@ public class TestCaseTypeTest extends AbstractDependencyTest {
         assertEquals(5, type.getExpectedResultTestParameters().length);
     }
 
+    @Test
     public void testToXml() {
         ITestValueParameter valueParamInput = type.newInputTestValueParameter();
         ITestValueParameter valueParamInput2 = type.newInputTestValueParameter();
@@ -180,6 +187,7 @@ public class TestCaseTypeTest extends AbstractDependencyTest {
         assertEquals("Rule1", ((ITestRuleParameter)type.getExpectedResultTestParameters()[1]).getName());
     }
 
+    @Test
     public void testDependsOn() throws Exception {
         List<IDependency> dependsOnList = CollectionUtil.toArrayList(type.dependsOn());
         assertEquals(0, dependsOnList.size());
@@ -254,6 +262,7 @@ public class TestCaseTypeTest extends AbstractDependencyTest {
         assertDependencyDetailContained(type, dependency, param4, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
     }
 
+    @Test
     public void testGetTestRuleCandidates() throws CoreException {
         IValidationRule[] testRuleParameters = type.getTestRuleCandidates(ipsProject);
         assertEquals(0, testRuleParameters.length);
@@ -289,6 +298,7 @@ public class TestCaseTypeTest extends AbstractDependencyTest {
         assertTrue(testRuleParametersList.contains(ruleBase));
     }
 
+    @Test
     public void testGetAllTestParameter() throws CoreException {
         ITestPolicyCmptTypeParameter testParameter1 = type.newInputTestPolicyCmptTypeParameter();
         ITestPolicyCmptTypeParameter testParameter1_1 = testParameter1.newTestPolicyCmptTypeParamChild();
@@ -312,6 +322,7 @@ public class TestCaseTypeTest extends AbstractDependencyTest {
         assertTrue(paramsList.contains(valueParameter));
     }
 
+    @Test
     public void testFindAllMetaObjects() throws CoreException {
         String testCaseTypeQName = "pack.MyTestCaseType";
         String testCaseTypeProj2QName = "otherpack.MyTestCaseTypeProj2";

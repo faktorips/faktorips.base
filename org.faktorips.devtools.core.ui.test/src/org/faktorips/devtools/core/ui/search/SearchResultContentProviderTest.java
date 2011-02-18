@@ -26,6 +26,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -45,7 +47,8 @@ public class SearchResultContentProviderTest extends AbstractIpsPluginTest {
     private Object[] parentElement;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         provider = new SearchResultContentProvider(null);
         proj = newIpsProject("TestProjekt", new ArrayList<Locale>());
@@ -66,6 +69,7 @@ public class SearchResultContentProviderTest extends AbstractIpsPluginTest {
         System.arraycopy(pcChildren2, 0, parentElement2, 1, pcChildren2.length);
     }
 
+    @Test
     public void testGetChildren() throws CoreException {
         // The first element in the Object[] is the search result, the others are its children.
 
@@ -78,6 +82,7 @@ public class SearchResultContentProviderTest extends AbstractIpsPluginTest {
         assertTrue(Arrays.equals(pcType2.getChildren(), children));
     }
 
+    @Test
     public void testGetParent() {
         Object parent = provider.getParent(generation);
         assertEquals(generation.getProductCmpt(), parent);
@@ -85,6 +90,7 @@ public class SearchResultContentProviderTest extends AbstractIpsPluginTest {
         assertEquals(pcType.getParent(), parent);
     }
 
+    @Test
     public void testHasChildren() {
         assertFalse(provider.hasChildren(parentElement));
         assertTrue(provider.hasChildren(parentElement2));

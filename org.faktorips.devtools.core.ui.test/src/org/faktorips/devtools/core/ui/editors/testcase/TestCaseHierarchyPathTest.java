@@ -20,6 +20,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.TestCaseHierarchyPath;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -32,6 +34,7 @@ public class TestCaseHierarchyPathTest extends AbstractIpsPluginTest {
     private TestCaseAndTestCaseTypeContent testContent;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = super.newIpsProject("TestProject");
@@ -41,6 +44,7 @@ public class TestCaseHierarchyPathTest extends AbstractIpsPluginTest {
         testContent = new TestCaseAndTestCaseTypeContent(testCase, testCaseType);
     }
 
+    @Test
     public void testPathForTestCase() {
         TestCaseHierarchyPath pathRelation = new TestCaseHierarchyPath(testContent.getRelation2(), true);
         assertEquals(
@@ -68,6 +72,7 @@ public class TestCaseHierarchyPathTest extends AbstractIpsPluginTest {
         assertTrue(path.count() == 0);
     }
 
+    @Test
     public void testPathForTestCaseType() {
         TestCaseHierarchyPath pathRelation = new TestCaseHierarchyPath(testContent.getRelation2(), false);
         assertEquals("testPolicyCmptType1//testPolicyCmptTypeRelation1//testPolicyCmptTypeRelation2",
@@ -86,6 +91,7 @@ public class TestCaseHierarchyPathTest extends AbstractIpsPluginTest {
         assertTrue(path.count() == 0);
     }
 
+    @Test
     public void testEvalTestPolicyCmptParamPath() throws CoreException {
         // eval path for testPolicyCmpt2 => testPolicyCmptType10.testPolicyCmptTypeRelation10
         String testPolicyCmptParamPath = TestCaseHierarchyPath.evalTestPolicyCmptParamPath(testContent.testPolicyCmpt2);

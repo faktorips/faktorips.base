@@ -24,6 +24,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -38,7 +40,8 @@ public class ArchiveIpsSrcFileTest extends AbstractIpsPluginTest {
     private IPolicyCmptType originalType;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         IIpsProject archiveProject = newIpsProject("ArchiveProject");
         originalType = newPolicyCmptType(archiveProject, "motor.Policy");
@@ -59,6 +62,7 @@ public class ArchiveIpsSrcFileTest extends AbstractIpsPluginTest {
         srcFile = pack.getIpsSrcFile(IpsObjectType.POLICY_CMPT_TYPE.getFileName("Policy"));
     }
 
+    @Test
     public void testExists() {
         assertTrue(srcFile.exists());
 
@@ -66,6 +70,7 @@ public class ArchiveIpsSrcFileTest extends AbstractIpsPluginTest {
         assertFalse(srcFile.exists());
     }
 
+    @Test
     public void testGetIpsObject() throws CoreException {
         assertNotNull(srcFile.getIpsObject());
         IPolicyCmptType type = (IPolicyCmptType)srcFile.getIpsObject();
@@ -73,26 +78,32 @@ public class ArchiveIpsSrcFileTest extends AbstractIpsPluginTest {
         assertEquals(1, type.getNumOfAttributes());
     }
 
+    @Test
     public void testGetParent() {
         assertEquals(pack, srcFile.getParent());
     }
 
+    @Test
     public void testGetIpsPackageFragment() {
         assertEquals(pack, srcFile.getIpsPackageFragment());
     }
 
+    @Test
     public void testGetCorrespondingFile() {
         assertNull(srcFile.getCorrespondingFile());
     }
 
+    @Test
     public void testGetCorrespondingResource() {
         assertNull(srcFile.getCorrespondingResource());
     }
 
+    @Test
     public void testGetContentFromEnclosingResource() throws CoreException {
         assertNotNull(srcFile.getContentFromEnclosingResource());
     }
 
+    @Test
     public void testGetEnclosingResource() {
         assertEquals(root.getCorrespondingResource(), srcFile.getEnclosingResource());
     }

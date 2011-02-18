@@ -38,6 +38,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author Stefan Widmaier
@@ -76,7 +78,8 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
     private IIpsPackageFragment modelDefaultPackage;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         List<IpsObjectType> allowedTypes = new ArrayList<IpsObjectType>(Arrays.asList(IpsPlugin.getDefault()
                 .getIpsModel().getIpsObjectTypes()));
@@ -138,6 +141,7 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         project.setProperties(props);
     }
 
+    @Test
     public void testGetChildren() {
         List<Object> list;
         // --- Tests for hierarchical layout style ---
@@ -253,6 +257,7 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         assertTrue(list.contains(file));
     }
 
+    @Test
     public void testGetParent() {
         Object parent;
         // tests for hierarchical layout
@@ -319,6 +324,7 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         assertEquals(folder, parent);
     }
 
+    @Test
     public void testHasChildren() {
         // hierarchical tests
         assertTrue(hierarchyProvider.hasChildren(proj));
@@ -361,6 +367,7 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         assertFalse(flatProvider.hasChildren(file));
     }
 
+    @Test
     public void testGetElements() throws CoreException {
         IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
             @Override
@@ -389,10 +396,12 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         assertEquals(3, children.length);
     }
 
+    @Test
     public void testDispose() {
         // no tests
     }
 
+    @Test
     public void testInputChanged() {
         // no tests
     }

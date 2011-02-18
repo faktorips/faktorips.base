@@ -20,6 +20,8 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
@@ -28,17 +30,20 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
     private IEnumLiteralNameAttribute literalNameAttribute;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         literalNameAttribute = paymentMode.getEnumLiteralNameAttribute();
     }
 
+    @Test
     public void testGetSetDefaultValueProviderAttribute() {
         assertEquals("name", literalNameAttribute.getDefaultValueProviderAttribute());
         literalNameAttribute.setDefaultValueProviderAttribute("foo");
         assertEquals("foo", literalNameAttribute.getDefaultValueProviderAttribute());
     }
 
+    @Test
     public void testXml() throws ParserConfigurationException, CoreException {
         Element xmlElement = literalNameAttribute.toXml(createXmlDocument(IEnumLiteralNameAttribute.XML_TAG));
         NamedNodeMap attributes = xmlElement.getAttributes();
@@ -52,10 +57,12 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
         assertEquals("name", loadedAttribute.getDefaultValueProviderAttribute());
     }
 
+    @Test
     public void testValidate() throws CoreException {
         assertEquals(0, literalNameAttribute.validate(ipsProject).getNoOfMessages());
     }
 
+    @Test
     public void testValidateIsNeeded() throws CoreException {
         paymentMode.setAbstract(true);
         MessageList validationMessageList = literalNameAttribute.validate(ipsProject);
@@ -72,6 +79,7 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
                 .getMessageByCode(IEnumLiteralNameAttribute.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_NOT_NEEDED));
     }
 
+    @Test
     public void testValidateDefaultValueProviderAttribute() throws CoreException {
         // Test pass validation if no default value provider attribute specified.
         literalNameAttribute.setDefaultValueProviderAttribute("");
@@ -107,6 +115,7 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
                 .getMessageByCode(IEnumLiteralNameAttribute.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_NOT_UNIQUE));
     }
 
+    @Test
     public void testGetSetIdentifier() {
         assertFalse(literalNameAttribute.isIdentifier());
         try {
@@ -116,6 +125,7 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
         }
     }
 
+    @Test
     public void testGetSetInherited() {
         assertFalse(literalNameAttribute.isInherited());
         try {
@@ -125,6 +135,7 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
         }
     }
 
+    @Test
     public void testGetSetUsedAsNameInFaktorIpsUi() {
         assertFalse(literalNameAttribute.isUsedAsNameInFaktorIpsUi());
         try {
@@ -134,6 +145,7 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
         }
     }
 
+    @Test
     public void testGetRenameRefactoring() {
         assertNull(literalNameAttribute.getRenameRefactoring());
     }

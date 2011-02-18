@@ -26,6 +26,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
@@ -40,7 +42,8 @@ public class LabelTest extends AbstractIpsPluginTest {
     private IPolicyCmptTypeAttribute attribute;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
         policyCmptType = newPolicyCmptType(ipsProject, "TestPolicy");
@@ -48,37 +51,44 @@ public class LabelTest extends AbstractIpsPluginTest {
         label = attribute.newLabel();
     }
 
+    @Test
     public void testConstructor() {
         assertNull(label.getLocale());
         assertEquals("", label.getValue());
         assertEquals("", label.getPluralValue());
     }
 
+    @Test
     public void testSetLocale() {
         label.setLocale(Locale.GERMAN);
         assertEquals(Locale.GERMAN, label.getLocale());
     }
 
+    @Test
     public void testSetValue() {
         label.setValue("foo");
         assertEquals("foo", label.getValue());
     }
 
+    @Test
     public void testSetValueNullPointer() {
         label.setValue(null);
         assertEquals("", label.getValue());
     }
 
+    @Test
     public void testSetPluralValue() {
         label.setPluralValue("bar");
         assertEquals("bar", label.getPluralValue());
     }
 
+    @Test
     public void testSetPluralValueNullPointer() {
         label.setPluralValue(null);
         assertEquals("", label.getPluralValue());
     }
 
+    @Test
     public void testValidateLocaleMissing() throws CoreException {
         MessageList validationMessages = label.validate(ipsProject);
         assertEquals(1, validationMessages.getNoOfMessages());
@@ -86,6 +96,7 @@ public class LabelTest extends AbstractIpsPluginTest {
         assertEquals(ILabel.MSGCODE_LOCALE_MISSING, message.getCode());
     }
 
+    @Test
     public void testValidateLocaleNotSupported() throws CoreException {
         label.setLocale(Locale.TAIWAN);
         MessageList validationMessages = label.validate(ipsProject);
@@ -94,6 +105,7 @@ public class LabelTest extends AbstractIpsPluginTest {
         assertEquals(ILabel.MSGCODE_LOCALE_NOT_SUPPORTED_BY_IPS_PROJECT, message.getCode());
     }
 
+    @Test
     public void testValidateLocaleNotSupportedByContextProject() throws CoreException {
         IIpsProject contextProject = newIpsProject("ContextProject");
         IIpsProjectProperties properties = contextProject.getProperties();
@@ -105,12 +117,14 @@ public class LabelTest extends AbstractIpsPluginTest {
         assertTrue(validationMessages.isEmpty());
     }
 
+    @Test
     public void testValidateOk() throws CoreException {
         label.setLocale(Locale.US);
         MessageList validationMessages = label.validate(ipsProject);
         assertEquals(0, validationMessages.getNoOfMessages());
     }
 
+    @Test
     public void testXml() throws ParserConfigurationException {
         label.setLocale(Locale.ENGLISH);
         label.setValue("foo");

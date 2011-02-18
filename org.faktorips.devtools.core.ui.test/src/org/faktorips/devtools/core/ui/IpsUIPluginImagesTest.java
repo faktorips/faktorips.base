@@ -26,9 +26,11 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.junit.Test;
 
 public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
 
+    @Test
     public void testCreateImageDescriptor() {
         String name = "test";
         ImageDescriptor descriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(name);
@@ -37,6 +39,7 @@ public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
         assertEquals(ImageDescriptor.createFromURL(url), descriptor);
     }
 
+    @Test
     public void testRegisterAndDisposeImage() {
         String name = "TestCase.gif";
         ImageDescriptor expDescriptor = ImageDescriptor.createFromFile(this.getClass(), name);
@@ -74,6 +77,7 @@ public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
         otherManager.dispose();
     }
 
+    @Test
     public void testResourceHandling() {
         String name = "TestCase.gif";
         ImageDescriptor descriptor = ImageDescriptor.createFromFile(this.getClass(), name);
@@ -105,6 +109,7 @@ public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
         assertEquals(imageA, imageP);
     }
 
+    @Test
     public void testDisabledgetImage() throws Exception {
         IIpsElement ipsElement = newIpsProject();
         IIpsElement newIpsElement = newIpsProject("zwei");
@@ -122,6 +127,7 @@ public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
         assertEquals(disabledImage, IpsUIPlugin.getImageHandling().getDisabledImage(newIpsElement));
     }
 
+    @Test
     public void testIpsElementgetImage() throws Exception {
         IIpsProject testElement = newIpsProject();
 
@@ -144,6 +150,7 @@ public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
      * Testing the image methods in the IpsUIPlugin by loading the same images several times. So
      * there should be only one instance of the real image.
      */
+    @Test
     public void testImageLoadingStress() throws Exception {
         String imageName = "New.gif";
         Image expected = IpsUIPlugin.getImageHandling().getSharedImage(imageName, true);

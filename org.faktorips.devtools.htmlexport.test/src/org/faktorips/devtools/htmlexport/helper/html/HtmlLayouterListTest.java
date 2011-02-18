@@ -20,11 +20,13 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
+import org.junit.Test;
 
 public class HtmlLayouterListTest extends AbstractTestHtmlLayouter {
 
     private String[] items;
 
+    @Test
     public void testList() throws Exception {
         ListPageElement liste = createList();
 
@@ -35,6 +37,7 @@ public class HtmlLayouterListTest extends AbstractTestHtmlLayouter {
         }
     }
 
+    @Test
     public void testOrderedList() throws Exception {
         ListPageElement liste = createList();
         liste.setOrdered(true);
@@ -46,6 +49,7 @@ public class HtmlLayouterListTest extends AbstractTestHtmlLayouter {
         }
     }
 
+    @Test
     public void testLeereListe() throws UnsupportedEncodingException {
         ListPageElement liste = new ListPageElement();
 

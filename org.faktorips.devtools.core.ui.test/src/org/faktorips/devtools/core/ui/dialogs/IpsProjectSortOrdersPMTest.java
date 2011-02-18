@@ -23,6 +23,8 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -35,10 +37,9 @@ public class IpsProjectSortOrdersPMTest extends AbstractIpsPluginTest {
     private IpsProjectSortOrdersPM sortOrderPM;
 
     @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-
-        ipsProject = newIpsProject("TestProject");
+    @Before
+    public void setUp() throws Exception {
+        ipsProject = newIpsProject();
         rootPackage = ipsProject.getIpsPackageFragmentRoots()[0];
 
         rootPackage.createPackageFragment("products.hausrat", true, null);
@@ -54,6 +55,7 @@ public class IpsProjectSortOrdersPMTest extends AbstractIpsPluginTest {
         sortOrderPM = new IpsProjectSortOrdersPM(ipsProject);
     }
 
+    @Test
     public void testGetChildrenBasic() {
         IIpsPackageFragment fragment = rootPackage.getIpsPackageFragment("products.hausrat");
         Object[] elements = sortOrderPM.getChildren(fragment);
@@ -72,6 +74,7 @@ public class IpsProjectSortOrdersPMTest extends AbstractIpsPluginTest {
         assertEquals("products.kranken.vertragsarten", ((IIpsPackageFragment)elements[2]).getName());
     }
 
+    @Test
     public void testGetChildrenExtended() throws IOException, CoreException {
         sortOrderPM.dispose();
 
@@ -136,6 +139,7 @@ public class IpsProjectSortOrdersPMTest extends AbstractIpsPluginTest {
         assertEquals("products.haftpflicht", ((IIpsPackageFragment)elements[3]).getName());
     }
 
+    @Test
     public void testGetParent() {
         IIpsPackageFragment fragment = rootPackage.getIpsPackageFragment("products.hausrat");
         IIpsPackageFragment parent = rootPackage.getIpsPackageFragment("products");
@@ -149,6 +153,7 @@ public class IpsProjectSortOrdersPMTest extends AbstractIpsPluginTest {
         assertEquals(null, sortOrderPM.getParent(fragment));
     }
 
+    @Test
     public void testHasChildren() {
         IIpsPackageFragment fragment = rootPackage.getIpsPackageFragment("products.hausrat");
         assertFalse(sortOrderPM.hasChildren(fragment));
@@ -160,6 +165,7 @@ public class IpsProjectSortOrdersPMTest extends AbstractIpsPluginTest {
         assertTrue(sortOrderPM.hasChildren(fragment));
     }
 
+    @Test
     public void testGetElements() {
         Object[] elements = sortOrderPM.getElements(sortOrderPM);
 
@@ -168,6 +174,7 @@ public class IpsProjectSortOrdersPMTest extends AbstractIpsPluginTest {
         assertTrue(fragment.isDefaultPackage());
     }
 
+    @Test
     public void testMoveUp() throws IOException, CoreException {
         sortOrderPM.dispose();
 
@@ -219,6 +226,7 @@ public class IpsProjectSortOrdersPMTest extends AbstractIpsPluginTest {
         assertEquals("products.kranken.leistungsarten", elements[2].getName());
     }
 
+    @Test
     public void testMoveDown() throws IOException, CoreException {
         sortOrderPM.dispose();
 
@@ -268,6 +276,7 @@ public class IpsProjectSortOrdersPMTest extends AbstractIpsPluginTest {
         assertEquals("products.kranken.vertragsarten", elements[2].getName());
     }
 
+    @Test
     public void testRestore() throws IOException, CoreException {
         sortOrderPM.dispose();
 
@@ -299,6 +308,7 @@ public class IpsProjectSortOrdersPMTest extends AbstractIpsPluginTest {
         assertEquals("products.kranken.vertragsarten", elements[2].getName());
     }
 
+    @Test
     public void testSaveSortDefDelta() throws IOException, CoreException {
         sortOrderPM.dispose();
 

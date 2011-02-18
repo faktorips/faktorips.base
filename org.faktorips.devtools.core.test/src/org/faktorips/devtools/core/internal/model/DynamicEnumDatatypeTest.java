@@ -19,6 +19,8 @@ import java.util.List;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -29,12 +31,14 @@ public class DynamicEnumDatatypeTest extends AbstractIpsPluginTest {
     private DynamicEnumDatatype dataType;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         IpsProject project = (IpsProject)newIpsProject();
         dataType = newDefinedEnumDatatype(project, new Class[] { TestEnumType.class })[0];
     }
 
+    @Test
     public void testGetAllValueIds() {
         List<String> allValues = Arrays.asList(dataType.getAllValueIds(false));
         assertTrue(allValues.contains(TestEnumType.FIRSTVALUE.getId()));
@@ -45,10 +49,12 @@ public class DynamicEnumDatatypeTest extends AbstractIpsPluginTest {
         assertTrue(allValues.contains(null));
     }
 
+    @Test
     public void testIsSupportingNames() {
         assertTrue(dataType.isSupportingNames());
     }
 
+    @Test
     public void testGetValueName() {
         assertEquals(TestEnumType.FIRSTVALUE.getName(), dataType.getValueName(TestEnumType.FIRSTVALUE.getId()));
         assertEquals(TestEnumType.SECONDVALUE.getName(), dataType.getValueName(TestEnumType.SECONDVALUE.getId()));

@@ -30,6 +30,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 
 public class IpsObjectTest extends AbstractIpsPluginTest {
 
@@ -38,13 +40,15 @@ public class IpsObjectTest extends AbstractIpsPluginTest {
     private IIpsObject ipsObject;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
         rootFolder = ipsProject.getIpsPackageFragmentRoots()[0];
         ipsObject = newPolicyCmptType(ipsProject, "pack.TestProduct");
     }
 
+    @Test
     public void testGetQualifiedName() throws CoreException {
         assertEquals("pack.TestProduct", ipsObject.getQualifiedName());
         IIpsPackageFragment defaultFolder = rootFolder.getIpsPackageFragment("");
@@ -52,6 +56,7 @@ public class IpsObjectTest extends AbstractIpsPluginTest {
         assertEquals("TestProduct", file.getIpsObject().getQualifiedName());
     }
 
+    @Test
     public void testValidateEqualIpsObjectAlreadyExistsInIpsObjectPath() throws CoreException {
         IIpsProject a = newIpsProject("aProject");
         IPolicyCmptType aPolicyProjectA = newPolicyCmptTypeWithoutProductCmptType(a, "faktorzehn.example.APolicy");

@@ -28,6 +28,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.junit.Before;
+import org.junit.Test;
 
 public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest implements IResourceChangeListener {
 
@@ -36,7 +38,8 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest implements 
     private IResourceChangeEvent event;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
         packRoot = ipsProject.getIpsPackageFragmentRoots()[0];
@@ -48,6 +51,7 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest implements 
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
     }
 
+    @Test
     public void test_FlatLayout() throws CoreException, InterruptedException {
         // test case 1: new package "model.base" and new PolicyCmptType
         IPolicyCmptType policyType = newPolicyCmptType(ipsProject, "model.base.Policy");
@@ -192,6 +196,7 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest implements 
         assertTrue(visitor.getElementsToUpdate().contains(doc1));
     }
 
+    @Test
     public void test_HierarchicalLayout() throws CoreException, InterruptedException {
         // test case 1: new package "model.base" and new PolicyCmptType
         IPolicyCmptType policyType = newPolicyCmptType(ipsProject, "model.base.Policy");

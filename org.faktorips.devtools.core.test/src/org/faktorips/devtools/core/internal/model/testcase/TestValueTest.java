@@ -23,6 +23,8 @@ import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
@@ -38,7 +40,8 @@ public class TestValueTest extends AbstractIpsPluginTest {
     private IIpsProject project;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
 
@@ -57,6 +60,7 @@ public class TestValueTest extends AbstractIpsPluginTest {
         (valueObjectUnknown = testCase.newTestValue()).setTestValueParameter("testValueParameter4");
     }
 
+    @Test
     public void testInitFromXml() {
         Element docEl = getTestDocument().getDocumentElement();
         Element paramEl = XmlUtil.getElement(docEl, "ValueObject", 0);
@@ -65,6 +69,7 @@ public class TestValueTest extends AbstractIpsPluginTest {
         assertEquals("500", valueObjectInput.getValue());
     }
 
+    @Test
     public void testToXml() {
         valueObjectInput.setTestValueParameter("Money");
         valueObjectInput.setValue("500");
@@ -78,6 +83,7 @@ public class TestValueTest extends AbstractIpsPluginTest {
         assertEquals("500", valueObjectInput.getValue());
     }
 
+    @Test
     public void testTestObjectRole() {
         assertTrue(valueObjectInput.isInput());
         assertFalse(valueObjectInput.isExpectedResult());
@@ -97,6 +103,7 @@ public class TestValueTest extends AbstractIpsPluginTest {
         assertTrue(valueObjectUnknown.isCombined());
     }
 
+    @Test
     public void testValidateTestValueParamNotFound() throws Exception {
         MessageList ml = valueObjectInput.validate(project);
         assertNull(ml.getMessageByCode(ITestValue.MSGCODE_TEST_VALUE_PARAM_NOT_FOUND));
@@ -106,6 +113,7 @@ public class TestValueTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(ITestValue.MSGCODE_TEST_VALUE_PARAM_NOT_FOUND));
     }
 
+    @Test
     public void testValidateValueDatatypeNotFound() throws Exception {
         ITestValueParameter param = valueObjectInput.findTestValueParameter(project);
         param.setValueDatatype("String");
@@ -118,6 +126,7 @@ public class TestValueTest extends AbstractIpsPluginTest {
         assertEquals(ITestValueParameter.MSGCODE_VALUEDATATYPE_NOT_FOUND, ml.getFirstMessage(Message.WARNING).getCode());
     }
 
+    @Test
     public void testValidateWrongType() throws Exception {
         MessageList ml = valueObjectInput.validate(project);
         assertNull(ml.getMessageByCode(ITestValueParameter.MSGCODE_WRONG_TYPE));

@@ -25,6 +25,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ReferencesToProductSearchQueryTest extends AbstractIpsPluginTest {
 
@@ -38,7 +40,8 @@ public class ReferencesToProductSearchQueryTest extends AbstractIpsPluginTest {
     private IProductCmpt prodCmptNoRef;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         GregorianCalendar calendar = (GregorianCalendar)Calendar.getInstance();
         proj = newIpsProject("TestProjekt");
@@ -67,6 +70,7 @@ public class ReferencesToProductSearchQueryTest extends AbstractIpsPluginTest {
         IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(calendar);
     }
 
+    @Test
     public void testRun() {
         query = new ReferencesToProductSearchQuery(prodCmptReferenced);
         // run query in same thread as this test

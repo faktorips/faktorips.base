@@ -30,6 +30,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -45,7 +47,8 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
     private IPolicyCmptType coverage;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         IIpsProject archiveProject = newIpsProject("ArchiveProject");
         policy = newPolicyCmptTypeWithoutProductCmptType(archiveProject, "mycompany.motor.Policy");
@@ -64,6 +67,7 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
         pack = (ArchiveIpsPackageFragment)root.getIpsPackageFragment("mycompany.motor");
     }
 
+    @Test
     public void testGetChildren() throws CoreException {
         IIpsElement[] children = pack.getChildren();
         assertEquals(2, children.length);
@@ -71,12 +75,14 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
         assertTrue((children[1] instanceof IIpsSrcFile));
     }
 
+    @Test
     public void testGetIpsSrcFile() {
         IIpsSrcFile file = pack.getIpsSrcFile(policy.getIpsSrcFile().getName());
         assertNotNull(file);
         assertEquals(pack, file.getParent());
     }
 
+    @Test
     public void testFindIpsObjectsByIpsObjectType() throws CoreException {
         List<IIpsObject> result = new ArrayList<IIpsObject>();
         pack.findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE, result);
@@ -87,6 +93,7 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
         assertTrue(result.contains(obj));
     }
 
+    @Test
     public void testFindIpsObjects() throws CoreException {
         List<IIpsObject> result = new ArrayList<IIpsObject>();
         pack.findIpsObjects(result);
@@ -100,33 +107,40 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
         assertTrue(qnts.contains(coverage.getQualifiedNameType()));
     }
 
+    @Test
     public void testGetChildIpsPackageFragments() throws CoreException {
         IIpsPackageFragment[] packs = pack.getChildIpsPackageFragments();
         assertEquals(1, packs.length);
         assertEquals("mycompany.motor.collision", packs[0].getName());
     }
 
+    @Test
     public void testGetNonIpsResources() throws CoreException {
         assertEquals(0, pack.getNonIpsResources().length);
     }
 
+    @Test
     public void testGetCorrespondingResource() {
         assertNull(pack.getCorrespondingResource());
     }
 
+    @Test
     public void testGetEnclosingResource() {
         assertEquals(archiveFile, pack.getEnclosingResource());
     }
 
+    @Test
     public void testGetParent() {
         assertEquals(root, pack.getParent());
     }
 
+    @Test
     public void testExists() {
         assertTrue(pack.exists());
         assertFalse(root.getIpsPackageFragment("unknownPack").exists());
     }
 
+    @Test
     public void testGetSortedChildIpsPackageFragmentsBasics() throws Exception {
 
         IIpsProject project = createTestArchive();
@@ -150,6 +164,7 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testSetSortDefinition() throws Exception {
 
         IpsPackageFragmentArbitrarySortDefinition sortDef = new IpsPackageFragmentArbitrarySortDefinition();
@@ -209,6 +224,7 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
         return project;
     }
 
+    @Test
     public void testHasChildIpsPackageFragments() throws CoreException {
         IIpsPackageFragment empty = root.getIpsPackageFragment("mycompany.motor.Coverage");
         assertFalse(empty.hasChildIpsPackageFragments());

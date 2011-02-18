@@ -4,11 +4,12 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.htmlexport.HtmlExportOperation;
 import org.faktorips.devtools.htmlexport.IDocumentorScript;
 import org.faktorips.devtools.htmlexport.TestUtil;
-import org.faktorips.devtools.htmlexport.helper.IoHandler;
 import org.faktorips.devtools.htmlexport.standard.StandardDocumentorScript;
+import org.junit.Test;
 
 public class HtmlExportOperationTest extends AbstractHtmlExportPluginTest {
 
+    @Test
     public void testConstructorParameters() {
 
         try {
@@ -19,6 +20,7 @@ public class HtmlExportOperationTest extends AbstractHtmlExportPluginTest {
         new HtmlExportOperation(context);
     }
 
+    @Test
     public void testWriteOverview() throws Exception {
         createStandardProjekt();
 

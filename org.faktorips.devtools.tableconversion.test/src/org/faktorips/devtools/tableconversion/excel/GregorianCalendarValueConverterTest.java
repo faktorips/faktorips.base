@@ -13,20 +13,25 @@
 
 package org.faktorips.devtools.tableconversion.excel;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import junit.framework.TestCase;
-
 import org.faktorips.datatype.Datatype;
 import org.faktorips.util.message.MessageList;
+import org.junit.Test;
 
 /**
  * 
  * @author Thorsten Guenther
  */
-public class GregorianCalendarValueConverterTest extends TestCase {
+public class GregorianCalendarValueConverterTest {
 
+    @Test
     public void testGetIpsValue() {
         MessageList ml = new MessageList();
         GregorianCalendarValueConverter converter = new GregorianCalendarValueConverter();
@@ -51,6 +56,7 @@ public class GregorianCalendarValueConverterTest extends TestCase {
         assertFalse(ml.isEmpty());
     }
 
+    @Test
     public void testGetExternalDataValue() {
         MessageList ml = new MessageList();
         GregorianCalendarValueConverter converter = new GregorianCalendarValueConverter();

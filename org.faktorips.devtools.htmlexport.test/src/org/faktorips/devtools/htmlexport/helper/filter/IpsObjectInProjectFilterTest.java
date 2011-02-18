@@ -13,15 +13,18 @@
 
 package org.faktorips.devtools.htmlexport.helper.filter;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import junit.framework.TestCase;
 
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.junit.Test;
 
-public class IpsObjectInProjectFilterTest extends TestCase {
+public class IpsObjectInProjectFilterTest {
 
+    @Test
     public void testObjectInProject() {
         IIpsElement element = mock(IIpsElement.class);
         IIpsElement filteredElement = mock(IIpsElement.class);

@@ -22,6 +22,8 @@ import org.faktorips.devtools.core.model.bf.IActionBFE;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.bf.commands.ChangeConstraintCommand;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ChangeConstraintCommandTest extends AbstractIpsPluginTest {
 
@@ -30,12 +32,14 @@ public class ChangeConstraintCommandTest extends AbstractIpsPluginTest {
     private ChangeConstraintCommand command;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
         bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf");
     }
 
+    @Test
     public void testExecute() {
         IActionBFE action = bf.newOpaqueAction(new Point(10, 10));
         command = new ChangeConstraintCommand(action, new Rectangle(100, 50, 200, 250));
@@ -44,6 +48,7 @@ public class ChangeConstraintCommandTest extends AbstractIpsPluginTest {
         assertEquals(new Dimension(200, 250), action.getSize());
     }
 
+    @Test
     public void testUndoRedo() {
         IActionBFE action = bf.newOpaqueAction(new Point(10, 10));
         Point location = action.getLocation();

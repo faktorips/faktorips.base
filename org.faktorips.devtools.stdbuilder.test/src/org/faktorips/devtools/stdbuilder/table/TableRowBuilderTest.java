@@ -17,6 +17,8 @@ import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TableRowBuilderTest extends AbstractStdBuilderTest {
 
@@ -27,7 +29,8 @@ public class TableRowBuilderTest extends AbstractStdBuilderTest {
     private TableRowBuilder builder;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         structure = newTableStructure(ipsProject, TABLE_STRUCTURE_NAME);
@@ -38,6 +41,7 @@ public class TableRowBuilderTest extends AbstractStdBuilderTest {
         return getGeneratedJavaType(structure, false, true, TABLE_STRUCTURE_NAME + "Row");
     }
 
+    @Test
     public void testGetGeneratedJavaElements() {
         generatedJavaElements = builder.getGeneratedJavaElements(structure);
         assertTrue(generatedJavaElements.contains(getGeneratedJavaClass()));

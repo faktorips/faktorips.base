@@ -46,6 +46,8 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 public class ProductCmptTest extends AbstractIpsPluginTest {
@@ -57,7 +59,8 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject(new ArrayList<Locale>());
         root = ipsProject.getIpsPackageFragmentRoots()[0];
@@ -66,6 +69,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         productCmpt = (ProductCmpt)srcFile.getIpsObject();
     }
 
+    @Test
     public void testValidate_ProductCmptTypeIsMissing() throws Exception {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
         productCmpt.setProductCmptType(type.getQualifiedName());
@@ -89,6 +93,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertNotNull(list.getMessageByCode(IProductCmpt.MSGCODE_MISSINGG_PRODUCT_CMPT_TYPE));
     }
 
+    @Test
     public void testValidate_ProductCmptTypeIsNotAbstract() throws Exception {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
         productCmpt.setProductCmptType(type.getQualifiedName());
@@ -101,6 +106,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertNotNull(list.getMessageByCode(IProductCmpt.MSGCODE_ABSTRACT_PRODUCT_CMPT_TYPE));
     }
 
+    @Test
     public void testValidate_InconsitencyInTypeHierarch() throws Exception {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
         IProductCmptType supertype = newProductCmptType(ipsProject, "SuperProduct");
@@ -141,6 +147,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
      * Test if a runtime id change will be correctly updated in the product component which
      * referenced the product cmpt on which the runtime id was changed.
      */
+    @Test
     public void testRuntimeIdDependency() throws CoreException, IOException {
         IProductCmptType c = newProductCmptType(root, "C");
         IProductCmptType d = newProductCmptType(root, "D");
@@ -202,6 +209,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testFindProductCmptKind() throws CoreException {
         IProductCmptKind kind = productCmpt.findProductCmptKind();
         assertEquals("TestProduct", kind.getName());
@@ -221,12 +229,14 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testSetProductCmptType() {
         productCmpt.setProductCmptType("newType");
         assertEquals("newType", productCmpt.getProductCmptType());
         assertTrue(srcFile.isDirty());
     }
 
+    @Test
     public void testInitFromXml() {
         productCmpt.initFromXml(getTestDocument().getDocumentElement());
         assertEquals("MotorProduct", productCmpt.getProductCmptType());
@@ -238,6 +248,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertEquals("1.5", ce.getValue());
     }
 
+    @Test
     public void testToXml() {
         productCmpt.setProductCmptType("MotorProduct");
         productCmpt.setRuntimeId("MotorProductId");
@@ -256,6 +267,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertEquals("0.15", genCopy.getConfigElements()[0].getValue());
     }
 
+    @Test
     public void testContainsFormula() {
         assertFalse(productCmpt.containsFormula());
         IProductCmptGeneration gen1 = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar(2000, 1,
@@ -274,6 +286,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertTrue(productCmpt.containsFormula());
     }
 
+    @Test
     public void testContainsFormulaTest() {
         assertFalse(productCmpt.containsFormula());
         IProductCmptGeneration gen1 = (IProductCmptGeneration)productCmpt.newGeneration();
@@ -290,6 +303,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertTrue(productCmpt.containsFormulaTest());
     }
 
+    @Test
     public void testDependsOn() throws Exception {
         // TODO v2 - fix test
         // IPolicyCmptType a = newPolicyAndProductCmptType(ipsProject, "A", "AConfigType");
@@ -374,6 +388,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         // assertTrue(dependsOnAsList.contains(tableContents2.getQualifiedNameType()));
     }
 
+    @Test
     public void testDependsOnWithFormula() {
         // TODO v2 - fix test
         // IPolicyCmptType a = newPolicyCmptType(root, "A");
@@ -409,6 +424,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
      * {@link org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport#containsDifferenceToModel(IIpsProject)}
      * .
      */
+    @Test
     public void testContainsDifferenceToModel() throws CoreException {
         PolicyCmptType testType = newPolicyAndProductCmptType(ipsProject, "TestPolicyType", "TestProductType");
         IPolicyCmptTypeAttribute a1 = testType.newPolicyCmptTypeAttribute();
@@ -444,6 +460,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
      * {@link org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport#fixAllDifferencesToModel(IIpsProject)}
      * .
      */
+    @Test
     public void testFixAllDifferencesToModel() throws CoreException {
         IPolicyCmptType testType = newPolicyAndProductCmptType(ipsProject, "TestPolicyType", "TestProductType");
         IProductCmptType productCmptType = testType.findProductCmptType(ipsProject);
@@ -476,11 +493,13 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertEquals(false, product2.containsDifferenceToModel(ipsProject));
     }
 
+    @Test
     public void testSetValidTo() {
         productCmpt.setValidTo(new GregorianCalendar(2000, 1, 1));
         assertEquals(new GregorianCalendar(2000, 1, 1), productCmpt.getValidTo());
     }
 
+    @Test
     public void testFindMetaClass() throws CoreException {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
         productCmpt.setProductCmptType(type.getQualifiedName());

@@ -13,31 +13,36 @@
 
 package org.faktorips.devtools.tableconversion.excel;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import junit.framework.TestCase;
-
 import org.faktorips.datatype.classtypes.DateDatatype;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
  * @author Thorsten Guenther
  */
-public class DateValueConverterTest extends TestCase {
+public class DateValueConverterTest {
     private MessageList ml;
     private DateValueConverter converter;
     private DateDatatype datatype;
 
-    @Override
+    @Before
     public void setUp() throws Exception {
-        super.setUp();
         ml = new MessageList();
         converter = new DateValueConverter();
         datatype = new DateDatatype();
     }
 
+    @Test
     public void testGetIpsValue() {
         String value = converter.getIpsValue(new Long(1234), ml);
         assertTrue(datatype.isParsable(value));
@@ -60,6 +65,7 @@ public class DateValueConverterTest extends TestCase {
         assertFalse(ml.isEmpty());
     }
 
+    @Test
     public void testGetExternalDataValue() {
         final String VALID = "2001-03-26";
         final String INVALID = "invalid";

@@ -13,7 +13,8 @@
 
 package org.faktorips.devtools.tableconversion.csv;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -21,8 +22,9 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.devtools.tableconversion.IValueConverter;
 import org.faktorips.util.message.MessageList;
+import org.junit.Test;
 
-public abstract class NumberValueConverterTest extends TestCase {
+public abstract class NumberValueConverterTest {
 
     /**
      * @return The datatype to pass into <code>ITableFormat.getIpsValue()</code> and
@@ -39,6 +41,7 @@ public abstract class NumberValueConverterTest extends TestCase {
      */
     public abstract String[] getExternalDataToConvert(boolean useCommaAsDecimalSeparator);
 
+    @Test
     public void testExternalToInternal() {
         String[] validExternalDoubles = getExternalDataToConvert(false);
 
@@ -52,6 +55,7 @@ public abstract class NumberValueConverterTest extends TestCase {
         }
     }
 
+    @Test
     public void testExternalToInternalCustomDecimalFormat() {
         String[] validExternalDoubles = getExternalDataToConvert(true);
 
@@ -76,6 +80,7 @@ public abstract class NumberValueConverterTest extends TestCase {
         return tableFormat;
     }
 
+    @Test
     public void testExternalToInternalInvalid() {
         String[] validExternalDecimals = { "Egon" };
 

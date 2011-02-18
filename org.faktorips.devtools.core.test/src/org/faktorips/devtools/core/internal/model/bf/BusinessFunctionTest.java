@@ -37,6 +37,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -45,17 +47,20 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
     }
 
+    @Test
     public void testGetIpsObjectType() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
         assertEquals(bf.getIpsObjectType(), BusinessFunctionIpsObjectType.getInstance());
     }
 
+    @Test
     public void testNewPartClass() throws CoreException {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
@@ -63,6 +68,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         assertEquals(bfe.getType(), BFElementType.END);
     }
 
+    @Test
     public void testInitFromXmlElement() throws Exception {
         Document doc = getTestDocument();
         IBusinessFunction bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
@@ -100,6 +106,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         assertEquals(target, cf.getTarget());
     }
 
+    @Test
     public void testToXml() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
@@ -131,6 +138,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         assertEquals(cf2, bf.getControlFlow(cf2.getId()));
     }
 
+    @Test
     public void testGetBFElementById() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
@@ -142,6 +150,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         assertEquals(opaqueAction, bf.getBFElement(opaqueAction.getId()));
     }
 
+    @Test
     public void testGetBFElements() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
@@ -154,6 +163,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         assertTrue(bfes.contains(opaqueAction));
     }
 
+    @Test
     public void testGetControlFlows() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
@@ -165,6 +175,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         assertTrue(bf.getControlFlows().contains(cf3));
     }
 
+    @Test
     public void testGetControlFlowById() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
@@ -176,6 +187,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         assertEquals(cf3, bf.getControlFlow(cf3.getId()));
     }
 
+    @Test
     public void testGetParameterBFEs() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
@@ -189,6 +201,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         assertTrue(pList.contains(p3));
     }
 
+    @Test
     public void testgetParameterBFE() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
@@ -203,6 +216,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         assertEquals(p3, bf.getParameterBFE("p3"));
     }
 
+    @Test
     public void testValidateStartOnlyOnce() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
@@ -219,6 +233,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         assertNotNull(list2.getMessageByCode(IBusinessFunction.MSGCODE_START_SINGLE_OCCURRENCE));
     }
 
+    @Test
     public void testValidateEndOnlyOnce() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
@@ -235,6 +250,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         assertNotNull(list2.getMessageByCode(IBusinessFunction.MSGCODE_END_SINGLE_OCCURRENCE));
     }
 
+    @Test
     public void testValidateBFElementNameCollision() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
@@ -300,6 +316,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         assertNull(list4.getMessageByCode(IBusinessFunction.MSGCODE_ELEMENT_NAME_COLLISION));
     }
 
+    @Test
     public void testValidateStartNodeMissing() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
@@ -311,6 +328,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         assertNull(msgList.getMessageByCode(IBusinessFunction.MSGCODE_START_DEFINITION_MISSING));
     }
 
+    @Test
     public void testValidateEndNodeMissing() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
@@ -322,6 +340,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         assertNull(msgList.getMessageByCode(IBusinessFunction.MSGCODE_END_DEFINITION_MISSING));
     }
 
+    @Test
     public void testValidateNotConnected1() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
@@ -345,6 +364,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         assertNull(msgList.getMessageByCode(IBusinessFunction.MSGCODE_NOT_CONNECTED_WITH_END));
     }
 
+    @Test
     public void testValidateNotConnected2() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
@@ -430,6 +450,7 @@ public class BusinessFunctionTest extends AbstractIpsPluginTest {
         assertNull(msgAction2.getMessageByCode(IBusinessFunction.MSGCODE_NOT_CONNECTED_WITH_END));
     }
 
+    @Test
     public void testDependsOn() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");

@@ -27,6 +27,8 @@ import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
@@ -48,7 +50,8 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
     final private String STRUCTURE_ROLENAME = "StructUsageRole";
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
         policyCmptType = newPolicyAndProductCmptType(project, "Policy", "Product");
@@ -63,6 +66,7 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
         contentUsage = cmpt.getProductCmptGeneration(0).newTableContentUsage();
     }
 
+    @Test
     public void testValidateUnknownStructure() throws Exception {
         MessageList ml = contentUsage.validate(project);
         assertNotNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_STRUCTURE_USAGE));
@@ -72,6 +76,7 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_STRUCTURE_USAGE));
     }
 
+    @Test
     public void testValidateUnknownContent() throws Exception {
         structUsage.setMandatoryTableContent(true);
         contentUsage.setStructureUsage("StructUsageRole");
@@ -101,6 +106,7 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_TABLE_CONTENT));
     }
 
+    @Test
     public void testValidateInvalidContent() throws Exception {
         content.setTableStructure("unknown");
         contentUsage.setStructureUsage("StructUsageRole");
@@ -113,6 +119,7 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_INVALID_TABLE_CONTENT));
     }
 
+    @Test
     public void testFindTableContents() throws Exception {
         contentUsage.setTableContentName("none");
         assertNull(contentUsage.findTableContents(project));
@@ -121,6 +128,7 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
         assertSame(content, contentUsage.findTableContents(project));
     }
 
+    @Test
     public void testFindTableStructureUsage() throws Exception {
         contentUsage.setStructureUsage("none");
         assertNull(contentUsage.findTableStructureUsage(project));
@@ -128,6 +136,7 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
         assertEquals(structUsage, contentUsage.findTableStructureUsage(project));
     }
 
+    @Test
     public void testInitFromXml() {
         Element el = getTestDocument().getDocumentElement();
         contentUsage.initFromXml(el);
@@ -136,6 +145,7 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
         assertEquals("RateTable2007", contentUsage.getTableContentName());
     }
 
+    @Test
     public void testToXml() {
         contentUsage.setStructureUsage("rateTable");
         contentUsage.setTableContentName("RateTable2007");
@@ -155,6 +165,7 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
         assertNull(contentUsage.getTableContentName());
     }
 
+    @Test
     public void testGetCaption() throws CoreException {
         contentUsage.setStructureUsage(STRUCTURE_ROLENAME);
         structUsage.getLabel(Locale.GERMAN).setValue("foo");
@@ -162,11 +173,13 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
         assertEquals("foo", contentUsage.getCaption(Locale.GERMAN));
     }
 
+    @Test
     public void testGetCaptionNotExistent() throws CoreException {
         contentUsage.setStructureUsage(STRUCTURE_ROLENAME);
         assertNull(contentUsage.getCaption(Locale.TAIWAN));
     }
 
+    @Test
     public void testGetCaptionNullPointer() throws CoreException {
         try {
             structUsage.getCaption(null);
@@ -175,6 +188,7 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetLastResortCaption() {
         contentUsage.setStructureUsage("foo");
         assertEquals("Foo", contentUsage.getLastResortCaption());

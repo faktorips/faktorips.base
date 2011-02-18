@@ -21,6 +21,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -34,13 +36,15 @@ public class IpsPackageNameComparatorTest extends AbstractIpsPluginTest {
     private IpsPackageNameComparator comparator;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         ipsProject = this.newIpsProject("TestProject");
         ipsRoot = (IpsPackageFragmentRoot)ipsProject.getIpsPackageFragmentRoots()[0];
     }
 
+    @Test
     public void testCompareBasicDefaultSortOrder() throws CoreException {
         comparator = new IpsPackageNameComparator(true);
 
@@ -84,6 +88,7 @@ public class IpsPackageNameComparatorTest extends AbstractIpsPluginTest {
         assertTrue(caughtException);
     }
 
+    @Test
     public void testCompareExtendedDefaultSortOrder() throws CoreException {
         comparator = new IpsPackageNameComparator(true);
 
@@ -119,6 +124,7 @@ public class IpsPackageNameComparatorTest extends AbstractIpsPluginTest {
         assertFalse(packA.equals(packX));
     }
 
+    @Test
     public void testCompareBasicSortOrder() throws CoreException, IOException {
         comparator = new IpsPackageNameComparator(false);
 
@@ -171,6 +177,7 @@ public class IpsPackageNameComparatorTest extends AbstractIpsPluginTest {
         assertTrue(caughtException);
     }
 
+    @Test
     public void testCompareExtendedSortOrder() throws CoreException, IOException {
 
         comparator = new IpsPackageNameComparator(false);

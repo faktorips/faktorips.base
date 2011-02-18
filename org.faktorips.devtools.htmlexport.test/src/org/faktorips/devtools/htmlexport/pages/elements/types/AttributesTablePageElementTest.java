@@ -19,13 +19,16 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.standard.AbstractXmlUnitHtmlExportTest;
 import org.faktorips.devtools.htmlexport.pages.standard.ContentPageUtil;
+import org.junit.Before;
+import org.junit.Test;
 
 public class AttributesTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
 
     private PolicyCmptType policy;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         policy = newPolicyCmptType(ipsProject, "Vertrag");
     }
@@ -38,6 +41,7 @@ public class AttributesTablePageElementTest extends AbstractXmlUnitHtmlExportTes
         return "//table[@id= '" + policy.getName() + "_attributes" + "']";
     }
 
+    @Test
     public void testAttributesTableVorhanden() throws Exception {
 
         IAttribute attributeString = createStringAttribute();
@@ -54,6 +58,7 @@ public class AttributesTablePageElementTest extends AbstractXmlUnitHtmlExportTes
         assertXPathFromTable(objectContentPage, "//tr[3][td='" + attributeInteger.getName() + "']");
     }
 
+    @Test
     public void testAttributesTableNichtVorhandenOhneAttribute() throws Exception {
 
         PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
@@ -61,6 +66,7 @@ public class AttributesTablePageElementTest extends AbstractXmlUnitHtmlExportTes
         assertXPathNotExists(objectContentPage, getXPathAttributeTable());
     }
 
+    @Test
     public void testAttributesTableAufbau() throws Exception {
         IAttribute attributeString = createStringAttribute();
         createIntegerAttribute();

@@ -24,11 +24,14 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
+import org.junit.Before;
+import org.junit.Test;
 
 public class NewPcTypeAssociationWizardTest extends AbstractIpsPluginTest {
     private IIpsProject project;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
@@ -43,6 +46,7 @@ public class NewPcTypeAssociationWizardTest extends AbstractIpsPluginTest {
      * @see IType#findAssociationsForTargetAndAssociationType(String, AssociationType, IIpsProject,
      *      boolean)
      */
+    @Test
     public void testGetCorrespondingTargetAssociations() throws Exception {
         IPolicyCmptType policyCmptTypeSuper1 = newPolicyCmptType(project, "policyCmptSuper1");
         IPolicyCmptType policyCmptType1 = newPolicyCmptType(project, "policyCmpt1");
@@ -94,6 +98,7 @@ public class NewPcTypeAssociationWizardTest extends AbstractIpsPluginTest {
     /**
      * Don't find association from subtypes
      */
+    @Test
     public void testGetCorrespondingTargetAssociationsFromSubType() throws Exception {
         // create supertypes
         IPolicyCmptType police = newPolicyCmptType(project, "policy");
@@ -144,6 +149,7 @@ public class NewPcTypeAssociationWizardTest extends AbstractIpsPluginTest {
     /**
      * Test if the last pages for creating the product cmpt type association are available or not.
      */
+    @Test
     public void testIsProductCmptTypeAvailable() throws CoreException {
         PolicyCmptType sourcePolicyCmptType = newPolicyAndProductCmptType(project, "Policy", "PolicyType");
         PolicyCmptType targetPolicyCmptType = newPolicyAndProductCmptType(project, "Coverage", "CoverageType");

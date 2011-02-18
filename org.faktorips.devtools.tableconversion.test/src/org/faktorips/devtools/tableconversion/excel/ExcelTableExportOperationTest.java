@@ -21,6 +21,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.tableconversion.AbstractTableTest;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ExcelTableExportOperationTest extends AbstractTableTest {
 
@@ -29,7 +31,8 @@ public class ExcelTableExportOperationTest extends AbstractTableTest {
     private IIpsProject ipsProject;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         ipsProject = newIpsProject("test");
@@ -59,6 +62,7 @@ public class ExcelTableExportOperationTest extends AbstractTableTest {
         new File(filename).delete();
     }
 
+    @Test
     public void testExportValid() throws Exception {
         ITableContents contents = createValidTableContents(ipsProject);
 
@@ -68,6 +72,7 @@ public class ExcelTableExportOperationTest extends AbstractTableTest {
         assertTrue(ml.isEmpty());
     }
 
+    @Test
     public void testExportInvalid() throws Exception {
         ITableContents contents = createInvalidTableContents(ipsProject);
 

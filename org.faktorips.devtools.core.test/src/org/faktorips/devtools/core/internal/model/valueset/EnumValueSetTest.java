@@ -39,6 +39,8 @@ import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -56,7 +58,8 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     private IProductCmptGeneration generation;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         gender = new DefaultEnumType("Gender", DefaultEnumValue.class);
         new DefaultEnumValue(gender, "male");
@@ -80,6 +83,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         ce.setPolicyCmptTypeAttribute("attr");
     }
 
+    @Test
     public void testCopy() {
         EnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("10");
@@ -93,6 +97,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertEquals(2, copy.getPositions("1").get(0).intValue());
     }
 
+    @Test
     public void testCopyPropertiesFrom() {
         EnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("10");
@@ -108,6 +113,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertEquals(2, set2.getPositions("1").get(0).intValue());
     }
 
+    @Test
     public void testGetPositions() {
         EnumValueSet set = new EnumValueSet(ce, "1");
         List<Integer> positions = set.getPositions("1");
@@ -140,6 +146,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertEquals(3, positions.get(1).intValue());
     }
 
+    @Test
     public void testContainsValue() {
         EnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("10EUR");
@@ -163,6 +170,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertFalse(list.containsErrorMsg());
     }
 
+    @Test
     public void testContainsValueInvalidSet() {
         EnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("1");
@@ -176,6 +184,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertNull(list.getMessageByCode(IValueSet.MSGCODE_VALUE_NOT_CONTAINED));
     }
 
+    @Test
     public void testContainsValueSet() throws Exception {
         EnumValueSet superset = new EnumValueSet(ce, "50");
         superset.addValue("1EUR");
@@ -231,6 +240,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertNotNull(list.getMessageByCode(IValueSet.MSGCODE_DATATYPES_NOT_MATCHING));
     }
 
+    @Test
     public void testAddValue() {
         IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
@@ -242,6 +252,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertEquals("one", set.getValue(2));
     }
 
+    @Test
     public void testRemoveValue_byValue() {
         IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
@@ -300,6 +311,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testRemoveValue_byIndex() {
         IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
@@ -344,9 +356,11 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertEquals(0, positions.size());
     }
 
+    @Test
     public void testRemoveValue_byIndex_LastEntry() {
     }
 
+    @Test
     public void testGetValue() {
         IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
@@ -359,6 +373,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testSetValue_oldValueHasOneOccurenceBeforeTheOperation_NewValueHasNoOccurenceBeforeTheOperation() {
         IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
@@ -374,6 +389,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertEquals(1, positions.get(0).intValue());
     }
 
+    @Test
     public void testSetValue_oldValueHasOneOccurenceBeforeTheOperation_NewValueHasOneOccurenceBeforeTheOperation() {
         IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
@@ -390,6 +406,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertEquals(2, positions.get(1).intValue());
     }
 
+    @Test
     public void testSetValue_oldValueHasOneOccurenceBeforeTheOperation_NewValueHasMultipleOccurencesBeforeTheOperation() {
         IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
@@ -408,6 +425,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertEquals(3, positions.get(2).intValue());
     }
 
+    @Test
     public void testSetValue_oldValueHasMultipleOccurencesBeforeAndOneAfterTheOperation_NewValueHasNoOccurenceBeforeTheOperation() {
         IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
@@ -424,6 +442,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertEquals(1, positions.get(0).intValue());
     }
 
+    @Test
     public void testSetValue_oldValueHasMultipleOccurencesBeforeAndOneAfterTheOperation_NewValueHasOneOccurenceBeforeTheOperation() {
         IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
@@ -441,6 +460,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertEquals(1, positions.get(1).intValue());
     }
 
+    @Test
     public void testSetValue_oldValueHasMultipleOccurencesBeforeAndOneAfterTheOperation_NewValueHasMultipleOccurencesBeforeTheOperation() {
         IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
@@ -460,6 +480,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertEquals(3, positions.get(2).intValue());
     }
 
+    @Test
     public void testSetValue_oldValueHasMultipleOccurencesBeforeAndAfterTheOperation_NewValueHasNoOccurenceBeforeTheOperation() {
         IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
@@ -478,6 +499,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertEquals(1, positions.get(0).intValue());
     }
 
+    @Test
     public void testSetValue_oldValueHasMultipleOccurencesBeforeAndAfterTheOperation_NewValueHasOneOccurenceBeforeTheOperation() {
         IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
@@ -497,6 +519,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertEquals(1, positions.get(1).intValue());
     }
 
+    @Test
     public void testSetValue_oldValueHasMultipleOccurencesBeforeAndAfterTheOperation_NewValueHasMultipleOccurencesBeforeTheOperation() {
         IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
@@ -518,6 +541,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertEquals(4, positions.get(2).intValue());
     }
 
+    @Test
     public void testCreateFromXml() {
         Document doc = getTestDocument();
         Element root = doc.getDocumentElement();
@@ -530,6 +554,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testToXml() {
         EnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
@@ -544,6 +569,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testValidate() throws Exception {
         EnumValueSet set = new EnumValueSet(ce, "1");
         MessageList list = set.validate(ipsProject);
@@ -598,6 +624,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testValidate_CheckDuplicates() throws CoreException {
         EnumValueSet set = new EnumValueSet(ce, "1");
         MessageList list = set.validate(ipsProject);
@@ -636,6 +663,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertEquals(2, ops.length);
     }
 
+    @Test
     public void testValidateValue() throws CoreException {
         EnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("2EUR");
@@ -662,6 +690,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertEquals(2, ops[0].getIndex());
     }
 
+    @Test
     public void testGetValues() {
         EnumValueSet set = new EnumValueSet(ce, "50");
         String[] values = set.getValues();
@@ -677,6 +706,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertEquals(2, values.length);
     }
 
+    @Test
     public void testGetContainsNull() {
         EnumValueSet set = new EnumValueSet(ce, "50");
 
@@ -692,6 +722,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertTrue(set.getContainsNull());
     }
 
+    @Test
     public void testSetContainsNull() {
         EnumValueSet set = new EnumValueSet(ce, "50");
 

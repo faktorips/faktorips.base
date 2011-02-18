@@ -13,17 +13,21 @@
 
 package org.faktorips.devtools.tableconversion.excel;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.util.message.MessageList;
+import org.junit.Test;
 
 /**
  * 
  * @author Thorsten Guenther
  */
-public class StringValueConverterTest extends TestCase {
+public class StringValueConverterTest {
 
+    @Test
     public void testGetIpsValue() {
         MessageList ml = new MessageList();
         StringValueConverter converter = new StringValueConverter();
@@ -36,6 +40,7 @@ public class StringValueConverterTest extends TestCase {
         assertTrue(ml.isEmpty());
     }
 
+    @Test
     public void testGetExternalDataValue() {
         MessageList ml = new MessageList();
         StringValueConverter converter = new StringValueConverter();

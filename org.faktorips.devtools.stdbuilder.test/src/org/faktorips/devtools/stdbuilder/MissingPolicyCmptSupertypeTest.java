@@ -19,9 +19,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.junit.Test;
 
 public class MissingPolicyCmptSupertypeTest extends AbstractIpsPluginTest {
 
+    @Test
     public void test() throws CoreException {
         IIpsProject project = newIpsProject();
         IPolicyCmptType type = newPolicyCmptType(project, "Type1");

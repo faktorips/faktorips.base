@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.htmlexport.HtmlExportOperation;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
+import org.junit.Before;
 
 public abstract class AbstractHtmlExportPluginTest extends AbstractIpsPluginTest {
 
@@ -43,7 +44,8 @@ public abstract class AbstractHtmlExportPluginTest extends AbstractIpsPluginTest
     }
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         ipsProject = newIpsProject("TestProjekt");

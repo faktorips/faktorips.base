@@ -14,6 +14,8 @@
 package org.faktorips.devtools.stdbuilder.policycmpttype.attribute;
 
 import org.faktorips.devtools.core.model.pctype.AttributeType;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -33,12 +35,14 @@ public class GenDerivedCachedAttributeTest extends GenPolicyCmptTypeAttributeTes
     }
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         genPublishedDerivedAttribute = new GenDerivedAttribute(genPolicyCmptType, publishedAttribute);
         genPublicDerivedAttribute = new GenDerivedAttribute(genPolicyCmptType, publicAttribute);
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterface() {
         genPublishedDerivedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
                 javaInterface, publishedAttribute);
@@ -52,6 +56,7 @@ public class GenDerivedCachedAttributeTest extends GenPolicyCmptTypeAttributeTes
         assertTrue(generatedJavaElements.isEmpty());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterfaceOverwritten() {
         publishedAttribute.setOverwrite(true);
         publicAttribute.setOverwrite(true);
@@ -66,6 +71,7 @@ public class GenDerivedCachedAttributeTest extends GenPolicyCmptTypeAttributeTes
         assertTrue(generatedJavaElements.isEmpty());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterfaceProductRelevant() {
         publishedAttribute.setProductRelevant(true);
         publicAttribute.setProductRelevant(true);
@@ -82,6 +88,7 @@ public class GenDerivedCachedAttributeTest extends GenPolicyCmptTypeAttributeTes
         assertTrue(generatedJavaElements.isEmpty());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterfaceProductRelevantOverwritten() {
         publishedAttribute.setProductRelevant(true);
         publicAttribute.setProductRelevant(true);
@@ -98,6 +105,7 @@ public class GenDerivedCachedAttributeTest extends GenPolicyCmptTypeAttributeTes
         assertTrue(generatedJavaElements.isEmpty());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementation() {
         genPublishedDerivedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
                 publishedAttribute);
@@ -114,6 +122,7 @@ public class GenDerivedCachedAttributeTest extends GenPolicyCmptTypeAttributeTes
         assertEquals(3, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementationOverwritten() {
         publishedAttribute.setOverwrite(true);
         publicAttribute.setOverwrite(true);
@@ -129,6 +138,7 @@ public class GenDerivedCachedAttributeTest extends GenPolicyCmptTypeAttributeTes
         assertEquals(1, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementationProductRelevant() {
         publishedAttribute.setProductRelevant(true);
         publicAttribute.setProductRelevant(true);
@@ -148,6 +158,7 @@ public class GenDerivedCachedAttributeTest extends GenPolicyCmptTypeAttributeTes
         assertEquals(3, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementationProductRelevantOverwritten() {
         publishedAttribute.setProductRelevant(true);
         publicAttribute.setProductRelevant(true);

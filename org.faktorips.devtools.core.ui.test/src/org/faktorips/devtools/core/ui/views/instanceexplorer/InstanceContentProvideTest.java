@@ -16,6 +16,8 @@ package org.faktorips.devtools.core.ui.views.instanceexplorer;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author dirmeier
@@ -32,7 +34,8 @@ public class InstanceContentProvideTest extends AbstractIpsPluginTest {
     private IIpsProject leaveProject2;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
 
@@ -60,6 +63,7 @@ public class InstanceContentProvideTest extends AbstractIpsPluginTest {
         leaveProject2.setIpsObjectPath(path);
     }
 
+    @Test
     public void testEmtptyTest() {
         assertTrue(true);
     }

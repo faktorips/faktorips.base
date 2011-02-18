@@ -18,13 +18,17 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IActionBFE;
+import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
+import org.faktorips.devtools.core.model.bf.IMethodCallBFE;
 import org.faktorips.devtools.core.model.bf.IParameterBFE;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -35,6 +39,7 @@ public class ActionBFETest extends AbstractIpsPluginTest {
     private IBusinessFunction bf;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
@@ -44,6 +49,7 @@ public class ActionBFETest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testPropertiesToXml() throws Exception {
         IActionBFE action = bf.newOpaqueAction(new Point(10, 10));
         action.setExecutableMethodName("aMethod");
@@ -56,6 +62,7 @@ public class ActionBFETest extends AbstractIpsPluginTest {
         assertEquals(action.getTarget(), action2.getTarget());
     }
 
+    @Test
     public void testInitPropertiesFromXml() {
         IActionBFE action = bf.newOpaqueAction(new Point(10, 10));
         action.initFromXml((Element)getTestDocument().getDocumentElement().getElementsByTagName(IActionBFE.XML_TAG)
@@ -64,6 +71,7 @@ public class ActionBFETest extends AbstractIpsPluginTest {
         assertEquals("aMethod", action.getExecutableMethodName());
     }
 
+    @Test
     public void testGetExecutableMethodName() {
         IActionBFE actionBFE = bf.newOpaqueAction(new Point(10, 10));
         listener.clear();
@@ -72,6 +80,7 @@ public class ActionBFETest extends AbstractIpsPluginTest {
         assertTrue(listener.getIpsObjectParts().contains(actionBFE));
     }
 
+    @Test
     public void testGetTarget() {
         IActionBFE actionBFE = bf.newOpaqueAction(new Point(10, 10));
         listener.clear();
@@ -80,6 +89,7 @@ public class ActionBFETest extends AbstractIpsPluginTest {
         assertTrue(listener.getIpsObjectParts().contains(actionBFE));
     }
 
+    @Test
     public void testFindTarget() throws Exception {
         IActionBFE actionBFE = bf.newMethodCallAction(new Point(10, 10));
         IParameterBFE parameter = bf.newParameter();
@@ -94,29 +104,32 @@ public class ActionBFETest extends AbstractIpsPluginTest {
         assertEquals(bf2, actionBFE.findReferencedBusinessFunction());
     }
 
+    @Test
     public void testValidateTargetNotSpecified() throws Exception {
         IActionBFE actionBFE = bf.newMethodCallAction(new Point(10, 10));
 
         MessageList msgList = actionBFE.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IActionBFE.MSGCODE_TARGET_NOT_SPECIFIED));
+        assertNotNull(msgList.getMessageByCode(IMethodCallBFE.MSGCODE_TARGET_NOT_SPECIFIED));
 
         actionBFE.setTarget("policy");
         msgList = actionBFE.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IActionBFE.MSGCODE_TARGET_NOT_SPECIFIED));
+        assertNull(msgList.getMessageByCode(IMethodCallBFE.MSGCODE_TARGET_NOT_SPECIFIED));
     }
 
+    @Test
     public void testValidateTargetDoesNotExist() throws Exception {
         IActionBFE actionBFE = bf.newMethodCallAction(new Point(10, 10));
         actionBFE.setTarget("p");
         MessageList msgList = actionBFE.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IActionBFE.MSGCODE_TARGET_DOES_NOT_EXIST));
+        assertNotNull(msgList.getMessageByCode(IMethodCallBFE.MSGCODE_TARGET_DOES_NOT_EXIST));
 
         IParameterBFE p = bf.newParameter();
         p.setName("p");
         msgList = actionBFE.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IActionBFE.MSGCODE_TARGET_DOES_NOT_EXIST));
+        assertNull(msgList.getMessageByCode(IMethodCallBFE.MSGCODE_TARGET_DOES_NOT_EXIST));
     }
 
+    @Test
     public void testValidateTargetNotValidType() throws Exception {
 
         IParameterBFE p = bf.newParameter();
@@ -127,15 +140,16 @@ public class ActionBFETest extends AbstractIpsPluginTest {
         actionBFE.setExecutableMethodName("aMethod");
         actionBFE.setTarget("p");
         MessageList msgList = actionBFE.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IActionBFE.MSGCODE_TARGET_NOT_VALID_TYPE));
+        assertNotNull(msgList.getMessageByCode(IMethodCallBFE.MSGCODE_TARGET_NOT_VALID_TYPE));
 
         IPolicyCmptType policy = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "policy");
         p.setDatatype(policy.getQualifiedName());
         msgList = actionBFE.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IActionBFE.MSGCODE_TARGET_NOT_VALID_TYPE));
+        assertNull(msgList.getMessageByCode(IMethodCallBFE.MSGCODE_TARGET_NOT_VALID_TYPE));
 
     }
 
+    @Test
     public void testValidateMethodNotSpecified() throws Exception {
 
         IParameterBFE p = bf.newParameter();
@@ -145,17 +159,18 @@ public class ActionBFETest extends AbstractIpsPluginTest {
         actionBFE.setTarget("p");
 
         MessageList msgList = actionBFE.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IActionBFE.MSGCODE_METHOD_NOT_SPECIFIED));
+        assertNotNull(msgList.getMessageByCode(IMethodCallBFE.MSGCODE_METHOD_NOT_SPECIFIED));
 
         actionBFE.setExecutableMethodName("aMethod");
         msgList = actionBFE.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IActionBFE.MSGCODE_METHOD_NOT_SPECIFIED));
+        assertNull(msgList.getMessageByCode(IMethodCallBFE.MSGCODE_METHOD_NOT_SPECIFIED));
 
         actionBFE.setExecutableMethodName("end");
         msgList = actionBFE.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IActionBFE.MSGCODE_NAME_NOT_VALID));
+        assertNotNull(msgList.getMessageByCode(IBFElement.MSGCODE_NAME_NOT_VALID));
     }
 
+    @Test
     public void testValidateMethodDoesNotExist() throws Exception {
         IPolicyCmptType policy = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "policy");
 
@@ -168,7 +183,7 @@ public class ActionBFETest extends AbstractIpsPluginTest {
         actionBFE.setExecutableMethodName("aMethod");
 
         MessageList msgList = actionBFE.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IActionBFE.MSGCODE_METHOD_DOES_NOT_EXIST));
+        assertNotNull(msgList.getMessageByCode(IMethodCallBFE.MSGCODE_METHOD_DOES_NOT_EXIST));
 
         IMethod method = policy.newMethod();
         method.setName("aMethod");
@@ -176,11 +191,11 @@ public class ActionBFETest extends AbstractIpsPluginTest {
         method.setModifier(Modifier.PUBLIC);
 
         msgList = actionBFE.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IActionBFE.MSGCODE_METHOD_DOES_NOT_EXIST));
+        assertNull(msgList.getMessageByCode(IMethodCallBFE.MSGCODE_METHOD_DOES_NOT_EXIST));
 
         method.delete();
         msgList = actionBFE.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IActionBFE.MSGCODE_METHOD_DOES_NOT_EXIST));
+        assertNotNull(msgList.getMessageByCode(IMethodCallBFE.MSGCODE_METHOD_DOES_NOT_EXIST));
 
         IPolicyCmptType superPolicy = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "superPolicy");
         policy.setSupertype(superPolicy.getQualifiedName());
@@ -191,55 +206,58 @@ public class ActionBFETest extends AbstractIpsPluginTest {
         method.setModifier(Modifier.PUBLIC);
 
         msgList = actionBFE.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IActionBFE.MSGCODE_METHOD_DOES_NOT_EXIST));
+        assertNull(msgList.getMessageByCode(IMethodCallBFE.MSGCODE_METHOD_DOES_NOT_EXIST));
 
     }
 
+    @Test
     public void testValidateInlineAction() throws Exception {
         // check name specified
         IActionBFE action = bf.newOpaqueAction(new Point(10, 10));
         MessageList msgList = action.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IActionBFE.MSGCODE_NAME_NOT_SPECIFIED));
+        assertNotNull(msgList.getMessageByCode(IBFElement.MSGCODE_NAME_NOT_SPECIFIED));
 
         action.setName("action1");
         msgList = action.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IActionBFE.MSGCODE_NAME_NOT_SPECIFIED));
+        assertNull(msgList.getMessageByCode(IBFElement.MSGCODE_NAME_NOT_SPECIFIED));
 
         // check valid name
         msgList = action.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IActionBFE.MSGCODE_NAME_NOT_VALID));
+        assertNull(msgList.getMessageByCode(IBFElement.MSGCODE_NAME_NOT_VALID));
 
         action.setName("action1-");
         msgList = action.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IActionBFE.MSGCODE_NAME_NOT_VALID));
+        assertNotNull(msgList.getMessageByCode(IBFElement.MSGCODE_NAME_NOT_VALID));
 
         action.setName("execute");
         msgList = action.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IActionBFE.MSGCODE_NAME_NOT_VALID));
+        assertNotNull(msgList.getMessageByCode(IBFElement.MSGCODE_NAME_NOT_VALID));
     }
 
+    @Test
     public void testValidateBusinessFunctionCallAction() throws Exception {
 
         IActionBFE action = bf.newBusinessFunctionCallAction(new Point(10, 10));
         MessageList msgList = action.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IActionBFE.MSGCODE_TARGET_NOT_SPECIFIED));
+        assertNotNull(msgList.getMessageByCode(IMethodCallBFE.MSGCODE_TARGET_NOT_SPECIFIED));
 
         action.setTarget("bf2");
         msgList = action.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IActionBFE.MSGCODE_TARGET_NOT_SPECIFIED));
+        assertNull(msgList.getMessageByCode(IMethodCallBFE.MSGCODE_TARGET_NOT_SPECIFIED));
 
         msgList = action.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IActionBFE.MSGCODE_TARGET_DOES_NOT_EXIST));
+        assertNotNull(msgList.getMessageByCode(IMethodCallBFE.MSGCODE_TARGET_DOES_NOT_EXIST));
 
         newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf2");
         msgList = action.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IActionBFE.MSGCODE_TARGET_DOES_NOT_EXIST));
+        assertNull(msgList.getMessageByCode(IMethodCallBFE.MSGCODE_TARGET_DOES_NOT_EXIST));
 
         action.setTarget("start");
         msgList = action.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IActionBFE.MSGCODE_NAME_NOT_VALID));
+        assertNotNull(msgList.getMessageByCode(IBFElement.MSGCODE_NAME_NOT_VALID));
     }
 
+    @Test
     public void testGetReferencedBFQualifiedName() {
         IActionBFE action = bf.newBusinessFunctionCallAction(new Point(10, 10));
         action.setTarget("aTarget");
@@ -250,6 +268,7 @@ public class ActionBFETest extends AbstractIpsPluginTest {
         assertNull(action.getReferencedBfQualifiedName());
     }
 
+    @Test
     public void testGetReferencedBFUnqualifiedName() {
         IActionBFE action = bf.newBusinessFunctionCallAction(new Point(10, 10));
 
@@ -264,6 +283,7 @@ public class ActionBFETest extends AbstractIpsPluginTest {
         assertNull(action.getReferencedBfUnqualifedName());
     }
 
+    @Test
     public void testGetDisplayString() {
         IActionBFE action = bf.newBusinessFunctionCallAction(new Point(10, 10));
         action.setTarget("aTarget");

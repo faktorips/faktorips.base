@@ -23,18 +23,16 @@ import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.junit.Test;
 
 public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
 
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-    }
-
+    @Test
     public void testGetEnumValues() {
         assertEquals(2, genderEnumContent.getEnumValues().size());
     }
 
+    @Test
     public void testNewEnumValue() throws CoreException {
         IEnumAttribute integerAttribute = genderEnumType.newEnumAttribute();
         integerAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
@@ -56,11 +54,13 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         assertNull(genderEnumContent.newEnumValue());
     }
 
+    @Test
     public void testGetEnumValuesCount() {
         assertEquals(2, genderEnumContent.getEnumValuesCount());
         assertEquals(0, genderEnumType.getEnumValuesCount());
     }
 
+    @Test
     public void testMoveEnumValuesUp() throws CoreException {
         try {
             genderEnumContent.moveEnumValues(null, true);
@@ -99,6 +99,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         assertEquals(genderEnumValueFemale, genderEnumContent.getEnumValues().get(2));
     }
 
+    @Test
     public void testMoveEnumValuesDown() throws CoreException {
         try {
             genderEnumContent.moveEnumValues(null, false);
@@ -135,6 +136,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         assertEquals(genderEnumValueMale, genderEnumContent.getEnumValues().get(2));
     }
 
+    @Test
     public void testGetIndexOfEnumValue() throws CoreException {
         assertEquals(0, genderEnumContent.getIndexOfEnumValue(genderEnumValueMale));
         assertEquals(1, genderEnumContent.getIndexOfEnumValue(genderEnumValueFemale));
@@ -148,11 +150,13 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         assertEquals(-1, genderEnumContent.getIndexOfEnumValue(paymentMode.getEnumValues().get(0)));
     }
 
+    @Test
     public void testClear() {
         genderEnumContent.clear();
         assertEquals(0, genderEnumContent.getEnumValuesCount());
     }
 
+    @Test
     public void testUniqueIdentifierValidation() throws CoreException {
         assertEquals(0, paymentMode.validate(ipsProject).getNoOfMessages());
         IEnumValue testValue1 = paymentMode.getEnumValues().get(0);
@@ -206,6 +210,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         assertEquals(2, paymentMode.validate(ipsProject).getNoOfMessages());
     }
 
+    @Test
     public void testDeleteEnumValues() {
         assertFalse(genderEnumContent.deleteEnumValues(paymentMode.getEnumValues()));
         assertFalse(genderEnumContent.deleteEnumValues(null));

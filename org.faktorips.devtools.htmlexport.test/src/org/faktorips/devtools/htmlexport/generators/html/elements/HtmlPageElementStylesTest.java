@@ -16,9 +16,11 @@ package org.faktorips.devtools.htmlexport.generators.html.elements;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
+import org.junit.Test;
 
 public class HtmlPageElementStylesTest extends AbstractHtmlPageElementLayouterTest {
 
+    @Test
     public void testNoStyles() {
         TextPageElement pageElement = new TextPageElement("testtext");
 
@@ -30,6 +32,7 @@ public class HtmlPageElementStylesTest extends AbstractHtmlPageElementLayouterTe
 
     }
 
+    @Test
     public void testStyleConcatenation() {
         TextPageElement pageElement = new TextPageElement("testtext");
         pageElement.addStyles(Style.ITALIC);

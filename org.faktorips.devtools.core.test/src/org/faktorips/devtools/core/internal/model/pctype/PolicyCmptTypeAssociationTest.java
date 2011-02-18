@@ -28,6 +28,8 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -40,7 +42,8 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
     private IPolicyCmptTypeAssociation implementationAssociation;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
         pcType = newPolicyCmptType(ipsProject, "Policy");
@@ -58,6 +61,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         implementationAssociation.setTarget(collisionCoverageType.getQualifiedName());
     }
 
+    @Test
     public void testIsQualificationPossible() throws CoreException {
         association.setTarget("UnknownTarget");
         assertFalse(association.isQualificationPossible(ipsProject));
@@ -79,6 +83,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertTrue(association.isQualificationPossible(ipsProject));
     }
 
+    @Test
     public void testFindQualifierCandidate() throws CoreException {
         association.setQualified(false);
         association.setTarget("UnknownTarget");
@@ -96,6 +101,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertEquals("UnkownType", association.findQualifierCandidate(ipsProject));
     }
 
+    @Test
     public void testFindQualifier() throws CoreException {
         association.setQualified(false);
         assertNull(association.findQualifier(ipsProject));
@@ -118,11 +124,13 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertEquals(productCmptType, association.findQualifier(ipsProject));
     }
 
+    @Test
     public void testSetQualified() {
         testPropertyAccessReadWrite(PolicyCmptTypeAssociation.class, IAssociation.PROPERTY_QUALIFIED, association,
                 Boolean.TRUE);
     }
 
+    @Test
     public void testValidateContainerRelation_ReverseRelation_Mismtach() throws CoreException {
         IPolicyCmptType policyType = newPolicyCmptType(ipsProject, "my.Policy");
         IPolicyCmptType coverageType = newPolicyCmptType(ipsProject, "my.Coverage");
@@ -194,6 +202,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
                 .getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_ASSOCIATION_INCONSTENT_WITH_DERIVED_UNION));
     }
 
+    @Test
     public void testValidateInverseRelationMismatch() throws Exception {
         IIpsProject ipsProject = newIpsProject("TestValidateInverseRelationMismatch");
         IPolicyCmptType typeA = newPolicyCmptType(ipsProject, "A");
@@ -235,6 +244,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_MISMATCH));
     }
 
+    @Test
     public void testValidateInverseRelationNotFoundInTarget() throws Exception {
         IIpsProject ipsProject = newIpsProject("testValidateInverseRelationNotFoundInTarget");
         IPolicyCmptType typeA = newPolicyCmptType(ipsProject, "A");
@@ -265,6 +275,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_DOES_NOT_EXIST_IN_TARGET));
     }
 
+    @Test
     public void testRemove() {
         assertEquals(1, pcType.getPolicyCmptTypeAssociations().length);
         association.delete();
@@ -272,6 +283,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertTrue(association.getIpsObject().getIpsSrcFile().isDirty());
     }
 
+    @Test
     public void testSetType() {
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         association.setAssociationType(AssociationType.ASSOCIATION);
@@ -279,6 +291,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertTrue(association.getIpsObject().getIpsSrcFile().isDirty());
     }
 
+    @Test
     public void testInitFromXml() {
         Document doc = getTestDocument();
         association.initFromXml(doc.getDocumentElement());
@@ -296,6 +309,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertEquals("Policy", association.getInverseAssociation());
     }
 
+    @Test
     public void testToXml() {
         association = pcType.newPolicyCmptTypeAssociation();
         association.setAssociationType(AssociationType.ASSOCIATION);
@@ -414,6 +428,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
     // }
     // }
 
+    @Test
     public void testValidateMaxCardinalityForReverseComposition() throws Exception {
         MessageList ml = new MessageList();
 
@@ -430,6 +445,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
                 .getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION));
     }
 
+    @Test
     public void testValidateReverseRelationOfContainerRelationHasToBeContainerRelationToo() throws Exception {
         association.setAssociationType(AssociationType.ASSOCIATION);
         IPolicyCmptTypeAssociation rel2 = targetType.newPolicyCmptTypeAssociation();
@@ -457,6 +473,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
                 .getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_ASSOCIATIONS_MUST_BOTH_BE_MARKED_AS_CONTAINER));
     }
 
+    @Test
     public void testValidateInverseAssociationTypeMissmatch() throws Exception {
         IPolicyCmptTypeAssociation ass2 = targetType.newPolicyCmptTypeAssociation();
         ass2.setTargetRoleSingular("test");
@@ -477,6 +494,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_ASSOCIATION_TYPE_MISSMATCH));
     }
 
+    @Test
     public void testValidateMasterDetailCompositionTypeMissmatch() throws Exception {
         IPolicyCmptTypeAssociation ass2 = targetType.newPolicyCmptTypeAssociation();
         ass2.setTargetRoleSingular("test");
@@ -532,6 +550,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_MASTER_TO_DETAIL_TYPE_MISSMATCH));
     }
 
+    @Test
     public void testFindInverseAssociation() throws CoreException {
         association.setInverseAssociation("");
         assertNull(association.findInverseAssociation(ipsProject));
@@ -549,6 +568,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertEquals(relation2, association.findInverseAssociation(ipsProject));
     }
 
+    @Test
     public void testNewInverseAssociation() throws CoreException {
         IPolicyCmptType targetType = newPolicyCmptType(ipsProject, "TargetType");
         association.setTarget(targetType.getQualifiedName());
@@ -567,6 +587,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertTrue(exceptionThrown);
     }
 
+    @Test
     public void testDetailToMasterMustDefineInverseAssociation() throws CoreException {
         // in case of a detail to master association the inverse must be set
         association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
@@ -584,6 +605,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         // different validation message
     }
 
+    @Test
     public void testInverseAssociationMismatch() throws CoreException {
         association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
         association.setTargetRoleSingular("associationDtoM");
@@ -624,6 +646,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_MISMATCH));
     }
 
+    @Test
     public void testFindTargetAssociationWithInverseSetToThis() throws CoreException {
         // test if using the master to detail compositions find method returns the correct detail to
         // master composition, target has two detail to master with same inverse name but different
@@ -672,6 +695,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
                 ((PolicyCmptTypeAssociation)relationCtoB).findTargetAssociationWithCorrespondingInverse(ipsProject));
     }
 
+    @Test
     public void testInverseOfSubsettedDerivedUnionMustExistsIfInverseOfDerivedUnionExists() throws CoreException {
         IPolicyCmptType policy = newPolicyCmptType(ipsProject, "my.Policy");
         IPolicyCmptType coverage = newPolicyCmptType(ipsProject, "my.Coverage");
@@ -753,6 +777,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertEquals(association.getTarget(), targetAssociation.getPolicyCmptType().getQualifiedName());
     }
 
+    @Test
     public void testDuplicateAssociationNameDifferentCardinality() throws CoreException {
         IPolicyCmptTypeAssociation association2 = pcType.newPolicyCmptTypeAssociation();
         association2.setTarget(targetType.getQualifiedName());
@@ -786,6 +811,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
     }
 
+    @Test
     public void testIsInverseOfDerivedUnion() throws CoreException {
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         association.setDerivedUnion(true);

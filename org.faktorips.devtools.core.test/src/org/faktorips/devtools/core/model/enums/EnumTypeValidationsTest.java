@@ -17,6 +17,8 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 
 public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
 
@@ -26,6 +28,7 @@ public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
     private IEnumType paymentMode;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
@@ -83,6 +86,7 @@ public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
         value2Text.setValue("Annual Payment");
     }
 
+    @Test
     public void testValidateSuperTypeHierarchyValidHierarchy() throws Exception {
         MessageList msgList = new MessageList();
         EnumTypeValidations.validateSuperTypeHierarchy(msgList, paymentMode, ipsProject);
@@ -90,6 +94,7 @@ public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
         assertNull(msgList.getMessageByCode(IEnumType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
     }
 
+    @Test
     public void testValidateSuperTypeHierarchyCycleHierarchy() throws Exception {
         abstractEnum.setSuperEnumType(paymentMode.getQualifiedName());
         MessageList msgList = new MessageList();
@@ -97,6 +102,7 @@ public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
         assertNotNull(msgList.getMessageByCode(IEnumType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY));
     }
 
+    @Test
     public void testValidateSuperTypeHierarchyInconsistentHierarchy() throws Exception {
         abstractEnum.setAbstract(false);
         MessageList msgList = new MessageList();
@@ -110,6 +116,7 @@ public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
         assertNotNull(msgList.getMessageByCode(IEnumType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
     }
 
+    @Test
     public void testValidateEnumContentName() {
         MessageList msgList = new MessageList();
         EnumTypeValidations.validateEnumContentName(msgList, paymentMode, false, true, "");

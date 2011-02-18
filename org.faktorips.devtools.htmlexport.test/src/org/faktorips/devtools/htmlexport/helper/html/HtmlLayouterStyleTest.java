@@ -18,9 +18,11 @@ import java.io.UnsupportedEncodingException;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
+import org.junit.Test;
 
 public class HtmlLayouterStyleTest extends AbstractTestHtmlLayouter {
 
+    @Test
     public void testStyleBold() throws UnsupportedEncodingException {
         String text = "text beispiel"; //$NON-NLS-1$
         TextPageElement pageElement = new TextPageElement(text);
@@ -29,6 +31,7 @@ public class HtmlLayouterStyleTest extends AbstractTestHtmlLayouter {
         assertEquals("<span class=\"BOLD\">" + text + "</span>", layout(pageElement)); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    @Test
     public void testStyleItalic() throws UnsupportedEncodingException {
         String text = "text beispiel"; //$NON-NLS-1$
         TextPageElement pageElement = new TextPageElement(text);
@@ -37,6 +40,7 @@ public class HtmlLayouterStyleTest extends AbstractTestHtmlLayouter {
         assertEquals("<span class=\"ITALIC\">" + text + "</span>", layout(pageElement)); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    @Test
     public void testStyleBoldAndItalic() throws UnsupportedEncodingException {
         String text = "text beispiel"; //$NON-NLS-1$
         TextPageElement pageElement = new TextPageElement(text);
@@ -46,6 +50,7 @@ public class HtmlLayouterStyleTest extends AbstractTestHtmlLayouter {
         assertTrue(layout(pageElement).matches("<span class=\"(ITALIC BOLD|BOLD ITALIC)\">" + text + "</span>")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    @Test
     public void testStyleCenter() throws UnsupportedEncodingException {
         String text = "text beispiel"; //$NON-NLS-1$
         TextPageElement pageElement = new TextPageElement(text, TextType.BLOCK);

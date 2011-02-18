@@ -37,6 +37,8 @@ import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
+import org.junit.Before;
+import org.junit.Test;
 
 public class AbstractParameterIdentifierResolverTest extends AbstractIpsPluginTest {
 
@@ -50,7 +52,8 @@ public class AbstractParameterIdentifierResolverTest extends AbstractIpsPluginTe
     private Locale locale;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         locale = Locale.GERMAN;
         ipsProject = this.newIpsProject();
@@ -84,6 +87,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractIpsPluginTe
         return null;
     }
 
+    @Test
     public void testCompile() throws Exception {
         // no parameter registered => undefined identifier
         CompilationResult result = resolver.compile("identifier", null, locale);
@@ -159,6 +163,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractIpsPluginTe
         assertEquals("this.getA()", result.getCodeFragment().getSourcecode());
     }
 
+    @Test
     public void testCompileWithEnumsInWorkspaceButNotInParameters() throws Exception {
         newDefinedEnumDatatype(ipsProject, new Class[] { TestEnumType.class });
         EnumDatatype testType = (EnumDatatype)ipsProject.findDatatype("TestEnumType");

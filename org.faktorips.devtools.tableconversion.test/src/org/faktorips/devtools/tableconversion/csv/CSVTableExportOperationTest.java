@@ -23,6 +23,8 @@ import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.tableconversion.AbstractTableTest;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 
 public class CSVTableExportOperationTest extends AbstractTableTest {
 
@@ -31,7 +33,8 @@ public class CSVTableExportOperationTest extends AbstractTableTest {
     private IIpsProject ipsProject;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         ipsProject = newIpsProject("test");
@@ -61,6 +64,7 @@ public class CSVTableExportOperationTest extends AbstractTableTest {
         new File(filename).delete();
     }
 
+    @Test
     public void testExportValid() throws Exception {
         ITableContents contents = createValidTableContents(ipsProject);
 
@@ -70,6 +74,7 @@ public class CSVTableExportOperationTest extends AbstractTableTest {
         assertTrue(ml.isEmpty());
     }
 
+    @Test
     public void testExportValidRowMismatch() throws Exception {
         ITableContents contents = createValidTableContents(ipsProject);
 
@@ -95,6 +100,7 @@ public class CSVTableExportOperationTest extends AbstractTableTest {
         assertFalse(ml.isEmpty());
     }
 
+    @Test
     public void testExportInvalid() throws Exception {
         ITableContents contents = createInvalidTableContents(ipsProject);
 

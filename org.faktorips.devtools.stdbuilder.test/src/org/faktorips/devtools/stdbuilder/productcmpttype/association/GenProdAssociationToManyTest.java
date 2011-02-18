@@ -21,13 +21,16 @@ import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.ProjectConfigurationUtil;
 import org.faktorips.valueset.IntegerRange;
+import org.junit.Before;
+import org.junit.Test;
 
 public class GenProdAssociationToManyTest extends GenProdAssociationTest {
 
     private GenProdAssociationToMany genAssociationToMany;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         association.setAssociationType(AssociationType.AGGREGATION);
@@ -38,6 +41,7 @@ public class GenProdAssociationToManyTest extends GenProdAssociationTest {
         ProjectConfigurationUtil.setUpUseTypesafeCollections(ipsProject, true);
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterface() {
         genAssociationToMany.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
                 javaInterfaceGeneration, association);
@@ -50,6 +54,7 @@ public class GenProdAssociationToManyTest extends GenProdAssociationTest {
         assertEquals(6, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterfaceConstrainsPolicyCmptTypeAssociation()
             throws CoreException {
 
@@ -59,6 +64,7 @@ public class GenProdAssociationToManyTest extends GenProdAssociationTest {
         expectMethodGetCardinalityForAssociation(genAssociationToMany, javaInterfaceGeneration);
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterfaceDoNotUseTypesafeCollections() throws CoreException {
         ProjectConfigurationUtil.setUpUseTypesafeCollections(ipsProject, false);
         genAssociationToMany.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
@@ -70,6 +76,7 @@ public class GenProdAssociationToManyTest extends GenProdAssociationTest {
         assertEquals(4, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterfaceDefinesDerivedUnion() {
         association.setDerivedUnion(true);
         genAssociationToMany.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
@@ -79,6 +86,7 @@ public class GenProdAssociationToManyTest extends GenProdAssociationTest {
         assertEquals(2, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementation() {
         genAssociationToMany.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
                 association);
@@ -94,6 +102,7 @@ public class GenProdAssociationToManyTest extends GenProdAssociationTest {
         assertEquals(9, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementationConstrainsPolicyCmptTypeAssociation() throws CoreException {
         setUpConstrainsPolicyCmptTypeAssociation();
         genAssociationToMany.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
@@ -101,6 +110,7 @@ public class GenProdAssociationToManyTest extends GenProdAssociationTest {
         expectMethodGetCardinalityForAssociation(genAssociationToMany, javaClassGeneration);
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementationDoNotUseTypesafeCollections() throws CoreException {
         ProjectConfigurationUtil.setUpUseTypesafeCollections(ipsProject, false);
         genAssociationToMany.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
@@ -115,6 +125,7 @@ public class GenProdAssociationToManyTest extends GenProdAssociationTest {
         assertEquals(7, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementationDefinesDerivedUnion() {
         association.setDerivedUnion(true);
         genAssociationToMany.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,

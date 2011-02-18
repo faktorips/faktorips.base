@@ -28,6 +28,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ModelSorterTest extends AbstractIpsPluginTest {
 
@@ -60,7 +62,8 @@ public class ModelSorterTest extends AbstractIpsPluginTest {
     private IPolicyCmptTypeAttribute attr2;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         sorter = new ModelExplorerSorter(true);
         proj = newIpsProject("aTestProject");
@@ -99,6 +102,7 @@ public class ModelSorterTest extends AbstractIpsPluginTest {
         createPackageOrderFile((IFolder)root.getCorrespondingResource(), list);
     }
 
+    @Test
     public void testCompareViewerObjectObject() {
         // Identity should be evaluated as equal
         assertTrue(sorter.compare(null, proj, proj) == 0);

@@ -43,6 +43,8 @@ import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 
 /**
@@ -58,7 +60,8 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
     private GregorianCalendar validFrom;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
         IIpsProjectProperties props = project.getProperties();
@@ -69,6 +72,7 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         validFrom = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
     }
 
+    @Test
     public void testGetToc() throws CoreException {
 
         IPolicyCmptType type = newPolicyAndProductCmptType(project, "motor.MotorPolicy", "motor.MotorProduct");
@@ -85,6 +89,7 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         assertEquals(3, toc.getEntries().size());
     }
 
+    @Test
     public void testCreateTocEntryPolicyCmptType() throws CoreException {
         IPolicyCmptType type = newPolicyCmptType(project, "test.Policy");
         TocEntryObject entry = tocFileBuilder.createTocEntry(type);
@@ -94,6 +99,7 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         assertEquals("org/faktorips/sample/model/internal/test/Policy.xml", entry.getXmlResourceName());
     }
 
+    @Test
     public void testCreateTocEntryProductCmptType() throws CoreException {
         IProductCmptType type = newProductCmptType(project, "test.Product");
         TocEntryObject entry = tocFileBuilder.createTocEntry(type);
@@ -103,6 +109,7 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         assertEquals("org/faktorips/sample/model/internal/test/Product.xml", entry.getXmlResourceName());
     }
 
+    @Test
     public void testCreateTocEntryTable() throws CoreException {
         ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE,
                 "motor.RateTableStructure");
@@ -122,6 +129,7 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
     /*
      * The wrrows with numbers ( => 7 ) counting the actual size of the TOC
      */
+    @Test
     public void testToc() throws Exception {
         // create a product component: policyCmptType => 1 productCmptType => 2 productCmpt => 3
         IPolicyCmptType type = newPolicyAndProductCmptType(project, "motor.MotorPolicy", "motor.MotorProduct");
@@ -278,6 +286,7 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
     // assertEquals(modStamp, tocFile.getModificationStamp());
     // }
 
+    @Test
     public void testCreateDeleteTocEntryFormulaTest() throws Exception {
         // create a product component
         IPolicyCmptType type = newPolicyAndProductCmptType(project, "motor.MotorPolicy", "motor.MotorProduct");

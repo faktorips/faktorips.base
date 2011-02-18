@@ -13,26 +13,32 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class CardinalityFieldTest extends TestCase {
+public class CardinalityFieldTest {
 
     private Shell shell;
 
-    @Override
-    protected void setUp() {
+    @Before
+    public void setUp() {
         shell = PlatformUI.getWorkbench().getDisplay().getShells()[0];
     }
 
+    @Test
     public void testSetText() {
         Text text = new Text(shell, SWT.NONE);
         CardinalityField field = new CardinalityField(text);
@@ -53,6 +59,7 @@ public class CardinalityFieldTest extends TestCase {
         assertNull(field.getValue());
     }
 
+    @Test
     public void testSetValue() {
         Text text = new Text(shell, SWT.NONE);
         CardinalityField field = new CardinalityField(text);

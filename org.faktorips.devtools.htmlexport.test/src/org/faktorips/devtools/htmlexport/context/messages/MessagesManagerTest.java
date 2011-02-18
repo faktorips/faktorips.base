@@ -13,23 +13,24 @@
 
 package org.faktorips.devtools.htmlexport.context.messages;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Locale;
 import java.util.Properties;
 
-import junit.framework.TestCase;
-
 import org.faktorips.devtools.htmlexport.FakePluginResourcesFacade;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
-import org.faktorips.devtools.htmlexport.context.messages.MessagesManager;
+import org.junit.Before;
+import org.junit.Test;
 
-public class MessagesManagerTest extends TestCase {
+public class MessagesManagerTest {
     private DocumentationContext context;
     private static final String KEY = "ProjectOverviewPageElement_project";
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-
+    @Before
+    public void setUp() throws Exception {
         FakePluginResourcesFacade pluginResources = new FakePluginResourcesFacade();
         Properties enMessages = new Properties();
         enMessages.put(KEY, "Project");
@@ -44,6 +45,7 @@ public class MessagesManagerTest extends TestCase {
         context = new DocumentationContext(pluginResources);
     }
 
+    @Test
     public void testProjectOverviewPageElementProjectEn() {
         context.setDescriptionLocale(Locale.UK);
 
@@ -53,6 +55,7 @@ public class MessagesManagerTest extends TestCase {
         assertTrue(context.getExportStatus().isOK());
     }
 
+    @Test
     public void testProjectOverviewPageElementProjectDe() {
         context.setDescriptionLocale(Locale.GERMAN);
 
@@ -62,6 +65,7 @@ public class MessagesManagerTest extends TestCase {
         assertTrue(context.getExportStatus().isOK());
     }
 
+    @Test
     public void testProjectOverviewPageElementProjectNotUsedLocaleWithFallback() {
         context.setDescriptionLocale(Locale.TRADITIONAL_CHINESE);
 
@@ -74,6 +78,7 @@ public class MessagesManagerTest extends TestCase {
         assertEquals(expectedResult, manager.getMessage(KEY));
     }
 
+    @Test
     public void testProjectOverviewPageElementProjectNotUsedKey() {
         String wrongKey = "definitiv ungültiger name für eine property";
         context.setDescriptionLocale(Locale.UK);

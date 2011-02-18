@@ -40,6 +40,8 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.values.DateUtil;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 public class TableContentsTest extends AbstractDependencyTest {
@@ -49,13 +51,15 @@ public class TableContentsTest extends AbstractDependencyTest {
     private ITableContents table;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
         table = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "Tc");
         pdSrcFile = table.getIpsSrcFile();
     }
 
+    @Test
     public void testDependsOn() throws Exception {
         ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Ts");
         IDependency[] dependsOn = table.dependsOn();
@@ -69,6 +73,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         assertSingleDependencyDetail(table, dependency, table, ITableContents.PROPERTY_TABLESTRUCTURE);
     }
 
+    @Test
     public void testNewColumn() {
         ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
         IRow row11 = gen1.newRow();
@@ -98,6 +103,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         assertEquals("b", row22.getValue(1));
     }
 
+    @Test
     public void testDeleteColumn() {
         ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
         IRow row11 = gen1.newRow();
@@ -124,6 +130,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         assertEquals("c", row22.getValue(1));
     }
 
+    @Test
     public void testInitFromXml() {
         table.initFromXml(getTestDocument().getDocumentElement());
         assertEquals("blabla", table.getDescriptionText(Locale.GERMAN));
@@ -142,6 +149,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         ((IpsModel)table.getIpsModel()).addIpsObjectExtensionProperty(property);
     }
 
+    @Test
     public void testInitFromXmlWithExtensionProperties() {
         addExtensionPropertyDefinition("prop1");
         addExtensionPropertyDefinition("prop2");
@@ -154,6 +162,7 @@ public class TableContentsTest extends AbstractDependencyTest {
     /**
      * Test init via SAX
      */
+    @Test
     public void testInitFromInputStream() throws CoreException {
         table.initFromInputStream(getClass().getResourceAsStream(getXmlResourceName()));
         assertEquals("RateTableStructure", table.getTableStructure());
@@ -186,6 +195,7 @@ public class TableContentsTest extends AbstractDependencyTest {
     /**
      * Test init via SAX
      */
+    @Test
     public void testInitFromInputStreamWithExtensionProperties() throws CoreException {
         addExtensionPropertyDefinition("prop1");
         addExtensionPropertyDefinition("prop2");
@@ -207,6 +217,7 @@ public class TableContentsTest extends AbstractDependencyTest {
                 exception);
     }
 
+    @Test
     public void testToXmlDocument() {
         IDescription description = table.newDescription();
         description.setLocale(Locale.GERMAN);
@@ -236,6 +247,7 @@ public class TableContentsTest extends AbstractDependencyTest {
 
     }
 
+    @Test
     public void testValidateKeyValuesFromTo() throws Exception {
         MessageList msgList = null;
 
@@ -282,6 +294,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         assertEquals(0, msgList.getNoOfMessages());
     }
 
+    @Test
     public void testValidateRowRangeFromGreaterToValue() throws Exception {
         ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Ts");
         IColumn fromColumn = structure.newColumn();
@@ -316,6 +329,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         assertNotNull(msgList.getMessageByCode(IRow.MSGCODE_UNIQUE_KEY_FROM_COlUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE));
     }
 
+    @Test
     public void testValidate() throws Exception {
         ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Ts");
         IColumn column1 = structure.newColumn();
@@ -360,6 +374,7 @@ public class TableContentsTest extends AbstractDependencyTest {
     /**
      * test the findMetaClass method
      */
+    @Test
     public void testFindMetaClass() throws CoreException {
         ITableStructure structure = newTableStructure(project, "Structure");
         table.setTableStructure(structure.getQualifiedName());

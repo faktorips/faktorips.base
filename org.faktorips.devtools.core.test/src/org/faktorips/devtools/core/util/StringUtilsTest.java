@@ -13,11 +13,14 @@
 
 package org.faktorips.devtools.core.util;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
-public class StringUtilsTest extends TestCase {
+import org.junit.Test;
 
-    public void testComputeCopyOfName() {
+public class StringUtilsTest {
+
+    @Test
+    public void testMethod() {
         String oldName = "test";
         assertEquals(Messages.StringUtils_copyOfNamePrefix + oldName, StringUtils.computeCopyOfName(0, oldName));
         assertEquals(Messages.StringUtils_copyOfNamePrefix + "(2)_" + oldName,

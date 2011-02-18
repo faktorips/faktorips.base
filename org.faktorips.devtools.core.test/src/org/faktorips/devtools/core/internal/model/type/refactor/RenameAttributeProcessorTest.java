@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParamet
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
+import org.junit.Test;
 
 /**
  * 
@@ -43,12 +44,14 @@ import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
  */
 public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
 
+    @Test
     public void testCheckInitialConditionsValid() throws CoreException {
         ProcessorBasedRefactoring renameRefactoring = policyCmptTypeAttribute.getRenameRefactoring();
         RefactoringStatus status = renameRefactoring.getProcessor().checkInitialConditions(new NullProgressMonitor());
         assertFalse(status.hasError());
     }
 
+    @Test
     public void testCheckFinalConditionsValid() throws CoreException {
         ProcessorBasedRefactoring renameRefactoring = policyCmptTypeAttribute.getRenameRefactoring();
         IIpsRenameProcessor renameProcessor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
@@ -58,6 +61,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
         assertFalse(status.hasError());
     }
 
+    @Test
     public void testCheckFinalConditionsInvalidAttributeName() throws CoreException {
         // Create another policy component type attribute to test against.
         IAttribute attribute = policyCmptType.newAttribute();
@@ -71,6 +75,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
         assertTrue(status.hasFatalError());
     }
 
+    @Test
     public void testRenamePolicyCmptTypeAttribute() throws CoreException {
         String newAttributeName = "test";
         performRenameRefactoring(policyCmptTypeAttribute, newAttributeName);
@@ -90,6 +95,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
         assertEquals(newAttributeName, productCmptGenerationConfigElement.getPolicyCmptTypeAttribute());
     }
 
+    @Test
     public void testRenamePolicyCmptTypeAttributeWithValidationRule() throws CoreException {
         policyCmptTypeAttribute.createValueSetRule();
         policyCmptTypeAttribute.setValueSetType(ValueSetType.ENUM);
@@ -118,6 +124,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
      * <tt>IPolicyCmptTypeAttribute</tt>. The new <tt>ITestCaseType</tt> may not be modified by the
      * refactoring, too.
      */
+    @Test
     public void testRenamePolicyCmptTypeAttributeSameNames() throws CoreException {
         otherPolicyCmptType.setConfigurableByProductCmptType(true);
 
@@ -166,6 +173,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
      * Test to rename an <tt>IPolicyCmptTypeAttribute</tt> from an <tt>IPolicyCmptType</tt> that is
      * a super type of another <tt>IPolicyCmptType</tt>.
      */
+    @Test
     public void testRenamePolicyCmptTypeAttributeInheritance() throws CoreException {
         // Create an attribute in the super policy component type.
         IPolicyCmptTypeAttribute superAttribute = superPolicyCmptType.newPolicyCmptTypeAttribute();
@@ -200,6 +208,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
         assertEquals(newAttributeName, superConfigElement.getPolicyCmptTypeAttribute());
     }
 
+    @Test
     public void testRenameProductCmptTypeAttribute() throws CoreException {
         String newAttributeName = "test";
         performRenameRefactoring(productCmptTypeAttribute, newAttributeName);
@@ -220,6 +229,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
      * an attribute with the same name as the first <tt>IProductCmptType</tt> (this may no be
      * modified by the rename refactoring).
      */
+    @Test
     public void testRenameProductCmptTypeAttributeSameNames() throws CoreException {
         // Create other product component type.
         IProductCmptType otherProductCmptType = newProductCmptType(ipsProject, "OtherProductCmptType");
@@ -253,6 +263,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
      * Test to rename an <tt>IProductCmptTypeAttribute</tt> from an <tt>IProductCmptType</tt> that
      * is a super type of another <tt>IProductCmptType</tt>.
      */
+    @Test
     public void testRenameProductCmptTypeAttributeInheritance() throws CoreException {
         // Create an attribute in the super product component type.
         IProductCmptTypeAttribute superAttribute = superProductCmptType.newProductCmptTypeAttribute();

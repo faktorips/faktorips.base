@@ -21,6 +21,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptTypeBuilderTest;
+import org.junit.Before;
 
 public abstract class GenProdAssociationTest extends ProductCmptTypeBuilderTest {
 
@@ -37,7 +38,8 @@ public abstract class GenProdAssociationTest extends ProductCmptTypeBuilderTest 
     protected IProductCmptType targetProductCmptType;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         targetProductCmptType = newProductCmptType(ipsProject, TARGET_PRODUCT_NAME);

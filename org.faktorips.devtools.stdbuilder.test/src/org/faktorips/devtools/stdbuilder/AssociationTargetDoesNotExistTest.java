@@ -20,6 +20,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.junit.Test;
 
 /**
  * 
@@ -35,6 +36,7 @@ public class AssociationTargetDoesNotExistTest extends AbstractIpsPluginTest {
         super(name);
     }
 
+    @Test
     public void test() throws CoreException {
         IIpsProject project = newIpsProject();
         IPolicyCmptType sourceType = newPolicyCmptTypeWithoutProductCmptType(project, "Source");

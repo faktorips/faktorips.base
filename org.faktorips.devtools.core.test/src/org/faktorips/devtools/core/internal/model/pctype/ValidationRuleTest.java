@@ -23,6 +23,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -33,7 +35,8 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     private IValidationRule rule;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         IIpsProject project = newIpsProject("TestProject");
         pcType = newPolicyCmptType(project, "Policy");
@@ -43,24 +46,28 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertFalse(ipsSrcFile.isDirty());
     }
 
+    @Test
     public void testRemove() {
         rule.delete();
         assertEquals(0, pcType.getRules().length);
         assertTrue(ipsSrcFile.isDirty());
     }
 
+    @Test
     public void testSetName() {
         rule.setName("newName");
         assertEquals("newName", rule.getName());
         assertTrue(ipsSrcFile.isDirty());
     }
 
+    @Test
     public void testSetMessageText() {
         rule.setMessageText("newText");
         assertEquals("newText", rule.getMessageText());
         assertTrue(ipsSrcFile.isDirty());
     }
 
+    @Test
     public void testAddValidatedAttribute() {
         rule.addValidatedAttribute("a");
         rule.addValidatedAttribute("b");
@@ -69,6 +76,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertTrue(ipsSrcFile.isDirty());
     }
 
+    @Test
     public void testSetValidatedAttributeAt() {
         rule.addValidatedAttribute("a");
         rule.addValidatedAttribute("b");
@@ -77,6 +85,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertTrue(ipsSrcFile.isDirty());
     }
 
+    @Test
     public void testGetValidatedAttributeAt() {
         rule.addValidatedAttribute("a");
         rule.addValidatedAttribute("b");
@@ -84,6 +93,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertEquals("b", rule.getValidatedAttributeAt(1));
     }
 
+    @Test
     public void testRemoveValidatedAttribute() {
         rule.addValidatedAttribute("a");
         rule.addValidatedAttribute("b");
@@ -91,6 +101,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertEquals("b", rule.getValidatedAttributeAt(0));
     }
 
+    @Test
     public void testValidatedAttrSpecifiedInSrc() {
         assertFalse(ipsSrcFile.isDirty());
         rule.setValidatedAttrSpecifiedInSrc(true);
@@ -98,6 +109,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertEquals(true, rule.isValidatedAttrSpecifiedInSrc());
     }
 
+    @Test
     public void testInitFromXml() {
         Document doc = getTestDocument();
         rule.setAppliedForAllBusinessFunctions(true);
@@ -117,6 +129,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertEquals("b", validatedAttributes[1]);
     }
 
+    @Test
     public void testToXmlDocument() {
         rule = pcType.newRule(); // => id=1 because it's the second rule
         rule.setName("checkAge");
@@ -147,6 +160,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertTrue(copy.isCheckValueAgainstValueSetRule());
     }
 
+    @Test
     public void testAddBusinessFunction() {
         rule.addBusinessFunction("f1");
         assertEquals(1, rule.getNumOfBusinessFunctions());
@@ -157,6 +171,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertEquals("f2", rule.getBusinessFunction(1));
     }
 
+    @Test
     public void testSetBusinessFunction() {
         rule.addBusinessFunction("f1");
         rule.addBusinessFunction("f2");
@@ -165,6 +180,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertEquals("changed", rule.getBusinessFunction(1));
     }
 
+    @Test
     public void testRemoveBusinessFunction() {
         rule.addBusinessFunction("f1");
         rule.addBusinessFunction("f2");
@@ -178,6 +194,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertEquals("f3", rule.getBusinessFunction(1));
     }
 
+    @Test
     public void testValidate() throws Exception {
         rule.addValidatedAttribute("a");
 
@@ -200,6 +217,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertEquals(1, messageList.getNoOfMessages());
     }
 
+    @Test
     public void testValidateBusinessFunctions() throws CoreException {
         rule.setAppliedForAllBusinessFunctions(true);
         MessageList msgList = rule.validate(ipsSrcFile.getIpsProject());
@@ -218,6 +236,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertTrue(msgList.isEmpty());
     }
 
+    @Test
     public void testValidateMsgCodeShouldntBeNull() throws CoreException {
         rule.setMessageCode(null);
         MessageList list = rule.validate(ipsSrcFile.getIpsProject());
@@ -231,6 +250,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertNull(list.getMessageByCode(IValidationRule.MSGCODE_MSGCODE_SHOULDNT_BE_EMPTY));
     }
 
+    @Test
     public void testValidateMessageText() throws Exception {
         rule.setMessageText("Messagetext " + SystemUtils.LINE_SEPARATOR + " bla bla");
         MessageList ml = rule.validate(ipsSrcFile.getIpsProject());
@@ -241,6 +261,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IValidationRule.MSGCODE_NO_NEWLINE));
     }
 
+    @Test
     public void testConstantAttributesCantBeValidated() throws CoreException {
         IPolicyCmptTypeAttribute a = pcType.newPolicyCmptTypeAttribute();
         a.setName("a1");

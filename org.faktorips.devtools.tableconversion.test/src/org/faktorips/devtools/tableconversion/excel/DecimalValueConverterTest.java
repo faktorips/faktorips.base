@@ -13,20 +13,24 @@
 
 package org.faktorips.devtools.tableconversion.excel;
 
-import java.util.Date;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import junit.framework.TestCase;
+import java.util.Date;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.values.Decimal;
+import org.junit.Test;
 
 /**
  * 
  * @author Thorsten Guenther
  */
-public class DecimalValueConverterTest extends TestCase {
+public class DecimalValueConverterTest {
 
+    @Test
     public void testGetIpsValue() {
         MessageList ml = new MessageList();
         DecimalValueConverter converter = new DecimalValueConverter();
@@ -57,6 +61,7 @@ public class DecimalValueConverterTest extends TestCase {
         assertEquals("Egon", value);
     }
 
+    @Test
     public void testGetExternalDataValue() {
         MessageList ml = new MessageList();
         DecimalValueConverter converter = new DecimalValueConverter();

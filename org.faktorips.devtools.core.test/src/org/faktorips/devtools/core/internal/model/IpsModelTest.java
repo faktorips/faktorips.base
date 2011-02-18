@@ -62,6 +62,8 @@ import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.util.ProjectUtil;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 
 public class IpsModelTest extends AbstractIpsPluginTest {
 
@@ -72,11 +74,13 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     private IJavaProject javaProject2 = null;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         model = (IpsModel)IpsPlugin.getDefault().getIpsModel();
     }
 
+    @Test
     public void testCreateIpsProject() throws CoreException {
         IProject project = newPlatformProject("TestProject");
         IJavaProject javaProject = addJavaCapabilities(project);
@@ -88,6 +92,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertEquals(0, path.getEntries().length);
     }
 
+    @Test
     public void testGetIpsProjects() throws CoreException {
         newPlatformProject("TestProject");
         IIpsProject[] ipsProjects = model.getIpsProjects();
@@ -105,6 +110,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertEquals("TestProject2", ipsProjects[0].getName());
     }
 
+    @Test
     public void testGetIpsModelProjects() throws CoreException {
         IIpsProject modelProject = newIpsProject("ModelProject");
         IIpsProjectProperties properties = modelProject.getProperties();
@@ -130,6 +136,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertEquals(modelProject, modelProjects[1]);
     }
 
+    @Test
     public void testGetIpsProductDefinitionProjects() throws CoreException {
         IIpsProject modelProject = newIpsProject("ModelProject");
         IIpsProjectProperties properties = modelProject.getProperties();
@@ -155,6 +162,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertEquals(productDefinitionProject, productDefinitionProjects[1]);
     }
 
+    @Test
     public void testGetIpsElement_ExistingIpsProject() throws Exception {
         IIpsProject ipsProject = newIpsProject("TestProject");
 
@@ -185,6 +193,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertNull(model.getIpsElement(textFile));
     }
 
+    @Test
     public void testGetIpsElement_NotExistingIpsProject() throws Exception {
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         IProject project = root.getProject("TestProject");
@@ -207,6 +216,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertNull(model.getIpsElement(textFile));
     }
 
+    @Test
     public void testFindIpsElement() throws CoreException {
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         assertEquals(model, model.getIpsElement(root));
@@ -230,6 +240,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertEquals(pdFolderA, model.findIpsElement(folderA));
     }
 
+    @Test
     public void testChangeListenerSupport() throws CoreException {
         IIpsProject project = newIpsProject();
         IIpsSrcFile file = newPolicyCmptType(project, "TestPolicy").getIpsSrcFile();
@@ -252,6 +263,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertNull(listener.lastEvent);
     }
 
+    @Test
     public void testModifcationStatusChangeListenerSupport() throws CoreException {
         IIpsProject project = newIpsProject();
         IIpsSrcFile file = newPolicyCmptType(project, "TestPolicy").getIpsSrcFile();
@@ -274,6 +286,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertNull(listener.lastEvent);
     }
 
+    @Test
     public void testResourceChanged() throws IOException, CoreException {
         IIpsProject ipsProject = this.newIpsProject("TestProject");
         IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
@@ -298,6 +311,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertEquals("something serious", attribute.getDescriptionText(Locale.US));
     }
 
+    @Test
     public void testGetIpsObjectExtensionProperties() {
         Class<?> extendedClass = model.getClass();
         ExtensionPropertyDefinition property = new StringExtensionPropertyDefinition();
@@ -347,6 +361,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertEquals(1, props.size());
     }
 
+    @Test
     public void testGetIpsObjectExtensionProperty() {
         ExtensionPropertyDefinition property = new StringExtensionPropertyDefinition();
         property.setPropertyId("prop1");
@@ -374,11 +389,13 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertNull(model.getExtensionPropertyDefinition(String.class, "prop2", false));
     }
 
+    @Test
     public void testGetPredefinedValueDatatypes() {
         ValueDatatype[] datatypes = model.getPredefinedValueDatatypes();
         assertTrue(datatypes.length > 0);
     }
 
+    @Test
     public void testIsPredefinedValueDatatype() {
         ValueDatatype[] datatypes = model.getPredefinedValueDatatypes();
         assertTrue(model.isPredefinedValueDatatype(datatypes[0].getQualifiedName()));
@@ -386,6 +403,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertFalse(model.isPredefinedValueDatatype(null));
     }
 
+    @Test
     public void testGetChangesInTimeNamingConvention() {
         IChangesOverTimeNamingConvention convention = model
                 .getChangesOverTimeNamingConvention(IChangesOverTimeNamingConvention.VAA);
@@ -401,6 +419,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertEquals(IChangesOverTimeNamingConvention.VAA, convention.getId());
     }
 
+    @Test
     public void testGetNonIpsResources() throws CoreException {
         IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
             @Override
@@ -426,6 +445,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertEquals(javaProject2.getProject(), nonIpsResources[1]);
     }
 
+    @Test
     public void testClearValidationCache() throws CoreException {
         IIpsProject project = super.newIpsProject();
         IPolicyCmptType pcType = super.newPolicyCmptType(project, "TestedType");
@@ -438,6 +458,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertNull(model.getValidationResultCache().getResult(pcType));
     }
 
+    @Test
     public void testRunAndQueueChangeEvents() throws CoreException {
         IIpsProject project = newIpsProject();
         final IPolicyCmptType typeA = newPolicyCmptType(project, "A");
@@ -528,6 +549,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testGetSortDefinition() throws CoreException, IOException {
         IIpsProject project = newIpsProject("TestProject");
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
@@ -605,6 +627,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertEquals("hausrat", fragments[2]);
     }
 
+    @Test
     public void testClearIpsSrcFileContentsCacheWhenFileDeleted() throws Exception {
         IIpsProject project = newIpsProject("TestProject");
         IPolicyCmptType pcType = newPolicyCmptTypeWithoutProductCmptType(project, "A");
@@ -634,6 +657,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
                 + "should be triggered by know and have the cache cleared.", status);
     }
 
+    @Test
     public void testSearchReferencingTestCases() throws CoreException {
         IIpsProject baseProject = newIpsProject("base");
         IIpsProject ipsProject = newIpsProject("next");

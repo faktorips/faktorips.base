@@ -13,27 +13,31 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.Locale;
 
-import junit.framework.TestCase;
-
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class ChangesOverTimeNamingConventionTest extends TestCase {
+public class ChangesOverTimeNamingConventionTest {
 
     private ChangesOverTimeNamingConvention vaa;
     private ChangesOverTimeNamingConvention pm;
 
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         vaa = new ChangesOverTimeNamingConvention(IChangesOverTimeNamingConvention.VAA);
         pm = new ChangesOverTimeNamingConvention(IChangesOverTimeNamingConvention.PM);
     }
 
+    @Test
     public void testGetName() {
         assertEquals("VAA", vaa.getName(Locale.ENGLISH));
         assertEquals("VAA", vaa.getName(Locale.GERMAN));
@@ -41,6 +45,7 @@ public class ChangesOverTimeNamingConventionTest extends TestCase {
         assertEquals("Produkt-Manager", pm.getName(Locale.GERMAN));
     }
 
+    @Test
     public void testGetGenerationConceptNameSingular() {
         assertNotNull(vaa.getGenerationConceptNameSingular(Locale.ENGLISH));
         assertNotNull(vaa.getGenerationConceptNameSingular(Locale.GERMAN));
@@ -48,6 +53,7 @@ public class ChangesOverTimeNamingConventionTest extends TestCase {
         assertNotNull(pm.getGenerationConceptNameSingular(Locale.GERMAN));
     }
 
+    @Test
     public void testGetGenerationConceptNamePlural() {
         assertNotNull(vaa.getGenerationConceptNamePlural(Locale.ENGLISH));
         assertNotNull(vaa.getGenerationConceptNamePlural(Locale.GERMAN));
@@ -55,6 +61,7 @@ public class ChangesOverTimeNamingConventionTest extends TestCase {
         assertNotNull(pm.getGenerationConceptNamePlural(Locale.GERMAN));
     }
 
+    @Test
     public void testGetGenerationConceptNameInsideSentence() {
         assertNotNull(vaa.getGenerationConceptNamePlural(true));
         assertNotNull(vaa.getGenerationConceptNamePlural(true));
@@ -67,6 +74,7 @@ public class ChangesOverTimeNamingConventionTest extends TestCase {
         assertNotNull(pm.getGenerationConceptNamePlural(false));
     }
 
+    @Test
     public void testGetGenerationConceptNameAbbreviation() {
         assertNotNull(vaa.getGenerationConceptNameAbbreviation(Locale.ENGLISH));
         assertNotNull(vaa.getGenerationConceptNameAbbreviation(Locale.GERMAN));
@@ -74,6 +82,7 @@ public class ChangesOverTimeNamingConventionTest extends TestCase {
         assertNotNull(pm.getGenerationConceptNameAbbreviation(Locale.GERMAN));
     }
 
+    @Test
     public void testGetEffectiveDateConceptName() {
         assertNotNull(vaa.getEffectiveDateConceptName(Locale.ENGLISH));
         assertNotNull(vaa.getEffectiveDateConceptName(Locale.GERMAN));

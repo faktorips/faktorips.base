@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.junit.Before;
 
 public abstract class PersistenceIpsTest extends AbstractIpsPluginTest {
 
@@ -32,7 +33,8 @@ public abstract class PersistenceIpsTest extends AbstractIpsPluginTest {
     }
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newPersistentIpsProject();
         policyCmptType = newPolicyCmptType(ipsProject, "Policy1");

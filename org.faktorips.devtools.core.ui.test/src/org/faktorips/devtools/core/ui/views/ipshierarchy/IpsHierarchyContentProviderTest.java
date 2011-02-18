@@ -24,6 +24,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IType;
+import org.junit.Before;
+import org.junit.Test;
 
 public class IpsHierarchyContentProviderTest extends AbstractIpsPluginTest {
     private IIpsProject pdProject;
@@ -35,7 +37,8 @@ public class IpsHierarchyContentProviderTest extends AbstractIpsPluginTest {
     private IPolicyCmptType supersupertype;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         pdProject = this.newIpsProject("TestProject");
         pdRootFolder = pdProject.getIpsPackageFragmentRoots()[0];
@@ -52,6 +55,7 @@ public class IpsHierarchyContentProviderTest extends AbstractIpsPluginTest {
         supertype.setSupertype(supersupertype.getQualifiedName());
     }
 
+    @Test
     public void testHasChildren() throws CoreException {
         HierarchyContentProvider a = new HierarchyContentProvider();
         a.inputChanged(null, null, TypeHierarchy.getTypeHierarchy(supertype));
@@ -60,6 +64,7 @@ public class IpsHierarchyContentProviderTest extends AbstractIpsPluginTest {
         assertFalse(a.hasChildren(pcType));
     }
 
+    @Test
     public void testGetParent() throws CoreException {
         HierarchyContentProvider a = new HierarchyContentProvider();
         a.inputChanged(null, null, TypeHierarchy.getTypeHierarchy(supertype));
@@ -69,6 +74,7 @@ public class IpsHierarchyContentProviderTest extends AbstractIpsPluginTest {
         assertTrue(b.getName().equals("Supertype"));
     }
 
+    @Test
     public void testGetChildren() throws CoreException {
         HierarchyContentProvider a = new HierarchyContentProvider();
         a.inputChanged(null, null, TypeHierarchy.getTypeHierarchy(supertype));
@@ -78,6 +84,7 @@ public class IpsHierarchyContentProviderTest extends AbstractIpsPluginTest {
         assertTrue(c[0].getName().equals("TestPolicy"));
     }
 
+    @Test
     public void testGetElements() throws CoreException {
         HierarchyContentProvider a = new HierarchyContentProvider();
         a.inputChanged(null, null, TypeHierarchy.getTypeHierarchy(supertype));

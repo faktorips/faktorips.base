@@ -21,6 +21,7 @@ import java.io.ObjectOutputStream;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+import org.junit.Test;
 
 public class IpsObjectDependencyTest extends AbstractIpsPluginTest {
 
@@ -43,6 +44,7 @@ public class IpsObjectDependencyTest extends AbstractIpsPluginTest {
         assertFalse(dependency1.equals(null));
     }
 
+    @Test
     public void testHashCode() {
         IpsObjectDependency dependency1 = IpsObjectDependency.createReferenceDependency(new QualifiedNameType("a.b.A",
                 IpsObjectType.POLICY_CMPT_TYPE), new QualifiedNameType("a.b.B", IpsObjectType.POLICY_CMPT_TYPE));
@@ -59,6 +61,7 @@ public class IpsObjectDependencyTest extends AbstractIpsPluginTest {
         assertFalse(dependency1.equals(dependency2));
     }
 
+    @Test
     public void testSerializable() throws Exception {
         IpsObjectDependency dependency = IpsObjectDependency.createReferenceDependency(new QualifiedNameType("a.b.A",
                 IpsObjectType.POLICY_CMPT_TYPE), new QualifiedNameType("a.b.B", IpsObjectType.POLICY_CMPT_TYPE));

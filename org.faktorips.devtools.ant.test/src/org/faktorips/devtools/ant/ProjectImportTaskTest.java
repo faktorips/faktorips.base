@@ -18,13 +18,15 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.apache.tools.ant.BuildException;
 import org.faktorips.devtools.ant.ProjectImportTask;
 
-public class ProjectImportTaskTest extends TestCase {
+public class ProjectImportTaskTest{
 
+@Test
     public void testNullAttribute() {
 
         ProjectImportTask projectimporter = new ProjectImportTask();
@@ -41,6 +43,7 @@ public class ProjectImportTaskTest extends TestCase {
 
     }
 
+@Test
     public void testNotExistingDirectory() {
 
         ProjectImportTask projectimporter = new ProjectImportTask();
@@ -54,6 +57,7 @@ public class ProjectImportTaskTest extends TestCase {
         }
     }
 
+@Test
     public void testIsNoDirectory() {
 
         ProjectImportTask projectimporter = new ProjectImportTask();
@@ -77,6 +81,7 @@ public class ProjectImportTaskTest extends TestCase {
         }
     }
 
+@Test
     public void testImport() {
         String path = this.getTempDirPath();
         ProjectImportTask projectimporter = new ProjectImportTask();

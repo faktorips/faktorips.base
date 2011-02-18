@@ -30,6 +30,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -44,7 +46,8 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     private IAttributeValue attrValue;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
         productCmptType = newProductCmptType(ipsProject, "Product");
@@ -56,6 +59,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         attrValue = generation.newAttributeValue(attribute, "42");
     }
 
+    @Test
     public void testValidate_UnknownAttribute() throws CoreException {
         MessageList ml = attrValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_UNKNWON_ATTRIBUTE));
@@ -72,6 +76,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_UNKNWON_ATTRIBUTE));
     }
 
+    @Test
     public void testValidate_ValueNotParsable() throws CoreException {
         MessageList ml = attrValue.validate(ipsProject);
         assertNull(ml
@@ -83,6 +88,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
                 .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
     }
 
+    @Test
     public void testValidate_ValueNotInSet() throws CoreException {
         MessageList ml = attrValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_UNKNWON_ATTRIBUTE));
@@ -114,15 +120,18 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testSetAttribute() {
         super.testPropertyAccessReadWrite(IAttributeValue.class, IAttributeValue.PROPERTY_ATTRIBUTE, attrValue,
                 "premium");
     }
 
+    @Test
     public void testSetValue() {
         super.testPropertyAccessReadWrite(IAttributeValue.class, IAttributeValue.PROPERTY_VALUE, attrValue, "newValue");
     }
 
+    @Test
     public void testInitFromXml() {
         Element el = getTestDocument().getDocumentElement();
         attrValue.initFromXml(el);
@@ -130,6 +139,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         assertEquals("42", attrValue.getValue());
     }
 
+    @Test
     public void testToXml() {
         Document doc = newDocument();
         attrValue.setValue("42");
@@ -142,16 +152,19 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         assertEquals("42", copy.getValue());
     }
 
+    @Test
     public void testGetCaption() throws CoreException {
         ILabel label = attribute.getLabel(Locale.US);
         label.setValue("TheCaption");
         assertEquals("TheCaption", attrValue.getCaption(Locale.US));
     }
 
+    @Test
     public void testGetCaptionNotExistent() throws CoreException {
         assertNull(attrValue.getCaption(Locale.TAIWAN));
     }
 
+    @Test
     public void testGetCaptionNullPointer() throws CoreException {
         try {
             attrValue.getCaption(null);
@@ -160,6 +173,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetLastResortCaption() {
         assertEquals(StringUtils.capitalize(attrValue.getAttribute()), attrValue.getLastResortCaption());
     }

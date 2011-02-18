@@ -23,18 +23,22 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ValidatedAttributesCompletionProcessorTest extends AbstractIpsPluginTest {
 
     private PolicyCmptType pcType;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         IIpsProject project = newIpsProject("TestProject");
         pcType = (PolicyCmptType)newIpsObject(project, IpsObjectType.POLICY_CMPT_TYPE, "policy");
     }
 
+    @Test
     public void testDoComputeCompletionProposals() throws Exception {
         IPolicyCmptTypeAttribute attr = pcType.newPolicyCmptTypeAttribute();
         attr.setName("anna");

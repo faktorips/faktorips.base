@@ -29,6 +29,8 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -45,7 +47,8 @@ public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
     private ProductCmptBuilder builder;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
         IIpsProjectProperties props = project.getProperties();
@@ -79,6 +82,7 @@ public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
         assertNotNull(builder);
     }
 
+    @Test
     public void testBuild() throws CoreException {
         // build should not throw an exception even if the reference to the type is missing
         productCmpt.getIpsSrcFile().save(true, null);
@@ -86,6 +90,7 @@ public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
         assertTrue(builder.getGeneratedJavaFile(productCmptGen).exists());
     }
 
+    @Test
     public void testBuildMissingType() throws CoreException {
         productCmpt.setProductCmptType("");
         productCmpt.getIpsSrcFile().save(true, null);
@@ -93,6 +98,7 @@ public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
         assertNull(builder.getGeneratedJavaFile(productCmptGen));
     }
 
+    @Test
     public void testDelete() throws CoreException {
         project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         IFile javaFile = builder.getGeneratedJavaFile(productCmptGen);

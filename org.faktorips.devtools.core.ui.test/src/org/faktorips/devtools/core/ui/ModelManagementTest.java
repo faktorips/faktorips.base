@@ -45,6 +45,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.util.StringUtil;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Test for threading issues (we hopefully once HAD).
@@ -56,7 +58,8 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
     private IPolicyCmptType type;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         IWorkspaceRunnable action = new IWorkspaceRunnable() {
 
@@ -79,6 +82,7 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
     /**
      * Same as above but with an open editor on the file.
      */
+    @Test
     public void testChangeDirectlyOnDiskWithoutUsingTheEclipseApiAndOpenEditor() throws Exception {
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("===== Start testChangeDirectlyOnDiskWithoutUsingTheEclipseApiAndOpenEditor() =====");

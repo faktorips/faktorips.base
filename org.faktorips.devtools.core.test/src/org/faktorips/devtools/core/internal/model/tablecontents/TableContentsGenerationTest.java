@@ -19,6 +19,8 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 public class TableContentsGenerationTest extends AbstractIpsPluginTest {
@@ -28,7 +30,8 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
     private IIpsProject project;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
         table = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "TestTable");
@@ -40,6 +43,7 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
         generation.getIpsSrcFile().save(true, null);
     }
 
+    @Test
     public void testGetChildren() {
         int childrenSizeBefore = generation.getChildren().length;
         table.newColumn(null);
@@ -50,6 +54,7 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
         assertEquals(childrenSizeBefore + 2, children.length);
     }
 
+    @Test
     public void testNewRow() {
         table.newColumn(null);
         table.newColumn(null);
@@ -67,6 +72,7 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
         assertEquals(1, row1.getRowNumber());
     }
 
+    @Test
     public void testNewColumn() {
         IRow row1 = generation.newRow();
         IRow row2 = generation.newRow();
@@ -75,6 +81,7 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
         assertEquals("a", row2.getValue(3));
     }
 
+    @Test
     public void testRemoveColumn() {
         IRow row1 = generation.newRow();
         IRow row2 = generation.newRow();
@@ -102,6 +109,7 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testToXml() {
         IRow row1 = generation.newRow();
         IRow row2 = generation.newRow();
@@ -112,11 +120,13 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
         assertEquals(2, generation.getNumOfRows());
     }
 
+    @Test
     public void testInitFromXml() {
         generation.initFromXml(getTestDocument().getDocumentElement());
         assertEquals(2, generation.getNumOfRows());
     }
 
+    @Test
     public void testNewPart() {
         // test rownumber init within newPart()
         IRow row0 = (IRow)generation.newPart(IRow.class);
@@ -133,6 +143,7 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
         assertTrue(generation.newPart(IRow.class) instanceof IRow);
     }
 
+    @Test
     public void testClear() {
         generation.newRow();
         generation.newRow();
@@ -140,6 +151,7 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
         assertEquals(0, generation.getNumOfRows());
     }
 
+    @Test
     public void testGetRow() {
         IRow row1 = generation.newRow();
         generation.newRow();
@@ -152,6 +164,7 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
         assertNull(generation.getRow(42));
     }
 
+    @Test
     public void testGetRowIndex() {
         IRow row = generation.newRow();
         assertEquals(0, row.getRowNumber());
@@ -161,6 +174,7 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
         assertEquals(2, row.getRowNumber());
     }
 
+    @Test
     public void testInsertRowAfter() {
         IRow row0 = generation.insertRowAfter(999);
         assertEquals(0, row0.getRowNumber());

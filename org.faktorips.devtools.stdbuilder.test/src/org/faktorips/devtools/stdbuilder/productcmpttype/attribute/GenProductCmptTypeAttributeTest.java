@@ -22,6 +22,8 @@ import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptTypeBuilderTest;
 import org.faktorips.devtools.stdbuilder.type.GenAttribute;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -43,7 +45,8 @@ public class GenProductCmptTypeAttributeTest extends ProductCmptTypeBuilderTest 
     private GenProductCmptTypeAttribute genPublicAttribute;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         publishedAttribute = productCmptType.newProductCmptTypeAttribute();
@@ -60,6 +63,7 @@ public class GenProductCmptTypeAttributeTest extends ProductCmptTypeBuilderTest 
         genPublicAttribute = new GenProductCmptTypeAttribute(genProductCmptType, publicAttribute);
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterface() {
         genPublishedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
                 javaInterfaceGeneration, publishedAttribute);
@@ -74,6 +78,7 @@ public class GenProductCmptTypeAttributeTest extends ProductCmptTypeBuilderTest 
         assertEquals(1, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementation() throws CoreException {
         genPublishedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
                 publishedAttribute);
@@ -93,6 +98,7 @@ public class GenProductCmptTypeAttributeTest extends ProductCmptTypeBuilderTest 
         assertEquals(4, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementationNotConfiguring() {
         productCmptType.setConfigurationForPolicyCmptType(false);
 

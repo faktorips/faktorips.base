@@ -13,15 +13,17 @@
 
 package org.faktorips.devtools.core.model.pctype;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
+import org.junit.Test;
 
-public class ModifierTest extends TestCase {
+public class ModifierTest {
 
     /**
      * Tests if all values can be created.
      */
+    @Test
     public void testGetEnumType() {
         assertEquals(Modifier.PUBLIC.toString(), "public");
         assertEquals(Modifier.PUBLISHED.toString(), "published");

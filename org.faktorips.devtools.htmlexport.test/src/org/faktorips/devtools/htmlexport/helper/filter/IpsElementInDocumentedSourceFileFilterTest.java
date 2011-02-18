@@ -13,21 +13,23 @@
 
 package org.faktorips.devtools.htmlexport.helper.filter;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.junit.Test;
 
-public class IpsElementInDocumentedSourceFileFilterTest extends TestCase {
+public class IpsElementInDocumentedSourceFileFilterTest {
 
+    @Test
     public void testFilterIpsSrcFile() {
         IIpsSrcFile element = mock(IIpsSrcFile.class);
         IIpsSrcFile filteredElement = mock(IIpsSrcFile.class);
@@ -44,6 +46,7 @@ public class IpsElementInDocumentedSourceFileFilterTest extends TestCase {
         assertFalse(filter.accept(filteredElement));
     }
 
+    @Test
     public void testFilterIpsObject() {
         IIpsObject object = mock(IIpsObject.class);
         IIpsSrcFile srcFile = mock(IIpsSrcFile.class);
@@ -67,6 +70,7 @@ public class IpsElementInDocumentedSourceFileFilterTest extends TestCase {
         assertFalse(filter.accept(filteredObject));
     }
 
+    @Test
     public void testFilterIpsPackage() {
         IIpsPackageFragment packageFragment = mock(IIpsPackageFragment.class);
         IIpsPackageFragment filteredPackageFragment = mock(IIpsPackageFragment.class);

@@ -19,9 +19,11 @@ import java.util.Collections;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
+import org.junit.Test;
 
 public class HtmlListPageElementLayouterTest extends AbstractHtmlPageElementLayouterTest {
 
+    @Test
     public void testLeereListe() throws Exception {
 
         ListPageElement pageElement = new ListPageElement(Collections.<PageElement> emptyList());
@@ -35,6 +37,7 @@ public class HtmlListPageElementLayouterTest extends AbstractHtmlPageElementLayo
         assertEquals(0, generateText.length());
     }
 
+    @Test
     public void testListe() throws Exception {
 
         String[] itemTexts = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };

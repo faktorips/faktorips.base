@@ -21,6 +21,8 @@ import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TableImplBuilderTest extends AbstractStdBuilderTest {
 
@@ -31,6 +33,7 @@ public class TableImplBuilderTest extends AbstractStdBuilderTest {
     private TableImplBuilder builder;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
 
@@ -38,6 +41,7 @@ public class TableImplBuilderTest extends AbstractStdBuilderTest {
         builder = new TableImplBuilder(builderSet, DefaultBuilderSet.KIND_TABLE_IMPL);
     }
 
+    @Test
     public void testDelete() throws CoreException {
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         IFile file = getTableImpleBuilder().getJavaFile(structure.getIpsSrcFile());
@@ -62,6 +66,7 @@ public class TableImplBuilderTest extends AbstractStdBuilderTest {
         return getGeneratedJavaType(structure, false, true, TABLE_STRUCTURE_NAME);
     }
 
+    @Test
     public void testGetGeneratedJavaElements() {
         generatedJavaElements = builder.getGeneratedJavaElements(structure);
         assertTrue(generatedJavaElements.contains(getGeneratedJavaClass()));

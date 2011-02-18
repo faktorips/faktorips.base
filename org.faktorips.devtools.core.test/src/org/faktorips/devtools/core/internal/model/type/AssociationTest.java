@@ -27,6 +27,8 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
@@ -43,7 +45,8 @@ public class AssociationTest extends AbstractIpsPluginTest {
     private IAssociation implementationRelation;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
         productType = newProductCmptType(ipsProject, "Product");
@@ -62,6 +65,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         implementationRelation.setSubsettedDerivedUnion(association.getName());
     }
 
+    @Test
     public void testIs1To1_And_Is1ToMany() throws CoreException {
         IPolicyCmptType type = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "Policy");
         IPolicyCmptTypeAssociation ass = type.newPolicyCmptTypeAssociation();
@@ -89,6 +93,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertTrue(ass.is1ToManyIgnoringQualifier());
     }
 
+    @Test
     public void testValidateTargetTypeNotASubtype() throws Exception {
         MessageList ml = new MessageList();
         association.setDerivedUnion(true);
@@ -102,6 +107,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IAssociation.MSGCODE_TARGET_TYPE_NOT_A_SUBTYPE));
     }
 
+    @Test
     public void testValidateTargetOfDerivedUnionNotFound() throws Exception {
         MessageList ml = new MessageList();
         association.setDerivedUnion(true);
@@ -114,6 +120,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IAssociation.MSGCODE_TARGET_OF_DERIVED_UNION_DOES_NOT_EXIST));
     }
 
+    @Test
     public void testValidateDerivedUnionNotFound() throws Exception {
         MessageList ml = new MessageList();
 
@@ -126,6 +133,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IAssociation.MSGCODE_DERIVED_UNION_NOT_FOUND));
     }
 
+    @Test
     public void testValidateNotMarkedAsContainerRelation() throws Exception {
         MessageList ml = new MessageList();
 
@@ -138,6 +146,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IAssociation.MSGCODE_NOT_MARKED_AS_DERIVED_UNION));
     }
 
+    @Test
     public void testFindDerivedUnionCandidates() throws CoreException {
         IAssociation[] candidates = association.findDerivedUnionCandidates(ipsProject);
         assertEquals(0, candidates.length);
@@ -163,6 +172,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertEquals(0, candidates.length);
     }
 
+    @Test
     public void testFindSubsettedDerivedUnion() throws CoreException {
         association.setTargetRoleSingular("myRole");
         assertNull(association.findSubsettedDerivedUnion(ipsProject));
@@ -192,6 +202,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertSame(union2, association.findSubsettedDerivedUnion(ipsProject));
     }
 
+    @Test
     public void testIsSubsetOfADerivedUnion() {
         association.setSubsettedDerivedUnion("");
         assertFalse(association.isSubsetOfADerivedUnion());
@@ -199,6 +210,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertTrue(association.isSubsetOfADerivedUnion());
     }
 
+    @Test
     public void testIsSubsetOfDerivedUnion_Union() throws CoreException {
         assertFalse(association.isSubsetOfDerivedUnion(null, ipsProject));
 
@@ -219,6 +231,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertFalse(association.isSubsetOfDerivedUnion(otherRelation, ipsProject));
     }
 
+    @Test
     public void testValidate_TargetDoesNotExist() throws CoreException {
         MessageList ml = new MessageList();
 
@@ -231,6 +244,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IAssociation.MSGCODE_TARGET_DOES_NOT_EXIST));
     }
 
+    @Test
     public void testValidate_TargetRoleSingularMustBeSet() throws CoreException {
         association.setTargetRoleSingular("");
         MessageList ml = association.validate(association.getIpsProject());
@@ -241,27 +255,30 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IAssociation.MSGCODE_TARGET_ROLE_SINGULAR_MUST_BE_SET));
     }
 
+    @Test
     public void testValidate_MaxCardinalityMustBeAtLeast1() throws CoreException {
         association.setMaxCardinality(0);
         MessageList ml = association.validate(association.getIpsProject());
-        assertNotNull(ml.getMessageByCode(Association.MSGCODE_MAX_CARDINALITY_MUST_BE_AT_LEAST_1));
+        assertNotNull(ml.getMessageByCode(IAssociation.MSGCODE_MAX_CARDINALITY_MUST_BE_AT_LEAST_1));
 
         association.setMaxCardinality(1);
         ml = association.validate(association.getIpsProject());
         assertNull(ml.getMessageByCode(IAssociation.MSGCODE_MAX_CARDINALITY_MUST_BE_AT_LEAST_1));
     }
 
+    @Test
     public void testValidate_MaxCardinalityIsLessThanMin() throws CoreException {
         association.setMinCardinality(3);
         association.setMaxCardinality(2);
         MessageList ml = association.validate(association.getIpsProject());
-        assertNotNull(ml.getMessageByCode(Association.MSGCODE_MAX_IS_LESS_THAN_MIN));
+        assertNotNull(ml.getMessageByCode(IAssociation.MSGCODE_MAX_IS_LESS_THAN_MIN));
 
         association.setMaxCardinality(4);
         ml = association.validate(association.getIpsProject());
         assertNull(ml.getMessageByCode(IAssociation.MSGCODE_MAX_IS_LESS_THAN_MIN));
     }
 
+    @Test
     public void testValidateMaxCardinalityForContainerRelationTooLow() throws Exception {
         MessageList ml = association.validate(association.getIpsProject());
         assertNull(ml.getMessageByCode(IAssociation.MSGCODE_MAX_CARDINALITY_FOR_DERIVED_UNION_TOO_LOW));
@@ -272,6 +289,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IAssociation.MSGCODE_MAX_CARDINALITY_FOR_DERIVED_UNION_TOO_LOW));
     }
 
+    @Test
     public void testValidationTargetRolePlural_EqualsTargetRoleSingular() throws Exception {
         association.setMaxCardinality(10);
         association.setTargetRoleSingular("role1");
@@ -294,6 +312,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IAssociation.MSGCODE_TARGET_ROLE_PLURAL_EQUALS_TARGET_ROLE_SINGULAR));
     }
 
+    @Test
     public void testValidationTargetRolePluralMustBeSet() throws Exception {
         TestIpsArtefactBuilderSet builderset = new TestIpsArtefactBuilderSet();
         builderset.setIpsProject(association.getIpsProject());
@@ -322,6 +341,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IAssociation.MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET));
     }
 
+    @Test
     public void testValidateDerivedUnionAndSubsetOfDerivedUnionNotTheSame() throws Exception {
         IPolicyCmptType sourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
         IPolicyCmptType targetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
@@ -339,6 +359,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertNull(msgList.getMessageByCode(IAssociation.MSGCODE_DERIVED_UNION_SUBSET_NOT_SAME_AS_DERIVED_UNION));
     }
 
+    @Test
     public void testValidateSubsetOfDerivedUnionSameMaxCardinality() throws Exception {
         IPolicyCmptType sourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
         IPolicyCmptType targetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
@@ -374,6 +395,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_SUBSET_OF_DERIVED_UNION_SAME_MAX_CARDINALITY));
     }
 
+    @Test
     public void testToXml() {
         association.setAssociationType(AssociationType.AGGREGATION);
         association.setTarget("pack1.CoverageType");
@@ -398,6 +420,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertEquals("BaseCoverageType", association.getSubsettedDerivedUnion());
     }
 
+    @Test
     public void testInitFromXmlElement() {
         Element docEl = getTestDocument().getDocumentElement();
         Element el = XmlUtil.getElement(docEl, 0);
@@ -413,6 +436,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertEquals("blabla", association.getDescriptionText(Locale.US));
     }
 
+    @Test
     public void testFindTarget() throws CoreException {
         association.setTarget("");
         assertNull(association.findTarget(ipsProject));
@@ -424,35 +448,42 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertEquals(targetType, association.findTarget(ipsProject));
     }
 
+    @Test
     public void testSetTarget() {
         super.testPropertyAccessReadWrite(Association.class, IAssociation.PROPERTY_TARGET, association, "newTarget");
     }
 
+    @Test
     public void testSetTargetRoleSingular() {
         super.testPropertyAccessReadWrite(Association.class, IAssociation.PROPERTY_TARGET_ROLE_SINGULAR, association,
                 "newRole");
     }
 
+    @Test
     public void testSetTargetRolePlural() {
         super.testPropertyAccessReadWrite(Association.class, IAssociation.PROPERTY_TARGET_ROLE_PLURAL, association,
                 "newRoles");
     }
 
+    @Test
     public void testSetMinCardinality() {
         super.testPropertyAccessReadWrite(Association.class, IAssociation.PROPERTY_MIN_CARDINALITY, association,
                 new Integer(42));
     }
 
+    @Test
     public void testSetMaxCardinality() {
         super.testPropertyAccessReadWrite(Association.class, IAssociation.PROPERTY_MAX_CARDINALITY, association,
                 new Integer(42));
     }
 
+    @Test
     public void testSetDerivedUnion() {
         super.testPropertyAccessReadWrite(Association.class, IAssociation.PROPERTY_SUBSETTED_DERIVED_UNION,
                 association, "SomeUnion");
     }
 
+    @Test
     public void testSetSubsettedDerivedUnion() {
         super.testPropertyAccessReadWrite(Association.class, IAssociation.PROPERTY_DERIVED_UNION, association,
                 Boolean.valueOf(!association.isDerivedUnion()));

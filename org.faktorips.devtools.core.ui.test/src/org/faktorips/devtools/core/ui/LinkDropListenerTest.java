@@ -40,6 +40,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureContentProvider;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Testing LinkDropListener
@@ -67,7 +69,8 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
     private IProductCmptTypeAssociation associationToC;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         ipsProject = newIpsProject();
@@ -103,6 +106,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         dropListener = new TestDropListener(treeViewer);
     }
 
+    @Test
     public void testValidateDrop() {
         IProductCmptReference target = structure.getRoot();
         int operation = DND.DROP_LINK;
@@ -137,6 +141,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         assertFalse(dropListener.validateDrop(references[2], operation, multiTransfer));
     }
 
+    @Test
     public void testPerformDropObject() {
         IProductCmptLink[] links;
 
@@ -228,6 +233,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         links[3].delete();
     }
 
+    @Test
     public void testSaveFile() throws CoreException {
         IIpsSrcFile ipsSrcFile = cmptA.getIpsSrcFile();
         assertTrue(ipsSrcFile.isMutable());

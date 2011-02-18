@@ -28,6 +28,8 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
@@ -41,13 +43,15 @@ public class AttributeTest extends AbstractIpsPluginTest {
     private IAttribute attribute;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
         type = newProductCmptType(ipsProject, "Product");
         attribute = ((IProductCmptType)type).newProductCmptTypeAttribute();
     }
 
+    @Test
     public void testValidate_defaultNotInValueset() throws Exception {
         IProductCmptTypeAttribute attributeWithValueSet = ((IProductCmptType)type).newProductCmptTypeAttribute();
         attributeWithValueSet.setDatatype(Datatype.INTEGER.getQualifiedName());
@@ -71,6 +75,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
+    @Test
     public void testValidate_defaultNotParsableUnknownDatatype() throws Exception {
         attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         attribute.setDefaultValue("1");
@@ -83,6 +88,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE));
     }
 
+    @Test
     public void testValidate_defaultNotParsableInvalidDatatype() throws Exception {
         attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
 
@@ -94,6 +100,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE));
     }
 
+    @Test
     public void testValidate_valueNotParsable() throws Exception {
         attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         attribute.setDefaultValue("1");
@@ -105,6 +112,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_VALUE_NOT_PARSABLE));
     }
 
+    @Test
     public void testValidate_invalidAttributeName() throws Exception {
         attribute.setName("test");
         MessageList ml = attribute.validate(attribute.getIpsProject());
@@ -115,18 +123,22 @@ public class AttributeTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_INVALID_ATTRIBUTE_NAME));
     }
 
+    @Test
     public void testSetName() {
         testPropertyAccessReadWrite(Attribute.class, IIpsElement.PROPERTY_NAME, attribute, "newName");
     }
 
+    @Test
     public void testSetModifier() {
         testPropertyAccessReadWrite(Attribute.class, IAttribute.PROPERTY_MODIFIER, attribute, Modifier.PUBLIC);
     }
 
+    @Test
     public void testSetValueDatatype() {
         testPropertyAccessReadWrite(Attribute.class, IAttribute.PROPERTY_DATATYPE, attribute, "newDatatype");
     }
 
+    @Test
     public void testFindValueDatatype() throws CoreException {
         attribute.setDatatype(Datatype.BOOLEAN.getName());
         assertEquals(Datatype.BOOLEAN, attribute.findDatatype(ipsProject));
@@ -134,10 +146,12 @@ public class AttributeTest extends AbstractIpsPluginTest {
         assertNull(attribute.findDatatype(ipsProject));
     }
 
+    @Test
     public void testSetDefaultValue() {
         testPropertyAccessReadWrite(Attribute.class, IAttribute.PROPERTY_DEFAULT_VALUE, attribute, "newDefault");
     }
 
+    @Test
     public void testInitFromXml() {
         IProductCmptTypeAttribute attr = ((IProductCmptType)type).newProductCmptTypeAttribute();
         Element rootEl = getTestDocument().getDocumentElement();
@@ -150,6 +164,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         assertEquals("Integer", attr.getDatatype());
     }
 
+    @Test
     public void testToXml() {
         attribute.setName("a1");
         attribute.setDefaultValue("newDefault");

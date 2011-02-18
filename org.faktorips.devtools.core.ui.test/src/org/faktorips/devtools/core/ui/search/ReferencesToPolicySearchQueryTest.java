@@ -23,6 +23,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ReferencesToPolicySearchQueryTest extends AbstractIpsPluginTest {
 
@@ -36,7 +38,8 @@ public class ReferencesToPolicySearchQueryTest extends AbstractIpsPluginTest {
     private ReferencesToPolicySearchQuery query;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         proj = newIpsProject("TestProjekt");
         root = proj.getIpsPackageFragmentRoots()[0];
@@ -63,6 +66,7 @@ public class ReferencesToPolicySearchQueryTest extends AbstractIpsPluginTest {
         pcTypeNoRef = newPolicyCmptType(root, "TestPCTypeNoRef");
     }
 
+    @Test
     public void testRun() {
         query = new ReferencesToPolicySearchQuery(pcTypeReferenced);
         // run query in same thread as this test

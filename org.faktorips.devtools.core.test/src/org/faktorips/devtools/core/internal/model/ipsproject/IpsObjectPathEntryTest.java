@@ -18,6 +18,8 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -32,12 +34,14 @@ public class IpsObjectPathEntryTest extends AbstractIpsPluginTest {
     private IpsObjectPath path;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
         path = new IpsObjectPath(ipsProject);
     }
 
+    @Test
     public void testGetIndex() throws CoreException {
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         assertEquals(1, path.getEntries().length);
@@ -51,6 +55,7 @@ public class IpsObjectPathEntryTest extends AbstractIpsPluginTest {
         assertEquals(1, entry1.getIndex());
     }
 
+    @Test
     public void testCreateFromXml() {
         Document doc = getTestDocument();
         NodeList nl = doc.getDocumentElement().getElementsByTagName(IpsObjectPathEntry.XML_ELEMENT);

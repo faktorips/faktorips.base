@@ -30,6 +30,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 public class ProductCmptLinkTest extends AbstractIpsPluginTest {
@@ -43,7 +45,8 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "TestPolicy", "TestProduct");
@@ -54,10 +57,12 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         ipsSrcFile = productCmpt.getIpsSrcFile();
     }
 
+    @Test
     public void testGetAssociation() {
         assertEquals("CoverageType", link.getAssociation());
     }
 
+    @Test
     public void testFindAssociation() throws CoreException {
         IProductCmptTypeAssociation assocation = productCmptType.newProductCmptTypeAssociation();
 
@@ -68,18 +73,21 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         assertNull(link.findAssociation(ipsProject));
     }
 
+    @Test
     public void testRemove() {
         link.delete();
         assertEquals(0, generation.getNumOfLinks());
         assertTrue(ipsSrcFile.isDirty());
     }
 
+    @Test
     public void testSetTarget() {
         link.setTarget("newTarget");
         assertEquals("newTarget", link.getTarget());
         assertTrue(ipsSrcFile.isDirty());
     }
 
+    @Test
     public void testToXml() {
         link = generation.newLink("coverage");
         link.setTarget("newTarget");
@@ -101,6 +109,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         assertEquals(Integer.MAX_VALUE, copy.getMaxCardinality());
     }
 
+    @Test
     public void testInitFromXml() {
         link.initFromXml((Element)getTestDocument().getDocumentElement()
                 .getElementsByTagName(IProductCmptLink.TAG_NAME).item(0));
@@ -117,11 +126,13 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         assertEquals(Integer.MAX_VALUE, link.getMaxCardinality());
     }
 
+    @Test
     public void testValidateUnknownAssociate() throws CoreException {
         MessageList ml = link.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_UNKNWON_ASSOCIATION));
     }
 
+    @Test
     public void testValidateUnknownTarget() throws CoreException {
         link.setTarget("unknown");
         MessageList ml = link.validate(ipsProject);
@@ -132,6 +143,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_UNKNWON_TARGET));
     }
 
+    @Test
     public void testValidateCardinality() throws CoreException {
         IPolicyCmptType coverageType = newPolicyAndProductCmptType(ipsProject, "TestCoverage", "TestCoverageType");
         IProductCmptType coverageTypeType = coverageType.findProductCmptType(ipsProject);
@@ -232,6 +244,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testValidateInvalidTarget() throws Exception {
         IPolicyCmptType targetType = newPolicyAndProductCmptType(ipsProject, "Coverage", "CoverageType");
         IProductCmptType targetProductType = targetType.findProductCmptType(ipsProject);
@@ -255,6 +268,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_INVALID_TARGET));
     }
 
+    @Test
     public void testIsMandatory() {
         link.setMinCardinality(0);
         link.setMaxCardinality(1);
@@ -273,6 +287,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         assertFalse(link.isMandatory());
     }
 
+    @Test
     public void testIsOptional() {
         link.setMinCardinality(0);
         link.setMaxCardinality(1);
@@ -291,6 +306,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         assertFalse(link.isOptional());
     }
 
+    @Test
     public void testIs1ToMany() {
         link.setMaxCardinality(10);
         assertTrue(link.is1ToMany());
@@ -298,11 +314,13 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         assertFalse(link.is1ToMany());
     }
 
+    @Test
     public void testGetCaption() throws CoreException {
         createAssociation();
         assertEquals("foo", link.getCaption(Locale.US));
     }
 
+    @Test
     public void testGetCaptionNullPointer() throws CoreException {
         try {
             link.getCaption(null);
@@ -311,11 +329,13 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetPluralCaption() throws CoreException {
         createAssociation();
         assertEquals("foos", link.getPluralCaption(Locale.US));
     }
 
+    @Test
     public void testGetPluralCaptionNullPointer() throws CoreException {
         try {
             link.getPluralCaption(null);
@@ -324,11 +344,13 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetLastResortCaption() {
         link.setAssociation("notCapitalized");
         assertEquals(StringUtils.capitalize(link.getAssociation()), link.getLastResortCaption());
     }
 
+    @Test
     public void testGetLastResortPluralCaption() {
         link.setAssociation("notCapitalized");
         assertEquals(StringUtils.capitalize(link.getAssociation()), link.getLastResortPluralCaption());

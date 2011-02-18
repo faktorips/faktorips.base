@@ -28,6 +28,8 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -43,6 +45,7 @@ public class TestCaseAndTestCaseTypeTest extends AbstractIpsPluginTest {
     private String pathToTestPolicyCmptInput;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         project = super.newIpsProject("TestProject");
@@ -92,6 +95,7 @@ public class TestCaseAndTestCaseTypeTest extends AbstractIpsPluginTest {
         testCase.newTestValue().setTestValueParameter("expectedResultValueParameter4");
     }
 
+    @Test
     public void testContentProvider() {
         TestCaseContentProvider testCaseCntProviderIn = new TestCaseContentProvider(TestCaseContentProvider.INPUT,
                 testCase);
@@ -102,6 +106,7 @@ public class TestCaseAndTestCaseTypeTest extends AbstractIpsPluginTest {
         assertEquals(5, testCaseContentProviderExp.getElements(testCase).length);
     }
 
+    @Test
     public void testValidateTestPolicyCmptAssociation() throws CoreException {
         ITestPolicyCmpt pc = testCase.findTestPolicyCmpt(pathToTestPolicyCmptInput);
         ITestPolicyCmptLink pcr = (ITestPolicyCmptLink)pc.getParent();

@@ -32,6 +32,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -46,6 +48,7 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
     private IProductCmptGeneration generation;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = super.newIpsProject("TestProject");
@@ -72,6 +75,7 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
         ce2.setPolicyCmptTypeAttribute("attr2");
     }
 
+    @Test
     public void testCreateFromXml() {
         Document doc = getTestDocument();
         Element root = doc.getDocumentElement();
@@ -82,6 +86,7 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
         assertNotNull(allValues);
     }
 
+    @Test
     public void testToXml() {
         UnrestrictedValueSet allValues = new UnrestrictedValueSet(ce, "1");
         Element element = allValues.toXml(newDocument());
@@ -90,6 +95,7 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
         assertNotNull(allValues2);
     }
 
+    @Test
     public void testContainsValue() throws Exception {
         UnrestrictedValueSet allValues = new UnrestrictedValueSet(ce, "1");
         assertFalse(allValues.containsValue("abc"));
@@ -100,6 +106,7 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
         assertTrue(allValues.containsValue("99"));
     }
 
+    @Test
     public void testContainsValueSet() throws Exception {
         UnrestrictedValueSet allValues = (UnrestrictedValueSet)ce.getValueSet();
 
@@ -108,6 +115,7 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
         assertFalse(allValues.containsValueSet(ce2.getValueSet()));
     }
 
+    @Test
     public void testGetContainsNull() throws Exception {
         UnrestrictedValueSet allValues = (UnrestrictedValueSet)ce.getValueSet();
 
@@ -131,6 +139,7 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
         assertFalse(allValues.getContainsNull());
     }
 
+    @Test
     public void testSetContainsNull() throws Exception {
         UnrestrictedValueSet allValues = (UnrestrictedValueSet)ce.getValueSet();
 

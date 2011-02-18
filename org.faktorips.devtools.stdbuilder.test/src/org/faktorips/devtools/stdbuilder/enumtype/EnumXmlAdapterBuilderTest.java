@@ -16,6 +16,8 @@ package org.faktorips.devtools.stdbuilder.enumtype;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
+import org.junit.Before;
+import org.junit.Test;
 
 public class EnumXmlAdapterBuilderTest extends AbstractStdBuilderTest {
 
@@ -26,7 +28,8 @@ public class EnumXmlAdapterBuilderTest extends AbstractStdBuilderTest {
     private IEnumType enumType;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         EnumTypeBuilder enumTypeBuilder = new EnumTypeBuilder(builderSet);
@@ -38,6 +41,7 @@ public class EnumXmlAdapterBuilderTest extends AbstractStdBuilderTest {
         return getGeneratedJavaType(enumType, true, true, ENUM_TYPE_NAME + "XmlAdapter");
     }
 
+    @Test
     public void testGetGeneratedJavaElements() {
         generatedJavaElements = builder.getGeneratedJavaElements(enumType);
         assertTrue(generatedJavaElements.contains(getGeneratedJavaXmlAdapter()));

@@ -29,6 +29,8 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -42,7 +44,8 @@ public class ProductCmptXMLBuilderTest extends AbstractIpsPluginTest {
     private IProductCmpt productCmpt;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
         IIpsProjectProperties props = project.getProperties();
@@ -85,10 +88,12 @@ public class ProductCmptXMLBuilderTest extends AbstractIpsPluginTest {
         assertFalse(productCmpt.validate(productCmpt.getIpsProject()).containsErrorMsg());
     }
 
+    @Test
     public void testBuild() throws CoreException {
         project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
     }
 
+    @Test
     public void testDelete() throws CoreException {
         project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
 

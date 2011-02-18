@@ -14,11 +14,13 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class IpsArtefactBuilderSetConfigTest extends AbstractIpsPluginTest {
 
+    @Test
     public void testInitFromXml() throws Exception {
         IpsArtefactBuilderSetConfigModel config = new IpsArtefactBuilderSetConfigModel();
         Document doc = getTestDocument();
@@ -28,6 +30,7 @@ public class IpsArtefactBuilderSetConfigTest extends AbstractIpsPluginTest {
         assertEquals("two", config.getPropertyValue("prop2"));
     }
 
+    @Test
     public void testToXml() throws Exception {
         IpsArtefactBuilderSetConfigModel config = new IpsArtefactBuilderSetConfigModel();
         Document doc = getTestDocument();

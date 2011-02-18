@@ -67,6 +67,7 @@ import org.faktorips.devtools.core.refactor.IIpsMoveProcessor;
 import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
 
 /**
  * Provides convenient methods to start Faktor-IPS refactorings and provides a basic model.
@@ -178,7 +179,8 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
     protected IBusinessFunction businessFunction;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         ipsProject = newIpsProject();

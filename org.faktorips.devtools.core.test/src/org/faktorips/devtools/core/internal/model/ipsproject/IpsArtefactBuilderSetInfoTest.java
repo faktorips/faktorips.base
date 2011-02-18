@@ -13,13 +13,17 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -37,14 +41,16 @@ import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 
-public class IpsArtefactBuilderSetInfoTest extends TestCase {
+public class IpsArtefactBuilderSetInfoTest {
 
     private TestExtensionRegistry registry;
     private TestLogger logger;
     private IpsArtefactBuilderSetInfo builderSetInfo;
 
-    @Override
+    @Before
     public void setUp() {
 
         HashMap<String, String> attributes = new HashMap<String, String>();
@@ -96,12 +102,14 @@ public class IpsArtefactBuilderSetInfoTest extends TestCase {
 
     }
 
+    @Test
     public void testLoadExtensions() {
         assertEquals(3, builderSetInfo.getPropertyDefinitions().length);
         assertEquals("mybuilderset", builderSetInfo.getBuilderSetId());
 
     }
 
+    @Test
     public void testValidateIpsBuilderSetPropertyValue() {
         IIpsProject ipsProject = createTestIpsProject("1.4");
         assertNull(builderSetInfo.validateIpsBuilderSetPropertyValue(ipsProject, "loggingConntectors", "true"));
@@ -110,6 +118,7 @@ public class IpsArtefactBuilderSetInfoTest extends TestCase {
 
     }
 
+    @Test
     public void testValidateIpsArtefactBuilderSetConfig() {
         IIpsProject ipsProject = createTestIpsProject("1.4");
         HashMap<String, String> properties = new HashMap<String, String>();

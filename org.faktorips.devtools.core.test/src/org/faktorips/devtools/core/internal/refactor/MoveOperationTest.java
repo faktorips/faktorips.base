@@ -44,6 +44,8 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.util.StringUtil;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests for move- and rename-operation
@@ -72,9 +74,9 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     private IPolicyCmptType policyCmptType;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
-
         ipsProject = newIpsProject();
         ipsRoot = ipsProject.getIpsPackageFragmentRoots()[0];
         IProductCmptType productCmptType1 = newProductCmptType(ipsProject, PRODUCT_QNAME);
@@ -109,6 +111,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
      * product with the same package, but another name. After that, the new file is expected to be
      * existent and the references to this object have to be the same as to the source.
      */
+    @Test
     public void testRenameProduct() throws CoreException, InvocationTargetException, InterruptedException {
         String targetName = "Moved" + coverage.getName(); //$NON-NLS-1$
         IIpsSrcFile targetFile = coverage.getIpsPackageFragment().getIpsSrcFile(targetName, IpsObjectType.PRODUCT_CMPT);
@@ -136,6 +139,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
      * For this test, one package is renamed. After that, the new package is expected to be existent
      * and the references to the contained objects have to be the same as to the source.
      */
+    @Test
     public void testRenamePackage() throws CoreException, InvocationTargetException, InterruptedException {
         IIpsPackageFragment sourcePackage = coverage.getIpsPackageFragment();
         IIpsPackageFragment target = sourcePackage.getRoot().getIpsPackageFragment("renamed");
@@ -171,6 +175,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
      * is expected to be existent and the references to this object have to be the same as to the
      * source.
      */
+    @Test
     public void testMoveProduct() throws CoreException, InvocationTargetException, InterruptedException {
         String runtimeId = coverage.getRuntimeId();
 
@@ -204,6 +209,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     /**
      * Test if the references of product components will be correctly updated in ips test cases,
      */
+    @Test
     public void testMoveProductRefByTestCase() throws Exception {
         IIpsSrcFile target = coverage.getIpsPackageFragment().getRoot().getIpsPackageFragment("test.my.pack")
                 .getIpsSrcFile(coverage.getName() + ".ipsproduct");
@@ -249,6 +255,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     /**
      * Test if the references of table contents will be correctly updated in product cmpts,
      */
+    @Test
     public void testTableContentRefByProductCmpt() throws Exception {
         // create table content
         IIpsSrcFile file = coverage.getIpsPackageFragment().createIpsFile(IpsObjectType.TABLE_CONTENTS, "table", true,
@@ -288,6 +295,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
      * After that, the new package is expected to be existant and the references to the contained
      * objects have to be the same as to the source.
      */
+    @Test
     public void testMovePackage() throws CoreException, InvocationTargetException, InterruptedException {
         IIpsPackageFragment sourcePackage = coverage.getIpsPackageFragment();
         ITestCase testCase = (ITestCase)sourcePackage.createIpsFile(IpsObjectType.TEST_CASE, "testcase", true, null)
@@ -331,6 +339,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertNotNull(target.getIpsSrcFile(policyCmptType.getName(), IpsObjectType.POLICY_CMPT_TYPE));
     }
 
+    @Test
     public void testMovePackageInDifferentRoot() throws Exception {
         IIpsPackageFragmentRoot targetRoot = createIpsPackageFrgmtRoot();
 
@@ -362,6 +371,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertEquals(sourceRefs.length, targetRefs.length);
     }
 
+    @Test
     public void testMoveTableContent() throws CoreException, InvocationTargetException, InterruptedException {
         IIpsSrcFile file = coverage.getIpsPackageFragment().createIpsFile(IpsObjectType.TABLE_CONTENTS, "table", true,
                 null);
@@ -377,6 +387,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertFalse(file.exists());
     }
 
+    @Test
     public void testMoveEnumContentToPackageWithEnumTypeSameNames() throws CoreException, InvocationTargetException,
             InterruptedException {
 
@@ -405,6 +416,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertTrue(targetFile.exists());
     }
 
+    @Test
     public void testRenameTableContent() throws Exception {
         IIpsSrcFile file = coverage.getIpsPackageFragment().createIpsFile(IpsObjectType.TABLE_CONTENTS, "Table", true,
                 null);
@@ -420,6 +432,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertFalse(file.exists());
     }
 
+    @Test
     public void testMoveTestCase() throws CoreException, InvocationTargetException, InterruptedException {
         IIpsSrcFile file = coverage.getIpsPackageFragment().createIpsFile(IpsObjectType.TEST_CASE, "testCase", true,
                 null);
@@ -435,6 +448,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertFalse(file.exists());
     }
 
+    @Test
     public void testRenameTestCase() throws Exception {
         IIpsSrcFile file = coverage.getIpsPackageFragment().createIpsFile(IpsObjectType.TEST_CASE, "testcase", true,
                 null);
@@ -455,6 +469,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
      * Test to rename a package framgent which contains at least one file that is NOT a product
      * component or a table content
      */
+    @Test
     public void testRenamePackageWithFiles() throws Exception {
         IIpsPackageFragmentRoot root = coverage.getIpsPackageFragment().getRoot();
         IIpsPackageFragment pack = root.createPackageFragment("test.subpackage", true, null);
@@ -479,6 +494,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testRenameEmptyFolder() throws Exception {
         IIpsPackageFragment pack = ipsRoot.createPackageFragment("empty", true, null);
 
@@ -494,6 +510,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertTrue(pack.exists());
     }
 
+    @Test
     public void testRenamePackageContainingOnlyPackages() throws Exception {
         IIpsPackageFragment level1 = ipsRoot.createPackageFragment("level1", true, null);
 
@@ -511,6 +528,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertTrue(ipsRoot.getIpsPackageFragment("levela").exists());
     }
 
+    @Test
     public void testMovePackageInRootContainingEmptyPackage() throws Exception {
         IIpsPackageFragment target = ipsRoot.createPackageFragment("target", true, null);
         IIpsPackageFragment source = ipsRoot.createPackageFragment("source", true, null);
@@ -526,6 +544,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertTrue(ipsProject.findIpsObject(IpsObjectType.PRODUCT_CMPT, "target.source.TestProduct").exists());
     }
 
+    @Test
     public void testMovePackageContainingEmptyPackage() throws Exception {
         IIpsPackageFragment target = ipsRoot.createPackageFragment("target", true, null);
         IIpsPackageFragment source = ipsRoot.createPackageFragment("parent.source", true, null);
@@ -542,6 +561,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertTrue(ipsProject.findIpsObject(IpsObjectType.PRODUCT_CMPT, "target.source.TestProduct").exists());
     }
 
+    @Test
     public void testCreateSubpackageByRename() throws CoreException, InvocationTargetException, InterruptedException {
         IIpsPackageFragment source = ipsRoot.createPackageFragment("source", true, null);
         newProductCmpt(ipsRoot, "source.TestProduct");
@@ -556,6 +576,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertNull(ipsProject.findIpsObject(IpsObjectType.PRODUCT_CMPT, "source.TestProduct"));
     }
 
+    @Test
     public void testMoveInDifferentRoot() throws Exception {
         IIpsPackageFragmentRoot targetRoot = createIpsPackageFrgmtRoot();
 
@@ -585,6 +606,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertTrue(target.exists());
     }
 
+    @Test
     public void testMoveFiles() throws Exception {
         // set up source and target
         IProject project = ipsProject.getProject();
@@ -630,6 +652,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertTrue(ipsProject.getProject().findMember("file1").exists());
     }
 
+    @Test
     public void testMoveLinks() throws Exception {
         // set up source and target
         IProject project = ipsProject.getProject();

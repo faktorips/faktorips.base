@@ -25,15 +25,18 @@ import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
+import org.junit.Test;
 
 public class RenameEnumAttributeProcessorTest extends AbstractIpsRefactoringTest {
 
+    @Test
     public void testCheckInitialConditionsValid() throws OperationCanceledException, CoreException {
         ProcessorBasedRefactoring renameRefactoring = enumAttribute.getRenameRefactoring();
         RefactoringStatus status = renameRefactoring.getProcessor().checkInitialConditions(new NullProgressMonitor());
         assertFalse(status.hasError());
     }
 
+    @Test
     public void testCheckFinalConditionsValid() throws OperationCanceledException, CoreException {
         ProcessorBasedRefactoring renameRefactoring = enumAttribute.getRenameRefactoring();
         IIpsRenameProcessor renameProcessor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
@@ -43,6 +46,7 @@ public class RenameEnumAttributeProcessorTest extends AbstractIpsRefactoringTest
         assertFalse(status.hasError());
     }
 
+    @Test
     public void testCheckFinalConditionsInvalidAttributeName() throws OperationCanceledException, CoreException {
         // Create another enumeration attribute to test against.
         IEnumAttribute otherEnumAttribute = enumType.newEnumAttribute();
@@ -56,6 +60,7 @@ public class RenameEnumAttributeProcessorTest extends AbstractIpsRefactoringTest
         assertTrue(status.hasError());
     }
 
+    @Test
     public void testRenameEnumAttribute() throws CoreException {
         enumType.setAbstract(true);
 
@@ -83,6 +88,7 @@ public class RenameEnumAttributeProcessorTest extends AbstractIpsRefactoringTest
         assertEquals(newAttributeName, inheritedEnumAttribute.getName());
     }
 
+    @Test
     public void testRenameEnumAttributeUsedInLiteralName() throws CoreException {
         IEnumType modelEnumType = newEnumType(ipsProject, "ModelEnumType");
         modelEnumType.setContainingValues(true);

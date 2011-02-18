@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.junit.Test;
 
 /**
  * 
@@ -27,6 +28,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
  */
 public class InvalidPcTypeHierarchyTest extends AbstractIpsPluginTest {
 
+    @Test
     public void test() throws CoreException {
         IIpsProject project = newIpsProject();
         IPolicyCmptType type1 = newPolicyCmptType(project, "Type1");

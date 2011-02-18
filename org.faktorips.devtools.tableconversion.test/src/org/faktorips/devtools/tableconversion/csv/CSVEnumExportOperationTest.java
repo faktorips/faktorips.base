@@ -23,6 +23,8 @@ import org.faktorips.devtools.tableconversion.AbstractTableExportOperation;
 import org.faktorips.devtools.tableconversion.AbstractTableTest;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 
 public class CSVEnumExportOperationTest extends AbstractTableTest {
 
@@ -31,7 +33,8 @@ public class CSVEnumExportOperationTest extends AbstractTableTest {
     private IIpsProject ipsProject;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         ipsProject = newIpsProject("test");
@@ -61,6 +64,7 @@ public class CSVEnumExportOperationTest extends AbstractTableTest {
         new File(filename).delete();
     }
 
+    @Test
     public void testExportValid() throws Exception {
         IEnumType enumType = createValidEnumTypeWithValues(ipsProject);
 
@@ -70,6 +74,7 @@ public class CSVEnumExportOperationTest extends AbstractTableTest {
         assertTrue(ml.toString(), ml.isEmpty());
     }
 
+    @Test
     public void testExportValidRowMismatch() throws Exception {
         IEnumType enumType = createValidEnumTypeWithValues(ipsProject);
 
@@ -95,6 +100,7 @@ public class CSVEnumExportOperationTest extends AbstractTableTest {
         assertFalse(ml.isEmpty());
     }
 
+    @Test
     public void testExportInvalid() throws Exception {
         IEnumType enumType = createInvalidEnumTypeWithValues(ipsProject);
 

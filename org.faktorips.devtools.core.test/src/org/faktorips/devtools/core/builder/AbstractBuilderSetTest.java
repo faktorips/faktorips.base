@@ -20,6 +20,8 @@ import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.util.LocalizedStringsSet;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -35,7 +37,8 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
     private EExtendsC e;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         a = new A();
         b = new B();
@@ -45,6 +48,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
         builderSet = new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { a, b, c, d, e });
     }
 
+    @Test
     public void testGetBuilderByClass() {
         assertEquals(0, builderSet.getBuildersByClass(NotInBuilderSer.class).size());
         assertEquals(5, builderSet.getBuildersByClass(DumyJavaSourceFileBuilder.class).size());

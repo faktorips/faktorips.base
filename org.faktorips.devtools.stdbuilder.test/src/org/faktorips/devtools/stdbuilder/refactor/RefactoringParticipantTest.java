@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.junit.Before;
 
 /**
  * Provides basic functionality for the refactoring participant tests of the standard builder.
@@ -70,7 +71,8 @@ public abstract class RefactoringParticipantTest extends AbstractIpsRefactoringT
     protected IType businessFunctionClass;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         setUpFolders();

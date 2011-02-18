@@ -21,6 +21,7 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.ProjectConfigurationUtil;
 import org.faktorips.runtime.IValidationContext;
+import org.junit.Test;
 
 /**
  * Tests the various Faktor-IPS "Rename" refactorings with regard to the generated Java source code.
@@ -29,6 +30,7 @@ import org.faktorips.runtime.IValidationContext;
  */
 public class RenameRefactoringParticipantTest extends RefactoringParticipantTest {
 
+    @Test
     public void testRenamePolicyCmptTypeAttribute() throws CoreException {
         performRenameRefactoring(policyCmptTypeAttribute, "test");
 
@@ -68,6 +70,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
                 new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" }).exists());
     }
 
+    @Test
     public void testRenamePolicyCmptTypeAttributeValueSetEnum() throws CoreException {
         policyCmptTypeAttribute.setValueSetType(ValueSetType.ENUM);
 
@@ -93,6 +96,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
                 new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" }).exists());
     }
 
+    @Test
     public void testRenamePolicyCmptTypeAttributeValueSetRange() throws CoreException {
         policyCmptTypeAttribute.setValueSetType(ValueSetType.RANGE);
 
@@ -118,6 +122,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
                 new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" }).exists());
     }
 
+    @Test
     public void testRenameProductCmptTypeAttribute() throws CoreException {
         performRenameRefactoring(productCmptTypeAttribute, "test");
 
@@ -139,6 +144,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
         assertTrue(policyClass.getMethod("getTest", new String[0]).exists());
     }
 
+    @Test
     public void testRenameEnumAttributeAbstractJava5Enums() throws CoreException {
         ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, true);
         enumType.setAbstract(true);
@@ -154,6 +160,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
         assertTrue(enumJavaType.getMethod("getTest", new String[0]).exists());
     }
 
+    @Test
     public void testRenameEnumAttributeAbstract() throws CoreException {
         ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, false);
         enumType.setAbstract(true);
@@ -172,6 +179,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
     }
 
     /** Assures that the referring Java elements in the subclass hierarchy are renamed. */
+    @Test
     public void testRenameEnumAttributeHierarchy() throws CoreException {
         ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, false);
         enumType.setAbstract(true);
@@ -207,6 +215,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
                 new String[] { "Q" + Datatype.STRING.getQualifiedName() + ";" }).exists());
     }
 
+    @Test
     public void testRenamePolicyCmptType() throws CoreException {
         performRenameRefactoring(policyCmptType, "RenamedPolicy");
 
@@ -218,6 +227,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
         assertTrue(productInterface.getMethod("createRenamedPolicy", new String[] {}).exists());
     }
 
+    @Test
     public void testRenameProductCmptType() throws CoreException {
         performRenameRefactoring(productCmptType, "RenamedProduct");
 
@@ -231,11 +241,13 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
         assertTrue(policyClass.getMethod("setRenamedProduct", new String[] { "QIRenamedProduct;", "Z" }).exists());
     }
 
+    @Test
     public void testRenameEnumLiteralNameAttributeValueJava5Enums() throws CoreException {
         ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, true);
         performTestRenameEnumLiteralNameAttributeValue();
     }
 
+    @Test
     public void testRenameEnumLiteralNameAttributeValue() throws CoreException {
         ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, false);
         performTestRenameEnumLiteralNameAttributeValue();
@@ -252,30 +264,35 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
         assertTrue(javaType.getField("BAR").exists());
     }
 
+    @Test
     public void testRenameEnumType() throws CoreException {
         performRenameRefactoring(enumType, "RenamedEnumType");
 
         checkJavaSourceFilesEnumType("", "RenamedEnumType");
     }
 
+    @Test
     public void testRenameTableStructure() throws CoreException {
         performRenameRefactoring(tableStructure, "RenamedTableStructure");
 
         checkJavaSourceFilesTableStructure("", "RenamedTableStructure");
     }
 
+    @Test
     public void testRenameTestCaseType() throws CoreException {
         performRenameRefactoring(testCaseType, "RenamedTestCaseType");
 
         checkJavaSourceFilesTestCaseType("", "RenamedTestCaseType");
     }
 
+    @Test
     public void testRenameBusinessFunction() throws CoreException {
         performRenameRefactoring(businessFunction, "RenamedBusinessFunction");
 
         checkJavaSourceFilesBusinessFunction("", "RenamedBusinessFunction");
     }
 
+    @Test
     public void testRenameOnlyLetterCaseChanged() throws CoreException {
         performRenameRefactoring(policyCmptType, "policyCmptType");
 

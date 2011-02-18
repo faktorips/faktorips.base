@@ -17,6 +17,8 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 public class ForeignKeyTest extends AbstractIpsPluginTest {
@@ -26,7 +28,8 @@ public class ForeignKeyTest extends AbstractIpsPluginTest {
     private ForeignKey key;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         IIpsProject project = newIpsProject();
         table = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "TestTable");
@@ -35,12 +38,14 @@ public class ForeignKeyTest extends AbstractIpsPluginTest {
         ipsSrcFile.save(true, null);
     }
 
+    @Test
     public void testRemove() {
         key.delete();
         assertEquals(0, table.getNumOfForeignKeys());
         assertTrue(ipsSrcFile.isDirty());
     }
 
+    @Test
     public void testGetName() {
         assertEquals("()", key.getName());
         key.setReferencedTableStructure("RefTable");
@@ -50,6 +55,7 @@ public class ForeignKeyTest extends AbstractIpsPluginTest {
         assertEquals("RefTable(age)", key.getName());
     }
 
+    @Test
     public void testGetKeyItems() {
         assertEquals(0, key.getKeyItemNames().length);
         String[] items = new String[] { "age", "gender" };
@@ -60,12 +66,14 @@ public class ForeignKeyTest extends AbstractIpsPluginTest {
         assertEquals("gender", key.getKeyItemNames()[1]);
     }
 
+    @Test
     public void testSetKeyItems() {
         String[] items = new String[] { "age", "gender" };
         key.setKeyItems(items);
         assertTrue(ipsSrcFile.isDirty());
     }
 
+    @Test
     public void testToXml() {
         key = (ForeignKey)table.newForeignKey();
         key.setReferencedTableStructure("RefTable");
@@ -84,6 +92,7 @@ public class ForeignKeyTest extends AbstractIpsPluginTest {
         assertEquals("gender", copy.getKeyItemNames()[1]);
     }
 
+    @Test
     public void testInitFromXml() {
         key.initFromXml(getTestDocument().getDocumentElement());
         assertEquals("42", key.getId());

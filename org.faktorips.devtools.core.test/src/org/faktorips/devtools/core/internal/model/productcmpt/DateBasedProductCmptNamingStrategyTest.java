@@ -22,6 +22,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -35,7 +37,8 @@ public class DateBasedProductCmptNamingStrategyTest extends AbstractIpsPluginTes
     private DateBasedProductCmptNamingStrategy strategy;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
         IIpsProjectProperties props = ipsProject.getProperties();
@@ -48,6 +51,7 @@ public class DateBasedProductCmptNamingStrategyTest extends AbstractIpsPluginTes
         ipsProject.setProperties(props);
     }
 
+    @Test
     public void testValidateVersionId() {
         MessageList list = new MessageList();
         list = strategy.validateVersionId("a2006-01-31");
@@ -73,12 +77,14 @@ public class DateBasedProductCmptNamingStrategyTest extends AbstractIpsPluginTes
         assertNotNull(list.getMessageByCode(IProductCmptNamingStrategy.MSGCODE_ILLEGAL_VERSION_ID));
     }
 
+    @Test
     public void testGetNextVersionId() throws CoreException {
         GregorianCalendar workingDate = new GregorianCalendar(2006, 0, 31);
         IProductCmpt pc = newProductCmpt(ipsProject, "TestProduct 2005-01-01");
         assertEquals("2006-01-31", strategy.getNextVersionId(pc, workingDate));
     }
 
+    @Test
     public void testInitFromXml() {
         Element el = getTestDocument().getDocumentElement();
         strategy.setPostfixAllowed(false);
@@ -98,6 +104,7 @@ public class DateBasedProductCmptNamingStrategyTest extends AbstractIpsPluginTes
         assertEquals("y", strategy.getReplacement(' '));
     }
 
+    @Test
     public void testToXml() {
         Document doc = newDocument();
         strategy.putSpecialCharReplacement('#', "zzz");
@@ -110,6 +117,7 @@ public class DateBasedProductCmptNamingStrategyTest extends AbstractIpsPluginTes
         assertEquals(3, strategy.getReplacedCharacters().length);
     }
 
+    @Test
     public void testGetUniqueRuntimeId() throws Exception {
         String prefix = ipsProject.getIpsProject().getRuntimeIdPrefix();
 

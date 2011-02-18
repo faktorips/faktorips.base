@@ -15,9 +15,11 @@ package org.faktorips.devtools.core.internal.model.testcase;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.util.message.MessageList;
+import org.junit.Test;
 
 public class IpsTestRunnerTest extends AbstractIpsPluginTest {
 
+    @Test
     public void testValidateTestCaseName() {
         assertContainsMessage(null, IpsTestRunner.validateTestCaseName("testCase"));
         assertContainsMessage(IpsTestRunner.INVALID_NAME, IpsTestRunner.validateTestCaseName("test,Case"));

@@ -21,6 +21,8 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.junit.Before;
+import org.junit.Test;
 
 public class IpsModelImplTest extends AbstractIpsPluginTest {
 
@@ -28,12 +30,14 @@ public class IpsModelImplTest extends AbstractIpsPluginTest {
     private IpsModel model;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
         model = (IpsModel)ipsProject.getIpsModel();
     }
 
+    @Test
     public void testGetIpsObjectPath() throws CoreException {
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         path.getSourceFolderEntries()[0].setSpecificBasePackageNameForMergableJavaClasses("newpackage");
@@ -57,6 +61,7 @@ public class IpsModelImplTest extends AbstractIpsPluginTest {
                 secondPath.getSourceFolderEntries()[0].getSpecificBasePackageNameForMergableJavaClasses());
     }
 
+    @Test
     public void testGetDatatypeHelpers() throws CoreException {
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setPredefinedDatatypesUsed(new String[] { Datatype.DECIMAL.getQualifiedName() });

@@ -26,6 +26,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
@@ -40,7 +42,8 @@ public class DescriptionTest extends AbstractIpsPluginTest {
     private IPolicyCmptTypeAttribute attribute;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
         policyCmptType = newPolicyCmptType(ipsProject, "TestPolicy");
@@ -48,21 +51,25 @@ public class DescriptionTest extends AbstractIpsPluginTest {
         description = attribute.newDescription();
     }
 
+    @Test
     public void testSetLocale() {
         description.setLocale(Locale.GERMAN);
         assertEquals(Locale.GERMAN, description.getLocale());
     }
 
+    @Test
     public void testSetText() {
         description.setText("foo");
         assertEquals("foo", description.getText());
     }
 
+    @Test
     public void testSetTextNullPointer() {
         description.setText(null);
         assertEquals("", description.getText());
     }
 
+    @Test
     public void testValidateLocaleMissing() throws CoreException {
         MessageList validationMessages = description.validate(ipsProject);
         assertEquals(1, validationMessages.getNoOfMessages());
@@ -70,6 +77,7 @@ public class DescriptionTest extends AbstractIpsPluginTest {
         assertEquals(IDescription.MSGCODE_LOCALE_MISSING, message.getCode());
     }
 
+    @Test
     public void testValidateLocaleNotSupported() throws CoreException {
         description.setLocale(Locale.TAIWAN);
         MessageList validationMessages = description.validate(ipsProject);
@@ -78,6 +86,7 @@ public class DescriptionTest extends AbstractIpsPluginTest {
         assertEquals(IDescription.MSGCODE_LOCALE_NOT_SUPPORTED_BY_IPS_PROJECT, message.getCode());
     }
 
+    @Test
     public void testValidateLocaleNotSupportedByContextProject() throws CoreException {
         IIpsProject contextProject = newIpsProject("ContextProject");
         IIpsProjectProperties properties = contextProject.getProperties();
@@ -89,12 +98,14 @@ public class DescriptionTest extends AbstractIpsPluginTest {
         assertTrue(validationMessages.isEmpty());
     }
 
+    @Test
     public void testValidateOk() throws CoreException {
         description.setLocale(Locale.US);
         MessageList validationMessages = description.validate(ipsProject);
         assertEquals(0, validationMessages.getNoOfMessages());
     }
 
+    @Test
     public void testXml() throws ParserConfigurationException {
         description.setLocale(Locale.ENGLISH);
         description.setText("foo");

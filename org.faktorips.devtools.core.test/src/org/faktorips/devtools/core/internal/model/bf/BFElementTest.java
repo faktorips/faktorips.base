@@ -24,6 +24,8 @@ import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -34,6 +36,7 @@ public class BFElementTest extends AbstractIpsPluginTest {
     private TestContentsChangeListener listener;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
@@ -41,6 +44,7 @@ public class BFElementTest extends AbstractIpsPluginTest {
         ipsProject.getIpsModel().addChangeListener(listener);
     }
 
+    @Test
     public void testInitFromXml() throws Exception {
         Document doc = getTestDocument();
         IBusinessFunction bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
@@ -55,6 +59,7 @@ public class BFElementTest extends AbstractIpsPluginTest {
         assertEquals(new Point(245, 51), bfe.getLocation());
     }
 
+    @Test
     public void testtoXml() throws Exception {
         IBusinessFunction bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
@@ -74,6 +79,7 @@ public class BFElementTest extends AbstractIpsPluginTest {
         assertEquals(bfe.getType(), action.getType());
     }
 
+    @Test
     public void testAddIncomingControlFlow() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
@@ -90,6 +96,7 @@ public class BFElementTest extends AbstractIpsPluginTest {
         assertFalse(bfe.getIncomingControlFlow().contains(cf));
     }
 
+    @Test
     public void testAddOutgoingControlFlow() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
@@ -106,6 +113,7 @@ public class BFElementTest extends AbstractIpsPluginTest {
         assertFalse(bfe.getOutgoingControlFlow().contains(cf));
     }
 
+    @Test
     public void testRemoveIncomingControlFlow() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
@@ -126,6 +134,7 @@ public class BFElementTest extends AbstractIpsPluginTest {
         assertTrue(listener.getIpsObjectParts().contains(bfe));
     }
 
+    @Test
     public void testRemoveOutgoingControlFlow() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
@@ -146,6 +155,7 @@ public class BFElementTest extends AbstractIpsPluginTest {
         assertTrue(listener.getIpsObjectParts().contains(bfe));
     }
 
+    @Test
     public void testGetAllControlFlows() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
@@ -158,6 +168,7 @@ public class BFElementTest extends AbstractIpsPluginTest {
         assertTrue(bfe.getAllControlFlows().contains(in));
     }
 
+    @Test
     public void testGetBusinessFunction() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
@@ -166,6 +177,7 @@ public class BFElementTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testSetLocation() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
@@ -191,6 +203,7 @@ public class BFElementTest extends AbstractIpsPluginTest {
         assertEquals(new Point(20, 20), bfe.getLocation());
     }
 
+    @Test
     public void testSetSize() throws Exception {
         BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");

@@ -47,6 +47,8 @@ import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -60,7 +62,8 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     private IConfigElement configElement;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "TestPolicy", "TestProduct");
@@ -72,6 +75,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         newDefinedEnumDatatype(ipsProject, new Class[] { TestEnumType.class });
     }
 
+    @Test
     public void testGetAllowedValueSetTypes() throws CoreException {
         // case 1: attribute not found
         configElement.setPolicyCmptTypeAttribute("a1");
@@ -109,6 +113,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         assertTrue(types.contains(ValueSetType.RANGE));
     }
 
+    @Test
     public void testFindPcTypeAttribute() throws CoreException {
         IPolicyCmptType policyCmptSupertype = newPolicyCmptType(ipsProject, "SuperPolicy");
         policyCmptType.setSupertype(policyCmptSupertype.getQualifiedName());
@@ -128,6 +133,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         assertNull(ce.findPcTypeAttribute(ipsProject));
     }
 
+    @Test
     public void testValidate_UnknownAttribute() throws CoreException {
         configElement.setPolicyCmptTypeAttribute("a");
         MessageList ml = configElement.validate(ipsProject);
@@ -140,6 +146,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE));
     }
 
+    @Test
     public void testValidate_UnknownDatatypeValue() throws CoreException {
         IConfigElement ce = generation.newConfigElement();
         ce.setValue("1");
@@ -159,6 +166,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNOWN_DATATYPE_VALUE));
     }
 
+    @Test
     public void testValidate_ValueNotParsable() throws CoreException {
         IConfigElement ce = generation.newConfigElement();
         ce.setValue("1");
@@ -181,6 +189,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUE_NOT_PARSABLE));
     }
 
+    @Test
     public void testValidateParsableEnumTypeDatatype() throws Exception {
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
         enumType.setContainingValues(true);
@@ -223,6 +232,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUE_NOT_PARSABLE));
     }
 
+    @Test
     public void testValidate_InvalidValueset() throws CoreException {
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("valueTest");
@@ -262,6 +272,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         assertEquals(0, ml.getNoOfMessages());
     }
 
+    @Test
     public void testValidate_InvalidDatatype() throws Exception {
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("test");
@@ -287,6 +298,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_INVALID_DATATYPE));
     }
 
+    @Test
     public void testValidate_ValueNotInValueset() throws CoreException {
         IConfigElement ce = generation.newConfigElement();
         ce.setValue("1");
@@ -318,6 +330,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET));
     }
 
+    @Test
     public void testValidate_ValueSetTypeMismatch() throws CoreException {
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("a1");
@@ -347,6 +360,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_TYPE_MISMATCH));
     }
 
+    @Test
     public void testValidate_ValueSetNotASubset() throws CoreException {
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("valueTest");
@@ -413,12 +427,14 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
     }
 
+    @Test
     public void testSetValue() {
         configElement.setValue("newValue");
         assertEquals("newValue", configElement.getValue());
         assertTrue(configElement.getIpsSrcFile().isDirty());
     }
 
+    @Test
     public void testInitFromXml() {
         Document doc = getTestDocument();
         configElement.initFromXml(doc.getDocumentElement());
@@ -431,6 +447,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         assertEquals("4", range.getStep());
     }
 
+    @Test
     public void testToXmlDocument() {
         IConfigElement cfgElement = generation.newConfigElement();
         cfgElement.setValue("value");
@@ -469,6 +486,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         assertNull(newCfgElement.getValue());
     }
 
+    @Test
     public void testGetCaption() throws CoreException {
         IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
         attribute.setName("attribute");
@@ -479,10 +497,12 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         assertEquals("TheCaption", configElement.getCaption(Locale.US));
     }
 
+    @Test
     public void testGetCaptionNotExistent() throws CoreException {
         assertNull(configElement.getCaption(Locale.TAIWAN));
     }
 
+    @Test
     public void testGetCaptionNullPointer() throws CoreException {
         try {
             configElement.getCaption(null);
@@ -491,6 +511,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetLastResortCaption() {
         configElement.setPolicyCmptTypeAttribute("attribute");
         assertEquals(StringUtils.capitalize(configElement.getPolicyCmptTypeAttribute()),

@@ -18,6 +18,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.junit.Test;
 
 /**
  * 
@@ -39,6 +40,7 @@ public class MissingProductCmptTypeTest extends AbstractIpsPluginTest {
      * 
      * @throws Exception
      */
+    @Test
     public void test() throws Exception {
         IIpsProject project = newIpsProject();
         IPolicyCmptType type = newPolicyCmptTypeWithoutProductCmptType(project, "Policy");

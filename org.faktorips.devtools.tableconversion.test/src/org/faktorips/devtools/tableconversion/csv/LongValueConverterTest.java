@@ -13,12 +13,15 @@
 
 package org.faktorips.devtools.tableconversion.csv;
 
+import static org.junit.Assert.assertFalse;
+
 import java.math.BigDecimal;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.tableconversion.IValueConverter;
 import org.faktorips.util.message.MessageList;
+import org.junit.Test;
 
 /**
  * Tests for Conversion of an arbitrary CSV-Long representation to IPS Long Datatype and vice versa.
@@ -38,6 +41,7 @@ public class LongValueConverterTest extends NumberValueConverterTest {
         return validExternalDoubles;
     }
 
+    @Test
     public void testExternalToInternalOverflow() {
         String tooBig = new BigDecimal(Long.MAX_VALUE).multiply(new BigDecimal(2)).toString();
 

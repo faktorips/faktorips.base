@@ -27,6 +27,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.junit.Before;
+import org.junit.Test;
 
 public class IpsHierarchyViewTest extends AbstractIpsPluginTest {
     private IIpsProject pdProject;
@@ -38,7 +40,8 @@ public class IpsHierarchyViewTest extends AbstractIpsPluginTest {
     private IPolicyCmptType supersupertype;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         pdProject = this.newIpsProject("TestProject");
         pdRootFolder = pdProject.getIpsPackageFragmentRoots()[0];
@@ -55,10 +58,12 @@ public class IpsHierarchyViewTest extends AbstractIpsPluginTest {
         supertype.setSupertype(supersupertype.getQualifiedName());
     }
 
+    @Test
     public void testSupport() {
         assertTrue(IpsHierarchyView.supports(pcType));
     }
 
+    @Test
     public void testIsNodeOfHierarchy() throws CoreException {
         IpsHierarchyViewMock testMock = new IpsHierarchyViewMock();
 

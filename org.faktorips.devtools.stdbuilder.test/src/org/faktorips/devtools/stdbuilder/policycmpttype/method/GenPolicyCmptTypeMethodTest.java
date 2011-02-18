@@ -20,6 +20,8 @@ import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptTypeBuilderTest;
 import org.faktorips.devtools.stdbuilder.type.GenMethod;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests concerning the generators for <tt>IMethod</tt>s for <tt>IPolicyCmptType</tt>s.
@@ -41,7 +43,8 @@ public class GenPolicyCmptTypeMethodTest extends PolicyCmptTypeBuilderTest {
     private GenPolicyCmptTypeMethod genPublicMethod;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         publishedMethod = policyCmptType.newMethod();
@@ -76,6 +79,7 @@ public class GenPolicyCmptTypeMethodTest extends PolicyCmptTypeBuilderTest {
         genPublicMethod = new GenPolicyCmptTypeMethod(genPolicyCmptType, publicMethod);
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterface() {
         genPublishedMethod.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
                 publishedMethod);
@@ -88,6 +92,7 @@ public class GenPolicyCmptTypeMethodTest extends PolicyCmptTypeBuilderTest {
         assertTrue(generatedJavaElements.isEmpty());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementation() {
         genPublishedMethod.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass, publishedMethod);
         expectMethod(javaClass, genPublishedMethod);

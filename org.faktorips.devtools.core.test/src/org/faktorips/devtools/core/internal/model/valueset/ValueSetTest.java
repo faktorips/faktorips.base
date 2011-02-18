@@ -22,6 +22,8 @@ import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ValueSetTest extends AbstractIpsPluginTest {
 
@@ -30,7 +32,8 @@ public class ValueSetTest extends AbstractIpsPluginTest {
     private IPolicyCmptTypeAttribute owner2;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
         IPolicyCmptType type = newPolicyCmptType(ipsProject, "Policy");
@@ -40,6 +43,7 @@ public class ValueSetTest extends AbstractIpsPluginTest {
         owner2.setDatatype(Datatype.INTEGER.getName());
     }
 
+    @Test
     public void testIsDetailedSpecificationOf_Unrestricted() {
         IValueSet set1 = owner1.changeValueSetType(ValueSetType.UNRESTRICTED);
 
@@ -62,6 +66,7 @@ public class ValueSetTest extends AbstractIpsPluginTest {
         assertTrue(set2.isDetailedSpecificationOf(set1));
     }
 
+    @Test
     public void testIsDetailedSpecificationOf_Range() {
         IValueSet set1 = owner1.changeValueSetType(ValueSetType.RANGE);
         set1.setAbstract(true);
@@ -96,6 +101,7 @@ public class ValueSetTest extends AbstractIpsPluginTest {
         assertTrue(range1.isDetailedSpecificationOf(range2));
     }
 
+    @Test
     public void testIsDetailedSpecificationOf_Enum() {
         IValueSet set1 = owner1.changeValueSetType(ValueSetType.ENUM);
         set1.setAbstract(true);

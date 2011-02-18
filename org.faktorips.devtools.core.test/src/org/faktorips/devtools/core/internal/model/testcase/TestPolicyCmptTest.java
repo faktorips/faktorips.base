@@ -44,6 +44,8 @@ import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
@@ -60,7 +62,8 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
     private ITestPolicyCmptTypeParameter childTestPolicyCmptTypeParameter;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         project = newIpsProject("TestProject");
@@ -179,6 +182,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         testPolicyCmptObjectCombined.setName(testPolicyCmptObjectCombined.getTestPolicyCmptTypeParameter());
     }
 
+    @Test
     public void testInitFromXml() {
         Element docEl = getTestDocument().getDocumentElement();
         Element paramEl = XmlUtil.getElement(docEl, "PolicyCmptTypeObject", 0);
@@ -196,6 +200,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertTrue(testPolicyCmptObjectExpected.getTestPolicyCmptLinks()[1].isComposition());
     }
 
+    @Test
     public void testToXml() {
         testPolicyCmptObjectExpected.setTestPolicyCmptTypeParameter("base.Test2");
         testPolicyCmptObjectExpected.setProductCmpt("productCmpt1");
@@ -225,6 +230,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertEquals("productCmpt1", testPolicyCmptObjectExpected.getProductCmpt());
     }
 
+    @Test
     public void testNewAndDelete() {
         assertEquals(3, testCase.getTestPolicyCmpts().length);
 
@@ -246,6 +252,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertEquals(0, testPolicyCmptObjectInput.getTestPolicyCmptLinks().length);
     }
 
+    @Test
     public void testInputOrExpectedResultObject() {
         assertFalse(testPolicyCmptObjectExpected.isInput());
         assertTrue(testPolicyCmptObjectExpected.isExpectedResult());
@@ -279,6 +286,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testValidateTestCaseTypeParamNotFound() throws Exception {
         MessageList ml = testPolicyCmptObjectInput.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
@@ -288,6 +296,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
     }
 
+    @Test
     public void testValidateProductCmptIsRequired() throws Exception {
         MessageList ml = testPolicyCmptObjectInput.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_IS_REQUIRED));
@@ -317,6 +326,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_IS_REQUIRED));
     }
 
+    @Test
     public void testValidatePolicyCmptTypeNotExistsWithGivenProduct() throws Exception {
         IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmptType");
         ITestPolicyCmptTypeParameter param = testPolicyCmptObjectInput.findTestPolicyCmptTypeParameter(project);
@@ -331,6 +341,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
                 ml.getFirstMessage(Message.WARNING).getCode());
     }
 
+    @Test
     public void testValidatePolicyCmptTypeNotExistsWithoutProduct() throws Exception {
         IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmptType");
         ITestPolicyCmptTypeParameter param = testPolicyCmptObjectInput.findTestPolicyCmptTypeParameter(project);
@@ -353,6 +364,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS));
     }
 
+    @Test
     public void testValidateMinInstancesNotReached() throws Exception {
         ITestPolicyCmptTypeParameter param = testPolicyCmptObjectInput.findTestPolicyCmptTypeParameter(project);
         param.setMinInstances(0);
@@ -375,6 +387,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MIN_INSTANCES_NOT_REACHED));
     }
 
+    @Test
     public void testValidateMaxInstancesNotReached() throws Exception {
         ITestPolicyCmptTypeParameter param = testPolicyCmptObjectInput.findTestPolicyCmptTypeParameter(project);
 
@@ -401,6 +414,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MAX_INSTANCES_REACHED));
     }
 
+    @Test
     public void testValidateProductCmptNotExists() throws Exception {
         MessageList ml = testPolicyCmptObjectInput.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_NOT_EXISTS));
@@ -414,6 +428,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_NOT_EXISTS));
     }
 
+    @Test
     public void testValidateProductComponentNotRequired() throws Exception {
         MessageList ml = testPolicyCmptObjectInput.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_COMPONENT_NOT_REQUIRED));
@@ -428,6 +443,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_COMPONENT_NOT_REQUIRED));
     }
 
+    @Test
     public void testValidatePolicyCmptTypeIsAbstract() throws Exception {
         MessageList ml = testPolicyCmptObjectInput.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_IS_ABSTRACT));
@@ -444,6 +460,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_IS_ABSTRACT));
     }
 
+    @Test
     public void testValidatePolicyCmptTypeAndProductCmptTypeGiven() throws Exception {
         MessageList ml = testPolicyCmptObjectInput.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_AND_PRODUCT_CMPT_TYPE_GIVEN));
@@ -463,6 +480,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_AND_PRODUCT_CMPT_TYPE_GIVEN));
     }
 
+    @Test
     public void testValidatePolicyCmptTypeNotAssignable() throws Exception {
         MessageList ml = testPolicyCmptObjectInput.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_NOT_ASSIGNABLE));
@@ -485,6 +503,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_NOT_ASSIGNABLE));
     }
 
+    @Test
     public void testGetIndexOfChildTestPolicyCmpt() throws CoreException {
         ITestPolicyCmptLink associationPos0 = testPolicyCmptObjectInput.addTestPcTypeLink(
                 childTestPolicyCmptTypeParameter, "testValueParameter1Child", null, "A");
@@ -502,6 +521,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertEquals(2, testPolicyCmptObjectInput.getIndexOfChildTestPolicyCmpt(testPolicyCmptChild2));
     }
 
+    @Test
     public void testMoveTestPolicyCmptAssociations() throws CoreException {
         ITestPolicyCmptLink associationPos0 = testPolicyCmptObjectInput.addTestPcTypeLink(
                 childTestPolicyCmptTypeParameter, "testValueParameter1Child", null, "A");
@@ -531,6 +551,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
     /**
      * Test that adding test objects doesn't end in a fix sort order
      */
+    @Test
     public void testAddTestPcTypeAssociationCorrectOrder() throws CoreException {
         ITestPolicyCmptTypeParameter parentTestPolicyCmptTypeParam = childTestPolicyCmptTypeParameter
                 .getParentTestPolicyCmptTypeParam();
@@ -544,6 +565,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertFalse(testCase.containsDifferenceToModel(project));
     }
 
+    @Test
     public void testUpdateDefaultTestAttributeValues() throws CoreException {
         // create model objects
         IPolicyCmptType policy = newPolicyCmptType(project, "Policy");
@@ -657,6 +679,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertNull(testAttrValueCoverage.getValue());
     }
 
+    @Test
     public void testFindProductCmpsCurrentGeneration_notProdRelevant() throws CoreException {
         // test find method if no product is specified, e.g. test object is not product relevant
         // in this case the find method should return null
@@ -734,6 +757,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testValidateAllowedProductCmpt() throws Exception {
         // test these two validation messages:
         // Error: WrongProductCmptOfAssociation
@@ -812,6 +836,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testSetProductCmptAndNameAfterIfApplicable() throws CoreException {
         TestContent testContent = new TestContent();
         testContent.init(project);

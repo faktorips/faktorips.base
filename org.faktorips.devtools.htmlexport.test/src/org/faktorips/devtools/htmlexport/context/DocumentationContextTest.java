@@ -13,15 +13,18 @@
 
 package org.faktorips.devtools.htmlexport.context;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.htmlexport.FakePluginResourcesFacade;
+import org.junit.Test;
 
-public class DocumentationContextTest extends TestCase {
+public class DocumentationContextTest {
 
+    @Test
     public void testExportStatus() {
         DocumentationContext context = new DocumentationContext(new FakePluginResourcesFacade());
 

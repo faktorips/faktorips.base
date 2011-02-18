@@ -15,6 +15,8 @@ package org.faktorips.devtools.core.model.enums;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.enums.AbstractIpsEnumPluginTest;
+import org.junit.Before;
+import org.junit.Test;
 
 public class EnumUtilTest extends AbstractIpsEnumPluginTest {
 
@@ -23,6 +25,7 @@ public class EnumUtilTest extends AbstractIpsEnumPluginTest {
     private IEnumAttribute superAttribute;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         superEnumType = newEnumType(ipsProject, "SuperEnumType");
@@ -34,6 +37,7 @@ public class EnumUtilTest extends AbstractIpsEnumPluginTest {
         superAttribute.setName("inherited");
     }
 
+    @Test
     public void testFindEnumAttributeIsUnique() throws CoreException {
         assertFalse(EnumUtil.findEnumAttributeIsUnique(inheritedAttribute, ipsProject));
         inheritedAttribute.setUnique(true);
@@ -43,6 +47,7 @@ public class EnumUtilTest extends AbstractIpsEnumPluginTest {
         assertTrue(EnumUtil.findEnumAttributeIsUnique(inheritedAttribute, ipsProject));
     }
 
+    @Test
     public void testFindEnumAttributeIsIdentifier() throws CoreException {
         assertFalse(EnumUtil.findEnumAttributeIsIdentifier(inheritedAttribute, ipsProject));
         inheritedAttribute.setIdentifier(true);
@@ -52,6 +57,7 @@ public class EnumUtilTest extends AbstractIpsEnumPluginTest {
         assertTrue(EnumUtil.findEnumAttributeIsIdentifier(inheritedAttribute, ipsProject));
     }
 
+    @Test
     public void testFindEnumAttributeIsUsedAsNameInFaktorIpsUi() throws CoreException {
         assertFalse(EnumUtil.findEnumAttributeIsUsedAsNameInFaktorIpsUi(inheritedAttribute, ipsProject));
         inheritedAttribute.setUsedAsNameInFaktorIpsUi(true);

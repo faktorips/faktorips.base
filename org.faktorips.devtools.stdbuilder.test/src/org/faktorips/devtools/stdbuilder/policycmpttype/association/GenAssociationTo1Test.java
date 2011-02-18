@@ -17,13 +17,16 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.junit.Before;
+import org.junit.Test;
 
 public class GenAssociationTo1Test extends GenAssociationTest {
 
     private GenAssociationTo1 genAssociationTo1;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         association.setMaxCardinality(1);
@@ -31,6 +34,7 @@ public class GenAssociationTo1Test extends GenAssociationTest {
         genAssociationTo1 = new GenAssociationTo1(genPolicyCmptType, association);
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterfaceMasterToDetail() {
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
@@ -44,6 +48,7 @@ public class GenAssociationTo1Test extends GenAssociationTest {
         assertEquals(5, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterfaceMasterToDetailTargetConfigurable()
             throws CoreException {
 
@@ -60,6 +65,7 @@ public class GenAssociationTo1Test extends GenAssociationTest {
                         getPublishedInterfaceName(configurationForTarget.getName())));
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementationMasterToDetail() {
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
@@ -72,6 +78,7 @@ public class GenAssociationTo1Test extends GenAssociationTest {
         assertEquals(5, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementationMasterToDetailTargetConfigurable() throws CoreException {
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
@@ -85,6 +92,7 @@ public class GenAssociationTo1Test extends GenAssociationTest {
                         getPublishedInterfaceName(configurationForTarget.getName())));
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterfaceDetailToMaster() {
         association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
 
@@ -95,6 +103,7 @@ public class GenAssociationTo1Test extends GenAssociationTest {
         assertEquals(2, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementationDetailToMaster() {
         association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
 
@@ -105,6 +114,7 @@ public class GenAssociationTo1Test extends GenAssociationTest {
         assertEquals(3, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterfaceAssociation() {
         association.setAssociationType(AssociationType.ASSOCIATION);
 
@@ -117,6 +127,7 @@ public class GenAssociationTo1Test extends GenAssociationTest {
         assertEquals(4, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementationAssociation() {
         association.setAssociationType(AssociationType.ASSOCIATION);
 

@@ -13,24 +13,23 @@
 
 package org.faktorips.devtools.core.model;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import junit.framework.TestCase;
-
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+import org.junit.Test;
 
-public class QualifiedNameTypeTest extends TestCase {
+public class QualifiedNameTypeTest {
 
-    @Override
-    public void setUp() {
-
-    }
-
+    @Test
     public void testNewQualifiedNameType() {
         QualifiedNameType qNameType = QualifiedNameType.newQualifedNameType("base/motor/Motorpolicy."
                 + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension());
@@ -56,6 +55,7 @@ public class QualifiedNameTypeTest extends TestCase {
         }
     }
 
+    @Test
     public void testSerialize() throws Exception {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(bos);
@@ -68,6 +68,7 @@ public class QualifiedNameTypeTest extends TestCase {
         assertEquals(qnt, qnt2);
     }
 
+    @Test
     public void testGetPackageName() {
         QualifiedNameType qnt = new QualifiedNameType("Policy", IpsObjectType.POLICY_CMPT_TYPE);
         assertEquals("", qnt.getPackageName());
@@ -76,6 +77,7 @@ public class QualifiedNameTypeTest extends TestCase {
         assertEquals("motor", qnt.getPackageName());
     }
 
+    @Test
     public void testGetUnqualifiedName() {
         QualifiedNameType qnt = new QualifiedNameType("Policy", IpsObjectType.POLICY_CMPT_TYPE);
         assertEquals("Policy", qnt.getUnqualifiedName());
@@ -88,6 +90,7 @@ public class QualifiedNameTypeTest extends TestCase {
 
     }
 
+    @Test
     public void testToPath() {
         QualifiedNameType qnt = new QualifiedNameType("Policy", IpsObjectType.POLICY_CMPT_TYPE);
         Path expectedPath = new Path("Policy." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension());
@@ -98,6 +101,7 @@ public class QualifiedNameTypeTest extends TestCase {
         assertEquals(expectedPath, qnt.toPath());
     }
 
+    @Test
     public void testHashCode() {
         QualifiedNameType type1 = new QualifiedNameType("test", IpsObjectType.POLICY_CMPT_TYPE);
         QualifiedNameType type2 = new QualifiedNameType("test", IpsObjectType.POLICY_CMPT_TYPE);
@@ -107,6 +111,7 @@ public class QualifiedNameTypeTest extends TestCase {
         assertFalse(type1.hashCode() == type3.hashCode());
     }
 
+    @Test
     public void testQualifiedNameType() {
         new QualifiedNameType("test", IpsObjectType.POLICY_CMPT_TYPE);
         try {
@@ -121,11 +126,13 @@ public class QualifiedNameTypeTest extends TestCase {
         }
     }
 
+    @Test
     public void testGetFilename() {
         QualifiedNameType qnt = new QualifiedNameType("test.Motorpolicy", IpsObjectType.POLICY_CMPT_TYPE);
         assertEquals("Motorpolicy." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension(), qnt.getFileName());
     }
 
+    @Test
     public void testEqualsObject() {
         QualifiedNameType type1 = new QualifiedNameType("test", IpsObjectType.POLICY_CMPT_TYPE);
         QualifiedNameType type2 = new QualifiedNameType("test", IpsObjectType.POLICY_CMPT_TYPE);
@@ -138,6 +145,7 @@ public class QualifiedNameTypeTest extends TestCase {
         assertFalse(type1.equals(type4));
     }
 
+    @Test
     public void testToString() {
         QualifiedNameType type1 = new QualifiedNameType("test", IpsObjectType.POLICY_CMPT_TYPE);
         assertEquals(type1.toString(), "PolicyCmptType: test");

@@ -27,6 +27,8 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnector;
+import org.junit.Before;
+import org.junit.Test;
 import org.xml.sax.SAXException;
 
 /**
@@ -48,7 +50,8 @@ public class IpsPluginTest extends AbstractIpsPluginTest {
     }
 
     @Override
-    protected void setUp() throws CoreException {
+    @Before
+    public void setUp() throws CoreException {
         pref = IpsPlugin.getDefault().getIpsPreferences();
         oldPresentationString = pref.getNullPresentation();
     }
@@ -58,12 +61,14 @@ public class IpsPluginTest extends AbstractIpsPluginTest {
         pref.setNullPresentation(oldPresentationString);
     }
 
+    @Test
     public void testGetDocumentBuilder() throws UnsupportedEncodingException, SAXException, IOException {
         DocumentBuilder docBuilder = IpsPlugin.getDefault().newDocumentBuilder();
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><abc/>";
         docBuilder.parse(new ByteArrayInputStream(xml.getBytes("UTF-8")));
     }
 
+    @Test
     public void testIpsPreferencesInclListener() {
         MyPropertyChangeListener listener = new MyPropertyChangeListener();
         IPreferenceStore store = IpsPlugin.getDefault().getPreferenceStore();
@@ -74,6 +79,7 @@ public class IpsPluginTest extends AbstractIpsPluginTest {
         assertEquals("-", listener.lastEvent.getNewValue());
     }
 
+    @Test
     public void testGetIpsLoggingFrameworkConnectors() {
         IIpsLoggingFrameworkConnector[] connectors = IpsPlugin.getDefault().getIpsLoggingFrameworkConnectors();
         List<String> connectorIds = new ArrayList<String>();

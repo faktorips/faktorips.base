@@ -28,6 +28,8 @@ import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
@@ -40,13 +42,15 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
         ITestCaseType type = (ITestCaseType)newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
         testAttribute = type.newExpectedResultPolicyCmptTypeParameter().newExpectedResultTestAttribute();
     }
 
+    @Test
     public void testInitFromXml() {
         Element docEl = getTestDocument().getDocumentElement();
         Element attributeEl = XmlUtil.getFirstElement(docEl);
@@ -98,6 +102,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testToXml() {
         testAttribute.setAttribute("attribute2");
         testAttribute.setDatatype("Money");
@@ -121,6 +126,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         assertFalse(testAttribute.isExpextedResultAttribute());
     }
 
+    @Test
     public void testFindAttribute() throws Exception {
         IPolicyCmptType policyCmptTypeSuper = newPolicyCmptType(ipsProject, "policyCmptSuper");
         IPolicyCmptTypeAttribute attr1 = policyCmptTypeSuper.newPolicyCmptTypeAttribute();
@@ -145,6 +151,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         assertEquals(attr1, testAttribute.findAttribute(ipsProject));
     }
 
+    @Test
     public void testValidateAttributeNotFound() throws Exception {
         IPolicyCmptType pct = newPolicyCmptType(ipsProject, "policyCmptType");
         IPolicyCmptTypeAttribute attr = pct.newPolicyCmptTypeAttribute();
@@ -160,6 +167,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
     }
 
+    @Test
     public void testValidateWrongType() throws Exception {
         MessageList ml = testAttribute.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_WRONG_TYPE));
@@ -175,6 +183,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_WRONG_TYPE));
     }
 
+    @Test
     public void testValidateTypeDoesNotMatchParentType() throws Exception {
         ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter)testAttribute.getParent();
         param.setTestParameterType(TestParameterType.COMBINED);
@@ -204,6 +213,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE));
     }
 
+    @Test
     public void testValidateDuplicateTestAttributeName() throws Exception {
         testAttribute.setName("testAttribute");
         MessageList ml = testAttribute.validate(ipsProject);
@@ -219,6 +229,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME));
     }
 
+    @Test
     public void testValidateExpectedOrComputedButNotExpectedRes() throws Exception {
         IPolicyCmptType pct = newPolicyCmptType(ipsProject, "policyCmptType");
         IPolicyCmptTypeAttribute attr = pct.newPolicyCmptTypeAttribute();
@@ -254,6 +265,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
     }
 
+    @Test
     public void testValidateDuplicateAttributeType() throws Exception {
         testAttribute.setName("a");
         testAttribute.setAttribute("attribute1");
@@ -283,6 +295,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DUPLICATE_ATTRIBUTE_AND_TYPE));
     }
 
+    @Test
     public void testValidateNameMustNotBeEmpty() throws Exception {
         testAttribute.setName("attribute1");
         MessageList ml = testAttribute.validate(ipsProject);
@@ -297,6 +310,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NAME_IS_EMPTY));
     }
 
+    @Test
     public void testValidateDatatypeAndAttributeGiven() throws Exception {
         testAttribute.setAttribute("");
         testAttribute.setDatatype("Y");
@@ -316,6 +330,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DATATYPE_AND_ATTRIBUTE_GIVEN));
     }
 
+    @Test
     public void testValidateDatatypeNotFound() throws Exception {
         testAttribute.setAttribute("");
         testAttribute.setDatatype("String");
@@ -329,6 +344,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         assertEquals(Message.ERROR, ml.getMessageByCode(ITestAttribute.MSGCODE_DATATYPE_NOT_FOUND).getSeverity());
     }
 
+    @Test
     public void testIsBasedOnModelAttribute() throws CoreException {
         testAttribute.setDatatype("");
         testAttribute.setAttribute("");
@@ -344,6 +360,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         assertFalse(testAttribute.isBasedOnModelAttribute());
     }
 
+    @Test
     public void testIsAttributeRelevantByProductCmpt() throws CoreException {
         ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter)testAttribute.getParent();
         param.setRequiresProductCmpt(true);
@@ -382,6 +399,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
      * Attributes of suptypes will never been found, because this feature is only available on the
      * test case side, see TestAttributeValue.validateSelf()
      */
+    @Test
     public void testFindAttributeInSubtype() throws Exception {
         IPolicyCmptType policyCmptTypeSuper = newPolicyCmptType(ipsProject, "policyCmptSuper");
         IPolicyCmptTypeAttribute attr1 = policyCmptTypeSuper.newPolicyCmptTypeAttribute();
@@ -411,6 +429,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         assertEquals(policyCmptType.getQualifiedName(), testAttribute.getCorrespondingPolicyCmptType());
     }
 
+    @Test
     public void testValidateName() throws CoreException {
         MessageList ml;
 

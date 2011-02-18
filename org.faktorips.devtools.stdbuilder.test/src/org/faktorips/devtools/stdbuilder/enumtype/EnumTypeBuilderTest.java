@@ -28,6 +28,8 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.ProjectConfigurationUtil;
+import org.junit.Before;
+import org.junit.Test;
 
 public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
 
@@ -46,7 +48,8 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
     private IType javaEnum;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         builder = new EnumTypeBuilder(builderSet);
@@ -78,6 +81,7 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         javaEnum = getGeneratedJavaType(enumType, false, false, ENUM_TYPE_NAME);
     }
 
+    @Test
     public void testBuildEnumTypeWithMissingSupertype() throws CoreException {
         idAttribute.setDatatype("");
         nameAttribute.setDatatype("");
@@ -86,11 +90,13 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForType() {
         generatedJavaElements = builder.getGeneratedJavaElements(enumType);
         assertTrue(generatedJavaElements.contains(javaEnum));
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForAttributeAbstractJava5Enums() throws CoreException {
         ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, true);
 
@@ -107,6 +113,7 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         expectIsValueByMethod(nameAttribute, false);
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForAttributeAbstract() throws CoreException {
         ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, false);
 
@@ -123,6 +130,7 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         expectIsValueByMethod(nameAttribute, false);
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForAttributeNotAbstractJava5Enums() throws CoreException {
         enumType.setAbstract(false);
         ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, true);
@@ -140,6 +148,7 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         expectIsValueByMethod(nameAttribute, false);
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForAttributeNotAbstract() throws CoreException {
         enumType.setAbstract(false);
         ProjectConfigurationUtil.setUpUseJava5Enums(ipsProject, false);
@@ -163,6 +172,7 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         expectIsValueByMethod(inheritedAttribute, false);
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForLiteralNameAttributeValue() throws CoreException {
         enumType.setAbstract(false);
 

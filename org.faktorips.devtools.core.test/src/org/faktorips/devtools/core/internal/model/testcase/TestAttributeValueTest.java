@@ -30,6 +30,8 @@ import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParamet
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
@@ -42,7 +44,8 @@ public class TestAttributeValueTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
         ITestCaseType testCaseType = (ITestCaseType)newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE,
@@ -61,6 +64,7 @@ public class TestAttributeValueTest extends AbstractIpsPluginTest {
         testAttributeValue.setTestAttribute("inputAttribute1");
     }
 
+    @Test
     public void testInitFromXml() {
         Element docEl = getTestDocument().getDocumentElement();
         Element paramEl = XmlUtil.getFirstElement(docEl);
@@ -69,6 +73,7 @@ public class TestAttributeValueTest extends AbstractIpsPluginTest {
         assertEquals("500", testAttributeValue.getValue());
     }
 
+    @Test
     public void testToXml() {
         testAttributeValue.setTestAttribute("attribute2");
         testAttributeValue.setValue("500");
@@ -80,6 +85,7 @@ public class TestAttributeValueTest extends AbstractIpsPluginTest {
         assertEquals("500", testAttributeValue.getValue());
     }
 
+    @Test
     public void testValidateTestAttributeNotFound() throws Exception {
         MessageList ml = testAttributeValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttributeValue.MSGCODE_TESTATTRIBUTE_NOT_FOUND));
@@ -90,6 +96,7 @@ public class TestAttributeValueTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(ITestAttributeValue.MSGCODE_TESTATTRIBUTE_NOT_FOUND));
     }
 
+    @Test
     public void testValidateAttributeNotFound() throws Exception {
         IPolicyCmptType pct = newPolicyCmptType(ipsProject, "policyCmptType");
         IPolicyCmptTypeAttribute attr = pct.newPolicyCmptTypeAttribute();
@@ -108,6 +115,7 @@ public class TestAttributeValueTest extends AbstractIpsPluginTest {
         assertEquals(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND, ml.getFirstMessage(Message.WARNING).getCode());
     }
 
+    @Test
     public void testValidateWrongType() throws Exception {
         MessageList ml = testAttributeValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_WRONG_TYPE));
@@ -123,6 +131,7 @@ public class TestAttributeValueTest extends AbstractIpsPluginTest {
      * doesn't find an attribute of the subclass. This feature is implemented on test test case side
      * see TestPolicyCmpt.findProductCmptAttribute()
      */
+    @Test
     public void testValidateAttributeInSuperType() throws CoreException {
         IPolicyCmptType pctSuper = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         IPolicyCmptType pct = newPolicyAndProductCmptType(ipsProject, "MotorPolicy", "MotorProduct");
@@ -174,10 +183,12 @@ public class TestAttributeValueTest extends AbstractIpsPluginTest {
         assertNotNull(testAttributeValue.findAttribute(ipsProject));
     }
 
+    @Test
     public void testFindAttribiute() throws CoreException {
         testAttributeValue.findAttribute(ipsProject);
     }
 
+    @Test
     public void testTestAttributeNotBasedOnModelAttribute() throws CoreException {
         testAttributeValue.setValue("x");
         ITestAttribute testAttribute = testAttributeValue.findTestAttribute(ipsProject);

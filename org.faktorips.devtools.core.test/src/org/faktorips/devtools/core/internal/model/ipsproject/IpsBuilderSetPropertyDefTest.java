@@ -13,6 +13,14 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -20,8 +28,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -36,9 +42,11 @@ import org.faktorips.abstracttest.TestLogger;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsBuilderSetPropertyDef;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.junit.Test;
 
-public class IpsBuilderSetPropertyDefTest extends TestCase {
+public class IpsBuilderSetPropertyDefTest {
 
+    @Test
     public void testloadExtensions() {
 
         Map<String, String> attributes = new HashMap<String, String>();
@@ -111,6 +119,7 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
         assertNull(propertyDef.getDisableValue(null));
     }
 
+    @Test
     public void testloadExtensionsIntegerValue() {
 
         HashMap<String, String> attributes = new HashMap<String, String>();
@@ -145,6 +154,7 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
 
     }
 
+    @Test
     public void testloadExtensionsBooleanValue() {
         HashMap<String, String> attributes = new HashMap<String, String>();
         attributes.put("name", "useChangeListener");
@@ -169,6 +179,7 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
         assertEquals(Boolean.FALSE, propertyDef.parseValue(propertyDef.getDisableValue(null)));
     }
 
+    @Test
     public void testloadExtensionsExtensionPointValue() {
         HashMap<String, String> attributes = new HashMap<String, String>();
         attributes.put("name", "loggingConnectorRef");
@@ -217,6 +228,7 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
         assertTrue(values.contains(IpsPlugin.PLUGIN_ID + ".ownLoggingConnector"));
     }
 
+    @Test
     public void testloadExtensionsWithClassSpecfied() {
         HashMap<String, String> attributes = new HashMap<String, String>();
         attributes.put("class", IpsBuilderSetPropertyDef.class.getName());
@@ -242,6 +254,7 @@ public class IpsBuilderSetPropertyDefTest extends TestCase {
         assertSame(ownDefClass, propertyDef);
     }
 
+    @Test
     public void testValidateAvailability() {
 
         Map<String, String> attributes = new HashMap<String, String>();

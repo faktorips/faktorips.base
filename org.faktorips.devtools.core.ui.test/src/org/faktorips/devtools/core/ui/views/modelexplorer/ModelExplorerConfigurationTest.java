@@ -38,6 +38,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.junit.Before;
+import org.junit.Test;
 
 @SuppressWarnings("restriction")
 // suppress the warning because of using WorkspaceRoot
@@ -64,7 +66,8 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
     private IIpsPackageFragment defaultPackage;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         proj = newIpsProject("Testprojekt");
 
@@ -96,6 +99,7 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testIsAllowedIpsElement() {
         assertTrue(config.isAllowedIpsElement(proj));
         assertTrue(config.isAllowedIpsElement(root));
@@ -108,6 +112,7 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
         assertFalse(config.isAllowedIpsElement(tableStructure));
     }
 
+    @Test
     public void testIsAllowedIpsElementType() {
         assertTrue(config.isAllowedIpsElementType(pcType.getIpsObjectType()));
         assertTrue(config.isAllowedIpsElementType(prodCmpt.getIpsObjectType()));
@@ -115,12 +120,14 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
         assertFalse(config.isAllowedIpsElementType(tableStructure.getIpsObjectType()));
     }
 
+    @Test
     public void testIsAllowedResource() {
         assertTrue(config.isAllowedResource(folder));
         assertTrue(config.isAllowedResource(file));
         assertFalse(config.isAllowedResource(failRessource));
     }
 
+    @Test
     public void testIsAllowedResourceType() {
         assertTrue(config.isAllowedResourceType(folder.getClass()));
         assertTrue(config.isAllowedResourceType(file.getClass()));
@@ -128,6 +135,7 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
         assertFalse(config.isAllowedResourceType(failRessource.getClass()));
     }
 
+    @Test
     public void testRepresentsProject() {
         assertTrue(config.representsProject(proj));
         assertTrue(config.representsProject(proj.getCorrespondingResource()));
@@ -138,6 +146,7 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
         assertFalse(config.representsProject(pcType));
     }
 
+    @Test
     public void testRepresentsFolder() {
         assertFalse(config.representsFolder(proj));
         assertFalse(config.representsFolder(proj.getCorrespondingResource()));
@@ -148,6 +157,7 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
         assertFalse(config.representsFolder(pcType));
     }
 
+    @Test
     public void testRepresentsFile() throws CoreException {
         assertFalse(config.representsFile(proj));
         assertFalse(config.representsFile(proj.getCorrespondingResource()));

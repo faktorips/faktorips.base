@@ -30,6 +30,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.util.StringUtil;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Test f�r threading issues (we hopefully once HAD).
@@ -41,7 +43,8 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
     private IPolicyCmptType type;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         IWorkspaceRunnable action = new IWorkspaceRunnable() {
 
@@ -59,6 +62,7 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
         ResourcesPlugin.getWorkspace().run(action, null);
     }
 
+    @Test
     public void test1() {
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("===== Start test1() =====");
@@ -69,6 +73,7 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void test2() {
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("===== Start test2() =====");
@@ -79,6 +84,7 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testDirectChangesToTheCorrespondingFile() throws Exception {
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("===== Start testDirectChangesToTheCorrespondingFile() =====");
@@ -100,6 +106,7 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testChangeDirectlyOnDiskWithoutUsingTheEclipseApi() throws Exception {
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("===== Start testChangeDirectlyOnDiskWithoutUsingTheEclipseApi() =====");

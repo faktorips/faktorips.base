@@ -35,6 +35,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
@@ -52,7 +54,8 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
     private QualifiedNameType qntMotorCollision;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         IIpsProject archiveProject = newIpsProject("ArchiveProject");
         qntMotorPolicy = newPolicyCmptTypeWithoutProductCmptType(archiveProject, "pack1.MotorPolicy")
@@ -72,6 +75,7 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         project.setIpsObjectPath(path);
     }
 
+    @Test
     public void testFindIpsSrcFilesStartingWith() throws CoreException {
         IIpsObject motorPol = project.findIpsObject(qntMotorPolicy);
         IIpsObject motorCol = project.findIpsObject(qntMotorCollision);
@@ -100,6 +104,7 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testFindIpsSrcFiles() throws Exception {
         ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
@@ -112,6 +117,7 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         assertTrue(result.contains(motorCollision.getIpsSrcFile()));
     }
 
+    @Test
     public void testFindIpsSrcFilesWithPackageFragment() throws Exception {
         ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, "pack1", result, new HashSet<IIpsObjectPathEntry>());
@@ -128,6 +134,7 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         assertTrue(result.contains(motorCollision.getIpsSrcFile()));
     }
 
+    @Test
     public void testInitFromXml() {
         Element docEl = getTestDocument().getDocumentElement();
         entry.initFromXml(XmlUtil.getElement(docEl, 0), project.getProject());
@@ -139,22 +146,26 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         assertNull(entry.getArchiveLocation());
     }
 
+    @Test
     public void testGetIpsArchive() {
         IIpsArchive archive = entry.getIpsArchive();
         assertNotNull(archive);
         assertEquals(archivePath, archive.getArchivePath());
     }
 
+    @Test
     public void testGetIpsPackageFragementRootName() {
         assertEquals(entry.getIpsPackageFragmentRoot().getName(), entry.getIpsPackageFragmentRootName());
     }
 
+    @Test
     public void testGetIpsPackageFragementRoot() {
         IIpsPackageFragmentRoot root = entry.getIpsPackageFragmentRoot();
         assertNotNull(root);
         assertEquals(archiveFile.getName(), root.getName());
     }
 
+    @Test
     public void testToXml() throws CoreException {
         Element el = entry.toXml(newDocument());
         // to create a new entry we need a handle to an existing file path
@@ -164,6 +175,7 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         assertEquals(archivePath, newEntry.getArchiveLocation());
     }
 
+    @Test
     public void testValidate() throws CoreException {
         MessageList ml = entry.validate();
         assertEquals(0, ml.size());

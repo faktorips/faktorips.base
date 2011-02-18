@@ -29,6 +29,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -42,12 +44,14 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
     private IpsObjectPath path;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
         path = new IpsObjectPath(ipsProject);
     }
 
+    @Test
     public void testFindIpsSrcFiles() throws Exception {
         IpsProject refProject = (IpsProject)newIpsProject("RefProject");
         IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(refProject, "a.A");
@@ -67,6 +71,7 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         assertFalse(result.contains(c.getIpsSrcFile()));
     }
 
+    @Test
     public void testFindIpsSrcFilesWithPackageFragment() throws Exception {
         IpsProject refProject = (IpsProject)newIpsProject("RefProject");
 
@@ -105,6 +110,7 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testInitFromXml() {
         Document doc = getTestDocument();
         IpsProjectRefEntry entry = new IpsProjectRefEntry(path);
@@ -112,6 +118,7 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         assertEquals(IpsPlugin.getDefault().getIpsModel().getIpsProject("RefProject"), entry.getReferencedIpsProject());
     }
 
+    @Test
     public void testToXml() {
         IIpsProject refProject = IpsPlugin.getDefault().getIpsModel().getIpsProject("RefProject");
         IpsProjectRefEntry entry = new IpsProjectRefEntry(path, refProject);
@@ -122,6 +129,7 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         assertEquals(refProject, entry.getReferencedIpsProject());
     }
 
+    @Test
     public void testValidate() throws CoreException {
         IIpsProjectProperties props = ipsProject.getProperties();
         IIpsObjectPath path = props.getIpsObjectPath();
@@ -138,7 +146,7 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(props);
         ml = ipsProject.validate();
         assertEquals(1, ml.getNoOfMessages());
-        assertNotNull(ml.getMessageByCode(IIpsProjectRefEntry.MSGCODE_MISSING_PROJECT));
+        assertNotNull(ml.getMessageByCode(IIpsObjectPathEntry.MSGCODE_MISSING_PROJECT));
 
         // validate empty project name
         path.removeProjectRefEntry(refProject);
@@ -146,6 +154,6 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(props);
         ml = ipsProject.validate();
         assertEquals(1, ml.getNoOfMessages());
-        assertNotNull(ml.getMessageByCode(IIpsProjectRefEntry.MSGCODE_PROJECT_NOT_SPECIFIED));
+        assertNotNull(ml.getMessageByCode(IIpsObjectPathEntry.MSGCODE_PROJECT_NOT_SPECIFIED));
     }
 }

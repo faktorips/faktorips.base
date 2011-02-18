@@ -17,6 +17,7 @@ import org.apache.commons.lang.SystemUtils;
 import org.faktorips.abstracttest.test.XmlAbstractTestCase;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -26,6 +27,7 @@ import org.w3c.dom.Element;
  */
 public class DescriptionHelperTest extends XmlAbstractTestCase {
 
+    @Test
     public void testSetDescription() {
         Document doc = newDocument();
         Element el = doc.createElement("Test");
@@ -45,6 +47,7 @@ public class DescriptionHelperTest extends XmlAbstractTestCase {
         assertEquals("l1" + SystemUtils.LINE_SEPARATOR + "l2", DescriptionHelper.getDescription(el));
     }
 
+    @Test
     public void testGetDescription() {
         Element rootEl = getTestDocument().getDocumentElement();
 
@@ -61,6 +64,7 @@ public class DescriptionHelperTest extends XmlAbstractTestCase {
         assertEquals("", DescriptionHelper.getDescription(obj));
     }
 
+    @Test
     public void testGetFirstNoneDescriptionElement() {
         Element rootEl = getTestDocument().getDocumentElement();
 

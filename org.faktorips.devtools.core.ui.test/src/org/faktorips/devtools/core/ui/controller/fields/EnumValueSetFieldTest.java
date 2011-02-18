@@ -28,6 +28,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -42,6 +44,7 @@ public class EnumValueSetFieldTest extends AbstractIpsPluginTest {
     private Shell shell;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         IIpsProject project = newIpsProject();
@@ -56,6 +59,7 @@ public class EnumValueSetFieldTest extends AbstractIpsPluginTest {
         assertNotNull(shell);
     }
 
+    @Test
     public void testWithDisplayTypeId_ValueSetDoesntContainNull() {
         IpsPlugin.getDefault().getIpsPreferences().setEnumTypeDisplay(EnumTypeDisplay.ID);
         valueSet.addValue(PaymentMode.ANNUAL_ID);
@@ -91,6 +95,7 @@ public class EnumValueSetFieldTest extends AbstractIpsPluginTest {
         assertEquals(4, items.length);
     }
 
+    @Test
     public void testWithDisplayTypeId_ValueSetContainsNull() {
         IpsPlugin.getDefault().getIpsPreferences().setEnumTypeDisplay(EnumTypeDisplay.ID);
         valueSet.addValue(null);
@@ -127,6 +132,7 @@ public class EnumValueSetFieldTest extends AbstractIpsPluginTest {
         assertEquals(4, items.length);
     }
 
+    @Test
     public void testWithDisplayTypeName() {
         IpsPlugin.getDefault().getIpsPreferences().setEnumTypeDisplay(EnumTypeDisplay.NAME);
         valueSet.addValue(PaymentMode.ANNUAL_ID);
@@ -162,6 +168,7 @@ public class EnumValueSetFieldTest extends AbstractIpsPluginTest {
         assertEquals(4, items.length);
     }
 
+    @Test
     public void testWithDisplayTypeNameAndId() {
         IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
         DatatypeFormatter formatter = prefs.getDatatypeFormatter();

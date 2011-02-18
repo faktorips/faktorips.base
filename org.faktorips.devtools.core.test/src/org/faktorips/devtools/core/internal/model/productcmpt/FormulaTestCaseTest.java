@@ -28,6 +28,8 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -41,7 +43,8 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
     private IFormulaTestCase formulaTestCase;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = super.newIpsProject();
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
@@ -58,6 +61,7 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         formula.setExpression("1");
     }
 
+    @Test
     public void testExecuteFormulaOnlyParam() throws Exception {
         IProductCmptTypeMethod method = productCmptType.newProductCmptTypeMethod();
         method.setFormulaSignatureDefinition(true);
@@ -89,6 +93,7 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         assertEquals(new Integer(600), result);
     }
 
+    @Test
     public void testInitFromXml() {
         Document doc = this.getTestDocument();
         formulaTestCase.initFromXml(doc.getDocumentElement());
@@ -98,6 +103,7 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         assertEquals(2, formulaTestCase.getFormulaTestInputValues().length);
     }
 
+    @Test
     public void testToXmlDocument() {
         IFormulaTestCase formulaTestCase = formula.newFormulaTestCase();
         formulaTestCase.setExpectedResult("101");
@@ -115,6 +121,7 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         assertNotNull(newFormulaTestCase.getFormulaTestInputValue("foo2"));
     }
 
+    @Test
     public void testNewAndDeleteFormulaTestInputValue() {
         IFormulaTestInputValue v1 = formulaTestCase.newFormulaTestInputValue();
         IFormulaTestInputValue v2 = formulaTestCase.newFormulaTestInputValue();
@@ -129,6 +136,7 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         assertEquals(0, formulaTestCase.getFormulaTestInputValues().length);
     }
 
+    @Test
     public void testAddOrDeleteFormulaTestInputValues() {
         IFormulaTestInputValue value1 = formulaTestCase.newFormulaTestInputValue();
         value1.setIdentifier("value1");
@@ -157,6 +165,7 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         assertFalse(formulaTestCase.addOrDeleteFormulaTestInputValues(newValues, ipsProject));
     }
 
+    @Test
     public void testIsFormulaTestCaseEmpty() {
         assertTrue(formulaTestCase.isFormulaTestCaseEmpty());
         IFormulaTestInputValue value1 = formulaTestCase.newFormulaTestInputValue();
@@ -172,6 +181,7 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
         assertFalse(formulaTestCase.isFormulaTestCaseEmpty());
     }
 
+    @Test
     public void testGenerateUniqueNameForFormulaTestCase() {
         formulaTestCase.setName("Test");
         assertEquals("Test", formulaTestCase.generateUniqueNameForFormulaTestCase("Test"));
@@ -199,6 +209,7 @@ public class FormulaTestCaseTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testValidate_DuplicateName() throws CoreException {
         formulaTestCase.setName("Test");
         MessageList ml = formulaTestCase.validate(formulaTestCase.getIpsProject());

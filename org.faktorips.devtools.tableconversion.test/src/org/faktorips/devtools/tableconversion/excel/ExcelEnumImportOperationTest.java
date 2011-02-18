@@ -28,6 +28,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.tableconversion.AbstractTableTest;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ExcelEnumImportOperationTest extends AbstractTableTest {
 
@@ -37,7 +39,8 @@ public class ExcelEnumImportOperationTest extends AbstractTableTest {
     File file;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         ipsProject = newIpsProject("test");
@@ -68,24 +71,28 @@ public class ExcelEnumImportOperationTest extends AbstractTableTest {
         file.delete();
     }
 
+    @Test
     public void testImportValid() throws Exception {
         MessageList ml = new MessageList();
         executeImport(ml, true);
         assertTrue(ml.isEmpty());
     }
 
+    @Test
     public void testImportFirstRowContainsNoColumnHeader() throws Exception {
         MessageList ml = new MessageList();
         IEnumType enumType = executeImport(ml, false);
         assertEquals(4, enumType.getEnumValuesCount());
     }
 
+    @Test
     public void testImportFirstRowContainsColumnHeader() throws Exception {
         MessageList ml = new MessageList();
         IEnumType enumType = executeImport(ml, true);
         assertEquals(3, enumType.getEnumValuesCount());
     }
 
+    @Test
     public void testImportInvalid() throws Exception {
         MessageList ml = new MessageList();
         IEnumType enumType = createExternalEnumType();

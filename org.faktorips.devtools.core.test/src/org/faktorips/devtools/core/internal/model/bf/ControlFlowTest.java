@@ -27,6 +27,8 @@ import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.devtools.core.model.bf.IDecisionBFE;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -38,6 +40,7 @@ public class ControlFlowTest extends AbstractIpsPluginTest {
     private BusinessFunction bf;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
@@ -47,6 +50,7 @@ public class ControlFlowTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testToXml() throws Exception {
         IControlFlow cf = bf.newControlFlow();
         cf.addBendpoint(0, new AbsoluteBendpoint(10, 10));
@@ -66,6 +70,7 @@ public class ControlFlowTest extends AbstractIpsPluginTest {
         assertTrue(bps.contains(new AbsoluteBendpoint(30, 30)));
     }
 
+    @Test
     public void testInitFromXmlElement() {
         Document doc = getTestDocument();
         NodeList nl = doc.getDocumentElement().getElementsByTagName(IControlFlow.XML_TAG);
@@ -79,6 +84,7 @@ public class ControlFlowTest extends AbstractIpsPluginTest {
         assertEquals(new Point(426, 256), bp.getLocation());
     }
 
+    @Test
     public void testSetBendpoint() {
         IControlFlow cf = bf.newControlFlow();
         cf.addBendpoint(0, new AbsoluteBendpoint(10, 10));
@@ -107,6 +113,7 @@ public class ControlFlowTest extends AbstractIpsPluginTest {
         assertTrue(listener.getIpsObjectParts().isEmpty());
     }
 
+    @Test
     public void testAddBendpoint() {
         IControlFlow cf = bf.newControlFlow();
         listener.clear();
@@ -129,6 +136,7 @@ public class ControlFlowTest extends AbstractIpsPluginTest {
         assertTrue(listener.getIpsObjectParts().isEmpty());
     }
 
+    @Test
     public void testRemoveBendpoint() {
         IControlFlow cf = bf.newControlFlow();
         cf.addBendpoint(0, new AbsoluteBendpoint(10, 10));
@@ -145,11 +153,13 @@ public class ControlFlowTest extends AbstractIpsPluginTest {
         assertTrue(listener.getIpsObjectParts().contains(cf));
     }
 
+    @Test
     public void testGetBusinessFunction() {
         IControlFlow cf = bf.newControlFlow();
         assertEquals(bf, cf.getBusinessFunction());
     }
 
+    @Test
     public void testSetSource() {
         IBFElement source = bf.newDecision(new Point(1, 1));
         IControlFlow cf = bf.newControlFlow();
@@ -176,6 +186,7 @@ public class ControlFlowTest extends AbstractIpsPluginTest {
         assertTrue(source.getOutgoingControlFlow().isEmpty());
     }
 
+    @Test
     public void testSetTarget() {
         IBFElement target = bf.newDecision(new Point(1, 1));
         IControlFlow cf = bf.newControlFlow();
@@ -202,6 +213,7 @@ public class ControlFlowTest extends AbstractIpsPluginTest {
         assertTrue(target.getIncomingControlFlow().isEmpty());
     }
 
+    @Test
     public void testValidateValue() throws Exception {
         IDecisionBFE decisionBFE = bf.newDecision(new Point(10, 10));
         decisionBFE.setDatatype(Datatype.INTEGER.getQualifiedName());
@@ -222,6 +234,7 @@ public class ControlFlowTest extends AbstractIpsPluginTest {
         assertNull(msgList.getMessageByCode(IControlFlow.MSGCODE_VALUE_NOT_VALID));
     }
 
+    @Test
     public void testValidateDuplicateValue() throws Exception {
         IDecisionBFE decisionBFE = bf.newDecision(new Point(10, 10));
         decisionBFE.setDatatype(Datatype.INTEGER.getQualifiedName());

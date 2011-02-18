@@ -31,7 +31,7 @@ public abstract class AbstractHtmlLayouterTableTest extends AbstractTestHtmlLayo
 
     protected TablePageElement createTable(int rows, int cols) {
         TablePageElement table = new TablePageElement();
-    
+
         for (int row = 0; row < rows; row++) {
             PageElement[] pageElements = new PageElement[cols];
             for (int col = 0; col < cols; col++) {

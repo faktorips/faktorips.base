@@ -30,6 +30,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Test for IpsCutAction.
@@ -43,7 +45,8 @@ public class IpsCutActionTest extends AbstractIpsPluginTest {
     IPolicyCmptType pcType;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         IIpsProject project = this.newIpsProject("TestProject");
@@ -59,6 +62,7 @@ public class IpsCutActionTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testRun() {
         String current = new IpsObjectPartState(attribute).toString();
 

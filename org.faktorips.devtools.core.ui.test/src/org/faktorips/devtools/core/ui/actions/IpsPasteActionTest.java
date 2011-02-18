@@ -39,6 +39,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Test for IpsCutAction.
@@ -58,7 +60,8 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
     IFolder folder;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         project = this.newIpsProject("TestProject");
@@ -92,6 +95,7 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
         return archiveFile;
     }
 
+    @Test
     public void testRun() throws CoreException {
         cutAction = newIpsCutAction(attribute);
         pasteAction = newIpsPasteAction(pcType);
@@ -112,6 +116,7 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
         assertEquals(2, root.getDefaultIpsPackageFragment().getChildIpsPackageFragments().length);
     }
 
+    @Test
     public void testCopyPasteIpsObject2IpsPackageFragment() throws CoreException {
         IIpsPackageFragment fragment = root.createPackageFragment("testTarget", true, null);
 
@@ -126,6 +131,7 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
         assertEquals(3, fragment.getChildren().length);
     }
 
+    @Test
     public void testCopyPasteIpsPackageFragment2IpsPackageFragment() throws CoreException {
         IIpsPackageFragment fragment = root.createPackageFragment("testTarget", true, null);
 
@@ -140,6 +146,7 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
         assertEquals(2, newFragment.getChildren().length);
     }
 
+    @Test
     public void testCopyPasteIpsObject2Folder() throws CoreException {
         newIpsCopyAction(pcType).run();
         assertEquals(0, folder.members().length);
@@ -152,6 +159,7 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
         assertEquals(3, folder.members().length);
     }
 
+    @Test
     public void testCopyPasteIpsPackageFragment2Folder() throws CoreException {
         newIpsCopyAction(pack).run();
         assertEquals(0, folder.members().length);
@@ -161,6 +169,7 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
         assertEquals(2, ((IFolder)folder.members()[0]).members().length);
     }
 
+    @Test
     public void testCopyPasteIpsObjectFromArchive2IpsPackageFragment() throws CoreException {
         IIpsPackageFragment fragment = root.createPackageFragment("test", true, null);
 
@@ -178,6 +187,7 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
         assertEquals(3, fragment.getChildren().length);
     }
 
+    @Test
     public void testCopyPasteIpsPackageFragmentFromArchive2IpsPackageFragment() throws CoreException {
         IIpsPackageFragment fragment = root.createPackageFragment("test", true, null);
 
@@ -193,6 +203,7 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
         assertEquals(2, fragment.getChildIpsPackageFragments()[0].getChildren().length);
     }
 
+    @Test
     public void testCopyPasteIpsObjectFromArchive2Folder() throws CoreException {
         IIpsObject obj1 = project.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "test.PolicyInArchive1");
         IIpsObject obj2 = project.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "test.PolicyInArchive2");
@@ -208,6 +219,7 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
         assertEquals(3, folder.members().length);
     }
 
+    @Test
     public void testCopyPasteIpsPackageFragmentFromArchive2Folder() throws CoreException {
         IIpsPackageFragmentRoot root = project.findIpsPackageFragmentRoot("test.ipsar");
         IIpsPackageFragment packageFrgmt = root.getIpsPackageFragment("test");
@@ -220,6 +232,7 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
         assertEquals(2, ((IFolder)folder.members()[0]).members().length);
     }
 
+    @Test
     public void testCopyPasteUnknown() throws Exception {
         IIpsPackageFragment destFragment = root.createPackageFragment("testTarget", true, null);
 

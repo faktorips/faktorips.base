@@ -13,20 +13,13 @@
 
 package org.faktorips.devtools.core.ui.views.modeldescription;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
-public class ModelDescriptionViewTest extends TestCase {
+import org.junit.Test;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
+public class ModelDescriptionViewTest {
 
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
+    @Test
     public void test() {
         assertEquals("eins", "ei" + "ns");
     }

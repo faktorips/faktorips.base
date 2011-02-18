@@ -34,6 +34,8 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -45,12 +47,14 @@ public class TypeTest extends AbstractIpsPluginTest {
     private IType type;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
         type = newProductCmptType(ipsProject, "MotorProduct");
     }
 
+    @Test
     public void testIsSubtype() throws CoreException {
         IType subtype = newProductCmptType((IProductCmptType)type, "Subtype");
         IType subsubtype = newProductCmptType((IProductCmptType)type, "SubSubtype");
@@ -66,6 +70,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertFalse(subtype.isSubtypeOf(anotherType, ipsProject));
     }
 
+    @Test
     public void testIsSubtypeDifferentProject() throws CoreException {
         IPolicyCmptType policyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "TestPolicy");
 
@@ -99,6 +104,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertFalse(policyCmptType.isSubtypeOf(supersupersupertype, project2));
     }
 
+    @Test
     public void testValidate_DuplicatePropertyName() throws CoreException {
         type = newPolicyCmptType(ipsProject, "Policy");
         IType supertype = newPolicyCmptType(ipsProject, "Supertype");
@@ -175,14 +181,17 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
     }
 
+    @Test
     public void testSetAbstract() {
         testPropertyAccessReadWrite(IType.class, IType.PROPERTY_ABSTRACT, type, Boolean.valueOf(!type.isAbstract()));
     }
 
+    @Test
     public void testSetSupertype() {
         testPropertyAccessReadWrite(IType.class, IType.PROPERTY_SUPERTYPE, type, "NewSupertype");
     }
 
+    @Test
     public void testValidate_MustOverrideAbstractMethod() throws CoreException {
         // a supertype with a method and connect the type to it
         IType superType = this.newProductCmptType(ipsProject, "Supertype");
@@ -223,6 +232,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertNull(list.getMessageByCode(IType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD));
     }
 
+    @Test
     public void testValidate_MustImplementInverseDerivedUnion() throws Exception {
         IPolicyCmptType source = newPolicyCmptType(ipsProject, "SourceType");
         IPolicyCmptType target = newPolicyCmptType(ipsProject, "TargetType");
@@ -291,6 +301,7 @@ public class TypeTest extends AbstractIpsPluginTest {
      * derived union association. The source must not be marked as abstract because it defines a
      * subset of the derived union.
      */
+    @Test
     public void testValidate_MustImplementInverseDerivedUnionOnlyTarget() throws Exception {
         IPolicyCmptType source = newPolicyCmptType(ipsProject, "SourceType");
         IPolicyCmptType target = newPolicyCmptType(ipsProject, "TargetType");
@@ -361,6 +372,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
     }
 
+    @Test
     public void testValidate_MustImplementDerivedUnion() throws Exception {
         IPolicyCmptType target = newPolicyCmptType(ipsProject, "TargetType");
 
@@ -436,6 +448,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
     }
 
+    @Test
     public void testValidate_AbstractMissing() throws Exception {
         MessageList ml = type.validate(type.getIpsProject());
         assertNull(ml.getMessageByCode(IType.MSGCODE_ABSTRACT_MISSING));
@@ -446,6 +459,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IType.MSGCODE_ABSTRACT_MISSING));
     }
 
+    @Test
     public void testGetMethod() {
         assertNull(type.getMethod("SomeName", new String[0]));
 
@@ -472,6 +486,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertNull(type.getMethod("unknown", new String[0]));
     }
 
+    @Test
     public void testFindMethod() throws CoreException {
         assertNull(type.findMethod("SomeName", new String[0], ipsProject));
 
@@ -501,6 +516,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertNull(type.findMethod("unknown", new String[0], ipsProject));
     }
 
+    @Test
     public void testFindAllMethods() throws Exception {
         assertTrue(type.findAllMethods(ipsProject).isEmpty());
 
@@ -534,6 +550,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertTrue(methods.contains(method4));
     }
 
+    @Test
     public void testFindAttribute() throws CoreException {
         assertNull(type.findAttribute("unknown", ipsProject));
 
@@ -562,6 +579,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertNull(type.findAttribute("unknown", ipsProject));
     }
 
+    @Test
     public void testFindAssociationsForTargetAndAssociationType() throws CoreException {
         IProductCmptType baseMotor = newProductCmptType(ipsProject, "BaseMotorProduct");
         IProductCmptType motor = (IProductCmptType)type;
@@ -606,6 +624,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertEquals(2, associations.length);
     }
 
+    @Test
     public void testFindAllAttributes() throws Exception {
         assertNull(type.findAttribute("unknown", ipsProject));
 
@@ -643,12 +662,14 @@ public class TypeTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testNewAttribute() {
         IAttribute attr = type.newAttribute();
         assertEquals(1, type.getAttributes().length);
         assertEquals(attr, type.getAttributes()[0]);
     }
 
+    @Test
     public void testGetAttribute() {
         assertNull(type.getAttribute("a"));
 
@@ -665,6 +686,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertNull(type.getAttribute(null));
     }
 
+    @Test
     public void testGetAttributes() {
         assertEquals(0, type.getAttributes().length);
 
@@ -678,6 +700,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertEquals(a2, attributes[1]);
     }
 
+    @Test
     public void testGetNumOfAttributes() {
         assertEquals(0, type.getNumOfAttributes());
 
@@ -688,6 +711,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertEquals(2, type.getNumOfAttributes());
     }
 
+    @Test
     public void testMoveAttributes() {
         IAttribute a1 = type.newAttribute();
         IAttribute a2 = type.newAttribute();
@@ -700,6 +724,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertEquals(a1, attributes[2]);
     }
 
+    @Test
     public void testGetAssociation() {
         assertNull(type.getAssociation(null));
         assertNull(type.getAssociation("OtherType"));
@@ -715,6 +740,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertNull(type.getAssociation("UnknownRole"));
     }
 
+    @Test
     public void testGetAssociationByRoleNamePlural() {
         assertNull(type.getAssociationByRoleNamePlural(null));
         assertNull(type.getAssociationByRoleNamePlural("OtherTypes"));
@@ -730,6 +756,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertNull(type.getAssociationByRoleNamePlural("UnknownRole"));
     }
 
+    @Test
     public void testFindAssociationByRoleNamePlural() throws CoreException {
         assertNull(type.findAssociationByRoleNamePlural(null, ipsProject));
         assertNull(type.findAssociationByRoleNamePlural("OtherTypes", ipsProject));
@@ -751,6 +778,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertNull(subtype.findAssociationByRoleNamePlural("UnknownRole", ipsProject));
     }
 
+    @Test
     public void testGetAssociationsForTarget() {
         assertEquals(0, type.getAssociationsForTarget(null).length);
 
@@ -770,6 +798,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertEquals(0, ass.length);
     }
 
+    @Test
     public void testGetMethods() {
         assertEquals(0, type.getMethods().length);
         IMethod m1 = type.newMethod();
@@ -782,6 +811,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertNotNull(type.getMethods()[0]);
     }
 
+    @Test
     public void testGetOverrideCandidates() throws CoreException {
         assertEquals(0, type.findOverrideMethodCandidates(false, ipsProject).length);
 
@@ -833,6 +863,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertEquals(0, candidates.length);
     }
 
+    @Test
     public void testValidate_SupertypeNotFound() throws Exception {
         MessageList ml = type.validate(ipsProject);
         assertNull(ml.getMessageByCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND));
@@ -847,6 +878,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND));
     }
 
+    @Test
     public void testValidate_CycleInTypeHirarchy() throws Exception {
         // create two more types that act as supertype and supertype's supertype
         IType supertype = newProductCmptType(ipsProject, "Product");
@@ -875,6 +907,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertNotNull(msg);
     }
 
+    @Test
     public void testValidate_InconsistentTypeHirachy() throws Exception {
         // create two more types that act as supertype and supertype's supertype
         // create two more types that act as supertype and supertype's supertype
@@ -895,6 +928,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
     }
 
+    @Test
     public void testFindOverrideMethodCandidates() throws CoreException {
         assertEquals(0, type.findOverrideMethodCandidates(false, ipsProject).length);
 
@@ -939,6 +973,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         // note: now only m5 is a candidate as it's abstract, m2 is not.
     }
 
+    @Test
     public void testOverrideMethods() throws CoreException {
         IType supertype = newProductCmptType(ipsProject, "Product");
         type.setSupertype(supertype.getQualifiedName());
@@ -969,6 +1004,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertFalse(methods[1].overrides(m2));
     }
 
+    @Test
     public void testFindAllAssociations() throws CoreException {
         IType superSuperType = newProductCmptType(ipsProject, "AbstractProduct");
         IType superType = newProductCmptType(ipsProject, "Product");
@@ -998,12 +1034,14 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertEquals("Ziel", assocs[2].getTargetRoleSingular());
     }
 
+    @Test
     public void testHasSupertype() {
         assertFalse(type.hasSupertype());
         type.setSupertype("xyz");
         assertTrue(type.hasSupertype());
     }
 
+    @Test
     public void testHasExistingSupertype() throws CoreException {
         assertFalse(type.hasExistingSupertype(ipsProject));
 

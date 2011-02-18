@@ -25,6 +25,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author Alexander Weickmann
@@ -48,7 +50,8 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
     private IProductCmptLink productCmptLink;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         policyToOtherPolicyAssociation = policyCmptType.newPolicyCmptTypeAssociation();
@@ -71,6 +74,7 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
         productCmptLink = productCmptGeneration.newLink(productToOtherProductAssociation);
     }
 
+    @Test
     public void testValidateUserInputNewNameEmpty() throws CoreException {
         IIpsRenameProcessor ipsRenameProcessor = (IIpsRenameProcessor)policyToOtherPolicyAssociation
                 .getRenameRefactoring().getProcessor();
@@ -80,6 +84,7 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
         assertTrue(status.hasFatalError());
     }
 
+    @Test
     public void testValidateUserInputNeitherNameNorPluralNameChanged() throws CoreException {
         IIpsRenameProcessor ipsRenameProcessor = (IIpsRenameProcessor)policyToOtherPolicyAssociation
                 .getRenameRefactoring().getProcessor();
@@ -89,6 +94,7 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
         assertTrue(status.hasFatalError());
     }
 
+    @Test
     public void testValidateUserInputNoPluralNameForToManyAssociation() throws CoreException {
         IIpsRenameProcessor ipsRenameProcessor = (IIpsRenameProcessor)policyToOtherPolicyAssociation
                 .getRenameRefactoring().getProcessor();
@@ -98,6 +104,7 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
         assertTrue(status.hasFatalError());
     }
 
+    @Test
     public void testValidateUserInputValid() throws CoreException {
         IIpsRenameProcessor ipsRenameProcessor = (IIpsRenameProcessor)policyToOtherPolicyAssociation
                 .getRenameRefactoring().getProcessor();
@@ -107,6 +114,7 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
         assertTrue(status.isOK());
     }
 
+    @Test
     public void testRenamePolicyCmptTypeAssociation() throws CoreException {
         String newAssociationName = "foo";
         String newPluralAssociationName = "bar";
@@ -130,6 +138,7 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
         assertEquals(newAssociationName, policyAssociationTestParameter.getAssociation());
     }
 
+    @Test
     public void testRenamePolicyCmptTypeAssociationDerivedUnion() throws CoreException {
         IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "Policy");
         policyCmptType.setConfigurableByProductCmptType(false);
@@ -175,6 +184,7 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
         assertEquals(newName, subtypeSubset.getSubsettedDerivedUnion());
     }
 
+    @Test
     public void testRenameProductCmptTypeAssociation() throws CoreException {
         String newAssociationName = "foo";
         String newPluralAssociationName = "bar";

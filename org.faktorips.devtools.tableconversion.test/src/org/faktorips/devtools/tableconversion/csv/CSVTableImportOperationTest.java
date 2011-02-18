@@ -29,6 +29,8 @@ import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.devtools.tableconversion.AbstractTableTest;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 
 public class CSVTableImportOperationTest extends AbstractTableTest {
 
@@ -41,7 +43,8 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
     private ITableContents contents;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         ipsProject = newIpsProject("test");
@@ -84,6 +87,7 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
         file.delete();
     }
 
+    @Test
     public void testImportValid() throws Exception {
         createValidExternalTable(ipsProject, format, true);
 
@@ -94,6 +98,7 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
         assertTrue(ml.isEmpty());
     }
 
+    @Test
     public void testImportValidRowMismatch() throws Exception {
         createValidExternalTable(ipsProject, format, true);
 
@@ -121,6 +126,7 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
         assertFalse(ml.isEmpty());
     }
 
+    @Test
     public void testImportFirstRowContainsNoColumnHeader() throws Exception {
         createValidExternalTable(ipsProject, format, false);
 
@@ -132,6 +138,7 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
         assertEquals(3, importTarget.getNumOfRows());
     }
 
+    @Test
     public void testImportFirstRowContainsColumnHeader() throws Exception {
         createValidExternalTable(ipsProject, format, true);
 
@@ -143,6 +150,7 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
         assertEquals(3, importTarget.getNumOfRows());
     }
 
+    @Test
     public void testImportInvalid() throws Exception {
         createInvalidCsvFile();
 

@@ -30,6 +30,8 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptT
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests for product component structure.
@@ -47,7 +49,8 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
     private IProductCmptTreeStructure structure;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
 
@@ -96,16 +99,19 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
         structure = productCmpt.getStructure(ipsProject);
     }
 
+    @Test
     public void testGetRoot() {
         IProductCmpt root = structure.getRoot().getProductCmpt();
         assertSame(productCmpt, root);
     }
 
+    @Test
     public void testNoGeneration() throws CycleInProductStructureException {
         productCmpt.getGenerationsOrderedByValidDate()[0].delete();
         structure.refresh();
     }
 
+    @Test
     public void testCircleDetection() throws Exception {
         // this has to work without any exception
         productCmpt.getStructure(ipsProject);
@@ -126,6 +132,7 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testTblContentUsageReferences() throws Exception {
         IProductCmptStructureTblUsageReference[] ptsus = structure
                 .getChildProductCmptStructureTblUsageReference(structure.getRoot());
@@ -140,6 +147,7 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
         assertEquals("tableContent2", tcu.getTableContentName());
     }
 
+    @Test
     public void testToSet() throws Exception {
         Set<IProductCmptStructureReference> array = structure.toSet(true);
         assertEquals(6, array.size());

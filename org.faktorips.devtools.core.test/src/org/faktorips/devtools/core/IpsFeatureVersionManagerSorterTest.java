@@ -13,16 +13,18 @@
 
 package org.faktorips.devtools.core;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.fail;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.model.versionmanager.IpsFeatureVersionManagerSorter;
+import org.junit.Test;
 
-public class IpsFeatureVersionManagerSorterTest extends TestCase {
+public class IpsFeatureVersionManagerSorterTest {
 
+    @Test
     public void testGetMigrationOperation() {
         IpsFeatureVersionManagerSorter sorter = new IpsFeatureVersionManagerSorter();
         Manager[] managers = new Manager[] { new Manager("6", "1"), new Manager("2", ""), new Manager("3", ""),

@@ -20,6 +20,8 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -32,7 +34,8 @@ public class TestParameterTest extends AbstractIpsPluginTest {
     private IIpsProject project;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
         testCaseType = (ITestCaseType)newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
@@ -40,6 +43,7 @@ public class TestParameterTest extends AbstractIpsPluginTest {
         testParam.setName("testPolicyCmptTypeParam");
     }
 
+    @Test
     public void testValidateDuplicateName() throws Exception {
         MessageList ml = testParam.validate(project);
         assertNull(ml.getMessageByCode(ITestParameter.MSGCODE_DUPLICATE_NAME));
@@ -68,6 +72,7 @@ public class TestParameterTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(ITestParameter.MSGCODE_DUPLICATE_NAME));
     }
 
+    @Test
     public void testValidateInvalidName() throws Exception {
         MessageList ml = testParam.validate(project);
         assertNull(ml.getMessageByCode(ITestParameter.MSGCODE_INVALID_NAME));

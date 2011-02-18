@@ -13,14 +13,16 @@
 
 package org.faktorips.devtools.core.model.extproperties;
 
+import static org.junit.Assert.assertEquals;
+
 import javax.naming.directory.Attribute;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
-import junit.framework.TestCase;
-
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -28,19 +30,19 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class IpsObjectPartStringExtPropertyTest extends TestCase {
+public class IpsObjectPartStringExtPropertyTest {
 
     private StringExtensionPropertyDefinition property;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         property = new StringExtensionPropertyDefinition();
         property.setPropertyId("id");
         property.setExtendedType(Attribute.class);
         property.setDefaultValue("defaultValue");
     }
 
+    @Test
     public void testValueToXml() throws ParserConfigurationException, FactoryConfigurationError {
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         Element el = doc.createElement("Value");
@@ -57,6 +59,7 @@ public class IpsObjectPartStringExtPropertyTest extends TestCase {
         assertEquals("<>&", property.getValueFromXml(el));
     }
 
+    @Test
     public void testGetValueFromXml() throws ParserConfigurationException, FactoryConfigurationError {
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         Element el = doc.createElement("Value");
@@ -71,6 +74,7 @@ public class IpsObjectPartStringExtPropertyTest extends TestCase {
         assertEquals("<>&", property.getValueFromXml(el));
     }
 
+    @Test
     public void testSetDefaultValue() {
         property.setDefaultValue("blabla");
         assertEquals("blabla", property.getDefaultValue());

@@ -19,6 +19,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptTypeBuilderTest;
+import org.junit.Before;
 
 public abstract class GenAssociationTest extends PolicyCmptTypeBuilderTest {
 
@@ -35,7 +36,8 @@ public abstract class GenAssociationTest extends PolicyCmptTypeBuilderTest {
     protected IPolicyCmptType targetPolicyCmptType;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         targetPolicyCmptType = newPolicyCmptType(ipsProject, TARGET_POLICY_NAME);

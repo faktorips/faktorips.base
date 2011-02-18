@@ -17,6 +17,8 @@ import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TestCaseTypeClassBuilderTest extends AbstractStdBuilderTest {
 
@@ -27,7 +29,8 @@ public class TestCaseTypeClassBuilderTest extends AbstractStdBuilderTest {
     private ITestCaseType testCaseType;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         testCaseType = newTestCaseType(ipsProject, TEST_CASE_TYPE_NAME);
@@ -38,6 +41,7 @@ public class TestCaseTypeClassBuilderTest extends AbstractStdBuilderTest {
         return getGeneratedJavaType(testCaseType, false, true, TEST_CASE_TYPE_NAME);
     }
 
+    @Test
     public void testGetGeneratedJavaElements() {
         generatedJavaElements = builder.getGeneratedJavaElements(testCaseType);
         assertTrue(generatedJavaElements.contains(getGeneratedJavaClass()));

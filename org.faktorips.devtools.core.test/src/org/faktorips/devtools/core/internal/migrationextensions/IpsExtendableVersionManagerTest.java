@@ -26,6 +26,8 @@ import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOperationFactory;
+import org.junit.Before;
+import org.junit.Test;
 import org.osgi.framework.Version;
 
 public class IpsExtendableVersionManagerTest extends AbstractIpsPluginTest {
@@ -36,13 +38,15 @@ public class IpsExtendableVersionManagerTest extends AbstractIpsPluginTest {
     private AbstractIpsProjectMigrationOperation ipsProjectMigrationOperation2;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         ipsExtendableVersionManager = new IpsExtendableVersionManager();
         currentVersion = Version.parseVersion(ipsExtendableVersionManager.getCurrentVersion());
     }
 
+    @Test
     public void testCompareToCurrentVersion() throws Exception {
 
         assertTrue(ipsExtendableVersionManager.compareToCurrentVersion(currentVersion + "zzz") > 0);
@@ -50,6 +54,7 @@ public class IpsExtendableVersionManagerTest extends AbstractIpsPluginTest {
         assertTrue(ipsExtendableVersionManager.compareToCurrentVersion(currentVersion.toString()) == 0);
     }
 
+    @Test
     public void testGetMigrationOperations() throws Exception {
         mockMigrationOperations();
 
@@ -72,6 +77,7 @@ public class IpsExtendableVersionManagerTest extends AbstractIpsPluginTest {
         assertEquals(ipsProjectMigrationOperation1, migrationOperations[0]);
     }
 
+    @Test
     public void testIsCurrentVersionCompatibleWith() throws Exception {
         mockMigrationOperations();
 

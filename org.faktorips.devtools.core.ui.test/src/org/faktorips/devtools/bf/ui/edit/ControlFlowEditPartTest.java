@@ -24,6 +24,8 @@ import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.bf.edit.ControlFlowEditPart;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ControlFlowEditPartTest extends AbstractIpsPluginTest {
 
@@ -35,6 +37,7 @@ public class ControlFlowEditPartTest extends AbstractIpsPluginTest {
     private Shell shell;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
@@ -66,12 +69,14 @@ public class ControlFlowEditPartTest extends AbstractIpsPluginTest {
         shell.dispose();
     }
 
+    @Test
     public void testActivate() {
         editPart.activate();
         controlFlow.addBendpoint(0, new AbsoluteBendpoint(1, 1));
         assertTrue(refreshChildrenCalled);
     }
 
+    @Test
     public void testDeactivate() {
         editPart.activate();
         controlFlow.addBendpoint(0, new AbsoluteBendpoint(1, 1));

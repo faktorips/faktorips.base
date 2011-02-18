@@ -36,6 +36,8 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptT
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureContentProvider;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests for LinkCreatorUtil
@@ -65,7 +67,8 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
     private ProductCmpt cmptSubB1;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         ipsProject = newIpsProject();
@@ -106,6 +109,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         linkCreator = new MyLinkCreator(true);
     }
 
+    @Test
     public void testValidateCreateLink() throws CoreException {
         IProductCmptReference target = structure.getRoot();
         List<IProductCmpt> singleCmpt = getList(cmptB1);
@@ -148,6 +152,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         // link.delete();
     }
 
+    @Test
     public void testCreateLink() {
         IProductCmptLink[] links;
 
@@ -244,6 +249,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         links[3].delete();
     }
 
+    @Test
     public void testSaveFile() throws CoreException {
         IIpsSrcFile ipsSrcFile = cmptA.getIpsSrcFile();
         assertTrue(ipsSrcFile.isMutable());

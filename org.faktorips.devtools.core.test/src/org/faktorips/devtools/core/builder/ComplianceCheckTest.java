@@ -18,6 +18,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.junit.Test;
 
 /**
  * 
@@ -25,6 +26,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  */
 public class ComplianceCheckTest extends AbstractIpsPluginTest {
 
+    @Test
     public void testIsComplianceLevelAtLeast5() throws CoreException {
         IIpsProject ipsProject = newIpsProject();
         IJavaProject javaProject = ipsProject.getJavaProject();

@@ -23,6 +23,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.junit.Test;
 
 /**
  * 
@@ -30,6 +31,7 @@ import org.faktorips.devtools.core.IpsPlugin;
  */
 public class TestAbstractEnumdatatypeBasedFieldTest extends AbstractIpsPluginTest {
 
+    @Test
     public void testInvalidValue() {
         Composite parent = new Composite(IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell(),
                 SWT.NONE);

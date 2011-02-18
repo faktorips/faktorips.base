@@ -13,10 +13,13 @@
 
 package org.faktorips.devtools.tableconversion.csv;
 
+import static org.junit.Assert.assertFalse;
+
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.tableconversion.IValueConverter;
 import org.faktorips.util.message.MessageList;
+import org.junit.Test;
 
 /**
  * Tests for Conversion of an arbitrary CSV-Integer representation to IPS Integer Datatype and vice
@@ -37,6 +40,7 @@ public class IntegerValueConverterTest extends NumberValueConverterTest {
         return validExternalDoubles;
     }
 
+    @Test
     public void testExternalToInternalOverflow() {
         String[] doNotFitInInteger = { String.valueOf(Long.MAX_VALUE), String.valueOf(Double.MIN_VALUE) };
 

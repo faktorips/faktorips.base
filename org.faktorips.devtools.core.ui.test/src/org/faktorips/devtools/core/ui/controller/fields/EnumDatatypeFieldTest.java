@@ -28,6 +28,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -42,6 +44,7 @@ public class EnumDatatypeFieldTest extends AbstractIpsPluginTest {
     private Shell shell;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         IIpsProject project = newIpsProject();
@@ -58,6 +61,7 @@ public class EnumDatatypeFieldTest extends AbstractIpsPluginTest {
         assertNotNull(shell);
     }
 
+    @Test
     public void testWithDisplayTypeName() {
         IpsPlugin.getDefault().getIpsPreferences().setEnumTypeDisplay(EnumTypeDisplay.NAME);
         Combo c = new Combo(shell, SWT.READ_ONLY);
@@ -91,6 +95,7 @@ public class EnumDatatypeFieldTest extends AbstractIpsPluginTest {
         assertEquals(4, items.length);
     }
 
+    @Test
     public void testWithDisplayTypeId() {
         IpsPlugin.getDefault().getIpsPreferences().setEnumTypeDisplay(EnumTypeDisplay.ID);
         Combo c = new Combo(shell, SWT.READ_ONLY);
@@ -124,6 +129,7 @@ public class EnumDatatypeFieldTest extends AbstractIpsPluginTest {
         assertEquals(4, items.length);
     }
 
+    @Test
     public void testWithDisplayTypeNameAndId() {
         IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
         DatatypeFormatter formatter = prefs.getDatatypeFormatter();

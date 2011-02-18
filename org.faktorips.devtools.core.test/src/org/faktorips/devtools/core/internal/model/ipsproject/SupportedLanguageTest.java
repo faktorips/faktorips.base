@@ -18,6 +18,8 @@ import java.util.Locale;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -28,34 +30,40 @@ public class SupportedLanguageTest extends AbstractIpsPluginTest {
     private ISupportedLanguage germanLanguage;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         englishLanguage = new SupportedLanguage(Locale.ENGLISH);
         ((SupportedLanguage)englishLanguage).setDefaultLanguage(true);
         germanLanguage = new SupportedLanguage(Locale.GERMAN);
     }
 
+    @Test
     public void testGetLocale() {
         assertEquals(Locale.ENGLISH, englishLanguage.getLocale());
         assertEquals(Locale.GERMAN, germanLanguage.getLocale());
     }
 
+    @Test
     public void testGetLanguageName() {
         assertEquals(Locale.ENGLISH.getDisplayLanguage(), englishLanguage.getLanguageName());
         assertEquals(Locale.GERMAN.getDisplayLanguage(), germanLanguage.getLanguageName());
     }
 
+    @Test
     public void testIsDefaultLanguage() {
         assertTrue(englishLanguage.isDefaultLanguage());
         assertFalse(germanLanguage.isDefaultLanguage());
     }
 
+    @Test
     public void testEquals() {
         assertEquals(englishLanguage, new SupportedLanguage(Locale.ENGLISH));
         assertEquals(germanLanguage, new SupportedLanguage(Locale.GERMAN));
         assertFalse(englishLanguage.equals(germanLanguage));
     }
 
+    @Test
     public void testInitFromXml() {
         Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
 
@@ -72,6 +80,7 @@ public class SupportedLanguageTest extends AbstractIpsPluginTest {
         assertFalse(supportedLanguage.isDefaultLanguage());
     }
 
+    @Test
     public void testToXml() {
         Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
 

@@ -14,37 +14,45 @@
 package org.faktorips.devtools.core.internal.model.enums;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
+import org.junit.Before;
+import org.junit.Test;
 
 public class EnumLiteralNameAttributeValueTest extends AbstractIpsEnumPluginTest {
 
     private IEnumLiteralNameAttributeValue literalNameAttributeValue;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         literalNameAttributeValue = (IEnumLiteralNameAttributeValue)paymentMode.getEnumValues().get(0)
                 .getEnumAttributeValues().get(0);
     }
 
+    @Test
     public void testSetValue() {
         literalNameAttributeValue.setValue("foo");
         assertEquals("FOO", literalNameAttributeValue.getValue());
     }
 
+    @Test
     public void testSetValueNull() {
         literalNameAttributeValue.setValue(null);
         assertNull(literalNameAttributeValue.getValue());
     }
 
+    @Test
     public void testSetValueInvalidCharacters() {
         literalNameAttributeValue.setValue("foo $$%bar");
         assertEquals("FOO____BAR", literalNameAttributeValue.getValue());
     }
 
+    @Test
     public void testSetValueUmlaut() {
         literalNameAttributeValue.setValue("fooÄbar");
         assertEquals("FOOAEBAR", literalNameAttributeValue.getValue());
@@ -68,11 +76,13 @@ public class EnumLiteralNameAttributeValueTest extends AbstractIpsEnumPluginTest
         assertEquals("FOOSSBAR", literalNameAttributeValue.getValue());
     }
 
+    @Test
     public void testGetName() {
         literalNameAttributeValue.setValue("FOOBAR");
         assertEquals("FOOBAR", literalNameAttributeValue.getName());
     }
 
+    @Test
     public void testValidateNumber() throws CoreException {
         literalNameAttributeValue.setValue("42");
         MessageList messages = literalNameAttributeValue.validate(ipsProject);
@@ -81,14 +91,16 @@ public class EnumLiteralNameAttributeValueTest extends AbstractIpsEnumPluginTest
         assertEquals(message.getCode(),
                 IEnumLiteralNameAttributeValue.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_VALUE_IS_NUMBER);
         assertEquals(message.getInvalidObjectProperties()[0], new ObjectProperty(literalNameAttributeValue,
-                IEnumLiteralNameAttributeValue.PROPERTY_VALUE));
+                IEnumAttributeValue.PROPERTY_VALUE));
     }
 
+    @Test
     public void testValidateNumberInName() throws CoreException {
         literalNameAttributeValue.setValue("a42b");
         assertTrue(literalNameAttributeValue.isValid(ipsProject));
     }
 
+    @Test
     public void testValidateLeadingNumber() throws CoreException {
         literalNameAttributeValue.setValue("42ab");
         MessageList messages = literalNameAttributeValue.validate(ipsProject);
@@ -97,9 +109,10 @@ public class EnumLiteralNameAttributeValueTest extends AbstractIpsEnumPluginTest
         assertEquals(message.getCode(),
                 IEnumLiteralNameAttributeValue.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_VALUE_IS_NUMBER);
         assertEquals(message.getInvalidObjectProperties()[0], new ObjectProperty(literalNameAttributeValue,
-                IEnumLiteralNameAttributeValue.PROPERTY_VALUE));
+                IEnumAttributeValue.PROPERTY_VALUE));
     }
 
+    @Test
     public void testValidateNull() throws CoreException {
         literalNameAttributeValue.setValue(null);
         MessageList messages = literalNameAttributeValue.validate(ipsProject);

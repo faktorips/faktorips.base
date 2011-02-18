@@ -26,6 +26,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TableContentsCompareItemCreatorTest extends AbstractIpsPluginTest {
 
@@ -43,7 +45,8 @@ public class TableContentsCompareItemCreatorTest extends AbstractIpsPluginTest {
     private IRow row4;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         IIpsProject proj = newIpsProject("TestProject");
@@ -70,6 +73,7 @@ public class TableContentsCompareItemCreatorTest extends AbstractIpsPluginTest {
         compareItemRoot = (TableContentsCompareItem)structureCreator.getStructure(new ResourceNode(correspondingFile));
     }
 
+    @Test
     public void testGetStructure() {
         assertEquals(srcFile, compareItemRoot.getIpsElement());
 
@@ -94,6 +98,7 @@ public class TableContentsCompareItemCreatorTest extends AbstractIpsPluginTest {
         assertEquals(row4, compareItemRow4.getIpsElement());
     }
 
+    @Test
     public void testGetContents() {
         Object[] children = compareItemRoot.getChildren();
         TableContentsCompareItem compareItem = (TableContentsCompareItem)children[0];
@@ -109,10 +114,12 @@ public class TableContentsCompareItemCreatorTest extends AbstractIpsPluginTest {
         assertTrue(compareItem.getContentStringWithoutWhiteSpace().equals(contentString));
     }
 
+    @Test
     public void testGetName() {
         assertEquals(Messages.TableContentsCompareItemCreator_TableContentsStructureCompare, structureCreator.getName());
     }
 
+    @Test
     public void testLocate() {
         assertNull(structureCreator.locate(null, compareItemRoot));
     }

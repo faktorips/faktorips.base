@@ -24,6 +24,8 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
@@ -37,7 +39,8 @@ public class TestPcTypeLinkTest extends AbstractIpsPluginTest {
     private ITestPolicyCmptLink testPcTypeAssociation;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
         ITestCaseType testCaseType = (ITestCaseType)newIpsObject(project, IpsObjectType.TEST_CASE_TYPE,
@@ -56,6 +59,7 @@ public class TestPcTypeLinkTest extends AbstractIpsPluginTest {
         testPcTypeAssociation.setTestPolicyCmptTypeParameter("childParam");
     }
 
+    @Test
     public void testInitFromXml() {
         Element docEl = getTestDocument().getDocumentElement();
         Element paramEl = XmlUtil.getFirstElement(docEl);
@@ -64,6 +68,7 @@ public class TestPcTypeLinkTest extends AbstractIpsPluginTest {
         assertEquals("base.target1", testPcTypeAssociation.getTarget());
     }
 
+    @Test
     public void testToXml() {
         testPcTypeAssociation.setTestPolicyCmptTypeParameter("association2");
         testPcTypeAssociation.setTarget("base.target2");
@@ -75,6 +80,7 @@ public class TestPcTypeLinkTest extends AbstractIpsPluginTest {
         assertEquals("base.target2", testPcTypeAssociation.getTarget());
     }
 
+    @Test
     public void testValidateTestCaseTypeParamNotFound() throws Exception {
         MessageList ml = testPcTypeAssociation.validate(project);
         assertNull(ml.getMessageByCode(ITestPolicyCmptLink.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
@@ -84,6 +90,7 @@ public class TestPcTypeLinkTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptLink.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
     }
 
+    @Test
     public void testValidateAssoziationTargetNotInTestCase() throws Exception {
         testCase.newTestPolicyCmpt().setName("testPolicyCmptTarget");
 
@@ -95,6 +102,7 @@ public class TestPcTypeLinkTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(ITestPolicyCmptLink.MSGCODE_ASSOZIATION_TARGET_NOT_IN_TEST_CASE));
     }
 
+    @Test
     public void testValidateModelAssociationNotFound() throws Exception {
         IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmptType");
         policyCmptType.newPolicyCmptTypeAssociation().setTargetRoleSingular("modelAssociation");

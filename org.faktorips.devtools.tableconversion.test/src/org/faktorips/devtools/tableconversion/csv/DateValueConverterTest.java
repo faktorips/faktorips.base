@@ -13,25 +13,29 @@
 
 package org.faktorips.devtools.tableconversion.csv;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 
-public class DateValueConverterTest extends TestCase {
+public class DateValueConverterTest {
     private MessageList ml;
     private DateValueConverter converter;
     private ITableFormat tableFormat;
 
-    @Override
+    @Before
     public void setUp() throws Exception {
-        super.setUp();
         ml = new MessageList();
         tableFormat = new CSVTableFormat();
         converter = new DateValueConverter();
         tableFormat.addValueConverter(converter);
     }
 
+    @Test
     public void testGetIpsValueUsingCustomDateFormat() {
         tableFormat.setProperty(CSVTableFormat.PROPERTY_DATE_FORMAT, "dd.MM.yyyy");
         String value = converter.getIpsValue("08.10.2009", ml);
@@ -48,10 +52,11 @@ public class DateValueConverterTest extends TestCase {
         assertFalse(ml.isEmpty());
     }
 
+    @Test
     public void testGetExternalDataValue() {
         tableFormat.setProperty(CSVTableFormat.PROPERTY_DATE_FORMAT, "dd.MM.yyyy");
         Object extValue = converter.getExternalDataValue("2009-10-15", ml);
         assertTrue(extValue instanceof String);
-        assertEquals("15.10.2009", (String)extValue);
+        assertEquals("15.10.2009", extValue);
     }
 }

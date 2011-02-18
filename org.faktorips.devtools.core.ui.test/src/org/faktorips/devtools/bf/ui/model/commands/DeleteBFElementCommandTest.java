@@ -21,6 +21,8 @@ import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.bf.commands.DeleteBFElementCommand;
+import org.junit.Before;
+import org.junit.Test;
 
 public class DeleteBFElementCommandTest extends AbstractIpsPluginTest {
 
@@ -29,12 +31,14 @@ public class DeleteBFElementCommandTest extends AbstractIpsPluginTest {
     private DeleteBFElementCommand command;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
         bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf");
     }
 
+    @Test
     public void testExecute() {
         IActionBFE action = bf.newOpaqueAction(new Point(10, 10));
         command = new DeleteBFElementCommand(bf, action);
@@ -53,6 +57,7 @@ public class DeleteBFElementCommandTest extends AbstractIpsPluginTest {
         assertTrue(action.getAllControlFlows().isEmpty());
     }
 
+    @Test
     public void testUndoRedo() {
         IActionBFE action = bf.newOpaqueAction(new Point(10, 10));
         command = new DeleteBFElementCommand(bf, action);

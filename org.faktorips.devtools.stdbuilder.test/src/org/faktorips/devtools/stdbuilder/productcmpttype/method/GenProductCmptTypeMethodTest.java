@@ -20,6 +20,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptTypeBuilderTest;
 import org.faktorips.devtools.stdbuilder.type.GenMethod;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests concerning the generators for <tt>IProductCmptTypeMethod</tt>s.
@@ -53,7 +55,8 @@ public class GenProductCmptTypeMethodTest extends ProductCmptTypeBuilderTest {
     private GenProductCmptTypeMethod genPublicFormulaMethod;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         publishedMethod = createTestMethod("publishedMethod", Modifier.PUBLISHED, false);
@@ -86,6 +89,7 @@ public class GenProductCmptTypeMethodTest extends ProductCmptTypeBuilderTest {
         return method;
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterface() {
         genPublishedMethod.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
                 javaInterfaceGeneration, publishedMethod);
@@ -98,6 +102,7 @@ public class GenProductCmptTypeMethodTest extends ProductCmptTypeBuilderTest {
         assertTrue(generatedJavaElements.isEmpty());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterfaceFormula() {
         genPublishedFormulaMethod.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
                 javaInterfaceGeneration, publishedFormulaMethod);
@@ -110,6 +115,7 @@ public class GenProductCmptTypeMethodTest extends ProductCmptTypeBuilderTest {
         assertTrue(generatedJavaElements.isEmpty());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementation() {
         genPublishedMethod.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
                 publishedMethod);
@@ -123,6 +129,7 @@ public class GenProductCmptTypeMethodTest extends ProductCmptTypeBuilderTest {
         assertEquals(1, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementationFormula() {
         genPublishedFormulaMethod.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
                 publishedFormulaMethod);

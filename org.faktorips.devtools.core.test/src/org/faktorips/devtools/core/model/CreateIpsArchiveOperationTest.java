@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.junit.Test;
 
 /**
  * 
@@ -38,6 +39,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
  */
 public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
 
+    @Test
     public void testRun() throws CoreException {
         IIpsProject project = newIpsProject();
         newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy", "mycompany.motor.MotorProduct");
@@ -68,6 +70,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
         assertTrue(qnt.contains(new QualifiedNameType("mycompany.home.HomePolicy", IpsObjectType.POLICY_CMPT_TYPE)));
     }
 
+    @Test
     public void testRunWithIconFile() throws CoreException {
         IIpsProject project = newIpsProject();
         newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy", "mycompany.motor.MotorProduct");
@@ -107,6 +110,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
         assertFalse(coreExceptionThrownOnGetResourceAsStream(archive));
     }
 
+    @Test
     public void testRunWithErroneousIconFile() throws CoreException {
         IIpsProject project = newIpsProject();
         newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy", "mycompany.motor.MotorProduct");

@@ -34,6 +34,8 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.values.DateUtil;
+import org.junit.Before;
+import org.junit.Test;
 
 public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
 
@@ -41,12 +43,14 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
     private ITableContents table;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject", new ArrayList<Locale>());
         table = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "Tc");
     }
 
+    @Test
     public void testUniqueKeysTwoRanges() throws CoreException {
         ITableContentsGeneration gen1 = createTwoRangeTable("T1");
 
@@ -59,6 +63,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
     }
 
+    @Test
     public void testUniqueKeysTwoRangesSameFrom() throws CoreException {
         ITableContentsGeneration gen1 = createTwoRangeTable("T2");
         createRow(gen1, new String[] { "405", "405", "101", "101" });
@@ -116,6 +121,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         return gen1;
     }
 
+    @Test
     public void testUniqueKeysMultipleKeys() throws CoreException {
         ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Ts");
         table.setTableStructure(structure.getQualifiedName());
@@ -164,6 +170,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
      * Test with one unique key: column key item or range with only from or to column specified (not
      * two column range)
      */
+    @Test
     public void testUniqueKeysOneKey() throws CoreException {
         ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Ts");
         table.setTableStructure(structure.getQualifiedName());
@@ -251,6 +258,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         assertNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
     }
 
+    @Test
     public void testUniqueKeysOneKeyTwoColumnRange() throws CoreException {
         ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Ts");
         table.setTableStructure(structure.getQualifiedName());
@@ -325,6 +333,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
      * validation then the validation aborts and a further validation message:
      * "TO_MANY_UNIQUE_KEY_VIOLATIONS" will be added.
      */
+    @Test
     public void testToManyUniqueKeyTwoColumnRangeViolation() throws CoreException {
         ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Ts");
         table.setTableStructure(structure.getQualifiedName());
@@ -361,6 +370,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_TO_MANY_UNIQUE_KEY_VIOLATIONS));
     }
 
+    @Test
     public void testUniqueKeysMultipleKeyTwoColumnRanges() throws CoreException {
         ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Ts");
         table.setTableStructure(structure.getQualifiedName());
@@ -463,6 +473,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
      * Test ranges, unique key is first column and 2 two-column-range's 1 column key: 1 column 1
      * range key: from=2 column, to=3 column 2 range key: from=4 column, to=5 column
      */
+    @Test
     public void testRanges() throws CoreException {
         assertRangeCollision("1", new String[][] { new String[] { "a", "1", "9", "10", "19" },
                 new String[] { "a", "10", "19", "10", "19" }, new String[] { "a", "20", "29", "10", "19" } }, false);
@@ -551,6 +562,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
     /**
      * Test two 'two column'-ranges, first range is equal
      */
+    @Test
     public void testIsRangeCollision() throws CoreException {
         assertSecondRangeCollision("1", 10, 19, 20, 29, false);
 
@@ -713,6 +725,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
      * '20': validation error (row 2 and 3) 4. validate after changing row 3 mandant to '2': no
      * validation error
      */
+    @Test
     public void testKeyValueRangeWithSameFromKeyAfter2ndChange() throws CoreException {
         ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Ts");
         table.setTableStructure(structure.getQualifiedName());
@@ -795,6 +808,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
      * creation: no validaion errors 2. validate after changing row 2 mandant to '1': two validation
      * error 3. validate after changing row 2 mandant to '2': no validation error again
      */
+    @Test
     public void testKeyValueRangeWithSameFromKeyAfterChange() throws CoreException {
         ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Ts");
         table.setTableStructure(structure.getQualifiedName());
@@ -913,6 +927,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testValidateUniqueKey() throws CoreException {
         InitAndValidateTime time = new InitAndValidateTime();
         testValidateUniqueKeyPerformance(1, true, time);

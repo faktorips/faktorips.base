@@ -71,6 +71,8 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * A common base class for builder tests.
@@ -96,12 +98,14 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject();
         root = ipsProject.getIpsPackageFragmentRoots()[0];
     }
 
+    @Test
     public void testCleanBuildNonDerivedFiles() throws CoreException {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
         IProductCmpt productCmpt = newProductCmpt(type, "Product");
@@ -276,6 +280,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testMarkerHandling() throws Exception {
         IPolicyCmptType pcType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "TestPolicy");
         pcType.setSupertype("UnknownSupertype");
@@ -314,6 +319,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         assertEquals(msgList.getNoOfMessages(), markers.length);
     }
 
+    @Test
     public void testDependencyGraphInstanceOfDependency() throws Exception {
         IProductCmptType a = newProductCmptType(root, "A");
         IProductCmptType b = newProductCmptType(root, "B");
@@ -342,6 +348,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         assertTrue(builtIpsObjects.contains(aProduct));
     }
 
+    @Test
     public void testDependencyGraphDatatypeAndInstanceOfDependency() throws Exception {
         IPolicyCmptType a = newPolicyAndProductCmptType(ipsProject, "A", "AConfigType");
         IAttribute aAttr = a.newAttribute();
@@ -406,6 +413,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
     }
 
+    @Test
     public void testDependencyGraphWithAggregateRootBuilderNoComposits() throws Exception {
         IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.A");
         IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.B");
@@ -435,6 +443,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         assertTrue(builtIpsObjects.contains(c));
     }
 
+    @Test
     public void testDependencyGraphWithAggregateRootBuilderWithMasterToChildComposits() throws Exception {
 
         IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.A");
@@ -467,6 +476,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         assertTrue(builtIpsObjects.contains(c));
     }
 
+    @Test
     public void testDependencyGraphWithAggregateRootBuilderWithChildToMasterComposits() throws Exception {
 
         IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.A");
@@ -497,6 +507,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         assertTrue(builtIpsObjects.contains(c));
     }
 
+    @Test
     public void testDependencyGraph() throws CoreException {
         IProductCmptType a = newProductCmptType(root, "A");
         IProductCmptType b = newProductCmptType(root, "B");
@@ -552,6 +563,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
     }
 
+    @Test
     public void testIsFullBuildTriggeredAfterChangesToIpsArchiveOnObjectPath() throws CoreException {
         IFile archiveFile = ipsProject.getProject().getFile("archive.ipsar");
         IPath archivePath = archiveFile.getLocation();
@@ -579,6 +591,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         assertEquals(IncrementalProjectBuilder.FULL_BUILD, builder.buildKind);
     }
 
+    @Test
     public void testIsFullBuildTriggeredAfterChangesToIpsProjectFile() throws CoreException {
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         AssertThatFullBuildIsTriggeredBuilder builder = new AssertThatFullBuildIsTriggeredBuilder();
@@ -590,6 +603,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         assertEquals(IncrementalProjectBuilder.FULL_BUILD, builder.buildKind);
     }
 
+    @Test
     public void testMarkerForNotParsableIpsSrcFiles() throws CoreException, UnsupportedEncodingException {
         IFile file = ((IContainer)root.getCorrespondingResource()).getFile(new Path("test."
                 + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension()));
@@ -608,6 +622,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         assertTrue("The expected message could not be found", isMessageThere);
     }
 
+    @Test
     public void testRemoveResource() throws CoreException {
         TestRemoveIpsArtefactBuilder builder = new TestRemoveIpsArtefactBuilder();
 
@@ -629,10 +644,12 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     }
 
     // TODO pk
+    @Test
     public void testDependencyGraphWithMultipleDelete() {
 
     }
 
+    @Test
     public void testDependencyGraphWithReferencingProjects() throws Exception {
         IIpsProject projectB = createSubProject(ipsProject, "projectB");
         IIpsProject projectC = createSubProject(projectB, "projectC");
@@ -737,6 +754,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         assertFalse(buildObjectsC.contains(c));
     }
 
+    @Test
     public void testDependencyGraphWithProductsInReferencingProjects() throws Exception {
         IIpsProject projectB = createSubProject(ipsProject, "projectB");
         IIpsProject projectC = createSubProject(projectB, "projectC");
@@ -880,6 +898,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         return builder;
     }
 
+    @Test
     public void testCleanBuild() throws CoreException {
         newPolicyCmptType(ipsProject, "mycompany.motor.MotorPolicy");
         IFile archiveFile = ipsProject.getProject().getFile("test.ipsar");
@@ -909,6 +928,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         project2.getProject().build(IncrementalProjectBuilder.CLEAN_BUILD, null);
     }
 
+    @Test
     public void testArtefactBuilderSetIfIpsProjectIsSet() throws CoreException {
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         IIpsArtefactBuilderSet builderSet = ((IpsModel)ipsProject.getIpsModel()).getIpsArtefactBuilderSet(ipsProject,

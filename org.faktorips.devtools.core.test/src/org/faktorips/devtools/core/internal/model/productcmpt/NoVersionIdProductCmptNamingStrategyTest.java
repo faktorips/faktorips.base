@@ -19,6 +19,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -35,47 +37,56 @@ public class NoVersionIdProductCmptNamingStrategyTest extends AbstractIpsPluginT
     private String prefix;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
         prefix = project.getRuntimeIdPrefix();
         strategy.setIpsProject(project);
     }
 
+    @Test
     public void testGetNextVersionId() throws CoreException {
         IProductCmpt pc = newProductCmpt(project, "TestProduct");
         assertEquals("", strategy.getNextVersionId(pc, null));
     }
 
+    @Test
     public void testGetConstantPart() {
         assertEquals("abc", strategy.getKindId("abc"));
     }
 
+    @Test
     public void testGetVersionId() {
         assertEquals("", strategy.getVersionId("abc.- 123"));
     }
 
+    @Test
     public void testGetNextName() {
         assertEquals("abc", strategy.getKindId("abc"));
     }
 
+    @Test
     public void testValidate() {
         MessageList list = strategy.validate("abc");
         assertFalse(list.containsErrorMsg());
     }
 
+    @Test
     public void testInitFromXml() {
         Element el = getTestDocument().getDocumentElement();
         strategy.initFromXml(el); // should not throw an exception
         assertEquals("", strategy.getVersionIdSeparator());
     }
 
+    @Test
     public void testToXml() {
         Document doc = newDocument();
         Element el = strategy.toXml(doc);
         assertEquals(IProductCmptNamingStrategy.XML_TAG_NAME, el.getNodeName());
     }
 
+    @Test
     public void testGetUniqueRuntimeId() throws Exception {
         String id = strategy.getUniqueRuntimeId(project, "TestProductCmpt");
         assertEquals(prefix + "TestProductCmpt", id);

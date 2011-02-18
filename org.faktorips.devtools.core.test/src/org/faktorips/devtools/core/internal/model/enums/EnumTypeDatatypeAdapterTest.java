@@ -25,6 +25,8 @@ import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 
 public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
 
@@ -32,12 +34,14 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
     private EnumTypeDatatypeAdapter paymentModeAdapter;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         genderAdapter = new EnumTypeDatatypeAdapter(genderEnumType, null);
         paymentModeAdapter = new EnumTypeDatatypeAdapter(paymentMode, null);
     }
 
+    @Test
     public void testGetJavaClassName() throws Exception {
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
         enumType.setContainingValues(true);
@@ -64,22 +68,27 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         assertEquals("org.faktorips.sample.model.EnumType", adapter.getJavaClassName());
     }
 
+    @Test
     public void testHasNullObject() {
         assertFalse(genderAdapter.hasNullObject());
     }
 
+    @Test
     public void testIsPrimitive() {
         assertFalse(genderAdapter.isPrimitive());
     }
 
+    @Test
     public void testIsValueDatatype() {
         assertTrue(genderAdapter.isValueDatatype());
     }
 
+    @Test
     public void testIsVoid() {
         assertFalse(genderAdapter.isVoid());
     }
 
+    @Test
     public void testCompreTo() throws Exception {
         assertEquals(0, genderAdapter.compareTo(genderAdapter));
         assertTrue(genderAdapter.compareTo(paymentModeAdapter) < 0);
@@ -87,6 +96,7 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
 
     }
 
+    @Test
     public void testGetAllValueIds() throws Exception {
         String[] ids = paymentModeAdapter.getAllValueIds(false);
         assertEquals(2, ids.length);
@@ -133,6 +143,7 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         assertEquals(0, colorIds.length);
     }
 
+    @Test
     public void testGetAllValueIds2() throws Exception {
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
         enumType.setContainingValues(false);
@@ -144,12 +155,14 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         assertEquals(0, result.length);
     }
 
+    @Test
     public void testGetValueName() {
         assertNotNull(paymentModeAdapter.getValueName("P1"));
         assertNotNull(paymentModeAdapter.getValueName("P2"));
         assertNull(paymentModeAdapter.getValueName("quarterly"));
     }
 
+    @Test
     public void testGetValueName2() throws Exception {
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
         enumType.setContainingValues(true);
@@ -183,6 +196,7 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         assertNull(adapter.getValueName("b"));
     }
 
+    @Test
     public void testAreValuesEqual() {
         assertTrue(paymentModeAdapter.areValuesEqual("P1", "P1"));
         assertFalse(paymentModeAdapter.areValuesEqual("P1", "P2"));
@@ -193,6 +207,7 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         }
     }
 
+    @Test
     public void testCheckReadyToUse() {
         MessageList msgList = paymentModeAdapter.checkReadyToUse();
         assertFalse(msgList.containsErrorMsg());
@@ -205,11 +220,13 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         assertFalse(msgList.containsErrorMsg());
     }
 
+    @Test
     public void testIsParsable() {
         assertTrue(paymentModeAdapter.isParsable("P1"));
         assertFalse(paymentModeAdapter.isParsable("P3"));
     }
 
+    @Test
     public void testEquals() throws Exception {
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
         enumType.setContainingValues(true);
@@ -262,6 +279,7 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         assertFalse(adapter.equals(adapter2));
     }
 
+    @Test
     public void testEquals2() throws Exception {
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
         enumType.setContainingValues(false);
@@ -295,6 +313,7 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         assertFalse(adapter1.equals(adapter2));
     }
 
+    @Test
     public void testHashCode() throws Exception {
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
         enumType.setContainingValues(false);

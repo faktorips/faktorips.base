@@ -20,6 +20,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.util.message.ObjectProperty;
+import org.junit.Before;
+import org.junit.Test;
 
 public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
 
@@ -42,7 +44,8 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
     private ObjectProperty opToVO;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         IIpsProject ipsProject = newIpsProject();
         validatorTest = new DuplicatePropertyNameValidator(ipsProject);
@@ -126,6 +129,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testIgnoreDuplicatedInverseAssociationsForDerivedUnions() throws CoreException {
         ObjectProperty[] objectProperties = new ObjectProperty[] { opToVB, opToVA };
         assertTrue(validatorTest.ignoreDuplicatedInverseAssociationsForDerivedUnions(objectProperties));

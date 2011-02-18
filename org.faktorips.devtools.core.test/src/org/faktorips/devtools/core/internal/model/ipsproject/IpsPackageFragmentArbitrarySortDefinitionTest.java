@@ -28,6 +28,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentSortDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.StringUtil;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -44,7 +46,8 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
     private IIpsPackageFragment packLeistung;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         sorter = new IpsPackageFragmentArbitrarySortDefinition();
@@ -96,6 +99,7 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
         list.clear();
     }
 
+    @Test
     public void testCompare() throws CoreException {
         // not initialized
         assertTrue((sorter.compare("", "") == 0));
@@ -120,6 +124,7 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
         assertFalse((sorter.compare("grunddeckung", "dummy") == 0));
     }
 
+    @Test
     public void testCopy() throws CoreException {
         // not initialized
         IIpsPackageFragmentSortDefinition sortDefCopy = sorter.copy();
@@ -136,6 +141,7 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
         assertEquals(sorter.toPersistenceContent(), sortDefCopy.toPersistenceContent());
     }
 
+    @Test
     public void testGetSegmentNames() throws CoreException {
         // not initialized
         assertEquals(0, sorter.getSegmentNames().length);
@@ -149,6 +155,7 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
         assertEquals("fix", segments[1]);
     }
 
+    @Test
     public void testInitPersistenceContent() throws CoreException {
         // not initialized
         assertEquals(0, sorter.getSegmentNames().length);
@@ -173,6 +180,7 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
         assertEquals("win", segments[4]);
     }
 
+    @Test
     public void testSetSegmentNames() throws CoreException {
         String packageNames = getSortDefinitionContent(packLeistungFix);
         sorter.initPersistenceContent(packageNames);
@@ -201,6 +209,7 @@ public class IpsPackageFragmentArbitrarySortDefinitionTest extends AbstractIpsPl
         assertEquals("folder3", result[2]);
     }
 
+    @Test
     public void testToPersistenceContent() throws CoreException {
         // not initialized
         String content = sorter.toPersistenceContent();

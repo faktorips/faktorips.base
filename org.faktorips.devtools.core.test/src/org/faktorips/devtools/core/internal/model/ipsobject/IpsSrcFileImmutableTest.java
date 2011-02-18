@@ -31,6 +31,8 @@ import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.junit.Before;
+import org.junit.Test;
 
 public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
 
@@ -41,7 +43,8 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
     private IFile file;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         // create srcfile with contents
@@ -60,24 +63,29 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
         productImmutable = (IProductCmpt)srcFileImmutable.getIpsObject();
     }
 
+    @Test
     public void testGetIpsObjectType() {
         assertEquals(IpsObjectType.getTypeForExtension("ipsproduct"), srcFileImmutable.getIpsObjectType());
     }
 
+    @Test
     public void testGetCorrespondingResource() {
         assertNull(srcFileImmutable.getCorrespondingResource());
     }
 
+    @Test
     public void testGetCorrespondingFile() {
         assertNull(srcFileImmutable.getCorrespondingFile());
     }
 
+    @Test
     public void testIsDirty() {
         assertFalse(srcFileImmutable.isDirty());
         productImmutable.newGeneration();
         assertFalse(srcFileImmutable.isDirty());
     }
 
+    @Test
     public void testGetIpsObject() throws CoreException {
         IpsSrcFileImmutable srcFileImm2 = new IpsSrcFileImmutable("TestSrcFileImmutable.ipsproduct", file.getContents());
         IProductCmpt prodImm2 = (IProductCmpt)srcFileImm2.getIpsObject();
@@ -125,6 +133,7 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testSave() throws CoreException {
         productImmutable.newGeneration();
         srcFileImmutable.save(true, null);
@@ -135,14 +144,17 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
         assertEquals(1, prodImm2.getNumOfGenerations());
     }
 
+    @Test
     public void testIsMutable() {
         assertFalse(srcFileImmutable.isMutable());
     }
 
+    @Test
     public void testIsHistoric() {
         assertTrue(srcFileImmutable.isHistoric());
     }
 
+    @Test
     public void testIsContentParsable() throws CoreException {
         IpsSrcFileImmutable srcFile = new IpsSrcFileImmutable("TestSrcFileImmutable.ipsproduct", file.getContents());
         assertTrue(srcFile.isContentParsable());
@@ -163,6 +175,7 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetQualifiedNameType() {
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><PolicyCmptType/>";
         String fileName = IpsObjectType.POLICY_CMPT_TYPE.getFileName("Test");

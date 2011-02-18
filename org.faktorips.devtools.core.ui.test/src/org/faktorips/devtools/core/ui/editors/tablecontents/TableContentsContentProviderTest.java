@@ -22,6 +22,8 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TableContentsContentProviderTest extends AbstractIpsPluginTest {
 
@@ -33,7 +35,8 @@ public class TableContentsContentProviderTest extends AbstractIpsPluginTest {
     private ITableContents tableContents;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         IIpsProject proj = newIpsProject("TableContentsLabelProviderProject");
         IIpsPackageFragmentRoot root = proj.getIpsPackageFragmentRoots()[0];
@@ -69,6 +72,7 @@ public class TableContentsContentProviderTest extends AbstractIpsPluginTest {
         rowNull.setValue(2, null);
     }
 
+    @Test
     public void testGetElements() {
         Object[] elements = contentProvider.getElements(tableContents);
         assertEquals(3, elements.length);

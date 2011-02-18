@@ -13,23 +13,27 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.junit.Before;
+import org.junit.Test;
 
-public class TextFieldTest extends TestCase {
+public class TextFieldTest {
 
     private Shell shell;
 
-    @Override
-    protected void setUp() {
+    @Before
+    public void setUp() {
         shell = PlatformUI.getWorkbench().getDisplay().getShells()[0];
     }
 
+    @Test
     public void testSetText() {
         Text text = new Text(shell, SWT.NONE);
         TextField field = new TextField(text);
@@ -46,6 +50,7 @@ public class TextFieldTest extends TestCase {
 
     }
 
+    @Test
     public void testSetValue() {
         Text text = new Text(shell, SWT.NONE);
         TextField field = new TextField(text);

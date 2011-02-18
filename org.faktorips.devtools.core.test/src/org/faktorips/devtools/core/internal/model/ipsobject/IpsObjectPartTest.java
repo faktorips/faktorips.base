@@ -21,6 +21,8 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.junit.Before;
+import org.junit.Test;
 
 public class IpsObjectPartTest extends AbstractIpsPluginTest {
 
@@ -30,7 +32,8 @@ public class IpsObjectPartTest extends AbstractIpsPluginTest {
     private IIpsObjectPart subpart;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
         productCmpt = (IProductCmpt)newIpsObject(project, IpsObjectType.PRODUCT_CMPT, "Product");
@@ -40,11 +43,13 @@ public class IpsObjectPartTest extends AbstractIpsPluginTest {
         subpart = generation.newConfigElement();
     }
 
+    @Test
     public void testGetIpsObject() {
         assertEquals(productCmpt, part.getIpsObject());
         assertEquals(productCmpt, subpart.getIpsObject());
     }
 
+    @Test
     public void testEquals() throws CoreException {
         assertFalse(part.equals(null));
         assertFalse(part.equals("abc"));

@@ -34,6 +34,8 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -49,6 +51,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     private IPolicyCmptType policyCmptType;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = super.newIpsProject("TestProject");
@@ -73,6 +76,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         intEl.setPolicyCmptTypeAttribute("test");
     }
 
+    @Test
     public void testCreateFromXml() {
         Document doc = getTestDocument();
         Element root = doc.getDocumentElement();
@@ -97,6 +101,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
     public void testToXml() {
         IRangeValueSet range = new RangeValueSet(ce, "1");
         range.setLowerBound("10");
@@ -111,6 +116,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         assertEquals(range.getContainsNull(), r2.getContainsNull());
     }
 
+    @Test
     public void testContainsValue() {
         RangeValueSet range = new RangeValueSet(intEl, "50");
         range.setLowerBound("20");
@@ -140,6 +146,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         assertFalse(range.containsValue("28"));
     }
 
+    @Test
     public void testContainsValueSet_BothSetsAreRanges() {
         RangeValueSet range = new RangeValueSet(intEl, "50");
         range.setLowerBound("10");
@@ -206,6 +213,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         assertTrue(range.containsValueSet(subRange));
     }
 
+    @Test
     public void testContainsValueSetEmptyWithDecimal() throws Exception {
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("attrX");
@@ -224,6 +232,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         assertTrue(range.containsValueSet(subset));
     }
 
+    @Test
     public void testValidate() throws Exception {
         RangeValueSet range = new RangeValueSet(intEl, "50");
         range.setLowerBound("20");
@@ -271,6 +280,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         assertNotNull(list.getMessageByCode(IValueSet.MSGCODE_NULL_NOT_SUPPORTED));
     }
 
+    @Test
     public void testContainsValueSetStep() {
         RangeValueSet range = new RangeValueSet(intEl, "50");
         range.setLowerBound("10");

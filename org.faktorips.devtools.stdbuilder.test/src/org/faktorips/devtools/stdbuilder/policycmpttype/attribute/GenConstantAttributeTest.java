@@ -16,6 +16,8 @@ package org.faktorips.devtools.stdbuilder.policycmpttype.attribute;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -35,12 +37,14 @@ public class GenConstantAttributeTest extends GenPolicyCmptTypeAttributeTest {
     }
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         genPublishedConstantAttribute = new GenConstantAttribute(genPolicyCmptType, publishedAttribute);
         genPublicConstantAttribute = new GenConstantAttribute(genPolicyCmptType, publicAttribute);
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterface() {
         genPublishedConstantAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
                 javaInterface, publishedAttribute);
@@ -54,6 +58,7 @@ public class GenConstantAttributeTest extends GenPolicyCmptTypeAttributeTest {
         assertTrue(generatedJavaElements.isEmpty());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterfaceOverwritten() {
         publishedAttribute.setOverwrite(true);
         publicAttribute.setOverwrite(true);
@@ -70,6 +75,7 @@ public class GenConstantAttributeTest extends GenPolicyCmptTypeAttributeTest {
         assertTrue(generatedJavaElements.isEmpty());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementation() {
         genPublishedConstantAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
                 publishedAttribute);
@@ -83,6 +89,7 @@ public class GenConstantAttributeTest extends GenPolicyCmptTypeAttributeTest {
         assertEquals(2, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementationOverwritten() {
         publishedAttribute.setOverwrite(true);
         publicAttribute.setOverwrite(true);

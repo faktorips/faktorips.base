@@ -25,6 +25,8 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdapter.DefaultIconDesc;
 import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdapter.IconDesc;
 import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdapter.PathIconDesc;
+import org.junit.Before;
+import org.junit.Test;
 
 // TODO Joerg warum musste vom IpsUIPluginTest abgeleitet werden
 // Problem beim der Autotestsuite (stefan w.)?
@@ -37,6 +39,7 @@ public class ProductCmptWorkbenchAdapterTest extends AbstractIpsPluginTest {
     private ImageDescriptor prodCmptDefaultIcon;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         prodCmptDefaultIcon = IpsUIPlugin.getImageHandling().createImageDescriptor("ProductCmpt.gif");
@@ -44,6 +47,7 @@ public class ProductCmptWorkbenchAdapterTest extends AbstractIpsPluginTest {
         root = newIpsPackageFragmentRoot(ipsProject, null, "root");
     }
 
+    @Test
     public void testProductCmptIconDesc() throws CoreException {
         // create Types
         IProductCmptType aSuperType = newProductCmptType(root, "ASuperType");

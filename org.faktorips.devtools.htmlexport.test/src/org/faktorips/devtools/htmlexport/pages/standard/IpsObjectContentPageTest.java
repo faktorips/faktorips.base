@@ -15,9 +15,11 @@ package org.faktorips.devtools.htmlexport.pages.standard;
 
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.junit.Test;
 
 public class IpsObjectContentPageTest extends AbstractXmlUnitHtmlExportTest {
 
+    @Test
     public void testPolicyCmptType() throws Exception {
         PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Vertrag", "VertragProdukt");
 

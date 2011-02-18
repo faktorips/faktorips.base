@@ -31,6 +31,8 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.tableconversion.AbstractTableTest;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ExcelTableImportOperationTest extends AbstractTableTest {
 
@@ -44,7 +46,8 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
     private ITableContents contents;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         ipsProject = newIpsProject("test");
@@ -87,6 +90,7 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         file.delete();
     }
 
+    @Test
     public void testImportValid() throws Exception {
         MessageList ml = new MessageList();
         structure = createTableStructure(ipsProject);
@@ -97,6 +101,7 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         assertTrue(ml.isEmpty());
     }
 
+    @Test
     public void testImportFirstRowContainsNoColumnHeader() throws Exception {
         MessageList ml = new MessageList();
         structure = createTableStructure(ipsProject);
@@ -109,6 +114,7 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         assertEquals(4, importTarget.getRows().length);
     }
 
+    @Test
     public void testImportFirstRowContainsColumnHeader() throws Exception {
         MessageList ml = new MessageList();
         structure = createTableStructure(ipsProject);
@@ -121,6 +127,7 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         assertEquals(3, importTarget.getRows().length);
     }
 
+    @Test
     public void testImportInvalid() throws Exception {
         MessageList ml = new MessageList();
         structure = createTableStructure(ipsProject);

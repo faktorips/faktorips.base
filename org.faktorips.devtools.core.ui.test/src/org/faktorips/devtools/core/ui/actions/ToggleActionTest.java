@@ -13,11 +13,14 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.databinding.observable.value.WritableValue;
+import org.junit.Test;
 
-public class ToggleActionTest extends TestCase {
+public class ToggleActionTest {
 
     private static final String WRONG_OBSERVABLE_STATE = "Wrong observable state";
 
@@ -27,6 +30,7 @@ public class ToggleActionTest extends TestCase {
      * Tests whether the action works as expected when starting with <code>true</code> or
      * <code>false</code>.
      */
+    @Test
     public void testActionStartingWithTrue() {
         checkAction(true);
         checkAction(false);
@@ -47,6 +51,7 @@ public class ToggleActionTest extends TestCase {
     /**
      * Verifies that the action toggles its state if the model changes.
      */
+    @Test
     public void testActionStateUpdateFromModel() {
         WritableValue observable = new WritableValue(true, Boolean.class);
         ToggleAction action = new ToggleAction("description", "icon", observable);

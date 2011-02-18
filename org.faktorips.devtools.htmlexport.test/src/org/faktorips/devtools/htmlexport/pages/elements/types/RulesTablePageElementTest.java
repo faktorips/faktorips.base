@@ -19,13 +19,16 @@ import org.faktorips.devtools.core.model.pctype.MessageSeverity;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.standard.AbstractXmlUnitHtmlExportTest;
 import org.faktorips.devtools.htmlexport.pages.standard.ContentPageUtil;
+import org.junit.Before;
+import org.junit.Test;
 
 public class RulesTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
 
     private PolicyCmptType policy;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         policy = newPolicyCmptType(ipsProject, "Vertrag");
     }
@@ -38,6 +41,7 @@ public class RulesTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
         return "//table[@id= '" + policy.getName() + "_validationrules" + "']";
     }
 
+    @Test
     public void testMethodsTableVorhanden() throws Exception {
 
         IValidationRule methodString = createRuleWithAttributes();
@@ -54,6 +58,7 @@ public class RulesTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
         assertXPathFromTable(objectContentPage, "//tr[3][td='" + methodInteger.getName() + "']");
     }
 
+    @Test
     public void testMethodsTableNichtVorhandenOhneAttribute() throws Exception {
 
         PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
@@ -61,6 +66,7 @@ public class RulesTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
         assertXPathNotExists(objectContentPage, getXPathMethodTable());
     }
 
+    @Test
     public void testMethodsTableAufbau() throws Exception {
         createRuleWithoutAttributes();
         createRuleWithAttributes();
@@ -77,8 +83,8 @@ public class RulesTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
             assertXPathFromTable(objectContentPage, "//tr[" + row + "][td='" + rule.getMessageText() + "']");
 
             String[] validatedAttributes = rule.getValidatedAttributes();
-            for (int i = 0; i < validatedAttributes.length; i++) {
-                assertXPathFromTable(objectContentPage, "//tr[" + row + "]/td[contains(., '" + validatedAttributes[i]
+            for (String validatedAttribute : validatedAttributes) {
+                assertXPathFromTable(objectContentPage, "//tr[" + row + "]/td[contains(., '" + validatedAttribute
                         + "')]");
             }
 

@@ -23,9 +23,11 @@ import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.htmlexport.context.AbstractHtmlExportPluginTest;
+import org.junit.Test;
 
 public class LanguageSupportTest extends AbstractHtmlExportPluginTest {
 
+    @Test
     public void testDescriptionLanguage() throws Exception {
 
         String deBeschreibung = "Deutsche Beschreibung";
@@ -56,6 +58,7 @@ public class LanguageSupportTest extends AbstractHtmlExportPluginTest {
         assertEquals(enBeschreibung, context.getDescription(policy));
     }
 
+    @Test
     public void testLabelLanguage() throws Exception {
         String deLabel = "Currywurst";
         String enLabel = "Haggis";

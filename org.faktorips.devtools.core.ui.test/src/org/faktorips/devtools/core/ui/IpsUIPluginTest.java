@@ -32,6 +32,8 @@ import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 
 public class IpsUIPluginTest extends AbstractIpsPluginTest {
 
@@ -43,6 +45,7 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
 
     @Override
     @SuppressWarnings("unchecked")
+    @Before
     public void setUp() throws Exception {
         super.setUp();
 
@@ -124,6 +127,7 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
                 new TestExtensionRegistry(new IExtensionPoint[] { extPoint, tableFormatExtPoint }));
     }
 
+    @Test
     public void testGetExtensionPropertyEditFieldFactory() throws Exception {
         IExtensionPropertyEditFieldFactory resultFactory = IpsUIPlugin.getDefault()
                 .getExtensionPropertyEditFieldFactory("additionalProperty");
@@ -132,12 +136,14 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
         assertEquals("False factory for additionalProperty2", editFieldFactory2, resultFactory);
     }
 
+    @Test
     public void testGetExtensionPropertyEditFieldFactoryNotRegistered() throws Exception {
         IExtensionPropertyEditFieldFactory resultFactory = IpsUIPlugin.getDefault()
                 .getExtensionPropertyEditFieldFactory("notRegisteredProperty");
         assertTrue(resultFactory instanceof DefaultExtensionPropertyEditFieldFactory);
     }
 
+    @Test
     public void testGetTableFormatPropertiesControlFactory() throws CoreException {
         ITableFormat tableFormatWithFactory = new TestTableFormat();
         ITableFormat tableFormatWithoutFactory = new TestTableFormatTwo();

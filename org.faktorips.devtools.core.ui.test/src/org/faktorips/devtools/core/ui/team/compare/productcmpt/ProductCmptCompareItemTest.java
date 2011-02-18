@@ -32,6 +32,8 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
 
@@ -52,7 +54,8 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
     private IProductCmptLink relation2;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         IIpsProject proj = newIpsProject("TestProject", new ArrayList<Locale>());
         root = proj.getIpsPackageFragmentRoots()[0];
@@ -86,6 +89,7 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
         compareItemRoot = (ProductCmptCompareItem)structureCreator.getStructure(new ResourceNode(correspondingFile));
     }
 
+    @Test
     public void testGetChildren() {
         Object[] children = compareItemRoot.getChildren();
         // Srcfile contains ProductComponent
@@ -102,6 +106,7 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
         assertEquals(5, children.length);
     }
 
+    @Test
     public void testGetImage() {
         assertEquals(IpsUIPlugin.getImageHandling().getImage(srcFile), compareItemRoot.getImage());
 
@@ -118,10 +123,12 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
         assertEquals(IpsUIPlugin.getImageHandling().getImage(generation3), compareItemGen3.getImage());
     }
 
+    @Test
     public void testGetType() {
         assertEquals("ipsproduct", compareItemRoot.getType());
     }
 
+    @Test
     public void testGetParent() {
         assertNull(compareItemRoot.getParent());
 
@@ -162,6 +169,7 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
         assertEquals(compareItemGen1, compareItemRelation2.getParent());
     }
 
+    @Test
     public void testGetIpsElement() {
         assertEquals(srcFile, compareItemRoot.getIpsElement());
 
@@ -196,6 +204,7 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
         assertEquals(relation2, compareItemRelation2.getIpsElement());
     }
 
+    @Test
     public void testHashCode() {
         Object[] children = compareItemRoot.getChildren();
         ProductCmptCompareItem compareItem = (ProductCmptCompareItem)children[0];

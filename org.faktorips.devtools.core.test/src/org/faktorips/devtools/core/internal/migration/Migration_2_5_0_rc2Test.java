@@ -20,6 +20,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 
 public class Migration_2_5_0_rc2Test extends AbstractIpsPluginTest {
 
@@ -29,7 +31,8 @@ public class Migration_2_5_0_rc2Test extends AbstractIpsPluginTest {
     private PolicyCmptType targetType;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
 
@@ -47,6 +50,7 @@ public class Migration_2_5_0_rc2Test extends AbstractIpsPluginTest {
      * detail and the inverse of the master to detail must be set to the corresponding detail to
      * master.
      */
+    @Test
     public void testFixInverseOfDetailToMasterAssociation() throws CoreException {
         MessageList ml = new MessageList();
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);

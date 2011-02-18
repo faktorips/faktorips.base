@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.junit.Test;
 
 /**
  * 
@@ -37,6 +38,7 @@ public class ProductCmptWithoutVersionIdTest extends AbstractIpsPluginTest {
         super(name);
     }
 
+    @Test
     public void test() throws CoreException {
         IIpsProject project = newIpsProject();
         IIpsProjectProperties props = project.getProperties();

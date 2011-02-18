@@ -27,6 +27,8 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProduc
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests for product component structure.
@@ -41,7 +43,8 @@ public class DeepCopyWizardPackageTest extends AbstractIpsPluginTest {
     private IIpsProject project;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         project = super.newIpsProject();
@@ -61,6 +64,7 @@ public class DeepCopyWizardPackageTest extends AbstractIpsPluginTest {
         newTableContents(project, "tableContentsWithoutKindId");
     }
 
+    @Test
     public void testGetPackage() throws Exception {
         SourcePage page = getSourcePageFor(inside);
         assertEquals(inside.getIpsPackageFragment(), page.getTargetPackage());
@@ -74,6 +78,7 @@ public class DeepCopyWizardPackageTest extends AbstractIpsPluginTest {
         assertEquals(middle.getIpsPackageFragment(), page.getTargetPackage());
     }
 
+    @Test
     public void testGetNewNameWithoutKindId() throws Exception {
         IIpsProjectProperties properties = project.getProperties();
         DateBasedProductCmptNamingStrategy strategy = new DateBasedProductCmptNamingStrategy();

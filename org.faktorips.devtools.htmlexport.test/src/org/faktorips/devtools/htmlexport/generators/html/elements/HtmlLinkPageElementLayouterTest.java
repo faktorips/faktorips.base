@@ -15,6 +15,8 @@ package org.faktorips.devtools.htmlexport.generators.html.elements;
 
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
+import org.junit.Before;
+import org.junit.Test;
 
 public class HtmlLinkPageElementLayouterTest extends AbstractHtmlPageElementLayouterTest {
 
@@ -22,11 +24,13 @@ public class HtmlLinkPageElementLayouterTest extends AbstractHtmlPageElementLayo
     private static final String FILE_EXTENSION = ".html";
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         layouter.setPathToRoot(PATH_TO_ROOT);
     }
 
+    @Test
     public void testLink() throws Exception {
         String path = "xyz/sub/file";
         String target = "frame";
@@ -44,6 +48,7 @@ public class HtmlLinkPageElementLayouterTest extends AbstractHtmlPageElementLayo
                 + "'][.='" + text + "']");
     }
 
+    @Test
     public void testLinkMitStyle() throws Exception {
         String path = "xyz/sub/file";
         String target = "frame";
@@ -59,6 +64,7 @@ public class HtmlLinkPageElementLayouterTest extends AbstractHtmlPageElementLayo
         assertXpathExists(layouter.generateText(), "/a[@class='BOLD']");
     }
 
+    @Test
     public void testLinkMitBlockStyle() throws Exception {
         String path = "xyz/sub/file";
         String target = "frame";
@@ -74,6 +80,7 @@ public class HtmlLinkPageElementLayouterTest extends AbstractHtmlPageElementLayo
         assertXpathExists(layouter.generateText(), "/div/a[.='" + text + "']");
     }
 
+    @Test
     public void testLinkMitAnker() throws Exception {
         String path = "xyz/sub/file";
         String target = "frame";

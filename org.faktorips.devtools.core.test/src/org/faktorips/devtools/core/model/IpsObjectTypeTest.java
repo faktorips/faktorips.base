@@ -20,9 +20,11 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.junit.Test;
 
 public class IpsObjectTypeTest extends AbstractIpsPluginTest {
 
+    @Test
     public void testNewObject() throws CoreException {
         IIpsProject ipsProject = newIpsProject();
         IpsObjectType[] types = IpsPlugin.getDefault().getIpsModel().getIpsObjectTypes();

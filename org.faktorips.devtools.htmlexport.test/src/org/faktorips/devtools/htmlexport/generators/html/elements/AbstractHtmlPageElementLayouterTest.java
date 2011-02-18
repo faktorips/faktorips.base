@@ -16,6 +16,7 @@ package org.faktorips.devtools.htmlexport.generators.html.elements;
 import org.faktorips.devtools.htmlexport.AbstractHtmlExportXmlUnitLayouterTest;
 import org.faktorips.devtools.htmlexport.TestUtil;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
+import org.junit.Before;
 
 public abstract class AbstractHtmlPageElementLayouterTest extends AbstractHtmlExportXmlUnitLayouterTest {
 
@@ -26,7 +27,8 @@ public abstract class AbstractHtmlPageElementLayouterTest extends AbstractHtmlEx
     }
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         layouter.clear();
     }
 

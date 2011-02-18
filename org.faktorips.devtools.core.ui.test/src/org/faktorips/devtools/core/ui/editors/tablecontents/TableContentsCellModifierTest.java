@@ -24,6 +24,8 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TableContentsCellModifierTest extends AbstractIpsPluginTest {
 
@@ -33,7 +35,8 @@ public class TableContentsCellModifierTest extends AbstractIpsPluginTest {
     private TableContentsCellModifier cellModifier;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         IIpsProject proj = newIpsProject("TableContentsLabelProviderProject");
         IIpsPackageFragmentRoot root = proj.getIpsPackageFragmentRoots()[0];
@@ -74,6 +77,7 @@ public class TableContentsCellModifierTest extends AbstractIpsPluginTest {
         cellModifier = new TableContentsCellModifier(tableViewer, null);
     }
 
+    @Test
     public void testGetValue() {
         assertEquals("1", cellModifier.getValue(rowValid, "ColumnA"));
         assertEquals("2", cellModifier.getValue(rowValid, "ColumnB"));
@@ -86,6 +90,7 @@ public class TableContentsCellModifierTest extends AbstractIpsPluginTest {
         assertNull(cellModifier.getValue(rowNull, "ColumnC"));
     }
 
+    @Test
     public void testModify() {
         cellModifier.modify(rowValid, "ColumnA", "X");
         cellModifier.modify(rowValid, "ColumnB", "Y");

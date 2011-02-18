@@ -18,13 +18,14 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import junit.framework.TestCase;
 
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
+import org.junit.Test;
 
-public class RegexTablePageElementLayoutTest extends TestCase {
+public class RegexTablePageElementLayoutTest {
 
+    @Test
     public void testMoreThenOneElementInTableCell() {
         TableCellPageElement cellPageElement = mock(TableCellPageElement.class);
         when(cellPageElement.size()).thenReturn(2);
@@ -39,6 +40,7 @@ public class RegexTablePageElementLayoutTest extends TestCase {
         verify(cellPageElement, never()).addStyles(styles);
     }
 
+    @Test
     public void testRegex() {
         TableCellPageElement cellPageElement = mock(TableCellPageElement.class);
         when(cellPageElement.size()).thenReturn(1);

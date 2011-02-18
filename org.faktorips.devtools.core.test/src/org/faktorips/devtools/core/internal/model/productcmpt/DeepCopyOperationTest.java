@@ -35,6 +35,8 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptS
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests for product component structure.
@@ -47,7 +49,8 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     private IProductCmpt product;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
         IPolicyCmptType pctype = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
@@ -58,6 +61,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
      * For this test, the comfort-product of the default test content is copied completely. After
      * that, the new files are expected to be existant and not dirty.
      */
+    @Test
     public void testCopyAll() throws Exception {
         createTestContent();
 
@@ -103,6 +107,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
      * that, the new files are expected to be existant and not dirty. Some relations from the new
      * objects link now the the not copied old objects.
      */
+    @Test
     public void testCopySome() throws Exception {
         createTestContent();
 
@@ -184,6 +189,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         assertEquals("products.DeepCopyOfStandardVehicle", rels[0].getName());
     }
 
+    @Test
     public void testCopyWithNoGeneration() throws Exception {
         product = newProductCmpt(ipsProject, "EmptyProduct");
         IProductCmptTreeStructure structure = product.getStructure(ipsProject);

@@ -32,6 +32,8 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategyF
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 
 public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
 
@@ -39,12 +41,14 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
     private CustomModelExtensions modelExtensions;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
         modelExtensions = (CustomModelExtensions)IpsPlugin.getDefault().getIpsModel().getCustomModelExtensions();
     }
 
+    @Test
     public void testGetProductCmptNamingStrategyFactory() {
         IProductCmptNamingStrategyFactory factory = modelExtensions
                 .getProductCmptNamingStrategyFactory(DateBasedProductCmptNamingStrategy.EXTENSION_ID);
@@ -59,6 +63,7 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
         assertNull(modelExtensions.getProductCmptNamingStrategyFactory("UnknownExtensionId"));
     }
 
+    @Test
     public void testCustomValidation() throws CoreException {
         PolicyCmptType type = newPolicyCmptType(ipsProject, "Policy");
         IPolicyCmptTypeAttribute attribute = type.newPolicyCmptTypeAttribute();

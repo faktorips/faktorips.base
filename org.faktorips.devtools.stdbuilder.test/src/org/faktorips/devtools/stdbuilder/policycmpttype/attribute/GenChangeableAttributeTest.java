@@ -20,6 +20,8 @@ import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.runtime.IValidationContext;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -39,12 +41,14 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
     }
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         genPublishedChangeableAttribute = new GenChangeableAttribute(genPolicyCmptType, publishedAttribute);
         genPublicChangeableAttribute = new GenChangeableAttribute(genPolicyCmptType, publicAttribute);
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterface() {
         genPublishedChangeableAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
                 javaInterface, publishedAttribute);
@@ -59,6 +63,7 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
         assertTrue(generatedJavaElements.isEmpty());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterfaceProductRelevant() throws CoreException {
         publishedAttribute.setProductRelevant(true);
         publicAttribute.setProductRelevant(true);
@@ -93,6 +98,7 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
         assertTrue(generatedJavaElements.isEmpty());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterfaceOverwritten() {
         publishedAttribute.setOverwrite(true);
         publicAttribute.setOverwrite(true);
@@ -108,6 +114,7 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
         assertTrue(generatedJavaElements.isEmpty());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterfaceProductRelevantOverwritten() throws CoreException {
         publishedAttribute.setProductRelevant(true);
         publicAttribute.setProductRelevant(true);
@@ -142,6 +149,7 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
         assertTrue(generatedJavaElements.isEmpty());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementation() {
         genPublishedChangeableAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
                 publishedAttribute);
@@ -160,6 +168,7 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
         assertEquals(4, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementationProductRelevant() throws CoreException {
         publishedAttribute.setProductRelevant(true);
         publicAttribute.setProductRelevant(true);
@@ -207,6 +216,7 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
         assertEquals(9, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementationOverwritten() {
         publishedAttribute.setOverwrite(true);
         publicAttribute.setOverwrite(true);
@@ -222,6 +232,7 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
         assertEquals(1, generatedJavaElements.size());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementationProductRelevantOverwritten() throws CoreException {
         publishedAttribute.setProductRelevant(true);
         publicAttribute.setProductRelevant(true);

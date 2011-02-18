@@ -16,9 +16,11 @@ package org.faktorips.devtools.htmlexport.generators.html.elements;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
+import org.junit.Test;
 
 public class HtmlRootPageElementLayouterTest extends AbstractHtmlPageElementLayouterTest {
 
+    @Test
     public void testRootPage() throws Exception {
         String title = "Wurzel";
         String text = "Inhalt";

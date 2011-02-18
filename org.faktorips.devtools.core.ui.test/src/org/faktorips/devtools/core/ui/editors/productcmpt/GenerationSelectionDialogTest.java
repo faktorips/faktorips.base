@@ -23,6 +23,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.values.DateUtil;
+import org.junit.Before;
+import org.junit.Test;
 
 public class GenerationSelectionDialogTest extends AbstractIpsPluginTest {
 
@@ -31,7 +33,8 @@ public class GenerationSelectionDialogTest extends AbstractIpsPluginTest {
     private Shell shell;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         project = super.newIpsProject("TestProject");
         productCmpt = newProductCmpt(project, "TestProduct");
@@ -43,6 +46,7 @@ public class GenerationSelectionDialogTest extends AbstractIpsPluginTest {
         shell.dispose();
     }
 
+    @Test
     public void testCreatedChoiceBtns() {
         GenerationSelectionDialog dialog = null;
         IIpsObjectGeneration[] generations = new IIpsObjectGeneration[10];

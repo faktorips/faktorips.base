@@ -16,14 +16,11 @@ package org.faktorips.devtools.core.util;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.junit.Test;
 
 public class ProjectUtilTest extends AbstractIpsPluginTest {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
+    @Test
     public void testAddIpsNature_And_hasIpsNature() throws CoreException {
         IProject project = newPlatformProject("PlatformProject");
         assertFalse(ProjectUtil.hasIpsNature(project.getProject()));

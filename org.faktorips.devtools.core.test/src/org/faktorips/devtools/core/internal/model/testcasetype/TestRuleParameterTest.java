@@ -21,6 +21,8 @@ import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
@@ -33,19 +35,22 @@ public class TestRuleParameterTest extends AbstractIpsPluginTest {
     private IIpsProject project;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
         ITestCaseType type = (ITestCaseType)newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
         ruleInput = type.newExpectedResultRuleParameter();
     }
 
+    @Test
     public void testIsRoot() {
         // a test rule parameter is always a root element, no childs are supported by the test rule
         // parameter
         assertTrue(ruleInput.isRoot());
     }
 
+    @Test
     public void testInitFromXml() {
         Element docEl = getTestDocument().getDocumentElement();
         Element paramEl = XmlUtil.getElement(docEl, "RuleParameter", 0);
@@ -63,6 +68,7 @@ public class TestRuleParameterTest extends AbstractIpsPluginTest {
         assertFalse(ruleInput.isCombinedParameter());
     }
 
+    @Test
     public void testToXml() {
         ruleInput.setName("rule3");
         ruleInput.setTestParameterType(TestParameterType.EXPECTED_RESULT);
@@ -85,6 +91,7 @@ public class TestRuleParameterTest extends AbstractIpsPluginTest {
         assertFalse(ruleInput.isCombinedParameter());
     }
 
+    @Test
     public void testValidateWrongType() throws Exception {
         MessageList ml = ruleInput.validate(project);
         assertNull(ml.getMessageByCode(ITestRuleParameter.MSGCODE_NOT_EXPECTED_RESULT));

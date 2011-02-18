@@ -27,6 +27,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -41,12 +43,14 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
     private IpsObjectPath path;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
         path = new IpsObjectPath(ipsProject);
     }
 
+    @Test
     public void testGetOutputFolderForGeneratedJavaFiles() {
         IFolder src = ipsProject.getProject().getFolder("src");
         IFolder out1 = ipsProject.getProject().getFolder("out1");
@@ -62,6 +66,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         assertEquals(out2, entry.getOutputFolderForMergableJavaFiles());
     }
 
+    @Test
     public void testGetBasePackageNameForGeneratedJavaClasses() {
         IFolder src = ipsProject.getProject().getFolder("src");
         path.setBasePackageNameForMergableJavaClasses("pack1");
@@ -75,6 +80,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         assertEquals("pack2", entry.getBasePackageNameForMergableJavaClasses());
     }
 
+    @Test
     public void testGetOutputFolderForExtensionJavaFiles() {
         IFolder src = ipsProject.getProject().getFolder("src");
         IFolder out1 = ipsProject.getProject().getFolder("out1");
@@ -90,6 +96,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         assertEquals(out2, entry.getOutputFolderForDerivedJavaFiles());
     }
 
+    @Test
     public void testGetBasePackageNameForExtensionJavaClasses() {
         IFolder src = ipsProject.getProject().getFolder("src");
         path.setBasePackageNameForDerivedJavaClasses("pack1");
@@ -103,6 +110,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         assertEquals("pack2", entry.getBasePackageNameForDerivedJavaClasses());
     }
 
+    @Test
     public void testInitFromXml() {
         IProject project = ipsProject.getProject();
         IpsSrcFolderEntry entry = new IpsSrcFolderEntry(path);
@@ -123,6 +131,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         assertEquals("", entry.getSpecificBasePackageNameForDerivedJavaClasses());
     }
 
+    @Test
     public void testToXml() {
         IProject project = ipsProject.getProject();
         IpsSrcFolderEntry entry = new IpsSrcFolderEntry(path, project.getFolder("ipssrc").getFolder("modelclasses"));
@@ -149,6 +158,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         assertEquals("", entry.getSpecificBasePackageNameForDerivedJavaClasses());
     }
 
+    @Test
     public void testValidate() throws CoreException {
         MessageList ml = ipsProject.validate();
         assertEquals(0, ml.getNoOfMessages());
@@ -185,6 +195,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         assertEquals(5, ml.getNoOfMessages());
     }
 
+    @Test
     public void testGetResourceAsStream() throws CoreException, IOException {
         IFolder projectSubFolder = ipsProject.getProject().getFolder(new Path("subFolder"));
         if (!projectSubFolder.exists()) {

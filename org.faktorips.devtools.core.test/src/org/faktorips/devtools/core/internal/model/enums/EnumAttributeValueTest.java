@@ -26,6 +26,8 @@ import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
@@ -34,6 +36,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     private IEnumAttributeValue maleNameAttributeValue;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
 
@@ -41,6 +44,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         maleNameAttributeValue = genderEnumValueMale.getEnumAttributeValues().get(1);
     }
 
+    @Test
     public void testFindEnumAttribute() throws CoreException {
         try {
             maleIdAttributeValue.findEnumAttribute(null);
@@ -62,6 +66,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         assertNull(maleNameAttributeValue.findEnumAttribute(ipsProject));
     }
 
+    @Test
     public void testIsEnumLiteralNameAttributeValue() {
         assertFalse(maleNameAttributeValue.isEnumLiteralNameAttributeValue());
         IEnumValue enumValue = paymentMode.getEnumValues().get(0);
@@ -70,11 +75,13 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         assertFalse(enumValue.getEnumAttributeValues().get(1).isEnumLiteralNameAttributeValue());
     }
 
+    @Test
     public void testGetSetValue() {
         maleIdAttributeValue.setValue("otherValue");
         assertEquals("otherValue", maleIdAttributeValue.getValue());
     }
 
+    @Test
     public void testXml() throws ParserConfigurationException, CoreException {
         Element xmlElement = maleIdAttributeValue.toXml(createXmlDocument(IEnumAttributeValue.XML_TAG));
         assertEquals(GENDER_ENUM_LITERAL_MALE_ID, xmlElement.getTextContent());
@@ -84,6 +91,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         assertEquals(GENDER_ENUM_LITERAL_MALE_ID, loadedAttributeValue.getValue());
     }
 
+    @Test
     public void testPropertiesToXml() throws Exception {
         IEnumType enumType = newEnumType(ipsProject, "AnEnum");
         IEnumAttribute enumAttr = enumType.newEnumAttribute();
@@ -118,6 +126,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         assertEquals("bar", enumType3.getEnumValues().get(0).getEnumAttributeValues().get(1).getValue());
     }
 
+    @Test
     public void testValidateParsable() throws CoreException {
         IEnumAttribute stringAttribute = genderEnumType.newEnumAttribute();
         stringAttribute.setDatatype(Datatype.STRING.getQualifiedName());
@@ -167,6 +176,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         booleanNewAttributeValue.setValue("false");
     }
 
+    @Test
     public void testValidateUniqueIdentifierValueEmpty() throws CoreException {
         IIpsModel ipsModel = getIpsModel();
         IEnumAttributeValue uniqueIdentifierEnumAttributeValue = genderEnumValueFemale.getEnumAttributeValues().get(0);
@@ -185,6 +195,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
                 .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_VALUE_EMPTY));
     }
 
+    @Test
     public void testValidateUniqueIdentifierValueNotUnique() throws CoreException {
         IEnumAttributeValue uniqueIdentifierEnumAttributeValueMale = genderEnumValueMale.getEnumAttributeValues()
                 .get(0);
@@ -205,12 +216,14 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
                 .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_NOT_UNIQUE));
     }
 
+    @Test
     public void testGetEnumValue() {
         assertEquals(genderEnumValueMale, genderEnumValueMale.getEnumAttributeValues().get(0).getEnumValue());
     }
 
     @SuppressWarnings("deprecation")
     // Test of deprecated method.
+    @Test
     public void testSetValueAsLiteralNameNull() {
         IEnumAttributeValue testValue = genderEnumValueMale.getEnumAttributeValues().get(1);
         testValue.setValueAsLiteralName(null);
@@ -219,6 +232,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
 
     @SuppressWarnings("deprecation")
     // Test of deprecated method.
+    @Test
     public void testSetValueAsLiteralNameInvalidCharacters() {
         IEnumAttributeValue testValue = genderEnumValueMale.getEnumAttributeValues().get(1);
         testValue.setValueAsLiteralName("foo $$%bar");
@@ -227,6 +241,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
 
     @SuppressWarnings("deprecation")
     // Test of deprecated method.
+    @Test
     public void testSetValueAsLiteralNameUmlaut() {
         IEnumAttributeValue testValue = genderEnumValueMale.getEnumAttributeValues().get(1);
 

@@ -26,6 +26,8 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ModelLabelProviderTest extends AbstractIpsPluginTest {
 
@@ -48,7 +50,8 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
     private IFile file;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         proj = newIpsProject("TestProject");
         root = proj.getIpsPackageFragmentRoots()[0];
@@ -78,6 +81,7 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         file.create(null, true, null);
     }
 
+    @Test
     public void testGetText_Attribute() {
         assertEquals("a1 : String", flatProvider.getText(attr));
         assertEquals("a1 : String", hierarchyProvider.getText(attr));
@@ -86,6 +90,7 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         assertEquals("/ a3 : float", hierarchyProvider.getText(attr3));
     }
 
+    @Test
     public void testGetImage() {
         // Image returned by getImage() equals Image returned by IpsElement#getImage()
         Image img = IpsUIPlugin.getImageHandling().getImage(proj.getProject());
@@ -106,6 +111,7 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         assertNotNull(hierarchyProvider.getImage(file));
     }
 
+    @Test
     public void testIfImagesAreReusedAndDisposedCorrectly() {
         Image image = flatProvider.getImage(file);
         assertSame(image, flatProvider.getImage(file));
@@ -116,6 +122,7 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         flatProvider.dispose();
     }
 
+    @Test
     public void testGetText() throws CoreException {
         String fragmentName;
         // packagefragment Labels
@@ -192,18 +199,22 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         assertEquals(proj.getName() + " (" + Messages.ModelLabelProvider_noProductDefinitionProjectLabel + ")", name);
     }
 
+    @Test
     public void testAddListener() {
         // no tests
     }
 
+    @Test
     public void testDispose() {
         // no tests
     }
 
+    @Test
     public void testIsLabelProperty() {
         // no tests
     }
 
+    @Test
     public void testRemoveListener() {
         // no tests
     }

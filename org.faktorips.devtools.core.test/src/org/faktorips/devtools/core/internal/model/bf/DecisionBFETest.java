@@ -25,6 +25,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -36,6 +38,7 @@ public class DecisionBFETest extends AbstractIpsPluginTest {
     private IBusinessFunction bf;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
@@ -44,6 +47,7 @@ public class DecisionBFETest extends AbstractIpsPluginTest {
         bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf");
     }
 
+    @Test
     public void testPropertiesToXml() throws Exception {
         IDecisionBFE decision = bf.newDecision(new Point(10, 10));
         decision.setDatatype(Datatype.INTEGER.getQualifiedName());
@@ -54,6 +58,7 @@ public class DecisionBFETest extends AbstractIpsPluginTest {
         assertEquals(Datatype.INTEGER.getQualifiedName(), loadedDecision.getDatatype());
     }
 
+    @Test
     public void testInitPropertiesFromXml() {
         Document doc = getTestDocument();
         NodeList nl = doc.getElementsByTagName(IDecisionBFE.XML_TAG);
@@ -63,6 +68,7 @@ public class DecisionBFETest extends AbstractIpsPluginTest {
         assertEquals(Datatype.STRING.getQualifiedName(), decision.getDatatype());
     }
 
+    @Test
     public void testValidateThis() throws Exception {
         IDecisionBFE decision = bf.newDecision(new Point(10, 10));
         // by default the inital datatype is set to boolean. To test that it is not specified it has
@@ -85,6 +91,7 @@ public class DecisionBFETest extends AbstractIpsPluginTest {
         assertNotNull(msgList.getMessageByCode(IDecisionBFE.MSGCODE_DATATYPE_ONLY_NONE_PRIM_VALUEDATATYPE));
     }
 
+    @Test
     public void testValidateThisMethodCallDecision() throws Exception {
         IDecisionBFE decision = bf.newMethodCallDecision(new Point(10, 10));
         MessageList msgList = decision.validate(ipsProject);
@@ -127,10 +134,12 @@ public class DecisionBFETest extends AbstractIpsPluginTest {
         assertNull(msgList.getMessageByCode(IDecisionBFE.MSGCODE_DATATYPE_NOT_SPECIFIED));
     }
 
+    @Test
     public void testFindDatatypeMethodCallDecision() {
 
     }
 
+    @Test
     public void testSetDatatype() {
         listener.clear();
         IDecisionBFE decision = bf.newDecision(new Point(10, 10));
@@ -138,6 +147,7 @@ public class DecisionBFETest extends AbstractIpsPluginTest {
         assertTrue(listener.getIpsObjectParts().contains(decision));
     }
 
+    @Test
     public void testFindDatatype() throws Exception {
         IDecisionBFE decision = bf.newDecision(new Point(10, 10));
         decision.setDatatype(Datatype.STRING.getQualifiedName());

@@ -17,6 +17,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeReference;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
@@ -26,18 +28,21 @@ public class EnumAttributeReferenceTest extends AbstractIpsEnumPluginTest {
     private IEnumAttributeReference genderNameReference;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         genderIdReference = genderEnumContent.getEnumAttributeReferences().get(0);
         genderNameReference = genderEnumContent.getEnumAttributeReferences().get(1);
     }
 
+    @Test
     public void testGetSetName() {
         assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME, genderIdReference.getName());
         genderIdReference.setName("foo");
         assertEquals("foo", genderIdReference.getName());
     }
 
+    @Test
     public void testXml() throws ParserConfigurationException {
         Element xmlElement = genderIdReference.toXml(createXmlDocument(IEnumAttributeReference.XML_TAG));
         NamedNodeMap attributes = xmlElement.getAttributes();

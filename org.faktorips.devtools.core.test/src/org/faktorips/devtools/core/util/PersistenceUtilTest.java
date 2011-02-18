@@ -13,7 +13,9 @@
 
 package org.faktorips.devtools.core.util;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.BigDecimalDatatype;
@@ -26,9 +28,11 @@ import org.faktorips.datatype.classtypes.IntegerDatatype;
 import org.faktorips.datatype.classtypes.LongDatatype;
 import org.faktorips.datatype.classtypes.MoneyDatatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
+import org.junit.Test;
 
-public class PersistenceUtilTest extends TestCase {
+public class PersistenceUtilTest {
 
+    @Test
     public void testIsValidTableName() {
         assertFalse(PersistenceUtil.isValidDatabaseIdentifier(null));
         assertFalse(PersistenceUtil.isValidDatabaseIdentifier(""));
@@ -43,6 +47,7 @@ public class PersistenceUtilTest extends TestCase {
         assertTrue(PersistenceUtil.isValidDatabaseIdentifier("_2_ALSO_VALID"));
     }
 
+    @Test
     public void testValueDatatypeSupport() {
         assertSupportsFor(new BigDecimalDatatype(), false, true, false);
         assertSupportsFor(new BooleanDatatype(), false, false, false);

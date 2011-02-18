@@ -31,6 +31,8 @@ import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.junit.Before;
+import org.junit.Test;
 
 public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
 
@@ -38,6 +40,7 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
     IEnumType enum1;
 
     @Override
+    @Before
     public void setUp() throws Exception {
         ipsProject = newIpsProject("TestProject");
 
@@ -88,6 +91,7 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
         ipsPreferences.setEnumTypeDisplay(EnumTypeDisplay.NAME);
     }
 
+    @Test
     public void testGetDatatypeValueIds() throws Exception {
         Shell shell = new Shell(Display.getDefault());
         Combo combo = new Combo(shell, SWT.None);
@@ -105,6 +109,7 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
         assertEquals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation(), field.getText());
     }
 
+    @Test
     public void testGetDatatypeValueIdsWithEnumContent() throws Exception {
         Shell shell = new Shell(Display.getDefault());
 

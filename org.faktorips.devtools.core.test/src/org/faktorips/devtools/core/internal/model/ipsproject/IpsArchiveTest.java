@@ -43,6 +43,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -62,7 +64,8 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     private IPolicyCmptType motorPolicyType;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("ArchiveProject");
         motorPolicyType = newPolicyCmptTypeWithoutProductCmptType(project, "motor.MotorPolicy");
@@ -85,6 +88,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     /**
      * Tests if the access methods work correct if we change the underlying archive file on disk.
      */
+    @Test
     public void testModificationToUnderlyingFile() throws Exception {
         QualifiedNameType qnt = new QualifiedNameType("motor.MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE);
         assertTrue(archive.contains(qnt));
@@ -96,6 +100,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         assertFalse(archive.contains(qnt));
     }
 
+    @Test
     public void testGetBasePackageNameForMergableArtefacts() throws CoreException {
         archiveFile.refreshLocal(0, null);
         project.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
@@ -105,6 +110,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         assertEquals(expPackage, archive.getBasePackageNameForMergableArtefacts(motorPolicyType.getQualifiedNameType()));
     }
 
+    @Test
     public void testGetBasePackageNameForDerivedArtefacts() throws CoreException {
         archiveFile.refreshLocal(0, null);
         project.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
@@ -116,11 +122,13 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         assertEquals(expPackage, archive.getBasePackageNameForDerivedArtefacts(qualifiedNameType));
     }
 
+    @Test
     public void testContains() throws CoreException {
         assertTrue(archive.contains(new QualifiedNameType("motor.MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE)));
         assertFalse(archive.contains(new QualifiedNameType("Unknown", IpsObjectType.POLICY_CMPT_TYPE)));
     }
 
+    @Test
     public void testContainsPackage() throws CoreException {
         assertTrue(archive.containsPackage(""));
         assertFalse(archive.containsPackage(null));
@@ -131,16 +139,19 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         assertFalse(archive.containsPackage("unknwon"));
     }
 
+    @Test
     public void testGetArchivePath() {
         assertEquals(archivePath, archive.getArchivePath());
     }
 
+    @Test
     public void testExists_FileInSameProject() throws CoreException {
         assertTrue(archive.exists());
         archiveFile.delete(true, null);
         assertFalse(archive.exists());
     }
 
+    @Test
     public void testExists_FileInWorkspaceButDifferentProject() throws CoreException {
         IIpsProject project2 = newIpsProject("Project2");
         IIpsArchive archive2 = new IpsArchive(project2, archiveFile.getFullPath());
@@ -150,6 +161,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         assertFalse(archive2.exists());
     }
 
+    @Test
     public void testExists_FileOutsideWorkspace() {
         IpsArchive archive = new IpsArchive(project, externalArchivePath);
         assertTrue(archive.exists());
@@ -162,6 +174,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         assertFalse(archive.exists());
     }
 
+    @Test
     public void testGetNoneEmptyPackages() throws CoreException {
         String[] packs = archive.getNonEmptyPackages();
         assertEquals(3, packs.length);
@@ -170,10 +183,12 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         assertEquals("motor.collision", packs[2]);
     }
 
+    @Test
     public void testGetCorrespondingResource_FileInSameProject() {
         assertEquals(archiveFile, archive.getCorrespondingResource());
     }
 
+    @Test
     public void testGetCorrespondingResource_FileInWorkspaceButDifferentProject() throws CoreException {
         IIpsProject project2 = newIpsProject("Project2");
         IpsArchive archive2 = new IpsArchive(project2, archiveFile.getFullPath());
@@ -181,26 +196,31 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         assertEquals(archiveFile, archive2.getCorrespondingResource());
     }
 
+    @Test
     public void testGetCorrespondingResource_FileOutsideWorkspace() {
         IpsArchive ipsArchive = new IpsArchive(project, externalArchivePath);
         assertNull(ipsArchive.getCorrespondingResource());
     }
 
+    @Test
     public void testGetLocation_FileInSameProject() {
         assertEquals(archiveFile.getLocation(), archive.getLocation());
     }
 
+    @Test
     public void testGetLocation_FileInWorkspaceButDifferentProject() {
         IpsArchive ipsArchive = new IpsArchive(project, externalArchivePath);
         assertEquals(externalArchivePath, ipsArchive.getLocation());
     }
 
+    @Test
     public void testGetLocation_FileOutsideWorkspace() throws CoreException {
         IIpsProject project2 = newIpsProject("Project2");
         IpsArchive archive2 = new IpsArchive(project2, archiveFile.getFullPath());
         assertEquals(archiveFile.getLocation(), archive2.getLocation());
     }
 
+    @Test
     public void testGetNoneEmptySubpackages() throws CoreException {
         String[] subpacks = archive.getNonEmptySubpackages("");
         assertEquals(2, subpacks.length);
@@ -220,6 +240,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     /*
      * Test for bug #1498
      */
+    @Test
     public void testGetNoneEmptySubpackages_DefaultPackageContainsIpsSrcFile() throws Exception {
         IIpsProject anotherProject = newIpsProject("AnotherArchiveProject");
         newPolicyCmptType(anotherProject, "SomeType");
@@ -231,6 +252,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         assertEquals(0, archive.getNonEmptySubpackages("").length);
     }
 
+    @Test
     public void testGetQNameTypes_FileInWorkspace() throws CoreException {
         Set<QualifiedNameType> qnt = archive.getQNameTypes();
         assertEquals(4, qnt.size());
@@ -246,6 +268,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
                 qntArray[3]);
     }
 
+    @Test
     public void testGetQNameTypes_FileOutsideWorkspace() throws CoreException {
         IIpsArchive archiveOutsideWorkspace = new IpsArchive(project, externalArchivePath);
         assertNotNull(archiveOutsideWorkspace);
@@ -266,6 +289,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
                 qntArray[3]);
     }
 
+    @Test
     public void testGetQNameType_Pack() throws CoreException {
         Set<QualifiedNameType> qnt = archive.getQNameTypes(null);
         assertEquals(0, qnt.size());
@@ -288,6 +312,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         assertEquals(0, qnt.size());
     }
 
+    @Test
     public void testGetContent() throws CoreException {
         assertNull(archive.getContent(null));
 
@@ -301,6 +326,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         assertNull(archive.getContent(qnt));
     }
 
+    @Test
     public void testDuplicateEntryAndTestRefreshInWorkspace() throws Exception {
         // store archive time to check if the refresh is successful after re-creating the archive
         long timeBefore = archiveFile.getLocalTimeStamp();
@@ -329,6 +355,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
      * 
      * ArchiveIpsPackageFragment#getChildIpsPackageFragments
      */
+    @Test
     public void testWithDefaultPackage() throws Exception {
         IIpsProject dummyProject = newIpsProject("DummyProject");
         newPolicyCmptTypeWithoutProductCmptType(dummyProject, "DummyPolicy");
@@ -365,6 +392,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Test
     public void testGetResourceAsStream() throws CoreException, IOException {
         // Icon must be accessible via ipsObjectPath, thus it is create in the default root-folder
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];

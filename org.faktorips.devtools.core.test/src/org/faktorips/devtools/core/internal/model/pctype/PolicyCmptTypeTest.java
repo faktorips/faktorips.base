@@ -47,11 +47,11 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
+import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.PersistentType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.PersistentType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -60,6 +60,8 @@ import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ITypeHierarchy;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 public class PolicyCmptTypeTest extends AbstractDependencyTest implements ContentsChangeListener {
@@ -71,7 +73,8 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
     private IIpsProject ipsProject;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject();
         policyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "TestPolicy");
@@ -80,6 +83,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         pack = policyCmptType.getIpsPackageFragment();
     }
 
+    @Test
     public void testGetChildren() {
         IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
         IMethod m1 = policyCmptType.newMethod();
@@ -95,6 +99,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertTrue(childrenList.contains(rule1));
     }
 
+    @Test
     public void testValidateProductCmptTypeDoesNotConfigureThisType() throws CoreException {
         IPolicyCmptType polType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         IProductCmptType productType = polType.findProductCmptType(ipsProject);
@@ -111,6 +116,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertNotNull(result.getMessageByCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE));
     }
 
+    @Test
     public void testValidateSupertypeConfigurableForcesThisTypeConfigurable() throws Exception {
         IPolicyCmptType superType = newPolicyAndProductCmptType(ipsProject, "SuperPolicy", "SuperProduct");
 
@@ -131,6 +137,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
 
     }
 
+    @Test
     public void testGetOverrideCandidates() throws CoreException {
         assertEquals(0, policyCmptType.findOverrideMethodCandidates(false, ipsProject).length);
 
@@ -184,6 +191,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertEquals(0, candidates.length);
     }
 
+    @Test
     public void testFindProductCmptType() throws CoreException {
         policyCmptType.setProductCmptType("");
         assertNull(policyCmptType.findProductCmptType(ipsProject));
@@ -202,6 +210,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertSame(productCmptType, policyCmptType.findProductCmptType(ipsProject));
     }
 
+    @Test
     public void testFindAttributeInSupertypeHierarchy() throws CoreException {
         assertNull(policyCmptType.findPolicyCmptTypeAttribute("unkown", ipsProject));
         IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
@@ -219,6 +228,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertEquals(a2, policyCmptType.findPolicyCmptTypeAttribute("a2", ipsProject));
     }
 
+    @Test
     public void testIsExtensionCompilationUnitGenerated() {
         assertFalse(policyCmptType.isExtensionCompilationUnitGenerated());
 
@@ -257,6 +267,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
 
     }
 
+    @Test
     public void testNewAttribute() {
         sourceFile.getIpsModel().addChangeListener(this);
         IPolicyCmptTypeAttribute a = policyCmptType.newPolicyCmptTypeAttribute();
@@ -280,6 +291,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertFalse(mId.equals(a2Id));
     }
 
+    @Test
     public void testGetAttributes() {
         assertEquals(0, policyCmptType.getPolicyCmptTypeAttributes().length);
         IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
@@ -292,6 +304,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertNotNull(policyCmptType.getPolicyCmptTypeAttributes()[0]);
     }
 
+    @Test
     public void testGetAttribute() {
         IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
         a1.setName("a1");
@@ -306,6 +319,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertNull(policyCmptType.getPolicyCmptTypeAttribute(null));
     }
 
+    @Test
     public void testNewMethod() {
         sourceFile.getIpsModel().addChangeListener(this);
         IMethod m = policyCmptType.newMethod();
@@ -322,6 +336,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertFalse(m2Id.equals(mId));
     }
 
+    @Test
     public void testGetMethods() {
         assertEquals(0, policyCmptType.getMethods().length);
         IMethod m1 = policyCmptType.newMethod();
@@ -334,6 +349,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertNotNull(policyCmptType.getMethods()[0]);
     }
 
+    @Test
     public void testNewRule() {
         sourceFile.getIpsModel().addChangeListener(this);
         IValidationRule r = policyCmptType.newRule();
@@ -350,6 +366,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertFalse(r2Id.equals(rId));
     }
 
+    @Test
     public void testGetRules() {
         assertEquals(0, policyCmptType.getRules().length);
         IValidationRule r1 = policyCmptType.newRule();
@@ -362,6 +379,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertNotNull(policyCmptType.getRules()[0]);
     }
 
+    @Test
     public void testNewRelation() {
         sourceFile.getIpsModel().addChangeListener(this);
         IPolicyCmptTypeAssociation r = policyCmptType.newPolicyCmptTypeAssociation();
@@ -378,6 +396,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertFalse(r2Id.equals(rId));
     }
 
+    @Test
     public void testGetRelations() {
         assertEquals(0, policyCmptType.getPolicyCmptTypeAssociations().length);
         IPolicyCmptTypeAssociation r1 = policyCmptType.newPolicyCmptTypeAssociation();
@@ -390,6 +409,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertNotNull(policyCmptType.getPolicyCmptTypeAssociations()[0]);
     }
 
+    @Test
     public void testDependsOnAssociation() throws CoreException {
         IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
         IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
@@ -412,6 +432,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertSingleDependencyDetail(a, dependency, aToB, IAssociation.PROPERTY_TARGET);
     }
 
+    @Test
     public void testDependsOnMethodParameterDatatypes() throws CoreException {
         IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
         IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
@@ -434,6 +455,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertSingleDependencyDetail(a, dependency, aMethodParam, IParameter.PROPERTY_DATATYPE);
     }
 
+    @Test
     public void testDependsOn() throws Exception {
         IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
         IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
@@ -475,6 +497,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertSingleDependencyDetail(c, dependency, cToB, IAssociation.PROPERTY_TARGET);
     }
 
+    @Test
     public void testDependsOnEnumType() throws Exception {
         IEnumType enumType = newDefaultEnumType(ipsProject, "Gender");
 
@@ -513,6 +536,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertSingleDependencyDetail(type, dependency, aAttr, IAttribute.PROPERTY_DATATYPE);
     }
 
+    @Test
     public void testDependsOnComposition() throws Exception {
         IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "AggregateRoot");
         IPolicyCmptType d1 = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "Detail1");
@@ -558,10 +582,12 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertSingleDependencyDetail(d2, dependency, d2, IPolicyCmptType.PROPERTY_SUPERTYPE);
     }
 
+    @Test
     public void testGetIpsObjectType() {
         assertEquals(IpsObjectType.POLICY_CMPT_TYPE, policyCmptType.getIpsObjectType());
     }
 
+    @Test
     public void testInitFromXml() {
         Element element = getTestDocument().getDocumentElement();
         policyCmptType.setConfigurableByProductCmptType(false);
@@ -597,6 +623,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertSame(rules[0], policyCmptType.getRules()[0]);
     }
 
+    @Test
     public void testToXml() throws CoreException {
         policyCmptType.setConfigurableByProductCmptType(true);
         policyCmptType.setProductCmptType("Product");
@@ -646,16 +673,19 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertEquals("t2", relations[1].getTarget());
     }
 
+    @Test
     public void testGetSupertypeHierarchy() throws CoreException {
         ITypeHierarchy hierarchy = policyCmptType.getSupertypeHierarchy();
         assertNotNull(hierarchy);
     }
 
+    @Test
     public void testGetSubtypeHierarchy() throws CoreException {
         ITypeHierarchy hierarchy = policyCmptType.getSubtypeHierarchy();
         assertNotNull(hierarchy);
     }
 
+    @Test
     public void testSetProductCmptType() {
         super.testPropertyAccessReadWrite(IPolicyCmptType.class, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE,
                 policyCmptType, "NewProduct");
@@ -666,6 +696,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         lastEvent = event;
     }
 
+    @Test
     public void testNewPart() {
         assertTrue(policyCmptType.newPart(PolicyCmptTypeAttribute.class) instanceof IPolicyCmptTypeAttribute);
         assertTrue(policyCmptType.newPart(Method.class) instanceof IMethod);
@@ -673,6 +704,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertTrue(policyCmptType.newPart(ValidationRule.class) instanceof IValidationRule);
     }
 
+    @Test
     public void testIsAggregateRoot() throws CoreException {
         assertTrue(policyCmptType.isAggregateRoot());
 
@@ -703,6 +735,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertTrue(invalidType.isAggregateRoot());
     }
 
+    @Test
     public void testValidate_ProductCmptTypeNameMissing() throws Exception {
         MessageList ml = policyCmptType.validate(ipsProject);
         assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING));
@@ -712,6 +745,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING));
     }
 
+    @Test
     public void testSupertypeNotProductRelevantIfTheTypeIsProductRelevant() throws Exception {
         IPolicyCmptType superPcType = newPolicyCmptType(ipsProject, "Super");
         policyCmptType.setSupertype(superPcType.getQualifiedName());
@@ -733,6 +767,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
                 .getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT));
     }
 
+    @Test
     public void testValidateOtherTypeWithSameNameTypeInIpsObjectPath() throws CoreException {
         IIpsProject a = newIpsProject("aProject");
         IProductCmptType aProductTypeProjectA = newProductCmptType(a, "faktorzehn.example.APolicy");
@@ -756,6 +791,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertNotNull(msgList.getMessageByCode(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_IN_DEPENDENT_PROJECT_EXISTS));
     }
 
+    @Test
     public void testValidateDuplicateRulesNames() throws Exception {
         IValidationRule rule1 = policyCmptType.newRule();
         rule1.setName("aRule");
@@ -781,6 +817,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertNull(msgList.getMessageByCode(IValidationRule.MSGCODE_VALIDATION_RULE_METHOD_NAME_COLLISION));
     }
 
+    @Test
     public void testPersistenceSupport() throws CoreException {
         assertFalse(policyCmptType.getIpsProject().isPersistenceSupportEnabled());
         IIpsProjectProperties properties = policyCmptType.getIpsProject().getProperties();
@@ -799,6 +836,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         policyCmptType.getPersistenceTypeInfo().setPersistentType(PersistentType.NONE);
     }
 
+    @Test
     public void testValidateDuplicateAssociationSpecialCase() throws CoreException {
         // MTB#357 special case: a detail-to-master association that is a subset of a derived-union
         // could have the same name as the corresponding derived union association

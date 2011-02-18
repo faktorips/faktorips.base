@@ -31,6 +31,8 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest {
 
@@ -49,7 +51,8 @@ public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest 
     private IProductCmptLink relation3;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         IIpsProject proj = newIpsProject(new ArrayList<Locale>());
         IIpsPackageFragmentRoot root = proj.getIpsPackageFragmentRoots()[0];
@@ -83,6 +86,7 @@ public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest 
         compareItemRoot = (ProductCmptCompareItem)structureCreator.getStructure(new ResourceNode(correspondingFile));
     }
 
+    @Test
     public void testCompare() {
         ProductCmptCompareItemComparator comparator = new ProductCmptCompareItemComparator();
 

@@ -21,6 +21,8 @@ import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -32,21 +34,25 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
     private MockParticipantHelper refactoringHelper;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         refactoringHelper = new MockParticipantHelper();
     }
 
+    @Test
     public void testInitializeNonIpsElement() {
         assertFalse(refactoringHelper.initialize(new Object()));
         assertFalse(refactoringHelper.initializeTargetJavaElementsCalled);
     }
 
+    @Test
     public void testInitializeIpsElement() {
         assertTrue(refactoringHelper.initialize(policyCmptType));
         assertTrue(refactoringHelper.initializeTargetJavaElementsCalled);
     }
 
+    @Test
     public void testCheckConditions() throws CoreException {
         refactoringHelper.initialize(policyCmptType);
         performFullBuild();
@@ -56,12 +62,14 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
         assertEquals(0, status.getEntries().length);
     }
 
+    @Test
     public void testCreateChange() throws OperationCanceledException, CoreException {
         refactoringHelper.initialize(policyCmptType);
         performFullBuild();
         refactoringHelper.createChange(new NullProgressMonitor());
     }
 
+    @Test
     public void testCreateChangeJavaElementsNotExisting() throws OperationCanceledException, CoreException {
         refactoringHelper.initialize(policyCmptType);
         refactoringHelper.createChange(new NullProgressMonitor());

@@ -24,6 +24,8 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.refactor.IIpsMoveProcessor;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -39,7 +41,8 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
     private IIpsPackageFragment originalIpsPackageFragment;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
 
         IIpsPackageFragmentRoot fragmentRoot = policyCmptType.getIpsPackageFragment().getRoot();
@@ -47,6 +50,7 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
         targetIpsPackageFragment = fragmentRoot.createPackageFragment(TARGET_PACKAGE_NAME, true, null);
     }
 
+    @Test
     public void testCheckFinalConditionsValid() throws CoreException {
         ProcessorBasedRefactoring refactoring = policyCmptType.getMoveRefactoring();
         IIpsMoveProcessor moveProcessor = (IIpsMoveProcessor)refactoring.getProcessor();
@@ -56,6 +60,7 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
         assertFalse(status.hasError());
     }
 
+    @Test
     public void testCheckFinalConditionsFileAlreadyExists() throws CoreException {
         ProcessorBasedRefactoring refactoring = policyCmptType.getMoveRefactoring();
         IIpsMoveProcessor moveProcessor = (IIpsMoveProcessor)refactoring.getProcessor();
@@ -66,6 +71,7 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
         assertTrue(status.hasFatalError());
     }
 
+    @Test
     public void testMovePolicyCmptType() throws CoreException {
         performMoveRefactoring(policyCmptType, targetIpsPackageFragment);
 
@@ -75,12 +81,14 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
         checkPolicyCmptTypeReferences(TARGET_PACKAGE_NAME + "." + POLICY_CMPT_TYPE_NAME);
     }
 
+    @Test
     public void testMoveSuperPolicyCmptType() throws CoreException {
         performMoveRefactoring(superPolicyCmptType, targetIpsPackageFragment);
 
         checkSuperPolicyCmptTypeReferences(TARGET_PACKAGE_NAME + "." + SUPER_POLICY_CMPT_TYPE_NAME);
     }
 
+    @Test
     public void testMoveProductCmptType() throws CoreException {
         performMoveRefactoring(productCmptType, targetIpsPackageFragment);
 
@@ -90,12 +98,14 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
         checkProductCmptTypeReferences(TARGET_PACKAGE_NAME + "." + PRODUCT_CMPT_TYPE_NAME);
     }
 
+    @Test
     public void testMoveSuperProductCmptType() throws CoreException {
         performMoveRefactoring(superProductCmptType, targetIpsPackageFragment);
 
         checkSuperProductCmptTypeReferences(TARGET_PACKAGE_NAME + "." + SUPER_PRODUCT_CMPT_TYPE_NAME);
     }
 
+    @Test
     public void testMoveTestCaseType() throws CoreException {
         performMoveRefactoring(testCaseType, targetIpsPackageFragment);
 
@@ -105,6 +115,7 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
         checkTestCaseTypeReferences(TARGET_PACKAGE_NAME + "." + TEST_CASE_TYPE_NAME);
     }
 
+    @Test
     public void testMoveEnumType() throws CoreException {
         performMoveRefactoring(enumType, targetIpsPackageFragment);
 
@@ -114,6 +125,7 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
         checkEnumTypeReferences(TARGET_PACKAGE_NAME + "." + ENUM_TYPE_NAME);
     }
 
+    @Test
     public void testMoveTableStructure() throws CoreException {
         performMoveRefactoring(tableStructure, targetIpsPackageFragment);
 
@@ -123,6 +135,7 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
         checkTableStructureReferences(TARGET_PACKAGE_NAME + "." + TABLE_STRUCTURE_NAME);
     }
 
+    @Test
     public void testMoveBusinessFunction() throws CoreException {
         performMoveRefactoring(businessFunction, targetIpsPackageFragment);
 
@@ -132,6 +145,7 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
         checkBusinessFunctionReferences(TARGET_PACKAGE_NAME + "." + BUSINESS_FUNCTION_NAME);
     }
 
+    @Test
     public void testMoveProductCmpt() throws CoreException {
         performMoveRefactoring(productCmpt, targetIpsPackageFragment);
 
@@ -141,6 +155,7 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
         checkProductCmptReferences(TARGET_PACKAGE_NAME + "." + PRODUCT_NAME);
     }
 
+    @Test
     public void testMoveTestCase() throws CoreException {
         performMoveRefactoring(testCase, targetIpsPackageFragment);
 
@@ -150,6 +165,7 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
         checkTestCaseReferences(TARGET_PACKAGE_NAME + "." + TEST_CASE_NAME);
     }
 
+    @Test
     public void testMoveEnumContent() throws CoreException {
         performMoveRefactoring(enumContent, targetIpsPackageFragment);
 
@@ -159,6 +175,7 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
         checkEnumContentReferences(TARGET_PACKAGE_NAME + "." + ENUM_CONTENT_NAME);
     }
 
+    @Test
     public void testMoveTableContent() throws CoreException {
         performMoveRefactoring(tableContents, targetIpsPackageFragment);
 
