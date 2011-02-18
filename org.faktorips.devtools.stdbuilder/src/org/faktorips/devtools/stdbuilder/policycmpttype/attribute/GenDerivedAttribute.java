@@ -68,7 +68,7 @@ public class GenDerivedAttribute extends GenPolicyCmptTypeAttribute {
             boolean generatesInterface) throws CoreException {
 
         if (!generatesInterface) {
-            if (((IPolicyCmptTypeAttribute)getAttribute()).getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL
+            if ((getAttribute()).getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL
                     && !getAttribute().isOverwrite()) {
                 generateField(builder);
             }
@@ -84,7 +84,7 @@ public class GenDerivedAttribute extends GenPolicyCmptTypeAttribute {
                 generateGetterInterface(builder);
             }
         } else {
-            if (((IPolicyCmptTypeAttribute)getAttribute()).getAttributeType() == AttributeType.DERIVED_ON_THE_FLY) {
+            if ((getAttribute()).getAttributeType() == AttributeType.DERIVED_ON_THE_FLY) {
                 generateGetterImplementationForOnTheFlyComputation(builder, ipsProject);
             } else {
                 if (!getAttribute().isOverwrite()) {
@@ -108,9 +108,8 @@ public class GenDerivedAttribute extends GenPolicyCmptTypeAttribute {
         generateGetterSignature(builder);
         builder.openBracket();
 
-        IProductCmptTypeMethod formulaSignature = ((IPolicyCmptTypeAttribute)getAttribute())
-                .findComputationMethod(ipsProject);
-        if (!((IPolicyCmptTypeAttribute)getAttribute()).isProductRelevant() || formulaSignature == null
+        IProductCmptTypeMethod formulaSignature = (getAttribute()).findComputationMethod(ipsProject);
+        if (!(getAttribute()).isProductRelevant() || formulaSignature == null
                 || formulaSignature.validate(ipsProject).containsErrorMsg()) {
             builder.append("return ");
             builder.append(getDatatypeHelper().newInstance(getAttribute().getDefaultValue()));

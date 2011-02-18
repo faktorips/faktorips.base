@@ -46,6 +46,10 @@ public abstract class RefactoringParticipantTest extends AbstractIpsRefactoringT
 
     protected IFolder internalFolder;
 
+    protected IType superPolicyClass;
+
+    protected IType superPolicyInterface;
+
     protected IType policyClass;
 
     protected IType policyInterface;
@@ -53,6 +57,10 @@ public abstract class RefactoringParticipantTest extends AbstractIpsRefactoringT
     protected IType productClass;
 
     protected IType productInterface;
+
+    protected IType superProductGenInterface;
+
+    protected IType superProductGenClass;
 
     protected IType productGenClass;
 
@@ -84,29 +92,27 @@ public abstract class RefactoringParticipantTest extends AbstractIpsRefactoringT
         // Configure the builder set to generate JAXB support.
         IIpsProjectProperties ipsProjectProperties = ipsProject.getProperties();
         IIpsArtefactBuilderSetConfigModel configModel = ipsProjectProperties.getBuilderSetConfig();
-        configModel.setPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT, "true", null); //$NON-NLS-1$
+        configModel.setPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT, "true", null);
         ipsProjectProperties.setBuilderSetConfig(configModel);
         ipsProject.setProperties(ipsProjectProperties);
-
-        /*
-         * A full build needs to be done so that Java source is generated out of the Faktor-IPS
-         * model. This Java source will be refactored by the tests.
-         */
-        performFullBuild();
     }
 
     private void setUpFolders() {
-        modelFolder = ipsProject.getProject().getFolder(Path.fromOSString("src/org/faktorips/sample/model")); //$NON-NLS-1$
-        internalFolder = modelFolder.getFolder("internal"); //$NON-NLS-1$
+        modelFolder = ipsProject.getProject().getFolder(Path.fromOSString("src/org/faktorips/sample/model"));
+        internalFolder = modelFolder.getFolder("internal");
     }
 
     private void setUpPolicyAndProductTypes() throws CoreException {
-        policyInterface = getJavaType(PACKAGE_NAME, "I" + POLICY_CMPT_TYPE_NAME, true, false); //$NON-NLS-1$
+        superPolicyInterface = getJavaType(PACKAGE_NAME, "I" + SUPER_POLICY_CMPT_TYPE_NAME, true, false);
+        superPolicyClass = getJavaType(PACKAGE_NAME, SUPER_POLICY_CMPT_TYPE_NAME, false, false);
+        policyInterface = getJavaType(PACKAGE_NAME, "I" + POLICY_CMPT_TYPE_NAME, true, false);
         policyClass = getJavaType(PACKAGE_NAME, POLICY_CMPT_TYPE_NAME, false, false);
-        productInterface = getJavaType(PACKAGE_NAME, "I" + PRODUCT_CMPT_TYPE_NAME, true, false); //$NON-NLS-1$
+        productInterface = getJavaType(PACKAGE_NAME, "I" + PRODUCT_CMPT_TYPE_NAME, true, false);
         productClass = getJavaType(PACKAGE_NAME, PRODUCT_CMPT_TYPE_NAME, false, false);
-        productGenInterface = getJavaType(PACKAGE_NAME, "I" + PRODUCT_CMPT_TYPE_NAME + "Gen", true, false); //$NON-NLS-1$ //$NON-NLS-2$
-        productGenClass = getJavaType(PACKAGE_NAME, PRODUCT_CMPT_TYPE_NAME + "Gen", false, false); //$NON-NLS-1$
+        superProductGenInterface = getJavaType(PACKAGE_NAME, "I" + SUPER_PRODUCT_CMPT_TYPE_NAME + "Gen", true, false);
+        superProductGenClass = getJavaType(PACKAGE_NAME, SUPER_PRODUCT_CMPT_TYPE_NAME + "Gen", false, false);
+        productGenInterface = getJavaType(PACKAGE_NAME, "I" + PRODUCT_CMPT_TYPE_NAME + "Gen", true, false);
+        productGenClass = getJavaType(PACKAGE_NAME, PRODUCT_CMPT_TYPE_NAME + "Gen", false, false);
         enumTypeJavaType = getJavaType(PACKAGE_NAME, ENUM_TYPE_NAME, true, false);
         enumTypeXmlAdapterClass = getJavaType(PACKAGE_NAME, ENUM_TYPE_NAME + "XmlAdapter", false, true);
     }

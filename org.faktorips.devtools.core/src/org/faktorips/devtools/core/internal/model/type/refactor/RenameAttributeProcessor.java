@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.type.refactor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -50,6 +52,9 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     /** Set containing all potentially referencing test case types. */
     private Set<IIpsSrcFile> testCaseTypeCmptSrcFiles;
 
+    /** Set containing all potentially referencing policy component types. */
+    private Set<IIpsSrcFile> policyCmptTypeSrcFiles;
+
     public RenameAttributeProcessor(IAttribute attribute) {
         super(attribute, attribute.getName());
         addIgnoredValidationMessageCodes();
@@ -57,6 +62,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
 
     private void addIgnoredValidationMessageCodes() {
         getIgnoredValidationMessageCodes().add(IValidationRule.MSGCODE_UNDEFINED_ATTRIBUTE);
+        getIgnoredValidationMessageCodes().add(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE);
     }
 
     @Override
@@ -66,9 +72,15 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
         for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
             addIpsSrcFile(ipsSrcFile);
         }
-        testCaseTypeCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.TEST_CASE_TYPE);
-        for (IIpsSrcFile ipsSrcFile : testCaseTypeCmptSrcFiles) {
-            addIpsSrcFile(ipsSrcFile);
+        if (getAttribute() instanceof IPolicyCmptTypeAttribute) {
+            testCaseTypeCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.TEST_CASE_TYPE);
+            for (IIpsSrcFile ipsSrcFile : testCaseTypeCmptSrcFiles) {
+                addIpsSrcFile(ipsSrcFile);
+            }
+            policyCmptTypeSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
+            for (IIpsSrcFile ipsSrcFile : policyCmptTypeSrcFiles) {
+                addIpsSrcFile(ipsSrcFile);
+            }
         }
     }
 
@@ -95,8 +107,41 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
             updateValidationRule();
             updateProductCmptConfigElementReferences();
             updateTestCaseTypeReferences();
+            updateOverwrittenAttributes();
         }
         updateAttributeName();
+    }
+
+    /**
+     * Updates all references to the {@link IPolicyCmptTypeAttribute} in overwritten attributes of
+     * the super type hierarchy.
+     */
+    private void updateOverwrittenAttributes() throws CoreException {
+        List<IPolicyCmptTypeAttribute> attributesToRename = new ArrayList<IPolicyCmptTypeAttribute>(1);
+
+        // Collect overwritten attributes
+        IPolicyCmptTypeAttribute overwrittenAttribute = null;
+        while (true) {
+            if (overwrittenAttribute == null) {
+                overwrittenAttribute = ((IPolicyCmptTypeAttribute)getAttribute())
+                        .findOverwrittenAttribute(getIpsProject());
+            } else {
+                overwrittenAttribute = overwrittenAttribute.findOverwrittenAttribute(getIpsProject());
+            }
+            if (overwrittenAttribute == null) {
+                break;
+            }
+            attributesToRename.add(overwrittenAttribute);
+        }
+
+        /*
+         * Rename the collected attributes (cannot do this in one step as findOverwrittenAttribute
+         * would not work this way)
+         */
+        for (IPolicyCmptTypeAttribute attribute : attributesToRename) {
+            attribute.setName(getNewName());
+            addIpsSrcFile(attribute.getIpsSrcFile());
+        }
     }
 
     /**

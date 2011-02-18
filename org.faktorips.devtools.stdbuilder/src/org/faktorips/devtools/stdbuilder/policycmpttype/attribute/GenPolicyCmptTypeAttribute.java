@@ -190,8 +190,7 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
      * method call.
      */
     public boolean isMemberVariableRequired() {
-        return (((IPolicyCmptTypeAttribute)getAttribute()).isChangeable() || isDerivedByExplicitMethodCall())
-                && !getAttribute().isOverwrite();
+        return ((getAttribute()).isChangeable() || isDerivedByExplicitMethodCall()) && !getAttribute().isOverwrite();
     }
 
     public boolean needsToBeConsideredInDeltaComputation() {
@@ -207,7 +206,7 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
     }
 
     public IValueSet getValueSet() {
-        return ((IPolicyCmptTypeAttribute)getAttribute()).getValueSet();
+        return (getAttribute()).getValueSet();
     }
 
     /**
@@ -281,7 +280,7 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
         if (!getAttribute().isOverwrite()) {
             return null;
         }
-        IPolicyCmptTypeAttribute overwritten = ((IPolicyCmptTypeAttribute)getAttribute())
+        IPolicyCmptTypeAttribute overwritten = (getAttribute())
                 .findOverwrittenAttribute(getAttribute().getIpsProject());
         if (overwritten == null) {
             return null;
@@ -293,22 +292,31 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
 
     protected IProductCmptType getProductCmptType(IIpsProject ipsProject) throws CoreException {
         if (productCmptType == null) {
-            productCmptType = ((IPolicyCmptTypeAttribute)getAttribute()).getPolicyCmptType().findProductCmptType(
-                    ipsProject);
+            productCmptType = (getAttribute()).getPolicyCmptType().findProductCmptType(ipsProject);
         }
         return productCmptType;
     }
 
     public boolean isProductRelevant() {
-        return ((IPolicyCmptTypeAttribute)getAttribute()).isProductRelevant();
+        return (getAttribute()).isProductRelevant();
     }
 
     public boolean isDerivedOnTheFly() {
-        return ((IPolicyCmptTypeAttribute)getAttribute()).getAttributeType() == AttributeType.DERIVED_ON_THE_FLY;
+        return (getAttribute()).getAttributeType() == AttributeType.DERIVED_ON_THE_FLY;
     }
 
     public boolean isDerivedByExplicitMethodCall() {
-        return ((IPolicyCmptTypeAttribute)getAttribute()).getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL;
+        return (getAttribute()).getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL;
+    }
+
+    @Override
+    public GenPolicyCmptType getGenType() {
+        return (GenPolicyCmptType)super.getGenType();
+    }
+
+    @Override
+    public IPolicyCmptTypeAttribute getAttribute() {
+        return (IPolicyCmptTypeAttribute)super.getAttribute();
     }
 
     @Override

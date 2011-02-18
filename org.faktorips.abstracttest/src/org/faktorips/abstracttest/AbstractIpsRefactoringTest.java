@@ -102,9 +102,15 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
 
     protected static final String TEST_CASE_NAME = "TestCase";
 
-    protected static final String QUALIFIED_POLICY_CMPT_TYPE_NAME = PACKAGE_NAME + "." + POLICY_CMPT_TYPE_NAME;
+    protected static final String QUALIFIED_POLICY_CMPT_TYPE_NAME = PACKAGE_NAME + '.' + POLICY_CMPT_TYPE_NAME;
 
-    protected static final String QUALIFIED_PRODUCT_CMPT_TYPE_NAME = PACKAGE_NAME + "." + PRODUCT_CMPT_TYPE_NAME;
+    protected static final String QUALIFIED_SUPER_POLICY_CMPT_TYPE_NAME = PACKAGE_NAME + '.'
+            + SUPER_POLICY_CMPT_TYPE_NAME;
+
+    protected static final String QUALIFIED_PRODUCT_CMPT_TYPE_NAME = PACKAGE_NAME + '.' + PRODUCT_CMPT_TYPE_NAME;
+
+    protected static final String QUALIFIED_SUPER_PRODUCT_CMPT_TYPE_NAME = PACKAGE_NAME + '.'
+            + SUPER_PRODUCT_CMPT_TYPE_NAME;
 
     protected static final String ENUM_TYPE_NAME = "EnumType";
 
@@ -198,16 +204,16 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
 
     private void createPolicyAndProductModel() throws CoreException {
         // Create super policy component type.
-        superPolicyCmptType = newPolicyCmptType(ipsProject, SUPER_POLICY_CMPT_TYPE_NAME);
+        superPolicyCmptType = newPolicyCmptType(ipsProject, QUALIFIED_SUPER_POLICY_CMPT_TYPE_NAME);
         superPolicyCmptType.setAbstract(true);
         superPolicyCmptType.setConfigurableByProductCmptType(true);
 
         // Create super product component type.
-        superProductCmptType = newProductCmptType(ipsProject, SUPER_PRODUCT_CMPT_TYPE_NAME);
+        superProductCmptType = newProductCmptType(ipsProject, QUALIFIED_SUPER_PRODUCT_CMPT_TYPE_NAME);
         superProductCmptType.setAbstract(true);
         superProductCmptType.setConfigurationForPolicyCmptType(true);
-        superProductCmptType.setPolicyCmptType(SUPER_POLICY_CMPT_TYPE_NAME);
-        superPolicyCmptType.setProductCmptType(SUPER_PRODUCT_CMPT_TYPE_NAME);
+        superProductCmptType.setPolicyCmptType(QUALIFIED_SUPER_POLICY_CMPT_TYPE_NAME);
+        superPolicyCmptType.setProductCmptType(QUALIFIED_SUPER_PRODUCT_CMPT_TYPE_NAME);
 
         // Create a policy component type and a product component type.
         policyCmptType = newPolicyCmptType(ipsProject, QUALIFIED_POLICY_CMPT_TYPE_NAME);
@@ -216,8 +222,8 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
         policyCmptType.setProductCmptType(QUALIFIED_PRODUCT_CMPT_TYPE_NAME);
         productCmptType.setConfigurationForPolicyCmptType(true);
         productCmptType.setPolicyCmptType(QUALIFIED_POLICY_CMPT_TYPE_NAME);
-        policyCmptType.setSupertype(SUPER_POLICY_CMPT_TYPE_NAME);
-        productCmptType.setSupertype(SUPER_PRODUCT_CMPT_TYPE_NAME);
+        policyCmptType.setSupertype(QUALIFIED_SUPER_POLICY_CMPT_TYPE_NAME);
+        productCmptType.setSupertype(QUALIFIED_SUPER_PRODUCT_CMPT_TYPE_NAME);
 
         // Create a policy component type attribute.
         policyCmptTypeAttribute = policyCmptType.newPolicyCmptTypeAttribute();

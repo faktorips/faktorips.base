@@ -80,7 +80,7 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractIpsRefacto
         superPolicyAttribute.setAttributeType(AttributeType.CHANGEABLE);
         superTestAttribute = testPolicyCmptTypeParameter.newInputTestAttribute();
         superTestAttribute.setAttribute(superPolicyAttribute);
-        superTestAttribute.setPolicyCmptType(SUPER_POLICY_CMPT_TYPE_NAME);
+        superTestAttribute.setPolicyCmptType(QUALIFIED_SUPER_POLICY_CMPT_TYPE_NAME);
         superTestAttribute.setName("superPolicyAttribute");
 
         otherProductCmpt = newProductCmpt(otherProductCmptType, OTHER_PRODUCT_NAME);

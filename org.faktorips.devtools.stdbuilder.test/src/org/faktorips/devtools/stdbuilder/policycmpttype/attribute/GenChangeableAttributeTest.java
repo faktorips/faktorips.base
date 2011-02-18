@@ -18,7 +18,9 @@ import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.runtime.IValidationContext;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,11 +32,27 @@ import org.junit.Test;
  */
 public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
 
-    /** <tt>GenChangeableAttribute</tt> generator for the published attribute. */
-    private GenChangeableAttribute genPublishedChangeableAttribute;
+    private static final String SUB_POLICY_NAME = "SubPolicy";
 
-    /** <tt>GenChangeableAttribute</tt> generator for the public attribute. */
-    private GenChangeableAttribute genPublicChangeableAttribute;
+    private GenChangeableAttribute genPublishedAttribute;
+
+    private GenChangeableAttribute genPublicAttribute;
+
+    private GenChangeableAttribute genOverwrittenPublishedAttribute;
+
+    private GenChangeableAttribute genOverwrittenPublicAttribute;
+
+    private IPolicyCmptType subPolicyCmptType;
+
+    private IPolicyCmptTypeAttribute overwrittenPublishedAttribute;
+
+    private IPolicyCmptTypeAttribute overwrittenPublicAttribute;
+
+    private IType subJavaInterface;
+
+    private IType subJavaClass;
+
+    private GenPolicyCmptType genSubPolicyCmptType;
 
     public GenChangeableAttributeTest() {
         super(AttributeType.CHANGEABLE);
@@ -44,234 +62,238 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        genPublishedChangeableAttribute = new GenChangeableAttribute(genPolicyCmptType, publishedAttribute);
-        genPublicChangeableAttribute = new GenChangeableAttribute(genPolicyCmptType, publicAttribute);
+
+        genPublishedAttribute = new GenChangeableAttribute(genPolicyCmptType, publishedAttribute);
+        genPublicAttribute = new GenChangeableAttribute(genPolicyCmptType, publicAttribute);
+
+        subPolicyCmptType = newPolicyCmptType(ipsProject, SUB_POLICY_NAME);
+        subPolicyCmptType.setSupertype(policyCmptType.getQualifiedName());
+
+        overwrittenPublishedAttribute = subPolicyCmptType.newPolicyCmptTypeAttribute();
+        overwrittenPublishedAttribute.setName(publishedAttribute.getName());
+        overwrittenPublishedAttribute.setOverwrite(true);
+        overwrittenPublishedAttribute.setDatatype(publishedAttribute.getDatatype());
+        overwrittenPublishedAttribute.setAttributeType(publishedAttribute.getAttributeType());
+        overwrittenPublishedAttribute.setModifier(publishedAttribute.getModifier());
+
+        overwrittenPublicAttribute = subPolicyCmptType.newPolicyCmptTypeAttribute();
+        overwrittenPublicAttribute.setName(publicAttribute.getName());
+        overwrittenPublicAttribute.setOverwrite(true);
+        overwrittenPublicAttribute.setDatatype(publicAttribute.getDatatype());
+        overwrittenPublicAttribute.setAttributeType(publicAttribute.getAttributeType());
+        overwrittenPublicAttribute.setModifier(publicAttribute.getModifier());
+
+        subJavaInterface = getGeneratedJavaType(subPolicyCmptType, false, false, "I" + SUB_POLICY_NAME);
+        subJavaClass = getGeneratedJavaType(subPolicyCmptType, false, true, SUB_POLICY_NAME);
+
+        genSubPolicyCmptType = new GenPolicyCmptType(subPolicyCmptType, builderSet);
+        genOverwrittenPublishedAttribute = new GenChangeableAttribute(genSubPolicyCmptType,
+                overwrittenPublishedAttribute);
+        genOverwrittenPublicAttribute = new GenChangeableAttribute(genSubPolicyCmptType, overwrittenPublicAttribute);
     }
 
     @Test
-    public void testGetGeneratedJavaElementsForPublishedInterface() {
-        genPublishedChangeableAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                javaInterface, publishedAttribute);
-        expectPropertyConstant(javaInterface, genPublishedChangeableAttribute);
-        expectGetterMethod(javaInterface, genPublishedChangeableAttribute);
-        expectSetterMethod(javaInterface, genPublishedChangeableAttribute);
-        assertEquals(3, generatedJavaElements.size());
+    public void testGetGeneratedJavaElementsForPublishedInterfaceGivenPublishedAttribute() {
+        genPublishedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
+                publishedAttribute);
+        expectationsForPublishedInterfaceGivenPublishedAttribute(genPublishedAttribute);
+    }
 
-        generatedJavaElements.clear();
-        genPublicChangeableAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                javaInterface, publicAttribute);
+    @Test
+    public void testGetGeneratedJavaElementsForPublishedInterfaceGivenPublicAttribute() {
+        genPublicAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
+                publicAttribute);
+        expectationsForPublishedInterfaceGivenPublicAttribute();
+    }
+
+    private void expectationsForPublishedInterfaceGivenPublicAttribute() {
         assertTrue(generatedJavaElements.isEmpty());
     }
 
-    @Test
-    public void testGetGeneratedJavaElementsForPublishedInterfaceProductRelevant() throws CoreException {
-        publishedAttribute.setProductRelevant(true);
-        publicAttribute.setProductRelevant(true);
-        performGetGeneratedJavaElementsForPublishedInterfaceProductRelevant();
-
-        publishedAttribute.setValueSetType(ValueSetType.ENUM);
-        publicAttribute.setValueSetType(ValueSetType.ENUM);
-        performGetGeneratedJavaElementsForPublishedInterfaceProductRelevant();
-
-        publishedAttribute.setValueSetType(ValueSetType.RANGE);
-        publicAttribute.setValueSetType(ValueSetType.RANGE);
-        performGetGeneratedJavaElementsForPublishedInterfaceProductRelevant();
+    private void expectationsForPublishedInterfaceGivenPublishedAttribute(GenChangeableAttribute genChangeableAttribute) {
+        expectPropertyConstant(javaInterface, genChangeableAttribute);
+        expectGetterMethod(javaInterface, genChangeableAttribute);
+        expectSetterMethod(javaInterface, genChangeableAttribute);
+        assertEquals(3, generatedJavaElements.size());
     }
 
-    private void performGetGeneratedJavaElementsForPublishedInterfaceProductRelevant() throws CoreException {
-        genPublishedChangeableAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                javaInterface, publishedAttribute);
-        expectPropertyConstant(javaInterface, genPublishedChangeableAttribute);
-        expectGetterMethod(javaInterface, genPublishedChangeableAttribute);
-        expectSetterMethod(javaInterface, genPublishedChangeableAttribute);
-        expectGetValueSetMethod(javaInterface, genPublishedChangeableAttribute);
+    @Test
+    public void testGetGeneratedJavaElementsForPublishedInterfaceGivenProductRelevantPublishedAttribute()
+            throws CoreException {
 
-        IType javaInterfaceProductGen = genPublishedChangeableAttribute
-                .findGeneratedJavaTypeForProductCmptTypeGen(true);
-        expectGetValueSetMethod(javaInterfaceProductGen, genPublishedChangeableAttribute);
-        expectGetDefaultValueMethod(javaInterfaceProductGen, genPublishedChangeableAttribute);
+        publishedAttribute.setProductRelevant(true);
+        genPublishedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
+                publishedAttribute);
+        expectationsForPublishedInterfaceGivenProductRelevantPublishedAttribute(genPublishedAttribute);
+    }
+
+    @Test
+    public void testGetGeneratedJavaElementsForPublishedInterfaceGivenProductRelevantPublicAttribute() {
+        publicAttribute.setProductRelevant(true);
+        genPublicAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
+                publicAttribute);
+        expectationsForPublishedInterfaceGivenProductRelevantPublicAttribute();
+    }
+
+    private void expectationsForPublishedInterfaceGivenProductRelevantPublishedAttribute(GenChangeableAttribute genChangeableAttribute)
+            throws CoreException {
+
+        expectPropertyConstant(javaInterface, genChangeableAttribute);
+        expectGetterMethod(javaInterface, genChangeableAttribute);
+        expectSetterMethod(javaInterface, genChangeableAttribute);
+        expectGetValueSetMethod(javaInterface, genChangeableAttribute);
+
+        IType javaInterfaceProductGen = genPublishedAttribute.findGeneratedJavaTypeForProductCmptTypeGen(true);
+        expectGetValueSetMethod(javaInterfaceProductGen, genChangeableAttribute);
+        expectGetDefaultValueMethod(javaInterfaceProductGen, genChangeableAttribute);
         assertEquals(6, generatedJavaElements.size());
+    }
 
-        generatedJavaElements.clear();
-        genPublicChangeableAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                javaInterface, publicAttribute);
+    private void expectationsForPublishedInterfaceGivenProductRelevantPublicAttribute() {
+        assertTrue(generatedJavaElements.isEmpty());
+    }
+
+    public void testGetGeneratedJavaElementsForPublishedInterfaceGivenOverwrittenPublishedAttribute() {
+        genOverwrittenPublishedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
+                subJavaInterface, overwrittenPublishedAttribute);
         assertTrue(generatedJavaElements.isEmpty());
     }
 
     @Test
-    public void testGetGeneratedJavaElementsForPublishedInterfaceOverwritten() {
-        publishedAttribute.setOverwrite(true);
-        publicAttribute.setOverwrite(true);
-
-        genPublishedChangeableAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                javaInterface, publishedAttribute);
-        expectPropertyConstant(javaInterface, genPublishedChangeableAttribute);
-        assertEquals(1, generatedJavaElements.size());
-
-        generatedJavaElements.clear();
-        genPublicChangeableAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                javaInterface, publicAttribute);
+    public void testGetGeneratedJavaElementsForPublishedInterfaceGivenOverwrittenPublicAttribute() {
+        genOverwrittenPublicAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
+                subJavaClass, overwrittenPublicAttribute);
         assertTrue(generatedJavaElements.isEmpty());
     }
 
     @Test
-    public void testGetGeneratedJavaElementsForPublishedInterfaceProductRelevantOverwritten() throws CoreException {
+    public void testGetGeneratedJavaElementsForPublishedInterfaceGivenProductRelevantOverwrittenPublishedAttribute() {
         publishedAttribute.setProductRelevant(true);
-        publicAttribute.setProductRelevant(true);
-        publishedAttribute.setOverwrite(true);
-        publicAttribute.setOverwrite(true);
-        performGetGeneratedJavaElementsForPublishedInterfaceProductRelevantOverwritten();
+        overwrittenPublishedAttribute.setProductRelevant(true);
 
-        publishedAttribute.setValueSetType(ValueSetType.ENUM);
-        publicAttribute.setValueSetType(ValueSetType.ENUM);
-        performGetGeneratedJavaElementsForPublishedInterfaceProductRelevantOverwritten();
-
-        publishedAttribute.setValueSetType(ValueSetType.RANGE);
-        publicAttribute.setValueSetType(ValueSetType.RANGE);
-        performGetGeneratedJavaElementsForPublishedInterfaceProductRelevantOverwritten();
+        genOverwrittenPublishedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
+                subJavaInterface, overwrittenPublishedAttribute);
+        assertTrue(generatedJavaElements.isEmpty());
     }
 
-    private void performGetGeneratedJavaElementsForPublishedInterfaceProductRelevantOverwritten() throws CoreException {
-        genPublishedChangeableAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                javaInterface, publishedAttribute);
-        expectPropertyConstant(javaInterface, genPublishedChangeableAttribute);
-        expectGetValueSetMethod(javaInterface, genPublishedChangeableAttribute);
+    public void testGetGeneratedJavaElementsForPublishedInterfaceGivenProductRelevantOverwrittenPublicAttribute() {
+        publicAttribute.setProductRelevant(true);
+        overwrittenPublicAttribute.setProductRelevant(true);
 
-        IType javaInterfaceProductGen = genPublishedChangeableAttribute
-                .findGeneratedJavaTypeForProductCmptTypeGen(true);
-        expectGetValueSetMethod(javaInterfaceProductGen, genPublishedChangeableAttribute);
-        expectGetDefaultValueMethod(javaInterfaceProductGen, genPublishedChangeableAttribute);
-        assertEquals(4, generatedJavaElements.size());
-
-        generatedJavaElements.clear();
-        genPublicChangeableAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
-                javaInterface, publicAttribute);
+        genOverwrittenPublicAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
+                subJavaClass, overwrittenPublicAttribute);
         assertTrue(generatedJavaElements.isEmpty());
     }
 
     @Test
-    public void testGetGeneratedJavaElementsForImplementation() {
-        genPublishedChangeableAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
+    public void testGetGeneratedJavaElementsForImplementationGivenPublishedAttribute() {
+        genPublishedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
                 publishedAttribute);
-        expectMemberVar(javaClass, genPublishedChangeableAttribute);
-        expectGetterMethod(javaClass, genPublishedChangeableAttribute);
-        expectSetterMethod(javaClass, genPublishedChangeableAttribute);
+        expectationsForImplementationGivenPublishedAttribute(genPublishedAttribute);
+    }
+
+    public void testGetGeneratedJavaElementsForImplementationGivenPublicAttribute() {
+        genPublicAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass, publicAttribute);
+        expectationsForImplementationGivenPublicAttribute(genPublicAttribute);
+    }
+
+    private void expectationsForImplementationGivenPublishedAttribute(GenChangeableAttribute genChangeableAttribute) {
+        expectMemberVar(javaClass, genChangeableAttribute);
+        expectGetterMethod(javaClass, genChangeableAttribute);
+        expectSetterMethod(javaClass, genChangeableAttribute);
         assertEquals(3, generatedJavaElements.size());
+    }
 
-        generatedJavaElements.clear();
-        genPublicChangeableAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
-                publicAttribute);
-        expectPropertyConstant(javaClass, genPublicChangeableAttribute);
-        expectMemberVar(javaClass, genPublicChangeableAttribute);
-        expectGetterMethod(javaClass, genPublicChangeableAttribute);
-        expectSetterMethod(javaClass, genPublicChangeableAttribute);
+    private void expectationsForImplementationGivenPublicAttribute(GenChangeableAttribute genChangeableAttribute) {
+        expectPropertyConstant(javaClass, genChangeableAttribute);
+        expectMemberVar(javaClass, genChangeableAttribute);
+        expectGetterMethod(javaClass, genChangeableAttribute);
+        expectSetterMethod(javaClass, genChangeableAttribute);
         assertEquals(4, generatedJavaElements.size());
     }
 
     @Test
-    public void testGetGeneratedJavaElementsForImplementationProductRelevant() throws CoreException {
+    public void testGetGeneratedJavaElementsForImplementationGivenProductRelevantPublishedAttribute()
+            throws CoreException {
+
         publishedAttribute.setProductRelevant(true);
-        publicAttribute.setProductRelevant(true);
-        performGetGeneratedJavaElementsForImplementationProductRelevant();
-
-        publishedAttribute.setValueSetType(ValueSetType.ENUM);
-        publicAttribute.setValueSetType(ValueSetType.ENUM);
-        performGetGeneratedJavaElementsForImplementationProductRelevant();
-
-        publishedAttribute.setValueSetType(ValueSetType.RANGE);
-        publicAttribute.setValueSetType(ValueSetType.RANGE);
-        performGetGeneratedJavaElementsForImplementationProductRelevant();
+        genPublishedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
+                publishedAttribute);
+        expectationsForImplementationGivenProductRelevantPublishedAttribute(genPublishedAttribute);
     }
 
-    private void performGetGeneratedJavaElementsForImplementationProductRelevant() throws CoreException {
-        generatedJavaElements.clear();
-        genPublishedChangeableAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
-                publishedAttribute);
-        expectMemberVar(javaClass, genPublishedChangeableAttribute);
-        expectGetterMethod(javaClass, genPublishedChangeableAttribute);
-        expectSetterMethod(javaClass, genPublishedChangeableAttribute);
-        expectGetValueSetMethod(javaClass, genPublishedChangeableAttribute);
+    @Test
+    public void testGetGeneratedJavaElementsForImplementationGivenProductRelevantPublicAttribute() throws CoreException {
+        publicAttribute.setProductRelevant(true);
+        genPublicAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass, publicAttribute);
+        expectationsForImplementationGivenProductRelevantPublicAttribute(genPublicAttribute);
+    }
 
-        IType javaClassProductGen = genPublishedChangeableAttribute.findGeneratedJavaTypeForProductCmptTypeGen(false);
-        expectDefaultMemberVariable(javaClassProductGen, genPublishedChangeableAttribute);
-        expectValueSetMemberVariable(javaClassProductGen, genPublishedChangeableAttribute);
-        expectGetDefaultValueMethod(javaClassProductGen, genPublishedChangeableAttribute);
-        expectGetValueSetMethod(javaClassProductGen, genPublishedChangeableAttribute);
+    private void expectationsForImplementationGivenProductRelevantPublishedAttribute(GenChangeableAttribute genChangeableAttribute)
+            throws CoreException {
+
+        expectMemberVar(javaClass, genChangeableAttribute);
+        expectGetterMethod(javaClass, genChangeableAttribute);
+        expectSetterMethod(javaClass, genChangeableAttribute);
+        expectGetValueSetMethod(javaClass, genChangeableAttribute);
+
+        IType javaClassProductGen = genPublishedAttribute.findGeneratedJavaTypeForProductCmptTypeGen(false);
+        expectDefaultMemberVariable(javaClassProductGen, genChangeableAttribute);
+        expectValueSetMemberVariable(javaClassProductGen, genChangeableAttribute);
+        expectGetDefaultValueMethod(javaClassProductGen, genChangeableAttribute);
+        expectGetValueSetMethod(javaClassProductGen, genChangeableAttribute);
         assertEquals(8, generatedJavaElements.size());
+    }
 
-        generatedJavaElements.clear();
-        genPublicChangeableAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
-                publicAttribute);
-        expectPropertyConstant(javaClass, genPublicChangeableAttribute);
-        expectMemberVar(javaClass, genPublicChangeableAttribute);
-        expectGetterMethod(javaClass, genPublicChangeableAttribute);
-        expectSetterMethod(javaClass, genPublicChangeableAttribute);
-        expectGetValueSetMethod(javaClass, genPublicChangeableAttribute);
+    private void expectationsForImplementationGivenProductRelevantPublicAttribute(GenChangeableAttribute genChangeableAttribute)
+            throws CoreException {
 
-        javaClassProductGen = genPublicChangeableAttribute.findGeneratedJavaTypeForProductCmptTypeGen(false);
-        expectDefaultMemberVariable(javaClassProductGen, genPublicChangeableAttribute);
-        expectValueSetMemberVariable(javaClassProductGen, genPublicChangeableAttribute);
-        expectGetDefaultValueMethod(javaClassProductGen, genPublicChangeableAttribute);
-        expectGetValueSetMethod(javaClassProductGen, genPublicChangeableAttribute);
+        expectPropertyConstant(javaClass, genChangeableAttribute);
+        expectMemberVar(javaClass, genChangeableAttribute);
+        expectGetterMethod(javaClass, genChangeableAttribute);
+        expectSetterMethod(javaClass, genChangeableAttribute);
+        expectGetValueSetMethod(javaClass, genChangeableAttribute);
+
+        IType javaClassProductGen = genPublicAttribute.findGeneratedJavaTypeForProductCmptTypeGen(false);
+        expectDefaultMemberVariable(javaClassProductGen, genChangeableAttribute);
+        expectValueSetMemberVariable(javaClassProductGen, genChangeableAttribute);
+        expectGetDefaultValueMethod(javaClassProductGen, genChangeableAttribute);
+        expectGetValueSetMethod(javaClassProductGen, genChangeableAttribute);
         assertEquals(9, generatedJavaElements.size());
     }
 
     @Test
-    public void testGetGeneratedJavaElementsForImplementationOverwritten() {
-        publishedAttribute.setOverwrite(true);
-        publicAttribute.setOverwrite(true);
-
-        genPublishedChangeableAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
-                publishedAttribute);
+    public void testGetGeneratedJavaElementsForImplementationGivenOverwrittenPublishedAttribute() {
+        genOverwrittenPublishedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, subJavaClass,
+                overwrittenPublishedAttribute);
         assertTrue(generatedJavaElements.isEmpty());
-
-        generatedJavaElements.clear();
-        genPublicChangeableAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
-                publicAttribute);
-        expectPropertyConstant(javaClass, genPublicChangeableAttribute);
-        assertEquals(1, generatedJavaElements.size());
     }
 
     @Test
-    public void testGetGeneratedJavaElementsForImplementationProductRelevantOverwritten() throws CoreException {
-        publishedAttribute.setProductRelevant(true);
-        publicAttribute.setProductRelevant(true);
-        publishedAttribute.setOverwrite(true);
-        publicAttribute.setOverwrite(true);
-        performGetGeneratedJavaElementsForImplementationProductRelevantOverwritten();
-
-        publishedAttribute.setValueSetType(ValueSetType.ENUM);
-        publicAttribute.setValueSetType(ValueSetType.ENUM);
-        performGetGeneratedJavaElementsForImplementationProductRelevantOverwritten();
-
-        publishedAttribute.setValueSetType(ValueSetType.RANGE);
-        publicAttribute.setValueSetType(ValueSetType.RANGE);
-        performGetGeneratedJavaElementsForImplementationProductRelevantOverwritten();
+    public void testGetGeneratedJavaElementsForImplementationGivenOverwrittenPublicAttribute() {
+        genOverwrittenPublicAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, subJavaClass,
+                overwrittenPublicAttribute);
+        assertTrue(generatedJavaElements.isEmpty());
     }
 
-    private void performGetGeneratedJavaElementsForImplementationProductRelevantOverwritten() throws CoreException {
-        generatedJavaElements.clear();
-        genPublishedChangeableAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
-                publishedAttribute);
-        IType javaClassProductGen = genPublishedChangeableAttribute.findGeneratedJavaTypeForProductCmptTypeGen(false);
-        expectDefaultMemberVariable(javaClassProductGen, genPublishedChangeableAttribute);
-        expectValueSetMemberVariable(javaClassProductGen, genPublishedChangeableAttribute);
-        expectGetValueSetMethod(javaClass, genPublishedChangeableAttribute);
-        expectGetValueSetMethod(javaClassProductGen, genPublishedChangeableAttribute);
-        expectGetDefaultValueMethod(javaClassProductGen, genPublishedChangeableAttribute);
-        assertEquals(5, generatedJavaElements.size());
+    @Test
+    public void testGetGeneratedJavaElementsForImplementationGivenProductRelevantOverwrittenPublishedAttribute() {
+        publishedAttribute.setProductRelevant(true);
+        overwrittenPublishedAttribute.setProductRelevant(true);
 
-        generatedJavaElements.clear();
-        genPublicChangeableAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
-                publicAttribute);
-        javaClassProductGen = genPublicChangeableAttribute.findGeneratedJavaTypeForProductCmptTypeGen(false);
-        expectPropertyConstant(javaClass, genPublicChangeableAttribute);
-        expectDefaultMemberVariable(javaClassProductGen, genPublicChangeableAttribute);
-        expectValueSetMemberVariable(javaClassProductGen, genPublicChangeableAttribute);
-        expectGetValueSetMethod(javaClass, genPublicChangeableAttribute);
-        expectGetValueSetMethod(javaClassProductGen, genPublicChangeableAttribute);
-        expectGetDefaultValueMethod(javaClassProductGen, genPublicChangeableAttribute);
-        assertEquals(6, generatedJavaElements.size());
+        genOverwrittenPublishedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, subJavaClass,
+                overwrittenPublishedAttribute);
+        assertTrue(generatedJavaElements.isEmpty());
+    }
+
+    @Test
+    public void testGetGeneratedJavaElementsForImplementationGivenProductRelevantOverwrittenPublicAttribute() {
+        publicAttribute.setProductRelevant(true);
+        overwrittenPublicAttribute.setProductRelevant(true);
+
+        genOverwrittenPublicAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, subJavaClass,
+                overwrittenPublicAttribute);
+        assertTrue(generatedJavaElements.isEmpty());
     }
 
     private void expectGetValueSetMethod(IType javaType, GenChangeableAttribute genChangeableAttribute) {

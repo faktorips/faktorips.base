@@ -73,7 +73,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     public void testRenameSuperPolicyCmptType() throws CoreException {
         performRenameRefactoring(superPolicyCmptType, NEW_OBJECT_NAME);
 
-        checkSuperPolicyCmptTypeReferences(NEW_OBJECT_NAME);
+        checkSuperPolicyCmptTypeReferences(PACKAGE_NAME + '.' + NEW_OBJECT_NAME);
     }
 
     @Test
@@ -111,7 +111,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     public void testRenameSuperProductCmptType() throws CoreException {
         performRenameRefactoring(superProductCmptType, NEW_OBJECT_NAME);
 
-        checkSuperProductCmptTypeReferences(NEW_OBJECT_NAME);
+        checkSuperProductCmptTypeReferences(PACKAGE_NAME + '.' + NEW_OBJECT_NAME);
     }
 
     @Test

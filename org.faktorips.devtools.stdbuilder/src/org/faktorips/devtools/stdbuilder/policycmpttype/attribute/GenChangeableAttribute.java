@@ -95,7 +95,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
      */
     protected void generateSetterSignature(JavaCodeFragmentBuilder methodsBuilder) {
         int modifier = java.lang.reflect.Modifier.PUBLIC;
-        String methodName = getMethodNametSetPropertyValue(getAttribute().getName(), getDatatype());
+        String methodName = getMethodNameSetPropertyValue(getAttribute().getName());
         String paramName = getParamNameForSetterMethod();
         methodsBuilder.signature(modifier, "void", methodName, new String[] { paramName },
                 new String[] { getJavaClassName() });
@@ -234,7 +234,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
 
         if (!generatesInterface) {
             methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
-            if (((IPolicyCmptTypeAttribute)getAttribute()).isOverwrite() && isSuperAttributeConfigured()) {
+            if ((getAttribute()).isOverwrite() && isSuperAttributeConfigured()) {
                 appendOverrideAnnotation(methodsBuilder, getIpsProject(), false);
             } else if (getAttribute().getModifier().isPublished()) {
                 appendOverrideAnnotation(methodsBuilder, getIpsProject(), true);
@@ -256,8 +256,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
 
     private boolean isSuperAttributeConfigured() {
         try {
-            IPolicyCmptTypeAttribute overwrittenAttribute = ((IPolicyCmptTypeAttribute)getAttribute())
-                    .findOverwrittenAttribute(getIpsProject());
+            IPolicyCmptTypeAttribute overwrittenAttribute = (getAttribute()).findOverwrittenAttribute(getIpsProject());
             return overwrittenAttribute.isProductRelevant();
         } catch (CoreException e) {
             IpsPlugin.log(e);
@@ -281,7 +280,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
         }
         generateSetterSignature(methodsBuilder);
         methodsBuilder.openBracket();
-        ((GenPolicyCmptType)getGenType()).generateChangeListenerSupportBeforeChange(methodsBuilder,
+        (getGenType()).generateChangeListenerSupportBeforeChange(methodsBuilder,
                 ChangeEventType.MUTABLE_PROPERTY_CHANGED, getDatatype().getJavaClassName(), getMemberVarName(),
                 getParamNameForSetterMethod(), getStaticConstantPropertyName());
         methodsBuilder.append("this.");
@@ -289,7 +288,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
         methodsBuilder.append(" = ");
         methodsBuilder.append(getDatatypeHelper().referenceOrSafeCopyIfNeccessary(getParamNameForSetterMethod()));
         methodsBuilder.appendln(";");
-        ((GenPolicyCmptType)getGenType()).generateChangeListenerSupportAfterChange(methodsBuilder,
+        (getGenType()).generateChangeListenerSupportAfterChange(methodsBuilder,
                 ChangeEventType.MUTABLE_PROPERTY_CHANGED, getDatatype().getJavaClassName(), getMemberVarName(),
                 getParamNameForSetterMethod(), getStaticConstantPropertyName());
         methodsBuilder.closeBracket();
@@ -303,8 +302,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
             body.append("().");
         } else { // Public
             body.append("((");
-            body.append(getProductCmptType(ipsProject).getName()
-                    + ((GenPolicyCmptType)getGenType()).getAbbreviationForGenerationConcept());
+            body.append(getProductCmptType(ipsProject).getName() + (getGenType()).getAbbreviationForGenerationConcept());
             body.append(")");
             body.append(genProductCmptType.getMethodNameGetProductCmptGeneration());
             body.append("()).");
@@ -418,7 +416,6 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
     }
 
     public void generateInitializationForOverrideAttributes(JavaCodeFragmentBuilder builder, IIpsProject ipsProject) {
-
         JavaCodeFragment initialValueExpression = getDatatypeHelper().newInstance(getAttribute().getDefaultValue());
         generateCallToMethodSetPropertyValue(initialValueExpression, builder);
     }
@@ -460,7 +457,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
 
     protected void generateConstantRangeOfAllowedValues(JavaCodeFragmentBuilder membersBuilder) {
         appendLocalizedJavaDoc("FIELD_MAX_RANGE_FOR", getAttribute().getName(), membersBuilder);
-        IRangeValueSet range = (IRangeValueSet)((IPolicyCmptTypeAttribute)getAttribute()).getValueSet();
+        IRangeValueSet range = (IRangeValueSet)(getAttribute()).getValueSet();
         JavaCodeFragment containsNullFrag = new JavaCodeFragment();
         containsNullFrag.append(range.getContainsNull());
         JavaCodeFragment frag = valuesetDatatypeHelper.newRangeInstance(createCastExpression(range.getLowerBound()),
@@ -477,8 +474,8 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
                 getDescriptionInGeneratorLanguage(getAttribute()), builder);
         String[] valueIds = EMPTY_STRING_ARRAY;
         boolean containsNull = false;
-        if (((IPolicyCmptTypeAttribute)getAttribute()).getValueSet() instanceof IEnumValueSet) {
-            IEnumValueSet set = (IEnumValueSet)((IPolicyCmptTypeAttribute)getAttribute()).getValueSet();
+        if ((getAttribute()).getValueSet() instanceof IEnumValueSet) {
+            IEnumValueSet set = (IEnumValueSet)(getAttribute()).getValueSet();
             valueIds = set.getValues();
             containsNull = set.getContainsNull();
         } else if (getDatatype() instanceof EnumDatatype) {
@@ -520,7 +517,7 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
     }
 
     protected String getMethodNametSetPropertyValue() {
-        return getJavaNamingConvention().getSetterMethodName(getAttribute().getName(), getDatatype());
+        return getJavaNamingConvention().getSetterMethodName(getAttribute().getName());
     }
 
     /**
@@ -561,17 +558,16 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
             IType generatedJavaType,
             IIpsElement ipsElement) {
 
-        super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType, ipsElement);
-
-        if (isOverwrite() && !(isProductRelevant())) {
+        if (isOverwrite()) {
             return;
         }
 
-        if (!(isProductRelevant() && isOverwrite())) {
-            addMemberVarToGeneratedJavaElements(javaElements, generatedJavaType);
-            addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
-            addSetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
-        }
+        super.getGeneratedJavaElementsForImplementation(javaElements, generatedJavaType, ipsElement);
+
+        addMemberVarToGeneratedJavaElements(javaElements, generatedJavaType);
+        addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+        addSetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+
         if (isProductRelevant()) {
             addGetValueSetMethodToGeneratedJavaElements(javaElements, generatedJavaType);
             IType javaTypeProductCmptTypeGen = null;
@@ -595,28 +591,28 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
             IType generatedJavaType,
             IIpsElement ipsElement) {
 
-        super.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType, ipsElement);
-
-        if ((isOverwrite() && !(isProductRelevant())) || !(isPublished())) {
+        if (isOverwrite()) {
             return;
         }
 
-        if (!(isProductRelevant() && isOverwrite())) {
+        if (isPublished()) {
+            super.getGeneratedJavaElementsForPublishedInterface(javaElements, generatedJavaType, ipsElement);
             addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
             addSetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
-        }
-        if (isProductRelevant()) {
-            addGetValueSetMethodToGeneratedJavaElements(javaElements, generatedJavaType);
-            IType javaTypeProductCmptTypeGen = null;
-            try {
-                javaTypeProductCmptTypeGen = findGeneratedJavaTypeForProductCmptTypeGen(true);
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
 
-            if (javaTypeProductCmptTypeGen != null) {
-                addGetDefaultValueMethodToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
-                addGetValueSetMethodToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
+            if (isProductRelevant()) {
+                addGetValueSetMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+                IType javaTypeProductCmptTypeGen = null;
+                try {
+                    javaTypeProductCmptTypeGen = findGeneratedJavaTypeForProductCmptTypeGen(true);
+                } catch (CoreException e) {
+                    throw new RuntimeException(e);
+                }
+
+                if (javaTypeProductCmptTypeGen != null) {
+                    addGetDefaultValueMethodToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
+                    addGetValueSetMethodToGeneratedJavaElements(javaElements, javaTypeProductCmptTypeGen);
+                }
             }
         }
     }
@@ -654,13 +650,11 @@ public class GenChangeableAttribute extends GenPolicyCmptTypeAttribute {
     }
 
     private void addValueSetMemberVarToGeneratedJavaElements(List<IJavaElement> javaElements, IType generatedJavaType) {
-
         IField field = generatedJavaType.getField(getFieldNameSetOfAllowedValues());
         javaElements.add(field);
     }
 
     private void addGetValueSetMethodToGeneratedJavaElements(List<IJavaElement> javaElements, IType generatedJavaType) {
-
         IMethod method = generatedJavaType.getMethod(getMethodNameGetSetOfAllowedValues(), new String[] { "Q"
                 + IValidationContext.class.getSimpleName() + ";" });
         javaElements.add(method);

@@ -31,9 +31,9 @@ public abstract class ProductCmptTypeBuilderTest extends AbstractStdBuilderTest 
 
     protected final static String POLICY_NAME = "PolicyCmptType";
 
-    protected IProductCmptType productCmptType;
-
     protected GenProductCmptType genProductCmptType;
+
+    protected IProductCmptType productCmptType;
 
     protected IPolicyCmptType policyCmptType;
 

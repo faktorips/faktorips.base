@@ -37,6 +37,8 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
 
         IIpsPackageFragmentRoot fragmentRoot = policyCmptType.getIpsPackageFragment().getRoot();
         targetIpsPackageFragment = fragmentRoot.createPackageFragment(TARGET_PACKAGE_NAME, true, null);
+
+        performFullBuild();
     }
 
     @Test

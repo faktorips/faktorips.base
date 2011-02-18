@@ -53,7 +53,7 @@ public abstract class GenAttribute extends GenTypePart {
         }
     }
 
-    public final IAttribute getAttribute() {
+    public IAttribute getAttribute() {
         return attribute;
     }
 
