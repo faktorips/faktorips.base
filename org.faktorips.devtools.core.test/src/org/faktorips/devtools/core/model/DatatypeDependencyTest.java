@@ -36,7 +36,8 @@ public class DatatypeDependencyTest {
         dependency = new DatatypeDependency(source, "a.b.e");
     }
 
-    public final void testHashCode() {
+    @Test
+    public void testHashCode() {
         QualifiedNameType source = new QualifiedNameType("a.b.c", IpsObjectType.POLICY_CMPT_TYPE);
         DatatypeDependency dependency = new DatatypeDependency(source, "a.b.e");
 
@@ -45,23 +46,28 @@ public class DatatypeDependencyTest {
         assertEquals(dependency.hashCode(), dependency2.hashCode());
     }
 
-    public final void testGetSource() {
+    @Test
+    public void testGetSource() {
         assertEquals(source, dependency.getSource());
     }
 
-    public final void testGetTargetAsQualifiedName() {
+    @Test
+    public void testGetTargetAsQualifiedName() {
         assertEquals("a.b.e", dependency.getTargetAsQualifiedName());
     }
 
-    public final void testGetTarget() {
+    @Test
+    public void testGetTarget() {
         assertEquals("a.b.e", dependency.getTarget());
     }
 
-    public final void testGetType() {
+    @Test
+    public void testGetType() {
         assertEquals(DependencyType.DATATYPE, dependency.getType());
     }
 
-    public final void testEqualsObject() {
+    @Test
+    public void testEqualsObject() {
         QualifiedNameType source = new QualifiedNameType("a.b.c", IpsObjectType.POLICY_CMPT_TYPE);
         DatatypeDependency dependency = new DatatypeDependency(source, "a.b.e");
 
