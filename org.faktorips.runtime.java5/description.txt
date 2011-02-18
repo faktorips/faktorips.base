@@ -1,8 +1,0 @@
-This project contains the Faktor-IPS runtime for Java 1.5.
-
-Classes of this project are used e.g. by generated code.
-
-A small special subset of these
-classes is also deployed as a runtime-client JAR  with necessary classes for client applications.
-The classes are described in the build script build/build.xml
-
