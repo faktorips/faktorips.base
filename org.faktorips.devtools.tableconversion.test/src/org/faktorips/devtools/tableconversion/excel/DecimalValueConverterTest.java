@@ -15,6 +15,7 @@ package org.faktorips.devtools.tableconversion.excel;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
@@ -76,7 +77,8 @@ public class DecimalValueConverterTest {
         assertTrue(ml.isEmpty());
 
         value = converter.getExternalDataValue(null, ml);
-        assertEquals(Decimal.NULL, value);
+        // do not use assertEquals because instances of Number are compared by getting longValue
+        assertSame(Decimal.NULL, value);
         assertTrue(ml.isEmpty());
 
         value = converter.getExternalDataValue(INVALID, ml);
