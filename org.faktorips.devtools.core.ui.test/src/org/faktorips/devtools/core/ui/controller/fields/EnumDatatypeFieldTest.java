@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Shell;

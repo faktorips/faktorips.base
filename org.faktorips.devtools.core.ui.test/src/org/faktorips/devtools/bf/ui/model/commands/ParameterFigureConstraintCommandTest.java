@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.bf.ui.model.commands;
 
+import static org.junit.Assert.assertEquals;
+
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;

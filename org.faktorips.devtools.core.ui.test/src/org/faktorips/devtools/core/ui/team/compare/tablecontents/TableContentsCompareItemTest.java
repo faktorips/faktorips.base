@@ -13,6 +13,11 @@
 
 package org.faktorips.devtools.core.ui.team.compare.tablecontents;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.util.GregorianCalendar;
 
 import org.eclipse.compare.ResourceNode;

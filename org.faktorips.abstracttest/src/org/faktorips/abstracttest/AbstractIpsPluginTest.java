@@ -13,6 +13,10 @@
 
 package org.faktorips.abstracttest;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
 import java.beans.PropertyDescriptor;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -101,6 +105,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.util.BeanUtil;
 import org.faktorips.util.StringUtil;
+import org.junit.After;
 import org.junit.Before;
 import org.w3c.dom.Document;
 
@@ -121,11 +126,6 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         super();
     }
 
-    public AbstractIpsPluginTest(String name) {
-        super(name);
-    }
-
-    @Override
     @Before
     public void setUp() throws Exception {
         IpsPlugin.getDefault().setSuppressLoggingDuringTest(false);
@@ -158,7 +158,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
     }
 
-    @Override
+    @After
     protected final void tearDown() throws Exception {
         IpsPlugin.getDefault().setSuppressLoggingDuringTest(false);
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();

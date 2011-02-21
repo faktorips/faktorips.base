@@ -28,10 +28,6 @@ public abstract class PersistenceIpsTest extends AbstractIpsPluginTest {
         super();
     }
 
-    public PersistenceIpsTest(String name) {
-        super(name);
-    }
-
     @Override
     @Before
     public void setUp() throws Exception {

@@ -31,10 +31,6 @@ public abstract class AbstractXmlUnitHtmlExportTest extends AbstractHtmlExportPl
         super();
     }
 
-    public AbstractXmlUnitHtmlExportTest(String name) {
-        super(name);
-    }
-
     @Override
     @Before
     public void setUp() throws Exception {

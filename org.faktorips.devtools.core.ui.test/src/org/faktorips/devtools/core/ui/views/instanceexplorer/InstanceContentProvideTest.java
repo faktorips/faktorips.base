@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.views.instanceexplorer;
 
+import static org.junit.Assert.assertTrue;
+
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;

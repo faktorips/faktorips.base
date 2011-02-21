@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.attribute;
 
+import static org.junit.Assert.assertTrue;
+
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;

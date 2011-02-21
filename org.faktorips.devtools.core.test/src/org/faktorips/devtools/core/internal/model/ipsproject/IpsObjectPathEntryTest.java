@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import static org.junit.Assert.assertEquals;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;

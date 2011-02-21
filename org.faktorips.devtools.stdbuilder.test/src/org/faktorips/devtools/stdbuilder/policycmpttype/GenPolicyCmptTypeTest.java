@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;

@@ -13,16 +13,15 @@
 
 package org.faktorips.devtools.ant;
 
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.apache.tools.ant.BuildException;
-import org.faktorips.devtools.ant.ProjectImportTask;
+import org.junit.Test;
 
 public class ProjectImportTaskTest{
 

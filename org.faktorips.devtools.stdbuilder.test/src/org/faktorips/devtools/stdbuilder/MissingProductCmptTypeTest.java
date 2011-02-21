@@ -30,10 +30,6 @@ public class MissingProductCmptTypeTest extends AbstractIpsPluginTest {
         super();
     }
 
-    public MissingProductCmptTypeTest(String name) {
-        super(name);
-    }
-
     /**
      * Tests if the build finishes without throwing an exception if the product component type name
      * is missing

@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 

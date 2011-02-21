@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.model.enums;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.enums.AbstractIpsEnumPluginTest;
 import org.junit.Before;

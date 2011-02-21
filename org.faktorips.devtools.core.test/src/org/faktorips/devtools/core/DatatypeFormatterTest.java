@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.List;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;

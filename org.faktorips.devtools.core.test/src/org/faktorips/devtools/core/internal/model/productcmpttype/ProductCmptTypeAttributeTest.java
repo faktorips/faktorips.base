@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import javax.xml.transform.TransformerException;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;

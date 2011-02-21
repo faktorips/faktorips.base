@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.ui.search;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 import java.util.HashSet;
 
 import org.eclipse.search.ui.NewSearchUI;

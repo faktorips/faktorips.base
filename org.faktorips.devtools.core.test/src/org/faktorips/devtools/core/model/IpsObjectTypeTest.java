@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.model;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;

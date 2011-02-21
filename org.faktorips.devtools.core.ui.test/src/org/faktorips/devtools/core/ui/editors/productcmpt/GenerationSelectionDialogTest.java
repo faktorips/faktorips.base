@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.GregorianCalendar;
 import java.util.List;
 

@@ -13,6 +13,11 @@
 
 package org.faktorips.devtools.htmlexport.pages.elements.core;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.ImageData;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;

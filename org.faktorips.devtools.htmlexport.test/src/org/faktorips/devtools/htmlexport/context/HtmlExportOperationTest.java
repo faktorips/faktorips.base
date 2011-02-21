@@ -1,5 +1,8 @@
 package org.faktorips.devtools.htmlexport.context;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.htmlexport.HtmlExportOperation;
 import org.faktorips.devtools.htmlexport.IDocumentorScript;

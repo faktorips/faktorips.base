@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 

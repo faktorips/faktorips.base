@@ -34,10 +34,6 @@ public class ProductCmptWithoutVersionIdTest extends AbstractIpsPluginTest {
         super();
     }
 
-    public ProductCmptWithoutVersionIdTest(String name) {
-        super(name);
-    }
-
     @Test
     public void test() throws CoreException {
         IIpsProject project = newIpsProject();

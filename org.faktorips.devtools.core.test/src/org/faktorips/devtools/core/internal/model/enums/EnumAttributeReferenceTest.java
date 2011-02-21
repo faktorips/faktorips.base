@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.enums;
 
+import static org.junit.Assert.assertEquals;
+
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.faktorips.devtools.core.model.IIpsElement;

@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -43,10 +46,6 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
 
     public IpsModelListenerTest() {
         super();
-    }
-
-    public IpsModelListenerTest(String name) {
-        super(name);
     }
 
     @Override

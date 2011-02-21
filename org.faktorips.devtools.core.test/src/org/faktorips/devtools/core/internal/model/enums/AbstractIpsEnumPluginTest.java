@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.enums;
 
+import static org.junit.Assert.assertEquals;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
@@ -151,7 +153,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
     }
 
     protected void assertOneValidationMessage(MessageList validationMessageList) {
-        assertEquals(1, validationMessageList.getNoOfMessages());
+        assertEquals(1, validationMessageList.size());
     }
 
     public class ContentsChangeCounter implements ContentsChangeListener {

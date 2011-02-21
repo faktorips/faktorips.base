@@ -13,6 +13,10 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.faktorips.abstracttest.AbstractIpsRefactoringTest;

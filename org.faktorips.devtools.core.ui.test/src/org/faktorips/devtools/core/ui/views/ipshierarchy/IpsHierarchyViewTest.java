@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.ui.views.ipshierarchy;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashSet;
 import java.util.Set;
 

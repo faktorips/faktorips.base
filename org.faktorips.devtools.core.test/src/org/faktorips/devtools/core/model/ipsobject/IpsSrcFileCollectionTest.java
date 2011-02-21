@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.model.ipsobject;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import junit.framework.Assert;
 
 import org.eclipse.core.runtime.CoreException;

@@ -13,6 +13,11 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;

@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import org.apache.commons.lang.SystemUtils;
 import org.faktorips.abstracttest.test.XmlAbstractTestCase;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;

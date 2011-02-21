@@ -32,10 +32,6 @@ public class AssociationTargetDoesNotExistTest extends AbstractIpsPluginTest {
         super();
     }
 
-    public AssociationTargetDoesNotExistTest(String name) {
-        super(name);
-    }
-
     @Test
     public void test() throws CoreException {
         IIpsProject project = newIpsProject();

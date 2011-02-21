@@ -13,6 +13,10 @@
 
 package org.faktorips.devtools.core.builder;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ISaveContext;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -23,9 +27,11 @@ import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.junit.Test;
 
 public class DependencyGraphPersistenceManagerTest extends AbstractIpsPluginTest {
 
+    @Test
     public final void testGetDependencyGraph() throws Exception {
 
         IIpsProject ipsProject = newIpsProject();

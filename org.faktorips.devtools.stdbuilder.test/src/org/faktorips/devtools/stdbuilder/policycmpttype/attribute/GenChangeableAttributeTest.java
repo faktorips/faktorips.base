@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.attribute;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IMethod;
@@ -153,6 +156,7 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
         assertTrue(generatedJavaElements.isEmpty());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterfaceGivenOverwrittenPublishedAttribute() {
         genOverwrittenPublishedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
                 subJavaInterface, overwrittenPublishedAttribute);
@@ -176,6 +180,7 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
         assertTrue(generatedJavaElements.isEmpty());
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForPublishedInterfaceGivenProductRelevantOverwrittenPublicAttribute() {
         publicAttribute.setProductRelevant(true);
         overwrittenPublicAttribute.setProductRelevant(true);
@@ -192,6 +197,7 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
         expectationsForImplementationGivenPublishedAttribute(genPublishedAttribute);
     }
 
+    @Test
     public void testGetGeneratedJavaElementsForImplementationGivenPublicAttribute() {
         genPublicAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass, publicAttribute);
         expectationsForImplementationGivenPublicAttribute(genPublicAttribute);

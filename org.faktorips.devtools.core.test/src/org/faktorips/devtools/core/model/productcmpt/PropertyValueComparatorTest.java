@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.model.productcmpt;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Arrays;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;

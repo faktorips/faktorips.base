@@ -13,6 +13,10 @@
 
 package org.faktorips.devtools.bf.ui.edit;
 
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPart;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;

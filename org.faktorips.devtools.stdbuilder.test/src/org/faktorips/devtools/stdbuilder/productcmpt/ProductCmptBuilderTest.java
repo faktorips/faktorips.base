@@ -13,6 +13,11 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpt;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.GregorianCalendar;
 
 import org.eclipse.core.resources.IFile;

@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.stdbuilder;
 
+import static org.junit.Assert.assertEquals;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.builder.DependencyGraph;

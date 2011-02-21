@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpttype.attribute;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IMethod;

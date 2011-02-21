@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.association;
 
+import static org.junit.Assert.assertEquals;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.pctype.AssociationType;

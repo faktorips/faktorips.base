@@ -13,6 +13,10 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.util.ArrayList;
 import java.util.List;
 

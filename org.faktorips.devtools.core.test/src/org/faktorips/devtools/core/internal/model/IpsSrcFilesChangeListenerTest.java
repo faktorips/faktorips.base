@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;

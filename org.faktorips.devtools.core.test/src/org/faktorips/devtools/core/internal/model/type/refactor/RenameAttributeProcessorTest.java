@@ -13,6 +13,12 @@
 
 package org.faktorips.devtools.core.internal.model.type.refactor;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
@@ -288,6 +294,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
      * Test whether renaming a {@link IPolicyCmptTypeAttribute} that is overwriting an attribute of
      * the super type hierarchy also renames the super attribute.
      */
+    @Test
     public void testRenameOverridingPolicyCmptTypeAttribute() throws CoreException {
         // Create a type hierarchy of depth 3, always overwriting an attribute
         IPolicyCmptType deepPolicyCmptType = newPolicyCmptType(ipsProject, "DeepPolicyCmptType");

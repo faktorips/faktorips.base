@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import static org.junit.Assert.assertEquals;
+
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.junit.Test;
 import org.w3c.dom.Document;

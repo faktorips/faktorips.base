@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.ui.internal.generationdate;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 

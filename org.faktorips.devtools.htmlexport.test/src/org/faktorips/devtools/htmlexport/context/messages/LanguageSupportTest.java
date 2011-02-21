@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.htmlexport.context.messages;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Locale;
 
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;

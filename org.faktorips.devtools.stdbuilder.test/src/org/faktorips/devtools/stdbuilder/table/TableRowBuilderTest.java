@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.stdbuilder.table;
 
+import static org.junit.Assert.assertTrue;
+
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;

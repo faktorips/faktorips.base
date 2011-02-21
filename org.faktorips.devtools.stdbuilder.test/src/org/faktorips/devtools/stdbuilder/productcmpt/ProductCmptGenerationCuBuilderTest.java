@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpt;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.GregorianCalendar;
 
 import org.eclipse.jdt.core.IType;

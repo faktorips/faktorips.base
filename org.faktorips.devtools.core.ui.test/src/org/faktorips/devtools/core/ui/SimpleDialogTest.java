@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui;
 
+import static org.junit.Assert.fail;
+
 import java.util.GregorianCalendar;
 
 import org.eclipse.core.resources.IFile;

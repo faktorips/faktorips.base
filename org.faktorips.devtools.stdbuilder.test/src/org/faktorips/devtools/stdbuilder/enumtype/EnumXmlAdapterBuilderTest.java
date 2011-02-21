@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.stdbuilder.enumtype;
 
+import static org.junit.Assert.assertTrue;
+
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;

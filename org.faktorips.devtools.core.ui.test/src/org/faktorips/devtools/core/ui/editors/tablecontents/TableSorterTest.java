@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.editors.tablecontents;
 
+import static org.junit.Assert.assertEquals;
+
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;

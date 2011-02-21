@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpttype;
 
+import static org.junit.Assert.assertTrue;
+
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.junit.Before;
 import org.junit.Test;

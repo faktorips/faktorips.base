@@ -39,10 +39,6 @@ public abstract class AbstractHtmlExportPluginTest extends AbstractIpsPluginTest
         super();
     }
 
-    public AbstractHtmlExportPluginTest(String name) {
-        super(name);
-    }
-
     @Override
     @Before
     public void setUp() throws Exception {

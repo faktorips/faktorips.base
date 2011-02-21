@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.model.pctype;
 
+import static org.junit.Assert.assertEquals;
+
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;

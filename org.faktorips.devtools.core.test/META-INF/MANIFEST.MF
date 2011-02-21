@@ -3,15 +3,14 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Tests for devtools.core
 Bundle-SymbolicName: org.faktorips.devtools.core.test;singleton:=true
 Bundle-Version: 0.0.0
-Fragment-Host: org.faktorips.devtools.core
-Require-Bundle: org.eclipse.core.runtime,
+Require-Bundle: org.faktorips.devtools.core,
+ org.faktorips.abstracttest,
+ org.eclipse.core.runtime,
  org.faktorips.fl,
  org.faktorips.valuetypes.java5,
  org.eclipse.jdt.core,
  org.eclipse.gef,
- org.eclipse.ltk.core.refactoring;bundle-version="3.4.0",
- org.junit4;bundle-version="4.3.1",
- org.mockito;bundle-version="1.8.3"
+ org.eclipse.ltk.core.refactoring;bundle-version="3.4.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.faktorips.devtools.core,
  org.faktorips.devtools.core.builder,
@@ -27,6 +26,3 @@ Export-Package: org.faktorips.devtools.core,
  org.faktorips.devtools.core.model.pctype
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Faktor Zehn AG
-Import-Package: org.faktorips.abstracttest,
- org.faktorips.abstracttest.builder,
- org.faktorips.abstracttest.test

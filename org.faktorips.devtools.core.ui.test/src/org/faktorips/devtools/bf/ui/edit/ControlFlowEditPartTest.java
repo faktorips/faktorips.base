@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.bf.ui.edit;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.eclipse.draw2d.AbsoluteBendpoint;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;

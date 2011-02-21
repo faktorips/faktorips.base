@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.enums.refactor;
 
+import static org.junit.Assert.assertEquals;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsRefactoringTest;
 import org.junit.Test;
