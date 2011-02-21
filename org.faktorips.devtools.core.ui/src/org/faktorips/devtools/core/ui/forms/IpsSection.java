@@ -39,7 +39,7 @@ import org.faktorips.util.ArgumentCheck;
 public abstract class IpsSection extends Composite implements IDataChangeableReadWriteAccess,
         IDataChangeableReadAccessWithListenerSupport, DisposeListener {
 
-    /** The ui control for the section */
+    /** The UI control for the section */
     private Section section;
 
     /** Flag indicating whether the section is currently refreshing */
@@ -51,7 +51,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
     /** SWT info how to layout the data (for example GridData.FILL_BOTH) */
     private int layoutData;
 
-    /** The ui toolkit to create new ui elements with */
+    /** The UI toolkit to create new UI elements with */
     private UIToolkit toolkit;
 
     /** Flag indicating whether the content of this section can be changed by the user */
@@ -71,19 +71,19 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
      */
     private IpsSection focusPredecessor;
 
-    /** The control that has to be focussed if <code>setFocus()</code> of this section is called. */
+    /** The control that has to be focused if <code>setFocus()</code> of this section is called. */
     private Control focusCtrl;
 
-    /** Binding context to bind ui elements with model data. */
+    /** Binding context to bind UI elements with model data. */
     protected BindingContext bindingContext;
 
     /**
      * Creates a new <code>IpsSection</code>.
      * 
-     * @param parent The parent ui composite.
+     * @param parent The parent UI composite.
      * @param style The section style to use, see {@link Section}.
      * @param layoutData How to layout the data within the section.
-     * @param toolkit The ui toolkit to create new ui elements with.
+     * @param toolkit The UI toolkit to create new UI elements with.
      */
     public IpsSection(Composite parent, int style, int layoutData, UIToolkit toolkit) {
         super(parent, SWT.NONE);
@@ -129,18 +129,18 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
     }
 
     /**
-     * Creates the ui controls for this section. All subclasses must implement this method on their
+     * Creates the UI controls for this section. All subclasses must implement this method on their
      * own.
      * 
-     * @param client The composite to create the ui elements into.
-     * @param toolkit The ui toolkit used to create new ui elements.
+     * @param client The composite to create the UI elements into.
+     * @param toolkit The UI toolkit used to create new UI elements.
      */
     protected abstract void initClientComposite(Composite client, UIToolkit toolkit);
 
     /**
-     * Returns the ui section widget being wrapped by this composite.
+     * Returns the UI section widget being wrapped by this composite.
      * 
-     * @return A handle to the ui section widget being wrapped by this composite.
+     * @return A handle to the UI section widget being wrapped by this composite.
      */
     protected Section getSectionControl() {
         return section;
@@ -250,7 +250,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
 
     /**
      * Adds a control that can gain the focus (by user operation or by system calls). The first
-     * control added to this section is the one focussed if this section is initially displayed (if
+     * control added to this section is the one focused if this section is initially displayed (if
      * there is no focus predecessor).
      * 
      * @throws NullPointerException if the given focusControl is <code>null</code>.

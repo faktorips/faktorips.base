@@ -38,7 +38,6 @@ import org.faktorips.devtools.core.ui.wizards.enumtype.EnumTypePage;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * 
  * The general info section for the <tt>EnumTypeEditor</tt> provides UI controls to edit the
  * <em>superEnumType</em> property, the <em>abstract</em> property and the
  * <em>valuesArePartOfModel</em> property of an <tt>IEnumType</tt>.

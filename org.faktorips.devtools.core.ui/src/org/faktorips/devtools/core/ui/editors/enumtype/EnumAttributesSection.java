@@ -71,6 +71,12 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
     public EnumAttributesSection(IEnumType enumType, Composite parent, UIToolkit toolkit) {
         super(enumType, parent, Messages.EnumAttributesSection_title, toolkit);
         ((EnumAttributesComposite)getPartsComposite()).createContextMenu();
+
+        addMonitoredValidationMessageCode(IEnumType.MSGCODE_ENUM_TYPE_MULTIPLE_LITERAL_NAME_ATTRIBUTES);
+        addMonitoredValidationMessageCode(IEnumType.MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE);
+        addMonitoredValidationMessageCode(IEnumType.MSGCODE_ENUM_TYPE_NO_USED_AS_ID_IN_FAKTOR_IPS_UI_ATTRIBUTE);
+        addMonitoredValidationMessageCode(IEnumType.MSGCODE_ENUM_TYPE_NO_USED_AS_NAME_IN_FAKTOR_IPS_UI_ATTRIBUTE);
+        addMonitoredValidationMessageCode(IEnumType.MSGCODE_ENUM_TYPE_NOT_INHERITED_ATTRIBUTES_IN_SUPERTYPE_HIERARCHY);
     }
 
     @Override
@@ -86,6 +92,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
     @Override
     protected void performRefresh() {
         super.performRefresh();
+
         enumAttributesComposite.updateInheritButtonEnabledState();
         try {
             enumAttributesComposite.setCanDelete(!(getEnumType().isCapableOfContainingValues()));
