@@ -79,8 +79,8 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
+import org.faktorips.devtools.core.ui.editors.IpsObjectPartContainerSection;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
-import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
@@ -106,7 +106,7 @@ import org.faktorips.util.message.MessageList;
  * 
  * @since 2.3
  */
-public class EnumValuesSection extends IpsSection implements ContentsChangeListener {
+public class EnumValuesSection extends IpsObjectPartContainerSection implements ContentsChangeListener {
 
     /** Key to store the state of the action in the dialog settings. */
     private static final String SETTINGS_KEY_LOCK_AND_SYNC = "lockAndSyncLiteralNames"; //$NON-NLS-1$
@@ -201,7 +201,7 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
     public EnumValuesSection(final IEnumValueContainer enumValueContainer, Composite parent, UIToolkit toolkit)
             throws CoreException {
 
-        super(parent, ExpandableComposite.TITLE_BAR, GridData.FILL_BOTH, toolkit);
+        super(enumValueContainer, parent, ExpandableComposite.TITLE_BAR, GridData.FILL_BOTH, toolkit);
         ArgumentCheck.notNull(enumValueContainer);
 
         this.enumValueContainer = enumValueContainer;
@@ -228,6 +228,8 @@ public class EnumValuesSection extends IpsSection implements ContentsChangeListe
         updateEnabledStates();
 
         registerAsChangeListenerToEnumValueContainer();
+
+        addMonitoredValidationMessageCode(IEnumType.MSGCODE_ENUM_TYPE_ENUM_VALUES_OBSOLETE);
     }
 
     private void initDefaultProviderValues() {

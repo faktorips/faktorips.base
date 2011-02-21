@@ -74,6 +74,8 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
     /** The control that has to be focused if <code>setFocus()</code> of this section is called. */
     private Control focusCtrl;
 
+    private Composite clientComposite;
+
     /** Binding context to bind UI elements with model data. */
     protected BindingContext bindingContext;
 
@@ -121,11 +123,11 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
         section.setLayoutData(new GridData(layoutData));
 
         // Create the client composite for the section
-        Composite client = toolkit.createGridComposite(section, 1, false, false);
-        client.setLayoutData(new GridData(layoutData));
-        initClientComposite(client, toolkit);
-        section.setClient(client);
-        toolkit.getFormToolkit().paintBordersFor(client);
+        clientComposite = toolkit.createGridComposite(section, 1, false, false);
+        clientComposite.setLayoutData(new GridData(layoutData));
+        initClientComposite(clientComposite, toolkit);
+        section.setClient(clientComposite);
+        toolkit.getFormToolkit().paintBordersFor(clientComposite);
     }
 
     /**
@@ -303,10 +305,14 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
     }
 
     /**
-     * Returns the ui toolkit.
+     * Returns the UI toolkit.
      */
     public UIToolkit getToolkit() {
         return toolkit;
+    }
+
+    protected Composite getClientComposite() {
+        return clientComposite;
     }
 
     /**
