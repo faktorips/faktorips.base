@@ -49,6 +49,7 @@ import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
@@ -272,24 +273,26 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         assertNotNull(builderToc.getEntry(new QualifiedNameType("motor.RateTableEnum", IpsObjectType.TABLE_CONTENTS)));
     }
 
-    // public void testIfIdenticalTocFileIsNotWrittenAfterFullBuild() throws CoreException {
-    // // create a product component
-    // IPolicyCmptType type = newPolicyAndProductCmptType(project, "motor.MotorPolicy",
-    // "motor.MotorProduct");
-    // IProductCmptType productCmptType = type.findProductCmptType(project);
-    // newProductCmpt(productCmptType, "motor.MotorProduct");
-    //
-    // // now make a full build
-    // project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
-    // IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
-    // IFile tocFile = project.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root);
-    // assertTrue(tocFile.exists());
-    // long modStamp = tocFile.getModificationStamp();
-    //
-    // // now make a seond full build
-    // project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
-    // assertEquals(modStamp, tocFile.getModificationStamp());
-    // }
+    @Ignore
+    // not supported at the moment
+    @Test
+    public void testIfIdenticalTocFileIsNotWrittenAfterFullBuild() throws CoreException {
+        // create a product component
+        IPolicyCmptType type = newPolicyAndProductCmptType(project, "motor.MotorPolicy", "motor.MotorProduct");
+        IProductCmptType productCmptType = type.findProductCmptType(project);
+        newProductCmpt(productCmptType, "motor.MotorProduct");
+
+        // now make a full build
+        project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
+        IFile tocFile = project.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root);
+        assertTrue(tocFile.exists());
+        long modStamp = tocFile.getModificationStamp();
+
+        // now make a seond full build
+        project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        assertEquals(modStamp, tocFile.getModificationStamp());
+    }
 
     @Test
     public void testCreateDeleteTocEntryFormulaTest() throws Exception {

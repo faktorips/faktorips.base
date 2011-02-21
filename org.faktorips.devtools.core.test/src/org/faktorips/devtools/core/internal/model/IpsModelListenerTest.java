@@ -16,6 +16,9 @@ package org.faktorips.devtools.core.internal.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.io.InputStream;
+
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -28,6 +31,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -150,23 +154,28 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
     // notfication is run asynchonously and so the event might occurr later!
     // So basically, we don't now how to test this!
     // Therefore we comment the whole test case until we have an idea, how we can test this.
-    /*
-     * @Test public void testChangeCorrespondigResource() throws Exception {
-     * 
-     * IFile ioFile = file.getCorrespondingFile(); InputStream is =
-     * file.getContentFromEnclosingResource();
-     * 
-     * TestContentChangeListener listener = new TestContentChangeListener();
-     * 
-     * try { IpsPlugin.getDefault().getIpsModel().addChangeListener(listener);
-     * ioFile.setContents(is, true, false, null); assertEquals(file,
-     * listener.lastEvent.getIpsSrcFile());
-     * assertEquals(ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED,
-     * listener.lastEvent.getEventType()); assertNull(listener.lastEvent.getPart()); assertEquals(0,
-     * listener.lastEvent.getMovedParts().length);
-     * 
-     * } finally { IpsPlugin.getDefault().getIpsModel().removeChangeListener(listener); } }
-     */
+    // TODO
+    @Ignore
+    @Test
+    public void testChangeCorrespondigResource() throws Exception {
+
+        IFile ioFile = file.getCorrespondingFile();
+        InputStream is = file.getContentFromEnclosingResource();
+
+        TestContentChangeListener listener = new TestContentChangeListener();
+
+        try {
+            IpsPlugin.getDefault().getIpsModel().addChangeListener(listener);
+            ioFile.setContents(is, true, false, null);
+            assertEquals(file, listener.lastEvent.getIpsSrcFile());
+            assertEquals(ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED, listener.lastEvent.getEventType());
+            assertNull(listener.lastEvent.getPart());
+            assertEquals(0, listener.lastEvent.getMovedParts().length);
+
+        } finally {
+            IpsPlugin.getDefault().getIpsModel().removeChangeListener(listener);
+        }
+    }
 
     @Test
     public void testStopRestartBroadcasting() throws Exception {
