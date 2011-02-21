@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
-import org.faktorips.util.ArgumentCheck;
 
 /**
  * An implementation of the {@link IExtensionPoint} interface for testing purposes. Not all of the
@@ -40,9 +39,6 @@ public class TestExtensionPoint implements IExtensionPoint {
      * and a simpleIdentifier
      */
     public TestExtensionPoint(IExtension[] extensions, String nameSpaceIdentifier, String simpleIdentifier) {
-        ArgumentCheck.notNull(extensions, this);
-        ArgumentCheck.notNull(nameSpaceIdentifier, this);
-        ArgumentCheck.notNull(simpleIdentifier, this);
         this.extensions = extensions;
         this.nameSpaceIdentifier = nameSpaceIdentifier;
         this.simpleIdentifier = simpleIdentifier;

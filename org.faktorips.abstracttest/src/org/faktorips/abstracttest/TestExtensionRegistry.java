@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IRegistryChangeListener;
 import org.eclipse.core.runtime.IRegistryEventListener;
-import org.faktorips.util.ArgumentCheck;
 
 /**
  * An implementation of the {@link IExtensionRegistry} interface for testing purposes. Not all of
@@ -40,7 +39,6 @@ public class TestExtensionRegistry implements IExtensionRegistry {
      * Creates a new TestExtensionRegistry for the provided {@link IExtensionPoint}s.
      */
     public TestExtensionRegistry(IExtensionPoint[] extensionPoints) {
-        ArgumentCheck.notNull(extensionPoints, this);
         this.extensionPoints = extensionPoints;
     }
 

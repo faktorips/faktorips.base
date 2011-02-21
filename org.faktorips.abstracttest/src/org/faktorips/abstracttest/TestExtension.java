@@ -13,13 +13,11 @@
 
 package org.faktorips.abstracttest;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
-import org.faktorips.util.ArgumentCheck;
 
 /**
  * An implementation of the {@link IExtension} interface for testing purposes. Not all of the
@@ -47,8 +45,6 @@ public class TestExtension implements IExtension {
      * simpleIdentifier.
      */
     public TestExtension(IConfigurationElement[] elements, String namespaceIdentifier, String simpleIdentifier) {
-        ArgumentCheck.notNull(elements, this);
-        ArgumentCheck.notNull(simpleIdentifier, this);
         this.elements = elements;
         this.simpleIdentifier = simpleIdentifier;
         this.namespaceIdentifier = namespaceIdentifier != null ? namespaceIdentifier : "";
@@ -101,7 +97,7 @@ public class TestExtension implements IExtension {
     public String getUniqueIdentifier() throws InvalidRegistryObjectException {
         StringBuffer buf = new StringBuffer();
         buf.append(namespaceIdentifier);
-        if (!StringUtils.isEmpty(namespaceIdentifier)) {
+        if (namespaceIdentifier != null && !namespaceIdentifier.isEmpty()) {
             buf.append('.');
 
         }

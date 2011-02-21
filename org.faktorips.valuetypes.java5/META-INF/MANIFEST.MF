@@ -4,13 +4,36 @@ Bundle-Name: Faktor-IPS Valuetypes for Java5
 Bundle-SymbolicName: org.faktorips.valuetypes.java5
 Bundle-Version: 0.0.0
 Bundle-Vendor: Faktor Zehn AG
-Export-Package: javax.xml.bind,
- javax.xml.bind.annotation,
+Export-Package: javax.xml.bind;
+  uses:="javax.xml.bind.annotation.adapters,
+   org.w3c.dom,
+   javax.xml.namespace,
+   org.xml.sax,
+   javax.xml.bind.attachment,
+   javax.xml.stream,
+   javax.xml.transform,
+   javax.xml.validation",
+ javax.xml.bind.annotation;
+  uses:="javax.xml.transform,
+   javax.xml.parsers,
+   javax.xml.transform.dom,
+   javax.xml.bind,
+   org.w3c.dom",
  javax.xml.bind.annotation.adapters,
- javax.xml.bind.attachment,
- javax.xml.bind.helpers,
- javax.xml.bind.util,
- org.faktorips.values.xml
+ javax.xml.bind.attachment;uses:="javax.activation",
+ javax.xml.bind.helpers;
+  uses:="javax.xml.bind.attachment,
+   javax.xml.stream,
+   javax.xml.transform,
+   javax.xml.bind.annotation.adapters,
+   javax.xml.validation,
+   javax.xml.bind,
+   org.w3c.dom,
+   org.xml.sax",
+ javax.xml.bind.util;uses:="javax.xml.transform.sax,javax.xml.bind,org.xml.sax",
+ org.faktorips.values,
+ org.faktorips.values.xml;uses:="org.faktorips.values,javax.xml.bind.annotation.adapters",
+ org.faktorips.valueset
 Bundle-ClassPath: faktorips-valuetypes-java5.jar,
  lib/jaxb-api-2.1.3.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

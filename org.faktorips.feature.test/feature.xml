@@ -815,7 +815,6 @@ schutz” abgerufen und ausgedruckt werden.
          download-size="0"
          install-size="0"
          version="0.0.0"
-         fragment="false"
          unpack="false"/>
 
    <plugin
@@ -860,6 +859,22 @@ schutz” abgerufen und ausgedruckt werden.
 
    <plugin
          id="org.faktorips.runtime.java5.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.faktorips.valuetypes.java5.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.faktorips.runtime.groovy.test"
          download-size="0"
          install-size="0"
          version="0.0.0"

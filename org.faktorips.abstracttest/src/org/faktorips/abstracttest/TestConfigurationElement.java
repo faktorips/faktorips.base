@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
-import org.faktorips.util.ArgumentCheck;
 
 /**
  * A test implementation of the IConfigurationElement to test extension point loading code without
@@ -48,9 +47,6 @@ public class TestConfigurationElement implements IConfigurationElement {
     public TestConfigurationElement(String name, Map<String, String> attributes, String value,
             IConfigurationElement[] children, Map<String, Object> executableExtensionMap) {
 
-        ArgumentCheck.notNull(name, this);
-        ArgumentCheck.notNull(attributes, this);
-        ArgumentCheck.notNull(children, this);
         this.name = name;
         this.attributes = attributes;
         this.children = children;
