@@ -11,3 +11,4 @@ Export-Package: org.faktorips.runtime,
  org.faktorips.runtime.modeltype.internal,
  org.faktorips.runtime.productdataprovider,
  org.faktorips.runtime.test
+Require-Bundle: org.junit4;bundle-version="4.3.1"
