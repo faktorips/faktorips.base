@@ -15,6 +15,8 @@ package org.faktorips.devtools.core.util;
 
 import junit.framework.TestCase;
 
+import org.junit.Test;
+
 /**
  * 
  * @author Jan Ortmann
@@ -23,7 +25,7 @@ public class QNameUtilTest extends TestCase {
 
     /*
      * Test method for 'org.faktorips.devtools.core.util.QNameUtil.getPackageName(String)'
-     */
+     */@Test
     public void testGetPackageName() {
         assertNull(QNameUtil.getPackageName(null));
         assertEquals("", QNameUtil.getPackageName("Test")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -33,7 +35,7 @@ public class QNameUtilTest extends TestCase {
 
     /*
      * Test method for 'org.faktorips.devtools.core.util.QNameUtil.getUnqualifiedName(String)'
-     */
+     */@Test
     public void testGetUnqualifiedName() {
         assertNull(QNameUtil.getUnqualifiedName(null));
         assertEquals("Test", QNameUtil.getUnqualifiedName("Test")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -44,7 +46,7 @@ public class QNameUtilTest extends TestCase {
 
     /*
      * Test method for 'org.faktorips.devtools.core.util.QNameUtil.concat(String, String)'
-     */
+     */@Test
     public void testConcat() {
         assertEquals("a.b", QNameUtil.concat("a", "b")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         assertEquals("b", QNameUtil.concat(null, "b")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -55,6 +57,7 @@ public class QNameUtilTest extends TestCase {
         assertEquals("", QNameUtil.concat("", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
+    @Test
     public void testGetSegments() {
         assertEquals(0, QNameUtil.getSegments(null).length);
         assertEquals(0, QNameUtil.getSegments("").length); //$NON-NLS-1$
@@ -80,6 +83,7 @@ public class QNameUtilTest extends TestCase {
 
     }
 
+    @Test
     public void testGetSegmentCount() {
 
         assertEquals(0, QNameUtil.getSegmentCount(null));
@@ -92,6 +96,7 @@ public class QNameUtilTest extends TestCase {
         assertEquals(5, QNameUtil.getSegmentCount("a.b.c.d. ")); //$NON-NLS-1$
     }
 
+    @Test
     public void testGetSubSegment() {
 
         assertEquals("", QNameUtil.getSubSegments("", 2)); //$NON-NLS-1$ //$NON-NLS-2$

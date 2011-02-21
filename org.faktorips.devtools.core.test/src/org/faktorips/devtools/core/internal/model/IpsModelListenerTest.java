@@ -151,7 +151,7 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
     // So basically, we don't now how to test this!
     // Therefore we comment the whole test case until we have an idea, how we can test this.
     /*
-     * public void testChangeCorrespondigResource() throws Exception {
+     * @Test public void testChangeCorrespondigResource() throws Exception {
      * 
      * IFile ioFile = file.getCorrespondingFile(); InputStream is =
      * file.getContentFromEnclosingResource();

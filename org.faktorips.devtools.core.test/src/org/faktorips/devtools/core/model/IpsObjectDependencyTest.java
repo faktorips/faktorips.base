@@ -27,8 +27,8 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.junit.Test;
 
 public class IpsObjectDependencyTest extends AbstractIpsPluginTest {
-
-    public final void testEqualsObject() {
+    @Test
+    public void testEqualsObject() {
 
         IpsObjectDependency dependency1 = IpsObjectDependency.createReferenceDependency(new QualifiedNameType("a.b.A",
                 IpsObjectType.POLICY_CMPT_TYPE), new QualifiedNameType("a.b.B", IpsObjectType.POLICY_CMPT_TYPE));

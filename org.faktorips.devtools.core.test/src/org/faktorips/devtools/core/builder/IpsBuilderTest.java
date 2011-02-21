@@ -286,13 +286,13 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         pcType.setSupertype("UnknownSupertype");
         pcType.getIpsSrcFile().save(true, null);
         MessageList msgList = pcType.validate(pcType.getIpsProject());
-        int numOfMsg = msgList.getNoOfMessages();
+        int numOfMsg = msgList.size();
         assertTrue(numOfMsg > 0);
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
         IResource resource = pcType.getEnclosingResource();
         IMarker[] markers = resource.findMarkers(IpsPlugin.PROBLEM_MARKER, true, IResource.DEPTH_INFINITE);
         assertTrue(markers.length > 0);
-        assertEquals(msgList.getNoOfMessages(), markers.length);
+        assertEquals(msgList.size(), markers.length);
         Map<String, Integer> msgTexts = new HashMap<String, Integer>();
         for (Object name : msgList) {
             Message msg = (Message)name;
@@ -312,11 +312,11 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         pcType.setSupertype("");
         pcType.getIpsSrcFile().save(true, null);
         msgList = pcType.validate(ipsProject);
-        assertEquals(0, msgList.getNoOfMessages());
+        assertEquals(0, msgList.size());
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
         resource = pcType.getEnclosingResource();
         markers = resource.findMarkers(IpsPlugin.PROBLEM_MARKER, true, IResource.DEPTH_INFINITE);
-        assertEquals(msgList.getNoOfMessages(), markers.length);
+        assertEquals(msgList.size(), markers.length);
     }
 
     @Test

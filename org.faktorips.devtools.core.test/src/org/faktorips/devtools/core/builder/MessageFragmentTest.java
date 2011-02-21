@@ -13,16 +13,18 @@
 
 package org.faktorips.devtools.core.builder;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
 import org.faktorips.util.StringUtil;
+import org.junit.Test;
 
-public class MessageFragmentTest extends TestCase {
+public class MessageFragmentTest {
 
-    /*
+    /**
      * Test method for
      * 'org.faktorips.devtools.core.builder.MessageFragment.createMessageFragment(String)'
      */
+    @Test
     public void testCreateMessageFragment() {
         MessageFragment msgFrag = MessageFragment
                 .createMessageFragment("The value a={attribute1} is not b={attribute2}"); //$NON-NLS-1$
@@ -50,6 +52,7 @@ public class MessageFragmentTest extends TestCase {
         assertEquals("attribute2", paraValues[1]); //$NON-NLS-1$
     }
 
+    @Test
     public void testCreateMessageFragment2() {
         MessageFragment msgFrag = MessageFragment.createMessageFragment(
                 "The value a={attribute1} is not b={attribute2}", MessageFragment.VALUES_AS_PARAMETER_NAMES); //$NON-NLS-1$
@@ -77,6 +80,7 @@ public class MessageFragmentTest extends TestCase {
         assertEquals("attribute2", paraValues[1]); //$NON-NLS-1$
     }
 
+    @Test
     public void testCreateMessageFragment3() {
         MessageFragment msgFrag = MessageFragment.createMessageFragment(
                 "The value a={0} is not b={1}", MessageFragment.VALUES_AS_PARAMETER_NAMES); //$NON-NLS-1$

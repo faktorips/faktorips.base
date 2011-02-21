@@ -159,7 +159,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     @After
-    protected final void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         IpsPlugin.getDefault().setSuppressLoggingDuringTest(false);
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
         for (IProject project : projects) {

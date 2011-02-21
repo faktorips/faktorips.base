@@ -17,6 +17,7 @@ import java.util.GregorianCalendar;
 
 import javax.xml.transform.TransformerException;
 
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -28,6 +29,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         super.setUp();
     }
 
+    @Test
     public void testGregorianCalendarToXmlDateString() {
         assertEquals("", XmlUtil.gregorianCalendarToXmlDateString(null)); //$NON-NLS-1$
         GregorianCalendar date = new GregorianCalendar(2005, 8, 9);
@@ -37,7 +39,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
     }
 
     @SuppressWarnings("deprecation")
-    // Test of deprecated method
+    // Test of deprecated method @Test
     public void testParseXmlDateStringToGregorianCalendar() {
         assertNull(XmlUtil.parseXmlDateStringToGregorianCalendar("")); //$NON-NLS-1$
         GregorianCalendar date = new GregorianCalendar(2005, 8, 9);
@@ -53,6 +55,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         }
     }
 
+    @Test
     public void testParseGregorianCalendar() throws XmlParseException {
         assertNull(XmlUtil.parseGregorianCalendar("")); //$NON-NLS-1$
         GregorianCalendar date = new GregorianCalendar(2005, 8, 9);
@@ -68,11 +71,13 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         }
     }
 
+    @Test
     public void testNodeToString() throws TransformerException {
         Document doc = newDocument();
         XmlUtil.nodeToString(doc, "Cp1252"); //$NON-NLS-1$
     }
 
+    @Test
     public void testGetFirstElement() {
         Document doc = getTestDocument();
         Element docElement = XmlUtil.getFirstElement(doc, "DocElement"); //$NON-NLS-1$
@@ -83,6 +88,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         assertNull(XmlUtil.getFirstElement(docElement, "UnknownElement")); //$NON-NLS-1$
     }
 
+    @Test
     public void testGetElementByIndex() throws Exception {
         Element rootEl = getTestDocument().getDocumentElement();
         assertEquals("TestElement", XmlUtil.getElement(rootEl, 0).getNodeName()); //$NON-NLS-1$
@@ -90,6 +96,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         assertEquals("TestElement", XmlUtil.getElement(rootEl, 2).getNodeName()); //$NON-NLS-1$
     }
 
+    @Test
     public void testGetElement() {
         Document doc = getTestDocument();
         Element docElement = XmlUtil.getFirstElement(doc, "DocElement"); //$NON-NLS-1$
@@ -104,6 +111,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
 
     }
 
+    @Test
     public void testGetTextNode() {
         Document doc = getTestDocument();
         Element docElement = XmlUtil.getFirstElement(doc, "DocElement"); //$NON-NLS-1$

@@ -15,6 +15,8 @@ package org.faktorips.devtools.core.enums;
 
 import junit.framework.TestCase;
 
+import org.junit.Test;
+
 public class DefaultEnumTypeTest extends TestCase {
 
     private static final String MALE_VALUE = "male"; //$NON-NLS-1$
@@ -32,6 +34,7 @@ public class DefaultEnumTypeTest extends TestCase {
         female = new DefaultEnumValue(gender, FEMALE_VALUE);
     }
 
+    @Test
     public void testGetValues() {
         assertEquals(2, gender.getValues().length);
         assertEquals(male, gender.getValues()[0]);
@@ -42,18 +45,21 @@ public class DefaultEnumTypeTest extends TestCase {
         assertEquals(male, gender.getValues()[0]);
     }
 
+    @Test
     public void testGetValueIds() {
         assertEquals(2, gender.getValueIds().length);
         assertEquals("male", gender.getValueIds()[0]); //$NON-NLS-1$
         assertEquals("female", gender.getValueIds()[1]); //$NON-NLS-1$
     }
 
+    @Test
     public void testContainsValue() {
         assertTrue(gender.containsValue(MALE_VALUE));
         assertTrue(gender.containsValue(FEMALE_VALUE));
         assertFalse(gender.containsValue("unknown")); //$NON-NLS-1$
     }
 
+    @Test
     public void testGetEnumValue_int() {
         assertEquals(male, gender.getEnumValue(0));
     }

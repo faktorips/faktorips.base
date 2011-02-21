@@ -13,24 +13,27 @@
 
 package org.faktorips.devtools.core.builder;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import junit.framework.TestCase;
-
 import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnector;
+import org.junit.Before;
+import org.junit.Test;
 
-public class JavaStandardLoggingLogStmtBuilderTest extends TestCase {
+public class JavaStandardLoggingLogStmtBuilderTest {
 
     private JavaUtilLoggingFrameworkConnector loggingFrameworkConnector;
 
-    @Override
+    @Before
     public void setUp() {
         loggingFrameworkConnector = new JavaUtilLoggingFrameworkConnector();
     }
 
-    public final void testGetLogConditionExp() {
+    @Test
+    public void testGetLogConditionExp() {
         ArrayList<String> usedClasses = new ArrayList<String>();
         String loggerExp = loggingFrameworkConnector.getLoggerInstanceStmt("\"com.foo\"", usedClasses); //$NON-NLS-1$
         String stmt = loggingFrameworkConnector.getLogConditionExp(IIpsLoggingFrameworkConnector.LEVEL_ERROR,
@@ -45,7 +48,8 @@ public class JavaStandardLoggingLogStmtBuilderTest extends TestCase {
         assertEquals(Level.class.getName(), usedClasses.get(1));
     }
 
-    public final void testGetLogStmtForMessage() {
+    @Test
+    public void testGetLogStmtForMessage() {
         String loggerExp = "LOGGER"; //$NON-NLS-1$
         ArrayList<String> usedClasses = new ArrayList<String>();
         String stmt = loggingFrameworkConnector.getLogStmtForMessage(IIpsLoggingFrameworkConnector.LEVEL_ERROR,
@@ -62,7 +66,8 @@ public class JavaStandardLoggingLogStmtBuilderTest extends TestCase {
         return "Message"; //$NON-NLS-1$
     }
 
-    public final void testGetLogStmtForMsgExp() {
+    @Test
+    public void testGetLogStmtForMsgExp() {
         String loggerExp = "LOGGER"; //$NON-NLS-1$
         ArrayList<String> usedClasses = new ArrayList<String>();
         String stmt = loggingFrameworkConnector.getLogStmtForMessageExp(IIpsLoggingFrameworkConnector.LEVEL_ERROR,
@@ -75,7 +80,8 @@ public class JavaStandardLoggingLogStmtBuilderTest extends TestCase {
         assertEquals(0, usedClasses.size());
     }
 
-    public final void testGetLogStmtForThrowable() {
+    @Test
+    public void testGetLogStmtForThrowable() {
         String loggerExp = "LOGGER"; //$NON-NLS-1$
         ArrayList<String> usedClasses = new ArrayList<String>();
         String stmt = loggingFrameworkConnector.getLogStmtForThrowable(IIpsLoggingFrameworkConnector.LEVEL_ERROR,
@@ -90,12 +96,14 @@ public class JavaStandardLoggingLogStmtBuilderTest extends TestCase {
         assertEquals(Level.class.getName(), usedClasses.get(0));
     }
 
-    public final void testGetLoggerClassName() {
+    @Test
+    public void testGetLoggerClassName() {
         String loggerClass = loggingFrameworkConnector.getLoggerClassName();
         assertEquals(Logger.class.getName(), loggerClass);
     }
 
-    public final void testGetLoggerInstanceStmtStringStringList() {
+    @Test
+    public void testGetLoggerInstanceStmtStringStringList() {
         ArrayList<String> usedClasses = new ArrayList<String>();
         String stmt = loggingFrameworkConnector.getLoggerInstanceStmt("\"com.foo\"", usedClasses); //$NON-NLS-1$
         assertEquals("Logger.getLogger(\"com.foo\")", stmt); //$NON-NLS-1$

@@ -15,9 +15,11 @@ package org.faktorips.devtools.core.util;
 
 import junit.framework.TestCase;
 
-public class StringUtilsTest extends TestCase {
+import org.junit.Test;
 
-    public final void testWrapText() {
+public class StringUtilsTest extends TestCase {
+    @Test
+    public void testWrapText() {
         String text = "Diese Klasse enthält die Kontostände, die für die Bestimmung der abzuführenden \n" //$NON-NLS-1$
                 + "Kapitalertragssteuer gegebenenfalls benötigt werden. Sie wird auf Deckungsebene \n" //$NON-NLS-1$
                 + "geführt. Dabei unterscheidet man zwischen den Komponenten Stammdeckung, \n" //$NON-NLS-1$
@@ -45,6 +47,7 @@ public class StringUtilsTest extends TestCase {
         assertEquals(expectedText, wrappedText);
     }
 
+    @Test
     public void testComputeCopyOfName() {
         String oldName = "test"; //$NON-NLS-1$
         assertEquals(Messages.StringUtils_copyOfNamePrefix + oldName, StringUtils.computeCopyOfName(0, oldName));

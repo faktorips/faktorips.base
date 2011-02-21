@@ -351,7 +351,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
     // TODO
     // /**
     // * Test of searching the correct container relation candidates.
-    // */
+    // */ @Test
     // public void testSearchContainerRelationCandidates() throws Exception {
     // IPolicyCmptType contract = content.getContract();
     // IPolicyCmptType coverage = content.getCoverage();

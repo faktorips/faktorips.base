@@ -131,12 +131,12 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
      * 
      * Jan Ortmann, 6.10.2010
      */
-
+    @Test
     // public void test_DemoDeleteProblem() throws Exception {
     // createJarFileAndAppendToClasspath();
     // deleteJarFile();
     // }
-    //
+    // @Test
     // public void testListenerMechnism_JarFile() throws Exception {
     // createJarFileAndAppendToClasspath();
     // ClassLoader cl = provider.getClassLoader();
@@ -161,7 +161,6 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
     // cl = provider.getClassLoader();
     // Class.forName("org.faktorips.test.ClassInAJar", true, cl);
     // }
-
     private void createClassFile() throws Exception {
         IPackageFragmentRoot root = javaProject.getPackageFragmentRoots()[0];
         IPackageFragment pack = root.getPackageFragment("");
