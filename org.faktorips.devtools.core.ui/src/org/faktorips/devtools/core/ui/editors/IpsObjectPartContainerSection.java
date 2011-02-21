@@ -68,10 +68,9 @@ public abstract class IpsObjectPartContainerSection extends IpsSection {
             if (!(monitoredValidationMessageCodes.isEmpty())) {
                 MessageList validationMessageList = ipsObjectPartContainer.validate(ipsObjectPartContainer
                         .getIpsProject());
-                for (String messageCode : monitoredValidationMessageCodes) {
-                    Message searchedErrorMessage = validationMessageList.getMessageByCode(messageCode);
-                    if (searchedErrorMessage != null) {
-                        filteredMessageList.add(searchedErrorMessage);
+                for (Message message : validationMessageList) {
+                    if (monitoredValidationMessageCodes.contains(message.getCode())) {
+                        filteredMessageList.add(message);
                     }
                 }
             }
