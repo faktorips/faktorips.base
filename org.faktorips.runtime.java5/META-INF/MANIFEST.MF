@@ -4,11 +4,11 @@ Bundle-Name: Faktor-IPS Runtime for Java5
 Bundle-SymbolicName: org.faktorips.runtime.java5
 Bundle-Version: 0.0.0
 Bundle-Vendor: Faktor Zehn AG
-Require-Bundle: org.faktorips.valuetypes.java5,
- org.junit
+Require-Bundle: org.faktorips.valuetypes.java5
 Export-Package: org.faktorips.runtime.formula,
  org.faktorips.runtime.internal.toc,
  org.faktorips.runtime.jaxb,
  org.faktorips.runtime.modeltype
 Bundle-ClassPath: faktorips-runtime-java5.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Import-Package: junit.framework;version="3.8.2"
