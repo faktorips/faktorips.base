@@ -295,7 +295,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
      * the super type hierarchy also renames the super attribute.
      */
     @Test
-    public void testRenameOverridingPolicyCmptTypeAttribute() throws CoreException {
+    public void testRenameOverwritingPolicyCmptTypeAttribute() throws CoreException {
         // Create a type hierarchy of depth 3, always overwriting an attribute
         IPolicyCmptType deepPolicyCmptType = newPolicyCmptType(ipsProject, "DeepPolicyCmptType");
         deepPolicyCmptType.setSupertype(policyCmptType.getQualifiedName());
@@ -325,6 +325,56 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
         // Run the refactoring
         String newAttributeName = "test";
         performRenameRefactoring(deepAttribute, newAttributeName);
+
+        // Check that the names of all 3 attributes have changed
+        assertEquals(newAttributeName, superAttribute.getName());
+        assertEquals(newAttributeName, attribute.getName());
+        assertEquals(newAttributeName, deepAttribute.getName());
+
+        assertNull(superPolicyCmptType.getAttribute(attributeName));
+        assertNull(policyCmptType.getAttribute(attributeName));
+        assertNull(deepPolicyCmptType.getAttribute(attributeName));
+
+        assertEquals(superAttribute, superPolicyCmptType.getAttribute(newAttributeName));
+        assertEquals(attribute, policyCmptType.getAttribute(newAttributeName));
+        assertEquals(deepAttribute, deepPolicyCmptType.getAttribute(newAttributeName));
+    }
+
+    /**
+     * Test whether renaming a {@link IPolicyCmptTypeAttribute} that is overwritten by attributes of
+     * the sub type hierarchy also renames the attributes in the sub type hierarchy.
+     */
+    @Test
+    public void testRenameOverwrittenPolicyCmptTypeAttribute() throws CoreException {
+        // Create a type hierarchy of depth 3, always overwriting an attribute
+        IPolicyCmptType deepPolicyCmptType = newPolicyCmptType(ipsProject, "DeepPolicyCmptType");
+        deepPolicyCmptType.setSupertype(policyCmptType.getQualifiedName());
+        IProductCmptType deepProductCmptType = newProductCmptType(ipsProject, "DeepProductCmptType");
+        deepProductCmptType.setSupertype(productCmptType.getQualifiedName());
+        deepProductCmptType.setConfigurationForPolicyCmptType(true);
+        deepProductCmptType.setPolicyCmptType(deepPolicyCmptType.getQualifiedName());
+        deepPolicyCmptType.setConfigurableByProductCmptType(true);
+        deepPolicyCmptType.setProductCmptType(deepProductCmptType.getQualifiedName());
+
+        String attributeName = "overwrittenAttribute";
+
+        IPolicyCmptTypeAttribute superAttribute = superPolicyCmptType.newPolicyCmptTypeAttribute();
+        superAttribute.setName(attributeName);
+        superAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
+        attribute.setName(attributeName);
+        attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        attribute.setOverwrite(true);
+
+        IPolicyCmptTypeAttribute deepAttribute = deepPolicyCmptType.newPolicyCmptTypeAttribute();
+        deepAttribute.setName(attributeName);
+        deepAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        deepAttribute.setOverwrite(true);
+
+        // Run the refactoring
+        String newAttributeName = "test";
+        performRenameRefactoring(superAttribute, newAttributeName);
 
         // Check that the names of all 3 attributes have changed
         assertEquals(newAttributeName, superAttribute.getName());

@@ -107,16 +107,41 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
             updateValidationRule();
             updateProductCmptConfigElementReferences();
             updateTestCaseTypeReferences();
-            updateOverwrittenAttributes();
+            updateSuperHierarchyAttributes();
+            updateSubHierarchyAttributes();
         }
         updateAttributeName();
+    }
+
+    /**
+     * Updates all references to the {@link IPolicyCmptTypeAttribute} in overwriting attributes of
+     * the sub type hierarchy.
+     */
+    private void updateSubHierarchyAttributes() throws CoreException {
+        for (IIpsSrcFile policyCmptTypeSrcFile : policyCmptTypeSrcFiles) {
+            IPolicyCmptType policyCmptType = (IPolicyCmptType)policyCmptTypeSrcFile.getIpsObject();
+
+            // The policy component type needs to be a sub type of the attribute's type
+            if (!(policyCmptType.isSubtypeOf(getType(), policyCmptType.getIpsProject()))) {
+                continue;
+            }
+
+            // An overwriting attribute with the same name must exist
+            IAttribute potentialOverwritingAttribute = policyCmptType.getAttribute(getOriginalName());
+            if (potentialOverwritingAttribute == null || !(potentialOverwritingAttribute.isOverwrite())) {
+                continue;
+            }
+
+            // At this point a valid overwriting attribute was found
+            potentialOverwritingAttribute.setName(getNewName());
+        }
     }
 
     /**
      * Updates all references to the {@link IPolicyCmptTypeAttribute} in overwritten attributes of
      * the super type hierarchy.
      */
-    private void updateOverwrittenAttributes() throws CoreException {
+    private void updateSuperHierarchyAttributes() throws CoreException {
         List<IPolicyCmptTypeAttribute> attributesToRename = new ArrayList<IPolicyCmptTypeAttribute>(1);
 
         // Collect overwritten attributes
