@@ -13,13 +13,17 @@
 
 package org.faktorips.runtime.productdataprovider;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
-
-import junit.framework.TestCase;
 
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
@@ -45,9 +49,11 @@ import org.faktorips.runtime.testrepository.motor.RateTable;
 import org.faktorips.runtime.testrepository.test.TestPremiumCalculation;
 import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
-public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
+public class DetachedContentRuntimeRepositoryManagerTest {
 
     private IRuntimeRepository repository;
     private TestProductDataProvider productDataProvider;
@@ -56,9 +62,8 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
     private TestProductDataProvider directPdp;
     private MyFactory directPdpFactory;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         directPdpFactory = new MyFactory(getClass().getClassLoader(),
                 "org/faktorips/runtime/testrepository/direct-repository-toc.xml");
         pdpFactory = new MyFactory(getClass().getClassLoader(),
@@ -72,6 +77,7 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
         productDataProvider = pdpFactory.testProductDataProvider;
     }
 
+    @Test
     public void testGetProductComponent() {
         Calendar effectiveDate = new GregorianCalendar(2005, 1, 1);
         MotorProduct motorPk = (MotorProduct)repository.getProductComponent("motor.MotorBasic");
@@ -148,6 +154,7 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
 
     }
 
+    @Test
     public void testGetProductComponent_KindId_VersionId() {
         repository = runtimeRepositoryManager.getActualRuntimeRepository();
         MotorProduct motorProduct = (MotorProduct)repository.getProductComponent("motor.MotorPlus", "2005-01");
@@ -158,6 +165,7 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
         assertNull(repository.getProductComponent("Unknown", "2005-01"));
     }
 
+    @Test
     public void testGetAllProductComponents_KindId() {
         MotorProduct motorProduct = (MotorProduct)repository.getProductComponent("motor.MotorPlus", "2005-01");
         assertNotNull(motorProduct);
@@ -170,6 +178,7 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
         assertEquals(0, repository.getAllProductComponents("unknown").size());
     }
 
+    @Test
     public void testGetProductComponentGeneration() {
         assertNull(repository.getProductComponentGeneration("motor.MotorPlus", new GregorianCalendar(2004, 11, 31)));
         assertNull(repository.getProductComponentGeneration("unknown", new GregorianCalendar(2005, 1, 1)));
@@ -208,6 +217,7 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
         assertTrue(productDataProvider.flag);
     }
 
+    @Test
     public void testGetAllProductComponentsByType() {
         // get all motor products
         List<IProductComponent> list = repository.getAllProductComponents(MotorProduct.class);
@@ -232,11 +242,13 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
         assertEquals(0, list.size());
     }
 
+    @Test
     public void testGetTableByClass() {
         RateTable table = (RateTable)repository.getTable(RateTable.class);
         assertNotNull(table);
     }
 
+    @Test
     public void testGetTableByQualifiedName() {
         RateTable table = (RateTable)repository.getTable("motor.RateTable");
         assertNotNull(table);
@@ -244,6 +256,7 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
         assertNotNull(table);
     }
 
+    @Test
     public void testGetAllProductComponentNames() {
         List<String> allNames = repository.getAllProductComponentIds();
         assertEquals(3, allNames.size());
@@ -252,6 +265,7 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
         assertTrue(allNames.contains("home.HomeBasic"));
     }
 
+    @Test
     public void testGetAllProductComponents() {
         List<IProductComponent> allProductCmpts = repository.getAllProductComponents();
         assertTrue(allProductCmpts.contains(repository.getProductComponent("motor.MotorBasic")));
@@ -259,6 +273,7 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
         assertTrue(allProductCmpts.contains(repository.getProductComponent("home.HomeBasic")));
     }
 
+    @Test
     public void testGetProductComponentGenerations() {
         IProductComponent motorPk = repository.getProductComponent("motor.MotorBasic");
         List<IProductComponentGeneration> result = repository.getProductComponentGenerations(motorPk);
@@ -273,6 +288,7 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
         assertEquals(0, result.size());
     }
 
+    @Test
     public void testGetIpsTestCase() throws Exception {
         TestPremiumCalculation test = (TestPremiumCalculation)repository.getIpsTestCase("test.CalculationTest1");
         assertNotNull(test);
@@ -289,17 +305,20 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
         assertNotNull(formulaTest);
     }
 
+    @Test
     public void testGetAllIpsTestCases() throws Exception {
         List<IpsTest2> tests = repository.getAllIpsTestCases(repository);
         assertEquals(3, tests.size());
     }
 
+    @Test
     public void testGetNumberOfProductComponentGenerations() {
         IProductComponent productComponent = repository.getProductComponent("motor.MotorPlus");
         int number = repository.getNumberOfProductComponentGenerations(productComponent);
         assertEquals(3, number);
     }
 
+    @Test
     public void testGetNextProductComponentGeneration() {
         IProductComponent productComponent = repository.getProductComponent("motor.MotorPlus");
         MotorProductGen motorProductGen = (MotorProductGen)productComponent.getGenerationBase(new GregorianCalendar(
@@ -325,6 +344,7 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
 
     }
 
+    @Test
     public void testGetPreviousProductComponentGeneration() {
         IProductComponent productComponent = repository.getProductComponent("motor.MotorPlus");
 
@@ -346,6 +366,7 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
         assertNull(previous);
     }
 
+    @Test
     public void testGetLatestProductComponentGeneration() {
         IProductComponent productComponent = repository.getProductComponent("motor.MotorPlus");
         IProductComponentGeneration generation = repository.getLatestProductComponentGeneration(productComponent);
@@ -354,6 +375,7 @@ public class DetachedContentRuntimeRepositoryManagerTest extends TestCase {
 
     }
 
+    @Test
     public void testGetIpsTestCaseStartingWith() {
         assertIpsTestCasesStartingWith("test", new String[] { "test.CalculationTest1", "test.CalculationTest2" });
         assertIpsTestCasesStartingWith("test.CalculationTest", new String[] { "test.CalculationTest1",

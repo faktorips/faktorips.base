@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.faktorips.values.Money;
+import org.junit.Test;
 
 /**
  *
@@ -25,6 +26,7 @@ public class MessageTest extends XmlAbstractTestCase {
 
     private final String LINE_SEPARATOR = System.getProperty("line.separator");
 
+    @Test
     public void testCreateCopy() {
         Message msg = new Message("code", "text", Message.INFO);
         Message copy = Message.createCopy(msg, "a", "b");
@@ -61,6 +63,7 @@ public class MessageTest extends XmlAbstractTestCase {
         }
     }
 
+    @Test
     public void testCopyConstructor() {
         ObjectProperty op0 = new ObjectProperty("0", "prop0");
         ObjectProperty op1 = new ObjectProperty("1", "prop1");
@@ -91,6 +94,7 @@ public class MessageTest extends XmlAbstractTestCase {
 
     }
 
+    @Test
     public void testMessage_StringStringint() {
         Message msg = new Message("code", "text", Message.INFO);
         assertEquals("code", msg.getCode());
@@ -100,6 +104,7 @@ public class MessageTest extends XmlAbstractTestCase {
         assertEquals(0, msg.getReplacementParameters().size());
     }
 
+    @Test
     public void testMessage_StringStringintObjectString() {
         Message msg = new Message("code", "text", Message.INFO, this, "property");
         assertEquals("code", msg.getCode());
@@ -111,6 +116,7 @@ public class MessageTest extends XmlAbstractTestCase {
         assertEquals("property", op.get(0).getProperty());
     }
 
+    @Test
     public void testMessage_StringStringintObjectStringArray() {
         Message msg = new Message("code", "text", Message.INFO, this, new String[] { "p1", "p2" });
         assertEquals("code", msg.getCode());
@@ -124,6 +130,7 @@ public class MessageTest extends XmlAbstractTestCase {
         assertEquals("p2", op.get(1).getProperty());
     }
 
+    @Test
     public void testMessage_StringStringintObjectPropertyArray() {
         ObjectProperty[] op = new ObjectProperty[] { new ObjectProperty("objectA", "pA"),
                 new ObjectProperty("objectB", "pB") };
@@ -141,6 +148,7 @@ public class MessageTest extends XmlAbstractTestCase {
         assertEquals("pB", op2.get(1).getProperty());
     }
 
+    @Test
     public void testMessage_Message() {
         Message msg = new Message("code", "text", Message.ERROR);
         Message copy = new Message(msg);
@@ -160,7 +168,7 @@ public class MessageTest extends XmlAbstractTestCase {
 
     /*
      * Class under test for String toString()
-     */
+     */@Test
     public void testToString() {
 
         Message msg = Message.newError("1", "blabla");
@@ -174,7 +182,7 @@ public class MessageTest extends XmlAbstractTestCase {
 
     /*
      * Class under test for boolean equals(Object)
-     */
+     */@Test
     public void testEqualsObject() {
         // differnet class
         Message msg = Message.newError("1", "blabla");
@@ -238,6 +246,7 @@ public class MessageTest extends XmlAbstractTestCase {
         assertTrue(msg.equals(msg2));
     }
 
+    @Test
     public void testGetNumOfInvalidObjectProperties() {
         Message msg = new Message("code", "text", Message.ERROR);
         assertEquals(0, msg.getNumOfInvalidObjectProperties());
@@ -249,6 +258,7 @@ public class MessageTest extends XmlAbstractTestCase {
         assertEquals(2, msg.getNumOfInvalidObjectProperties());
     }
 
+    @Test
     public void testGetNumOfReplacementParameters() {
         Message msg = new Message("code", "text", Message.ERROR);
         assertEquals(0, msg.getNumOfReplacementParameters());
@@ -261,6 +271,7 @@ public class MessageTest extends XmlAbstractTestCase {
         assertEquals(2, msg.getNumOfReplacementParameters());
     }
 
+    @Test
     public void testHasReplacementParameter() {
         Message msg = new Message("code", "text", Message.ERROR);
         assertFalse(msg.hasReplacementParameter("param"));
@@ -274,6 +285,7 @@ public class MessageTest extends XmlAbstractTestCase {
         assertTrue(msg.hasReplacementParameter("minAge"));
     }
 
+    @Test
     public void testGetReplacementValue() {
         Message msg = new Message("code", "text", Message.ERROR);
         assertNull(msg.getReplacementValue("param"));

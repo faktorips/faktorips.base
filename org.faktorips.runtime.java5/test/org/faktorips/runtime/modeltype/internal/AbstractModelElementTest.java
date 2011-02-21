@@ -13,16 +13,20 @@
 
 package org.faktorips.runtime.modeltype.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Set;
 
-import junit.framework.TestCase;
-
 import org.faktorips.runtime.InMemoryRuntimeRepository;
+import org.junit.Test;
 
-public class AbstractModelElementTest extends TestCase {
+public class AbstractModelElementTest {
 
     private InMemoryRuntimeRepository repository = new InMemoryRuntimeRepository();
 
+    @Test
     public void testGetExtensionPropertyValue() {
         ModelType type = new ModelType(repository);
         assertNull(type.getExtensionPropertyValue("prop0"));
@@ -32,6 +36,7 @@ public class AbstractModelElementTest extends TestCase {
         assertNull(type.getExtensionPropertyValue("prop1"));
     }
 
+    @Test
     public void testGetExtensionPropertyIds() {
         ModelType type = new ModelType(repository);
 

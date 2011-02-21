@@ -13,20 +13,23 @@
 
 package org.faktorips.devtools.core.ui.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.junit.Test;
 
 /**
  * Tests the class {@link TypedSelection}.
  */
-public class TypedSelectionTest extends TestCase {
+public class TypedSelectionTest {
     /** Error message. */
     private static final String NO_EXCEPTION_ON_WRONG_TYPE = "No exception is thrown: Wrong element type is ignored."; //$NON-NLS-1$
     /** Error message. */
@@ -53,6 +56,7 @@ public class TypedSelectionTest extends TestCase {
     /**
      * Checks whether we correctly identify a selection of String elements (any count).
      */
+    @Test
     public void testAnyCount() {
         assertAnyCountInSelection(new String[] { TEST_STRING });
         assertAnyCountInSelection(new String[] { TEST_STRING, TEST_STRING });
@@ -83,6 +87,7 @@ public class TypedSelectionTest extends TestCase {
      * 
      * @throws Exception in case of an unexpected error during the test
      */
+    @Test
     public void testCorrectSelectionOfTwo() throws Exception {
         StructuredSelection selection = new StructuredSelection(new String[] { TEST_STRING, SECOND_TEST_STRING });
         TypedSelection<String> validator = TypedSelection.create(String.class, selection, 2);
@@ -104,6 +109,7 @@ public class TypedSelectionTest extends TestCase {
      * 
      * @throws Exception in case of an unexpected error during the test
      */
+    @Test
     public void testCorrectSingleSelection() throws Exception {
         StructuredSelection selection = new StructuredSelection(new String[] { TEST_STRING });
         TypedSelection<String> validator = TypedSelection.create(String.class, selection);
@@ -122,6 +128,7 @@ public class TypedSelectionTest extends TestCase {
      * 
      * @throws Exception in case of an unexpected error during the test
      */
+    @Test
     public void testSubTypes() throws Exception {
         StructuredSelection selection = new StructuredSelection(new Number[] { INTEGER_VALUE, LONG_VALUE });
         TypedSelection<Number> validator = TypedSelection.create(Number.class, selection, 2);
@@ -136,6 +143,7 @@ public class TypedSelectionTest extends TestCase {
      * 
      * @throws Exception in case of an unexpected error during the test
      */
+    @Test
     public void testDeclinedSelectionOfTwo() throws Exception {
         StructuredSelection selection = new StructuredSelection();
 
@@ -169,6 +177,7 @@ public class TypedSelectionTest extends TestCase {
     /**
      * Checks the null validator.
      */
+    @Test
     public void testNullValidator() {
         TypedSelection<Object> validator = TypedSelection.createNullValidator();
 
@@ -178,6 +187,7 @@ public class TypedSelectionTest extends TestCase {
     /**
      * Checks that the validator only accepts a positive minimum count.
      */
+    @Test
     public void testPositiveMinimum() {
         boolean isThrown = false;
         try {
@@ -200,6 +210,7 @@ public class TypedSelectionTest extends TestCase {
      * Checks whether the equal method correctly compares selection providers with model
      * collections.
      */
+    @Test
     public void testEqual() {
         StructuredSelection selection = new StructuredSelection();
 
@@ -229,6 +240,7 @@ public class TypedSelectionTest extends TestCase {
     /**
      * Checks whether we could convert a selection to a collection.
      */
+    @Test
     public void testConversion() {
         List<String> selectionModel = new ArrayList<String>();
         selectionModel.add(TEST_STRING);
@@ -250,6 +262,7 @@ public class TypedSelectionTest extends TestCase {
     /**
      * Checks whether we could convert a selection to a single element.
      */
+    @Test
     public void testSingleElementConversion() {
         List<String> selectionModel = new ArrayList<String>();
         selectionModel.add(TEST_STRING);
@@ -262,6 +275,7 @@ public class TypedSelectionTest extends TestCase {
     /**
      * Checks whether we throw an exception if the converted selection is empty.
      */
+    @Test
     public void testEmptyCollectionForConvert() {
         boolean isThrown = false;
         try {
@@ -275,6 +289,7 @@ public class TypedSelectionTest extends TestCase {
     /**
      * Checks whether we throw an exception if the converted selection is empty.
      */
+    @Test
     public void testEmptyCollectionForSingleConvert() {
         boolean isThrown = false;
         try {
@@ -288,6 +303,7 @@ public class TypedSelectionTest extends TestCase {
     /**
      * Checks whether we throw an exception if the converted selection contains two elements.
      */
+    @Test
     public void testWrongNumberOfElementsForConvertSingle() {
         boolean isThrown = false;
         try {
@@ -305,6 +321,7 @@ public class TypedSelectionTest extends TestCase {
     /**
      * Checks whether we throw an exception if the converted selection contains the wrong type.
      */
+    @Test
     public void testWrongElementForConvert() {
         boolean isThrown = false;
         try {
@@ -322,6 +339,7 @@ public class TypedSelectionTest extends TestCase {
      * Checks whether we throw an exception if the converted selection is empty or contains the
      * wrong type.
      */
+    @Test
     public void testWrongElementForConvertSingle() {
         boolean isThrown = false;
         try {

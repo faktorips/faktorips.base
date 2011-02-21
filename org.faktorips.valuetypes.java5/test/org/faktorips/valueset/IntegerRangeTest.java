@@ -13,22 +13,25 @@
 
 package org.faktorips.valueset;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class IntegerRangeTest extends TestCase {
+public class IntegerRangeTest {
 
-    public IntegerRangeTest(String name) {
-        super(name);
-    }
-
+    @Test
     public void testConstructor() {
         IntegerRange range = new IntegerRange(5, 10);
         assertEquals(range.getLowerBound().intValue(), 5);
         assertEquals(range.getUpperBound().intValue(), 10);
     }
 
+    @Test
     public void testSize() {
         IntegerRange range = new IntegerRange(5, 10);
         assertEquals(6, range.size());
@@ -53,6 +56,7 @@ public class IntegerRangeTest extends TestCase {
 
     }
 
+    @Test
     public void testValueOf() {
         assertEquals(new IntegerRange(2, 5), IntegerRange.valueOf("2", "5"));
         assertEquals(new IntegerRange(null, null), IntegerRange.valueOf("", ""));
@@ -66,6 +70,7 @@ public class IntegerRangeTest extends TestCase {
         }
     }
 
+    @Test
     public void testContains() {
         IntegerRange range = IntegerRange.valueOf(null, new Integer(100), 10);
         assertTrue(range.contains(30));
@@ -80,6 +85,7 @@ public class IntegerRangeTest extends TestCase {
         assertFalse(range.contains(44));
     }
 
+    @Test
     public void testGetValues() {
         IntegerRange range = IntegerRange.valueOf(0, 100, 20);
         Set<Integer> values = range.getValues(false);
@@ -102,6 +108,7 @@ public class IntegerRangeTest extends TestCase {
         assertTrue(values.contains(null));
     }
 
+    @Test
     public void testSerializable() throws Exception {
         TestUtil.testSerializable(IntegerRange.valueOf(0, 100, 20));
     }

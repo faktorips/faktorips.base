@@ -13,13 +13,20 @@
 
 package org.faktorips.values;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.math.BigDecimal;
 import java.util.Currency;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class MoneyTest extends TestCase {
-
+public class MoneyTest {
+    @Test
     public void testValueOf_DecimalCurrency() {
         assertEquals(Money.valueOf("420EUR"), Money.valueOf(Decimal.valueOf("420"), Currency.getInstance("EUR")));
         assertEquals(Money.valueOf("13.42EUR"), Money.valueOf(Decimal.valueOf("13.42"), Currency.getInstance("EUR")));
@@ -37,6 +44,7 @@ public class MoneyTest extends TestCase {
         assertEquals(Money.NULL, Money.valueOf(Decimal.valueOf(42, 0), null));
     }
 
+    @Test
     public void testValueOf_DecimalCurrencyInt() {
         assertEquals(Money.valueOf("420EUR"),
                 Money.valueOf(Decimal.valueOf("420"), Currency.getInstance("EUR"), BigDecimal.ROUND_HALF_UP));
@@ -53,6 +61,7 @@ public class MoneyTest extends TestCase {
         assertEquals(Money.NULL, Money.valueOf(Decimal.valueOf(42, 0), null, BigDecimal.ROUND_HALF_UP));
     }
 
+    @Test
     public void testValueOfString() {
         assertEquals(Money.euro(10, 12), Money.valueOf("10.12EUR"));
         assertEquals(Money.euro(10, 12), Money.valueOf("10.12 EUR"));
@@ -104,6 +113,7 @@ public class MoneyTest extends TestCase {
         }
     }
 
+    @Test
     public void testValueOflongintCurrency() {
         Money money = Money.valueOf(123, 74, Currency.getInstance("EUR"));
         assertEquals(Currency.getInstance("EUR"), money.getCurrency());
@@ -127,26 +137,31 @@ public class MoneyTest extends TestCase {
         }
     }
 
+    @Test
     public void testSymmetryOfToStringAndValueOfForNull() {
         Money moneyNull = Money.NULL;
         assertTrue(Money.valueOf(moneyNull.toString()).isNull());
     }
 
+    @Test
     public void testGetAmount() {
         assertEquals(Decimal.valueOf("7.31"), Money.euro(7, 31).getAmount());
         assertTrue(Money.NULL.getAmount().isNull());
     }
 
+    @Test
     public void testGetCurrency() {
         assertEquals(Currency.getInstance("EUR"), Money.euro(7, 31).getCurrency());
         assertNull(Money.NULL.getCurrency());
     }
 
+    @Test
     public void testIsNull() {
         assertFalse(Money.euro(0, 0).isNull());
         assertTrue(Money.NULL.isNull());
     }
 
+    @Test
     public void testAdd() {
         Money m1 = Money.euro(10, 0);
         Money m2 = Money.euro(12, 43);
@@ -180,6 +195,7 @@ public class MoneyTest extends TestCase {
         }
     }
 
+    @Test
     public void testSubtract() {
         Money m1 = Money.euro(10, 0);
         Money m2 = Money.euro(12, 43);
@@ -213,6 +229,7 @@ public class MoneyTest extends TestCase {
         }
     }
 
+    @Test
     public void testMultiplyint() {
         Money m = Money.euro(10, 12);
         int factor = 2;
@@ -220,6 +237,7 @@ public class MoneyTest extends TestCase {
         assertTrue(Money.NULL.multiply(factor).isNull());
     }
 
+    @Test
     public void testMultiplylong() {
         Money m = Money.euro(10, 12);
         long factor = 2;
@@ -227,6 +245,7 @@ public class MoneyTest extends TestCase {
         assertTrue(Money.NULL.multiply(factor).isNull());
     }
 
+    @Test
     public void testMultiplyDecimal() {
         Money m = Money.euro(10, 12);
         // no rounding necessary
@@ -256,6 +275,7 @@ public class MoneyTest extends TestCase {
 
     }
 
+    @Test
     public void testDivide_int() {
         Money m = Money.euro(10, 12);
         int divisor = 2;
@@ -270,6 +290,7 @@ public class MoneyTest extends TestCase {
         assertTrue(Money.NULL.divide(2, 2).isNull());
     }
 
+    @Test
     public void testDivide_long() {
         Money m = Money.euro(10, 12);
         long divisor = 2;
@@ -284,6 +305,7 @@ public class MoneyTest extends TestCase {
         assertTrue(Money.NULL.divide(2, 2).isNull());
     }
 
+    @Test
     public void testDivide_Decimal() {
         Money m = Money.euro(10, 12);
         // no rounding necessary
@@ -312,6 +334,7 @@ public class MoneyTest extends TestCase {
         }
     }
 
+    @Test
     public void testCompareTo() {
         Money m = Money.euro(10, 42);
         assertTrue(m.compareTo(Money.euro(10, 41)) > 0);
@@ -347,6 +370,7 @@ public class MoneyTest extends TestCase {
         }
     }
 
+    @Test
     public void testGreaterThan() {
         Money m = Money.euro(10, 42);
         assertTrue(m.greaterThan(Money.euro(10, 41)));
@@ -377,6 +401,7 @@ public class MoneyTest extends TestCase {
         }
     }
 
+    @Test
     public void testGreaterThanOrEqual() {
         Money m = Money.euro(10, 42);
         assertTrue(m.greaterThanOrEqual(Money.euro(10, 41)));
@@ -407,6 +432,7 @@ public class MoneyTest extends TestCase {
         }
     }
 
+    @Test
     public void testLessThan() {
         Money m = Money.euro(10, 42);
         assertFalse(m.lessThan(Money.euro(10, 41)));
@@ -437,6 +463,7 @@ public class MoneyTest extends TestCase {
         }
     }
 
+    @Test
     public void testLessThanOrEqual() {
         Money m = Money.euro(10, 42);
         assertFalse(m.lessThanOrEqual(Money.euro(10, 41)));
@@ -467,6 +494,7 @@ public class MoneyTest extends TestCase {
         }
     }
 
+    @Test
     public void testMax() {
         Money value1 = Money.euro(10, 5);
         Money value2 = Money.euro(20, 5);
@@ -478,6 +506,7 @@ public class MoneyTest extends TestCase {
         assertSame(value1, value1.max(value3));
     }
 
+    @Test
     public void testMin() {
         Money value1 = Money.euro(10, 5);
         Money value2 = Money.euro(20, 5);
@@ -490,6 +519,7 @@ public class MoneyTest extends TestCase {
 
     }
 
+    @Test
     public void testEqualsObject() {
         // different class
         assertFalse(Money.euro(0, 0).equals(this));
@@ -516,6 +546,7 @@ public class MoneyTest extends TestCase {
         assertTrue(Money.NULL.equals(Money.NULL));
     }
 
+    @Test
     public void testToString() {
         assertEquals("100.77 EUR", Money.euro(100, 77).toString());
     }

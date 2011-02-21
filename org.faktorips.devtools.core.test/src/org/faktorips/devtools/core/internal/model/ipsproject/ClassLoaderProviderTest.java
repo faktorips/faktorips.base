@@ -131,7 +131,7 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
      * 
      * Jan Ortmann, 6.10.2010
      */
-    @Test
+    // @Test
     // public void test_DemoDeleteProblem() throws Exception {
     // createJarFileAndAppendToClasspath();
     // deleteJarFile();

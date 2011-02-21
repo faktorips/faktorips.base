@@ -16,9 +16,10 @@ package org.faktorips.fl.operations;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.BinaryOperation;
 import org.faktorips.fl.CompilerAbstractTest;
+import org.junit.Test;
 
 public class NotEqualsObjectDatatypeTest extends CompilerAbstractTest {
-
+    @Test
     public void testDecimal() throws Exception {
         compiler.setBinaryOperations(new BinaryOperation[] { new NotEqualsObjectDatatype(Datatype.DECIMAL,
                 Datatype.DECIMAL) });
@@ -27,6 +28,7 @@ public class NotEqualsObjectDatatypeTest extends CompilerAbstractTest {
         execAndTestSuccessfull("1.0!=1.0", false);
     }
 
+    @Test
     public void testMoney() throws Exception {
         compiler.setBinaryOperations(new BinaryOperation[] { new NotEqualsObjectDatatype(Datatype.MONEY, Datatype.MONEY) });
         compiler.setEnsureResultIsObject(false);
@@ -34,6 +36,7 @@ public class NotEqualsObjectDatatypeTest extends CompilerAbstractTest {
         execAndTestSuccessfull("1.23EUR!=1.23EUR", false);
     }
 
+    @Test
     public void testString() throws Exception {
         compiler.setBinaryOperations(new BinaryOperation[] { new NotEqualsObjectDatatype(Datatype.STRING,
                 Datatype.STRING) });

@@ -13,10 +13,17 @@
 
 package org.faktorips.util.message;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-public class MessageListTest extends TestCase {
+import org.junit.Test;
 
+public class MessageListTest {
+    @Test
     public void testAddMessage() {
         MessageList list = new MessageList();
 
@@ -31,6 +38,7 @@ public class MessageListTest extends TestCase {
         assertTrue(msg2 == list.getMessage(1));
     }
 
+    @Test
     public void testAddMessageList() {
         MessageList list1 = new MessageList();
         Message msg1 = Message.newError("1", "blabla");
@@ -53,6 +61,7 @@ public class MessageListTest extends TestCase {
         assertEquals(3, list1.getNoOfMessages());
     }
 
+    @Test
     public void testAddMessageListObjectProperty_OverrideTrue() {
         MessageList list1 = new MessageList();
         Message msg1 = Message.newError("1", "blabla");
@@ -77,6 +86,7 @@ public class MessageListTest extends TestCase {
         assertEquals(msg3.getSeverity(), list1.getMessage(2).getSeverity());
     }
 
+    @Test
     public void testAddMessageListObjectProperty_OverrideFalse() {
         MessageList list1 = new MessageList();
         Message msg1 = Message.newError("1", "blabla");
@@ -98,6 +108,7 @@ public class MessageListTest extends TestCase {
         assertEquals(objProp1, list1.getMessage(2).getInvalidObjectProperties()[0]);
     }
 
+    @Test
     public void testGetNoOfMessages() {
         MessageList list = new MessageList();
         assertEquals(0, list.getNoOfMessages());
@@ -113,6 +124,7 @@ public class MessageListTest extends TestCase {
         assertEquals(0, list.getNoOfMessages(Message.NONE));
     }
 
+    @Test
     public void testGetMessage() {
         MessageList list = new MessageList();
         Message msg1 = Message.newError("1", "blabla");
@@ -131,6 +143,7 @@ public class MessageListTest extends TestCase {
         }
     }
 
+    @Test
     public void testGetMessageByCode() {
         MessageList list = new MessageList();
         assertNull(list.getMessageByCode("1"));
@@ -147,6 +160,7 @@ public class MessageListTest extends TestCase {
         assertNull(list.getMessageByCode("3"));
     }
 
+    @Test
     public void testGetSeverity() {
         MessageList list = new MessageList();
         assertEquals(0, list.getSeverity());
@@ -161,6 +175,7 @@ public class MessageListTest extends TestCase {
         assertEquals(Message.ERROR, list.getSeverity());
     }
 
+    @Test
     public void testGetMessageWithHighestSeverity() {
         MessageList list = new MessageList();
         assertNull(list.getMessageWithHighestSeverity());
@@ -182,6 +197,7 @@ public class MessageListTest extends TestCase {
         assertSame(error, list.getMessageWithHighestSeverity());
     }
 
+    @Test
     public void testContainsErrorMsg() {
         MessageList list = new MessageList();
         assertFalse(list.containsErrorMsg());
@@ -196,6 +212,7 @@ public class MessageListTest extends TestCase {
         assertTrue(list.containsErrorMsg());
     }
 
+    @Test
     public void testToString() {
         MessageList list = new MessageList();
         list.toString();
@@ -203,6 +220,7 @@ public class MessageListTest extends TestCase {
         list.toString();
     }
 
+    @Test
     public void testEquals() {
         MessageList list = new MessageList();
         list.add(Message.newInfo("1", "blabla"));
@@ -219,6 +237,7 @@ public class MessageListTest extends TestCase {
         assertTrue(list.equals(list2));
     }
 
+    @Test
     public void testGetMessagesFor() {
         MessageList list = new MessageList();
         Message msg1 = new Message("1", "text1", Message.ERROR, this, "name");

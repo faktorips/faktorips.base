@@ -13,14 +13,18 @@
 
 package org.faktorips.valueset;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Set;
 
-import junit.framework.TestCase;
-
 import org.faktorips.values.Decimal;
+import org.junit.Test;
 
-public class DecimalRangeTest extends TestCase {
-
+public class DecimalRangeTest {
+    @Test
     public void testValueOf() {
         DecimalRange range = DecimalRange.valueOf("1.25", "5.67");
         Decimal lower = range.getLowerBound();
@@ -29,6 +33,7 @@ public class DecimalRangeTest extends TestCase {
         assertEquals(Decimal.valueOf(567, 2), upper);
     }
 
+    @Test
     public void testConstructor() {
         DecimalRange range = new DecimalRange(Decimal.valueOf(125, 2), Decimal.valueOf(567, 2));
         Decimal lower = range.getLowerBound();
@@ -37,6 +42,7 @@ public class DecimalRangeTest extends TestCase {
         assertEquals(Decimal.valueOf(567, 2), upper);
     }
 
+    @Test
     public void testConstructorWithStep() {
         DecimalRange.valueOf(Decimal.valueOf(new Integer(10)), Decimal.valueOf(new Integer(100)),
                 Decimal.valueOf(10, 0));
@@ -60,6 +66,7 @@ public class DecimalRangeTest extends TestCase {
         }
     }
 
+    @Test
     public void testContains() {
         DecimalRange range = new DecimalRange(Decimal.valueOf(new Integer(10)), Decimal.valueOf(new Integer(100)));
         assertTrue(range.contains(Decimal.valueOf(new Integer(30))));
@@ -78,6 +85,7 @@ public class DecimalRangeTest extends TestCase {
         assertFalse(range.contains(Decimal.valueOf(35, 0)));
     }
 
+    @Test
     public void testGetValues() {
         DecimalRange range = new DecimalRange(Decimal.valueOf(new Integer(10)), Decimal.valueOf(new Integer(100)));
         try {
@@ -125,6 +133,7 @@ public class DecimalRangeTest extends TestCase {
         assertTrue(values.contains(Decimal.NULL));
     }
 
+    @Test
     public void testSerializable() throws Exception {
         DecimalRange range = DecimalRange.valueOf(Decimal.valueOf(new Integer(10)), Decimal.valueOf(new Integer(100)),
                 Decimal.valueOf(new Integer(10)), true);

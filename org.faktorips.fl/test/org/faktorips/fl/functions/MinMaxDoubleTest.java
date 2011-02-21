@@ -14,10 +14,11 @@
 package org.faktorips.fl.functions;
 
 import org.faktorips.datatype.Datatype;
+import org.junit.Test;
 
 public class MinMaxDoubleTest extends FunctionAbstractTest {
-
-    public final void testCompile() throws Exception {
+    @Test
+    public void testCompile() throws Exception {
         registerFunction(new MinMaxDouble("MAX", "", true));
         execAndTestSuccessfull("MAX(a; b)", new Double(4.4), new String[] { "a", "b" }, new Datatype[] {
                 Datatype.DOUBLE, Datatype.DOUBLE }, new Object[] { new Double(4.4), new Double(3.5) }, Datatype.DOUBLE);

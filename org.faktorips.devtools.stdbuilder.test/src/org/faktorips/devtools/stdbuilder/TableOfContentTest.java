@@ -13,10 +13,19 @@
 
 package org.faktorips.devtools.stdbuilder;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import org.faktorips.abstracttest.test.XmlAbstractTestCase;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -28,6 +37,8 @@ import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
@@ -38,11 +49,12 @@ public class TableOfContentTest extends XmlAbstractTestCase {
 
     private TableOfContent toc;
 
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         toc = new TableOfContent();
     }
 
+    @Test
     public void testGetTocEntry() {
         assertNull(toc.getEntry(new QualifiedNameType("Unkown", IpsObjectType.POLICY_CMPT_TYPE)));
 
@@ -58,6 +70,7 @@ public class TableOfContentTest extends XmlAbstractTestCase {
         assertNull(toc.getEntry(new QualifiedNameType("Unkown", IpsObjectType.POLICY_CMPT_TYPE)));
     }
 
+    @Test
     public void testGetProductCmptTocEntries() {
         assertEquals(0, toc.getEntries().size());
         TocEntryObject entry0 = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
@@ -73,6 +86,7 @@ public class TableOfContentTest extends XmlAbstractTestCase {
         assertEquals(entry0, iterator.next());
     }
 
+    @Test
     public void testAddOrReplaceTocEntry_TestCase() {
         TocEntryObject entry0 = new TestCaseTocEntry("TestCaseId", "TestCaseName", "TestCase.xml", "TestCase");
         boolean changed = toc.addOrReplaceTocEntry(entry0);
@@ -82,6 +96,7 @@ public class TableOfContentTest extends XmlAbstractTestCase {
         assertEquals(entry0, toc.getEntries().iterator().next());
     }
 
+    @Test
     public void testAddOrReplaceTocEntry() {
         TocEntryObject entry0 = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
                 "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicyPkAnpStufe", new DateTime(2010, 1, 1));
@@ -169,6 +184,7 @@ public class TableOfContentTest extends XmlAbstractTestCase {
 
     }
 
+    @Test
     public void testRemoveEntry() {
         toc.removeEntry(new QualifiedNameType("MotorProduct", IpsObjectType.PRODUCT_CMPT));
         assertFalse(toc.isModified());
@@ -225,6 +241,7 @@ public class TableOfContentTest extends XmlAbstractTestCase {
 
     }
 
+    @Test
     public void testToXml() throws Exception {
         TocEntryObject entry0 = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
                 "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicyPkAnpStufe", new DateTime(2010, 1, 1));
@@ -253,6 +270,7 @@ public class TableOfContentTest extends XmlAbstractTestCase {
         assertEquals(1, xmlAdapterEntries.size());
     }
 
+    @Test
     public void testToXml_EntriesAreOrdered() throws Exception {
         // test if the two xml representations are identical regradless of the order in that the
         // entries

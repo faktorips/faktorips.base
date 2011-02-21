@@ -17,6 +17,8 @@ import java.math.BigDecimal;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.values.Decimal;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  *
@@ -24,10 +26,12 @@ import org.faktorips.values.Decimal;
 public class RoundTest extends FunctionAbstractTest {
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
     }
 
+    @Test
     public void testRoundUp() throws Exception {
         registerFunction(new Round("ROUNDUP", "", BigDecimal.ROUND_UP));
         execAndTestSuccessfull("ROUNDUP(3.25; 1)", Decimal.valueOf("3.3"), Datatype.DECIMAL);
@@ -35,6 +39,7 @@ public class RoundTest extends FunctionAbstractTest {
         execAndTestSuccessfull("ROUNDUP(-3.21; 1)", Decimal.valueOf("-3.3"), Datatype.DECIMAL);
     }
 
+    @Test
     public void testRoundDown() throws Exception {
         registerFunction(new Round("ROUNDDOWN", "", BigDecimal.ROUND_DOWN));
         execAndTestSuccessfull("ROUNDDOWN(3.25; 1)", Decimal.valueOf("3.2"), Datatype.DECIMAL);
@@ -43,6 +48,7 @@ public class RoundTest extends FunctionAbstractTest {
         execAndTestSuccessfull("ROUNDDOWN(-3.29; 1)", Decimal.valueOf("-3.2"), Datatype.DECIMAL);
     }
 
+    @Test
     public void testRoundHalfUp() throws Exception {
         registerFunction(new Round("ROUND", "", BigDecimal.ROUND_HALF_UP));
         execAndTestSuccessfull("ROUND(3.25; 1)", Decimal.valueOf("3.3"), Datatype.DECIMAL);

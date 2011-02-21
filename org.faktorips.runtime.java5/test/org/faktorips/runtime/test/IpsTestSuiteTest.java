@@ -13,17 +13,20 @@
 
 package org.faktorips.runtime.test;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
+import org.junit.Test;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class IpsTestSuiteTest extends TestCase {
+public class IpsTestSuiteTest {
 
     /*
      * Test method for 'org.faktorips.runtime.test.IpsTestSuite.getTest(String)'
-     */
+     */@Test
     public void testGetTest() {
         IpsTestSuite suite = new IpsTestSuite("suite");
         IpsTestSuite suite2 = new IpsTestSuite("suite.suite2");
@@ -38,7 +41,7 @@ public class IpsTestSuiteTest extends TestCase {
 
     /*
      * Test method for 'org.faktorips.runtime.test.IpsTestCase2.run(IpsTestResult)'
-     */
+     */@Test
     public void testRun() {
         IpsTestSuite suite = new IpsTestSuite("suite");
         MyTestCase test1 = new MyTestCase("suite.Test1", "42", "42");
@@ -81,6 +84,7 @@ public class IpsTestSuiteTest extends TestCase {
         assertEquals(5, listener.failureCount);
     }
 
+    @Test
     public void testCountTestCases() {
         IpsTestSuite root = new IpsTestSuite("root");
         MyTestCase test0 = new MyTestCase("suite.Test0", "42", "42");

@@ -13,21 +13,19 @@
 
 package org.faktorips.sourcecode;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.commons.lang.SystemUtils;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.junit.Test;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class JavaCodeFragmentBuilderTest extends TestCase {
+public class JavaCodeFragmentBuilderTest {
 
-    public JavaCodeFragmentBuilderTest(String name) {
-        super(name);
-    }
-
+    @Test
     public void testOpenCloseBracket() {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder(true);
         assertEquals(0, builder.getFragment().getIndentationLevel());

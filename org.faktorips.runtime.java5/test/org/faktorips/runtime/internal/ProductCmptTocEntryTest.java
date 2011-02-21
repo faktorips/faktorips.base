@@ -23,6 +23,7 @@ import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
@@ -39,6 +40,7 @@ public class ProductCmptTocEntryTest extends XmlAbstractTestCase {
         super.setUp();
     }
 
+    @Test
     public void testCreateFromXml() {
         Element element = getTestDocument().getDocumentElement();
         ProductCmptTocEntry entry = (ProductCmptTocEntry)TocEntryObject.createFromXml(element);
@@ -58,6 +60,7 @@ public class ProductCmptTocEntryTest extends XmlAbstractTestCase {
         assertEquals(new DateTime(2005, 1, 1), genEntries.get(1).getValidFrom());
     }
 
+    @Test
     public void testToXml() {
         ProductCmptTocEntry entry = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
                 "org/samples/MotorPolice.ipsproduct", "org.samples.MotorPolicyPk", "org.samples.MotorPolicyPkAnpStufe",
@@ -91,6 +94,7 @@ public class ProductCmptTocEntryTest extends XmlAbstractTestCase {
         assertEquals(new DateTime(2005, 1, 1), entry.getGenerationEntries().get(1).getValidFrom());
     }
 
+    @Test
     public void testGetGenerationEntry() {
         ProductCmptTocEntry entry = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
                 "MotorPolice.ipsproduct", "java.lang.String", "java.lang.String", new DateTime(2010, 1, 1));
@@ -105,6 +109,7 @@ public class ProductCmptTocEntryTest extends XmlAbstractTestCase {
         assertSame(genEntry1, entry.getGenerationEntry(new GregorianCalendar(2006, 0, 1)));
     }
 
+    @Test
     public void testToString() {
         TocEntryObject entry = new ProductCmptTocEntry("MotorProduct 2005-01", "motor.MotorProduct 2005-01",
                 "MotorProduct", "2005-01", "MotorPolice.ipsproduct", "java.lang.String", "java.lang.String",
@@ -112,6 +117,7 @@ public class ProductCmptTocEntryTest extends XmlAbstractTestCase {
         assertEquals("TocEntry(ProductComponent:MotorProduct 2005-01)", entry.toString());
     }
 
+    @Test
     public void testCreateTableTocEntry() {
         TocEntryObject toc = new TableContentTocEntry("RateTable", "RateTable", "RateTable.ipstablecontents",
                 "RateTable");

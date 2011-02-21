@@ -13,26 +13,33 @@
 
 package org.faktorips.datatype;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Calendar;
 import java.util.Date;
 
-import junit.framework.TestCase;
-
 import org.faktorips.datatype.classtypes.DateDatatype;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
  * @author Peter Erzberger
  */
-public class DateDatatypeTest extends TestCase {
+public class DateDatatypeTest {
 
     private DateDatatype datatype;
 
-    @Override
+    @Before
     public void setUp() {
         datatype = new DateDatatype();
     }
 
+    @Test
     public void testGetValue() {
         String valueStr = "2000-01-01"; //$NON-NLS-1$
         Date date = (Date)datatype.getValue(valueStr);
@@ -54,6 +61,7 @@ public class DateDatatypeTest extends TestCase {
         }
     }
 
+    @Test
     public void testIsParsable() {
         assertTrue(datatype.isParsable("2000-01-01")); //$NON-NLS-1$
         assertTrue(datatype.isParsable("2000-01-01")); //$NON-NLS-1$
@@ -66,6 +74,7 @@ public class DateDatatypeTest extends TestCase {
         assertTrue(datatype.isParsable("2001-1-1")); //$NON-NLS-1$
     }
 
+    @Test
     public void testValueToString() {
         Calendar cal = Calendar.getInstance();
         cal.set(2000, Calendar.FEBRUARY, 20);

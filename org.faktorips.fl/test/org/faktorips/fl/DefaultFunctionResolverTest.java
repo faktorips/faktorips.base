@@ -13,27 +13,27 @@
 
 package org.faktorips.fl;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.functions.AbstractFlFunction;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  *
  */
-public class DefaultFunctionResolverTest extends TestCase {
+public class DefaultFunctionResolverTest {
 
     private DefaultFunctionResolver resolver;
 
-    /*
-     * @see TestCase#setUp()
-     */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         resolver = new DefaultFunctionResolver();
     }
 
+    @Test
     public void testAdd() {
         FlFunction fct = new AbstractTestFlFunction("fct1", Datatype.DECIMAL, new Datatype[0]);
         resolver.add(fct);
@@ -41,6 +41,7 @@ public class DefaultFunctionResolverTest extends TestCase {
         assertSame(fct, resolver.getFunctions()[0]);
     }
 
+    @Test
     public void testRemove() {
         AbstractTestFlFunction fct1 = new AbstractTestFlFunction("fct1", Datatype.DECIMAL, new Datatype[0]);
         resolver.add(fct1);

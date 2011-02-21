@@ -14,16 +14,20 @@
 package org.faktorips.fl.functions;
 
 import org.faktorips.datatype.Datatype;
+import org.junit.Before;
+import org.junit.Test;
 
 public class OrTest extends FunctionAbstractTest {
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         registerFunction(new Or("OR", ""));
         compiler.setEnsureResultIsObject(false);
     }
 
+    @Test
     public void testCompile() throws Exception {
         // test if multiple arguments work
         execAndTestSuccessfull("OR(true)", Boolean.TRUE, Datatype.PRIMITIVE_BOOLEAN);

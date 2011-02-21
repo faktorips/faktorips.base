@@ -13,16 +13,21 @@
 
 package org.faktorips.valueset;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class OrderedValueSetTest extends TestCase {
-
+public class OrderedValueSetTest {
+    @Test
     public void testConstructor() {
 
         try {
@@ -40,6 +45,7 @@ public class OrderedValueSetTest extends TestCase {
         }
     }
 
+    @Test
     public void testGetValues() {
         Integer[] values = new Integer[] { new Integer(1), new Integer(2), new Integer(3) };
         OrderedValueSet<Integer> valueSet = new OrderedValueSet<Integer>(false, null, values);
@@ -63,11 +69,13 @@ public class OrderedValueSetTest extends TestCase {
         assertEquals(expectedValues, Arrays.asList(valueSet.getValues(true).toArray()));
     }
 
+    @Test
     public void testIsDiscrete() {
         OrderedValueSet<Object> valueSet = new OrderedValueSet<Object>(false, null, new Object[0]);
         assertTrue(valueSet.isDiscrete());
     }
 
+    @Test
     public void testContains() {
         Integer[] values = new Integer[] { new Integer(1), new Integer(2), new Integer(3), null };
         OrderedValueSet<Integer> valueSet = new OrderedValueSet<Integer>(true, null, values);
@@ -77,6 +85,7 @@ public class OrderedValueSetTest extends TestCase {
         assertFalse(valueSet.contains(new Integer(5)));
     }
 
+    @Test
     public void testContainsNull() {
         OrderedValueSet<Object> valueSet = new OrderedValueSet<Object>(false, null, new Object[0]);
         assertFalse(valueSet.containsNull());
@@ -85,6 +94,7 @@ public class OrderedValueSetTest extends TestCase {
         assertTrue(valueSet.containsNull());
     }
 
+    @Test
     public void testIsEmpty() {
         OrderedValueSet<Object> valueSet = new OrderedValueSet<Object>(false, null, new Object[0]);
         assertTrue(valueSet.isEmpty());
@@ -97,18 +107,21 @@ public class OrderedValueSetTest extends TestCase {
         assertFalse(valueSet.isEmpty());
     }
 
+    @Test
     public void testSize() {
         Integer[] values = new Integer[] { new Integer(1), new Integer(2), new Integer(3) };
         OrderedValueSet<Integer> valueSet = new OrderedValueSet<Integer>(false, null, values);
         assertEquals(3, valueSet.size());
     }
 
+    @Test
     public void testSerializable() throws Exception {
         Integer[] values = new Integer[] { new Integer(1), new Integer(2), new Integer(3) };
         OrderedValueSet<Integer> valueSet = new OrderedValueSet<Integer>(false, null, values);
         TestUtil.testSerializable(valueSet);
     }
 
+    @Test
     public void testEquals() {
 
         Integer[] values = new Integer[] { new Integer(1), new Integer(2), new Integer(3) };
@@ -130,6 +143,7 @@ public class OrderedValueSetTest extends TestCase {
         assertFalse(valueSet.equals(valueSet4));
     }
 
+    @Test
     public void testHashCode() {
         Integer[] values = new Integer[] { new Integer(1), new Integer(2), new Integer(3) };
         OrderedValueSet<Integer> valueSet = new OrderedValueSet<Integer>(false, null, values);
@@ -150,6 +164,7 @@ public class OrderedValueSetTest extends TestCase {
         assertFalse(valueSet.hashCode() == valueSet4.hashCode());
     }
 
+    @Test
     public void testToString() {
         Integer[] values = new Integer[] { new Integer(1), new Integer(2), new Integer(3) };
         OrderedValueSet<Integer> valueSet = new OrderedValueSet<Integer>(false, null, values);

@@ -13,11 +13,11 @@
 
 package org.faktorips.devtools.core.util;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-public class StringUtilsTest extends TestCase {
+public class StringUtilsTest {
     @Test
     public void testWrapText() {
         String text = "Diese Klasse enthält die Kontostände, die für die Bestimmung der abzuführenden \n" //$NON-NLS-1$

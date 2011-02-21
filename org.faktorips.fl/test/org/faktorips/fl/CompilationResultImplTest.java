@@ -13,18 +13,22 @@
 
 package org.faktorips.fl;
 
-import java.util.HashSet;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import junit.framework.TestCase;
+import java.util.HashSet;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.util.message.Message;
+import org.junit.Test;
 
 /**
  *
  */
-public class CompilationResultImplTest extends TestCase {
-
+public class CompilationResultImplTest {
+    @Test
     public void testGetIdentifiersUsed() {
         CompilationResultImpl result = new CompilationResultImpl();
         assertEquals(0, result.getResolvedIdentifiers().length);
@@ -38,6 +42,7 @@ public class CompilationResultImplTest extends TestCase {
         assertEquals("b", result.getResolvedIdentifiers()[1]);
     }
 
+    @Test
     public void testIsUsedAsIdentifier() {
         CompilationResultImpl result = new CompilationResultImpl();
         assertFalse(result.isUsedAsIdentifier("a"));
@@ -48,6 +53,7 @@ public class CompilationResultImplTest extends TestCase {
         assertFalse(result.isUsedAsIdentifier(null));
     }
 
+    @Test
     public void testAddIdentifiersUsed() {
         CompilationResultImpl result = new CompilationResultImpl();
         result.addIdentifiersUsed(null);
@@ -76,6 +82,7 @@ public class CompilationResultImplTest extends TestCase {
         fail("Expected value: " + expected + " not in array!");
     }
 
+    @Test
     public void testAdd() {
         CompilationResultImpl result1 = new CompilationResultImpl();
 
@@ -105,6 +112,7 @@ public class CompilationResultImplTest extends TestCase {
 
     }
 
+    @Test
     public void testSuccessfullFailed() {
         CompilationResultImpl result = new CompilationResultImpl("blabla", Datatype.STRING);
         assertTrue(result.successfull());
@@ -117,6 +125,7 @@ public class CompilationResultImplTest extends TestCase {
         assertTrue(result.failed());
     }
 
+    @Test
     public void testToString() {
         CompilationResultImpl result = new CompilationResultImpl("blabla", Datatype.STRING);
         result.toString();

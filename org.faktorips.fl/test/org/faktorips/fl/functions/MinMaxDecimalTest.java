@@ -15,10 +15,11 @@ package org.faktorips.fl.functions;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.values.Decimal;
+import org.junit.Test;
 
 public class MinMaxDecimalTest extends FunctionAbstractTest {
-
-    public final void testCompile() throws Exception {
+    @Test
+    public void testCompile() throws Exception {
         registerFunction(new MinMaxDecimal("MAX", "", true));
         execAndTestSuccessfull("MAX(3.0; 4.0)", Decimal.valueOf("4.0"), Datatype.DECIMAL);
         execAndTestSuccessfull("MAX(4.0; 3.0)", Decimal.valueOf("4.0"), Datatype.DECIMAL);

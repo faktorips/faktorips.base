@@ -13,28 +13,28 @@
 
 package org.faktorips.sourcecode;
 
-import java.util.Iterator;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
-import junit.framework.TestCase;
+import java.util.Iterator;
 
 import org.apache.commons.lang.SystemUtils;
 import org.faktorips.codegen.ImportDeclaration;
+import org.junit.Test;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class ImportDeclarationTest extends TestCase {
+public class ImportDeclarationTest {
 
-    public ImportDeclarationTest(String name) {
-        super(name);
-    }
-
+    @Test
     public void testImportDeclaration() {
         ImportDeclaration id = new ImportDeclaration();
         assertEquals(0, id.getNoOfImports());
     }
 
+    @Test
     public void testImportDeclaration_ImportDeclaration_PackageName() {
         ImportDeclaration id = new ImportDeclaration();
         id.add("moredummy.DummyClass"); //$NON-NLS-1$
@@ -51,6 +51,7 @@ public class ImportDeclarationTest extends TestCase {
         assertEquals("dummy.*", newId.iterator().next()); //$NON-NLS-1$
     }
 
+    @Test
     public void testAdd() {
         ImportDeclaration id = new ImportDeclaration();
         id.iterator();
@@ -86,6 +87,7 @@ public class ImportDeclarationTest extends TestCase {
         assertFalse(it.hasNext());
     }
 
+    @Test
     public void testToString() {
         ImportDeclaration id = new ImportDeclaration();
         id.add("java.util.List"); //$NON-NLS-1$
@@ -97,6 +99,7 @@ public class ImportDeclarationTest extends TestCase {
         assertEquals(expected, id.toString());
     }
 
+    @Test
     public void testEquals() {
         ImportDeclaration id = new ImportDeclaration();
         id.add("java.util.List"); //$NON-NLS-1$
@@ -116,6 +119,7 @@ public class ImportDeclarationTest extends TestCase {
         assertFalse(id.equals(id2));
     }
 
+    @Test
     public void testGetUncoveredImports() {
         ImportDeclaration decl = new ImportDeclaration();
         decl.add("java.util.List"); //$NON-NLS-1$

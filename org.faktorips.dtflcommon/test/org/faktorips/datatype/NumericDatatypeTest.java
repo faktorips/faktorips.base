@@ -13,6 +13,9 @@
 
 package org.faktorips.datatype;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import junit.framework.TestCase;
 
 import org.faktorips.datatype.classtypes.BigDecimalDatatype;
@@ -21,14 +24,15 @@ import org.faktorips.datatype.classtypes.DoubleDatatype;
 import org.faktorips.datatype.classtypes.IntegerDatatype;
 import org.faktorips.datatype.classtypes.LongDatatype;
 import org.faktorips.datatype.classtypes.MoneyDatatype;
+import org.junit.Test;
 
 /**
  * 
  * @author Thorsten Guenther
  */
-public class NumericDatatypeTest extends TestCase {
+public class NumericDatatypeTest {
 
-    private class TestDatatypeWithDecinalPlaces<T extends NumericDatatype> extends TestCase {
+    private class TestDatatypeWithDecinalPlaces<T extends NumericDatatype>  {
 
         private T datatype;
 
@@ -39,6 +43,7 @@ public class NumericDatatypeTest extends TestCase {
             }
         }
 
+        @Test
         public void testDivisibleWithoutRemainderDecimal() {
             assertTrue(datatype.divisibleWithoutRemainder("10", "2")); //$NON-NLS-1$ //$NON-NLS-2$
             assertFalse(datatype.divisibleWithoutRemainder("9", "2")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -64,11 +69,13 @@ public class NumericDatatypeTest extends TestCase {
 
     }
 
+    @Test
     public void testDivisibleWithoutRemainderPrimitiveInteger() {
         PrimitiveIntegerDatatype datatype = new PrimitiveIntegerDatatype();
         defaultTests(datatype);
     }
 
+    @Test
     public void testDivisibleWithoutRemainderDouble() {
         DoubleDatatype datatype = new DoubleDatatype();
         defaultTests(datatype);
@@ -77,16 +84,19 @@ public class NumericDatatypeTest extends TestCase {
         assertTrue(datatype.divisibleWithoutRemainder("100", "0.2")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    @Test
     public void testDivisibleWithoutRemainderInteger() {
         IntegerDatatype datatype = new IntegerDatatype();
         defaultTests(datatype);
     }
 
+    @Test
     public void testDivisibleWithoutRemainderLong() {
         LongDatatype datatype = new LongDatatype();
         defaultTests(datatype);
     }
 
+    @Test
     public void testDivisibleWithoutRemainderDecimal() {
         TestDatatypeWithDecinalPlaces<NumericDatatype> bigDecimalDatatypeTest = new TestDatatypeWithDecinalPlaces<NumericDatatype>(
                 new BigDecimalDatatype());
@@ -137,6 +147,7 @@ public class NumericDatatypeTest extends TestCase {
         }
     }
 
+    @Test
     public void testHasDecimalPlaces() {
         assertHasDecimalPlaces(true, new DecimalDatatype());
         assertHasDecimalPlaces(true, new DoubleDatatype());

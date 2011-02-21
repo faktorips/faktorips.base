@@ -13,22 +13,25 @@
 
 package org.faktorips.valueset;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class LongRangeTest extends TestCase {
+public class LongRangeTest {
 
-    public LongRangeTest(String name) {
-        super(name);
-    }
-
+    @Test
     public void testConstructor() {
         LongRange range = new LongRange(5L, 10L);
         assertEquals(range.getLowerBound().longValue(), 5L);
         assertEquals(range.getUpperBound().longValue(), 10L);
     }
 
+    @Test
     public void testSize() {
         LongRange range = new LongRange(5L, 10L);
         assertEquals(6, range.size());
@@ -53,6 +56,7 @@ public class LongRangeTest extends TestCase {
         assertEquals(6, range.size());
     }
 
+    @Test
     public void testGetValues() {
         LongRange range = LongRange.valueOf(100L, 1100L, 200L);
         Set<Long> values = range.getValues(false);
@@ -70,6 +74,7 @@ public class LongRangeTest extends TestCase {
         assertTrue(values.contains(null));
     }
 
+    @Test
     public void testValueOf() {
         assertEquals(new LongRange(2L, 5L), LongRange.valueOf("2", "5"));
         assertEquals(new LongRange(null, null), LongRange.valueOf("", ""));
@@ -118,6 +123,7 @@ public class LongRangeTest extends TestCase {
         }
     }
 
+    @Test
     public void testSerializable() throws Exception {
         TestUtil.testSerializable(LongRange.valueOf(new Long(10), new Long(100), new Long(10)));
     }

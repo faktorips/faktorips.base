@@ -20,6 +20,8 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -28,7 +30,8 @@ import org.faktorips.fl.IdentifierResolver;
 public class NotTest extends FunctionAbstractTest {
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         compiler.setEnsureResultIsObject(false);
         registerFunction(new Not("NOT", ""));
@@ -48,11 +51,13 @@ public class NotTest extends FunctionAbstractTest {
         });
     }
 
+    @Test
     public void testPrimitiveBoolean() throws Exception {
         execAndTestSuccessfull("NOT(FALSE)", true);
         execAndTestSuccessfull("NOT(TRUE)", false);
     }
 
+    @Test
     public void testBoolean() throws Exception {
         execAndTestSuccessfull("NOT( beTrue )", Boolean.FALSE, Datatype.BOOLEAN);
         execAndTestSuccessfull("NOT( beFalse )", Boolean.TRUE, Datatype.BOOLEAN);

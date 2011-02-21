@@ -14,16 +14,20 @@
 package org.faktorips.fl.functions;
 
 import org.faktorips.datatype.Datatype;
+import org.junit.Before;
+import org.junit.Test;
 
 public class AndTest extends FunctionAbstractTest {
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         registerFunction(new And("AND", ""));
         compiler.setEnsureResultIsObject(false);
     }
 
+    @Test
     public void testCompile() throws Exception {
         // test if multiple arguments work
         execAndTestSuccessfull("AND(true)", Boolean.TRUE, Datatype.PRIMITIVE_BOOLEAN);

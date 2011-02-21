@@ -13,30 +13,30 @@
 
 package org.faktorips.sourcecode;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.Map.Entry;
-
-import junit.framework.TestCase;
+import java.util.StringTokenizer;
 
 import org.apache.commons.lang.SystemUtils;
 import org.faktorips.codegen.ClassNameUtil;
 import org.faktorips.codegen.ImportDeclaration;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.junit.Test;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class JavaCodeFragmentTest extends TestCase {
+public class JavaCodeFragmentTest {
 
-    public JavaCodeFragmentTest(String name) {
-        super(name);
-    }
-
+    @Test
     public void testGetImportDeclaration() {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(JavaCodeFragment.class);
@@ -47,12 +47,14 @@ public class JavaCodeFragmentTest extends TestCase {
         assertTrue(decl.toString().indexOf(getClass().getName()) != -1);
     }
 
+    @Test
     public void testJavaCodeFragment() {
         JavaCodeFragment fragment = new JavaCodeFragment();
         assertEquals("", fragment.getSourcecode()); //$NON-NLS-1$
         assertEquals(new ImportDeclaration(), fragment.getImportDeclaration());
     }
 
+    @Test
     public void testBol() {
         JavaCodeFragment fragment = new JavaCodeFragment();
         assertTrue(fragment.bol());
@@ -62,6 +64,7 @@ public class JavaCodeFragmentTest extends TestCase {
         assertTrue(fragment.bol());
     }
 
+    @Test
     public void testAppend_String() {
         JavaCodeFragment fragment = new JavaCodeFragment(true);
         fragment.append("blabla"); //$NON-NLS-1$
@@ -84,6 +87,7 @@ public class JavaCodeFragmentTest extends TestCase {
         assertEquals(expected, fragment.getSourcecode());
     }
 
+    @Test
     public void testAppendClassName() {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(List.class);
@@ -105,6 +109,7 @@ public class JavaCodeFragmentTest extends TestCase {
 
     }
 
+    @Test
     public void testAppendInnerClassName() {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendInnerClassName(Entry.class);
@@ -113,6 +118,7 @@ public class JavaCodeFragmentTest extends TestCase {
         assertTrue(fragment.getImportDeclaration().isCovered(Entry.class.getName().replaceAll("\\$", "\\."))); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    @Test
     public void testAppend_Fragment() {
         JavaCodeFragmentBuilder builder1 = new JavaCodeFragmentBuilder(true);
         builder1.openBracket();
@@ -151,6 +157,7 @@ public class JavaCodeFragmentTest extends TestCase {
         assertEquals("Hello world!", builder.getFragment().getSourcecode()); //$NON-NLS-1$
     }
 
+    @Test
     public void testEquals() {
         ImportDeclaration id1 = new ImportDeclaration();
         ImportDeclaration id2 = new ImportDeclaration();
@@ -164,6 +171,7 @@ public class JavaCodeFragmentTest extends TestCase {
         assertFalse(fragment1.equals(new JavaCodeFragment("return", id2))); //$NON-NLS-1$
     }
 
+    @Test
     public void testAddImport() {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.addImport(Calendar.class.getName());

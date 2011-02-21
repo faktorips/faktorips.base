@@ -13,6 +13,9 @@
 
 package org.faktorips.runtime.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -20,24 +23,24 @@ import java.util.List;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import junit.framework.TestCase;
-
+import org.junit.Before;
+import org.junit.Test;
 import org.xml.sax.SAXException;
 
-public class EnumSaxHandlerTest extends TestCase {
+public class EnumSaxHandlerTest {
 
     private InputStream is;
     private SAXParser saxParser;
     private EnumSaxHandler handler;
 
-    @Override
+    @Before
     public void setUp() throws Exception {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         saxParser = factory.newSAXParser();
         handler = new EnumSaxHandler();
     }
 
-    @Override
+    @Before
     public void tearDown() {
         if (is != null) {
             try {
@@ -53,6 +56,7 @@ public class EnumSaxHandlerTest extends TestCase {
                 EnumSaxHandlerTest.class.getName().replace('.', '/') + (extension != null ? extension : ".xml"));
     }
 
+    @Test
     public void testCorrectContent() throws Exception {
         is = createInputStream(null);
         saxParser.parse(is, handler);
@@ -69,6 +73,7 @@ public class EnumSaxHandlerTest extends TestCase {
         assertEquals("cn", enumAttributeValues.get(1));
     }
 
+    @Test
     public void testWrongContent() throws Exception {
         is = createInputStream("Wrong.xml");
         try {
@@ -85,6 +90,7 @@ public class EnumSaxHandlerTest extends TestCase {
      * return characters.
      * 
      */
+    @Test
     public void testCRContent() throws Exception {
         is = createInputStream("WithCRContent.xml");
         saxParser.parse(is, handler);

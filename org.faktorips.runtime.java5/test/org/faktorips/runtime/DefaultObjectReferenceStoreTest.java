@@ -13,10 +13,13 @@
 
 package org.faktorips.runtime;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
-public class DefaultObjectReferenceStoreTest extends TestCase {
+import org.junit.Test;
 
+public class DefaultObjectReferenceStoreTest {
+    @Test
     public void testGetObject() {
         DefaultObjectReferenceStore store = new DefaultObjectReferenceStore();
         IMyInterface someObject = new MyImplementation();

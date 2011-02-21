@@ -13,6 +13,10 @@
 
 package org.faktorips.fl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Locale;
 
 import org.faktorips.codegen.ConversionCodeGenerator;
@@ -27,20 +31,14 @@ import org.faktorips.fl.operations.PlusInteger;
 import org.faktorips.util.message.Message;
 import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
+import org.junit.Test;
 
 /**
  *
  */
 public class ExprCompilerTest extends CompilerAbstractTest {
 
-    /*
-     * @see TestCase#setUp()
-     */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
+    @Test
     public void testGetFunctions() {
         DefaultFunctionResolver r1 = new DefaultFunctionResolver();
         FlFunction f1 = new If("IF1", "");
@@ -65,34 +63,37 @@ public class ExprCompilerTest extends CompilerAbstractTest {
      * Test if a syntax error message is generated when the expression is not a valid expression as
      * defined by the grammar.
      */
+    @Test
     public void testSyntaxError() {
         CompilationResult result = compiler.compile("1 * * 2");
         assertTrue(result.failed());
-        assertEquals(1, result.getMessages().getNoOfMessages());
+        assertEquals(1, result.getMessages().size());
         assertEquals(ExprCompiler.SYNTAX_ERROR, result.getMessages().getMessage(0).getCode());
 
         // Tokens like , and " cause a TokenMgrError (Error not Exception!)
         // Test if this is catched
         result = compiler.compile("1, 2");
         assertTrue(result.failed());
-        assertEquals(1, result.getMessages().getNoOfMessages());
+        assertEquals(1, result.getMessages().size());
         assertEquals(ExprCompiler.LEXICAL_ERROR, result.getMessages().getMessage(0).getCode());
 
         result = compiler.compile("1\" 2");
         assertTrue(result.failed());
-        assertEquals(1, result.getMessages().getNoOfMessages());
+        assertEquals(1, result.getMessages().size());
         assertEquals(ExprCompiler.LEXICAL_ERROR, result.getMessages().getMessage(0).getCode());
     }
 
+    @Test
     public void testOpInvalidTypesError() {
         CompilationResult result = compiler.compile("1.5 + 2EUR");
         assertTrue(result.failed());
-        assertEquals(1, result.getMessages().getNoOfMessages());
+        assertEquals(1, result.getMessages().size());
         Message msg = result.getMessages().getMessage(0);
         assertEquals(ExprCompiler.UNDEFINED_OPERATOR, msg.getCode());
         assertEquals("The operator + is undefined for the type(s) Decimal, Money.", msg.getText());
     }
 
+    @Test
     public void testBinaryOperationCasting() throws Exception {
         // Make only implicit conversions int to Decimal.
         ConversionCodeGenerator ccg = new ConversionCodeGenerator();
@@ -114,10 +115,11 @@ public class ExprCompilerTest extends CompilerAbstractTest {
      * Test if the lhs of a binary operation contains an error message, that the result of the
      * operation is a compilation result with that message.
      */
+    @Test
     public void testBinaryOperationWithLhsError() {
         CompilationResult result = compiler.compile("a + 2");
         assertTrue(result.failed());
-        assertEquals(1, result.getMessages().getNoOfMessages());
+        assertEquals(1, result.getMessages().size());
         Message msg = result.getMessages().getMessage(0);
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, msg.getCode());
     }
@@ -126,10 +128,11 @@ public class ExprCompilerTest extends CompilerAbstractTest {
      * Test if the rhs of a binary operation contains an error message, that the result of the
      * operation is a compilation result with that message.
      */
+    @Test
     public void testBinaryOperationWithRhsError() {
         CompilationResult result = compiler.compile("a + 2");
         assertTrue(result.failed());
-        assertEquals(1, result.getMessages().getNoOfMessages());
+        assertEquals(1, result.getMessages().size());
         Message msg = result.getMessages().getMessage(0);
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, msg.getCode());
     }
@@ -138,24 +141,27 @@ public class ExprCompilerTest extends CompilerAbstractTest {
      * Test if the lhs and the rhs of a binary operation contains an error message, that the result
      * of the operation is a compilation result with the two messages.
      */
+    @Test
     public void testBinaryOperationWithLhsAndRhsError() {
         CompilationResult result = compiler.compile("a + b");
         assertTrue(result.failed());
-        assertEquals(2, result.getMessages().getNoOfMessages());
+        assertEquals(2, result.getMessages().size());
         Message lhsMsg = result.getMessages().getMessage(0);
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, lhsMsg.getCode());
         Message rhsMsg = result.getMessages().getMessage(1);
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, rhsMsg.getCode());
     }
 
+    @Test
     public void testIdentifierResolvingFailed() {
         CompilationResult result = compiler.compile("a + 2");
         assertTrue(result.failed());
-        assertEquals(1, result.getMessages().getNoOfMessages());
+        assertEquals(1, result.getMessages().size());
         Message msg = result.getMessages().getMessage(0);
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, msg.getCode());
     }
 
+    @Test
     public void testIdentifierResolvingSuccessfull() {
         compiler = new ExprCompiler(Locale.ENGLISH);
         DefaultIdentifierResolver resolver = new DefaultIdentifierResolver();
@@ -167,21 +173,25 @@ public class ExprCompilerTest extends CompilerAbstractTest {
         assertEquals(Datatype.DECIMAL, result.getDatatype());
     }
 
+    @Test
     public void testFunctionResolvingSuccessfull() throws Exception {
         compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
         execAndTestSuccessfull("ROUND(2.34; 1)", Decimal.valueOf("2.3"), Datatype.DECIMAL);
     }
 
+    @Test
     public void testFunctionResolvingWithImplicitConversion() {
         //
     }
 
+    @Test
     public void testUndefinedOperator() throws Exception {
         CompilationResult result = execAndTestFail("+ false", ExprCompiler.UNDEFINED_OPERATOR);
         assertEquals("The operator + is undefined for the type(s) boolean.",
                 result.getMessages().getMessageByCode(ExprCompiler.UNDEFINED_OPERATOR).getText());
     }
 
+    @Test
     public void testUnaryOperationCasting() throws Exception {
         // Make only implicit conversions int to Integer.
         ConversionCodeGenerator ccg = new ConversionCodeGenerator();
@@ -195,19 +205,23 @@ public class ExprCompilerTest extends CompilerAbstractTest {
         execAndTestSuccessfull("+ 42", new Integer(42), Datatype.INTEGER);
     }
 
+    @Test
     public void testFunctionResolving_FailWithInvalidFunction() throws Exception {
         execAndTestFail("InvalidFunction(2.34; 1)", ExprCompiler.UNDEFINED_FUNCTION);
     }
 
+    @Test
     public void testFunctionResolving_FailWithWrongArgTypes() throws Exception {
         compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
         execAndTestFail("ROUND(false; 1)", ExprCompiler.WRONG_ARGUMENT_TYPES);
     }
 
+    @Test
     public void testFunctionCall_ErrorInArgumentsTypes() throws Exception {
         execAndTestFail("ROUND(false + 1; 1)", ExprCompiler.UNDEFINED_OPERATOR);
     }
 
+    @Test
     public void testBooleanConstant() {
         compiler.setEnsureResultIsObject(false);
         CompilationResult result = compiler.compile("false");
@@ -223,6 +237,7 @@ public class ExprCompilerTest extends CompilerAbstractTest {
         assertEquals(expected, result.getCodeFragment());
     }
 
+    @Test
     public void testStringConstant() {
         CompilationResult result = compiler.compile("\"blabla\"");
         assertTrue(result.successfull());
@@ -231,11 +246,13 @@ public class ExprCompilerTest extends CompilerAbstractTest {
         assertEquals(expected, result.getCodeFragment());
     }
 
+    @Test
     public void testDecimalConstant() throws Exception {
         execAndTestSuccessfull("10.123", Decimal.valueOf("10.123"), Datatype.DECIMAL);
         execAndTestSuccessfull("-10.123", Decimal.valueOf("-10.123"), Datatype.DECIMAL);
     }
 
+    @Test
     public void testIntegerConstant() {
         compiler.setEnsureResultIsObject(false);
         CompilationResult result = compiler.compile("42");
@@ -251,11 +268,13 @@ public class ExprCompilerTest extends CompilerAbstractTest {
         assertEquals(expected, result.getCodeFragment());
     }
 
+    @Test
     public void testMoneyConstant() throws Exception {
         execAndTestSuccessfull("10.12EUR", Money.valueOf("10.12EUR"), Datatype.MONEY);
         execAndTestSuccessfull("-10.12EUR", Money.valueOf("-10.12EUR"), Datatype.MONEY);
     }
 
+    @Test
     public void testIsValidIdentifier() {
         assertTrue(ExprCompiler.isValidIdentifier("a"));
         assertTrue(ExprCompiler.isValidIdentifier("a.a"));
@@ -267,6 +286,7 @@ public class ExprCompilerTest extends CompilerAbstractTest {
         assertTrue(ExprCompiler.isValidIdentifier("a9"));
     }
 
+    @Test
     public void testSemicolonAtEnd() {
         CompilationResult result = compiler.compile("1");
         assertTrue(result.successfull());
@@ -274,6 +294,7 @@ public class ExprCompilerTest extends CompilerAbstractTest {
         assertFalse(result.successfull());
     }
 
+    @Test
     public void testUsedIdentifiers() {
         compiler.setIdentifierResolver(new IdentifierResolver() {
             public CompilationResult compile(String identifier, ExprCompiler exprCompiler, Locale locale) {

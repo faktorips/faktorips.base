@@ -16,6 +16,7 @@ package org.faktorips.runtime.internal;
 import java.util.List;
 
 import org.faktorips.runtime.XmlAbstractTestCase;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -33,6 +34,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         super.setUp();
     }
 
+    @Test
     public void testGetFirstElement() {
         Document doc = getTestDocument();
         Element docElement = XmlUtil.getFirstElement(doc, "DocElement");
@@ -43,6 +45,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         assertNull(XmlUtil.getFirstElement(docElement, "UnknownElement"));
     }
 
+    @Test
     public void testGetElement() {
         Document doc = getTestDocument();
         Element docElement = XmlUtil.getFirstElement(doc, "DocElement");
@@ -57,6 +60,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
 
     }
 
+    @Test
     public void testGetTextNode() {
         Document doc = getTestDocument();
         Element docElement = XmlUtil.getFirstElement(doc, "DocElement");
@@ -79,6 +83,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         assertEquals("123", XmlUtil.getTextNode(child).getData());
     }
 
+    @Test
     public void testGetValueFromNode() {
         Document doc = getTestDocument();
         Element docElement = XmlUtil.getFirstElement(doc, "DocElement");
@@ -86,6 +91,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         assertEquals("testValue", testValue);
     }
 
+    @Test
     public void testGetElementsFromNode() {
         Document doc = getTestDocument();
         Element docElement = XmlUtil.getFirstElement(doc, "DocElement");

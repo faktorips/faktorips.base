@@ -15,17 +15,14 @@ package org.faktorips.fl.functions;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.values.Decimal;
+import org.junit.Test;
 
 /**
  *
  */
 public class AbsTest extends FunctionAbstractTest {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
+    @Test
     public void testRoundUp() throws Exception {
         registerFunction(new Abs("ABS", ""));
         execAndTestSuccessfull("ABS(3.25)", Decimal.valueOf("3.25"), Datatype.DECIMAL);

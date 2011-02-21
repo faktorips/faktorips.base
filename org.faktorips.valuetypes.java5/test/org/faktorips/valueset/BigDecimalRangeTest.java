@@ -13,13 +13,18 @@
 
 package org.faktorips.valueset;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.math.BigDecimal;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class BigDecimalRangeTest extends TestCase {
-
+public class BigDecimalRangeTest {
+    @Test
     public void testValueOf() {
         BigDecimalRange range = BigDecimalRange.valueOf("1.25", "5.67");
         BigDecimal lower = range.getLowerBound();
@@ -28,6 +33,7 @@ public class BigDecimalRangeTest extends TestCase {
         assertEquals(BigDecimal.valueOf(567, 2), upper);
     }
 
+    @Test
     public void testConstructor() {
         BigDecimalRange range = new BigDecimalRange(BigDecimal.valueOf(125, 2), BigDecimal.valueOf(567, 2));
         BigDecimal lower = range.getLowerBound();
@@ -36,6 +42,7 @@ public class BigDecimalRangeTest extends TestCase {
         assertEquals(BigDecimal.valueOf(567, 2), upper);
     }
 
+    @Test
     public void testConstructorWithStep() {
         BigDecimalRange.valueOf(BigDecimal.valueOf(new Integer(10)), BigDecimal.valueOf(new Integer(100)),
                 BigDecimal.valueOf(10, 0));
@@ -59,6 +66,7 @@ public class BigDecimalRangeTest extends TestCase {
         }
     }
 
+    @Test
     public void testContains() {
         BigDecimalRange range = new BigDecimalRange(BigDecimal.valueOf(new Integer(10)),
                 BigDecimal.valueOf(new Integer(100)));
@@ -79,6 +87,7 @@ public class BigDecimalRangeTest extends TestCase {
         assertFalse(range.contains(BigDecimal.valueOf(35, 0)));
     }
 
+    @Test
     public void testGetValues() {
 
         BigDecimalRange range = new BigDecimalRange(BigDecimal.valueOf(new Integer(10)),
@@ -130,6 +139,7 @@ public class BigDecimalRangeTest extends TestCase {
 
     }
 
+    @Test
     public void testSerializable() throws Exception {
         BigDecimalRange range = BigDecimalRange.valueOf(BigDecimal.valueOf(new Integer(10)),
                 BigDecimal.valueOf(new Integer(100)), BigDecimal.valueOf(new Integer(10)), true);

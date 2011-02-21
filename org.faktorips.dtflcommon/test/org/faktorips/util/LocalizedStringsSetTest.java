@@ -13,23 +13,26 @@
 
 package org.faktorips.util;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
 
-public class LocalizedStringsSetTest extends TestCase {
+public class LocalizedStringsSetTest {
 
     private LocalizedStringsSet set;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         // in this case the class name is the set's name.
         set = new LocalizedStringsSet(this.getClass());
     }
 
+    @Test
     public void testGetLocalizedStringStringLocaleObjectArray() {
         GregorianCalendar calendar = new GregorianCalendar(2004, 11, 20);
         Date date = calendar.getTime();
@@ -40,11 +43,13 @@ public class LocalizedStringsSetTest extends TestCase {
         assertEquals("Datum=20.12.04, x=9,34", set.getString("replacements", Locale.GERMAN, replacements)); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    @Test
     public void testGetLocalizedStringStringLocaleObject() {
         assertEquals("The answer is 42", set.getString("singleReplacement", Locale.ENGLISH, new Integer(42))); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals("Die Antwort ist 42", set.getString("singleReplacement", Locale.GERMAN, new Integer(42))); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    @Test
     public void testGetLocalizedStringStringLocale() {
         assertEquals("Hello world!", set.getString("simple", Locale.ENGLISH)); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals("Hallo Welt!", set.getString("simple", Locale.GERMAN)); //$NON-NLS-1$ //$NON-NLS-2$

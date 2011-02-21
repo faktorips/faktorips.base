@@ -13,14 +13,17 @@
 
 package org.faktorips.datatype.classtypes;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 
 /**
  * 
  * @author Thorsten Guenther
  */
-public class MoneyDatatypeTest extends TestCase {
-
+public class MoneyDatatypeTest {
+    @Test
     public void testDivisibleWithoutRemainder() {
         MoneyDatatype datatype = new MoneyDatatype();
         assertTrue(datatype.divisibleWithoutRemainder("10 EUR", "2 EUR")); //$NON-NLS-1$ //$NON-NLS-2$

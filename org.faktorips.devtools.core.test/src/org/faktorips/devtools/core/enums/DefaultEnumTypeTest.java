@@ -13,11 +13,14 @@
 
 package org.faktorips.devtools.core.enums;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+import org.junit.Before;
 import org.junit.Test;
 
-public class DefaultEnumTypeTest extends TestCase {
+public class DefaultEnumTypeTest {
 
     private static final String MALE_VALUE = "male"; //$NON-NLS-1$
     private static final String FEMALE_VALUE = "female"; //$NON-NLS-1$
@@ -27,8 +30,8 @@ public class DefaultEnumTypeTest extends TestCase {
     private DefaultEnumValue male;
     private DefaultEnumValue female;
 
-    @Override
-    protected void setUp() {
+    @Before
+    public void setUp() {
         gender = new DefaultEnumType(GENDER_ENUM_TYPE_NAME, DefaultEnumValue.class);
         male = new DefaultEnumValue(gender, MALE_VALUE);
         female = new DefaultEnumValue(gender, FEMALE_VALUE);

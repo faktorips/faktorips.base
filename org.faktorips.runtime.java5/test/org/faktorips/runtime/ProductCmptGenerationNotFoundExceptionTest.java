@@ -15,14 +15,14 @@ package org.faktorips.runtime;
 
 import java.util.GregorianCalendar;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class ProductCmptGenerationNotFoundExceptionTest extends TestCase {
-
+public class ProductCmptGenerationNotFoundExceptionTest {
+    @Test
     public void testToString() {
         ProductCmptGenerationNotFoundException e = new ProductCmptGenerationNotFoundException("MotorProducts",
                 "MotorProduct", new GregorianCalendar(2007, 0, 1), false);

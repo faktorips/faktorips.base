@@ -17,6 +17,7 @@ import java.io.InputStream;
 
 import org.faktorips.runtime.XmlAbstractTestCase;
 import org.faktorips.values.Decimal;
+import org.junit.Test;
 
 /**
  * 
@@ -34,6 +35,7 @@ public class TableTest extends XmlAbstractTestCase {
         table = new TestTable();
     }
 
+    @Test
     public void testInitFromXmlViaSax() throws Exception {
         String className = getClass().getName();
         int index = className.lastIndexOf('.');

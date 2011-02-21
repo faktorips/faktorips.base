@@ -13,20 +13,22 @@
 
 package org.faktorips.runtime.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree.TwoColumnKey;
+import org.junit.Test;
 
 /**
  * 
  * @author Peter Erzberger
  */
 @SuppressWarnings("unchecked")
-public class ReadOnlyBinaryRangeTreeTest extends TestCase {
-
+public class ReadOnlyBinaryRangeTreeTest {
+    @Test
     public void testTwoCulmnTreeBasedOnStrings() {
         Map map = new HashMap();
         map.put(new TwoColumnKey("a", "c"), new Integer(42));
@@ -37,6 +39,7 @@ public class ReadOnlyBinaryRangeTreeTest extends TestCase {
         assertEquals(new Integer(43), tree.getValue("m"));
     }
 
+    @Test
     public void testLowerRangeTreeBasedOnStrings() {
         Map map = new HashMap();
         map.put("a", new Integer(42));
@@ -49,6 +52,7 @@ public class ReadOnlyBinaryRangeTreeTest extends TestCase {
         assertEquals(new Integer(43), tree.getValue("o"));
     }
 
+    @Test
     public void testBuildTreeWith1Node() {
         TestReadOnlyBinaryRangTree tree = TestReadOnlyBinaryRangTree.createTreeWidthIntegerValues(1, 1, 1);
 
@@ -58,6 +62,7 @@ public class ReadOnlyBinaryRangeTreeTest extends TestCase {
         assertNull(tree.root.left);
     }
 
+    @Test
     public void testBuildTreeWith2Nodes() {
         TestReadOnlyBinaryRangTree tree = TestReadOnlyBinaryRangTree.createTreeWidthIntegerValues(2, 0, 1);
 
@@ -66,6 +71,7 @@ public class ReadOnlyBinaryRangeTreeTest extends TestCase {
         assertNull(tree.root.right);
     }
 
+    @Test
     public void testBuildTreeWith3Nodes() {
         TestReadOnlyBinaryRangTree tree = TestReadOnlyBinaryRangTree.createTreeWidthIntegerValues(3, 1, 1);
 
@@ -80,6 +86,7 @@ public class ReadOnlyBinaryRangeTreeTest extends TestCase {
         assertNull(tree.root.right.right);
     }
 
+    @Test
     public void testBuildTreeWith4Nodes() {
         TestReadOnlyBinaryRangTree tree = TestReadOnlyBinaryRangTree.createTreeWidthIntegerValues(4, 0, 1);
 
@@ -89,6 +96,7 @@ public class ReadOnlyBinaryRangeTreeTest extends TestCase {
         assertNode(0, tree.root.left.left);
     }
 
+    @Test
     public void testBuildTreeWidth8Nodes() {
         TestReadOnlyBinaryRangTree tree = TestReadOnlyBinaryRangTree.createTreeWidthIntegerValues(8, 0, 1);
 
@@ -117,6 +125,7 @@ public class ReadOnlyBinaryRangeTreeTest extends TestCase {
         assertNull(tree.root.right.right.right);
     }
 
+    @Test
     public void testBuildTreeWidth5Nodes() {
         TestReadOnlyBinaryRangTree tree = TestReadOnlyBinaryRangTree.createTreeWidthIntegerValues(5, 1, 1);
 
@@ -140,6 +149,7 @@ public class ReadOnlyBinaryRangeTreeTest extends TestCase {
         assertNull(tree.root.right.right.right);
     }
 
+    @Test
     public void testBuildTreeWidth7Nodes() {
         TestReadOnlyBinaryRangTree tree = TestReadOnlyBinaryRangTree.createTreeWidthIntegerValues(7, 1, 1);
 
@@ -168,6 +178,7 @@ public class ReadOnlyBinaryRangeTreeTest extends TestCase {
         assertNull(tree.root.right.right.right);
     }
 
+    @Test
     public void testLowerBoundEqualGetValue() {
         TestReadOnlyBinaryRangTree tree = TestReadOnlyBinaryRangTree.createTreeWidthIntegerValues(10, 10, 10,
                 ReadOnlyBinaryRangeTree.KeyType.KEY_IS_LOWER_BOUND_EQUAL);
@@ -194,6 +205,7 @@ public class ReadOnlyBinaryRangeTreeTest extends TestCase {
         assertEquals(new Integer(60), lowerBound);
     }
 
+    @Test
     public void testLowerBoundGetValue() {
         TestReadOnlyBinaryRangTree tree = TestReadOnlyBinaryRangTree.createTreeWidthIntegerValues(10, 10, 10,
                 ReadOnlyBinaryRangeTree.KeyType.KEY_IS_LOWER_BOUND);
@@ -206,6 +218,7 @@ public class ReadOnlyBinaryRangeTreeTest extends TestCase {
 
     }
 
+    @Test
     public void testUpperBoundEqualGetValue() {
         TestReadOnlyBinaryRangTree tree = TestReadOnlyBinaryRangTree.createTreeWidthIntegerValues(10, 10, 10,
                 ReadOnlyBinaryRangeTree.KeyType.KEY_IS_UPPER_BOUND_EQUAL);
@@ -235,6 +248,7 @@ public class ReadOnlyBinaryRangeTreeTest extends TestCase {
         assertEquals(new Integer(80), upperBound);
     }
 
+    @Test
     public void testUpperBoundGetValue() {
         TestReadOnlyBinaryRangTree tree = TestReadOnlyBinaryRangTree.createTreeWidthIntegerValues(10, 10, 10,
                 ReadOnlyBinaryRangeTree.KeyType.KEY_IS_UPPER_BOUND);
@@ -246,6 +260,7 @@ public class ReadOnlyBinaryRangeTreeTest extends TestCase {
         assertEquals(new Integer(10), upperBound);
     }
 
+    @Test
     public void testTwoColumnRangeGetValue() {
         TestTwoColumnReadOnlyBinaryRangeTree tree = TestTwoColumnReadOnlyBinaryRangeTree.createTreeWithIntegerValues(
                 10, 2, 1);
@@ -281,6 +296,7 @@ public class ReadOnlyBinaryRangeTreeTest extends TestCase {
         assertNull(value);
     }
 
+    @Test
     public void testTwoColumnRangeWithZipCodes() {
         // There was a test case with the number of 35 nodes that caused the tree to break during
         // initialization

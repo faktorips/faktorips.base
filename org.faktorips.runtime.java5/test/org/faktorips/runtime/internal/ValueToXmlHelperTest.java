@@ -14,6 +14,7 @@
 package org.faktorips.runtime.internal;
 
 import org.faktorips.runtime.XmlAbstractTestCase;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -30,6 +31,7 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
         super.setUp();
     }
 
+    @Test
     public void testAddValueToElement() {
         Document doc = getTestDocument();
         Element node = doc.createElement("ParentEl");
@@ -43,6 +45,7 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
         assertEquals("true", node.getAttribute("isNull"));
     }
 
+    @Test
     public void testGetValueFromElement() {
         Document doc = getTestDocument();
 
@@ -62,6 +65,7 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
         assertEquals("42", ValueToXmlHelper.getValueFromElement(node, "Property"));
     }
 
+    @Test
     public void testGetRangeFromElement() {
         Document doc = getTestDocument();
         NodeList configElements = doc.getDocumentElement().getElementsByTagName("ConfigElement");
@@ -82,6 +86,7 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
         assertNull(range);
     }
 
+    @Test
     public void testGetEnumValueSetFromElement() {
         Document doc = getTestDocument();
         NodeList configElements = doc.getDocumentElement().getElementsByTagName("ConfigElement");

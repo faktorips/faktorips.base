@@ -13,19 +13,23 @@
 
 package org.faktorips.valueset;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Set;
 
-import junit.framework.TestCase;
-
 import org.faktorips.values.Money;
+import org.junit.Test;
 
 /**
  * Test class for <code>com.fja.pm.domain.MoneyRange</code>
  * 
  * @author Peter Kuntz
  */
-public class MoneyRangeTest extends TestCase {
-
+public class MoneyRangeTest {
+    @Test
     public void testValueOf() {
         MoneyRange range = MoneyRange.valueOf("1.25 EUR", "5.67 EUR");
         Money lower = range.getLowerBound();
@@ -54,6 +58,7 @@ public class MoneyRangeTest extends TestCase {
         assertTrue(range.containsNull());
     }
 
+    @Test
     public void testConstructor() {
         MoneyRange range = new MoneyRange(Money.euro(1, 25), Money.euro(5, 67));
         Money lower = range.getLowerBound();
@@ -62,6 +67,7 @@ public class MoneyRangeTest extends TestCase {
         assertEquals(Money.euro(5, 67), upper);
     }
 
+    @Test
     public void testContains() {
         MoneyRange range = MoneyRange.valueOf(Money.euro(10, 0), Money.euro(100, 0), Money.euro(10, 0), true);
         assertEquals(11, range.size());
@@ -81,6 +87,7 @@ public class MoneyRangeTest extends TestCase {
         assertFalse(range.contains(Money.euro(110, 0)));
     }
 
+    @Test
     public void testSize() {
         MoneyRange range = MoneyRange.valueOf(Money.euro(0, 0), Money.euro(100, 0), Money.euro(10, 0), true);
         assertEquals(12, range.size());
@@ -89,6 +96,7 @@ public class MoneyRangeTest extends TestCase {
         assertEquals(11, range.size());
     }
 
+    @Test
     public void testGetValues() {
         MoneyRange range = MoneyRange.valueOf(Money.euro(10, 0), Money.euro(100, 0), Money.euro(10, 0), true);
         Set<Money> values = range.getValues(false);
@@ -110,6 +118,7 @@ public class MoneyRangeTest extends TestCase {
         assertFalse(values.contains(Money.euro(110, 0)));
     }
 
+    @Test
     public void testSerializable() throws Exception {
         TestUtil.testSerializable(MoneyRange.valueOf(Money.euro(10, 0), Money.euro(100, 0), Money.euro(10, 0), true));
     }

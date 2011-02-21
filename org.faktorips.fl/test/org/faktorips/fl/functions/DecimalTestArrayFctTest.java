@@ -13,19 +13,18 @@
 
 package org.faktorips.fl.functions;
 
+import static org.junit.Assert.assertTrue;
+
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.values.Decimal;
+import org.junit.Test;
 
 /**
  *
  */
 public class DecimalTestArrayFctTest extends FunctionAbstractTest {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
+    @Test
     public void test() throws Exception {
         DecimalTestArrayFct testFct = new DecimalTestArrayFct();
         testFct.setValues(new Decimal[] { Decimal.valueOf(10, 0), Decimal.valueOf(32, 0) });
@@ -37,6 +36,7 @@ public class DecimalTestArrayFctTest extends FunctionAbstractTest {
         assertTrue(result.successfull());
     }
 
+    @Test
     public void testNull() throws Exception {
         DecimalTestArrayFct testFct = new DecimalTestArrayFct();
         testFct.setValues(null);

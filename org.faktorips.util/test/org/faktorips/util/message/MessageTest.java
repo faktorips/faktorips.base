@@ -13,12 +13,15 @@
 
 package org.faktorips.util.message;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.commons.lang.SystemUtils;
+import org.junit.Test;
 
-public class MessageTest extends TestCase {
-
+public class MessageTest {
+    @Test
     public void testCopy() {
         Message msg = new Message("code", "text", Message.INFO);
         Message copy = Message.createCopy(msg, "a", "b");
@@ -44,6 +47,7 @@ public class MessageTest extends TestCase {
         assertEquals("prop2", ops[2].getProperty());
     }
 
+    @Test
     public void testMessage_StringStringint() {
         Message msg = new Message("code", "text", Message.INFO);
         assertEquals("code", msg.getCode());
@@ -52,6 +56,7 @@ public class MessageTest extends TestCase {
         assertEquals(0, msg.getInvalidObjectProperties().length);
     }
 
+    @Test
     public void testMessage_StringStringintObjectString() {
         Message msg = new Message("code", "text", Message.INFO, this, "property");
         assertEquals("code", msg.getCode());
@@ -63,6 +68,7 @@ public class MessageTest extends TestCase {
         assertEquals("property", op[0].getProperty());
     }
 
+    @Test
     public void testMessage_StringStringintObjectStringArray() {
         Message msg = new Message("code", "text", Message.INFO, this, new String[] { "p1", "p2" });
         assertEquals("code", msg.getCode());
@@ -76,6 +82,7 @@ public class MessageTest extends TestCase {
         assertEquals("p2", op[1].getProperty());
     }
 
+    @Test
     public void testMessage_StringStringintObjectPropertyArray() {
         ObjectProperty[] op = new ObjectProperty[] { new ObjectProperty("objectA", "pA"),
                 new ObjectProperty("objectB", "pB") };
@@ -95,7 +102,7 @@ public class MessageTest extends TestCase {
 
     /*
      * Class under test for String toString()
-     */
+     */@Test
     public void testToString() {
         Message msg = Message.newError("1", "blabla");
         String expected = "ERROR 1[]" + SystemUtils.LINE_SEPARATOR + "blabla";
@@ -108,7 +115,7 @@ public class MessageTest extends TestCase {
 
     /*
      * Class under test for boolean equals(Object)
-     */
+     */@Test
     public void testEqualsObject() {
         // differnet class
         Message msg = Message.newError("1", "blabla");

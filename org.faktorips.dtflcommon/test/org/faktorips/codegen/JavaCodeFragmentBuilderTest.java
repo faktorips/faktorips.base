@@ -13,15 +13,17 @@
 
 package org.faktorips.codegen;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.apache.commons.lang.SystemUtils;
+import org.junit.Test;
 
-public class JavaCodeFragmentBuilderTest extends TestCase {
-
+public class JavaCodeFragmentBuilderTest {
+    @Test
     public void testAnnotation_AsOneString() {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
         builder.annotationLn("javax.xml.bind.annotation.XmlAttribute"); //$NON-NLS-1$
@@ -37,6 +39,7 @@ public class JavaCodeFragmentBuilderTest extends TestCase {
         assertEquals(imports, code.getImportDeclaration());
     }
 
+    @Test
     public void testAnnotation_ClassName_Params() {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
         builder.annotationLn("javax.xml.bind.annotation.XmlAttribute", "name=\"parent-id\""); //$NON-NLS-1$ //$NON-NLS-2$
@@ -47,6 +50,7 @@ public class JavaCodeFragmentBuilderTest extends TestCase {
         assertEquals(imports, code.getImportDeclaration());
     }
 
+    @Test
     public void testAnnotation_AnnotationString_ParamName_ParamValue() {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
         builder.annotationLn("javax.xml.bind.annotation.XmlAttribute", "name", "parent-id"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -57,6 +61,7 @@ public class JavaCodeFragmentBuilderTest extends TestCase {
         assertEquals(imports, code.getImportDeclaration());
     }
 
+    @Test
     public void testAnnotation_Class_Params() {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
         builder.annotationLn(Override.class, "someParameters"); //$NON-NLS-1$
@@ -67,7 +72,8 @@ public class JavaCodeFragmentBuilderTest extends TestCase {
         assertEquals(imports, code.getImportDeclaration());
     }
 
-    public final void testMethodBeginIntStringStringStringArrayStringArray() {
+    @Test
+    public void testMethodBeginIntStringStringStringArrayStringArray() {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
         builder.methodBegin(Modifier.PUBLIC, String[].class, "validate", new String[0], new Class[0]); //$NON-NLS-1$
         StringBuffer buf = new StringBuffer();
@@ -77,6 +83,7 @@ public class JavaCodeFragmentBuilderTest extends TestCase {
         assertEquals(buf.toString(), builder.toString().trim());
     }
 
+    @Test
     public void testAnnotationLnClassValue() {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
         builder.annotationLn("AnAnnotation", "value", List.class); //$NON-NLS-1$ //$NON-NLS-2$
@@ -85,6 +92,7 @@ public class JavaCodeFragmentBuilderTest extends TestCase {
         assertTrue(builder.getFragment().getImportDeclaration().isCovered(List.class));
     }
 
+    @Test
     public void testAnnotationClassValueLn() {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
         builder.annotationClassValueLn("AnAnnotation", "value", List.class.getName()); //$NON-NLS-1$ //$NON-NLS-2$

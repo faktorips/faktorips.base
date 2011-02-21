@@ -13,14 +13,18 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.junit.Before;
+import org.junit.Test;
 
-public class SelectionProviderDispatcherTest extends TestCase {
+public class SelectionProviderDispatcherTest {
 
     private TestSelection selection1;
     private TestSelection selection2;
@@ -36,7 +40,7 @@ public class SelectionProviderDispatcherTest extends TestCase {
 
     private SelectionProviderDispatcher dispatcher;
 
-    @Override
+    @Before
     public void setUp() {
         selection1 = new TestSelection();
         selection2 = new TestSelection();
@@ -64,6 +68,7 @@ public class SelectionProviderDispatcherTest extends TestCase {
         dispatcher.addSelectionChangedListener(listener2);
     }
 
+    @Test
     public void testGetSelection() {
 
         providerActivation1.activated = true;
@@ -79,6 +84,7 @@ public class SelectionProviderDispatcherTest extends TestCase {
         assertEquals(selection2, currentSelection);
     }
 
+    @Test
     public void testSetSelection() {
 
         TestSelection selection3 = new TestSelection();
@@ -101,6 +107,7 @@ public class SelectionProviderDispatcherTest extends TestCase {
 
     }
 
+    @Test
     public void testSelectionChanged() {
         dispatcher.selectionChanged(new SelectionChangedEvent(selectionProvider1, selection1));
         assertTrue(listener1.informed);

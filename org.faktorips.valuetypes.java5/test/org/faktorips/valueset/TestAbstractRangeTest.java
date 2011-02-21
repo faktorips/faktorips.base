@@ -13,14 +13,20 @@
 
 package org.faktorips.valueset;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import org.junit.Test;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class TestAbstractRangeTest extends TestCase {
-
+public class TestAbstractRangeTest {
+    @Test
     public void testConstructor() {
         IntegerRange range = new IntegerRange(null, new Integer(10));
         assertNull(range.getLowerBound());
@@ -65,6 +71,7 @@ public class TestAbstractRangeTest extends TestCase {
         }
     }
 
+    @Test
     public void testIsEmpty() {
         // range 5-10 should not be empty
         IntegerRange range = new IntegerRange(5, 10);
@@ -87,6 +94,7 @@ public class TestAbstractRangeTest extends TestCase {
         assertFalse(range.isEmpty());
     }
 
+    @Test
     public void testContains() {
         IntegerRange range = new IntegerRange(5, 10);
         assertTrue(range.contains(5));
@@ -107,6 +115,7 @@ public class TestAbstractRangeTest extends TestCase {
         assertFalse(range.contains(9));
     }
 
+    @Test
     public void testEqual() {
         IntegerRange range1 = new IntegerRange(5, 10);
         assertTrue(range1.equals(new IntegerRange(5, 10)));
@@ -148,6 +157,7 @@ public class TestAbstractRangeTest extends TestCase {
         assertFalse(range1.equals(range2));
     }
 
+    @Test
     public void testHashCode() {
         IntegerRange range1 = IntegerRange.valueOf(new Integer(10), new Integer(60), 5);
         IntegerRange range2 = IntegerRange.valueOf(new Integer(10), new Integer(60), 5);
@@ -157,6 +167,7 @@ public class TestAbstractRangeTest extends TestCase {
         assertFalse(range1.hashCode() == range2.hashCode());
     }
 
+    @Test
     public void testIsDiscrete() {
         IntegerRange range = IntegerRange.valueOf(new Integer(10), new Integer(60), null, true);
         assertFalse(range.isDiscrete());
@@ -164,6 +175,7 @@ public class TestAbstractRangeTest extends TestCase {
         assertTrue(range.isDiscrete());
     }
 
+    @Test
     public void testContainsNull() {
         IntegerRange range = IntegerRange.valueOf(new Integer(10), new Integer(60), null, false);
         assertFalse(range.containsNull());

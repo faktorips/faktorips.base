@@ -13,23 +13,25 @@
 
 package org.faktorips.fl;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.values.Decimal;
+import org.junit.Test;
 
 /**
  *
  */
-public class ExprEvaluatorTest extends TestCase {
-
+public class ExprEvaluatorTest {
+    @Test
     public void testExecute() throws Exception {
         ExprEvaluator processor = new ExprEvaluator(new ExprCompiler());
         Object o = processor.evaluate("10.123");
         assertEquals(Decimal.valueOf("10.123"), o);
     }
 
+    @Test
     public void testExecuteWithVariables() throws Exception {
         ExprCompiler compiler = new ExprCompiler();
         DefaultIdentifierResolver resolver = new DefaultIdentifierResolver();
@@ -41,6 +43,7 @@ public class ExprEvaluatorTest extends TestCase {
         assertEquals(new Integer(84), o);
     }
 
+    @Test
     public void testExecuteWithEnum() throws Exception {
         System.setProperty("debug", "true");
         System.setProperty("trace", "true");

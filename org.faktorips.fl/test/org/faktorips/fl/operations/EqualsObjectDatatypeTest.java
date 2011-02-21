@@ -23,6 +23,8 @@ import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.CompilerAbstractTest;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -31,7 +33,8 @@ import org.faktorips.fl.IdentifierResolver;
 public class EqualsObjectDatatypeTest extends CompilerAbstractTest {
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         compiler.setBinaryOperations(new BinaryOperation[] { new EqualsObjectDatatype(AnyDatatype.INSTANCE) });
         compiler.setIdentifierResolver(new IdentifierResolver() {
@@ -49,11 +52,13 @@ public class EqualsObjectDatatypeTest extends CompilerAbstractTest {
         });
     }
 
+    @Test
     public void testSuccessfull() throws Exception {
         execAndTestSuccessfull("beTrue=beTrue", Boolean.TRUE, Datatype.BOOLEAN);
         execAndTestSuccessfull("beFalse=beFalse", Boolean.TRUE, Datatype.BOOLEAN);
     }
 
+    @Test
     public void testDecimal() throws Exception {
         compiler.setBinaryOperations(new BinaryOperation[] { new EqualsObjectDatatype(Datatype.DECIMAL,
                 Datatype.DECIMAL) });
@@ -62,6 +67,7 @@ public class EqualsObjectDatatypeTest extends CompilerAbstractTest {
         execAndTestSuccessfull("1.0=1.0", true);
     }
 
+    @Test
     public void testMoney() throws Exception {
         compiler.setBinaryOperations(new BinaryOperation[] { new EqualsObjectDatatype(Datatype.MONEY, Datatype.MONEY) });
         compiler.setEnsureResultIsObject(false);
@@ -69,6 +75,7 @@ public class EqualsObjectDatatypeTest extends CompilerAbstractTest {
         execAndTestSuccessfull("1.23EUR=1.23EUR", true);
     }
 
+    @Test
     public void testString() throws Exception {
         compiler.setBinaryOperations(new BinaryOperation[] { new EqualsObjectDatatype(Datatype.STRING, Datatype.STRING) });
         compiler.setEnsureResultIsObject(false);

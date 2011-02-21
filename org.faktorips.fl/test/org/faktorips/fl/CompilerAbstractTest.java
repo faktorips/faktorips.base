@@ -13,30 +13,29 @@
 
 package org.faktorips.fl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.util.message.Message;
+import org.junit.Before;
 
 /**
  *
  */
-public abstract class CompilerAbstractTest extends TestCase {
+public abstract class CompilerAbstractTest {
 
     protected ExprCompiler compiler;
     private ExprEvaluator processor;
 
-    /*
-     * @see TestCase#setUp()
-     */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         compiler = new ExprCompiler();
         Locale.setDefault(Locale.ENGLISH);
         compiler.setLocale(Locale.ENGLISH);

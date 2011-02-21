@@ -13,6 +13,8 @@
 
 package org.faktorips.fl.functions;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Locale;
 
 import org.faktorips.codegen.JavaCodeFragment;
@@ -23,6 +25,8 @@ import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
 import org.faktorips.values.Decimal;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -31,16 +35,19 @@ import org.faktorips.values.Decimal;
 public class SumBeanArrayPropertyFctTest extends FunctionAbstractTest {
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
     }
 
+    @Test
     public void test() throws Exception {
         registerFunction(new SumBeanArrayPropertyFct());
         compiler.setIdentifierResolver(new BeanIdentifierResolver());
         execAndTestSuccessfull("SUM(beans; value)", Decimal.valueOf("42"), Datatype.DECIMAL);
     }
 
+    @Test
     public void testSumDecimal() {
         SimpleBean bean1 = new SimpleBean();
         bean1.setValue(Decimal.valueOf(10, 0));

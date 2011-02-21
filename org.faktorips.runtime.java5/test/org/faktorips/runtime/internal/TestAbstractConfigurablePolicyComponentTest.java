@@ -37,6 +37,7 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ValidationContext;
 import org.faktorips.runtime.XmlAbstractTestCase;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
@@ -70,11 +71,13 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
         repository.putProductCmptGeneration(coverageGen);
     }
 
+    @Test
     public void testGetProductComponent() {
         PcA a = new PcA(productA, null);
         assertEquals(productA, a.getProductComponent());
     }
 
+    @Test
     public void testSetProductComponent() {
         PcA policy = new PcA(productA, null);
         assertEquals(productA, policy.getProductComponent());
@@ -89,6 +92,7 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
         assertNull(policy.getProductCmptGeneration());
     }
 
+    @Test
     public void testSetProductCmptGeneration() {
         PcA policy = new PcA(productA, null);
         assertEquals(productGenA, policy.getProductCmptGeneration());
@@ -102,6 +106,7 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
         assertNull(policy.getProductCmptGeneration());
     }
 
+    @Test
     public void testValidate() {
         PcB b = new PcB(productA);
         PcA a = new PcA(productA, b);
@@ -129,6 +134,7 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
         assertEquals("B", list.getMessage(0).getCode());
     }
 
+    @Test
     public void testInitFromXml() {
         DefaultObjectReferenceStore store = new DefaultObjectReferenceStore();
         XmlPc pc = new XmlPc();
@@ -146,6 +152,7 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
         assertEquals(1, store.getAllUnresolvedReferences().size());
     }
 
+    @Test
     public void testInitFromXml_KeepObjectValueIfNotSpecifiedInXml() {
         Element docEl = getTestDocument().getDocumentElement();
         DefaultObjectReferenceStore store = new DefaultObjectReferenceStore();
@@ -156,6 +163,7 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
         // xml datat does not contain any information about prop0
     }
 
+    @Test
     public void testListenerMechanism() {
         PcB pc = new PcB(null);
         ChangeListener listener = new ChangeListener();

@@ -21,6 +21,7 @@ import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.InMemoryRuntimeRepository;
 import org.faktorips.runtime.XmlAbstractTestCase;
 import org.faktorips.valueset.IntegerRange;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 public class ProductComponentGenerationTest extends XmlAbstractTestCase {
@@ -36,6 +37,7 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
         gen = new TestProductCmptGeneration(pc);
     }
 
+    @Test
     public void testGetPropertyElements() {
         Element genEl = getTestDocument().getDocumentElement();
         Map<String, Element> map = gen.getPropertyElements(genEl);
@@ -60,6 +62,7 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
         assertNotNull(tsuEl);
     }
 
+    @Test
     public void testGetLinkElements() {
         Element genEl = getTestDocument().getDocumentElement();
         Map<String, List<Element>> map = gen.getLinkElements(genEl);
@@ -85,6 +88,7 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
         assertEquals("target2", rel2El.getAttribute("target"));
     }
 
+    @Test
     public void testAddToCardinalityMap() {
         Element genEl = getTestDocument().getDocumentElement();
         Map<String, List<Element>> map = gen.getLinkElements(genEl);

@@ -13,14 +13,17 @@
 
 package org.faktorips.values;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class ObjectUtilTest extends TestCase {
-
+public class ObjectUtilTest {
+    @Test
     public void testIsNull() {
         assertTrue(ObjectUtil.isNull(null));
         assertTrue(ObjectUtil.isNull(Money.NULL));

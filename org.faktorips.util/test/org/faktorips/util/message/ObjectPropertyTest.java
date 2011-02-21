@@ -13,10 +13,14 @@
 
 package org.faktorips.util.message;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-public class ObjectPropertyTest extends TestCase {
+import org.junit.Test;
 
+public class ObjectPropertyTest {
+    @Test
     public void testHashCode() {
         ObjectProperty op1 = new ObjectProperty(new Integer(1), "toString");
         ObjectProperty op2 = new ObjectProperty(new Integer(1), "toString");
@@ -26,6 +30,7 @@ public class ObjectPropertyTest extends TestCase {
         assertFalse(op1.hashCode() == op3.hashCode());
     }
 
+    @Test
     public void testEqualsObject() {
         ObjectProperty op1 = new ObjectProperty(new Integer(1), "toString");
         ObjectProperty op2 = new ObjectProperty(new Integer(1), "toString");

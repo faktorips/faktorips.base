@@ -13,16 +13,19 @@
 
 package org.faktorips.fl;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
+import org.junit.Test;
 
 /**
  *
  */
-public class FunctionSignatureImplTest extends TestCase {
-
+public class FunctionSignatureImplTest {
+    @Test
     public void testMatch() {
         Datatype[] argList = new Datatype[] { Datatype.DECIMAL, Datatype.MONEY };
         FunctionSignatureImpl fct1 = new FunctionSignatureImpl("Function1", Datatype.DECIMAL, argList);
@@ -45,6 +48,7 @@ public class FunctionSignatureImplTest extends TestCase {
         assertTrue(fct1.match("Function1", new Datatype[] { Datatype.DECIMAL, Datatype.MONEY }));
     }
 
+    @Test
     public void testIsSame() {
         FunctionSignatureImpl fct1 = new FunctionSignatureImpl("Function1", Datatype.DECIMAL, new Datatype[] {
                 Datatype.DECIMAL, Datatype.MONEY });
@@ -75,6 +79,7 @@ public class FunctionSignatureImplTest extends TestCase {
         assertTrue(fct1.isSame(fct6));
     }
 
+    @Test
     public void testToString() {
         FunctionSignatureImpl fct = new FunctionSignatureImpl("function1", Datatype.VOID, new Datatype[] {});
         assertEquals("void function1()", fct.toString());

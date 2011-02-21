@@ -15,16 +15,20 @@ package org.faktorips.fl.functions;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.values.Decimal;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  */
 public class SumDecimalTest extends FunctionAbstractTest {
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
     }
 
+    @Test
     public void test() throws Exception {
         registerFunction(new SumDecimal("SUM", ""));
         DecimalTestArrayFct testFct = new DecimalTestArrayFct();

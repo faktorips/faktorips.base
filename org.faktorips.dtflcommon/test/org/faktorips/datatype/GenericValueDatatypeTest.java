@@ -13,20 +13,27 @@
 
 package org.faktorips.datatype;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 
-public class GenericValueDatatypeTest extends TestCase {
+public class GenericValueDatatypeTest {
 
     private DefaultGenericValueDatatype datatype;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         datatype = new DefaultGenericValueDatatype(PaymentMode.class);
     }
 
+    @Test
     public void testValidate_ClassNotFound() {
         GenericValueDatatype type = new InvalidType();
         MessageList list = type.checkReadyToUse();
@@ -34,6 +41,7 @@ public class GenericValueDatatypeTest extends TestCase {
         assertNotNull(list.getMessageByCode(GenericValueDatatype.MSGCODE_JAVACLASS_NOT_FOUND));
     }
 
+    @Test
     public void testValidate_InvalidMethods() {
         datatype.setIsParsableMethodName("unknownMethod"); //$NON-NLS-1$
         datatype.setToStringMethodName("unknownMethod"); //$NON-NLS-1$
@@ -46,6 +54,7 @@ public class GenericValueDatatypeTest extends TestCase {
         assertNotNull(list.getMessageByCode(GenericValueDatatype.MSGCODE_TOSTRING_METHOD_NOT_FOUND));
     }
 
+    @Test
     public void testValidate_InvalidSpecialCaseNull() {
         datatype.setIsParsableMethodName("isParsable"); //$NON-NLS-1$
         datatype.setToStringMethodName("getId"); //$NON-NLS-1$
@@ -61,6 +70,7 @@ public class GenericValueDatatypeTest extends TestCase {
         assertNotNull(list.getMessageByCode(GenericValueDatatype.MSGCODE_SPECIALCASE_NULL_IS_NOT_NULL));
     }
 
+    @Test
     public void testIsParsable() {
         datatype.setIsParsableMethodName("isParsable"); //$NON-NLS-1$
         assertTrue(datatype.isParsable(PaymentMode.ANNUAL.getId()));
@@ -75,6 +85,7 @@ public class GenericValueDatatypeTest extends TestCase {
         assertFalse(datatype.isParsable("abc")); //$NON-NLS-1$
     }
 
+    @Test
     public void testGetIsParsableMethod() {
         assertNotNull(datatype.getIsParsableMethod());
         datatype.setIsParsableMethodName("unknownMethod"); //$NON-NLS-1$
@@ -86,6 +97,7 @@ public class GenericValueDatatypeTest extends TestCase {
         }
     }
 
+    @Test
     public void testGetValue() {
         datatype.setValueOfMethodName("getPaymentMode"); //$NON-NLS-1$
         assertEquals(PaymentMode.ANNUAL, datatype.getValue(PaymentMode.ANNUAL.getId()));
@@ -96,6 +108,7 @@ public class GenericValueDatatypeTest extends TestCase {
         assertNull(datatype.getValue(null));
     }
 
+    @Test
     public void testGetValueOfMethod() {
         datatype.setValueOfMethodName("getPaymentMode"); //$NON-NLS-1$
         assertNotNull(datatype.getValueOfMethod());
@@ -108,11 +121,13 @@ public class GenericValueDatatypeTest extends TestCase {
         }
     }
 
+    @Test
     public void testValueToString() {
         datatype.setToStringMethodName("getId"); //$NON-NLS-1$
         assertEquals(PaymentMode.ANNUAL.getId(), datatype.valueToString(PaymentMode.ANNUAL));
     }
 
+    @Test
     public void testGetToStringMethod() {
         datatype.setToStringMethodName("getId"); //$NON-NLS-1$
         assertNotNull(datatype.getToStringMethod());
@@ -128,6 +143,7 @@ public class GenericValueDatatypeTest extends TestCase {
         assertNotNull(datatype.getToStringMethod());
     }
 
+    @Test
     public void testEquals() {
         assertEquals(datatype, datatype);
         assertFalse(datatype.equals(Datatype.INTEGER));
@@ -148,6 +164,7 @@ public class GenericValueDatatypeTest extends TestCase {
         assertEquals(datatype, paymentMode2);
     }
 
+    @Test
     public void testHashCode() {
         assertEquals(datatype.hashCode(), datatype.hashCode());
         assertFalse(datatype.hashCode() == Datatype.INTEGER.hashCode());
@@ -168,6 +185,7 @@ public class GenericValueDatatypeTest extends TestCase {
         assertEquals(datatype.hashCode(), paymentMode2.hashCode());
     }
 
+    @Test
     public void testIsNull() {
         datatype.setValueOfMethodName("getPaymentMode"); //$NON-NLS-1$
         assertFalse(datatype.isNull(PaymentMode.ANNUAL.getId()));

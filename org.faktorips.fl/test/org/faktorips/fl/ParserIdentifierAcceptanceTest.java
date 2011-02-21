@@ -13,19 +13,22 @@
 
 package org.faktorips.fl;
 
-import java.util.Locale;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import junit.framework.TestCase;
+import java.util.Locale;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
+import org.junit.Test;
 
-public class ParserIdentifierAcceptanceTest extends TestCase {
+public class ParserIdentifierAcceptanceTest {
 
     private ExprCompiler compiler;
 
-    @Override
+    @Before
     public void setUp() {
         compiler = new ExprCompiler();
         Locale.setDefault(Locale.ENGLISH);
@@ -37,6 +40,7 @@ public class ParserIdentifierAcceptanceTest extends TestCase {
         compiler.setIdentifierResolver(resolver);
     }
 
+    @Test
     public void testParserIdentifiers() {
         CompilationResult result = compiler.compile("Altersgruppe_1980-01-01");
         assertTrue(result.successfull());
@@ -51,6 +55,7 @@ public class ParserIdentifierAcceptanceTest extends TestCase {
         assertFalse(result.successfull());
     }
 
+    @Test
     public void testParserWithUmlaut() throws Exception {
         compiler = new ExprCompiler();
         DefaultIdentifierResolver resolver = new DefaultIdentifierResolver();

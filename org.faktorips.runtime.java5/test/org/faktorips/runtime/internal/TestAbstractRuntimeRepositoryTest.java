@@ -13,14 +13,19 @@
 
 package org.faktorips.runtime.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-
-import junit.framework.TestCase;
 
 import org.faktorips.runtime.IEnumValueLookupService;
 import org.faktorips.runtime.IProductComponent;
@@ -32,12 +37,14 @@ import org.faktorips.runtime.ProductCmptNotFoundException;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestSuite;
 import org.faktorips.runtime.testrepository.test.TestPremiumCalculation;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class TestAbstractRuntimeRepositoryTest extends TestCase {
+public class TestAbstractRuntimeRepositoryTest {
 
     private InMemoryRuntimeRepository mainRepository;
     private InMemoryRuntimeRepository inBetweenRepositoryA;
@@ -65,8 +72,8 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
     /*
      * @see TestCase#setUp()
      */
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         mainRepository = new InMemoryRuntimeRepository();
         inBetweenRepositoryA = new InMemoryRuntimeRepository();
         inBetweenRepositoryB = new InMemoryRuntimeRepository();
@@ -106,6 +113,7 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
 
     }
 
+    @Test
     public void testAddRuntimeRepository() {
         mainRepository = new InMemoryRuntimeRepository();
         InMemoryRuntimeRepository r1 = new InMemoryRuntimeRepository();
@@ -121,6 +129,7 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
         assertEquals(r2, mainRepository.getDirectlyReferencedRepositories().get(1));
     }
 
+    @Test
     public void testGetAllReferencedRepositories() {
         List<IRuntimeRepository> result = baseRepository.getAllReferencedRepositories();
         assertEquals(0, result.size());
@@ -136,6 +145,7 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
         assertEquals(baseRepository, result.get(2));
     }
 
+    @Test
     public void testGetProductComponent_ById() {
         assertEquals(mainPc, mainRepository.getProductComponent("mainPc"));
         assertEquals(inAPc, mainRepository.getProductComponent("inAPc"));
@@ -145,6 +155,7 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
         assertNull(mainRepository.getProductComponent("unknown"));
     }
 
+    @Test
     public void testGetExistingProductComponent_ById() {
         assertEquals(mainPc, mainRepository.getProductComponent("mainPc"));
         assertEquals(inAPc, mainRepository.getProductComponent("inAPc"));
@@ -160,6 +171,7 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
         }
     }
 
+    @Test
     public void testGetProductComponentGeneration() {
         assertEquals(mainPcGen, mainRepository.getProductComponentGeneration("mainPc", effectiveDate));
         assertEquals(inAPcGen, mainRepository.getProductComponentGeneration("inAPc", effectiveDate));
@@ -170,6 +182,7 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
         assertNull(mainRepository.getProductComponentGeneration("mainPc", new GregorianCalendar(2000, 0, 1)));
     }
 
+    @Test
     public void testGetExistingProductComponentGeneration() {
         assertEquals(mainPcGen, mainRepository.getExistingProductComponentGeneration("mainPc", effectiveDate));
         assertEquals(inAPcGen, mainRepository.getExistingProductComponentGeneration("inAPc", effectiveDate));
@@ -197,6 +210,7 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
         }
     }
 
+    @Test
     public void testGetProductComponent_ByKindIdVersionId() {
         assertEquals(mainPc, mainRepository.getProductComponent("mainKind", "mainVersion"));
         assertEquals(inAPc, mainRepository.getProductComponent("inAKind", "inAVersion"));
@@ -204,6 +218,7 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
         assertEquals(basePc, mainRepository.getProductComponent("baseKind", "baseVersion"));
     }
 
+    @Test
     public void testGetAllProductComponents_ByKindId() {
         assertEquals(1, mainRepository.getAllProductComponents("mainKind").size());
         assertEquals(mainPc, mainRepository.getAllProductComponents("mainKind").get(0));
@@ -212,6 +227,7 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
         assertEquals(basePc, mainRepository.getAllProductComponents("baseKind").get(0));
     }
 
+    @Test
     public void testGetProductComponentGeneration_ByIdAndEffectiveDate() {
         assertEquals(mainPcGen, mainRepository.getProductComponentGeneration("mainPc", effectiveDate));
         assertEquals(inAPcGen, mainRepository.getProductComponentGeneration("inAPc", effectiveDate));
@@ -228,6 +244,7 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
         assertNull(mainRepository.getProductComponentGeneration("validToPc", tooLate));
     }
 
+    @Test
     public void testGetAllProductComponents_ByClass() {
         List<IProductComponent> result = mainRepository.getAllProductComponents(TestProductComponent.class);
         assertEquals(5, result.size());
@@ -247,6 +264,7 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
         assertEquals(basePc, result.get(0));
     }
 
+    @Test
     public void testGetAllProductComponents() {
         List<IProductComponent> result = mainRepository.getAllProductComponents();
         assertEquals(5, result.size());
@@ -266,6 +284,7 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
         assertEquals(basePc, result.get(0));
     }
 
+    @Test
     public void testGetAllProductComponentIds() {
         List<String> result = mainRepository.getAllProductComponentIds();
         assertEquals(5, result.size());
@@ -285,17 +304,20 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
         assertEquals(basePc.getId(), result.get(0));
     }
 
+    @Test
     public void testGetProductComponentGenerations() {
         assertEquals(1, mainRepository.getProductComponentGenerations(mainPc).size());
         assertEquals(mainPcGen, mainRepository.getProductComponentGenerations(mainPc).get(0));
         assertEquals(basePcGen, mainRepository.getProductComponentGenerations(basePc).get(0));
     }
 
+    @Test
     public void testGetTable() {
         assertEquals(testTable, mainRepository.getTable(TestTable.class));
         assertEquals(testTable, baseRepository.getTable(TestTable.class));
     }
 
+    @Test
     public void testGetTestSuite() throws Exception {
         mainRepository = new InMemoryRuntimeRepository();
         TestPremiumCalculation test1 = new TestPremiumCalculation("pack.Test1");
@@ -334,6 +356,7 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
         assertNotNull(suiteY.getTest("Test7"));
     }
 
+    @Test
     public void testGetIpsTest() throws Exception {
         mainRepository = new InMemoryRuntimeRepository();
         TestPremiumCalculation test1 = new TestPremiumCalculation("pack.Test1");
@@ -358,6 +381,7 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
         }
     }
 
+    @Test
     public void testAddEnumValueLookup() {
         Lookup lookup = new Lookup();
         mainRepository.addEnumValueLookupService(lookup);
@@ -368,6 +392,7 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
         assertEquals(lookup2, mainRepository.getEnumValueLookupService(TestEnumValue.class));
     }
 
+    @Test
     public void testGetEnumValueLookup() {
         mainRepository.getEnumValueLookupService(TestEnumValue.class);
 
@@ -380,6 +405,7 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
         assertEquals(lookup2, mainRepository.getEnumValueLookupService(TestEnumValue.class));
     }
 
+    @Test
     public void testRemoveEnumValueLookup() {
         Lookup lookup = new Lookup();
         mainRepository.removeEnumValueLookupService(lookup);
@@ -390,6 +416,7 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
         assertNull(mainRepository.getEnumValueLookupService(TestEnumValue.class));
     }
 
+    @Test
     public void testGetEnumValueFromLookup() {
         Lookup lookup = new Lookup();
         assertNull(baseRepository.getEnumValue(TestEnumValue.class, lookup.value1.getEnumValueId()));
@@ -407,6 +434,7 @@ public class TestAbstractRuntimeRepositoryTest extends TestCase {
 
     }
 
+    @Test
     public void testGetEnumValuesFromLookup() {
         Lookup lookup = new Lookup();
         assertNull(baseRepository.getEnumValues(TestEnumValue.class));

@@ -13,18 +13,26 @@
 
 package org.faktorips.datatype;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-public class GenericEnumDatatypeTest extends TestCase {
+import org.junit.Before;
+import org.junit.Test;
+
+public class GenericEnumDatatypeTest {
 
     private DefaultGenericEnumDatatype datatype;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         datatype = new DefaultGenericEnumDatatype(PaymentMode.class);
     }
 
+    @Test
     public void testGetAllValueIds() {
         datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
         datatype.setToStringMethodName("getId"); //$NON-NLS-1$
@@ -50,6 +58,7 @@ public class GenericEnumDatatypeTest extends TestCase {
         assertEquals(null, valueIds[2]);
     }
 
+    @Test
     public void testGetGetAllValuesMethod() {
         datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
         assertNotNull(datatype.getGetAllValuesMethod());
@@ -62,6 +71,7 @@ public class GenericEnumDatatypeTest extends TestCase {
         }
     }
 
+    @Test
     public void testGetValueName() {
         datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
         datatype.setToStringMethodName("getId"); //$NON-NLS-1$
@@ -75,6 +85,7 @@ public class GenericEnumDatatypeTest extends TestCase {
         assertEquals("Annual Payment", datatype.getValueName(PaymentMode.ANNUAL.getId())); //$NON-NLS-1$
     }
 
+    @Test
     public void testGetValue() {
         datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
         datatype.setToStringMethodName("getId"); //$NON-NLS-1$
@@ -86,6 +97,7 @@ public class GenericEnumDatatypeTest extends TestCase {
         assertEquals(PaymentMode.ANNUAL, datatype.getValue(PaymentMode.ANNUAL.getId()));
     }
 
+    @Test
     public void testIsParsable() {
         datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
         datatype.setToStringMethodName("getId"); //$NON-NLS-1$
@@ -99,6 +111,7 @@ public class GenericEnumDatatypeTest extends TestCase {
         assertFalse(datatype.isParsable("unknownId")); //$NON-NLS-1$
     }
 
+    @Test
     public void testGetValueIdsFromCache() throws Exception {
         datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
         datatype.setToStringMethodName("getId"); //$NON-NLS-1$
@@ -117,6 +130,7 @@ public class GenericEnumDatatypeTest extends TestCase {
         assertNull(ids); // should have cleared the cached
     }
 
+    @Test
     public void testGetValueNamesFromCache() throws Exception {
         datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
         datatype.setValueOfMethodName("getPaymentMode"); //$NON-NLS-1$

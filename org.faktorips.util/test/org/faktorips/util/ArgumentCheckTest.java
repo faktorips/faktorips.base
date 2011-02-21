@@ -13,10 +13,13 @@
 
 package org.faktorips.util;
 
+import static org.junit.Assert.fail;
 import junit.framework.TestCase;
 
-public class ArgumentCheckTest extends TestCase {
+import org.junit.Test;
 
+public class ArgumentCheckTest {
+    @Test
     public void testIsSubclassOf() {
         ArgumentCheck.isSubclassOf(this.getClass(), TestCase.class);
         try {
@@ -27,6 +30,7 @@ public class ArgumentCheckTest extends TestCase {
         }
     }
 
+    @Test
     public void testIsInstanceOf() {
         ArgumentCheck.isInstanceOf(this, TestCase.class);
         try {
@@ -37,6 +41,7 @@ public class ArgumentCheckTest extends TestCase {
         }
     }
 
+    @Test
     public void testIsNullArray() {
         String[] ids = new String[3];
         try {
@@ -54,6 +59,7 @@ public class ArgumentCheckTest extends TestCase {
         ArgumentCheck.notNull(ids);
     }
 
+    @Test
     public void testIsNullArrayContext() {
         String[] ids = new String[3];
         try {

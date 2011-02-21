@@ -14,10 +14,11 @@
 package org.faktorips.fl.functions;
 
 import org.faktorips.datatype.Datatype;
+import org.junit.Test;
 
 public class MinMaxIntTest extends FunctionAbstractTest {
-
-    public final void testCompile() throws Exception {
+    @Test
+    public void testCompile() throws Exception {
         registerFunction(new MinMaxInt("MAX", "", true));
 
         execAndTestSuccessfull("MAX(3; 4)", new Integer(4), Datatype.INTEGER);

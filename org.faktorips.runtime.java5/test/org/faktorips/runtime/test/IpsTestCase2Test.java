@@ -13,21 +13,24 @@
 
 package org.faktorips.runtime.test;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.MessageList;
+import org.junit.Test;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class IpsTestCase2Test extends TestCase {
+public class IpsTestCase2Test {
 
     /*
      * Test method for 'org.faktorips.runtime.test.IpsTestCase2.run(IpsTestResult)'
-     */
+     */@Test
     public void testRun() {
         IpsTestResult result = new IpsTestResult();
         MyTestCase test = new MyTestCase("MyTest", "42", "42");
@@ -55,6 +58,7 @@ public class IpsTestCase2Test extends TestCase {
         assertEquals("TestedAttribute", failure.getTestedAttribute());
     }
 
+    @Test
     public void testGetExtensionAttribute() {
         MyTestCase test = new MyTestCase("MyTest", "42", "42");
         MyModelObject modelObj1 = new MyModelObject();

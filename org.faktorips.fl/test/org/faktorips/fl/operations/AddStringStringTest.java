@@ -17,6 +17,8 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.BinaryOperation;
 import org.faktorips.fl.CompilerAbstractTest;
 import org.faktorips.fl.ExprCompiler;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -24,19 +26,23 @@ import org.faktorips.fl.ExprCompiler;
 public class AddStringStringTest extends CompilerAbstractTest {
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         compiler.setBinaryOperations(new BinaryOperation[] { new AddStringString() });
     }
 
+    @Test
     public void test() throws Exception {
         execAndTestSuccessfull("\"a\" + \"b\"", "ab", Datatype.STRING);
     }
 
+    @Test
     public void testLhsError() throws Exception {
         execAndTestFail("a a + \"b\"", ExprCompiler.SYNTAX_ERROR);
     }
 
+    @Test
     public void testRhsError() throws Exception {
         execAndTestFail("\"b\" + a a", ExprCompiler.SYNTAX_ERROR);
     }

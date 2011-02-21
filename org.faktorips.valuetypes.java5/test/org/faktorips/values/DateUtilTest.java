@@ -13,18 +13,19 @@
 
 package org.faktorips.values;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class DateUtilTest extends TestCase {
+public class DateUtilTest {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
+    @Test
     public void testGregorianCalendarToIsoDateString() {
         assertEquals("", DateUtil.gregorianCalendarToIsoDateString(null));
         GregorianCalendar date = new GregorianCalendar(2005, 8, 9);
@@ -33,6 +34,7 @@ public class DateUtilTest extends TestCase {
         assertEquals("2005-10-10", DateUtil.gregorianCalendarToIsoDateString(date));
     }
 
+    @Test
     public void testIsIsoDate() {
         assertTrue(DateUtil.isIsoDate("2008-01-01"));
         assertFalse(DateUtil.isIsoDate("01-01-2008"));
@@ -42,6 +44,7 @@ public class DateUtilTest extends TestCase {
         assertFalse(DateUtil.isIsoDate(null));
     }
 
+    @Test
     public void testDatetoIsoDateString() {
         assertEquals("", DateUtil.dateToIsoDateString(null));
         Date date = new GregorianCalendar(2005, 8, 9).getTime();
@@ -50,6 +53,7 @@ public class DateUtilTest extends TestCase {
         assertEquals("2005-10-10", DateUtil.dateToIsoDateString(date));
     }
 
+    @Test
     public void testParseIsoDateStringToGregorianCalendar() {
         assertNull(DateUtil.parseIsoDateStringToGregorianCalendar(""));
         GregorianCalendar date = new GregorianCalendar(2005, 8, 9);
@@ -59,6 +63,7 @@ public class DateUtilTest extends TestCase {
         assertEquals(date, DateUtil.parseIsoDateStringToGregorianCalendar("2005-10-10"));
     }
 
+    @Test
     public void testParseIsoDateStringToDate() {
         assertNull(DateUtil.parseIsoDateStringToDate(""));
         Date date = new GregorianCalendar(2005, 8, 9).getTime();

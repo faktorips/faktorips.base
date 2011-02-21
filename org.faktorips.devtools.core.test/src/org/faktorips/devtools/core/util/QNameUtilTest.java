@@ -13,7 +13,8 @@
 
 package org.faktorips.devtools.core.util;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
@@ -21,7 +22,7 @@ import org.junit.Test;
  * 
  * @author Jan Ortmann
  */
-public class QNameUtilTest extends TestCase {
+public class QNameUtilTest {
 
     /*
      * Test method for 'org.faktorips.devtools.core.util.QNameUtil.getPackageName(String)'

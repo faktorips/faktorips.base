@@ -13,6 +13,10 @@
 
 package org.faktorips.runtime.productdataprovider;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,14 +31,11 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import junit.framework.TestCase;
-
 import org.faktorips.runtime.internal.toc.IReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
-import org.faktorips.runtime.productdataprovider.ClassLoaderProductDataProviderFactory;
-import org.faktorips.runtime.productdataprovider.DataModifiedException;
-import org.faktorips.runtime.productdataprovider.IProductDataProvider;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -42,7 +43,7 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-public class ClassLoaderProductDataProviderTest extends TestCase {
+public class ClassLoaderProductDataProviderTest {
 
     private IProductDataProvider pdp;
 
@@ -54,9 +55,8 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
 
     private ClassLoaderProductDataProviderFactory pdpFactory;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         pdpFactory = new ClassLoaderProductDataProviderFactory(TOC_FIlE_NAME);
         pdpFactory.setCheckForModifications(true);
         docBuilder = createDocumentnewInstanceer();
@@ -68,6 +68,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         return Thread.currentThread().getContextClassLoader();
     }
 
+    @Test
     public void testgetVersion() throws Exception {
         File tocFile = new File(getClassLoader().getResource(TOC_FIlE_NAME).toURI());
         tocFile.setLastModified(321321000);
@@ -81,6 +82,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         assertEquals("123456000", stamp);
     }
 
+    @Test
     public void testLoadTocData() throws Exception {
         File tocFile = new File(getClassLoader().getResource(TOC_FIlE_NAME).toURI());
         tocFile.setLastModified(321321000);
@@ -104,6 +106,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         assertEquals("999999000", pdp.getVersion());
     }
 
+    @Test
     public void testGetProductCmptData() throws Exception {
         File tocFile = new File(getClassLoader().getResource(TOC_FIlE_NAME).toURI());
 
@@ -133,6 +136,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         assertTrue(expectedElement.isEqualNode(actualElement));
     }
 
+    @Test
     public void testGetProductCmptGenerationData() throws Exception {
         File tocFile = new File(getClassLoader().getResource(TOC_FIlE_NAME).toURI());
 
@@ -165,6 +169,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         assertTrue(generations.item(1).isEqualNode(actualElement));
     }
 
+    @Test
     public void testGetTestCaseData() throws Exception {
         File tocFile = new File(getClassLoader().getResource(TOC_FIlE_NAME).toURI());
 
@@ -193,6 +198,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         assertTrue(expectedElement.isEqualNode(actualElement));
     }
 
+    @Test
     public void testGetTableContentAsStream() throws Exception {
         File tocFile = new File(getClassLoader().getResource(TOC_FIlE_NAME).toURI());
 
@@ -226,6 +232,7 @@ public class ClassLoaderProductDataProviderTest extends TestCase {
         assertEquals(expectedContent, actualContent);
     }
 
+    @Test
     public void testGetEnumContentAsStream() throws Exception {
         File tocFile = new File(getClassLoader().getResource(TOC_FIlE_NAME).toURI());
 

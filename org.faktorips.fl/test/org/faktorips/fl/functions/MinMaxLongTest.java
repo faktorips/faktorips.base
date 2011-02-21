@@ -14,10 +14,11 @@
 package org.faktorips.fl.functions;
 
 import org.faktorips.datatype.Datatype;
+import org.junit.Test;
 
 public class MinMaxLongTest extends FunctionAbstractTest {
-
-    public final void testCompile() throws Exception {
+    @Test
+    public void testCompile() throws Exception {
         registerFunction(new MinMaxLong("MAX", "", true));
         execAndTestSuccessfull("MAX(a; b)", new Long(4), new String[] { "a", "b" }, new Datatype[] { Datatype.LONG,
                 Datatype.LONG }, new Object[] { new Long(4), new Long(3) }, Datatype.LONG);

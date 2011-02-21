@@ -13,13 +13,15 @@
 
 package org.faktorips.util;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.ByteArrayInputStream;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class StreamUtilTest extends TestCase {
-
-    public final void testCopy() throws Exception {
+public class StreamUtilTest {
+    @Test
+    public void testCopy() throws Exception {
         byte[] bytes = new byte[8];
         for (int i = 0; i < bytes.length; i++) {
             bytes[i] = 1;

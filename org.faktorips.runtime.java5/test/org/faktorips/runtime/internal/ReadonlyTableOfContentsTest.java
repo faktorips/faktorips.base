@@ -16,6 +16,7 @@ package org.faktorips.runtime.internal;
 import org.faktorips.runtime.XmlAbstractTestCase;
 import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
+import org.junit.Test;
 
 /**
  * 
@@ -25,7 +26,7 @@ public class ReadonlyTableOfContentsTest extends XmlAbstractTestCase {
 
     /*
      * Test method for 'org.faktorips.runtime.ReadonlyTableOfContents.initFromXml(Element)'
-     */
+     */@Test
     public void testInitFromXml() {
         AbstractReadonlyTableOfContents toc = new ReadonlyTableOfContents();
         toc.initFromXml(getTestDocument().getDocumentElement());

@@ -13,6 +13,9 @@
 
 package org.faktorips.fl.functions;
 
+import org.junit.Before;
+import org.junit.Test;
+
 /**
  * 
  * @author Jan Ortmann
@@ -20,32 +23,38 @@ package org.faktorips.fl.functions;
 public class IsEmptyTest extends FunctionAbstractTest {
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         compiler.setEnsureResultIsObject(false);
         registerFunction(new IsEmpty("ISEMPTY", ""));
     }
 
+    @Test
     public void testDecimal() throws Exception {
         execAndTestSuccessfull("ISEMPTY(1.0)", false);
         registerFunction(new DecimalNullFct());
         execAndTestSuccessfull("ISEMPTY(DECIMALNULL())", true);
     }
 
+    @Test
     public void testMoney() throws Exception {
         execAndTestSuccessfull("ISEMPTY(10EUR)", false);
         registerFunction(new MoneyNullFct());
         execAndTestSuccessfull("ISEMPTY(MONEYNULL())", true);
     }
 
+    @Test
     public void testString() throws Exception {
         execAndTestSuccessfull("ISEMPTY(\"a\")", false);
     }
 
+    @Test
     public void testInt() throws Exception {
         execAndTestSuccessfull("ISEMPTY(1)", false);
     }
 
+    @Test
     public void testBoolean() throws Exception {
         registerFunction(new BooleanFct("TRUEOBJ", Boolean.TRUE));
         registerFunction(new BooleanFct("BOOLEANNULL", null));
@@ -53,6 +62,7 @@ public class IsEmptyTest extends FunctionAbstractTest {
         execAndTestSuccessfull("ISEMPTY(BOOLEANNULL())", true);
     }
 
+    @Test
     public void testPrimitiveBoolean() throws Exception {
         execAndTestSuccessfull("ISEMPTY(true)", false);
     }

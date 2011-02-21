@@ -13,30 +13,31 @@
 
 package org.faktorips.util;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.apache.commons.lang.SystemUtils;
+import org.junit.Test;
 
 /**
  * @author Jan Ortmann
  */
-public class StringUtilTest extends TestCase {
+public class StringUtilTest {
 
-    public StringUtilTest(String name) {
-        super(name);
-    }
-
+    @Test
     public void testQuote() {
         assertEquals("\"hello\"", StringUtil.quote("hello"));
         assertNull(StringUtil.quote(null));
     }
 
+    @Test
     public void testUnqualifiedClassName() {
         assertEquals("Test", StringUtil.unqualifiedName("com.Test"));
         assertEquals("Test", StringUtil.unqualifiedName("com.ips.Test"));
         assertEquals("Test", StringUtil.unqualifiedName("Test"));
     }
 
+    @Test
     public void testGetLine() {
         String lineSeparator = SystemUtils.LINE_SEPARATOR;
         String text = "blabla";
@@ -49,6 +50,7 @@ public class StringUtilTest extends TestCase {
                 StringUtil.getLine(text, 6 + SystemUtils.LINE_SEPARATOR.getBytes().length, lineSeparator));
     }
 
+    @Test
     public void testGetLines() {
         String[] result;
 
@@ -74,10 +76,12 @@ public class StringUtilTest extends TestCase {
         assertEquals("", result[2]);
     }
 
+    @Test
     public void testGetSystemLineseparator() {
         assertEquals(System.getProperty("line.separator"), StringUtil.getSystemLineSeparator());
     }
 
+    @Test
     public void testGetFileExtension() {
         String ext = StringUtil.getFileExtension("readme.txt");
         assertEquals("txt", ext);
@@ -86,6 +90,7 @@ public class StringUtilTest extends TestCase {
         assertNull(ext);
     }
 
+    @Test
     public void testToCamlCase() {
         String testString = null;
         assertEquals("", StringUtil.toCamelCase(testString, true));
@@ -132,6 +137,7 @@ public class StringUtilTest extends TestCase {
         assertEquals("asd1234", StringUtil.toCamelCase(testString, false));
     }
 
+    @Test
     public void testCamelCaseToUnderscore() {
         String testString = null;
         assertEquals("", StringUtil.camelCaseToUnderscore(testString, false));

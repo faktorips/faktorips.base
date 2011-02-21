@@ -15,10 +15,11 @@ package org.faktorips.fl.functions;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.values.Money;
+import org.junit.Test;
 
 public class MinMaxMoneyTest extends FunctionAbstractTest {
-
-    public final void testCompile() throws Exception {
+    @Test
+    public void testCompile() throws Exception {
         registerFunction(new MinMaxMoney("MAX", "", true));
         execAndTestSuccessfull("MAX(3.0EUR; 4.0EUR)", Money.euro(4), Datatype.MONEY);
         execAndTestSuccessfull("MAX(4.0EUR; 3.0EUR)", Money.euro(4), Datatype.MONEY);

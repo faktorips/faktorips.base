@@ -13,14 +13,15 @@
 
 package org.faktorips.valueset;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-public class DoubleRangeTest extends TestCase {
+import org.junit.Test;
 
-    public DoubleRangeTest(String name) {
-        super(name);
-    }
+public class DoubleRangeTest {
 
+    @Test
     public void testConstructor() {
         DoubleRange range = new DoubleRange(5.0, 10.0);
         assertEquals(range.getLowerBound().doubleValue(), 5.0, 0.0);
@@ -28,6 +29,7 @@ public class DoubleRangeTest extends TestCase {
         assertFalse(range.containsNull());
     }
 
+    @Test
     public void testConstructor2() {
         DoubleRange range = new DoubleRange(5.0, 10.0, true);
         assertEquals(range.getLowerBound().doubleValue(), 5.0, 0.0);
@@ -35,6 +37,7 @@ public class DoubleRangeTest extends TestCase {
         assertTrue(range.containsNull());
     }
 
+    @Test
     public void testSerializable() throws Exception {
         TestUtil.testSerializable(new DoubleRange(5.0, 10.0));
     }

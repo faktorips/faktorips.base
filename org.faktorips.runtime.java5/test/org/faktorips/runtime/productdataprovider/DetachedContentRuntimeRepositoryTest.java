@@ -13,27 +13,28 @@
 
 package org.faktorips.runtime.productdataprovider;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
-import junit.framework.TestCase;
-
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IRuntimeRepositoryManager;
-import org.faktorips.runtime.productdataprovider.ClassLoaderProductDataProviderFactory;
-import org.faktorips.runtime.productdataprovider.DataModifiedException;
-import org.faktorips.runtime.productdataprovider.DetachedContentRuntimeRepositoryManager;
-import org.faktorips.runtime.productdataprovider.IProductDataProvider;
+import org.junit.Before;
+import org.junit.Test;
 
-public class DetachedContentRuntimeRepositoryTest extends TestCase {
+public class DetachedContentRuntimeRepositoryTest {
 
     private IRuntimeRepositoryManager repository;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         setTocVersion(0);
         MyBuilder builder = new MyBuilder(getClass().getClassLoader(),
                 "org/faktorips/runtime/testrepository/faktorips-repository-toc.xml");
@@ -59,6 +60,7 @@ public class DetachedContentRuntimeRepositoryTest extends TestCase {
         }
     }
 
+    @Test
     public void testClientCall() {
         IRuntimeRepository client1 = repository.getActualRuntimeRepository();
         IRuntimeRepository client2 = repository.getActualRuntimeRepository();

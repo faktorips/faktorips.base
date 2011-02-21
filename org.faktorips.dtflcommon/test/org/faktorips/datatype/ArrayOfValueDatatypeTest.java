@@ -13,14 +13,16 @@
 
 package org.faktorips.datatype;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class ArrayOfValueDatatypeTest extends TestCase {
-
+public class ArrayOfValueDatatypeTest {
+    @Test
     public void testGetDimenion() {
         assertEquals(0, ArrayOfValueDatatype.getDimension(null));
         assertEquals(0, ArrayOfValueDatatype.getDimension("Money")); //$NON-NLS-1$
@@ -28,22 +30,26 @@ public class ArrayOfValueDatatypeTest extends TestCase {
         assertEquals(2, ArrayOfValueDatatype.getDimension("Money[][]")); //$NON-NLS-1$
     }
 
+    @Test
     public void testGetBasicDatatypeName() {
         assertEquals("Money", ArrayOfValueDatatype.getBasicDatatypeName("Money")); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals("Money", ArrayOfValueDatatype.getBasicDatatypeName("Money[]")); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals("Money", ArrayOfValueDatatype.getBasicDatatypeName("Money[][]")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    @Test
     public void testGetName() {
         ArrayOfValueDatatype datatype = new ArrayOfValueDatatype(Datatype.MONEY, 2);
         assertEquals(datatype.getBasicDatatype().getName() + "[][]", datatype.getName()); //$NON-NLS-1$
     }
 
+    @Test
     public void testGetQualifiedName() {
         ArrayOfValueDatatype datatype = new ArrayOfValueDatatype(Datatype.MONEY, 2);
         assertEquals(datatype.getBasicDatatype().getQualifiedName() + "[][]", datatype.getQualifiedName()); //$NON-NLS-1$
     }
 
+    @Test
     public void testGetJavaClassName() {
         ArrayOfValueDatatype datatype = new ArrayOfValueDatatype(Datatype.MONEY, 2);
         assertEquals(datatype.getBasicDatatype().getJavaClassName() + "[][]", datatype.getJavaClassName()); //$NON-NLS-1$

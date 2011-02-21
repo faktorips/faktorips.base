@@ -31,6 +31,7 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ValidationContext;
 import org.faktorips.runtime.XmlAbstractTestCase;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
@@ -38,7 +39,7 @@ import org.w3c.dom.Element;
  * @author Jan Ortmann
  */
 public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
-
+    @Test
     public void testValidate() {
         PcB b = new PcB();
         PcA a = new PcA(b);
@@ -65,6 +66,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         assertEquals("B", list.getMessage(0).getCode());
     }
 
+    @Test
     public void testInitFromXml() {
         DefaultObjectReferenceStore store = new DefaultObjectReferenceStore();
         XmlPc pc = new XmlPc();
@@ -81,6 +83,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         assertEquals(1, store.getAllUnresolvedReferences().size());
     }
 
+    @Test
     public void testInitFromXml_KeepObjectValueIfNotSpecifiedInXml() {
         Element docEl = getTestDocument().getDocumentElement();
         DefaultObjectReferenceStore store = new DefaultObjectReferenceStore();
@@ -91,6 +94,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         // xml datat does not contain any information about prop0
     }
 
+    @Test
     public void testListenerMechanism() {
         PcB pc = new PcB();
         ChangeListener listener = new ChangeListener();

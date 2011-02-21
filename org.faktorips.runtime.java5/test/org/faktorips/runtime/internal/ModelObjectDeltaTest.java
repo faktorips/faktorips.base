@@ -13,13 +13,17 @@
 
 package org.faktorips.runtime.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import junit.framework.TestCase;
 
 import org.faktorips.runtime.DeltaComputationOptionsByPosition;
 import org.faktorips.runtime.IDeltaComputationOptions;
@@ -29,16 +33,18 @@ import org.faktorips.runtime.IModelObjectDelta;
 import org.faktorips.runtime.IModelObjectDeltaVisitor;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.MessageList;
+import org.junit.Test;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class ModelObjectDeltaTest extends TestCase {
+public class ModelObjectDeltaTest {
 
     private final MyModelObject objectA = new MyModelObject("A");
     private final MyModelObject objectB = new MyModelObject("B");
 
+    @Test
     public void testNewEmptyDelta() {
         ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
         assertTrue(delta.isEmpty());
@@ -52,6 +58,7 @@ public class ModelObjectDeltaTest extends TestCase {
         assertSame(objectB, delta.getReferenceObject());
     }
 
+    @Test
     public void testNewDelta_SameClasses() {
         ModelObjectDelta delta = ModelObjectDelta.newDelta(objectA, objectB, new DeltaComputationOptionsByPosition());
         assertTrue(delta.isEmpty());
@@ -65,6 +72,7 @@ public class ModelObjectDeltaTest extends TestCase {
         assertSame(objectB, delta.getReferenceObject());
     }
 
+    @Test
     public void testNewDelta_DifferentClasses() {
         MyModelObject2 objectC = new MyModelObject2("C");
         ModelObjectDelta delta = ModelObjectDelta.newDelta(objectA, objectC, new DeltaComputationOptionsByPosition());
@@ -86,6 +94,7 @@ public class ModelObjectDeltaTest extends TestCase {
         assertTrue(delta.isChanged());
     }
 
+    @Test
     public void testNewAddDelta() {
         ModelObjectDelta delta = ModelObjectDelta.newAddDelta(objectB, "childs");
         assertFalse(delta.isEmpty());
@@ -99,6 +108,7 @@ public class ModelObjectDeltaTest extends TestCase {
         assertSame(objectB, delta.getReferenceObject());
     }
 
+    @Test
     public void testNewRemoveDelta() {
         ModelObjectDelta delta = ModelObjectDelta.newRemoveDelta(objectA, "childs");
         assertFalse(delta.isEmpty());
@@ -112,6 +122,7 @@ public class ModelObjectDeltaTest extends TestCase {
         assertNull(delta.getReferenceObject());
     }
 
+    @Test
     public void testMarkPropertyChanged() {
         ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
         delta.markPropertyChanged("property");
@@ -140,6 +151,7 @@ public class ModelObjectDeltaTest extends TestCase {
         assertEquals("property2", props.get(1));
     }
 
+    @Test
     public void testAddChildDelta_EmptyDelta() {
         ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
         ModelObjectDelta childDelta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
@@ -151,6 +163,7 @@ public class ModelObjectDeltaTest extends TestCase {
         assertEquals(0, delta.getChildDeltas().size());
     }
 
+    @Test
     public void testAddChildDelta_PropertyChangeDelta() {
         ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
         ModelObjectDelta childDelta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
@@ -164,6 +177,7 @@ public class ModelObjectDeltaTest extends TestCase {
         assertSame(childDelta, delta.getChildDeltas().get(0));
     }
 
+    @Test
     public void testAddChildDelta_AddDelta() {
         ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
         ModelObjectDelta childDelta = ModelObjectDelta.newAddDelta(objectB, "childs");
@@ -176,6 +190,7 @@ public class ModelObjectDeltaTest extends TestCase {
         assertSame(childDelta, delta.getChildDeltas().get(0));
     }
 
+    @Test
     public void testAddChildDelta_RemoveDelta() {
         ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
         ModelObjectDelta childDelta = ModelObjectDelta.newRemoveDelta(objectA, "childs");
@@ -188,6 +203,7 @@ public class ModelObjectDeltaTest extends TestCase {
         assertSame(childDelta, delta.getChildDeltas().get(0));
     }
 
+    @Test
     public void testCreateChildDeltas_to1Association_ComputationByObject_ObjectUnchanged() {
         IDeltaComputationOptions options = new Options(IDeltaComputationOptions.ComputationMethod.BY_OBJECT);
         ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
@@ -200,6 +216,7 @@ public class ModelObjectDeltaTest extends TestCase {
         assertEquals(0, childDeltas.size());
     }
 
+    @Test
     public void testCreateChildDeltas_to1Association_ComputationByObject_Added() {
         IDeltaComputationOptions options = new Options(IDeltaComputationOptions.ComputationMethod.BY_OBJECT);
         ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
@@ -213,6 +230,7 @@ public class ModelObjectDeltaTest extends TestCase {
         assertEquals(objectB, childDeltas.get(0).getReferenceObject());
     }
 
+    @Test
     public void testCreateChildDeltas_to1Association_ComputationByObject_Removed() {
         IDeltaComputationOptions options = new Options(IDeltaComputationOptions.ComputationMethod.BY_OBJECT);
         ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
@@ -226,6 +244,7 @@ public class ModelObjectDeltaTest extends TestCase {
         assertEquals(objectA, childDeltas.get(0).getOriginalObject());
     }
 
+    @Test
     public void testCreateChildDeltas_to1Association_ComputationByObject_RemovedAdded() {
         IDeltaComputationOptions options = new Options(IDeltaComputationOptions.ComputationMethod.BY_OBJECT);
         ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
@@ -241,6 +260,7 @@ public class ModelObjectDeltaTest extends TestCase {
         assertEquals(objectB, childDeltas.get(1).getReferenceObject());
     }
 
+    @Test
     public void testCreateChildDeltas_to1Association_ComputationByObject_ObjectHasChanged() {
         IDeltaComputationOptions options = new Options(IDeltaComputationOptions.ComputationMethod.BY_OBJECT);
         ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
@@ -257,6 +277,7 @@ public class ModelObjectDeltaTest extends TestCase {
         assertEquals(objectA1, childDeltas.get(0).getReferenceObject());
     }
 
+    @Test
     public void testCreateChildDeltas_to1Association_ComputationByPositionAdded() {
         IDeltaComputationOptions options = new Options(IDeltaComputationOptions.ComputationMethod.BY_POSITION);
         ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
@@ -270,6 +291,7 @@ public class ModelObjectDeltaTest extends TestCase {
         assertEquals(objectB, childDeltas.get(0).getReferenceObject());
     }
 
+    @Test
     public void testCreateChildDeltas_to1Association_ComputationByPosition_Removed() {
         IDeltaComputationOptions options = new Options(IDeltaComputationOptions.ComputationMethod.BY_POSITION);
         ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
@@ -283,6 +305,7 @@ public class ModelObjectDeltaTest extends TestCase {
         assertEquals(objectA, childDeltas.get(0).getOriginalObject());
     }
 
+    @Test
     public void testCreateChildDeltas_to1Association_ComputationByPosition_RemovedAdded() {
         IDeltaComputationOptions options = new Options(IDeltaComputationOptions.ComputationMethod.BY_POSITION);
         ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
@@ -297,6 +320,7 @@ public class ModelObjectDeltaTest extends TestCase {
         assertEquals(objectB, childDeltas.get(0).getReferenceObject());
     }
 
+    @Test
     public void testCreateChildDeltas_toManyAssociation_ComputationByObject_Added() {
         IDeltaComputationOptions options = new Options(IDeltaComputationOptions.ComputationMethod.BY_OBJECT);
         ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
@@ -315,6 +339,7 @@ public class ModelObjectDeltaTest extends TestCase {
         assertEquals(objectB, childDeltas.get(1).getReferenceObject());
     }
 
+    @Test
     public void testCreateChildDeltas_toManyAssociation_ComputationByObject_Removed() {
         IDeltaComputationOptions options = new Options(IDeltaComputationOptions.ComputationMethod.BY_OBJECT);
         ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
@@ -333,6 +358,7 @@ public class ModelObjectDeltaTest extends TestCase {
         assertEquals(objectB, childDeltas.get(1).getOriginalObject());
     }
 
+    @Test
     public void testCreateChildDeltas_toManyAssociation_ComputationByObject_Moved() {
         IDeltaComputationOptions options = new Options(IDeltaComputationOptions.ComputationMethod.BY_OBJECT);
         ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
@@ -356,6 +382,7 @@ public class ModelObjectDeltaTest extends TestCase {
         assertEquals(objectB, childDeltas.get(1).getReferenceObject());
     }
 
+    @Test
     public void testAccept() {
         ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
         ModelObjectDelta childDelta1 = ModelObjectDelta.newEmptyDelta(objectA, objectB);
