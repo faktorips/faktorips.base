@@ -5,10 +5,14 @@ Bundle-SymbolicName: org.faktorips.runtime.java5
 Bundle-Version: 0.0.0
 Bundle-Vendor: Faktor Zehn AG
 Require-Bundle: org.faktorips.valuetypes.java5
-Export-Package: org.faktorips.runtime.formula,
+Export-Package: org.faktorips.runtime,
+ org.faktorips.runtime.formula,
+ org.faktorips.runtime.internal,
  org.faktorips.runtime.internal.toc,
  org.faktorips.runtime.jaxb,
- org.faktorips.runtime.modeltype
+ org.faktorips.runtime.modeltype,
+ org.faktorips.runtime.productdataprovider,
+ org.faktorips.runtime.test
 Bundle-ClassPath: faktorips-runtime-java5.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: junit.framework;version="3.8.2"
