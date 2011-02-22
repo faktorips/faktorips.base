@@ -39,7 +39,8 @@ public class XmlUtilTest extends XmlAbstractTestCase {
     }
 
     @SuppressWarnings("deprecation")
-    // Test of deprecated method @Test
+    // Test of deprecated method
+    @Test
     public void testParseXmlDateStringToGregorianCalendar() {
         assertNull(XmlUtil.parseXmlDateStringToGregorianCalendar("")); //$NON-NLS-1$
         GregorianCalendar date = new GregorianCalendar(2005, 8, 9);
