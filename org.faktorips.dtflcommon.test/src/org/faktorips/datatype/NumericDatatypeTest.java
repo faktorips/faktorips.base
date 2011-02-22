@@ -42,7 +42,6 @@ public class NumericDatatypeTest {
             }
         }
 
-        @Test
         public void testDivisibleWithoutRemainderDecimal() {
             assertTrue(datatype.divisibleWithoutRemainder("10", "2")); //$NON-NLS-1$ //$NON-NLS-2$
             assertFalse(datatype.divisibleWithoutRemainder("9", "2")); //$NON-NLS-1$ //$NON-NLS-2$
