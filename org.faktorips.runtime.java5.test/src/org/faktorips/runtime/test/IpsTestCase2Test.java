@@ -30,7 +30,8 @@ public class IpsTestCase2Test {
 
     /*
      * Test method for 'org.faktorips.runtime.test.IpsTestCase2.run(IpsTestResult)'
-     */@Test
+     */
+	@Test
     public void testRun() {
         IpsTestResult result = new IpsTestResult();
         MyTestCase test = new MyTestCase("MyTest", "42", "42");

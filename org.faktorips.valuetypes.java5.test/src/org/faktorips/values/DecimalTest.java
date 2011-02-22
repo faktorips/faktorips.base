@@ -295,7 +295,8 @@ public class DecimalTest {
     }
 
     @SuppressWarnings("deprecation")
-    // leave the test till the deprecated method is removed @Test
+    // leave the test till the deprecated method is removed
+    @Test
     public void testEqualsIgnoreScale() {
         Decimal d = Decimal.valueOf("100.67");
         assertTrue(d.equalsIgnoreScale(Decimal.valueOf("100.67")));
@@ -310,7 +311,8 @@ public class DecimalTest {
     }
 
     @SuppressWarnings("deprecation")
-    // leave the test till the deprecated method is removed @Test
+    // leave the test till the deprecated method is removed
+    @Test
     public void testNotEqualsIgnoreScale() {
         Decimal d = Decimal.valueOf("100.67");
         assertFalse(d.notEqualsIgnoreScale(Decimal.valueOf("100.67")));

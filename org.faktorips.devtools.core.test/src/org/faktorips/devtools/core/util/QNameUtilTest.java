@@ -24,9 +24,10 @@ import org.junit.Test;
  */
 public class QNameUtilTest {
 
-    /*
+    /**
      * Test method for 'org.faktorips.devtools.core.util.QNameUtil.getPackageName(String)'
-     */@Test
+     */
+    @Test
     public void testGetPackageName() {
         assertNull(QNameUtil.getPackageName(null));
         assertEquals("", QNameUtil.getPackageName("Test")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -34,9 +35,10 @@ public class QNameUtilTest {
         assertEquals("a.b", QNameUtil.getPackageName("a.b.Test")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    /*
+    /**
      * Test method for 'org.faktorips.devtools.core.util.QNameUtil.getUnqualifiedName(String)'
-     */@Test
+     */
+    @Test
     public void testGetUnqualifiedName() {
         assertNull(QNameUtil.getUnqualifiedName(null));
         assertEquals("Test", QNameUtil.getUnqualifiedName("Test")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -45,9 +47,10 @@ public class QNameUtilTest {
         assertEquals("", QNameUtil.getUnqualifiedName("a.b.")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    /*
+    /**
      * Test method for 'org.faktorips.devtools.core.util.QNameUtil.concat(String, String)'
-     */@Test
+     */
+    @Test
     public void testConcat() {
         assertEquals("a.b", QNameUtil.concat("a", "b")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         assertEquals("b", QNameUtil.concat(null, "b")); //$NON-NLS-1$ //$NON-NLS-2$

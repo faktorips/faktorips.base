@@ -100,9 +100,10 @@ public class MessageTest {
         assertEquals("pB", op2[1].getProperty());
     }
 
-    /*
+    /**
      * Class under test for String toString()
-     */@Test
+     */
+    @Test
     public void testToString() {
         Message msg = Message.newError("1", "blabla");
         String expected = "ERROR 1[]" + SystemUtils.LINE_SEPARATOR + "blabla";
@@ -113,9 +114,10 @@ public class MessageTest {
         assertEquals(expected, msg.toString());
     }
 
-    /*
+    /**
      * Class under test for boolean equals(Object)
-     */@Test
+     */
+    @Test
     public void testEqualsObject() {
         // differnet class
         Message msg = Message.newError("1", "blabla");

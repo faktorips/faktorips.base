@@ -23,7 +23,8 @@ public class CmdLineIpsTestRunnerTest  {
 
     /*
      * Test method for 'org.faktorips.runtime.test.CmdLineIpsTestRunner.main(String[])'
-     */@Test
+     */
+	@Test
     public void testMain() {
         CmdLineIpsTestRunner.main(new String[] { "{org/faktorips/runtime/testrepository/faktorips-repository-toc.xml}",
                 "{test}" });

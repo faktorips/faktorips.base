@@ -35,6 +35,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -131,36 +132,40 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
      * 
      * Jan Ortmann, 6.10.2010
      */
-    // @Test
-    // public void test_DemoDeleteProblem() throws Exception {
-    // createJarFileAndAppendToClasspath();
-    // deleteJarFile();
-    // }
-    // @Test
-    // public void testListenerMechnism_JarFile() throws Exception {
-    // createJarFileAndAppendToClasspath();
-    // ClassLoader cl = provider.getClassLoader();
-    // Class.forName("org.faktorips.test.ClassInAJar", true, cl);
-    // Listener listener = new Listener();
-    // assertNull(listener.project);
-    // provider.addClasspathChangeListener(listener);
-    //
-    // deleteJarFile();
-    // assertEquals(javaProject, listener.project);
-    // cl = provider.getClassLoader();
-    // try {
-    // Class.forName("org.faktorips.test.ClassInAJar", true, cl);
-    // fail(); // jar was deleted, so the class shouldn't be found.
-    // } catch (ClassNotFoundException e) {
-    // }
-    //
-    // // after re-adding the jar, the class should be loaded again
-    // listener.project = null;
-    // createJarFile();
-    // assertEquals(javaProject, listener.project);
-    // cl = provider.getClassLoader();
-    // Class.forName("org.faktorips.test.ClassInAJar", true, cl);
-    // }
+    @Ignore
+    @Test
+    public void test_DemoDeleteProblem() throws Exception {
+        createJarFileAndAppendToClasspath();
+        deleteJarFile();
+    }
+
+    @Ignore
+    @Test
+    public void testListenerMechnism_JarFile() throws Exception {
+        createJarFileAndAppendToClasspath();
+        ClassLoader cl = provider.getClassLoader();
+        Class.forName("org.faktorips.test.ClassInAJar", true, cl);
+        Listener listener = new Listener();
+        assertNull(listener.project);
+        provider.addClasspathChangeListener(listener);
+
+        deleteJarFile();
+        assertEquals(javaProject, listener.project);
+        cl = provider.getClassLoader();
+        try {
+            Class.forName("org.faktorips.test.ClassInAJar", true, cl);
+            fail(); // jar was deleted, so the class shouldn't be found.
+        } catch (ClassNotFoundException e) {
+        }
+
+        // after re-adding the jar, the class should be loaded again
+        listener.project = null;
+        createJarFile();
+        assertEquals(javaProject, listener.project);
+        cl = provider.getClassLoader();
+        Class.forName("org.faktorips.test.ClassInAJar", true, cl);
+    }
+
     private void createClassFile() throws Exception {
         IPackageFragmentRoot root = javaProject.getPackageFragmentRoots()[0];
         IPackageFragment pack = root.getPackageFragment("");

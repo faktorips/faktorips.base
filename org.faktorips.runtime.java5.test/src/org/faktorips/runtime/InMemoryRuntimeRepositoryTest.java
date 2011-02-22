@@ -281,7 +281,8 @@ public class InMemoryRuntimeRepositoryTest {
         assertNull(expectedGen);
     }
 
-    // actually testing the AbstractRuntimeRepository @Test
+    // actually testing the AbstractRuntimeRepository
+    @Test
     public void testGetNextProductComponentGenerationInReferencedRepository() {
 
         InMemoryRuntimeRepository subRepository1 = new InMemoryRuntimeRepository();
@@ -381,7 +382,8 @@ public class InMemoryRuntimeRepositoryTest {
         }
     }
 
-    // actually testing the AbstractRuntimeRepository @Test
+    // actually testing the AbstractRuntimeRepository
+    @Test
     public void testGetPreviousProductComponentGenerationInReferencedRepository() {
 
         InMemoryRuntimeRepository subRepository1 = new InMemoryRuntimeRepository();

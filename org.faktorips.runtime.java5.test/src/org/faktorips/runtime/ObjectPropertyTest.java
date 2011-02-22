@@ -21,9 +21,10 @@ import org.junit.Test;
 
 public class ObjectPropertyTest {
 
-    /*
+    /**
      * Test method for 'org.faktorips.util.message.ObjectProperty.hashCode()'
-     */@Test
+     */
+	@Test
     public void testHashCode() {
         ObjectProperty op1 = new ObjectProperty(new Integer(1), "toString");
         ObjectProperty op2 = new ObjectProperty(new Integer(1), "toString");
@@ -34,9 +35,10 @@ public class ObjectPropertyTest {
 
     }
 
-    /*
+    /**
      * Test method for 'org.faktorips.util.message.ObjectProperty.equals(Object)'
-     */@Test
+     */
+	@Test
     public void testEqualsObject() {
         ObjectProperty op1 = new ObjectProperty(new Integer(1), "toString");
         ObjectProperty op2 = new ObjectProperty(new Integer(1), "toString");

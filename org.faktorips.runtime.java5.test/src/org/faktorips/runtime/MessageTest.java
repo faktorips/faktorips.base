@@ -171,9 +171,10 @@ public class MessageTest extends XmlAbstractTestCase {
         assertEquals(params.get(1), copyParams.get(1));
     }
 
-    /*
+    /**
      * Class under test for String toString()
-     */@Test
+     */
+    @Test
     public void testToString() {
 
         Message msg = Message.newError("1", "blabla");
@@ -185,9 +186,10 @@ public class MessageTest extends XmlAbstractTestCase {
         assertEquals(expected, msg.toString());
     }
 
-    /*
+    /**
      * Class under test for boolean equals(Object)
-     */@Test
+     */
+     @Test
     public void testEqualsObject() {
         // differnet class
         Message msg = Message.newError("1", "blabla");

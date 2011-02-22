@@ -24,9 +24,10 @@ import org.junit.Test;
  */
 public class IpsTestSuiteTest {
 
-    /*
+    /**
      * Test method for 'org.faktorips.runtime.test.IpsTestSuite.getTest(String)'
-     */@Test
+     */
+	@Test
     public void testGetTest() {
         IpsTestSuite suite = new IpsTestSuite("suite");
         IpsTestSuite suite2 = new IpsTestSuite("suite.suite2");
@@ -39,9 +40,10 @@ public class IpsTestSuiteTest {
         assertEquals(case1, suite.getTest("case1"));
     }
 
-    /*
+    /**
      * Test method for 'org.faktorips.runtime.test.IpsTestCase2.run(IpsTestResult)'
-     */@Test
+     */
+	@Test
     public void testRun() {
         IpsTestSuite suite = new IpsTestSuite("suite");
         MyTestCase test1 = new MyTestCase("suite.Test1", "42", "42");
