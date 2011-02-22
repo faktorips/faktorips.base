@@ -32,7 +32,7 @@ public class TableTest extends XmlAbstractTestCase {
     private TestTable table;
 
     @Before
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         table = new TestTable();
     }
 

@@ -59,7 +59,7 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
     private ProductComponentGeneration coverageGen;
 
     @Before
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         repository = new InMemoryRuntimeRepository();
         productA = new TestProductComponent(repository, "TestProduct", "aKind", "aVersion");
         productGenA = new TestProductCmptGeneration(productA);
