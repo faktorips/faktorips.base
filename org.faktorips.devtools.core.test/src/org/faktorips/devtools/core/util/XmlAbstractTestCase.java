@@ -19,8 +19,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import junit.framework.TestCase;
-
 import org.w3c.dom.Document;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
@@ -29,15 +27,7 @@ import org.xml.sax.SAXParseException;
 /**
  * A test case that makes it easier to write test cases that read data from an XML file.
  */
-public abstract class XmlAbstractTestCase extends TestCase {
-
-    public XmlAbstractTestCase() {
-        super();
-    }
-
-    public XmlAbstractTestCase(String name) {
-        super(name);
-    }
+public abstract class XmlAbstractTestCase {
 
     /**
      * Returns the XML document that is associated with the test case. This document has the same

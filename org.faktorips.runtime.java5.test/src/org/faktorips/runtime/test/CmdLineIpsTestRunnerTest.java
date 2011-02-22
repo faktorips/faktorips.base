@@ -13,8 +13,6 @@
 
 package org.faktorips.runtime.test;
 
-import junit.framework.TestCase;
-
 import org.junit.Test;
 
 /**

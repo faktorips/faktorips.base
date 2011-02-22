@@ -13,6 +13,8 @@
 
 package org.faktorips.runtime.internal;
 
+import static org.junit.Assert.*;
+
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -31,14 +33,6 @@ import org.w3c.dom.Element;
  * @author Jan Ortmann
  */
 public class ProductCmptTocEntryTest extends XmlAbstractTestCase {
-
-    /*
-     * @see TestCase#setUp()
-     */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
 
     @Test
     public void testCreateFromXml() {

@@ -13,6 +13,10 @@
 
 package org.faktorips.runtime.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Method;
@@ -37,6 +41,7 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ValidationContext;
 import org.faktorips.runtime.XmlAbstractTestCase;
+import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
 
@@ -53,9 +58,8 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
     private ProductComponent coverage;
     private ProductComponentGeneration coverageGen;
 
-    @Override
+    @Before
     protected void setUp() throws Exception {
-        super.setUp();
         repository = new InMemoryRuntimeRepository();
         productA = new TestProductComponent(repository, "TestProduct", "aKind", "aVersion");
         productGenA = new TestProductCmptGeneration(productA);

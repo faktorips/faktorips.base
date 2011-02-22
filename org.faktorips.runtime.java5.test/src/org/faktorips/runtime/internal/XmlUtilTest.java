@@ -13,6 +13,8 @@
 
 package org.faktorips.runtime.internal;
 
+import static org.junit.Assert.*;
+
 import java.util.List;
 
 import org.faktorips.runtime.XmlAbstractTestCase;
@@ -25,14 +27,6 @@ import org.w3c.dom.Text;
  *
  */
 public class XmlUtilTest extends XmlAbstractTestCase {
-
-    /*
-     * @see TestCase#setUp()
-     */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
 
     @Test
     public void testGetFirstElement() {

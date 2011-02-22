@@ -13,6 +13,9 @@
 
 package org.faktorips.runtime.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +24,7 @@ import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.InMemoryRuntimeRepository;
 import org.faktorips.runtime.XmlAbstractTestCase;
 import org.faktorips.valueset.IntegerRange;
+import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
 
@@ -30,7 +34,7 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
     private ProductComponent pc;
     private TestProductCmptGeneration gen;
 
-    @Override
+    @Before
     public void setUp() {
         repository = new InMemoryRuntimeRepository();
         pc = new TestProductComponent(repository, "TestProduct", "TestProductKind", "TestProductVersion");

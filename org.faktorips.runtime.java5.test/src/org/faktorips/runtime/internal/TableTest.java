@@ -13,10 +13,14 @@
 
 package org.faktorips.runtime.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import java.io.InputStream;
 
 import org.faktorips.runtime.XmlAbstractTestCase;
 import org.faktorips.values.Decimal;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -27,10 +31,7 @@ public class TableTest extends XmlAbstractTestCase {
 
     private TestTable table;
 
-    /*
-     * @see TestCase#setUp()
-     */
-    @Override
+    @Before
     protected void setUp() throws Exception {
         table = new TestTable();
     }

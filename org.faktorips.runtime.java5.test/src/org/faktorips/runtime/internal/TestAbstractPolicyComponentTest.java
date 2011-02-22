@@ -13,6 +13,10 @@
 
 package org.faktorips.runtime.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Method;
@@ -47,22 +51,22 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         a.valid = true;
         b.valid = true;
         MessageList list = a.validate(new ValidationContext());
-        assertEquals(0, list.getNoOfMessages());
+        assertEquals(0, list.size());
 
         a.valid = false;
         list = a.validate(new ValidationContext());
-        assertEquals(1, list.getNoOfMessages());
+        assertEquals(1, list.size());
         assertEquals("A", list.getMessage(0).getCode());
 
         b.valid = false;
         list = a.validate(new ValidationContext());
-        assertEquals(2, list.getNoOfMessages());
+        assertEquals(2, list.size());
         assertEquals("A", list.getMessage(0).getCode());
         assertEquals("B", list.getMessage(1).getCode());
 
         a.valid = true;
         list = a.validate(new ValidationContext());
-        assertEquals(1, list.getNoOfMessages());
+        assertEquals(1, list.size());
         assertEquals("B", list.getMessage(0).getCode());
     }
 

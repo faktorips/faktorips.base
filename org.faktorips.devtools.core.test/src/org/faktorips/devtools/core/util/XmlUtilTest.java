@@ -13,6 +13,11 @@
 
 package org.faktorips.devtools.core.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+
 import java.util.GregorianCalendar;
 
 import javax.xml.transform.TransformerException;
@@ -23,11 +28,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
 public class XmlUtilTest extends XmlAbstractTestCase {
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
 
     @Test
     public void testGregorianCalendarToXmlDateString() {
