@@ -14,16 +14,16 @@
 package org.faktorips.util;
 
 import static org.junit.Assert.fail;
-import junit.framework.TestCase;
 
 import org.junit.Test;
 
 public class ArgumentCheckTest {
     @Test
     public void testIsSubclassOf() {
-        ArgumentCheck.isSubclassOf(this.getClass(), TestCase.class);
+        ArgumentCheck.isSubclassOf(String.class, String.class);
+        ArgumentCheck.isSubclassOf(Double.class, Number.class);
         try {
-            ArgumentCheck.isSubclassOf(String.class, TestCase.class);
+            ArgumentCheck.isSubclassOf(String.class, Number.class);
             fail();
         } catch (IllegalArgumentException e) {
             // an exception is excepted to be thrown
@@ -32,7 +32,8 @@ public class ArgumentCheckTest {
 
     @Test
     public void testIsInstanceOf() {
-        ArgumentCheck.isInstanceOf(this, TestCase.class);
+        ArgumentCheck.isInstanceOf("123", String.class);
+        ArgumentCheck.isInstanceOf(new Double(1234), Number.class);
         try {
             ArgumentCheck.isInstanceOf(this, String.class);
             fail();
