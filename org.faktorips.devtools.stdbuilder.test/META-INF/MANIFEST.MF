@@ -16,8 +16,5 @@ Require-Bundle: org.faktorips.dtflcommon,
  org.eclipse.ltk.core.refactoring;bundle-version="3.4.0",
  org.faktorips.devtools.core,
  org.faktorips.abstracttest
-Export-Package: org.faktorips.devtools.stdbuilder,
- org.faktorips.devtools.stdbuilder.productcmpt,
- org.faktorips.devtools.stdbuilder.table
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Faktor Zehn AG

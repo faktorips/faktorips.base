@@ -20,7 +20,8 @@ Require-Bundle: org.eclipse.ui,
  org.faktorips.runtime.java5,
  org.faktorips.valuetypes.java5;bundle-version="0.0.0"
 Bundle-ActivationPolicy: lazy
-Export-Package: org.faktorips.devtools.stdbuilder.bf,
+Export-Package: org.faktorips.devtools.stdbuilder,
+ org.faktorips.devtools.stdbuilder.bf,
  org.faktorips.devtools.stdbuilder.enumtype,
  org.faktorips.devtools.stdbuilder.formulatest,
  org.faktorips.devtools.stdbuilder.policycmpttype,
