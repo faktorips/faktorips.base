@@ -64,6 +64,8 @@ public class DetachedContentRuntimeRepositoryManagerTest {
 
     @Before
     public void setUp() throws Exception {
+    	// the context classloader must be the classloader of the runtime bundle
+    	Thread.currentThread().setContextClassLoader(DetachedContentRuntimeRepositoryManager.class.getClassLoader());
         directPdpFactory = new MyFactory(getClass().getClassLoader(),
                 "org/faktorips/runtime/testrepository/direct-repository-toc.xml");
         pdpFactory = new MyFactory(getClass().getClassLoader(),

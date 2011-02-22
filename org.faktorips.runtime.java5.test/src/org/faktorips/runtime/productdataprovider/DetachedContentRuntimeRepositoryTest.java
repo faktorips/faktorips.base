@@ -18,6 +18,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.net.JarURLConnection;
@@ -26,201 +28,197 @@ import java.net.URLConnection;
 
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IRuntimeRepositoryManager;
+import org.faktorips.runtime.internal.DateTime;
+import org.faktorips.runtime.internal.ProductComponent;
+import org.faktorips.runtime.internal.toc.IReadonlyTableOfContents;
+import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
+import org.faktorips.runtime.testrepository.motor.MotorProduct;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 public class DetachedContentRuntimeRepositoryTest {
 
-    private IRuntimeRepositoryManager repository;
+	private IRuntimeRepositoryManager repositoryManager;
+	private IProductDataProvider pdpMock;
+	private IReadonlyTableOfContents tocMock;
 
-    @Before
-    public void setUp() throws Exception {
-        setTocVersion(0);
-        MyBuilder builder = new MyBuilder(getClass().getClassLoader(),
-                "org/faktorips/runtime/testrepository/faktorips-repository-toc.xml");
-        repository = new DetachedContentRuntimeRepositoryManager.Builder(builder).build();
-    }
+	@Before
+	public void setUp() throws Exception {
+		IProductDataProviderFactory pdpFactoryMock = Mockito
+				.mock(IProductDataProviderFactory.class);
+		pdpMock = Mockito.mock(IProductDataProvider.class);
+		// when(pdpMock.getVersion()).thenReturn("0");
+		when(pdpMock.isCompatibleToBaseVersion()).thenReturn(true);
 
-    private void setTocVersion(long version) {
-        URL tocUrl = getClass().getClassLoader().getResource(
-                "org/faktorips/runtime/testrepository/faktorips-repository-toc.xml");
-        try {
-            URLConnection connection = tocUrl.openConnection();
-            if (connection instanceof JarURLConnection) {
-                JarURLConnection jarUrlConnection = (JarURLConnection)connection;
-                URL jarUrl = jarUrlConnection.getJarFileURL();
-                File jarFile = new File(jarUrl.toURI());
-                jarFile.setLastModified(version);
-            } else {
-                File tocFile = new File(tocUrl.getFile());
-                tocFile.setLastModified(version);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Cannot get last modification stamp of toc url", e);
-        }
-    }
+		tocMock = Mockito.mock(IReadonlyTableOfContents.class);
+		when(pdpMock.getToc()).thenReturn(tocMock);
 
-    @Test
-    public void testClientCall() {
-        IRuntimeRepository client1 = repository.getActualRuntimeRepository();
-        IRuntimeRepository client2 = repository.getActualRuntimeRepository();
-        IRuntimeRepository client3 = repository.getActualRuntimeRepository();
+		when(pdpFactoryMock.newInstance()).thenReturn(pdpMock);
+		repositoryManager = new DetachedContentRuntimeRepositoryManager.Builder(
+				pdpFactoryMock).build();
+	}
 
-        // every client repository should be the same (equal)
-        assertEquals(client1, client2);
-        assertEquals(client2, client3);
+	@Test
+	public void testClientCall() {
+		IRuntimeRepository client1 = repositoryManager
+				.getActualRuntimeRepository();
+		IRuntimeRepository client2 = repositoryManager
+				.getActualRuntimeRepository();
+		IRuntimeRepository client3 = repositoryManager
+				.getActualRuntimeRepository();
 
-        assertNotNull(client1.getProductComponent("motor.MotorBasic"));
+		// every client repository should be the same (equal)
+		assertEquals(client1, client2);
+		assertEquals(client2, client3);
 
-        assertNotNull(client2.getProductComponent("motor.MotorPlus"));
+		ProductComponent pcMock1 = Mockito.mock(ProductComponent.class);
+//		<ProductComponent ipsObjectId="motor.MotorPlus" ipsObjectQualifiedName="motor.MotorPlus" kindId="motor.MotorPlus" versionId="2005-01" xmlResource="org/faktorips/runtime/testrepository/motor/MotorPlus.ipsproduct" implementationClass="org.faktorips.runtime.testrepository.motor.MotorProduct" policyCmptClass="org.faktorips.runtime.testrepository.motor.MotorPolicy" validTo="2010-01-16">
+		 ProductCmptTocEntry tocEntry = new  ProductCmptTocEntry("motor.MotorBasic", "motor.MotorBasic", "motor.MotorBasic", "2005-01", "org/faktorips/runtime/testrepository/motor/MotorPlus.ipsproduct", "org.faktorips.runtime.testrepository.motor.MotorProduct", "org.faktorips.runtime.testrepository.motor.MotorProductGen", new DateTime(2010, 1, 16));
+		when(tocMock.getProductCmptTocEntry("motor.MotorBasic")).thenReturn(tocEntry);
 
-        assertNotNull(client3.getProductComponent("motor.MotorBasic"));
+		assertNotNull(client1.getProductComponent("motor.MotorBasic"));
 
-        setTocVersion(1000);
+		assertNotNull(client2.getProductComponent("motor.MotorPlus"));
 
-        // should NOT throw an exception because product component is in cache and
-        // we did not call checkForModifications()
-        client1.getProductComponent("motor.MotorBasic");
+		assertNotNull(client3.getProductComponent("motor.MotorBasic"));
 
-        client1 = repository.getActualRuntimeRepository();
-        assertNotSame(client1, client2);
-        // still equals
-        assertEquals(client2, client3);
+		when(pdpMock.getVersion()).thenReturn("1000");
 
-        // shold NOT throw an exception because we just called startRequest.
-        client1.getProductComponent("motor.MotorPlus");
+		// should NOT throw an exception because product component is in cache
+		// and
+		// we did not call checkForModifications()
+		try {
+			client1.getProductComponent("motor.MotorBasic");
+		} catch (Exception e) {
+			fail();
+		}
 
-        setTocVersion(2000);
+		client1 = repositoryManager.getActualRuntimeRepository();
+		assertNotSame(client1, client2);
+		// still equals
+		assertEquals(client2, client3);
 
-        try {
-            // should throw an exception because version changed and requested product component is
-            // not in cache
-            client1.getProductComponent("motor.MotorBasic");
-            fail("Should throw a runtime exception");
-        } catch (RuntimeException e) {
-            assertTrue(e.getCause() instanceof DataModifiedException);
-            DataModifiedException dme = (DataModifiedException)e.getCause();
-            assertEquals("1000", dme.oldVersion);
-            assertEquals("2000", dme.newVersion);
-        }
+		// shold NOT throw an exception because we just called startRequest.
+		client1.getProductComponent("motor.MotorPlus");
 
-        // MotorPlus is cached --> no exception until checkForModifications()
-        client1.getProductComponent("motor.MotorPlus");
+		when(pdpMock.getVersion()).thenReturn("2000");
 
-        // try again MotorBasic - did not call checkForModifications --> still same exception
-        try {
-            client1.getProductComponent("motor.MotorBasic");
-            fail("Should throw a runtime exception");
+		try {
+			// should throw an exception because version changed and requested
+			// product component is
+			// not in cache
+			client1.getProductComponent("motor.MotorBasic");
+			fail("Should throw a runtime exception");
+		} catch (RuntimeException e) {
+			assertTrue(e.getCause() instanceof DataModifiedException);
+			DataModifiedException dme = (DataModifiedException) e.getCause();
+			assertEquals("1000", dme.oldVersion);
+			assertEquals("2000", dme.newVersion);
+		}
 
-        } catch (RuntimeException e) {
-            assertTrue(e.getCause() instanceof DataModifiedException);
-            DataModifiedException dme = (DataModifiedException)e.getCause();
-            assertEquals("1000", dme.oldVersion);
-            assertEquals("2000", dme.newVersion);
-        }
+		// MotorPlus is cached --> no exception until checkForModifications()
+		client1.getProductComponent("motor.MotorPlus");
 
-        // client2 sill works on old version. MotroBasic is still in cache
-        assertNotNull(client2.getProductComponent("motor.MotorBasic"));
-        // exception should also be thrown if data not cached
-        try {
-            client2.getProductComponent("home.HomeBasic");
-            fail("Should throw a runtime exception");
+		// try again MotorBasic - did not call checkForModifications --> still
+		// same exception
+		try {
+			client1.getProductComponent("motor.MotorBasic");
+			fail("Should throw a runtime exception");
 
-        } catch (RuntimeException e) {
-            assertTrue(e.getCause() instanceof DataModifiedException);
-            DataModifiedException dme = (DataModifiedException)e.getCause();
-            assertEquals("0", dme.oldVersion);
-            assertEquals("2000", dme.newVersion);
-        }
+		} catch (RuntimeException e) {
+			assertTrue(e.getCause() instanceof DataModifiedException);
+			DataModifiedException dme = (DataModifiedException) e.getCause();
+			assertEquals("1000", dme.oldVersion);
+			assertEquals("2000", dme.newVersion);
+		}
 
-        client1 = repository.getActualRuntimeRepository();
-        assertNotSame(client1, client2);
-        // still equals
-        assertEquals(client2, client3);
+		// client2 sill works on old version. MotroBasic is still in cache
+		assertNotNull(client2.getProductComponent("motor.MotorBasic"));
+		// exception should also be thrown if data not cached
+		try {
+			client2.getProductComponent("home.HomeBasic");
+			fail("Should throw a runtime exception");
 
-        // no exception anymore for client1
-        assertNotNull(client1.getProductComponent("home.HomeBasic"));
+		} catch (RuntimeException e) {
+			assertTrue(e.getCause() instanceof DataModifiedException);
+			DataModifiedException dme = (DataModifiedException) e.getCause();
+			assertEquals("0", dme.oldVersion);
+			assertEquals("2000", dme.newVersion);
+		}
 
-        // MotorBasic still cached
-        assertNotNull(client2.getProductComponent("motor.MotorBasic"));
+		client1 = repositoryManager.getActualRuntimeRepository();
+		assertNotSame(client1, client2);
+		// still equals
+		assertEquals(client2, client3);
 
-        // but still exception for not cached content in client2
-        try {
-            client2.getProductComponent("home.HomeBasic");
-            fail("Should throw a runtime exception");
+		// no exception anymore for client1
+		assertNotNull(client1.getProductComponent("home.HomeBasic"));
 
-        } catch (RuntimeException e) {
-            assertTrue(e.getCause() instanceof DataModifiedException);
-            DataModifiedException dme = (DataModifiedException)e.getCause();
-            // client2 was still on version 0 - never called checkForModifications
-            assertEquals("0", dme.oldVersion);
-            assertEquals("2000", dme.newVersion);
-        }
+		// MotorBasic still cached
+		assertNotNull(client2.getProductComponent("motor.MotorBasic"));
 
-        // MotorBasic also for client3 in cache
-        assertNotNull(client3.getProductComponent("motor.MotorBasic"));
-        // and still exception for client3 for not cached data
-        try {
-            client3.getProductComponent("home.HomeBasic");
-            fail("Should throw a runtime exception");
+		// but still exception for not cached content in client2
+		try {
+			client2.getProductComponent("home.HomeBasic");
+			fail("Should throw a runtime exception");
 
-        } catch (RuntimeException e) {
-            assertTrue(e.getCause() instanceof DataModifiedException);
-            DataModifiedException dme = (DataModifiedException)e.getCause();
-            // client2 was still on version 0 - never called checkForModifications
-            assertEquals("0", dme.oldVersion);
-            assertEquals("2000", dme.newVersion);
-        }
+		} catch (RuntimeException e) {
+			assertTrue(e.getCause() instanceof DataModifiedException);
+			DataModifiedException dme = (DataModifiedException) e.getCause();
+			// client2 was still on version 0 - never called
+			// checkForModifications
+			assertEquals("0", dme.oldVersion);
+			assertEquals("2000", dme.newVersion);
+		}
 
-        client2 = repository.getActualRuntimeRepository();
-        // client2 now equals to client1
-        assertEquals(client1, client2);
-        assertNotSame(client2, client3);
+		// MotorBasic also for client3 in cache
+		assertNotNull(client3.getProductComponent("motor.MotorBasic"));
+		// and still exception for client3 for not cached data
+		try {
+			client3.getProductComponent("home.HomeBasic");
+			fail("Should throw a runtime exception");
 
-        // no exception anymore for client1 and client2
-        assertNotNull(client1.getProductComponent("home.HomeBasic"));
-        assertNotNull(client2.getProductComponent("home.HomeBasic"));
-        assertNotNull(client1.getTable("motor.RateTable"));
-        assertNotNull(client2.getTable("motor.RateTable"));
+		} catch (RuntimeException e) {
+			assertTrue(e.getCause() instanceof DataModifiedException);
+			DataModifiedException dme = (DataModifiedException) e.getCause();
+			// client2 was still on version 0 - never called
+			// checkForModifications
+			assertEquals("0", dme.oldVersion);
+			assertEquals("2000", dme.newVersion);
+		}
 
-        // MotorBasic also for client3 in cache
-        assertNotNull(client3.getProductComponent("motor.MotorBasic"));
-        // but still exception for client3
-        try {
-            client3.getProductComponent("home.HomeBasic");
-            fail("Should throw a runtime exception");
+		client2 = repositoryManager.getActualRuntimeRepository();
+		// client2 now equals to client1
+		assertEquals(client1, client2);
+		assertNotSame(client2, client3);
 
-        } catch (RuntimeException e) {
-            assertTrue(e.getCause() instanceof DataModifiedException);
-            DataModifiedException dme = (DataModifiedException)e.getCause();
-            assertEquals("0", dme.oldVersion);
-            assertEquals("2000", dme.newVersion);
-        }
+		// no exception anymore for client1 and client2
+		assertNotNull(client1.getProductComponent("home.HomeBasic"));
+		assertNotNull(client2.getProductComponent("home.HomeBasic"));
+		assertNotNull(client1.getTable("motor.RateTable"));
+		assertNotNull(client2.getTable("motor.RateTable"));
 
-        client3 = repository.getActualRuntimeRepository();
-        assertEquals(client1, client2);
-        assertEquals(client2, client3);
-        assertNotNull(client1.getProductComponent("motor.MotorPlus"));
-        assertNotNull(client2.getProductComponent("home.HomeBasic"));
-        assertNotNull(client3.getProductComponent("motor.MotorBasic"));
-    }
+		// MotorBasic also for client3 in cache
+		assertNotNull(client3.getProductComponent("motor.MotorBasic"));
+		// but still exception for client3
+		try {
+			client3.getProductComponent("home.HomeBasic");
+			fail("Should throw a runtime exception");
 
-    public class MyBuilder extends ClassLoaderProductDataProviderFactory {
+		} catch (RuntimeException e) {
+			assertTrue(e.getCause() instanceof DataModifiedException);
+			DataModifiedException dme = (DataModifiedException) e.getCause();
+			assertEquals("0", dme.oldVersion);
+			assertEquals("2000", dme.newVersion);
+		}
 
-        private IProductDataProvider provider;
-
-        public MyBuilder(ClassLoader cl, String tocResourcePath) {
-            super(tocResourcePath);
-            setClassLoader(cl);
-            setCheckForModifications(true);
-        }
-
-        @Override
-        public IProductDataProvider newInstance() {
-            provider = super.newInstance();
-            return provider;
-        }
-
-    }
+		client3 = repositoryManager.getActualRuntimeRepository();
+		assertEquals(client1, client2);
+		assertEquals(client2, client3);
+		assertNotNull(client1.getProductComponent("motor.MotorPlus"));
+		assertNotNull(client2.getProductComponent("home.HomeBasic"));
+		assertNotNull(client3.getProductComponent("motor.MotorBasic"));
+	}
 
 }

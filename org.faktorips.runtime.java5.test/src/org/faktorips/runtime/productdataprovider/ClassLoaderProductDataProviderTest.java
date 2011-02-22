@@ -59,6 +59,7 @@ public class ClassLoaderProductDataProviderTest {
     public void setUp() throws Exception {
         pdpFactory = new ClassLoaderProductDataProviderFactory(TOC_FIlE_NAME);
         pdpFactory.setCheckForModifications(true);
+        pdpFactory.setClassLoader(getClass().getClassLoader());
         docBuilder = createDocumentnewInstanceer();
         pdp = pdpFactory.newInstance();
         copy(TOC_FIlE_NAME_1, TOC_FIlE_NAME);
