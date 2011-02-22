@@ -370,7 +370,7 @@
                 <!-- customer plugins -->              
                 <cvs module="de.qv.faktorips"/>  
                 <cvs module="de.qv.ormext.builder"/>
-                <cvs module="de.qv.ormext.builder.test"/>                
+                <cvs module="de.qv.faktorips.test"/>                
             </depends>      
         </project>
 
@@ -416,7 +416,7 @@
                 <!-- customer plugins -->              
                 <cvs module="de.qv.faktorips"/>  
                 <cvs module="de.qv.ormext.builder"/>
-                <cvs module="de.qv.ormext.builder.test"/>                
+                <cvs module="de.qv.faktorips.test"/>                
             </depends>      
         </project>
                         

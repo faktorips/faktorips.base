@@ -193,7 +193,7 @@
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ormext.test" tag="v2_4_patches"/>
             <cvs cvsroot="${cvsroot}" module="de.qv.faktorips" tag="v2_4_patches"/>
             <cvs cvsroot="${cvsroot}" module="de.qv.ormext.builder" tag="v2_4_patches"/>
-            <cvs cvsroot="${cvsroot}" module="de.qv.ormext.builder.test" tag="v2_4_patches"/>
+            <cvs cvsroot="${cvsroot}" module="de.qv.faktorips.test" tag="v2_4_patches"/>
         </modificationset>
         <schedule interval="300">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="pluginbuilder.faktorips">
@@ -272,7 +272,7 @@
             <cvs cvsroot="${cvsroot}" module="org.faktorips.devtools.ormext.test" tag="v2_5_patches"/>
             <cvs cvsroot="${cvsroot}" module="de.qv.faktorips" tag="v2_5_patches"/>
             <cvs cvsroot="${cvsroot}" module="de.qv.ormext.builder" tag="v2_5_patches"/>
-            <cvs cvsroot="${cvsroot}" module="de.qv.ormext.builder.test" tag="v2_5_patches"/>
+            <cvs cvsroot="${cvsroot}" module="de.qv.faktorips.test" tag="v2_5_patches"/>
         </modificationset>
         <schedule interval="300">
             <ant uselogger="true" usedebug="false" buildfile="${mainbuildfile}" target="pluginbuilder.faktorips">
