@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Faktor-IPS Formula Language Tests
+Bundle-SymbolicName: org.faktorips.fl.test
+Bundle-Version: 0.0.0
+Fragment-Host: org.faktorips.fl;bundle-version="0.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Faktor Zehn AG
+Require-Bundle: org.junit4;bundle-version="4.3.1"

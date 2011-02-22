@@ -16,7 +16,6 @@ package org.faktorips.datatype;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import junit.framework.TestCase;
 
 import org.faktorips.datatype.classtypes.BigDecimalDatatype;
 import org.faktorips.datatype.classtypes.DecimalDatatype;
