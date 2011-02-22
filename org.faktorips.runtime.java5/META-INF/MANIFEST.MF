@@ -16,3 +16,4 @@ Export-Package: org.faktorips.runtime,
 Bundle-ClassPath: faktorips-runtime-java5.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: junit.framework;version="3.8.2"
+Eclipse-ExtensibleAPI: true
