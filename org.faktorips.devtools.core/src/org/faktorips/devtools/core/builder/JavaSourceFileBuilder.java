@@ -1112,7 +1112,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
                     .getArtefactDestination(buildsDerivedArtefacts());
             IPackageFragmentRoot javaRoot = ipsObject.getIpsProject().getJavaProject()
                     .getPackageFragmentRoot(outputFolder);
-            String packageName = getBuilderSet().getPackage(getKindId(), ipsSrcFile);
+            String packageName = getBuilderSet().getPackage(getKindId(), ipsObject.getIpsSrcFile());
             IPackageFragment fragment = javaRoot.getPackageFragment(packageName);
             List<IType> javaTypes = new ArrayList<IType>(1);
             getGeneratedJavaTypesThis(ipsObject, fragment, javaTypes);
