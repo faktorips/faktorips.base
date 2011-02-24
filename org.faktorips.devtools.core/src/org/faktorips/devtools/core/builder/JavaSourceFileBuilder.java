@@ -63,7 +63,10 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -747,13 +750,17 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
         boolean newFileCreated = createFileIfNotThere(javaFile);
 
-        String javaFileContentsStr = null;
-        if (!newFileCreated) {
-            String charset = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
-            javaFileContentsStr = getJavaFileContents(javaFile, charset);
-            if (isMergeEnabled()) {
-                content = merge(javaFile, javaFileContentsStr, content);
-            }
+        if (newFileCreated) {
+            content = writeFeatureVersions(content);
+            String formattedContent = format(content);
+            javaFile.setContents(transform(ipsSrcFile, formattedContent), true, false, null);
+            return;
+        }
+
+        String charset = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
+        String javaFileContentsStr = getJavaFileContents(javaFile, charset);
+        if (isMergeEnabled()) {
+            content = merge(javaFile, javaFileContentsStr, content);
         }
         content = writeFeatureVersions(content);
         String formattedContent = format(content);
@@ -766,7 +773,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             return;
         }
         javaFile.setContents(transform(ipsSrcFile, formattedContent), true, false, null);
-        // TODO organize imports
     }
 
     private String getJavaFileContents(IFile javaFile, String charset) throws CoreException {
@@ -1108,15 +1114,50 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         ArgumentCheck.notNull(ipsObject);
 
         try {
-            IFolder outputFolder = ipsObject.getIpsPackageFragment().getRoot()
-                    .getArtefactDestination(buildsDerivedArtefacts());
-            IPackageFragmentRoot javaRoot = ipsObject.getIpsProject().getJavaProject()
-                    .getPackageFragmentRoot(outputFolder);
-            String packageName = getBuilderSet().getPackage(getKindId(), ipsObject.getIpsSrcFile());
-            IPackageFragment fragment = javaRoot.getPackageFragment(packageName);
+            IIpsProject ipsProject = ipsObject.getIpsProject();
+            IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
+            IFolder outputFolder;
+            String basePackageName;
+            if (buildsDerivedArtefacts()) {
+                outputFolder = ipsObjectPath.getOutputFolderForDerivedSources();
+                basePackageName = ipsObjectPath.getBasePackageNameForDerivedJavaClasses();
+            } else {
+                outputFolder = ipsObjectPath.getOutputFolderForMergableSources();
+                basePackageName = ipsObjectPath.getBasePackageNameForMergableJavaClasses();
+            }
+
+            if (ipsObjectPath.isOutputDefinedPerSrcFolder()) {
+                IIpsPackageFragmentRoot ipsRoot = ipsObject.getIpsPackageFragment().getRoot();
+                for (IIpsSrcFolderEntry entry : ipsObjectPath.getSourceFolderEntries()) {
+                    if (entry.getIpsPackageFragmentRoot().equals(ipsRoot)) {
+                        if (buildsDerivedArtefacts()) {
+                            outputFolder = entry.getOutputFolderForDerivedJavaFiles();
+                            basePackageName = entry.getBasePackageNameForDerivedJavaClasses();
+                        } else {
+                            outputFolder = entry.getOutputFolderForMergableJavaFiles();
+                            basePackageName = entry.getBasePackageNameForMergableJavaClasses();
+                        }
+                        break;
+                    }
+                }
+            }
+
+            IPackageFragmentRoot javaRoot = ipsProject.getJavaProject().getPackageFragmentRoot(outputFolder);
+            String internalPackageSeparator = isBuildingPublishedSourceFile() ? "" : ".internal"; //$NON-NLS-1$ //$NON-NLS-2$
+            String qualifiedIpsObjectName = ipsObject.getQualifiedName();
+            String packageName = ""; //$NON-NLS-1$
+            if (qualifiedIpsObjectName.contains(".") && qualifiedIpsObjectName.length() > 1) { //$NON-NLS-1$
+                // FIXME FS#1684 AW: applied toLowerCase as a workaround.
+                packageName = "." //$NON-NLS-1$
+                        + qualifiedIpsObjectName.substring(0, qualifiedIpsObjectName.lastIndexOf('.')).toLowerCase();
+            }
+            IPackageFragment fragment = javaRoot.getPackageFragment(basePackageName + internalPackageSeparator
+                    + packageName);
+
             List<IType> javaTypes = new ArrayList<IType>(1);
             getGeneratedJavaTypesThis(ipsObject, fragment, javaTypes);
             return javaTypes;
+
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
