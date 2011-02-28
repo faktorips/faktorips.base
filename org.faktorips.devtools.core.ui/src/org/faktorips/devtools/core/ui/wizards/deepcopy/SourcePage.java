@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
@@ -50,6 +51,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -69,11 +71,10 @@ import org.faktorips.devtools.core.ui.controller.fields.IpsPckFragmentRefField;
 import org.faktorips.devtools.core.ui.controller.fields.IpsPckFragmentRootRefField;
 import org.faktorips.devtools.core.ui.controller.fields.StructuredViewerField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DateControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
-import org.faktorips.devtools.core.ui.controls.Radiobutton;
-import org.faktorips.devtools.core.ui.controls.RadiobuttonGroup;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateContentProvider;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateViewer;
@@ -111,8 +112,7 @@ public class SourcePage extends WizardPage {
     // DeepCopyWizard.TYPE_COPY_PRODUCT or TYPE_NEW_VERSION
     private final int type;
 
-    private Radiobutton copyTableContentsBtn;
-    private Radiobutton createEmptyTableContentsBtn;
+    private Checkbox copyTableContentsBtn;
 
     private DeepCopyContentProvider contentProvider;
 
@@ -122,20 +122,11 @@ public class SourcePage extends WizardPage {
 
     private GenerationDateViewer generationDateViewer;
 
-    private static String getTitle(int type) {
-        if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
-            return Messages.SourcePage_title;
-        } else {
-            return NLS.bind(Messages.SourcePage_titleNewVersion, IpsPlugin.getDefault().getIpsPreferences()
-                    .getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
-        }
-    }
-
     /**
      * Creates a new page to select the objects to copy.
      */
     protected SourcePage(int type) {
-        super(PAGE_ID, getTitle(type), null);
+        super(PAGE_ID);
         this.type = type;
 
         String descr = null;
@@ -162,52 +153,85 @@ public class SourcePage extends WizardPage {
             return;
         }
 
+        setTitle(getTitle());
+
         UIToolkit toolkit = new UIToolkit(null);
         Composite root = toolkit.createComposite(parent);
-        root.setLayout(new GridLayout(1, false));
+        root.setLayout(new GridLayout(1, true));
         root.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         setControl(root);
 
-        Composite inputRoot = toolkit.createLabelEditColumnComposite(root);
+        Composite masterCopyComposite = toolkit.createComposite(root);
+        masterCopyComposite.setLayout(new GridLayout(2, true));
+        masterCopyComposite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 
-        createOldValidFromControl(toolkit, inputRoot);
+        Group masterGroup = toolkit.createGroup(masterCopyComposite, Messages.SourcePage_copyFrom);
+        Composite masterComposite = toolkit.createLabelEditColumnComposite(masterGroup);
+        ((GridLayout)masterComposite.getLayout()).numColumns = 3;
 
-        toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelValidFrom);
-        newWorkingDateControl = new DateControl(inputRoot, toolkit);
-
-        toolkit.createFormLabel(inputRoot, Messages.SourcePage_labelTargetRoot);
-        targetPackRootControl = toolkit.createPdPackageFragmentRootRefControl(inputRoot, true);
-
-        toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelTargetPackage);
-        targetPackageControl = toolkit.createPdPackageFragmentRefControl(getPresentationModel().getTargetPackageRoot(),
-                inputRoot);
-
-        if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
-            toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelSearchPattern);
-            searchInput = toolkit.createText(inputRoot);
-
-            toolkit.createFormLabel(inputRoot, Messages.ReferenceAndPreviewPage_labelReplacePattern);
-            replaceInput = toolkit.createText(inputRoot);
-        }
+        createOldValidFromControl(toolkit, masterComposite);
+        toolkit.createVerticalSpacer(masterComposite, 0);
 
         String label = NLS.bind(Messages.ReferenceAndPreviewPage_labelVersionId, IpsPlugin.getDefault()
                 .getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
-        toolkit.createFormLabel(inputRoot, label);
-        versionId = toolkit.createText(inputRoot);
 
-        // radio button: copy table contents, create empty table contents
-        RadiobuttonGroup group = toolkit.createRadiobuttonGroup(root, SWT.SHADOW_IN,
-                Messages.SourcePage_labelGroupTableContents);
-        group.getGroup().setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
-        copyTableContentsBtn = group.addRadiobutton(Messages.SourcePage_labelRadioBtnCopyTableContents);
+        IProductCmpt rootProductCmpt = getPresentationModel().getStructure().getRoot().getProductCmpt();
+        String masterVersionId = ""; //$NON-NLS-1$
+        try {
+            masterVersionId = rootProductCmpt.getVersionId();
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
+        createLabel(toolkit, masterComposite, label, masterVersionId);
+
+        createLabel(toolkit, masterComposite, Messages.SourcePage_labelTargetRoot, rootProductCmpt
+                .getIpsPackageFragment().getRoot().getCorrespondingResource().getFullPath().toString().substring(1));
+
+        createLabel(toolkit, masterComposite, Messages.ReferenceAndPreviewPage_labelTargetPackage, rootProductCmpt
+                .getIpsPackageFragment().getName());
+
+        Group copyGroup = toolkit.createGroup(masterCopyComposite, Messages.SourcePage_copyTo);
+        Composite copyComposite = toolkit.createLabelEditColumnComposite(copyGroup);
+
+        toolkit.createLabel(copyComposite, Messages.ReferenceAndPreviewPage_labelValidFrom);
+        newWorkingDateControl = new DateControl(copyComposite, toolkit);
+
+        toolkit.createLabel(copyComposite, label);
+        versionId = toolkit.createText(copyComposite);
+
+        toolkit.createLabel(copyComposite, Messages.SourcePage_labelTargetRoot);
+        targetPackRootControl = toolkit.createPdPackageFragmentRootRefControl(copyComposite, true);
+
+        toolkit.createLabel(copyComposite, Messages.ReferenceAndPreviewPage_labelTargetPackage);
+        targetPackageControl = toolkit.createPdPackageFragmentRefControl(getPresentationModel().getTargetPackageRoot(),
+                copyComposite);
+
+        toolkit.createLabel(copyComposite, Messages.SourcePage_tables);
+        copyTableContentsBtn = toolkit
+                .createCheckbox(copyComposite, Messages.SourcePage_labelRadioBtnCopyTableContents);
         copyTableContentsBtn.setChecked(true);
-        createEmptyTableContentsBtn = group.addRadiobutton(Messages.SourcePage_labelRadioBtnCreateEmptyTableContents);
+
+        if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
+            Group searchReplaceGroup = toolkit.createGroup(root, Messages.SourcePage_searchAndReplace);
+            ((GridData)searchReplaceGroup.getLayoutData()).horizontalSpan = 2;
+            ((GridData)searchReplaceGroup.getLayoutData()).verticalAlignment = SWT.TOP;
+            ((GridData)searchReplaceGroup.getLayoutData()).grabExcessVerticalSpace = false;
+            Composite searchReplaceComposite = toolkit.createLabelEditColumnComposite(searchReplaceGroup);
+
+            toolkit.createLabel(searchReplaceComposite, Messages.ReferenceAndPreviewPage_labelSearchPattern);
+            searchInput = toolkit.createText(searchReplaceComposite);
+
+            toolkit.createLabel(searchReplaceComposite, Messages.ReferenceAndPreviewPage_labelReplacePattern);
+            replaceInput = toolkit.createText(searchReplaceComposite);
+        }
 
         tree = new CheckboxTreeViewer(root, SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
         tree.setUseHashlookup(true);
         contentProvider = new DeepCopyContentProvider(true, false);
         tree.setContentProvider(contentProvider);
-        tree.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        GridData treeLayoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
+        treeLayoutData.horizontalSpan = 2;
+        tree.getControl().setLayoutData(treeLayoutData);
         createColumns();
 
         tree.setInput(getStructure());
@@ -218,8 +242,26 @@ public class SourcePage extends WizardPage {
 
     }
 
+    @Override
+    public String getTitle() {
+        if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
+            return NLS.bind(Messages.SourcePage_title, getPresentationModel().getStructure().getRoot().getProductCmpt()
+                    .getName());
+        } else {
+            return NLS.bind(Messages.SourcePage_titleNewVersion, IpsPlugin.getDefault().getIpsPreferences()
+                    .getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
+        }
+    }
+
+    private Label createLabel(UIToolkit toolkit, Composite parent, String descriptionLabel, String text) {
+        toolkit.createLabel(parent, descriptionLabel);
+        Label label = toolkit.createLabel(parent, text);
+        toolkit.createVerticalSpacer(parent, generationDateViewer.getCombo().getTextHeight());
+        return label;
+    }
+
     private void createOldValidFromControl(UIToolkit toolkit, Composite inputRoot) {
-        toolkit.createFormLabel(inputRoot, Messages.SourcePage_labelSourceValidFrom);
+        toolkit.createLabel(inputRoot, Messages.SourcePage_labelSourceValidFrom);
         generationDateViewer = new GenerationDateViewer(inputRoot);
         generationDateViewer.getCombo().setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
         IStructuredContentProvider generationContentProvider = new IStructuredContentProvider() {
@@ -315,8 +357,6 @@ public class SourcePage extends WizardPage {
         binding.bindContent(versionField, getPresentationModel(), DeepCopyPresentationModel.VERSION_ID);
 
         binding.bindContent(copyTableContentsBtn, getPresentationModel(), DeepCopyPresentationModel.COPY_TABLE);
-        binding.bindContent(createEmptyTableContentsBtn, getPresentationModel(),
-                DeepCopyPresentationModel.CREATE_EMPTY_TABLE);
 
         tree.addCheckStateListener(new ICheckStateListener() {
 
@@ -631,12 +671,12 @@ public class SourcePage extends WizardPage {
         }
 
         if (getPresentationModel().getTreeStatus().getCopyOrLink(getStructure().getRoot()) != CopyOrLink.COPY) {
-            setMessage(Messages.ReferenceAndPreviewPage_msgSelectAtLeastOneProduct, Message.WARNING);
+            setMessage(Messages.SourcePage_msgNothingSelected, Message.WARNING);
             return;
         }
 
         if (getWizard().getDeepCopyPreview().getErrorElements().size() != 0) {
-            setErrorMessage(Messages.SourcePage_msgCopyNotPossible + " " //$NON-NLS-1$
+            setErrorMessage(Messages.SourcePage_msgCopyNotPossible // NLS-1$
                     + getWizard().getDeepCopyPreview().getFirstErrorText());
             return;
         }
@@ -679,7 +719,7 @@ public class SourcePage extends WizardPage {
             if (dateFormat instanceof SimpleDateFormat) {
                 pattern = ((SimpleDateFormat)dateFormat).toLocalizedPattern();
             } else {
-                pattern = "\"" + dateFormat.format(new GregorianCalendar().getTime()) + "\""; //$NON-NLS-1$//$NON-NLS-2$
+                pattern = "\"" + dateFormat.format(new GregorianCalendar().getTime()) + "\""; // NLS-2$ //$NON-NLS-1$ //$NON-NLS-2$
             }
             setErrorMessage(NLS.bind(Messages.SourcePage_errorWorkingDateFormat, pattern));
         }
@@ -714,7 +754,6 @@ public class SourcePage extends WizardPage {
         }
         // otherwise buttons are disabled after run and save ui state?
         copyTableContentsBtn.setEnabled(true);
-        createEmptyTableContentsBtn.setEnabled(true);
     }
 
     private class ChangeListener implements PropertyChangeListener {

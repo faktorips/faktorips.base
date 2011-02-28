@@ -128,7 +128,7 @@ public class DeepCopyPreview {
             int segmentsToIgnore,
             IIpsPackageFragmentRoot root,
             IIpsPackageFragment base) {
-        if (base == null || !base.getRoot().exists()) {
+        if (root == null || base == null || !base.getRoot().exists()) {
             return;
         }
         IIpsObject correspondingIpsObject = modified.getWrappedIpsObject();

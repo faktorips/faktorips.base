@@ -82,7 +82,7 @@ public class GenerationDate {
         if (getValidTo() != null) {
             result.append(getDateFormat().format(getValidTo().getTime()));
         } else {
-            result.append(Messages.AdjustmentDate_infinite);
+            result.append(Messages.GenerationDate_infinite);
         }
         return result.toString();
     }

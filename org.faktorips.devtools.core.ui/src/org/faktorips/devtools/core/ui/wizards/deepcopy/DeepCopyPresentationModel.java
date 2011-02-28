@@ -38,9 +38,6 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
     public static final String PACKAGE_FRAGMENT_ROOT = "ipsPckFragmentRoot"; //$NON-NLS-1$
     public static final String TARGET_PACKAGE_ROOT = "targetPackageRoot"; //$NON-NLS-1$
     public static final String COPY_TABLE = "copyTable"; //$NON-NLS-1$
-    // this is the negation of copy table but it is modeled in two values to have binding with radio
-    // buttons for better usability
-    public static final String CREATE_EMPTY_TABLE = "createEmptyTable"; //$NON-NLS-1$
 
     private GenerationDate oldValidFrom;
     private GregorianCalendar newValidFrom;
@@ -190,12 +187,6 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
 
     public boolean isCopyTable() {
         return copyTable;
-    }
-
-    public void setCreateEmptyTable(boolean createEmptyTable) {
-        boolean oldValue = isCreateEmptyTable();
-        this.copyTable = !createEmptyTable;
-        notifyListeners(new PropertyChangeEvent(this, CREATE_EMPTY_TABLE, oldValue, createEmptyTable));
     }
 
     public boolean isCreateEmptyTable() {
