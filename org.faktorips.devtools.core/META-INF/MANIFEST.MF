@@ -40,6 +40,7 @@ Require-Bundle: org.eclipse.ui;visibility:=reexport,
 Bundle-ActivationPolicy: lazy
 Export-Package: org.faktorips.devtools.core,
  org.faktorips.devtools.core.builder,
+ org.faktorips.devtools.core.builder.organizeimports,
  org.faktorips.devtools.core.enums,
  org.faktorips.devtools.core.internal.migration,
  org.faktorips.devtools.core.internal.migrationextensions,
@@ -91,3 +92,4 @@ Export-Package: org.faktorips.devtools.core,
 Bundle-ClassPath: .,
  lib/log4j-1.2.14.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.eclipse.jdt.internal.corext.codemanipulation

@@ -1,0 +1,580 @@
+/*
+ * BEGIN FAKTORIPS GENERATOR INFORMATION SECTION
+ * 
+ * builder set: org.faktorips.devtools.stdbuilder.ipsstdbuilderset, Version: 3.0.0
+ * 
+ * END FAKTORIPS GENERATOR INFORMATION SECTION
+ */
+package org.faktorips.integrationtest.internal.attributetests.overridetest.import;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.xml.bind.annotation.XmlElement;
+import blablabla.Test;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.faktorips.integrationtest.attributetests.overridetest.IBaseType;
+import org.faktorips.integrationtest.attributetests.overridetest.IBaseTypeConfig;
+import org.faktorips.integrationtest.attributetests.overridetest.IBaseTypeConfigGen;
+import unused.packageid.ImportThis;
+import org.faktorips.runtime.AssociationChangedEvent;
+import org.faktorips.runtime.IDeltaComputationOptions;
+import org.faktorips.runtime.IModelObject;
+import org.faktorips.runtime.IModelObjectDelta;
+import org.faktorips.runtime.IModelObjectVisitor;
+import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.IValidationContext;
+import unused.packageid.ImportThis;
+import org.faktorips.runtime.IpsPropertyChangeSupport;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.AbstractConfigurableModelObject;
+import org.faktorips.runtime.internal.AbstractModelObject;
+import org.faktorips.runtime.internal.ModelObjectDelta;
+import org.faktorips.values.Money;
+import org.faktorips.valueset.IntegerRange;
+import org.faktorips.valueset.ValueSet;
+import org.w3c.dom.Element;
+import unused.packageid.ImportThis;
+
+/**
+ * 
+ * @generated
+ */
+@XmlRootElement(name = "BaseType")
+public class BaseType extends AbstractConfigurableModelObject implements IBaseType {
+    /**
+     * Helper object for Changelistener.
+     * 
+     * @generated
+     */
+    protected final IpsPropertyChangeSupport propertyChangeSupport = new IpsPropertyChangeSupport(this);
+
+    /**
+     * Member variable for changeableAttribute.
+     * 
+     * @generated
+     */
+    @XmlElement(name = "changeableAttribute", nillable = true)
+    private Integer changeableAttribute = Integer.valueOf("0");
+
+    /**
+     * Member variable for computedAttribute.
+     * 
+     * @generated
+     */
+    @XmlElement(name = "computedAttribute", nillable = true)
+    private Money computedAttribute = Money.NULL;
+
+    /**
+     * Member variable for twoOverridesAttribute.
+     * 
+     * @generated
+     */
+    @XmlElement(name = "twoOverridesAttribute", nillable = true)
+    private String twoOverridesAttribute = null;
+    /**
+     * Member variable for constantAttribute.
+     * 
+     * @generated
+     */
+    @XmlElement(name = "constantAttribute", nillable = true)
+    private String constantAttribute = null;
+
+    /**
+     * Member variable for onlyInSubclassConfigured.
+     * 
+     * @generated
+     */
+    @XmlElement(name = "onlyInSubclassConfigured", nillable = true)
+    private String onlyInSubclassConfigured = null;
+
+    /**
+     * Creates a new BaseType.
+     * 
+     * @generated
+     */
+    public BaseType() {
+        super();
+    }
+
+    /**
+     * Creates a new BaseType.
+     * 
+     * @generated
+     */
+    public BaseType(IBaseTypeConfig productCmpt) {
+        super(productCmpt);
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public IntegerRange getRangeForChangeableAttribute(IValidationContext context) {
+        return getBaseTypeConfigGen().getRangeForChangeableAttribute(context);
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public Integer getChangeableAttribute() {
+        return changeableAttribute;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public void setChangeableAttribute(Integer newValue) {
+        Integer oldChangeableAttribute = changeableAttribute;
+        this.changeableAttribute = newValue;
+        notifyChangeListeners(new PropertyChangeEvent(this, PROPERTY_CHANGEABLEATTRIBUTE, oldChangeableAttribute,
+                changeableAttribute));
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public Money getComputedAttribute() {
+        return computedAttribute;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public ValueSet<String> getSetOfAllowedValuesForTwoOverridesAttribute(IValidationContext context) {
+        return getBaseTypeConfigGen().getSetOfAllowedValuesForTwoOverridesAttribute(context);
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public String getTwoOverridesAttribute() {
+        return twoOverridesAttribute;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public void setTwoOverridesAttribute(String newValue) {
+        String oldTwoOverridesAttribute = twoOverridesAttribute;
+        this.twoOverridesAttribute = newValue;
+        notifyChangeListeners(new PropertyChangeEvent(this, PROPERTY_TWOOVERRIDESATTRIBUTE, oldTwoOverridesAttribute,
+                twoOverridesAttribute));
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @modifiable
+     */
+    public Integer getDerivedAttribute() {
+        // TODO Belegung der Berechnungsparameter implementieren
+        String param1 = null;
+        return ((BaseTypeConfigGen)getBaseTypeConfigGen()).computeDerivedAttribute(param1);
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public ValueSet<String> getSetOfAllowedValuesForConstantAttribute(IValidationContext context) {
+        return getBaseTypeConfigGen().getSetOfAllowedValuesForConstantAttribute(context);
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public String getConstantAttribute() {
+        return constantAttribute;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public void setConstantAttribute(String newValue) {
+        String oldConstantAttribute = constantAttribute;
+        this.constantAttribute = newValue;
+        notifyChangeListeners(new PropertyChangeEvent(this, PROPERTY_CONSTANTATTRIBUTE, oldConstantAttribute,
+                constantAttribute));
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public String getDerivedNotCachedToOverride() {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public String getOnlyInSubclassConfigured() {
+        return onlyInSubclassConfigured;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public void setOnlyInSubclassConfigured(String newValue) {
+        String oldOnlyInSubclassConfigured = onlyInSubclassConfigured;
+        this.onlyInSubclassConfigured = newValue;
+        notifyChangeListeners(new PropertyChangeEvent(this, PROPERTY_ONLYINSUBCLASSCONFIGURED,
+                oldOnlyInSubclassConfigured, onlyInSubclassConfigured));
+    }
+
+    /**
+     * Initializes the object with the configurated defaults.
+     * 
+     * @generated
+     */
+    @Override
+    public void initialize() {
+        if (getBaseTypeConfigGen() == null) {
+            return;
+        }
+        changeableAttribute = getBaseTypeConfigGen().getDefaultValueChangeableAttribute();
+        twoOverridesAttribute = getBaseTypeConfigGen().getDefaultValueTwoOverridesAttribute();
+        constantAttribute = getBaseTypeConfigGen().getDefaultValueConstantAttribute();
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public IBaseTypeConfig getBaseTypeConfig() {
+        return (IBaseTypeConfig)getProductComponent();
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public IBaseTypeConfigGen getBaseTypeConfigGen() {
+        return (IBaseTypeConfigGen)getProductCmptGeneration();
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public void setBaseTypeConfig(IBaseTypeConfig baseTypeConfig, boolean initPropertiesWithConfiguratedDefaults) {
+        setProductComponent(baseTypeConfig);
+        if (initPropertiesWithConfiguratedDefaults) {
+            initialize();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    @Override
+    public void effectiveFromHasChanged() {
+        super.effectiveFromHasChanged();
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public Calendar getEffectiveFromAsCalendar() {
+        return null; // TODO Implement access to effective from.
+        // To avoid that the generator overwrites the implementation,
+        // you have to add NOT after @annotation in the Javadoc!
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public void notifyChangeListeners(PropertyChangeEvent event) {
+        if (event instanceof AssociationChangedEvent) {
+            propertyChangeSupport.fireAssociationChange((AssociationChangedEvent)event);
+        } else {
+            propertyChangeSupport.firePropertyChange(event);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.addPropertyChangeListener(listener);
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public void addPropertyChangeListener(PropertyChangeListener listener, boolean propagateEventsFromChildren) {
+        propertyChangeSupport.addPropertyChangeListener(listener, propagateEventsFromChildren);
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public boolean hasListeners(String propertyName) {
+        return propertyChangeSupport.hasListeners(propertyName);
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.removePropertyChangeListener(listener);
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    @Override
+    protected void initPropertiesFromXml(Map<String, String> propMap, IRuntimeRepository productRepository) {
+        super.initPropertiesFromXml(propMap, productRepository);
+        if (propMap.containsKey("changeableAttribute")) {
+            changeableAttribute = (propMap.get("changeableAttribute") == null || propMap.get("changeableAttribute")
+                    .equals("")) ? null : new Integer(propMap.get("changeableAttribute"));
+        }
+        if (propMap.containsKey("computedAttribute")) {
+            computedAttribute = Money.valueOf(propMap.get("computedAttribute"));
+        }
+        if (propMap.containsKey("twoOverridesAttribute")) {
+            twoOverridesAttribute = propMap.get("twoOverridesAttribute");
+        }
+        if (propMap.containsKey("constantAttribute")) {
+            constantAttribute = propMap.get("constantAttribute");
+        }
+        if (propMap.containsKey("onlyInSubclassConfigured")) {
+            onlyInSubclassConfigured = propMap.get("onlyInSubclassConfigured");
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    @Override
+    protected AbstractModelObject createChildFromXml(Element childEl) {
+        AbstractModelObject newChild = super.createChildFromXml(childEl);
+        if (newChild != null) {
+            return newChild;
+        }
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public IModelObjectDelta computeDelta(IModelObject otherObject, IDeltaComputationOptions options) {
+        ModelObjectDelta delta = ModelObjectDelta.newDelta(this, otherObject, options);
+        if (!BaseType.class.isAssignableFrom(otherObject.getClass())) {
+            return delta;
+        }
+        BaseType otherBaseType = (BaseType)otherObject;
+        delta.checkPropertyChange(IBaseType.PROPERTY_CHANGEABLEATTRIBUTE, changeableAttribute,
+                otherBaseType.changeableAttribute, options);
+        delta.checkPropertyChange(IBaseType.PROPERTY_COMPUTEDATTRIBUTE, computedAttribute,
+                otherBaseType.computedAttribute, options);
+        delta.checkPropertyChange(IBaseType.PROPERTY_TWOOVERRIDESATTRIBUTE, twoOverridesAttribute,
+                otherBaseType.twoOverridesAttribute, options);
+        delta.checkPropertyChange(IBaseType.PROPERTY_CONSTANTATTRIBUTE, constantAttribute,
+                otherBaseType.constantAttribute, options);
+        delta.checkPropertyChange(IBaseType.PROPERTY_ONLYINSUBCLASSCONFIGURED, onlyInSubclassConfigured,
+                otherBaseType.onlyInSubclassConfigured, options);
+        return delta;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public IModelObject newCopy() {
+        Map<IModelObject, IModelObject> copyMap = new HashMap<IModelObject, IModelObject>();
+        BaseType newCopy = (BaseType)newCopyInternal(copyMap);
+        copyAssociationsInternal(newCopy, copyMap);
+        return newCopy;
+    }
+
+    /**
+     * Internal copy method with a {@link Map} containing already copied instances.
+     * 
+     * @param copyMap the map contains the copied instances
+     * 
+     * @generated
+     */
+    public IModelObject newCopyInternal(Map<IModelObject, IModelObject> copyMap) {
+        BaseType newCopy = (BaseType)copyMap.get(this);
+        if (newCopy == null) {
+            newCopy = new BaseType();
+            newCopy.copyProductCmptAndGenerationInternal(this);
+            copyProperties(newCopy, copyMap);
+        }
+        return newCopy;
+    }
+
+    /**
+     * This method sets all properties in the copy with the values of this object. If there are
+     * copied associated objects they are added to the copy map.
+     * 
+     * @param copy The copy object
+     * @param copyMap a map containing copied associated objects
+     * 
+     * @generated
+     */
+    protected void copyProperties(IModelObject copy, Map<IModelObject, IModelObject> copyMap) {
+        BaseType concreteCopy = (BaseType)copy;
+        concreteCopy.changeableAttribute = changeableAttribute;
+        concreteCopy.computedAttribute = computedAttribute;
+        concreteCopy.twoOverridesAttribute = twoOverridesAttribute;
+        concreteCopy.constantAttribute = constantAttribute;
+        concreteCopy.onlyInSubclassConfigured = onlyInSubclassConfigured;
+    }
+
+    /**
+     * Internal method for setting copied associations. For copied targets, the association have to
+     * retarget to the new copied instance. This method have to call
+     * {@link #copyAssociationsInternal(IModelObject, Map)} in other instances associated by
+     * composite.
+     * 
+     * @param abstractCopy the copy of this policy component
+     * @param copyMap the map contains the copied instances
+     * 
+     * @generated
+     */
+    public void copyAssociationsInternal(IModelObject abstractCopy, Map<IModelObject, IModelObject> copyMap) {
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @generated
+     */
+    public boolean accept(IModelObjectVisitor visitor) {
+        if (!visitor.visit(this)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Validates the object (but not its children).
+     * 
+     * @generated
+     */
+    @Override
+    public boolean validateSelf(MessageList ml, IValidationContext context) {
+        if (!super.validateSelf(ml, context)) {
+            return false;
+        }
+        if (!rule1(ml, context)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Validates the objects children.
+     * 
+     * @generated
+     */
+    @Override
+    public void validateDependants(MessageList ml, IValidationContext context) {
+        super.validateDependants(ml, context);
+    }
+
+    /**
+     * Executes the rule rule1 and adds a message to the given list if the object is invalid.
+     * 
+     * @restrainedmodifiable
+     */
+    protected boolean rule1(MessageList ml, IValidationContext context) {
+
+        // begin-user-code
+        // TODO Implement the rule rule1. "blabla"
+        if (true) {
+            ml.add(createMessageForRuleRule1(context));
+        }
+        return true;
+        // end-user-code
+    }
+
+    /**
+     * Creates a message to indicate that the rule rule1 has found an invalid state.
+     * 
+     * @generated
+     */
+    protected Message createMessageForRuleRule1(IValidationContext context) {
+        ObjectProperty[] invalidObjectProperties = new ObjectProperty[] { new ObjectProperty(this,
+                PROPERTY_TWOOVERRIDESATTRIBUTE) };
+        StringBuffer text = new StringBuffer();
+        text.append("rule1");
+        return new Message(MSG_CODE_RULE1, text.toString(), Message.ERROR, invalidObjectProperties);
+    }
+
+}

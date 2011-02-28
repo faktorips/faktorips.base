@@ -55,6 +55,7 @@ import org.eclipse.text.edits.TextEdit;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.builder.organizeimports.IpsRemoveImportsOperation;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
@@ -750,29 +751,29 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
         boolean newFileCreated = createFileIfNotThere(javaFile);
 
-        if (newFileCreated) {
-            content = writeFeatureVersions(content);
-            String formattedContent = format(content);
-            javaFile.setContents(transform(ipsSrcFile, formattedContent), true, false, null);
-            return;
+        String oldJavaFileContentsStr = null;
+        if (!newFileCreated) {
+            String charset = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
+            oldJavaFileContentsStr = getJavaFileContents(javaFile, charset);
+            if (isMergeEnabled()) {
+                content = merge(javaFile, oldJavaFileContentsStr, content);
+            }
         }
 
-        String charset = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
-        String javaFileContentsStr = getJavaFileContents(javaFile, charset);
-        if (isMergeEnabled()) {
-            content = merge(javaFile, javaFileContentsStr, content);
-        }
         content = writeFeatureVersions(content);
         String formattedContent = format(content);
+
+        formattedContent = new IpsRemoveImportsOperation().removeUnusedImports(formattedContent);
 
         /*
          * If merging is not activated and the content of the file is equal compared to the
          * generated and formatted content then the new content is not written to the file.
          */
-        if (formattedContent.equals(javaFileContentsStr)) {
+        if (formattedContent.equals(oldJavaFileContentsStr)) {
             return;
+        } else {
+            javaFile.setContents(transform(ipsSrcFile, formattedContent), true, false, null);
         }
-        javaFile.setContents(transform(ipsSrcFile, formattedContent), true, false, null);
     }
 
     private String getJavaFileContents(IFile javaFile, String charset) throws CoreException {
