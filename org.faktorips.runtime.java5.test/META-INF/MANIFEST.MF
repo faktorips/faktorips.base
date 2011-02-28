@@ -7,4 +7,5 @@ Bundle-Vendor: Faktor Zehn AG
 Fragment-Host: org.faktorips.runtime.java5;bundle-version="0.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit4;bundle-version="4.3.1",
- org.mockito;bundle-version="1.8.3"
+ org.mockito.mockito-all;bundle-version="1.8.5",
+ org.powermock;bundle-version="1.4.8"
