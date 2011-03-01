@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: User Interface for Standard Builder
+Bundle-SymbolicName: org.faktorips.devtools.stdbuilder.ui
+Bundle-Version: 0.0.0
+Bundle-Activator: org.faktorips.devtools.stdbuilder.ui.StdBuilderUIPlugin
+Bundle-Vendor: Faktor Zehn AG
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Bundle-Localization: plugin
