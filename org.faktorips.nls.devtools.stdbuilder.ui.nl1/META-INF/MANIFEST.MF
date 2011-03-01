@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Faktor-IPS Stdbuilder UI German language pack
+Bundle-SymbolicName: org.faktorips.nls.devtools.stdbuilder.ui.nl1
+Bundle-Version: 0.0.0
+Bundle-Vendor: Faktor Zehn AG
+Fragment-Host: org.faktorips.devtools.stdbuilder.ui;bundle-version="0.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
