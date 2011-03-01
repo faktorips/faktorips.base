@@ -70,8 +70,8 @@ public class DetachedContentRuntimeRepositoryManagerTest {
                 "org/faktorips/runtime/testrepository/direct-repository-toc.xml");
         pdpFactory = new MyFactory(getClass().getClassLoader(),
                 "org/faktorips/runtime/testrepository/faktorips-repository-toc.xml");
-        runtimeRepositoryManager = new DetachedContentRuntimeRepositoryManager.Builder(directPdpFactory).build();
-        IRuntimeRepositoryManager referencedManager = new DetachedContentRuntimeRepositoryManager.Builder(pdpFactory)
+        runtimeRepositoryManager = new DetachedContentRuntimeBuilder(directPdpFactory).build();
+        IRuntimeRepositoryManager referencedManager = new DetachedContentRuntimeBuilder(pdpFactory)
                 .build();
         runtimeRepositoryManager.addDirectlyReferencedManager(referencedManager);
         repository = runtimeRepositoryManager.getActualRuntimeRepository();

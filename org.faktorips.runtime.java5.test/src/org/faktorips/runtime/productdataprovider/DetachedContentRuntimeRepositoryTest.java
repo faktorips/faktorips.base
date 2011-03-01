@@ -14,206 +14,234 @@
 package org.faktorips.runtime.productdataprovider;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.faktorips.runtime.IRuntimeRepository;
-import org.faktorips.runtime.IRuntimeRepositoryManager;
+import java.io.InputStream;
+
+import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
 import org.faktorips.runtime.internal.DateTime;
-import org.faktorips.runtime.internal.ProductComponent;
+import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
+import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.IReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
+import org.faktorips.runtime.internal.toc.TableContentTocEntry;
+import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.mockito.Answers;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.w3c.dom.Element;
 
-@Ignore // until fixed with mockito FIPS-63
 public class DetachedContentRuntimeRepositoryTest {
 
-	private IRuntimeRepositoryManager repositoryManager;
-	private IProductDataProvider pdpMock;
-	private IReadonlyTableOfContents tocMock;
+	private static final String REPOSITORY_NAME = "testRepository";
+
+	private DetachedContentRuntimeRepository repository;
+
+	@Mock(answer = Answers.RETURNS_MOCKS)
+	private DetachedContentRuntimeBuilder mockBuilder;
+
+	@Mock
+	private IProductDataProvider productDataProvider;
+
+	@Mock
+	private IFormulaEvaluatorFactory formulaEvaluatorFactory;
 
 	@Before
 	public void setUp() throws Exception {
-		IProductDataProviderFactory pdpFactoryMock = Mockito
-				.mock(IProductDataProviderFactory.class);
-		pdpMock = Mockito.mock(IProductDataProvider.class);
-		// when(pdpMock.getVersion()).thenReturn("0");
-		when(pdpMock.isCompatibleToBaseVersion()).thenReturn(true);
+		MockitoAnnotations.initMocks(this);
 
-		tocMock = Mockito.mock(IReadonlyTableOfContents.class);
-		when(pdpMock.getToc()).thenReturn(tocMock);
+		mockBuilder();
 
-		when(pdpFactoryMock.newInstance()).thenReturn(pdpMock);
-		repositoryManager = new DetachedContentRuntimeRepositoryManager.Builder(
-				pdpFactoryMock).build();
+		repository = new DetachedContentRuntimeRepository(mockBuilder);
+	}
+
+	private void mockBuilder() {
+		when(mockBuilder.getRepositoryName()).thenReturn(REPOSITORY_NAME);
+
+		IProductDataProviderFactory productDataProviderFactory = mock(IProductDataProviderFactory.class);
+		when(productDataProviderFactory.newInstance()).thenReturn(
+				productDataProvider);
+		when(mockBuilder.getProductDataProviderFactory()).thenReturn(
+				productDataProviderFactory);
+
+		when(mockBuilder.getFormulaEvaluatorFactory()).thenReturn(
+				formulaEvaluatorFactory);
 	}
 
 	@Test
-	public void testClientCall() {
-		IRuntimeRepository client1 = repositoryManager
-				.getActualRuntimeRepository();
-		IRuntimeRepository client2 = repositoryManager
-				.getActualRuntimeRepository();
-		IRuntimeRepository client3 = repositoryManager
-				.getActualRuntimeRepository();
+	public void testConstructor() {
+		assertEquals(REPOSITORY_NAME, repository.getName());
+		assertEquals(formulaEvaluatorFactory,
+				repository.getFormulaEvaluatorFactory());
+	}
 
-		// every client repository should be the same (equal)
-		assertEquals(client1, client2);
-		assertEquals(client2, client3);
+	@Test
+	public void testLoadTableOfContents() {
+		IReadonlyTableOfContents mockToc = mock(IReadonlyTableOfContents.class);
+		when(productDataProvider.getToc()).thenReturn(mockToc);
 
-		ProductComponent pcMock1 = Mockito.mock(ProductComponent.class);
-//		<ProductComponent ipsObjectId="motor.MotorPlus" ipsObjectQualifiedName="motor.MotorPlus" kindId="motor.MotorPlus" versionId="2005-01" xmlResource="org/faktorips/runtime/testrepository/motor/MotorPlus.ipsproduct" implementationClass="org.faktorips.runtime.testrepository.motor.MotorProduct" policyCmptClass="org.faktorips.runtime.testrepository.motor.MotorPolicy" validTo="2010-01-16">
-		 ProductCmptTocEntry tocEntry = new  ProductCmptTocEntry("motor.MotorBasic", "motor.MotorBasic", "motor.MotorBasic", "2005-01", "org/faktorips/runtime/testrepository/motor/MotorPlus.ipsproduct", "org.faktorips.runtime.testrepository.motor.MotorProduct", "org.faktorips.runtime.testrepository.motor.MotorProductGen", new DateTime(2010, 1, 16));
-		when(tocMock.getProductCmptTocEntry("motor.MotorBasic")).thenReturn(tocEntry);
+		assertEquals(mockToc, repository.loadTableOfContents());
+	}
 
-		assertNotNull(client1.getProductComponent("motor.MotorBasic"));
+	@Test
+	public void testGetDocumentElementProductCmptTocEntry()
+			throws DataModifiedException {
+		Element mockElement = mock(Element.class);
+		ProductCmptTocEntry mockTocEntry = mock(ProductCmptTocEntry.class);
+		when(productDataProvider.getProductCmptData(mockTocEntry)).thenReturn(
+				mockElement);
 
-		assertNotNull(client2.getProductComponent("motor.MotorPlus"));
+		assertEquals(mockElement, repository.getDocumentElement(mockTocEntry));
+	}
 
-		assertNotNull(client3.getProductComponent("motor.MotorBasic"));
+	@Test(expected = DataModifiedRuntimeException.class)
+	public void testGetDocumentElementProductCmptTocEntryDataModifiedExceptionThrown()
+			throws DataModifiedException {
+		ProductCmptTocEntry mockTocEntry = mock(ProductCmptTocEntry.class);
+		when(productDataProvider.getProductCmptData(mockTocEntry)).thenThrow(
+				new DataModifiedException("", "", ""));
 
-		when(pdpMock.getVersion()).thenReturn("1000");
+		repository.getDocumentElement(mockTocEntry);
+	}
 
-		// should NOT throw an exception because product component is in cache
-		// and
-		// we did not call checkForModifications()
-		try {
-			client1.getProductComponent("motor.MotorBasic");
-		} catch (Exception e) {
-			fail();
-		}
+	@Test
+	public void testGetDocumentElementGenerationTocEntry()
+			throws DataModifiedException {
+		Element mockElement = mock(Element.class);
+		GenerationTocEntry mockTocEntry = mock(GenerationTocEntry.class);
+		when(productDataProvider.getProductCmptGenerationData(mockTocEntry))
+				.thenReturn(mockElement);
 
-		client1 = repositoryManager.getActualRuntimeRepository();
-		assertNotSame(client1, client2);
-		// still equals
-		assertEquals(client2, client3);
+		assertEquals(mockElement, repository.getDocumentElement(mockTocEntry));
+	}
 
-		// shold NOT throw an exception because we just called startRequest.
-		client1.getProductComponent("motor.MotorPlus");
+	@Test(expected = DataModifiedRuntimeException.class)
+	public void testGetDocumentElementGenerationTocEntryDataModifiedExceptionThrown()
+			throws DataModifiedException {
+		GenerationTocEntry mockTocEntry = mock(GenerationTocEntry.class);
+		when(productDataProvider.getProductCmptGenerationData(mockTocEntry))
+				.thenThrow(new DataModifiedException("", "", ""));
 
-		when(pdpMock.getVersion()).thenReturn("2000");
+		repository.getDocumentElement(mockTocEntry);
+	}
 
-		try {
-			// should throw an exception because version changed and requested
-			// product component is
-			// not in cache
-			client1.getProductComponent("motor.MotorBasic");
-			fail("Should throw a runtime exception");
-		} catch (RuntimeException e) {
-			assertTrue(e.getCause() instanceof DataModifiedException);
-			DataModifiedException dme = (DataModifiedException) e.getCause();
-			assertEquals("1000", dme.oldVersion);
-			assertEquals("2000", dme.newVersion);
-		}
+	@Test
+	public void testGetDocumentElementTestCaseTocEntry()
+			throws DataModifiedException {
+		Element mockElement = mock(Element.class);
+		TestCaseTocEntry mockTocEntry = mock(TestCaseTocEntry.class);
+		when(productDataProvider.getTestcaseElement(mockTocEntry)).thenReturn(
+				mockElement);
 
-		// MotorPlus is cached --> no exception until checkForModifications()
-		client1.getProductComponent("motor.MotorPlus");
+		assertEquals(mockElement, repository.getDocumentElement(mockTocEntry));
+	}
 
-		// try again MotorBasic - did not call checkForModifications --> still
-		// same exception
-		try {
-			client1.getProductComponent("motor.MotorBasic");
-			fail("Should throw a runtime exception");
+	@Test(expected = DataModifiedRuntimeException.class)
+	public void testGetDocumentElementTestCaseTocEntryDataModifiedExceptionThrown()
+			throws DataModifiedException {
+		TestCaseTocEntry mockTocEntry = mock(TestCaseTocEntry.class);
+		when(productDataProvider.getTestcaseElement(mockTocEntry)).thenThrow(
+				new DataModifiedException("", "", ""));
 
-		} catch (RuntimeException e) {
-			assertTrue(e.getCause() instanceof DataModifiedException);
-			DataModifiedException dme = (DataModifiedException) e.getCause();
-			assertEquals("1000", dme.oldVersion);
-			assertEquals("2000", dme.newVersion);
-		}
+		repository.getDocumentElement(mockTocEntry);
+	}
 
-		// client2 sill works on old version. MotroBasic is still in cache
-		assertNotNull(client2.getProductComponent("motor.MotorBasic"));
-		// exception should also be thrown if data not cached
-		try {
-			client2.getProductComponent("home.HomeBasic");
-			fail("Should throw a runtime exception");
+	@Test
+	public void testGetProductComponentGenerationImplClass() {
+		String generationImplClassName = "generationImplClassName";
+		ProductCmptTocEntry prodctCmptTocEntry = new ProductCmptTocEntry("",
+				"", "", "", "", "", generationImplClassName,
+				mock(DateTime.class));
+		GenerationTocEntry generationTocEntry = new GenerationTocEntry(
+				prodctCmptTocEntry, mock(DateTime.class,
+						Answers.RETURNS_DEEP_STUBS.get()), "", "");
 
-		} catch (RuntimeException e) {
-			assertTrue(e.getCause() instanceof DataModifiedException);
-			DataModifiedException dme = (DataModifiedException) e.getCause();
-			assertEquals("0", dme.oldVersion);
-			assertEquals("2000", dme.newVersion);
-		}
+		assertEquals(
+				generationImplClassName,
+				repository
+						.getProductComponentGenerationImplClass(generationTocEntry));
+	}
 
-		client1 = repositoryManager.getActualRuntimeRepository();
-		assertNotSame(client1, client2);
-		// still equals
-		assertEquals(client2, client3);
+	@Test
+	public void testGetProductComponentGenerationImplClassFormulaEvaluatorFactoryIsNull() {
+		when(mockBuilder.getFormulaEvaluatorFactory()).thenReturn(null);
+		repository = new DetachedContentRuntimeRepository(mockBuilder);
 
-		// no exception anymore for client1
-		assertNotNull(client1.getProductComponent("home.HomeBasic"));
+		String generationImplClassName = "generationImplClassName";
+		GenerationTocEntry generationTocEntry = new GenerationTocEntry(
+				mock(ProductCmptTocEntry.class), mock(DateTime.class,
+						Answers.RETURNS_DEEP_STUBS.get()),
+				generationImplClassName, "");
 
-		// MotorBasic still cached
-		assertNotNull(client2.getProductComponent("motor.MotorBasic"));
+		assertEquals(
+				generationImplClassName,
+				repository
+						.getProductComponentGenerationImplClass(generationTocEntry));
+	}
 
-		// but still exception for not cached content in client2
-		try {
-			client2.getProductComponent("home.HomeBasic");
-			fail("Should throw a runtime exception");
+	@Test
+	public void testGetXmlAsStreamEnumContent() throws DataModifiedException {
+		InputStream mockInputStream = mock(InputStream.class);
+		EnumContentTocEntry mockTocEntry = mock(EnumContentTocEntry.class);
+		when(productDataProvider.getEnumContentAsStream(mockTocEntry))
+				.thenReturn(mockInputStream);
 
-		} catch (RuntimeException e) {
-			assertTrue(e.getCause() instanceof DataModifiedException);
-			DataModifiedException dme = (DataModifiedException) e.getCause();
-			// client2 was still on version 0 - never called
-			// checkForModifications
-			assertEquals("0", dme.oldVersion);
-			assertEquals("2000", dme.newVersion);
-		}
+		assertEquals(mockInputStream, repository.getXmlAsStream(mockTocEntry));
+	}
 
-		// MotorBasic also for client3 in cache
-		assertNotNull(client3.getProductComponent("motor.MotorBasic"));
-		// and still exception for client3 for not cached data
-		try {
-			client3.getProductComponent("home.HomeBasic");
-			fail("Should throw a runtime exception");
+	@Test(expected = DataModifiedRuntimeException.class)
+	public void testGetXmlAsStreamEnumContentDataModifiedExceptionThrown()
+			throws DataModifiedException {
+		EnumContentTocEntry mockTocEntry = mock(EnumContentTocEntry.class);
+		when(productDataProvider.getEnumContentAsStream(mockTocEntry))
+				.thenThrow(new DataModifiedException("", "", ""));
 
-		} catch (RuntimeException e) {
-			assertTrue(e.getCause() instanceof DataModifiedException);
-			DataModifiedException dme = (DataModifiedException) e.getCause();
-			// client2 was still on version 0 - never called
-			// checkForModifications
-			assertEquals("0", dme.oldVersion);
-			assertEquals("2000", dme.newVersion);
-		}
+		repository.getXmlAsStream(mockTocEntry);
+	}
 
-		client2 = repositoryManager.getActualRuntimeRepository();
-		// client2 now equals to client1
-		assertEquals(client1, client2);
-		assertNotSame(client2, client3);
+	@Test
+	public void testGetXmlAsStreamTableContent() throws DataModifiedException {
+		InputStream mockInputStream = mock(InputStream.class);
+		TableContentTocEntry mockTocEntry = mock(TableContentTocEntry.class);
+		when(productDataProvider.getTableContentAsStream(mockTocEntry))
+				.thenReturn(mockInputStream);
 
-		// no exception anymore for client1 and client2
-		assertNotNull(client1.getProductComponent("home.HomeBasic"));
-		assertNotNull(client2.getProductComponent("home.HomeBasic"));
-		assertNotNull(client1.getTable("motor.RateTable"));
-		assertNotNull(client2.getTable("motor.RateTable"));
+		assertEquals(mockInputStream, repository.getXmlAsStream(mockTocEntry));
+	}
 
-		// MotorBasic also for client3 in cache
-		assertNotNull(client3.getProductComponent("motor.MotorBasic"));
-		// but still exception for client3
-		try {
-			client3.getProductComponent("home.HomeBasic");
-			fail("Should throw a runtime exception");
+	@Test(expected = DataModifiedRuntimeException.class)
+	public void testGetXmlAsStreamTableContentDataModifiedExceptionThrown()
+			throws DataModifiedException {
+		TableContentTocEntry mockTocEntry = mock(TableContentTocEntry.class);
+		when(productDataProvider.getTableContentAsStream(mockTocEntry))
+				.thenThrow(new DataModifiedException("", "", ""));
 
-		} catch (RuntimeException e) {
-			assertTrue(e.getCause() instanceof DataModifiedException);
-			DataModifiedException dme = (DataModifiedException) e.getCause();
-			assertEquals("0", dme.oldVersion);
-			assertEquals("2000", dme.newVersion);
-		}
+		repository.getXmlAsStream(mockTocEntry);
+	}
 
-		client3 = repositoryManager.getActualRuntimeRepository();
-		assertEquals(client1, client2);
-		assertEquals(client2, client3);
-		assertNotNull(client1.getProductComponent("motor.MotorPlus"));
-		assertNotNull(client2.getProductComponent("home.HomeBasic"));
-		assertNotNull(client3.getProductComponent("motor.MotorBasic"));
+	@Test
+	public void testGetProductDataVersion() {
+		String productDataVersion = "testVersion";
+		when(productDataProvider.getVersion()).thenReturn(productDataVersion);
+		assertEquals(productDataVersion, repository.getProductDataVersion());
+	}
+
+	@Test
+	public void testIsUpToDate() {
+		when(productDataProvider.isCompatibleToBaseVersion()).thenReturn(true);
+		assertTrue(repository.isUpToDate());
+		when(productDataProvider.isCompatibleToBaseVersion()).thenReturn(false);
+		assertFalse(repository.isUpToDate());
+	}
+
+	@Test
+	public void testIsModifiable() {
+		assertFalse(repository.isModifiable());
 	}
 
 }

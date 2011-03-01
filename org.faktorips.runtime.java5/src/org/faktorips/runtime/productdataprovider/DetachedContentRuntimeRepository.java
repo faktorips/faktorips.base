@@ -54,14 +54,20 @@ public class DetachedContentRuntimeRepository extends AbstractClassLoadingRuntim
      * {@link DetachedContentRuntimeRepositoryManager} to get necessary information about name,
      * {@link ClassLoader} and {@link IProductDataProvider}
      * 
-     * @param builder The {@link DetachedContentRuntimeRepositoryManager.Builder} containing all
+     * @param builder The {@link DetachedContentRuntimeBuilder} containing all
      *            necessary information
      */
-    DetachedContentRuntimeRepository(DetachedContentRuntimeRepositoryManager.Builder builder) {
+    DetachedContentRuntimeRepository(DetachedContentRuntimeBuilder builder) {
         super(builder.getRepositoryName(), builder.getCacheFactory(), builder.getClassLoader());
         this.productDataProvider = builder.getProductDataProviderFactory().newInstance();
         this.formulaEvaluatorFactory = builder.getFormulaEvaluatorFactory();
         super.initialize();
+    }
+
+    @Override
+    protected synchronized IReadonlyTableOfContents loadTableOfContents() {
+        IReadonlyTableOfContents toc = productDataProvider.getToc();
+        return toc;
     }
 
     /**
@@ -82,7 +88,7 @@ public class DetachedContentRuntimeRepository extends AbstractClassLoadingRuntim
         try {
             return productDataProvider.getProductCmptData(tocEntry);
         } catch (DataModifiedException e) {
-            throw createDataModifiedException(e);
+            throw createDataModifiedRuntimeException(e);
         }
     }
 
@@ -91,7 +97,7 @@ public class DetachedContentRuntimeRepository extends AbstractClassLoadingRuntim
         try {
             return productDataProvider.getProductCmptGenerationData(tocEntry);
         } catch (DataModifiedException e) {
-            throw createDataModifiedException(e);
+            throw createDataModifiedRuntimeException(e);
         }
     }
 
@@ -100,7 +106,7 @@ public class DetachedContentRuntimeRepository extends AbstractClassLoadingRuntim
         try {
             return productDataProvider.getTestcaseElement(tocEntry);
         } catch (DataModifiedException e) {
-            throw createDataModifiedException(e);
+            throw createDataModifiedRuntimeException(e);
         }
     }
 
@@ -114,17 +120,11 @@ public class DetachedContentRuntimeRepository extends AbstractClassLoadingRuntim
     }
 
     @Override
-    protected synchronized IReadonlyTableOfContents loadTableOfContents() {
-        IReadonlyTableOfContents toc = productDataProvider.getToc();
-        return toc;
-    }
-
-    @Override
     protected InputStream getXmlAsStream(EnumContentTocEntry tocEntry) {
         try {
             return productDataProvider.getEnumContentAsStream(tocEntry);
         } catch (DataModifiedException e) {
-            throw createDataModifiedException(e);
+            throw createDataModifiedRuntimeException(e);
         }
     }
 
@@ -133,7 +133,7 @@ public class DetachedContentRuntimeRepository extends AbstractClassLoadingRuntim
         try {
             return productDataProvider.getTableContentAsStream(tocEntry);
         } catch (DataModifiedException e) {
-            throw createDataModifiedException(e);
+            throw createDataModifiedRuntimeException(e);
         }
     }
 
@@ -152,7 +152,7 @@ public class DetachedContentRuntimeRepository extends AbstractClassLoadingRuntim
         return productDataProvider.isCompatibleToBaseVersion();
     }
 
-    private RuntimeException createDataModifiedException(DataModifiedException e) {
+    private RuntimeException createDataModifiedRuntimeException(DataModifiedException e) {
         return new DataModifiedRuntimeException(e);
     }
 
