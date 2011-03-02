@@ -1,3 +1,5 @@
+mnemoic
+tooltip
 closeable
 locales
 internationalize
