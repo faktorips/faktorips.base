@@ -24,7 +24,6 @@ import java.net.URLConnection;
 
 import javax.xml.parsers.DocumentBuilder;
 
-import org.faktorips.util.IoUtil;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -53,7 +52,13 @@ public class ClassLoaderDataSource {
         } catch (SAXException e) {
             throw new RuntimeException("Cannot parse xml resource '" + resourcePath + "'", e);
         } finally {
-            IoUtil.close(inputStream);
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
 
