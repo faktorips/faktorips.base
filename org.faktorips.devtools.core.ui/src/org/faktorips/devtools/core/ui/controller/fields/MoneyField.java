@@ -22,6 +22,8 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controls.TextComboControl;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.values.Decimal;
+import org.faktorips.values.Money;
 
 /**
  * This class is a {@link EditField} for money values. The combo control is populated with the
@@ -71,17 +73,22 @@ public class MoneyField extends DefaultEditField {
     @Override
     public void setMessages(MessageList list) {
         MessageCueController.setMessageCue(control.getTextControl(), list);
-        MessageCueController.setMessageCue(control.getComboControl(), list);
     }
 
     @Override
     public Object parseContent() {
-        return prepareObjectForGet(getText());
+        Money money = Money.valueOf(Decimal.valueOf((String)valueField.getValue()),
+                Currency.getInstance((String)currencyField.getValue()));
+        if (money != Money.NULL) {
+            return money.toString();
+        } else {
+            return null;
+        }
     }
 
     @Override
     public void setValue(Object newValue) {
-        setText((String)super.prepareObjectForSet(newValue));
+        setText((String)newValue);
     }
 
     /**
@@ -89,20 +96,7 @@ public class MoneyField extends DefaultEditField {
      */
     @Override
     public String getText() {
-        return valueField.getText() + " " + currencyField.getText(); //$NON-NLS-1$        
-    }
-
-    /**
-     * Returns <code>null</code> if the text control contains the null-presentation string.
-     * Otherwise the fields value (<value>+" "+<currency>) is returned.
-     */
-    @Override
-    public Object prepareObjectForGet(Object value) {
-        if (super.prepareObjectForGet(valueField.getText()) == null) {
-            return null;
-        } else {
-            return getText();
-        }
+        return valueField.getValue() + " " + currencyField.getValue(); //$NON-NLS-1$
     }
 
     @Override
@@ -116,18 +110,19 @@ public class MoneyField extends DefaultEditField {
     }
 
     private void setTextInternal(String newText) {
-        if (newText == null) {
-            valueField.setText(""); //$NON-NLS-1$
-        } else {
-            String[] values = newText.split(" "); //$NON-NLS-1$
-            if (values.length == 2) {
-                valueField.setText(values[0]);
-                currencyField.setText(values[1]);
-            } else {
-                valueField.setText(""); //$NON-NLS-1$
-                currencyField.getCombo().select(0);
+        try {
+            Money money = Money.valueOf(newText);
+            if (money != Money.NULL) {
+                valueField.setValue(money.getAmount().toString());
+                currencyField.setValue(money.getCurrency().toString());
+                return;
             }
+        } catch (IllegalArgumentException e) {
+            // fall through
         }
+        valueField.setText(newText);
+        // TODO setting default currency in project properties
+        currencyField.setText("EUR"); //$NON-NLS-1$
     }
 
     @Override
