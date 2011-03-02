@@ -20,6 +20,7 @@ import java.io.ByteArrayInputStream;
 import org.junit.Test;
 
 public class StreamUtilTest {
+	
     @Test
     public void testCopy() throws Exception {
         byte[] bytes = new byte[8];

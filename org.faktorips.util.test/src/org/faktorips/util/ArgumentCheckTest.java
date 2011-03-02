@@ -18,6 +18,7 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 
 public class ArgumentCheckTest {
+	
     @Test
     public void testIsSubclassOf() {
         ArgumentCheck.isSubclassOf(String.class, String.class);
