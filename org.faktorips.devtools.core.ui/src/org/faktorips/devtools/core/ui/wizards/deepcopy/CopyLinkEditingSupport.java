@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
-import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
@@ -68,30 +67,6 @@ public class CopyLinkEditingSupport extends EditingSupport {
         if (element instanceof IProductCmptStructureReference) {
             IProductCmptStructureReference reference = (IProductCmptStructureReference)element;
             treeStatus.setCopOrLink(reference, (CopyOrLink)value);
-        }
-    }
-
-    private void expandOrCollapse(IProductCmptStructureReference element, boolean isCopy) {
-        if (isCopy && treeStatus.isChecked(element)) {
-            getViewer().expandToLevel(element, AbstractTreeViewer.ALL_LEVELS);
-            updateAfterExpansion(element, true);
-        } else {
-            getViewer().collapseToLevel(element, AbstractTreeViewer.ALL_LEVELS);
-        }
-    }
-
-    /**
-     * For any reason, the check state of collapsed elements is not updated. So we have to update
-     * the correct state when expanding the tree
-     */
-    private void updateAfterExpansion(IProductCmptStructureReference reference, boolean recursive) {
-        for (IProductCmptStructureReference child : reference.getChildren()) {
-            boolean checked = treeStatus.isChecked(child);
-            getViewer().setChecked(child, checked);
-            getViewer().setGrayed(child, !treeStatus.isEnabled(child));
-            if (recursive) {
-                updateAfterExpansion(child, recursive);
-            }
         }
     }
 
