@@ -1,3 +1,4 @@
+closeable
 locales
 internationalize
 multi
