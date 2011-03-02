@@ -215,7 +215,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
             if (KIND_PRODUCT_CMPT_TOCENTRY.equals(kind)) {
                 return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
             }
-            if (KIND_PRODUCT_CMPT_TYPE_GENERATION_IMPL.equals(kind)) {
+            if (KIND_PRODUCT_CMPT_GENERATION.equals(kind)) {
                 return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
             }
             if (KIND_FORMULA_TEST_CASE.equals(kind)) {
