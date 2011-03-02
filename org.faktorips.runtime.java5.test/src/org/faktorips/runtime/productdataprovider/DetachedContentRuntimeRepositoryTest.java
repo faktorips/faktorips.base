@@ -21,6 +21,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
 
+import org.faktorips.runtime.ICacheFactory;
 import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
@@ -38,12 +39,7 @@ import org.w3c.dom.Element;
 
 public class DetachedContentRuntimeRepositoryTest {
 
-    private static final String REPOSITORY_NAME = "testRepository";
-
     private DetachedContentRuntimeRepository repository;
-
-    @Mock(answer = Answers.RETURNS_MOCKS)
-    private DetachedContentRuntimeBuilder mockBuilder;
 
     @Mock
     private IProductDataProvider productDataProvider;
@@ -55,25 +51,8 @@ public class DetachedContentRuntimeRepositoryTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        mockBuilder();
-
-        repository = new DetachedContentRuntimeRepository(mockBuilder);
-    }
-
-    private void mockBuilder() {
-        when(mockBuilder.getRepositoryName()).thenReturn(REPOSITORY_NAME);
-
-        IProductDataProviderFactory productDataProviderFactory = mock(IProductDataProviderFactory.class);
-        when(productDataProviderFactory.newInstance()).thenReturn(productDataProvider);
-        when(mockBuilder.getProductDataProviderFactory()).thenReturn(productDataProviderFactory);
-
-        when(mockBuilder.getFormulaEvaluatorFactory()).thenReturn(formulaEvaluatorFactory);
-    }
-
-    @Test
-    public void testConstructor() {
-        assertEquals(REPOSITORY_NAME, repository.getName());
-        assertEquals(formulaEvaluatorFactory, repository.getFormulaEvaluatorFactory());
+        repository = new DetachedContentRuntimeRepository("", mock(ICacheFactory.class), mock(ClassLoader.class),
+                productDataProvider, formulaEvaluatorFactory);
     }
 
     @Test
@@ -149,8 +128,8 @@ public class DetachedContentRuntimeRepositoryTest {
 
     @Test
     public void testGetProductComponentGenerationImplClassFormulaEvaluatorFactoryIsNull() {
-        when(mockBuilder.getFormulaEvaluatorFactory()).thenReturn(null);
-        repository = new DetachedContentRuntimeRepository(mockBuilder);
+        repository = new DetachedContentRuntimeRepository("", mock(ICacheFactory.class), mock(ClassLoader.class),
+                productDataProvider, null);
 
         String generationImplClassName = "generationImplClassName";
         GenerationTocEntry generationTocEntry = new GenerationTocEntry(mock(ProductCmptTocEntry.class), mock(

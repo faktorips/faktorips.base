@@ -15,6 +15,7 @@ package org.faktorips.runtime.productdataprovider;
 
 import java.io.InputStream;
 
+import org.faktorips.runtime.ICacheFactory;
 import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
 import org.faktorips.runtime.internal.AbstractClassLoadingRuntimeRepository;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
@@ -49,18 +50,12 @@ public class DetachedContentRuntimeRepository extends AbstractClassLoadingRuntim
     private final IProductDataProvider productDataProvider;
     private final IFormulaEvaluatorFactory formulaEvaluatorFactory;
 
-    /**
-     * This is the constructor for the {@link DetachedContentRuntimeRepository} expecting a
-     * {@link DetachedContentRuntimeRepositoryManager} to get necessary information about name,
-     * {@link ClassLoader} and {@link IProductDataProvider}
-     * 
-     * @param builder The {@link DetachedContentRuntimeBuilder} containing all
-     *            necessary information
-     */
-    DetachedContentRuntimeRepository(DetachedContentRuntimeBuilder builder) {
-        super(builder.getRepositoryName(), builder.getCacheFactory(), builder.getClassLoader());
-        this.productDataProvider = builder.getProductDataProviderFactory().newInstance();
-        this.formulaEvaluatorFactory = builder.getFormulaEvaluatorFactory();
+    DetachedContentRuntimeRepository(String repositoryName, ICacheFactory cacheFactory, ClassLoader classLoader,
+            IProductDataProvider productDataProvider, IFormulaEvaluatorFactory formulaEvaluatorFactory) {
+
+        super(repositoryName, cacheFactory, classLoader);
+        this.productDataProvider = productDataProvider;
+        this.formulaEvaluatorFactory = formulaEvaluatorFactory;
         super.initialize();
     }
 

@@ -36,6 +36,7 @@ import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
+import org.faktorips.runtime.productdataprovider.DetachedContentRuntimeRepositoryManager.Builder;
 import org.faktorips.runtime.test.IpsFormulaTestCase;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCase2;
@@ -70,8 +71,8 @@ public class DetachedContentRuntimeRepositoryManagerTest {
                 "org/faktorips/runtime/testrepository/direct-repository-toc.xml");
         pdpFactory = new MyFactory(getClass().getClassLoader(),
                 "org/faktorips/runtime/testrepository/faktorips-repository-toc.xml");
-        runtimeRepositoryManager = new DetachedContentRuntimeBuilder(directPdpFactory).build();
-        IRuntimeRepositoryManager referencedManager = new DetachedContentRuntimeBuilder(pdpFactory).build();
+        runtimeRepositoryManager = new Builder(directPdpFactory).build();
+        IRuntimeRepositoryManager referencedManager = new Builder(pdpFactory).build();
         runtimeRepositoryManager.addDirectlyReferencedManager(referencedManager);
         repository = runtimeRepositoryManager.getActualRuntimeRepository();
         directPdp = directPdpFactory.testProductDataProvider;
