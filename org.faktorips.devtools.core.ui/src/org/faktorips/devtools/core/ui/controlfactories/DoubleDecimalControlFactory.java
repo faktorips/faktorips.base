@@ -40,14 +40,6 @@ import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
  */
 public class DoubleDecimalControlFactory extends ValueDatatypeControlFactory {
 
-    // private IpsPreferences preferences;
-
-    // public MoneyControlFactory(IpsPreferences preferences) {
-    // super();
-    // ArgumentCheck.notNull(preferences, this);
-    // this.preferences = preferences;
-    // }
-
     public DoubleDecimalControlFactory() {
         super();
     }
