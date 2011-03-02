@@ -22,8 +22,8 @@ public class PaymentMode implements NullObjectSupport {
     final static PaymentMode MONTHLY = new PaymentMode("monthly", "Monthly Payment"); //$NON-NLS-1$ //$NON-NLS-2$
     final static PaymentMode NULL = new PaymentModeNull();
 
-    private String id;
-    private String name;
+    private final String id;
+    private final String name;
 
     public final static PaymentMode[] getAllPaymentModes() {
         return new PaymentMode[] { MONTHLY, ANNUAL };
@@ -73,10 +73,12 @@ public class PaymentMode implements NullObjectSupport {
         return id;
     }
 
+    @Override
     public boolean isNull() {
         return this == PaymentMode.NULL;
     }
 
+    @Override
     public boolean isNotNull() {
         return !isNotNull();
     }
