@@ -269,7 +269,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
         List<IProductCmptStructureReference> children = new ArrayList<IProductCmptStructureReference>();
         for (IProductCmptLink link : links) {
             try {
-                IProductCmpt p = ipsProject.findProductCmpt(link.getTarget());
+                IProductCmpt p = link.findTarget(ipsProject);
                 if (p != null) {
                     if (association.isAssoziation()) {
                         children.add(new ProductCmptReference(this, parent, p, link));

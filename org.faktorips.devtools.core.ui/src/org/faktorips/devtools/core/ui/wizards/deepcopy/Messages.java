@@ -35,6 +35,8 @@ public class Messages extends NLS {
     public static String SourcePage_columnNameNewName;
     public static String SourcePage_columnNameOperation;
     public static String SourcePage_columnNameSourceStructure;
+    public static String SourcePage_copyFrom;
+    public static String SourcePage_copyTo;
     public static String SourcePage_errorPrefixWorkingDateFormat;
     public static String SourcePage_errorWorkingDateFormat;
     public static String SourcePage_labelSourceValidFrom;
@@ -49,6 +51,7 @@ public class Messages extends NLS {
     public static String SourcePage_msgSearchPatternNotFound;
     public static String SourcePage_msgSelectSourceFolder;
     public static String SourcePage_msgWarningTargetWillBeCreated;
+    public static String SourcePage_tables;
     public static String SourcePage_title;
     public static String SourcePage_description;
     public static String SourcePage_description_copy;
@@ -73,6 +76,7 @@ public class Messages extends NLS {
     public static String SourcePage_msgReplaceTextNotFound;
     public static String SourcePage_operationCopy;
     public static String SourcePage_operationLink;
+    public static String SourcePage_searchAndReplace;
     public static String ReferenceAndPreviewPage_msgCircleDetected;
     public static String DeepCopyWizard_titleNewVersion;
     public static String SourcePage_titleNewVersion;

@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
@@ -64,12 +65,8 @@ public class DeepCopyWizard extends ResizableWizard {
     /**
      * Creates a new wizard which can make a deep copy of the given product.
      * 
-     * @param product The source product which should be copied or used as template for the new
-     *            version.
-     * 
-     * @param validFromOfGenerationSource The generation of the source product which is valid on
-     *            this date will be used as template for the new generation. If <null>null</code>
-     *            then the last generation will be used as template for the new generation.
+     * @param productGeneration The source product generation which should be copied or used as
+     *            template for the new version.
      * 
      * @param type One of TYPE_COPY_PRODUCT or TYPE_NEW_VERSION. The first one allows to enter the
      *            version id (if supported by product component naming strategy) free and enter a
@@ -80,8 +77,8 @@ public class DeepCopyWizard extends ResizableWizard {
      * @throws IllegalArgumentException if the given type is not valid.
      * @throws CycleInProductStructureException when the structure have a cyle
      */
-    public DeepCopyWizard(IProductCmpt product, GregorianCalendar validFromOfGenerationSource, int type)
-            throws IllegalArgumentException, CycleInProductStructureException {
+    public DeepCopyWizard(IProductCmptGeneration productGeneration, int type) throws IllegalArgumentException,
+            CycleInProductStructureException {
         super(SECTION_NAME, IpsPlugin.getDefault().getDialogSettings(), DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
         setNeedsProgressMonitor(true);
@@ -91,13 +88,9 @@ public class DeepCopyWizard extends ResizableWizard {
         }
         this.type = type;
 
-        GregorianCalendar structureDate = null;
-        if (validFromOfGenerationSource == null) {
-            structureDate = product.getGeneration(product.getNumOfGenerations() - 1).getValidFrom();
-        } else {
-            structureDate = product.getGenerationByEffectiveDate(validFromOfGenerationSource).getValidFrom();
-        }
-        presentationModel = new DeepCopyPresentationModel(product.getStructure(structureDate, product.getIpsProject()));
+        GregorianCalendar structureDate = productGeneration.getValidFrom();
+        presentationModel = new DeepCopyPresentationModel(productGeneration.getProductCmpt().getStructure(
+                structureDate, productGeneration.getIpsProject()));
         deepCopyPreview = new DeepCopyPreview(presentationModel);
 
         if (type == TYPE_COPY_PRODUCT) {

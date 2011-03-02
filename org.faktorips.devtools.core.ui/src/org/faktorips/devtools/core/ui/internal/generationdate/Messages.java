@@ -27,6 +27,6 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
-    public static String AdjustmentDate_infinite;
+    public static String GenerationDate_infinite;
 
 }

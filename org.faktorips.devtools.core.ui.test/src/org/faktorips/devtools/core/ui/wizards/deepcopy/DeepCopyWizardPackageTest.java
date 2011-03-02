@@ -102,7 +102,8 @@ public class DeepCopyWizardPackageTest extends AbstractIpsPluginTest {
 
     private SourcePage getSourcePageFor(IProductCmpt cmpt) throws IllegalArgumentException,
             CycleInProductStructureException {
-        DeepCopyWizard wizard = new DeepCopyWizard(cmpt, null, DeepCopyWizard.TYPE_COPY_PRODUCT);
+        DeepCopyWizard wizard = new DeepCopyWizard((IProductCmptGeneration)cmpt.getGeneration(0),
+                DeepCopyWizard.TYPE_COPY_PRODUCT);
         WizardDialog d = new WizardDialog(new Shell(), wizard);
         d.setBlockOnOpen(false);
         d.open();

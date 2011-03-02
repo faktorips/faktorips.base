@@ -18,11 +18,11 @@ import java.util.Currency;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Control;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controls.TextComboControl;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
 
 /**
@@ -77,12 +77,18 @@ public class MoneyField extends DefaultEditField {
 
     @Override
     public Object parseContent() {
-        return prepareObjectForGet(getText());
+        Money money = Money.valueOf(Decimal.valueOf((String)valueField.getValue()),
+                Currency.getInstance((String)currencyField.getValue()));
+        if (money != Money.NULL) {
+            return money.toString();
+        } else {
+            return null;
+        }
     }
 
     @Override
     public void setValue(Object newValue) {
-        setText((String)super.prepareObjectForSet(newValue));
+        setText((String)newValue);
     }
 
     /**
@@ -90,20 +96,7 @@ public class MoneyField extends DefaultEditField {
      */
     @Override
     public String getText() {
-        return valueField.getValue() + " " + currencyField.getValue(); //$NON-NLS-1$        
-    }
-
-    /**
-     * Returns <code>null</code> if the text control contains the null-presentation string.
-     * Otherwise the fields value (<value>+" "+<currency>) is returned.
-     */
-    @Override
-    public Object prepareObjectForGet(Object value) {
-        if (super.prepareObjectForGet(valueField.getText()) == null) {
-            return null;
-        } else {
-            return getText();
-        }
+        return valueField.getValue() + " " + currencyField.getValue(); //$NON-NLS-1$
     }
 
     @Override
@@ -117,13 +110,19 @@ public class MoneyField extends DefaultEditField {
     }
 
     private void setTextInternal(String newText) {
-        if (newText == null || newText.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) {
-            valueField.setText(""); //$NON-NLS-1$
-        } else {
+        try {
             Money money = Money.valueOf(newText);
-            valueField.setValue(money.getAmount().toString());
-            currencyField.setValue(money.getCurrency().toString());
+            if (money != Money.NULL) {
+                valueField.setValue(money.getAmount().toString());
+                currencyField.setValue(money.getCurrency().toString());
+                return;
+            }
+        } catch (IllegalArgumentException e) {
+            // fall through
         }
+        valueField.setText(newText);
+        // TODO setting default currency in project properties
+        currencyField.setText("EUR"); //$NON-NLS-1$
     }
 
     @Override

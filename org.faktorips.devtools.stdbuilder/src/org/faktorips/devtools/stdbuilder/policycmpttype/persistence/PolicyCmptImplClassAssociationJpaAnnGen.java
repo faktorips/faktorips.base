@@ -271,9 +271,11 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
         IPersistentAssociationInfo persistenceAssociatonInfo = genAssociation.getAssociation()
                 .getPersistenceAssociatonInfo();
         List<String> cascadeTypes = new ArrayList<String>();
+        boolean needImport = false;
         if (persistenceAssociatonInfo.isCascadeTypeMerge() && persistenceAssociatonInfo.isCascadeTypeRemove()
                 && persistenceAssociatonInfo.isCascadeTypePersist() && persistenceAssociatonInfo.isCascadeTypeRefresh()) {
             attributesToAppend.add("cascade=CascadeType.ALL");
+            needImport = true;
         } else {
             if (persistenceAssociatonInfo.isCascadeTypeMerge()) {
                 cascadeTypes.add("CascadeType.MERGE");
@@ -288,10 +290,12 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractAnnotationG
                 cascadeTypes.add("CascadeType.REFRESH");
             }
         }
+        if (needImport || cascadeTypes.size() > 0) {
+            fragment.addImport(IMPORT_CASCADE_TYPE);
+        }
         if (cascadeTypes.size() == 0) {
             return;
         }
-        fragment.addImport(IMPORT_CASCADE_TYPE);
         String cascadeTypesAsString = "cascade={";
         for (Iterator<String> iterator = cascadeTypes.iterator(); iterator.hasNext();) {
             cascadeTypesAsString += iterator.next();

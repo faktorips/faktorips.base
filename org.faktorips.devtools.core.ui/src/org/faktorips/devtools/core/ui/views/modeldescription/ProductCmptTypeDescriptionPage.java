@@ -24,7 +24,6 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.ui.editors.pctype.Messages;
 
 /**
  * A page for presenting the properties of a {@link IProductCmptType} or {@link IProductCmpt}. This
@@ -46,9 +45,8 @@ public class ProductCmptTypeDescriptionPage extends DefaultModelDescriptionPage 
         IIpsProject ipsProject = getIpsObject().getIpsProject();
         if (getIpsObject() != null) {
             IAttribute[] attributes = getIpsObject().findAllAttributes(ipsProject);
-            List<DescriptionItem> attributeDescriptions = new ArrayList<DescriptionItem>();
             for (IAttribute attribute : attributes) {
-                createDescriptionItem(attribute, attributeDescriptions);
+                createDescriptionItem(attribute, descriptions);
             }
             IPolicyCmptType policyCmptType = getIpsObject().findPolicyCmptType(ipsProject);
             if (policyCmptType != null) {
@@ -56,19 +54,16 @@ public class ProductCmptTypeDescriptionPage extends DefaultModelDescriptionPage 
                 for (IAttribute attribute : policyCmptAttributes) {
                     IPolicyCmptTypeAttribute pcAttribute = (IPolicyCmptTypeAttribute)attribute;
                     if (pcAttribute.isProductRelevant()) {
-                        createDescriptionItem(attribute, attributeDescriptions);
+                        createDescriptionItem(attribute, descriptions);
                     }
                 }
             }
-            descriptions.add(new DescriptionItem(Messages.AttributesSection_title, attributeDescriptions));
             IAssociation[] associations = getIpsObject().findAllAssociations(ipsProject);
-            List<DescriptionItem> aDescriptions = new ArrayList<DescriptionItem>();
             for (IAssociation association : associations) {
                 if (!association.isDerivedUnion()) {
-                    createDescriptionItem(association, aDescriptions);
+                    createDescriptionItem(association, descriptions);
                 }
             }
-            descriptions.add(new DescriptionItem(Messages.AssociationsSection_title, aDescriptions));
         }
         return descriptions;
     }

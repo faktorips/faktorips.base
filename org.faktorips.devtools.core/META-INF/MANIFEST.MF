@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Development Tools
 Bundle-SymbolicName: org.faktorips.devtools.core; singleton:=true
-Bundle-Version: 3.2.2.rc1
+Bundle-Version: 3.2.2.rfinal
 Bundle-Activator: org.faktorips.devtools.core.IpsPlugin
 Bundle-Vendor: Faktor Zehn AG
 Bundle-Localization: plugin
@@ -40,6 +40,7 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.apache.log4j,
  org.faktorips.devtools.core,
  org.faktorips.devtools.core.builder,
+ org.faktorips.devtools.core.builder.organizeimports,
  org.faktorips.devtools.core.enums,
  org.faktorips.devtools.core.internal.migration,
  org.faktorips.devtools.core.internal.migrationextensions,
