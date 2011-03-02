@@ -464,8 +464,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         productCmptGenImplClassBuilder.setEnumTypeBuilder(enumTypeBuilder);
 
         // product component builders
-        ProductCmptBuilder productCmptGenerationImplBuilder = new ProductCmptBuilder(this,
-                KIND_PRODUCT_CMPT_TYPE_GENERATION_IMPL);
+        ProductCmptBuilder productCmptGenerationImplBuilder = new ProductCmptBuilder(this, KIND_PRODUCT_CMPT_GENERATION);
         IIpsArtefactBuilder productCmptContentCopyBuilder = new ProductCmptXMLBuilder(IpsObjectType.PRODUCT_CMPT, this,
                 KIND_PRODUCT_CMPT, productCmptGenerationImplBuilder);
 
@@ -726,7 +725,14 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                 continue;
             }
             JavaSourceFileBuilder javaBuilder = (JavaSourceFileBuilder)builder;
-            javaElements.addAll(javaBuilder.getGeneratedJavaElements(ipsElement));
+            IIpsSrcFile ipsSrcFile = (IIpsSrcFile)ipsElement.getAdapter(IIpsSrcFile.class);
+            try {
+                if (javaBuilder.isBuilderFor(ipsSrcFile)) {
+                    javaElements.addAll(javaBuilder.getGeneratedJavaElements(ipsElement));
+                }
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
         }
 
         return javaElements;
