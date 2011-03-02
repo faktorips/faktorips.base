@@ -7,12 +7,11 @@ Bundle-Activator: org.faktorips.devtools.core.IpsPlugin
 Bundle-Vendor: Faktor Zehn AG
 Bundle-Localization: plugin
 Eclipse-ExtensibleAPI: true
-Require-Bundle: org.eclipse.ui;visibility:=reexport,
+Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime;visibility:=reexport,
  org.eclipse.core.resources;visibility:=reexport,
  org.eclipse.jdt.core,
  org.eclipse.jdt.launching,
- org.eclipse.jdt.ui,
  org.eclipse.ui.ide;visibility:=reexport,
  org.eclipse.ltk.core.refactoring,
  org.eclipse.jface.text,
@@ -26,7 +25,7 @@ Require-Bundle: org.eclipse.ui;visibility:=reexport,
  org.eclipse.team.cvs.ui,
  org.eclipse.team.ui,
  org.eclipse.debug.core,
- org.eclipse.ui.views;visibility:=reexport,
+ org.eclipse.ui.views,
  org.eclipse.compare,
  org.eclipse.team.cvs.core,
  org.eclipse.update.core,
