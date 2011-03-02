@@ -187,7 +187,6 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
 
         PropertyChangeEvent lastEvent;
 
-        @Override
         public void propertyChange(PropertyChangeEvent evt) {
             lastEvent = evt;
         }
@@ -246,7 +245,6 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
          * 
          * @generated
          */
-        @Override
         public void notifyChangeListeners(PropertyChangeEvent event) {
             if (event instanceof AssociationChangedEvent) {
                 propertyChangeSupport.fireAssociationChange((AssociationChangedEvent)event);
@@ -260,7 +258,6 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
          * 
          * @generated
          */
-        @Override
         public void addPropertyChangeListener(PropertyChangeListener listener) {
             propertyChangeSupport.addPropertyChangeListener(listener);
         }
@@ -270,7 +267,6 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
          * 
          * @generated
          */
-        @Override
         public void addPropertyChangeListener(PropertyChangeListener listener, boolean propagateEventsFromChildren) {
             propertyChangeSupport.addPropertyChangeListener(listener, propagateEventsFromChildren);
         }
@@ -280,7 +276,6 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
          * 
          * @generated
          */
-        @Override
         public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
             propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
         }
@@ -290,7 +285,6 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
          * 
          * @generated
          */
-        @Override
         public boolean hasListeners(String propertyName) {
             return propertyChangeSupport.hasListeners(propertyName);
         }
@@ -300,7 +294,6 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
          * 
          * @generated
          */
-        @Override
         public void removePropertyChangeListener(PropertyChangeListener listener) {
             propertyChangeSupport.removePropertyChangeListener(listener);
         }
@@ -310,7 +303,6 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
          * 
          * @generated
          */
-        @Override
         public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
             propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
         }
@@ -371,7 +363,6 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
             return null;
         }
 
-        @Override
         public Calendar getEffectiveFromAsCalendar() {
             return effectiveDate;
         }
@@ -415,7 +406,6 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
             return parent;
         }
 
-        @Override
         public Calendar getEffectiveFromAsCalendar() {
             return ((IConfigurableModelObject)parent).getEffectiveFromAsCalendar();
         }

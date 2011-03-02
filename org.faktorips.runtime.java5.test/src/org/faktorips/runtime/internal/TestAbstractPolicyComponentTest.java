@@ -118,7 +118,6 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
 
         PropertyChangeEvent lastEvent;
 
-        @Override
         public void propertyChange(PropertyChangeEvent evt) {
             lastEvent = evt;
         }
@@ -177,16 +176,15 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         /**
          * Helper object for Changelistener.
          * 
-         * @generated
+         * 
          */
         protected final IpsPropertyChangeSupport propertyChangeSupport = new IpsPropertyChangeSupport(this);
 
         /**
          * {@inheritDoc}
          * 
-         * @generated
+         * 
          */
-        @Override
         public void notifyChangeListeners(PropertyChangeEvent event) {
             if (event instanceof AssociationChangedEvent) {
                 propertyChangeSupport.fireAssociationChange((AssociationChangedEvent)event);
@@ -198,9 +196,8 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         /**
          * {@inheritDoc}
          * 
-         * @generated
+         * 
          */
-        @Override
         public void addPropertyChangeListener(PropertyChangeListener listener) {
             propertyChangeSupport.addPropertyChangeListener(listener);
         }
@@ -208,9 +205,8 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         /**
          * {@inheritDoc}
          * 
-         * @generated
+         * 
          */
-        @Override
         public void addPropertyChangeListener(PropertyChangeListener listener, boolean propagateEventsFromChildren) {
             propertyChangeSupport.addPropertyChangeListener(listener, propagateEventsFromChildren);
         }
@@ -218,9 +214,8 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         /**
          * {@inheritDoc}
          * 
-         * @generated
+         * 
          */
-        @Override
         public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
             propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
         }
@@ -228,9 +223,8 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         /**
          * {@inheritDoc}
          * 
-         * @generated
+         * 
          */
-        @Override
         public boolean hasListeners(String propertyName) {
             return propertyChangeSupport.hasListeners(propertyName);
         }
@@ -238,9 +232,8 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         /**
          * {@inheritDoc}
          * 
-         * @generated
+         * 
          */
-        @Override
         public void removePropertyChangeListener(PropertyChangeListener listener) {
             propertyChangeSupport.removePropertyChangeListener(listener);
         }
@@ -248,9 +241,8 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         /**
          * {@inheritDoc}
          * 
-         * @generated
+         * 
          */
-        @Override
         public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
             propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
         }

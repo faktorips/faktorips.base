@@ -80,7 +80,6 @@ public class IpsTestCase2Test {
 
     private class MyModelObject implements IModelObject {
 
-        @Override
         public MessageList validate(IValidationContext context) {
             throw new RuntimeException();
         }

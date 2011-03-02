@@ -32,7 +32,6 @@ public class TestPolicyComponent extends AbstractConfigurableModelObject {
         super(productCmpt);
     }
 
-    @Override
     public Calendar getEffectiveFromAsCalendar() {
         return null;
     }

@@ -31,7 +31,6 @@ public class MotorProduct extends PnCProduct {
         return new MotorProductGen(this);
     }
 
-    @Override
     public IConfigurableModelObject createPolicyComponent() {
         return new MotorPolicy(this);
     }
