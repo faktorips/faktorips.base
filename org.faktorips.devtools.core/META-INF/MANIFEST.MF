@@ -92,4 +92,3 @@ Export-Package: org.faktorips.devtools.core,
 Bundle-ClassPath: .,
  lib/log4j-1.2.14.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.eclipse.jdt.internal.corext.codemanipulation
