@@ -14,327 +14,349 @@
 package org.faktorips.runtime.productdataprovider;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.Reader;
+import java.util.GregorianCalendar;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
-import org.faktorips.runtime.internal.toc.IReadonlyTableOfContents;
+import org.faktorips.runtime.internal.DateTime;
+import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
+import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
+import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
-import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
+import org.faktorips.runtime.internal.toc.TableContentTocEntry;
+import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Answers;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
-@Ignore // until fixed with mockito FIPS-63
 public class ClassLoaderProductDataProviderTest {
 
-    private IProductDataProvider pdp;
+    private static final String TOC_RESOURCE_PATH = "Toc";
 
-    private DocumentBuilder docBuilder;
+    private static final String INITIAL_TOC_FILE_LAST_MODIFIED = "1000";
 
-    private final String TOC_FIlE_NAME = "org/faktorips/sample/model/internal/faktorips-repository-toc.xml";
-    private final String TOC_FIlE_NAME_1 = "org/faktorips/sample/model/internal/faktorips-repository-toc.1.xml";
-    private final String TOC_FIlE_NAME_2 = "org/faktorips/sample/model/internal/faktorips-repository-toc.2.xml";
+    private ClassLoaderProductDataProvider productDataProvider;
 
-    private ClassLoaderProductDataProviderFactory pdpFactory;
+    @Mock
+    private ClassLoaderDataSource mockDataSource;
 
     @Before
-    public void setUp() throws Exception {
-        pdpFactory = new ClassLoaderProductDataProviderFactory(TOC_FIlE_NAME);
-        pdpFactory.setCheckForModifications(true);
-        pdpFactory.setClassLoader(getClass().getClassLoader());
-        docBuilder = createDocumentnewInstanceer();
-        pdp = pdpFactory.newInstance();
-        copy(TOC_FIlE_NAME_1, TOC_FIlE_NAME);
-    }
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
 
-    private ClassLoader getClassLoader() {
-        return Thread.currentThread().getContextClassLoader();
+        when(mockDataSource.getLastModificationStamp(TOC_RESOURCE_PATH)).thenReturn(INITIAL_TOC_FILE_LAST_MODIFIED);
+        mockRootElementForResourcePath(TOC_RESOURCE_PATH);
+
+        productDataProvider = createProductDataProvider(true);
     }
 
     @Test
-    public void testgetVersion() throws Exception {
-        File tocFile = new File(getClassLoader().getResource(TOC_FIlE_NAME).toURI());
-        tocFile.setLastModified(321321000);
-        pdp = pdpFactory.newInstance();
-        String stamp = pdp.getVersion();
-        assertEquals("321321000", stamp);
-
-        tocFile.setLastModified(123456000);
-        pdp = pdpFactory.newInstance();
-        stamp = pdp.getVersion();
-        assertEquals("123456000", stamp);
+    public void constructor() {
+        assertNotNull(productDataProvider.getToc());
+        assertEquals(INITIAL_TOC_FILE_LAST_MODIFIED, productDataProvider.getVersion());
     }
 
     @Test
-    public void testLoadTocData() throws Exception {
-        File tocFile = new File(getClassLoader().getResource(TOC_FIlE_NAME).toURI());
-        tocFile.setLastModified(321321000);
-        pdp = pdpFactory.newInstance();
+    public void testGetBaseVersion() {
+        when(mockDataSource.getLastModificationStamp(TOC_RESOURCE_PATH)).thenReturn("foo");
 
-        assertEquals("321321000", pdp.getVersion());
-
-        ReadonlyTableOfContents expectedToc = new ReadonlyTableOfContents();
-        expectedToc.initFromXml(getElement(TOC_FIlE_NAME_1));
-        assertEquals(expectedToc.toString(), pdp.getToc().toString());
-
-        copy(TOC_FIlE_NAME_2, TOC_FIlE_NAME);
-
-        tocFile.setLastModified(999999000);
-
-        pdp = pdpFactory.newInstance();
-
-        expectedToc = new ReadonlyTableOfContents();
-        expectedToc.initFromXml(getElement(TOC_FIlE_NAME_2));
-        assertEquals(expectedToc.toString(), pdp.getToc().toString());
-        assertEquals("999999000", pdp.getVersion());
+        assertEquals("foo", productDataProvider.getBaseVersion());
     }
 
     @Test
-    public void testGetProductCmptData() throws Exception {
-        File tocFile = new File(getClassLoader().getResource(TOC_FIlE_NAME).toURI());
+    public void testGetBaseVersionRepositoryDoesNotCheckTocModifications() {
+        Element mockTocElement = mockRootElementForResourcePath(TOC_RESOURCE_PATH);
+        when(mockTocElement.getAttribute(AbstractReadonlyTableOfContents.PRODUCT_DATA_VERSION_XML_ELEMENT)).thenReturn(
+                "foo");
+        productDataProvider = createProductDataProvider(false);
 
-        Element expectedElement = getElement("org/faktorips/sample/model/internal/TestProduct 2006-01.xml");
-
-        tocFile.setLastModified(321321000);
-
-        pdp = pdpFactory.newInstance();
-
-        IReadonlyTableOfContents toc = pdp.getToc();
-        Element actualElement = pdp.getProductCmptData(toc.getProductCmptTocEntry("sample.TestProduct 2006-01"));
-
-        assertEquals("321321000", pdp.getVersion());
-        assertTrue(expectedElement.isEqualNode(actualElement));
-
-        tocFile.setLastModified(987987000);
-        try {
-            pdp.getProductCmptData(toc.getProductCmptTocEntry("sample.TestProduct 2006-01"));
-            fail();
-        } catch (DataModifiedException e) {
-            pdp = pdpFactory.newInstance();
-            toc = pdp.getToc();
-        }
-        actualElement = pdp.getProductCmptData(toc.getProductCmptTocEntry("sample.TestProduct 2006-01"));
-
-        assertEquals("987987000", pdp.getVersion());
-        assertTrue(expectedElement.isEqualNode(actualElement));
+        assertEquals("foo", productDataProvider.getBaseVersion());
     }
 
     @Test
-    public void testGetProductCmptGenerationData() throws Exception {
-        File tocFile = new File(getClassLoader().getResource(TOC_FIlE_NAME).toURI());
+    public void testGetProductCmptData() throws DataModifiedException {
+        String xmlResourceName = "XmlResourceName";
+        ProductCmptTocEntry tocEntry = createProductCmptTocEntry(xmlResourceName, false);
+        Element mockRootElement = mockRootElementForResourcePath(xmlResourceName);
 
-        NodeList generations = getElement("org/faktorips/sample/model/internal/TestProduct 2006-01.xml")
-                .getElementsByTagName("Generation");
+        assertEquals(mockRootElement, productDataProvider.getProductCmptData(tocEntry));
+    }
 
-        tocFile.setLastModified(321321000);
+    @Test(expected = DataModifiedException.class)
+    public void testGetProductCmptDataRepositoryModified() throws DataModifiedException {
+        ProductCmptTocEntry tocEntry = createProductCmptTocEntry("XmlResourceName", true);
 
-        pdp = pdpFactory.newInstance();
-        IReadonlyTableOfContents toc = pdp.getToc();
-        assertEquals("321321000", pdp.getVersion());
+        modifyRepository();
 
-        ProductCmptTocEntry pcmptEntry = toc.getProductCmptTocEntry("sample.TestProduct 2006-01");
-        Element actualElement = pdp.getProductCmptGenerationData(pcmptEntry.getLatestGenerationEntry());
-        assertTrue(generations.item(1).isEqualNode(actualElement));
-
-        tocFile.setLastModified(987987000);
-        try {
-            pdp.getProductCmptGenerationData(toc.getProductCmptTocEntry("sample.TestProduct 2006-01")
-                    .getLatestGenerationEntry());
-            fail();
-        } catch (DataModifiedException e) {
-            pdp = pdpFactory.newInstance();
-            toc = pdp.getToc();
-        }
-
-        assertEquals("987987000", pdp.getVersion());
-        pcmptEntry = toc.getProductCmptTocEntry("sample.TestProduct 2006-01");
-        actualElement = pdp.getProductCmptGenerationData(pcmptEntry.getLatestGenerationEntry());
-        assertTrue(generations.item(1).isEqualNode(actualElement));
+        productDataProvider.getProductCmptData(tocEntry);
     }
 
     @Test
-    public void testGetTestCaseData() throws Exception {
-        File tocFile = new File(getClassLoader().getResource(TOC_FIlE_NAME).toURI());
+    public void testGetProductCmptDataRepositoryModifiedButRepositoryDoesNotCheckTocModifications()
+            throws DataModifiedException {
 
-        Element expectedElement = getElement("org/faktorips/sample/model/internal/Test.xml");
+        productDataProvider = createProductDataProvider(false);
 
-        tocFile.setLastModified(321321000);
+        ProductCmptTocEntry tocEntry = createProductCmptTocEntry("XmlResourceName", true);
 
-        pdp = pdpFactory.newInstance();
-        IReadonlyTableOfContents toc = pdp.getToc();
-        Element actualElement = pdp.getTestcaseElement(toc.getTestCaseTocEntryByQName("testpack.Test"));
+        modifyRepository();
 
-        assertEquals("321321000", pdp.getVersion());
-        assertTrue(expectedElement.isEqualNode(actualElement));
-
-        tocFile.setLastModified(987987000);
-        try {
-            pdp.getTestcaseElement(toc.getTestCaseTocEntryByQName("testpack.Test"));
-            fail();
-        } catch (DataModifiedException e) {
-            pdp = pdpFactory.newInstance();
-            toc = pdp.getToc();
-        }
-        actualElement = pdp.getTestcaseElement(toc.getTestCaseTocEntryByQName("testpack.Test"));
-
-        assertEquals("987987000", pdp.getVersion());
-        assertTrue(expectedElement.isEqualNode(actualElement));
+        // Test successful if no exception is thrown
+        productDataProvider.getProductCmptData(tocEntry);
     }
 
     @Test
-    public void testGetTableContentAsStream() throws Exception {
-        File tocFile = new File(getClassLoader().getResource(TOC_FIlE_NAME).toURI());
+    public void testGetTestcaseElement() throws DataModifiedException {
+        String xmlResourceName = "XmlResourceName";
+        TestCaseTocEntry tocEntry = createTestCaseTocEntry(xmlResourceName, false);
+        Element mockRootElement = mockRootElementForResourcePath(xmlResourceName);
 
-        String expectedContent = readStreamContent(getClassLoader().getResourceAsStream(
-                "org/faktorips/sample/model/internal/A1Content.xml"));
+        assertEquals(mockRootElement, productDataProvider.getTestcaseElement(tocEntry));
+    }
 
-        tocFile.setLastModified(321321000);
+    @Test(expected = DataModifiedException.class)
+    public void testGetTestcaseElementRepositoryModified() throws DataModifiedException {
+        TestCaseTocEntry tocEntry = createTestCaseTocEntry("XmlResourceName", true);
 
-        pdp = pdpFactory.newInstance();
-        IReadonlyTableOfContents toc = pdp.getToc();
-        InputStream is = pdp.getTableContentAsStream(toc.getTableTocEntryByQualifiedTableName("testpack.A1Content"));
-        String actualContent = readStreamContent(is);
-        is.close();
+        modifyRepository();
 
-        assertEquals("321321000", pdp.getVersion());
-        assertEquals(expectedContent, actualContent);
-
-        tocFile.setLastModified(987987000);
-        try {
-            pdp.getTableContentAsStream(toc.getTableTocEntryByQualifiedTableName("testpack.A1Content"));
-            fail();
-        } catch (DataModifiedException e) {
-            pdp = pdpFactory.newInstance();
-            toc = pdp.getToc();
-        }
-        is = pdp.getTableContentAsStream(toc.getTableTocEntryByQualifiedTableName("testpack.A1Content"));
-
-        actualContent = readStreamContent(is);
-        is.close();
-        assertEquals("987987000", pdp.getVersion());
-        assertEquals(expectedContent, actualContent);
+        productDataProvider.getTestcaseElement(tocEntry);
     }
 
     @Test
-    public void testGetEnumContentAsStream() throws Exception {
-        File tocFile = new File(getClassLoader().getResource(TOC_FIlE_NAME).toURI());
+    public void testGetTestcaseElementRepositoryModifiedButRepositoryDoesNotCheckTocModifications()
+            throws DataModifiedException {
 
-        String expectedContent = readStreamContent(getClassLoader().getResourceAsStream(
-                "org/faktorips/sample/model/internal/TestEnum.xml"));
+        productDataProvider = createProductDataProvider(false);
 
-        tocFile.setLastModified(321321000);
+        TestCaseTocEntry tocEntry = createTestCaseTocEntry("XmlResourceName", true);
 
-        pdp = pdpFactory.newInstance();
-        IReadonlyTableOfContents toc = pdp.getToc();
-        InputStream is = pdp.getEnumContentAsStream(toc
-                .getEnumContentTocEntry("org.faktorips.sample.model.gaa.TestEnum"));
-        String actualContent = readStreamContent(is);
-        is.close();
+        modifyRepository();
 
-        assertEquals("321321000", pdp.getVersion());
-        assertEquals(expectedContent, actualContent);
+        // Test successful if no exception is thrown
+        productDataProvider.getTestcaseElement(tocEntry);
+    }
 
-        tocFile.setLastModified(987987000);
-        try {
-            pdp.getEnumContentAsStream(toc.getEnumContentTocEntry("org.faktorips.sample.model.gaa.TestEnum"));
-            fail();
-        } catch (DataModifiedException e) {
-            pdp = pdpFactory.newInstance();
-            toc = pdp.getToc();
+    @Test
+    public void testGetProductCmptGenerationData() throws DataModifiedException {
+        String xmlResourceName = "foo";
+        DateTime generationValidFrom = DateTime.createDateOnly(new GregorianCalendar());
+
+        ProductCmptTocEntry productCmptTocEntry = createProductCmptTocEntry(xmlResourceName, false);
+        GenerationTocEntry generationTocEntry = new GenerationTocEntry(productCmptTocEntry, generationValidFrom, "", "");
+
+        Element mockProductCmptElement = mockRootElementForResourcePath(xmlResourceName);
+        NodeList mockChildrenList = mock(NodeList.class);
+        when(mockChildrenList.getLength()).thenReturn(2);
+        mockGenerationChildElement(mockChildrenList, 0, DateTime.createDateOnly(new GregorianCalendar(1, 1, 1)));
+        Element mockChild2 = mockGenerationChildElement(mockChildrenList, 1, generationValidFrom);
+        when(mockProductCmptElement.getChildNodes()).thenReturn(mockChildrenList);
+
+        assertEquals(mockChild2, productDataProvider.getProductCmptGenerationData(generationTocEntry));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testGetProductCmptGenerationDataGenerationDoesNotExist() throws DataModifiedException {
+        String xmlResourceName = "foo";
+        DateTime generationValidFrom = DateTime.createDateOnly(new GregorianCalendar());
+
+        ProductCmptTocEntry productCmptTocEntry = createProductCmptTocEntry(xmlResourceName, false);
+        GenerationTocEntry generationTocEntry = new GenerationTocEntry(productCmptTocEntry, generationValidFrom, "", "");
+
+        Element mockProductCmptElement = mockRootElementForResourcePath(xmlResourceName);
+        NodeList mockChildrenList = mock(NodeList.class);
+        when(mockChildrenList.getLength()).thenReturn(2);
+        mockGenerationChildElement(mockChildrenList, 0, DateTime.createDateOnly(new GregorianCalendar(1, 1, 1)));
+        mockGenerationChildElement(mockChildrenList, 1, DateTime.createDateOnly(new GregorianCalendar(2, 2, 2)));
+        when(mockProductCmptElement.getChildNodes()).thenReturn(mockChildrenList);
+
+        productDataProvider.getProductCmptGenerationData(generationTocEntry);
+    }
+
+    @Test(expected = DataModifiedException.class)
+    public void testGetProductCmptGenerationDataRepositoryModified() throws DataModifiedException {
+        String xmlResourceName = "foo";
+        DateTime generationValidFrom = DateTime.createDateOnly(new GregorianCalendar());
+
+        ProductCmptTocEntry productCmptTocEntry = createProductCmptTocEntry(xmlResourceName, false);
+        GenerationTocEntry generationTocEntry = new GenerationTocEntry(productCmptTocEntry, generationValidFrom, "", "");
+
+        Element mockProductCmptElement = mockRootElementForResourcePath(xmlResourceName);
+        NodeList mockChildrenList = mock(NodeList.class);
+        when(mockChildrenList.getLength()).thenReturn(2);
+        mockGenerationChildElement(mockChildrenList, 0, DateTime.createDateOnly(new GregorianCalendar(1, 1, 1)));
+        mockGenerationChildElement(mockChildrenList, 1, generationValidFrom);
+        when(mockProductCmptElement.getChildNodes()).thenReturn(mockChildrenList);
+
+        modifyRepository();
+
+        productDataProvider.getProductCmptGenerationData(generationTocEntry);
+    }
+
+    @Test
+    public void testGetProductCmptGenerationDataRepositoryModifiedButRepositoryDoesNotCheckTocModifications()
+            throws DataModifiedException {
+
+        productDataProvider = createProductDataProvider(false);
+
+        String xmlResourceName = "foo";
+        DateTime generationValidFrom = DateTime.createDateOnly(new GregorianCalendar());
+
+        ProductCmptTocEntry productCmptTocEntry = createProductCmptTocEntry(xmlResourceName, false);
+        GenerationTocEntry generationTocEntry = new GenerationTocEntry(productCmptTocEntry, generationValidFrom, "", "");
+
+        Element mockProductCmptElement = mockRootElementForResourcePath(xmlResourceName);
+        NodeList mockChildrenList = mock(NodeList.class);
+        when(mockChildrenList.getLength()).thenReturn(2);
+        mockGenerationChildElement(mockChildrenList, 0, DateTime.createDateOnly(new GregorianCalendar(1, 1, 1)));
+        mockGenerationChildElement(mockChildrenList, 1, generationValidFrom);
+        when(mockProductCmptElement.getChildNodes()).thenReturn(mockChildrenList);
+
+        modifyRepository();
+
+        // Test successful if no exception is thrown
+        productDataProvider.getProductCmptGenerationData(generationTocEntry);
+    }
+
+    @Test
+    public void testGetTableContentAsStream() throws DataModifiedException {
+        String xmlResourceName = "foo";
+        TableContentTocEntry tocEntry = new TableContentTocEntry("", "", xmlResourceName, "");
+        InputStream mockInputStream = mock(InputStream.class);
+        when(mockDataSource.getResourceAsStream(xmlResourceName)).thenReturn(mockInputStream);
+
+        assertEquals(mockInputStream, productDataProvider.getTableContentAsStream(tocEntry));
+    }
+
+    @Test(expected = DataModifiedException.class)
+    public void testGetTableContentAsStreamRepositoryModified() throws DataModifiedException {
+        String xmlResourceName = "foo";
+        TableContentTocEntry tocEntry = new TableContentTocEntry("", "", xmlResourceName, "");
+        InputStream mockInputStream = mock(InputStream.class);
+        when(mockDataSource.getResourceAsStream(xmlResourceName)).thenReturn(mockInputStream);
+
+        modifyRepository();
+
+        productDataProvider.getTableContentAsStream(tocEntry);
+    }
+
+    @Test
+    public void testGetTableContentAsStreamRepositoryModifiedButRepositoryDoesNotCheckTocModifications()
+            throws DataModifiedException {
+
+        productDataProvider = createProductDataProvider(false);
+
+        String xmlResourceName = "foo";
+        TableContentTocEntry tocEntry = new TableContentTocEntry("", "", xmlResourceName, "");
+        InputStream mockInputStream = mock(InputStream.class);
+        when(mockDataSource.getResourceAsStream(xmlResourceName)).thenReturn(mockInputStream);
+
+        modifyRepository();
+
+        // Test successful if no exception is thrown
+        productDataProvider.getTableContentAsStream(tocEntry);
+    }
+
+    @Test
+    public void testGetEnumContentAsStream() throws DataModifiedException {
+        String xmlResourceName = "foo";
+        EnumContentTocEntry tocEntry = new EnumContentTocEntry("", "", xmlResourceName, "");
+        InputStream mockInputStream = mock(InputStream.class);
+        when(mockDataSource.getResourceAsStream(xmlResourceName)).thenReturn(mockInputStream);
+
+        assertEquals(mockInputStream, productDataProvider.getEnumContentAsStream(tocEntry));
+    }
+
+    @Test(expected = DataModifiedException.class)
+    public void testGetEnumContentAsStreamRepositoryModified() throws DataModifiedException {
+        String xmlResourceName = "foo";
+        EnumContentTocEntry tocEntry = new EnumContentTocEntry("", "", xmlResourceName, "");
+        InputStream mockInputStream = mock(InputStream.class);
+        when(mockDataSource.getResourceAsStream(xmlResourceName)).thenReturn(mockInputStream);
+
+        modifyRepository();
+
+        productDataProvider.getEnumContentAsStream(tocEntry);
+    }
+
+    @Test
+    public void testGetEnumContentAsStreamRepositoryModifiedButRepositoryDoesNotCheckTocModifications()
+            throws DataModifiedException {
+
+        productDataProvider = createProductDataProvider(false);
+
+        String xmlResourceName = "foo";
+        EnumContentTocEntry tocEntry = new EnumContentTocEntry("", "", xmlResourceName, "");
+        InputStream mockInputStream = mock(InputStream.class);
+        when(mockDataSource.getResourceAsStream(xmlResourceName)).thenReturn(mockInputStream);
+
+        modifyRepository();
+
+        // Test successful if no exception is thrown
+        productDataProvider.getEnumContentAsStream(tocEntry);
+    }
+
+    private void modifyRepository() {
+        when(mockDataSource.getLastModificationStamp(TOC_RESOURCE_PATH)).thenReturn("1234");
+    }
+
+    private Element mockGenerationChildElement(NodeList nodeList, int index, DateTime validFrom) {
+        Element mockChild = mock(Element.class);
+        when(mockChild.getNodeName()).thenReturn(GenerationTocEntry.XML_TAG);
+        when(mockChild.getAttribute(GenerationTocEntry.PROPERTY_VALID_FROM)).thenReturn(validFrom.toIsoFormat());
+        when(nodeList.item(index)).thenReturn(mockChild);
+        return mockChild;
+    }
+
+    private ClassLoaderProductDataProvider createProductDataProvider(boolean checkTocModifications) {
+        return new ClassLoaderProductDataProvider(mockDataSource, TOC_RESOURCE_PATH, checkTocModifications);
+    }
+
+    /**
+     * Creates a {@link ProductCmptTocEntry} with the given XML resource name.
+     * 
+     * @param xmlResourceName The name of the XML resource the TOC entry shall point to
+     * @param mockRootElement Flag indicating whether a document root element mock shall be directly
+     *            created for the given XML resource name
+     */
+    private ProductCmptTocEntry createProductCmptTocEntry(String xmlResourceName, boolean mockRootElement) {
+        ProductCmptTocEntry tocEntry = new ProductCmptTocEntry("", "", "", "", xmlResourceName, "", "",
+                mock(DateTime.class));
+        if (mockRootElement) {
+            mockRootElementForResourcePath(xmlResourceName);
         }
-        is = pdp.getEnumContentAsStream(toc.getEnumContentTocEntry("org.faktorips.sample.model.gaa.TestEnum"));
-
-        actualContent = readStreamContent(is);
-        is.close();
-        assertEquals("987987000", pdp.getVersion());
-        assertEquals(expectedContent, actualContent);
+        return tocEntry;
     }
 
-    void copy(String srcName, String dstName) throws Exception {
-        File src = new File(getClassLoader().getResource(srcName).toURI());
-        File dst = new File(getClassLoader().getResource(dstName).toURI());
-        InputStream in = new FileInputStream(src);
-        OutputStream out = new FileOutputStream(dst);
-        // Transfer bytes from in to out
-        byte[] buf = new byte[1024];
-        int len;
-        while ((len = in.read(buf)) > 0) {
-            out.write(buf, 0, len);
+    /**
+     * @see #createProductCmptTocEntry(String, boolean)
+     */
+    private TestCaseTocEntry createTestCaseTocEntry(String xmlResourceName, boolean mockRootElement) {
+        TestCaseTocEntry tocEntry = new TestCaseTocEntry("", "", xmlResourceName, "");
+        if (mockRootElement) {
+            mockRootElementForResourcePath(xmlResourceName);
         }
-        in.close();
-        out.close();
+        return tocEntry;
     }
 
-    Element getElement(String resource) throws SAXException, IOException {
-        InputStream is = getClassLoader().getResourceAsStream(resource);
-        Document doc = docBuilder.parse(is);
-        is.close();
-        return doc.getDocumentElement();
+    private Element mockRootElementForResourcePath(String resourcePath) {
+        Document mockDocument = mock(Document.class);
+        Element mockRootElement = mock(Element.class, Answers.RETURNS_DEEP_STUBS.get());
+        when(mockDataSource.loadDocument(eq(resourcePath), any(DocumentBuilder.class))).thenReturn(mockDocument);
+        when(mockDocument.getDocumentElement()).thenReturn(mockRootElement);
+        return mockRootElement;
     }
 
-    public static String readStreamContent(InputStream stream) throws IOException {
-        Reader reader = new InputStreamReader(stream);
-        return readContent(reader);
-    }
-
-    public static String readContent(Reader reader) throws IOException {
-        BufferedReader bufferedReader = null;
-        try {
-            bufferedReader = new BufferedReader(reader);
-            StringBuilder tocnewInstanceer = new StringBuilder();
-            while (bufferedReader.ready()) {
-                tocnewInstanceer.append(bufferedReader.readLine()).append('\n');
-            }
-            return tocnewInstanceer.toString();
-        } finally {
-            if (bufferedReader != null) {
-                bufferedReader.close();
-            }
-        }
-    }
-
-    private static final DocumentBuilder createDocumentnewInstanceer() {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(false);
-        DocumentBuilder builder;
-        try {
-            builder = factory.newDocumentBuilder();
-        } catch (ParserConfigurationException e1) {
-            throw new RuntimeException("Error creating document pdpFactory.", e1);
-        }
-        builder.setErrorHandler(new ErrorHandler() {
-            public void error(SAXParseException e) throws SAXException {
-                throw e;
-            }
-
-            public void fatalError(SAXParseException e) throws SAXException {
-                throw e;
-            }
-
-            public void warning(SAXParseException e) throws SAXException {
-                throw e;
-            }
-        });
-        return builder;
-    }
 }

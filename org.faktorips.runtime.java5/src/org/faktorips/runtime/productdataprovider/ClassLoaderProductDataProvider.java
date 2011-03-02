@@ -13,12 +13,7 @@
 
 package org.faktorips.runtime.productdataprovider;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.JarURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
 
 import org.faktorips.runtime.IVersionChecker;
 import org.faktorips.runtime.internal.DateTime;
@@ -28,71 +23,73 @@ import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
+import org.faktorips.runtime.internal.toc.TocEntryObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
  * The {@link ClassLoaderProductDataProvider} is an implementation of {@link IProductDataProvider}
- * normally for testing purpose. It loads data similar as the
- * {@link org.faktorips.runtime.ClassloaderRuntimeRepository}. Modification is checked by checking
- * the modification date of the toc resource.
+ * normally for testing purpose.
+ * <p>
+ * It loads data similar as the {@link org.faktorips.runtime.ClassloaderRuntimeRepository}.
+ * Modification is checked by checking the modification date of the TOC resource.
  * 
  * @author dirmeier
  */
 public class ClassLoaderProductDataProvider extends AbstractProductDataProvider {
 
-    private final ClassLoader cl;
-    private final boolean checkTocModifications;
-    private final String tocFileLastModified;
-    private final ReadonlyTableOfContents toc;
-    private final URL tocUrl;
+    private final ClassLoaderDataSource dataSource;
 
-    public ClassLoaderProductDataProvider(ClassLoader classLoader, String tocResourcePath, boolean checkTocModifications) {
+    private final boolean checkTocModifications;
+
+    private final String tocFileLastModified;
+
+    private final ReadonlyTableOfContents toc;
+
+    private final String tocResourcePath;
+
+    public ClassLoaderProductDataProvider(ClassLoaderDataSource dataSource, String tocResourcePath,
+            boolean checkTocModifications) {
+
         super(new IVersionChecker() {
 
             public boolean isCompatibleVersion(String oldVersion, String newVersion) {
                 return oldVersion.equals(newVersion);
             }
+
         });
-        this.cl = classLoader;
-        tocUrl = cl.getResource(tocResourcePath);
-        if (tocUrl == null) {
-            throw new IllegalArgumentException("Can' find table of contents file " + tocResourcePath);
-        }
+
+        this.dataSource = dataSource;
+        this.tocResourcePath = tocResourcePath;
         this.checkTocModifications = checkTocModifications;
+
         toc = loadToc();
         tocFileLastModified = getBaseVersion();
     }
 
     private ReadonlyTableOfContents loadToc() {
-        InputStream is = null;
-        Document doc;
-        try {
-            is = tocUrl.openStream();
-            doc = getDocumentBuilder().parse(is);
-        } catch (Exception e) {
-            throw new RuntimeException("Error loading table of contents from " + tocUrl.getFile(), e);
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        try {
-            Element tocElement = doc.getDocumentElement();
-            ReadonlyTableOfContents toc = new ReadonlyTableOfContents();
-            toc.initFromXml(tocElement);
-            return toc;
-        } catch (Exception e) {
-            throw new RuntimeException("Error creating toc from xml.", e);
-        }
+        Element tocElement = getDocumentElement(tocResourcePath);
+        ReadonlyTableOfContents toc = new ReadonlyTableOfContents();
+        toc.initFromXml(tocElement);
+        return toc;
+    }
+
+    @Override
+    public String getBaseVersion() {
+        return checkTocModifications ? dataSource.getLastModificationStamp(tocResourcePath) : toc
+                .getProductDataVersion();
     }
 
     public Element getProductCmptData(ProductCmptTocEntry tocEntry) throws DataModifiedException {
+        return getDocumentElement(tocEntry);
+    }
+
+    public Element getTestcaseElement(TestCaseTocEntry tocEntry) throws DataModifiedException {
+        return getDocumentElement(tocEntry);
+    }
+
+    private Element getDocumentElement(TocEntryObject tocEntry) throws DataModifiedException {
         String resourcePath = tocEntry.getXmlResourceName();
         Element documentElement = getDocumentElement(resourcePath);
         throwExceptionIfModified(tocEntry.getIpsObjectId(), getBaseVersion());
@@ -104,94 +101,48 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
         NodeList nl = docElement.getChildNodes();
         DateTime validFrom = tocEntry.getValidFrom();
         for (int i = 0; i < nl.getLength(); i++) {
-            if ("Generation".equals(nl.item(i).getNodeName())) {
+            if (GenerationTocEntry.XML_TAG.equals(nl.item(i).getNodeName())) {
                 Element genElement = (Element)nl.item(i);
-                DateTime generationValidFrom = DateTime.parseIso(genElement.getAttribute("validFrom"));
+                DateTime generationValidFrom = DateTime.parseIso(genElement
+                        .getAttribute(GenerationTocEntry.PROPERTY_VALID_FROM));
                 if (validFrom.equals(generationValidFrom)) {
                     throwExceptionIfModified(tocEntry.getParent().getIpsObjectId(), getBaseVersion());
                     return genElement;
                 }
             }
         }
-        throw new RuntimeException("Can't find the generation for the toc entry " + tocEntry);
-    }
-
-    public Element getTestcaseElement(TestCaseTocEntry tocEntry) throws DataModifiedException {
-        String resourcePath = tocEntry.getXmlResourceName();
-        Element documentElement = getDocumentElement(resourcePath);
-        throwExceptionIfModified(tocEntry.getIpsObjectId(), getBaseVersion());
-        return documentElement;
+        throw new RuntimeException("Can't find the generation for the TOC entry '" + tocEntry + "'");
     }
 
     public InputStream getTableContentAsStream(TableContentTocEntry tocEntry) throws DataModifiedException {
-        InputStream resourceAsStream = cl.getResourceAsStream(tocEntry.getXmlResourceName());
+        return getResourceAsStream(tocEntry);
+    }
+
+    public InputStream getEnumContentAsStream(EnumContentTocEntry tocEntry) throws DataModifiedException {
+        return getResourceAsStream(tocEntry);
+    }
+
+    private InputStream getResourceAsStream(TocEntryObject tocEntry) throws DataModifiedException {
+        InputStream resourceAsStream = dataSource.getResourceAsStream(tocEntry.getXmlResourceName());
         throwExceptionIfModified(tocEntry.getIpsObjectId(), getBaseVersion());
         return resourceAsStream;
     }
 
-    public InputStream getEnumContentAsStream(EnumContentTocEntry tocEntry) throws DataModifiedException {
-        InputStream resourceAsStream = cl.getResourceAsStream(tocEntry.getXmlResourceName());
-        throwExceptionIfModified(tocEntry.getIpsObjectId(), getBaseVersion());
-        return resourceAsStream;
+    private Element getDocumentElement(String resourcePath) {
+        Document doc = dataSource.loadDocument(resourcePath, getDocumentBuilder());
+        Element element = doc.getDocumentElement();
+        if (element == null) {
+            throw new RuntimeException("Xml resource '" + resourcePath + "' hasn't got a document element.");
+        }
+        return element;
     }
 
     public synchronized ReadonlyTableOfContents getToc() {
         return toc;
     }
 
-    private Element getDocumentElement(String resourcePath) {
-        InputStream is = cl.getResourceAsStream(resourcePath);
-        if (is == null) {
-            throw new RuntimeException("Can't find resource " + resourcePath);
-        }
-        Document doc;
-        try {
-            doc = getDocumentBuilder().parse(is);
-        } catch (Exception e) {
-            throw new RuntimeException("Can't parse xml resource " + resourcePath, e);
-        } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                throw new RuntimeException("Unable to close the input stream of the resource: " + resourcePath, e);
-            }
-        }
-        Element element = doc.getDocumentElement();
-        if (element == null) {
-            throw new RuntimeException("Xml resource " + resourcePath + " hasn't got a document element.");
-        }
-        return element;
-    }
-
     public String getVersion() {
         return tocFileLastModified;
-    }
-
-    @Override
-    public String getBaseVersion() {
-        if (checkTocModifications) {
-            String lastMod = "";
-            try {
-                URLConnection connection = tocUrl.openConnection();
-                if (connection instanceof JarURLConnection) {
-                    JarURLConnection jarUrlConnection = (JarURLConnection)connection;
-                    URL jarUrl = jarUrlConnection.getJarFileURL();
-                    File jarFile = new File(jarUrl.toURI());
-                    lastMod = "" + jarFile.lastModified();
-                } else {
-                    File tocFile = new File(tocUrl.getFile());
-                    lastMod = "" + tocFile.lastModified();
-                }
-            } catch (Exception e) {
-                throw new RuntimeException("Cannot get last modification stamp of toc url", e);
-            }
-            return lastMod;
-        }
-        if (toc != null) {
-            return toc.getProductDataVersion();
-        } else {
-            return "";
-        }
     }
 
     private void throwExceptionIfModified(String name, String timestamp) throws DataModifiedException {

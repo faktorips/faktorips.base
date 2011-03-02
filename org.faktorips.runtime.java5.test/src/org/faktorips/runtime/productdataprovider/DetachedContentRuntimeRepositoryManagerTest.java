@@ -412,8 +412,8 @@ public class DetachedContentRuntimeRepositoryManagerTest {
 
         String baseVersion = "0";
 
-        public TestProductDataProvider(ClassLoader cl, String toc) {
-            super(cl, toc, true);
+        public TestProductDataProvider(ClassLoaderDataSource dataSource, String toc) {
+            super(dataSource, toc, true);
         }
 
         @Override
@@ -469,7 +469,8 @@ public class DetachedContentRuntimeRepositoryManagerTest {
 
         @Override
         public IProductDataProvider newInstance() {
-            testProductDataProvider = new TestProductDataProvider(cl, tocResourcePath2);
+        	ClassLoaderDataSource dataSource = new ClassLoaderDataSource(cl);
+            testProductDataProvider = new TestProductDataProvider(dataSource, tocResourcePath2);
             return testProductDataProvider;
         }
 

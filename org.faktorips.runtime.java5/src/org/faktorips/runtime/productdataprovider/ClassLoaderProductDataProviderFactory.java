@@ -34,7 +34,8 @@ public class ClassLoaderProductDataProviderFactory implements IProductDataProvid
     }
 
     public IProductDataProvider newInstance() {
-        return new ClassLoaderProductDataProvider(classLoader, tocResourcePath, checkForModifications);
+        ClassLoaderDataSource dataSource = new ClassLoaderDataSource(classLoader);
+        return new ClassLoaderProductDataProvider(dataSource, tocResourcePath, checkForModifications);
     }
 
 }

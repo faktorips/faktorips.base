@@ -25,14 +25,16 @@ import org.w3c.dom.Element;
  */
 public class GenerationTocEntry extends TocEntry {
 
-    protected final static String XML_TAG = "Generation";
+    public final static String XML_TAG = "Generation";
+
+    public static final String PROPERTY_VALID_FROM = "validFrom";
 
     private final static TimeZone defaultTimeZone = TimeZone.getDefault();
 
     public final static GenerationTocEntry createFromXml(ProductCmptTocEntry parent, Element element) {
-        DateTime validFrom = DateTime.parseIso(element.getAttribute("validFrom"));
-        String className = element.getAttribute("implementationClass");
-        String xmlResourceName = element.getAttribute("xmlResource");
+        DateTime validFrom = DateTime.parseIso(element.getAttribute(PROPERTY_VALID_FROM));
+        String className = element.getAttribute(PROPERTY_IMPLEMENTATION_CLASS);
+        String xmlResourceName = element.getAttribute(PROPERTY_XML_RESOURCE);
         return new GenerationTocEntry(parent, validFrom, className, xmlResourceName);
     }
 
@@ -86,7 +88,7 @@ public class GenerationTocEntry extends TocEntry {
     @Override
     protected void addToXml(Element element) {
         super.addToXml(element);
-        element.setAttribute("validFrom", validFrom.toIsoFormat());
+        element.setAttribute(PROPERTY_VALID_FROM, validFrom.toIsoFormat());
     }
 
     /**
