@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-
-
+   <extension
+         point="org.faktorips.devtools.core.productReleaseExtension">
 	<!--
 	This extension is used to test the deployment wizard
 	-->
-   <extension
-         point="org.faktorips.devtools.core.productReleaseExtension">
       <releaseExtension
             id="org.faktorips.devtools.core.test.releaseExtension"
             readableVersionFormat="z.B. 2.4.1.rfinal"

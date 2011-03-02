@@ -6,5 +6,4 @@ Bundle-Version: 0.0.0
 Bundle-Vendor: Faktor Zehn AG
 Fragment-Host: org.faktorips.devtools.tableconversion
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-ClassPath: $nl$,
- .
+Bundle-ClassPath: .
