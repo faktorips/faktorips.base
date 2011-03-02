@@ -111,7 +111,6 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
         ProductComponentGeneration.addToCardinalityMap(cardinalityMap, "relation4", relEl);
         cardinality = cardinalityMap.get("relation4");
         assertEquals(new IntegerRange(0, Integer.MAX_VALUE), cardinality);
-
     }
 
 }

@@ -23,10 +23,8 @@ import static org.junit.Assert.fail;
 import org.faktorips.runtime.Message.Severity;
 import org.junit.Test;
 
-/**
- *
- */
 public class MessageListTest {
+
     @Test
     public void testAddMessage() {
         MessageList list = new MessageList();
@@ -119,8 +117,8 @@ public class MessageListTest {
         list.add(Message.newInfo("1", "blabla"));
         assertEquals(1, list.size());
         list.add(Message.newInfo("1", "blabla"));
-        assertEquals(2, list.size()); // messages are equal, but the list does not filter
-        // duplicate messages
+        // messages are equal, but the list does not filter duplicate messages
+        assertEquals(2, list.size());
     }
 
     @Test
@@ -138,7 +136,7 @@ public class MessageListTest {
             list.getMessage(2);
             fail();
         } catch (IndexOutOfBoundsException e) {
-            // ok
+            // OK
         }
     }
 

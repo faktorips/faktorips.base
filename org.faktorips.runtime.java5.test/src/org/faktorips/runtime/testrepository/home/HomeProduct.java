@@ -26,9 +26,7 @@ public class HomeProduct extends PnCProduct {
         super(registry, id, productKindId, versionId);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public IConfigurableModelObject createPolicyComponent() {
         return new HomePolicy(this);
     }

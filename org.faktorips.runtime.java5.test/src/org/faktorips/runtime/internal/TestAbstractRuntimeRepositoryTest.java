@@ -69,9 +69,6 @@ public class TestAbstractRuntimeRepositoryTest {
     private TestProductComponent validToPc;
     private TestProductCmptGeneration validToPcGen;
 
-    /*
-     * @see TestCase#setUp()
-     */
     @Before
     public void setUp() throws Exception {
         mainRepository = new InMemoryRuntimeRepository();
@@ -110,7 +107,6 @@ public class TestAbstractRuntimeRepositoryTest {
         validToPcGen = new TestProductCmptGeneration(validToPc);
         validToPcGen.setValidFrom(validFrom);
         mainRepository.putProductCmptGeneration(validToPcGen);
-
     }
 
     @Test
@@ -377,7 +373,7 @@ public class TestAbstractRuntimeRepositoryTest {
             mainRepository.getIpsTest(null);
             fail();
         } catch (Exception e) {
-            // ok
+            // OK
         }
     }
 
@@ -431,7 +427,6 @@ public class TestAbstractRuntimeRepositoryTest {
         assertEquals(lookup.value2, mainRepository.getEnumValue(TestEnumValue.class, lookup.value2.getEnumValueId()));
 
         assertNull(mainRepository.getEnumValue(TestEnumValue.class, "unknownId"));
-
     }
 
     @Test
@@ -448,12 +443,12 @@ public class TestAbstractRuntimeRepositoryTest {
         assertEquals(lookup.value1, values.get(0));
         assertEquals(lookup.value2, values.get(1));
 
-        // test if list is unmodfiable
+        // test if list is unmodifiable
         try {
             values.add(new TestEnumValue("value3"));
             fail();
         } catch (UnsupportedOperationException e) {
-            // ok
+            // OK
         }
 
     }
@@ -464,20 +459,22 @@ public class TestAbstractRuntimeRepositoryTest {
 
     private class Lookup implements IEnumValueLookupService<TestEnumValue> {
 
-        private TestEnumValue value1 = new TestEnumValue("value1");
-        private TestEnumValue value2 = new TestEnumValue("value2");
+        private final TestEnumValue value1 = new TestEnumValue("value1");
+        private final TestEnumValue value2 = new TestEnumValue("value2");
 
-        private List<TestEnumValue> values = new ArrayList<TestEnumValue>();
+        private final List<TestEnumValue> values = new ArrayList<TestEnumValue>();
 
         public Lookup() {
             values.add(value1);
             values.add(value2);
         }
 
+        @Override
         public Class<TestEnumValue> getEnumTypeClass() {
             return TestEnumValue.class;
         }
 
+        @Override
         public TestEnumValue getEnumValue(Object id) {
             for (TestEnumValue value : values) {
                 if (value.getEnumValueId().equals(id)) {
@@ -487,13 +484,16 @@ public class TestAbstractRuntimeRepositoryTest {
             return null;
         }
 
+        @Override
         public List<TestEnumValue> getEnumValues() {
             return values;
         }
 
+        @Override
         public XmlAdapter<?, TestEnumValue> getXmlAdapter() {
             return null;
         }
 
     }
+
 }

@@ -94,8 +94,10 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         XmlPc pc = new XmlPc();
         pc.prop0 = "bla";
         pc.initFromXml(XmlUtil.getElement(docEl, "XmlPc", 1), false, null, store);
-        assertEquals("bla", pc.prop0); // make sure prop0 is not set to null
-        // xml datat does not contain any information about prop0
+
+        // make sure prop0 is not set to null
+        // XML data does not contain any information about prop0
+        assertEquals("bla", pc.prop0);
     }
 
     @Test
@@ -116,9 +118,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
 
         PropertyChangeEvent lastEvent;
 
-        /**
-         * {@inheritDoc}
-         */
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
             lastEvent = evt;
         }
@@ -147,9 +147,6 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
             return true;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void removeChildModelObjectInternal(IModelObject child) {
             // do nothing
@@ -172,9 +169,6 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
             return true;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void removeChildModelObjectInternal(IModelObject child) {
             // do nothing
@@ -192,6 +186,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
          * 
          * @generated
          */
+        @Override
         public void notifyChangeListeners(PropertyChangeEvent event) {
             if (event instanceof AssociationChangedEvent) {
                 propertyChangeSupport.fireAssociationChange((AssociationChangedEvent)event);
@@ -205,6 +200,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
          * 
          * @generated
          */
+        @Override
         public void addPropertyChangeListener(PropertyChangeListener listener) {
             propertyChangeSupport.addPropertyChangeListener(listener);
         }
@@ -214,6 +210,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
          * 
          * @generated
          */
+        @Override
         public void addPropertyChangeListener(PropertyChangeListener listener, boolean propagateEventsFromChildren) {
             propertyChangeSupport.addPropertyChangeListener(listener, propagateEventsFromChildren);
         }
@@ -223,6 +220,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
          * 
          * @generated
          */
+        @Override
         public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
             propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
         }
@@ -232,6 +230,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
          * 
          * @generated
          */
+        @Override
         public boolean hasListeners(String propertyName) {
             return propertyChangeSupport.hasListeners(propertyName);
         }
@@ -241,6 +240,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
          * 
          * @generated
          */
+        @Override
         public void removePropertyChangeListener(PropertyChangeListener listener) {
             propertyChangeSupport.removePropertyChangeListener(listener);
         }
@@ -250,6 +250,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
          * 
          * @generated
          */
+        @Override
         public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
             propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
         }
@@ -280,9 +281,6 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
             this.child = child;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected AbstractModelObject createChildFromXml(Element childEl) {
             if ("Child".equals(childEl.getNodeName())) {
@@ -298,9 +296,6 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
             // do nothing
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected IUnresolvedReference createUnresolvedReference(Object objectId, String targetRole, String targetId)
                 throws SecurityException, NoSuchMethodException {
@@ -311,9 +306,6 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
             return null;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void removeChildModelObjectInternal(IModelObject child) {
             // do nothing
@@ -343,12 +335,11 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
             return parent;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void removeChildModelObjectInternal(IModelObject child) {
             // do nothing
         }
+
     }
+
 }

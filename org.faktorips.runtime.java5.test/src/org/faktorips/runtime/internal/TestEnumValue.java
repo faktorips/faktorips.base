@@ -11,18 +11,14 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-/**
- * 
- */
 package org.faktorips.runtime.internal;
 
 /**
  * @author ortmann
- * 
  */
 public class TestEnumValue {
 
-    private String id;
+    private final String id;
 
     public TestEnumValue(String id) {
         this.id = id;
@@ -36,4 +32,5 @@ public class TestEnumValue {
     public String toString() {
         return id;
     }
+
 }

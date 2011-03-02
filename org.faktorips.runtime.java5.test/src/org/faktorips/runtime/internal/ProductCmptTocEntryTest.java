@@ -13,7 +13,10 @@
 
 package org.faktorips.runtime.internal;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -120,4 +123,5 @@ public class ProductCmptTocEntryTest extends XmlAbstractTestCase {
         assertEquals("RateTable", toc.getImplementationClassName());
         assertTrue(toc instanceof TableContentTocEntry);
     }
+
 }

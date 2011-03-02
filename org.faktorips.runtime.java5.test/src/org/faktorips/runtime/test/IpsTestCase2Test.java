@@ -28,10 +28,7 @@ import org.junit.Test;
  */
 public class IpsTestCase2Test {
 
-    /*
-     * Test method for 'org.faktorips.runtime.test.IpsTestCase2.run(IpsTestResult)'
-     */
-	@Test
+    @Test
     public void testRun() {
         IpsTestResult result = new IpsTestResult();
         MyTestCase test = new MyTestCase("MyTest", "42", "42");
@@ -82,8 +79,12 @@ public class IpsTestCase2Test {
     }
 
     private class MyModelObject implements IModelObject {
+
+        @Override
         public MessageList validate(IValidationContext context) {
             throw new RuntimeException();
         }
+
     }
+
 }

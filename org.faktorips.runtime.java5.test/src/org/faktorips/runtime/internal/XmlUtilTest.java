@@ -13,7 +13,9 @@
 
 package org.faktorips.runtime.internal;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.List;
 
@@ -23,9 +25,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
-/**
- *
- */
 public class XmlUtilTest extends XmlAbstractTestCase {
 
     @Test
@@ -64,11 +63,12 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         assertNotNull(text);
         assertEquals("blabla", text.getData());
 
-        // test after manually processing a document
-        // e.g. using xsl transformation text nodes could be split into several sibling text nodes
-        // this test ensures that the node will be normalized before returning the text of the child
-        // text nodes
-        // see Interface org.w3c.dom.Text
+        /*
+         * test after manually processing a document e.g. using XSL transformation text nodes could
+         * be split into several sibling text nodes this test ensures that the node will be
+         * normalized before returning the text of the child text nodes see Interface
+         * org.w3c.dom.Text
+         */
         Element child = doc.createElement("Child");
         testElement.appendChild(child);
         child.appendChild(doc.createTextNode("1"));
@@ -92,4 +92,5 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         List<Element> testElements = XmlUtil.getElementsFromNode(docElement, "ChildA", "type", "testtype1");
         assertEquals(2, testElements.size());
     }
+
 }

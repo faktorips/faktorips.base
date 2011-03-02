@@ -22,6 +22,7 @@ import org.faktorips.values.Money;
 import org.junit.Test;
 
 public class ValidationContextTest {
+
     @Test
     public void testGetLocale() {
         ValidationContext context = new ValidationContext();
@@ -38,4 +39,5 @@ public class ValidationContextTest {
         context.setValue("b", new Integer(1));
         assertEquals(Money.euro(100), context.getValue("a"));
     }
+
 }

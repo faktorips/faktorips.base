@@ -20,20 +20,17 @@ import org.faktorips.values.Decimal;
 
 public class TestTable extends Table {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initKeyMaps() {
         // do nothing
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected void addRow(List columns, IRuntimeRepository repository) {
         String company = (String)columns.get(0);
         Integer gender = columns.get(1) == null ? null : new Integer((String)columns.get(1));
         Decimal rate = columns.get(2) == null ? Decimal.NULL : Decimal.valueOf((String)columns.get(2));
         rows.add(new TestTableRow(company, gender, rate));
     }
+
 }

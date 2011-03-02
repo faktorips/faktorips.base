@@ -64,15 +64,14 @@ public class DetachedContentRuntimeRepositoryManagerTest {
 
     @Before
     public void setUp() throws Exception {
-    	// the context classloader must be the classloader of the runtime bundle
-    	Thread.currentThread().setContextClassLoader(DetachedContentRuntimeRepositoryManager.class.getClassLoader());
+        // the context class loader must be the class loader of the runtime bundle
+        Thread.currentThread().setContextClassLoader(DetachedContentRuntimeRepositoryManager.class.getClassLoader());
         directPdpFactory = new MyFactory(getClass().getClassLoader(),
                 "org/faktorips/runtime/testrepository/direct-repository-toc.xml");
         pdpFactory = new MyFactory(getClass().getClassLoader(),
                 "org/faktorips/runtime/testrepository/faktorips-repository-toc.xml");
         runtimeRepositoryManager = new DetachedContentRuntimeBuilder(directPdpFactory).build();
-        IRuntimeRepositoryManager referencedManager = new DetachedContentRuntimeBuilder(pdpFactory)
-                .build();
+        IRuntimeRepositoryManager referencedManager = new DetachedContentRuntimeBuilder(pdpFactory).build();
         runtimeRepositoryManager.addDirectlyReferencedManager(referencedManager);
         repository = runtimeRepositoryManager.getActualRuntimeRepository();
         directPdp = directPdpFactory.testProductDataProvider;
@@ -88,9 +87,8 @@ public class DetachedContentRuntimeRepositoryManagerTest {
         assertNotNull(motorProductGen);
         assertEquals(Decimal.valueOf("0.15"), motorProductGen.getTaxRate());
         assertEquals(Money.euro(15, 0), motorProductGen.getFixedCosts());
-        assertEquals(new DateTime(2010, 1, 18), motorPk.getValidTo()); // the valid to of this
-        // product component is read
-        // from the toc entry
+        // the valid-to of this product component is read from the TOC entry
+        assertEquals(new DateTime(2010, 1, 18), motorPk.getValidTo());
 
         motorPk = (MotorProduct)repository.getProductComponent("motor.MotorPlus");
         assertNotNull(motorPk);
@@ -98,10 +96,9 @@ public class DetachedContentRuntimeRepositoryManagerTest {
         assertNotNull(motorProductGen);
         assertEquals(Decimal.valueOf("0.15"), motorProductGen.getTaxRate());
         assertEquals(Money.euro(20, 0), motorProductGen.getFixedCosts());
-        assertEquals(new DateTime(2010, 1, 16), motorPk.getValidTo()); // the valid to of this
-        // product component is read
-        // from the xml content of
-        // the prod. comp.
+        // the valid-to of this product component is read from the XML content of the product
+        // component
+        assertEquals(new DateTime(2010, 1, 16), motorPk.getValidTo());
 
         HomeProduct homePk = (HomeProduct)repository.getProductComponent("home.HomeBasic");
         assertNotNull(homePk);
@@ -153,7 +150,6 @@ public class DetachedContentRuntimeRepositoryManagerTest {
         repository.getIpsTest("test.CalculationTest2");
         // should NOT use cached object
         assertTrue(directPdp.flag);
-
     }
 
     @Test
@@ -302,7 +298,6 @@ public class DetachedContentRuntimeRepositoryManagerTest {
         assertNotNull(test);
         assertEquals("test.CalculationTest2", test2.getQualifiedName());
 
-        // formla test
         IpsFormulaTestCase formulaTest = (IpsFormulaTestCase)repository.getIpsTest("motor.MotorBasic");
         assertNotNull(formulaTest);
     }
@@ -343,7 +338,6 @@ public class DetachedContentRuntimeRepositoryManagerTest {
 
         next = (MotorProductGen)repository.getNextProductComponentGeneration(motorProductGen);
         assertNull(next);
-
     }
 
     @Test
@@ -405,9 +399,10 @@ public class DetachedContentRuntimeRepositoryManagerTest {
 
     private static class TestProductDataProvider extends ClassLoaderProductDataProvider {
 
-        // set true by any method called (except getModificationStamp())
-        // indicates that one of the overridden methods was calles - that means the data is not
-        // loaded from cache
+        /**
+         * set true by any method called (except getModificationStamp()) indicates that one of the
+         * overridden methods was called - that means the data is not loaded from cache
+         */
         boolean flag = false;
 
         String baseVersion = "0";
@@ -453,6 +448,7 @@ public class DetachedContentRuntimeRepositoryManagerTest {
             }
             return baseVersion;
         }
+
     }
 
     public static class MyFactory extends ClassLoaderProductDataProviderFactory {
@@ -469,7 +465,7 @@ public class DetachedContentRuntimeRepositoryManagerTest {
 
         @Override
         public IProductDataProvider newInstance() {
-        	ClassLoaderDataSource dataSource = new ClassLoaderDataSource(cl);
+            ClassLoaderDataSource dataSource = new ClassLoaderDataSource(cl);
             testProductDataProvider = new TestProductDataProvider(dataSource, tocResourcePath2);
             return testProductDataProvider;
         }

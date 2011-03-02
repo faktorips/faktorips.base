@@ -51,9 +51,7 @@ public class ClassloaderRuntimeRepositoryTest {
 
     @Before
     public void setUp() throws Exception {
-        /**
-         * The repository loading the empty toc to include testing referenced repositories
-         */
+        // The repository loading the empty TOC to include testing referenced repositories
         repository = ClassloaderRuntimeRepository
                 .create("org/faktorips/runtime/testrepository/direct-repository-toc.xml");
         ClassloaderRuntimeRepository mainRepository = ClassloaderRuntimeRepository
@@ -70,9 +68,8 @@ public class ClassloaderRuntimeRepositoryTest {
         assertNotNull(motorProductGen);
         assertEquals(Decimal.valueOf("0.15"), motorProductGen.getTaxRate());
         assertEquals(Money.euro(15, 0), motorProductGen.getFixedCosts());
-        assertEquals(new DateTime(2010, 1, 18), motorPk.getValidTo()); // the valid to of this
-        // product component is read
-        // from the toc entry
+        // the valid-to of this product component is read from the TOC entry
+        assertEquals(new DateTime(2010, 1, 18), motorPk.getValidTo());
 
         motorPk = (MotorProduct)repository.getProductComponent("motor.MotorPlus");
         assertNotNull(motorPk);
@@ -80,10 +77,9 @@ public class ClassloaderRuntimeRepositoryTest {
         assertNotNull(motorProductGen);
         assertEquals(Decimal.valueOf("0.15"), motorProductGen.getTaxRate());
         assertEquals(Money.euro(20, 0), motorProductGen.getFixedCosts());
-        assertEquals(new DateTime(2010, 1, 16), motorPk.getValidTo()); // the valid to of this
-        // product component is read
-        // from the xml content of
-        // the prod. comp.
+        // the valid-to of this product component is read from the XML content of the product
+        // component
+        assertEquals(new DateTime(2010, 1, 16), motorPk.getValidTo());
 
         HomeProduct homePk = (HomeProduct)repository.getProductComponent("home.HomeBasic");
         assertNotNull(homePk);
@@ -218,7 +214,6 @@ public class ClassloaderRuntimeRepositoryTest {
         assertEquals("42", test.getInputSumInsured());
         assertEquals("43", test.getExpResultPremium());
 
-        // formla test
         IpsFormulaTestCase formulaTest = (IpsFormulaTestCase)repository.getIpsTest("motor.MotorBasic");
         assertNotNull(formulaTest);
     }
@@ -259,7 +254,6 @@ public class ClassloaderRuntimeRepositoryTest {
 
         next = (MotorProductGen)repository.getNextProductComponentGeneration(motorProductGen);
         assertNull(next);
-
     }
 
     @Test
@@ -290,7 +284,6 @@ public class ClassloaderRuntimeRepositoryTest {
         IProductComponentGeneration generation = repository.getLatestProductComponentGeneration(productComponent);
         assertEquals(new DateTime(2007, 1, 1).toDate(TimeZone.getDefault()),
                 generation.getValidFrom(TimeZone.getDefault()));
-
     }
 
     @Test
@@ -318,4 +311,5 @@ public class ClassloaderRuntimeRepositoryTest {
             assertTrue("Missing test case: " + element, found);
         }
     }
+
 }

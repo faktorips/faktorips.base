@@ -19,6 +19,7 @@ import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
 public class DefaultObjectReferenceStoreTest {
+
     @Test
     public void testGetObject() {
         DefaultObjectReferenceStore store = new DefaultObjectReferenceStore();
@@ -33,10 +34,11 @@ public class DefaultObjectReferenceStoreTest {
     }
 
     interface IMyInterface {
-        // do nothing
+
     }
 
     class MyImplementation implements IMyInterface {
-        // do nothing
+
     }
+
 }

@@ -66,4 +66,5 @@ public class TableTest extends XmlAbstractTestCase {
         assertEquals(Integer.valueOf("1"), row.getGender());
         assertEquals(Decimal.valueOf("0.35"), row.getRate());
     }
+
 }

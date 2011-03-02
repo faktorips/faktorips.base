@@ -26,11 +26,11 @@ import org.junit.Test;
  * 
  * @author Peter Erzberger
  */
-@SuppressWarnings("unchecked")
 public class ReadOnlyBinaryRangeTreeTest {
+
     @Test
     public void testTwoCulmnTreeBasedOnStrings() {
-        Map map = new HashMap();
+        Map<TwoColumnKey, Integer> map = new HashMap<TwoColumnKey, Integer>();
         map.put(new TwoColumnKey("a", "c"), new Integer(42));
         map.put(new TwoColumnKey("d", "z"), new Integer(43));
 
@@ -41,7 +41,7 @@ public class ReadOnlyBinaryRangeTreeTest {
 
     @Test
     public void testLowerRangeTreeBasedOnStrings() {
-        Map map = new HashMap();
+        Map<String, Integer> map = new HashMap<String, Integer>();
         map.put("a", new Integer(42));
         map.put("m", new Integer(43));
         map.put("x", new Integer(44));
@@ -311,15 +311,14 @@ public class ReadOnlyBinaryRangeTreeTest {
 
         private static final long serialVersionUID = 1L;
 
-        /**
-         */
-        public TestReadOnlyBinaryRangTree(Map map, KeyType keyType) {
+        public TestReadOnlyBinaryRangTree(Map<Integer, Integer> map, KeyType keyType) {
             super(map, keyType);
         }
 
         private static TestReadOnlyBinaryRangTree createTreeWidthIntegerValues(int nodeCount,
                 int startPos,
                 int rangWidth) {
+
             return createTreeWidthIntegerValues(nodeCount, startPos, rangWidth,
                     ReadOnlyBinaryRangeTree.KeyType.KEY_IS_LOWER_BOUND_EQUAL);
         }
@@ -328,7 +327,8 @@ public class ReadOnlyBinaryRangeTreeTest {
                 int startPos,
                 int rangeWidth,
                 KeyType keyType) {
-            HashMap map = new HashMap(nodeCount);
+
+            HashMap<Integer, Integer> map = new HashMap<Integer, Integer>(nodeCount);
             for (int i = 0; i < nodeCount; i++) {
                 Integer value = new Integer(startPos + rangeWidth * i);
                 map.put(value, value);
@@ -341,16 +341,15 @@ public class ReadOnlyBinaryRangeTreeTest {
 
         private static final long serialVersionUID = 42L;
 
-        /**
-         */
-        public TestTwoColumnReadOnlyBinaryRangeTree(Map map) {
+        public TestTwoColumnReadOnlyBinaryRangeTree(Map<TwoColumnKey, Integer> map) {
             super(map, ReadOnlyBinaryRangeTree.KeyType.KEY_IS_TWO_COLUMN_KEY);
         }
 
         private static TestTwoColumnReadOnlyBinaryRangeTree createTreeWithIntegerValues(int nodeCount,
                 int nodeWidth,
                 int gap) {
-            final Map map = new HashMap(nodeCount);
+
+            final Map<TwoColumnKey, Integer> map = new HashMap<TwoColumnKey, Integer>(nodeCount);
 
             for (int i = 0; i < nodeCount; i++) {
                 final Integer lowerBound = new Integer((nodeWidth + gap + 1) * (i));
@@ -362,5 +361,7 @@ public class ReadOnlyBinaryRangeTreeTest {
 
             return new TestTwoColumnReadOnlyBinaryRangeTree(map);
         }
+
     }
+
 }

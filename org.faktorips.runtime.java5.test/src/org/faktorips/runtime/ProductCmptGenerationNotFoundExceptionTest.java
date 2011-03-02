@@ -22,10 +22,12 @@ import org.junit.Test;
  * @author Jan Ortmann
  */
 public class ProductCmptGenerationNotFoundExceptionTest {
+
     @Test
     public void testToString() {
         ProductCmptGenerationNotFoundException e = new ProductCmptGenerationNotFoundException("MotorProducts",
                 "MotorProduct", new GregorianCalendar(2007, 0, 1), false);
         e.toString();
     }
+
 }

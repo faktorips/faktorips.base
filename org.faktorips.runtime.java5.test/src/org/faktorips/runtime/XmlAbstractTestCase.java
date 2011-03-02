@@ -30,7 +30,7 @@ import org.xml.sax.SAXParseException;
 public abstract class XmlAbstractTestCase {
 
     /**
-     * Returns the xml document that is associated with the test case. This document has the same
+     * Returns the XML document that is associated with the test case. This document has the same
      * name as the test case class and the ending "+.xml".
      */
     public Document getTestDocument() {
@@ -65,14 +65,17 @@ public abstract class XmlAbstractTestCase {
         factory.setNamespaceAware(true);
         DocumentBuilder builder = factory.newDocumentBuilder();
         builder.setErrorHandler(new ErrorHandler() {
+            @Override
             public void error(SAXParseException e) throws SAXException {
                 throw e;
             }
 
+            @Override
             public void fatalError(SAXParseException e) throws SAXException {
                 throw e;
             }
 
+            @Override
             public void warning(SAXParseException e) throws SAXException {
                 throw e;
             }

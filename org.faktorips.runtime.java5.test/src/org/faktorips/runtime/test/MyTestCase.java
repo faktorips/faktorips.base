@@ -30,35 +30,24 @@ class MyTestCase extends IpsTestCase2 {
         this.actualValue = actualValue;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initInputFromXml(Element inputEl) {
         // do nothing
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initExpectedResultFromXml(Element resultEl) {
         // do nothing
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void executeBusinessLogic() throws Exception {
         // do nothing
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void executeAsserts(IpsTestResult result) throws Exception {
         assertEquals(expectedValue, actualValue, result, "TestObject", "TestedAttribute");
     }
+
 }

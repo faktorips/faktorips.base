@@ -31,49 +31,31 @@ public class TestPremiumCalculation extends IpsTestCase2 {
         super(qName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initInputFromXml(Element inputEl) {
         Element el = XmlUtil.getFirstElement(inputEl);
         inputSumInsured = el.getAttribute("value");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void initExpectedResultFromXml(Element resultEl) {
         Element el = XmlUtil.getFirstElement(resultEl);
         expResultPremium = el.getAttribute("value");
     }
 
-    /**
-     * @return Returns the expResultPremium.
-     */
     public String getExpResultPremium() {
         return expResultPremium;
     }
 
-    /**
-     * @return Returns the inputSumInsured.
-     */
     public String getInputSumInsured() {
         return inputSumInsured;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void executeBusinessLogic() throws Exception {
         // do nothing
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void executeAsserts(IpsTestResult result) throws Exception {
         // do nothing
@@ -82,4 +64,5 @@ public class TestPremiumCalculation extends IpsTestCase2 {
     public void testDummy() {
         // do nothing
     }
+
 }

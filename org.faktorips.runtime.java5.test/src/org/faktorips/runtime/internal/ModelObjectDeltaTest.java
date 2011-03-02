@@ -426,9 +426,7 @@ public class ModelObjectDeltaTest {
             this.property = property;
         }
 
-        /**
-         * {@inheritDoc}
-         */
+        @Override
         public MessageList validate(IValidationContext context) {
             return null;
         }
@@ -438,9 +436,7 @@ public class ModelObjectDeltaTest {
             return id;
         }
 
-        /**
-         * {@inheritDoc}
-         */
+        @Override
         public IModelObjectDelta computeDelta(IModelObject otherObject, IDeltaComputationOptions options) {
             MyModelObject other = (MyModelObject)otherObject;
             ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(this, otherObject);
@@ -477,6 +473,7 @@ public class ModelObjectDeltaTest {
             this.rc = rc;
         }
 
+        @Override
         public boolean visit(IModelObjectDelta delta) {
             visitedDeltas.add(delta);
             return rc;
@@ -493,17 +490,17 @@ public class ModelObjectDeltaTest {
             this.computationMethod = computationMethod;
         }
 
+        @Override
         public ComputationMethod getMethod(String association) {
             return computationMethod;
         }
 
+        @Override
         public boolean ignore(Class<?> clazz, String property) {
             return false;
         }
 
-        /**
-         * {@inheritDoc}
-         */
+        @Override
         public boolean isSame(IModelObject object1, IModelObject object2) {
             MyModelObject mo1 = (MyModelObject)object1;
             MyModelObject mo2 = (MyModelObject)object2;
@@ -511,4 +508,5 @@ public class ModelObjectDeltaTest {
         }
 
     }
+
 }

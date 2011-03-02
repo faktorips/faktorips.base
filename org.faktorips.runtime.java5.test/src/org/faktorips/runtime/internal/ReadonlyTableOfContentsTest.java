@@ -26,10 +26,7 @@ import org.junit.Test;
  */
 public class ReadonlyTableOfContentsTest extends XmlAbstractTestCase {
 
-    /*
-     * Test method for 'org.faktorips.runtime.ReadonlyTableOfContents.initFromXml(Element)'
-     */
-	@Test
+    @Test
     public void testInitFromXml() {
         AbstractReadonlyTableOfContents toc = new ReadonlyTableOfContents();
         toc.initFromXml(getTestDocument().getDocumentElement());

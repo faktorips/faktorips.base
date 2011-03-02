@@ -19,15 +19,13 @@ package org.faktorips.runtime.test;
  * @author Joerg Ortmann
  */
 public class MyFormulaTestCase extends IpsFormulaTestCase {
+
     private int failures = 0;
 
     public MyFormulaTestCase(String qName) {
         super(qName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void executeAsserts(IpsTestResult result) throws Exception {
         for (int i = 0; i < failures; i++) {
@@ -35,9 +33,6 @@ public class MyFormulaTestCase extends IpsFormulaTestCase {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void executeBusinessLogic() throws Exception {
         // do nothing
@@ -46,4 +41,5 @@ public class MyFormulaTestCase extends IpsFormulaTestCase {
     public void addDummyFailures(int failures) {
         this.failures += failures;
     }
+
 }

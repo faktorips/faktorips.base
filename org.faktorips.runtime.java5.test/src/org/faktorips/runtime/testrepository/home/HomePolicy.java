@@ -16,8 +16,6 @@ package org.faktorips.runtime.testrepository.home;
 import org.faktorips.runtime.testrepository.PnCPolicy;
 
 /**
- * Test class.
- * 
  * @author Jan Ortmann
  */
 public class HomePolicy extends PnCPolicy {

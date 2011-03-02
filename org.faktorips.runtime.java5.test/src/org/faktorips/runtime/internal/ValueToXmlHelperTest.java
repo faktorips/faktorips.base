@@ -107,4 +107,5 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
         assertEquals("h", enumValues.getValue(1));
         assertTrue(enumValues.containsNull());
     }
+
 }

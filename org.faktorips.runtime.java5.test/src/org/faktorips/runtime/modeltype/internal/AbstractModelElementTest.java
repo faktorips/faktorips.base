@@ -24,7 +24,7 @@ import org.junit.Test;
 
 public class AbstractModelElementTest {
 
-    private InMemoryRuntimeRepository repository = new InMemoryRuntimeRepository();
+    private final InMemoryRuntimeRepository repository = new InMemoryRuntimeRepository();
 
     @Test
     public void testGetExtensionPropertyValue() {
@@ -54,4 +54,5 @@ public class AbstractModelElementTest {
         assertTrue(ids.contains("prop0"));
         assertTrue(ids.contains("prop1"));
     }
+
 }

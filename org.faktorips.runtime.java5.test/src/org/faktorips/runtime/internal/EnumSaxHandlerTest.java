@@ -101,4 +101,5 @@ public class EnumSaxHandlerTest {
         String value = values.get(0);
         assertEquals("a\rb\rc", value);
     }
+
 }

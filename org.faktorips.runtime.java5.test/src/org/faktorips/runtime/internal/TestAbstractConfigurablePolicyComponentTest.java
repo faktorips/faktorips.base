@@ -119,22 +119,22 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
         a.valid = true;
         b.valid = true;
         MessageList list = a.validate(new ValidationContext());
-        assertEquals(0, list.getNoOfMessages());
+        assertEquals(0, list.size());
 
         a.valid = false;
         list = a.validate(new ValidationContext());
-        assertEquals(1, list.getNoOfMessages());
+        assertEquals(1, list.size());
         assertEquals("A", list.getMessage(0).getCode());
 
         b.valid = false;
         list = a.validate(new ValidationContext());
-        assertEquals(2, list.getNoOfMessages());
+        assertEquals(2, list.size());
         assertEquals("A", list.getMessage(0).getCode());
         assertEquals("B", list.getMessage(1).getCode());
 
         a.valid = true;
         list = a.validate(new ValidationContext());
-        assertEquals(1, list.getNoOfMessages());
+        assertEquals(1, list.size());
         assertEquals("B", list.getMessage(0).getCode());
     }
 
@@ -163,8 +163,10 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
         XmlPc pc = new XmlPc();
         pc.prop0 = "bla";
         pc.initFromXml(XmlUtil.getElement(docEl, "XmlPc", 1), false, repository, store);
-        assertEquals("bla", pc.prop0); // make sure prop0 is not set to null
-        // xml datat does not contain any information about prop0
+
+        // make sure prop0 is not set to null
+        // XML data does not contain any information about prop0
+        assertEquals("bla", pc.prop0);
     }
 
     @Test
@@ -185,9 +187,7 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
 
         PropertyChangeEvent lastEvent;
 
-        /**
-         * {@inheritDoc}
-         */
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
             lastEvent = evt;
         }
@@ -246,6 +246,7 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
          * 
          * @generated
          */
+        @Override
         public void notifyChangeListeners(PropertyChangeEvent event) {
             if (event instanceof AssociationChangedEvent) {
                 propertyChangeSupport.fireAssociationChange((AssociationChangedEvent)event);
@@ -259,6 +260,7 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
          * 
          * @generated
          */
+        @Override
         public void addPropertyChangeListener(PropertyChangeListener listener) {
             propertyChangeSupport.addPropertyChangeListener(listener);
         }
@@ -268,6 +270,7 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
          * 
          * @generated
          */
+        @Override
         public void addPropertyChangeListener(PropertyChangeListener listener, boolean propagateEventsFromChildren) {
             propertyChangeSupport.addPropertyChangeListener(listener, propagateEventsFromChildren);
         }
@@ -277,6 +280,7 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
          * 
          * @generated
          */
+        @Override
         public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
             propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
         }
@@ -286,6 +290,7 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
          * 
          * @generated
          */
+        @Override
         public boolean hasListeners(String propertyName) {
             return propertyChangeSupport.hasListeners(propertyName);
         }
@@ -295,6 +300,7 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
          * 
          * @generated
          */
+        @Override
         public void removePropertyChangeListener(PropertyChangeListener listener) {
             propertyChangeSupport.removePropertyChangeListener(listener);
         }
@@ -304,6 +310,7 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
          * 
          * @generated
          */
+        @Override
         public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
             propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
         }
@@ -339,9 +346,6 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
             this.child = child;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected AbstractModelObject createChildFromXml(Element childEl) {
             if ("Child".equals(childEl.getNodeName())) {
@@ -357,9 +361,6 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
             // do nothing
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected IUnresolvedReference createUnresolvedReference(Object objectId, String targetRole, String targetId)
                 throws SecurityException, NoSuchMethodException {
@@ -370,16 +371,11 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
             return null;
         }
 
-        /**
-         * {@inheritDoc}
-         */
+        @Override
         public Calendar getEffectiveFromAsCalendar() {
             return effectiveDate;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void removeChildModelObjectInternal(IModelObject child) {
             // do nothing
@@ -403,18 +399,12 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
             parent = newParent;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void initialize() {
             // test that the generation is accessible
             assertNotNull(getProductComponent().getGenerationBase(getEffectiveFromAsCalendar()));
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void removeChildModelObjectInternal(IModelObject child) {
             // do nothing
@@ -425,9 +415,7 @@ public class TestAbstractConfigurablePolicyComponentTest extends XmlAbstractTest
             return parent;
         }
 
-        /**
-         * {@inheritDoc}
-         */
+        @Override
         public Calendar getEffectiveFromAsCalendar() {
             return ((IConfigurableModelObject)parent).getEffectiveFromAsCalendar();
         }

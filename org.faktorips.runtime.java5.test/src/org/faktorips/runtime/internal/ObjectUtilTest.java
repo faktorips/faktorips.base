@@ -23,6 +23,7 @@ import org.junit.Test;
  * @author Jan Ortmann
  */
 public class ObjectUtilTest {
+
     @Test
     public void testEqualsObject() {
         assertTrue(ObjectUtil.equals(null, null));
@@ -34,7 +35,6 @@ public class ObjectUtilTest {
 
         Object o2 = new Object();
         assertFalse(ObjectUtil.equals(o1, o2));
-
     }
 
 }

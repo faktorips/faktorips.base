@@ -35,9 +35,9 @@ import org.w3c.dom.Element;
 
 public class TocModifyUtil {
 
-    private AbstractProductDataProvider productDataProvider;
-    private DocumentBuilder docBuilder;
-    private URL tocResource;
+    private final AbstractProductDataProvider productDataProvider;
+    private final DocumentBuilder docBuilder;
+    private final URL tocResource;
 
     public TocModifyUtil(String tocResourcePath) throws ParserConfigurationException {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -64,14 +64,14 @@ public class TocModifyUtil {
 
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         try {
-            transformerFactory.setAttribute("indent-number", new Integer(4)); //$NON-NLS-1$
+            transformerFactory.setAttribute("indent-number", new Integer(4));
         } catch (IllegalArgumentException e) {
             // no problem, we're using a older version
         }
         Transformer transformer = transformerFactory.newTransformer();
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         // both settings are necessary, to accommodate versions in Java 1.4 and 1.5
-        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4"); //$NON-NLS-1$ //$NON-NLS-2$
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
         DOMSource source = new DOMSource(element);
         StreamResult result = new StreamResult(writer);
         transformer.transform(source, result);
@@ -85,4 +85,5 @@ public class TocModifyUtil {
         builder = factory.newDocumentBuilder();
         return builder;
     }
+
 }

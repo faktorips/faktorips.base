@@ -43,4 +43,5 @@ public class TestProductCmptGeneration extends ProductComponentGeneration {
     public int computeTestFormula(int parameter_1, String parameter_2) throws FormulaExecutionException {
         return (Integer)getFormulaEvaluator().evaluate("computeTestFormula", parameter_1, parameter_2);
     }
+
 }

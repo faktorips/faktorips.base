@@ -23,25 +23,19 @@ class MyListener implements IpsTestListener {
     IpsTest2 lastFinished;
     IpsTestFailure lastFailure;
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void testStarted(IpsTest2 test) {
         startedCount++;
         lastStarted = test;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void testFinished(IpsTest2 test) {
         finishCount++;
         lastFinished = test;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void testFailureOccured(IpsTestFailure failure) {
         failureCount++;
         lastFailure = failure;

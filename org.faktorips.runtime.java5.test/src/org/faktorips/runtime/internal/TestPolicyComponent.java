@@ -24,29 +24,19 @@ import org.faktorips.runtime.IProductComponent;
  */
 public class TestPolicyComponent extends AbstractConfigurableModelObject {
 
-    /**
-     * 
-     */
     public TestPolicyComponent() {
         super();
     }
 
-    /**
-     */
     public TestPolicyComponent(IProductComponent productCmpt) {
         super(productCmpt);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public Calendar getEffectiveFromAsCalendar() {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void removeChildModelObjectInternal(IModelObject child) {
         // do nothing

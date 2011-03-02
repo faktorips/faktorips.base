@@ -23,9 +23,6 @@ import org.junit.Test;
 
 public class DateTimeTest {
 
-    /*
-     * Test method for 'org.faktorips.runtime.internal.DateTime.toDate(TimeZone)'
-     */
     @Test
     public void testToDate() {
         DateTime dt = new DateTime(2005, 5, 1);
@@ -34,9 +31,6 @@ public class DateTimeTest {
         assertEquals(date, dt.toDate(cal.getTimeZone()));
     }
 
-    /*
-     * Test method for 'org.faktorips.runtime.internal.DateTime.toGregorianCalendar(TimeZone)'
-     */
     @Test
     public void testToGregorianCalendar() {
         DateTime dt = new DateTime(2005, 5, 1);
@@ -44,13 +38,11 @@ public class DateTimeTest {
         assertEquals(cal, dt.toGregorianCalendar(cal.getTimeZone()));
     }
 
-    /*
-     * Test method for 'org.faktorips.runtime.internal.DateTime.toGregorianCalendar(TimeZone)'
-     */
     @Test
     public void testCreateDateOnly() {
         GregorianCalendar cal = new GregorianCalendar(2005, 4, 1);
         assertEquals(new DateTime(2005, 5, 1), DateTime.createDateOnly(cal));
         assertNull(DateTime.createDateOnly(null));
     }
+
 }

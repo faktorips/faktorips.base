@@ -24,9 +24,6 @@ import java.util.List;
 import org.faktorips.values.Money;
 import org.junit.Test;
 
-/**
- *
- */
 public class MessageTest extends XmlAbstractTestCase {
 
     private final String LINE_SEPARATOR = System.getProperty("line.separator");
@@ -96,7 +93,6 @@ public class MessageTest extends XmlAbstractTestCase {
             assertEquals(ops.get(i).getObject(), opsCpy.get(i).getObject());
             assertEquals(ops.get(i).getProperty(), opsCpy.get(i).getProperty());
         }
-
     }
 
     @Test
@@ -171,12 +167,8 @@ public class MessageTest extends XmlAbstractTestCase {
         assertEquals(params.get(1), copyParams.get(1));
     }
 
-    /**
-     * Class under test for String toString()
-     */
     @Test
     public void testToString() {
-
         Message msg = Message.newError("1", "blabla");
         String expected = "ERROR 1[]" + LINE_SEPARATOR + "blabla";
         assertEquals(expected, msg.toString());
@@ -186,20 +178,17 @@ public class MessageTest extends XmlAbstractTestCase {
         assertEquals(expected, msg.toString());
     }
 
-    /**
-     * Class under test for boolean equals(Object)
-     */
-     @Test
+    @Test
     public void testEqualsObject() {
-        // differnet class
+        // different class
         Message msg = Message.newError("1", "blabla");
         assertFalse(msg.equals(this));
 
-        // diferent code
+        // different code
         Message msg2 = Message.newError("2", "blabla");
         assertFalse(msg.equals(msg2));
 
-        // diferent code, one code is null
+        // different code, one code is null
         msg2 = Message.newError(null, "blabla");
         assertFalse(msg.equals(msg2));
         assertFalse(msg2.equals(msg));

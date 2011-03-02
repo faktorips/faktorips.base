@@ -91,7 +91,7 @@ public class InMemoryRuntimeRepositoryTest {
             repository.putTable(null);
             fail();
         } catch (NullPointerException e) {
-            // ok
+            // OK
         }
     }
 
@@ -330,7 +330,6 @@ public class InMemoryRuntimeRepositoryTest {
 
         expectedGen = repository.getPreviousProductComponentGeneration(rep2bGen1);
         assertNull(expectedGen);
-
     }
 
     @Test
@@ -359,7 +358,6 @@ public class InMemoryRuntimeRepositoryTest {
 
     @Test
     public void testGetLatestProductComponentGeneration() {
-
         repository = new InMemoryRuntimeRepository();
         a = new TestProductComponent(repository, "a", "aKind", "aVersion");
         TestProductCmptGeneration aGen1 = new TestProductCmptGeneration(a);
@@ -378,7 +376,7 @@ public class InMemoryRuntimeRepositoryTest {
             repository.getLatestProductComponentGeneration(null);
             fail();
         } catch (NullPointerException e) {
-            // ok
+            // OK
         }
     }
 
@@ -431,7 +429,6 @@ public class InMemoryRuntimeRepositoryTest {
 
         expectedGen = repository.getPreviousProductComponentGeneration(rep2bGen1);
         assertNull(expectedGen);
-
     }
 
     @Test
@@ -520,7 +517,7 @@ public class InMemoryRuntimeRepositoryTest {
     }
 
     class TestTable2 extends TestTable {
-        // do nothing
+
     }
 
     private class TestXmlAdapter extends XmlAdapter<String, TestEnumValue> {
@@ -539,7 +536,7 @@ public class InMemoryRuntimeRepositoryTest {
 
     private class TestEnumValue {
 
-        private String id;
+        private final String id;
 
         public TestEnumValue(String id) {
             this.id = id;
@@ -549,4 +546,5 @@ public class InMemoryRuntimeRepositoryTest {
             return id;
         }
     }
+
 }

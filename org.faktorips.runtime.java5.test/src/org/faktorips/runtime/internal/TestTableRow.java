@@ -17,38 +17,26 @@ import org.faktorips.values.Decimal;
 
 public class TestTableRow {
 
-    private String company;
+    private final String company;
 
-    private Integer gender;
+    private final Integer gender;
 
-    private Decimal rate;
+    private final Decimal rate;
 
-    /**
-     * 
-     */
     public TestTableRow(String company, Integer gender, Decimal rate) {
         this.company = company;
         this.gender = gender;
         this.rate = rate;
     }
 
-    /**
-     * 
-     */
     public String getCompany() {
         return company;
     }
 
-    /**
-     * 
-     */
     public Integer getGender() {
         return gender;
     }
 
-    /**
-     * 
-     */
     public Decimal getRate() {
         return rate;
     }

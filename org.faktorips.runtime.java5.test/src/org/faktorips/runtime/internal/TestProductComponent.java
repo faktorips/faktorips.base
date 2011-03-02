@@ -31,9 +31,7 @@ public class TestProductComponent extends ProductComponent {
         return new TestProductCmptGeneration(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public IConfigurableModelObject createPolicyComponent() {
         throw new UnsupportedOperationException();
     }
