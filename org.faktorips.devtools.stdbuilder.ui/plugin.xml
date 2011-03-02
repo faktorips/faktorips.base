@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any?after=navigate">
+         <menu
+               label="%org.faktorips.devtools.stdbuilder.ui.dynamicmenus.jumpToSourceCodeMenu">
+            <dynamic
+                  class="org.faktorips.devtools.stdbuilder.ui.dynamicmenus.JumpToSourceCodeDynamicMenuContribution"
+                  id="org.faktorips.devtools.stdbuilder.ui.dynamicmenus.jumpToSourceCode">
+            </dynamic>
+         </menu>
+      </menuContribution>
+   </extension>
+
+</plugin>
