@@ -310,7 +310,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
         IProductCmptStructureReference parent = reference;
         while (enabled && (parent = parent.getParent()) != null) {
             if (parent instanceof IProductCmptTypeAssociationReference) {
-                parent = parent.getParent();
+                // parent = parent.getParent();
                 continue;
             } else {
                 LinkStatus status = getStatus(parent);
