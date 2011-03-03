@@ -49,8 +49,8 @@ import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree;
-import org.faktorips.runtime.internal.Table;
 import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree.TwoColumnKey;
+import org.faktorips.runtime.internal.Table;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 
@@ -815,9 +815,9 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         }
         IUniqueKey[] keys = getUniqueKeys();
         for (int i = 0; i < keys.length; i++) {
-            String[] keyClassParameterTypes = (String[])fKeyClassParameterTypes.get(i);
+            String[] keyClassParameterTypes = fKeyClassParameterTypes.get(i);
             if (keyClassParameterTypes != null) {
-                createHashKeyClass(fKeyClassNames[i], (String[])fKeyClassParameterNames.get(i), keyClassParameterTypes);
+                createHashKeyClass(fKeyClassNames[i], fKeyClassParameterNames.get(i), keyClassParameterTypes);
             }
         }
     }
@@ -1171,7 +1171,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 fDatatypes.put(datatype.getQualifiedName(), datatype);
             }
         }
-        return (Datatype)fDatatypes.get(name);
+        return fDatatypes.get(name);
     }
 
     @Override
