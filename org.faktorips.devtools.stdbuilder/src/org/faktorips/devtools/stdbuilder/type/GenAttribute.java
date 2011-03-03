@@ -86,7 +86,7 @@ public abstract class GenAttribute extends GenTypePart {
     }
 
     public final String getSetterMethodName() {
-        return getJavaNamingConvention().getSetterMethodName(getAttribute().getName(), getDatatype());
+        return getJavaNamingConvention().getSetterMethodName(getAttribute().getName());
     }
 
     /**
