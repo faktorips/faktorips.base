@@ -26,9 +26,9 @@
 
 	<!-- These are the settings for merging annotations -->
 	<!-- Defining the custom tag to keep custom annotations:
-	does match any @generated or @restrainedmodifiable that are not followed by @customizedAnnotations -->
+	does match any @generated or @restrainedmodifiable that is not followed by @customizedAnnotations -->
 	<merge:dictionaryPattern name="KeepAnnotations" select="Member/getComment" match="@\s*((g)enerated|restrainedmodifiable)(?![\s\S]*@\s*customizedAnnotations(.*(CONTENT\-CHANGED|ALL).*|\s*)(\n\r?|\r\n?))"/>
-	<merge:dictionaryPattern name="KeepAnnotations" select="Member/getComment" match="@\s*(generate(d)|restrainedmodifiable)(?![\s\S]*@\s*customizedAnnotations(.*(DELETED|ALL).*|\s*)(\n\r?|\r\n?))"/>
+	<merge:dictionaryPattern name="KeepAnnotations" select="Member/getComment" match="@\s*(generate(d)|restrainedmodifiable)(?![\s\S]*@\s*customizedAnnotations(.*(REMOVED|ALL).*|\s*)(\n\r?|\r\n?))"/>
 	<merge:dictionaryPattern name="KeepAnnotations" select="Member/getComment" match="@\s*(g(e)nerated|restrainedmodifiable)(?![\s\S]*@\s*customizedAnnotations(.*(ADDED|ALL).*|\s*)(\n\r?|\r\n?))"/>
 	<!-- overwrite the content of annotations -->
 	<merge:pull sourceGet="Annotation/getContents" targetParentMarkup="^g$" targetPut="Annotation/setContents"/>
