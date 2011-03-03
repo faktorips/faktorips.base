@@ -31,12 +31,14 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -53,6 +55,67 @@ import org.xml.sax.SAXParseException;
  * @author Jan Ortmann
  */
 public class XmlUtil {
+
+    // xml document builder
+    /**
+     * This is a thread local variable because the document builder is not thread safe.
+     */
+    private static ThreadLocal<DocumentBuilder> docBuilderHolder = new ThreadLocal<DocumentBuilder>() {
+        @Override
+        protected DocumentBuilder initialValue() {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setNamespaceAware(true);
+            factory.setExpandEntityReferences(false);
+            DocumentBuilder builder;
+            try {
+                builder = factory.newDocumentBuilder();
+            } catch (ParserConfigurationException e) {
+                throw new RuntimeException(e);
+            }
+            builder.setErrorHandler(new ErrorHandler() {
+                @Override
+                public void error(SAXParseException e) throws SAXException {
+                    throw e;
+                }
+
+                @Override
+                public void fatalError(SAXParseException e) throws SAXException {
+                    throw e;
+                }
+
+                @Override
+                public void warning(SAXParseException e) throws SAXException {
+                    throw e;
+                }
+            });
+            return builder;
+        }
+    };
+
+    /**
+     * This is a thread local variable because the {@link Transformer} is not thread safe.
+     */
+    private static ThreadLocal<Transformer> transformerHolder = new ThreadLocal<Transformer>() {
+        @Override
+        protected Transformer initialValue() {
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            try {
+                transformerFactory.setAttribute("indent-number", new Integer(4)); //$NON-NLS-1$
+            } catch (IllegalArgumentException e) {
+                // no problem, we're using a older version
+            }
+            try {
+                return transformerFactory.newTransformer();
+            } catch (TransformerConfigurationException e) {
+                IpsPlugin.log(e);
+            }
+            return null;
+        }
+    };
+
+    private static Transformer getTransformer() {
+        return transformerHolder.get();
+    }
 
     public final static void setAttributeConvertNullToEmptyString(Element el, String attribute, String value) {
         if (value == null) {
@@ -154,13 +217,7 @@ public class XmlUtil {
      * the encoding is not available from the writer).
      */
     public final static void nodeToWriter(Node node, Writer writer, String encoding) throws TransformerException {
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        try {
-            transformerFactory.setAttribute("indent-number", new Integer(4)); //$NON-NLS-1$
-        } catch (IllegalArgumentException e) {
-            // no problem, we're using a older version
-        }
-        Transformer transformer = transformerFactory.newTransformer();
+        Transformer transformer = getTransformer();
         transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
         transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
         // both settings are necessary, to accommodate versions in Java 1.4 and 1.5
@@ -179,7 +236,6 @@ public class XmlUtil {
     // Unused exception suppressed because of deprecation.
     public final static Document getDocument(InputStream is) throws SAXException, IOException,
             ParserConfigurationException {
-
         return getDefaultDocumentBuilder().parse(is);
     }
 
@@ -188,62 +244,7 @@ public class XmlUtil {
     }
 
     public final static DocumentBuilder getDefaultDocumentBuilder() {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true);
-        factory.setExpandEntityReferences(false);
-        DocumentBuilder builder;
-        try {
-            builder = factory.newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e);
-        }
-        builder.setErrorHandler(new ErrorHandler() {
-            @Override
-            public void error(SAXParseException e) throws SAXException {
-                throw e;
-            }
-
-            @Override
-            public void fatalError(SAXParseException e) throws SAXException {
-                throw e;
-            }
-
-            @Override
-            public void warning(SAXParseException e) throws SAXException {
-                throw e;
-            }
-        });
-        return builder;
-    }
-
-    public final static DocumentBuilder getValidatingDocumentBuilder() {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true);
-        factory.setExpandEntityReferences(false);
-        factory.setValidating(true);
-        DocumentBuilder builder;
-        try {
-            builder = factory.newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e);
-        }
-        builder.setErrorHandler(new ErrorHandler() {
-            @Override
-            public void error(SAXParseException e) throws SAXException {
-                throw e;
-            }
-
-            @Override
-            public void fatalError(SAXParseException e) throws SAXException {
-                throw e;
-            }
-
-            @Override
-            public void warning(SAXParseException e) throws SAXException {
-                throw e;
-            }
-        });
-        return builder;
+        return docBuilderHolder.get();
     }
 
     /**
@@ -281,15 +282,8 @@ public class XmlUtil {
      */
     private static void writeXMLtoResult(Result res, Document doc, String doctype, int indentWidth, String encoding)
             throws TransformerException {
-
+        Transformer transformer = getTransformer();
         Source src = new DOMSource(doc);
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        try {
-            transformerFactory.setAttribute("indent-number", new Integer(4)); //$NON-NLS-1$
-        } catch (IllegalArgumentException e) {
-            // no problem, we're using a older version
-        }
-        Transformer transformer = transformerFactory.newTransformer();
         transformer = TransformerFactory.newInstance().newTransformer();
         transformer.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$
         transformer.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$

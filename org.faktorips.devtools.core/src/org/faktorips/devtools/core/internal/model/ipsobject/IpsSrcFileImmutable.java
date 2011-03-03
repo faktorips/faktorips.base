@@ -111,7 +111,7 @@ public class IpsSrcFileImmutable extends IpsSrcFile {
 
         try {
             ipsObject = (IpsObject)getIpsObjectType().newObject(this);
-            Document doc = IpsPlugin.getDefault().newDocumentBuilder().parse(getContentFromEnclosingResource());
+            Document doc = IpsPlugin.getDefault().getDocumentBuilder().parse(getContentFromEnclosingResource());
             ipsObject.initFromXml(doc.getDocumentElement());
         } catch (Exception e) {
             IpsPlugin.log(new IpsStatus(e));

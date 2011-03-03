@@ -138,7 +138,7 @@ public class Migration_2_3_2_rfinal extends AbstractIpsProjectMigrationOperation
                 searchedTypes.addAll(enumType.findAllSuperEnumTypes(ipsProject));
                 for (IEnumType currentSearchedEnumType : searchedTypes) {
                     InputStream is = currentSearchedEnumType.getIpsSrcFile().getContentFromEnclosingResource();
-                    DocumentBuilder builder = IpsPlugin.getDefault().newDocumentBuilder();
+                    DocumentBuilder builder = IpsPlugin.getDefault().getDocumentBuilder();
                     Document doc;
                     try {
                         doc = builder.parse(is);

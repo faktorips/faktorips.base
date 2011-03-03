@@ -142,7 +142,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
      * Copy constructor.
      */
     public IpsProjectProperties(IIpsProject ipsProject, IpsProjectProperties props) {
-        Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
+        Document doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
         Element el = props.toXml(doc);
         initFromXml(ipsProject, el);
         createdFromParsableFileContents = props.createdFromParsableFileContents;

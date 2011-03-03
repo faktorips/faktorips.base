@@ -63,7 +63,7 @@ public class IpsPluginTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetDocumentBuilder() throws UnsupportedEncodingException, SAXException, IOException {
-        DocumentBuilder docBuilder = IpsPlugin.getDefault().newDocumentBuilder();
+        DocumentBuilder docBuilder = IpsPlugin.getDefault().getDocumentBuilder();
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><abc/>";
         docBuilder.parse(new ByteArrayInputStream(xml.getBytes("UTF-8")));
     }

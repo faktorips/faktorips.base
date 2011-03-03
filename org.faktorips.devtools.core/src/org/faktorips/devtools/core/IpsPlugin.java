@@ -48,6 +48,7 @@ import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrat
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOperationFactory;
 import org.faktorips.devtools.core.model.versionmanager.IpsFeatureVersionManagerSorter;
+import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.devtools.tableconversion.IValueConverter;
 import org.faktorips.util.ArgumentCheck;
@@ -281,14 +282,30 @@ public class IpsPlugin extends AbstractUIPlugin {
      * @throws RuntimeException if the factory throws a ParserConfigurationException. The
      *             ParserConfigurationException is wrapped in a runtime exception as we can't do
      *             anything to resolve it.
+     * @deprecated It is not useful to create a new document builder every time you need one. The
+     *             only problem is that {@link DocumentBuilder} is not thread safe. To avoid multi
+     *             threading problems, use {@link #getDocumentBuilder()} instead.
      */
+    @Deprecated
     public DocumentBuilder newDocumentBuilder() {
         try {
             return docBuilderFactory.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    /**
+     * Returns a thread local document builder. This method does not create a new document builder
+     * for every call but creating a new document builder for every thread.
+     * 
+     * @throws RuntimeException if the factory throws a ParserConfigurationException. The
+     *             ParserConfigurationException is wrapped in a runtime exception as we can't do
+     *             anything to resolve it.
+     */
+    public DocumentBuilder getDocumentBuilder() {
+        return XmlUtil.getDefaultDocumentBuilder();
+        //
     }
 
     /**

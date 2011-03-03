@@ -291,7 +291,7 @@ public class IpsPasteAction extends IpsAction {
         String encoding = ipsObject.getIpsProject().getXmlFileCharset();
         String contents;
         try {
-            contents = XmlUtil.nodeToString(ipsObject.toXml(IpsPlugin.getDefault().newDocumentBuilder().newDocument()),
+            contents = XmlUtil.nodeToString(ipsObject.toXml(IpsPlugin.getDefault().getDocumentBuilder().newDocument()),
                     encoding);
         } catch (TransformerException e) {
             throw new RuntimeException(e);

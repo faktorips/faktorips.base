@@ -252,7 +252,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         }
         String xml = null;
         try {
-            Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
+            Document doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
             String version = getIpsProject().getProperties().getVersion();
             if (StringUtils.isEmpty(version)) {
                 version = "" + new Date().getTime();
@@ -320,7 +320,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                 InputStream is = tocFile.getContents(true);
                 Document doc;
                 try {
-                    DocumentBuilder builder = IpsPlugin.getDefault().newDocumentBuilder();
+                    DocumentBuilder builder = IpsPlugin.getDefault().getDocumentBuilder();
                     doc = builder.parse(is);
                 } catch (Exception e) {
                     // can happen if the file is deleted in the filesystem, but the workspace has

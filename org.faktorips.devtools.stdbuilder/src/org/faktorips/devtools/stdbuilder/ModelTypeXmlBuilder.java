@@ -68,7 +68,7 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         StandardBuilderSet stdBuilderSet = (StandardBuilderSet)getBuilderSet();
         IType type = (IType)ipsSrcFile.getIpsObject();
-        doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
+        doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
         Element modelTypeEl = doc.createElement("ModelType");
         modelTypeEl.setAttribute("name", type.getQualifiedName());
         modelTypeEl.setAttribute("class", stdBuilderSet.getGenerator(type).getQualifiedName(false));

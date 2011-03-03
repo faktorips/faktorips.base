@@ -833,7 +833,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     @Override
     public Memento newMemento() {
-        Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
+        Document doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
         return new XmlMemento(this, toXml(doc));
     }
 

@@ -69,7 +69,7 @@ public class SupportedLanguageTest extends AbstractIpsPluginTest {
 
     @Test
     public void testInitFromXml() {
-        Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
+        Document doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
 
         ISupportedLanguage supportedLanguage = new SupportedLanguage();
         Element elementEnglishLanguage = englishLanguage.toXml(doc);
@@ -86,7 +86,7 @@ public class SupportedLanguageTest extends AbstractIpsPluginTest {
 
     @Test
     public void testToXml() {
-        Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
+        Document doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
 
         Element elementEnglishLanguage = englishLanguage.toXml(doc);
         assertEquals(Locale.ENGLISH.getLanguage(), elementEnglishLanguage.getAttribute("locale"));

@@ -204,7 +204,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * @throws CoreException if an error occurs while saving the data.
      */
     private void saveProjectProperties(IIpsProjectProperties properties) throws CoreException {
-        Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
+        Document doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
         Element propertiesEl = ((IpsProjectProperties)properties).toXml(doc);
         doc.appendChild(propertiesEl);
         IFile file = getIpsProjectPropertiesFile();

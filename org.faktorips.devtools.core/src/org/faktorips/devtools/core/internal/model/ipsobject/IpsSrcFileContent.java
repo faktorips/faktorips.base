@@ -84,7 +84,7 @@ public class IpsSrcFileContent {
         try {
             String encoding = ipsObject.getIpsProject().getXmlFileCharset();
             ByteArrayInputStream is = new ByteArrayInputStream(xml.getBytes(encoding));
-            DocumentBuilder builder = IpsPlugin.getDefault().newDocumentBuilder();
+            DocumentBuilder builder = IpsPlugin.getDefault().getDocumentBuilder();
             Document doc = builder.parse(is);
             is.close();
             ipsObject.initFromXml(doc.getDocumentElement());
@@ -209,7 +209,7 @@ public class IpsSrcFileContent {
                 ((XmlSaxSupport)ipsObject).initFromInputStream(is);
             } else {
                 is = file.getContentFromEnclosingResource();
-                DocumentBuilder builder = IpsPlugin.getDefault().newDocumentBuilder();
+                DocumentBuilder builder = IpsPlugin.getDefault().getDocumentBuilder();
                 Document doc = builder.parse(is);
                 ipsObject.initFromXml(doc.getDocumentElement());
             }
@@ -321,7 +321,7 @@ public class IpsSrcFileContent {
                     if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                         System.out.println("IpsSrcFileContent.save() begin: " + IpsSrcFileContent.this); //$NON-NLS-1$
                     }
-                    Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
+                    Document doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
                     String encoding = ipsObject.getIpsProject().getXmlFileCharset();
                     String newXml = XmlUtil.nodeToString(getIpsObject().toXml(doc), encoding);
                     ByteArrayInputStream is = new ByteArrayInputStream(newXml.getBytes(encoding));

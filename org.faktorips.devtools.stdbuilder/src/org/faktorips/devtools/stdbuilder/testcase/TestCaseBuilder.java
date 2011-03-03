@@ -123,7 +123,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         InputStream is = null;
         String content = null;
         try {
-            Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
+            Document doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
             Element element = toRuntimeTestCaseXml(doc, testCase);
             String encoding = ipsSrcFile.getIpsProject() == null ? "UTF-8" : testCase.getIpsProject().getXmlFileCharset(); //$NON-NLS-1$
             content = XmlUtil.nodeToString(element, encoding);

@@ -67,7 +67,7 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
     @Override
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-        Document document = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
+        Document document = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
         Element root = productCmpt.toXml(document);
 
         IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();

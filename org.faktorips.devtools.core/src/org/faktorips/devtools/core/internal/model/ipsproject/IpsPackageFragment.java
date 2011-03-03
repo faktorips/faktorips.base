@@ -322,7 +322,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
         String filename = type.getFileName(ipsObjectName);
         IIpsObject ipsObject = type.newObject(getIpsSrcFile(filename));
 
-        Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
+        Document doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
         Element element = ipsObject.toXml(doc);
         try {
             String encoding = getIpsProject().getXmlFileCharset();
@@ -344,7 +344,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
 
         IpsObjectType type = template.getIpsObjectType();
         String filename = type.getFileName(name);
-        Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
+        Document doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
         Element element;
 
         if (template instanceof IProductCmpt) {

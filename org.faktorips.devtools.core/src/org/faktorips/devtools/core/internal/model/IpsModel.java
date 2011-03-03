@@ -987,7 +987,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             return data;
         }
         try {
-            doc = IpsPlugin.getDefault().newDocumentBuilder().parse(is);
+            doc = IpsPlugin.getDefault().getDocumentBuilder().parse(is);
         } catch (Exception e) {
             IpsPlugin.log(new IpsStatus("Error parsing project file " + file, e));//$NON-NLS-1$
             return data;

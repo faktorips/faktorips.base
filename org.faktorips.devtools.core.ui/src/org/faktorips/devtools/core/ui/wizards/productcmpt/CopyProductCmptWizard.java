@@ -98,7 +98,7 @@ public class CopyProductCmptWizard extends Wizard implements INewIpsObjectWizard
     private String getContentsOfIpsObject(IIpsObject ipsObject) {
         String encoding = ipsObject.getIpsProject().getXmlFileCharset();
         try {
-            return XmlUtil.nodeToString(ipsObject.toXml(IpsPlugin.getDefault().newDocumentBuilder().newDocument()),
+            return XmlUtil.nodeToString(ipsObject.toXml(IpsPlugin.getDefault().getDocumentBuilder().newDocument()),
                     encoding);
         } catch (TransformerException e) {
             throw new RuntimeException(e);

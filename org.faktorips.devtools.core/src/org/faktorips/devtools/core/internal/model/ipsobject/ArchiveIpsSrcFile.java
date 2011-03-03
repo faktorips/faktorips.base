@@ -56,7 +56,7 @@ public class ArchiveIpsSrcFile extends AbstractIpsSrcFile {
 
     @Override
     public IIpsSrcFileMemento newMemento() throws CoreException {
-        Document doc = IpsPlugin.getDefault().newDocumentBuilder().newDocument();
+        Document doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
         return new IIpsSrcFileMemento(this, getIpsObject().toXml(doc), false);
     }
 
