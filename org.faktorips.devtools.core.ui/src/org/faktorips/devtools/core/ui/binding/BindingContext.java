@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.StructuredViewer;
@@ -393,7 +394,7 @@ public class BindingContext {
     public void dispose() {
         IpsPlugin.getDefault().getIpsModel().removeChangeListener(listener);
         // defensive copy to avoid concurrent modification
-        List<FieldPropertyMapping> mappingsCopy = new ArrayList<FieldPropertyMapping>(mappings);
+        List<FieldPropertyMapping> mappingsCopy = new CopyOnWriteArrayList<FieldPropertyMapping>(mappings);
 
         // exceptions
         Set<Object> disposedPmos = new HashSet<Object>();
@@ -406,7 +407,7 @@ public class BindingContext {
         }
 
         // defensive copy to avoid concurrent
-        List<ControlPropertyBinding> controlsCopy = new ArrayList<ControlPropertyBinding>(controlBindings);
+        List<ControlPropertyBinding> controlsCopy = new CopyOnWriteArrayList<ControlPropertyBinding>(controlBindings);
 
         // modification exceptions
         for (ControlPropertyBinding mapping : controlsCopy) {
@@ -429,7 +430,7 @@ public class BindingContext {
      * validation. This return value can be evaluated when overriding this method.
      */
     protected void showValidationStatus(List<FieldPropertyMapping> propertyMappings) {
-        ArrayList<IIpsObject> copy = new ArrayList<IIpsObject>(ipsObjects);
+        List<IIpsObject> copy = new CopyOnWriteArrayList<IIpsObject>(ipsObjects);
         for (IIpsObject iIpsObject : copy) {
             showValidationStatus(iIpsObject, propertyMappings);
         }
@@ -476,7 +477,7 @@ public class BindingContext {
     }
 
     private void applyControlBindings() {
-        List<ControlPropertyBinding> copy = new ArrayList<ControlPropertyBinding>(controlBindings);
+        List<ControlPropertyBinding> copy = new CopyOnWriteArrayList<ControlPropertyBinding>(controlBindings);
         for (ControlPropertyBinding binding : copy) {
             try {
                 binding.updateUI();
@@ -493,7 +494,7 @@ public class BindingContext {
         @Override
         public void valueChanged(FieldValueChangedEvent e) {
             // defensive copy to avoid concurrent modification
-            List<FieldPropertyMapping> copy = new ArrayList<FieldPropertyMapping>(mappings);
+            List<FieldPropertyMapping> copy = new CopyOnWriteArrayList<FieldPropertyMapping>(mappings);
 
             // exceptions
             for (FieldPropertyMapping mapping : copy) {
@@ -522,7 +523,7 @@ public class BindingContext {
         @Override
         public void contentsChanged(ContentChangeEvent event) {
             // defensive copy to avoid concurrent modification
-            List<FieldPropertyMapping> copy = new ArrayList<FieldPropertyMapping>(mappings);
+            List<FieldPropertyMapping> copy = new CopyOnWriteArrayList<FieldPropertyMapping>(mappings);
 
             // exceptions
             for (FieldPropertyMapping mapping : copy) {
@@ -545,7 +546,7 @@ public class BindingContext {
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
             // defensive copy to avoid concurrent modification
-            List<FieldPropertyMapping> copy = new ArrayList<FieldPropertyMapping>(mappings);
+            List<FieldPropertyMapping> copy = new CopyOnWriteArrayList<FieldPropertyMapping>(mappings);
 
             // exceptions
             for (FieldPropertyMapping mapping : copy) {

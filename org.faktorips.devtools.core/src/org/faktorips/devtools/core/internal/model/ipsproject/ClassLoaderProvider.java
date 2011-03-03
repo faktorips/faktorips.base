@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -141,7 +142,7 @@ public class ClassLoaderProvider {
      * case we get a concurrent modification exception from the iterator!)
      */
     private void classpathContentsChanged() {
-        List<IClasspathContentsChangeListener> copy = new ArrayList<IClasspathContentsChangeListener>(
+        List<IClasspathContentsChangeListener> copy = new CopyOnWriteArrayList<IClasspathContentsChangeListener>(
                 classpathContentsChangeListeners);
         for (IClasspathContentsChangeListener listener : copy) {
             listener.classpathContentsChanges(javaProject);

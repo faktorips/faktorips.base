@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.forms;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -208,7 +209,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
             return;
         }
 
-        List<IDataChangeableStateChangeListener> listeners = new ArrayList<IDataChangeableStateChangeListener>(
+        List<IDataChangeableStateChangeListener> listeners = new CopyOnWriteArrayList<IDataChangeableStateChangeListener>(
                 dataChangeableStateChangeListeners);
         for (IDataChangeableStateChangeListener iDataChangeableStateChangeListener : listeners) {
             iDataChangeableStateChangeListener.dataChangeableStateHasChanged(this);

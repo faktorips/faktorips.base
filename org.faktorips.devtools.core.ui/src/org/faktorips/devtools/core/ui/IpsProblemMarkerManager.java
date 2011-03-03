@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IProject;
@@ -82,7 +83,7 @@ public class IpsProblemMarkerManager implements IResourceChangeListener {
      */
     private void fireChanges(IResource[] changes) {
         // copy to avoid concurrent modifications!
-        List<IIpsProblemChangedListener> listenersCopy = new ArrayList<IIpsProblemChangedListener>(listeners);
+        List<IIpsProblemChangedListener> listenersCopy = new CopyOnWriteArrayList<IIpsProblemChangedListener>(listeners);
         for (IIpsProblemChangedListener listener : listenersCopy) {
             listener.problemsChanged(changes);
         }

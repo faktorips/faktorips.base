@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.editors;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -258,7 +259,7 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
             return;
         }
 
-        List<IDataChangeableStateChangeListener> listeners = new ArrayList<IDataChangeableStateChangeListener>(
+        List<IDataChangeableStateChangeListener> listeners = new CopyOnWriteArrayList<IDataChangeableStateChangeListener>(
                 dataChangeableStateChangeListeners);
         for (IDataChangeableStateChangeListener iDataChangeableStateChangeListener : listeners) {
             iDataChangeableStateChangeListener.dataChangeableStateHasChanged(this);

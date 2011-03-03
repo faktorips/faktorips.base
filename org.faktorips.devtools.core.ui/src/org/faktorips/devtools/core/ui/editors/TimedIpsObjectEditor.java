@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.editors;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -98,7 +99,7 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
      *
      */
     private void notifyGenerationChanged() {
-        List<IActiveGenerationChangedListener> copy = new ArrayList<IActiveGenerationChangedListener>(
+        List<IActiveGenerationChangedListener> copy = new CopyOnWriteArrayList<IActiveGenerationChangedListener>(
                 activeGenerationChangedListeners);
         for (IActiveGenerationChangedListener listener : copy) {
             listener.activeGenerationChanged(generation);

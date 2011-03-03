@@ -26,6 +26,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -631,7 +632,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         display.syncExec(new Runnable() {
             @Override
             public void run() {
-                List<IModificationStatusChangeListener> copy = new ArrayList<IModificationStatusChangeListener>(
+                List<IModificationStatusChangeListener> copy = new CopyOnWriteArrayList<IModificationStatusChangeListener>(
                         modificationStatusChangeListeners); // copy do avoid
                 // concurrent
                 // modifications while
@@ -683,7 +684,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         final Runnable notifier = new Runnable() {
             @Override
             public void run() {
-                List<ContentsChangeListener> copy = new ArrayList<ContentsChangeListener>(changeListeners); // copy
+                List<ContentsChangeListener> copy = new CopyOnWriteArrayList<ContentsChangeListener>(changeListeners); // copy
                 // do
                 // avoid
                 // concurrent
@@ -730,7 +731,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         final Runnable notifier = new Runnable() {
             @Override
             public void run() {
-                List<IIpsSrcFilesChangeListener> copy = new ArrayList<IIpsSrcFilesChangeListener>(
+                List<IIpsSrcFilesChangeListener> copy = new CopyOnWriteArrayList<IIpsSrcFilesChangeListener>(
                         ipsSrcFilesChangeListeners);
 
                 for (IIpsSrcFilesChangeListener listener : copy) {

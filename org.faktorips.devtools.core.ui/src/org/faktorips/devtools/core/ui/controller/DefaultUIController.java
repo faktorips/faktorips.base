@@ -19,6 +19,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -94,7 +95,7 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
     @Override
     public void updateModel() {
         // defensive copy to avoid concurrent modification exceptions
-        List<FieldPropertyMapping> copy = new ArrayList<FieldPropertyMapping>(mappings);
+        List<FieldPropertyMapping> copy = new CopyOnWriteArrayList<FieldPropertyMapping>(mappings);
         for (FieldPropertyMapping mapping : copy) {
             try {
                 mapping.setPropertyValue();
@@ -108,7 +109,7 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
 
     @Override
     public void updateUI() {
-        List<FieldPropertyMapping> copy = new ArrayList<FieldPropertyMapping>(mappings); // defensive
+        List<FieldPropertyMapping> copy = new CopyOnWriteArrayList<FieldPropertyMapping>(mappings); // defensive
         // copy to avoid concurrent modification exceptions
         for (FieldPropertyMapping mapping : copy) {
             try {
@@ -123,7 +124,7 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
 
     @Override
     public void valueChanged(FieldValueChangedEvent e) {
-        List<FieldPropertyMapping> copy = new ArrayList<FieldPropertyMapping>(mappings); // defensive
+        List<FieldPropertyMapping> copy = new CopyOnWriteArrayList<FieldPropertyMapping>(mappings); // defensive
         // copy to avoid concurrent modification exceptions
         for (FieldPropertyMapping mapping : copy) {
             if (e.field == mapping.getField()) {

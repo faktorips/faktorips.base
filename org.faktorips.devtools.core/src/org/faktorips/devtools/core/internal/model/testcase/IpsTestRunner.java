@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
@@ -877,14 +878,14 @@ public class IpsTestRunner implements IIpsTestRunner {
     }
 
     private void notifyTestEntry(String qualifiedName, String fullPath) {
-        List<IIpsTestRunListener> copy = new ArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
+        List<IIpsTestRunListener> copy = new CopyOnWriteArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
         for (IIpsTestRunListener listener : copy) {
             listener.testTableEntry(qualifiedName, fullPath);
         }
     }
 
     private void notifyTestEntries(String[] qualifiedNames, String[] fullPaths) {
-        List<IIpsTestRunListener> copy = new ArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
+        List<IIpsTestRunListener> copy = new CopyOnWriteArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
         for (IIpsTestRunListener listener : copy) {
             listener.testTableEntries(qualifiedNames, fullPaths);
         }
@@ -901,7 +902,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         }
         testRunnerMonitor.subTask(qualifiedTestName);
 
-        List<IIpsTestRunListener> copy = new ArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
+        List<IIpsTestRunListener> copy = new CopyOnWriteArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
         for (IIpsTestRunListener listener : copy) {
             listener.testStarted(qualifiedTestName);
         }
@@ -909,7 +910,7 @@ public class IpsTestRunner implements IIpsTestRunner {
 
     private void notifyTestFinished(String qualifiedTestName) {
         testRunnerMonitor.worked(1);
-        List<IIpsTestRunListener> copy = new ArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
+        List<IIpsTestRunListener> copy = new CopyOnWriteArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
         for (IIpsTestRunListener listener : copy) {
             listener.testFinished(qualifiedTestName);
         }
@@ -917,7 +918,7 @@ public class IpsTestRunner implements IIpsTestRunner {
 
     private void notifyTestFailureOccured(String testFailureOccured, String[] failureDetails) {
         // defensive copy to avoid concurrent modification exceptions
-        List<IIpsTestRunListener> copy = new ArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
+        List<IIpsTestRunListener> copy = new CopyOnWriteArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
         for (IIpsTestRunListener listener : copy) {
             listener.testFailureOccured(testFailureOccured, failureDetails);
         }
@@ -925,21 +926,21 @@ public class IpsTestRunner implements IIpsTestRunner {
 
     private void notifyTestRunStarted(int count, String repositoryPackage, String testPackage) {
         testRunnerMonitor.beginTask(Messages.IpsTestRunner_Job_Name, count);
-        List<IIpsTestRunListener> copy = new ArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
+        List<IIpsTestRunListener> copy = new CopyOnWriteArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
         for (IIpsTestRunListener listener : copy) {
             listener.testRunStarted(count, repositoryPackage, testPackage);
         }
     }
 
     private void notifyTestRunEnded(String elapsedTime) {
-        List<IIpsTestRunListener> copy = new ArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
+        List<IIpsTestRunListener> copy = new CopyOnWriteArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
         for (IIpsTestRunListener listener : copy) {
             listener.testRunEnded(elapsedTime);
         }
     }
 
     private void notifyTestErrorOccured(String qualifiedTestName, String[] errorDetails) {
-        List<IIpsTestRunListener> copy = new ArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
+        List<IIpsTestRunListener> copy = new CopyOnWriteArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
         for (IIpsTestRunListener listener : copy) {
             listener.testErrorOccured(qualifiedTestName, errorDetails);
         }
@@ -1033,7 +1034,9 @@ public class IpsTestRunner implements IIpsTestRunner {
              */
             Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
         } catch (OperationCanceledException ignored) {
+            // ignore
         } catch (InterruptedException ignored) {
+            // ignore
         }
         job.schedule();
     }
