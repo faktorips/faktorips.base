@@ -22,6 +22,7 @@ import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.Signature;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.ISources;
@@ -122,7 +123,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
             elementSignature = javaElement.getElementName() + '(';
             String[] parameterTypes = ((IMethod)javaElement).getParameterTypes();
             for (int i = 0; i < parameterTypes.length; i++) {
-                elementSignature += parameterTypes[i].substring(1, parameterTypes[i].length() - 1);
+                elementSignature += Signature.toString(parameterTypes[i]);
                 if (i < parameterTypes.length - 1) {
                     elementSignature += ", ";
                 }
