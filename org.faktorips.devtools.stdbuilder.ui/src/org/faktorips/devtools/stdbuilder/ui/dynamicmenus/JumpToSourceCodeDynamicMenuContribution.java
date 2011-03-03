@@ -18,7 +18,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IType;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.ISources;
@@ -96,7 +99,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
                 null,                                                   // icon
                 null,                                                   // disabledIcon
                 null,                                                   // hoverIcon
-                javaElement.getElementName(),                           // label
+                getJavaElementLabel(javaElement),                       // label
                 null,                                                   // mnemoic
                 null,                                                   // tooltip
                 CommandContributionItem.STYLE_PUSH,                     // style
@@ -105,6 +108,31 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         );
         // @formatter:on
         return new CommandContributionItem(itemParameter);
+    }
+
+    private String getJavaElementLabel(IJavaElement javaElement) {
+        String parentLabel = javaElement.getParent().getElementName();
+
+        String type = "";
+        String elementSignature = javaElement.getElementName();
+        if (javaElement instanceof IField) {
+            type = "Field";
+        } else if (javaElement instanceof IMethod) {
+            type = "Method";
+            elementSignature = javaElement.getElementName() + '(';
+            String[] parameterTypes = ((IMethod)javaElement).getParameterTypes();
+            for (int i = 0; i < parameterTypes.length; i++) {
+                elementSignature += parameterTypes[i].substring(1, parameterTypes[i].length() - 1);
+                if (i < parameterTypes.length - 1) {
+                    elementSignature += ", ";
+                }
+            }
+            elementSignature += ')';
+        } else if (javaElement instanceof IType) {
+            type = "Type";
+        }
+
+        return '(' + type + ") " + parentLabel + " - " + elementSignature;
     }
 
 }
