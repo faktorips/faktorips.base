@@ -20,9 +20,6 @@
                      <adapt
                            type="org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile">
                      </adapt>
-                     <adapt
-                           type="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer">
-                     </adapt>
                   </iterate>
                </with>
             </visibleWhen>
