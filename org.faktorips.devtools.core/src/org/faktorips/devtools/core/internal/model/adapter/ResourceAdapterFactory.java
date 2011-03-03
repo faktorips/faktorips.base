@@ -28,9 +28,9 @@ import org.faktorips.devtools.core.model.type.IType;
  */
 public class ResourceAdapterFactory extends AbstractIpsAdapterFactory {
 
-    // Required because the signature of this method is fixed by IAdapterFactory.
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
+    // The Eclipse API uses raw type
     public Object getAdapter(Object adaptableObject, Class adapterType) {
         if (!(adaptableObject instanceof IResource)) {
             return null;

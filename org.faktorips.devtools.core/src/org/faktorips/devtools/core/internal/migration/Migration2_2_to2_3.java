@@ -154,7 +154,6 @@ public class Migration2_2_to2_3 {
         }
     }
 
-    @SuppressWarnings({ "unchecked" })
     private static void migrateInitFromXmlMethods(IIpsProject ipsProject, IProgressMonitor monitor)
             throws CoreException {
 

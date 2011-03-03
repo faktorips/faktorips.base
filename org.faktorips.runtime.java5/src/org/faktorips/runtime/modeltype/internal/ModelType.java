@@ -131,7 +131,6 @@ public class ModelType extends AbstractModelElement implements IModelType {
         return loadClass(interfaceName);
     }
 
-    @SuppressWarnings("unchecked")
     public IModelType getSuperType() {
         if (superTypeName != null && superTypeName.length() > 0) {
             Class superclass = loadClass(superTypeName);

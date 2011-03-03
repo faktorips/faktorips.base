@@ -39,20 +39,20 @@ public class CustomValidationsPerType {
     // ICustomValidations<T> as values. The map contains only the validations defined exactly for
     // the type. The inheritance
     // hierarchy is not resolved.
-    // see class Javadoc why suppress warnings is neccessary
-    @SuppressWarnings("unchecked")
+    // see class Javadoc why suppress warnings is necessary
+    @SuppressWarnings("rawtypes")
     private Map<Class<? extends IIpsObjectPartContainer>, Set> backingMap = new HashMap<Class<? extends IIpsObjectPartContainer>, Set>();
 
     // map with model types (T class<? extends IIpsOpsObjectPartContainer) as keys and sets of
     // ICustomValidations<T> as values. The inheritance hierarhcy is resolved. The set of
     // validations for a given type, contains all
     // validations for the type itself and all super types and interfaces.
-    // see class Javadoc why suppress warnings is neccessary
-    @SuppressWarnings("unchecked")
+    // see class Javadoc why suppress warnings is necessary
+    @SuppressWarnings("rawtypes")
     private Map<Class<? extends IIpsObjectPartContainer>, Set> resolvedMap = new HashMap<Class<? extends IIpsObjectPartContainer>, Set>();
 
-    // see class Javadoc why suppress warnings is neccessary
-    @SuppressWarnings("unchecked")
+    // see class Javadoc why suppress warnings is necessary
+    @SuppressWarnings("rawtypes")
     public static CustomValidationsPerType createFromExtensions() {
         CustomValidationsPerType customValidationsPerType = new CustomValidationsPerType();
         ExtensionPoints extensionPoints = new ExtensionPoints(IpsPlugin.PLUGIN_ID);
@@ -65,8 +65,8 @@ public class CustomValidationsPerType {
         return customValidationsPerType;
     }
 
-    // see class Javadoc why suppress warnings is neccessary
-    @SuppressWarnings("unchecked")
+    // see class Javadoc why suppress warnings is necessary
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private boolean addInternal(ICustomValidation validation) {
         // see class Javadoc
         Set validations = backingMap.get(validation.getExtendedClass());
@@ -77,7 +77,7 @@ public class CustomValidationsPerType {
         return validations.add(validation);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     private void resolveInheritanceHierarchy() {
         resolvedMap.clear();
         Set<Class<? extends IIpsObjectPartContainer>> types = backingMap.keySet();
@@ -87,14 +87,14 @@ public class CustomValidationsPerType {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     private <T extends IIpsObjectPartContainer> Set collectAllCustomValidationsInInheritanceHierarchy(Class<T> type) {
         Set validations = new HashSet();
         collectCustomValidations(type, validations);
         return validations;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private <T extends IIpsObjectPartContainer> void collectCustomValidations(Class<? extends T> type, Set validations) {
         Set<ICustomValidation> typeValidations = backingMap.get(type);
         if (typeValidations != null) {
@@ -140,4 +140,5 @@ public class CustomValidationsPerType {
         resolveInheritanceHierarchy();
         return rc;
     }
+
 }

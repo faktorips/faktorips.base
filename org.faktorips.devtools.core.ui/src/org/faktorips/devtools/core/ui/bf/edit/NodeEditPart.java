@@ -127,15 +127,15 @@ public abstract class NodeEditPart extends AbstractGraphicalEditPart implements 
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    // Eclipse API uses unchecked return type
+    @SuppressWarnings("rawtypes")
+    // The Eclipse API uses raw type
     protected List getModelSourceConnections() {
         return getBFElement().getOutgoingControlFlow();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    // Eclipse API uses unchecked return type
+    @SuppressWarnings("rawtypes")
+    // The Eclipse API uses raw type
     protected List getModelTargetConnections() {
         return getBFElement().getIncomingControlFlow();
     }

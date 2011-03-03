@@ -27,13 +27,10 @@ import org.eclipse.ui.views.properties.ResourcePropertySource;
  */
 class PropertyAdapterFactory implements IAdapterFactory {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
+    // The Eclipse API uses raw type
     public Object getAdapter(Object o, Class adapterType) {
-        // can suppress the warning as the Eclipse interface defineds the method signature
         if (adapterType.isInstance(o)) {
             return o;
         }
@@ -50,13 +47,11 @@ class PropertyAdapterFactory implements IAdapterFactory {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
+    // The Eclipse API uses raw type
     public Class[] getAdapterList() {
-        // can suppress the warning as the Eclipse interface defineds the method signature
         return new Class[] { IPropertySource.class };
     }
+
 }

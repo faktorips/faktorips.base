@@ -93,8 +93,8 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    // IAdaptable uses unchecked Class
+    @SuppressWarnings("rawtypes")
+    // IAdaptable uses raw type
     public Object getAdapter(Class adapterType) {
         // TODO this code is getting deprecated. The adapters should be handled in
         // IpsElementAdapterFactory

@@ -29,8 +29,8 @@ import org.faktorips.devtools.core.model.IIpsElement;
  */
 public class IpsElementAdapterFactory implements IAdapterFactory {
 
-    @SuppressWarnings("unchecked")
-    // the eclipse API is not generified
+    @SuppressWarnings("rawtypes")
+    // the eclipse API uses raw type
     @Override
     public Object getAdapter(Object adaptableObject, Class adapterType) {
         if (!(adaptableObject instanceof IIpsElement)) {
@@ -50,8 +50,8 @@ public class IpsElementAdapterFactory implements IAdapterFactory {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
-    // the eclipse API is not generified
+    @SuppressWarnings("rawtypes")
+    // the eclipse API uses raw type
     @Override
     public Class[] getAdapterList() {
         return new Class[] { IResource.class, IProject.class, IFolder.class, IFile.class };

@@ -67,7 +67,6 @@ public class BusinessFunctionEditPart extends AbstractGraphicalEditPart implemen
      * Returns all {@link IBFElement} except for the parameters.
      */
     @Override
-    @SuppressWarnings("unchecked")
     protected List getModelChildren() {
         return getBusinessFunction().getBFElementsWithoutParameters();
     }

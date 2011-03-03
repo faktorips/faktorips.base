@@ -23,13 +23,10 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  */
 class ResourceAdapterFactory implements IAdapterFactory {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
+    // The Eclipse API uses raw type
     public Object getAdapter(Object o, Class adapterType) {
-        // can suppress the warning as the Eclipse interface defineds the method signature
         if (adapterType.isInstance(o)) {
             return o;
         } else if (adapterType == IWorkbenchAdapter.class) {
@@ -38,13 +35,11 @@ class ResourceAdapterFactory implements IAdapterFactory {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
+    // The Eclipse API uses raw type
     public Class[] getAdapterList() {
-        // can suppress the warning as the Eclipse interface defineds the method signature
         return new Class[] { IWorkbenchAdapter.class };
     }
+
 }

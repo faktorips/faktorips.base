@@ -110,8 +110,8 @@ public class IpsElementWorkbenchAdapterAdapterFactory implements IAdapterFactory
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    // IWorkbenchAdapter is not generic
+    @SuppressWarnings("rawtypes")
+    // The Eclipse API uses raw type
     public Class[] getAdapterList() {
         return new Class[] { IWorkbenchAdapter.class, IWorkbenchAdapter2.class };
     }

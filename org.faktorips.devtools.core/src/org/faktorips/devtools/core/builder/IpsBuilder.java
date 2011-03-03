@@ -89,7 +89,8 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         return new MultiStatus(IpsPlugin.PLUGIN_ID, 0, Messages.IpsBuilder_msgBuildResults, null);
     }
 
-    @SuppressWarnings("unchecked")
+    // Eclipse API uses raw type
+    @SuppressWarnings("rawtypes")
     @Override
     protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
         MultiStatus buildStatus = createInitialMultiStatus();
@@ -98,7 +99,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             monitor.subTask(Messages.IpsBuilder_validatingProject);
             /*
              * We have to clear the validation cache as for example the deletion of IPS source files
-             * migth still be undetected as the validation result cache gets cleared in a resource
+             * might still be undetected as the validation result cache gets cleared in a resource
              * change listener. it is not guaranteed that the listener is notified before the build
              * starts!
              */

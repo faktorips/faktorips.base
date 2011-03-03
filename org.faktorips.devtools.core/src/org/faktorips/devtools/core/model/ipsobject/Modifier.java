@@ -79,12 +79,6 @@ public enum Modifier implements IAdaptable {
         return getId();
     }
 
-    // private Modifier(DefaultEnumType type, String id, int jdtFlags, int javaModifier) {
-    // super(type, id);
-    // this.jdtFlags = jdtFlags;
-    // this.javaModifier = javaModifier;
-    // }
-
     public final static Modifier getModifier(String id) {
         for (Modifier m : values()) {
             if (m.id.equals(id)) {
@@ -94,18 +88,8 @@ public enum Modifier implements IAdaptable {
         return null;
     }
 
-    // @Deprecated
-    // public String getName() {
-    // return toString();
-    // }
-    //
-    // @Deprecated
-    // public final static Class<Modifier> getEnumType() {
-    // return Modifier.class;
-    // }
-
-    @SuppressWarnings("unchecked")
-    // eclipse interface is not type safe
+    @SuppressWarnings("rawtypes")
+    // The Eclipse API uses raw type
     @Override
     public Object getAdapter(Class adapter) {
         return Platform.getAdapterManager().getAdapter(this, adapter);

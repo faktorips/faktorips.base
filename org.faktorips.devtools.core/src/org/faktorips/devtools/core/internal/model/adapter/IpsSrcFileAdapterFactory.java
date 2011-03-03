@@ -21,8 +21,8 @@ import org.faktorips.devtools.core.model.type.IType;
 
 public class IpsSrcFileAdapterFactory extends AbstractIpsAdapterFactory {
 
-    @SuppressWarnings("unchecked")
-    // eclipse has a generic lack
+    @SuppressWarnings("rawtypes")
+    // The Eclipse API uses raw type
     @Override
     public Object getAdapter(Object adaptableObject, Class adapterType) {
         if (adaptableObject instanceof IIpsSrcFile) {
@@ -44,8 +44,8 @@ public class IpsSrcFileAdapterFactory extends AbstractIpsAdapterFactory {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
-    // eclipse has a generic lack
+    @SuppressWarnings("rawtypes")
+    // The Eclipse API uses raw type
     @Override
     public Class[] getAdapterList() {
         return new Class[] { ProductCmpt.class, IType.class, IIpsObject.class };

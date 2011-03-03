@@ -258,8 +258,8 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
         return getSite().getId();
     }
 
-    @SuppressWarnings("unchecked")
     // Eclipse API uses unchecked type
+    @SuppressWarnings("rawtypes")
     @Override
     public Object getAdapter(Class adapter) {
         if (adapter == IPropertySheetPage.class) {

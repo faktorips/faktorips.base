@@ -75,7 +75,6 @@ public class JAXBContextFactory {
      * @throws JAXBException The exception thrown by {@link JAXBContext#newInstance(Class...)}
      * @throws NullPointerException if one of the parametes is <code>null</code>.
      */
-    @SuppressWarnings("unchecked")
     public static JAXBContext newContext(IRuntimeRepository repository, ClassLoader cl) throws JAXBException,
             ClassNotFoundException {
         Set<String> classNames = repository.getAllModelTypeImplementationClasses();
