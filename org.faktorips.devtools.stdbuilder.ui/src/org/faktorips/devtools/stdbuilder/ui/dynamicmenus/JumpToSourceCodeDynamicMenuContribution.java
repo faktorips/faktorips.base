@@ -133,7 +133,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
             type = "Type";
         }
 
-        return '(' + type + ") " + parentLabel + " - " + elementSignature;
+        return '(' + type + ") " + parentLabel + " :: " + elementSignature;
     }
 
 }
