@@ -11,6 +11,21 @@
                   class="org.faktorips.devtools.stdbuilder.ui.dynamicmenus.JumpToSourceCodeDynamicMenuContribution"
                   id="org.faktorips.devtools.stdbuilder.ui.dynamicmenus.jumpToSourceCode">
             </dynamic>
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <iterate
+                        operator="or">
+                     <adapt
+                           type="org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile">
+                     </adapt>
+                     <adapt
+                           type="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer">
+                     </adapt>
+                  </iterate>
+               </with>
+            </visibleWhen>
          </menu>
       </menuContribution>
    </extension>
