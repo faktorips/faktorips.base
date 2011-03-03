@@ -111,7 +111,7 @@ public class Migration_2_5_0_rc2Test extends AbstractIpsPluginTest {
         masterToDetail2.setTarget("unknown");
         ml = new MessageList();
         assertTrue(Migration_2_5_0_rc2.fixInverseOfDetailToMasterAssociation(ipsProject, ml, association));
-        assertEquals(0, ml.getNoOfMessages());
+        assertEquals(0, ml.size());
 
         // test fixed associations detail to master and master to detail
         assertEquals(association.getInverseAssociation(), masterToDetail1.getName());

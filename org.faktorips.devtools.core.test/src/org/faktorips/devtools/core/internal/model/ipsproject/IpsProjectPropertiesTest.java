@@ -75,7 +75,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     public void testValidate_DefinedDatatypes() throws CoreException {
         IpsProjectProperties props = new IpsProjectProperties();
         MessageList list = props.validate(ipsProject);
-        int numOfMessages = list.getNoOfMessages();
+        int numOfMessages = list.size();
         DynamicValueDatatype dynDatatype = new DynamicValueDatatype(ipsProject);
         props.setDefinedDatatypes(new DynamicValueDatatype[] { dynDatatype });
         // must suppress as the dynamic datatype's class can't be loaded (and this is written to the
@@ -83,22 +83,22 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         suppressLoggingDuringExecutionOfThisTestCase();
         list = props.validate(ipsProject);
         // now there should be at least one more message
-        assertTrue(list.getNoOfMessages() > numOfMessages);
+        assertTrue(list.size() > numOfMessages);
     }
 
     @Test
     public void testValidate_PredefinedDatatypes() throws CoreException {
         IpsProjectProperties props = new IpsProjectProperties();
         MessageList list = props.validate(ipsProject);
-        int numOfMessages = list.getNoOfMessages();
+        int numOfMessages = list.size();
         props.setPredefinedDatatypesUsed(ipsProject.getIpsModel().getPredefinedValueDatatypes());
         list = props.validate(ipsProject);
-        assertEquals(numOfMessages, list.getNoOfMessages()); // there should be at least one or
+        assertEquals(numOfMessages, list.size()); // there should be at least one or
         // message
 
         props.setPredefinedDatatypesUsed(new String[] { "unknownDatatype" });
         list = props.validate(ipsProject);
-        assertTrue(list.getNoOfMessages() > numOfMessages); // there should be at least one or
+        assertTrue(list.size() > numOfMessages); // there should be at least one or
         // message
         assertTrue(list.getMessageByCode(IIpsProjectProperties.MSGCODE_UNKNOWN_PREDEFINED_DATATYPE) != null);
     }
@@ -107,17 +107,17 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     public void testValidate_SupportedLanguagesIsoConformity() throws CoreException {
         IpsProjectProperties props = new IpsProjectProperties();
         MessageList list = props.validate(ipsProject);
-        int numOfMessages = list.getNoOfMessages();
+        int numOfMessages = list.size();
 
         // Test that there is no additional error message if the locale is OK.
         props.addSupportedLanguage(Locale.ENGLISH);
         list = props.validate(ipsProject);
-        assertEquals(numOfMessages, list.getNoOfMessages());
+        assertEquals(numOfMessages, list.size());
 
         // Test for one more additional error message if the locale is not OK.
         props.addSupportedLanguage(new Locale("fooIsNotBarAndBarIsNotFoo"));
         list = props.validate(ipsProject);
-        assertEquals(numOfMessages + 1, list.getNoOfMessages());
+        assertEquals(numOfMessages + 1, list.size());
         assertNotNull(list.getMessageByCode(IIpsProjectProperties.MSGCODE_SUPPORTED_LANGUAGE_UNKNOWN_LOCALE));
     }
 
@@ -125,20 +125,20 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     public void testValidate_SupportedLanguagesDefaultLanguage() throws CoreException {
         IpsProjectProperties props = new IpsProjectProperties();
         MessageList list = props.validate(ipsProject);
-        int numOfMessages = list.getNoOfMessages();
+        int numOfMessages = list.size();
 
         // Test that there is no additional error message if everything is OK.
         props.addSupportedLanguage(Locale.ENGLISH);
         props.addSupportedLanguage(Locale.GERMAN);
         props.setDefaultLanguage(props.getSupportedLanguage(Locale.ENGLISH));
         list = props.validate(ipsProject);
-        assertEquals(numOfMessages, list.getNoOfMessages());
+        assertEquals(numOfMessages, list.size());
 
         // Test for one more additional error message if there is a problem.
         ISupportedLanguage germanLanguage = props.getSupportedLanguage(Locale.GERMAN);
         ((SupportedLanguage)germanLanguage).setDefaultLanguage(true);
         list = props.validate(ipsProject);
-        assertEquals(numOfMessages + 1, list.getNoOfMessages());
+        assertEquals(numOfMessages + 1, list.size());
         assertNotNull(list.getMessageByCode(IIpsProjectProperties.MSGCODE_MORE_THAN_ONE_DEFAULT_LANGUAGE));
     }
 

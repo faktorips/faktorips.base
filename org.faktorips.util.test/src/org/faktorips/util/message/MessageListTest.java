@@ -23,18 +23,19 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 
 public class MessageListTest {
+
     @Test
     public void testAddMessage() {
         MessageList list = new MessageList();
 
         Message msg1 = Message.newError("1", "blabla");
         list.add(msg1);
-        assertEquals(1, list.getNoOfMessages());
+        assertEquals(1, list.size());
         assertTrue(msg1 == list.getMessage(0));
 
         Message msg2 = Message.newError("1", "blabla");
         list.add(msg2);
-        assertEquals(2, list.getNoOfMessages());
+        assertEquals(2, list.size());
         assertTrue(msg2 == list.getMessage(1));
     }
 
@@ -51,14 +52,14 @@ public class MessageListTest {
         list2.add(msg3);
 
         list1.add(list2);
-        assertEquals(3, list1.getNoOfMessages());
+        assertEquals(3, list1.size());
         assertTrue(msg1 == list1.getMessage(0));
         assertTrue(msg2 == list1.getMessage(1));
         assertTrue(msg3 == list1.getMessage(2));
 
         MessageList nullList = null;
         list1.add(nullList); // should not throw an exception
-        assertEquals(3, list1.getNoOfMessages());
+        assertEquals(3, list1.size());
     }
 
     @Test
@@ -76,7 +77,7 @@ public class MessageListTest {
 
         ObjectProperty objProp2 = new ObjectProperty(this, "property2");
         list1.add(list2, objProp2, true);
-        assertEquals(3, list1.getNoOfMessages());
+        assertEquals(3, list1.size());
         assertEquals(0, list1.getMessage(0).getInvalidObjectProperties().length);
         assertEquals(objProp2, list1.getMessage(1).getInvalidObjectProperties()[0]);
         assertEquals(objProp2, list1.getMessage(2).getInvalidObjectProperties()[0]);
@@ -101,7 +102,7 @@ public class MessageListTest {
 
         ObjectProperty objProp2 = new ObjectProperty(this, "property2");
         list1.add(list2, objProp2, false);
-        assertEquals(3, list1.getNoOfMessages());
+        assertEquals(3, list1.size());
         assertEquals(0, list1.getMessage(0).getInvalidObjectProperties().length);
         assertEquals(objProp2, list1.getMessage(1).getInvalidObjectProperties()[0]);
         // message 3 should remain untouched, as the invalid object properties were set!
@@ -111,11 +112,11 @@ public class MessageListTest {
     @Test
     public void testGetNoOfMessages() {
         MessageList list = new MessageList();
-        assertEquals(0, list.getNoOfMessages());
+        assertEquals(0, list.size());
         list.add(Message.newInfo("1", "blabla"));
-        assertEquals(1, list.getNoOfMessages());
+        assertEquals(1, list.size());
         list.add(Message.newInfo("1", "blabla"));
-        assertEquals(2, list.getNoOfMessages()); // messages are equal, but the list does not filter
+        assertEquals(2, list.size()); // messages are equal, but the list does not filter
         // duplicate messages
 
         assertEquals(0, list.getNoOfMessages(Message.ERROR));
@@ -259,13 +260,13 @@ public class MessageListTest {
 
         // the object/property variant
         MessageList result = list.getMessagesFor(this, "name");
-        assertEquals(2, result.getNoOfMessages());
+        assertEquals(2, result.size());
         assertEquals(msg1, result.getMessage(0));
         assertEquals(msg4, result.getMessage(1));
 
         // the object/any property variant
         result = list.getMessagesFor(this);
-        assertEquals(5, result.getNoOfMessages());
+        assertEquals(5, result.size());
         assertEquals(msg1, result.getMessage(0));
         assertEquals(msg3, result.getMessage(1));
         assertEquals(msg4, result.getMessage(2));
@@ -274,12 +275,12 @@ public class MessageListTest {
 
         // the object/property/index property variant
         result = list.getMessagesFor(this, "index", 2);
-        assertEquals(1, result.getNoOfMessages());
+        assertEquals(1, result.size());
         assertEquals(msg5, result.getMessage(0));
 
         // empty list
         result = list.getMessagesFor(result, "name");
-        assertEquals(0, result.getNoOfMessages());
+        assertEquals(0, result.size());
     }
 
 }

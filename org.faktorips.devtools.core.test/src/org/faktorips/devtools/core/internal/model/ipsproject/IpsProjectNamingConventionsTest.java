@@ -67,29 +67,29 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
     public void testValidateIpsPackageName() throws CoreException {
         MessageList ml = namingConventions.validateIpsPackageName("validName");
         assertFalse(ml.containsErrorMsg());
-        assertEquals(0, ml.getNoOfMessages());
+        assertEquals(0, ml.size());
 
         ml = namingConventions.validateIpsPackageName("1_invalid");
         assertTrue(ml.containsErrorMsg());
-        assertEquals(1, ml.getNoOfMessages());
+        assertEquals(1, ml.size());
         assertEquals(Message.ERROR, ml.getSeverity());
         assertEquals(IIpsProjectNamingConventions.INVALID_NAME, ml.getMessage(0).getCode());
 
         ml = namingConventions.validateIpsPackageName("no blanks allowed");
         assertTrue(ml.containsErrorMsg());
-        assertEquals(1, ml.getNoOfMessages());
+        assertEquals(1, ml.size());
         assertEquals(Message.ERROR, ml.getSeverity());
         assertEquals(IIpsProjectNamingConventions.INVALID_NAME, ml.getMessage(0).getCode());
 
         ml = namingConventions.validateIpsPackageName("new");
         assertTrue(ml.containsErrorMsg());
-        assertEquals(1, ml.getNoOfMessages());
+        assertEquals(1, ml.size());
         assertEquals(Message.ERROR, ml.getSeverity());
         assertEquals(IIpsProjectNamingConventions.INVALID_NAME, ml.getMessage(0).getCode());
 
         ml = namingConventions.validateIpsPackageName("BIG");
         assertFalse(ml.containsErrorMsg());
-        assertEquals(1, ml.getNoOfMessages());
+        assertEquals(1, ml.size());
         assertEquals(Message.WARNING, ml.getSeverity());
         assertEquals(IIpsProjectNamingConventions.DISCOURAGED_NAME, ml.getMessage(0).getCode());
     }

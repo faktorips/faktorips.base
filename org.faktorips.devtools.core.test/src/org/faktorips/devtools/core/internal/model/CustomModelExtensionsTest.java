@@ -86,10 +86,10 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
         assertEquals(1, validations.size());
         assertTrue(validations.contains(validation1));
 
-        int expectedNoOfMessages = result.getNoOfMessages() + 1; // we don't assume 1 message, to be
+        int expectedNoOfMessages = result.size() + 1; // we don't assume 1 message, to be
         // independant of other tests.
         result = attribute.validate(ipsProject);
-        assertEquals(expectedNoOfMessages, result.getNoOfMessages());
+        assertEquals(expectedNoOfMessages, result.size());
         assertEquals(validation1.msgToReturn, result.getMessageByCode("M1"));
 
         // 2.) validation for the published interface class
@@ -102,7 +102,7 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
 
         expectedNoOfMessages++;
         result = attribute.validate(ipsProject);
-        assertEquals(expectedNoOfMessages, result.getNoOfMessages());
+        assertEquals(expectedNoOfMessages, result.size());
         assertEquals(validation1.msgToReturn, result.getMessageByCode("M1"));
         assertEquals(validation2.msgToReturn, result.getMessageByCode("M2"));
 
@@ -117,7 +117,7 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
 
         expectedNoOfMessages++;
         result = attribute.validate(ipsProject);
-        assertEquals(expectedNoOfMessages, result.getNoOfMessages());
+        assertEquals(expectedNoOfMessages, result.size());
         assertEquals(validation1.msgToReturn, result.getMessageByCode("M1"));
         assertEquals(validation2.msgToReturn, result.getMessageByCode("M2"));
         assertEquals(validation3.msgToReturn, result.getMessageByCode("M3"));
@@ -134,7 +134,7 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
 
         expectedNoOfMessages++;
         result = attribute.validate(ipsProject);
-        assertEquals(expectedNoOfMessages, result.getNoOfMessages());
+        assertEquals(expectedNoOfMessages, result.size());
         assertEquals(validation1.msgToReturn, result.getMessageByCode("M1"));
         assertEquals(validation2.msgToReturn, result.getMessageByCode("M2"));
         assertEquals(validation3.msgToReturn, result.getMessageByCode("M3"));

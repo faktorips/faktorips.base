@@ -142,14 +142,14 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(props);
 
         MessageList ml = ipsProject.validate();
-        assertEquals(0, ml.getNoOfMessages());
+        assertEquals(0, ml.size());
 
         // validate missing project reference
         refProject = IpsPlugin.getDefault().getIpsModel().getIpsProject("none");
         path.newIpsProjectRefEntry(refProject);
         ipsProject.setProperties(props);
         ml = ipsProject.validate();
-        assertEquals(1, ml.getNoOfMessages());
+        assertEquals(1, ml.size());
         assertNotNull(ml.getMessageByCode(IIpsObjectPathEntry.MSGCODE_MISSING_PROJECT));
 
         // validate empty project name
@@ -157,7 +157,7 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         path.newIpsProjectRefEntry(null);
         ipsProject.setProperties(props);
         ml = ipsProject.validate();
-        assertEquals(1, ml.getNoOfMessages());
+        assertEquals(1, ml.size());
         assertNotNull(ml.getMessageByCode(IIpsObjectPathEntry.MSGCODE_PROJECT_NOT_SPECIFIED));
     }
 }

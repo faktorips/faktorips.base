@@ -579,15 +579,15 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     public void testValidate() throws Exception {
         EnumValueSet set = new EnumValueSet(ce, "1");
         MessageList list = set.validate(ipsProject);
-        assertEquals(0, list.getNoOfMessages());
+        assertEquals(0, list.size());
 
         set.addValue("2EUR");
         list = set.validate(ipsProject);
-        assertEquals(0, list.getNoOfMessages());
+        assertEquals(0, list.size());
 
         set.addValue("2w");
         list = set.validate(ipsProject);
-        assertEquals(1, list.getNoOfMessages());
+        assertEquals(1, list.size());
 
         Datatype[] vds = ipsProject.findDatatypes(true, false);
         ArrayList<Datatype> vdlist = new ArrayList<Datatype>();
@@ -618,13 +618,13 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         set2.addValue("1");
         set2.addValue("2");
         list = set2.validate(ipsProject);
-        assertEquals(0, list.getNoOfMessages());
+        assertEquals(0, list.size());
 
         ce.getProductCmpt().setProductCmptType("unkown");
         list = set2.validate(ipsProject);
-        assertEquals(2, list.getNoOfMessages());
+        assertEquals(2, list.size());
         MessageList messages = list.getMessagesFor(set2, IEnumValueSet.PROPERTY_VALUES);
-        for (int i = 0; i < messages.getNoOfMessages(); i++) {
+        for (int i = 0; i < messages.size(); i++) {
             assertEquals(Message.WARNING, messages.getMessage(i).getSeverity());
             assertEquals(IValueSet.MSGCODE_UNKNOWN_DATATYPE, messages.getMessage(i).getCode());
         }
@@ -634,19 +634,19 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     public void testValidate_CheckDuplicates() throws CoreException {
         EnumValueSet set = new EnumValueSet(ce, "1");
         MessageList list = set.validate(ipsProject);
-        assertEquals(0, list.getNoOfMessages());
+        assertEquals(0, list.size());
 
         set.addValue("2EUR");
         list = set.validate(ipsProject);
-        assertEquals(0, list.getNoOfMessages());
+        assertEquals(0, list.size());
 
         set.addValue("3EUR");
         list = set.validate(ipsProject);
-        assertEquals(0, list.getNoOfMessages());
+        assertEquals(0, list.size());
 
         set.addValue("2EUR");
         list = set.validate(ipsProject);
-        assertEquals(1, list.getNoOfMessages());
+        assertEquals(1, list.size());
         Message msg0 = list.getMessage(0);
         assertEquals(IEnumValueSet.MSGCODE_DUPLICATE_VALUE, msg0.getCode());
         ObjectProperty[] ops = msg0.getInvalidObjectProperties();
@@ -656,14 +656,14 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
         set.addValue("2EUR");
         list = set.validate(ipsProject);
-        assertEquals(1, list.getNoOfMessages());
+        assertEquals(1, list.size());
         msg0 = list.getMessage(0);
         ops = msg0.getInvalidObjectProperties();
         assertEquals(3, ops.length);
 
         set.setValue(3, "4EUR");
         list = set.validate(ipsProject);
-        assertEquals(1, list.getNoOfMessages());
+        assertEquals(1, list.size());
         msg0 = list.getMessage(0);
         ops = msg0.getInvalidObjectProperties();
         assertEquals(2, ops.length);
@@ -677,7 +677,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         set.addValue("2EUR");
 
         MessageList list = set.validateValue(0, ipsProject);
-        assertEquals(1, list.getNoOfMessages());
+        assertEquals(1, list.size());
         Message msg0 = list.getMessage(0);
         assertEquals(IEnumValueSet.MSGCODE_DUPLICATE_VALUE, msg0.getCode());
         ObjectProperty[] ops = msg0.getInvalidObjectProperties();
@@ -688,7 +688,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertTrue(list.isEmpty());
 
         list = set.validateValue(2, ipsProject);
-        assertEquals(1, list.getNoOfMessages());
+        assertEquals(1, list.size());
         msg0 = list.getMessage(0);
         assertEquals(IEnumValueSet.MSGCODE_DUPLICATE_VALUE, msg0.getCode());
         ops = msg0.getInvalidObjectProperties();

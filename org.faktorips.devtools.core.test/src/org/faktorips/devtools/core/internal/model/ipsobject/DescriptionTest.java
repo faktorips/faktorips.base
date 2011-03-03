@@ -75,7 +75,7 @@ public class DescriptionTest extends AbstractIpsPluginTest {
     @Test
     public void testValidateLocaleMissing() throws CoreException {
         MessageList validationMessages = description.validate(ipsProject);
-        assertEquals(1, validationMessages.getNoOfMessages());
+        assertEquals(1, validationMessages.size());
         Message message = validationMessages.getFirstMessage(Message.ERROR);
         assertEquals(IDescription.MSGCODE_LOCALE_MISSING, message.getCode());
     }
@@ -84,7 +84,7 @@ public class DescriptionTest extends AbstractIpsPluginTest {
     public void testValidateLocaleNotSupported() throws CoreException {
         description.setLocale(Locale.TAIWAN);
         MessageList validationMessages = description.validate(ipsProject);
-        assertEquals(1, validationMessages.getNoOfMessages());
+        assertEquals(1, validationMessages.size());
         Message message = validationMessages.getFirstMessage(Message.WARNING);
         assertEquals(IDescription.MSGCODE_LOCALE_NOT_SUPPORTED_BY_IPS_PROJECT, message.getCode());
     }
@@ -105,7 +105,7 @@ public class DescriptionTest extends AbstractIpsPluginTest {
     public void testValidateOk() throws CoreException {
         description.setLocale(Locale.US);
         MessageList validationMessages = description.validate(ipsProject);
-        assertEquals(0, validationMessages.getNoOfMessages());
+        assertEquals(0, validationMessages.size());
     }
 
     @Test

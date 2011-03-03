@@ -571,7 +571,7 @@ public class TestCaseTest extends AbstractDependencyTest {
 
         // test the correct default values
         MessageList ml = testCaseX.validate(ipsProject);
-        assertEquals(ml.getNoOfMessages(), 0);
+        assertEquals(ml.size(), 0);
         parameter = testCaseTypeX.newInputTestValueParameter();
         parameter.setName("testBoolean");
         parameter.setDatatype("Boolean");

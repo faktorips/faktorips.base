@@ -109,7 +109,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
     public void testValidate_SyntaxErrorInFormula() throws CoreException {
         formula.setExpression("42EUR12");
         MessageList list = formula.validate(ipsProject);
-        assertEquals(1, list.getNoOfMessages());
+        assertEquals(1, list.size());
         Message msg = list.getMessage(0);
         assertEquals(ExprCompiler.SYNTAX_ERROR, msg.getCode());
         assertEquals(formula, msg.getInvalidObjectProperties()[0].getObject());

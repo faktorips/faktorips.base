@@ -78,7 +78,7 @@ public class Migration_2_5_0_rc2 extends AbstractIpsProjectMigrationOperation {
                 migratePolicyCmptType(msgResultList, policyCmptType);
             }
         }
-        if (msgResultList.getNoOfMessages() > 0) {
+        if (msgResultList.size() > 0) {
             String text = "Migration finished with warnings. Some manually migration steps are necessary. See other messages for details."; //$NON-NLS-1$
             msgResultList.add(new Message("finishedWithWarnings", text, Message.WARNING)); //$NON-NLS-1$
         }

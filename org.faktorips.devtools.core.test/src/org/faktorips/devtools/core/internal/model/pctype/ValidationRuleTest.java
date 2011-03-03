@@ -207,7 +207,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         // validation is expected to fail because the specified attribute doesn't exist for the
         // PolicyCmptType
         MessageList messageList = rule.validate(ipsSrcFile.getIpsProject()).getMessagesFor(rule, "validatedAttributes");
-        assertEquals(1, messageList.getNoOfMessages());
+        assertEquals(1, messageList.size());
 
         IPolicyCmptTypeAttribute attr = pcType.newPolicyCmptTypeAttribute();
         attr.setName("a");
@@ -215,12 +215,12 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         attr.setDatatype("String");
 
         messageList = rule.validate(ipsSrcFile.getIpsProject()).getMessagesFor(rule, "validatedAttributes");
-        assertEquals(0, messageList.getNoOfMessages());
+        assertEquals(0, messageList.size());
 
         // validation is expected to fail because of duplicate attribute entries
         rule.addValidatedAttribute("a");
         messageList = rule.validate(ipsSrcFile.getIpsProject()).getMessagesFor(rule, "validatedAttributes");
-        assertEquals(1, messageList.getNoOfMessages());
+        assertEquals(1, messageList.size());
     }
 
     @Test

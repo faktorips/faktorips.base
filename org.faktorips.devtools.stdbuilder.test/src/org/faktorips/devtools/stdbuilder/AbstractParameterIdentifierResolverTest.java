@@ -96,7 +96,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractIpsPluginTe
         // no parameter registered => undefined identifier
         CompilationResult result = resolver.compile("identifier", null, locale);
         assertTrue(result.failed());
-        assertEquals(1, result.getMessages().getNoOfMessages());
+        assertEquals(1, result.getMessages().size());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
 
         // parameter with a value datatype
@@ -122,39 +122,39 @@ public class AbstractParameterIdentifierResolverTest extends AbstractIpsPluginTe
         // unkown parameter
         result = resolver.compile("unkownParameter", null, locale);
         assertTrue(result.failed());
-        assertEquals(1, result.getMessages().getNoOfMessages());
+        assertEquals(1, result.getMessages().size());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
 
         // parameter with unkown datatype
         method.newParameter("UnknownDatatye", "p3");
         result = resolver.compile("p3", null, locale);
         assertTrue(result.failed());
-        assertEquals(1, result.getMessages().getNoOfMessages());
+        assertEquals(1, result.getMessages().size());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
 
         // unkown attribute
         result = resolver.compile("policy.unkownAttribute", null, locale);
         assertTrue(result.failed());
-        assertEquals(1, result.getMessages().getNoOfMessages());
+        assertEquals(1, result.getMessages().size());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
 
         // attribute with unkown datatype
         attribute.setDatatype("UnknownDatatype");
         result = resolver.compile("policy.tax", null, locale);
         assertTrue(result.failed());
-        assertEquals(1, result.getMessages().getNoOfMessages());
+        assertEquals(1, result.getMessages().size());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
 
         // no attributename given
         result = resolver.compile("policy.", null, locale);
         assertTrue(result.failed());
-        assertEquals(1, result.getMessages().getNoOfMessages());
+        assertEquals(1, result.getMessages().size());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
 
         // unkown policy component type
         result = resolver.compile("unkownType.tax", null, locale);
         assertTrue(result.failed());
-        assertEquals(1, result.getMessages().getNoOfMessages());
+        assertEquals(1, result.getMessages().size());
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, result.getMessages().getMessage(0).getCode());
 
         // attribute of the product component type can be accessed without specifing the product

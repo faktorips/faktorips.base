@@ -286,17 +286,17 @@ public class TableContentsTest extends AbstractDependencyTest {
         IRow newRow = tableGen.newRow();
         msgList = table.validate(project);
         assertNotNull(msgList.getMessageByCode(IRow.MSGCODE_UNDEFINED_UNIQUEKEY_VALUE));
-        assertEquals(2, msgList.getNoOfMessages());
+        assertEquals(2, msgList.size());
 
         newRow.setValue(0, "1");
         msgList = table.validate(project);
         assertNotNull(msgList.getMessageByCode(IRow.MSGCODE_UNDEFINED_UNIQUEKEY_VALUE));
-        assertEquals(1, msgList.getNoOfMessages());
+        assertEquals(1, msgList.size());
 
         newRow.setValue(1, "2");
         msgList = table.validate(project);
         assertNull(msgList.getMessageByCode(IRow.MSGCODE_UNDEFINED_UNIQUEKEY_VALUE));
-        assertEquals(0, msgList.getNoOfMessages());
+        assertEquals(0, msgList.size());
     }
 
     @Test

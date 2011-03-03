@@ -66,7 +66,7 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testValidate() throws CoreException {
-        assertEquals(0, literalNameAttribute.validate(ipsProject).getNoOfMessages());
+        assertEquals(0, literalNameAttribute.validate(ipsProject).size());
     }
 
     @Test

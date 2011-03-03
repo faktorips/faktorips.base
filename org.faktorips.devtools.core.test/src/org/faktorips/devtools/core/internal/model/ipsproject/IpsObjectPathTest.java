@@ -399,7 +399,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     @Test
     public void testValidate() throws CoreException {
         MessageList ml = ipsProject.validate();
-        assertEquals(0, ml.getNoOfMessages());
+        assertEquals(0, ml.size());
 
         IIpsProjectProperties props = ipsProject.getProperties();
         IIpsObjectPath path = props.getIpsObjectPath();
@@ -416,19 +416,19 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         path.setOutputFolderForDerivedSources(folder1);
         ipsProject.setProperties(props);
         ml = ipsProject.validate();
-        assertEquals(2, ml.getNoOfMessages());
+        assertEquals(2, ml.size());
 
         // validate missing folders only when general output folder needs to be defined
         path.setOutputDefinedPerSrcFolder(true);
         ipsProject.setProperties(props);
         ml = ipsProject.validate();
-        assertEquals(0, ml.getNoOfMessages());
+        assertEquals(0, ml.size());
     }
 
     @Test
     public void testValidateOutputFolderMergableAndDerivedEmpty() throws Exception {
         MessageList ml = ipsProject.validate();
-        assertEquals(0, ml.getNoOfMessages());
+        assertEquals(0, ml.size());
 
         IIpsProjectProperties props = ipsProject.getProperties();
         IIpsObjectPath path = props.getIpsObjectPath();

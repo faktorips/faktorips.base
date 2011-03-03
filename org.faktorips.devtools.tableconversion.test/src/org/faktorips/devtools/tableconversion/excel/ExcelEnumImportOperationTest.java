@@ -106,7 +106,7 @@ public class ExcelEnumImportOperationTest extends AbstractTableTest {
         ExcelEnumImportOperation op = new ExcelEnumImportOperation(enumType, file.getName(), format, "NULL", true, ml,
                 true);
         op.run(new NullProgressMonitor());
-        assertEquals(7, ml.getNoOfMessages());
+        assertEquals(7, ml.size());
     }
 
     private IEnumType createExternalEnumType() throws Exception, CoreException {

@@ -164,7 +164,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testUniqueIdentifierValidation() throws CoreException {
-        assertEquals(0, paymentMode.validate(ipsProject).getNoOfMessages());
+        assertEquals(0, paymentMode.validate(ipsProject).size());
         IEnumValue testValue1 = paymentMode.getEnumValues().get(0);
         IEnumValue testValue2 = paymentMode.getEnumValues().get(1);
 
@@ -176,12 +176,12 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         testValue1.setEnumAttributeValue(newUnique, "newUniqueValue");
         testValue2.setEnumAttributeValue(newUnique, "newUniqueValue");
         getIpsModel().clearValidationCache();
-        assertEquals(2, paymentMode.validate(ipsProject).getNoOfMessages());
+        assertEquals(2, paymentMode.validate(ipsProject).size());
 
         // Test working for EnumValue deletion.
         testValue2.delete();
         getIpsModel().clearValidationCache();
-        assertEquals(0, paymentMode.validate(ipsProject).getNoOfMessages());
+        assertEquals(0, paymentMode.validate(ipsProject).size());
 
         // Test working for EnumValue addition.
         testValue2 = paymentMode.newEnumValue();
@@ -190,15 +190,15 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         testValue2.setEnumAttributeValue(2, "monthly");
         testValue2.setEnumAttributeValue(3, "newUniqueValue");
         getIpsModel().clearValidationCache();
-        assertEquals(8, paymentMode.validate(ipsProject).getNoOfMessages());
+        assertEquals(8, paymentMode.validate(ipsProject).size());
 
         // Test working for toggling unique property.
         newUnique.setUnique(false);
         getIpsModel().clearValidationCache();
-        assertEquals(6, paymentMode.validate(ipsProject).getNoOfMessages());
+        assertEquals(6, paymentMode.validate(ipsProject).size());
         newUnique.setUnique(true);
         getIpsModel().clearValidationCache();
-        assertEquals(8, paymentMode.validate(ipsProject).getNoOfMessages());
+        assertEquals(8, paymentMode.validate(ipsProject).size());
         testValue2.setEnumAttributeValue(0, "ANNUALLY");
         testValue2.setEnumAttributeValue(1, "P2");
         testValue2.setEnumAttributeValue(2, "annually");
@@ -208,12 +208,12 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         paymentMode.moveEnumAttribute(newUnique, true);
         testValue2.setEnumAttributeValue(3, "monthly");
         getIpsModel().clearValidationCache();
-        assertEquals(2, paymentMode.validate(ipsProject).getNoOfMessages());
+        assertEquals(2, paymentMode.validate(ipsProject).size());
 
         // Test working for EnumAttribute deletion.
         paymentMode.deleteEnumAttributeWithValues(newUnique);
         getIpsModel().clearValidationCache();
-        assertEquals(2, paymentMode.validate(ipsProject).getNoOfMessages());
+        assertEquals(2, paymentMode.validate(ipsProject).size());
     }
 
     @Test

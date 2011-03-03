@@ -165,7 +165,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
     @Test
     public void testValidate() throws CoreException {
         MessageList ml = ipsProject.validate();
-        assertEquals(0, ml.getNoOfMessages());
+        assertEquals(0, ml.size());
 
         IIpsProjectProperties props = ipsProject.getProperties();
         IIpsObjectPath path = props.getIpsObjectPath();
@@ -175,7 +175,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         srcEntries[0].setSpecificOutputFolderForMergableJavaFiles(null);
         ipsProject.setProperties(props);
         ml = ipsProject.validate();
-        assertEquals(1, ml.getNoOfMessages());
+        assertEquals(1, ml.size());
         assertNotNull(ml.getMessageByCode(IIpsSrcFolderEntry.MSGCODE_OUTPUT_FOLDER_MERGABLE_MISSING));
 
         // validate missing outputFolderGenerated
@@ -183,20 +183,20 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         srcEntries[0].setSpecificOutputFolderForMergableJavaFiles(folder1);
         ipsProject.setProperties(props);
         ml = ipsProject.validate();
-        assertEquals(1, ml.getNoOfMessages());
+        assertEquals(1, ml.size());
         assertNotNull(ml.getMessageByCode(IIpsSrcFolderEntry.MSGCODE_OUTPUT_FOLDER_MERGABLE_DOESNT_EXIST));
 
         // validate missing outputFolderDerived
         srcEntries[0].setSpecificOutputFolderForDerivedJavaFiles(folder1);
         ipsProject.setProperties(props);
         ml = ipsProject.validate();
-        assertEquals(2, ml.getNoOfMessages());
+        assertEquals(2, ml.size());
 
         // validate missing source folder
         path.newSourceFolderEntry(folder1);
         ipsProject.setProperties(props);
         ml = ipsProject.validate();
-        assertEquals(5, ml.getNoOfMessages());
+        assertEquals(5, ml.size());
     }
 
     @Test

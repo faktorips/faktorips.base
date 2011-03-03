@@ -163,7 +163,7 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
                 importTarget, format, "NULL", true, ml, true);
 
         op.run(new NullProgressMonitor());
-        assertEquals(6, ml.getNoOfMessages());
+        assertEquals(6, ml.size());
     }
 
     private void createInvalidCsvFile() throws Exception {

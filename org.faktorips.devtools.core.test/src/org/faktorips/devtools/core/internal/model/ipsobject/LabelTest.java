@@ -95,7 +95,7 @@ public class LabelTest extends AbstractIpsPluginTest {
     @Test
     public void testValidateLocaleMissing() throws CoreException {
         MessageList validationMessages = label.validate(ipsProject);
-        assertEquals(1, validationMessages.getNoOfMessages());
+        assertEquals(1, validationMessages.size());
         Message message = validationMessages.getFirstMessage(Message.ERROR);
         assertEquals(ILabel.MSGCODE_LOCALE_MISSING, message.getCode());
     }
@@ -104,7 +104,7 @@ public class LabelTest extends AbstractIpsPluginTest {
     public void testValidateLocaleNotSupported() throws CoreException {
         label.setLocale(Locale.TAIWAN);
         MessageList validationMessages = label.validate(ipsProject);
-        assertEquals(1, validationMessages.getNoOfMessages());
+        assertEquals(1, validationMessages.size());
         Message message = validationMessages.getFirstMessage(Message.WARNING);
         assertEquals(ILabel.MSGCODE_LOCALE_NOT_SUPPORTED_BY_IPS_PROJECT, message.getCode());
     }
@@ -125,7 +125,7 @@ public class LabelTest extends AbstractIpsPluginTest {
     public void testValidateOk() throws CoreException {
         label.setLocale(Locale.US);
         MessageList validationMessages = label.validate(ipsProject);
-        assertEquals(0, validationMessages.getNoOfMessages());
+        assertEquals(0, validationMessages.size());
     }
 
     @Test

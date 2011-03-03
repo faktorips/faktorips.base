@@ -82,7 +82,7 @@ public class ExcelTableExportOperationTest extends AbstractTableTest {
         MessageList ml = new MessageList();
         ExcelTableExportOperation op = new ExcelTableExportOperation(contents, filename, format, "NULL", true, ml);
         op.run(new NullProgressMonitor());
-        assertEquals(6, ml.getNoOfMessages());
+        assertEquals(6, ml.size());
     }
 
 }

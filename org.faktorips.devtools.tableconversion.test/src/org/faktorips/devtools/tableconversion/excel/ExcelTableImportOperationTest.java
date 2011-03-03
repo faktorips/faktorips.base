@@ -139,7 +139,7 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         ExcelTableImportOperation op = new ExcelTableImportOperation(structure, file.getName(), importTarget, format,
                 "NULL", true, ml, true);
         op.run(new NullProgressMonitor());
-        assertEquals(6, ml.getNoOfMessages());
+        assertEquals(6, ml.size());
     }
 
     private void createValid() throws Exception {

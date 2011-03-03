@@ -184,19 +184,19 @@ public class TestRuleTest extends AbstractIpsPluginTest {
         testRuleNew.setTestRuleParameter(paramRule.getName());
         testRuleNew.setValidationRule(ruleA.getMessageCode());
         ml = testRule.validate(project);
-        assertEquals(0, ml.getNoOfMessages());
+        assertEquals(0, ml.size());
 
         testRuleNew = testCase.newTestRule();
         testRuleNew.setTestRuleParameter(paramRule.getName());
         testRuleNew.setValidationRule(ruleB.getMessageCode());
         ml = testRule.validate(project);
-        assertEquals(0, ml.getNoOfMessages());
+        assertEquals(0, ml.size());
 
         testRuleNew = testCase.newTestRule();
         testRuleNew.setTestRuleParameter(paramRule.getName());
         testRuleNew.setValidationRule(ruleC.getMessageCode());
         ml = testRule.validate(project);
-        assertEquals(0, ml.getNoOfMessages());
+        assertEquals(0, ml.size());
     }
 
     @Test

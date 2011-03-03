@@ -161,12 +161,12 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         row2.setValue(0, "1");
         messageList = table.validate(project);
         assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
-        assertEquals(2, messageList.getNoOfMessages());
+        assertEquals(2, messageList.size());
 
         row2.setValue(1, "1");
         messageList = table.validate(project);
         assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
-        assertEquals(4, messageList.getNoOfMessages());
+        assertEquals(4, messageList.size());
 
     }
 
@@ -233,7 +233,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         row2.setValue(0, "0");
         messageList = table.validate(project);
         assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
-        assertEquals(2, messageList.getNoOfMessages());
+        assertEquals(2, messageList.size());
 
         row2.setValue(0, "1");
         messageList = table.validate(project);
@@ -255,7 +255,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         row2.setValue(0, "0");
         messageList = table.validate(project);
         assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
-        assertEquals(2, messageList.getNoOfMessages());
+        assertEquals(2, messageList.size());
 
         row2.setValue(0, "1");
         messageList = table.validate(project);
@@ -305,21 +305,21 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
 
         messageList = table.validate(project);
         assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
-        assertEquals(2, messageList.getNoOfMessages());
+        assertEquals(2, messageList.size());
 
         // valid contents
         row2.setValue(0, "21");
 
         messageList = table.validate(project);
         assertNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
-        assertEquals(0, messageList.getNoOfMessages());
+        assertEquals(0, messageList.size());
 
         // invalid contents (from column - unique violation)
         row2.setValue(0, "19");
 
         messageList = table.validate(project);
         assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
-        assertEquals(2, messageList.getNoOfMessages());
+        assertEquals(2, messageList.size());
 
         // invalid contents (from column equal - unique violation)
         row1.setValue(0, "10");
@@ -329,7 +329,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
 
         messageList = table.validate(project);
         assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
-        assertEquals(2, messageList.getNoOfMessages());
+        assertEquals(2, messageList.size());
     }
 
     /**
@@ -417,7 +417,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
 
         // precondition valid structure, all Datatypes found etc.
         structure.validate(project);
-        assertEquals(0, structure.validate(project).getNoOfMessages());
+        assertEquals(0, structure.validate(project).size());
 
         ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
         table.newColumn("a");
@@ -465,7 +465,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
 
         messageList = table.validate(project);
         assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
-        assertEquals(2, messageList.getNoOfMessages());
+        assertEquals(2, messageList.size());
 
         // valid contents, both ranges overlap but different column key
         row2.setValue(4, "1.24");
@@ -775,7 +775,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         // Step 1
         MessageList messageList = table.validate(project);
         assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
-        assertEquals(2, messageList.getNoOfMessages());
+        assertEquals(2, messageList.size());
         assertRowInValidationMsg(messageList, 2);
         assertRowInValidationMsg(messageList, 3);
 
@@ -783,7 +783,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         row.setValue(1, "10"); // ageMin
         messageList = table.validate(project);
         assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
-        assertEquals(2, messageList.getNoOfMessages());
+        assertEquals(2, messageList.size());
         assertRowInValidationMsg(messageList, 1);
         assertRowInValidationMsg(messageList, 3);
 
@@ -791,7 +791,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         row.setValue(1, "20"); // ageMin
         messageList = table.validate(project);
         assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
-        assertEquals(2, messageList.getNoOfMessages());
+        assertEquals(2, messageList.size());
         assertRowInValidationMsg(messageList, 2);
         assertRowInValidationMsg(messageList, 3);
 
@@ -803,7 +803,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
 
     private void assertRowInValidationMsg(MessageList messageList, int row) throws CoreException {
         assertEquals(table.getNumOfGenerations(), 1);
-        assertEquals(1, messageList.getMessagesFor((table.getGeneration(0).getChildren())[row - 1]).getNoOfMessages());
+        assertEquals(1, messageList.getMessagesFor((table.getGeneration(0).getChildren())[row - 1]).size());
     }
 
     /**
@@ -859,7 +859,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         row.setValue(0, "1"); // mandant
         messageList = table.validate(project);
         assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
-        assertEquals(2, messageList.getNoOfMessages());
+        assertEquals(2, messageList.size());
         assertRowInValidationMsg(messageList, 1);
         assertRowInValidationMsg(messageList, 2);
 

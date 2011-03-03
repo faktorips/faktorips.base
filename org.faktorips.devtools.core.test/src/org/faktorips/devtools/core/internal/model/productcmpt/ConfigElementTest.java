@@ -261,7 +261,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
 
         // no test for specific message codes because the codes are under controll
         // of the value set.
-        assertTrue(ml.getNoOfMessages() > 0);
+        assertTrue(ml.size() > 0);
 
         valueSet = (IRangeValueSet)ce.getValueSet();
         valueSet.setLowerBound("0");
@@ -275,7 +275,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         productCmpt.getIpsSrcFile().save(true, null);
 
         ml = ce.validate(ipsProject);
-        assertEquals(0, ml.getNoOfMessages());
+        assertEquals(0, ml.size());
     }
 
     @Test
@@ -393,7 +393,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         policyCmptType.getIpsSrcFile().save(true, null);
 
         ml = ce.validate(ipsProject);
-        assertEquals(0, ml.getNoOfMessages());
+        assertEquals(0, ml.size());
 
         // check lower unbound values
         valueSet.setLowerBound(null);

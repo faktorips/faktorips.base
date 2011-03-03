@@ -111,7 +111,7 @@ public class CSVTableExportOperationTest extends AbstractTableTest {
         MessageList ml = new MessageList();
         CSVTableExportOperation op = new CSVTableExportOperation(contents, filename, format, "NULL", true, ml);
         op.run(new NullProgressMonitor());
-        assertEquals(7, ml.getNoOfMessages()); // from 8 columns only the String column is valid
+        assertEquals(7, ml.size()); // from 8 columns only the String column is valid
     }
 
 }
