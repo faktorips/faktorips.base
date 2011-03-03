@@ -90,7 +90,8 @@ public abstract class GenMethod extends GenTypePart {
         Datatype[] parameterDatatypes = getParameterDatatypes();
         String[] parameterTypeSignatures = new String[parameterDatatypes.length];
         for (int i = 0; i < parameterTypeSignatures.length; i++) {
-            parameterTypeSignatures[i] = getJavaParameterTypeSignature(parameterDatatypes[i]);
+            parameterTypeSignatures[i] = getJavaTypeSignature(parameterDatatypes[i], getMethod().getModifier()
+                    .isPublished());
         }
         org.eclipse.jdt.core.IMethod method = generatedJavaType.getMethod(getMethod().getName(),
                 parameterTypeSignatures);

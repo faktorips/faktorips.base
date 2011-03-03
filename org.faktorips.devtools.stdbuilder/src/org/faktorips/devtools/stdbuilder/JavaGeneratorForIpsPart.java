@@ -11,16 +11,20 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.builder;
+package org.faktorips.devtools.stdbuilder;
 
 import java.util.List;
 import java.util.Locale;
 
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.Signature;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.builder.JavaGenerationHelper;
+import org.faktorips.devtools.core.builder.JavaNamingConvention;
+import org.faktorips.devtools.core.builder.LocalizedTextHelper;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
@@ -70,7 +74,7 @@ public abstract class JavaGeneratorForIpsPart {
             IIpsProject iIpsProject,
             boolean interfaceMethodImplementation) {
 
-        JavaGeneratiorHelper.appendOverrideAnnotation(fragmentBuilder, iIpsProject, interfaceMethodImplementation);
+        JavaGenerationHelper.appendOverrideAnnotation(fragmentBuilder, iIpsProject, interfaceMethodImplementation);
     }
 
     /**
@@ -212,7 +216,7 @@ public abstract class JavaGeneratorForIpsPart {
     }
 
     public String getJavaDocCommentForOverriddenMethod() {
-        return JavaGeneratiorHelper.getJavaDocCommentForOverriddenMethod();
+        return JavaGenerationHelper.getJavaDocCommentForOverriddenMethod();
     }
 
     /**
@@ -227,7 +231,7 @@ public abstract class JavaGeneratorForIpsPart {
     }
 
     public JavaNamingConvention getJavaNamingConvention() {
-        return JavaGeneratiorHelper.getJavaNamingConvention();
+        return JavaGenerationHelper.getJavaNamingConvention();
     }
 
     /**
@@ -298,21 +302,20 @@ public abstract class JavaGeneratorForIpsPart {
             IType generatedJavaType,
             IIpsElement ipsElement);
 
-    protected final String getJavaParameterTypeSignature(Datatype datatype) {
-        char typeIdentifier = 'Q';
-        if (datatype.isVoid()) {
-            return "V"; //$NON-NLS-1$
-        } else if (datatype.isPrimitive()) {
-            if (datatype.equals(Datatype.PRIMITIVE_INT)) {
-                return "I"; //$NON-NLS-1$
-            } else if (datatype.equals(Datatype.PRIMITIVE_BOOLEAN)) {
-                return "Z"; //$NON-NLS-1$
-            } else if (datatype.equals(Datatype.PRIMITIVE_LONG)) {
-                return "J"; //$NON-NLS-1$
-            }
+    /**
+     * Returns the Java type signature for the given {@link Datatype}.
+     * 
+     * @param datatype The {@link Datatype} to get the parameter type signature for
+     * @param resolveToPublishedInterface Flag indicating whether the datatype should be resolved to
+     *            the published interface type
+     * 
+     * @see Signature
+     */
+    protected final String getJavaTypeSignature(Datatype datatype, boolean resolveToPublishedInterface) {
+        if (resolveToPublishedInterface) {
+            // StdBuilderHelper. TODO AW
         }
-
-        return typeIdentifier + datatype.getName() + ";"; //$NON-NLS-1$
+        return Signature.createTypeSignature(datatype.getName(), false);
     }
 
     @Override

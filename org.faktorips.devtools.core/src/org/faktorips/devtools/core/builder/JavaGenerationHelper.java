@@ -18,14 +18,13 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- * This class is an assembly of the common methods of the {@link JavaSourceFileBuilder} and
- * {@link JavaGeneratorForIpsPart}.
+ * This class is an assembly of methods common to Java builders and generators.
  * 
  * @author Peter Kuntz
  */
-public final class JavaGeneratiorHelper {
+public final class JavaGenerationHelper {
 
-    private JavaGeneratiorHelper() {
+    private JavaGenerationHelper() {
         // Helper class not to be instantiated.
     }
 
