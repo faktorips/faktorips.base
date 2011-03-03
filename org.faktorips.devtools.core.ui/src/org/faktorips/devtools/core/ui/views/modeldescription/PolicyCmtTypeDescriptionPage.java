@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.ui.editors.pctype.Messages;
 
 /**
  * A page for presenting the properties of a {@link IPolicyCmptType}. This page is connected to a
@@ -40,17 +39,13 @@ public class PolicyCmtTypeDescriptionPage extends DefaultModelDescriptionPage {
     protected List<DescriptionItem> createDescriptions() throws CoreException {
         List<DescriptionItem> descriptions = new ArrayList<DescriptionItem>();
         IAttribute[] attributes = getIpsObject().findAllAttributes(getIpsObject().getIpsProject());
-        List<DescriptionItem> attributeDescriptions = new ArrayList<DescriptionItem>();
         for (IAttribute attribute : attributes) {
-            createDescriptionItem(attribute, attributeDescriptions);
+            createDescriptionItem(attribute, descriptions);
         }
-        descriptions.add(new DescriptionItem(Messages.AttributesSection_title, attributeDescriptions));
         IAssociation[] associations = getIpsObject().findAllAssociations(getIpsObject().getIpsProject());
-        List<DescriptionItem> aDescriptions = new ArrayList<DescriptionItem>();
         for (IAssociation association : associations) {
-            createDescriptionItem(association, aDescriptions);
+            createDescriptionItem(association, descriptions);
         }
-        descriptions.add(new DescriptionItem(Messages.AssociationsSection_title, aDescriptions));
         return descriptions;
     }
 
