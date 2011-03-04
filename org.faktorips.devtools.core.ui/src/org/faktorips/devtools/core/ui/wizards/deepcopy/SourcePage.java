@@ -35,7 +35,6 @@ import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeViewerListener;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
@@ -165,51 +164,62 @@ public class SourcePage extends WizardPage {
         masterCopyComposite.setLayout(new GridLayout(2, true));
         masterCopyComposite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 
-        Group masterGroup = toolkit.createGroup(masterCopyComposite, Messages.SourcePage_copyFrom);
-        Composite masterComposite = toolkit.createLabelEditColumnComposite(masterGroup);
+        Group originGroup = toolkit.createGroup(masterCopyComposite, Messages.SourcePage_copyFrom);
+        Composite masterComposite = toolkit.createLabelEditColumnComposite(originGroup);
         ((GridLayout)masterComposite.getLayout()).numColumns = 3;
-
-        createOldValidFromControl(toolkit, masterComposite);
-        toolkit.createVerticalSpacer(masterComposite, 0);
-
-        String label = NLS.bind(Messages.ReferenceAndPreviewPage_labelVersionId, IpsPlugin.getDefault()
-                .getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
-
-        IProductCmpt rootProductCmpt = getPresentationModel().getStructure().getRoot().getProductCmpt();
-        String masterVersionId = ""; //$NON-NLS-1$
-        try {
-            masterVersionId = rootProductCmpt.getVersionId();
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
-        createLabel(toolkit, masterComposite, label, masterVersionId);
-
-        createLabel(toolkit, masterComposite, Messages.SourcePage_labelTargetRoot, rootProductCmpt
-                .getIpsPackageFragment().getRoot().getCorrespondingResource().getFullPath().toString().substring(1));
-
-        createLabel(toolkit, masterComposite, Messages.ReferenceAndPreviewPage_labelTargetPackage, rootProductCmpt
-                .getIpsPackageFragment().getName());
-
         Group copyGroup = toolkit.createGroup(masterCopyComposite, Messages.SourcePage_copyTo);
         Composite copyComposite = toolkit.createLabelEditColumnComposite(copyGroup);
 
-        toolkit.createLabel(copyComposite, Messages.ReferenceAndPreviewPage_labelValidFrom);
-        newWorkingDateControl = new DateControl(copyComposite, toolkit);
+        String changeOverTimeLabel = NLS.bind(Messages.ReferenceAndPreviewPage_labelVersionId, IpsPlugin.getDefault()
+                .getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular());
 
-        toolkit.createLabel(copyComposite, label);
-        versionId = toolkit.createText(copyComposite);
+        int[] height = new int[4];
+        // create content in copy group
+        // first create right group to get correct heights
+        {
+            toolkit.createLabel(copyComposite, Messages.ReferenceAndPreviewPage_labelValidFrom);
+            newWorkingDateControl = new DateControl(copyComposite, toolkit);
+            height[0] = newWorkingDateControl.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
 
-        toolkit.createLabel(copyComposite, Messages.SourcePage_labelTargetRoot);
-        targetPackRootControl = toolkit.createPdPackageFragmentRootRefControl(copyComposite, true);
+            toolkit.createLabel(copyComposite, changeOverTimeLabel);
+            versionId = toolkit.createText(copyComposite);
+            height[1] = versionId.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
 
-        toolkit.createLabel(copyComposite, Messages.ReferenceAndPreviewPage_labelTargetPackage);
-        targetPackageControl = toolkit.createPdPackageFragmentRefControl(getPresentationModel().getTargetPackageRoot(),
-                copyComposite);
+            toolkit.createLabel(copyComposite, Messages.SourcePage_labelTargetRoot);
+            targetPackRootControl = toolkit.createPdPackageFragmentRootRefControl(copyComposite, true);
+            height[2] = targetPackRootControl.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
 
-        toolkit.createLabel(copyComposite, Messages.SourcePage_tables);
-        copyTableContentsBtn = toolkit
-                .createCheckbox(copyComposite, Messages.SourcePage_labelRadioBtnCopyTableContents);
-        copyTableContentsBtn.setChecked(true);
+            toolkit.createLabel(copyComposite, Messages.ReferenceAndPreviewPage_labelTargetPackage);
+            targetPackageControl = toolkit.createPdPackageFragmentRefControl(getPresentationModel()
+                    .getTargetPackageRoot(), copyComposite);
+            height[3] = targetPackageControl.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+
+            toolkit.createLabel(copyComposite, Messages.SourcePage_tables);
+            copyTableContentsBtn = toolkit.createCheckbox(copyComposite,
+                    Messages.SourcePage_labelRadioBtnCopyTableContents);
+            copyTableContentsBtn.setChecked(true);
+        }
+        // create content in origin grou
+        {
+            createOldValidFromControl(toolkit, masterComposite);
+            toolkit.createVerticalSpacer(masterComposite, height[0]);
+
+            IProductCmpt rootProductCmpt = getPresentationModel().getStructure().getRoot().getProductCmpt();
+            String masterVersionId = ""; //$NON-NLS-1$
+            try {
+                masterVersionId = rootProductCmpt.getVersionId();
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+            createLabel(toolkit, masterComposite, changeOverTimeLabel, masterVersionId, height[1]);
+
+            createLabel(toolkit, masterComposite, Messages.SourcePage_labelTargetRoot,
+                    rootProductCmpt.getIpsPackageFragment().getRoot().getCorrespondingResource().getFullPath()
+                            .toString().substring(1), height[2]);
+
+            createLabel(toolkit, masterComposite, Messages.ReferenceAndPreviewPage_labelTargetPackage, rootProductCmpt
+                    .getIpsPackageFragment().getName(), height[3]);
+        }
 
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
             Group searchReplaceGroup = toolkit.createGroup(root, Messages.SourcePage_searchAndReplace);
@@ -224,6 +234,9 @@ public class SourcePage extends WizardPage {
             toolkit.createLabel(searchReplaceComposite, Messages.ReferenceAndPreviewPage_labelReplacePattern);
             replaceInput = toolkit.createText(searchReplaceComposite);
         }
+
+        Label horizonzalLine = toolkit.createHorizonzalLine(root);
+        ((GridData)horizonzalLine.getLayoutData()).horizontalSpan = 2;
 
         tree = new CheckboxTreeViewer(root, SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
         tree.setUseHashlookup(true);
@@ -253,17 +266,16 @@ public class SourcePage extends WizardPage {
         }
     }
 
-    private Label createLabel(UIToolkit toolkit, Composite parent, String descriptionLabel, String text) {
+    private Label createLabel(UIToolkit toolkit, Composite parent, String descriptionLabel, String text, int maxHeight) {
         toolkit.createLabel(parent, descriptionLabel);
         Label label = toolkit.createLabel(parent, text);
-        toolkit.createVerticalSpacer(parent, generationDateViewer.getCombo().getTextHeight());
+        toolkit.createVerticalSpacer(parent, maxHeight);
         return label;
     }
 
     private void createOldValidFromControl(UIToolkit toolkit, Composite inputRoot) {
         toolkit.createLabel(inputRoot, Messages.SourcePage_labelSourceValidFrom);
         generationDateViewer = new GenerationDateViewer(inputRoot);
-        generationDateViewer.getCombo().setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
         IStructuredContentProvider generationContentProvider = new IStructuredContentProvider() {
 
             private GenerationDateContentProvider internalContentProvider = new GenerationDateContentProvider();
@@ -285,16 +297,8 @@ public class SourcePage extends WizardPage {
             }
         };
         generationDateViewer.setContentProvider(generationContentProvider);
-        generationDateViewer.setLabelProvider(new LabelProvider() {
-            @Override
-            public String getText(Object element) {
-                if (element instanceof GenerationDate) {
-                    return ((GenerationDate)element).getText();
-                }
-                return super.getText(element);
-            }
-        });
         generationDateViewer.setInput(getPresentationModel().getStructure().getRoot().getProductCmpt());
+        generationDateViewer.updateButtons();
 
         GregorianCalendar validAt = getStructure().getValidAt();
         Object[] elements = generationContentProvider.getElements(null);
@@ -307,6 +311,7 @@ public class SourcePage extends WizardPage {
                 break;
             }
         }
+
     }
 
     protected void initBindingsAndRefresh() {
