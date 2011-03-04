@@ -326,8 +326,9 @@ public class SourcePage extends WizardPage {
                 // can be updated
                 refreshPageAfterValueChange();
                 updateCheckedAndGrayedStatus(getStructure());
-                setMessagePleaseEnterWorkingDate();
                 updateColumnWidth();
+                setErrorMessage(null);
+                setMessagePleaseEnterWorkingDate();
             }
         });
     }
