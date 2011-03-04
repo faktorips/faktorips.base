@@ -362,8 +362,17 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         // Dies muss ueberarbeitet werden
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setBuilderSetId("org.faktorips.devtools.stdbuilder.ipsstdbuilderset");
-        props.setPredefinedDatatypesUsed(new String[] { "Decimal", "Money", "Integer", "int", "boolean", "String",
-                "Boolean" });
+        // @formatter:off
+        props.setPredefinedDatatypesUsed(new String[] {
+                Datatype.DECIMAL.getName(),
+                Datatype.MONEY.getName(),
+                Datatype.INTEGER.getName(),
+                Datatype.PRIMITIVE_INT.getName(),
+                Datatype.PRIMITIVE_LONG.getName(),
+                Datatype.PRIMITIVE_BOOLEAN.getName(),
+                Datatype.STRING.getName(),
+                Datatype.BOOLEAN.getName() });
+        // @formatter:on
 
         props.setMinRequiredVersionNumber(
                 "org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
