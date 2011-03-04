@@ -25,6 +25,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -101,7 +102,7 @@ public abstract class GenAttribute extends GenTypePart {
     protected final void addSetterMethodToGeneratedJavaElements(List<IJavaElement> javaElements, IType generatedJavaType) {
         ArgumentCheck.notNull(new Object[] { javaElements, generatedJavaType });
         IMethod setterMethod = generatedJavaType.getMethod(getSetterMethodName(),
-                new String[] { getJavaTypeSignature(getDatatype(), false) });
+                new String[] { StdBuilderHelper.transformDatatypeToJdtTypeSignature(getDatatype(), false) });
         javaElements.add(setterMethod);
     }
 

@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -90,8 +91,8 @@ public abstract class GenMethod extends GenTypePart {
         Datatype[] parameterDatatypes = getParameterDatatypes();
         String[] parameterTypeSignatures = new String[parameterDatatypes.length];
         for (int i = 0; i < parameterTypeSignatures.length; i++) {
-            parameterTypeSignatures[i] = getJavaTypeSignature(parameterDatatypes[i], getMethod().getModifier()
-                    .isPublished());
+            parameterTypeSignatures[i] = StdBuilderHelper.transformDatatypeToJdtTypeSignature(parameterDatatypes[i],
+                    getMethod().getModifier().isPublished());
         }
         org.eclipse.jdt.core.IMethod method = generatedJavaType.getMethod(getMethod().getName(),
                 parameterTypeSignatures);

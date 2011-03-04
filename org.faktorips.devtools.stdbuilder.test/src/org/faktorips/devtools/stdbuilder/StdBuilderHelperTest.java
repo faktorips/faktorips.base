@@ -11,65 +11,51 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.builder;
+package org.faktorips.devtools.stdbuilder;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
-import java.util.Locale;
-
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.Signature;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.builder.JavaGeneratorForIpsPart;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.util.LocalizedStringsSet;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class JavaGeneratorForIpsPartTest {
-
-    private JavaGeneratorForIpsPart generator;
-
-    @Before
-    public void setUp() {
-        generator = new StubGenerator(mock(IIpsObjectPartContainer.class), new LocalizedStringsSet(getClass()));
-    }
+public class StdBuilderHelperTest {
 
     @Test
     public void testGetJavaParameterTypeSignatureVoid() {
-        assertEquals(String.valueOf(Signature.C_VOID), generator.getJavaTypeSignature(Datatype.VOID, false));
+        assertEquals(String.valueOf(Signature.C_VOID),
+                StdBuilderHelper.transformDatatypeToJdtTypeSignature(Datatype.VOID, false));
     }
 
     @Test
     public void testGetJavaParameterTypeSignatureInt() {
-        assertEquals(String.valueOf(Signature.C_INT), generator.getJavaTypeSignature(Datatype.PRIMITIVE_INT, false));
+        assertEquals(String.valueOf(Signature.C_INT),
+                StdBuilderHelper.transformDatatypeToJdtTypeSignature(Datatype.PRIMITIVE_INT, false));
     }
 
     @Test
     public void testGetJavaParameterTypeSignatureBoolean() {
         assertEquals(String.valueOf(Signature.C_BOOLEAN),
-                generator.getJavaTypeSignature(Datatype.PRIMITIVE_BOOLEAN, false));
+                StdBuilderHelper.transformDatatypeToJdtTypeSignature(Datatype.PRIMITIVE_BOOLEAN, false));
     }
 
     @Test
     public void testGetJavaParameterTypeSignatureLong() {
-        assertEquals(String.valueOf(Signature.C_LONG), generator.getJavaTypeSignature(Datatype.PRIMITIVE_LONG, false));
+        assertEquals(String.valueOf(Signature.C_LONG),
+                StdBuilderHelper.transformDatatypeToJdtTypeSignature(Datatype.PRIMITIVE_LONG, false));
     }
 
     @Test
     public void testGetJavaParameterTypeSignatureNonPrimitive() {
         assertEquals(Signature.createTypeSignature(Datatype.INTEGER.getName(), false),
-                generator.getJavaTypeSignature(Datatype.INTEGER, false));
+                StdBuilderHelper.transformDatatypeToJdtTypeSignature(Datatype.INTEGER, false));
     }
 
     @Test
@@ -84,7 +70,7 @@ public class JavaGeneratorForIpsPartTest {
         Datatype policyCmptType = new PolicyCmptType(ipsSrcFile);
 
         String expectedSignature = Signature.createTypeSignature(name, false);
-        assertEquals(expectedSignature, generator.getJavaTypeSignature(policyCmptType, false));
+        assertEquals(expectedSignature, StdBuilderHelper.transformDatatypeToJdtTypeSignature(policyCmptType, false));
     }
 
     // TODO AW work in progress
@@ -101,34 +87,7 @@ public class JavaGeneratorForIpsPartTest {
         Datatype policyCmptType = new PolicyCmptType(ipsSrcFile);
 
         String expectedSignature = Signature.createTypeSignature("I" + name, false);
-        assertEquals(expectedSignature, generator.getJavaTypeSignature(policyCmptType, true));
-    }
-
-    private static class StubGenerator extends JavaGeneratorForIpsPart {
-
-        public StubGenerator(IIpsObjectPartContainer part, LocalizedStringsSet localizedStringsSet) {
-            super(part, localizedStringsSet);
-        }
-
-        @Override
-        public Locale getLanguageUsedInGeneratedSourceCode() {
-            return null;
-        }
-
-        @Override
-        public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
-                IType generatedJavaType,
-                IIpsElement ipsElement) {
-
-        }
-
-        @Override
-        public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
-                IType generatedJavaType,
-                IIpsElement ipsElement) {
-
-        }
-
+        assertEquals(expectedSignature, StdBuilderHelper.transformDatatypeToJdtTypeSignature(policyCmptType, true));
     }
 
 }

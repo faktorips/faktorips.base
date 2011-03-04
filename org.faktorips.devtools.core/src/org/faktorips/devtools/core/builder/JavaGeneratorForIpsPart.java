@@ -18,7 +18,6 @@ import java.util.Locale;
 
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.Signature;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -298,22 +297,6 @@ public abstract class JavaGeneratorForIpsPart {
     public abstract void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
             IType generatedJavaType,
             IIpsElement ipsElement);
-
-    /**
-     * Returns the Java type signature for the given {@link Datatype}.
-     * 
-     * @param datatype The {@link Datatype} to get the parameter type signature for
-     * @param resolveToPublishedInterface Flag indicating whether the datatype should be resolved to
-     *            the published interface type
-     * 
-     * @see Signature
-     */
-    protected final String getJavaTypeSignature(Datatype datatype, boolean resolveToPublishedInterface) {
-        if (resolveToPublishedInterface) {
-            // StdBuilderHelper. TODO AW
-        }
-        return Signature.createTypeSignature(datatype.getName(), false);
-    }
 
     @Override
     public String toString() {

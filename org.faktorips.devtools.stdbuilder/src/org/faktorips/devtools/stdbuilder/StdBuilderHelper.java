@@ -14,6 +14,8 @@
 package org.faktorips.devtools.stdbuilder;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.Signature;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -29,6 +31,32 @@ import org.faktorips.devtools.core.model.type.IParameter;
  * @author Jan Ortmann
  */
 public class StdBuilderHelper {
+
+    /**
+     * Returns the JDT type signature for the given {@link Datatype}.
+     * <p>
+     * The JDT type signature is a special representation of a datatype so it can be used to
+     * identify {@link IJavaElement}s. For example, the datatype <tt>int</tt> in JDT is represented
+     * as just <tt>I</tt>.
+     * <p>
+     * When dealing with Faktor-IPS datatypes it is also possible that the datatype should be
+     * resolved to the published interface. In this case depending on the used naming convention the
+     * name of the datatype is modified, e.g. from <tt>Policy</tt> to <tt>IPolicy</tt>.
+     * 
+     * @param datatype The {@link Datatype} to get the parameter type signature for
+     * @param resolveToPublishedInterface Flag indicating whether the datatype should be resolved to
+     *            the published interface type
+     * 
+     * @see Signature
+     */
+    public final static String transformDatatypeToJdtTypeSignature(Datatype datatype,
+            boolean resolveToPublishedInterface) {
+
+        if (resolveToPublishedInterface) {
+            // StdBuilderHelper. TODO AW
+        }
+        return Signature.createTypeSignature(datatype.getName(), false);
+    }
 
     public final static String transformDatatypeToJavaClassName(String datatypeName,
             boolean resolveToPublishedInterface,
@@ -78,7 +106,7 @@ public class StdBuilderHelper {
     /**
      * This method is supposed to be used for the generation of methods which deal with the range or
      * enum value set for a datatype. Since for primitive datatypes the range and enum value set
-     * classes of the non primitive wrapper types are used. Therefor this method checks if the
+     * classes of the non primitive wrapper types are used. Therefore this method checks if the
      * provided DatatypeHelper is based on a primitive datatype. If so the according wrapper
      * datatype is retrieved from the IpsProject and returned. If the datatype is not primitive the
      * provided datatype will be returned.
