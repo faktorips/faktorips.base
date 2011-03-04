@@ -22,7 +22,7 @@ import org.eclipse.jdt.core.Signature;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.builder.JavaGenerationHelper;
+import org.faktorips.devtools.core.builder.JavaGeneratorHelper;
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.builder.LocalizedTextHelper;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -74,7 +74,7 @@ public abstract class JavaGeneratorForIpsPart {
             IIpsProject iIpsProject,
             boolean interfaceMethodImplementation) {
 
-        JavaGenerationHelper.appendOverrideAnnotation(fragmentBuilder, iIpsProject, interfaceMethodImplementation);
+        JavaGeneratorHelper.appendOverrideAnnotation(fragmentBuilder, iIpsProject, interfaceMethodImplementation);
     }
 
     /**
@@ -216,7 +216,7 @@ public abstract class JavaGeneratorForIpsPart {
     }
 
     public String getJavaDocCommentForOverriddenMethod() {
-        return JavaGenerationHelper.getJavaDocCommentForOverriddenMethod();
+        return JavaGeneratorHelper.getJavaDocCommentForOverriddenMethod();
     }
 
     /**
@@ -231,7 +231,7 @@ public abstract class JavaGeneratorForIpsPart {
     }
 
     public JavaNamingConvention getJavaNamingConvention() {
-        return JavaGenerationHelper.getJavaNamingConvention();
+        return JavaGeneratorHelper.getJavaNamingConvention();
     }
 
     /**

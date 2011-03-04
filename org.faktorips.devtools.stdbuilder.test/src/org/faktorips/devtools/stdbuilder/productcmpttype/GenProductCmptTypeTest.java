@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
-import org.faktorips.devtools.core.builder.JavaGenerationHelper;
+import org.faktorips.devtools.core.builder.JavaGeneratorHelper;
 import org.junit.Test;
 
 public class GenProductCmptTypeTest extends ProductCmptTypeBuilderTest {
@@ -62,7 +62,7 @@ public class GenProductCmptTypeTest extends ProductCmptTypeBuilderTest {
         String methodName = genProductCmptType.getMethodNameSetProductCmpt();
         String[] parameterTypeSignatures = new String[] {
                 "Q"
-                        + JavaGenerationHelper.getJavaNamingConvention().getPublishedInterfaceName(
+                        + JavaGeneratorHelper.getJavaNamingConvention().getPublishedInterfaceName(
                                 genProductCmptType.getType().getName()) + ";", "Z" };
         IMethod expectedMethod = javaType.getMethod(methodName, parameterTypeSignatures);
         assertTrue(generatedJavaElements.contains(expectedMethod));

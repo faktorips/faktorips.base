@@ -22,9 +22,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * 
  * @author Peter Kuntz
  */
-public final class JavaGenerationHelper {
+public final class JavaGeneratorHelper {
 
-    private JavaGenerationHelper() {
+    private JavaGeneratorHelper() {
         // Helper class not to be instantiated.
     }
 

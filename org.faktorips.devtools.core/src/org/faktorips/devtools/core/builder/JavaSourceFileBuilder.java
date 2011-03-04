@@ -265,7 +265,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * Returns the Java naming convention to be used.
      */
     public JavaNamingConvention getJavaNamingConvention() {
-        return JavaGenerationHelper.getJavaNamingConvention();
+        return JavaGeneratorHelper.getJavaNamingConvention();
     }
 
     /**
@@ -814,7 +814,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     public String getJavaDocCommentForOverriddenMethod() {
-        return JavaGenerationHelper.getJavaDocCommentForOverriddenMethod();
+        return JavaGeneratorHelper.getJavaDocCommentForOverriddenMethod();
     }
 
     /**
@@ -828,7 +828,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      *            an interface method or an override of a super class method.
      */
     public void appendOverrideAnnotation(JavaCodeFragmentBuilder fragmentBuilder, boolean interfaceMethodImplementation) {
-        JavaGenerationHelper.appendOverrideAnnotation(fragmentBuilder, getIpsProject(), interfaceMethodImplementation);
+        JavaGeneratorHelper.appendOverrideAnnotation(fragmentBuilder, getIpsProject(), interfaceMethodImplementation);
     }
 
     /**
@@ -842,7 +842,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * is added to the fragment builder.
      */
     public void appendGenerics(JavaCodeFragmentBuilder fragmentBuilder, String... classeNames) {
-        JavaGenerationHelper.appendGenerics(fragmentBuilder, getIpsProject(), classeNames);
+        JavaGeneratorHelper.appendGenerics(fragmentBuilder, getIpsProject(), classeNames);
     }
 
     /**
@@ -856,7 +856,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * is added to the fragment builder.
      */
     public void appendGenerics(JavaCodeFragmentBuilder fragmentBuilder, Class<?>... classes) {
-        JavaGenerationHelper.appendGenerics(fragmentBuilder, getIpsProject(), classes);
+        JavaGeneratorHelper.appendGenerics(fragmentBuilder, getIpsProject(), classes);
     }
 
     /**

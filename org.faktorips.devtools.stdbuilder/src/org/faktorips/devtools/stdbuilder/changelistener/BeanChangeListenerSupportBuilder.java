@@ -18,7 +18,7 @@ import java.beans.PropertyChangeListener;
 import java.lang.reflect.Modifier;
 
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.core.builder.JavaGenerationHelper;
+import org.faktorips.devtools.core.builder.JavaGeneratorHelper;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.LocalizedTextHelper;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
@@ -205,7 +205,7 @@ public class BeanChangeListenerSupportBuilder implements IChangeListenerSupportB
         methodBuilder.javaDoc(genPolicyCmptType.getJavaDocCommentForOverriddenMethod(),
                 JavaSourceFileBuilder.ANNOTATION_GENERATED);
         if (!createPropertyChangeListenerMethods) {
-            JavaGenerationHelper.appendOverrideAnnotation(methodBuilder, genPolicyCmptType.getPolicyCmptType()
+            JavaGeneratorHelper.appendOverrideAnnotation(methodBuilder, genPolicyCmptType.getPolicyCmptType()
                     .getIpsProject(), false);
         }
         methodBuilder.methodBegin(Modifier.PUBLIC, Void.TYPE, MethodNames.NOTIFIY_CHANGE_LISTENERS,
