@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.devtools.core.util.QNameUtil;
 
 /**
  * 
@@ -50,12 +51,19 @@ public class StdBuilderHelper {
      * @see Signature
      */
     public final static String transformDatatypeToJdtTypeSignature(Datatype datatype,
-            boolean resolveToPublishedInterface) {
+            boolean resolveToPublishedInterface,
+            StandardBuilderSet builderSet,
+            IIpsProject ipsProject) {
 
-        if (resolveToPublishedInterface) {
-            // StdBuilderHelper. TODO AW
+        String qualifiedJavaClassName;
+        try {
+            qualifiedJavaClassName = transformDatatypeToJavaClassName(datatype.getName(), resolveToPublishedInterface,
+                    builderSet, ipsProject);
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
         }
-        return Signature.createTypeSignature(datatype.getName(), false);
+        String unqualifiedJavaClassName = QNameUtil.getUnqualifiedName(qualifiedJavaClassName);
+        return Signature.createTypeSignature(unqualifiedJavaClassName, false);
     }
 
     public final static String transformDatatypeToJavaClassName(String datatypeName,

@@ -91,8 +91,9 @@ public abstract class GenMethod extends GenTypePart {
         Datatype[] parameterDatatypes = getParameterDatatypes();
         String[] parameterTypeSignatures = new String[parameterDatatypes.length];
         for (int i = 0; i < parameterTypeSignatures.length; i++) {
+            boolean resolveToPublishedInterface = getMethod().getModifier().isPublished();
             parameterTypeSignatures[i] = StdBuilderHelper.transformDatatypeToJdtTypeSignature(parameterDatatypes[i],
-                    getMethod().getModifier().isPublished());
+                    resolveToPublishedInterface, getBuilderSet(), getIpsProject());
         }
         org.eclipse.jdt.core.IMethod method = generatedJavaType.getMethod(getMethod().getName(),
                 parameterTypeSignatures);

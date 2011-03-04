@@ -26,6 +26,8 @@ import org.faktorips.datatype.Datatype;
  */
 public class JavaNamingConvention {
 
+    // TODO AW: Very bad style, instead we should have subclasses, also the JAVA_STANDARD isn't used
+    // at all ...
     /**
      * Standard Java naming convention. Interfaces have the name of the concecpt and the
      * implementation has the suffix 'Impl'.

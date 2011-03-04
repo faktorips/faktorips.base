@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.builder.DefaultJavaGeneratorForIpsPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -66,6 +67,10 @@ public abstract class GenTypePart extends DefaultJavaGeneratorForIpsPart {
 
     public String getUnqualifiedClassName(IPolicyCmptType target, boolean forInterface) throws CoreException {
         return genType.getBuilderSet().getGenerator(target).getUnqualifiedClassName(forInterface);
+    }
+
+    protected StandardBuilderSet getBuilderSet() {
+        return genType.getBuilderSet();
     }
 
     protected final void addFieldToGeneratedJavaElements(List<IJavaElement> javaElements,
