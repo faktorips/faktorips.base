@@ -110,6 +110,7 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         IpsProjectRefEntry entry = new IpsProjectRefEntry(path);
         entry.initFromXml(doc.getDocumentElement(), ipsProject.getProject());
         assertEquals(IpsPlugin.getDefault().getIpsModel().getIpsProject("RefProject"), entry.getReferencedIpsProject());
+        assertFalse(entry.isUseNWDITrackPrefix());
     }
 
     public void testToXml() {
@@ -120,6 +121,7 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         entry = new IpsProjectRefEntry(path);
         entry.initFromXml(element, ipsProject.getProject());
         assertEquals(refProject, entry.getReferencedIpsProject());
+        assertFalse(entry.isUseNWDITrackPrefix());
     }
 
     public void testValidate() throws CoreException {
