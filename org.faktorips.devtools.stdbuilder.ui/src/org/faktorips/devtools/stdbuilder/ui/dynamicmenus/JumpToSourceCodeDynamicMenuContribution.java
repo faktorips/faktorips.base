@@ -19,8 +19,6 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IMethod;
-import org.eclipse.jdt.core.Signature;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -112,22 +110,8 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     }
 
     private String getJavaElementLabel(IJavaElement javaElement) {
-        String parentLabel = javaElement.getParent().getElementName();
-
-        String elementSignature = javaElement.getElementName();
-        if (javaElement instanceof IMethod) {
-            elementSignature = javaElement.getElementName() + '(';
-            String[] parameterTypes = ((IMethod)javaElement).getParameterTypes();
-            for (int i = 0; i < parameterTypes.length; i++) {
-                elementSignature += Signature.toString(parameterTypes[i]);
-                if (i < parameterTypes.length - 1) {
-                    elementSignature += ", ";
-                }
-            }
-            elementSignature += ')';
-        }
-
-        return parentLabel + " :: " + elementSignature;
+        IWorkbenchAdapter workbenchAdapter = (IWorkbenchAdapter)javaElement.getAdapter(IWorkbenchAdapter.class);
+        return workbenchAdapter != null ? workbenchAdapter.getLabel(javaElement) : null;
     }
 
     private ImageDescriptor getJavaElementIcon(IJavaElement javaElement) {
