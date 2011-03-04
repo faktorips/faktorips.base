@@ -58,13 +58,15 @@ public class StdBuilderHelperTest extends AbstractStdBuilderTest {
 
     @Test
     public void testGetJavaTypeSignaturePolicyCmptTypeNotResolveToPublished() throws CoreException {
+        String packageName = "bar";
         String name = "Foo";
+        String qualifiedName = packageName + '.' + name;
 
         // Create package as parent to test that only the unqualified name is used
         IIpsPackageFragment mockPackageFragment = mock(IIpsPackageFragment.class);
         when(mockPackageFragment.getName()).thenReturn("bar");
 
-        IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, name);
+        IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, qualifiedName);
 
         String expectedSignature = Signature.createTypeSignature(name, false);
         assertEquals(expectedSignature,
@@ -73,13 +75,15 @@ public class StdBuilderHelperTest extends AbstractStdBuilderTest {
 
     @Test
     public void testGetJavaTypeSignaturePolicyCmptTypeResolveToPublished() throws CoreException {
+        String packageName = "bar";
         String name = "Foo";
+        String qualifiedName = packageName + '.' + name;
 
         // Create package as parent to test that only the unqualified name is used
         IIpsPackageFragment mockPackageFragment = mock(IIpsPackageFragment.class);
         when(mockPackageFragment.getName()).thenReturn("bar");
 
-        IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, name);
+        IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, qualifiedName);
 
         String expectedSignature = Signature.createTypeSignature(builderSet.getJavaNamingConvention()
                 .getPublishedInterfaceName(name), false);

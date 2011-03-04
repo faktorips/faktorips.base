@@ -57,8 +57,8 @@ public class StdBuilderHelper {
 
         String qualifiedJavaClassName;
         try {
-            qualifiedJavaClassName = transformDatatypeToJavaClassName(datatype.getName(), resolveToPublishedInterface,
-                    builderSet, ipsProject);
+            qualifiedJavaClassName = transformDatatypeToJavaClassName(datatype.getQualifiedName(),
+                    resolveToPublishedInterface, builderSet, ipsProject);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
@@ -66,21 +66,21 @@ public class StdBuilderHelper {
         return Signature.createTypeSignature(unqualifiedJavaClassName, false);
     }
 
-    public final static String transformDatatypeToJavaClassName(String datatypeName,
+    public final static String transformDatatypeToJavaClassName(String qualifiedDatatypeName,
             boolean resolveToPublishedInterface,
             StandardBuilderSet builderSet,
             IIpsProject ipsProject) throws CoreException {
 
-        Datatype datatype = ipsProject.findDatatype(datatypeName);
+        Datatype datatype = ipsProject.findDatatype(qualifiedDatatypeName);
         if (datatype.isVoid()) {
             return "void";
         }
         if (datatype instanceof ValueDatatype) {
-            DatatypeHelper helper = ipsProject.findDatatypeHelper(datatypeName);
+            DatatypeHelper helper = ipsProject.findDatatypeHelper(qualifiedDatatypeName);
             if (helper != null) {
                 return helper.getJavaClassName();
             }
-            throw new RuntimeException("Can't get datatype helper for datatype " + datatypeName);
+            throw new RuntimeException("Can't get datatype helper for datatype " + qualifiedDatatypeName);
         }
         if (datatype instanceof PolicyCmptType) {
             if (resolveToPublishedInterface) {
@@ -95,7 +95,7 @@ public class StdBuilderHelper {
             return builderSet.getGenerator((IProductCmptType)datatype)
                     .getQualifiedClassNameForProductCmptTypeGen(false);
         }
-        throw new RuntimeException("Can't get Java class name for datatype " + datatypeName);
+        throw new RuntimeException("Can't get Java class name for datatype " + qualifiedDatatypeName);
     }
 
     public final static String[] transformParameterTypesToJavaClassNames(IParameter[] params,
