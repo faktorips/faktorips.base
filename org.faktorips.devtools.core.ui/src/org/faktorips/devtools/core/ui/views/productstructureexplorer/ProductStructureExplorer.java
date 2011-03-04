@@ -32,10 +32,8 @@ import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.dnd.DND;
@@ -44,11 +42,8 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -139,10 +134,6 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
     private Composite viewerPanel;
 
     private GenerationDateViewer generationDateViewer;
-
-    private Button prevButton;
-
-    private Button nextButton;
 
     private ProductStructureContentProvider contentProvider;
 
@@ -396,18 +387,14 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         viewerPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         viewerPanel.setLayout(new GridLayout(1, true));
 
-        String generationConceptName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
-                .getGenerationConceptNameSingular();
-
         Composite adjustmentDatePanel = new Composite(viewerPanel, SWT.NONE);
         adjustmentDatePanel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
         adjustmentDatePanel.setLayout(new GridLayout(3, false));
 
         generationDateViewer = new GenerationDateViewer(adjustmentDatePanel);
-        generationDateViewer.getCombo().setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
-        generationDateViewer.getCombo().setToolTipText(
-                NLS.bind(Messages.ProductStructureExplorer_selectAdjustmentToolTip, generationConceptName));
+
         GenerationDateContentProvider adjustmentContentProvider = new GenerationDateContentProvider();
+        generationDateViewer.setContentProvider(adjustmentContentProvider);
         adjustmentContentProvider.addCollectorFinishedListener(new ICollectorFinishedListener() {
 
             @Override
@@ -415,56 +402,6 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
                 generationDateViewer.setSelection(0);
             }
 
-        });
-        generationDateViewer.setContentProvider(adjustmentContentProvider);
-        generationDateViewer.setLabelProvider(new LabelProvider() {
-            @Override
-            public String getText(Object element) {
-                if (element instanceof GenerationDate) {
-                    return ((GenerationDate)element).getText();
-                }
-                return super.getText(element);
-            }
-        });
-
-        prevButton = new Button(adjustmentDatePanel, SWT.NONE);
-        prevButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft_small.gif", true)); //$NON-NLS-1$
-        prevButton.setToolTipText(NLS.bind(Messages.ProductStructureExplorer_prevAdjustmentToolTip,
-                generationConceptName));
-        prevButton.setEnabled(false);
-
-        nextButton = new Button(adjustmentDatePanel, SWT.NONE);
-        nextButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight_small.gif", true)); //$NON-NLS-1$
-        nextButton.setToolTipText(NLS.bind(Messages.ProductStructureExplorer_nextAdjustmentToolTip,
-                generationConceptName));
-        nextButton.setEnabled(false);
-
-        prevButton.addSelectionListener(new SelectionListener() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                int selectedIndex = generationDateViewer.getCombo().getSelectionIndex();
-                generationDateViewer.setSelection(selectedIndex + 1);
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // Nothing to do
-            }
-        });
-
-        nextButton.addSelectionListener(new SelectionListener() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                int selectedIndex = generationDateViewer.getCombo().getSelectionIndex();
-                generationDateViewer.setSelection(selectedIndex - 1);
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // Nothing to do
-            }
         });
 
         generationDateViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -637,6 +574,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
                 // adjustment
                 // until the valid adjustment dates are collected
                 setAdjustmentDate(null);
+                generationDateViewer.updateButtons();
             }
         });
     }
@@ -649,19 +587,12 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
             }
             IProductCmptTreeStructure structure = productComponent.getStructure(validFrom,
                     productComponent.getIpsProject());
-            updateButtons();
             labelProvider.setAdjustmentDate(generationDate);
             showTreeInput(structure);
             treeViewer.expandToLevel(2);
         } catch (CycleInProductStructureException e) {
             handleCircle(e);
         }
-    }
-
-    private void updateButtons() {
-        int index = generationDateViewer.getCombo().getSelectionIndex();
-        nextButton.setEnabled(index > 0);
-        prevButton.setEnabled(index < generationDateViewer.getCombo().getItems().length - 1);
     }
 
     private void refresh() {
