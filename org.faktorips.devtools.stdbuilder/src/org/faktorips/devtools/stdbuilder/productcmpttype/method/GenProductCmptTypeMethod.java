@@ -253,13 +253,7 @@ public class GenProductCmptTypeMethod extends GenMethod {
             IType generatedJavaType,
             IIpsElement ipsElement) {
 
-        if (isFormulaSignatureDefinition()) {
-            if (!(isPublished())) {
-                addMethodToGeneratedJavaElements(javaElements, generatedJavaType);
-            }
-        } else {
-            addMethodToGeneratedJavaElements(javaElements, generatedJavaType);
-        }
+        addMethodToGeneratedJavaElements(javaElements, generatedJavaType);
     }
 
     @Override

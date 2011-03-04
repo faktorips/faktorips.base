@@ -33,28 +33,28 @@ import org.junit.Test;
  */
 public class GenProductCmptTypeMethodTest extends ProductCmptTypeBuilderTest {
 
-    /** A published <tt>IProductCmptTypeMethod</tt> that can be used for tests. */
+    /** A published {@link IProductCmptTypeMethod} that can be used for tests. */
     private IProductCmptTypeMethod publishedMethod;
 
-    /** A public <tt>IProductCmptTypeMethod</tt> that can be used for tests. */
+    /** A public {@link IProductCmptTypeMethod} that can be used for tests. */
     private IProductCmptTypeMethod publicMethod;
 
-    /** A published formula <tt>IProductCmptTypeMethod</tt> that can be used for tests. */
+    /** A published formula {@link IProductCmptTypeMethod} that can be used for tests. */
     private IProductCmptTypeMethod publishedFormulaMethod;
 
-    /** A public formula <tt>IProductCmptTypeMethod</tt> that can be used for tests. */
+    /** A public formula {@link IProductCmptTypeMethod} that can be used for tests. */
     private IProductCmptTypeMethod publicFormulaMethod;
 
-    /** <tt>GenProductCmptTypeMethod</tt> generator for the published method. */
+    /** {@link GenProductCmptTypeMethod} generator for the published method. */
     private GenProductCmptTypeMethod genPublishedMethod;
 
-    /** <tt>GenProductCmptTypeMethod</tt> generator for the public method. */
+    /** {@link GenProductCmptTypeMethod} generator for the public method. */
     private GenProductCmptTypeMethod genPublicMethod;
 
-    /** <tt>GenProductCmptTypeMethod</tt> generator for the published formula method. */
+    /** {@link GenProductCmptTypeMethod} generator for the published formula method. */
     private GenProductCmptTypeMethod genPublishedFormulaMethod;
 
-    /** <tt>GenProductCmptTypeMethod</tt> generator for the public formula method. */
+    /** {@link GenProductCmptTypeMethod} generator for the public formula method. */
     private GenProductCmptTypeMethod genPublicFormulaMethod;
 
     @Override
@@ -136,7 +136,8 @@ public class GenProductCmptTypeMethodTest extends ProductCmptTypeBuilderTest {
     public void testGetGeneratedJavaElementsForImplementationFormula() {
         genPublishedFormulaMethod.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
                 publishedFormulaMethod);
-        assertTrue(generatedJavaElements.isEmpty());
+        expectMethod(javaClassGeneration, genPublishedFormulaMethod);
+        assertEquals(1, generatedJavaElements.size());
 
         generatedJavaElements.clear();
         genPublicFormulaMethod.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
