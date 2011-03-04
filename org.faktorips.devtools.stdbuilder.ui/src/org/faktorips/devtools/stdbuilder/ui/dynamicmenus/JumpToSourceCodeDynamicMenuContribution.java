@@ -18,18 +18,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMethod;
-import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.Signature;
 import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.ISources;
 import org.eclipse.ui.actions.CompoundContributionItem;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
 import org.eclipse.ui.menus.IWorkbenchContribution;
+import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.services.IEvaluationService;
 import org.eclipse.ui.services.IServiceLocator;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -93,19 +93,19 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         arguments.put(PARAMETER_ID_ELEMENT_REF, javaElement);
         // @formatter:off
         CommandContributionItemParameter itemParameter = new CommandContributionItemParameter(
-                serviceLocator,                                         // serviceLocator
-                null,                                                   // id
-                COMMAND_ID_OPEN_ELEMENT_IN_EDITOR,                      // commandId
-                arguments,                                              // arguments
-                null,                                                   // icon
-                null,                                                   // disabledIcon
-                null,                                                   // hoverIcon
-                getJavaElementLabel(javaElement),                       // label
-                null,                                                   // mnemoic
-                null,                                                   // tooltip
-                CommandContributionItem.STYLE_PUSH,                     // style
-                null,                                                   // helpContextId
-                false                                                   // visibleEnabled
+                serviceLocator,                               // serviceLocator
+                null,                                         // id
+                COMMAND_ID_OPEN_ELEMENT_IN_EDITOR,            // commandId
+                arguments,                                    // arguments
+                getJavaElementIcon(javaElement),              // icon
+                null,                                         // disabledIcon
+                null,                                         // hoverIcon
+                getJavaElementLabel(javaElement),             // label
+                null,                                         // mnemoic
+                null,                                         // tooltip
+                CommandContributionItem.STYLE_PUSH,           // style
+                null,                                         // helpContextId
+                false                                         // visibleEnabled
         );
         // @formatter:on
         return new CommandContributionItem(itemParameter);
@@ -114,12 +114,8 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     private String getJavaElementLabel(IJavaElement javaElement) {
         String parentLabel = javaElement.getParent().getElementName();
 
-        String type = "";
         String elementSignature = javaElement.getElementName();
-        if (javaElement instanceof IField) {
-            type = "Field";
-        } else if (javaElement instanceof IMethod) {
-            type = "Method";
+        if (javaElement instanceof IMethod) {
             elementSignature = javaElement.getElementName() + '(';
             String[] parameterTypes = ((IMethod)javaElement).getParameterTypes();
             for (int i = 0; i < parameterTypes.length; i++) {
@@ -129,11 +125,14 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
                 }
             }
             elementSignature += ')';
-        } else if (javaElement instanceof IType) {
-            type = "Type";
         }
 
-        return '(' + type + ") " + parentLabel + " :: " + elementSignature;
+        return parentLabel + " :: " + elementSignature;
+    }
+
+    private ImageDescriptor getJavaElementIcon(IJavaElement javaElement) {
+        IWorkbenchAdapter workbenchAdapter = (IWorkbenchAdapter)javaElement.getAdapter(IWorkbenchAdapter.class);
+        return workbenchAdapter != null ? workbenchAdapter.getImageDescriptor(javaElement) : null;
     }
 
 }
