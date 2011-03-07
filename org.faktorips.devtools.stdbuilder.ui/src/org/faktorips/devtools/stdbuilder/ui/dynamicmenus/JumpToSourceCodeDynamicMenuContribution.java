@@ -98,16 +98,20 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         List<IType> sortedTypes = sortTypes(javaTypesToJavaElements.keySet());
         for (int i = 0; i < sortedTypes.size(); i++) {
             IType type = sortedTypes.get(i);
-            addOpenInJavaEditorCommand(contributionItems, type);
-            for (IMember member : javaTypesToJavaElements.get(type)) {
-                addOpenInJavaEditorCommand(contributionItems, member);
-            }
-            /*
-             * Add a separator after each type's members but do not add a separator at the very
-             * bottom of the menu.
-             */
-            if (i < sortedTypes.size() - 1) {
-                addSeparator(contributionItems);
+            if (type.exists()) {
+                addOpenInJavaEditorCommand(contributionItems, type);
+                for (IMember member : javaTypesToJavaElements.get(type)) {
+                    if (member.exists()) {
+                        addOpenInJavaEditorCommand(contributionItems, member);
+                    }
+                }
+                /*
+                 * Add a separator after each type's members but do not add a separator at the very
+                 * bottom of the menu.
+                 */
+                if (i < sortedTypes.size() - 1) {
+                    addSeparator(contributionItems);
+                }
             }
         }
 
@@ -151,27 +155,25 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
      */
     private List<IType> sortTypes(Set<IType> types) {
         List<IType> sortedTypes = new ArrayList<IType>(types.size());
-        // Add classes and enums
-        for (IType type : types) {
-            try {
-                if (!(type.isInterface())) {
-                    sortedTypes.add(type);
-                }
-            } catch (JavaModelException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        // Add interfaces
-        for (IType type : types) {
-            try {
-                if (type.isInterface()) {
-                    sortedTypes.add(type);
-                }
-            } catch (JavaModelException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        addToSortedTypes(sortedTypes, types, false);
+        addToSortedTypes(sortedTypes, types, true);
         return sortedTypes;
+    }
+
+    private void addToSortedTypes(List<IType> sortedTypes, Set<IType> types, boolean interfacesIfTrueClassesOtherwise) {
+        for (IType type : types) {
+            if (type.exists()) {
+                try {
+                    boolean addCondition = interfacesIfTrueClassesOtherwise ? type.isInterface()
+                            : !(type.isInterface());
+                    if (addCondition) {
+                        sortedTypes.add(type);
+                    }
+                } catch (JavaModelException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
     }
 
     private void addTypeIfNotPresent(Map<IType, Set<IMember>> javaTypesToJavaElements, IType type) {
@@ -192,14 +194,13 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         contributionItems.add(new Separator());
     }
 
-    private void addOpenInJavaEditorCommand(List<IContributionItem> contributionItems,
-            IJavaElement javaElement) {
+    private void addOpenInJavaEditorCommand(List<IContributionItem> contributionItems, IJavaElement javaElement) {
 
         Map<String, Object> arguments = new HashMap<String, Object>(1);
         arguments.put(PARAMETER_ID_ELEMENT_REF, javaElement);
 
-        addCommand(contributionItems, COMMAND_ID_OPEN_ELEMENT_IN_EDITOR, arguments,
-                getJavaElementIcon(javaElement), getJavaElementLabel(javaElement));
+        addCommand(contributionItems, COMMAND_ID_OPEN_ELEMENT_IN_EDITOR, arguments, getJavaElementIcon(javaElement),
+                getJavaElementLabel(javaElement));
     }
 
     private void addNoSourceCodeFoundCommand(List<IContributionItem> contributionItems) {
