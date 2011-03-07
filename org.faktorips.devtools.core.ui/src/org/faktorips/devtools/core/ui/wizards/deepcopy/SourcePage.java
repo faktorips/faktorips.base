@@ -327,8 +327,6 @@ public class SourcePage extends WizardPage {
                 refreshPageAfterValueChange();
                 updateCheckedAndGrayedStatus(getStructure());
                 updateColumnWidth();
-                setErrorMessage(null);
-                setMessagePleaseEnterWorkingDate();
 
                 getWizard().getDeepCopyPreview().getErrorElements().clear();
                 setErrorMessage(null);
