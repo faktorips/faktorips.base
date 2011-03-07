@@ -13,13 +13,20 @@
 
 package org.faktorips.devtools.stdbuilder.ui.dynamicmenus;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IMember;
+import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.ISources;
@@ -55,10 +62,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
 
     @Override
     protected IContributionItem[] getContributionItems() {
-        IEvaluationService evaluationService = (IEvaluationService)serviceLocator.getService(IEvaluationService.class);
-        IStructuredSelection selection = (IStructuredSelection)evaluationService.getCurrentState().getVariable(
-                ISources.ACTIVE_MENU_SELECTION_NAME);
-        Object selectedItem = selection.getFirstElement();
+        Object selectedItem = getSelectedItem();
         if (selectedItem instanceof IIpsSrcFile) {
             try {
                 selectedItem = ((IIpsSrcFile)selectedItem).getIpsObject();
@@ -75,15 +79,97 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         StandardBuilderSet builderSet = (StandardBuilderSet)ipsObjectPartContainer.getIpsProject()
                 .getIpsArtefactBuilderSet();
         List<IJavaElement> generatedJavaElements = builderSet.getGeneratedJavaElements(ipsObjectPartContainer);
+        Map<IType, Set<IMember>> javaTypesToJavaElements = getJavaTypesToJavaElementsMap(generatedJavaElements);
 
-        // Add an "Open in Java Editor" command contribution for each generated Java element
-        IContributionItem[] contributionItems = new IContributionItem[generatedJavaElements.size()];
-        for (int i = 0; i < contributionItems.length; i++) {
-            IJavaElement javaElement = generatedJavaElements.get(i);
-            contributionItems[i] = createOpenInJavaEditorCommandContributionItem(javaElement);
+        /*
+         * Go over all types (that are either generated or parent of a generated member) and add an
+         * "Open in Java Editor" command contribution item for each type itself as well as its
+         * members.
+         */
+        List<IContributionItem> contributionItems = new ArrayList<IContributionItem>(generatedJavaElements.size());
+        List<IType> sortedTypes = sortTypes(javaTypesToJavaElements.keySet());
+        for (int i = 0; i < sortedTypes.size(); i++) {
+            IType type = sortedTypes.get(i);
+            CommandContributionItem contributionItemType = createOpenInJavaEditorCommandContributionItem(type);
+            contributionItems.add(contributionItemType);
+            for (IMember member : javaTypesToJavaElements.get(type)) {
+                CommandContributionItem contributionItemMember = createOpenInJavaEditorCommandContributionItem(member);
+                contributionItems.add(contributionItemMember);
+            }
+            /*
+             * Add a separator after each type's members but do not add a separator at the very
+             * bottom of the menu.
+             */
+            if (i < sortedTypes.size() - 1) {
+                contributionItems.add(new Separator());
+            }
         }
 
-        return contributionItems;
+        return contributionItems.toArray(new IContributionItem[contributionItems.size()]);
+    }
+
+    private Map<IType, Set<IMember>> getJavaTypesToJavaElementsMap(List<IJavaElement> generatedJavaElements) {
+        Map<IType, Set<IMember>> javaTypesToJavaElements = new HashMap<IType, Set<IMember>>(2);
+        for (IJavaElement javaElement : generatedJavaElements) {
+            IType type = null;
+            if (javaElement instanceof IType) {
+                type = (IType)javaElement;
+                addTypeIfNotPresent(javaTypesToJavaElements, type);
+            } else if (javaElement instanceof IMember) {
+                type = (IType)javaElement.getParent();
+                addTypeIfNotPresent(javaTypesToJavaElements, type);
+                Set<IMember> members = javaTypesToJavaElements.get(type);
+                members.add((IMember)javaElement);
+            } else {
+                throw new RuntimeException("Unknown Java type.");
+            }
+        }
+        return javaTypesToJavaElements;
+    }
+
+    /**
+     * Takes a set of {@link IType}s as input and creates / returns a sorted list according to the
+     * fact whether or not a type is an interface.
+     * <p>
+     * Classes and enums are considered "less than" interfaces.
+     */
+    private List<IType> sortTypes(Set<IType> types) {
+        List<IType> sortedTypes = new ArrayList<IType>(types.size());
+        // Add classes and enums
+        for (IType type : types) {
+            try {
+                if (!(type.isInterface())) {
+                    sortedTypes.add(type);
+                }
+            } catch (JavaModelException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        // Add interfaces
+        for (IType type : types) {
+            try {
+                if (type.isInterface()) {
+                    sortedTypes.add(type);
+                }
+            } catch (JavaModelException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return sortedTypes;
+    }
+
+    private void addTypeIfNotPresent(Map<IType, Set<IMember>> javaTypesToJavaElements, IType type) {
+        if (!(javaTypesToJavaElements.containsKey(type))) {
+            javaTypesToJavaElements.put(type, new HashSet<IMember>());
+        }
+    }
+
+    private Object getSelectedItem() {
+        IEvaluationService evaluationService = (IEvaluationService)serviceLocator.getService(IEvaluationService.class);
+        IStructuredSelection selection = (IStructuredSelection)evaluationService.getCurrentState().getVariable(
+                ISources.ACTIVE_MENU_SELECTION_NAME);
+        Object selectedItem = selection.getFirstElement();
+        return selectedItem;
     }
 
     private CommandContributionItem createOpenInJavaEditorCommandContributionItem(IJavaElement javaElement) {
