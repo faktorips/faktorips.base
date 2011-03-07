@@ -37,8 +37,10 @@ import org.eclipse.ui.menus.IWorkbenchContribution;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.services.IEvaluationService;
 import org.eclipse.ui.services.IServiceLocator;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 /**
@@ -62,7 +64,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
 
     @Override
     protected IContributionItem[] getContributionItems() {
-        Object selectedItem = getSelectedItem();
+        IIpsElement selectedItem = getSelectedIpsElement();
         if (selectedItem instanceof IIpsSrcFile) {
             try {
                 selectedItem = ((IIpsSrcFile)selectedItem).getIpsObject();
@@ -164,12 +166,12 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         }
     }
 
-    private Object getSelectedItem() {
+    private IIpsElement getSelectedIpsElement() {
         IEvaluationService evaluationService = (IEvaluationService)serviceLocator.getService(IEvaluationService.class);
         IStructuredSelection selection = (IStructuredSelection)evaluationService.getCurrentState().getVariable(
                 ISources.ACTIVE_MENU_SELECTION_NAME);
-        Object selectedItem = selection.getFirstElement();
-        return selectedItem;
+        TypedSelection<IIpsElement> typedSelection = TypedSelection.create(IIpsElement.class, selection);
+        return typedSelection.getElement();
     }
 
     private CommandContributionItem createOpenInJavaEditorCommandContributionItem(IJavaElement javaElement) {
