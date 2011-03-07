@@ -466,5 +466,4 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         } catch (NullPointerException e) {
         }
     }
-
 }
