@@ -75,44 +75,44 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         if (!(selectedItem instanceof IIpsObjectPartContainer)) {
             return new IContributionItem[0];
         }
+        return getContributionItemsForIpsObjectPartContainer((IIpsObjectPartContainer)selectedItem);
+    }
 
-        // Obtain the Java elements generated for the IPS object part container
-        IIpsObjectPartContainer ipsObjectPartContainer = (IIpsObjectPartContainer)selectedItem;
-        StandardBuilderSet builderSet = (StandardBuilderSet)ipsObjectPartContainer.getIpsProject()
-                .getIpsArtefactBuilderSet();
-        List<IJavaElement> generatedJavaElements = builderSet.getGeneratedJavaElements(ipsObjectPartContainer);
-        Map<IType, Set<IMember>> javaTypesToJavaElements = getJavaTypesToJavaElementsMap(generatedJavaElements);
+    private IContributionItem[] getContributionItemsForIpsObjectPartContainer(IIpsObjectPartContainer ipsObjectPartContainer) {
+        /*
+         * Obtain the Java types and their members which are generated for the IPS Object Part
+         * Container.
+         */
+        Map<IType, Set<IMember>> javaTypesToJavaElements = getJavaTypesToJavaElementsMap(ipsObjectPartContainer);
 
         /*
          * Go over all types (that are either generated or parent of a generated member) and add an
          * "Open in Java Editor" command contribution item for each type itself as well as its
          * members.
          */
-        List<IContributionItem> contributionItems = new ArrayList<IContributionItem>(generatedJavaElements.size());
+        List<IContributionItem> contributionItems = new ArrayList<IContributionItem>(javaTypesToJavaElements.size() * 3);
         List<IType> sortedTypes = sortTypes(javaTypesToJavaElements.keySet());
         for (int i = 0; i < sortedTypes.size(); i++) {
             IType type = sortedTypes.get(i);
-            CommandContributionItem contributionItemType = createOpenInJavaEditorCommandContributionItem(type);
-            contributionItems.add(contributionItemType);
+            addOpenInJavaEditorCommandContributionItem(contributionItems, type);
             for (IMember member : javaTypesToJavaElements.get(type)) {
-                CommandContributionItem contributionItemMember = createOpenInJavaEditorCommandContributionItem(member);
-                contributionItems.add(contributionItemMember);
+                addOpenInJavaEditorCommandContributionItem(contributionItems, member);
             }
             /*
              * Add a separator after each type's members but do not add a separator at the very
              * bottom of the menu.
              */
             if (i < sortedTypes.size() - 1) {
-                contributionItems.add(new Separator());
+                addSeparator(contributionItems);
             }
         }
 
         return contributionItems.toArray(new IContributionItem[contributionItems.size()]);
     }
 
-    private Map<IType, Set<IMember>> getJavaTypesToJavaElementsMap(List<IJavaElement> generatedJavaElements) {
+    private Map<IType, Set<IMember>> getJavaTypesToJavaElementsMap(IIpsObjectPartContainer ipsObjectPartContainer) {
         Map<IType, Set<IMember>> javaTypesToJavaElements = new HashMap<IType, Set<IMember>>(2);
-        for (IJavaElement javaElement : generatedJavaElements) {
+        for (IJavaElement javaElement : getGeneratedJavaElements(ipsObjectPartContainer)) {
             IType type = null;
             if (javaElement instanceof IType) {
                 type = (IType)javaElement;
@@ -127,6 +127,12 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
             }
         }
         return javaTypesToJavaElements;
+    }
+
+    private List<IJavaElement> getGeneratedJavaElements(IIpsObjectPartContainer ipsObjectPartContainer) {
+        StandardBuilderSet builderSet = (StandardBuilderSet)ipsObjectPartContainer.getIpsProject()
+                .getIpsArtefactBuilderSet();
+        return builderSet.getGeneratedJavaElements(ipsObjectPartContainer);
     }
 
     /**
@@ -174,9 +180,16 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         return typedSelection.getElement();
     }
 
-    private CommandContributionItem createOpenInJavaEditorCommandContributionItem(IJavaElement javaElement) {
+    private void addSeparator(List<IContributionItem> contributionItems) {
+        contributionItems.add(new Separator());
+    }
+
+    private void addOpenInJavaEditorCommandContributionItem(List<IContributionItem> contributionItems,
+            IJavaElement javaElement) {
+
         Map<String, Object> arguments = new HashMap<String, Object>(1);
         arguments.put(PARAMETER_ID_ELEMENT_REF, javaElement);
+
         // @formatter:off
         CommandContributionItemParameter itemParameter = new CommandContributionItemParameter(
                 serviceLocator,                               // serviceLocator
@@ -194,7 +207,8 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
                 false                                         // visibleEnabled
         );
         // @formatter:on
-        return new CommandContributionItem(itemParameter);
+
+        contributionItems.add(new CommandContributionItem(itemParameter));
     }
 
     private String getJavaElementLabel(IJavaElement javaElement) {

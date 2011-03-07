@@ -13,9 +13,10 @@
 
 package org.faktorips.devtools.stdbuilder.ui.dynamicmenus;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import java.util.Iterator;
 
 import org.eclipse.core.expressions.IEvaluationContext;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -57,17 +58,44 @@ public class JumpToSourceCodeDynamicMenuContributionTest {
      * out Commands but Command is a final class.
      */
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testGetContributionItemsNoIpsElementSelected() {
         setCurrentSelection(new Object());
 
-        assertEquals(0, menuContribution.getContributionItems().length);
+        menuContribution.getContributionItems();
     }
 
-    private void setCurrentSelection(Object selectedItem) {
+    private void setCurrentSelection(final Object selectedItem) {
         IStructuredSelection mockSelection = mock(IStructuredSelection.class);
-        when(mockSelection.getFirstElement()).thenReturn(selectedItem);
+        when(mockSelection.iterator()).thenReturn(new SelectionIterator(selectedItem));
         when(mockEvaluationContext.getVariable(ISources.ACTIVE_MENU_SELECTION_NAME)).thenReturn(mockSelection);
+    }
+
+    private static class SelectionIterator implements Iterator<Object> {
+
+        private Object[] selectedItems;
+
+        private int position;
+
+        private SelectionIterator(Object... selectedItems) {
+            this.selectedItems = selectedItems;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return position < selectedItems.length;
+        }
+
+        @Override
+        public Object next() {
+            return selectedItems[position++];
+        }
+
+        @Override
+        public void remove() {
+
+        }
+
     }
 
 }
