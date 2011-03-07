@@ -20,6 +20,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IActionDelegate;
+import org.eclipse.ui.IObjectActionDelegate;
+import org.eclipse.ui.PlatformUI;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
@@ -151,6 +153,11 @@ public class WrapperAction extends IpsAction {
     @Override
     public void run(IStructuredSelection selection) {
         if (wrappedActionDelegate != null) {
+            if (wrappedActionDelegate instanceof IObjectActionDelegate) {
+                IObjectActionDelegate objectActionDelegate = (IObjectActionDelegate)wrappedActionDelegate;
+                objectActionDelegate.setActivePart(this, PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                        .getPartService().getActivePart());
+            }
             wrappedActionDelegate.selectionChanged(this, selection);
             wrappedActionDelegate.run(this);
         }
