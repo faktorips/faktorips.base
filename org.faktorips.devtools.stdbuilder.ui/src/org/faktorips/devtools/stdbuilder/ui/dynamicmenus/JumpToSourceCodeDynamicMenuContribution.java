@@ -15,7 +15,7 @@ package org.faktorips.devtools.stdbuilder.ui.dynamicmenus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -179,7 +179,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
 
     private void addTypeIfNotPresent(Map<IType, Set<IMember>> javaTypesToJavaElements, IType type) {
         if (!(javaTypesToJavaElements.containsKey(type))) {
-            javaTypesToJavaElements.put(type, new HashSet<IMember>());
+            javaTypesToJavaElements.put(type, new LinkedHashSet<IMember>());
         }
     }
 
