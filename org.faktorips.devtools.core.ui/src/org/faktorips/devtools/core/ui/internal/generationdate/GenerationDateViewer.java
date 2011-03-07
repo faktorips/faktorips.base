@@ -48,14 +48,13 @@ public class GenerationDateViewer extends ComboViewer {
         layout.marginHeight = 0;
         layout.marginWidth = 0;
         parent.setLayout(layout);
-        parent.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
-        getCombo().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        parent.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false));
         String generationConceptName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
                 .getGenerationConceptNameSingular();
 
         getCombo().setToolTipText(
                 NLS.bind(Messages.ProductStructureExplorer_selectAdjustmentToolTip, generationConceptName));
-        getCombo().setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+        getCombo().setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false));
         setLabelProvider(new LabelProvider() {
             @Override
             public String getText(Object element) {
