@@ -144,18 +144,18 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
 
     @Override
     public void initFromXml(Element element, IProject project) {
+        initUseNWDITrackPrefix(element);
         String projectName = element.getAttribute("referencedIpsProject"); //$NON-NLS-1$
-        if (initUseNWDITrackPrefix(element)) {
-            projectName = convertProjNameUsingSapConvention(projectName, project.getName());
+        if (isUseNWDITrackPrefix()) {
+            projectName = createNWDIProjectName(projectName, project.getName());
         }
         if (!StringUtils.isEmpty(projectName)) {
             referencedIpsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(projectName);
         }
     }
 
-    private boolean initUseNWDITrackPrefix(Element element) {
+    private void initUseNWDITrackPrefix(Element element) {
         useNWDITrackPrefix = Boolean.valueOf(element.getAttribute("useNWDITrackPrefix")); //$NON-NLS-1$
-        return useNWDITrackPrefix;
     }
 
     /**
@@ -170,7 +170,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
      * This dirty functionality is necessary because in nwdi environment the project name could be
      * differ if the project is stored in different developer tracks or instances.
      */
-    public static String convertProjNameUsingSapConvention(String refProjectName, String currProjectName) {
+    public static String createNWDIProjectName(String refProjectName, String currProjectName) {
         String separator = "~"; //$NON-NLS-1$
         Pattern p = Pattern.compile("(.*)~([0-9]+)~(.*)"); //$NON-NLS-1$
 
@@ -198,9 +198,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
     public Element toXml(Document doc) {
         Element element = doc.createElement(XML_ELEMENT);
         element.setAttribute("type", TYPE_PROJECT_REFERENCE); //$NON-NLS-1$
-        element
-                .setAttribute(
-                        "referencedIpsProject", referencedIpsProject == null ? "" : referencedIpsProject.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+        element.setAttribute("referencedIpsProject", referencedIpsProject == null ? "" : referencedIpsProject.getName()); //$NON-NLS-1$ //$NON-NLS-2$
         if (useNWDITrackPrefix != null) {
             // store attribute only if nwdi support is needed
             element.setAttribute("useNWDITrackPrefix", Boolean.toString(useNWDITrackPrefix)); //$NON-NLS-1$ 

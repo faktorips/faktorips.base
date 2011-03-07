@@ -23,29 +23,29 @@ public class IpsProjectRefEntryJunitTest extends TestCase {
 
     public void testConvertProjNameUsingSapConvention() {
         // no sap format
-        assertEquals("x", IpsProjectRefEntry.convertProjNameUsingSapConvention("x", "y"));
+        assertEquals("x", IpsProjectRefEntry.createNWDIProjectName("x", "y"));
 
         // no sap format current project name
         assertEquals("CZ2_OMCWTG1_D~0~mc(2fbonus(2fkern(2fjava~as.de", IpsProjectRefEntry
-                .convertProjNameUsingSapConvention("CZ2_OMCWTG1_D~0~mc(2fbonus(2fkern(2fjava~as.de", "y"));
+                .createNWDIProjectName("CZ2_OMCWTG1_D~0~mc(2fbonus(2fkern(2fjava~as.de", "y"));
 
         // no sap format referenced project name, use name as relative name
-        assertEquals("CZ2_OMCWTG101_D~11~x", IpsProjectRefEntry.convertProjNameUsingSapConvention("x",
+        assertEquals("CZ2_OMCWTG101_D~11~x", IpsProjectRefEntry.createNWDIProjectName("x",
                 "CZ2_OMCWTG101_D~11~mc(2bonus(2fdomain(2fjava~as.de"));
 
         // different instance
         assertEquals("CZ2_OMCWTG1_D~1~mc(2fbonus(2fkern(2fjava~as.de", IpsProjectRefEntry
-                .convertProjNameUsingSapConvention("CZ2_OMCWTG1_D~0~mc(2fbonus(2fkern(2fjava~as.de",
+                .createNWDIProjectName("CZ2_OMCWTG1_D~0~mc(2fbonus(2fkern(2fjava~as.de",
                         "CZ2_OMCWTG1_D~1~mc(2bonus(2fdomain(2fjava~as.de"));
 
         // different track
         assertEquals("CZ2_OMCWTG2_D~0~mc(2fbonus(2fkern(2fjava~as.de", IpsProjectRefEntry
-                .convertProjNameUsingSapConvention("CZ2_OMCWTG1_D~0~mc(2fbonus(2fkern(2fjava~as.de",
+                .createNWDIProjectName("CZ2_OMCWTG1_D~0~mc(2fbonus(2fkern(2fjava~as.de",
                         "CZ2_OMCWTG2_D~0~mc(2bonus(2fdomain(2fjava~as.de"));
 
         // different track and instance
         assertEquals("CZ2_OMCWTG101_D~11~mc(2fbonus(2fkern(2fjava~as.de", IpsProjectRefEntry
-                .convertProjNameUsingSapConvention("CZ2_OMCWTG1_D~0~mc(2fbonus(2fkern(2fjava~as.de",
+                .createNWDIProjectName("CZ2_OMCWTG1_D~0~mc(2fbonus(2fkern(2fjava~as.de",
                         "CZ2_OMCWTG101_D~11~mc(2bonus(2fdomain(2fjava~as.de"));
     }
 }
