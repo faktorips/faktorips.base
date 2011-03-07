@@ -27,5 +27,12 @@
          </menu>
       </menuContribution>
    </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="org.faktorips.devtools.stdbuilder.ui.commands.NoSourceCodeFound"
+            name="%org.faktorips.devtools.stdbuilder.ui.commands.NoSourceCodeFound">
+      </command>
+   </extension>
 
 </plugin>
