@@ -53,6 +53,8 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
 
     private static final String COMMAND_ID_OPEN_ELEMENT_IN_EDITOR = "org.eclipse.jdt.ui.commands.openElementInEditor";
 
+    private static final String COMMAND_ID_NO_SOURCE_CODE_FOUND = "org.faktorips.devtools.stdbuilder.ui.commands.NoSourceCodeFound";
+
     private static final String PARAMETER_ID_ELEMENT_REF = "elementRef";
 
     private IServiceLocator serviceLocator;
@@ -73,7 +75,9 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
             }
         }
         if (!(selectedItem instanceof IIpsObjectPartContainer)) {
-            return new IContributionItem[0];
+            List<IContributionItem> contributionItems = new ArrayList<IContributionItem>(1);
+            addNoSourceCodeFoundCommand(contributionItems);
+            return contributionItems.toArray(new IContributionItem[1]);
         }
         return getContributionItemsForIpsObjectPartContainer((IIpsObjectPartContainer)selectedItem);
     }
@@ -94,9 +98,9 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         List<IType> sortedTypes = sortTypes(javaTypesToJavaElements.keySet());
         for (int i = 0; i < sortedTypes.size(); i++) {
             IType type = sortedTypes.get(i);
-            addOpenInJavaEditorCommandContributionItem(contributionItems, type);
+            addOpenInJavaEditorCommand(contributionItems, type);
             for (IMember member : javaTypesToJavaElements.get(type)) {
-                addOpenInJavaEditorCommandContributionItem(contributionItems, member);
+                addOpenInJavaEditorCommand(contributionItems, member);
             }
             /*
              * Add a separator after each type's members but do not add a separator at the very
@@ -105,6 +109,10 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
             if (i < sortedTypes.size() - 1) {
                 addSeparator(contributionItems);
             }
+        }
+
+        if (contributionItems.isEmpty()) {
+            addNoSourceCodeFoundCommand(contributionItems);
         }
 
         return contributionItems.toArray(new IContributionItem[contributionItems.size()]);
@@ -184,22 +192,36 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         contributionItems.add(new Separator());
     }
 
-    private void addOpenInJavaEditorCommandContributionItem(List<IContributionItem> contributionItems,
+    private void addOpenInJavaEditorCommand(List<IContributionItem> contributionItems,
             IJavaElement javaElement) {
 
         Map<String, Object> arguments = new HashMap<String, Object>(1);
         arguments.put(PARAMETER_ID_ELEMENT_REF, javaElement);
 
+        addCommand(contributionItems, COMMAND_ID_OPEN_ELEMENT_IN_EDITOR, arguments,
+                getJavaElementIcon(javaElement), getJavaElementLabel(javaElement));
+    }
+
+    private void addNoSourceCodeFoundCommand(List<IContributionItem> contributionItems) {
+        addCommand(contributionItems, COMMAND_ID_NO_SOURCE_CODE_FOUND, null, null, null);
+    }
+
+    private void addCommand(List<IContributionItem> contributionItems,
+            String commandId,
+            Map<String, Object> arguments,
+            ImageDescriptor icon,
+            String label) {
+
         // @formatter:off
         CommandContributionItemParameter itemParameter = new CommandContributionItemParameter(
                 serviceLocator,                               // serviceLocator
                 null,                                         // id
-                COMMAND_ID_OPEN_ELEMENT_IN_EDITOR,            // commandId
+                commandId,                                    // commandId
                 arguments,                                    // arguments
-                getJavaElementIcon(javaElement),              // icon
+                icon,                                         // icon
                 null,                                         // disabledIcon
                 null,                                         // hoverIcon
-                getJavaElementLabel(javaElement),             // label
+                label,                                        // label
                 null,                                         // mnemoic
                 null,                                         // tooltip
                 CommandContributionItem.STYLE_PUSH,           // style
