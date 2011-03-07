@@ -98,20 +98,21 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         List<IType> sortedTypes = sortTypes(javaTypesToJavaElements.keySet());
         for (int i = 0; i < sortedTypes.size(); i++) {
             IType type = sortedTypes.get(i);
-            if (type.exists()) {
-                addOpenInJavaEditorCommand(contributionItems, type);
-                for (IMember member : javaTypesToJavaElements.get(type)) {
-                    if (member.exists()) {
-                        addOpenInJavaEditorCommand(contributionItems, member);
-                    }
+            if (!(type.exists())) {
+                continue;
+            }
+            addOpenInJavaEditorCommand(contributionItems, type);
+            for (IMember member : javaTypesToJavaElements.get(type)) {
+                if (member.exists()) {
+                    addOpenInJavaEditorCommand(contributionItems, member);
                 }
-                /*
-                 * Add a separator after each type's members but do not add a separator at the very
-                 * bottom of the menu.
-                 */
-                if (i < sortedTypes.size() - 1) {
-                    addSeparator(contributionItems);
-                }
+            }
+            /*
+             * Add a separator after each type's members but do not add a separator at the very
+             * bottom of the menu.
+             */
+            if (i < sortedTypes.size() - 1) {
+                addSeparator(contributionItems);
             }
         }
 
@@ -195,7 +196,6 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     }
 
     private void addOpenInJavaEditorCommand(List<IContributionItem> contributionItems, IJavaElement javaElement) {
-
         Map<String, Object> arguments = new HashMap<String, Object>(1);
         arguments.put(PARAMETER_ID_ELEMENT_REF, javaElement);
 
