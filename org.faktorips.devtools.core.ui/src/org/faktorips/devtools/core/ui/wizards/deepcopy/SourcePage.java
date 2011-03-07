@@ -329,6 +329,11 @@ public class SourcePage extends WizardPage {
                 updateColumnWidth();
                 setErrorMessage(null);
                 setMessagePleaseEnterWorkingDate();
+
+                getWizard().getDeepCopyPreview().getErrorElements().clear();
+                setErrorMessage(null);
+                tree.refresh(true);
+                setMessagePleaseEnterWorkingDate();
             }
         });
     }
@@ -745,7 +750,7 @@ public class SourcePage extends WizardPage {
                     }
                     monitor.beginTask(Messages.ReferenceAndPreviewPage_msgValidateCopy, 8);
                     SubProgressMonitor subProgressMonitor = new SubProgressMonitor(monitor, 6);
-                    getWizard().getDeepCopyPreview().checkForInvalidTargets(subProgressMonitor);
+                    getWizard().getDeepCopyPreview().createTargetNodes(subProgressMonitor);
                     monitor.worked(1);
                     tree.refresh();
                     monitor.worked(1);

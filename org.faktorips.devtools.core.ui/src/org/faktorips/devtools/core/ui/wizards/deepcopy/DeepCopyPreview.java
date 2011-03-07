@@ -72,7 +72,7 @@ public class DeepCopyPreview {
      * 
      * @param progressMonitor a progress monitor to show state of work
      */
-    public void checkForInvalidTargets(IProgressMonitor progressMonitor) {
+    public void createTargetNodes(IProgressMonitor progressMonitor) {
         errorElements.clear();
         filename2referenceMap.clear();
         oldObject2newNameMap.clear();
@@ -359,7 +359,7 @@ public class DeepCopyPreview {
     }
 
     private boolean isValid(IProgressMonitor progressMonitor) {
-        checkForInvalidTargets(progressMonitor);
+        createTargetNodes(progressMonitor);
         return getErrorElements().isEmpty();
     }
 
