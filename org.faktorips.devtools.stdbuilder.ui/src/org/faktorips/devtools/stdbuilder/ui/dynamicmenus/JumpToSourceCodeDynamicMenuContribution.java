@@ -226,7 +226,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
      * Creates a menu which represents the given {@link IType} and lists the set of it's
      * {@link IMember}.
      * <p>
-     * Each member is represented by a commands that allows the user to open that member in a Java
+     * Each member is represented by a command that allows the user to open that member in a Java
      * editor.
      */
     private IMenuManager createTypeMenu(IType type, Set<IMember> members) {
