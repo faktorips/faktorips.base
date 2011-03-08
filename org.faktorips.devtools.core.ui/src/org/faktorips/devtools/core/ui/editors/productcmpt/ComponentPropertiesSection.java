@@ -170,32 +170,6 @@ public class ComponentPropertiesSection extends IpsSection {
         validToField = new FormattingTextField(validToText, new GregorianCalendarFormat());
         controller.add(validToField, product, IProductCmpt.PROPERTY_VALID_TO);
 
-        // handle invalid values - the gregorian calendar field transforms all invalid values
-        // to null, so invalid strings like "egon" can not be validated in the normal way by
-        // validating the object itself
-        // validToText.addModifyListener(new ModifyListener() {
-        // @Override
-        // public void modifyText(ModifyEvent e) {
-        // String value = validToText.getText();
-        // if (value.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) {
-        // return;
-        // }
-        //
-        // DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
-        // try {
-        // String parsed = format.format(format.parse(value));
-        // if (!parsed.equals(value)) {
-        //                        throw new ParseException(value + " parsed to " + parsed, 0); //$NON-NLS-1$
-        // }
-        // } catch (ParseException e1) {
-        // MessageList list = new MessageList();
-        // String msg = NLS.bind(Messages.ProductAttributesSection_msgInvalidDate, value);
-        //                    list.add(new Message("", msg, Message.ERROR, product, IProductCmpt.PROPERTY_VALID_TO)); //$NON-NLS-1$
-        // validToField.setMessages(list);
-        // }
-        // }
-        // });
-
         uiMasterController = new CompositeUIController();
         uiMasterController.add(controller);
         uiMasterController.updateUI();
