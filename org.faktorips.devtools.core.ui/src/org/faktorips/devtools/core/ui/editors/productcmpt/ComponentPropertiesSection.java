@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.events.ModifyEvent;
@@ -37,7 +38,6 @@ import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
-import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 import org.faktorips.devtools.core.ui.controller.fields.GregorianCalendarFormat;
@@ -53,75 +53,116 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  */
 public class ComponentPropertiesSection extends IpsSection {
 
-    /**
-     * Product component which holds the informations to display
-     */
+    /** Product component which holds the informations to display. */
     private final IProductCmpt product;
 
     private final ExtensionPropertyControlFactory extFactory;
 
-    /**
-     * Pane which serves as parent for all controlls created inside this section.
-     */
+    /** Pane which serves as parent for all controls created inside this section. */
     private Composite rootPane;
 
-    /**
-     * List of controls displaying data (needed to enable/disable).
-     */
+    /** List of controls displaying data (needed to enable / disable). */
     private final List<Text> editControls = new ArrayList<Text>();
 
-    /**
-     * Controller to handle update of ui and model automatically.
-     */
-    private CompositeUIController uiMasterController = null;
+    /** Controller to handle update of UI and model automatically. */
+    private CompositeUIController uiMasterController;
 
     private ProductCmptType2RefControl productCmptTypeControl;
-    private MyModifyListener policyCmptTypeListener;
 
     private Text runtimeIdText;
+
     private Text validToText;
-    private EditField validToField;
+
     private final ProductCmptEditor editor;
 
-    /**
-     * Creates a new attributes section.
-     * 
-     * @param parent The parent to link the ui-items to.
-     * @param toolkit The toolkit to use for easier ui-handling
-     */
     public ComponentPropertiesSection(IProductCmpt product, Composite parent, UIToolkit toolkit,
             ProductCmptEditor editor) {
 
         super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
+
         this.product = product;
-        extFactory = new ExtensionPropertyControlFactory(product.getClass());
         this.editor = editor;
+        extFactory = new ExtensionPropertyControlFactory(product.getClass());
+
         initControls();
         setText(Messages.ProductAttributesSection_attribute);
     }
 
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
-        GridLayout layout = new GridLayout(1, true);
-        layout.marginHeight = 2;
-        layout.marginWidth = 1;
-        client.setLayout(layout);
+        // Initialize layout stuff
+        initLayout(client);
+        initRootPane(client, toolkit);
 
-        rootPane = toolkit.createLabelEditColumnComposite(client);
-        rootPane.setLayoutData(new GridData(GridData.FILL_BOTH));
-        GridLayout workAreaLayout = (GridLayout)rootPane.getLayout();
-        workAreaLayout.marginHeight = 5;
-        workAreaLayout.marginWidth = 5;
+        // Initialize the individual rows of the section
+        initProductCmptTypeRow(toolkit);
+        initRuntimeIdRow(toolkit);
+        initValidToRow(toolkit);
 
-        /*
-         * following line forces the paint listener to draw a light grey border around the text
-         * control. Can only be understood by looking at the FormToolkit.PaintBorder class.
-         */
-        rootPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
-        toolkit.getFormToolkit().paintBordersFor(rootPane);
+        // Initialize controllers
+        IpsObjectUIController controller = initUiController();
+        initUiMasterController(controller);
 
-        // create label or hyperlink and text control for the policy component type
-        // this product component is based on.
+        extFactory.createControls(rootPane, toolkit, product);
+        extFactory.bind(bindingContext);
+    }
+
+    private void initUiMasterController(IpsObjectUIController controller) {
+        uiMasterController = new CompositeUIController();
+        uiMasterController.add(controller);
+        uiMasterController.updateUI();
+    }
+
+    private IpsObjectUIController initUiController() {
+        IpsObjectUIController controller = new IpsObjectUIController(product);
+        controller.add(new IpsObjectField(productCmptTypeControl), product, IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
+        controller.add(runtimeIdText, product, IProductCmpt.PROPERTY_RUNTIME_ID);
+        controller.add(new FormattingTextField(validToText, new GregorianCalendarFormat()), product,
+                IProductCmpt.PROPERTY_VALID_TO);
+        return controller;
+    }
+
+    /**
+     * Create label and text control for the valid-to date of the displayed {@link IProductCmpt}.
+     */
+    private void initValidToRow(UIToolkit toolkit) {
+        toolkit.createLabel(rootPane, Messages.ProductAttributesSection_labelValidTo);
+        DateControl dateControl = new DateControl(rootPane, toolkit);
+        validToText = dateControl.getTextControl();
+        validToText.setText(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
+        editControls.add(validToText);
+    }
+
+    /**
+     * Create label and text control for the runtime id representing the displayed
+     * {@link IProductCmpt}.
+     */
+    private void initRuntimeIdRow(UIToolkit toolkit) {
+        toolkit.createLabel(rootPane, Messages.ProductAttributesSection_labelRuntimeId);
+        runtimeIdText = toolkit.createText(rootPane);
+        editControls.add(runtimeIdText);
+
+        // Update the enabled state of the runtime-id-input field if the global preference changed
+        IpsPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(new IPropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent event) {
+                if (!event.getProperty().equals(IpsPreferences.MODIFY_RUNTIME_ID)) {
+                    return;
+                }
+                if (!runtimeIdText.isDisposed()) {
+                    updateRuntimeIdEnableState();
+                } else {
+                    IpsPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
+                }
+            }
+        });
+    }
+
+    /**
+     * Create label or hyperlink and text control for the {@link IProductCmptType} the displayed
+     * {@link IProductCmpt} is based on.
+     */
+    private void initProductCmptTypeRow(UIToolkit toolkit) {
         if (IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()) {
             Hyperlink link = toolkit.createHyperlink(rootPane, Messages.ProductAttributesSection_template);
             link.addHyperlinkListener(new HyperlinkAdapter() {
@@ -136,8 +177,7 @@ public class ComponentPropertiesSection extends IpsSection {
                         if (productCmptType != null) {
                             IpsUIPlugin.getDefault().openEditor(productCmptType);
                         }
-                    } catch (Exception e) {
-                        // TODO catch Exception needs to be documented properly or specialized
+                    } catch (CoreException e) {
                         IpsPlugin.logAndShowErrorDialog(e);
                     }
                 }
@@ -148,52 +188,29 @@ public class ComponentPropertiesSection extends IpsSection {
 
         productCmptTypeControl = new ProductCmptType2RefControl(product.getIpsProject(), rootPane, toolkit, true);
         toolkit.setDataChangeable(productCmptTypeControl.getTextControl(), false);
-        IpsObjectField field = new IpsObjectField(productCmptTypeControl);
+        productCmptTypeControl.getTextControl().addModifyListener(new MyModifyListener());
+    }
 
-        // create label and text control for the runtime id representing the displayed product
-        // component
-        toolkit.createLabel(rootPane, Messages.ProductAttributesSection_labelRuntimeId);
-        runtimeIdText = toolkit.createText(rootPane);
-        editControls.add(runtimeIdText);
+    private void initLayout(Composite client) {
+        GridLayout layout = new GridLayout(1, true);
+        layout.marginHeight = 2;
+        layout.marginWidth = 1;
+        client.setLayout(layout);
+    }
 
-        // create label and text control for the valid-to date of the displayed product component
-        toolkit.createLabel(rootPane, Messages.ProductAttributesSection_labelValidTo);
-        // validToText = toolkit.createText(rootPane);
-        DateControl dateControl = new DateControl(rootPane, toolkit);
-        validToText = dateControl.getTextControl();
-        validToText.setText(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
-        editControls.add(validToText);
+    private void initRootPane(Composite client, UIToolkit toolkit) {
+        rootPane = toolkit.createLabelEditColumnComposite(client);
+        rootPane.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridLayout workAreaLayout = (GridLayout)rootPane.getLayout();
+        workAreaLayout.marginHeight = 5;
+        workAreaLayout.marginWidth = 5;
 
-        IpsObjectUIController controller = new IpsObjectUIController(product);
-        controller.add(field, product, IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
-        controller.add(runtimeIdText, product, IProductCmpt.PROPERTY_RUNTIME_ID);
-        validToField = new FormattingTextField(validToText, new GregorianCalendarFormat());
-        controller.add(validToField, product, IProductCmpt.PROPERTY_VALID_TO);
-
-        uiMasterController = new CompositeUIController();
-        uiMasterController.add(controller);
-        uiMasterController.updateUI();
-
-        policyCmptTypeListener = new MyModifyListener();
-        productCmptTypeControl.getTextControl().addModifyListener(policyCmptTypeListener);
-
-        // update enablement state of runtime-id-input if preference changed
-        IpsPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(new IPropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent event) {
-                if (!event.getProperty().equals(IpsPreferences.MODIFY_RUNTIME_ID)) {
-                    return;
-                }
-                if (!runtimeIdText.isDisposed()) {
-                    updateRuntimeIdEnableState();
-                } else {
-                    IpsPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
-                }
-            }
-        });
-
-        extFactory.createControls(rootPane, toolkit, product);
-        extFactory.bind(bindingContext);
+        /*
+         * following line forces the paint listener to draw a light grey border around the text
+         * control. Can only be understood by looking at the FormToolkit.PaintBorder class.
+         */
+        rootPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
+        toolkit.getFormToolkit().paintBordersFor(rootPane);
     }
 
     @Override
@@ -231,6 +248,7 @@ public class ComponentPropertiesSection extends IpsSection {
             editor.checkForInconsistenciesToModel();
             productCmptTypeControl.getTextControl().addModifyListener(this);
         }
+
     }
 
 }
