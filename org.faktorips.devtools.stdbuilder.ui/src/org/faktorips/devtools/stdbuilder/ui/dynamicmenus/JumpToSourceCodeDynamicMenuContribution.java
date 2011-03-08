@@ -26,7 +26,8 @@ import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.action.IContributionItem;
-import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.ISources;
@@ -76,7 +77,8 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         }
         if (!(selectedItem instanceof IIpsObjectPartContainer)) {
             List<IContributionItem> contributionItems = new ArrayList<IContributionItem>(1);
-            addNoSourceCodeFoundCommand(contributionItems);
+            IContributionItem noSourceCodeFoundCommand = createNoSourceCodeFoundCommand();
+            contributionItems.add(noSourceCodeFoundCommand);
             return contributionItems.toArray(new IContributionItem[1]);
         }
         return getContributionItemsForIpsObjectPartContainer((IIpsObjectPartContainer)selectedItem);
@@ -101,23 +103,22 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
             if (!(type.exists())) {
                 continue;
             }
-            addOpenInJavaEditorCommand(contributionItems, type);
+            IMenuManager typeMenu = addMenu(contributionItems, type);
             for (IMember member : javaTypesToJavaElements.get(type)) {
                 if (member.exists()) {
-                    addOpenInJavaEditorCommand(contributionItems, member);
+                    IContributionItem openInJavaEditorCommand = createOpenInJavaEditorCommand(member);
+                    typeMenu.add(openInJavaEditorCommand);
                 }
             }
-            /*
-             * Add a separator after each type's members but do not add a separator at the very
-             * bottom of the menu.
-             */
-            if (i < sortedTypes.size() - 1) {
-                addSeparator(contributionItems);
+            if (typeMenu.isEmpty()) {
+                IContributionItem noSourceCodeFoundCommand = createNoSourceCodeFoundCommand();
+                typeMenu.add(noSourceCodeFoundCommand);
             }
         }
 
         if (contributionItems.isEmpty()) {
-            addNoSourceCodeFoundCommand(contributionItems);
+            IContributionItem noSourceCodeFoundCommand = createNoSourceCodeFoundCommand();
+            contributionItems.add(noSourceCodeFoundCommand);
         }
 
         return contributionItems.toArray(new IContributionItem[contributionItems.size()]);
@@ -191,24 +192,25 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         return typedSelection.getElement();
     }
 
-    private void addSeparator(List<IContributionItem> contributionItems) {
-        contributionItems.add(new Separator());
+    private IMenuManager addMenu(List<IContributionItem> contributionItems, IJavaElement javaElement) {
+        IMenuManager menu = new MenuManager(getJavaElementLabel(javaElement), getJavaElementIcon(javaElement), null);
+        contributionItems.add(menu);
+        return menu;
     }
 
-    private void addOpenInJavaEditorCommand(List<IContributionItem> contributionItems, IJavaElement javaElement) {
+    private IContributionItem createOpenInJavaEditorCommand(IJavaElement javaElement) {
         Map<String, Object> arguments = new HashMap<String, Object>(1);
         arguments.put(PARAMETER_ID_ELEMENT_REF, javaElement);
 
-        addCommand(contributionItems, COMMAND_ID_OPEN_ELEMENT_IN_EDITOR, arguments, getJavaElementIcon(javaElement),
+        return createCommand(COMMAND_ID_OPEN_ELEMENT_IN_EDITOR, arguments, getJavaElementIcon(javaElement),
                 getJavaElementLabel(javaElement));
     }
 
-    private void addNoSourceCodeFoundCommand(List<IContributionItem> contributionItems) {
-        addCommand(contributionItems, COMMAND_ID_NO_SOURCE_CODE_FOUND, null, null, null);
+    private IContributionItem createNoSourceCodeFoundCommand() {
+        return createCommand(COMMAND_ID_NO_SOURCE_CODE_FOUND, null, null, null);
     }
 
-    private void addCommand(List<IContributionItem> contributionItems,
-            String commandId,
+    private IContributionItem createCommand(String commandId,
             Map<String, Object> arguments,
             ImageDescriptor icon,
             String label) {
@@ -231,7 +233,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         );
         // @formatter:on
 
-        contributionItems.add(new CommandContributionItem(itemParameter));
+        return new CommandContributionItem(itemParameter);
     }
 
     private String getJavaElementLabel(IJavaElement javaElement) {
