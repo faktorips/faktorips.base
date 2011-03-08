@@ -32,7 +32,9 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -44,6 +46,7 @@ import org.faktorips.devtools.core.ui.controller.fields.GregorianCalendarFormat;
 import org.faktorips.devtools.core.ui.controller.fields.IpsObjectField;
 import org.faktorips.devtools.core.ui.controls.DateControl;
 import org.faktorips.devtools.core.ui.controls.ProductCmptType2RefControl;
+import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
@@ -69,7 +72,7 @@ public class ComponentPropertiesSection extends IpsSection {
 
     private ProductCmptType2RefControl productCmptTypeControl;
 
-    private Text runtimeIdText;
+    private TextButtonControl runtimeIdControl;
 
     private Text validToText;
 
@@ -116,7 +119,7 @@ public class ComponentPropertiesSection extends IpsSection {
     private IpsObjectUIController initUiController() {
         IpsObjectUIController controller = new IpsObjectUIController(product);
         controller.add(new IpsObjectField(productCmptTypeControl), product, IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
-        controller.add(runtimeIdText, product, IProductCmpt.PROPERTY_RUNTIME_ID);
+        controller.add(runtimeIdControl.getTextControl(), product, IProductCmpt.PROPERTY_RUNTIME_ID);
         controller.add(new FormattingTextField(validToText, new GregorianCalendarFormat()), product,
                 IProductCmpt.PROPERTY_VALID_TO);
         return controller;
@@ -139,8 +142,8 @@ public class ComponentPropertiesSection extends IpsSection {
      */
     private void initRuntimeIdRow(UIToolkit toolkit) {
         toolkit.createLabel(rootPane, Messages.ProductAttributesSection_labelRuntimeId);
-        runtimeIdText = toolkit.createText(rootPane);
-        editControls.add(runtimeIdText);
+        runtimeIdControl = new RuntimeIdControl(rootPane, toolkit);
+        editControls.add(runtimeIdControl.getTextControl());
 
         // Update the enabled state of the runtime-id-input field if the global preference changed
         IpsPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(new IPropertyChangeListener() {
@@ -149,13 +152,18 @@ public class ComponentPropertiesSection extends IpsSection {
                 if (!event.getProperty().equals(IpsPreferences.MODIFY_RUNTIME_ID)) {
                     return;
                 }
-                if (!runtimeIdText.isDisposed()) {
+                if (!runtimeIdControl.isDisposed()) {
                     updateRuntimeIdEnableState();
                 } else {
                     IpsPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
                 }
             }
         });
+    }
+
+    private void updateRuntimeIdEnableState() {
+        getToolkit().setDataChangeable(runtimeIdControl,
+                isDataChangeable() & IpsPlugin.getDefault().getIpsPreferences().canModifyRuntimeId());
     }
 
     /**
@@ -168,17 +176,17 @@ public class ComponentPropertiesSection extends IpsSection {
             link.addHyperlinkListener(new HyperlinkAdapter() {
                 @Override
                 public void linkActivated(HyperlinkEvent event) {
+                    if (!IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()) {
+                        // if the property changed while the editor is open
+                        return;
+                    }
                     try {
-                        if (!IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()) {
-                            // if the property changed while the editor is open
-                            return;
-                        }
                         IProductCmptType productCmptType = product.findProductCmptType(product.getIpsProject());
                         if (productCmptType != null) {
                             IpsUIPlugin.getDefault().openEditor(productCmptType);
                         }
                     } catch (CoreException e) {
-                        IpsPlugin.logAndShowErrorDialog(e);
+                        throw new RuntimeException(e);
                     }
                 }
             });
@@ -233,11 +241,6 @@ public class ComponentPropertiesSection extends IpsSection {
         }
     }
 
-    private void updateRuntimeIdEnableState() {
-        getToolkit().setDataChangeable(runtimeIdText,
-                isDataChangeable() & IpsPlugin.getDefault().getIpsPreferences().canModifyRuntimeId());
-    }
-
     private class MyModifyListener implements ModifyListener {
 
         @Override
@@ -247,6 +250,33 @@ public class ComponentPropertiesSection extends IpsSection {
             uiMasterController.updateModel();
             editor.checkForInconsistenciesToModel();
             productCmptTypeControl.getTextControl().addModifyListener(this);
+        }
+
+    }
+
+    /**
+     * Needed so a "Generate" button can be attached to the runtime-id input field.
+     * <p>
+     * The "Generate" button enables the user to automatically generate a runtime-id based on the
+     * name of the {@link IProductCmpt} and the {@link IProductCmptNamingStrategy} of the associated
+     * {@link IIpsProject}.
+     */
+    private class RuntimeIdControl extends TextButtonControl {
+
+        public RuntimeIdControl(Composite parent, UIToolkit toolkit) {
+            super(parent, toolkit, Messages.ProductAttributesSection_ButtonLabel_GenerateRuntimeId);
+        }
+
+        @Override
+        protected void buttonClicked() {
+            IIpsProject ipsProject = product.getIpsProject();
+            IProductCmptNamingStrategy namingStrategy = ipsProject.getProductCmptNamingStrategy();
+            try {
+                String generatedRuntimeId = namingStrategy.getUniqueRuntimeId(ipsProject, product.getName());
+                product.setRuntimeId(generatedRuntimeId);
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
         }
 
     }

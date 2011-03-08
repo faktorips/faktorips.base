@@ -189,6 +189,8 @@ public class Messages extends NLS {
 
     public static String ProductAttributesSection_labelRuntimeId;
 
+    public static String ProductAttributesSection_ButtonLabel_GenerateRuntimeId;
+
     public static String ProductAttributesSection_labelValidTo;
 
     public static String FormulaTestInputValuesControl_ButtonLabel_Store;
