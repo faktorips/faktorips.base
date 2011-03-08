@@ -103,17 +103,8 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
             if (!(type.exists())) {
                 continue;
             }
-            IMenuManager typeMenu = addMenu(contributionItems, type);
-            for (IMember member : javaTypesToJavaElements.get(type)) {
-                if (member.exists()) {
-                    IContributionItem openInJavaEditorCommand = createOpenInJavaEditorCommand(member);
-                    typeMenu.add(openInJavaEditorCommand);
-                }
-            }
-            if (typeMenu.isEmpty()) {
-                IContributionItem noSourceCodeFoundCommand = createNoSourceCodeFoundCommand();
-                typeMenu.add(noSourceCodeFoundCommand);
-            }
+            IMenuManager typeMenu = createTypeMenu(type, javaTypesToJavaElements.get(type));
+            contributionItems.add(typeMenu);
         }
 
         if (contributionItems.isEmpty()) {
@@ -192,10 +183,26 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         return typedSelection.getElement();
     }
 
-    private IMenuManager addMenu(List<IContributionItem> contributionItems, IJavaElement javaElement) {
-        IMenuManager menu = new MenuManager(getJavaElementLabel(javaElement), getJavaElementIcon(javaElement), null);
-        contributionItems.add(menu);
-        return menu;
+    /**
+     * Creates a menu which represents the given {@link IType} and lists the set of it's
+     * {@link IMember}.
+     * <p>
+     * Each member is represented by a commands that allows the user to open that member in a Java
+     * editor.
+     */
+    private IMenuManager createTypeMenu(IType type, Set<IMember> members) {
+        IMenuManager typeMenu = new MenuManager(getJavaElementLabel(type), getJavaElementIcon(type), null);
+        for (IMember member : members) {
+            if (member.exists()) {
+                IContributionItem openInJavaEditorCommand = createOpenInJavaEditorCommand(member);
+                typeMenu.add(openInJavaEditorCommand);
+            }
+        }
+        if (typeMenu.isEmpty()) {
+            IContributionItem noSourceCodeFoundCommand = createNoSourceCodeFoundCommand();
+            typeMenu.add(noSourceCodeFoundCommand);
+        }
+        return typeMenu;
     }
 
     private IContributionItem createOpenInJavaEditorCommand(IJavaElement javaElement) {
