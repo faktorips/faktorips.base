@@ -15,6 +15,7 @@ package org.faktorips.devtools.stdbuilder.ui.dynamicmenus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -38,6 +38,8 @@ import org.eclipse.ui.menus.IWorkbenchContribution;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.services.IEvaluationService;
 import org.eclipse.ui.services.IServiceLocator;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -60,6 +62,8 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
 
     private IServiceLocator serviceLocator;
 
+    private StandardBuilderSet builderSet;
+
     @Override
     public void initialize(IServiceLocator serviceLocator) {
         this.serviceLocator = serviceLocator;
@@ -72,16 +76,31 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
             try {
                 selectedItem = ((IIpsSrcFile)selectedItem).getIpsObject();
             } catch (CoreException e) {
-                throw new RuntimeException(e);
+                /*
+                 * Recover from exception: If the IPS Object cannot be extracted from the source
+                 * file we log the exception and show the error to the user. Then, the situation is
+                 * treated as if there was no source code found.
+                 */
+                IpsPlugin.logAndShowErrorDialog(e);
+                return getContributionItemsForNoSourceCodeFound();
             }
         }
+
         if (!(selectedItem instanceof IIpsObjectPartContainer)) {
-            List<IContributionItem> contributionItems = new ArrayList<IContributionItem>(1);
-            IContributionItem noSourceCodeFoundCommand = createNoSourceCodeFoundCommand();
-            contributionItems.add(noSourceCodeFoundCommand);
-            return contributionItems.toArray(new IContributionItem[1]);
+            return getContributionItemsForNoSourceCodeFound();
         }
-        return getContributionItemsForIpsObjectPartContainer((IIpsObjectPartContainer)selectedItem);
+
+        IIpsObjectPartContainer ipsObjectPartContainer = (IIpsObjectPartContainer)selectedItem;
+        builderSet = (StandardBuilderSet)ipsObjectPartContainer.getIpsProject().getIpsArtefactBuilderSet();
+
+        return getContributionItemsForIpsObjectPartContainer(ipsObjectPartContainer);
+    }
+
+    private IContributionItem[] getContributionItemsForNoSourceCodeFound() {
+        List<IContributionItem> contributionItems = new ArrayList<IContributionItem>(1);
+        IContributionItem noSourceCodeFoundCommand = createNoSourceCodeFoundCommand();
+        contributionItems.add(noSourceCodeFoundCommand);
+        return contributionItems.toArray(new IContributionItem[1]);
     }
 
     private IContributionItem[] getContributionItemsForIpsObjectPartContainer(IIpsObjectPartContainer ipsObjectPartContainer) {
@@ -97,27 +116,23 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
          * members.
          */
         List<IContributionItem> contributionItems = new ArrayList<IContributionItem>(javaTypesToJavaElements.size() * 3);
-        List<IType> sortedTypes = sortTypes(javaTypesToJavaElements.keySet());
-        for (int i = 0; i < sortedTypes.size(); i++) {
-            IType type = sortedTypes.get(i);
-            if (!(type.exists())) {
-                continue;
-            }
+        List<IType> sortedJavaTypes = sortAndCheckTypes(javaTypesToJavaElements.keySet());
+        for (int i = 0; i < sortedJavaTypes.size(); i++) {
+            IType type = sortedJavaTypes.get(i);
             IMenuManager typeMenu = createTypeMenu(type, javaTypesToJavaElements.get(type));
             contributionItems.add(typeMenu);
         }
 
         if (contributionItems.isEmpty()) {
-            IContributionItem noSourceCodeFoundCommand = createNoSourceCodeFoundCommand();
-            contributionItems.add(noSourceCodeFoundCommand);
+            return getContributionItemsForNoSourceCodeFound();
+        } else {
+            return contributionItems.toArray(new IContributionItem[contributionItems.size()]);
         }
-
-        return contributionItems.toArray(new IContributionItem[contributionItems.size()]);
     }
 
     private Map<IType, Set<IMember>> getJavaTypesToJavaElementsMap(IIpsObjectPartContainer ipsObjectPartContainer) {
-        Map<IType, Set<IMember>> javaTypesToJavaElements = new HashMap<IType, Set<IMember>>(2);
-        for (IJavaElement javaElement : getGeneratedJavaElements(ipsObjectPartContainer)) {
+        Map<IType, Set<IMember>> javaTypesToJavaElements = new LinkedHashMap<IType, Set<IMember>>(2);
+        for (IJavaElement javaElement : builderSet.getGeneratedJavaElements(ipsObjectPartContainer)) {
             IType type = null;
             if (javaElement instanceof IType) {
                 type = (IType)javaElement;
@@ -134,45 +149,69 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         return javaTypesToJavaElements;
     }
 
-    private List<IJavaElement> getGeneratedJavaElements(IIpsObjectPartContainer ipsObjectPartContainer) {
-        StandardBuilderSet builderSet = (StandardBuilderSet)ipsObjectPartContainer.getIpsProject()
-                .getIpsArtefactBuilderSet();
-        return builderSet.getGeneratedJavaElements(ipsObjectPartContainer);
-    }
-
-    /**
-     * Takes a set of {@link IType}s as input and creates / returns a sorted list according to the
-     * fact whether or not a type is an interface.
-     * <p>
-     * Classes and enums are considered "less than" interfaces.
-     */
-    private List<IType> sortTypes(Set<IType> types) {
-        List<IType> sortedTypes = new ArrayList<IType>(types.size());
-        addToSortedTypes(sortedTypes, types, false);
-        addToSortedTypes(sortedTypes, types, true);
-        return sortedTypes;
-    }
-
-    private void addToSortedTypes(List<IType> sortedTypes, Set<IType> types, boolean interfacesIfTrueClassesOtherwise) {
-        for (IType type : types) {
-            if (type.exists()) {
-                try {
-                    boolean addCondition = interfacesIfTrueClassesOtherwise ? type.isInterface()
-                            : !(type.isInterface());
-                    if (addCondition) {
-                        sortedTypes.add(type);
-                    }
-                } catch (JavaModelException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-    }
-
     private void addTypeIfNotPresent(Map<IType, Set<IMember>> javaTypesToJavaElements, IType type) {
         if (!(javaTypesToJavaElements.containsKey(type))) {
             javaTypesToJavaElements.put(type, new LinkedHashSet<IMember>());
         }
+    }
+
+    /**
+     * Takes a set of {@link IType}s as input and creates / returns a sorted version of it.
+     * <p>
+     * The sorting algorithm ensures that first stands an interface and immediately thereafter the
+     * associated implementation (if there is one). Thereby it takes the used
+     * {@link JavaNamingConvention} into account. Here is an example:
+     * <ol>
+     * <li>IPolicy
+     * <li>Policy
+     * <li>IProduct
+     * <li>Product
+     * </ol>
+     * <p>
+     * Furthermore this method ensures that each type of the returned set actually exists. This way
+     * it is not necessary to check the returned types for existence. However, existence of members
+     * still needs to be checked.
+     */
+    private List<IType> sortAndCheckTypes(Set<IType> javaTypes) {
+        List<IType> sortedTypes = new ArrayList<IType>(javaTypes.size());
+        for (IType type : javaTypes) {
+            if (isInterfaceType(type)) {
+                if (type.exists()) {
+                    sortedTypes.add(type);
+                }
+                IType implementation = getImplementationForInterface(javaTypes, type);
+                if (implementation != null && implementation.exists()) {
+                    sortedTypes.add(implementation);
+                }
+            }
+        }
+        return sortedTypes;
+    }
+
+    /**
+     * Checks whether the given Java type is an interface type.
+     * <p>
+     * In contrast to {@link IType#exists()} this method uses the {@link JavaNamingConvention} and
+     * the type's name for the check. This way the type does not need to be accessed which should
+     * slightly increase performance and avoid certain exceptions.
+     */
+    private boolean isInterfaceType(IType javaType) {
+        return getJavaNamingConvention().isPublishedInterfaceName(javaType.getElementName());
+    }
+
+    private IType getImplementationForInterface(Set<IType> types, IType interfaceType) {
+        String searchedTypeName = getJavaNamingConvention().getImplementationClassNameForPublishedInterfaceName(
+                interfaceType.getElementName());
+        for (IType type : types) {
+            if (type.getElementName().equals(searchedTypeName)) {
+                return type;
+            }
+        }
+        return null;
+    }
+
+    private JavaNamingConvention getJavaNamingConvention() {
+        return builderSet.getJavaNamingConvention();
     }
 
     private IIpsElement getSelectedIpsElement() {

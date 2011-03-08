@@ -26,8 +26,10 @@ import org.faktorips.datatype.Datatype;
  */
 public class JavaNamingConvention {
 
-    // TODO AW: Very bad style, instead we should have subclasses, also the JAVA_STANDARD isn't used
-    // at all ...
+    /*
+     * TODO AW: Very bad style (implicit inheritance), instead we should have subclasses, also the
+     * JAVA_STANDARD isn't used at all ...
+     */
     /**
      * Standard Java naming convention. Interfaces have the name of the concecpt and the
      * implementation has the suffix 'Impl'.
@@ -58,6 +60,33 @@ public class JavaNamingConvention {
     }
 
     /**
+     * Returns whether the given unqualified concept name actually is a published interface name.
+     */
+    public boolean isPublishedInterfaceName(String name) {
+        char[] characters = name.toCharArray();
+        char firstChar = characters[0];
+        if (type == 1) {
+            /*
+             * First character must be an I while the second character must exist and must not be
+             * lower case.
+             */
+            if (firstChar != 'I') {
+                return false;
+            }
+            if (characters.length < 2) {
+                return false;
+            }
+            return !(Character.isLowerCase(characters[1]));
+        } else {
+            // Second character must be lower case or non-existent.
+            if (characters.length < 2) {
+                return true;
+            }
+            return Character.isLowerCase(characters[1]);
+        }
+    }
+
+    /**
      * Returns the unqualified name of the implementation class for the given concept name.
      */
     public String getImplementationClassName(String name) {
@@ -65,6 +94,18 @@ public class JavaNamingConvention {
             return name;
         } else {
             return name + "Impl"; //$NON-NLS-1$
+        }
+    }
+
+    /**
+     * Returns the unqualified name of the implementation class that is associated to the given
+     * published interface name.
+     */
+    public String getImplementationClassNameForPublishedInterfaceName(String publishedInterfaceName) {
+        if (type == 1) {
+            return getImplementationClassName(publishedInterfaceName.substring(1));
+        } else {
+            return getImplementationClassName(publishedInterfaceName);
         }
     }
 
