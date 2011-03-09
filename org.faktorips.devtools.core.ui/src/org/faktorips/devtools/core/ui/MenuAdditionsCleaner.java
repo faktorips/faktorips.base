@@ -30,16 +30,15 @@ import org.eclipse.search.ui.IContextMenuConstants;
 public class MenuAdditionsCleaner implements IMenuListener {
 
     @Override
-    public void menuAboutToShow(IMenuManager manager) {
+    public void menuAboutToShow(IMenuManager menuManager) {
         // remove all additions provided by the eclipse platform
         boolean isInAdditions = false;
-        for (IContributionItem item : manager.getItems()) {
+        for (IContributionItem item : menuManager.getItems()) {
             if (item == null || item.getId() == null) {
                 continue;
             }
             if (item.getId().equals(IContextMenuConstants.GROUP_ADDITIONS)) {
                 isInAdditions = true;
-                item.setVisible(false);
             }
             if (isInAdditions) {
                 item.setVisible(false);
