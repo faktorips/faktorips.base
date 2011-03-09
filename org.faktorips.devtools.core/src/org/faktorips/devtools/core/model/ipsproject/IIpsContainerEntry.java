@@ -13,18 +13,58 @@
 
 package org.faktorips.devtools.core.model.ipsproject;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IClasspathContainer;
+import org.faktorips.devtools.core.model.IIpsModel;
 
 /**
- * An ips object path container provides a way to indirectly reference a set of entries of type
- * archive or project. What entries the container contains is not fixed.
+ * A container entry is an entry that wraps severall other, none-container entries. The entries are
+ * determined dynamically by the {@link IIpsObjectPathContainer} the entry refers to.
  * 
- * @since 3.1
+ * @since 3.3
  */
 public interface IIpsContainerEntry extends IIpsObjectPathEntry {
 
-    public String getDescription();
+    /**
+     * Returns a human readable name for the container entry.
+     */
+    public String getName();
 
-    public IIpsObjectPathEntry[] resolveEntries() throws CoreException;
+    /**
+     * Returns the kind of the container. The kind is used to lookup the container in the ips model
+     * via {@link IIpsModel#getIpsObjectPathContainer(IIpsProject, String)}.
+     */
+    public String getContainerKind();
+
+    /**
+     * Returns the ips object path container that is referenced by this entry. The container is used
+     * to resolve the entries that contain ips objects. Returns <code>null</code> if the container
+     * is not found.
+     */
+    public IIpsObjectPathContainer getIpsObjectPathContainer();
+
+    /**
+     * Returns the optional path information needed by certain ips object path containers to resolve
+     * entries. For exmple the JDT {@link IClasspathContainer} identifies the container by a path
+     * {@link IClasspathContainer#getPath()}.
+     */
+    public String getContainerPath();
+
+    /**
+     * Returns the list of entries that are provided by the container this entry refers to. The
+     * returned list does does not contain any container entries.
+     */
+    public List<IIpsObjectPathEntry> resolveEntries() throws CoreException;
+
+    /**
+     * Returns the resolved entry that defines the given IPS package fragment root. Returns
+     * <code>null</code> if not found. So basically this method loops over {@link #resolveEntries()}
+     * and checks if one the entries has the given <code>rootName</code>.
+     * 
+     * @param rootName The name of the IPS package fragment root to search the entry for
+     */
+    public IIpsObjectPathEntry getResolvedEntry(String rootName);
 
 }

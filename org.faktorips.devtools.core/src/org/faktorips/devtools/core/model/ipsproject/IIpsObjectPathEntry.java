@@ -75,9 +75,14 @@ public interface IIpsObjectPathEntry {
     public final static String TYPE_ARCHIVE = "archive"; //$NON-NLS-1$
 
     /**
-     * Type constant indicating a source folder entry.
+     * Type constant indicating a container entry.
      */
     public final static String TYPE_CONTAINER = "container"; //$NON-NLS-1$
+
+    /**
+     * Type constant indicating a plugin entry.
+     */
+    public final static String TYPE_PLUGIN = "plugin"; //$NON-NLS-1$
 
     /**
      * Returns the object path this is an entry of.
@@ -98,6 +103,12 @@ public interface IIpsObjectPathEntry {
      * @see #TYPE_CONTAINER
      */
     public String getType();
+
+    /**
+     * Returns <code>true</code> if this is a container entry that can be resolved to "real"
+     * entries.
+     */
+    public boolean isContainer();
 
     /**
      * Returns the (zero based) index of this entry in the path.
