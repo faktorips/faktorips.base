@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.ui.MenuAdditionsCleaner;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IDeleteListener;
@@ -42,18 +43,20 @@ import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringHandler;
 import org.faktorips.devtools.core.ui.refactor.IpsRenameHandler;
-import org.faktorips.util.ArgumentCheck;
 
 /**
  * A section to display and edit a type's attributes.
  */
 public class AttributesSection extends SimpleIpsPartsSection {
 
+    private final IpsObjectEditorPage editorPage;
+
     private AttributesComposite attributesComposite;
 
-    public AttributesSection(IpsObjectEditorPage page, IPolicyCmptType pcType, Composite parent, UIToolkit toolkit) {
+    public AttributesSection(IpsObjectEditorPage editorPage, IPolicyCmptType pcType, Composite parent, UIToolkit toolkit) {
         super(pcType, parent, Messages.AttributesSection_title, toolkit);
-        ArgumentCheck.notNull(page);
+        this.editorPage = editorPage;
+        attributesComposite.createContextMenu();
     }
 
     @Override
@@ -79,7 +82,6 @@ public class AttributesSection extends SimpleIpsPartsSection {
         public AttributesComposite(IIpsObject pdObject, Composite parent, UIToolkit toolkit) {
             super(pdObject, parent, toolkit);
             addDeleteListener();
-            createContextMenu();
         }
 
         private void addDeleteListener() {
@@ -125,18 +127,20 @@ public class AttributesSection extends SimpleIpsPartsSection {
         }
 
         private void createContextMenu() {
-            MenuManager manager = new MenuManager();
             MenuManager refactorSubmenu = new MenuManager(Messages.AttributesSection_submenuRefactor);
-
-            manager.add(refactorSubmenu);
-            manager.add(new Separator());
-
             refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsRenameHandler.CONTRIBUTION_ID));
             // TODO AW: Pull Up not yet working
             // refactorSubmenu.add(new PullUpAction(editorSite.getShell(),
             // getPartsComposite()));
+
+            MenuManager manager = new MenuManager();
+            manager.add(refactorSubmenu);
+            manager.add(new Separator("navigate")); //$NON-NLS-1$
+
             Menu contextMenu = manager.createContextMenu(getViewer().getControl());
             getViewer().getControl().setMenu(contextMenu);
+            editorPage.getSite().registerContextMenu(manager, getSelectionProvider());
+            manager.addMenuListener(new MenuAdditionsCleaner());
         }
 
         @Override
