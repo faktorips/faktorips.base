@@ -125,17 +125,17 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         if (targetType == null) {
             return null;
         }
-        IAssociation[] candidates = productCmptType.getAssociationsForTarget(targetType.getProductCmptType());
+        List<IAssociation> candidates = productCmptType.getAssociationsForTarget(targetType.getProductCmptType());
         int index = getAssociationIndex();
-        if (index >= candidates.length) {
+        if (index >= candidates.size()) {
             return null;
         }
-        return (IProductCmptTypeAssociation)candidates[index];
+        return (IProductCmptTypeAssociation)candidates.get(index);
     }
 
     private int getAssociationIndex() {
         List<IAssociation> allAssociationsForTheTargetType = new ArrayList<IAssociation>();
-        IPolicyCmptTypeAssociation[] ass = getPolicyCmptType().getPolicyCmptTypeAssociations();
+        List<IPolicyCmptTypeAssociation> ass = getPolicyCmptType().getPolicyCmptTypeAssociations();
         for (IPolicyCmptTypeAssociation as : ass) {
             if (target.equals(as.getTarget())) {
                 allAssociationsForTheTargetType.add(as);
@@ -217,36 +217,15 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         if (target == null) {
             return null;
         }
-        IPolicyCmptTypeAssociation[] associations = target.getPolicyCmptTypeAssociations();
-        for (IPolicyCmptTypeAssociation association : associations) {
+        List<IAssociation> associations = target.getAssociations();
+        // TODO FIPS-85
+        // if (getIpsProject().getProperties().isUnsafeInverseAssociations()) {
+        // associations = target.findAllAssociations(target.getIpsProject());
+        // Collections.reverse(associations);
+        // }
+        for (IAssociation association : associations) {
             if (association.getName().equals(inverseAssociation)) {
-                return association;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Returns the target site association with inverse set to this association. The inverse of the
-     * target association must be the name of this association and the target of the inverse must be
-     * the policy component type this association belongs to.
-     * 
-     */
-    // public to enable testing in the test plugin
-    public IPolicyCmptTypeAssociation findTargetAssociationWithCorrespondingInverse(IIpsProject ipsProject)
-            throws CoreException {
-
-        IPolicyCmptType target = findTargetPolicyCmptType(ipsProject);
-        if (target == null) {
-            return null;
-        }
-        IPolicyCmptTypeAssociation[] associationCandidates = target.getPolicyCmptTypeAssociations();
-        for (IPolicyCmptTypeAssociation associationCandidate : associationCandidates) {
-            String canditateInverseAssociationName = associationCandidate.getInverseAssociation();
-            String canditateTargetQName = getPolicyCmptType().getQualifiedName();
-            if (getName().equals(canditateInverseAssociationName)
-                    && associationCandidate.getTarget().equals(canditateTargetQName)) {
-                return associationCandidate;
+                return (IPolicyCmptTypeAssociation)association;
             }
         }
         return null;
@@ -369,18 +348,10 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         }
 
         // target of inverse must be this
-        if (!inverseAss.getInverseAssociation().equals(targetRoleSingular)) {
+        if (!checkInverseAssociation(getIpsProject(), this, inverseAss)) {
             String text = Messages.Association_msg_InverseAssociationMismatch;
             list.add(new Message(MSGCODE_INVERSE_RELATION_MISMATCH, text, Message.ERROR, this,
                     PROPERTY_INVERSE_ASSOCIATION));
-        } else {
-            // inverse must match both sites
-            IPolicyCmptTypeAssociation targetSiteAssociation = findTargetAssociationWithCorrespondingInverse(ipsProject);
-            if (targetSiteAssociation == null || !inverseAssociation.equals(targetSiteAssociation.getName())) {
-                String text = Messages.Association_msg_InverseAssociationMismatch;
-                list.add(new Message(MSGCODE_INVERSE_RELATION_MISMATCH, text, Message.ERROR, this,
-                        PROPERTY_INVERSE_ASSOCIATION));
-            }
         }
 
         // check correct type combinations:
@@ -417,6 +388,31 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
             list.add(new Message(MSGCODE_INVERSE_ASSOCIATIONS_MUST_BOTH_BE_MARKED_AS_CONTAINER, text, Message.ERROR,
                     this, PROPERTY_INVERSE_ASSOCIATION));
         }
+    }
+
+    /**
+     * Return true if the given inverse association is valid for the given association according to
+     * the project settings
+     * 
+     */
+    private static boolean checkInverseAssociation(IIpsProject ipsProject,
+            IAssociation association,
+            IPolicyCmptTypeAssociation inverseAss) throws CoreException {
+        if (inverseAss.getInverseAssociation().equals(association.getName())
+                && inverseAss.getTarget().equals(association.getType().getQualifiedName())) {
+            return true;
+        }
+        // TODO FIPS-85
+        // if (ipsProject.getProperties().isUnsafeInverseAssociations()) {
+        // // when unsafe inverse associations is activated also a derived union of this one is
+        // // allowed
+        // IAssociation subsettedDerivedUnion =
+        // association.findSubsettedDerivedUnion(association.getIpsProject());
+        // if (subsettedDerivedUnion != null) {
+        // return checkTargetOfInverse(ipsProject, subsettedDerivedUnion, inverseAss);
+        // }
+        // }
+        return false;
     }
 
     @Override

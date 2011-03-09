@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.htmlexport.pages.elements.types;
 
+import java.util.List;
+
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
@@ -74,7 +76,7 @@ public class RulesTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
 
         int row = 2;
 
-        IValidationRule[] rules = policy.getRules();
+        List<IValidationRule> rules = policy.getRules();
         for (IValidationRule rule : rules) {
             assertXPathFromTable(objectContentPage, "//tr[" + row + "][td='" + rule.getName() + "']");
             assertXPathFromTable(objectContentPage, "//tr[" + row + "][td='" + rule.getMessageCode() + "']");

@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.htmlexport.pages.elements.types;
 
+import java.util.List;
+
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -74,7 +76,7 @@ public class MethodsTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
 
         int row = 2;
 
-        IMethod[] methods = policy.getMethods();
+        List<IMethod> methods = policy.getMethods();
         for (IMethod method : methods) {
             assertXPathFromTable(objectContentPage, "//tr[" + row + "][td='" + method.getDatatype() + "']");
             assertXPathFromTable(objectContentPage, "//tr[" + row + "][td='" + method.getModifier().getId() + "']");

@@ -16,6 +16,9 @@ package org.faktorips.devtools.core.model.ipsobject;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.util.Arrays;
+
 import junit.framework.Assert;
 
 import org.eclipse.core.runtime.CoreException;
@@ -42,8 +45,8 @@ public class IpsSrcFileCollectionTest extends AbstractIpsPluginTest {
         IProductCmpt cmpt2 = newProductCmpt(ipsProject, "home2.ProductA");
         cmpt2.setProductCmptType(subtype.getQualifiedName());
 
-        IpsSrcFileCollection collection = new IpsSrcFileCollection(new IIpsSrcFile[] { cmpt0.getIpsSrcFile(),
-                cmpt1.getIpsSrcFile(), cmpt2.getIpsSrcFile() }, type);
+        IpsSrcFileCollection collection = new IpsSrcFileCollection(Arrays.asList(new IIpsSrcFile[] {
+                cmpt0.getIpsSrcFile(), cmpt1.getIpsSrcFile(), cmpt2.getIpsSrcFile() }), type);
         assertTrue(collection.isDuplicateName(cmpt0.getIpsSrcFile()));
         assertTrue(collection.isInstanceOfMetaClass(cmpt0.getIpsSrcFile()));
 
@@ -53,7 +56,7 @@ public class IpsSrcFileCollectionTest extends AbstractIpsPluginTest {
         assertTrue(collection.isDuplicateName(cmpt2.getIpsSrcFile()));
         assertFalse(collection.isInstanceOfMetaClass(cmpt2.getIpsSrcFile()));
 
-        collection = new IpsSrcFileCollection(new IIpsSrcFile[] {});
+        collection = new IpsSrcFileCollection(Arrays.asList(new IIpsSrcFile[] {}));
 
         try {
             collection.isDuplicateName(cmpt1.getIpsSrcFile());
@@ -63,8 +66,8 @@ public class IpsSrcFileCollectionTest extends AbstractIpsPluginTest {
         }
 
         // MetaObjectClass = null !
-        collection = new IpsSrcFileCollection(new IIpsSrcFile[] { cmpt0.getIpsSrcFile(), cmpt1.getIpsSrcFile(),
-                cmpt2.getIpsSrcFile() }, null);
+        collection = new IpsSrcFileCollection(Arrays.asList(new IIpsSrcFile[] { cmpt0.getIpsSrcFile(),
+                cmpt1.getIpsSrcFile(), cmpt2.getIpsSrcFile() }), null);
         assertFalse(collection.isInstanceOfMetaClass(cmpt0.getIpsSrcFile()));
         assertFalse(collection.isInstanceOfMetaClass(cmpt1.getIpsSrcFile()));
         assertFalse(collection.isInstanceOfMetaClass(cmpt2.getIpsSrcFile()));

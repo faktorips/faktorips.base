@@ -737,7 +737,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
         @Override
         protected boolean visit(IProductCmptType currentType) throws CoreException {
-            IAssociation[] associations = currentType.getAssociations();
+            List<IAssociation> associations = currentType.getAssociations();
             for (IAssociation association : associations) {
                 if (association.isDerivedUnion()) {
                     continue;

@@ -989,7 +989,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             if (type == null) {
                 return;
             }
-            IMethod[] methods = type.getMethods();
+            List<IMethod> methods = type.getMethods();
             for (IMethod method : methods) {
                 if (method.getSignatureString().startsWith(prefix)) {
                     addToResult(result, method, documentOffset);

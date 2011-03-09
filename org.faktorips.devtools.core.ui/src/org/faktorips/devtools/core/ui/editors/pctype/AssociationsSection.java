@@ -237,7 +237,7 @@ public class AssociationsSection extends SimpleIpsPartsSection {
         private class AssociationContentProvider implements IStructuredContentProvider {
             @Override
             public Object[] getElements(Object inputElement) {
-                return getPcType().getPolicyCmptTypeAssociations();
+                return getPcType().getPolicyCmptTypeAssociations().toArray();
             }
 
             @Override

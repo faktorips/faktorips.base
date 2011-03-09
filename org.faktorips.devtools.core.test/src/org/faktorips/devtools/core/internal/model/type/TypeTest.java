@@ -218,7 +218,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertNotNull(list.getMessageByCode(IType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD));
 
         // "implement" the method in pcType => error should no be reported anymore
-        type.overrideMethods(new IMethod[] { superMethod });
+        type.overrideMethods(Arrays.asList(new IMethod[] { superMethod }));
         list = type.validate(ipsProject);
         assertNull(list.getMessageByCode(IType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD));
 
@@ -235,7 +235,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertNotNull(list.getMessageByCode(IType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD));
 
         // "implement" the method in the supertype => error should no be reported anymore
-        superType.overrideMethods(new IMethod[] { supersuperMethod });
+        superType.overrideMethods(Arrays.asList(new IMethod[] { supersuperMethod }));
         list = type.validate(ipsProject);
         assertNull(list.getMessageByCode(IType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD));
     }
@@ -593,9 +593,9 @@ public class TypeTest extends AbstractIpsPluginTest {
         IProductCmptType motor = (IProductCmptType)type;
         IProductCmptType injection = newProductCmptType(ipsProject, "InjectionProduct");
 
-        IAssociation[] associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
-                AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
-        assertEquals(0, associations.length);
+        List<IAssociation> associations = motor.findAssociationsForTargetAndAssociationType(
+                injection.getQualifiedName(), AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
+        assertEquals(0, associations.size());
 
         // Association: motor -> injection
         IAssociation association = motor.newAssociation();
@@ -610,26 +610,26 @@ public class TypeTest extends AbstractIpsPluginTest {
         // result = 1, because super not set
         associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
                 AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
-        assertEquals(1, associations.length);
+        assertEquals(1, associations.size());
 
         motor.setSupertype(baseMotor.getQualifiedName());
 
         // result = 1, because association type of super type association not equal
         associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
                 AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
-        assertEquals(1, associations.length);
+        assertEquals(1, associations.size());
 
         // result = 1 using search without supertype
         associationInBase.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
                 AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
-        assertEquals(1, associations.length);
+        assertEquals(1, associations.size());
 
         // result = 1 using search with supertype included
         associationInBase.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
                 AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, true);
-        assertEquals(2, associations.length);
+        assertEquals(2, associations.size());
     }
 
     @Test
@@ -650,7 +650,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         IAttribute a3 = superSupertype.newAttribute();
         a3.setName("a3");
 
-        List<IAttribute> all = Arrays.asList(type.findAllAttributes(ipsProject));
+        List<IAttribute> all = type.findAllAttributes(ipsProject);
         assertEquals(a3, all.get(0));
         assertEquals(a2, all.get(1));
         assertEquals(a1, all.get(2));
@@ -658,7 +658,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         IAttribute a1Supertype = supertype.newAttribute();
         a1Supertype.setName("a1");
 
-        all = Arrays.asList(type.findAllAttributes(ipsProject));
+        all = type.findAllAttributes(ipsProject);
         assertEquals(a3, all.get(0));
         assertEquals(a2, all.get(1));
         assertEquals(a1, all.get(2));
@@ -673,8 +673,8 @@ public class TypeTest extends AbstractIpsPluginTest {
     @Test
     public void testNewAttribute() {
         IAttribute attr = type.newAttribute();
-        assertEquals(1, type.getAttributes().length);
-        assertEquals(attr, type.getAttributes()[0]);
+        assertEquals(1, type.getAttributes().size());
+        assertEquals(attr, type.getAttributes().get(0));
     }
 
     @Test
@@ -696,16 +696,16 @@ public class TypeTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetAttributes() {
-        assertEquals(0, type.getAttributes().length);
+        assertEquals(0, type.getAttributes().size());
 
         IAttribute a1 = type.newAttribute();
-        IAttribute[] attributes = type.getAttributes();
-        assertEquals(a1, attributes[0]);
+        List<? extends IAttribute> attributes = type.getAttributes();
+        assertEquals(a1, attributes.get(0));
 
         IAttribute a2 = type.newAttribute();
         attributes = type.getAttributes();
-        assertEquals(a1, attributes[0]);
-        assertEquals(a2, attributes[1]);
+        assertEquals(a1, attributes.get(0));
+        assertEquals(a2, attributes.get(1));
     }
 
     @Test
@@ -726,10 +726,10 @@ public class TypeTest extends AbstractIpsPluginTest {
         IAttribute a3 = type.newAttribute();
 
         type.moveAttributes(new int[] { 1, 2 }, true);
-        IAttribute[] attributes = type.getAttributes();
-        assertEquals(a2, attributes[0]);
-        assertEquals(a3, attributes[1]);
-        assertEquals(a1, attributes[2]);
+        List<? extends IAttribute> attributes = type.getAttributes();
+        assertEquals(a2, attributes.get(0));
+        assertEquals(a3, attributes.get(1));
+        assertEquals(a1, attributes.get(2));
     }
 
     @Test
@@ -788,7 +788,7 @@ public class TypeTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetAssociationsForTarget() {
-        assertEquals(0, type.getAssociationsForTarget(null).length);
+        assertEquals(0, type.getAssociationsForTarget(null).size());
 
         IAssociation ass1 = type.newAssociation();
         ass1.setTarget("Target1");
@@ -797,31 +797,31 @@ public class TypeTest extends AbstractIpsPluginTest {
         IAssociation ass3 = type.newAssociation();
         ass3.setTarget("Target1");
 
-        IAssociation[] ass = type.getAssociationsForTarget("Target1");
-        assertEquals(2, ass.length);
-        assertEquals(ass1, ass[0]);
-        assertEquals(ass3, ass[1]);
+        List<IAssociation> ass = type.getAssociationsForTarget("Target1");
+        assertEquals(2, ass.size());
+        assertEquals(ass1, ass.get(0));
+        assertEquals(ass3, ass.get(1));
 
         ass = type.getAssociationsForTarget("UnknownTarget");
-        assertEquals(0, ass.length);
+        assertEquals(0, ass.size());
     }
 
     @Test
     public void testGetMethods() {
-        assertEquals(0, type.getMethods().length);
+        assertEquals(0, type.getMethods().size());
         IMethod m1 = type.newMethod();
         IMethod m2 = type.newMethod();
-        assertSame(m1, type.getMethods()[0]);
-        assertSame(m2, type.getMethods()[1]);
+        assertSame(m1, type.getMethods().get(0));
+        assertSame(m2, type.getMethods().get(1));
 
         // make sure a defensive copy is returned.
-        type.getMethods()[0] = null;
-        assertNotNull(type.getMethods()[0]);
+        type.getMethods().clear();
+        assertNotNull(type.getMethods().get(0));
     }
 
     @Test
     public void testGetOverrideCandidates() throws CoreException {
-        assertEquals(0, type.findOverrideMethodCandidates(false, ipsProject).length);
+        assertEquals(0, type.findOverrideMethodCandidates(false, ipsProject).size());
 
         // create two more types that act as supertype and supertype's supertype
         IType supertype = newProductCmptType(ipsProject, "Supertype");
@@ -849,26 +849,26 @@ public class TypeTest extends AbstractIpsPluginTest {
         m5.setAbstract(true);
         m5.newParameter("Money", "p1");
 
-        IMethod[] candidates = type.findOverrideMethodCandidates(false, ipsProject);
-        assertEquals(2, candidates.length);
-        assertEquals(m3, candidates[0]);
-        assertEquals(m5, candidates[1]);
+        List<IMethod> candidates = type.findOverrideMethodCandidates(false, ipsProject);
+        assertEquals(2, candidates.size());
+        assertEquals(m3, candidates.get(0));
+        assertEquals(m5, candidates.get(1));
         // notes:
         // m2 is not a candidate because it is already overridden by m1
         // m4 is not a candidate because it is overridden by m3 and m3 comes first in the hierarchy
 
         // only not implemented abstract methods
         candidates = type.findOverrideMethodCandidates(true, ipsProject);
-        assertEquals(1, candidates.length);
-        assertEquals(m5, candidates[0]);
+        assertEquals(1, candidates.size());
+        assertEquals(m5, candidates.get(0));
         // note: now only m5 is a candidate as it's abstract, m3 is not.
 
         // override the supersupertype method m5 in the supertype
         // => now also m5 is not a candidate any more, if only not implemented abstract methods are
         // requested.
-        supertype.overrideMethods(new IMethod[] { m5 });
+        supertype.overrideMethods(Arrays.asList(new IMethod[] { m5 }));
         candidates = type.findOverrideMethodCandidates(true, ipsProject);
-        assertEquals(0, candidates.length);
+        assertEquals(0, candidates.size());
     }
 
     @Test
@@ -938,7 +938,7 @@ public class TypeTest extends AbstractIpsPluginTest {
 
     @Test
     public void testFindOverrideMethodCandidates() throws CoreException {
-        assertEquals(0, type.findOverrideMethodCandidates(false, ipsProject).length);
+        assertEquals(0, type.findOverrideMethodCandidates(false, ipsProject).size());
 
         // create two more types that act as supertype and supertype's supertype
         IType supertype = newProductCmptType(ipsProject, "Product");
@@ -966,18 +966,18 @@ public class TypeTest extends AbstractIpsPluginTest {
         m5.setAbstract(true);
         m5.newParameter("Money", "p1");
 
-        IMethod[] candidates = type.findOverrideMethodCandidates(false, ipsProject);
-        assertEquals(2, candidates.length);
-        assertEquals(m3, candidates[0]);
-        assertEquals(m5, candidates[1]);
+        List<IMethod> candidates = type.findOverrideMethodCandidates(false, ipsProject);
+        assertEquals(2, candidates.size());
+        assertEquals(m3, candidates.get(0));
+        assertEquals(m5, candidates.get(1));
         // notes:
         // m2 is not a candidate because it is already overridden by m1
         // m4 is not a candidate because it is the same as m3
 
         // only abstract methods
         candidates = type.findOverrideMethodCandidates(true, ipsProject);
-        assertEquals(1, candidates.length);
-        assertEquals(m5, candidates[0]);
+        assertEquals(1, candidates.size());
+        assertEquals(m5, candidates.get(0));
         // note: now only m5 is a candidate as it's abstract, m2 is not.
     }
 
@@ -995,21 +995,21 @@ public class TypeTest extends AbstractIpsPluginTest {
         IMethod m2 = supertype.newMethod();
         m1.setName("m2");
 
-        type.overrideMethods(new IMethod[] { m1, m2 });
+        type.overrideMethods(Arrays.asList(new IMethod[] { m1, m2 }));
         assertEquals(2, type.getNumOfMethods());
-        IMethod[] methods = type.getMethods();
-        assertTrue(methods[0].overrides(m1));
-        assertEquals("int", methods[0].getDatatype());
-        assertEquals(Modifier.PUBLISHED, methods[0].getModifier());
-        assertEquals("p", methods[0].getParameters()[0].getName());
-        assertTrue(methods[1].overrides(m2));
+        List<IMethod> methods = type.getMethods();
+        assertTrue(methods.get(0).overrides(m1));
+        assertEquals("int", methods.get(0).getDatatype());
+        assertEquals(Modifier.PUBLISHED, methods.get(0).getModifier());
+        assertEquals("p", methods.get(0).getParameters()[0].getName());
+        assertTrue(methods.get(1).overrides(m2));
 
         IType otherType = newProductCmptType(ipsProject, "OtherType");
-        otherType.overrideMethods(new IMethod[] { m1, m2 });
+        otherType.overrideMethods(Arrays.asList(new IMethod[] { m1, m2 }));
         assertEquals(2, otherType.getNumOfMethods());
         methods = otherType.getMethods();
-        assertFalse(methods[0].overrides(m1));
-        assertFalse(methods[1].overrides(m2));
+        assertFalse(methods.get(0).overrides(m1));
+        assertFalse(methods.get(1).overrides(m2));
     }
 
     @Test
@@ -1035,11 +1035,11 @@ public class TypeTest extends AbstractIpsPluginTest {
         superSuperTypeAssoc.setTargetRoleSingular("SuperSuperZiel");
         superSuperTypeAssoc.setTargetRolePlural("SuperSuperZiele");
 
-        IAssociation[] assocs = type.findAllAssociations(ipsProject);
-        assertEquals(3, assocs.length);
-        assertEquals("SuperSuperZiel", assocs[0].getTargetRoleSingular());
-        assertEquals("SuperZiel", assocs[1].getTargetRoleSingular());
-        assertEquals("Ziel", assocs[2].getTargetRoleSingular());
+        List<IAssociation> assocs = type.findAllAssociations(ipsProject);
+        assertEquals(3, assocs.size());
+        assertEquals("SuperSuperZiel", assocs.get(0).getTargetRoleSingular());
+        assertEquals("SuperZiel", assocs.get(1).getTargetRoleSingular());
+        assertEquals("Ziel", assocs.get(2).getTargetRoleSingular());
     }
 
     @Test

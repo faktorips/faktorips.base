@@ -158,7 +158,7 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
 
     @Test
     public void testUpdate() throws Exception {
-        a.getPolicyCmptTypeAssociations()[0].delete();
+        a.getPolicyCmptTypeAssociations().get(0).delete();
         a.getIpsSrcFile().save(true, null);
 
         IDependency[] dependants = graph.getDependants(a.getQualifiedNameType());

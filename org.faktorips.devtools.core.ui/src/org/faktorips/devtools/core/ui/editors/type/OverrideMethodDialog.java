@@ -49,7 +49,7 @@ public class OverrideMethodDialog extends SelectSupertypeHierarchyPartsDialog {
     private void selectAbstractMethods(IType type) {
         try {
             List<IMethod> selected = new ArrayList<IMethod>();
-            IMethod[] method = type.findOverrideMethodCandidates(false, type.getIpsProject());
+            List<IMethod> method = type.findOverrideMethodCandidates(false, type.getIpsProject());
             for (IMethod element : method) {
                 if (element.isAbstract()) {
                     selected.add(element);
@@ -62,15 +62,15 @@ public class OverrideMethodDialog extends SelectSupertypeHierarchyPartsDialog {
     }
 
     /** Returns the <tt>IMethod</tt>s the user has selected to override. */
-    public IMethod[] getSelectedMethods() {
-        List<Object> methods = new ArrayList<Object>();
+    public List<IMethod> getSelectedMethods() {
+        List<IMethod> methods = new ArrayList<IMethod>();
         Object[] checked = getResult();
         for (Object element : checked) {
             if (element instanceof IMethod) {
-                methods.add(element);
+                methods.add((IMethod)element);
             }
         }
-        return methods.toArray(new IMethod[methods.size()]);
+        return methods;
     }
 
     private static class CandidatesContentProvider extends SupertypeHierarchyPartsContentProvider {
@@ -80,7 +80,7 @@ public class OverrideMethodDialog extends SelectSupertypeHierarchyPartsDialog {
         }
 
         @Override
-        protected IIpsObjectPart[] getAvailableParts(IIpsObject ipsObject) {
+        protected List<? extends IIpsObjectPart> getAvailableParts(IIpsObject ipsObject) {
             IType type = (IType)ipsObject;
             try {
                 return type.findOverrideMethodCandidates(false, type.getIpsProject());
@@ -90,7 +90,7 @@ public class OverrideMethodDialog extends SelectSupertypeHierarchyPartsDialog {
         }
 
         @Override
-        protected IIpsObject[] getSupertypes(IIpsObject ipsObject) throws CoreException {
+        protected List<? extends IIpsObject> getSupertypes(IIpsObject ipsObject) throws CoreException {
             IType type = (IType)ipsObject;
             SupertypesCollector collector = new SupertypesCollector(type.getIpsProject());
             try {
@@ -98,7 +98,7 @@ public class OverrideMethodDialog extends SelectSupertypeHierarchyPartsDialog {
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }
-            return collector.supertypes.toArray(new IIpsObject[collector.supertypes.size()]);
+            return collector.supertypes;
         }
 
         private static class SupertypesCollector extends TypeHierarchyVisitor {

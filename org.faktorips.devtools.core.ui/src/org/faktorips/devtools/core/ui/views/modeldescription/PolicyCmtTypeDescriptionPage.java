@@ -38,11 +38,11 @@ public class PolicyCmtTypeDescriptionPage extends DefaultModelDescriptionPage {
     @Override
     protected List<DescriptionItem> createDescriptions() throws CoreException {
         List<DescriptionItem> descriptions = new ArrayList<DescriptionItem>();
-        IAttribute[] attributes = getIpsObject().findAllAttributes(getIpsObject().getIpsProject());
+        List<IAttribute> attributes = getIpsObject().findAllAttributes(getIpsObject().getIpsProject());
         for (IAttribute attribute : attributes) {
             createDescriptionItem(attribute, descriptions);
         }
-        IAssociation[] associations = getIpsObject().findAllAssociations(getIpsObject().getIpsProject());
+        List<IAssociation> associations = getIpsObject().findAllAssociations(getIpsObject().getIpsProject());
         for (IAssociation association : associations) {
             createDescriptionItem(association, descriptions);
         }

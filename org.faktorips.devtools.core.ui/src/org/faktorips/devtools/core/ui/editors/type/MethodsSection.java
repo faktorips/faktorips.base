@@ -154,7 +154,7 @@ public class MethodsSection extends SimpleIpsPartsSection {
 
             @Override
             public Object[] getElements(Object inputElement) {
-                return getType().getMethods();
+                return getType().getMethods().toArray();
             }
 
             @Override

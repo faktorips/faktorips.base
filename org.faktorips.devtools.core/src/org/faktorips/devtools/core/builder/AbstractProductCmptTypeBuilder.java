@@ -81,11 +81,11 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
     @Override
     protected final void generateCodeForPolicyCmptTypeAttributes(TypeSection typeSection) throws CoreException {
         IPolicyCmptType policyCmptType = getPcType();
-        IPolicyCmptTypeAttribute[] attributes = policyCmptType == null ? new IPolicyCmptTypeAttribute[0]
+        List<IPolicyCmptTypeAttribute> attributes = policyCmptType == null ? new ArrayList<IPolicyCmptTypeAttribute>()
                 : policyCmptType.getPolicyCmptTypeAttributes();
         for (IPolicyCmptTypeAttribute attribute : attributes) {
             IPolicyCmptTypeAttribute a = attribute;
-            if (!a.isProductRelevant() || !a.isChangeable() || !a.isValid()) {
+            if (!a.isProductRelevant() || !a.isChangeable() || !a.isValid(a.getIpsProject())) {
                 continue;
             }
             try {
@@ -112,9 +112,9 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
         if (type == null) {
             return;
         }
-        ITableStructureUsage[] tsus = type.getTableStructureUsages();
+        List<ITableStructureUsage> tsus = type.getTableStructureUsages();
         for (ITableStructureUsage tsu : tsus) {
-            if (tsu.isValid()) {
+            if (tsu.isValid(tsu.getIpsProject())) {
                 generateCodeForTableUsage(tsu, fieldCodeBuilder, methodCodeBuilder);
             }
         }
@@ -147,7 +147,7 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
         HashMap<IAssociation, List<IAssociation>> derivedUnionAssociations = new HashMap<IAssociation, List<IAssociation>>();
-        IAssociation[] associations = getProductCmptType().getAssociations();
+        List<IAssociation> associations = getProductCmptType().getAssociations();
         for (IAssociation association2 : associations) {
             IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)association2;
             try {
@@ -241,9 +241,9 @@ public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder
 
         @Override
         protected boolean visit(IProductCmptType type) throws CoreException {
-            IAssociation[] associations = type.getAssociations();
+            List<IAssociation> associations = type.getAssociations();
             for (IAssociation association : associations) {
-                if (association.isDerivedUnion() && association.isValid()) {
+                if (association.isDerivedUnion() && association.isValid(association.getIpsProject())) {
                     try {
                         List<IAssociation> implAssociations = derivedUnionMap.get(association);
                         if (implAssociations != null) {

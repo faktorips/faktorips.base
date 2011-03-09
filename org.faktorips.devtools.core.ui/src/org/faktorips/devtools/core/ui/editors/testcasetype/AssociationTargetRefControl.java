@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -43,9 +46,9 @@ public class AssociationTargetRefControl extends PcTypeRefControl {
         this.policyCmptTypeTarget = policyCmptTypeTarget;
     }
 
-    protected IIpsObject[] getIpsObjects() throws CoreException {
+    protected List<IIpsObject> getIpsObjects() throws CoreException {
         if (policyCmptTypeTarget == null) {
-            return new IIpsObject[0];
+            return new ArrayList<IIpsObject>();
         }
 
         /*
@@ -57,13 +60,12 @@ public class AssociationTargetRefControl extends PcTypeRefControl {
          * policy cmpt from this selection of policy cmpt types
          */
         ITypeHierarchy subTypeHierarchy = policyCmptTypeTarget.getSubtypeHierarchy();
-        IType[] subTypes = subTypeHierarchy.getAllSubtypes(policyCmptTypeTarget);
+        List<IType> subTypes = subTypeHierarchy.getAllSubtypes(policyCmptTypeTarget);
         if (subTypes == null) {
-            subTypes = new IPolicyCmptType[0];
+            subTypes = new ArrayList<IType>();
         }
-        IIpsObject[] policyCmptTypes = new IIpsObject[subTypes.length + 1];
-        System.arraycopy(subTypes, 0, policyCmptTypes, 0, subTypes.length);
-        policyCmptTypes[subTypes.length] = policyCmptTypeTarget;
-        return policyCmptTypes;
+        ArrayList<IIpsObject> result = new ArrayList<IIpsObject>(subTypes);
+        result.add(policyCmptTypeTarget);
+        return result;
     }
 }

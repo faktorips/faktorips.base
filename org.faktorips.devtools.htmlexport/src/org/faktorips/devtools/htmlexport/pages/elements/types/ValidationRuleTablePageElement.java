@@ -40,7 +40,7 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
      * 
      */
     public ValidationRuleTablePageElement(IPolicyCmptType policyCmptType, DocumentationContext context) {
-        super(Arrays.asList(policyCmptType.getRules()), context);
+        super(policyCmptType.getRules(), context);
         setId(policyCmptType.getName() + "_validationrules"); //$NON-NLS-1$
     }
 
@@ -63,12 +63,13 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
     protected List<String> getHeadlineWithIpsObjectPart() {
         List<String> headline = new ArrayList<String>();
 
-        headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineName)); 
-        headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineMessageCode)); 
-        headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineMessageSeverity)); 
-        headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineMessageText)); 
-        headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineValidatedAttributes)); 
-        headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineDescription)); 
+        headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineName));
+        headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineMessageCode));
+        headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineMessageSeverity));
+        headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineMessageText));
+        headline.add(getContext().getMessage(
+                HtmlExportMessages.ValidationRuleTablePageElement_headlineValidatedAttributes));
+        headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineDescription));
 
         return headline;
     }

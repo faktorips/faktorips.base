@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.views;
 
+import java.util.Collection;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsMetaClass;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -37,12 +39,15 @@ public class InstanceIpsSrcFileViewItem extends IpsSrcFileViewItem {
      * 
      * @throws NullPointerException if files is <code>null</code>
      */
-    public static final InstanceIpsSrcFileViewItem[] createItems(IIpsSrcFile[] files, IIpsMetaClass baseMetaClass) {
-        IpsSrcFileCollection collection = new IpsSrcFileCollection(files, baseMetaClass);
-        InstanceIpsSrcFileViewItem[] items = new InstanceIpsSrcFileViewItem[files.length];
-        for (int i = 0; i < files.length; i++) {
-            InstanceIpsSrcFileViewItem newItem = new InstanceIpsSrcFileViewItem(files[i], collection);
+    public static final InstanceIpsSrcFileViewItem[] createItems(Collection<IIpsSrcFile> metaObjectsSrcFiles,
+            IIpsMetaClass baseMetaClass) {
+        IpsSrcFileCollection collection = new IpsSrcFileCollection(metaObjectsSrcFiles, baseMetaClass);
+        InstanceIpsSrcFileViewItem[] items = new InstanceIpsSrcFileViewItem[metaObjectsSrcFiles.size()];
+        int i = 0;
+        for (IIpsSrcFile srcFile : metaObjectsSrcFiles) {
+            InstanceIpsSrcFileViewItem newItem = new InstanceIpsSrcFileViewItem(srcFile, collection);
             items[i] = newItem;
+            i++;
         }
         return items;
     }

@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.views.instanceexplorer;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -624,8 +626,10 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
         }
 
         @Override
-        public IIpsSrcFile[] searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
-            return new IIpsSrcFile[] { metaObject.getIpsSrcFile() };
+        public Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
+            ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+            result.add(metaObject.getIpsSrcFile());
+            return result;
         }
 
         @Override

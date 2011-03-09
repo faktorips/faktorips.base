@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.builder;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.codegen.DatatypeHelper;
@@ -108,7 +110,7 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
     protected final void generateCodeForMethodsDefinedInModel(JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
 
-        IMethod[] methods = ((IType)getIpsObject()).getMethods();
+        List<IMethod> methods = ((IType)getIpsObject()).getMethods();
         for (IMethod method2 : methods) {
             IMethod method = method2;
             if (!method.validate(getIpsProject()).containsErrorMsg()) {
@@ -210,7 +212,7 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
         if (productCmptType == null) {
             return;
         }
-        IProductCmptTypeAttribute[] attributes = productCmptType.getProductCmptTypeAttributes();
+        List<IProductCmptTypeAttribute> attributes = productCmptType.getProductCmptTypeAttributes();
         for (IProductCmptTypeAttribute attribute : attributes) {
             IProductCmptTypeAttribute a = attribute;
             if (!a.isValid()) {

@@ -86,7 +86,7 @@ public class Migration_2_5_0_rc2 extends AbstractIpsProjectMigrationOperation {
     }
 
     private void migratePolicyCmptType(MessageList msgResultList, IPolicyCmptType policyCmptType) throws CoreException {
-        IPolicyCmptTypeAssociation[] associations = policyCmptType.getPolicyCmptTypeAssociations();
+        List<IPolicyCmptTypeAssociation> associations = policyCmptType.getPolicyCmptTypeAssociations();
         for (IPolicyCmptTypeAssociation association : associations) {
             MessageList ml = association.validate(getIpsProject());
             if (!ml.containsErrorMsg()) {
@@ -131,7 +131,7 @@ public class Migration_2_5_0_rc2 extends AbstractIpsProjectMigrationOperation {
             msgList.add(new Message(MSGCODE_TARGET_POLICY_CMPT_NOT_EXISTS, text, Message.WARNING, association));
             return true;
         }
-        IAssociation[] associationCandidates = targetPolicyCmptType.getAssociationsForTarget(association
+        List<IAssociation> associationCandidates = targetPolicyCmptType.getAssociationsForTarget(association
                 .getPolicyCmptType().getQualifiedName());
         List<IPolicyCmptTypeAssociation> masterDetailcanditates = searchMasterToDetailCandidate(association,
                 associationCandidates);
@@ -155,7 +155,7 @@ public class Migration_2_5_0_rc2 extends AbstractIpsProjectMigrationOperation {
     }
 
     private static List<IPolicyCmptTypeAssociation> searchMasterToDetailCandidate(IPolicyCmptTypeAssociation association,
-            IAssociation[] associationCandidates) {
+            List<IAssociation> associationCandidates) {
         List<IPolicyCmptTypeAssociation> candidates = new ArrayList<IPolicyCmptTypeAssociation>();
         for (IAssociation associationCandidate : associationCandidates) {
             IPolicyCmptTypeAssociation candidate = (IPolicyCmptTypeAssociation)associationCandidate;

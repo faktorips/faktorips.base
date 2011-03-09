@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.htmlexport.pages.elements.types;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -41,7 +40,7 @@ public class InheritedTypeAssociationsPageElement extends
 
     @Override
     protected List<IAssociation> getIpsObjectParts(IType ipsElement) {
-        return Arrays.asList(ipsElement.getAssociations());
+        return ipsElement.getAssociations();
     }
 
 }

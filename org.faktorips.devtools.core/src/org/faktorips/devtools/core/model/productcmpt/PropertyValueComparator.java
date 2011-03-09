@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.model.productcmpt;
 
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.faktorips.devtools.core.IpsPlugin;
@@ -66,9 +67,11 @@ public class PropertyValueComparator implements Comparator<IPropertyValue> {
         try {
             if (type != null) {
                 propIndexMap = new HashMap<String, Integer>();
-                IProdDefProperty[] props = type.findProdDefProperties(ipsProject);
-                for (int i = 0; i < props.length; i++) {
-                    propIndexMap.put(props[i].getPropertyName(), new Integer(i));
+                List<IProdDefProperty> props = type.findProdDefProperties(ipsProject);
+                int i = 0;
+                for (IProdDefProperty property : props) {
+                    propIndexMap.put(property.getPropertyName(), i);
+                    i++;
                 }
             }
         } catch (Exception e) {

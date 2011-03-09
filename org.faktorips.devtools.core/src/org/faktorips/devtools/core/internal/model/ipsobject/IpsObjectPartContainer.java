@@ -42,7 +42,6 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
-import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -75,8 +74,7 @@ import org.w3c.dom.NodeList;
  * 
  * @author Jan Ortmann
  */
-public abstract class IpsObjectPartContainer extends IpsElement implements IIpsObjectPartContainer,
-        IExtensionPropertyAccess {
+public abstract class IpsObjectPartContainer extends IpsElement implements IIpsObjectPartContainer {
 
     /** Name of the XML element the containing the elements for the extension property values. */
     protected final static String XML_EXT_PROPERTIES_ELEMENT = "ExtensionProperties"; //$NON-NLS-1$

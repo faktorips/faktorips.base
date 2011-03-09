@@ -63,7 +63,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageE
 public class ProductGenerationAttributeTable extends AbstractStandardTablePageElement {
 
     private final IProductCmpt productCmpt;
-    private final IAttribute[] attributes;
+    private final List<IAttribute> attributes;
     private final DocumentationContext context;
     private final IProductCmptType productCmptType;
 
@@ -108,7 +108,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             return;
         }
 
-        IAttribute[] attributes = new IAttribute[0];
+        List<IAttribute> attributes = new ArrayList<IAttribute>();
         try {
             attributes = policyCmptType.findAllAttributes(context.getIpsProject());
         } catch (CoreException e) {
@@ -222,7 +222,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     }
 
     private void addAttributes() {
-        if (attributes.length == 0) {
+        if (attributes.size() == 0) {
             return;
         }
 
@@ -232,9 +232,9 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     }
 
     private void addTableStructureUsages() {
-        ITableStructureUsage[] tableStructureUsages = productCmptType.getTableStructureUsages();
+        List<ITableStructureUsage> tableStructureUsages = productCmptType.getTableStructureUsages();
 
-        if (tableStructureUsages.length == 0) {
+        if (tableStructureUsages.size() == 0) {
             return;
         }
 
@@ -246,9 +246,9 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     }
 
     private void addFormulas() {
-        IProductCmptTypeMethod[] formulaSignatures = productCmptType.getFormulaSignatures();
+        List<IProductCmptTypeMethod> formulaSignatures = productCmptType.getFormulaSignatures();
 
-        if (formulaSignatures.length == 0) {
+        if (formulaSignatures.size() == 0) {
             return;
         }
 
@@ -320,7 +320,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     private void addChildProductCmptTypes() {
         addSubHeadline(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_associatedComponents));
 
-        IAssociation[] associations = getAllAssociations();
+        List<IAssociation> associations = getAllAssociations();
         for (IAssociation association : associations) {
             PageElement[] cells = new PageElement[productCmpt.getNumOfGenerations() + 1];
             cells[0] = new PageElementUtils().createIpsElementRepresentation(association, context,
@@ -379,14 +379,14 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         return new WrapperPageElement(WrapperType.BLOCK).addPageElements(targetLink, cardinalities);
     }
 
-    private IAssociation[] getAllAssociations() {
-        IAssociation[] associations;
+    private List<IAssociation> getAllAssociations() {
+        List<IAssociation> associations;
         try {
             associations = productCmptType.findAllAssociations(productCmptType.getIpsProject());
         } catch (CoreException e) {
             getContext().addStatus(new IpsStatus(IStatus.WARNING, "Error finding all associations of " //$NON-NLS-1$
                     + productCmptType.getQualifiedName(), e));
-            associations = new IAssociation[0];
+            associations = new ArrayList<IAssociation>();
         }
         return associations;
     }

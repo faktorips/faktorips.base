@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.model.ipsobject;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,25 +39,25 @@ public class IpsSrcFileCollection {
 
     /**
      * Create a new collection based on the given {@link IIpsSrcFile}s. Using this constructor is
-     * the same as calling {@link #IpsSrcFileCollection(IIpsSrcFile[], IIpsMetaClass)} with
+     * the same as calling {@link #IpsSrcFileCollection(Collection, IIpsMetaClass)} with
      * {@link IIpsMetaClass} as <code>null</code>.
      * 
      * @param srcFiles The {@link IIpsSrcFile}s to use for this collection.
      */
-    public IpsSrcFileCollection(IIpsSrcFile[] srcFiles) {
+    public IpsSrcFileCollection(Collection<IIpsSrcFile> srcFiles) {
         this(srcFiles, null);
     }
 
     /**
      * Create a new collection based on the given {@link IIpsSrcFile}s.
      * 
-     * @param srcFiles The {@link IIpsSrcFile}s to use for this collection.
+     * @param metaObjectsSrcFiles The {@link IIpsSrcFile}s to use for this collection.
      * @param metaClass The {@link IIpsMetaClass} to check the source files against. Can be
      *            <code>null</code>, in this case the method
      *            {@link #isInstanceOfMetaClass(IIpsSrcFile)} will always return false;
      */
-    public IpsSrcFileCollection(IIpsSrcFile[] srcFiles, IIpsMetaClass metaClass) {
-        initItems(srcFiles, metaClass);
+    public IpsSrcFileCollection(Collection<IIpsSrcFile> metaObjectsSrcFiles, IIpsMetaClass metaClass) {
+        initItems(metaObjectsSrcFiles, metaClass);
     }
 
     /**
@@ -104,7 +105,7 @@ public class IpsSrcFileCollection {
      * Creates an item for each IPS source file and marks the items as duplicate, if two (or more)
      * IPS source files have the same unqualified name.
      */
-    private void initItems(IIpsSrcFile[] files, IIpsMetaClass baseMetaClass) {
+    private void initItems(Collection<IIpsSrcFile> metaObjectsSrcFiles, IIpsMetaClass baseMetaClass) {
 
         String metaClassName = null;
         if (baseMetaClass != null) {
@@ -112,7 +113,7 @@ public class IpsSrcFileCollection {
         }
 
         Map<String, CollectionItem> itemsByName = new HashMap<String, CollectionItem>();
-        for (IIpsSrcFile file : files) {
+        for (IIpsSrcFile file : metaObjectsSrcFiles) {
             CollectionItem item = itemsByName.get(file.getName());
             CollectionItem newItem = new CollectionItem();
             collection.put(file, newItem);

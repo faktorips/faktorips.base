@@ -203,7 +203,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         IPolicyCmptType pcType = parent.findPolicyCmptType(ipsProject);
 
         while (pcType != null) {
-            IPolicyCmptTypeAssociation[] associations = pcType.getPolicyCmptTypeAssociations();
+            List<IPolicyCmptTypeAssociation> associations = pcType.getPolicyCmptTypeAssociations();
             for (IPolicyCmptTypeAssociation association2 : associations) {
                 if (association2.getName().equals(association)) {
                     return association2;

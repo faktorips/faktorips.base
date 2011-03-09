@@ -342,6 +342,27 @@ public interface IIpsProjectProperties {
     public void setRulesWithoutReferencesAllowedEnabled(boolean enabled);
 
     /**
+     * Check if the inverse associations have to be type safe or not. Due to Issue FIPS-85 we need
+     * to have to possibility to use the inverse association of the super type as inverse
+     * association for a concrete type. When this property is true, these unsafe inverse
+     * associations are allowed. Otherwise if this property is false you have to create a concrete
+     * inverse association for every subset of a derived union with an inverse association.
+     * <p>
+     * If you have enabled the persistence/jpa mode, this proeprty have to be false!
+     * 
+     * @return true when unsafe inverse associations are allowed
+     */
+    boolean isUnsafeInverseAssociations();
+
+    /**
+     * Set this parameter true when unsafe inverse association are allowed. Set false when only type
+     * safe inverse associations are allowed. . @see {@link #isUnsafeInverseAssociations()}
+     * 
+     * @param typesafeInverseAssociations True to allow unsafe inverse associations
+     */
+    void setUnsafeInverseAssociations(boolean typesafeInverseAssociations);
+
+    /**
      * @return The IDs of all required features.
      */
     public String[] getRequiredIpsFeatureIds();

@@ -31,13 +31,13 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 public abstract class SupertypeHierarchyPartsContentProvider implements ITreeContentProvider {
 
     /** The set of provided <tt>IIpsObjectPart</tt>s. */
-    private IIpsObjectPart[] providedObjectParts;
+    private List<? extends IIpsObjectPart> providedObjectParts;
 
     /**
      * The supertypes building the supertype hierarchy to which the provided <tt>IIpsObjectPart</tt>
      * s belong to.
      */
-    private IIpsObject[] supertypes;
+    private List<? extends IIpsObject> supertypes;
 
     /**
      * @param ipsObject The <tt>IIpsObject</tt> the <tt>IIpsObjectPart</tt>s available for selection
@@ -52,7 +52,7 @@ public abstract class SupertypeHierarchyPartsContentProvider implements ITreeCon
         }
     }
 
-    protected abstract IIpsObject[] getSupertypes(IIpsObject ipsObject) throws CoreException;
+    protected abstract List<? extends IIpsObject> getSupertypes(IIpsObject ipsObject) throws CoreException;
 
     @Override
     public Object[] getChildren(Object parentElement) {
@@ -87,7 +87,7 @@ public abstract class SupertypeHierarchyPartsContentProvider implements ITreeCon
 
     @Override
     public Object[] getElements(Object inputElement) {
-        return isNoAvailableParts() ? new Object[0] : supertypes;
+        return isNoAvailableParts() ? new Object[0] : supertypes.toArray();
     }
 
     private boolean isNoAvailableParts() {
@@ -109,6 +109,6 @@ public abstract class SupertypeHierarchyPartsContentProvider implements ITreeCon
         // Nothing to do.
     }
 
-    protected abstract IIpsObjectPart[] getAvailableParts(IIpsObject ipsObject);
+    protected abstract List<? extends IIpsObjectPart> getAvailableParts(IIpsObject ipsObject);
 
 }

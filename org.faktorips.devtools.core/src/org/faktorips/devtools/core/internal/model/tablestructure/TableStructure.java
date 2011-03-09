@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.tablestructure;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.TreeSet;
@@ -512,13 +513,13 @@ public class TableStructure extends IpsObject implements ITableStructure {
     }
 
     @Override
-    public IIpsSrcFile[] searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
+    public Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
         TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
         IIpsProject[] searchProjects = getIpsProject().findReferencingProjectLeavesOrSelf();
         for (IIpsProject project : searchProjects) {
             result.addAll(Arrays.asList(project.findAllTableContentsSrcFiles(this)));
         }
-        return result.toArray(new IIpsSrcFile[result.size()]);
+        return result;
     }
 
 }

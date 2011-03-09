@@ -38,7 +38,7 @@ public class MethodsTablePageElement extends AbstractIpsObjectPartsContainerTabl
      * 
      */
     public MethodsTablePageElement(IType type, DocumentationContext context) {
-        super(Arrays.asList(type.getMethods()), context);
+        super(type.getMethods(), context);
         setId(type.getName() + "_methods"); //$NON-NLS-1$
     }
 

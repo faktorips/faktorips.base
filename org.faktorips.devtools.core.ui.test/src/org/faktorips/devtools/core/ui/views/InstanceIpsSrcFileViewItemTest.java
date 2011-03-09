@@ -18,6 +18,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -43,8 +46,8 @@ public class InstanceIpsSrcFileViewItemTest extends AbstractIpsPluginTest {
         IProductCmpt cmpt2 = newProductCmpt(ipsProject, "home2.ProductA");
         cmpt2.setProductCmptType(subtype.getQualifiedName());
 
-        InstanceIpsSrcFileViewItem[] items = InstanceIpsSrcFileViewItem.createItems(
-                new IIpsSrcFile[] { cmpt0.getIpsSrcFile(), cmpt1.getIpsSrcFile(), cmpt2.getIpsSrcFile() }, type);
+        InstanceIpsSrcFileViewItem[] items = InstanceIpsSrcFileViewItem.createItems(Arrays.asList(new IIpsSrcFile[] {
+                cmpt0.getIpsSrcFile(), cmpt1.getIpsSrcFile(), cmpt2.getIpsSrcFile() }), type);
         assertEquals(3, items.length);
         assertEquals(cmpt0.getIpsSrcFile(), items[0].getIpsSrcFile());
         assertTrue(items[0].isDuplicateName());
@@ -58,17 +61,17 @@ public class InstanceIpsSrcFileViewItemTest extends AbstractIpsPluginTest {
         assertTrue(items[2].isDuplicateName());
         assertFalse(items[2].isInstanceOfMetaClass());
 
-        items = InstanceIpsSrcFileViewItem.createItems(new IIpsSrcFile[] {}, type);
+        items = InstanceIpsSrcFileViewItem.createItems(new ArrayList<IIpsSrcFile>(), type);
         assertEquals(0, items.length);
 
         // MetaObjectClass = null !
-        items = InstanceIpsSrcFileViewItem.createItems(new IIpsSrcFile[] { cmpt0.getIpsSrcFile(),
-                cmpt1.getIpsSrcFile(), cmpt2.getIpsSrcFile() }, null);
+        items = InstanceIpsSrcFileViewItem.createItems(Arrays.asList(new IIpsSrcFile[] { cmpt0.getIpsSrcFile(),
+                cmpt1.getIpsSrcFile(), cmpt2.getIpsSrcFile() }), null);
         assertFalse(items[0].isInstanceOfMetaClass());
         assertFalse(items[1].isInstanceOfMetaClass());
         assertFalse(items[2].isInstanceOfMetaClass());
 
-        items = InstanceIpsSrcFileViewItem.createItems(new IIpsSrcFile[] {}, type);
+        items = InstanceIpsSrcFileViewItem.createItems(new ArrayList<IIpsSrcFile>(), type);
         assertEquals(0, items.length);
 
         try {

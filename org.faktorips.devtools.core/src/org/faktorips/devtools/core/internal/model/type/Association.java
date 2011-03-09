@@ -401,21 +401,21 @@ public abstract class Association extends IpsObjectPart implements IAssociation 
 
         @Override
         protected boolean visit(IType currentType) throws CoreException {
-            IAssociation[] associations = currentType.getAssociations();
-            for (int j = 0; j < associations.length; j++) {
-                if (!associations[j].isDerivedUnion()) {
+            List<IAssociation> associations = currentType.getAssociations();
+            for (IAssociation association : associations) {
+                if (!association.isDerivedUnion()) {
                     continue;
                 }
-                if (associations[j].equals(Association.this)) {
+                if (association.equals(Association.this)) {
                     continue;
                 }
-                IType derivedUnionTarget = associations[j].findTarget(ipsProject);
+                IType derivedUnionTarget = association.findTarget(ipsProject);
                 if (derivedUnionTarget == null) {
                     continue;
                 }
 
                 if (targetType.isSubtypeOrSameType(derivedUnionTarget, ipsProject)) {
-                    candidates.add(associations[j]);
+                    candidates.add(association);
                 }
             }
             return true;

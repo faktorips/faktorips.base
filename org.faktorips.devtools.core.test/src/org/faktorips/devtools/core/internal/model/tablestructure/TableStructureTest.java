@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -30,6 +31,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -368,16 +370,14 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         TableContents tableContent2 = newTableContents(tableStructure, tableContent2QName);
         TableContents tableContent3 = newTableContents(project, tableContent3QName);
 
-        Object[] result = tableStructure.searchMetaObjectSrcFiles(true);
-        List<Object> resultList = Arrays.asList(result);
-        assertEquals(2, result.length);
+        Collection<IIpsSrcFile> resultList = tableStructure.searchMetaObjectSrcFiles(true);
+        assertEquals(2, resultList.size());
         assertTrue(resultList.contains(tableContent1.getIpsSrcFile()));
         assertTrue(resultList.contains(tableContent2.getIpsSrcFile()));
         assertFalse(resultList.contains(tableContent3.getIpsSrcFile()));
 
-        result = tableStructure.searchMetaObjectSrcFiles(false);
-        resultList = Arrays.asList(result);
-        assertEquals(2, result.length);
+        resultList = tableStructure.searchMetaObjectSrcFiles(false);
+        assertEquals(2, resultList.size());
         assertTrue(resultList.contains(tableContent1.getIpsSrcFile()));
         assertTrue(resultList.contains(tableContent2.getIpsSrcFile()));
         assertFalse(resultList.contains(tableContent3.getIpsSrcFile()));
@@ -385,9 +385,8 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         TableContents tableContentProj2 = newTableContents(referencingProject, tableContentProj2QName);
         tableContentProj2.setTableStructure(tableStructureQName);
 
-        result = tableStructure.searchMetaObjectSrcFiles(true);
-        resultList = Arrays.asList(result);
-        assertEquals(3, result.length);
+        resultList = tableStructure.searchMetaObjectSrcFiles(true);
+        assertEquals(3, resultList.size());
         assertTrue(resultList.contains(tableContent1.getIpsSrcFile()));
         assertTrue(resultList.contains(tableContent2.getIpsSrcFile()));
         assertTrue(resultList.contains(tableContentProj2.getIpsSrcFile()));
@@ -395,7 +394,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
 
         TableStructure tableStructureProj2 = newTableStructure(independentProject, tableStructureProj2QName);
 
-        result = tableStructureProj2.searchMetaObjectSrcFiles(true);
-        assertEquals(0, result.length);
+        resultList = tableStructureProj2.searchMetaObjectSrcFiles(true);
+        assertEquals(0, resultList.size());
     }
 }

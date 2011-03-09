@@ -283,9 +283,9 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testRemove() {
-        assertEquals(1, pcType.getPolicyCmptTypeAssociations().length);
+        assertEquals(1, pcType.getPolicyCmptTypeAssociations().size());
         association.delete();
-        assertEquals(0, pcType.getPolicyCmptTypeAssociations().length);
+        assertEquals(0, pcType.getPolicyCmptTypeAssociations().size());
         assertTrue(association.getIpsObject().getIpsSrcFile().isDirty());
     }
 
@@ -608,11 +608,6 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         relationBtoC.setTargetRolePlural("roleCs");
         relationBtoC.setInverseAssociation("roleB");
 
-        // test internal find method
-        assertEquals(relationBtoA,
-                ((PolicyCmptTypeAssociation)relationAtoB).findTargetAssociationWithCorrespondingInverse(ipsProject));
-        assertEquals(relationBtoC,
-                ((PolicyCmptTypeAssociation)relationCtoB).findTargetAssociationWithCorrespondingInverse(ipsProject));
     }
 
     @Test

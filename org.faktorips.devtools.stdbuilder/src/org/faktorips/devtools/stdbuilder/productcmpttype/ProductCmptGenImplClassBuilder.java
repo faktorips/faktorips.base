@@ -264,7 +264,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             generator.generateDoInitPropertiesFromXml(builder);
         }
         IPolicyCmptType policyCmptType = getPcType();
-        IPolicyCmptTypeAttribute[] attributes = policyCmptType == null ? new IPolicyCmptTypeAttribute[0]
+        List<IPolicyCmptTypeAttribute> attributes = policyCmptType == null ? new ArrayList<IPolicyCmptTypeAttribute>()
                 : policyCmptType.getPolicyCmptTypeAttributes();
         for (IPolicyCmptTypeAttribute attribute : attributes) {
             IPolicyCmptTypeAttribute a = attribute;
@@ -546,8 +546,8 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         if (type == null) {
             return;
         }
-        IAssociation[] associations = type.getAssociations();
-        if (associations.length == 0) {
+        List<IAssociation> associations = type.getAssociations();
+        if (associations.isEmpty()) {
             return;
         }
         String javaDoc = null;
@@ -649,8 +649,8 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         if (type == null || !type.isValid(getIpsProject())) {
             return;
         }
-        ITableStructureUsage[] tsus = type.getTableStructureUsages();
-        if (tsus.length == 0) {
+        List<ITableStructureUsage> tsus = type.getTableStructureUsages();
+        if (tsus.isEmpty()) {
             return;
         }
         String javaDoc = null;
@@ -753,7 +753,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
 
         @Override
         protected boolean visit(IProductCmptType type) {
-            IProductCmptTypeMethod[] methods = type.getProductCmptTypeMethods();
+            List<IProductCmptTypeMethod> methods = type.getProductCmptTypeMethods();
             for (IProductCmptTypeMethod method : methods) {
                 if (method.isFormulaSignatureDefinition()) {
                     modifier = modifier | Modifier.ABSTRACT;
@@ -790,11 +790,10 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         appendOverrideAnnotation(methodsBuilder, false);
         generateSignatureGetLink(methodsBuilder);
         methodsBuilder.openBracket();
-        IAssociation[] associations = getProductCmptType().getAssociations();
-        for (int i = 0; i < associations.length; i++) {
-            IProductCmptTypeAssociation a = (IProductCmptTypeAssociation)associations[i];
-            if (!associations[i].isDerivedUnion()) {
-                GenProdAssociation genProdAssociation = getGenerator(a);
+        List<IProductCmptTypeAssociation> associations = getProductCmptType().getProductCmptTypeAssociations();
+        for (IProductCmptTypeAssociation association : associations) {
+            if (!association.isDerivedUnion()) {
+                GenProdAssociation genProdAssociation = getGenerator(association);
                 if (genProdAssociation != null) {
                     genProdAssociation.generateCodeForGetLink(methodsBuilder);
                 }
@@ -846,10 +845,10 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                     + "<? extends " + IProductComponent.class.getName() + ">>");
             methodsBuilder.appendln("();");
         }
-        IAssociation[] associations = getProductCmptType().getAssociations();
-        for (int i = 0; i < associations.length; i++) {
-            IProductCmptTypeAssociation a = (IProductCmptTypeAssociation)associations[i];
-            if (!associations[i].isDerivedUnion()) {
+        List<IAssociation> associations = getProductCmptType().getAssociations();
+        for (IAssociation association : associations) {
+            IProductCmptTypeAssociation a = (IProductCmptTypeAssociation)association;
+            if (!association.isDerivedUnion()) {
                 GenProdAssociation genProdAssociation = getGenerator(a);
                 if (genProdAssociation != null) {
                     genProdAssociation.generateCodeForGetLinks(methodsBuilder);

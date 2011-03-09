@@ -45,7 +45,7 @@ public class OverrideAttributeDialog extends SelectSupertypeHierarchyPartsDialog
     }
 
     /** Returns the <tt>IPolicyCmptTypeAttribute</tt>s the user has selected to override. */
-    public IPolicyCmptTypeAttribute[] getSelectedAttributes() {
+    public List<IPolicyCmptTypeAttribute> getSelectedAttributes() {
         List<IPolicyCmptTypeAttribute> attributes = new ArrayList<IPolicyCmptTypeAttribute>();
         Object[] checked = getResult();
         for (Object element : checked) {
@@ -54,7 +54,7 @@ public class OverrideAttributeDialog extends SelectSupertypeHierarchyPartsDialog
                 attributes.add(attr);
             }
         }
-        return attributes.toArray(new IPolicyCmptTypeAttribute[attributes.size()]);
+        return attributes;
     }
 
     /** Provides the <tt>IPolicyCmptTypeAttribute</tt>s available for selection. */
@@ -69,7 +69,7 @@ public class OverrideAttributeDialog extends SelectSupertypeHierarchyPartsDialog
         }
 
         @Override
-        public IIpsObjectPart[] getAvailableParts(IIpsObject ipsObject) {
+        public List<? extends IIpsObjectPart> getAvailableParts(IIpsObject ipsObject) {
             IPolicyCmptType policyCmptType = (IPolicyCmptType)ipsObject;
             try {
                 return policyCmptType.findOverrideAttributeCandidates(policyCmptType.getIpsProject());
@@ -79,7 +79,7 @@ public class OverrideAttributeDialog extends SelectSupertypeHierarchyPartsDialog
         }
 
         @Override
-        protected IIpsObject[] getSupertypes(IIpsObject ipsObject) throws CoreException {
+        protected List<? extends IIpsObject> getSupertypes(IIpsObject ipsObject) throws CoreException {
             IPolicyCmptType policyCmptType = (IPolicyCmptType)ipsObject;
             return policyCmptType.getSupertypeHierarchy().getAllSupertypes(policyCmptType);
         }

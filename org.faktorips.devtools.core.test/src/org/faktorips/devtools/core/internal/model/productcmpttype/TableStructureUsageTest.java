@@ -69,7 +69,7 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
     @Test
     public void testRemove() {
         tableStructureUsage.delete();
-        assertEquals(0, pcType.getTableStructureUsages().length);
+        assertEquals(0, pcType.getTableStructureUsages().size());
         assertTrue(pcType.getIpsSrcFile().isDirty());
     }
 

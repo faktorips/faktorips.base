@@ -92,7 +92,7 @@ public class GenPolicyCmptType extends GenType {
     }
 
     private void createGeneratorsForMethods() throws CoreException {
-        IMethod[] methods = getPolicyCmptType().getMethods();
+        List<IMethod> methods = getPolicyCmptType().getMethods();
         for (IMethod method : methods) {
             if (method.isValid(getPolicyCmptType().getIpsProject())) {
                 GenPolicyCmptTypeMethod generator = new GenPolicyCmptTypeMethod(this, method);
@@ -103,7 +103,7 @@ public class GenPolicyCmptType extends GenType {
     }
 
     private void createGeneratorsForValidationRules() throws CoreException {
-        IValidationRule[] validationRules = getPolicyCmptType().getRules();
+        List<IValidationRule> validationRules = getPolicyCmptType().getRules();
         for (IValidationRule validationRule : validationRules) {
             if (validationRule.isValid(getPolicyCmptType().getIpsProject())) {
                 GenValidationRule generator = new GenValidationRule(this, validationRule);
@@ -114,7 +114,7 @@ public class GenPolicyCmptType extends GenType {
     }
 
     private void createGeneratorsForAttributes() throws CoreException {
-        IPolicyCmptTypeAttribute[] attrs = getPolicyCmptType().getPolicyCmptTypeAttributes();
+        List<IPolicyCmptTypeAttribute> attrs = getPolicyCmptType().getPolicyCmptTypeAttributes();
         for (IPolicyCmptTypeAttribute attr : attrs) {
             if (attr.isValid(getPolicyCmptType().getIpsProject())) {
                 GenPolicyCmptTypeAttribute generator = createGenerator(attr);
@@ -126,7 +126,7 @@ public class GenPolicyCmptType extends GenType {
 
     private void createGeneratorsForAssociations() throws CoreException {
         IPolicyCmptType type = getPolicyCmptType();
-        IPolicyCmptTypeAssociation[] ass = type.getPolicyCmptTypeAssociations();
+        List<IPolicyCmptTypeAssociation> ass = type.getPolicyCmptTypeAssociations();
         for (IPolicyCmptTypeAssociation as : ass) {
             if (as.isValid(getPolicyCmptType().getIpsProject())) {
                 GenAssociation generator = createGenerator(as);

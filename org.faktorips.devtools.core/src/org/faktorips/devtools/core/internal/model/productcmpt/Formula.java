@@ -220,7 +220,7 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         IIpsProject ipsProject = getIpsProject();
         IProductCmptType productCmptType = getProductCmptGeneration().getProductCmpt().findProductCmptType(ipsProject);
         if (productCmptType != null) {
-            IAttribute[] attributes = productCmptType.findAllAttributes(ipsProject);
+            List<IAttribute> attributes = productCmptType.findAllAttributes(ipsProject);
             for (IAttribute attribute : attributes) {
                 Datatype datatype = attribute.findDatatype(ipsProject);
                 if (datatype instanceof EnumDatatype) {
@@ -291,8 +291,8 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         collectEnumsAllowedInFormula(enumNamesToTypes);
         List<String> filteredIdentifieres = removeIdentifieresOfEnumDatatypes(enumNamesToTypes, resolvedIdentifiers);
 
-        IAttribute[] attributes = signature.getProductCmptType().findAllAttributes(ipsProject);
-        Set<String> attributeNames = new HashSet<String>(attributes.length);
+        List<IAttribute> attributes = signature.getProductCmptType().findAllAttributes(ipsProject);
+        Set<String> attributeNames = new HashSet<String>(attributes.size());
         for (IAttribute attribute : attributes) {
             attributeNames.add(attribute.getName());
         }
@@ -434,7 +434,7 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
 
         @Override
         protected boolean visit(IPolicyCmptType currentType) throws CoreException {
-            IPolicyCmptTypeAttribute[] attr = currentType.getPolicyCmptTypeAttributes();
+            List<IPolicyCmptTypeAttribute> attr = currentType.getPolicyCmptTypeAttributes();
             for (IPolicyCmptTypeAttribute element : attr) {
                 searchAndAdd(project, element.getDatatype(), enumtypes);
             }

@@ -14,9 +14,7 @@
 package org.faktorips.devtools.core.internal.model.type;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -62,36 +60,8 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     private boolean abstractFlag;
 
-    protected IpsObjectPartCollection<? extends IMethod> methods;
-    protected IpsObjectPartCollection<? extends IAssociation> associations;
-    protected IpsObjectPartCollection<? extends IAttribute> attributes;
-
     public Type(IIpsSrcFile file) {
         super(file);
-        attributes = createCollectionForAttributes();
-        associations = createCollectionForAssociations();
-        methods = createCollectionForMethods();
-    }
-
-    /** Factory method to create the collection holding the methods. */
-    protected abstract IpsObjectPartCollection<? extends IMethod> createCollectionForMethods();
-
-    /** Factory method to create the collection holding the associations. */
-    protected abstract IpsObjectPartCollection<? extends IAssociation> createCollectionForAssociations();
-
-    /** Factory method to create the collection holding the attributes. */
-    protected abstract IpsObjectPartCollection<? extends IAttribute> createCollectionForAttributes();
-
-    public Iterator<? extends IMethod> getIteratorForMethods() {
-        return methods.iterator();
-    }
-
-    public Iterator<? extends IAssociation> getIteratorForAssociations() {
-        return associations.iterator();
-    }
-
-    public Iterator<? extends IAttribute> getIteratorForAttributes() {
-        return attributes.iterator();
     }
 
     @Override
@@ -158,14 +128,20 @@ public abstract class Type extends BaseIpsObject implements IType {
         return isSubtypeOf(candidate, project);
     }
 
+    protected abstract IpsObjectPartCollection<? extends IAttribute> getAttributesPartCollection();
+
+    protected abstract IpsObjectPartCollection<? extends IAssociation> getAssociationPartCollection();
+
+    protected abstract IpsObjectPartCollection<? extends IMethod> getMethodPartCollection();
+
     @Override
-    public IAttribute[] getAttributes() {
-        return (IAttribute[])attributes.toArray(new IAttribute[attributes.size()]);
+    public List<IAttribute> getAttributes() {
+        return new ArrayList<IAttribute>(getAttributesPartCollection().getBackingList());
     }
 
     @Override
     public IAttribute getAttribute(String name) {
-        return attributes.getPartByName(name);
+        return getAttributesPartCollection().getPartByName(name);
     }
 
     @Override
@@ -176,17 +152,17 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public IAttribute[] findAllAttributes(IIpsProject ipsProject) throws CoreException {
+    public List<IAttribute> findAllAttributes(IIpsProject ipsProject) throws CoreException {
         AllAttributeFinder finder = new AllAttributeFinder(ipsProject);
         finder.start(this);
-        return finder.getAttributes();
+        return finder.attributes;
     }
 
     @Override
-    public IAssociation[] findAllAssociations(IIpsProject ipsProject) throws CoreException {
-        AllAssociationFinder finder = new AllAssociationFinder(ipsProject);
+    public List<IAssociation> findAllAssociations(IIpsProject ipsProject) throws CoreException {
+        AllAssociationFinder finder = new AllAssociationFinder(ipsProject, true);
         finder.start(this);
-        return finder.getAssociations();
+        return finder.associations;
     }
 
     @Override
@@ -198,17 +174,17 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     @Override
     public IAttribute newAttribute() {
-        return attributes.newPart();
+        return getAttributesPartCollection().newPart();
     }
 
     @Override
     public int getNumOfAttributes() {
-        return attributes.size();
+        return getAttributesPartCollection().size();
     }
 
     @Override
     public int[] moveAttributes(int[] indexes, boolean up) {
-        return attributes.moveParts(indexes, up);
+        return getAttributesPartCollection().moveParts(indexes, up);
     }
 
     @Override
@@ -228,34 +204,34 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public IAssociation[] findAssociationsForTargetAndAssociationType(String target,
+    public List<IAssociation> findAssociationsForTargetAndAssociationType(String target,
             AssociationType associationType,
             IIpsProject project,
             boolean includeSupertypes) throws CoreException {
 
         if (target == null || associationType == null) {
-            return new IAssociation[0];
+            return new ArrayList<IAssociation>();
         }
 
         if (includeSupertypes) {
             AssociationTargetAndTypeFinder finder = new AssociationTargetAndTypeFinder(project, target, associationType);
             finder.start(this);
-            return finder.getAssociationsFound().toArray(new IAssociation[finder.getAssociationsFound().size()]);
+            return finder.getAssociationsFound();
         } else {
             List<IAssociation> result = new ArrayList<IAssociation>();
-            IAssociation[] associations = getAssociationsForTarget(target);
+            List<IAssociation> associations = getAssociationsForTarget(target);
             for (IAssociation association : associations) {
                 if (association.getAssociationType() == associationType) {
                     result.add(association);
                 }
             }
-            return result.toArray(new IAssociation[result.size()]);
+            return result;
         }
     }
 
     @Override
     public IAssociation getAssociation(String name) {
-        return associations.getPartByName(name);
+        return getAssociationPartCollection().getPartByName(name);
     }
 
     @Override
@@ -263,9 +239,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         if (roleNamePlural == null) {
             return null;
         }
-        int size = associations.size();
-        for (int i = 0; i < size; i++) {
-            IAssociation association = associations.getPart(i);
+        for (IAssociation association : getAssociationPartCollection()) {
             if (roleNamePlural.equals(association.getTargetRolePlural())) {
                 return association;
             }
@@ -274,19 +248,19 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public IAssociation[] getAssociationsForTarget(String target) {
+    public List<IAssociation> getAssociationsForTarget(String target) {
         List<IAssociation> result = new ArrayList<IAssociation>();
-        for (IAssociation association : associations) {
+        for (IAssociation association : getAssociationPartCollection()) {
             if (association.getTarget().equals(target)) {
                 result.add(association);
             }
         }
-        return result.toArray(new IAssociation[result.size()]);
+        return result;
     }
 
     @Override
-    public IAssociation[] getAssociations() {
-        return (IAssociation[])associations.toArray(new IAssociation[associations.size()]);
+    public List<IAssociation> getAssociations() {
+        return new ArrayList<IAssociation>(getAssociationPartCollection().getBackingList());
     }
 
     @Override
@@ -298,27 +272,27 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     @Override
     public int getNumOfAssociations() {
-        return associations.size();
+        return getAssociationPartCollection().size();
     }
 
     @Override
     public int[] moveAssociations(int[] indexes, boolean up) {
-        return associations.moveParts(indexes, up);
+        return getAssociationPartCollection().moveParts(indexes, up);
     }
 
     @Override
     public IAssociation newAssociation() {
-        return associations.newPart();
+        return getAssociationPartCollection().newPart();
     }
 
     @Override
     public IMethod newMethod() {
-        return methods.newPart();
+        return getMethodPartCollection().newPart();
     }
 
     @Override
-    public IMethod[] getMethods() {
-        return (IMethod[])methods.toArray(new IMethod[methods.size()]);
+    public List<IMethod> getMethods() {
+        return new ArrayList<IMethod>(getMethodPartCollection().getBackingList());
     }
 
     @Override
@@ -326,7 +300,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         if (datatypes == null) {
             datatypes = new String[0];
         }
-        for (IMethod method : methods) {
+        for (IMethod method : getMethodPartCollection()) {
             if (!method.getName().equals(methodName)) {
                 continue;
             }
@@ -357,7 +331,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     @Override
     public IMethod getMethod(String signature) {
-        for (IMethod method : methods) {
+        for (IMethod method : getMethodPartCollection()) {
             if (method.getSignatureString().equals(signature)) {
                 return method;
             }
@@ -374,40 +348,40 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     @Override
     public int getNumOfMethods() {
-        return methods.size();
+        return getMethodPartCollection().size();
     }
 
     @Override
     public int[] moveMethods(int[] indexes, boolean up) {
-        return methods.moveParts(indexes, up);
+        return getMethodPartCollection().moveParts(indexes, up);
     }
 
     @Override
-    public IMethod[] findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject)
+    public List<IMethod> findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject)
             throws CoreException {
 
         MethodOverrideCandidatesFinder finder = new MethodOverrideCandidatesFinder(ipsProject,
                 onlyNotImplementedAbstractMethods);
         finder.start(findSupertype(ipsProject));
-        return finder.getCandidates();
+        return finder.candidates;
     }
 
     @Override
-    public IMethod[] overrideMethods(IMethod[] methods) {
-        IMethod[] newMethods = new IMethod[methods.length];
-        for (int i = 0; i < methods.length; i++) {
+    public List<IMethod> overrideMethods(List<IMethod> methods) {
+        List<IMethod> newMethods = new ArrayList<IMethod>(methods.size());
+        for (IMethod method : methods) {
             IMethod override = newMethod();
-            override.setModifier(methods[i].getModifier());
+            override.setModifier(method.getModifier());
             override.setAbstract(false);
-            override.setDatatype(methods[i].getDatatype());
-            override.setName(methods[i].getName());
-            IParameter[] params = methods[i].getParameters();
+            override.setDatatype(method.getDatatype());
+            override.setName(method.getName());
+            IParameter[] params = method.getParameters();
             for (IParameter param : params) {
                 IParameter newParam = override.newParameter();
                 newParam.setName(param.getName());
                 newParam.setDatatype(param.getDatatype());
             }
-            newMethods[i] = override;
+            newMethods.add(override);
         }
         return newMethods;
     }
@@ -419,7 +393,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     @Override
     public IMethod getMatchingMethod(IMethod method) {
-        for (IMethod thisMethod : methods) {
+        for (IMethod thisMethod : getMethodPartCollection()) {
             if (thisMethod.isSameSignature(method)) {
                 return thisMethod;
             }
@@ -457,8 +431,7 @@ public abstract class Type extends BaseIpsObject implements IType {
                 DerivedUnionsSpecifiedValidator validator = new DerivedUnionsSpecifiedValidator(list, ipsProject);
                 validator.start(this);
             }
-            IMethod[] methods = getMethods();
-            for (IMethod method : methods) {
+            for (IMethod method : getMethodPartCollection()) {
                 if (method.isAbstract()) {
                     String text = Messages.Type_msg_AbstractMissmatch;
                     list.add(new Message(MSGCODE_ABSTRACT_MISSING, text, Message.ERROR, this, PROPERTY_ABSTRACT));
@@ -506,7 +479,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     private void validateIfAllAbstractMethodsAreImplemented(IIpsProject ipsProject, MessageList list)
             throws CoreException {
 
-        IMethod[] methods = findOverrideMethodCandidates(true, ipsProject);
+        List<IMethod> methods = findOverrideMethodCandidates(true, ipsProject);
         for (IMethod method : methods) {
             String text = NLS.bind(Messages.Type_msg_MustOverrideAbstractMethod, method.getName(), method.getType()
                     .getQualifiedName());
@@ -567,7 +540,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     private void addMethodDatatypeDependencies(Set<IDependency> dependencies,
             Map<IDependency, List<IDependencyDetail>> details) {
-        for (IMethod method2 : methods) {
+        for (IMethod method2 : getMethodPartCollection()) {
             Method method = (Method)method2;
             method.dependsOn(dependencies, details);
         }
@@ -576,8 +549,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     private void addAttributeDatatypeDependencies(Set<IDependency> dependencies,
             Map<IDependency, List<IDependencyDetail>> details) {
 
-        IAttribute[] attributes = getAttributes();
-        for (IAttribute attribute : attributes) {
+        for (IAttribute attribute : getAttributesPartCollection()) {
             String datatype = attribute.getDatatype();
             IDependency dependency = new DatatypeDependency(getQualifiedNameType(), datatype);
             dependencies.add(dependency);
@@ -588,8 +560,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     private void addQualifiedNameTypesForRelationTargets(Set<IDependency> dependencies,
             Map<IDependency, List<IDependencyDetail>> details) {
 
-        IAssociation[] relations = getAssociations();
-        for (IAssociation relation : relations) {
+        for (IAssociation relation : getAssociationPartCollection()) {
             String targetQName = relation.getTarget();
             /*
              * an additional condition "&& this.isAggregateRoot()" will _not_ be helpful, because
@@ -638,25 +609,21 @@ public abstract class Type extends BaseIpsObject implements IType {
             this.onlyNotImplementedAbstractMethods = onlyNotImplementedAbstractMethods;
         }
 
-        public IMethod[] getCandidates() {
-            return candidates.toArray(new IMethod[candidates.size()]);
-        }
-
         @Override
         protected boolean visit(IType currentType) throws CoreException {
-            IMethod[] typeMethods = currentType.getMethods();
-            for (int i = 0; i < typeMethods.length; i++) {
-                if (onlyNotImplementedAbstractMethods && !typeMethods[i].isAbstract()) {
+            List<IMethod> typeMethods = currentType.getMethods();
+            for (IMethod method : typeMethods) {
+                if (onlyNotImplementedAbstractMethods && !method.isAbstract()) {
                     continue;
                 }
-                IMethod overridingMethod = typeMethods[i].findOverridingMethod(Type.this, ipsProject);
+                IMethod overridingMethod = method.findOverridingMethod(Type.this, ipsProject);
                 if (overridingMethod != null && overridingMethod.getType() == Type.this) {
                     continue;
                 }
                 if (overridingMethod == null || (!onlyNotImplementedAbstractMethods)) {
                     // candidate found, but it might be already in the list
-                    if (!sameMethodAlreadyInCandidateList(typeMethods[i], candidates)) {
-                        candidates.add(typeMethods[i]);
+                    if (!sameMethodAlreadyInCandidateList(method, candidates)) {
+                        candidates.add(method);
                     }
                 }
             }
@@ -735,7 +702,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
         @Override
         protected boolean visit(IType currentType) {
-            IAssociation[] associations = currentType.getAssociationsForTarget(associationTarget);
+            List<IAssociation> associations = currentType.getAssociationsForTarget(associationTarget);
             for (IAssociation association : associations) {
                 if (association.getAssociationType() == associationType) {
                     associationsFound.add(association);
@@ -856,13 +823,13 @@ public abstract class Type extends BaseIpsObject implements IType {
 
         @Override
         protected boolean visit(IType currentType) throws CoreException {
-            IAttribute[] lattributes = currentType.getAttributes();
+            List<? extends IAttribute> lattributes = currentType.getAttributes();
             List<IAttribute> attributesToAdd = new ArrayList<IAttribute>();
             // Considers overridden attributes.
-            for (int i = 0; i < lattributes.length; i++) {
-                if (!attributeNames.contains(lattributes[i].getName())) {
-                    attributesToAdd.add(lattributes[i]);
-                    attributeNames.add(lattributes[i].getName());
+            for (IAttribute attribute : lattributes) {
+                if (!attributeNames.contains(attribute.getName())) {
+                    attributesToAdd.add(attribute);
+                    attributeNames.add(attribute.getName());
                 }
             }
             // Place supertype attributes before subtype attributes.
@@ -870,37 +837,30 @@ public abstract class Type extends BaseIpsObject implements IType {
             return true;
         }
 
-        private IAttribute[] getAttributes() {
-            return attributes.toArray(new IAttribute[attributes.size()]);
-        }
-
     }
 
     private static class AllAssociationFinder extends TypeHierarchyVisitor {
 
-        private List<IAssociation> associations;
+        private final List<IAssociation> associations;
+        private final boolean superTypeFirst;
 
-        private Set<String> associationNames;
-
-        public AllAssociationFinder(IIpsProject ipsProject) {
+        public AllAssociationFinder(IIpsProject ipsProject, boolean superTypeFirst) {
             super(ipsProject);
+            this.superTypeFirst = superTypeFirst;
             associations = new ArrayList<IAssociation>();
-            associationNames = new HashSet<String>();
         }
 
         @Override
         protected boolean visit(IType currentType) throws CoreException {
-            IAssociation[] lassociations = currentType.getAssociations();
-            // Place supertype associations before subtype associations.
-            associations.addAll(0, Arrays.asList(lassociations));
-            for (IAssociation assoc : lassociations) {
-                associationNames.add(assoc.getName());
+            List<? extends IAssociation> lassociations = currentType.getAssociations();
+            if (superTypeFirst) {
+                // Place supertype associations before subtype associations.
+                associations.addAll(0, lassociations);
+            } else {
+                associations.addAll(lassociations);
             }
-            return true;
-        }
 
-        private IAssociation[] getAssociations() {
-            return associations.toArray(new IAssociation[associations.size()]);
+            return true;
         }
 
     }
@@ -918,26 +878,26 @@ public abstract class Type extends BaseIpsObject implements IType {
 
         @Override
         protected boolean visit(IType currentType) throws CoreException {
-            IAssociation[] associations = currentType.getAssociations();
+            List<? extends IAssociation> associations = currentType.getAssociations();
             for (IAssociation association : associations) {
                 candidateSubsets.add(association);
             }
-            for (int i = 0; i < associations.length; i++) {
-                if (associations[i].isDerivedUnion()) {
-                    if (!isSubsetted(associations[i])) {
-                        String text = NLS.bind(Messages.Type_msg_MustImplementDerivedUnion, associations[i].getName(),
-                                associations[i].getType().getQualifiedName());
+            for (IAssociation association : associations) {
+                if (association.isDerivedUnion()) {
+                    if (!isSubsetted(association)) {
+                        String text = NLS.bind(Messages.Type_msg_MustImplementDerivedUnion, association.getName(),
+                                association.getType().getQualifiedName());
                         msgList.add(new Message(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION, text, Message.ERROR,
                                 Type.this, IType.PROPERTY_ABSTRACT));
                     }
-                } else if (associations[i] instanceof IPolicyCmptTypeAssociation) {
+                } else if (association instanceof IPolicyCmptTypeAssociation) {
                     /*
                      * special check for policy component type associations with type detail to
                      * master, if this association is a inverse of a derived union then we need to
                      * check either the class is abstract or an inverse implementation of the
                      * derived union exists
                      */
-                    IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)associations[i];
+                    IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)association;
                     if (!policyCmptTypeAssociation.isInverseOfDerivedUnion()) {
                         continue;
                     }
@@ -948,7 +908,7 @@ public abstract class Type extends BaseIpsObject implements IType {
                      */
                     if (!isInverseSubsetted(policyCmptTypeAssociation)) {
                         String text = NLS.bind(Messages.Type_msg_MustImplementInverseDerivedUnion,
-                                associations[i].getName(), associations[i].getType().getQualifiedName());
+                                association.getName(), association.getType().getQualifiedName());
                         msgList.add(new Message(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION, text,
                                 Message.ERROR, Type.this, IType.PROPERTY_ABSTRACT));
                     }
@@ -993,6 +953,12 @@ public abstract class Type extends BaseIpsObject implements IType {
                 if (inverseAssociationOfCandidate.getSubsettedDerivedUnion().equals(derivedUnion.getName())) {
                     return true;
                 }
+                // TODO FIPS-85
+                // if (ipsProject.getProperties().isUnsafeInverseAssociations()) {
+                // if (inverseAssociationOfCandidate.equals(derivedUnion)) {
+                // return true;
+                // }
+                // }
             }
             return false;
         }
@@ -1035,16 +1001,16 @@ public abstract class Type extends BaseIpsObject implements IType {
 
         @Override
         protected boolean visit(IProductCmptType currentType) throws CoreException {
-            IAssociation[] typeAssociations = currentType.getAssociations();
+            List<? extends IAssociation> typeAssociations = currentType.getAssociations();
             int index = 0;
-            for (int i = 0; i < typeAssociations.length; i++) {
+            for (IAssociation association : typeAssociations) {
                 /*
                  * To get the associations of the root type of the supertype hierarchy first, put in
                  * the list at first, but with unchanged order for all associations found in one
                  * type ...
                  */
-                if (!typeAssociations[i].isDerived()) {
-                    associations.add(index, typeAssociations[i]);
+                if (!association.isDerived()) {
+                    associations.add(index, association);
                     index++;
                 }
             }

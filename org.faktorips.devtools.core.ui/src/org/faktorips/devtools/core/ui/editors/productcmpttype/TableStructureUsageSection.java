@@ -184,7 +184,7 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
 
             @Override
             public Object[] getElements(Object inputElement) {
-                return productCmptType.getTableStructureUsages();
+                return productCmptType.getTableStructureUsages().toArray();
             }
 
             @Override

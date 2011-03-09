@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.editors.pctype.associationwizard;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -587,9 +586,9 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         String source = sourceAssociation.getPolicyCmptType().getQualifiedName();
         AssociationType correspondingAssociationType = sourceAssociation.getAssociationType()
                 .getCorrespondingAssociationType();
-        IAssociation[] associations = target.findAssociationsForTargetAndAssociationType(source,
+        List<IAssociation> associations = target.findAssociationsForTargetAndAssociationType(source,
                 correspondingAssociationType, sourceAssociation.getIpsProject(), false);
-        return Arrays.asList(associations);
+        return associations;
     }
 
     /**
@@ -728,7 +727,8 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     }
 
     public void storeExistingInverseAssociation(String inverseAssociation) {
-        IPolicyCmptTypeAssociation[] policyCmptTypeAssociations = targetPolicyCmptType.getPolicyCmptTypeAssociations();
+        List<IPolicyCmptTypeAssociation> policyCmptTypeAssociations = targetPolicyCmptType
+                .getPolicyCmptTypeAssociations();
         for (IPolicyCmptTypeAssociation policyCmptTypeAssociation : policyCmptTypeAssociations) {
             if (policyCmptTypeAssociation.getName().equals(inverseAssociation)) {
                 storeInverseAssociation(policyCmptTypeAssociation);

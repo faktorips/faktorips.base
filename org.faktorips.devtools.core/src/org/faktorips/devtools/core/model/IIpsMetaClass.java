@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.model;
 
+import java.util.Collection;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -42,6 +44,6 @@ public interface IIpsMetaClass extends IIpsObject {
      * @return An array of <code>IIpsSrcFile</code>s containing all meta objects that are instances
      *         of this meta class
      */
-    public IIpsSrcFile[] searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException;
+    public Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException;
 
 }

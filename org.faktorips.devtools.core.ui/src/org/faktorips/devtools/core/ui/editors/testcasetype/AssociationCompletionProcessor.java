@@ -60,15 +60,15 @@ public class AssociationCompletionProcessor extends AbstractCompletionProcessor 
 
         IPolicyCmptType currentPcType = pcType;
         while (currentPcType != null) {
-            IPolicyCmptTypeAssociation[] associations = currentPcType.getPolicyCmptTypeAssociations();
-            for (int i = 0; i < associations.length; i++) {
+            List<IPolicyCmptTypeAssociation> associations = currentPcType.getPolicyCmptTypeAssociations();
+            for (IPolicyCmptTypeAssociation association : associations) {
                 if (onlyAssoziationOrComposition
-                        && !(associations[i].isAssoziation() || associations[i].isCompositionMasterToDetail())) {
+                        && !(association.isAssoziation() || association.isCompositionMasterToDetail())) {
                     continue;
                 }
 
-                if (associations[i].getName().toLowerCase().startsWith(prefix)) {
-                    addToResult(result, associations[i], documentOffset);
+                if (association.getName().toLowerCase().startsWith(prefix)) {
+                    addToResult(result, association, documentOffset);
                 }
             }
             currentPcType = (IPolicyCmptType)currentPcType.findSupertype(currentPcType.getIpsProject());

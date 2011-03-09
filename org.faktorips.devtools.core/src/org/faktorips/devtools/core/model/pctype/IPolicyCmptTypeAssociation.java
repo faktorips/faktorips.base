@@ -267,10 +267,8 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     public void setInverseAssociation(String relation);
 
     /**
-     * Searches the inverse relation and returns it, if it exists. Returns <code>null</code> if the
-     * inverse relation exists. For detail-to-master relations the method always(!) returns
-     * <code>null</code> as several master-to-detail relations can have the same detail-to-master
-     * relation.
+     * Searches the inverse association and returns it, if it exists. Returns <code>null</code> if
+     * no inverse association exists.
      * 
      * @param ipsProject The IPS project which IPS object path is used to search.
      * 

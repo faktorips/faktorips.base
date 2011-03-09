@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.builder;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -146,7 +147,7 @@ public abstract class AbstractParameterIdentifierResolver implements IdentifierR
         IProductCmptType productCmptType = null;
         try {
             productCmptType = getProductCmptType();
-            IAttribute[] attributes = productCmptType.findAllAttributes(ipsproject);
+            List<IAttribute> attributes = productCmptType.findAllAttributes(ipsproject);
             for (IAttribute attribute : attributes) {
                 if (attribute.getName().equals(identifier)) {
                     Datatype attrDatatype = attribute.findDatatype(ipsproject);

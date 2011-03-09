@@ -144,11 +144,11 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
             @Override
             public Object[] getElements(Object inputElement) {
                 List<IPolicyCmptTypeAssociation> content = new ArrayList<IPolicyCmptTypeAssociation>();
-                IPolicyCmptTypeAssociation[] policyCmptTypeAssociations = ((IPolicyCmptType)getIpsObject())
+                List<IPolicyCmptTypeAssociation> policyCmptTypeAssociations = ((IPolicyCmptType)getIpsObject())
                         .getPolicyCmptTypeAssociations();
-                for (int i = 0; i < policyCmptTypeAssociations.length; i++) {
-                    if (!policyCmptTypeAssociations[i].getPersistenceAssociatonInfo().isTransient()) {
-                        content.add(policyCmptTypeAssociations[i]);
+                for (IPolicyCmptTypeAssociation policyCmptTypeAssociation : policyCmptTypeAssociations) {
+                    if (!policyCmptTypeAssociation.getPersistenceAssociatonInfo().isTransient()) {
+                        content.add(policyCmptTypeAssociation);
                     }
                 }
                 return content.toArray();

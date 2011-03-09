@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +39,7 @@ import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.DependencyType;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -258,8 +260,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
 
     @Test
     public void testFindProdDefProperties() throws CoreException {
-        IProdDefProperty[] props = productCmptType.findProdDefProperties(ipsProject);
-        assertEquals(0, props.length);
+        List<IProdDefProperty> props = productCmptType.findProdDefProperties(ipsProject);
+        assertEquals(0, props.size());
 
         // attributes
         IProductCmptTypeAttribute supertypeAttr = superProductCmptType.newProductCmptTypeAttribute();
@@ -270,13 +272,13 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         IProductCmptTypeAttribute typeAttribute2 = productCmptType.newProductCmptTypeAttribute("attrInType2");
 
         props = superProductCmptType.findProdDefProperties(ipsProject);
-        assertEquals(1, props.length);
-        assertEquals(supertypeAttr, props[0]);
+        assertEquals(1, props.size());
+        assertEquals(supertypeAttr, props.get(0));
         props = productCmptType.findProdDefProperties(ipsProject);
-        assertEquals(3, props.length);
-        assertEquals(supertypeAttr, props[0]);
-        assertEquals(typeAttribute1, props[1]);
-        assertEquals(typeAttribute2, props[2]);
+        assertEquals(3, props.size());
+        assertEquals(supertypeAttr, props.get(0));
+        assertEquals(typeAttribute1, props.get(1));
+        assertEquals(typeAttribute2, props.get(2));
 
         // table structure usages
         ITableStructureUsage supertypeTsu = superProductCmptType.newTableStructureUsage();
@@ -284,17 +286,17 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         ITableStructureUsage typeTsu2 = productCmptType.newTableStructureUsage();
 
         props = superProductCmptType.findProdDefProperties(ipsProject);
-        assertEquals(2, props.length);
-        assertEquals(supertypeAttr, props[0]);
-        assertEquals(supertypeTsu, props[1]);
+        assertEquals(2, props.size());
+        assertEquals(supertypeAttr, props.get(0));
+        assertEquals(supertypeTsu, props.get(1));
         props = productCmptType.findProdDefProperties(ipsProject);
-        assertEquals(6, props.length);
-        assertEquals(supertypeAttr, props[0]);
-        assertEquals(typeAttribute1, props[1]);
-        assertEquals(typeAttribute2, props[2]);
-        assertEquals(supertypeTsu, props[3]);
-        assertEquals(typeTsu1, props[4]);
-        assertEquals(typeTsu2, props[5]);
+        assertEquals(6, props.size());
+        assertEquals(supertypeAttr, props.get(0));
+        assertEquals(typeAttribute1, props.get(1));
+        assertEquals(typeAttribute2, props.get(2));
+        assertEquals(supertypeTsu, props.get(3));
+        assertEquals(typeTsu1, props.get(4));
+        assertEquals(typeTsu2, props.get(5));
 
         // formula signatures
         IProductCmptTypeMethod supertypeSignature = superProductCmptType.newProductCmptTypeMethod();
@@ -306,34 +308,31 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         // method is not a product def property as it is not a formula signature
 
         props = superProductCmptType.findProdDefProperties(ipsProject);
-        assertEquals(3, props.length);
-        assertEquals(supertypeAttr, props[0]);
-        assertEquals(supertypeTsu, props[1]);
-        assertEquals(supertypeSignature, props[2]);
+        assertEquals(3, props.size());
+        assertEquals(supertypeAttr, props.get(0));
+        assertEquals(supertypeTsu, props.get(1));
+        assertEquals(supertypeSignature, props.get(2));
 
         props = productCmptType.findProdDefProperties(ipsProject);
-        assertEquals(9, props.length);
-        assertEquals(supertypeAttr, props[0]);
-        assertEquals(typeAttribute1, props[1]);
-        assertEquals(typeAttribute2, props[2]);
-        assertEquals(supertypeTsu, props[3]);
-        assertEquals(typeTsu1, props[4]);
-        assertEquals(typeTsu2, props[5]);
-        assertEquals(supertypeSignature, props[6]);
-        assertEquals(typeSignature1, props[7]);
-        assertEquals(typeSignature2, props[8]);
+        assertEquals(9, props.size());
+        assertEquals(supertypeAttr, props.get(0));
+        assertEquals(typeAttribute1, props.get(1));
+        assertEquals(typeAttribute2, props.get(2));
+        assertEquals(supertypeTsu, props.get(3));
+        assertEquals(typeTsu1, props.get(4));
+        assertEquals(typeTsu2, props.get(5));
+        assertEquals(supertypeSignature, props.get(6));
+        assertEquals(typeSignature1, props.get(7));
+        assertEquals(typeSignature2, props.get(8));
 
         // default values and value sets
         IPolicyCmptType policyCmptSupertype = newPolicyCmptType(ipsProject, "SuperPolicy");
         superProductCmptType.setPolicyCmptType(policyCmptSupertype.getQualifiedName());
-        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptSupertypeAttr = policyCmptSupertype
-                .newPolicyCmptTypeAttribute();
+        IPolicyCmptTypeAttribute policyCmptSupertypeAttr = policyCmptSupertype.newPolicyCmptTypeAttribute();
         policyCmptSupertypeAttr.setProductRelevant(true);
-        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptTypeAttr1 = policyCmptType
-                .newPolicyCmptTypeAttribute();
+        IPolicyCmptTypeAttribute policyCmptTypeAttr1 = policyCmptType.newPolicyCmptTypeAttribute();
         policyCmptTypeAttr1.setProductRelevant(true);
-        org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute policyCmptTypeAttr2 = policyCmptType
-                .newPolicyCmptTypeAttribute();
+        IPolicyCmptTypeAttribute policyCmptTypeAttr2 = policyCmptType.newPolicyCmptTypeAttribute();
         policyCmptTypeAttr2.setProductRelevant(true);
         policyCmptType.newPolicyCmptTypeAttribute().setProductRelevant(false); // this attribute is
         // not a product def
@@ -345,40 +344,40 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         derivedAttr.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
 
         props = superProductCmptType.findProdDefProperties(ipsProject);
-        assertEquals(4, props.length);
-        assertEquals(supertypeAttr, props[0]);
-        assertEquals(supertypeTsu, props[1]);
-        assertEquals(supertypeSignature, props[2]);
-        assertEquals(policyCmptSupertypeAttr, props[3]);
+        assertEquals(4, props.size());
+        assertEquals(supertypeAttr, props.get(0));
+        assertEquals(supertypeTsu, props.get(1));
+        assertEquals(supertypeSignature, props.get(2));
+        assertEquals(policyCmptSupertypeAttr, props.get(3));
 
         props = productCmptType.findProdDefProperties(ipsProject);
-        assertEquals(12, props.length);
-        assertEquals(supertypeAttr, props[0]);
-        assertEquals(typeAttribute1, props[1]);
-        assertEquals(typeAttribute2, props[2]);
-        assertEquals(supertypeTsu, props[3]);
-        assertEquals(typeTsu1, props[4]);
-        assertEquals(typeTsu2, props[5]);
-        assertEquals(supertypeSignature, props[6]);
-        assertEquals(typeSignature1, props[7]);
-        assertEquals(typeSignature2, props[8]);
-        assertEquals(policyCmptSupertypeAttr, props[9]);
-        assertEquals(policyCmptTypeAttr1, props[10]);
-        assertEquals(policyCmptTypeAttr2, props[11]);
+        assertEquals(12, props.size());
+        assertEquals(supertypeAttr, props.get(0));
+        assertEquals(typeAttribute1, props.get(1));
+        assertEquals(typeAttribute2, props.get(2));
+        assertEquals(supertypeTsu, props.get(3));
+        assertEquals(typeTsu1, props.get(4));
+        assertEquals(typeTsu2, props.get(5));
+        assertEquals(supertypeSignature, props.get(6));
+        assertEquals(typeSignature1, props.get(7));
+        assertEquals(typeSignature2, props.get(8));
+        assertEquals(policyCmptSupertypeAttr, props.get(9));
+        assertEquals(policyCmptTypeAttr1, props.get(10));
+        assertEquals(policyCmptTypeAttr2, props.get(11));
     }
 
     @Test
     public void testFindProdDefProperties_TwoProductCmptTypesConfigureSamePolicyCmptType() throws CoreException {
         IPolicyCmptTypeAttribute policyCmptTypeAttr1 = policyCmptType.newPolicyCmptTypeAttribute();
         policyCmptTypeAttr1.setProductRelevant(true);
-        IProdDefProperty[] props = productCmptType.findProdDefProperties(ipsProject);
-        assertEquals(1, props.length); // make sure, setup is ok
+        List<IProdDefProperty> props = productCmptType.findProdDefProperties(ipsProject);
+        assertEquals(1, props.size()); // make sure, setup is ok
 
         IProductCmptType subtype = newProductCmptType(productCmptType, "Subtype");
         subtype.setConfigurationForPolicyCmptType(true);
         subtype.setPolicyCmptType(policyCmptType.getQualifiedName());
         props = subtype.findProdDefProperties(ipsProject);
-        assertEquals(1, props.length); // attribute mustn't be inluded twice!!!
+        assertEquals(1, props.size()); // attribute mustn't be inluded twice!!!
     }
 
     @Test
@@ -543,8 +542,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
 
     @Test
     public void testFindProdDefProperty_ByName() throws CoreException {
-        IProdDefProperty[] props = productCmptType.findProdDefProperties(ipsProject);
-        assertEquals(0, props.length);
+        List<IProdDefProperty> props = productCmptType.findProdDefProperties(ipsProject);
+        assertEquals(0, props.size());
 
         // attributes
         IProductCmptTypeAttribute supertypeAttr = superProductCmptType.newProductCmptTypeAttribute();
@@ -645,9 +644,9 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         assertNotNull(method);
         assertEquals(productCmptType, method.getParent());
         assertEquals(1, productCmptType.getNumOfMethods());
-        assertEquals(method, productCmptType.getMethods()[0]);
-        assertEquals(1, productCmptType.getMethods().length);
-        assertEquals(1, productCmptType.getProductCmptTypeMethods().length);
+        assertEquals(method, productCmptType.getMethods().get(0));
+        assertEquals(1, productCmptType.getMethods().size());
+        assertEquals(1, productCmptType.getProductCmptTypeMethods().size());
     }
 
     @Test
@@ -656,9 +655,9 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         assertNotNull(method);
         assertEquals(productCmptType, method.getParent());
         assertEquals(1, productCmptType.getNumOfMethods());
-        assertEquals(method, productCmptType.getMethods()[0]);
-        assertEquals(1, productCmptType.getMethods().length);
-        assertEquals(1, productCmptType.getProductCmptTypeMethods().length);
+        assertEquals(method, productCmptType.getMethods().get(0));
+        assertEquals(1, productCmptType.getMethods().size());
+        assertEquals(1, productCmptType.getProductCmptTypeMethods().size());
     }
 
     @Test
@@ -667,7 +666,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         assertNotNull(tsu);
         assertEquals(productCmptType, tsu.getParent());
         assertEquals(1, productCmptType.getNumOfTableStructureUsages());
-        assertEquals(tsu, productCmptType.getTableStructureUsages()[0]);
+        assertEquals(tsu, productCmptType.getTableStructureUsages().get(0));
     }
 
     @Test
@@ -743,7 +742,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
     public void testNewAttribute() {
         IProductCmptTypeAttribute a1 = productCmptType.newProductCmptTypeAttribute();
         assertEquals(1, productCmptType.getNumOfAttributes());
-        assertEquals(a1, productCmptType.getProductCmptTypeAttributes()[0]);
+        assertEquals(a1, productCmptType.getProductCmptTypeAttributes().get(0));
         assertEquals(productCmptType, a1.getProductCmptType());
 
         assertEquals(a1, lastEvent.getPart());
@@ -768,16 +767,16 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
 
     @Test
     public void testGetAttributes() {
-        assertEquals(0, productCmptType.getProductCmptTypeAttributes().length);
+        assertEquals(0, productCmptType.getProductCmptTypeAttributes().size());
 
         IProductCmptTypeAttribute a1 = productCmptType.newProductCmptTypeAttribute();
-        IProductCmptTypeAttribute[] attributes = productCmptType.getProductCmptTypeAttributes();
-        assertEquals(a1, attributes[0]);
+        List<IProductCmptTypeAttribute> attributes = productCmptType.getProductCmptTypeAttributes();
+        assertEquals(a1, attributes.get(0));
 
         IProductCmptTypeAttribute a2 = productCmptType.newProductCmptTypeAttribute();
         attributes = productCmptType.getProductCmptTypeAttributes();
-        assertEquals(a1, attributes[0]);
-        assertEquals(a2, attributes[1]);
+        assertEquals(a1, attributes.get(0));
+        assertEquals(a2, attributes.get(1));
     }
 
     @Test
@@ -895,10 +894,10 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         IProductCmptTypeAttribute a3 = productCmptType.newProductCmptTypeAttribute();
 
         productCmptType.moveAttributes(new int[] { 1, 2 }, true);
-        IProductCmptTypeAttribute[] attributes = productCmptType.getProductCmptTypeAttributes();
-        assertEquals(a2, attributes[0]);
-        assertEquals(a3, attributes[1]);
-        assertEquals(a1, attributes[2]);
+        List<IProductCmptTypeAttribute> attributes = productCmptType.getProductCmptTypeAttributes();
+        assertEquals(a2, attributes.get(0));
+        assertEquals(a3, attributes.get(1));
+        assertEquals(a1, attributes.get(2));
 
         assertTrue(lastEvent.isAffected(a1));
         assertTrue(lastEvent.isAffected(a2));
@@ -1048,8 +1047,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         bMethod2.newParameter(Datatype.INTEGER.toString(), "param2");
         bMethod2.setOverloadsFormula(false);
 
-        IProductCmptTypeMethod[] methods = bType.findSignaturesOfOverloadedFormulas(ipsProject);
-        assertEquals(1, methods.length);
+        List<IProductCmptTypeMethod> methods = bType.findSignaturesOfOverloadedFormulas(ipsProject);
+        assertEquals(1, methods.size());
     }
 
     @Test
@@ -1079,8 +1078,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         IProductCmptType bType = newProductCmptType(ipsProject, "BType");
         bType.setSupertype(aType.getQualifiedName());
 
-        IMethod[] methods = bType.findOverrideMethodCandidates(false, ipsProject);
-        assertEquals(2, methods.length);
+        List<IMethod> methods = bType.findOverrideMethodCandidates(false, ipsProject);
+        assertEquals(2, methods.size());
 
         IProductCmptTypeMethod bMethod = bType.newProductCmptTypeMethod();
         bMethod.setName("calculate");
@@ -1094,7 +1093,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         bMethod.setOverloadsFormula(true);
 
         methods = bType.findOverrideMethodCandidates(false, ipsProject);
-        assertEquals(1, methods.length);
+        assertEquals(1, methods.size());
     }
 
     @Override
@@ -1141,9 +1140,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         ProductCmpt productCmpt2 = newProductCmpt(productCmptType, productCmpt2QName);
         ProductCmpt productCmpt3 = newProductCmpt(ipsProject, productCmpt3QName);
 
-        Object[] result = productCmptType.searchMetaObjectSrcFiles(true);
-        List<Object> resultList = Arrays.asList(result);
-        assertEquals(2, result.length);
+        Collection<IIpsSrcFile> resultList = productCmptType.searchMetaObjectSrcFiles(true);
+        assertEquals(2, resultList.size());
         assertTrue(resultList.contains(productCmpt1.getIpsSrcFile()));
         assertTrue(resultList.contains(productCmpt2.getIpsSrcFile()));
         assertFalse(resultList.contains(productCmpt3.getIpsSrcFile()));
@@ -1151,9 +1149,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
         ProductCmpt productCmptProj2 = newProductCmpt(referencingProject, productCmptProj2QName);
         productCmptProj2.setProductCmptType(productCmptTypeQName);
 
-        result = productCmptType.searchMetaObjectSrcFiles(true);
-        resultList = Arrays.asList(result);
-        assertEquals(3, result.length);
+        resultList = productCmptType.searchMetaObjectSrcFiles(true);
+        assertEquals(3, resultList.size());
         assertTrue(resultList.contains(productCmpt1.getIpsSrcFile()));
         assertTrue(resultList.contains(productCmpt2.getIpsSrcFile()));
         assertTrue(resultList.contains(productCmptProj2.getIpsSrcFile()));
@@ -1161,19 +1158,18 @@ public class ProductCmptTypeTest extends AbstractDependencyTest implements Conte
 
         ProductCmptType productCmptTypeProj2 = newProductCmptType(independentProject, productCmptTypeProj2QName);
 
-        result = productCmptTypeProj2.searchMetaObjectSrcFiles(true);
-        assertEquals(0, result.length);
+        resultList = productCmptTypeProj2.searchMetaObjectSrcFiles(true);
+        assertEquals(0, resultList.size());
 
         ProductCmptType superProductCmpt = newProductCmptType(ipsProject, "superProductCmpt");
         superProductCmpt.setAbstract(true);
         productCmptType.setSupertype(superProductCmpt.getQualifiedName());
 
-        result = productCmptTypeProj2.searchMetaObjectSrcFiles(false);
-        assertEquals(0, result.length);
+        resultList = productCmptTypeProj2.searchMetaObjectSrcFiles(false);
+        assertEquals(0, resultList.size());
 
-        result = superProductCmpt.searchMetaObjectSrcFiles(true);
-        resultList = Arrays.asList(result);
-        assertEquals(3, result.length);
+        resultList = superProductCmpt.searchMetaObjectSrcFiles(true);
+        assertEquals(3, resultList.size());
         assertTrue(resultList.contains(productCmpt1.getIpsSrcFile()));
         assertTrue(resultList.contains(productCmpt2.getIpsSrcFile()));
         assertTrue(resultList.contains(productCmptProj2.getIpsSrcFile()));

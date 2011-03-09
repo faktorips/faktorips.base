@@ -276,6 +276,11 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     }
 
     @Override
+    public boolean isUnsafeInverseAssociations() {
+        return propertiesInternal.isUnsafeInverseAssociations();
+    }
+
+    @Override
     public Set<String> getResourcesPathExcludedFromTheProductDefiniton() {
         return propertiesInternal.getResourcesPathExcludedFromTheProductDefiniton();
     }
@@ -348,6 +353,11 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setRulesWithoutReferencesAllowedEnabled(boolean enabled) {
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+    }
+
+    @Override
+    public void setUnsafeInverseAssociations(boolean typesafeInverseAssociations) {
         throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 

@@ -1530,12 +1530,13 @@ public class IpsProject extends IpsElement implements IIpsProject {
     public IPolicyCmptType[] findReferencingPolicyCmptTypes(IPolicyCmptType pcType) throws CoreException {
         ArrayList<IIpsObject> list = new ArrayList<IIpsObject>();
         // get referenced PCTypes
-        IIpsObject[] pcTypes = findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE);
-        for (IIpsObject pcType2 : pcTypes) {
-            IPolicyCmptTypeAssociation[] relations = ((PolicyCmptType)pcType2).getPolicyCmptTypeAssociations();
+        IIpsSrcFile[] pcTypes = findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
+        for (IIpsSrcFile pcType2 : pcTypes) {
+            List<IPolicyCmptTypeAssociation> relations = ((IPolicyCmptType)pcType2.getIpsObject())
+                    .getPolicyCmptTypeAssociations();
             for (IPolicyCmptTypeAssociation relation : relations) {
                 if (relation.getTarget().equals(pcType.getQualifiedName())) {
-                    list.add(pcType2);
+                    list.add(pcType2.getIpsObject());
                 }
             }
         }

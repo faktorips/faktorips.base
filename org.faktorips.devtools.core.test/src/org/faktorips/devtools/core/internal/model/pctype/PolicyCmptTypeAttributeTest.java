@@ -187,7 +187,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     @Test
     public void testRemove() {
         attribute.delete();
-        assertEquals(0, pcType.getPolicyCmptTypeAttributes().length);
+        assertEquals(0, pcType.getPolicyCmptTypeAttributes().size());
         assertTrue(ipsSrcFile.isDirty());
     }
 

@@ -146,7 +146,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
 
     @Test
     public void testGetOverrideCandidates() throws CoreException {
-        assertEquals(0, policyCmptType.findOverrideMethodCandidates(false, ipsProject).length);
+        assertEquals(0, policyCmptType.findOverrideMethodCandidates(false, ipsProject).size());
 
         // create two more types that act as supertype and supertype's supertype
         IIpsSrcFile file1 = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Supertype", true, null);
@@ -176,26 +176,26 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         m5.setAbstract(true);
         m5.newParameter("Money", "p1");
 
-        IMethod[] candidates = policyCmptType.findOverrideMethodCandidates(false, ipsProject);
-        assertEquals(2, candidates.length);
-        assertEquals(m3, candidates[0]);
-        assertEquals(m5, candidates[1]);
+        List<IMethod> candidates = policyCmptType.findOverrideMethodCandidates(false, ipsProject);
+        assertEquals(2, candidates.size());
+        assertEquals(m3, candidates.get(0));
+        assertEquals(m5, candidates.get(1));
         // notes:
         // m2 is not a candidate because it is already overridden by m1
         // m4 is not a candidate because it is overridden by m3 and m3 comes first in the hierarchy
 
         // only not implemented abstract methods
         candidates = policyCmptType.findOverrideMethodCandidates(true, ipsProject);
-        assertEquals(1, candidates.length);
-        assertEquals(m5, candidates[0]);
+        assertEquals(1, candidates.size());
+        assertEquals(m5, candidates.get(0));
         // note: now only m5 is a candidate as it's abstract, m3 is not.
 
         // override the supersupertype method m5 in the supertype
         // => now also m5 is not a candidate any more, if only not implemented abstract methods are
         // requested.
-        supertype.overrideMethods(new IMethod[] { m5 });
+        supertype.overrideMethods(Arrays.asList(new IMethod[] { m5 }));
         candidates = policyCmptType.findOverrideMethodCandidates(true, ipsProject);
-        assertEquals(0, candidates.length);
+        assertEquals(0, candidates.size());
     }
 
     @Test
@@ -300,15 +300,15 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
 
     @Test
     public void testGetAttributes() {
-        assertEquals(0, policyCmptType.getPolicyCmptTypeAttributes().length);
+        assertEquals(0, policyCmptType.getPolicyCmptTypeAttributes().size());
         IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
         IPolicyCmptTypeAttribute a2 = policyCmptType.newPolicyCmptTypeAttribute();
-        assertSame(a1, policyCmptType.getPolicyCmptTypeAttributes()[0]);
-        assertSame(a2, policyCmptType.getPolicyCmptTypeAttributes()[1]);
+        assertSame(a1, policyCmptType.getPolicyCmptTypeAttributes().get(0));
+        assertSame(a2, policyCmptType.getPolicyCmptTypeAttributes().get(1));
 
         // make sure a defensive copy is returned.
-        policyCmptType.getPolicyCmptTypeAttributes()[0] = null;
-        assertNotNull(policyCmptType.getPolicyCmptTypeAttributes()[0]);
+        policyCmptType.getPolicyCmptTypeAttributes().clear();
+        assertNotNull(policyCmptType.getPolicyCmptTypeAttributes().get(0));
     }
 
     @Test
@@ -345,15 +345,15 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
 
     @Test
     public void testGetMethods() {
-        assertEquals(0, policyCmptType.getMethods().length);
+        assertEquals(0, policyCmptType.getMethods().size());
         IMethod m1 = policyCmptType.newMethod();
         IMethod m2 = policyCmptType.newMethod();
-        assertSame(m1, policyCmptType.getMethods()[0]);
-        assertSame(m2, policyCmptType.getMethods()[1]);
+        assertSame(m1, policyCmptType.getMethods().get(0));
+        assertSame(m2, policyCmptType.getMethods().get(1));
 
         // make sure a defensive copy is returned.
-        policyCmptType.getMethods()[0] = null;
-        assertNotNull(policyCmptType.getMethods()[0]);
+        policyCmptType.getMethods().clear();
+        assertNotNull(policyCmptType.getMethods().get(0));
     }
 
     @Test
@@ -375,15 +375,15 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
 
     @Test
     public void testGetRules() {
-        assertEquals(0, policyCmptType.getRules().length);
+        assertEquals(0, policyCmptType.getRules().size());
         IValidationRule r1 = policyCmptType.newRule();
         IValidationRule r2 = policyCmptType.newRule();
-        assertSame(r1, policyCmptType.getRules()[0]);
-        assertSame(r2, policyCmptType.getRules()[1]);
+        assertSame(r1, policyCmptType.getRules().get(0));
+        assertSame(r2, policyCmptType.getRules().get(1));
 
         // make sure a defensive copy is returned.
-        policyCmptType.getRules()[0] = null;
-        assertNotNull(policyCmptType.getRules()[0]);
+        policyCmptType.getRules().clear();
+        assertNotNull(policyCmptType.getRules().get(0));
     }
 
     @Test
@@ -405,15 +405,15 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
 
     @Test
     public void testGetRelations() {
-        assertEquals(0, policyCmptType.getPolicyCmptTypeAssociations().length);
+        assertEquals(0, policyCmptType.getPolicyCmptTypeAssociations().size());
         IPolicyCmptTypeAssociation r1 = policyCmptType.newPolicyCmptTypeAssociation();
         IPolicyCmptTypeAssociation r2 = policyCmptType.newPolicyCmptTypeAssociation();
-        assertSame(r1, policyCmptType.getPolicyCmptTypeAssociations()[0]);
-        assertSame(r2, policyCmptType.getPolicyCmptTypeAssociations()[1]);
+        assertSame(r1, policyCmptType.getPolicyCmptTypeAssociations().get(0));
+        assertSame(r2, policyCmptType.getPolicyCmptTypeAssociations().get(1));
 
         // make sure a defensive copy is returned.
-        policyCmptType.getPolicyCmptTypeAssociations()[0] = null;
-        assertNotNull(policyCmptType.getPolicyCmptTypeAssociations()[0]);
+        policyCmptType.getPolicyCmptTypeAssociations().clear();
+        assertNotNull(policyCmptType.getPolicyCmptTypeAssociations().get(0));
     }
 
     @Test
@@ -605,17 +605,17 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertTrue(policyCmptType.isAbstract());
         assertEquals("blabla", policyCmptType.getDescriptionText(Locale.US));
 
-        IPolicyCmptTypeAttribute[] a = policyCmptType.getPolicyCmptTypeAttributes();
-        assertEquals(1, a.length);
+        List<IPolicyCmptTypeAttribute> a = policyCmptType.getPolicyCmptTypeAttributes();
+        assertEquals(1, a.size());
 
-        IMethod[] m = policyCmptType.getMethods();
-        assertEquals(1, m.length);
+        List<IMethod> m = policyCmptType.getMethods();
+        assertEquals(1, m.size());
 
-        IValidationRule[] rules = policyCmptType.getRules();
-        assertEquals(1, rules.length);
+        List<IValidationRule> rules = policyCmptType.getRules();
+        assertEquals(1, rules.size());
 
-        IPolicyCmptTypeAssociation[] r = policyCmptType.getPolicyCmptTypeAssociations();
-        assertEquals(1, r.length);
+        List<IPolicyCmptTypeAssociation> r = policyCmptType.getPolicyCmptTypeAssociations();
+        assertEquals(1, r.size());
 
         policyCmptType.initFromXml(element);
         assertEquals(1, policyCmptType.getNumOfAttributes());
@@ -624,10 +624,10 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertEquals(1, policyCmptType.getNumOfRules());
 
         // test if the object references have remained the same
-        assertSame(a[0], policyCmptType.getPolicyCmptTypeAttributes()[0]);
-        assertSame(r[0], policyCmptType.getPolicyCmptTypeAssociations()[0]);
-        assertSame(m[0], policyCmptType.getMethods()[0]);
-        assertSame(rules[0], policyCmptType.getRules()[0]);
+        assertSame(a.get(0), policyCmptType.getPolicyCmptTypeAttributes().get(0));
+        assertSame(r.get(0), policyCmptType.getPolicyCmptTypeAssociations().get(0));
+        assertSame(m.get(0), policyCmptType.getMethods().get(0));
+        assertSame(rules.get(0), policyCmptType.getRules().get(0));
     }
 
     @Test
@@ -665,19 +665,19 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertEquals("NewSuperType", copy.getSupertype());
         assertTrue(copy.isAbstract());
         assertEquals("blabla", copy.getDescriptionText(Locale.US));
-        IPolicyCmptTypeAttribute[] attributes = copy.getPolicyCmptTypeAttributes();
-        assertEquals(2, attributes.length);
-        assertEquals("a1", attributes[0].getName());
-        assertEquals("a2", attributes[1].getName());
-        IMethod[] methods = copy.getMethods();
-        assertEquals("m1", methods[0].getName());
-        assertEquals("m2", methods[1].getName());
-        IValidationRule[] rules = copy.getRules();
-        assertEquals("rule1", rules[0].getName());
-        assertEquals("rule2", rules[1].getName());
-        IPolicyCmptTypeAssociation[] relations = copy.getPolicyCmptTypeAssociations();
-        assertEquals("t1", relations[0].getTarget());
-        assertEquals("t2", relations[1].getTarget());
+        List<IPolicyCmptTypeAttribute> attributes = copy.getPolicyCmptTypeAttributes();
+        assertEquals(2, attributes.size());
+        assertEquals("a1", attributes.get(0).getName());
+        assertEquals("a2", attributes.get(1).getName());
+        List<IMethod> methods = copy.getMethods();
+        assertEquals("m1", methods.get(0).getName());
+        assertEquals("m2", methods.get(1).getName());
+        List<IValidationRule> rules = copy.getRules();
+        assertEquals("rule1", rules.get(0).getName());
+        assertEquals("rule2", rules.get(1).getName());
+        List<IPolicyCmptTypeAssociation> relations = copy.getPolicyCmptTypeAssociations();
+        assertEquals("t1", relations.get(0).getTarget());
+        assertEquals("t2", relations.get(1).getTarget());
     }
 
     @Test

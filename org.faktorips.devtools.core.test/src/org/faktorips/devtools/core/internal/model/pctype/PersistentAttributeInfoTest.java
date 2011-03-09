@@ -103,8 +103,8 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         PolicyCmptType copyOfPcType = (PolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "Copy");
         copyOfPcType.initFromXml(element);
 
-        assertEquals(1, copyOfPcType.getPolicyCmptTypeAttributes().length);
-        IPersistentAttributeInfo persistenceAttributeInfoCopy = copyOfPcType.getPolicyCmptTypeAttributes()[0]
+        assertEquals(1, copyOfPcType.getPolicyCmptTypeAttributes().size());
+        IPersistentAttributeInfo persistenceAttributeInfoCopy = copyOfPcType.getPolicyCmptTypeAttributes().get(0)
                 .getPersistenceAttributeInfo();
 
         assertTrue(persistenceAttributeInfoCopy.isTransient());

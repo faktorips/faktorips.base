@@ -103,11 +103,12 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     private IPolicyCmptTypeAssociation[] getAssociationsFor(IPolicyCmptType from, IPolicyCmptType target) {
         List<IPolicyCmptTypeAssociation> result = new ArrayList<IPolicyCmptTypeAssociation>();
         String targetQName = target.getQualifiedName();
-        IPolicyCmptTypeAssociation[] policyAssociations = from.getPolicyCmptTypeAssociations();
-        for (int i = 0; i < policyAssociations.length; i++) {
-            if (targetQName.equals(policyAssociations[i].getTarget())) {
-                if (!AssociationType.COMPOSITION_DETAIL_TO_MASTER.equals(policyAssociations[i].getAssociationType())) {
-                    result.add(policyAssociations[i]);
+        List<IPolicyCmptTypeAssociation> policyAssociations = from.getPolicyCmptTypeAssociations();
+        for (IPolicyCmptTypeAssociation policyCmptTypeAssociation : policyAssociations) {
+            if (targetQName.equals(policyCmptTypeAssociation.getTarget())) {
+                if (!AssociationType.COMPOSITION_DETAIL_TO_MASTER
+                        .equals(policyCmptTypeAssociation.getAssociationType())) {
+                    result.add(policyCmptTypeAssociation);
                 }
             }
         }
@@ -116,8 +117,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
 
     private int getAssociationIndex() {
         List<IAssociation> allAssociationsForTheTargetType = new ArrayList<IAssociation>();
-        IAssociation[] assoc = getType().getAssociations();
-        for (IAssociation element : assoc) {
+        for (IAssociation element : getType().getAssociations()) {
             if (getTarget().equals(element.getTarget())) {
                 allAssociationsForTheTargetType.add(element);
             }

@@ -14,7 +14,6 @@
 package org.faktorips.devtools.htmlexport.pages.standard;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -61,7 +60,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
     private static class TableStructureTablePageElement extends
             AbstractIpsObjectPartsContainerTablePageElement<ITableStructureUsage> {
         public TableStructureTablePageElement(IProductCmptType productCmptType, DocumentationContext context) {
-            super(Arrays.asList(productCmptType.getTableStructureUsages()), context);
+            super(productCmptType.getTableStructureUsages(), context);
         }
 
         @Override
@@ -166,8 +165,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
     private void addProductCmptList() {
         List<IIpsSrcFile> allProductCmptSrcFiles;
         try {
-            allProductCmptSrcFiles = new ArrayList<IIpsSrcFile>(Arrays.asList(getDocumentedIpsObject()
-                    .searchMetaObjectSrcFiles(true)));
+            allProductCmptSrcFiles = new ArrayList<IIpsSrcFile>(getDocumentedIpsObject().searchMetaObjectSrcFiles(true));
         } catch (CoreException e) {
             IpsStatus status = new IpsStatus(IStatus.ERROR,
                     "Error getting ProductCmpts of " + getDocumentedIpsObject().getQualifiedName(), e); //$NON-NLS-1$

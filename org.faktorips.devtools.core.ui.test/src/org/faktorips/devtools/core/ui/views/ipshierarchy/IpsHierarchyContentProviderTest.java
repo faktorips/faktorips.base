@@ -81,10 +81,10 @@ public class IpsHierarchyContentProviderTest extends AbstractIpsPluginTest {
     public void testGetChildren() throws CoreException {
         HierarchyContentProvider a = new HierarchyContentProvider();
         a.inputChanged(null, null, TypeHierarchy.getTypeHierarchy(supertype));
-        IType[] b = (IType[])a.getChildren(supersupertype);
-        assertTrue(b[0].getName().equals("Supertype"));
-        IType[] c = (IType[])a.getChildren(supertype);
-        assertTrue(c[0].getName().equals("TestPolicy"));
+        Object[] b = a.getChildren(supersupertype);
+        assertTrue(((IType)b[0]).getName().equals("Supertype"));
+        Object[] c = a.getChildren(supertype);
+        assertTrue(((IType)c[0]).getName().equals("TestPolicy"));
     }
 
     @Test

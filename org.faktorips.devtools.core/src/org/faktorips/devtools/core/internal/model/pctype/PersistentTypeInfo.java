@@ -300,7 +300,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         if (inheritanceStrategy != InheritanceStrategy.SINGLE_TABLE) {
             // if a subtype type has no attributes then we didn't need an own table
             if (StringUtils.isNotEmpty(getPolicyCmptType().getSupertype())
-                    && getPolicyCmptType().getAttributes().length == 0) {
+                    && getPolicyCmptType().getAttributes().size() == 0) {
                 return;
             }
             validateTableNameValidIdentifier(msgList);
@@ -379,7 +379,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         if (rootEntity != getPolicyCmptType()
                 && !rootEntity.getPersistenceTypeInfo().isDefinesDiscriminatorColumn()
                 && (inheritanceStrategy == InheritanceStrategy.SINGLE_TABLE || inheritanceStrategy == InheritanceStrategy.JOINED_SUBCLASS)
-                && getPolicyCmptType().getAttributes().length > 0) {
+                && getPolicyCmptType().getAttributes().size() > 0) {
             // TODO JPA Joerg wenn das mit getPolicyCmptType().getAttributes().length > 0 stimmt
             // zus. noch transiente attribute ausschliessen
             String text = NLS.bind(Messages.PersistentTypeInfo_msgDiscriminatorMustBeDefinedInTheRootEntity,
@@ -682,7 +682,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             InheritanceStrategy currentInheritanceStrategy = currentType.getPersistenceTypeInfo()
                     .getInheritanceStrategy();
 
-            IPolicyCmptTypeAttribute[] policyCmptTypeAttributes = currentType.getPolicyCmptTypeAttributes();
+            List<IPolicyCmptTypeAttribute> policyCmptTypeAttributes = currentType.getPolicyCmptTypeAttributes();
             for (IPolicyCmptTypeAttribute currentAttribute : policyCmptTypeAttributes) {
                 if (isPersistentAttribute(currentAttribute)) {
                     addIfNotEmpty(currentAttribute.getPersistenceAttributeInfo().getTableColumnName(),
@@ -725,7 +725,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
 
         private void collectAssociationColumnsIfExists(IPolicyCmptType currentType) {
-            IPolicyCmptTypeAssociation[] policyCmptTypeAssociations = currentType.getPolicyCmptTypeAssociations();
+            List<IPolicyCmptTypeAssociation> policyCmptTypeAssociations = currentType.getPolicyCmptTypeAssociations();
             for (IPolicyCmptTypeAssociation policyCmptTypeAssociation : policyCmptTypeAssociations) {
                 IPersistentAssociationInfo pAssInfo = policyCmptTypeAssociation.getPersistenceAssociatonInfo();
                 addIfNotEmpty(pAssInfo.getJoinColumnName(), new ObjectProperty(pAssInfo,

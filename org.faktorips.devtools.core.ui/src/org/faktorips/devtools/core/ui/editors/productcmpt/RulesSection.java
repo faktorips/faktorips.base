@@ -143,7 +143,7 @@ public class RulesSection extends SimpleIpsPartsSection {
                         return new Object[0];
                     }
                     ITypeHierarchy hierarchy = type.getSupertypeHierarchy();
-                    return hierarchy.getAllRules(type);
+                    return hierarchy.getAllRules(type).toArray();
                 } catch (CoreException e) {
                     IpsPlugin.log(e);
                     return new Object[0];

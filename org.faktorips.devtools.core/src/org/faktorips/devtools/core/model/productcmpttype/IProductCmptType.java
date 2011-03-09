@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.model.productcmpttype;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.IIpsMetaClass;
@@ -163,7 +166,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     /**
      * Returns the type's attributes.
      */
-    public IProductCmptTypeAttribute[] getProductCmptTypeAttributes();
+    public List<IProductCmptTypeAttribute> getProductCmptTypeAttributes();
 
     /**
      * Returns the attribute with the given name defined in <strong>this</strong> type (This method
@@ -211,7 +214,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Returns the table structure usages defined for this type or an empty array is no usage is
      * defined.
      */
-    public ITableStructureUsage[] getTableStructureUsages();
+    public List<ITableStructureUsage> getTableStructureUsages();
 
     /**
      * Returns the table structure usage with the given role name. If more than one table structure
@@ -275,17 +278,17 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     /**
      * Returns the type's methods. Typesafe version of <code>getMethods()</code>.
      */
-    public IProductCmptTypeMethod[] getProductCmptTypeMethods();
+    public List<IProductCmptTypeMethod> getProductCmptTypeMethods();
 
     /**
      * Returns the type's associations. Typesafe version of <code>getAssociations()</code>.
      */
-    public IProductCmptTypeAssociation[] getProductCmptTypeAssociations();
+    public List<IProductCmptTypeAssociation> getProductCmptTypeAssociations();
 
     /**
      * Returns the methods of this type which are no formula signatures.
      */
-    public IProductCmptTypeMethod[] getNonFormulaProductCmptTypeMethods();
+    public List<IProductCmptTypeMethod> getNonFormulaProductCmptTypeMethods();
 
     /**
      * Returns the method signature with the indicates formula name. Returns <code>null</code> if no
@@ -298,7 +301,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Returns all method signatures of this product component type neglecting the type hierarchy.
      * Returns an empty array if no formula signature is defined for this type.
      */
-    public IProductCmptTypeMethod[] getFormulaSignatures();
+    public List<IProductCmptTypeMethod> getFormulaSignatures();
 
     /**
      * Searches the method signature with the indicated formula name in the type's supertype
@@ -318,13 +321,13 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @throws CoreException if an error occurs while searching.
      */
-    public IProductCmptTypeMethod[] findSignaturesOfOverloadedFormulas(IIpsProject ipsProject) throws CoreException;
+    public List<IProductCmptTypeMethod> findSignaturesOfOverloadedFormulas(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the types product definition properties including properties defined in one of the
      * type's supertypes.
      */
-    public IProdDefProperty[] findProdDefProperties(IIpsProject ipsProject) throws CoreException;
+    public List<IProdDefProperty> findProdDefProperties(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the product definition property with the given name and type. If no such property is
@@ -360,6 +363,6 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     /**
      * @see #searchMetaObjectSrcFiles(boolean)
      */
-    public IIpsSrcFile[] searchProductComponents(boolean includeSubtypes) throws CoreException;
+    public Collection<IIpsSrcFile> searchProductComponents(boolean includeSubtypes) throws CoreException;
 
 }

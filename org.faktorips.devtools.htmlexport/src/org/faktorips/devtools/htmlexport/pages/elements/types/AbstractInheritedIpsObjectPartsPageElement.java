@@ -57,7 +57,7 @@ public abstract class AbstractInheritedIpsObjectPartsPageElement<S extends IIpsE
                 continue;
             }
 
-            List<T> objectParts = getIpsObjectParts(superElement);
+            List<? extends T> objectParts = getIpsObjectParts(superElement);
 
             if (objectParts.isEmpty()) {
                 continue;
@@ -67,7 +67,7 @@ public abstract class AbstractInheritedIpsObjectPartsPageElement<S extends IIpsE
         }
     }
 
-    protected void addInheritedObjectParts(S superElement, List<T> objectParts) {
+    protected void addInheritedObjectParts(S superElement, List<? extends T> objectParts) {
         WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
 
         wrapper.addPageElements(new TextPageElement(createHeadline(superElement), TextType.HEADING_3));
@@ -76,7 +76,7 @@ public abstract class AbstractInheritedIpsObjectPartsPageElement<S extends IIpsE
         addPageElements(wrapper);
     }
 
-    protected WrapperPageElement createInheritedObjectPartsEnumeration(List<T> objectParts) {
+    protected WrapperPageElement createInheritedObjectPartsEnumeration(List<? extends T> objectParts) {
         WrapperPageElement inheritedObjectParts = new WrapperPageElement(WrapperType.BLOCK);
         for (T objectPart : objectParts) {
             if (!showObjectPart(objectPart)) {
@@ -95,7 +95,7 @@ public abstract class AbstractInheritedIpsObjectPartsPageElement<S extends IIpsE
 
     protected abstract String createHeadline(S superElement);
 
-    protected abstract List<T> getIpsObjectParts(S ipsElement);
+    protected abstract List<? extends T> getIpsObjectParts(S ipsElement);
 
     protected PageElement createRepresentation(T objectPart) {
         return new PageElementUtils().createLinkPageElement(context, objectPart, "content", new Style[0]); //$NON-NLS-1$

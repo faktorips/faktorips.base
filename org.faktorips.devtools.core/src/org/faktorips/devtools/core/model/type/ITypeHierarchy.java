@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.model.type;
 
+import java.util.List;
+
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 
 /**
@@ -41,12 +43,12 @@ public interface ITypeHierarchy {
      * Returns the type's super types by traveling up the hierarchy. The first element in the array
      * (if any) is the given type's direkt super type.
      */
-    public IType[] getAllSupertypes(IType type);
+    public List<IType> getAllSupertypes(IType type);
 
     /**
      * Returns the type's super types and itself. The first element in the array is the type itself.
      */
-    public IType[] getAllSupertypesInclSelf(IType type);
+    public List<IType> getAllSupertypesInclSelf(IType type);
 
     /**
      * Returns <code>true</code> if the candidate is a super type of the indicated sub type,
@@ -66,27 +68,27 @@ public interface ITypeHierarchy {
      * Returns all attributes of the given type either defined in the type itself or any of it's
      * super types found in the hierarchy.
      */
-    public IAttribute[] getAllAttributes(IType type);
+    public List<IAttribute> getAllAttributes(IType type);
 
     /**
      * Returns all attributes of the given type either defined in the type itself or any of it's
      * super types found in the hierarchy. If an attribute overrides another, only the one
      * overriding is contained in the result, but not the overridden one.
      */
-    public IAttribute[] getAllAttributesRespectingOverride(IType type);
+    public List<IAttribute> getAllAttributesRespectingOverride(IType type);
 
     /**
      * Returns all methods of the given type either defined in the type itself or any of it's super
      * types found in the hierarchy.
      */
-    public IMethod[] getAllMethods(IType type);
+    public List<IMethod> getAllMethods(IType type);
 
     /**
      * Returns all rules of the given type either defined in the type itself or any of it's super
      * types found in the hierarchy. Works only for PolicyCmptType. Returns an empty array for all
      * other types.
      */
-    public IValidationRule[] getAllRules(IType type);
+    public List<IValidationRule> getAllRules(IType type);
 
     /**
      * Returns the attribute with the given name if either the type or one of it's super types
@@ -100,7 +102,7 @@ public interface ITypeHierarchy {
      * either type is <code>null</code> or the hierarchy does not contain any sub types for the
      * type.
      */
-    public IType[] getSubtypes(IType type);
+    public List<IType> getSubtypes(IType type);
 
     /**
      * Returns all direct and indirect sub types for the given policy component type.
@@ -108,7 +110,7 @@ public interface ITypeHierarchy {
      * @return An empty array if either type is <code>null</code> or the hierarchy does not contain
      *         any sub types for the type.
      */
-    public IType[] getAllSubtypes(IType type);
+    public List<IType> getAllSubtypes(IType type);
 
     /**
      * Test if the IType with the given name is part of the Hierarchy.

@@ -132,14 +132,14 @@ public class LinksContentProvider implements ITreeContentProvider {
 
         @Override
         protected boolean visit(IProductCmptType currentType) throws CoreException {
-            IAssociation[] typeAssociations = currentType.getAssociations();
+            List<IAssociation> typeAssociations = currentType.getAssociations();
             int index = 0;
-            for (int i = 0; i < typeAssociations.length; i++) {
+            for (IAssociation association : typeAssociations) {
                 // to get the associations of the root type of the supertype hierarchy first,
                 // put in the list at first, but with unchanged order for all associations
                 // found in one type...
-                if (!typeAssociations[i].isDerived()) {
-                    associations.add(index, typeAssociations[i].getName());
+                if (!association.isDerived()) {
+                    associations.add(index, association.getName());
                     index++;
                 }
             }

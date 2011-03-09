@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.editors.SelectSupertypeHierarchyPartsDialog;
 import org.faktorips.devtools.core.ui.editors.SupertypeHierarchyPartsContentProvider;
 
@@ -68,21 +67,21 @@ public class InheritEnumAttributesDialog extends SelectSupertypeHierarchyPartsDi
         }
 
         @Override
-        protected IIpsObjectPart[] getAvailableParts(IIpsObject ipsObject) {
+        protected List<IEnumAttribute> getAvailableParts(IIpsObject ipsObject) {
             IEnumType enumType = (IEnumType)ipsObject;
             try {
                 List<IEnumAttribute> candiates = enumType.findInheritEnumAttributeCandidates(enumType.getIpsProject());
-                return candiates.toArray(new IEnumAttribute[candiates.size()]);
+                return candiates;
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }
         }
 
         @Override
-        protected IIpsObject[] getSupertypes(IIpsObject ipsObject) throws CoreException {
+        protected List<IEnumType> getSupertypes(IIpsObject ipsObject) throws CoreException {
             IEnumType enumType = (IEnumType)ipsObject;
             List<IEnumType> supertypes = enumType.findAllSuperEnumTypes(enumType.getIpsProject());
-            return supertypes.toArray(new IEnumType[supertypes.size()]);
+            return supertypes;
         }
 
     }

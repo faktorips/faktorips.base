@@ -50,17 +50,17 @@ public class InverseAssociationCompletionProcessor extends AbstractCompletionPro
         if (target == null) {
             return;
         }
-        IPolicyCmptTypeAssociation[] associationCandidates = target.getPolicyCmptTypeAssociations();
-        for (int i = 0; i < associationCandidates.length; i++) {
+        List<IPolicyCmptTypeAssociation> associationCandidates = target.getPolicyCmptTypeAssociations();
+        for (IPolicyCmptTypeAssociation association : associationCandidates) {
             // only association candidates with target policy component type equal to the policy
             // component type this association belongs to
-            if (!associationCandidates[i].getTarget().equals(association.getPolicyCmptType().getQualifiedName())) {
+            if (!association.getTarget().equals(association.getPolicyCmptType().getQualifiedName())) {
                 continue;
             }
 
             // only association with name starts with prefix
-            if (associationCandidates[i].getName().toLowerCase().startsWith(prefix)) {
-                addToResult(result, associationCandidates[i], documentOffset);
+            if (association.getName().toLowerCase().startsWith(prefix)) {
+                addToResult(result, association, documentOffset);
             }
         }
     }

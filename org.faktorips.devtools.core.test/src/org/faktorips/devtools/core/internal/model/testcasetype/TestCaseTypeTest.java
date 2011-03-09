@@ -19,6 +19,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -28,6 +29,7 @@ import org.faktorips.devtools.core.model.DependencyDetail;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -366,16 +368,14 @@ public class TestCaseTypeTest extends AbstractDependencyTest {
         TestCase testCase2 = newTestCase(testCaseType, testCase2QName);
         TestCase testCase3 = newTestCase(ipsProject, testCase3QName);
 
-        Object[] result = testCaseType.searchMetaObjectSrcFiles(true);
-        List<Object> resultList = Arrays.asList(result);
-        assertEquals(2, result.length);
+        Collection<IIpsSrcFile> resultList = testCaseType.searchMetaObjectSrcFiles(true);
+        assertEquals(2, resultList.size());
         assertTrue(resultList.contains(testCase1.getIpsSrcFile()));
         assertTrue(resultList.contains(testCase2.getIpsSrcFile()));
         assertFalse(resultList.contains(testCase3.getIpsSrcFile()));
 
-        result = testCaseType.searchMetaObjectSrcFiles(false);
-        resultList = Arrays.asList(result);
-        assertEquals(2, result.length);
+        resultList = testCaseType.searchMetaObjectSrcFiles(false);
+        assertEquals(2, resultList.size());
         assertTrue(resultList.contains(testCase1.getIpsSrcFile()));
         assertTrue(resultList.contains(testCase2.getIpsSrcFile()));
         assertFalse(resultList.contains(testCase3.getIpsSrcFile()));
@@ -383,9 +383,8 @@ public class TestCaseTypeTest extends AbstractDependencyTest {
         TestCase testCaseProj2 = newTestCase(referencingProject, testCaseProj2QName);
         testCaseProj2.setTestCaseType(testCaseTypeQName);
 
-        result = testCaseType.searchMetaObjectSrcFiles(true);
-        resultList = Arrays.asList(result);
-        assertEquals(3, result.length);
+        resultList = testCaseType.searchMetaObjectSrcFiles(true);
+        assertEquals(3, resultList.size());
         assertTrue(resultList.contains(testCase1.getIpsSrcFile()));
         assertTrue(resultList.contains(testCase2.getIpsSrcFile()));
         assertTrue(resultList.contains(testCaseProj2.getIpsSrcFile()));
@@ -393,8 +392,8 @@ public class TestCaseTypeTest extends AbstractDependencyTest {
 
         TestCaseType testCaseTypeProj2 = newTestCaseType(independentProject, testCaseTypeProj2QName);
 
-        result = testCaseTypeProj2.searchMetaObjectSrcFiles(true);
-        assertEquals(0, result.length);
+        resultList = testCaseTypeProj2.searchMetaObjectSrcFiles(true);
+        assertEquals(0, resultList.size());
     }
 
 }

@@ -174,7 +174,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement {
     /**
      * Returns the type's attributes.
      */
-    public IAttribute[] getAttributes();
+    public List<IAttribute> getAttributes();
 
     /**
      * Returns this type's attributes and the attributes within the supertype hierarchy. It
@@ -184,14 +184,14 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement {
      * 
      * @throws CoreException If an exception occurs while collecting the attributes.
      */
-    public IAttribute[] findAllAttributes(IIpsProject ipsProject) throws CoreException;
+    public List<IAttribute> findAllAttributes(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns this type's associations within the supertype hierarchy.
      * 
      * @throws CoreException If an exception occurs while collecting the associations.
      */
-    public IAssociation[] findAllAssociations(IIpsProject ipsProject) throws CoreException;
+    public List<IAssociation> findAllAssociations(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the attribute with the given name defined in <strong>this</strong> type (This method
@@ -299,7 +299,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement {
      * @param includeSupertypes <code>true</code> if the supertype hierarchy should be included in
      *            the search, <tt>false</tt> otherwise.
      */
-    public IAssociation[] findAssociationsForTargetAndAssociationType(String target,
+    public List<IAssociation> findAssociationsForTargetAndAssociationType(String target,
             AssociationType associationType,
             IIpsProject ipsProject,
             boolean includeSupertypes) throws CoreException;
@@ -307,7 +307,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement {
     /**
      * Returns the type's associations.
      */
-    public IAssociation[] getAssociations();
+    public List<IAssociation> getAssociations();
 
     /**
      * Returns all not derived associations from this type and its super types.
@@ -322,7 +322,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement {
      * 
      * @param target The qualified name of the target type.
      */
-    public IAssociation[] getAssociationsForTarget(String target);
+    public List<IAssociation> getAssociationsForTarget(String target);
 
     /**
      * Creates a new association and returns it.
@@ -363,7 +363,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement {
     /**
      * Returns the type's methods.
      */
-    public IMethod[] getMethods();
+    public List<IMethod> getMethods();
 
     /**
      * Returns the first method with the given name and the given parameters in this type. This
@@ -445,14 +445,14 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement {
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      */
-    public IMethod[] findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject)
+    public List<IMethod> findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject)
             throws CoreException;
 
     /**
      * Creates new methods in this type that override the given methods. Note that it is not checked
      * whether the methods really belong to one of the type's supertypes.
      */
-    public IMethod[] overrideMethods(IMethod[] methods);
+    public List<IMethod> overrideMethods(List<IMethod> methods);
 
     /**
      * Returns true if this type has a method equal to the indicated one. Two methods are considered

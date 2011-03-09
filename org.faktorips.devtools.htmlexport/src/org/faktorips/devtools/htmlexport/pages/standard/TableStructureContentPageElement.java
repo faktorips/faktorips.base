@@ -15,6 +15,7 @@ package org.faktorips.devtools.htmlexport.pages.standard;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -316,10 +317,9 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
      * adds a list with the table contents of this table structure
      */
     private void addTableContentList() {
-        List<IIpsSrcFile> tableContentsSrcFiles;
+        Collection<IIpsSrcFile> tableContentsSrcFiles;
         try {
-            tableContentsSrcFiles = new ArrayList<IIpsSrcFile>(Arrays.asList(getDocumentedIpsObject()
-                    .searchMetaObjectSrcFiles(true)));
+            tableContentsSrcFiles = getDocumentedIpsObject().searchMetaObjectSrcFiles(true);
         } catch (CoreException e) {
             getContext().addStatus(
                     new IpsStatus(IStatus.WARNING,
@@ -339,8 +339,8 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
             return;
         }
 
-        List<PageElement> linkPageElements = new PageElementUtils().createLinkPageElements(tableContentsSrcFiles,
-                "content", new LinkedHashSet<Style>(), getContext()); //$NON-NLS-1$
+        List<PageElement> linkPageElements = new PageElementUtils().createLinkPageElements(new ArrayList<IIpsSrcFile>(
+                tableContentsSrcFiles), "content", new LinkedHashSet<Style>(), getContext()); //$NON-NLS-1$
         ListPageElement liste = new ListPageElement(linkPageElements);
 
         wrapper.addPageElements(liste);

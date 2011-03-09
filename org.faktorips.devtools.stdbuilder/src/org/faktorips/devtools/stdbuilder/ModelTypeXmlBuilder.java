@@ -91,8 +91,8 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
     }
 
     private void addAssociations(IType model, Element modelType) throws CoreException {
-        IAssociation[] associations = model.getAssociations();
-        if (associations.length > 0) {
+        List<IAssociation> associations = model.getAssociations();
+        if (associations.size() > 0) {
             Element modelTypeAssociations = doc.createElement("ModelTypeAssociations");
             modelType.appendChild(modelTypeAssociations);
             for (IAssociation association : associations) {
@@ -151,8 +151,8 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
     }
 
     private void addAttributes(IType model, Element modelType) throws CoreException {
-        IAttribute[] attributes = model.getAttributes();
-        if (attributes.length > 0) {
+        List<? extends IAttribute> attributes = model.getAttributes();
+        if (attributes.size() > 0) {
             Element modelTypeAttributes = doc.createElement("ModelTypeAttributes");
             modelType.appendChild(modelTypeAttributes);
             for (IAttribute attribute : attributes) {

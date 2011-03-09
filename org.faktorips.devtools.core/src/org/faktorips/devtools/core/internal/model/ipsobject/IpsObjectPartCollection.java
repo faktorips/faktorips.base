@@ -141,6 +141,15 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
         return parts;
     }
 
+    /**
+     * Returns a copy of the backing list
+     * 
+     * @return A copy of the list of all parts
+     */
+    public List<T> asList() {
+        return new ArrayList<T>(parts);
+    }
+
     public IIpsObjectPart[] getParts() {
         return parts.toArray(new IIpsObjectPart[parts.size()]);
     }

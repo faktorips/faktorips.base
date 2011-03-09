@@ -143,9 +143,9 @@ public class GenProductCmptType extends GenType {
     }
 
     private void createGeneratorsForProdAttributes() throws CoreException {
-        IProductCmptTypeAttribute[] attrs = getProductCmptType().getProductCmptTypeAttributes();
+        List<IProductCmptTypeAttribute> attrs = getProductCmptType().getProductCmptTypeAttributes();
         for (IProductCmptTypeAttribute attr : attrs) {
-            if (attr.isValid()) {
+            if (attr.isValid(attr.getIpsProject())) {
                 GenProductCmptTypeAttribute generator = new GenProductCmptTypeAttribute(this, attr);
                 genProductCmptTypeAttributes.add(generator);
                 getGeneratorsByPart().put(attr, generator);
@@ -154,9 +154,9 @@ public class GenProductCmptType extends GenType {
     }
 
     private void createGeneratorsForProdAssociations() throws CoreException {
-        IProductCmptTypeAssociation[] ass = getProductCmptType().getProductCmptTypeAssociations();
+        List<IProductCmptTypeAssociation> ass = getProductCmptType().getProductCmptTypeAssociations();
         for (IProductCmptTypeAssociation as : ass) {
-            if (as.isValid()) {
+            if (as.isValid(as.getIpsProject())) {
                 GenProdAssociation generator = createGenerator(as);
                 genProdAssociations.add(generator);
                 getGeneratorsByPart().put(as, generator);
@@ -165,9 +165,9 @@ public class GenProductCmptType extends GenType {
     }
 
     private void createGeneratorsForMethods() throws CoreException {
-        IProductCmptTypeMethod[] methods = getProductCmptType().getProductCmptTypeMethods();
+        List<IProductCmptTypeMethod> methods = getProductCmptType().getProductCmptTypeMethods();
         for (IProductCmptTypeMethod method : methods) {
-            if (method.isValid()) {
+            if (method.isValid(method.getIpsProject())) {
                 GenProductCmptTypeMethod generator = new GenProductCmptTypeMethod(this, method);
                 genMethods.add(generator);
                 getGeneratorsByPart().put(method, generator);
@@ -176,9 +176,9 @@ public class GenProductCmptType extends GenType {
     }
 
     private void createGeneratorsForTableStructureUsages() throws CoreException {
-        ITableStructureUsage[] tsus = getProductCmptType().getTableStructureUsages();
+        List<ITableStructureUsage> tsus = getProductCmptType().getTableStructureUsages();
         for (ITableStructureUsage tsu : tsus) {
-            if (tsu.isValid()) {
+            if (tsu.isValid(tsu.getIpsProject())) {
                 GenTableStructureUsage generator = new GenTableStructureUsage(this, tsu);
                 genTableStructureUsages.add(generator);
                 getGeneratorsByPart().put(tsu, generator);
@@ -195,7 +195,7 @@ public class GenProductCmptType extends GenType {
 
     public GenProductCmptTypeAttribute getGenerator(IProductCmptTypeAttribute a) throws CoreException {
         GenProductCmptTypeAttribute generator = (GenProductCmptTypeAttribute)getGeneratorsByPart().get(a);
-        if (generator == null && a.isValid()) {
+        if (generator == null && a.isValid(a.getIpsProject())) {
             // generators for supertype attributes will be created on demand since it is expected
             // that
             // only a few exit. It will not be checked if the provided attribute is actually a
@@ -211,7 +211,7 @@ public class GenProductCmptType extends GenType {
 
     public GenProductCmptTypeMethod getGenerator(IProductCmptTypeMethod method) throws CoreException {
         GenProductCmptTypeMethod generator = (GenProductCmptTypeMethod)getGeneratorsByPart().get(method);
-        if (generator == null && method.isValid()) {
+        if (generator == null && method.isValid(method.getIpsProject())) {
             // generators for supertype methods will be created on demand since it is expected that
             // only a few exit. It will not be checked if the provided method is actually a
             // supertype
@@ -225,7 +225,7 @@ public class GenProductCmptType extends GenType {
 
     public GenProdAssociation getGenerator(IProductCmptTypeAssociation a) throws CoreException {
         GenProdAssociation generator = (GenProdAssociation)getGeneratorsByPart().get(a);
-        if (generator == null && a.isValid()) {
+        if (generator == null && a.isValid(a.getIpsProject())) {
             // generators for supertype associations will be created on demand since it is expected
             // that
             // only a few exit. It will not be checked if the provided association is actually a
@@ -238,7 +238,7 @@ public class GenProductCmptType extends GenType {
         return generator;
     }
 
-    public GenTableStructureUsage getGenerator(ITableStructureUsage tsu) throws CoreException {
+    public GenTableStructureUsage getGenerator(ITableStructureUsage tsu) {
         return (GenTableStructureUsage)getGeneratorsByPart().get(tsu);
     }
 
@@ -257,7 +257,7 @@ public class GenProductCmptType extends GenType {
         return frag;
     }
 
-    public String getMethodNameGetGeneration() throws CoreException {
+    public String getMethodNameGetGeneration() {
         IChangesOverTimeNamingConvention convention = getProductCmptType().getIpsProject()
                 .getChangesInTimeNamingConventionForGeneratedCode();
         Locale locale = getLanguageUsedInGeneratedSourceCode();
@@ -267,7 +267,7 @@ public class GenProductCmptType extends GenType {
                 generationConceptAbbreviation, generationConceptName });
     }
 
-    public String getQualifiedClassNameForProductCmptTypeGen(boolean forInterface) throws CoreException {
+    public String getQualifiedClassNameForProductCmptTypeGen(boolean forInterface) {
         return getQualifiedName(forInterface)
                 + getChangesInTimeNamingConvention().getGenerationConceptNameAbbreviation(
                         getLanguageUsedInGeneratedSourceCode());
@@ -280,7 +280,7 @@ public class GenProductCmptType extends GenType {
      * public IProductGen getGeneration(Calendar effectiveDate)
      * </pre>
      */
-    void generateSignatureGetGeneration(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    void generateSignatureGetGeneration(JavaCodeFragmentBuilder methodsBuilder) {
         String generationInterface = getQualifiedClassNameForProductCmptTypeGen(true);
         String methodName = getMethodNameGetGeneration();
         String paramName = getVarNameEffectiveDate();
@@ -291,8 +291,6 @@ public class GenProductCmptType extends GenType {
     /**
      * Returns the variable or parameter name for the effetiveDate.
      * 
-     * @param element An ips element that gives access to the ips project.
-     * @see org.faktorips.devtools.core.builder.AbstractProductCmptTypeBuilder#getVarNameEffectiveDate
      */
     public String getVarNameEffectiveDate() {
         IChangesOverTimeNamingConvention convention = getChangesInTimeNamingConvention();
@@ -308,7 +306,7 @@ public class GenProductCmptType extends GenType {
      * public IMotorProduct getMotorProduct()
      * </pre>
      */
-    public void generateSignatureGetProductCmpt(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    public void generateSignatureGetProductCmpt(JavaCodeFragmentBuilder methodsBuilder) {
         String returnType = getQualifiedName(true);
         String methodName = getMethodNameGetProductCmpt();
         methodsBuilder.signature(Modifier.PUBLIC, returnType, methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
@@ -321,7 +319,7 @@ public class GenProductCmptType extends GenType {
      * public void setMotorProduct(IMotorProduct motorProduct, boolean initPropertiesWithConfiguratedDefaults)
      * </pre>
      */
-    public void generateSignatureSetProductComponent(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    public void generateSignatureSetProductComponent(JavaCodeFragmentBuilder methodsBuilder) {
         String methodName = getMethodNameSetProductCmpt();
         String[] paramTypes = new String[] { getQualifiedName(true), "boolean" };
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, "void", methodName,
@@ -329,7 +327,7 @@ public class GenProductCmptType extends GenType {
     }
 
     /** Returns the method parameters for the method: setProductCmpt. */
-    public String[] getMethodParamNamesSetProductCmpt() throws CoreException {
+    public String[] getMethodParamNamesSetProductCmpt() {
         return new String[] { StringUtils.uncapitalize(getType().getName()), "initPropertiesWithConfiguratedDefaults" };
     }
 

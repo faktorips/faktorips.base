@@ -14,7 +14,6 @@
 package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -31,8 +30,8 @@ public class InheritedTypeAttributesPageElement extends AbstractInheritedIpsObje
     }
 
     @Override
-    protected List<IAttribute> getIpsObjectParts(IType element) {
-        return Arrays.asList(element.getAttributes());
+    protected List<? extends IAttribute> getIpsObjectParts(IType element) {
+        return element.getAttributes();
     }
 
     @Override
@@ -43,7 +42,7 @@ public class InheritedTypeAttributesPageElement extends AbstractInheritedIpsObje
 
     private void initializeOverwritingAttributesList() {
         overwritingAttributes = new ArrayList<String>();
-        List<IAttribute> ipsObjectParts = getIpsObjectParts(getParentIpsElement());
+        List<? extends IAttribute> ipsObjectParts = getIpsObjectParts(getParentIpsElement());
         for (IAttribute attribute : ipsObjectParts) {
             if (attribute.isOverwrite()) {
                 overwritingAttributes.add(attribute.getName());

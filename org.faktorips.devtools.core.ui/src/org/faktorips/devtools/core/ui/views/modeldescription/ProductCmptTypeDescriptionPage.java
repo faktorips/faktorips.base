@@ -44,13 +44,13 @@ public class ProductCmptTypeDescriptionPage extends DefaultModelDescriptionPage 
         List<DescriptionItem> descriptions = new ArrayList<DescriptionItem>();
         IIpsProject ipsProject = getIpsObject().getIpsProject();
         if (getIpsObject() != null) {
-            IAttribute[] attributes = getIpsObject().findAllAttributes(ipsProject);
+            List<IAttribute> attributes = getIpsObject().findAllAttributes(ipsProject);
             for (IAttribute attribute : attributes) {
                 createDescriptionItem(attribute, descriptions);
             }
             IPolicyCmptType policyCmptType = getIpsObject().findPolicyCmptType(ipsProject);
             if (policyCmptType != null) {
-                IAttribute[] policyCmptAttributes = policyCmptType.findAllAttributes(ipsProject);
+                List<IAttribute> policyCmptAttributes = policyCmptType.findAllAttributes(ipsProject);
                 for (IAttribute attribute : policyCmptAttributes) {
                     IPolicyCmptTypeAttribute pcAttribute = (IPolicyCmptTypeAttribute)attribute;
                     if (pcAttribute.isProductRelevant()) {
@@ -58,7 +58,7 @@ public class ProductCmptTypeDescriptionPage extends DefaultModelDescriptionPage 
                     }
                 }
             }
-            IAssociation[] associations = getIpsObject().findAllAssociations(ipsProject);
+            List<IAssociation> associations = getIpsObject().findAllAssociations(ipsProject);
             for (IAssociation association : associations) {
                 if (!association.isDerivedUnion()) {
                     createDescriptionItem(association, descriptions);

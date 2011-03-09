@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -102,14 +104,14 @@ public class AttributesSection extends SimpleIpsPartsSection {
 
                 private IValidationRule findValidationRule(IIpsObjectPart part) {
                     String name = part.getName();
-                    IValidationRule[] rules = getPolicyCmptType().getRules();
-                    for (int i = 0; i < rules.length; i++) {
-                        if (!rules[i].isCheckValueAgainstValueSetRule()) {
+                    List<IValidationRule> rules = getPolicyCmptType().getRules();
+                    for (IValidationRule rule : rules) {
+                        if (!rule.isCheckValueAgainstValueSetRule()) {
                             continue;
                         }
-                        String[] attributes = rules[i].getValidatedAttributes();
+                        String[] attributes = rule.getValidatedAttributes();
                         if (attributes.length == 1 && attributes[0].equals(name)) {
-                            return rules[i];
+                            return rule;
                         }
                     }
                     return null;
@@ -184,7 +186,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
         private void overrideClicked() {
             OverrideAttributeDialog dialog = new OverrideAttributeDialog(getPolicyCmptType(), getShell());
             if (dialog.open() == Window.OK) {
-                IPolicyCmptTypeAttribute[] attributesToOverwrite = dialog.getSelectedAttributes();
+                List<IPolicyCmptTypeAttribute> attributesToOverwrite = dialog.getSelectedAttributes();
                 getPolicyCmptType().overrideAttributes(attributesToOverwrite);
                 refresh();
             }
@@ -214,7 +216,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
 
             @Override
             public Object[] getElements(Object inputElement) {
-                return getPolicyCmptType().getPolicyCmptTypeAttributes();
+                return getPolicyCmptType().getPolicyCmptTypeAttributes().toArray();
             }
 
             @Override

@@ -262,10 +262,10 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     }
 
     private void validateDuplicateRoleName(MessageList msgList) {
-        ITableStructureUsage[] tabeStructureUsages = getProductCmptType().getTableStructureUsages();
-        for (int i = 0; i < tabeStructureUsages.length; i++) {
-            if (!(tabeStructureUsages[i].getId().equals(getId()))
-                    && tabeStructureUsages[i].getRoleName().equals(getRoleName())) {
+        List<ITableStructureUsage> tableStructureUsages = getProductCmptType().getTableStructureUsages();
+        for (ITableStructureUsage tableStructureUsage : tableStructureUsages) {
+            if (!(tableStructureUsage.getId().equals(getId()))
+                    && tableStructureUsage.getRoleName().equals(getRoleName())) {
                 String text = NLS.bind(Messages.TableStructureUsage_msgSameRoleName, getRoleName());
                 msgList.add(new Message(MSGCODE_SAME_ROLENAME, text, Message.ERROR));
             }

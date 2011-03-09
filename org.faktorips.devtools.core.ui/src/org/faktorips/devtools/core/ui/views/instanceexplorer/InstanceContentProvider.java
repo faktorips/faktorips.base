@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.views.instanceexplorer;
 
+import java.util.Collection;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -59,7 +61,7 @@ public class InstanceContentProvider extends DeferredStructuredContentProvider {
         }
         try {
             monitor.beginTask(getWaitingLabel(), 2);
-            IIpsSrcFile[] metaObjectsSrcFiles = ipsMetaClass.searchMetaObjectSrcFiles(subTypeSearch);
+            Collection<IIpsSrcFile> metaObjectsSrcFiles = ipsMetaClass.searchMetaObjectSrcFiles(subTypeSearch);
             monitor.worked(1);
             InstanceIpsSrcFileViewItem[] result = InstanceIpsSrcFileViewItem.createItems(metaObjectsSrcFiles,
                     ipsMetaClass);

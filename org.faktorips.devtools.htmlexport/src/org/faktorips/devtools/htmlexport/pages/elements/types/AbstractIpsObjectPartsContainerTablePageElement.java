@@ -30,10 +30,10 @@ public abstract class AbstractIpsObjectPartsContainerTablePageElement<T extends 
         AbstractStandardTablePageElement {
 
     private DocumentationContext context;
-    protected final List<T> objectParts;
+    protected final List<? extends T> objectParts;
     private IExtensionPropertyDefinition[] propertyDefinitions;
 
-    public AbstractIpsObjectPartsContainerTablePageElement(List<T> objectParts, DocumentationContext context) {
+    public AbstractIpsObjectPartsContainerTablePageElement(List<? extends T> objectParts, DocumentationContext context) {
         super();
         this.objectParts = objectParts;
         this.setContext(context);

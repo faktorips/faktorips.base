@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.type;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +43,7 @@ public class TypeHierarchy implements ITypeHierarchy {
     public final static TypeHierarchy getSupertypeHierarchy(IType pcType) throws CoreException {
         IIpsProject project = pcType.getIpsProject();
         TypeHierarchy hierarchy = new TypeHierarchy(pcType);
-        IType[] subtypes = new IType[0];
+        List<IType> subtypes = new ArrayList<IType>();
         while (pcType != null) {
             IType supertype = pcType.findSupertype(project);
             if (hierarchy.contains(supertype)) {
@@ -52,7 +51,8 @@ public class TypeHierarchy implements ITypeHierarchy {
                 supertype = null;
             }
             hierarchy.add(new Node(pcType, supertype, subtypes));
-            subtypes = new IType[] { pcType };
+            subtypes = new ArrayList<IType>();
+            subtypes.add(pcType);
             pcType = supertype;
         }
         return hierarchy;
@@ -78,14 +78,14 @@ public class TypeHierarchy implements ITypeHierarchy {
         for (IType subtype : subtypes) {
             addSubtypes(hierarchy, subtype, pcType);
         }
-        pcTypeNode.subtypes = subtypes.toArray(new IType[subtypes.size()]);
+        pcTypeNode.subtypes = subtypes;
         return hierarchy;
     }
 
     private final static void addSubtypes(TypeHierarchy hierarchie, IType pcType, IType superType) throws CoreException {
 
         List<IType> subtypes = searchDirectSubtypes(pcType, hierarchie);
-        Node node = new Node(pcType, superType, subtypes.toArray(new IType[subtypes.size()]));
+        Node node = new Node(pcType, superType, subtypes);
         hierarchie.add(node);
         for (IType subtype : subtypes) {
             addSubtypes(hierarchie, subtype, pcType);
@@ -161,18 +161,18 @@ public class TypeHierarchy implements ITypeHierarchy {
      * (if any) is the given type's direkt supertype.
      */
     @Override
-    public IType[] getAllSupertypes(IType type) {
+    public List<IType> getAllSupertypes(IType type) {
         List<IType> result = new ArrayList<IType>();
         getAllSupertypes(type, result);
-        return result.toArray(new IType[result.size()]);
+        return result;
     }
 
     @Override
-    public IType[] getAllSupertypesInclSelf(IType type) {
+    public List<IType> getAllSupertypesInclSelf(IType type) {
         List<IType> result = new ArrayList<IType>();
         result.add(type);
         getAllSupertypes(type, result);
-        return result.toArray(new IType[result.size()]);
+        return result;
     }
 
     private void getAllSupertypes(IType type, List<IType> result) {
@@ -197,7 +197,7 @@ public class TypeHierarchy implements ITypeHierarchy {
 
     @Override
     public boolean isSubtypeOf(IType candidate, IType supertype) {
-        IType[] subtypes = getSubtypes(supertype);
+        List<IType> subtypes = getSubtypes(supertype);
         for (IType subtype : subtypes) {
             if (subtype.equals(candidate)) {
                 return true;
@@ -210,24 +210,24 @@ public class TypeHierarchy implements ITypeHierarchy {
     }
 
     @Override
-    public IType[] getSubtypes(IType type) {
+    public List<IType> getSubtypes(IType type) {
         Node node = nodes.get(type);
         if (node == null) {
-            return new IType[0];
+            return new ArrayList<IType>();
         }
         return node.subtypes;
     }
 
     @Override
-    public IType[] getAllSubtypes(IType type) {
+    public List<IType> getAllSubtypes(IType type) {
         Node node = nodes.get(type);
         if (node == null) {
-            return new IType[0];
+            return new ArrayList<IType>();
         }
 
         ArrayList<IType> all = new ArrayList<IType>();
         addSubtypes(node, all);
-        return all.toArray(new IType[all.size()]);
+        return all;
     }
 
     private void addSubtypes(Node node, List<IType> list) {
@@ -235,7 +235,7 @@ public class TypeHierarchy implements ITypeHierarchy {
             return;
         }
 
-        list.addAll(Arrays.asList(node.subtypes));
+        list.addAll(node.subtypes);
         for (IType subtype : node.subtypes) {
             addSubtypes(nodes.get(subtype), list);
         }
@@ -244,9 +244,9 @@ public class TypeHierarchy implements ITypeHierarchy {
     private static class Node {
         IType type;
         IType supertype;
-        IType[] subtypes;
+        List<IType> subtypes;
 
-        Node(IType type, IType supertype, IType[] subtypes) {
+        Node(IType type, IType supertype, List<IType> subtypes) {
             ArgumentCheck.notNull(type);
             ArgumentCheck.notNull(subtypes);
             this.type = type;
@@ -256,70 +256,70 @@ public class TypeHierarchy implements ITypeHierarchy {
     }
 
     @Override
-    public IAttribute[] getAllAttributes(IType type) {
+    public List<IAttribute> getAllAttributes(IType type) {
         List<IAttribute> attributes = new ArrayList<IAttribute>();
-        IType[] types = getAllSupertypesInclSelf(type);
+        List<IType> types = getAllSupertypesInclSelf(type);
         for (IType type2 : types) {
-            IAttribute[] list = type2.getAttributes();
+            List<? extends IAttribute> list = type2.getAttributes();
             for (Object nextAttr : list) {
                 attributes.add((IAttribute)nextAttr);
             }
         }
-        return attributes.toArray(new IAttribute[attributes.size()]);
+        return attributes;
     }
 
     @Override
-    public IAttribute[] getAllAttributesRespectingOverride(IType type) {
+    public List<IAttribute> getAllAttributesRespectingOverride(IType type) {
         List<IAttribute> attributes = new ArrayList<IAttribute>();
-        IType[] types = getAllSupertypesInclSelf(type);
+        List<IType> types = getAllSupertypesInclSelf(type);
 
         Map<String, IAttribute> overridden = new HashMap<String, IAttribute>();
 
         for (IType type2 : types) {
-            IAttribute[] attrs = type2.getAttributes();
-            for (int j = 0; j < attrs.length; j++) {
-                if (!overridden.containsKey(attrs[j].getName())) {
-                    attributes.add(attrs[j]);
-                    if (attrs[j].isOverwrite()) {
-                        overridden.put(attrs[j].getName(), attrs[j]);
+            List<? extends IAttribute> attrs = type2.getAttributes();
+            for (IAttribute attribute : attrs) {
+                if (!overridden.containsKey(attribute.getName())) {
+                    attributes.add(attribute);
+                    if (attribute.isOverwrite()) {
+                        overridden.put(attribute.getName(), attribute);
                     }
                 }
             }
         }
-        return attributes.toArray(new IAttribute[attributes.size()]);
+        return attributes;
     }
 
     @Override
-    public IMethod[] getAllMethods(IType type) {
+    public List<IMethod> getAllMethods(IType type) {
         List<IMethod> methods = new ArrayList<IMethod>();
-        IType[] types = getAllSupertypesInclSelf(type);
+        List<IType> types = getAllSupertypesInclSelf(type);
         for (IType type2 : types) {
-            IMethod[] typeMethods = type2.getMethods();
-            for (Object nextMethod : typeMethods) {
-                methods.add((IMethod)nextMethod);
+            List<IMethod> typeMethods = type2.getMethods();
+            for (IMethod nextMethod : typeMethods) {
+                methods.add(nextMethod);
             }
         }
-        return methods.toArray(new IMethod[methods.size()]);
+        return methods;
     }
 
     @Override
-    public IValidationRule[] getAllRules(IType type) {
+    public List<IValidationRule> getAllRules(IType type) {
         List<IValidationRule> rules = new ArrayList<IValidationRule>();
-        IType[] types = getAllSupertypesInclSelf(type);
+        List<IType> types = getAllSupertypesInclSelf(type);
         for (IType type2 : types) {
             if (type2 instanceof IPolicyCmptType) {
-                IValidationRule[] typeRules = ((IPolicyCmptType)type2).getRules();
+                List<IValidationRule> typeRules = ((IPolicyCmptType)type2).getRules();
                 for (Object nextRule : typeRules) {
                     rules.add((IValidationRule)nextRule);
                 }
             }
         }
-        return rules.toArray(new IValidationRule[rules.size()]);
+        return rules;
     }
 
     @Override
     public IAttribute findAttribute(IType type, String attributeName) {
-        IType[] types = getAllSupertypesInclSelf(type);
+        List<IType> types = getAllSupertypesInclSelf(type);
         for (IType type2 : types) {
             IAttribute a = type2.getAttribute(attributeName);
             if (a != null) {

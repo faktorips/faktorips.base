@@ -21,6 +21,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -41,6 +42,7 @@ import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
@@ -988,9 +990,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         EnumContent enum2 = newEnumContent(enumType, enum2QName);
         EnumContent enum3 = newEnumContent(ipsProject, enum3QName);
 
-        Object[] result = enumType.searchMetaObjectSrcFiles(true);
-        List<Object> resultList = Arrays.asList(result);
-        assertEquals(2, result.length);
+        Collection<IIpsSrcFile> resultList = enumType.searchMetaObjectSrcFiles(true);
+        assertEquals(2, resultList.size());
         assertTrue(resultList.contains(enum1.getIpsSrcFile()));
         assertTrue(resultList.contains(enum2.getIpsSrcFile()));
         assertFalse(resultList.contains(enum3.getIpsSrcFile()));
@@ -998,9 +999,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         EnumContent enumProj2 = newEnumContent(referencingProject, enumProj2QName);
         enumProj2.setEnumType(enumTypeQName);
 
-        result = enumType.searchMetaObjectSrcFiles(true);
-        resultList = Arrays.asList(result);
-        assertEquals(3, result.length);
+        resultList = enumType.searchMetaObjectSrcFiles(true);
+        assertEquals(3, resultList.size());
         assertTrue(resultList.contains(enum1.getIpsSrcFile()));
         assertTrue(resultList.contains(enum2.getIpsSrcFile()));
         assertTrue(resultList.contains(enumProj2.getIpsSrcFile()));
@@ -1008,19 +1008,18 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
         EnumType enumTypeProj2 = newEnumType(independentProject, enumTypeProj2QName);
 
-        result = enumTypeProj2.searchMetaObjectSrcFiles(true);
-        assertEquals(0, result.length);
+        resultList = enumTypeProj2.searchMetaObjectSrcFiles(true);
+        assertEquals(0, resultList.size());
 
         EnumType superEnum = newEnumType(ipsProject, "superEnum");
         superEnum.setAbstract(true);
         enumType.setSuperEnumType(superEnum.getQualifiedName());
 
-        result = enumTypeProj2.searchMetaObjectSrcFiles(false);
-        assertEquals(0, result.length);
+        resultList = enumTypeProj2.searchMetaObjectSrcFiles(false);
+        assertEquals(0, resultList.size());
 
-        result = superEnum.searchMetaObjectSrcFiles(true);
-        resultList = Arrays.asList(result);
-        assertEquals(3, result.length);
+        resultList = superEnum.searchMetaObjectSrcFiles(true);
+        assertEquals(3, resultList.size());
         assertTrue(resultList.contains(enum1.getIpsSrcFile()));
         assertTrue(resultList.contains(enum2.getIpsSrcFile()));
         assertTrue(resultList.contains(enumProj2.getIpsSrcFile()));

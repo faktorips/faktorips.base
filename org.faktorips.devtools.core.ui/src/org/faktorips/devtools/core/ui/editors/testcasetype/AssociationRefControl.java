@@ -87,7 +87,7 @@ public class AssociationRefControl extends TextButtonControl {
         List<IPolicyCmptTypeAssociation> associationsToSelect = new ArrayList<IPolicyCmptTypeAssociation>();
         IPolicyCmptType currPolicyCmptType = parentPolicyCmptType;
         while (currPolicyCmptType != null) {
-            IPolicyCmptTypeAssociation[] associations = currPolicyCmptType.getPolicyCmptTypeAssociations();
+            List<IPolicyCmptTypeAssociation> associations = currPolicyCmptType.getPolicyCmptTypeAssociations();
             for (IPolicyCmptTypeAssociation association : associations) {
                 if (association.isAssoziation() || association.isCompositionMasterToDetail()) {
                     associationsToSelect.add(association);

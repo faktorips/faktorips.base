@@ -32,7 +32,7 @@ public class HierarchyContentProvider implements ITreeContentProvider {
     public Object[] getChildren(Object parentElement) {
         if (hierarchy != null && parentElement instanceof IType) {
             IType type = (IType)parentElement;
-            return hierarchy.getSubtypes(type);
+            return hierarchy.getSubtypes(type).toArray();
         } else {
             return new Object[0];
         }

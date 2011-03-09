@@ -189,11 +189,11 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
 
         @Override
         protected boolean visit(IProductCmptType currentType) throws CoreException {
-            ITableStructureUsage[] tsu = currentType.getTableStructureUsages();
+            List<ITableStructureUsage> tsu = currentType.getTableStructureUsages();
             for (ITableStructureUsage element : tsu) {
                 tableStructureUsages.add(element);
             }
-            IProductCmptTypeAttribute[] attr = currentType.getProductCmptTypeAttributes();
+            List<IProductCmptTypeAttribute> attr = currentType.getProductCmptTypeAttributes();
             for (IProductCmptTypeAttribute element : attr) {
                 attributes.add(element);
             }

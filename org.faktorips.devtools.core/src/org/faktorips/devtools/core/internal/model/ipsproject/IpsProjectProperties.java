@@ -76,6 +76,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private final static String OPTIONAL_CONSTRAINT_NAME_RULESWITHOUTREFERENCE = "rulesWithoutReferencesAllowed"; //$NON-NLS-1$
 
+    private final static String OPTIONAL_CONSTRAINT_UNSAFE_INVERSE_ASSOCIATIONS = "unsafeInverseAssociations"; //$NON-NLS-1$
+
     public final static IpsProjectProperties createFromXml(IpsProject ipsProject, Element element) {
         IpsProjectProperties data = new IpsProjectProperties();
         data.initFromXml(ipsProject, element);
@@ -121,6 +123,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean derivedUnionIsImplementedRuleEnabled = true;
     private boolean referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled = true;
     private boolean rulesWithoutReferencesAllowed = false;
+    private boolean unsafeInverseAssociations = false;
+
     private Map<String, String> requiredFeatures = new HashMap<String, String>();
 
     // hidden resource names in the model and product explorer
@@ -495,6 +499,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         optionalConstraintsEl.appendChild(createConstraintElement(doc, OPTIONAL_CONSTRAINT_NAME_RULESWITHOUTREFERENCE,
                 rulesWithoutReferencesAllowed));
 
+        optionalConstraintsEl.appendChild(createConstraintElement(doc, OPTIONAL_CONSTRAINT_UNSAFE_INVERSE_ASSOCIATIONS,
+                isUnsafeInverseAssociations()));
+
         // persistence options
         createPersistenceOptionsDescriptionComment(projectEl);
         Element persistenceOptionsEl = doc.createElement("PersistenceOptions"); //$NON-NLS-1$
@@ -723,6 +730,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled = enable;
             } else if (name.equals(OPTIONAL_CONSTRAINT_NAME_RULESWITHOUTREFERENCE)) {
                 rulesWithoutReferencesAllowed = enable;
+            } else if (name.equals(OPTIONAL_CONSTRAINT_UNSAFE_INVERSE_ASSOCIATIONS)) {
+                setUnsafeInverseAssociations(enable);
             }
         }
     }
@@ -828,6 +837,16 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     @Override
     public void setRulesWithoutReferencesAllowedEnabled(boolean enabled) {
         rulesWithoutReferencesAllowed = enabled;
+    }
+
+    @Override
+    public void setUnsafeInverseAssociations(boolean unsafeInverseAssociations) {
+        this.unsafeInverseAssociations = unsafeInverseAssociations;
+    }
+
+    @Override
+    public boolean isUnsafeInverseAssociations() {
+        return unsafeInverseAssociations;
     }
 
     @Override
@@ -1010,6 +1029,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     private void createOptionalConstraintsDescriptionComment(Node parentEl) {
+        // @formatter:off
         String s = "OptionalConstraints" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "Some of the contraints defined in the Faktor-IPS metamodel are optional." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -1021,8 +1041,27 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "    <!-- True if Faktor-IPS checks if referenced product components are valid on the effective date " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "		    of the referencing product component generation. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <Constraint name=\"referencedProductComponentsAreValidOnThisGenerationsValidFromDate\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <!-- True to allow rules without references -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <Constraint name=\"" + OPTIONAL_CONSTRAINT_NAME_RULESWITHOUTREFERENCE + "\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
+                + "    <!-- True to allow unsafe inverse associations. If false you have to create an inverse association" //$NON-NLS-1$
+                + "         for every subset of a derived union, when the derived union has an inverse association  -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <Constraint name=\"" + OPTIONAL_CONSTRAINT_UNSAFE_INVERSE_ASSOCIATIONS + "\" enable=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$
+                + SystemUtils.LINE_SEPARATOR
+                //
+                // Check if the inverse associations have to be type safe or not. Due to Issue
+                // FIPS-85 we need
+                // * to have to possibility to use the inverse association of the super type as
+                // inverse
+                // * association for a concrete type. When this property is false, these unsafe
+                // inverse
+                // * associations are allowed. Otherwise if this property is true you have to create
+                // a concrete
+                // * inverse association for every subset of a derived union with an inverse
+                // association.
+
                 + "</OptionalConstraints>" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$
         createDescriptionComment(s, parentEl);
+//        @formatter:on
     }
 
     private void createPersistenceOptionsDescriptionComment(Node parentEl) {

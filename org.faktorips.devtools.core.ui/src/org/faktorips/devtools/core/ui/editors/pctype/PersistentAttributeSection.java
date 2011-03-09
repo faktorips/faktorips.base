@@ -144,7 +144,7 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
         private class PersistentAttributeContentProvider implements IStructuredContentProvider {
             @Override
             public Object[] getElements(Object inputElement) {
-                IPolicyCmptTypeAttribute[] pcAttributes = ((IPolicyCmptType)getIpsObject())
+                List<IPolicyCmptTypeAttribute> pcAttributes = ((IPolicyCmptType)getIpsObject())
                         .getPolicyCmptTypeAttributes();
                 List<IPolicyCmptTypeAttribute> persistableAttributes = new ArrayList<IPolicyCmptTypeAttribute>();
                 for (IPolicyCmptTypeAttribute pcAttribute : pcAttributes) {

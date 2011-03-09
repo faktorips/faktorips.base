@@ -132,7 +132,7 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
         IIpsProject ipsProject = formula.getIpsProject();
         IProductCmptType productCmptType = formula.findProductCmptType(formula.getIpsProject());
         if (productCmptType != null) {
-            IAttribute[] attributes = productCmptType.findAllAttributes(ipsProject);
+            List<IAttribute> attributes = productCmptType.findAllAttributes(ipsProject);
             for (IAttribute attribute : attributes) {
                 if (attribute.getName().startsWith(prefix)) {
                     addPartToResult(result, attribute, attribute.getDatatype(), replacementOffset, prefix.length());
@@ -224,13 +224,13 @@ public class FormulaCompletionProcessor extends AbstractCompletionProcessor {
         if (!(datatype instanceof IType)) {
             return;
         }
-        IAttribute[] attributes = ((IType)datatype).findAllAttributes(ipsProject);
+        List<IAttribute> attributes = ((IType)datatype).findAllAttributes(ipsProject);
         List<String> attributeNames = new ArrayList<String>();
-        for (int i = 0; i < attributes.length; i++) {
-            if (attributes[i].getName().startsWith(attributePrefix)) {
-                if (!attributeNames.contains(attributes[i].getName())) {
-                    addAttributeToResult(result, attributes[i], replacementOffset, attributePrefix.length());
-                    attributeNames.add(attributes[i].getName());
+        for (IAttribute attribute : attributes) {
+            if (attribute.getName().startsWith(attributePrefix)) {
+                if (!attributeNames.contains(attribute.getName())) {
+                    addAttributeToResult(result, attribute, replacementOffset, attributePrefix.length());
+                    attributeNames.add(attribute.getName());
                 }
             }
         }

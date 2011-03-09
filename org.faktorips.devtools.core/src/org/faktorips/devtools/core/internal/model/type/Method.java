@@ -316,7 +316,7 @@ public class Method extends BaseIpsObjectPart implements IMethod {
     }
 
     private boolean validateDuplicateMethodInSameType(MessageList msgList) {
-        IMethod[] methods = getType().getMethods();
+        List<IMethod> methods = getType().getMethods();
         String thisSignature = getSignatureString();
         for (IMethod method : methods) {
             if (method.equals(this)) {

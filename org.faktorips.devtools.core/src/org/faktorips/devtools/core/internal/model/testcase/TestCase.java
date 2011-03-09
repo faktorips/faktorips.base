@@ -853,7 +853,7 @@ public class TestCase extends IpsObject implements ITestCase {
         if (pct == null) {
             return;
         }
-        validationRules.addAll(Arrays.asList(pct.getRules()));
+        validationRules.addAll(pct.getRules());
         IProductCmpt pc = testPolicyCmpt.findProductCmpt(ipsProject);
         if (pc == null) {
             return;
@@ -865,7 +865,7 @@ public class TestCase extends IpsObject implements ITestCase {
         if (!pctOfPc.equals(pct)) {
             // add all rules inside the supertype hierarchy
             ITypeHierarchy supertypeHierarchy = pctOfPc.getSupertypeHierarchy();
-            validationRules.addAll(Arrays.asList(supertypeHierarchy.getAllRules(pctOfPc)));
+            validationRules.addAll(supertypeHierarchy.getAllRules(pctOfPc));
         }
     }
 

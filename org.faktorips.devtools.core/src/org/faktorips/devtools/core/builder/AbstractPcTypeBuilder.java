@@ -89,7 +89,7 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
 
     @Override
     protected final void generateCodeForPolicyCmptTypeAttributes(TypeSection mainSection) throws CoreException {
-        IPolicyCmptTypeAttribute[] attributes = getPcType().getPolicyCmptTypeAttributes();
+        List<IPolicyCmptTypeAttribute> attributes = getPcType().getPolicyCmptTypeAttributes();
         for (IPolicyCmptTypeAttribute attribute : attributes) {
             IPolicyCmptTypeAttribute a = attribute;
             if (!a.validate(getIpsProject()).containsErrorMsg()) {
@@ -147,15 +147,15 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
     protected void generateCodeForValidationRules(JavaCodeFragmentBuilder constantBuilder,
             JavaCodeFragmentBuilder memberVarBuilder,
             JavaCodeFragmentBuilder methodBuilder) throws CoreException {
-        IValidationRule[] rules = getPcType().getRules();
-        for (int i = 0; i < rules.length; i++) {
+        List<IValidationRule> rules = getPcType().getRules();
+        for (IValidationRule rule : rules) {
             try {
-                if (!rules[i].validate(getIpsProject()).containsErrorMsg()) {
-                    generateCodeForValidationRule(rules[i]);
+                if (!rule.validate(getIpsProject()).containsErrorMsg()) {
+                    generateCodeForValidationRule(rule);
                 }
             } catch (CoreException e) {
                 throw new CoreException(new IpsStatus(IStatus.ERROR,
-                        "Error building validation rule " + rules[i].getName() + " of " //$NON-NLS-1$ //$NON-NLS-2$
+                        "Error building validation rule " + rule.getName() + " of " //$NON-NLS-1$ //$NON-NLS-2$
                                 + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
             }
         }
@@ -177,25 +177,25 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
         HashMap<IAssociation, List<IAssociation>> derivedUnions = new HashMap<IAssociation, List<IAssociation>>();
-        IPolicyCmptTypeAssociation[] associations = getPcType().getPolicyCmptTypeAssociations();
-        for (int i = 0; i < associations.length; i++) {
+        List<IPolicyCmptTypeAssociation> associations = getPcType().getPolicyCmptTypeAssociations();
+        for (IPolicyCmptTypeAssociation association : associations) {
             try {
-                if (!associations[i].isValid()) {
+                if (!association.isValid(association.getIpsProject())) {
                     continue;
                 }
-                generateCodeForAssociation(associations[i], fieldsBuilder, methodsBuilder);
-                if (associations[i].isSubsetOfADerivedUnion()) {
-                    IAssociation derivedUnion = associations[i].findSubsettedDerivedUnion(getIpsProject());
+                generateCodeForAssociation(association, fieldsBuilder, methodsBuilder);
+                if (association.isSubsetOfADerivedUnion()) {
+                    IAssociation derivedUnion = association.findSubsettedDerivedUnion(getIpsProject());
                     List<IAssociation> implementationAssociations = derivedUnions.get(derivedUnion);
                     if (implementationAssociations == null) {
                         implementationAssociations = new ArrayList<IAssociation>();
                         derivedUnions.put(derivedUnion, implementationAssociations);
                     }
-                    implementationAssociations.add(associations[i]);
+                    implementationAssociations.add(association);
                 }
             } catch (Exception e) {
                 throw new CoreException(new IpsStatus(IStatus.ERROR, "Error building association " //$NON-NLS-1$
-                        + associations[i].getName() + " of " //$NON-NLS-1$
+                        + association.getName() + " of " //$NON-NLS-1$
                         + getQualifiedClassName(getIpsObject().getIpsSrcFile()), e));
             }
         }
@@ -254,9 +254,9 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
 
         @Override
         protected boolean visit(IPolicyCmptType currentType) throws CoreException {
-            IPolicyCmptTypeAssociation[] associations = currentType.getPolicyCmptTypeAssociations();
+            List<IPolicyCmptTypeAssociation> associations = currentType.getPolicyCmptTypeAssociations();
             for (IPolicyCmptTypeAssociation association : associations) {
-                if (association.isDerivedUnion() && association.isValid()) {
+                if (association.isDerivedUnion() && association.isValid(association.getIpsProject())) {
                     try {
                         List<IAssociation> implAssociations = derivedUnionMap.get(association);
                         if (implAssociations != null) {

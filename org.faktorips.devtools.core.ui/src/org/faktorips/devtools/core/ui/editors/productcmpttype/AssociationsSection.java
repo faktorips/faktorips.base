@@ -139,7 +139,7 @@ public class AssociationsSection extends SimpleIpsPartsSection {
 
                 @Override
                 public Object[] getElements(Object inputElement) {
-                    return getProductCmptType().getAssociations();
+                    return getProductCmptType().getAssociations().toArray();
                 }
 
                 @Override

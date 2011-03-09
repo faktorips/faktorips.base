@@ -105,7 +105,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     @Override
     public IValidationRule findValueSetRule(IIpsProject ipsProject) {
-        IValidationRule[] rules = getPolicyCmptType().getRules();
+        List<IValidationRule> rules = getPolicyCmptType().getRules();
 
         for (IValidationRule rule : rules) {
             String[] attributes = rule.getValidatedAttributes();

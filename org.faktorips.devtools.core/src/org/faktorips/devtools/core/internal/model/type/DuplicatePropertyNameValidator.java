@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.model.type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -127,14 +126,12 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor {
     @Override
     protected boolean visit(IType currentType) throws CoreException {
         Type currType = (Type)currentType;
-        for (Iterator<? extends IAttribute> it = currType.getIteratorForAttributes(); it.hasNext();) {
-            IAttribute attr = it.next();
+        for (IAttribute attr : currType.getAttributesPartCollection()) {
             if (!attr.isOverwrite()) {
                 add(attr.getName().toLowerCase(), new ObjectProperty(attr, IIpsElement.PROPERTY_NAME));
             }
         }
-        for (Iterator<? extends IAssociation> it = currType.getIteratorForAssociations(); it.hasNext();) {
-            IAssociation ass = it.next();
+        for (IAssociation ass : currType.getAssociationPartCollection()) {
             if (ass.is1ToMany()) {
                 // target role plural only check if is many association
                 add(ass.getTargetRolePlural().toLowerCase(), new ObjectProperty(ass,

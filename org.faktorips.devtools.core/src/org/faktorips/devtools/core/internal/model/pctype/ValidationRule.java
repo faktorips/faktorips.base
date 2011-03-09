@@ -218,8 +218,8 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
     }
 
     private void validateValidatedAttribute(MessageList list, IIpsProject ipsProject) throws CoreException {
-        IAttribute[] attributes = getPolicyCmptType().getSupertypeHierarchy().getAllAttributes(getPolicyCmptType());
-        Set<String> attributeNames = new HashSet<String>(attributes.length);
+        List<IAttribute> attributes = getPolicyCmptType().getSupertypeHierarchy().getAllAttributes(getPolicyCmptType());
+        Set<String> attributeNames = new HashSet<String>(attributes.size());
         for (IAttribute attribute : attributes) {
             attributeNames.add(attribute.getName());
         }

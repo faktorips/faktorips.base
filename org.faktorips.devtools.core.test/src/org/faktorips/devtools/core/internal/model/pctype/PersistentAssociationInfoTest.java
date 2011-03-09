@@ -306,8 +306,8 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
 
         PolicyCmptType copyOfPcType = (PolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "Copy");
         copyOfPcType.newPolicyCmptTypeAssociation();
-        IPersistentAssociationInfo copyOfPersistenceAssociatonInfo = copyOfPcType.getPolicyCmptTypeAssociations()[0]
-                .getPersistenceAssociatonInfo();
+        IPersistentAssociationInfo copyOfPersistenceAssociatonInfo = copyOfPcType.getPolicyCmptTypeAssociations()
+                .get(0).getPersistenceAssociatonInfo();
         copyOfPersistenceAssociatonInfo.initFromXml(element);
 
         assertTrue(copyOfPersistenceAssociatonInfo.isTransient());

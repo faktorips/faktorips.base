@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.enums;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -554,7 +555,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     @Override
     public int getEnumLiteralNameAttributesCount() {
         int count = 0;
-        for (IEnumAttribute currentEnumAttribute : enumAttributes.getBackingList()) {
+        for (IEnumAttribute currentEnumAttribute : enumAttributes) {
             if (currentEnumAttribute instanceof IEnumLiteralNameAttribute) {
                 count++;
             }
@@ -871,7 +872,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    public IIpsSrcFile[] searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
+    public Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
 
         TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
         IIpsProject[] searchProjects = getIpsProject().findReferencingProjectLeavesOrSelf();
@@ -879,7 +880,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             result.addAll(Arrays.asList(project.findAllEnumContentSrcFiles(this, includeSubtypes)));
         }
 
-        return result.toArray(new IIpsSrcFile[result.size()]);
+        return result;
     }
 
     @Override
@@ -923,7 +924,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
     @Override
     public IEnumLiteralNameAttribute getEnumLiteralNameAttribute() {
-        for (IEnumAttribute currentAttribute : enumAttributes.getBackingList()) {
+        for (IEnumAttribute currentAttribute : enumAttributes) {
             if (currentAttribute instanceof IEnumLiteralNameAttribute) {
                 return (IEnumLiteralNameAttribute)currentAttribute;
             }

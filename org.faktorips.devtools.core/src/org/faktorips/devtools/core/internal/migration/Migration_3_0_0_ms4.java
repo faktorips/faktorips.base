@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.migration;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -57,7 +59,8 @@ public class Migration_3_0_0_ms4 extends DefaultMigration {
     protected void migrate(IIpsSrcFile srcFile) throws CoreException {
         if (srcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE)) {
             IPolicyCmptType policyCmptType = (IPolicyCmptType)srcFile.getIpsObject();
-            IPolicyCmptTypeAssociation[] policyCmptTypeAssociations = policyCmptType.getPolicyCmptTypeAssociations();
+            List<IPolicyCmptTypeAssociation> policyCmptTypeAssociations = policyCmptType
+                    .getPolicyCmptTypeAssociations();
             for (IPolicyCmptTypeAssociation ass : policyCmptTypeAssociations) {
                 migrateAssociation(ass);
             }

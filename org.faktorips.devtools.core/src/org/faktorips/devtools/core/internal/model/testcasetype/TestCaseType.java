@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.testcasetype;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -505,7 +506,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
             if (policyCmptType == null) {
                 continue;
             }
-            validationRules.addAll(Arrays.asList(policyCmptType.getSupertypeHierarchy().getAllRules(policyCmptType)));
+            validationRules.addAll(policyCmptType.getSupertypeHierarchy().getAllRules(policyCmptType));
             getValidationRules(parameter.getTestPolicyCmptTypeParamChilds(), validationRules, ipsProject);
         }
     }
@@ -535,13 +536,13 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     }
 
     @Override
-    public IIpsSrcFile[] searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
+    public Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
         TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
         IIpsProject[] searchProjects = getIpsProject().findReferencingProjectLeavesOrSelf();
         for (IIpsProject project : searchProjects) {
             result.addAll(Arrays.asList(project.findAllTestCaseSrcFiles(this)));
         }
-        return result.toArray(new IIpsSrcFile[result.size()]);
+        return result;
     }
 
 }

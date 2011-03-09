@@ -14,7 +14,6 @@
 package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -74,6 +73,6 @@ public class InheritedTypeMethodsPageElement extends AbstractInheritedIpsObjectP
 
     @Override
     protected List<IMethod> getIpsObjectParts(IType ipsElement) {
-        return Arrays.asList(ipsElement.getMethods());
+        return ipsElement.getMethods();
     }
 }

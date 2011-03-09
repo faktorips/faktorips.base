@@ -110,7 +110,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
 
             @Override
             public Object[] getElements(Object inputElement) {
-                return getProductCmptType().getProductCmptTypeAttributes();
+                return getProductCmptType().getProductCmptTypeAttributes().toArray();
             }
 
             @Override

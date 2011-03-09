@@ -141,7 +141,7 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
     }
 
     private IPolicyCmptTypeAttribute[] getElements() throws CoreException {
-        IAttribute[] attributes = typeHierarchy.getAllAttributesRespectingOverride(policyCmptType);
+        List<? extends IAttribute> attributes = typeHierarchy.getAllAttributesRespectingOverride(policyCmptType);
         List<IPolicyCmptTypeAttribute> attributesInDialog = new ArrayList<IPolicyCmptTypeAttribute>();
         for (IAttribute attribute : attributes) {
             IPolicyCmptTypeAttribute policyCmptarttribute = (IPolicyCmptTypeAttribute)attribute;
@@ -153,7 +153,7 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
             if (subtypeHierarchy == null) {
                 subtypeHierarchy = policyCmptType.getSubtypeHierarchy();
             }
-            IType[] allSubtypes = subtypeHierarchy.getAllSubtypes(policyCmptType);
+            List<IType> allSubtypes = subtypeHierarchy.getAllSubtypes(policyCmptType);
             for (IType subtype : allSubtypes) {
                 IPolicyCmptType policyCmptTypeSubtype = (IPolicyCmptType)subtype;
                 attributes = policyCmptTypeSubtype.getPolicyCmptTypeAttributes();

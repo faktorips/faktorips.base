@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.model.pctype;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.pctype.PersistentTypeInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -191,7 +193,7 @@ public interface IPolicyCmptType extends IType {
     /**
      * Returns the type's attributes.
      */
-    public IPolicyCmptTypeAttribute[] getPolicyCmptTypeAttributes();
+    public List<IPolicyCmptTypeAttribute> getPolicyCmptTypeAttributes();
 
     /**
      * Returns the attribute with the given name defined in <strong>this</strong> type (This method
@@ -244,7 +246,7 @@ public interface IPolicyCmptType extends IType {
      * 
      * @param ipsProject TODO
      */
-    public IPolicyCmptTypeAttribute[] findOverrideAttributeCandidates(IIpsProject ipsProject) throws CoreException;
+    public List<IPolicyCmptTypeAttribute> findOverrideAttributeCandidates(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Creates new attributes in this type overriding the given attributes. Note that it is not
@@ -252,12 +254,12 @@ public interface IPolicyCmptType extends IType {
      * 
      * @return The created attributes.
      */
-    public IPolicyCmptTypeAttribute[] overrideAttributes(IPolicyCmptTypeAttribute[] attributes);
+    public List<IPolicyCmptTypeAttribute> overrideAttributes(List<IPolicyCmptTypeAttribute> attributes);
 
     /**
      * Returns the type's validation rules.
      */
-    public IValidationRule[] getRules();
+    public List<IValidationRule> getRules();
 
     /**
      * Creates a new validation rule and returns it.
@@ -305,7 +307,7 @@ public interface IPolicyCmptType extends IType {
     /**
      * Returns the type's relations.
      */
-    public IPolicyCmptTypeAssociation[] getPolicyCmptTypeAssociations();
+    public List<IPolicyCmptTypeAssociation> getPolicyCmptTypeAssociations();
 
     /**
      * Creates a new association and returns it.
