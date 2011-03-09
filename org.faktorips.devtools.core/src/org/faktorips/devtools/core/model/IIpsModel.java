@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -291,6 +292,17 @@ public interface IIpsModel extends IIpsElement {
      * @throws CoreException if any exceptions occurs during search.
      */
     public List<ITestCase> searchReferencingTestCases(IProductCmpt cmpt) throws CoreException;
+
+    /**
+     * Returns the container identified by the given containerKind for the given IPS project.
+     * Returns <code>null</code> if no container with the given kind exists.
+     * 
+     * @param containerKind The container kind
+     * 
+     * @throws NullPointerException if containerKind is <code>null</code> or ipsProject is
+     *             <code>null</code>.
+     */
+    public IIpsObjectPathContainer getIpsObjectPathContainer(IIpsProject ipsProject, String containerKind);
 
     /**
      * Adding a {@link IIpsSrcFilesChangeListener} to the list of listeners. If the listener already

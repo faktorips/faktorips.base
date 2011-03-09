@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchiveEntry;
+import org.faktorips.devtools.core.model.ipsproject.IIpsContainerEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -182,9 +183,17 @@ public class IpsObjectPath implements IIpsObjectPath {
         if (rootName == null) {
             return null;
         }
-        for (IIpsObjectPathEntry entrie : entries) {
-            if (rootName.equals(entrie.getIpsPackageFragmentRootName())) {
-                return entrie;
+        for (IIpsObjectPathEntry entry : entries) {
+            if (entry.isContainer()) {
+                IIpsContainerEntry containerEntry = (IIpsContainerEntry)entry;
+                IIpsObjectPathEntry resolvedEntry = containerEntry.getResolvedEntry(rootName);
+                if (resolvedEntry != null) {
+                    return resolvedEntry;
+                }
+            } else {
+                if (rootName.equals(entry.getIpsPackageFragmentRootName())) {
+                    return entry;
+                }
             }
         }
         return null;
@@ -540,9 +549,8 @@ public class IpsObjectPath implements IIpsObjectPath {
                 result.add((IProductCmpt)productCmptFile.getIpsObject());
                 continue;
             }
-            QualifiedNameType cmptTypeQnt = new QualifiedNameType(
-                    productCmptFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE),
-                    IpsObjectType.PRODUCT_CMPT_TYPE);
+            QualifiedNameType cmptTypeQnt = new QualifiedNameType(productCmptFile
+                    .getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE), IpsObjectType.PRODUCT_CMPT_TYPE);
             visitedEntries.clear();
             IIpsSrcFile typeFoundFile = findIpsSrcFile(cmptTypeQnt, visitedEntries);
             if (typeFoundFile == null) {
@@ -584,11 +592,13 @@ public class IpsObjectPath implements IIpsObjectPath {
     public Element toXml(Document doc) {
         Element element = doc.createElement(XML_TAG_NAME);
         element.setAttribute("outputDefinedPerSrcFolder", "" + outputDefinedPerSourceFolder); //$NON-NLS-1$ //$NON-NLS-2$
-        element.setAttribute(
-                "outputFolderMergableSources", outputFolderMergableSources == null ? "" : outputFolderMergableSources.getProjectRelativePath().toString()); //$NON-NLS-1$ //$NON-NLS-2$
+        element
+                .setAttribute(
+                        "outputFolderMergableSources", outputFolderMergableSources == null ? "" : outputFolderMergableSources.getProjectRelativePath().toString()); //$NON-NLS-1$ //$NON-NLS-2$
         element.setAttribute("basePackageMergable", basePackageMergable); //$NON-NLS-1$
-        element.setAttribute(
-                "outputFolderDerivedSources", outputFolderDerivedSources == null ? "" : outputFolderDerivedSources.getProjectRelativePath().toString()); //$NON-NLS-1$ //$NON-NLS-2$
+        element
+                .setAttribute(
+                        "outputFolderDerivedSources", outputFolderDerivedSources == null ? "" : outputFolderDerivedSources.getProjectRelativePath().toString()); //$NON-NLS-1$ //$NON-NLS-2$
         element.setAttribute("basePackageDerived", basePackageDerived); //$NON-NLS-1$
         // entries
         for (IIpsObjectPathEntry entrie : entries) {

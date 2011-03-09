@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.PlatformObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -34,7 +35,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
+public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsObjectPathEntry {
 
     // name of xml elements representing path entries.
     public final static String XML_ELEMENT = "Entry"; //$NON-NLS-1$
@@ -49,6 +50,11 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
     @Override
     public IIpsObjectPath getIpsObjectPath() {
         return path;
+    }
+
+    @Override
+    public boolean isContainer() {
+        return false;
     }
 
     @Override
@@ -207,7 +213,12 @@ public abstract class IpsObjectPathEntry implements IIpsObjectPathEntry {
             return entry;
         }
         if (type.equals(TYPE_CONTAINER)) {
-            entry = new IpsContainerEntryBasedOnClasspathContainer(path);
+            entry = new IpsContainerEntry(path);
+            entry.initFromXml(element, project);
+            return entry;
+        }
+        if (type.equals(TYPE_PLUGIN)) {
+            entry = new IpsPluginEntry(path);
             entry.initFromXml(element, project);
             return entry;
         }
