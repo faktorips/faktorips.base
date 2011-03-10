@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.ui.IpsContextMenuId;
 import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
@@ -135,7 +136,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
 
             MenuManager manager = new MenuManager();
             manager.add(refactorSubmenu);
-            manager.add(new Separator("navigate")); //$NON-NLS-1$
+            manager.add(new Separator(IpsContextMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
 
             Menu contextMenu = manager.createContextMenu(getViewer().getControl());
             getViewer().getControl().setMenu(contextMenu);

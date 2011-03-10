@@ -58,6 +58,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrationOperation;
+import org.faktorips.devtools.core.ui.IpsContextMenuId;
 import org.faktorips.devtools.core.ui.actions.CleanUpTranslationsAction;
 import org.faktorips.devtools.core.ui.actions.CopyTableAction;
 import org.faktorips.devtools.core.ui.actions.CreateIpsArchiveAction;
@@ -195,8 +196,8 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         createOpenMenu(manager, selected, (IStructuredSelection)treeViewer.getSelection());
         manager.add(new Separator("reorg")); //$NON-NLS-1$
         createReorgActions(manager, selected);
-        manager.add(new Separator(GROUP_NAVIGATE));
-        createObjectNavigateActions(manager, selected);
+        manager.add(new Separator(IpsContextMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
+        manager.add(new GroupMarker(GROUP_NAVIGATE));
         manager.add(new Separator("misc")); //$NON-NLS-1$
         createRefreshAction(manager, selected);
         createProjectActions(manager, selected, (IStructuredSelection)treeViewer.getSelection());
@@ -358,14 +359,6 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
             }
         }
         return false;
-    }
-
-    /**
-     * @param manager The menu manager
-     * @param selected the selected object
-     */
-    protected void createObjectNavigateActions(IMenuManager manager, Object selected) {
-        // For model explorer the navigator commands are provided by the plugin.xml
     }
 
     protected void createProjectActions(IMenuManager manager, Object selected, IStructuredSelection selection) {

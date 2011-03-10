@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
-            locationURI="popup:org.eclipse.ui.popup.any?after=navigate">
+            locationURI="popup:org.eclipse.ui.popup.any?after=jumpToSourceCode">
          <menu
                icon="icons/jumpToSourceCode.gif"
                id="org.faktorips.devtools.stdbuilder.ui.dynamicmenus.jumpToSourceCodeMenu"
