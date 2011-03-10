@@ -1104,7 +1104,7 @@ public abstract class GenAssociation extends GenTypePart {
 
     /**
      * Returns the association generator of the corresponding inverse of a derived union. Returns
-     * <code>null</code> if the inverse of this association is missing or this association is no
+     * <code>null</code> if the inverse of this association is missing or inverse association is no
      * subset of a derived union. Note that more than one generators could be returned if the
      * derived union is itself a subset of a derived union.
      */
