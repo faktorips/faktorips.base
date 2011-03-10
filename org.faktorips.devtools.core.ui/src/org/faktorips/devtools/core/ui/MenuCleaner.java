@@ -51,6 +51,12 @@ public class MenuCleaner implements IMenuListener {
     private final Set<String> filteredMenuGroups = new HashSet<String>();
 
     /**
+     * In white list mode every item that is not in the set of filtered prefixes or filtered menu
+     * group IDs will be filtered out.
+     */
+    private boolean whiteListMode;
+
+    /**
      * Creates a menu cleaner that filters out the "additions" menu group as well as the "Source"
      * and / or "Generate" menu.
      */
@@ -126,34 +132,55 @@ public class MenuCleaner implements IMenuListener {
         return filteredMenuGroups.add(menuGroup);
     }
 
-    @Override
-    public void menuAboutToShow(IMenuManager manager) {
-        filterMenuGroups(manager);
-        filterPrefixes(manager);
+    /**
+     * Allows to set the menu cleaner into white list mode.
+     * <p>
+     * In white list mode every item that is not in the set of filtered prefixes or filtered menu
+     * group IDs will be filtered out.
+     * 
+     * @param whiteListMode Flag indicating whether white list mode should be active
+     */
+    public void setWhiteListMode(boolean whiteListMode) {
+        this.whiteListMode = whiteListMode;
     }
 
-    private void filterMenuGroups(IMenuManager menuManager) {
+    /**
+     * Returns whether this menu cleaner is currently in white list mode.
+     */
+    public boolean isWhiteListMode() {
+        return whiteListMode;
+    }
+
+    /**
+     * Returns whether this menu cleaner is currently in black list mode.
+     */
+    public boolean isBlackListMode() {
+        return !whiteListMode;
+    }
+
+    @Override
+    public void menuAboutToShow(IMenuManager manager) {
+        filterItems(manager);
+    }
+
+    private void filterItems(IMenuManager menuManager) {
         boolean inFilteredGroup = false;
         for (IContributionItem item : menuManager.getItems()) {
-            if (item.getId() == null) {
+            String id = item.getId();
+            if (id == null) {
                 continue;
             }
             if (item.isGroupMarker()) {
-                inFilteredGroup = isFilteredMenuGroupId(item.getId());
+                inFilteredGroup = isFilteredMenuGroupId(id);
             }
-            if (inFilteredGroup) {
-                filterItem(item);
-            }
-        }
-    }
-
-    private void filterPrefixes(IMenuManager menuManager) {
-        for (IContributionItem item : menuManager.getItems()) {
-            if (item.getId() == null) {
-                continue;
-            }
-            if (isFilteredPrefixId(item.getId())) {
-                filterItem(item);
+            if (isBlackListMode()) {
+                if (inFilteredGroup || isFilteredPrefixId(id)) {
+                    filterItem(item);
+                }
+            } else {
+                if (!inFilteredGroup && !isFilteredPrefixId(id)) {
+                    filterItem(item);
+                }
             }
         }
     }

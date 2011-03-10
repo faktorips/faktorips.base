@@ -18,7 +18,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -44,6 +43,7 @@ public class MenuCleanerTest {
     public void testDefaultConstructor() {
         assertTrue(cleaner.getFilteredPrefixes().isEmpty());
         assertTrue(cleaner.getFilteredMenuGroups().isEmpty());
+        assertFalse(cleaner.isWhiteListMode());
     }
 
     @Test
@@ -56,6 +56,7 @@ public class MenuCleanerTest {
 
         assertEquals(filteredPrefixes, menuCleaner.getFilteredPrefixes());
         assertEquals(filteredMenuGroups, menuCleaner.getFilteredMenuGroups());
+        assertFalse(cleaner.isWhiteListMode());
     }
 
     @Test(expected = NullPointerException.class)
@@ -131,12 +132,12 @@ public class MenuCleanerTest {
 
         IMenuManager menuManager = new MenuManager();
 
-        IContributionItem beforeFooItem = addMockContributionItem(menuManager, "beforeFoo");
-        IContributionItem beginFooGroupMarker = addMockGroupMarker(menuManager, "foo");
-        IContributionItem fooItem1 = addMockContributionItem(menuManager, "foo1");
-        IContributionItem fooItem2 = addMockContributionItem(menuManager, "foo2");
-        IContributionItem barGroupMarker = addMockGroupMarker(menuManager, "bar");
-        IContributionItem barItem = addMockContributionItem(menuManager, "barItem");
+        IContributionItem beforeFooItem = addContributionItem(menuManager, "beforeFoo");
+        IContributionItem beginFooGroupMarker = addGroupMarker(menuManager, "foo");
+        IContributionItem fooItem1 = addContributionItem(menuManager, "foo1");
+        IContributionItem fooItem2 = addContributionItem(menuManager, "foo2");
+        IContributionItem barGroupMarker = addGroupMarker(menuManager, "bar");
+        IContributionItem barItem = addContributionItem(menuManager, "barItem");
 
         cleaner.menuAboutToShow(menuManager);
 
@@ -156,13 +157,32 @@ public class MenuCleanerTest {
         cleaner.addFilteredMenuGroup("foo");
 
         IMenuManager menuManager = new MenuManager();
-        IContributionItem fooGroupMarker = addMockGroupMarker(menuManager, "foo");
-        addMockContributionItem(menuManager, null);
-        addMockGroupMarker(menuManager, null);
+        IContributionItem fooGroupMarker = addGroupMarker(menuManager, "foo");
+        addContributionItem(menuManager, null);
+        addGroupMarker(menuManager, null);
 
         cleaner.menuAboutToShow(menuManager);
 
         verify(fooGroupMarker).setVisible(false);
+    }
+
+    @Test
+    public void testMenuAboutToShowFilterMenuGroupWhiteListMode() {
+        cleaner.addFilteredMenuGroup("foo");
+        cleaner.setWhiteListMode(true);
+
+        IMenuManager menuManager = new MenuManager();
+        IContributionItem fooGroup = addGroupMarker(menuManager, "foo");
+        IContributionItem fooItem = addContributionItem(menuManager, "fooItem");
+        IContributionItem barGroup = addGroupMarker(menuManager, "bar");
+        IContributionItem barItem = addContributionItem(menuManager, "barItem");
+
+        cleaner.menuAboutToShow(menuManager);
+
+        verify(fooGroup, never()).setVisible(false);
+        verify(fooItem, never()).setVisible(false);
+        verify(barGroup).setVisible(false);
+        verify(barItem).setVisible(false);
     }
 
     /**
@@ -174,12 +194,12 @@ public class MenuCleanerTest {
         cleaner.addFilteredPrefix("foo.bar");
 
         IMenuManager menuManager = new MenuManager();
-        IContributionItem notMatchedItem1 = addMockContributionItem(menuManager, "foo.notMatchedItem1");
-        IContributionItem matchedItem1 = addMockContributionItem(menuManager, "foo.bar.matchedItem1");
-        IContributionItem notMatchedItem2 = addMockContributionItem(menuManager, "bar.notMatchedItem2");
-        IContributionItem matchedItem2 = addMockContributionItem(menuManager, "foo.bar.matchedItem2");
-        IContributionItem notMatchedItem3 = addMockContributionItem(menuManager, "notMatchedItem3");
-        IContributionItem matchedItem3 = addMockContributionItem(menuManager, "foo.bar.f10.matchedItem3");
+        IContributionItem notMatchedItem1 = addContributionItem(menuManager, "foo.notMatchedItem1");
+        IContributionItem matchedItem1 = addContributionItem(menuManager, "foo.bar.matchedItem1");
+        IContributionItem notMatchedItem2 = addContributionItem(menuManager, "bar.notMatchedItem2");
+        IContributionItem matchedItem2 = addContributionItem(menuManager, "foo.bar.matchedItem2");
+        IContributionItem notMatchedItem3 = addContributionItem(menuManager, "notMatchedItem3");
+        IContributionItem matchedItem3 = addContributionItem(menuManager, "foo.bar.f10.matchedItem3");
 
         cleaner.menuAboutToShow(menuManager);
 
@@ -200,15 +220,30 @@ public class MenuCleanerTest {
         cleaner.addFilteredPrefix("foo.bar");
 
         IMenuManager menuManager = new MenuManager();
-        addMockContributionItem(menuManager, null);
-        IContributionItem matchedItem = addMockContributionItem(menuManager, "foo.bar.matchedItem");
-        addMockContributionItem(menuManager, null);
-        IContributionItem notMachtedItem = addMockContributionItem(menuManager, "bar.foo.notMatchedItem");
+        addContributionItem(menuManager, null);
+        IContributionItem matchedItem = addContributionItem(menuManager, "foo.bar.matchedItem");
+        addContributionItem(menuManager, null);
+        IContributionItem notMachtedItem = addContributionItem(menuManager, "bar.foo.notMatchedItem");
 
         cleaner.menuAboutToShow(menuManager);
 
         verify(matchedItem).setVisible(false);
         verify(notMachtedItem, never()).setVisible(false);
+    }
+
+    @Test
+    public void testMenuAboutToShowFilterPrefixesWhiteListMode() {
+        cleaner.addFilteredPrefix("foo");
+        cleaner.setWhiteListMode(true);
+
+        IMenuManager menuManager = new MenuManager();
+        IContributionItem matchedItem = addContributionItem(menuManager, "foo.item");
+        IContributionItem notMatchedItem = addContributionItem(menuManager, "bar.item");
+
+        cleaner.menuAboutToShow(menuManager);
+
+        verify(matchedItem, never()).setVisible(false);
+        verify(notMatchedItem).setVisible(false);
     }
 
     /**
@@ -220,24 +255,24 @@ public class MenuCleanerTest {
         cleaner.addFilteredPrefix("bar");
 
         IMenuManager menuManager = new MenuManager();
-        IContributionItem fooGroup = addMockGroupMarker(menuManager, "foo");
-        IContributionItem barItem1 = addMockContributionItem(menuManager, "bar.item1");
-        IContributionItem fooItem1 = addMockContributionItem(menuManager, "foo.item1");
-        IContributionItem barGroup = addMockGroupMarker(menuManager, "barGroup");
-        IContributionItem barItem2 = addMockContributionItem(menuManager, "bar.item2");
-        IContributionItem fooItem2 = addMockContributionItem(menuManager, "foo.item2");
+        IContributionItem fooGroup = addGroupMarker(menuManager, "foo");
+        IContributionItem barItem1 = addContributionItem(menuManager, "bar.item1");
+        IContributionItem fooItem1 = addContributionItem(menuManager, "foo.item1");
+        IContributionItem barGroup = addGroupMarker(menuManager, "barGroup");
+        IContributionItem barItem2 = addContributionItem(menuManager, "bar.item2");
+        IContributionItem fooItem2 = addContributionItem(menuManager, "foo.item2");
 
         cleaner.menuAboutToShow(menuManager);
 
         verify(fooGroup).setVisible(false);
-        verify(barItem1, times(2)).setVisible(false);
+        verify(barItem1).setVisible(false);
         verify(fooItem1).setVisible(false);
         verify(barGroup).setVisible(false);
         verify(barItem2).setVisible(false);
         verify(fooItem2, never()).setVisible(false);
     }
 
-    private IContributionItem addMockContributionItem(IMenuManager menuManager, String id) {
+    private IContributionItem addContributionItem(IMenuManager menuManager, String id) {
         IContributionItem mockContributionItem = mock(IContributionItem.class);
         when(mockContributionItem.getId()).thenReturn(id);
         when(mockContributionItem.isSeparator()).thenReturn(false);
@@ -246,7 +281,7 @@ public class MenuCleanerTest {
         return mockContributionItem;
     }
 
-    private IContributionItem addMockGroupMarker(IMenuManager menuManager, String id) {
+    private IContributionItem addGroupMarker(IMenuManager menuManager, String id) {
         IContributionItem mockGroupMarker = mock(IContributionItem.class);
         when(mockGroupMarker.getId()).thenReturn(id);
         when(mockGroupMarker.isGroupMarker()).thenReturn(true);
