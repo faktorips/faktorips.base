@@ -40,14 +40,27 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class MenuCleaner implements IMenuListener {
 
-    /** A menu cleaner that filters out the "additions" menu group. */
-    public static final MenuCleaner ADDITIONS_CLEANER = new MenuCleaner(IContextMenuConstants.GROUP_ADDITIONS);
+    private static final String MENU_ID_GENERATE = "generateMenuId"; //$NON-NLS-1$
+
+    private static final String MENU_ID_SOURCE = "sourceMenuId"; //$NON-NLS-1$
 
     /** All items matching at least one of the prefixes contained in this set will be filtered out. */
     private final Set<String> filteredPrefixes = new HashSet<String>();
 
     /** All items belonging to a group contained in this set will be filtered out. */
     private final Set<String> filteredMenuGroups = new HashSet<String>();
+
+    /**
+     * Creates a menu cleaner that filters out the "additions" menu group as well as the "Source"
+     * and / or "Generate" menu.
+     */
+    public static MenuCleaner createAdditionsCleaner() {
+        MenuCleaner additionsCleaner = new MenuCleaner();
+        additionsCleaner.addFilteredMenuGroup(IContextMenuConstants.GROUP_ADDITIONS);
+        additionsCleaner.addFilteredPrefix(MENU_ID_GENERATE);
+        additionsCleaner.addFilteredPrefix(MENU_ID_SOURCE);
+        return additionsCleaner;
+    }
 
     /**
      * Creates an empty menu cleaner meaning that no prefixes or menu groups are filtered out as
@@ -69,12 +82,6 @@ public class MenuCleaner implements IMenuListener {
     public MenuCleaner(Set<String> filteredPrefixes, Set<String> filteredMenuGroups) {
         this.filteredPrefixes.addAll(filteredPrefixes);
         this.filteredMenuGroups.addAll(filteredMenuGroups);
-    }
-
-    private MenuCleaner(String... filteredMenuGroups) {
-        for (String menuGroup : filteredMenuGroups) {
-            addFilteredMenuGroup(menuGroup);
-        }
     }
 
     /**

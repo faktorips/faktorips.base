@@ -141,7 +141,7 @@ public class AttributesSection extends SimpleIpsPartsSection {
             getViewer().getControl().setMenu(contextMenu);
             editorPage.getSite().registerContextMenu(manager, getSelectionProvider());
 
-            manager.addMenuListener(MenuCleaner.ADDITIONS_CLEANER);
+            manager.addMenuListener(MenuCleaner.createAdditionsCleaner());
         }
 
         @Override

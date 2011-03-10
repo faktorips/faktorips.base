@@ -25,7 +25,6 @@ import static org.mockito.Mockito.when;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.jdt.ui.IContextMenuConstants;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -39,14 +38,6 @@ public class MenuCleanerTest {
     @Before
     public void setUp() {
         cleaner = new MenuCleaner();
-    }
-
-    @Test
-    public void testAdditionsCleaner() {
-        assertEquals(0, MenuCleaner.ADDITIONS_CLEANER.getFilteredPrefixes().size());
-        assertEquals(1, MenuCleaner.ADDITIONS_CLEANER.getFilteredMenuGroups().size());
-        assertTrue(MenuCleaner.ADDITIONS_CLEANER.getFilteredMenuGroups()
-                .contains(IContextMenuConstants.GROUP_ADDITIONS));
     }
 
     @Test
@@ -183,7 +174,7 @@ public class MenuCleanerTest {
         cleaner.addFilteredPrefix("foo.bar");
 
         IMenuManager menuManager = new MenuManager();
-        IContributionItem notMatchedItem1 = addMockContributionItem(menuManager, "bar.foo.notMatchedItem1");
+        IContributionItem notMatchedItem1 = addMockContributionItem(menuManager, "foo.notMatchedItem1");
         IContributionItem matchedItem1 = addMockContributionItem(menuManager, "foo.bar.matchedItem1");
         IContributionItem notMatchedItem2 = addMockContributionItem(menuManager, "bar.notMatchedItem2");
         IContributionItem matchedItem2 = addMockContributionItem(menuManager, "foo.bar.matchedItem2");

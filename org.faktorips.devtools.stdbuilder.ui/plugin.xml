@@ -7,6 +7,7 @@
             locationURI="popup:org.eclipse.ui.popup.any?after=navigate">
          <menu
                icon="icons/jumpToSourceCode.gif"
+               id="org.faktorips.devtools.stdbuilder.ui.dynamicmenus.jumpToSourceCodeMenu"
                label="%org.faktorips.devtools.stdbuilder.ui.dynamicmenus.jumpToSourceCodeMenu">
             <dynamic
                   class="org.faktorips.devtools.stdbuilder.ui.dynamicmenus.JumpToSourceCodeDynamicMenuContribution"

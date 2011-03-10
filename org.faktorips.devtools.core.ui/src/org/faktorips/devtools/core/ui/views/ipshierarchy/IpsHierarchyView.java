@@ -232,7 +232,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
         Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
         treeViewer.getControl().setMenu(contextMenu);
         getSite().registerContextMenu(manager, treeViewer);
-        manager.addMenuListener(MenuCleaner.ADDITIONS_CLEANER);
+        manager.addMenuListener(MenuCleaner.createAdditionsCleaner());
     }
 
     @Override
