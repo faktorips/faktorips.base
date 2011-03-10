@@ -68,7 +68,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.MenuAdditionsCleaner;
+import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.views.AbstractShowInSupportingViewPart;
 import org.faktorips.devtools.core.ui.views.InstanceIpsSrcFileViewItem;
@@ -247,7 +247,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
         Menu contextMenu = manager.createContextMenu(tableViewer.getControl());
         tableViewer.getControl().setMenu(contextMenu);
         getSite().registerContextMenu(manager, tableViewer);
-        manager.addMenuListener(new MenuAdditionsCleaner());
+        manager.addMenuListener(MenuCleaner.ADDITIONS_CLEANER);
     }
 
     /**

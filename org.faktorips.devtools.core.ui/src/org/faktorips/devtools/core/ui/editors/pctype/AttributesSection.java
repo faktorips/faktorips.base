@@ -34,7 +34,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.ui.MenuAdditionsCleaner;
+import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IDeleteListener;
@@ -140,7 +140,8 @@ public class AttributesSection extends SimpleIpsPartsSection {
             Menu contextMenu = manager.createContextMenu(getViewer().getControl());
             getViewer().getControl().setMenu(contextMenu);
             editorPage.getSite().registerContextMenu(manager, getSelectionProvider());
-            manager.addMenuListener(new MenuAdditionsCleaner());
+
+            manager.addMenuListener(MenuCleaner.ADDITIONS_CLEANER);
         }
 
         @Override

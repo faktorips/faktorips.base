@@ -38,7 +38,7 @@ import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.ui.MenuAdditionsCleaner;
+import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.actions.WrapperAction;
 import org.faktorips.devtools.core.ui.refactor.IpsMoveHandler;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringHandler;
@@ -119,9 +119,8 @@ public class ProductExplorer extends ModelExplorer {
         manager.addMenuListener(new ProductMenuBuilder(this, config, getViewSite(), getSite(), treeViewer));
         Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
         treeViewer.getControl().setMenu(contextMenu);
-        // do not register contextmenue to prevent insertion of MB-Additions
         getSite().registerContextMenu(manager, treeViewer);
-        manager.addMenuListener(new MenuAdditionsCleaner());
+        manager.addMenuListener(MenuCleaner.ADDITIONS_CLEANER);
     }
 
     protected class ProductMenuBuilder extends ModelExplorerContextMenuBuilder {
