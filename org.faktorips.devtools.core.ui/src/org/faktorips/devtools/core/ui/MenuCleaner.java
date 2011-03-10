@@ -166,19 +166,18 @@ public class MenuCleaner implements IMenuListener {
     private void filterItems(IMenuManager menuManager) {
         boolean inFilteredGroup = false;
         for (IContributionItem item : menuManager.getItems()) {
-            String id = item.getId();
-            if (id == null) {
+            if (item.getId() == null) {
                 continue;
             }
             if (item.isGroupMarker()) {
-                inFilteredGroup = isFilteredMenuGroupId(id);
+                inFilteredGroup = isFilteredMenuGroupId(item.getId());
             }
             if (isBlackListMode()) {
-                if (inFilteredGroup || isFilteredPrefixId(id)) {
+                if (inFilteredGroup || isFilteredPrefixId(item.getId())) {
                     filterItem(item);
                 }
             } else {
-                if (!inFilteredGroup && !isFilteredPrefixId(id)) {
+                if (!inFilteredGroup && !isFilteredPrefixId(item.getId())) {
                     filterItem(item);
                 }
             }
