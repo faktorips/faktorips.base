@@ -122,11 +122,12 @@ public class MenuCleaner implements IMenuListener {
     @Override
     public void menuAboutToShow(IMenuManager manager) {
         filterMenuGroups(manager);
+        filterPrefixes(manager);
     }
 
-    private void filterMenuGroups(IMenuManager manager) {
+    private void filterMenuGroups(IMenuManager menuManager) {
         boolean inFilteredGroup = false;
-        for (IContributionItem item : manager.getItems()) {
+        for (IContributionItem item : menuManager.getItems()) {
             if (item.getId() == null) {
                 continue;
             }
@@ -134,13 +135,37 @@ public class MenuCleaner implements IMenuListener {
                 inFilteredGroup = isFilteredMenuGroupId(item.getId());
             }
             if (inFilteredGroup) {
-                item.setVisible(false);
+                filterItem(item);
+            }
+        }
+    }
+
+    private void filterPrefixes(IMenuManager menuManager) {
+        for (IContributionItem item : menuManager.getItems()) {
+            if (item.getId() == null) {
+                continue;
+            }
+            if (isFilteredPrefixId(item.getId())) {
+                filterItem(item);
             }
         }
     }
 
     private boolean isFilteredMenuGroupId(String id) {
         return filteredMenuGroups.contains(id);
+    }
+
+    private boolean isFilteredPrefixId(String id) {
+        for (String prefix : filteredPrefixes) {
+            if (id.startsWith(prefix)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void filterItem(IContributionItem item) {
+        item.setVisible(false);
     }
 
 }

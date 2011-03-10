@@ -18,6 +18,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -130,41 +131,119 @@ public class MenuCleanerTest {
     }
 
     /**
-     * Tests that the a specific group and all contribution items belonging to the group are made
+     * Tests that a specific menu group and all contribution items belonging to this group are made
      * invisible. Every other item must remain visible.
      */
     @Test
     public void testMenuAboutToShowFilterMenuGroup() {
         cleaner.addFilteredMenuGroup("foo");
-        cleaner.addFilteredMenuGroup("blub");
 
         IMenuManager menuManager = new MenuManager();
 
         IContributionItem beforeFooItem = addMockContributionItem(menuManager, "beforeFoo");
-
         IContributionItem beginFooGroupMarker = addMockGroupMarker(menuManager, "foo");
         IContributionItem fooItem1 = addMockContributionItem(menuManager, "foo1");
         IContributionItem fooItem2 = addMockContributionItem(menuManager, "foo2");
-
         IContributionItem barGroupMarker = addMockGroupMarker(menuManager, "bar");
         IContributionItem barItem = addMockContributionItem(menuManager, "barItem");
-
-        IContributionItem blubGroupMarker = addMockGroupMarker(menuManager, "blub");
-        IContributionItem blubItem = addMockContributionItem(menuManager, "blubItem");
 
         cleaner.menuAboutToShow(menuManager);
 
         verify(beforeFooItem, never()).setVisible(false);
-
         verify(beginFooGroupMarker).setVisible(false);
         verify(fooItem1).setVisible(false);
         verify(fooItem2).setVisible(false);
-
         verify(barGroupMarker, never()).setVisible(false);
         verify(barItem, never()).setVisible(false);
+    }
 
-        verify(blubGroupMarker).setVisible(false);
-        verify(blubItem).setVisible(false);
+    /**
+     * Tests that null IDs are ignored when filtering menu groups.
+     */
+    @Test
+    public void testMenuAboutToShowFilterMenuGroupWithNullIds() {
+        cleaner.addFilteredMenuGroup("foo");
+
+        IMenuManager menuManager = new MenuManager();
+        IContributionItem fooGroupMarker = addMockGroupMarker(menuManager, "foo");
+        addMockContributionItem(menuManager, null);
+        addMockGroupMarker(menuManager, null);
+
+        cleaner.menuAboutToShow(menuManager);
+
+        verify(fooGroupMarker).setVisible(false);
+    }
+
+    /**
+     * Tests that all contribution items matching a specific prefix are filtered out (made
+     * invisible) while all other items remain visible.
+     */
+    @Test
+    public void testMenuAboutToShowFilterPrefixes() {
+        cleaner.addFilteredPrefix("foo.bar");
+
+        IMenuManager menuManager = new MenuManager();
+        IContributionItem notMatchedItem1 = addMockContributionItem(menuManager, "bar.foo.notMatchedItem1");
+        IContributionItem matchedItem1 = addMockContributionItem(menuManager, "foo.bar.matchedItem1");
+        IContributionItem notMatchedItem2 = addMockContributionItem(menuManager, "bar.notMatchedItem2");
+        IContributionItem matchedItem2 = addMockContributionItem(menuManager, "foo.bar.matchedItem2");
+        IContributionItem notMatchedItem3 = addMockContributionItem(menuManager, "notMatchedItem3");
+        IContributionItem matchedItem3 = addMockContributionItem(menuManager, "foo.bar.f10.matchedItem3");
+
+        cleaner.menuAboutToShow(menuManager);
+
+        verify(notMatchedItem1, never()).setVisible(false);
+        verify(notMatchedItem2, never()).setVisible(false);
+        verify(notMatchedItem3, never()).setVisible(false);
+
+        verify(matchedItem1).setVisible(false);
+        verify(matchedItem2).setVisible(false);
+        verify(matchedItem3).setVisible(false);
+    }
+
+    /**
+     * Tests that null IDs are ignored when filtering prefixes.
+     */
+    @Test
+    public void testMenuAboutToShowFilterPrefixesNullIds() {
+        cleaner.addFilteredPrefix("foo.bar");
+
+        IMenuManager menuManager = new MenuManager();
+        addMockContributionItem(menuManager, null);
+        IContributionItem matchedItem = addMockContributionItem(menuManager, "foo.bar.matchedItem");
+        addMockContributionItem(menuManager, null);
+        IContributionItem notMachtedItem = addMockContributionItem(menuManager, "bar.foo.notMatchedItem");
+
+        cleaner.menuAboutToShow(menuManager);
+
+        verify(matchedItem).setVisible(false);
+        verify(notMachtedItem, never()).setVisible(false);
+    }
+
+    /**
+     * Tests that filtering prefixes and filtering menu groups works in unison.
+     */
+    @Test
+    public void testMenuAboutToShowFilterBothPrefixesAndMenuGroups() {
+        cleaner.addFilteredMenuGroup("foo");
+        cleaner.addFilteredPrefix("bar");
+
+        IMenuManager menuManager = new MenuManager();
+        IContributionItem fooGroup = addMockGroupMarker(menuManager, "foo");
+        IContributionItem barItem1 = addMockContributionItem(menuManager, "bar.item1");
+        IContributionItem fooItem1 = addMockContributionItem(menuManager, "foo.item1");
+        IContributionItem barGroup = addMockGroupMarker(menuManager, "barGroup");
+        IContributionItem barItem2 = addMockContributionItem(menuManager, "bar.item2");
+        IContributionItem fooItem2 = addMockContributionItem(menuManager, "foo.item2");
+
+        cleaner.menuAboutToShow(menuManager);
+
+        verify(fooGroup).setVisible(false);
+        verify(barItem1, times(2)).setVisible(false);
+        verify(fooItem1).setVisible(false);
+        verify(barGroup).setVisible(false);
+        verify(barItem2).setVisible(false);
+        verify(fooItem2, never()).setVisible(false);
     }
 
     private IContributionItem addMockContributionItem(IMenuManager menuManager, String id) {
