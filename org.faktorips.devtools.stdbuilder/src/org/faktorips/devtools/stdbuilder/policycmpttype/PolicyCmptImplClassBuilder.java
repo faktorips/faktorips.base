@@ -17,9 +17,11 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -189,6 +191,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     private Map<GenAssociation, List<IPolicyCmptTypeAssociation>> getAllInverseOfDerivedUnionAssociationsGenerator(IPolicyCmptType type)
             throws CoreException {
+        Set<String> associationNames = new HashSet<String>();
         Map<GenAssociation, List<IPolicyCmptTypeAssociation>> result = new HashMap<GenAssociation, List<IPolicyCmptTypeAssociation>>();
         List<IPolicyCmptTypeAssociation> associations = type.getPolicyCmptTypeAssociations();
         for (IPolicyCmptTypeAssociation anAssociation : associations) {
@@ -208,19 +211,24 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
             for (GenAssociation genAssociation : generatorsForInverseOfDerivedUnion) {
 
+                // Multiple inverse associations could have the same name in type hierarchy. We have
+                // to create the getter only for the first one
                 IPolicyCmptTypeAssociation association = genAssociation.getAssociation();
-                if (!type.getQualifiedName().equals(association.getType().getQualifiedName())) {
-                    // the type is not the same - must be a supertype
-                    if (type.getAssociation(association.getTargetRoleSingular()) != null) {
-                        // an association with the same name exists in the type and supertype.
-                        // This could happen if a detail-to-master association is the subset of a
-                        // derived union association with the same role name as the derived union.
-                        // @see MTB#357
-                        // Because of this association also exists in type, the corresponding getter
-                        // method is already generated
-                        continue;
-                    }
+                if (!associationNames.add(association.getName())) {
+                    continue;
                 }
+                // if (!type.getQualifiedName().equals(association.getType().getQualifiedName())) {
+                // // the type is not the same - must be a supertype
+                // if (type.getAssociation(association.getTargetRoleSingular()) != null) {
+                // // an association with the same name exists in the type and supertype.
+                // // This could happen if a detail-to-master association is the subset of a
+                // // derived union association with the same role name as the derived union.
+                // // @see MTB#357
+                // // Because of this association also exists in type, the corresponding getter
+                // // method is already generated
+                // // continue;
+                // }
+                // }
 
                 // the derived union could be implemented by different associations in the same
                 // class thus we need a list of associations
@@ -1331,6 +1339,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             generateMethodGetEffectiveFromAsCalendarForDependantObjectBaseClass(methodBuilder);
         }
 
+        // generate Method getParentModelObject()
         generateMethodGetParentModelObject(methodBuilder, detailToMasterAssociations);
 
         // methods create for each parent

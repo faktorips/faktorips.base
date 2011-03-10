@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -183,6 +184,10 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
                 if (!association.isValid(association.getIpsProject())) {
                     continue;
                 }
+                if (skipGenerateCodeForAssociation(association)) {
+                    continue;
+                }
+
                 generateCodeForAssociation(association, fieldsBuilder, methodsBuilder);
                 if (association.isSubsetOfADerivedUnion()) {
                     IAssociation derivedUnion = association.findSubsettedDerivedUnion(getIpsProject());
@@ -202,6 +207,30 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
         CodeGeneratorForContainerAssociationImplementation generator = new CodeGeneratorForContainerAssociationImplementation(
                 derivedUnions, fieldsBuilder, methodsBuilder);
         generator.start(getPcType());
+    }
+
+    /**
+     * Could be overwritten in concrete implementation
+     * 
+     * @param association the association that may be skipped
+     * @throws CoreException in case of an core exception
+     */
+    protected boolean skipGenerateCodeForAssociation(IPolicyCmptTypeAssociation association) throws CoreException {
+        if (association.getAssociationType().isCompositionDetailToMaster()) {
+            // Detail to Master associations could have the same name as a corresponding
+            // association in the super type @see MTB#357 and FIPS-85
+            // The Implementation is generateCodeForDependantObject(JavaCodeFragmentBuilder,
+            // JavaCodeFragmentBuilder, List<IPolicyCmptTypeAssociation>)
+            IType type = association.getType();
+            IType supertype = type.findSupertype(type.getIpsProject());
+            if (supertype != null
+                    && supertype.findAssociation(association.getName(), supertype.getIpsProject()) != null) {
+                // there is an association with the same name --> do not create the
+                // getter
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
