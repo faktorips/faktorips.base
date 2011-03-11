@@ -80,7 +80,7 @@ public class ReferencesToProductSearchQueryTest extends AbstractIpsPluginTest {
         NewSearchUI.runQueryInForeground(IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow(), query);
 
         ReferenceSearchResult searchResult = (ReferenceSearchResult)query.getSearchResult();
-        Object[] results = searchResult.getElements();
+        Object[] results = searchResult.getMatchingElements();
         assertEquals(3, results.length);
 
         Object[] res1 = (Object[])results[0];

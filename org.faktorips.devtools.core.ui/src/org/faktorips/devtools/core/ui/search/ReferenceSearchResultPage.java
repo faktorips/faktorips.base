@@ -13,37 +13,24 @@
 
 package org.faktorips.devtools.core.ui.search;
 
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.search.ui.IContextMenuConstants;
 import org.eclipse.search.ui.text.AbstractTextSearchResult;
-import org.eclipse.search.ui.text.AbstractTextSearchViewPage;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IMemento;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
-import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
 
-public class ReferenceSearchResultPage extends AbstractTextSearchViewPage {
+public class ReferenceSearchResultPage extends IpsElementsSearchViewPage {
 
     private static final String FALSE = "false"; //$NON-NLS-1$
     private static final String TRUE = "true"; //$NON-NLS-1$
     private static final String KEY_FILTER_TEST_CASE = "org.faktorips.devtools.core.ui.search.referencesearchresultpage.filtertestcase"; //$NON-NLS-1$
     private static final String KEY_FILTER_PRODUCT_CMPT = "org.faktorips.devtools.core.ui.search.referencesearchresultpage.filterproductcmpt"; //$NON-NLS-1$
-
-    private SearchResultLabelProvider labelProvider;
-    private SearchResultContentProvider contentProvider;
 
     boolean filterTestCase = false;
     boolean filterProductCmpt = false;
@@ -79,76 +66,6 @@ public class ReferenceSearchResultPage extends AbstractTextSearchViewPage {
         private boolean isTestCase(IpsObjectType ipsObjectType) {
             return IpsObjectType.TEST_CASE.equals(ipsObjectType);
         }
-    }
-
-    public ReferenceSearchResultPage() {
-        super(AbstractTextSearchViewPage.FLAG_LAYOUT_TREE);
-    }
-
-    @Override
-    protected StructuredViewer getViewer() {
-        // override so that it's visible in the package.
-        return super.getViewer();
-    }
-
-    @Override
-    protected synchronized void elementsChanged(Object[] objects) {
-        contentProvider.elementsChanged(objects);
-    }
-
-    @Override
-    protected void clear() {
-        contentProvider.clear();
-    }
-
-    @Override
-    protected void configureTreeViewer(TreeViewer viewer) {
-        if (labelProvider == null) {
-            labelProvider = new SearchResultLabelProvider();
-        }
-        if (contentProvider == null) {
-            contentProvider = new SearchResultContentProvider(this);
-        }
-        viewer.setLabelProvider(labelProvider);
-        viewer.setContentProvider(contentProvider);
-        viewer.setSorter(new ReferenceViewerSorter());
-        viewer.addDoubleClickListener(new TreeViewerDoubleclickListener(viewer));
-        viewer.setUseHashlookup(true);
-    }
-
-    @Override
-    protected void configureTableViewer(TableViewer viewer) {
-        // nothing to do
-    }
-
-    @Override
-    protected void fillContextMenu(IMenuManager mgr) {
-        mgr.appendToGroup(IContextMenuConstants.GROUP_OPEN, new OpenEditorAction(getViewer()));
-        IIpsSrcFile ipsSrcFile = getIpsSrcFileForSelection();
-        if (ipsSrcFile != null && IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType())) {
-            mgr.appendToGroup(IContextMenuConstants.GROUP_SHOW, new Separator(
-                    ModelExplorerContextMenuBuilder.GROUP_NAVIGATE));
-        }
-        super.fillContextMenu(mgr);
-    }
-
-    public IIpsSrcFile getIpsSrcFileForSelection() {
-        Object selection = ((IStructuredSelection)getViewer().getSelection()).getFirstElement();
-        // retrieve first element of the selection
-        return getCorrespondingIpsSrcFile(selection);
-    }
-
-    private IIpsSrcFile getCorrespondingIpsSrcFile(Object selection) {
-        if (selection instanceof Object[]) {
-            selection = ((Object[])selection)[0];
-        }
-        if (selection instanceof IIpsObjectPart) {
-            return ((IIpsObjectPart)selection).getIpsObject().getIpsSrcFile();
-        }
-        if (selection instanceof IIpsObject) {
-            return ((IIpsObject)selection).getIpsSrcFile();
-        }
-        return null;
     }
 
     @Override
@@ -206,4 +123,12 @@ public class ReferenceSearchResultPage extends AbstractTextSearchViewPage {
         }
         return label;
     }
+
+    @Override
+    protected void configureTreeViewer(TreeViewer viewer) {
+        super.configureTreeViewer(viewer);
+        viewer.setSorter(new ReferenceViewerSorter());
+        viewer.addDoubleClickListener(new TreeViewerDoubleclickListener(viewer));
+    }
+
 }

@@ -22,6 +22,8 @@ import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 
+// TODO remove if not necessary!!!
+
 /**
  * @author Thorsten Guenther
  */

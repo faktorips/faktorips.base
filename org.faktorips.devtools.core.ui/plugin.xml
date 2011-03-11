@@ -1090,7 +1090,7 @@
             id="org.faktorips.devtools.core.ui.search.ReferenceSearchResultPage"
             searchResultClass="org.faktorips.devtools.core.ui.search.ReferenceSearchResult"/>
    </extension>
-
+   
    <extension
          id="org.faktorips.devtools.core.ipsProblemsDecorator"
          name="IPS-Problemsdecorator"
@@ -1843,4 +1843,27 @@
          </ControlFactory>
       </extension>
 
+	<!-- Extension Points Model Search -->
+
+	<extension point="org.eclipse.search.searchPages">
+	   <page id="org.faktorips.devtools.core.ui.search.model.ModelSearchPage"
+			label="%org.faktorips.devtools.core.ui.search.model.ModelSearchPage.label"
+			sizeHint="460,160"
+			extensions="java:90, jav:90"
+			showScopeSection="true"
+			canSearchEnclosingProjects="true"
+			class="org.faktorips.devtools.core.ui.search.model.ModelSearchPage">
+		</page>
+	</extension>
+	
+	<extension point="org.eclipse.search.searchResultViewPages">
+		<viewPage
+			id="org.faktorips.devtools.core.ui.search.model.ModelSearchResultPage"
+			searchResultClass="org.faktorips.devtools.core.ui.search.model.ModelSearchResult"
+			class="org.faktorips.devtools.core.ui.search.model.ModelSearchResultPage">
+		</viewPage>
+	</extension>
+	
+
+	
 </plugin>
