@@ -30,7 +30,7 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.actions.CompoundContributionItem;
 import org.eclipse.ui.menus.CommandContributionItem;
@@ -223,7 +223,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
 
     private IIpsElement getSelectedIpsElement() {
         ISelectionService selectionService = (ISelectionService)serviceLocator.getService(ISelectionService.class);
-        IStructuredSelection selection = (IStructuredSelection)selectionService.getSelection();
+        ISelection selection = selectionService.getSelection();
         TypedSelection<IIpsElement> typedSelection = TypedSelection.create(IIpsElement.class, selection);
         return typedSelection.getElement();
     }
