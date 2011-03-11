@@ -246,7 +246,6 @@ public class Messages extends NLS {
 
     public static String PersistentTypeInfoSection_textSupertypeNotFound;
 
-    public static String AttributesSection_title;
     public static String AttributesSection_deleteMessage;
     public static String AttributesSection_deleteTitle;
     public static String BehaviourPage_title;
@@ -343,7 +342,6 @@ public class Messages extends NLS {
     public static String ValidatedAttributesControl_description;
     public static String ValidatedAttributesControl_label;
 
-    public static String AttributesSection_submenuRefactor;
     public static String AssociationsSection_submenuRefactor;
 
 }

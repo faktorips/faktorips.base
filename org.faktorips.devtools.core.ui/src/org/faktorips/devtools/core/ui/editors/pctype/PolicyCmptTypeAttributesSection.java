@@ -16,53 +16,39 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.ui.IpsContextMenuId;
-import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IDeleteListener;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
-import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
-import org.faktorips.devtools.core.ui.refactor.IpsRefactoringHandler;
-import org.faktorips.devtools.core.ui.refactor.IpsRenameHandler;
+import org.faktorips.devtools.core.ui.editors.type.AttributesSection;
 
-/**
- * A section to display and edit a type's attributes.
- */
-public class AttributesSection extends SimpleIpsPartsSection {
+public class PolicyCmptTypeAttributesSection extends AttributesSection {
 
-    private final IpsObjectEditorPage editorPage;
+    private PolicyCmptTypeAttributesComposite attributesComposite;
 
-    private AttributesComposite attributesComposite;
+    public PolicyCmptTypeAttributesSection(IpsObjectEditorPage editorPage, IPolicyCmptType policyCmptType,
+            Composite parent, UIToolkit toolkit) {
 
-    public AttributesSection(IpsObjectEditorPage editorPage, IPolicyCmptType pcType, Composite parent, UIToolkit toolkit) {
-        super(pcType, parent, Messages.AttributesSection_title, toolkit);
-        this.editorPage = editorPage;
-        attributesComposite.createContextMenu();
+        super(editorPage, policyCmptType, parent, toolkit);
     }
 
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
-        attributesComposite = new AttributesComposite(getIpsObject(), parent, toolkit);
+        attributesComposite = new PolicyCmptTypeAttributesComposite(getIpsObject(), parent, toolkit);
         return attributesComposite;
     }
 
@@ -72,16 +58,17 @@ public class AttributesSection extends SimpleIpsPartsSection {
         attributesComposite.updateOverrideButtonEnabledState();
     }
 
-    /**
-     * A composite that shows a policy component's attributes in a viewer and allows to edit
-     * attributes in a dialog, create new attributes and delete attributes.
-     */
-    private class AttributesComposite extends IpsPartsComposite {
+    @Override
+    protected AttributesComposite getAttributesComposite() {
+        return attributesComposite;
+    }
+
+    private class PolicyCmptTypeAttributesComposite extends AttributesComposite {
 
         private Button overrideButton;
 
-        public AttributesComposite(IIpsObject pdObject, Composite parent, UIToolkit toolkit) {
-            super(pdObject, parent, toolkit);
+        public PolicyCmptTypeAttributesComposite(IIpsObject ipsObject, Composite parent, UIToolkit toolkit) {
+            super(ipsObject, parent, toolkit);
             addDeleteListener();
         }
 
@@ -125,24 +112,6 @@ public class AttributesSection extends SimpleIpsPartsSection {
                     // Nothing to do.
                 }
             });
-        }
-
-        private void createContextMenu() {
-            MenuManager refactorSubmenu = new MenuManager(Messages.AttributesSection_submenuRefactor);
-            refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsRenameHandler.CONTRIBUTION_ID));
-            // TODO AW: Pull Up not yet working
-            // refactorSubmenu.add(new PullUpAction(editorSite.getShell(),
-            // getPartsComposite()));
-
-            MenuManager manager = new MenuManager();
-            manager.add(refactorSubmenu);
-            manager.add(new Separator(IpsContextMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
-
-            Menu contextMenu = manager.createContextMenu(getViewer().getControl());
-            getViewer().getControl().setMenu(contextMenu);
-            editorPage.getSite().registerContextMenu(manager, getSelectionProvider());
-
-            manager.addMenuListener(MenuCleaner.createAdditionsCleaner());
         }
 
         @Override
@@ -199,42 +168,8 @@ public class AttributesSection extends SimpleIpsPartsSection {
         }
 
         @Override
-        protected IStructuredContentProvider createContentProvider() {
-            return new AttributeContentProvider();
-        }
-
-        @Override
-        protected IIpsObjectPart newIpsPart() {
-            return getPolicyCmptType().newPolicyCmptTypeAttribute();
-        }
-
-        @Override
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
             return new AttributeEditDialog((IPolicyCmptTypeAttribute)part, shell);
-        }
-
-        @Override
-        protected int[] moveParts(int[] indexes, boolean up) {
-            return getPolicyCmptType().moveAttributes(indexes, up);
-        }
-
-        private class AttributeContentProvider implements IStructuredContentProvider {
-
-            @Override
-            public Object[] getElements(Object inputElement) {
-                return getPolicyCmptType().getPolicyCmptTypeAttributes().toArray();
-            }
-
-            @Override
-            public void dispose() {
-                // Nothing to do.
-            }
-
-            @Override
-            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-                // Nothing to do.
-            }
-
         }
 
     }
