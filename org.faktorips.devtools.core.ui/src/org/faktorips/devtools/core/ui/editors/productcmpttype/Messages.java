@@ -27,6 +27,8 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
+    public static String ProductCmptTypeAssociationsSection_menuOpenTargetInNewEditor;
+
     public static String AssociationEditDialog_derivedUnionCheckbox;
     public static String AssociationEditDialog_derivedUnionGroup;
     public static String AssociationEditDialog_derivedUnionLabel;
@@ -41,7 +43,6 @@ public class Messages extends NLS {
     public static String AssociationEditDialog_title;
     public static String AssociationEditDialog_typeLabel;
     public static String AssociationsSection_menuOpenTargetInNewEditor;
-    public static String AssociationsSection_title;
     public static String AttributeEditDialog_datatypeLabel;
     public static String AttributeEditDialog_defaultvalueLabel;
     public static String AttributeEditDialog_general;
@@ -49,7 +50,6 @@ public class Messages extends NLS {
     public static String AttributeEditDialog_nameLabel;
     public static String AttributeEditDialog_title;
     public static String AttributeEditDialog_valueSetSection;
-    public static String AttributesSection_title;
     public static String BehaviourPage_title_behaviour;
     public static String CustomIconPage_Page_Tab_Label;
 

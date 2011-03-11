@@ -147,9 +147,9 @@ public class Messages extends NLS {
 
     public static String AssociationEditDialog_toConstraintTheAssociation;
 
-    public static String AssociationsSection_menuOpenTargetInNewEditor;
+    public static String PolicyCmptTypeAssociationsSection_menuOpenTargetInNewEditor;
 
-    public static String AssociationsSection_newButton;
+    public static String PolicyCmptTypeAssociationsSection_newButton;
 
     public static String AttributeEditDialog_attributeComputed;
 
@@ -249,7 +249,6 @@ public class Messages extends NLS {
     public static String AttributesSection_deleteMessage;
     public static String AttributesSection_deleteTitle;
     public static String BehaviourPage_title;
-    public static String AssociationsSection_title;
     public static String RulesSection_title;
     public static String RulesSection_titleMissingAttribute;
     public static String RulesSection_msgMissingAttribute;
@@ -341,7 +340,5 @@ public class Messages extends NLS {
     public static String RuleFunctionsControl_titleColumn2;
     public static String ValidatedAttributesControl_description;
     public static String ValidatedAttributesControl_label;
-
-    public static String AssociationsSection_submenuRefactor;
 
 }

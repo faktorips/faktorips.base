@@ -32,6 +32,9 @@ public class Messages extends NLS {
     public static String AttributesSection_title;
     public static String AttributesSection_submenuRefactor;
 
+    public static String AssociationsSection_title;
+    public static String AssociationsSection_submenuRefactor;
+
     public static String MethodsSection_title;
     public static String MethodsSection_button;
 

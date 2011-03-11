@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpttype;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -42,7 +41,7 @@ public class ProductCmptTypeAttributesSection extends AttributesSection {
 
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
-        attributesComposite = new ProductCmptTypeAttributesComposite(getIpsObject(), parent, toolkit);
+        attributesComposite = new ProductCmptTypeAttributesComposite(getProductCmptType(), parent, toolkit);
         return attributesComposite;
     }
 
@@ -51,10 +50,14 @@ public class ProductCmptTypeAttributesSection extends AttributesSection {
         return attributesComposite;
     }
 
+    private IProductCmptType getProductCmptType() {
+        return (IProductCmptType)getType();
+    }
+
     private class ProductCmptTypeAttributesComposite extends AttributesComposite {
 
-        public ProductCmptTypeAttributesComposite(IIpsObject ipsObject, Composite parent, UIToolkit toolkit) {
-            super(ipsObject, parent, toolkit);
+        public ProductCmptTypeAttributesComposite(IProductCmptType productCmptType, Composite parent, UIToolkit toolkit) {
+            super(productCmptType, parent, toolkit);
         }
 
         @Override

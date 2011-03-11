@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.editors.type;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
@@ -25,6 +26,7 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.IpsContextMenuId;
 import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
@@ -32,51 +34,61 @@ import org.faktorips.devtools.core.ui.refactor.IpsRefactoringHandler;
 import org.faktorips.devtools.core.ui.refactor.IpsRenameHandler;
 
 /**
- * A section to display and edit a type's attributes.
+ * A section to display and edit a type's associations.
+ * 
+ * @author Jan Ortmann
  */
-public abstract class AttributesSection extends SimpleIpsPartsSection {
+public abstract class AssociationsSection extends SimpleIpsPartsSection {
 
-    private final IpsObjectEditorPage editorPage;
+    private IpsObjectEditorPage editorPage;
 
-    protected AttributesSection(IpsObjectEditorPage editorPage, IType type, Composite parent, UIToolkit toolkit) {
-        super(type, parent, Messages.AttributesSection_title, toolkit);
+    protected AssociationsSection(IpsObjectEditorPage editorPage, IType type, Composite parent, UIToolkit toolkit) {
+        super(type, parent, Messages.AssociationsSection_title, toolkit);
         this.editorPage = editorPage;
-        getAttributesComposite().createContextMenu();
+        getAssociationsComposite().createContextMenu();
     }
 
-    protected abstract AttributesComposite getAttributesComposite();
+    protected abstract AssociationsComposite getAssociationsComposite();
 
     protected IType getType() {
         return (IType)getIpsObject();
     }
 
     /**
-     * A composite that shows a policy component's attributes in a viewer and allows to edit
-     * attributes in a dialog, create new attributes and delete attributes.
+     * A composite that shows a type's associations in a viewer and allows to edit associations in a
+     * dialog, create new associations and delete associations.
      */
-    protected abstract class AttributesComposite extends IpsPartsComposite {
+    protected abstract class AssociationsComposite extends IpsPartsComposite {
 
-        protected AttributesComposite(IType type, Composite parent, UIToolkit toolkit) {
-            super(type, parent, toolkit);
+        private IpsAction openTargetAction;
+
+        protected AssociationsComposite(IType type, Composite parent, UIToolkit toolkit) {
+            this(type, parent, true, true, true, true, true, toolkit);
         }
+
+        protected AssociationsComposite(IType type, Composite parent, boolean canCreate, boolean canEdit,
+                boolean canDelete, boolean canMove, boolean showEditButton, UIToolkit toolkit) {
+
+            super(type, parent, canCreate, canEdit, canDelete, canMove, showEditButton, toolkit);
+            openTargetAction = createOpenTargetAction();
+        }
+
+        protected abstract IpsAction createOpenTargetAction();
 
         @Override
         protected IIpsObjectPart newIpsPart() throws CoreException {
-            return getType().newAttribute();
-        }
-
-        @Override
-        protected int[] moveParts(int[] indexes, boolean up) {
-            return getType().moveAttributes(indexes, up);
+            return getType().newAssociation();
         }
 
         private void createContextMenu() {
-            MenuManager refactorSubmenu = new MenuManager(Messages.AttributesSection_submenuRefactor);
+            MenuManager refactorSubmenu = new MenuManager(Messages.AssociationsSection_submenuRefactor);
             refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsRenameHandler.CONTRIBUTION_ID));
 
             MenuManager manager = new MenuManager();
             manager.add(refactorSubmenu);
             manager.add(new Separator(IpsContextMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
+            manager.add(new Separator());
+            manager.add(openTargetAction);
 
             Menu contextMenu = manager.createContextMenu(getViewer().getControl());
             getViewer().getControl().setMenu(contextMenu);
@@ -86,15 +98,30 @@ public abstract class AttributesSection extends SimpleIpsPartsSection {
         }
 
         @Override
-        protected IStructuredContentProvider createContentProvider() {
-            return new AttributeContentProvider();
+        protected int[] moveParts(int[] indexes, boolean up) {
+            return getType().moveAssociations(indexes, up);
         }
 
-        private class AttributeContentProvider implements IStructuredContentProvider {
+        @Override
+        protected void openLink() {
+            openTargetAction.run();
+        }
+
+        @Override
+        protected ILabelProvider createLabelProvider() {
+            return new AssociationsLabelProvider();
+        }
+
+        @Override
+        protected IStructuredContentProvider createContentProvider() {
+            return new AssociationContentProvider();
+        }
+
+        private class AssociationContentProvider implements IStructuredContentProvider {
 
             @Override
             public Object[] getElements(Object inputElement) {
-                return getType().getAttributes().toArray();
+                return getType().getAssociations().toArray();
             }
 
             @Override

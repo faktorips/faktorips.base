@@ -24,7 +24,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -48,7 +47,7 @@ public class PolicyCmptTypeAttributesSection extends AttributesSection {
 
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
-        attributesComposite = new PolicyCmptTypeAttributesComposite(getIpsObject(), parent, toolkit);
+        attributesComposite = new PolicyCmptTypeAttributesComposite(getPolicyCmptType(), parent, toolkit);
         return attributesComposite;
     }
 
@@ -63,12 +62,16 @@ public class PolicyCmptTypeAttributesSection extends AttributesSection {
         return attributesComposite;
     }
 
+    private IPolicyCmptType getPolicyCmptType() {
+        return (IPolicyCmptType)getType();
+    }
+
     private class PolicyCmptTypeAttributesComposite extends AttributesComposite {
 
         private Button overrideButton;
 
-        public PolicyCmptTypeAttributesComposite(IIpsObject ipsObject, Composite parent, UIToolkit toolkit) {
-            super(ipsObject, parent, toolkit);
+        public PolicyCmptTypeAttributesComposite(IPolicyCmptType policyCmptType, Composite parent, UIToolkit toolkit) {
+            super(policyCmptType, parent, toolkit);
             addDeleteListener();
         }
 
@@ -118,10 +121,6 @@ public class PolicyCmptTypeAttributesSection extends AttributesSection {
         public void setDataChangeable(boolean flag) {
             super.setDataChangeable(flag);
             overrideButton.setEnabled(flag);
-        }
-
-        public IPolicyCmptType getPolicyCmptType() {
-            return (IPolicyCmptType)getIpsObject();
         }
 
         @Override
