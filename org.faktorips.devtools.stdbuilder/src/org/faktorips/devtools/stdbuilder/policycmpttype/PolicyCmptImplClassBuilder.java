@@ -191,10 +191,11 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     private Map<GenAssociation, List<IPolicyCmptTypeAssociation>> getAllInverseOfDerivedUnionAssociationsGenerator(IPolicyCmptType type)
             throws CoreException {
-        Set<String> associationNames = new HashSet<String>();
         Map<GenAssociation, List<IPolicyCmptTypeAssociation>> result = new HashMap<GenAssociation, List<IPolicyCmptTypeAssociation>>();
         List<IPolicyCmptTypeAssociation> associations = type.getPolicyCmptTypeAssociations();
         for (IPolicyCmptTypeAssociation anAssociation : associations) {
+            Set<String> associationNames = new HashSet<String>();
+
             GenAssociation generator = getGenerator(anAssociation);
             if (generator == null) {
                 continue;
@@ -213,10 +214,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
                 // Multiple inverse associations could have the same name in type hierarchy. We have
                 // to create the getter only for the first one
-                IPolicyCmptTypeAssociation association = genAssociation.getAssociation();
-                if (!associationNames.add(association.getName())) {
-                    continue;
-                }
                 // if (!type.getQualifiedName().equals(association.getType().getQualifiedName())) {
                 // // the type is not the same - must be a supertype
                 // if (type.getAssociation(association.getTargetRoleSingular()) != null) {
@@ -229,6 +226,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 // // continue;
                 // }
                 // }
+                if (!associationNames.add(genAssociation.getAssociation().getName())) {
+                    continue;
+                }
 
                 // the derived union could be implemented by different associations in the same
                 // class thus we need a list of associations
