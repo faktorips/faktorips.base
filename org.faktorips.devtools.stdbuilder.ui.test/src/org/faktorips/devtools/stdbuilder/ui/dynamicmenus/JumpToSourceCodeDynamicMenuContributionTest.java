@@ -18,11 +18,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.Iterator;
 
-import org.eclipse.core.expressions.IEvaluationContext;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.ISources;
-import org.eclipse.ui.commands.ICommandService;
-import org.eclipse.ui.services.IEvaluationService;
+import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.services.IServiceLocator;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,17 +34,13 @@ public class JumpToSourceCodeDynamicMenuContributionTest {
     private IServiceLocator mockServiceLocator;
 
     @Mock
-    private IEvaluationContext mockEvaluationContext;
+    private ISelectionService mockSelectionService;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        IEvaluationService mockEvaluationService = mock(IEvaluationService.class);
-        when(mockEvaluationService.getCurrentState()).thenReturn(mockEvaluationContext);
-        when(mockServiceLocator.getService(IEvaluationService.class)).thenReturn(mockEvaluationService);
-        ICommandService mockCommandService = mock(ICommandService.class);
-        when(mockServiceLocator.getService(ICommandService.class)).thenReturn(mockCommandService);
+        when(mockServiceLocator.getService(ISelectionService.class)).thenReturn(mockSelectionService);
 
         menuContribution = new JumpToSourceCodeDynamicMenuContribution();
         menuContribution.initialize(mockServiceLocator);
@@ -68,7 +61,7 @@ public class JumpToSourceCodeDynamicMenuContributionTest {
     private void setCurrentSelection(final Object selectedItem) {
         IStructuredSelection mockSelection = mock(IStructuredSelection.class);
         when(mockSelection.iterator()).thenReturn(new SelectionIterator(selectedItem));
-        when(mockEvaluationContext.getVariable(ISources.ACTIVE_MENU_SELECTION_NAME)).thenReturn(mockSelection);
+        when(mockSelectionService.getSelection()).thenReturn(mockSelection);
     }
 
     private static class SelectionIterator implements Iterator<Object> {
