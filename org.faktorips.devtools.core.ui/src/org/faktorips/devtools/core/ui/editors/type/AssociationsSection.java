@@ -40,7 +40,7 @@ import org.faktorips.devtools.core.ui.refactor.IpsRenameHandler;
  */
 public abstract class AssociationsSection extends SimpleIpsPartsSection {
 
-    private IpsObjectEditorPage editorPage;
+    private final IpsObjectEditorPage editorPage;
 
     protected AssociationsSection(IpsObjectEditorPage editorPage, IType type, Composite parent, UIToolkit toolkit) {
         super(type, parent, Messages.AssociationsSection_title, toolkit);

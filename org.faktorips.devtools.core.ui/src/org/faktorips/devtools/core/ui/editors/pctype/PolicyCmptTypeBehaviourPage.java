@@ -28,13 +28,13 @@ public class PolicyCmptTypeBehaviourPage extends PolicyCmptTypeEditorPage {
 
     @Override
     protected void createContentForSingleStructurePage(Composite parentContainer, UIToolkit toolkit) {
-        new MethodsSection((IType)getIpsObject(), parentContainer, toolkit);
+        new MethodsSection(this, (IType)getIpsObject(), parentContainer, toolkit);
         new RulesSection((IPolicyCmptType)getIpsObject(), parentContainer, toolkit);
     }
 
     @Override
     protected void createContentForSplittedStructurePage(Composite parentContainer, UIToolkit toolkit) {
-        new MethodsSection((IType)getIpsObject(), parentContainer, toolkit);
+        new MethodsSection(this, (IType)getIpsObject(), parentContainer, toolkit);
         new RulesSection((IPolicyCmptType)getIpsObject(), parentContainer, toolkit);
     }
 

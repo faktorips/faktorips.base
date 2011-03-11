@@ -76,7 +76,7 @@ public class Messages extends NLS {
     public static String GeneralInfoSection_configuresLabel;
     public static String GeneralInfoSection_supertypeLabel;
     public static String GeneralInfoSection_title;
-    public static String MethodsAndFormulaSection_title;
+    public static String ProductCmptTypeMethodsSection_title;
     public static String ProductCmptTypeEditor_title;
     public static String ProductCmptTypeMethodEditDialog_formulaCheckbox;
     public static String ProductCmptTypeMethodEditDialog_formulaGroup;

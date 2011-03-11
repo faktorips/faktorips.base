@@ -20,17 +20,19 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
+import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.type.MethodsSection;
 
 /**
- * 
  * @author Jan Ortmann
  */
-public class MethodsAndFormulaSection extends MethodsSection {
+public class ProductCmptTypeMethodsSection extends MethodsSection {
 
-    public MethodsAndFormulaSection(IProductCmptType type, Composite parent, UIToolkit toolkit) {
-        super(type, parent, toolkit);
-        setText(Messages.MethodsAndFormulaSection_title);
+    public ProductCmptTypeMethodsSection(IpsObjectEditorPage editorPage, IProductCmptType type, Composite parent,
+            UIToolkit toolkit) {
+
+        super(editorPage, type, parent, toolkit);
+        setText(Messages.ProductCmptTypeMethodsSection_title);
     }
 
     @Override

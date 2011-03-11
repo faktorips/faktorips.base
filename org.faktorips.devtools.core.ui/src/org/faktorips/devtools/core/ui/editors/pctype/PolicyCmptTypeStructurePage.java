@@ -48,7 +48,7 @@ class PolicyCmptTypeStructurePage extends PolicyCmptTypeEditorPage {
         Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
         new PolicyCmptTypeAttributesSection(this, (IPolicyCmptType)getIpsObject(), members, toolkit);
         new PolicyCmptTypeAssociationsSection(this, (IPolicyCmptType)getIpsObject(), members, toolkit);
-        new MethodsSection((IPolicyCmptType)getIpsObject(), members, toolkit);
+        new MethodsSection(this, (IPolicyCmptType)getIpsObject(), members, toolkit);
         new RulesSection((IPolicyCmptType)getIpsObject(), members, toolkit);
     }
 

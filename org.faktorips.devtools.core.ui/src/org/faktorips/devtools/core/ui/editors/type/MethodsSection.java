@@ -14,6 +14,8 @@
 package org.faktorips.devtools.core.ui.editors.type;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
@@ -22,30 +24,37 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.ui.IpsContextMenuId;
+import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
+import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 
 /**
- * A section to display and edit a type's <tt>IMethod</tt>s.
+ * A section to display and edit a type's methods.
  */
 public class MethodsSection extends SimpleIpsPartsSection {
 
+    private final IpsObjectEditorPage editorPage;
+
     private MethodsComposite methodsComposite;
 
-    public MethodsSection(IType type, Composite parent, UIToolkit toolkit) {
+    public MethodsSection(IpsObjectEditorPage editorPage, IType type, Composite parent, UIToolkit toolkit) {
         super(type, parent, Messages.MethodsSection_title, toolkit);
+        this.editorPage = editorPage;
+        methodsComposite.createContextMenu();
     }
 
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
-        methodsComposite = new MethodsComposite((IType)getIpsObject(), parent, toolkit);
+        methodsComposite = new MethodsComposite(getType(), parent, toolkit);
         return methodsComposite;
     }
 
@@ -59,20 +68,20 @@ public class MethodsSection extends SimpleIpsPartsSection {
         return new MethodEditDialog(part, shell);
     }
 
+    protected IType getType() {
+        return (IType)getIpsObject();
+    }
+
     /**
-     * A composite that shows a policy component's methods in a viewer and allows to edit methods in
-     * a dialog, create new methods and delete methods.
+     * A composite that shows a type's methods in a viewer and allows to edit methods in a dialog,
+     * create new methods and delete methods.
      */
     private class MethodsComposite extends IpsPartsComposite {
 
         private Button overrideButton;
 
-        public MethodsComposite(IType pcType, Composite parent, UIToolkit toolkit) {
-            super(pcType, parent, toolkit);
-        }
-
-        public IType getType() {
-            return (IType)getIpsObject();
+        private MethodsComposite(IType type, Composite parent, UIToolkit toolkit) {
+            super(type, parent, toolkit);
         }
 
         @Override
@@ -86,20 +95,15 @@ public class MethodsSection extends SimpleIpsPartsSection {
             overrideButton.addSelectionListener(new SelectionListener() {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
-                    try {
-                        overrideClicked();
-                    } catch (Exception ex) {
-                        IpsPlugin.logAndShowErrorDialog(ex);
-                    }
+                    overrideClicked();
                 }
 
                 @Override
                 public void widgetDefaultSelected(SelectionEvent e) {
-                    // nothing to do
+                    // Nothing to do
                 }
             });
             updateOverrideButtonEnabledState();
-
             return true;
         }
 
@@ -113,20 +117,10 @@ public class MethodsSection extends SimpleIpsPartsSection {
         }
 
         private void overrideClicked() {
-            try {
-                OverrideMethodDialog dialog = new OverrideMethodDialog(getType(), getShell());
-                if (dialog.open() == Window.OK) {
-                    getType().overrideMethods(dialog.getSelectedMethods());
-                }
-            } catch (Exception e) {
-                // TODO catch Exception needs to be documented properly or specialized
-                IpsPlugin.logAndShowErrorDialog(e);
+            OverrideMethodDialog dialog = new OverrideMethodDialog(getType(), getShell());
+            if (dialog.open() == Window.OK) {
+                getType().overrideMethods(dialog.getSelectedMethods());
             }
-        }
-
-        @Override
-        protected IStructuredContentProvider createContentProvider() {
-            return new MethodContentProvider();
         }
 
         @Override
@@ -150,6 +144,22 @@ public class MethodsSection extends SimpleIpsPartsSection {
             overrideButton.setEnabled(flag);
         }
 
+        private void createContextMenu() {
+            MenuManager manager = new MenuManager();
+            manager.add(new GroupMarker(IpsContextMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
+
+            Menu contextMenu = manager.createContextMenu(getViewer().getControl());
+            getViewer().getControl().setMenu(contextMenu);
+            editorPage.getSite().registerContextMenu(manager, getSelectionProvider());
+
+            manager.addMenuListener(MenuCleaner.createAdditionsCleaner());
+        }
+
+        @Override
+        protected IStructuredContentProvider createContentProvider() {
+            return new MethodContentProvider();
+        }
+
         private class MethodContentProvider implements IStructuredContentProvider {
 
             @Override
@@ -159,12 +169,12 @@ public class MethodsSection extends SimpleIpsPartsSection {
 
             @Override
             public void dispose() {
-                // Nothing to do.
+                // Nothing to do
             }
 
             @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-                // Nothing to do.
+                // Nothing to do
             }
 
         }

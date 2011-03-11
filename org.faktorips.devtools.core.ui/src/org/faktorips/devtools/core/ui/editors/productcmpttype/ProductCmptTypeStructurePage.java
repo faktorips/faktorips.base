@@ -48,7 +48,7 @@ class ProductCmptTypeStructurePage extends ProductCmptTypeEditorPage {
         Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
         new ProductCmptTypeAttributesSection(this, getProductCmptType(), members, toolkit);
         new ProductCmptTypeAssociationsSection(this, getProductCmptType(), members, toolkit);
-        new MethodsAndFormulaSection(getProductCmptType(), members, toolkit);
+        new ProductCmptTypeMethodsSection(this, getProductCmptType(), members, toolkit);
         new TableStructureUsageSection(getProductCmptType(), members, toolkit);
     }
 
