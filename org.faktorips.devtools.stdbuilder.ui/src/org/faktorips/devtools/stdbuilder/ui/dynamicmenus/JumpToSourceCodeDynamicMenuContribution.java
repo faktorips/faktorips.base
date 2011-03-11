@@ -14,6 +14,7 @@
 package org.faktorips.devtools.stdbuilder.ui.dynamicmenus;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -41,6 +42,8 @@ import org.eclipse.ui.services.IServiceLocator;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
@@ -63,6 +66,8 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     private IServiceLocator serviceLocator;
 
     private StandardBuilderSet builderSet;
+
+    private IIpsObjectPartContainer selectedIpsObjectPartContainer;
 
     @Override
     public void initialize(IServiceLocator serviceLocator) {
@@ -90,10 +95,10 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
             return getContributionItemsForNoSourceCodeFound();
         }
 
-        IIpsObjectPartContainer ipsObjectPartContainer = (IIpsObjectPartContainer)selectedItem;
-        builderSet = (StandardBuilderSet)ipsObjectPartContainer.getIpsProject().getIpsArtefactBuilderSet();
+        selectedIpsObjectPartContainer = (IIpsObjectPartContainer)selectedItem;
+        builderSet = (StandardBuilderSet)selectedIpsObjectPartContainer.getIpsProject().getIpsArtefactBuilderSet();
 
-        return getContributionItemsForIpsObjectPartContainer(ipsObjectPartContainer);
+        return getContributionItemsForIpsObjectPartContainer();
     }
 
     private IContributionItem[] getContributionItemsForNoSourceCodeFound() {
@@ -103,12 +108,12 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         return contributionItems.toArray(new IContributionItem[1]);
     }
 
-    private IContributionItem[] getContributionItemsForIpsObjectPartContainer(IIpsObjectPartContainer ipsObjectPartContainer) {
+    private IContributionItem[] getContributionItemsForIpsObjectPartContainer() {
         /*
          * Obtain the Java types and their members which are generated for the IPS Object Part
          * Container.
          */
-        Map<IType, Set<IMember>> javaTypesToJavaElements = getJavaTypesToJavaElementsMap(ipsObjectPartContainer);
+        Map<IType, Set<IMember>> javaTypesToJavaElements = getJavaTypesToJavaElementsMap();
 
         /*
          * Go over all types (that are either generated or parent of a generated member) and add an
@@ -116,10 +121,13 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
          * members.
          */
         List<IContributionItem> contributionItems = new ArrayList<IContributionItem>(javaTypesToJavaElements.size() * 3);
-        List<IType> sortedJavaTypes = sortAndCheckTypes(javaTypesToJavaElements.keySet());
+
+        List<IType> sortedJavaTypes = sortTypes(javaTypesToJavaElements.keySet());
         for (IType type : sortedJavaTypes) {
-            IMenuManager typeMenu = createTypeMenu(type, javaTypesToJavaElements.get(type));
-            contributionItems.add(typeMenu);
+            if (type.exists()) {
+                IMenuManager typeMenu = createTypeMenu(type, javaTypesToJavaElements.get(type));
+                contributionItems.add(typeMenu);
+            }
         }
 
         if (contributionItems.isEmpty()) {
@@ -129,9 +137,9 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         }
     }
 
-    private Map<IType, Set<IMember>> getJavaTypesToJavaElementsMap(IIpsObjectPartContainer ipsObjectPartContainer) {
+    private Map<IType, Set<IMember>> getJavaTypesToJavaElementsMap() {
         Map<IType, Set<IMember>> javaTypesToJavaElements = new LinkedHashMap<IType, Set<IMember>>(2);
-        for (IJavaElement javaElement : builderSet.getGeneratedJavaElements(ipsObjectPartContainer)) {
+        for (IJavaElement javaElement : builderSet.getGeneratedJavaElements(selectedIpsObjectPartContainer)) {
             IType type = null;
             if (javaElement instanceof IType) {
                 type = (IType)javaElement;
@@ -167,19 +175,20 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
      * <li>Product
      * </ol>
      * <p>
-     * Furthermore this method ensures that each type of the returned set actually exists. This way
-     * it is not necessary to check the returned types for existence. However, existence of members
-     * still needs to be checked.
+     * No sorting is done if the selected {@link IIpsObjectPartContainer} is an {@link IEnumType} or
+     * {@link IEnumAttribute}.
      */
-    private List<IType> sortAndCheckTypes(Set<IType> javaTypes) {
+    private List<IType> sortTypes(Set<IType> javaTypes) {
+        if (selectedIpsObjectPartContainer instanceof IEnumType
+                || selectedIpsObjectPartContainer instanceof IEnumAttribute) {
+            return Arrays.asList(javaTypes.toArray(new IType[javaTypes.size()]));
+        }
         List<IType> sortedTypes = new ArrayList<IType>(javaTypes.size());
         for (IType type : javaTypes) {
             if (isInterfaceType(type)) {
-                if (type.exists()) {
-                    sortedTypes.add(type);
-                }
+                sortedTypes.add(type);
                 IType implementation = getImplementationForInterface(javaTypes, type);
-                if (implementation != null && implementation.exists()) {
+                if (implementation != null) {
                     sortedTypes.add(implementation);
                 }
             }
