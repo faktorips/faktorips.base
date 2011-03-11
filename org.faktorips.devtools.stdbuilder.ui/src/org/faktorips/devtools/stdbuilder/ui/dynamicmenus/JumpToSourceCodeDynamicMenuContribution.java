@@ -117,8 +117,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
          */
         List<IContributionItem> contributionItems = new ArrayList<IContributionItem>(javaTypesToJavaElements.size() * 3);
         List<IType> sortedJavaTypes = sortAndCheckTypes(javaTypesToJavaElements.keySet());
-        for (int i = 0; i < sortedJavaTypes.size(); i++) {
-            IType type = sortedJavaTypes.get(i);
+        for (IType type : sortedJavaTypes) {
             IMenuManager typeMenu = createTypeMenu(type, javaTypesToJavaElements.get(type));
             contributionItems.add(typeMenu);
         }
