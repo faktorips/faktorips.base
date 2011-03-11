@@ -145,14 +145,14 @@ public class MethodsSection extends SimpleIpsPartsSection {
         }
 
         private void createContextMenu() {
-            MenuManager manager = new MenuManager();
-            manager.add(new GroupMarker(IpsContextMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
+            MenuManager menuManager = new MenuManager();
+            menuManager.add(new GroupMarker(IpsContextMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
 
-            Menu contextMenu = manager.createContextMenu(getViewer().getControl());
+            Menu contextMenu = menuManager.createContextMenu(getViewer().getControl());
             getViewer().getControl().setMenu(contextMenu);
-            editorPage.getSite().registerContextMenu(manager, getSelectionProvider());
+            editorPage.getSite().registerContextMenu(menuManager, getSelectionProvider());
 
-            manager.addMenuListener(MenuCleaner.createAdditionsCleaner());
+            menuManager.addMenuListener(MenuCleaner.createAdditionsCleaner());
         }
 
         @Override

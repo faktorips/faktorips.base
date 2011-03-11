@@ -105,7 +105,7 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
         new EnumTypeGeneralInfoSection(enumType, formBody, toolkit);
 
         Composite remainerSection = createGridComposite(toolkit, formBody, 1, true, GridData.FILL_HORIZONTAL);
-        enumAttributesSection = new EnumAttributesSection(enumType, remainerSection, toolkit);
+        enumAttributesSection = new EnumAttributesSection(this, enumType, remainerSection, toolkit);
         try {
             enumValuesSection = new EnumValuesSection(enumType, formBody, toolkit);
         } catch (CoreException e) {

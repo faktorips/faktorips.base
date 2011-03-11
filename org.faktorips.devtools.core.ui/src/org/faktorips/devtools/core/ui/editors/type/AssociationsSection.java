@@ -84,17 +84,17 @@ public abstract class AssociationsSection extends SimpleIpsPartsSection {
             MenuManager refactorSubmenu = new MenuManager(Messages.AssociationsSection_submenuRefactor);
             refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsRenameHandler.CONTRIBUTION_ID));
 
-            MenuManager manager = new MenuManager();
-            manager.add(refactorSubmenu);
-            manager.add(new Separator(IpsContextMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
-            manager.add(new Separator());
-            manager.add(openTargetAction);
+            MenuManager menuManager = new MenuManager();
+            menuManager.add(refactorSubmenu);
+            menuManager.add(new Separator(IpsContextMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
+            menuManager.add(new Separator());
+            menuManager.add(openTargetAction);
 
-            Menu contextMenu = manager.createContextMenu(getViewer().getControl());
+            Menu contextMenu = menuManager.createContextMenu(getViewer().getControl());
             getViewer().getControl().setMenu(contextMenu);
-            editorPage.getSite().registerContextMenu(manager, getSelectionProvider());
+            editorPage.getSite().registerContextMenu(menuManager, getSelectionProvider());
 
-            manager.addMenuListener(MenuCleaner.createAdditionsCleaner());
+            menuManager.addMenuListener(MenuCleaner.createAdditionsCleaner());
         }
 
         @Override

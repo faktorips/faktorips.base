@@ -36,8 +36,11 @@ import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.ui.IpsContextMenuId;
+import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
+import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringHandler;
@@ -57,6 +60,8 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class EnumAttributesSection extends SimpleIpsPartsSection {
 
+    private final IpsObjectEditorPage editorPage;
+
     /** The UI composite for the section. */
     EnumAttributesComposite enumAttributesComposite;
 
@@ -68,9 +73,10 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
      * @param parent The parent UI composite.
      * @param toolkit The UI toolkit that shall be used to create UI elements.
      */
-    public EnumAttributesSection(IEnumType enumType, Composite parent, UIToolkit toolkit) {
+    public EnumAttributesSection(IpsObjectEditorPage editorPage, IEnumType enumType, Composite parent, UIToolkit toolkit) {
         super(enumType, parent, Messages.EnumAttributesSection_title, toolkit);
-        ((EnumAttributesComposite)getPartsComposite()).createContextMenu();
+        this.editorPage = editorPage;
+        enumAttributesComposite.createContextMenu();
 
         addMonitoredValidationMessageCode(IEnumType.MSGCODE_ENUM_TYPE_MULTIPLE_LITERAL_NAME_ATTRIBUTES);
         addMonitoredValidationMessageCode(IEnumType.MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE);
@@ -135,16 +141,18 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         }
 
         private void createContextMenu() {
-            MenuManager manager = new MenuManager();
             MenuManager refactorSubmenu = new MenuManager(Messages.EnumAttributesSection_submenuRefactor);
-
-            manager.add(refactorSubmenu);
-            manager.add(new Separator());
-
             refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsRenameHandler.CONTRIBUTION_ID));
 
-            Menu contextMenu = manager.createContextMenu(getViewer().getControl());
+            MenuManager menuManager = new MenuManager();
+            menuManager.add(refactorSubmenu);
+            menuManager.add(new Separator(IpsContextMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
+
+            Menu contextMenu = menuManager.createContextMenu(getViewer().getControl());
             getViewer().getControl().setMenu(contextMenu);
+            editorPage.getSite().registerContextMenu(menuManager, getSelectionProvider());
+
+            menuManager.addMenuListener(MenuCleaner.createAdditionsCleaner());
         }
 
         @Override
@@ -180,7 +188,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
 
             /*
              * If this is the first attribute to be created and the values are being defined in the
-             * EnumType then make sure that there will be one EnumValue available for editing.
+             * enum type then make sure that there will be one enum value available for editing.
              */
             if (enumType.getEnumAttributesCountIncludeSupertypeCopies(true) == 1) {
                 if (enumType.isContainingValues() && !(enumType.isAbstract())) {
@@ -198,7 +206,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             IEnumAttribute enumAttributeToDelete = (IEnumAttribute)partToDelete;
             enumType.deleteEnumAttributeWithValues(enumAttributeToDelete);
 
-            // Delete all EnumValues if there are no more EnumAttributes.
+            // Delete all enum values if there are no more enum attributes.
             if (enumType.getEnumAttributesCountIncludeSupertypeCopies(enumType.isCapableOfContainingValues()) == 0) {
                 for (IEnumValue currentEnumValue : enumType.getEnumValues()) {
                     currentEnumValue.delete();
@@ -276,7 +284,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         }
 
         /**
-         * Opens a dialog enabling the user to inherit <tt>IEnumAttribute</tt>s from the supertype
+         * Opens a dialog enabling the user to inherit <tt>IEnumAttribute</tt>s from the super type
          * hierarchy in a comfortable way.
          */
         private void inheritClicked() throws CoreException {
