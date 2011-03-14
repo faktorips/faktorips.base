@@ -1192,53 +1192,52 @@ public class GenAssociationToMany extends GenAssociation {
             IType generatedJavaType) {
 
         addFieldAssociationNameToGeneratedJavaElements(javaElements, generatedJavaType);
+
+        if (!association.isDerivedUnion()) {
+            addFieldGetMaxCardinalityForToGeneratedJavaElements(javaElements, generatedJavaType);
+            addMethodAddObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+            addMethodRemoveObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+            addMethodNewChildToGeneratedJavaElements(javaElements, generatedJavaType);
+            addMethodGetRefObjectAtIndexToGeneratedJavaElements(javaElements, generatedJavaType);
+
+            if (target.isConfigurableByProductCmptType()) {
+                try {
+                    IProductCmptType targetConfiguringProductCmptType = target.findProductCmptType(target
+                            .getIpsProject());
+                    if (targetConfiguringProductCmptType != null) {
+                        addMethodNewChildConfiguredToGeneratedJavaElements(javaElements, generatedJavaType,
+                                targetConfiguringProductCmptType);
+                    }
+                    if (association.isQualified()) {
+                        addMethodGetRefObjectByQualifierToGeneratedJavaElements(javaElements, generatedJavaType,
+                                targetConfiguringProductCmptType);
+                    }
+                } catch (CoreException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
         addMethodGetNumOfRefObjectsToGeneratedJavaElements(javaElements, generatedJavaType);
         addMethodContainsObjectToGeneratedJavaElements(javaElements, generatedJavaType);
         addMethodGetAllRefObjectsToGeneratedJavaElements(javaElements, generatedJavaType);
-
-        if (association.isDerivedUnion()) {
-            return;
-        }
-
-        addFieldGetMaxCardinalityForToGeneratedJavaElements(javaElements, generatedJavaType);
-        addMethodAddObjectToGeneratedJavaElements(javaElements, generatedJavaType);
-        addMethodRemoveObjectToGeneratedJavaElements(javaElements, generatedJavaType);
-        addMethodNewChildToGeneratedJavaElements(javaElements, generatedJavaType);
-        addMethodGetRefObjectAtIndexToGeneratedJavaElements(javaElements, generatedJavaType);
-
-        if (target.isConfigurableByProductCmptType()) {
-            try {
-                IProductCmptType targetConfiguringProductCmptType = target.findProductCmptType(target.getIpsProject());
-                if (targetConfiguringProductCmptType != null) {
-                    addMethodNewChildConfiguredToGeneratedJavaElements(javaElements, generatedJavaType,
-                            targetConfiguringProductCmptType);
-                }
-                if (association.isQualified()) {
-                    addMethodGetRefObjectByQualifierToGeneratedJavaElements(javaElements, generatedJavaType,
-                            targetConfiguringProductCmptType);
-                }
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 
     private void getGeneratedJavaElementsForPublishedInterfaceAssociation(List<IJavaElement> javaElements,
             IType generatedJavaType) {
 
         addFieldAssociationNameToGeneratedJavaElements(javaElements, generatedJavaType);
+
+        if (!association.isDerivedUnion()) {
+            addFieldGetMaxCardinalityForToGeneratedJavaElements(javaElements, generatedJavaType);
+            addMethodAddObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+            addMethodRemoveObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+            addMethodGetRefObjectAtIndexToGeneratedJavaElements(javaElements, generatedJavaType);
+        }
+
         addMethodGetNumOfRefObjectsToGeneratedJavaElements(javaElements, generatedJavaType);
         addMethodContainsObjectToGeneratedJavaElements(javaElements, generatedJavaType);
         addMethodGetAllRefObjectsToGeneratedJavaElements(javaElements, generatedJavaType);
-
-        if (association.isDerivedUnion()) {
-            return;
-        }
-
-        addFieldGetMaxCardinalityForToGeneratedJavaElements(javaElements, generatedJavaType);
-        addMethodAddObjectToGeneratedJavaElements(javaElements, generatedJavaType);
-        addMethodRemoveObjectToGeneratedJavaElements(javaElements, generatedJavaType);
-        addMethodGetRefObjectAtIndexToGeneratedJavaElements(javaElements, generatedJavaType);
     }
 
     @Override
@@ -1257,54 +1256,51 @@ public class GenAssociationToMany extends GenAssociation {
     private void getGeneratedJavaElementsForImplementationMasterToDetail(List<IJavaElement> javaElements,
             IType generatedJavaType) {
 
-        addMethodContainsObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+        if (!association.isDerivedUnion()) {
+            addFieldAssociationToGeneratedJavaElements(javaElements, generatedJavaType);
+            addMethodGetNumOfRefObjectsToGeneratedJavaElements(javaElements, generatedJavaType);
+            addMethodGetAllRefObjectsToGeneratedJavaElements(javaElements, generatedJavaType);
+            addMethodGetRefObjectAtIndexToGeneratedJavaElements(javaElements, generatedJavaType);
+            addMethodNewChildToGeneratedJavaElements(javaElements, generatedJavaType);
+            addMethodAddObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+            addMethodAddObjectInternalToGeneratedJavaElements(javaElements, generatedJavaType);
+            addMethodRemoveObjectToGeneratedJavaElements(javaElements, generatedJavaType);
 
-        if (association.isDerivedUnion()) {
-            return;
-        }
-
-        addFieldAssociationToGeneratedJavaElements(javaElements, generatedJavaType);
-        addMethodGetNumOfRefObjectsToGeneratedJavaElements(javaElements, generatedJavaType);
-        addMethodGetAllRefObjectsToGeneratedJavaElements(javaElements, generatedJavaType);
-        addMethodGetRefObjectAtIndexToGeneratedJavaElements(javaElements, generatedJavaType);
-        addMethodNewChildToGeneratedJavaElements(javaElements, generatedJavaType);
-        addMethodAddObjectToGeneratedJavaElements(javaElements, generatedJavaType);
-        addMethodAddObjectInternalToGeneratedJavaElements(javaElements, generatedJavaType);
-        addMethodRemoveObjectToGeneratedJavaElements(javaElements, generatedJavaType);
-
-        if (target.isConfigurableByProductCmptType()) {
-            try {
-                IProductCmptType targetConfiguringProductCmptType = target.findProductCmptType(target.getIpsProject());
-                if (targetConfiguringProductCmptType != null) {
-                    addMethodNewChildConfiguredToGeneratedJavaElements(javaElements, generatedJavaType,
-                            targetConfiguringProductCmptType);
+            if (target.isConfigurableByProductCmptType()) {
+                try {
+                    IProductCmptType targetConfiguringProductCmptType = target.findProductCmptType(target
+                            .getIpsProject());
+                    if (targetConfiguringProductCmptType != null) {
+                        addMethodNewChildConfiguredToGeneratedJavaElements(javaElements, generatedJavaType,
+                                targetConfiguringProductCmptType);
+                    }
+                    if (association.isQualified()) {
+                        addMethodGetRefObjectByQualifierToGeneratedJavaElements(javaElements, generatedJavaType,
+                                targetConfiguringProductCmptType);
+                    }
+                } catch (CoreException e) {
+                    throw new RuntimeException(e);
                 }
-                if (association.isQualified()) {
-                    addMethodGetRefObjectByQualifierToGeneratedJavaElements(javaElements, generatedJavaType,
-                            targetConfiguringProductCmptType);
-                }
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
             }
         }
+
+        addMethodContainsObjectToGeneratedJavaElements(javaElements, generatedJavaType);
     }
 
     private void getGeneratedJavaElementsForImplementationAssociation(List<IJavaElement> javaElements,
             IType generatedJavaType) {
 
-        addMethodContainsObjectToGeneratedJavaElements(javaElements, generatedJavaType);
-
-        if (association.isDerivedUnion()) {
-            return;
+        if (!association.isDerivedUnion()) {
+            addFieldAssociationToGeneratedJavaElements(javaElements, generatedJavaType);
+            addMethodGetNumOfRefObjectsToGeneratedJavaElements(javaElements, generatedJavaType);
+            addMethodGetAllRefObjectsToGeneratedJavaElements(javaElements, generatedJavaType);
+            addMethodGetRefObjectAtIndexToGeneratedJavaElements(javaElements, generatedJavaType);
+            addMethodAddObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+            addMethodAddObjectInternalToGeneratedJavaElements(javaElements, generatedJavaType);
+            addMethodRemoveObjectToGeneratedJavaElements(javaElements, generatedJavaType);
         }
 
-        addFieldAssociationToGeneratedJavaElements(javaElements, generatedJavaType);
-        addMethodGetNumOfRefObjectsToGeneratedJavaElements(javaElements, generatedJavaType);
-        addMethodGetAllRefObjectsToGeneratedJavaElements(javaElements, generatedJavaType);
-        addMethodGetRefObjectAtIndexToGeneratedJavaElements(javaElements, generatedJavaType);
-        addMethodAddObjectToGeneratedJavaElements(javaElements, generatedJavaType);
-        addMethodAddObjectInternalToGeneratedJavaElements(javaElements, generatedJavaType);
-        addMethodRemoveObjectToGeneratedJavaElements(javaElements, generatedJavaType);
+        addMethodContainsObjectToGeneratedJavaElements(javaElements, generatedJavaType);
     }
 
     private void addMethodGetNumOfRefObjectsToGeneratedJavaElements(List<IJavaElement> javaElements,

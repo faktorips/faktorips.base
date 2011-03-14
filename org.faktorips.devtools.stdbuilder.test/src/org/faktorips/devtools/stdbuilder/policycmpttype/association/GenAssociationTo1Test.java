@@ -42,11 +42,11 @@ public class GenAssociationTo1Test extends GenAssociationTest {
 
         genAssociationTo1.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
                 association);
-        expectFieldGetMaxCardinalityFor(genAssociationTo1, javaInterface);
-        expectFieldAssociationName(genAssociationTo1, javaInterface);
-        expectMethodGetRefObject(javaInterface);
-        expectMethodSetObject(javaInterface);
-        expectMethodNewChild(genAssociationTo1, javaInterface);
+        expectFieldAssociationName(0, genAssociationTo1, javaInterface);
+        expectFieldGetMaxCardinalityFor(1, genAssociationTo1, javaInterface);
+        expectMethodGetRefObject(2, javaInterface);
+        expectMethodSetObject(3, javaInterface);
+        expectMethodNewChild(4, genAssociationTo1, javaInterface);
         assertEquals(5, generatedJavaElements.size());
     }
 
@@ -61,6 +61,7 @@ public class GenAssociationTo1Test extends GenAssociationTest {
         genAssociationTo1.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
                 association);
         expectMethodNewChildConfigured(
+                5,
                 genAssociationTo1,
                 javaInterface,
                 getGeneratedJavaType(configurationForTarget, false, false,
@@ -72,11 +73,11 @@ public class GenAssociationTo1Test extends GenAssociationTest {
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
         genAssociationTo1.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass, association);
-        expectFieldAssociation(genAssociationTo1, javaClass);
-        expectMethodGetRefObject(javaClass);
-        expectMethodSetObject(javaClass);
-        expectMethodSetObjectInternal(javaClass);
-        expectMethodNewChild(genAssociationTo1, javaClass);
+        expectFieldAssociation(0, genAssociationTo1, javaClass);
+        expectMethodGetRefObject(1, javaClass);
+        expectMethodSetObject(2, javaClass);
+        expectMethodSetObjectInternal(3, javaClass);
+        expectMethodNewChild(4, genAssociationTo1, javaClass);
         assertEquals(5, generatedJavaElements.size());
     }
 
@@ -88,6 +89,7 @@ public class GenAssociationTo1Test extends GenAssociationTest {
 
         genAssociationTo1.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass, association);
         expectMethodNewChildConfigured(
+                5,
                 genAssociationTo1,
                 javaClass,
                 getGeneratedJavaType(configurationForTarget, false, false,
@@ -100,8 +102,8 @@ public class GenAssociationTo1Test extends GenAssociationTest {
 
         genAssociationTo1.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
                 association);
-        expectFieldAssociationName(genAssociationTo1, javaInterface);
-        expectMethodGetRefObject(javaInterface);
+        expectFieldAssociationName(0, genAssociationTo1, javaInterface);
+        expectMethodGetRefObject(1, javaInterface);
         assertEquals(2, generatedJavaElements.size());
     }
 
@@ -110,9 +112,9 @@ public class GenAssociationTo1Test extends GenAssociationTest {
         association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
 
         genAssociationTo1.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass, association);
-        expectFieldAssociation(genAssociationTo1, javaClass);
-        expectMethodGetRefObject(javaClass);
-        expectMethodSetObjectInternal(javaClass);
+        expectFieldAssociation(0, genAssociationTo1, javaClass);
+        expectMethodGetRefObject(1, javaClass);
+        expectMethodSetObjectInternal(2, javaClass);
         assertEquals(3, generatedJavaElements.size());
     }
 
@@ -122,10 +124,10 @@ public class GenAssociationTo1Test extends GenAssociationTest {
 
         genAssociationTo1.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
                 association);
-        expectFieldGetMaxCardinalityFor(genAssociationTo1, javaInterface);
-        expectFieldAssociationName(genAssociationTo1, javaInterface);
-        expectMethodGetRefObject(javaInterface);
-        expectMethodSetObject(javaInterface);
+        expectFieldAssociationName(0, genAssociationTo1, javaInterface);
+        expectFieldGetMaxCardinalityFor(1, genAssociationTo1, javaInterface);
+        expectMethodGetRefObject(2, javaInterface);
+        expectMethodSetObject(3, javaInterface);
         assertEquals(4, generatedJavaElements.size());
     }
 
@@ -134,25 +136,25 @@ public class GenAssociationTo1Test extends GenAssociationTest {
         association.setAssociationType(AssociationType.ASSOCIATION);
 
         genAssociationTo1.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass, association);
-        expectFieldAssociation(genAssociationTo1, javaClass);
-        expectMethodGetRefObject(javaClass);
-        expectMethodSetObject(javaClass);
-        expectMethodSetObjectInternal(javaClass);
+        expectFieldAssociation(0, genAssociationTo1, javaClass);
+        expectMethodGetRefObject(1, javaClass);
+        expectMethodSetObject(2, javaClass);
+        expectMethodSetObjectInternal(3, javaClass);
         assertEquals(4, generatedJavaElements.size());
     }
 
-    private void expectMethodGetRefObject(IType javaType) {
-        expectMethod(javaType, genAssociationTo1.getMethodNameGetRefObject());
+    private void expectMethodGetRefObject(int index, IType javaType) {
+        expectMethod(index, javaType, genAssociationTo1.getMethodNameGetRefObject());
     }
 
-    private void expectMethodSetObject(IType javaType) {
-        expectMethod(javaType, genAssociationTo1.getMethodNameAddOrSetObject(),
+    private void expectMethodSetObject(int index, IType javaType) {
+        expectMethod(index, javaType, genAssociationTo1.getMethodNameAddOrSetObject(),
                 "Q" + javaInterfaceTargetType.getElementName() + ";");
     }
 
-    private void expectMethodSetObjectInternal(IType javaType) {
-        expectMethod(javaType, genAssociationTo1.getMethodNameAddOrSetObjectInternal(),
-                "Q" + javaInterfaceTargetType.getElementName() + ";");
+    private void expectMethodSetObjectInternal(int index, IType javaType) {
+        expectMethod(index, javaType, genAssociationTo1.getMethodNameAddOrSetObjectInternal(), "Q"
+                + javaInterfaceTargetType.getElementName() + ";");
     }
 
     private String getPublishedInterfaceName(String name) {

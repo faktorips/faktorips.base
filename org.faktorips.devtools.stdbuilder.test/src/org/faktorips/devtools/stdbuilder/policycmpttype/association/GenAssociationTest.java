@@ -53,32 +53,33 @@ public abstract class GenAssociationTest extends PolicyCmptTypeBuilderTest {
         association.setTargetRolePlural(TARGET_ROLE_PLURAL);
     }
 
-    protected final void expectFieldGetMaxCardinalityFor(GenAssociation genAssociation, IType javaType) {
-        expectField(javaType, genAssociation.getFieldNameGetMaxCardinalityFor());
+    protected final void expectFieldGetMaxCardinalityFor(int index, GenAssociation genAssociation, IType javaType) {
+        expectField(index, javaType, genAssociation.getFieldNameGetMaxCardinalityFor());
     }
 
-    protected final void expectMethodNewChild(GenAssociation genAssociation, IType javaType) {
-        expectMethod(javaType, genAssociation.getMethodNameNewChild());
+    protected final void expectMethodNewChild(int index, GenAssociation genAssociation, IType javaType) {
+        expectMethod(index, javaType, genAssociation.getMethodNameNewChild());
     }
 
-    protected final void expectMethodNewChildConfigured(GenAssociation genAssociation,
+    protected final void expectMethodNewChildConfigured(int index,
+            GenAssociation genAssociation,
             IType javaType,
             IType javaInterfaceTargetConfiguringProductCmptType) {
 
-        expectMethod(javaType, genAssociation.getMethodNameNewChild(), "Q"
+        expectMethod(index, javaType, genAssociation.getMethodNameNewChild(), "Q"
                 + javaInterfaceTargetConfiguringProductCmptType.getElementName() + ";");
     }
 
-    protected final void expectFieldAssociation(GenAssociation genAssociation, IType javaType) {
+    protected final void expectFieldAssociation(int index, GenAssociation genAssociation, IType javaType) {
         try {
-            expectField(javaType, genAssociation.getFieldNameForAssociation());
+            expectField(index, javaType, genAssociation.getFieldNameForAssociation());
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
     }
 
-    protected final void expectFieldAssociationName(GenAssociation genAssociation, IType javaType) {
-        expectField(javaType, genAssociation.getStaticConstantAssociationName());
+    protected final void expectFieldAssociationName(int index, GenAssociation genAssociation, IType javaType) {
+        expectField(index, javaType, genAssociation.getStaticConstantAssociationName());
     }
 
     protected final IProductCmptType setUpTargetConfigurable() throws CoreException {
