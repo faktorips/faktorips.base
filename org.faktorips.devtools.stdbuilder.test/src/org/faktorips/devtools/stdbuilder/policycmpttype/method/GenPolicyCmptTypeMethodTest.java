@@ -86,7 +86,7 @@ public class GenPolicyCmptTypeMethodTest extends PolicyCmptTypeBuilderTest {
     public void testGetGeneratedJavaElementsForPublishedInterface() {
         genPublishedMethod.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
                 publishedMethod);
-        expectMethod(javaInterface, genPublishedMethod);
+        expectMethod(0, javaInterface, genPublishedMethod);
         assertEquals(1, generatedJavaElements.size());
 
         generatedJavaElements.clear();
@@ -98,20 +98,20 @@ public class GenPolicyCmptTypeMethodTest extends PolicyCmptTypeBuilderTest {
     @Test
     public void testGetGeneratedJavaElementsForImplementation() {
         genPublishedMethod.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass, publishedMethod);
-        expectMethod(javaClass, genPublishedMethod);
+        expectMethod(0, javaClass, genPublishedMethod);
         assertEquals(1, generatedJavaElements.size());
 
         generatedJavaElements.clear();
         genPublicMethod.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass, publicMethod);
-        expectMethod(javaClass, genPublicMethod);
+        expectMethod(0, javaClass, genPublicMethod);
         assertEquals(1, generatedJavaElements.size());
     }
 
-    private void expectMethod(IType javaType, GenMethod genMethod) {
+    private void expectMethod(int index, IType javaType, GenMethod genMethod) {
         String[] parameterTypeSignatures = new String[] { "I", "V", "QString;" };
         String methodName = genMethod.getMethod().getName();
         org.eclipse.jdt.core.IMethod expectedMethod = javaType.getMethod(methodName, parameterTypeSignatures);
-        assertTrue(generatedJavaElements.contains(expectedMethod));
+        assertEquals(expectedMethod, generatedJavaElements.get(index));
     }
 
 }
