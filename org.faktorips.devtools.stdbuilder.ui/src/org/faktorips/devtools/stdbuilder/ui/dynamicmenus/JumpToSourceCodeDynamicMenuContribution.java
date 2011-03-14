@@ -31,12 +31,13 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.ISelectionService;
+import org.eclipse.ui.ISources;
 import org.eclipse.ui.actions.CompoundContributionItem;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
 import org.eclipse.ui.menus.IWorkbenchContribution;
 import org.eclipse.ui.model.IWorkbenchAdapter;
+import org.eclipse.ui.services.IEvaluationService;
 import org.eclipse.ui.services.IServiceLocator;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
@@ -222,8 +223,9 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     }
 
     private IIpsElement getSelectedIpsElement() {
-        ISelectionService selectionService = (ISelectionService)serviceLocator.getService(ISelectionService.class);
-        ISelection selection = selectionService.getSelection();
+        IEvaluationService evaluationService = (IEvaluationService)serviceLocator.getService(IEvaluationService.class);
+        ISelection selection = (ISelection)evaluationService.getCurrentState().getVariable(
+                ISources.ACTIVE_MENU_SELECTION_NAME);
         TypedSelection<IIpsElement> typedSelection = TypedSelection.create(IIpsElement.class, selection);
         return typedSelection.getElement();
     }

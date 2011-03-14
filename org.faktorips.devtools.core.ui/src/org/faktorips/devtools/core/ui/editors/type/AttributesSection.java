@@ -81,7 +81,6 @@ public abstract class AttributesSection extends SimpleIpsPartsSection {
             Menu contextMenu = menuManager.createContextMenu(getViewer().getControl());
             getViewer().getControl().setMenu(contextMenu);
             editorPage.getSite().registerContextMenu(menuManager, getSelectionProvider());
-            editorPage.getSite().setSelectionProvider(getSelectionProvider());
 
             menuManager.addMenuListener(MenuCleaner.createAdditionsCleaner());
         }

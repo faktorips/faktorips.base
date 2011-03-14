@@ -19,10 +19,12 @@ import static org.mockito.Mockito.when;
 import java.util.Iterator;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.ISelectionService;
+import org.eclipse.ui.ISources;
+import org.eclipse.ui.services.IEvaluationService;
 import org.eclipse.ui.services.IServiceLocator;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -33,14 +35,14 @@ public class JumpToSourceCodeDynamicMenuContributionTest {
     @Mock
     private IServiceLocator mockServiceLocator;
 
-    @Mock
-    private ISelectionService mockSelectionService;
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private IEvaluationService mockEvaluationService;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        when(mockServiceLocator.getService(ISelectionService.class)).thenReturn(mockSelectionService);
+        when(mockServiceLocator.getService(IEvaluationService.class)).thenReturn(mockEvaluationService);
 
         menuContribution = new JumpToSourceCodeDynamicMenuContribution();
         menuContribution.initialize(mockServiceLocator);
@@ -48,7 +50,7 @@ public class JumpToSourceCodeDynamicMenuContributionTest {
 
     /*
      * Cannot test more without PowerMock as creating CommandContributionItems would require to mock
-     * out Commands but Command is a final class.
+     * out commands but Command is a final class.
      */
 
     @Test(expected = IllegalArgumentException.class)
@@ -61,7 +63,8 @@ public class JumpToSourceCodeDynamicMenuContributionTest {
     private void setCurrentSelection(final Object selectedItem) {
         IStructuredSelection mockSelection = mock(IStructuredSelection.class);
         when(mockSelection.iterator()).thenReturn(new SelectionIterator(selectedItem));
-        when(mockSelectionService.getSelection()).thenReturn(mockSelection);
+        when(mockEvaluationService.getCurrentState().getVariable(ISources.ACTIVE_MENU_SELECTION_NAME)).thenReturn(
+                mockSelection);
     }
 
     private static class SelectionIterator implements Iterator<Object> {
