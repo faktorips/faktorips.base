@@ -297,8 +297,8 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
             IType generatedJavaType,
             IIpsElement ipsElement) {
 
-        addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
         addStaticConstantToGeneratedJavaElements(javaElements, generatedJavaType);
+        addGetterMethodToGeneratedJavaElements(javaElements, generatedJavaType);
     }
 
     private void addStaticConstantToGeneratedJavaElements(List<IJavaElement> javaElements, IType generatedJavaType) {
