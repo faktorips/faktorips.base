@@ -14,10 +14,8 @@
 package org.faktorips.devtools.stdbuilder.productcmpttype;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.builder.JavaGeneratorHelper;
 import org.junit.Test;
@@ -47,25 +45,21 @@ public class GenProductCmptTypeTest extends ProductCmptTypeBuilderTest {
     }
 
     private void expectGetProductCmptMethod(IType javaType) {
-        String methodName = genProductCmptType.getMethodNameGetProductCmpt();
-        IMethod expectedMethod = javaType.getMethod(methodName, new String[0]);
-        assertTrue(generatedJavaElements.contains(expectedMethod));
+        expectMethod(javaType, genProductCmptType.getMethodNameGetProductCmpt(), new String[0]);
     }
 
     private void expectGetProductCmptGenMethod(IType javaType) {
-        String methodName = genProductCmptType.getMethodNameGetProductCmptGeneration();
-        IMethod expectedMethod = javaType.getMethod(methodName, new String[0]);
-        assertTrue(generatedJavaElements.contains(expectedMethod));
+        expectMethod(javaType, genProductCmptType.getMethodNameGetProductCmptGeneration(), new String[0]);
     }
 
     private void expectSetProductCmptMethod(IType javaType) {
-        String methodName = genProductCmptType.getMethodNameSetProductCmpt();
-        String[] parameterTypeSignatures = new String[] {
-                "Q"
-                        + JavaGeneratorHelper.getJavaNamingConvention().getPublishedInterfaceName(
-                                genProductCmptType.getType().getName()) + ";", "Z" };
-        IMethod expectedMethod = javaType.getMethod(methodName, parameterTypeSignatures);
-        assertTrue(generatedJavaElements.contains(expectedMethod));
+        expectMethod(
+                javaType,
+                genProductCmptType.getMethodNameSetProductCmpt(),
+                new String[] {
+                        "Q"
+                                + JavaGeneratorHelper.getJavaNamingConvention().getPublishedInterfaceName(
+                                        genProductCmptType.getType().getName()) + ";", "Z" });
     }
 
 }

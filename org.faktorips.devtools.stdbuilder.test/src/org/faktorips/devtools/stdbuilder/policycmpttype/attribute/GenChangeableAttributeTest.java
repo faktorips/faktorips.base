@@ -17,8 +17,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IField;
-import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -302,29 +300,21 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
         assertTrue(generatedJavaElements.isEmpty());
     }
 
-    private void expectGetValueSetMethod(int index, IType javaType, GenChangeableAttribute genChangeableAttribute) {
-        String methodName = genChangeableAttribute.getMethodNameGetSetOfAllowedValues();
-        String[] parameterTypeSignatures = new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" };
-        IMethod expectedGetSetOfAllowedValuesMethod = javaType.getMethod(methodName, parameterTypeSignatures);
-        assertEquals(expectedGetSetOfAllowedValuesMethod, generatedJavaElements.get(index));
-    }
-
-    private void expectGetDefaultValueMethod(int index, IType javaType, GenChangeableAttribute genChangeableAttribute) {
-        String methodName = genChangeableAttribute.getMethodNameGetDefaultValue();
-        IMethod expectedGetDefaultValueMethod = javaType.getMethod(methodName, new String[] {});
-        assertEquals(expectedGetDefaultValueMethod, generatedJavaElements.get(index));
+    private void expectValueSetMemberVariable(int index, IType javaType, GenChangeableAttribute genChangeableAttribute) {
+        expectField(index, javaType, genChangeableAttribute.getFieldNameSetOfAllowedValues());
     }
 
     private void expectDefaultMemberVariable(int index, IType javaType, GenChangeableAttribute genChangeableAttribute) {
-        String fieldName = genChangeableAttribute.getFieldNameDefaultValue();
-        IField expectedDefaultMemberVariable = javaType.getField(fieldName);
-        assertEquals(expectedDefaultMemberVariable, generatedJavaElements.get(index));
+        expectField(index, javaType, genChangeableAttribute.getFieldNameDefaultValue());
     }
 
-    private void expectValueSetMemberVariable(int index, IType javaType, GenChangeableAttribute genChangeableAttribute) {
-        String fieldName = genChangeableAttribute.getFieldNameSetOfAllowedValues();
-        IField expectedSetOfAllowedValuesMemberVariable = javaType.getField(fieldName);
-        assertEquals(expectedSetOfAllowedValuesMemberVariable, generatedJavaElements.get(index));
+    private void expectGetValueSetMethod(int index, IType javaType, GenChangeableAttribute genChangeableAttribute) {
+        expectMethod(index, javaType, genChangeableAttribute.getMethodNameGetSetOfAllowedValues(), new String[] { "Q"
+                + IValidationContext.class.getSimpleName() + ";" });
+    }
+
+    private void expectGetDefaultValueMethod(int index, IType javaType, GenChangeableAttribute genChangeableAttribute) {
+        expectMethod(index, javaType, genChangeableAttribute.getMethodNameGetDefaultValue(), new String[0]);
     }
 
 }

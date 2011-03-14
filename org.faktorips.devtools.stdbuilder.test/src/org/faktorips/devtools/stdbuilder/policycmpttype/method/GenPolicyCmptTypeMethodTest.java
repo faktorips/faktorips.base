@@ -108,10 +108,9 @@ public class GenPolicyCmptTypeMethodTest extends PolicyCmptTypeBuilderTest {
     }
 
     private void expectMethod(int index, IType javaType, GenMethod genMethod) {
-        String[] parameterTypeSignatures = new String[] { "I", "V", "QString;" };
         String methodName = genMethod.getMethod().getName();
-        org.eclipse.jdt.core.IMethod expectedMethod = javaType.getMethod(methodName, parameterTypeSignatures);
-        assertEquals(expectedMethod, generatedJavaElements.get(index));
+        String[] parameterTypeSignatures = new String[] { "I", "V", "QString;" };
+        expectMethod(index, javaType, methodName, parameterTypeSignatures);
     }
 
 }

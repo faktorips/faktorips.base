@@ -16,8 +16,6 @@ package org.faktorips.devtools.stdbuilder.productcmpttype.association;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IField;
-import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.stdbuilder.ProjectConfigurationUtil;
@@ -106,31 +104,24 @@ public class GenProdAssociationTo1Test extends GenProdAssociationTest {
     }
 
     private void expectFieldTo1Association(int index, IType javaType) {
-        IField expectedField = javaType.getField(genAssociationTo1.getFieldNameTo1Association());
-        assertEquals(expectedField, generatedJavaElements.get(index));
+        expectField(index, javaType, genAssociationTo1.getFieldNameTo1Association());
     }
 
     private void expectMethodGet1RelatedCmpt(int index, IType javaType) {
-        IMethod expectedMethod = javaType.getMethod(genAssociationTo1.getMethodNameGet1RelatedCmpt(), new String[0]);
-        assertEquals(expectedMethod, generatedJavaElements.get(index));
+        expectMethod(index, javaType, genAssociationTo1.getMethodNameGet1RelatedCmpt(), new String[0]);
     }
 
     private void expectMethodGet1RelatedCmptGen(int index, IType javaType) {
-        IMethod expectedMethod = javaType.getMethod(genAssociationTo1.getMethodNameGet1RelatedCmpt(),
+        expectMethod(index, javaType, genAssociationTo1.getMethodNameGet1RelatedCmpt(),
                 new String[] { "Ljava.util.Calendar;" });
-        assertEquals(expectedMethod, generatedJavaElements.get(index));
     }
 
     private void expectMethodGet1RelatedCmptLink(int index, GenProdAssociation genProdAssociation, IType javaType) {
-        IMethod expectedMethod = javaType.getMethod(genProdAssociation.getMethodNameGet1RelatedCmptLink(),
-                new String[0]);
-        assertEquals(expectedMethod, generatedJavaElements.get(index));
+        expectMethod(index, javaType, genProdAssociation.getMethodNameGet1RelatedCmptLink(), new String[0]);
     }
 
     private void expectMethodSet1RelatedCmpt(int index, IType javaType) {
-        IMethod expectedMethod = javaType.getMethod(genAssociationTo1.getMethodNameSet1RelatedCmpt(),
-                new String[] { "Q" + javaInterfaceTargetType.getElementName() + ";" });
-        assertEquals(expectedMethod, generatedJavaElements.get(index));
+        expectMethod(index, javaType, genAssociationTo1.getMethodNameSet1RelatedCmpt(), new String[] { "Q"
+                + javaInterfaceTargetType.getElementName() + ";" });
     }
-
 }

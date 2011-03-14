@@ -14,6 +14,7 @@
 package org.faktorips.devtools.stdbuilder;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,8 +84,12 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Expects a field with the given name in the given Java type to be added to the list of
-     * generated Java elements.
+     * Expects a specific field to be added to the list of generated Java elements.
+     * 
+     * @param index The position at which the field is expected in the list of generated Java
+     *            elements
+     * @param javaType The Java type the expected field belongs to
+     * @param fieldName The name of the expected field
      */
     protected final void expectField(int index, IType javaType, String fieldName) {
         IField field = javaType.getField(fieldName);
@@ -92,8 +97,25 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Expects a method with the given name and parameter types in the given Java type to be added
-     * to the list of generated Java elements.
+     * Expects a specific method to be added to the list of generated Java elements.
+     * 
+     * @param javaType The Java type the expected method belongs to
+     * @param methodName The name of the expected method
+     * @param parameterTypeSignatures The parameter type signatures of the expected method
+     */
+    protected final void expectMethod(IType javaType, String methodName, String... parameterTypeSignatures) {
+        IMethod method = javaType.getMethod(methodName, parameterTypeSignatures);
+        assertTrue(generatedJavaElements.contains(method));
+    }
+
+    /**
+     * Expects a specific method to be added to the list of generated Java elements.
+     * 
+     * @param index The position at which the method is expected in the list of generated Java
+     *            elements
+     * @param javaType The Java type the expected method belongs to
+     * @param methodName The name of the expected method
+     * @param parameterTypeSignatures The parameter type signatures of the expected method
      */
     protected final void expectMethod(int index, IType javaType, String methodName, String... parameterTypeSignatures) {
         IMethod method = javaType.getMethod(methodName, parameterTypeSignatures);

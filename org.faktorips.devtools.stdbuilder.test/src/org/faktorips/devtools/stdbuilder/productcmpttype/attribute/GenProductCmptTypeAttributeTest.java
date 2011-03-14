@@ -16,8 +16,6 @@ package org.faktorips.devtools.stdbuilder.productcmpttype.attribute;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IField;
-import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
@@ -122,24 +120,20 @@ public class GenProductCmptTypeAttributeTest extends ProductCmptTypeBuilderTest 
     }
 
     private void expectStaticConstant(int index, IType javaType, GenProductCmptTypeAttribute genAttribute) {
-        IField field = javaType.getField(genAttribute.getStaticConstantPropertyName());
-        assertEquals(field, generatedJavaElements.get(index));
-    }
-
-    private void expectGetterMethod(int index, IType javaType, GenAttribute genAttribute) {
-        IMethod expectedGetterMethod = javaType.getMethod(genAttribute.getGetterMethodName(), new String[] {});
-        assertEquals(expectedGetterMethod, generatedJavaElements.get(index));
-    }
-
-    private void expectSetterMethod(int index, IType javaType, GenAttribute genAttribute) {
-        IMethod expectedSetterMethod = javaType.getMethod(genAttribute.getSetterMethodName(), new String[] { "Q"
-                + genAttribute.getDatatype().getName() + ";" });
-        assertEquals(expectedSetterMethod, generatedJavaElements.get(index));
+        expectField(index, javaType, genAttribute.getStaticConstantPropertyName());
     }
 
     private void expectMemberVar(int index, IType javaType, GenAttribute genAttribute) {
-        IField expectedMemberVar = javaType.getField(genAttribute.getMemberVarName());
-        assertEquals(expectedMemberVar, generatedJavaElements.get(index));
+        expectField(index, javaType, genAttribute.getMemberVarName());
+    }
+
+    private void expectGetterMethod(int index, IType javaType, GenAttribute genAttribute) {
+        expectMethod(index, javaType, genAttribute.getGetterMethodName(), new String[0]);
+    }
+
+    private void expectSetterMethod(int index, IType javaType, GenAttribute genAttribute) {
+        expectMethod(index, javaType, genAttribute.getSetterMethodName(), new String[] { "Q"
+                + genAttribute.getDatatype().getName() + ";" });
     }
 
 }
