@@ -57,19 +57,6 @@ public abstract class GenAssociationTest extends PolicyCmptTypeBuilderTest {
         expectField(index, javaType, genAssociation.getFieldNameGetMaxCardinalityFor());
     }
 
-    protected final void expectMethodNewChild(int index, GenAssociation genAssociation, IType javaType) {
-        expectMethod(index, javaType, genAssociation.getMethodNameNewChild());
-    }
-
-    protected final void expectMethodNewChildConfigured(int index,
-            GenAssociation genAssociation,
-            IType javaType,
-            IType javaInterfaceTargetConfiguringProductCmptType) {
-
-        expectMethod(index, javaType, genAssociation.getMethodNameNewChild(), "Q"
-                + javaInterfaceTargetConfiguringProductCmptType.getElementName() + ";");
-    }
-
     protected final void expectFieldAssociation(int index, GenAssociation genAssociation, IType javaType) {
         try {
             expectField(index, javaType, genAssociation.getFieldNameForAssociation());
@@ -80,6 +67,18 @@ public abstract class GenAssociationTest extends PolicyCmptTypeBuilderTest {
 
     protected final void expectFieldAssociationName(int index, GenAssociation genAssociation, IType javaType) {
         expectField(index, javaType, genAssociation.getStaticConstantAssociationName());
+    }
+
+    protected final void expectMethodNewChild(GenAssociation genAssociation, IType javaType) {
+        expectMethod(javaType, genAssociation.getMethodNameNewChild());
+    }
+
+    protected final void expectMethodNewChildConfigured(GenAssociation genAssociation,
+            IType javaType,
+            IType javaInterfaceTargetConfiguringProductCmptType) {
+
+        expectMethod(javaType, genAssociation.getMethodNameNewChild(), "Q"
+                + javaInterfaceTargetConfiguringProductCmptType.getElementName() + ";");
     }
 
     protected final IProductCmptType setUpTargetConfigurable() throws CoreException {

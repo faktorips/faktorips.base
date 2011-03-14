@@ -17,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.Signature;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -45,13 +46,13 @@ public class GenAssociationToManyTest extends GenAssociationTest {
                 association);
         expectFieldAssociationName(0, genAssociationToMany, javaInterface);
         expectFieldGetMaxCardinalityFor(1, genAssociationToMany, javaInterface);
-        expectMethodAddObject(2, javaInterface);
-        expectMethodRemoveObject(3, javaInterface);
-        expectMethodNewChild(4, genAssociationToMany, javaInterface);
-        expectMethodGetRefObjectAtIndex(5, javaInterface);
-        expectMethodGetNumOfRefObjects(6, javaInterface);
-        expectMethodContainsObject(7, javaInterface);
-        expectMethodGetAllRefObjects(8, javaInterface);
+        expectMethodAddObject(javaInterface);
+        expectMethodRemoveObject(javaInterface);
+        expectMethodNewChild(genAssociationToMany, javaInterface);
+        expectMethodGetRefObjectAtIndex(javaInterface);
+        expectMethodGetNumOfRefObjects(javaInterface);
+        expectMethodContainsObject(javaInterface);
+        expectMethodGetAllRefObjects(javaInterface);
         assertEquals(9, generatedJavaElements.size());
     }
 
@@ -65,12 +66,21 @@ public class GenAssociationToManyTest extends GenAssociationTest {
 
         genAssociationToMany.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
                 association);
+        expectFieldAssociationName(0, genAssociationToMany, javaInterface);
+        expectFieldGetMaxCardinalityFor(1, genAssociationToMany, javaInterface);
+        expectMethodAddObject(javaInterface);
+        expectMethodRemoveObject(javaInterface);
+        expectMethodNewChild(genAssociationToMany, javaInterface);
+        expectMethodGetRefObjectAtIndex(javaInterface);
+        expectMethodGetNumOfRefObjects(javaInterface);
+        expectMethodContainsObject(javaInterface);
+        expectMethodGetAllRefObjects(javaInterface);
         expectMethodNewChildConfigured(
-                6,
                 genAssociationToMany,
                 javaInterface,
                 getGeneratedJavaType(configurationForTarget, false, false,
                         getPublishedInterfaceName(configurationForTarget.getName())));
+        assertEquals(10, generatedJavaElements.size());
     }
 
     @Test
@@ -82,11 +92,25 @@ public class GenAssociationToManyTest extends GenAssociationTest {
 
         genAssociationToMany.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
                 association);
-        expectMethodGetRefObjectByQualifier(
-                7,
+        expectFieldAssociationName(0, genAssociationToMany, javaInterface);
+        expectFieldGetMaxCardinalityFor(1, genAssociationToMany, javaInterface);
+        expectMethodAddObject(javaInterface);
+        expectMethodRemoveObject(javaInterface);
+        expectMethodNewChild(genAssociationToMany, javaInterface);
+        expectMethodGetRefObjectAtIndex(javaInterface);
+        expectMethodGetNumOfRefObjects(javaInterface);
+        expectMethodContainsObject(javaInterface);
+        expectMethodGetAllRefObjects(javaInterface);
+        expectMethodNewChildConfigured(
+                genAssociationToMany,
                 javaInterface,
                 getGeneratedJavaType(configurationForTarget, false, false,
                         getPublishedInterfaceName(configurationForTarget.getName())));
+        expectMethodGetRefObjectByQualifier(
+                javaInterface,
+                getGeneratedJavaType(configurationForTarget, false, false,
+                        getPublishedInterfaceName(configurationForTarget.getName())));
+        assertEquals(11, generatedJavaElements.size());
     }
 
     @Test
@@ -97,9 +121,9 @@ public class GenAssociationToManyTest extends GenAssociationTest {
         genAssociationToMany.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
                 association);
         expectFieldAssociationName(0, genAssociationToMany, javaInterface);
-        expectMethodGetNumOfRefObjects(1, javaInterface);
-        expectMethodContainsObject(2, javaInterface);
-        expectMethodGetAllRefObjects(3, javaInterface);
+        expectMethodGetNumOfRefObjects(javaInterface);
+        expectMethodContainsObject(javaInterface);
+        expectMethodGetAllRefObjects(javaInterface);
         assertEquals(4, generatedJavaElements.size());
     }
 
@@ -109,14 +133,14 @@ public class GenAssociationToManyTest extends GenAssociationTest {
 
         genAssociationToMany.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass, association);
         expectFieldAssociation(0, genAssociationToMany, javaClass);
-        expectMethodGetNumOfRefObjects(1, javaClass);
-        expectMethodGetAllRefObjects(2, javaClass);
-        expectMethodGetRefObjectAtIndex(3, javaClass);
-        expectMethodNewChild(4, genAssociationToMany, javaClass);
-        expectMethodAddObject(5, javaClass);
-        expectMethodAddObjectInternal(6, javaClass);
-        expectMethodRemoveObject(7, javaClass);
-        expectMethodContainsObject(8, javaClass);
+        expectMethodGetNumOfRefObjects(javaClass);
+        expectMethodGetAllRefObjects(javaClass);
+        expectMethodGetRefObjectAtIndex(javaClass);
+        expectMethodNewChild(genAssociationToMany, javaClass);
+        expectMethodAddObject(javaClass);
+        expectMethodAddObjectInternal(javaClass);
+        expectMethodRemoveObject(javaClass);
+        expectMethodContainsObject(javaClass);
         assertEquals(9, generatedJavaElements.size());
     }
 
@@ -127,12 +151,21 @@ public class GenAssociationToManyTest extends GenAssociationTest {
         IProductCmptType configurationForTarget = setUpTargetConfigurable();
 
         genAssociationToMany.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass, association);
+        expectFieldAssociation(0, genAssociationToMany, javaClass);
+        expectMethodGetNumOfRefObjects(javaClass);
+        expectMethodGetAllRefObjects(javaClass);
+        expectMethodGetRefObjectAtIndex(javaClass);
+        expectMethodNewChild(genAssociationToMany, javaClass);
+        expectMethodAddObject(javaClass);
+        expectMethodAddObjectInternal(javaClass);
+        expectMethodRemoveObject(javaClass);
+        expectMethodContainsObject(javaClass);
         expectMethodNewChildConfigured(
-                8,
                 genAssociationToMany,
                 javaClass,
                 getGeneratedJavaType(configurationForTarget, false, false,
                         getPublishedInterfaceName(configurationForTarget.getName())));
+        assertEquals(10, generatedJavaElements.size());
     }
 
     @Test
@@ -143,11 +176,25 @@ public class GenAssociationToManyTest extends GenAssociationTest {
         association.setQualified(true);
 
         genAssociationToMany.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass, association);
-        expectMethodGetRefObjectByQualifier(
-                9,
+        expectFieldAssociation(0, genAssociationToMany, javaClass);
+        expectMethodGetNumOfRefObjects(javaClass);
+        expectMethodGetAllRefObjects(javaClass);
+        expectMethodGetRefObjectAtIndex(javaClass);
+        expectMethodNewChild(genAssociationToMany, javaClass);
+        expectMethodAddObject(javaClass);
+        expectMethodAddObjectInternal(javaClass);
+        expectMethodRemoveObject(javaClass);
+        expectMethodContainsObject(javaClass);
+        expectMethodNewChildConfigured(
+                genAssociationToMany,
                 javaClass,
                 getGeneratedJavaType(configurationForTarget, false, false,
                         getPublishedInterfaceName(configurationForTarget.getName())));
+        expectMethodGetRefObjectByQualifier(
+                javaClass,
+                getGeneratedJavaType(configurationForTarget, false, false,
+                        getPublishedInterfaceName(configurationForTarget.getName())));
+        assertEquals(11, generatedJavaElements.size());
     }
 
     @Test
@@ -156,7 +203,7 @@ public class GenAssociationToManyTest extends GenAssociationTest {
         association.setDerivedUnion(true);
 
         genAssociationToMany.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass, association);
-        expectMethodContainsObject(0, javaClass);
+        expectMethodContainsObject(javaClass);
         assertEquals(1, generatedJavaElements.size());
     }
 
@@ -168,12 +215,12 @@ public class GenAssociationToManyTest extends GenAssociationTest {
                 association);
         expectFieldAssociationName(0, genAssociationToMany, javaInterface);
         expectFieldGetMaxCardinalityFor(1, genAssociationToMany, javaInterface);
-        expectMethodAddObject(2, javaInterface);
-        expectMethodRemoveObject(3, javaInterface);
-        expectMethodGetRefObjectAtIndex(4, javaInterface);
-        expectMethodGetNumOfRefObjects(5, javaInterface);
-        expectMethodContainsObject(6, javaInterface);
-        expectMethodGetAllRefObjects(7, javaInterface);
+        expectMethodAddObject(javaInterface);
+        expectMethodRemoveObject(javaInterface);
+        expectMethodGetRefObjectAtIndex(javaInterface);
+        expectMethodGetNumOfRefObjects(javaInterface);
+        expectMethodContainsObject(javaInterface);
+        expectMethodGetAllRefObjects(javaInterface);
         assertEquals(8, generatedJavaElements.size());
     }
 
@@ -185,9 +232,9 @@ public class GenAssociationToManyTest extends GenAssociationTest {
         genAssociationToMany.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
                 association);
         expectFieldAssociationName(0, genAssociationToMany, javaInterface);
-        expectMethodGetNumOfRefObjects(1, javaInterface);
-        expectMethodContainsObject(2, javaInterface);
-        expectMethodGetAllRefObjects(3, javaInterface);
+        expectMethodGetNumOfRefObjects(javaInterface);
+        expectMethodContainsObject(javaInterface);
+        expectMethodGetAllRefObjects(javaInterface);
         assertEquals(4, generatedJavaElements.size());
     }
 
@@ -197,13 +244,13 @@ public class GenAssociationToManyTest extends GenAssociationTest {
 
         genAssociationToMany.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass, association);
         expectFieldAssociation(0, genAssociationToMany, javaClass);
-        expectMethodGetNumOfRefObjects(1, javaClass);
-        expectMethodGetAllRefObjects(2, javaClass);
-        expectMethodGetRefObjectAtIndex(3, javaClass);
-        expectMethodAddObject(4, javaClass);
-        expectMethodAddObjectInternal(5, javaClass);
-        expectMethodRemoveObject(6, javaClass);
-        expectMethodContainsObject(7, javaClass);
+        expectMethodGetNumOfRefObjects(javaClass);
+        expectMethodGetAllRefObjects(javaClass);
+        expectMethodGetRefObjectAtIndex(javaClass);
+        expectMethodAddObject(javaClass);
+        expectMethodAddObjectInternal(javaClass);
+        expectMethodRemoveObject(javaClass);
+        expectMethodContainsObject(javaClass);
         assertEquals(8, generatedJavaElements.size());
     }
 
@@ -213,47 +260,44 @@ public class GenAssociationToManyTest extends GenAssociationTest {
         association.setDerivedUnion(true);
 
         genAssociationToMany.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass, association);
-        expectMethodContainsObject(0, javaClass);
+        expectMethodContainsObject(javaClass);
         assertEquals(1, generatedJavaElements.size());
     }
 
-    private void expectMethodGetNumOfRefObjects(int index, IType javaType) {
-        expectMethod(index, javaType, genAssociationToMany.getMethodNameGetNumOfRefObjects());
+    private void expectMethodGetNumOfRefObjects(IType javaType) {
+        expectMethod(javaType, genAssociationToMany.getMethodNameGetNumOfRefObjects());
     }
 
-    private void expectMethodContainsObject(int index, IType javaType) {
-        expectMethod(index, javaType, genAssociationToMany.getMethodNameContainsObject(),
+    private void expectMethodContainsObject(IType javaType) {
+        expectMethod(javaType, genAssociationToMany.getMethodNameContainsObject(),
+                Signature.createTypeSignature(javaInterfaceTargetType.getElementName(), false));
+    }
+
+    private void expectMethodGetAllRefObjects(IType javaType) {
+        expectMethod(javaType, genAssociationToMany.getMethodNameGetAllRefObjects());
+    }
+
+    private void expectMethodAddObject(IType javaType) {
+        expectMethod(javaType, genAssociationToMany.getMethodNameAddObject(),
                 "Q" + javaInterfaceTargetType.getElementName() + ";");
     }
 
-    private void expectMethodGetAllRefObjects(int index, IType javaType) {
-        expectMethod(index, javaType, genAssociationToMany.getMethodNameGetAllRefObjects());
-    }
-
-    private void expectMethodAddObject(int index, IType javaType) {
-        expectMethod(index, javaType, genAssociationToMany.getMethodNameAddObject(),
+    private void expectMethodAddObjectInternal(IType javaType) {
+        expectMethod(javaType, genAssociationToMany.getMethodNameAddObjectInternal(),
                 "Q" + javaInterfaceTargetType.getElementName() + ";");
     }
 
-    private void expectMethodAddObjectInternal(int index, IType javaType) {
-        expectMethod(index, javaType, genAssociationToMany.getMethodNameAddObjectInternal(), "Q"
-                + javaInterfaceTargetType.getElementName() + ";");
-    }
-
-    private void expectMethodRemoveObject(int index, IType javaType) {
-        expectMethod(index, javaType, genAssociationToMany.getMethodNameRemoveObject(),
+    private void expectMethodRemoveObject(IType javaType) {
+        expectMethod(javaType, genAssociationToMany.getMethodNameRemoveObject(),
                 "Q" + javaInterfaceTargetType.getElementName() + ";");
     }
 
-    private void expectMethodGetRefObjectAtIndex(int index, IType javaType) {
-        expectMethod(index, javaType, genAssociationToMany.getMethodNameGetRefObjectAtIndex(), "I");
+    private void expectMethodGetRefObjectAtIndex(IType javaType) {
+        expectMethod(javaType, genAssociationToMany.getMethodNameGetRefObjectAtIndex(), "I");
     }
 
-    private void expectMethodGetRefObjectByQualifier(int index,
-            IType javaType,
-            IType javaInterfaceTargetConfiguringProductCmptType) {
-
-        expectMethod(index, javaType, genAssociationToMany.getMethodNameGetRefObject(), "Q"
+    private void expectMethodGetRefObjectByQualifier(IType javaType, IType javaInterfaceTargetConfiguringProductCmptType) {
+        expectMethod(javaType, genAssociationToMany.getMethodNameGetRefObject(), "Q"
                 + javaInterfaceTargetConfiguringProductCmptType.getElementName() + ";");
     }
 
