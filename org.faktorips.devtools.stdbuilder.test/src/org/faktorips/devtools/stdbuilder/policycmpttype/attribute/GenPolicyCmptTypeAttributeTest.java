@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.attribute;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IMethod;
@@ -76,28 +76,31 @@ public abstract class GenPolicyCmptTypeAttributeTest extends PolicyCmptTypeBuild
         publicAttribute.setAttributeType(attributeType);
     }
 
-    protected final void expectPropertyConstant(IType javaType, GenPolicyCmptTypeAttribute genPolicyCmptTypeAttribute) {
+    protected final void expectPropertyConstant(int index,
+            IType javaType,
+            GenPolicyCmptTypeAttribute genPolicyCmptTypeAttribute) {
+
         IField expectedPropertyConstant = javaType.getField(genPolicyCmptTypeAttribute.getStaticConstantPropertyName());
-        assertTrue(generatedJavaElements.contains(expectedPropertyConstant));
+        assertEquals(expectedPropertyConstant, generatedJavaElements.get(index));
     }
 
-    protected final void expectGetterMethod(IType javaType, GenAttribute genAttribute) {
+    protected final void expectGetterMethod(int index, IType javaType, GenAttribute genAttribute) {
         String methodName = genAttribute.getGetterMethodName();
         IMethod expectedGetterMethod = javaType.getMethod(methodName, new String[] {});
-        assertTrue(generatedJavaElements.contains(expectedGetterMethod));
+        assertEquals(expectedGetterMethod, generatedJavaElements.get(index));
     }
 
-    protected final void expectSetterMethod(IType javaType, GenAttribute genAttribute) {
+    protected final void expectSetterMethod(int index, IType javaType, GenAttribute genAttribute) {
         String methodName = genAttribute.getSetterMethodName();
         String[] parameterTypeSignatures = new String[] { "Q" + genAttribute.getDatatype().getName() + ";" };
         IMethod expectedSetterMethod = javaType.getMethod(methodName, parameterTypeSignatures);
-        assertTrue(generatedJavaElements.contains(expectedSetterMethod));
+        assertEquals(expectedSetterMethod, generatedJavaElements.get(index));
     }
 
-    protected final void expectMemberVar(IType javaType, GenAttribute genAttribute) {
+    protected final void expectMemberVar(int index, IType javaType, GenAttribute genAttribute) {
         String fieldName = genAttribute.getMemberVarName();
         IField expectedMemberVar = javaType.getField(fieldName);
-        assertTrue(generatedJavaElements.contains(expectedMemberVar));
+        assertEquals(expectedMemberVar, generatedJavaElements.get(index));
     }
 
 }

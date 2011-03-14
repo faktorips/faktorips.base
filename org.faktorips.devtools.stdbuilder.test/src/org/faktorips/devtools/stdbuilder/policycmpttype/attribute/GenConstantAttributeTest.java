@@ -51,8 +51,8 @@ public class GenConstantAttributeTest extends GenPolicyCmptTypeAttributeTest {
     public void testGetGeneratedJavaElementsForPublishedInterface() {
         genPublishedConstantAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
                 javaInterface, publishedAttribute);
-        expectPropertyConstant(javaInterface, genPublishedConstantAttribute);
-        expectMemberConstant(javaInterface, genPublishedConstantAttribute);
+        expectPropertyConstant(0, javaInterface, genPublishedConstantAttribute);
+        expectMemberConstant(1, javaInterface, genPublishedConstantAttribute);
         assertEquals(2, generatedJavaElements.size());
 
         generatedJavaElements.clear();
@@ -68,8 +68,8 @@ public class GenConstantAttributeTest extends GenPolicyCmptTypeAttributeTest {
 
         genPublishedConstantAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
                 javaInterface, publishedAttribute);
-        expectPropertyConstant(javaInterface, genPublishedConstantAttribute);
-        expectMemberConstant(javaInterface, genPublishedConstantAttribute);
+        expectPropertyConstant(0, javaInterface, genPublishedConstantAttribute);
+        expectMemberConstant(1, javaInterface, genPublishedConstantAttribute);
         assertEquals(2, generatedJavaElements.size());
 
         generatedJavaElements.clear();
@@ -87,8 +87,8 @@ public class GenConstantAttributeTest extends GenPolicyCmptTypeAttributeTest {
         generatedJavaElements.clear();
         genPublicConstantAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
                 publicAttribute);
-        expectPropertyConstant(javaClass, genPublicConstantAttribute);
-        expectMemberConstant(javaClass, genPublicConstantAttribute);
+        expectPropertyConstant(0, javaClass, genPublicConstantAttribute);
+        expectMemberConstant(1, javaClass, genPublicConstantAttribute);
         assertEquals(2, generatedJavaElements.size());
     }
 
@@ -104,15 +104,15 @@ public class GenConstantAttributeTest extends GenPolicyCmptTypeAttributeTest {
         generatedJavaElements.clear();
         genPublicConstantAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
                 publicAttribute);
-        expectPropertyConstant(javaClass, genPublicConstantAttribute);
-        expectMemberConstant(javaClass, genPublicConstantAttribute);
+        expectPropertyConstant(0, javaClass, genPublicConstantAttribute);
+        expectMemberConstant(1, javaClass, genPublicConstantAttribute);
         assertEquals(2, generatedJavaElements.size());
     }
 
-    private void expectMemberConstant(IType javaType, GenConstantAttribute genConstantAttribute) {
+    private void expectMemberConstant(int index, IType javaType, GenConstantAttribute genConstantAttribute) {
         String fieldName = genConstantAttribute.getConstantMemberVarName();
         IField expectedMemberConstant = javaType.getField(fieldName);
-        assertTrue(generatedJavaElements.contains(expectedMemberConstant));
+        assertEquals(expectedMemberConstant, generatedJavaElements.get(index));
     }
 
 }

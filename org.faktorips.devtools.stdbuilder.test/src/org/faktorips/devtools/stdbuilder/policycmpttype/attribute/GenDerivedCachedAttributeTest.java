@@ -49,8 +49,8 @@ public class GenDerivedCachedAttributeTest extends GenPolicyCmptTypeAttributeTes
     public void testGetGeneratedJavaElementsForPublishedInterface() {
         genPublishedDerivedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
                 javaInterface, publishedAttribute);
-        expectPropertyConstant(javaInterface, genPublishedDerivedAttribute);
-        expectGetterMethod(javaInterface, genPublishedDerivedAttribute);
+        expectPropertyConstant(0, javaInterface, genPublishedDerivedAttribute);
+        expectGetterMethod(1, javaInterface, genPublishedDerivedAttribute);
         assertEquals(2, generatedJavaElements.size());
 
         generatedJavaElements.clear();
@@ -81,8 +81,8 @@ public class GenDerivedCachedAttributeTest extends GenPolicyCmptTypeAttributeTes
 
         genPublishedDerivedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
                 javaInterface, publishedAttribute);
-        expectPropertyConstant(javaInterface, genPublishedDerivedAttribute);
-        expectGetterMethod(javaInterface, genPublishedDerivedAttribute);
+        expectPropertyConstant(0, javaInterface, genPublishedDerivedAttribute);
+        expectGetterMethod(1, javaInterface, genPublishedDerivedAttribute);
         assertEquals(2, generatedJavaElements.size());
 
         generatedJavaElements.clear();
@@ -112,16 +112,16 @@ public class GenDerivedCachedAttributeTest extends GenPolicyCmptTypeAttributeTes
     public void testGetGeneratedJavaElementsForImplementation() {
         genPublishedDerivedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
                 publishedAttribute);
-        expectMemberVar(javaClass, genPublishedDerivedAttribute);
-        expectGetterMethod(javaClass, genPublishedDerivedAttribute);
+        expectMemberVar(0, javaClass, genPublishedDerivedAttribute);
+        expectGetterMethod(1, javaClass, genPublishedDerivedAttribute);
         assertEquals(2, generatedJavaElements.size());
 
         generatedJavaElements.clear();
         genPublicDerivedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
                 publicAttribute);
-        expectPropertyConstant(javaClass, genPublicDerivedAttribute);
-        expectMemberVar(javaClass, genPublicDerivedAttribute);
-        expectGetterMethod(javaClass, genPublicDerivedAttribute);
+        expectPropertyConstant(0, javaClass, genPublicDerivedAttribute);
+        expectMemberVar(1, javaClass, genPublicDerivedAttribute);
+        expectGetterMethod(2, javaClass, genPublicDerivedAttribute);
         assertEquals(3, generatedJavaElements.size());
     }
 
@@ -137,7 +137,7 @@ public class GenDerivedCachedAttributeTest extends GenPolicyCmptTypeAttributeTes
         generatedJavaElements.clear();
         genPublicDerivedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
                 publicAttribute);
-        expectPropertyConstant(javaClass, genPublicDerivedAttribute);
+        expectPropertyConstant(0, javaClass, genPublicDerivedAttribute);
         assertEquals(1, generatedJavaElements.size());
     }
 
@@ -148,16 +148,16 @@ public class GenDerivedCachedAttributeTest extends GenPolicyCmptTypeAttributeTes
 
         genPublishedDerivedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
                 publishedAttribute);
-        expectMemberVar(javaClass, genPublishedDerivedAttribute);
-        expectGetterMethod(javaClass, genPublishedDerivedAttribute);
+        expectMemberVar(0, javaClass, genPublishedDerivedAttribute);
+        expectGetterMethod(1, javaClass, genPublishedDerivedAttribute);
         assertEquals(2, generatedJavaElements.size());
 
         generatedJavaElements.clear();
         genPublicDerivedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
                 publicAttribute);
-        expectPropertyConstant(javaClass, genPublicDerivedAttribute);
-        expectMemberVar(javaClass, genPublicDerivedAttribute);
-        expectGetterMethod(javaClass, genPublicDerivedAttribute);
+        expectPropertyConstant(0, javaClass, genPublicDerivedAttribute);
+        expectMemberVar(1, javaClass, genPublicDerivedAttribute);
+        expectGetterMethod(2, javaClass, genPublicDerivedAttribute);
         assertEquals(3, generatedJavaElements.size());
     }
 
@@ -175,7 +175,7 @@ public class GenDerivedCachedAttributeTest extends GenPolicyCmptTypeAttributeTes
         generatedJavaElements.clear();
         genPublicDerivedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass,
                 publicAttribute);
-        expectPropertyConstant(javaClass, genPublicDerivedAttribute);
+        expectPropertyConstant(0, javaClass, genPublicDerivedAttribute);
         assertEquals(1, generatedJavaElements.size());
     }
 

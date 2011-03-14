@@ -114,9 +114,9 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
     }
 
     private void expectationsForPublishedInterfaceGivenPublishedAttribute(GenChangeableAttribute genChangeableAttribute) {
-        expectPropertyConstant(javaInterface, genChangeableAttribute);
-        expectGetterMethod(javaInterface, genChangeableAttribute);
-        expectSetterMethod(javaInterface, genChangeableAttribute);
+        expectPropertyConstant(0, javaInterface, genChangeableAttribute);
+        expectGetterMethod(1, javaInterface, genChangeableAttribute);
+        expectSetterMethod(2, javaInterface, genChangeableAttribute);
         assertEquals(3, generatedJavaElements.size());
     }
 
@@ -141,14 +141,14 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
     private void expectationsForPublishedInterfaceGivenProductRelevantPublishedAttribute(GenChangeableAttribute genChangeableAttribute)
             throws CoreException {
 
-        expectPropertyConstant(javaInterface, genChangeableAttribute);
-        expectGetterMethod(javaInterface, genChangeableAttribute);
-        expectSetterMethod(javaInterface, genChangeableAttribute);
-        expectGetValueSetMethod(javaInterface, genChangeableAttribute);
+        expectPropertyConstant(0, javaInterface, genChangeableAttribute);
+        expectGetterMethod(1, javaInterface, genChangeableAttribute);
+        expectSetterMethod(2, javaInterface, genChangeableAttribute);
+        expectGetValueSetMethod(3, javaInterface, genChangeableAttribute);
 
         IType javaInterfaceProductGen = genPublishedAttribute.findGeneratedJavaTypeForProductCmptTypeGen(true);
-        expectGetValueSetMethod(javaInterfaceProductGen, genChangeableAttribute);
-        expectGetDefaultValueMethod(javaInterfaceProductGen, genChangeableAttribute);
+        expectGetDefaultValueMethod(4, javaInterfaceProductGen, genChangeableAttribute);
+        expectGetValueSetMethod(5, javaInterfaceProductGen, genChangeableAttribute);
         assertEquals(6, generatedJavaElements.size());
     }
 
@@ -204,17 +204,17 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
     }
 
     private void expectationsForImplementationGivenPublishedAttribute(GenChangeableAttribute genChangeableAttribute) {
-        expectMemberVar(javaClass, genChangeableAttribute);
-        expectGetterMethod(javaClass, genChangeableAttribute);
-        expectSetterMethod(javaClass, genChangeableAttribute);
+        expectMemberVar(0, javaClass, genChangeableAttribute);
+        expectGetterMethod(1, javaClass, genChangeableAttribute);
+        expectSetterMethod(2, javaClass, genChangeableAttribute);
         assertEquals(3, generatedJavaElements.size());
     }
 
     private void expectationsForImplementationGivenPublicAttribute(GenChangeableAttribute genChangeableAttribute) {
-        expectPropertyConstant(javaClass, genChangeableAttribute);
-        expectMemberVar(javaClass, genChangeableAttribute);
-        expectGetterMethod(javaClass, genChangeableAttribute);
-        expectSetterMethod(javaClass, genChangeableAttribute);
+        expectPropertyConstant(0, javaClass, genChangeableAttribute);
+        expectMemberVar(1, javaClass, genChangeableAttribute);
+        expectGetterMethod(2, javaClass, genChangeableAttribute);
+        expectSetterMethod(3, javaClass, genChangeableAttribute);
         assertEquals(4, generatedJavaElements.size());
     }
 
@@ -238,33 +238,33 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
     private void expectationsForImplementationGivenProductRelevantPublishedAttribute(GenChangeableAttribute genChangeableAttribute)
             throws CoreException {
 
-        expectMemberVar(javaClass, genChangeableAttribute);
-        expectGetterMethod(javaClass, genChangeableAttribute);
-        expectSetterMethod(javaClass, genChangeableAttribute);
-        expectGetValueSetMethod(javaClass, genChangeableAttribute);
+        expectMemberVar(0, javaClass, genChangeableAttribute);
+        expectGetterMethod(1, javaClass, genChangeableAttribute);
+        expectSetterMethod(2, javaClass, genChangeableAttribute);
+        expectGetValueSetMethod(3, javaClass, genChangeableAttribute);
 
         IType javaClassProductGen = genPublishedAttribute.findGeneratedJavaTypeForProductCmptTypeGen(false);
-        expectDefaultMemberVariable(javaClassProductGen, genChangeableAttribute);
-        expectValueSetMemberVariable(javaClassProductGen, genChangeableAttribute);
-        expectGetDefaultValueMethod(javaClassProductGen, genChangeableAttribute);
-        expectGetValueSetMethod(javaClassProductGen, genChangeableAttribute);
+        expectDefaultMemberVariable(4, javaClassProductGen, genChangeableAttribute);
+        expectValueSetMemberVariable(5, javaClassProductGen, genChangeableAttribute);
+        expectGetDefaultValueMethod(6, javaClassProductGen, genChangeableAttribute);
+        expectGetValueSetMethod(7, javaClassProductGen, genChangeableAttribute);
         assertEquals(8, generatedJavaElements.size());
     }
 
     private void expectationsForImplementationGivenProductRelevantPublicAttribute(GenChangeableAttribute genChangeableAttribute)
             throws CoreException {
 
-        expectPropertyConstant(javaClass, genChangeableAttribute);
-        expectMemberVar(javaClass, genChangeableAttribute);
-        expectGetterMethod(javaClass, genChangeableAttribute);
-        expectSetterMethod(javaClass, genChangeableAttribute);
-        expectGetValueSetMethod(javaClass, genChangeableAttribute);
+        expectPropertyConstant(0, javaClass, genChangeableAttribute);
+        expectMemberVar(1, javaClass, genChangeableAttribute);
+        expectGetterMethod(2, javaClass, genChangeableAttribute);
+        expectSetterMethod(3, javaClass, genChangeableAttribute);
+        expectGetValueSetMethod(4, javaClass, genChangeableAttribute);
 
         IType javaClassProductGen = genPublicAttribute.findGeneratedJavaTypeForProductCmptTypeGen(false);
-        expectDefaultMemberVariable(javaClassProductGen, genChangeableAttribute);
-        expectValueSetMemberVariable(javaClassProductGen, genChangeableAttribute);
-        expectGetDefaultValueMethod(javaClassProductGen, genChangeableAttribute);
-        expectGetValueSetMethod(javaClassProductGen, genChangeableAttribute);
+        expectDefaultMemberVariable(5, javaClassProductGen, genChangeableAttribute);
+        expectValueSetMemberVariable(6, javaClassProductGen, genChangeableAttribute);
+        expectGetDefaultValueMethod(7, javaClassProductGen, genChangeableAttribute);
+        expectGetValueSetMethod(8, javaClassProductGen, genChangeableAttribute);
         assertEquals(9, generatedJavaElements.size());
     }
 
@@ -302,29 +302,29 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
         assertTrue(generatedJavaElements.isEmpty());
     }
 
-    private void expectGetValueSetMethod(IType javaType, GenChangeableAttribute genChangeableAttribute) {
+    private void expectGetValueSetMethod(int index, IType javaType, GenChangeableAttribute genChangeableAttribute) {
         String methodName = genChangeableAttribute.getMethodNameGetSetOfAllowedValues();
         String[] parameterTypeSignatures = new String[] { "Q" + IValidationContext.class.getSimpleName() + ";" };
         IMethod expectedGetSetOfAllowedValuesMethod = javaType.getMethod(methodName, parameterTypeSignatures);
-        assertTrue(generatedJavaElements.contains(expectedGetSetOfAllowedValuesMethod));
+        assertEquals(expectedGetSetOfAllowedValuesMethod, generatedJavaElements.get(index));
     }
 
-    private void expectGetDefaultValueMethod(IType javaType, GenChangeableAttribute genChangeableAttribute) {
+    private void expectGetDefaultValueMethod(int index, IType javaType, GenChangeableAttribute genChangeableAttribute) {
         String methodName = genChangeableAttribute.getMethodNameGetDefaultValue();
         IMethod expectedGetDefaultValueMethod = javaType.getMethod(methodName, new String[] {});
-        assertTrue(generatedJavaElements.contains(expectedGetDefaultValueMethod));
+        assertEquals(expectedGetDefaultValueMethod, generatedJavaElements.get(index));
     }
 
-    private void expectDefaultMemberVariable(IType javaType, GenChangeableAttribute genChangeableAttribute) {
+    private void expectDefaultMemberVariable(int index, IType javaType, GenChangeableAttribute genChangeableAttribute) {
         String fieldName = genChangeableAttribute.getFieldNameDefaultValue();
         IField expectedDefaultMemberVariable = javaType.getField(fieldName);
-        assertTrue(generatedJavaElements.contains(expectedDefaultMemberVariable));
+        assertEquals(expectedDefaultMemberVariable, generatedJavaElements.get(index));
     }
 
-    private void expectValueSetMemberVariable(IType javaType, GenChangeableAttribute genChangeableAttribute) {
+    private void expectValueSetMemberVariable(int index, IType javaType, GenChangeableAttribute genChangeableAttribute) {
         String fieldName = genChangeableAttribute.getFieldNameSetOfAllowedValues();
         IField expectedSetOfAllowedValuesMemberVariable = javaType.getField(fieldName);
-        assertTrue(generatedJavaElements.contains(expectedSetOfAllowedValuesMemberVariable));
+        assertEquals(expectedSetOfAllowedValuesMemberVariable, generatedJavaElements.get(index));
     }
 
 }
