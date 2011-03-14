@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpttype.association;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IMethod;
@@ -55,17 +55,20 @@ public abstract class GenProdAssociationTest extends ProductCmptTypeBuilderTest 
         association.setTargetRolePlural(TARGET_ROLE_PLURAL);
     }
 
-    protected final void expectMethodGetRelatedCmptLink(GenProdAssociation genProdAssociation, IType javaType) {
+    protected final void expectMethodGetRelatedCmptLink(int index, GenProdAssociation genProdAssociation, IType javaType) {
         IMethod expectedMethod = javaType.getMethod(genProdAssociation.getMethodNameGet1RelatedCmptLink(),
                 new String[] { "Q" + javaInterfaceTargetType.getElementName() + ";" });
-        assertTrue(generatedJavaElements.contains(expectedMethod));
+        assertEquals(expectedMethod, generatedJavaElements.get(index));
     }
 
-    protected final void expectMethodGetCardinalityForAssociation(GenProdAssociation genProdAssociation, IType javaType) {
+    protected final void expectMethodGetCardinalityForAssociation(int index,
+            GenProdAssociation genProdAssociation,
+            IType javaType) {
+
         try {
             IMethod expectedMethod = javaType.getMethod(genProdAssociation.getMethodNameGetCardinalityForAssociation(),
                     new String[] { "Q" + javaInterfaceTargetType.getElementName() + ";" });
-            assertTrue(generatedJavaElements.contains(expectedMethod));
+            assertEquals(expectedMethod, generatedJavaElements.get(index));
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
