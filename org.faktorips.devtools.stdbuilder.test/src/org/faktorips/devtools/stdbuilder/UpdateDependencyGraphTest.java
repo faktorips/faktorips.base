@@ -36,9 +36,7 @@ public class UpdateDependencyGraphTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Tests if the build updates the dependencygraph correctly.
-     * 
-     * @throws CoreException
+     * Tests if the build updates the dependency graph correctly.
      */
     @Test
     public void test() throws CoreException {
@@ -64,7 +62,7 @@ public class UpdateDependencyGraphTest extends AbstractIpsPluginTest {
         dependency = graph.getDependants(typeA.getQualifiedNameType());
         assertEquals(0, dependency.length);
 
-        // recreate the dependeny
+        // recreate the dependency
         typeB.setSupertype(typeA.getQualifiedName());
         typeB.getIpsSrcFile().save(true, null);
         incrementalBuild();

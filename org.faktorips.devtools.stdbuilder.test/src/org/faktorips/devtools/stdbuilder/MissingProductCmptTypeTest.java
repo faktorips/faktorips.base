@@ -33,8 +33,6 @@ public class MissingProductCmptTypeTest extends AbstractIpsPluginTest {
     /**
      * Tests if the build finishes without throwing an exception if the product component type name
      * is missing
-     * 
-     * @throws Exception
      */
     @Test
     public void test() throws Exception {
@@ -42,31 +40,6 @@ public class MissingProductCmptTypeTest extends AbstractIpsPluginTest {
         IPolicyCmptType type = newPolicyCmptTypeWithoutProductCmptType(project, "Policy");
         type.setConfigurableByProductCmptType(true);
         type.setProductCmptType("Product"); // missing product component type!
-
-        // IAttribute a = type.newAttribute();
-        // a.setName("a");
-        // a.setDatatype("Integer");
-        // a.setProductRelevant(true);
-        // a.setValueSetType(ValueSetType.RANGE);
-        // a.setDefaultValue("0");
-        // RangeValueSet range = (RangeValueSet)a.getValueSet();
-        // range.setLowerBound("0");
-        // range.setUpperBound("10");
-        // assertTrue(a.isValid());
-
-        // IPolicyCmptType target = newPolicyAndProductCmptType(project, "Target", "TargetType");
-        // IRelation r = type.newRelation();
-        // r.setTarget(target.getQualifiedName());
-        // r.setMinCardinality(1);
-        // r.setMaxCardinality(1);
-        // r.setTargetRoleSingular("Target");
-        // r.setTargetRolePlural("Targets");
-        // r.setProductRelevant(true);
-        // r.setMinCardinalityProductSide(1);
-        // r.setMaxCardinalityProductSide(1);
-        // r.setTargetRoleSingularProductSide("TargetType");
-        // r.setTargetRolePluralProductSide("TargetTypes");
-        // assertTrue(r.isValid());
 
         type.getIpsSrcFile().save(true, null);
         ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);

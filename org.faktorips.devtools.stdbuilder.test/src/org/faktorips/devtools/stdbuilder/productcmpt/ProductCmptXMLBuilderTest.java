@@ -62,7 +62,7 @@ public class ProductCmptXMLBuilderTest extends AbstractIpsPluginTest {
         method.setFormulaSignatureDefinition(true);
         method.setFormulaName("AgeCalculation");
 
-        assertTrue(productCmptType.isValid());
+        assertTrue(productCmptType.isValid(project));
 
         IProductCmptTypeAssociation rel = productCmptType.newProductCmptTypeAssociation();
         rel.setTargetRoleSingular("role");
