@@ -64,7 +64,7 @@ public class ProductCmptGenerationCuBuilderTest extends AbstractStdBuilderTest {
     }
 
     private IType getGeneratedJavaClass(String generationNamePart) {
-        return getGeneratedJavaType(productCmpt, true, builder.getKindId(), PRODUCT_CMPT_NAME + generationNamePart);
+        return getGeneratedJavaClass(productCmpt, true, builder.getKindId(), PRODUCT_CMPT_NAME + generationNamePart);
     }
 
 }

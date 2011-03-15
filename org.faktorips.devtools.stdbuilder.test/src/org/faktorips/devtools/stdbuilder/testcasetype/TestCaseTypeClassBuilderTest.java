@@ -46,7 +46,7 @@ public class TestCaseTypeClassBuilderTest extends AbstractStdBuilderTest {
     }
 
     private IType getGeneratedJavaClass() {
-        return getGeneratedJavaType(testCaseType, false, builder.getKindId(), TEST_CASE_TYPE_NAME);
+        return getGeneratedJavaClass(testCaseType, false, builder.getKindId(), TEST_CASE_TYPE_NAME);
     }
 
 }

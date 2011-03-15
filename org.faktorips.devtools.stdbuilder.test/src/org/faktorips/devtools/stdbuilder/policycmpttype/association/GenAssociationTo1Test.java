@@ -75,9 +75,8 @@ public class GenAssociationTo1Test extends GenAssociationTest {
         expectMethodNewChildConfigured(
                 genAssociationTo1,
                 javaInterface,
-                getGeneratedJavaType(configurationForTarget, false,
-                        StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE,
-                        getPublishedInterfaceName(configurationForTarget.getName())));
+                getGeneratedJavaInterface(configurationForTarget, false,
+                        StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE, configurationForTarget.getName()));
         assertEquals(6, generatedJavaElements.size());
     }
 
@@ -109,9 +108,8 @@ public class GenAssociationTo1Test extends GenAssociationTest {
         expectMethodNewChildConfigured(
                 genAssociationTo1,
                 javaClass,
-                getGeneratedJavaType(configurationForTarget, false,
-                        StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE,
-                        getPublishedInterfaceName(configurationForTarget.getName())));
+                getGeneratedJavaInterface(configurationForTarget, false,
+                        StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE, configurationForTarget.getName()));
         assertEquals(6, generatedJavaElements.size());
     }
 
@@ -174,10 +172,6 @@ public class GenAssociationTo1Test extends GenAssociationTest {
     private void expectMethodSetObjectInternal(IType javaType) {
         expectMethod(javaType, genAssociationTo1.getMethodNameAddOrSetObjectInternal(),
                 unresolvedParam(javaInterfaceTargetType.getElementName()));
-    }
-
-    private String getPublishedInterfaceName(String name) {
-        return genAssociationTo1.getJavaNamingConvention().getPublishedInterfaceName(name);
     }
 
     @Test

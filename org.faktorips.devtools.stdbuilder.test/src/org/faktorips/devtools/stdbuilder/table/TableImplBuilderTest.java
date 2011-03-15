@@ -73,7 +73,7 @@ public class TableImplBuilderTest extends AbstractStdBuilderTest {
     }
 
     private IType getGeneratedJavaClass() {
-        return getGeneratedJavaType(structure, false, StandardBuilderSet.KIND_TABLE_IMPL, TABLE_STRUCTURE_NAME);
+        return getGeneratedJavaClass(structure, false, StandardBuilderSet.KIND_TABLE_IMPL, TABLE_STRUCTURE_NAME);
     }
 
 }

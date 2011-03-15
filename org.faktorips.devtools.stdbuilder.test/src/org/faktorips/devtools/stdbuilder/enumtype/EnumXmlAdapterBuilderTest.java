@@ -46,7 +46,7 @@ public class EnumXmlAdapterBuilderTest extends AbstractStdBuilderTest {
     }
 
     private IType getGeneratedJavaXmlAdapter() {
-        return getGeneratedJavaType(enumType, true, builder.getKindId(), ENUM_TYPE_NAME + "XmlAdapter");
+        return getGeneratedJavaClass(enumType, true, builder.getKindId(), ENUM_TYPE_NAME + "XmlAdapter");
     }
 
 }

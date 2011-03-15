@@ -80,9 +80,9 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
         overwrittenPublicAttribute.setAttributeType(publicAttribute.getAttributeType());
         overwrittenPublicAttribute.setModifier(publicAttribute.getModifier());
 
-        subJavaInterface = getGeneratedJavaType(subPolicyCmptType, false,
-                StandardBuilderSet.KIND_POLICY_CMPT_TYPE_INTERFACE, "I" + SUB_POLICY_NAME);
-        subJavaClass = getGeneratedJavaType(subPolicyCmptType, false, StandardBuilderSet.KIND_POLICY_CMPT_TYPE_IMPL,
+        subJavaInterface = getGeneratedJavaInterface(subPolicyCmptType, false,
+                StandardBuilderSet.KIND_POLICY_CMPT_TYPE_INTERFACE, SUB_POLICY_NAME);
+        subJavaClass = getGeneratedJavaClass(subPolicyCmptType, false, StandardBuilderSet.KIND_POLICY_CMPT_TYPE_IMPL,
                 SUB_POLICY_NAME);
 
         genSubPolicyCmptType = new GenPolicyCmptType(subPolicyCmptType, builderSet);

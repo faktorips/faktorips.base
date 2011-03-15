@@ -78,9 +78,8 @@ public class GenAssociationToManyTest extends GenAssociationTest {
         expectMethodNewChildConfigured(
                 genAssociationToMany,
                 javaInterface,
-                getGeneratedJavaType(configurationForTarget, false,
-                        StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE,
-                        getPublishedInterfaceName(configurationForTarget.getName())));
+                getGeneratedJavaInterface(configurationForTarget, false,
+                        StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE, configurationForTarget.getName()));
         assertEquals(10, generatedJavaElements.size());
     }
 
@@ -105,14 +104,12 @@ public class GenAssociationToManyTest extends GenAssociationTest {
         expectMethodNewChildConfigured(
                 genAssociationToMany,
                 javaInterface,
-                getGeneratedJavaType(configurationForTarget, false,
-                        StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE,
-                        getPublishedInterfaceName(configurationForTarget.getName())));
+                getGeneratedJavaInterface(configurationForTarget, false,
+                        StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE, configurationForTarget.getName()));
         expectMethodGetRefObjectByQualifier(
                 javaInterface,
-                getGeneratedJavaType(configurationForTarget, false,
-                        StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE,
-                        getPublishedInterfaceName(configurationForTarget.getName())));
+                getGeneratedJavaInterface(configurationForTarget, false,
+                        StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE, configurationForTarget.getName()));
         assertEquals(11, generatedJavaElements.size());
     }
 
@@ -166,9 +163,8 @@ public class GenAssociationToManyTest extends GenAssociationTest {
         expectMethodNewChildConfigured(
                 genAssociationToMany,
                 javaClass,
-                getGeneratedJavaType(configurationForTarget, false,
-                        StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE,
-                        getPublishedInterfaceName(configurationForTarget.getName())));
+                getGeneratedJavaInterface(configurationForTarget, false,
+                        StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE, configurationForTarget.getName()));
         assertEquals(10, generatedJavaElements.size());
     }
 
@@ -192,14 +188,12 @@ public class GenAssociationToManyTest extends GenAssociationTest {
         expectMethodNewChildConfigured(
                 genAssociationToMany,
                 javaClass,
-                getGeneratedJavaType(configurationForTarget, false,
-                        StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE,
-                        getPublishedInterfaceName(configurationForTarget.getName())));
+                getGeneratedJavaInterface(configurationForTarget, false,
+                        StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE, configurationForTarget.getName()));
         expectMethodGetRefObjectByQualifier(
                 javaClass,
-                getGeneratedJavaType(configurationForTarget, false,
-                        StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE,
-                        getPublishedInterfaceName(configurationForTarget.getName())));
+                getGeneratedJavaInterface(configurationForTarget, false,
+                        StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE, configurationForTarget.getName()));
         assertEquals(11, generatedJavaElements.size());
     }
 
@@ -305,10 +299,6 @@ public class GenAssociationToManyTest extends GenAssociationTest {
     private void expectMethodGetRefObjectByQualifier(IType javaType, IType javaInterfaceTargetConfiguringProductCmptType) {
         expectMethod(javaType, genAssociationToMany.getMethodNameGetRefObject(),
                 unresolvedParam(javaInterfaceTargetConfiguringProductCmptType.getElementName()));
-    }
-
-    private String getPublishedInterfaceName(String name) {
-        return genAssociationToMany.getJavaNamingConvention().getPublishedInterfaceName(name);
     }
 
 }

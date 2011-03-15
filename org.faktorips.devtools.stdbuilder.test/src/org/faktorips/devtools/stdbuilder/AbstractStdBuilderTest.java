@@ -30,6 +30,7 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.Signature;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.builder.JavaGeneratorHelper;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -60,9 +61,41 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Returns the generated Java type for the given {@link IIpsObject}.
+     * Returns the generated Java implementation class for the given {@link IIpsObject}.
      */
-    protected final IType getGeneratedJavaType(IIpsObject ipsObject,
+    protected final IType getGeneratedJavaClass(IIpsObject ipsObject,
+            boolean derivedSource,
+            String kindId,
+            String conceptName) {
+
+        String javaTypeName = JavaGeneratorHelper.getJavaNamingConvention().getImplementationClassName(conceptName);
+        return getGeneratedJavaType(ipsObject, derivedSource, kindId, javaTypeName);
+    }
+
+    /**
+     * Returns the generated Java enum for the given {@link IIpsObject}.
+     */
+    protected final IType getGeneratedJavaEnum(IIpsObject ipsObject,
+            boolean derivedSource,
+            String kindId,
+            String conceptName) {
+
+        return getGeneratedJavaType(ipsObject, derivedSource, kindId, conceptName);
+    }
+
+    /**
+     * Returns the generated published Java interface for the given {@link IIpsObject}.
+     */
+    protected final IType getGeneratedJavaInterface(IIpsObject ipsObject,
+            boolean derivedSource,
+            String kindId,
+            String conceptName) {
+
+        String javaTypeName = JavaGeneratorHelper.getJavaNamingConvention().getPublishedInterfaceName(conceptName);
+        return getGeneratedJavaType(ipsObject, derivedSource, kindId, javaTypeName);
+    }
+
+    private final IType getGeneratedJavaType(IIpsObject ipsObject,
             boolean derivedSource,
             String kindId,
             String javaTypeName) {
@@ -126,6 +159,48 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
      */
     protected final String booleanParam() {
         return Signature.SIG_BOOLEAN;
+    }
+
+    /**
+     * Returns the JDT signature for a primitive byte parameter.
+     */
+    protected final String byteParam() {
+        return Signature.SIG_BYTE;
+    }
+
+    /**
+     * Returns the JDT signature for a primitive char parameter.
+     */
+    protected final String charParam() {
+        return Signature.SIG_CHAR;
+    }
+
+    /**
+     * Returns the JDT signature for a primitive double parameter.
+     */
+    protected final String doubleParam() {
+        return Signature.SIG_DOUBLE;
+    }
+
+    /**
+     * Returns the JDT signature for a primitive float parameter.
+     */
+    protected final String floatParam() {
+        return Signature.SIG_FLOAT;
+    }
+
+    /**
+     * Returns the JDT signature for a primitive long parameter.
+     */
+    protected final String longParam() {
+        return Signature.SIG_LONG;
+    }
+
+    /**
+     * Returns the JDT signature for a primitive short parameter.
+     */
+    protected final String shortParam() {
+        return Signature.SIG_SHORT;
     }
 
     /**

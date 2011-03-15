@@ -44,8 +44,8 @@ public abstract class GenProdAssociationTest extends ProductCmptTypeBuilderTest 
 
         targetProductCmptType = newProductCmptType(ipsProject, TARGET_PRODUCT_NAME);
 
-        javaInterfaceTargetType = getGeneratedJavaType(targetProductCmptType, false,
-                StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE, "I" + TARGET_PRODUCT_NAME);
+        javaInterfaceTargetType = getGeneratedJavaInterface(targetProductCmptType, false,
+                StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE, TARGET_PRODUCT_NAME);
 
         association = productCmptType.newProductCmptTypeAssociation();
         association.setMinCardinality(0);
