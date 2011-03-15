@@ -14,6 +14,7 @@
 package org.faktorips.devtools.stdbuilder.productcmpttype;
 
 import org.eclipse.jdt.core.IType;
+import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
@@ -61,10 +62,16 @@ public abstract class ProductCmptTypeBuilderTest extends AbstractStdBuilderTest 
                 StandardBuilderSet.KIND_POLICY_CMPT_TYPE_IMPL, POLICY_NAME);
         javaInterfaceConfiguredPolicy = getGeneratedJavaInterface(policyCmptType, false,
                 StandardBuilderSet.KIND_POLICY_CMPT_TYPE_INTERFACE, POLICY_NAME);
+
+        IChangesOverTimeNamingConvention changesOverTimeNamingConvention = ipsProject
+                .getChangesInTimeNamingConventionForGeneratedCode();
         javaClassGeneration = getGeneratedJavaClass(productCmptType, false,
-                StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_GENERATION_IMPL, PRODUCT_NAME + "Gen");
+                StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_GENERATION_IMPL, PRODUCT_NAME
+                        + changesOverTimeNamingConvention.getGenerationConceptNameAbbreviation());
         javaInterfaceGeneration = getGeneratedJavaInterface(productCmptType, false,
-                StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_GENERATION_INTERFACE, PRODUCT_NAME + "Gen");
+                StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_GENERATION_INTERFACE, PRODUCT_NAME
+                        + changesOverTimeNamingConvention.getGenerationConceptNameAbbreviation());
+
         javaClass = getGeneratedJavaClass(productCmptType, false, StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_IMPL,
                 PRODUCT_NAME);
         javaInterface = getGeneratedJavaInterface(productCmptType, false,
