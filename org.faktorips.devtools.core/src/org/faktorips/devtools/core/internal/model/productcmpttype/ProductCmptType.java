@@ -54,6 +54,7 @@ import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeValidations;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeValidations;
@@ -223,6 +224,13 @@ public class ProductCmptType extends Type implements IProductCmptType {
             return attr;
         }
         return null;
+    }
+
+    @Override
+    public List<IAssociation> findAllNotDerivedAssociations() throws CoreException {
+        NotDerivedAssociationCollector collector = new NotDerivedAssociationCollector(getIpsProject());
+        collector.start(this);
+        return collector.associations;
     }
 
     @Override
@@ -758,4 +766,31 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
     }
 
+    private static class NotDerivedAssociationCollector extends ProductCmptTypeHierarchyVisitor {
+
+        public NotDerivedAssociationCollector(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        private List<IAssociation> associations = new ArrayList<IAssociation>();
+
+        @Override
+        protected boolean visit(IProductCmptType currentType) throws CoreException {
+            List<? extends IAssociation> typeAssociations = currentType.getAssociations();
+            int index = 0;
+            for (IAssociation association : typeAssociations) {
+                /*
+                 * To get the associations of the root type of the supertype hierarchy first, put in
+                 * the list at first, but with unchanged order for all associations found in one
+                 * type ...
+                 */
+                if (!association.isDerived()) {
+                    associations.add(index, association);
+                    index++;
+                }
+            }
+            return true;
+        }
+
+    }
 }

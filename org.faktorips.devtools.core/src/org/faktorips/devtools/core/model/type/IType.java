@@ -17,10 +17,10 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.internal.model.type.AssociationType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.AssociationType;
 
 /**
  * Common interface for types, policy component type and product component type. Common for all
@@ -308,11 +308,6 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement {
      * Returns the type's associations.
      */
     public List<IAssociation> getAssociations();
-
-    /**
-     * Returns all not derived associations from this type and its super types.
-     */
-    public List<IAssociation> findAllNotDerivedAssociations() throws CoreException;
 
     /**
      * Returns all associations that have the indicated target. Returns an empty array if no such

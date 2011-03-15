@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.model.pctype;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.type.AssociationType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;

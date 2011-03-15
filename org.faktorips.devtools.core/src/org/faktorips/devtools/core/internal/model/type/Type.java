@@ -33,11 +33,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.core.model.pctype.AssociationType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -274,13 +269,6 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public List<IAssociation> findAllNotDerivedAssociations() throws CoreException {
-        NotDerivedAssociationCollector collector = new NotDerivedAssociationCollector(getIpsProject());
-        collector.start(this);
-        return collector.associations;
-    }
-
-    @Override
     public int getNumOfAssociations() {
         return getAssociationPartCollection().size();
     }
@@ -484,7 +472,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     /**
-     * Validation for {@link IPolicyCmptType#MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD}
+     * Validation for {@link #MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD}
      */
     private void validateIfAllAbstractMethodsAreImplemented(IIpsProject ipsProject, MessageList list)
             throws CoreException {
@@ -871,6 +859,28 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     }
 
+    protected void checkDerivedUnionIsImplemented(IAssociation association,
+            List<IAssociation> candidateSubsets,
+            MessageList msgList) throws CoreException {
+        if (association.isDerivedUnion()) {
+            if (!isSubsetted(association, candidateSubsets)) {
+                String text = NLS.bind(Messages.Type_msg_MustImplementDerivedUnion, association.getName(), association
+                        .getType().getQualifiedName());
+                msgList.add(new Message(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION, text, Message.ERROR, Type.this,
+                        IType.PROPERTY_ABSTRACT));
+            }
+        }
+    }
+
+    private boolean isSubsetted(IAssociation derivedUnion, List<IAssociation> candidateSubsets) throws CoreException {
+        for (IAssociation candidate : candidateSubsets) {
+            if (derivedUnion == candidate.findSubsettedDerivedUnion(getIpsProject())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private class DerivedUnionsSpecifiedValidator extends TypeHierarchyVisitor {
 
         private MessageList msgList;
@@ -889,85 +899,11 @@ public abstract class Type extends BaseIpsObject implements IType {
                 candidateSubsets.add(association);
             }
             for (IAssociation association : associations) {
-                if (association.isDerivedUnion()) {
-                    if (!isSubsetted(association)) {
-                        String text = NLS.bind(Messages.Type_msg_MustImplementDerivedUnion, association.getName(),
-                                association.getType().getQualifiedName());
-                        msgList.add(new Message(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION, text, Message.ERROR,
-                                Type.this, IType.PROPERTY_ABSTRACT));
-                    }
-                } else if (association instanceof IPolicyCmptTypeAssociation) {
-                    /*
-                     * special check for policy component type associations with type detail to
-                     * master, if this association is a inverse of a derived union then we need to
-                     * check either the class is abstract or an inverse implementation of the
-                     * derived union exists
-                     */
-                    IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)association;
-                    if (!policyCmptTypeAssociation.isInverseOfDerivedUnion()) {
-                        continue;
-                    }
-
-                    /*
-                     * now check if there is another detail to master which is the inverse of a
-                     * subset derived union
-                     */
-                    if (!isInverseSubsetted(policyCmptTypeAssociation)) {
-                        String text = NLS.bind(Messages.Type_msg_MustImplementInverseDerivedUnion,
-                                association.getName(), association.getType().getQualifiedName());
-                        msgList.add(new Message(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION, text,
-                                Message.ERROR, Type.this, IType.PROPERTY_ABSTRACT));
-                    }
-                }
+                checkDerivedUnionIsImplemented(association, candidateSubsets, msgList);
             }
             return true;
         }
 
-        private boolean isSubsetted(IAssociation derivedUnion) throws CoreException {
-            for (IAssociation candidate : candidateSubsets) {
-                if (derivedUnion == candidate.findSubsettedDerivedUnion(ipsProject)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private boolean isInverseSubsetted(IPolicyCmptTypeAssociation inverseOfDerivedUnion) throws CoreException {
-            IPolicyCmptTypeAssociation derivedUnion = inverseOfDerivedUnion.findInverseAssociation(getIpsProject());
-            if (derivedUnion == null) {
-                // must be an error
-                return false;
-            }
-            /*
-             * now check if one of the candidate is the inverse of the implementation of the derived
-             * union
-             */
-            for (IAssociation candidate : candidateSubsets) {
-                if (!(candidate instanceof IPolicyCmptTypeAssociation)) {
-                    continue;
-                }
-                IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)candidate;
-                if (!policyCmptTypeAssociation.isCompositionDetailToMaster()) {
-                    continue;
-                }
-                IPolicyCmptTypeAssociation inverseAssociationOfCandidate = policyCmptTypeAssociation
-                        .findInverseAssociation(getIpsProject());
-                if (inverseAssociationOfCandidate == null) {
-                    continue;
-                }
-                // test if the inverse is the subset of the derived union
-                if (inverseAssociationOfCandidate.getSubsettedDerivedUnion().equals(derivedUnion.getName())) {
-                    return true;
-                }
-                // TODO FIPS-85
-                if (ipsProject.getProperties().isSharedDetailToMasterAssociations()) {
-                    if (inverseAssociationOfCandidate.equals(derivedUnion)) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
     }
 
     private static class IsSubtypeOfVisitor extends TypeHierarchyVisitor {
@@ -991,34 +927,6 @@ public abstract class Type extends BaseIpsObject implements IType {
             if (currentType == supertypeCandidate) {
                 subtype = true;
                 return false;
-            }
-            return true;
-        }
-
-    }
-
-    private static class NotDerivedAssociationCollector extends ProductCmptTypeHierarchyVisitor {
-
-        public NotDerivedAssociationCollector(IIpsProject ipsProject) {
-            super(ipsProject);
-        }
-
-        private List<IAssociation> associations = new ArrayList<IAssociation>();
-
-        @Override
-        protected boolean visit(IProductCmptType currentType) throws CoreException {
-            List<? extends IAssociation> typeAssociations = currentType.getAssociations();
-            int index = 0;
-            for (IAssociation association : typeAssociations) {
-                /*
-                 * To get the associations of the root type of the supertype hierarchy first, put in
-                 * the list at first, but with unchanged order for all associations found in one
-                 * type ...
-                 */
-                if (!association.isDerived()) {
-                    associations.add(index, association);
-                    index++;
-                }
             }
             return true;
         }

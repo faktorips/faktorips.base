@@ -27,7 +27,6 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;

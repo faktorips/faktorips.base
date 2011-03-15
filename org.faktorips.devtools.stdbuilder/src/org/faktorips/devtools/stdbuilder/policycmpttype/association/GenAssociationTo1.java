@@ -24,9 +24,9 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.internal.model.type.AssociationType;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -170,10 +170,11 @@ public class GenAssociationTo1 extends GenAssociation {
         if (inverseAssociation == null) {
             return false;
         }
-        // FIPS-85: the inverse of a shared association is always the derived union of the shared
+        // TODO FIPS-85: the inverse of a shared association is always the derived union of the
+        // shared
         // association host. However we do not want to generate the methods like it is the inverse
         // of a derived union
-        return inverseAssociation.isDerivedUnion() && !association.isSharedAssociation();
+        return inverseAssociation.isDerivedUnion();
     }
 
     /**
@@ -183,9 +184,8 @@ public class GenAssociationTo1 extends GenAssociation {
      * derived union is itself a subset of a derived union.
      */
     public List<GenAssociation> getGeneratorForInverseOfDerivedUnion() throws CoreException {
-        if (inverseAssociation == null
-                || (!inverseAssociation.isSubsetOfADerivedUnion() && !association.isSharedAssociation())
-                || !isCompositionDetailToMaster()) {
+        if (!association.isSharedAssociation()
+                && (inverseAssociation == null || !inverseAssociation.isSubsetOfADerivedUnion() || !isCompositionDetailToMaster())) {
             return null;
         }
         // find the derived union the inverse of this (the master to detail association) is the
@@ -194,7 +194,12 @@ public class GenAssociationTo1 extends GenAssociation {
         if (association.isSharedAssociation()) {
             // FIPS-85: for shared associations, the subsetted derived union is the same as the
             // inverse association
-            subsettedDerivedUnion = inverseAssociation;
+            // TODO null check
+            IPolicyCmptTypeAssociation sharedAssociationHost = association.findSharedAssociationHost(getIpsProject());
+            if (sharedAssociationHost == null) {
+                return null;
+            }
+            subsettedDerivedUnion = sharedAssociationHost.findInverseAssociation(getIpsProject());
         } else {
             subsettedDerivedUnion = (IPolicyCmptTypeAssociation)inverseAssociation
                     .findSubsettedDerivedUnion(getIpsProject());

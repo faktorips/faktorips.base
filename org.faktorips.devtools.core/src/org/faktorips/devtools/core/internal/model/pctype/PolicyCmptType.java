@@ -27,6 +27,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
+import org.faktorips.devtools.core.internal.model.type.AssociationType;
 import org.faktorips.devtools.core.internal.model.type.Method;
 import org.faktorips.devtools.core.internal.model.type.Type;
 import org.faktorips.devtools.core.internal.model.type.TypeHierarchy;
@@ -41,7 +42,6 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
-import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceStrategy;
@@ -615,4 +615,71 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         newPart(PersistentTypeInfo.class);
     }
 
+    @Override
+    protected void checkDerivedUnionIsImplemented(IAssociation association,
+            List<IAssociation> candidateSubsets,
+            MessageList msgList) throws CoreException {
+        super.checkDerivedUnionIsImplemented(association, candidateSubsets, msgList);
+        if (!association.isDerivedUnion()) {
+            /*
+             * special check for policy component type associations with type detail to master, if
+             * this association is a inverse of a derived union then we need to check either the
+             * class is abstract or an inverse implementation of the derived union exists
+             */
+            IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)association;
+            if (!policyCmptTypeAssociation.isInverseOfDerivedUnion()) {
+                return;
+            }
+
+            /*
+             * now check if there is another detail to master which is the inverse of a subset
+             * derived union
+             */
+            if (!isInverseSubsetted(policyCmptTypeAssociation, candidateSubsets)) {
+                String text = NLS
+                        .bind(org.faktorips.devtools.core.internal.model.type.Messages.Type_msg_MustImplementInverseDerivedUnion,
+                                association.getName(), association.getType().getQualifiedName());
+                msgList.add(new Message(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION, text, Message.ERROR, this,
+                        IType.PROPERTY_ABSTRACT));
+            }
+        }
+    }
+
+    private boolean isInverseSubsetted(IPolicyCmptTypeAssociation inverseOfDerivedUnion,
+            List<IAssociation> candidateSubsets) throws CoreException {
+        IPolicyCmptTypeAssociation derivedUnion = inverseOfDerivedUnion.findInverseAssociation(getIpsProject());
+        if (derivedUnion == null) {
+            // must be an error
+            return false;
+        }
+        /*
+         * now check if one of the candidate is the inverse of the implementation of the derived
+         * union
+         */
+        for (IAssociation candidate : candidateSubsets) {
+            if (!(candidate instanceof IPolicyCmptTypeAssociation)) {
+                continue;
+            }
+            IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)candidate;
+            if (!policyCmptTypeAssociation.isCompositionDetailToMaster()) {
+                continue;
+            }
+            IPolicyCmptTypeAssociation inverseAssociationOfCandidate = policyCmptTypeAssociation
+                    .findInverseAssociation(getIpsProject());
+            if (inverseAssociationOfCandidate == null) {
+                continue;
+            }
+            // test if the inverse is the subset of the derived union
+            if (inverseAssociationOfCandidate.getSubsettedDerivedUnion().equals(derivedUnion.getName())) {
+                return true;
+            }
+            // FIPS-85
+            if (getIpsProject().getProperties().isSharedDetailToMasterAssociations()) {
+                if (inverseAssociationOfCandidate.equals(derivedUnion)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

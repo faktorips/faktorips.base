@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.model.IIpsMetaClass;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 
 /**
@@ -162,6 +163,11 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * @throws CoreException if an error occurs while searching for the supertype.
      */
     public IProductCmptType findSuperProductCmptType(IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * Returns all not derived associations from this type and its super types.
+     */
+    public List<IAssociation> findAllNotDerivedAssociations() throws CoreException;
 
     /**
      * Returns the type's attributes.

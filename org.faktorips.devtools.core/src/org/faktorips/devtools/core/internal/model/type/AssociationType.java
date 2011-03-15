@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.pctype;
+package org.faktorips.devtools.core.internal.model.type;
 
 import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
 
