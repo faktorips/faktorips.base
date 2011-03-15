@@ -18,6 +18,7 @@ import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptTypeBuilderTest;
 import org.junit.Before;
 
@@ -44,7 +45,8 @@ public abstract class GenAssociationTest extends PolicyCmptTypeBuilderTest {
         targetPolicyCmptType.setConfigurableByProductCmptType(false);
         targetPolicyCmptType.setProductCmptType("");
 
-        javaInterfaceTargetType = getGeneratedJavaType(targetPolicyCmptType, false, false, "I" + TARGET_POLICY_NAME);
+        javaInterfaceTargetType = getGeneratedJavaType(targetPolicyCmptType, false,
+                StandardBuilderSet.KIND_POLICY_CMPT_TYPE_INTERFACE, "I" + TARGET_POLICY_NAME);
 
         association = policyCmptType.newPolicyCmptTypeAssociation();
         association.setMinCardinality(0);

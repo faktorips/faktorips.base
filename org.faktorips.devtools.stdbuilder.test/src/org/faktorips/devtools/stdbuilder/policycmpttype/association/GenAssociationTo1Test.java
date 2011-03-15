@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -74,7 +75,8 @@ public class GenAssociationTo1Test extends GenAssociationTest {
         expectMethodNewChildConfigured(
                 genAssociationTo1,
                 javaInterface,
-                getGeneratedJavaType(configurationForTarget, false, false,
+                getGeneratedJavaType(configurationForTarget, false,
+                        StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE,
                         getPublishedInterfaceName(configurationForTarget.getName())));
         assertEquals(6, generatedJavaElements.size());
     }
@@ -107,7 +109,8 @@ public class GenAssociationTo1Test extends GenAssociationTest {
         expectMethodNewChildConfigured(
                 genAssociationTo1,
                 javaClass,
-                getGeneratedJavaType(configurationForTarget, false, false,
+                getGeneratedJavaType(configurationForTarget, false,
+                        StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE,
                         getPublishedInterfaceName(configurationForTarget.getName())));
         assertEquals(6, generatedJavaElements.size());
     }

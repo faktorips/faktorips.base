@@ -21,6 +21,7 @@ import org.eclipse.jdt.core.Signature;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -78,7 +79,8 @@ public class GenAssociationToManyTest extends GenAssociationTest {
         expectMethodNewChildConfigured(
                 genAssociationToMany,
                 javaInterface,
-                getGeneratedJavaType(configurationForTarget, false, false,
+                getGeneratedJavaType(configurationForTarget, false,
+                        StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE,
                         getPublishedInterfaceName(configurationForTarget.getName())));
         assertEquals(10, generatedJavaElements.size());
     }
@@ -104,11 +106,13 @@ public class GenAssociationToManyTest extends GenAssociationTest {
         expectMethodNewChildConfigured(
                 genAssociationToMany,
                 javaInterface,
-                getGeneratedJavaType(configurationForTarget, false, false,
+                getGeneratedJavaType(configurationForTarget, false,
+                        StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE,
                         getPublishedInterfaceName(configurationForTarget.getName())));
         expectMethodGetRefObjectByQualifier(
                 javaInterface,
-                getGeneratedJavaType(configurationForTarget, false, false,
+                getGeneratedJavaType(configurationForTarget, false,
+                        StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE,
                         getPublishedInterfaceName(configurationForTarget.getName())));
         assertEquals(11, generatedJavaElements.size());
     }
@@ -163,7 +167,8 @@ public class GenAssociationToManyTest extends GenAssociationTest {
         expectMethodNewChildConfigured(
                 genAssociationToMany,
                 javaClass,
-                getGeneratedJavaType(configurationForTarget, false, false,
+                getGeneratedJavaType(configurationForTarget, false,
+                        StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE,
                         getPublishedInterfaceName(configurationForTarget.getName())));
         assertEquals(10, generatedJavaElements.size());
     }
@@ -188,11 +193,13 @@ public class GenAssociationToManyTest extends GenAssociationTest {
         expectMethodNewChildConfigured(
                 genAssociationToMany,
                 javaClass,
-                getGeneratedJavaType(configurationForTarget, false, false,
+                getGeneratedJavaType(configurationForTarget, false,
+                        StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE,
                         getPublishedInterfaceName(configurationForTarget.getName())));
         expectMethodGetRefObjectByQualifier(
                 javaClass,
-                getGeneratedJavaType(configurationForTarget, false, false,
+                getGeneratedJavaType(configurationForTarget, false,
+                        StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE,
                         getPublishedInterfaceName(configurationForTarget.getName())));
         assertEquals(11, generatedJavaElements.size());
     }

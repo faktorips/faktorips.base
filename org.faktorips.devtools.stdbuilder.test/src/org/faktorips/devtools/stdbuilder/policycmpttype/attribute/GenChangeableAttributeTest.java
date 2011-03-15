@@ -21,6 +21,7 @@ import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.runtime.IValidationContext;
 import org.junit.Before;
@@ -84,8 +85,10 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
         overwrittenPublicAttribute.setAttributeType(publicAttribute.getAttributeType());
         overwrittenPublicAttribute.setModifier(publicAttribute.getModifier());
 
-        subJavaInterface = getGeneratedJavaType(subPolicyCmptType, false, false, "I" + SUB_POLICY_NAME);
-        subJavaClass = getGeneratedJavaType(subPolicyCmptType, false, true, SUB_POLICY_NAME);
+        subJavaInterface = getGeneratedJavaType(subPolicyCmptType, false,
+                StandardBuilderSet.KIND_POLICY_CMPT_TYPE_INTERFACE, "I" + SUB_POLICY_NAME);
+        subJavaClass = getGeneratedJavaType(subPolicyCmptType, false, StandardBuilderSet.KIND_POLICY_CMPT_TYPE_IMPL,
+                SUB_POLICY_NAME);
 
         genSubPolicyCmptType = new GenPolicyCmptType(subPolicyCmptType, builderSet);
         genOverwrittenPublishedAttribute = new GenChangeableAttribute(genSubPolicyCmptType,

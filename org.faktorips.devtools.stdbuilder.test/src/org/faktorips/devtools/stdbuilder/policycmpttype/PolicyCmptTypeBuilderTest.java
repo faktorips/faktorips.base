@@ -16,6 +16,7 @@ package org.faktorips.devtools.stdbuilder.policycmpttype;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.junit.Before;
 
 /**
@@ -43,8 +44,10 @@ public abstract class PolicyCmptTypeBuilderTest extends AbstractStdBuilderTest {
         policyCmptType = newPolicyCmptType(ipsProject, POLICY_NAME);
         genPolicyCmptType = new GenPolicyCmptType(policyCmptType, builderSet);
 
-        javaClass = getGeneratedJavaType(policyCmptType, false, true, POLICY_NAME);
-        javaInterface = getGeneratedJavaType(policyCmptType, false, false, "I" + POLICY_NAME);
+        javaClass = getGeneratedJavaType(policyCmptType, false, StandardBuilderSet.KIND_POLICY_CMPT_TYPE_IMPL,
+                POLICY_NAME);
+        javaInterface = getGeneratedJavaType(policyCmptType, false, StandardBuilderSet.KIND_POLICY_CMPT_TYPE_INTERFACE,
+                "I" + POLICY_NAME);
     }
 
 }

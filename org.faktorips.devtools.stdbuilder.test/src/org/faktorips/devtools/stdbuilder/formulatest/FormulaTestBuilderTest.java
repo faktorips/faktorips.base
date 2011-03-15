@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -85,14 +86,15 @@ public class FormulaTestBuilderTest extends AbstractStdBuilderTest {
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
     }
 
-    private IType getGeneratedJavaClass() {
-        return getGeneratedJavaType(productCmpt, true, true, PRODUCT_NAME + FormulaTestBuilder.RUNTIME_EXTENSION);
-    }
-
     @Test
     public void testGetGeneratedJavaElements() {
         generatedJavaElements = builder.getGeneratedJavaElements(productCmpt);
         assertTrue(generatedJavaElements.contains(getGeneratedJavaClass()));
+    }
+
+    private IType getGeneratedJavaClass() {
+        return getGeneratedJavaType(productCmpt, true, StandardBuilderSet.KIND_FORMULA_TEST_CASE, PRODUCT_NAME
+                + FormulaTestBuilder.RUNTIME_EXTENSION);
     }
 
 }

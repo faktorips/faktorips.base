@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
@@ -62,25 +63,21 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
      */
     protected final IType getGeneratedJavaType(IIpsObject ipsObject,
             boolean derivedSource,
-            boolean internalSource,
+            String kindId,
             String javaTypeName) {
 
-        String rootFolderName = derivedSource ? OUTPUT_FOLDER_NAME_DERIVED : OUTPUT_FOLDER_NAME_MERGABLE;
-        IFolder rootFolder = ipsProject.getProject().getFolder(rootFolderName);
-        IPackageFragmentRoot javaPackageRoot = ipsProject.getJavaProject().getPackageFragmentRoot(rootFolder);
-
-        String basePackageName = derivedSource ? BASE_PACKAGE_NAME_DERIVED : BASE_PACKAGE_NAME_MERGABLE;
-        String internalSeparator = internalSource ? "internal" : "";
-        String ipsFragmentName = ipsObject.getIpsPackageFragment().getName();
-        String ipsPackageName = (ipsFragmentName.length() > 0) ? internalSeparator + "." + ipsFragmentName
-                : internalSeparator;
-        String javaPackageName = (ipsPackageName.length() > 0) ? basePackageName + "." + ipsPackageName
-                : basePackageName;
-
-        IPackageFragment javaPackage = javaPackageRoot.getPackageFragment(javaPackageName);
-        ICompilationUnit javaCompilationUnit = javaPackage.getCompilationUnit(javaTypeName
-                + JavaSourceFileBuilder.JAVA_EXTENSION);
-        return javaCompilationUnit.getType(javaTypeName);
+        try {
+            IFolder outputFolder = ipsObject.getIpsPackageFragment().getRoot().getArtefactDestination(derivedSource);
+            IPackageFragmentRoot javaRoot = ipsObject.getIpsProject().getJavaProject()
+                    .getPackageFragmentRoot(outputFolder);
+            String packageName = builderSet.getPackage(kindId, ipsObject.getIpsSrcFile());
+            IPackageFragment javaPackage = javaRoot.getPackageFragment(packageName);
+            ICompilationUnit javaCompilationUnit = javaPackage.getCompilationUnit(javaTypeName
+                    + JavaSourceFileBuilder.JAVA_EXTENSION);
+            return javaCompilationUnit.getType(javaTypeName);
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

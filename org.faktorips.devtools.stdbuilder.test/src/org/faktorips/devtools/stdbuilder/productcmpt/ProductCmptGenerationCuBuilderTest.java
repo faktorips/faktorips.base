@@ -57,14 +57,14 @@ public class ProductCmptGenerationCuBuilderTest extends AbstractStdBuilderTest {
                 productCmptBuilder);
     }
 
-    private IType getGeneratedJavaClass(String generationNamePart) {
-        return getGeneratedJavaType(productCmpt, true, true, PRODUCT_CMPT_NAME + generationNamePart);
-    }
-
     @Test
     public void testGetGeneratedJavaElements() {
         generatedJavaElements = builder.getGeneratedJavaElements(productCmpt);
         assertTrue(generatedJavaElements.contains(getGeneratedJavaClass("___20100320")));
+    }
+
+    private IType getGeneratedJavaClass(String generationNamePart) {
+        return getGeneratedJavaType(productCmpt, true, builder.getKindId(), PRODUCT_CMPT_NAME + generationNamePart);
     }
 
 }

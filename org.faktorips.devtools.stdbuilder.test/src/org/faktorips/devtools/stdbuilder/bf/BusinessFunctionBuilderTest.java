@@ -20,6 +20,7 @@ import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,14 +42,15 @@ public class BusinessFunctionBuilderTest extends AbstractStdBuilderTest {
                 BUSINESS_FUNCTION_NAME);
     }
 
-    private IType getGeneratedJavaClass() {
-        return getGeneratedJavaType(businessFunction, false, false, BUSINESS_FUNCTION_NAME);
-    }
-
     @Test
     public void testGetGeneratedJavaElements() {
         generatedJavaElements = builder.getGeneratedJavaElements(businessFunction);
         assertTrue(generatedJavaElements.contains(getGeneratedJavaClass()));
+    }
+
+    private IType getGeneratedJavaClass() {
+        return getGeneratedJavaType(businessFunction, false, StandardBuilderSet.KIND_BUSINESS_FUNCTION,
+                BUSINESS_FUNCTION_NAME);
     }
 
 }

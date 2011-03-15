@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -55,7 +56,7 @@ public class TableImplBuilderTest extends AbstractStdBuilderTest {
         assertFalse(file.exists());
     }
 
-    private TableImplBuilder getTableImpleBuilder() throws CoreException {
+    private TableImplBuilder getTableImpleBuilder() {
         IIpsArtefactBuilder[] builders = ipsProject.getIpsArtefactBuilderSet().getArtefactBuilders();
         for (IIpsArtefactBuilder builder2 : builders) {
             if (builder2.getClass() == TableImplBuilder.class) {
@@ -65,14 +66,14 @@ public class TableImplBuilderTest extends AbstractStdBuilderTest {
         throw new RuntimeException("The " + TableImplBuilder.class + " is not in the builder set.");
     }
 
-    private IType getGeneratedJavaClass() {
-        return getGeneratedJavaType(structure, false, true, TABLE_STRUCTURE_NAME);
-    }
-
     @Test
     public void testGetGeneratedJavaElements() {
         generatedJavaElements = builder.getGeneratedJavaElements(structure);
         assertTrue(generatedJavaElements.contains(getGeneratedJavaClass()));
+    }
+
+    private IType getGeneratedJavaClass() {
+        return getGeneratedJavaType(structure, false, StandardBuilderSet.KIND_TABLE_IMPL, TABLE_STRUCTURE_NAME);
     }
 
 }

@@ -62,12 +62,18 @@ public abstract class ProductCmptTypeBuilderTest extends AbstractStdBuilderTest 
         genProductCmptType = new GenProductCmptType(productCmptType,
                 (StandardBuilderSet)ipsProject.getIpsArtefactBuilderSet());
 
-        javaClassConfiguredPolicy = getGeneratedJavaType(policyCmptType, false, true, POLICY_NAME);
-        javaInterfaceConfiguredPolicy = getGeneratedJavaType(policyCmptType, false, false, POLICY_NAME);
-        javaClassGeneration = getGeneratedJavaType(productCmptType, false, true, PRODUCT_NAME + "Gen");
-        javaInterfaceGeneration = getGeneratedJavaType(productCmptType, false, false, "I" + PRODUCT_NAME + "Gen");
-        javaClass = getGeneratedJavaType(productCmptType, false, true, PRODUCT_NAME);
-        javaInterface = getGeneratedJavaType(productCmptType, false, false, "I" + PRODUCT_NAME);
+        javaClassConfiguredPolicy = getGeneratedJavaType(policyCmptType, false,
+                StandardBuilderSet.KIND_POLICY_CMPT_TYPE_IMPL, POLICY_NAME);
+        javaInterfaceConfiguredPolicy = getGeneratedJavaType(policyCmptType, false,
+                StandardBuilderSet.KIND_POLICY_CMPT_TYPE_INTERFACE, POLICY_NAME);
+        javaClassGeneration = getGeneratedJavaType(productCmptType, false,
+                StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_GENERATION_IMPL, PRODUCT_NAME + "Gen");
+        javaInterfaceGeneration = getGeneratedJavaType(productCmptType, false,
+                StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_GENERATION_INTERFACE, "I" + PRODUCT_NAME + "Gen");
+        javaClass = getGeneratedJavaType(productCmptType, false, StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_IMPL,
+                PRODUCT_NAME);
+        javaInterface = getGeneratedJavaType(productCmptType, false,
+                StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE, "I" + PRODUCT_NAME);
     }
 
 }
