@@ -41,6 +41,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
+import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceStrategy;
@@ -50,8 +51,10 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ITypeHierarchy;
 import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.util.ArgumentCheck;
@@ -340,6 +343,26 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     @Override
     public ITypeHierarchy getSubtypeHierarchy() throws CoreException {
         return TypeHierarchy.getSubtypeHierarchy(this);
+    }
+
+    @Override
+    protected List<IAssociation> findAssociationsForTargetAndAssociationTypeInternal(String target,
+            AssociationType associationType,
+            IIpsProject project) throws CoreException {
+        List<IAssociation> result = super.findAssociationsForTargetAndAssociationTypeInternal(target, associationType,
+                project);
+        if (getIpsProject().getProperties().isSharedDetailToMasterAssociations()) {
+            IType targetType = project.findPolicyCmptType(target);
+            for (IPolicyCmptTypeAssociation association : getAssociationPartCollection()) {
+                if (association.isSharedAssociation()) {
+                    IType sharedTarget = association.findTarget(getIpsProject());
+                    if (targetType.isSubtypeOf(sharedTarget, getIpsProject())) {
+                        result.add(association);
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     @Override

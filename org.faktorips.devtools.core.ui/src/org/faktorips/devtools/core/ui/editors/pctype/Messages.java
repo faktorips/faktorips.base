@@ -133,6 +133,10 @@ public class Messages extends NLS {
 
     public static String AssociationEditDialog_qualifiedByType;
 
+    public static String AssociationEditDialog_sharedAssociations;
+
+    public static String AssociationEditDialog_sharedAssociationsTooltip;
+
     public static String AssociationEditDialog_targetLabel;
 
     public static String AssociationEditDialog_targetRolePluralLabel;

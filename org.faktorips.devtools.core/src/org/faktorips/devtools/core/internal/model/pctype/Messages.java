@@ -78,6 +78,8 @@ public class Messages extends NLS {
 
     public static String PolicyCmptTypeAssociation_InverseOfDetailToMasterMustBeAMasterToDetail;
 
+    public static String PolicyCmptTypeAssociation_sharedAssociation_invalidAssociationHost;
+    public static String PolicyCmptTypeAssociation_sharedAssociation_noAssociationHost;
     public static String PolicyCmptTypeAttribute_msg_ComputationMethodSignatureDoesNotExists;
     public static String PolicyCmptTypeAttribute_msg_ComputationMethodSignatureHasADifferentDatatype;
     public static String PolicyCmptTypeAttribute_msg_ComputationMethodSignatureIsMissing;

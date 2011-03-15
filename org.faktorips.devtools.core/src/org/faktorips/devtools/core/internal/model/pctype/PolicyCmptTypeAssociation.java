@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.internal.model.type.Association;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -34,6 +35,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -44,7 +46,22 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     final static String TAG_NAME = "Association"; //$NON-NLS-1$
 
     private boolean qualified = false;
+
     private String inverseAssociation = ""; //$NON-NLS-1$
+
+    /**
+     * When the optional constraint
+     * {@link IIpsProjectProperties#isSharedDetailToMasterAssociations()} is enabled, a
+     * detail-to-master association could be marked as shared association. That means the
+     * {@link #getPolicyCmptType()} does not know exactly its parent model object class. Hence the
+     * {@link #inverseAssociation} of this association is empty. To get the correct inverse
+     * association the name of this association must be the same as the detail-to-master association
+     * in a super type.
+     * <p>
+     * Also read the discussion of FIPS-85.
+     */
+    private boolean sharedAssociation;
+
     private IIpsObjectPart persistenceAssociationInfo;
 
     public PolicyCmptTypeAssociation(IPolicyCmptType pcType, String id) {
@@ -191,13 +208,33 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         return ipsProject.findProductCmptType(findQualifierCandidate(ipsProject));
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * For shared associations the value of inverse association does not matter because the inverse
+     * association is always found via shared association host.
+     */
     @Override
     public String getInverseAssociation() {
         return inverseAssociation;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * If this association is a shared association, the method is delegated to the shared
+     * association host.
+     */
     @Override
     public boolean hasInverseAssociation() {
+        if (isSharedAssociation()) {
+            try {
+                IPolicyCmptTypeAssociation sharedAssociationHost = findSharedAssociationHost(getIpsProject());
+                return sharedAssociationHost != null ? sharedAssociationHost.hasInverseAssociation() : false;
+            } catch (CoreException e) {
+                return false;
+            }
+        }
         return StringUtils.isNotEmpty(inverseAssociation);
     }
 
@@ -208,23 +245,34 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         valueChanged(oldValue, newRelation);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * For {@link IPolicyCmptTypeAssociation} this method does also find the inverse association for
+     * shared associations. The inverse of a shared association is the inverse association of the
+     * shared association host.
+     */
     @Override
     public IPolicyCmptTypeAssociation findInverseAssociation(IIpsProject ipsProject) throws CoreException {
-        if (StringUtils.isEmpty(inverseAssociation)) {
-            return null;
-        }
+        String searchedAssociation = inverseAssociation;
         IPolicyCmptType target = findTargetPolicyCmptType(ipsProject);
         if (target == null) {
             return null;
         }
         List<IAssociation> associations = target.getAssociations();
-        // TODO FIPS-85
-        // if (getIpsProject().getProperties().isUnsafeInverseAssociations()) {
-        // associations = target.findAllAssociations(target.getIpsProject());
-        // Collections.reverse(associations);
-        // }
+        // FIPS-85: in shared associations the inverse association is defined in shared association
+        // host
+        if (isSharedAssociation()) {
+            IPolicyCmptTypeAssociation hostAssociation = findSharedAssociationHost(getIpsProject());
+            if (hostAssociation != null) {
+                searchedAssociation = hostAssociation.getInverseAssociation();
+            }
+        }
+        if (StringUtils.isEmpty(searchedAssociation)) {
+            return null;
+        }
         for (IAssociation association : associations) {
-            if (association.getName().equals(inverseAssociation)) {
+            if (association.getName().equals(searchedAssociation)) {
                 return (IPolicyCmptTypeAssociation)association;
             }
         }
@@ -259,6 +307,37 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         }
 
         return inverseAssociation;
+    }
+
+    @Override
+    public void setSharedAssociation(boolean sharedAssociation) {
+        boolean oldValue = this.sharedAssociation;
+        this.sharedAssociation = sharedAssociation;
+        valueChanged(oldValue, sharedAssociation);
+    }
+
+    @Override
+    public boolean isSharedAssociation() {
+        // shared associations are only allowed for detail-to-master associations when the
+        // corresponding optional constraint is activated in the project
+        return getAssociationType().isCompositionDetailToMaster()
+                && getIpsProject().getProperties().isSharedDetailToMasterAssociations() && sharedAssociation;
+    }
+
+    @Override
+    public IPolicyCmptTypeAssociation findSharedAssociationHost(IIpsProject ipsProject) throws CoreException {
+        IType supertype = getType().findSupertype(ipsProject);
+        if (supertype == null) {
+            return null;
+        }
+        IPolicyCmptTypeAssociation associationHost = (IPolicyCmptTypeAssociation)supertype.findAssociation(getName(),
+                ipsProject);
+        if (associationHost != null && associationHost.getTarget().equals(getTarget())
+                && associationHost.getAssociationType().isCompositionDetailToMaster()) {
+            return associationHost;
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -311,16 +390,36 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
 
     private void validateInverseRelation(MessageList list, IIpsProject ipsProject) throws CoreException {
         if (type.isCompositionDetailToMaster()) {
-            if (StringUtils.isEmpty(inverseAssociation)) {
-                // inverse must always be set if type is detail to master
-                String text = Messages.PolicyCmptTypeAssociation_Association_msg_InverseAssociationMustNotBeEmpty;
-                list.add(new Message(MSGCODE_INVERSE_ASSOCIATION_MUST_BE_SET_IF_TYPE_IS_DETAIL_TO_MASTER, text,
-                        Message.ERROR, this, PROPERTY_INVERSE_ASSOCIATION));
+            // TODO FIPS-85
+            String text = Messages.PolicyCmptTypeAssociation_Association_msg_InverseAssociationMustNotBeEmpty;
+            Message errorMessage = Message.newError(
+                    MSGCODE_INVERSE_ASSOCIATION_MUST_BE_SET_IF_TYPE_IS_DETAIL_TO_MASTER, text, this,
+                    PROPERTY_INVERSE_ASSOCIATION);
+            if (isSharedAssociation()) {
+                // for shared associations it is valid to specify no inverse association if there is
+                // an inverse association of a derived union, with the same name in superclass
+                IPolicyCmptTypeAssociation superAssociation = findSharedAssociationHost(getIpsProject());
+                if (superAssociation == null) {
+                    list.add(Message.newError(MSGCODE_SHARED_ASSOCIATION_INVALID,
+                            Messages.PolicyCmptTypeAssociation_sharedAssociation_noAssociationHost, this,
+                            PROPERTY_SHARED_ASSOCIATION));
+                    return;
+                }
+                if (!superAssociation.isInverseOfDerivedUnion()) {
+                    list.add(Message.newError(MSGCODE_SHARED_ASSOCIATION_INVALID,
+                            Messages.PolicyCmptTypeAssociation_sharedAssociation_invalidAssociationHost, this,
+                            PROPERTY_SHARED_ASSOCIATION));
+                    return;
+                }
+            } else if (StringUtils.isEmpty(inverseAssociation)) {
+                // inverse must always be set if type is detail to master (expect for shared
+                // inverse associations)
+                list.add(errorMessage);
                 return;
             }
         }
 
-        if (StringUtils.isEmpty(inverseAssociation)) {
+        if (StringUtils.isEmpty(inverseAssociation) && !isSharedAssociation()) {
             // special check in case of subsetted derived union the inverse must be set if the
             // derived union has specified an inverse association
             if (isSubsetOfADerivedUnion()) {
@@ -395,23 +494,38 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
      * the project settings
      * 
      */
-    private static boolean checkInverseAssociation(IIpsProject ipsProject,
-            IAssociation association,
+    private boolean checkInverseAssociation(IIpsProject ipsProject,
+            IPolicyCmptTypeAssociation association,
             IPolicyCmptTypeAssociation inverseAss) throws CoreException {
         if (inverseAss.getInverseAssociation().equals(association.getName())
                 && inverseAss.getTarget().equals(association.getType().getQualifiedName())) {
             return true;
         }
-        // TODO FIPS-85
-        // if (ipsProject.getProperties().isUnsafeInverseAssociations()) {
-        // // when unsafe inverse associations is activated also a derived union of this one is
-        // // allowed
-        // IAssociation subsettedDerivedUnion =
-        // association.findSubsettedDerivedUnion(association.getIpsProject());
-        // if (subsettedDerivedUnion != null) {
-        // return checkTargetOfInverse(ipsProject, subsettedDerivedUnion, inverseAss);
-        // }
-        // }
+        // FIPS-85: For shared associations we have to check the inverse association of the shared
+        // association host
+        if (inverseAss.isSharedAssociation()) {
+            IPolicyCmptTypeAssociation sharedAssociationHost = inverseAss.findSharedAssociationHost(inverseAss
+                    .getIpsProject());
+            if (sharedAssociationHost == null) {
+                return false;
+            }
+            if (checkInverseAssociation(ipsProject, association, sharedAssociationHost)) {
+                return true;
+            } else {
+                // when shared associations is activated also a derived union of this one is
+                // allowed as inverse association
+                IPolicyCmptTypeAssociation subsettedDerivedUnion = (IPolicyCmptTypeAssociation)association
+                        .findSubsettedDerivedUnion(ipsProject);
+                if (subsettedDerivedUnion == null) {
+                    return false;
+                }
+                return checkInverseAssociation(ipsProject, subsettedDerivedUnion, sharedAssociationHost);
+            }
+        }
+        if (association.isSharedAssociation()) {
+            IPolicyCmptTypeAssociation hostAssociation = association.findSharedAssociationHost(ipsProject);
+            return checkInverseAssociation(ipsProject, hostAssociation, inverseAss);
+        }
         return false;
     }
 
@@ -445,6 +559,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         }
         subsettedDerivedUnion = element.getAttribute(PROPERTY_SUBSETTED_DERIVED_UNION);
         inverseAssociation = element.getAttribute(PROPERTY_INVERSE_ASSOCIATION);
+        sharedAssociation = Boolean.parseBoolean(element.getAttribute(PROPERTY_SHARED_ASSOCIATION));
     }
 
     @Override
@@ -452,6 +567,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_QUALIFIED, "" + qualified); //$NON-NLS-1$
         newElement.setAttribute(PROPERTY_INVERSE_ASSOCIATION, inverseAssociation);
+        newElement.setAttribute(PROPERTY_SHARED_ASSOCIATION, Boolean.toString(sharedAssociation));
     }
 
     @Override

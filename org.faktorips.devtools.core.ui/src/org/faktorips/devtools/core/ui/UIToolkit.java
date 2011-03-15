@@ -473,6 +473,18 @@ public class UIToolkit {
     }
 
     /**
+     * Creates a new push button.
+     */
+    public Button createButton(Composite parent, String text, int style) {
+        if (formToolkit != null) {
+            return formToolkit.createButton(parent, text, style);
+        }
+        Button newButton = new Button(parent, style);
+        newButton.setText(text);
+        return newButton;
+    }
+
+    /**
      * Creates a new toggle button.
      */
     public Button createToggleButton(Composite parent, String text) {

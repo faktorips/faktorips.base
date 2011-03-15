@@ -880,6 +880,87 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
 
     }
 
+    @Test
+    public void testFindAssociationsForTargetAndAssociationType() throws CoreException {
+        IPolicyCmptType baseMotor = newPolicyCmptType(ipsProject, "BaseMotor");
+        IPolicyCmptType injection = newPolicyCmptType(ipsProject, "Injection");
+
+        List<IAssociation> associations = policyCmptType.findAssociationsForTargetAndAssociationType(
+                injection.getQualifiedName(), AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
+        assertEquals(0, associations.size());
+
+        // Association: motor -> injection
+        IAssociation association = policyCmptType.newAssociation();
+        association.setTarget(injection.getQualifiedName());
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+
+        // Association: baseMotor -> injection
+        IAssociation associationInBase = baseMotor.newAssociation();
+        associationInBase.setTarget(injection.getQualifiedName());
+        associationInBase.setAssociationType(AssociationType.ASSOCIATION);
+
+        // result = 1, because super not set
+        associations = policyCmptType.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
+                AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
+        assertEquals(1, associations.size());
+
+        policyCmptType.setSupertype(baseMotor.getQualifiedName());
+
+        // result = 1, because association type of super type association not equal
+        associations = policyCmptType.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
+                AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
+        assertEquals(1, associations.size());
+
+        // result = 1 using search without supertype
+        associationInBase.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        associations = policyCmptType.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
+                AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
+        assertEquals(1, associations.size());
+
+        // result = 1 using search with supertype included
+        associationInBase.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        associations = policyCmptType.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
+                AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, true);
+        assertEquals(2, associations.size());
+
+        // shared association
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setSharedDetailToMasterAssociations(true);
+        ipsProject.setProperties(properties);
+
+        IPolicyCmptType baseInjection = newPolicyCmptType(ipsProject, "baseInjection");
+        injection.setSupertype(baseInjection.getQualifiedName());
+
+        IPolicyCmptTypeAssociation sharedAsso = (IPolicyCmptTypeAssociation)injection.newAssociation();
+        sharedAsso.setTarget(baseMotor.getQualifiedName());
+        sharedAsso.setTargetRoleSingular("sharedAsso");
+
+        associations = policyCmptType.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
+                AssociationType.COMPOSITION_DETAIL_TO_MASTER, ipsProject, false);
+        assertEquals(0, associations.size());
+        associations = policyCmptType.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
+                AssociationType.COMPOSITION_DETAIL_TO_MASTER, ipsProject, true);
+        assertEquals(0, associations.size());
+
+        sharedAsso.setSharedAssociation(true);
+        sharedAsso.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+
+        associations = policyCmptType.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
+                AssociationType.COMPOSITION_DETAIL_TO_MASTER, ipsProject, false);
+        assertEquals(0, associations.size());
+        associations = policyCmptType.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
+                AssociationType.COMPOSITION_DETAIL_TO_MASTER, ipsProject, true);
+        assertEquals(0, associations.size());
+
+        associations = injection.findAssociationsForTargetAndAssociationType(policyCmptType.getQualifiedName(),
+                AssociationType.COMPOSITION_DETAIL_TO_MASTER, ipsProject, false);
+        assertEquals(1, associations.size());
+        associations = injection.findAssociationsForTargetAndAssociationType(policyCmptType.getQualifiedName(),
+                AssociationType.COMPOSITION_DETAIL_TO_MASTER, ipsProject, true);
+        assertEquals(1, associations.size());
+
+    }
+
     private class AggregateRootBuilderSet extends EmptyBuilderSet {
 
         public final static String ID = "AggregateRootBuilderSet";
@@ -895,4 +976,5 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         }
 
     }
+
 }

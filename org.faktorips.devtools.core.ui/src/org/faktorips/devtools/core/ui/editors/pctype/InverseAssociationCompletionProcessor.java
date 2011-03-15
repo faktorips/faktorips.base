@@ -21,6 +21,7 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.ArgumentCheck;
@@ -50,14 +51,10 @@ public class InverseAssociationCompletionProcessor extends AbstractCompletionPro
         if (target == null) {
             return;
         }
-        List<IPolicyCmptTypeAssociation> associationCandidates = target.getPolicyCmptTypeAssociations();
-        for (IPolicyCmptTypeAssociation association : associationCandidates) {
-            // only association candidates with target policy component type equal to the policy
-            // component type this association belongs to
-            if (!association.getTarget().equals(association.getPolicyCmptType().getQualifiedName())) {
-                continue;
-            }
-
+        List<IAssociation> associationCandidates = target.findAssociationsForTargetAndAssociationType(association
+                .getPolicyCmptType().getQualifiedName(), association.getAssociationType()
+                .getCorrespondingAssociationType(), ipsProject, false);
+        for (IAssociation association : associationCandidates) {
             // only association with name starts with prefix
             if (association.getName().toLowerCase().startsWith(prefix)) {
                 addToResult(result, association, documentOffset);
@@ -65,11 +62,11 @@ public class InverseAssociationCompletionProcessor extends AbstractCompletionPro
         }
     }
 
-    private void addToResult(List<ICompletionProposal> result, IPolicyCmptTypeAssociation relation, int documentOffset) {
-        String name = relation.getName();
-        String displayText = name + " - " + relation.getParent().getName(); //$NON-NLS-1$
-        Image image = IpsUIPlugin.getImageHandling().getImage(relation);
-        String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(relation);
+    private void addToResult(List<ICompletionProposal> result, IAssociation association, int documentOffset) {
+        String name = association.getName();
+        String displayText = name + " - " + association.getParent().getName(); //$NON-NLS-1$
+        Image image = IpsUIPlugin.getImageHandling().getImage(association);
+        String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(association);
         CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(), image,
                 displayText, null, localizedDescription);
         result.add(proposal);

@@ -276,8 +276,8 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     }
 
     @Override
-    public boolean isUnsafeInverseAssociations() {
-        return propertiesInternal.isUnsafeInverseAssociations();
+    public boolean isSharedDetailToMasterAssociations() {
+        return propertiesInternal.isSharedDetailToMasterAssociations();
     }
 
     @Override
@@ -357,7 +357,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     }
 
     @Override
-    public void setUnsafeInverseAssociations(boolean typesafeInverseAssociations) {
+    public void setSharedDetailToMasterAssociations(boolean sharedDetailToMasterAssociations) {
         throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 

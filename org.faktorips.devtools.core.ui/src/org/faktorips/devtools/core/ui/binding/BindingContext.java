@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -48,6 +49,7 @@ import org.faktorips.devtools.core.ui.controller.FieldExtensionPropertyMapping;
 import org.faktorips.devtools.core.ui.controller.FieldPropertyMapping;
 import org.faktorips.devtools.core.ui.controller.FieldPropertyMappingByPropertyDescriptor;
 import org.faktorips.devtools.core.ui.controller.Messages;
+import org.faktorips.devtools.core.ui.controller.fields.ButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
@@ -184,6 +186,25 @@ public class BindingContext {
     }
 
     /**
+     * Binds the selection state of the given button to the given ips object property
+     * 
+     * @return the edit field created to access the value in the text control.
+     * 
+     * @throws IllegalArgumentException if the property is not of type Boolean or boolean.
+     * @throws NullPointerException if any argument is <code>null</code>.
+     */
+    public EditField bindContent(Button button, Object object, String propertyName) {
+        PropertyDescriptor property = BeanUtil.getPropertyDescriptor(object.getClass(), propertyName);
+        if (Boolean.class != property.getPropertyType() && Boolean.TYPE != property.getPropertyType()) {
+            throwWrongPropertyTypeException(property, new Class[] { Boolean.class, Boolean.TYPE });
+        }
+
+        EditField field = new ButtonField(button);
+        bindContent(field, object, propertyName);
+        return field;
+    }
+
+    /**
      * Binds the given text-button control to the given ips object's property.
      * 
      * @return the edit field created to access the value in the text control.
@@ -314,6 +335,22 @@ public class BindingContext {
      */
     public void bindEnabled(Control control, Object object, String property, boolean enabledIfTrue) {
         add(new EnableBinding(control, object, property, enabledIfTrue));
+    }
+
+    /**
+     * Binds the control's enabled property to the given part container's property.
+     * 
+     * @param control The control which enabled property is bound
+     * @param object The object the control is bound to
+     * @param property The name of the object's property the control is bound to.
+     * @param expectedValue the control is enabled when the value given by the property is equal to
+     *            the expected value
+     * 
+     * @throws IllegalArgumentException if the object's property is not of type boolean.
+     * @throws NullPointerException if any argument is <code>null</code>.
+     */
+    public void bindEnabled(Control control, Object object, String property, Object expectedValue) {
+        add(new EnableBinding(control, object, property, expectedValue));
     }
 
     /**

@@ -26,6 +26,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -281,6 +282,119 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_DOES_NOT_EXIST_IN_TARGET));
     }
 
+    /**
+     * FIPS-85 Checking MSGCODE_INVERSE_RELATION_MISMATCH with shared associations
+     */
+    @Test
+    public void testValidateSharedAssociationCheckInverse() throws Exception {
+        setOptionalConstraintSharedAssociation(true);
+        PolicyCmptType basePolicy = newPolicyCmptType(ipsProject, "basePolicy");
+        PolicyCmptType basePart = newPolicyCmptType(ipsProject, "basePart");
+        PolicyCmptType policy = newPolicyCmptType(ipsProject, "policy");
+        PolicyCmptType part = newPolicyCmptType(ipsProject, "part");
+
+        policy.setSupertype(basePolicy.getQualifiedName());
+        part.setSupertype(basePart.getQualifiedName());
+
+        IPolicyCmptTypeAssociation compositBasePart = (IPolicyCmptTypeAssociation)basePolicy.newAssociation();
+        compositBasePart.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        compositBasePart.setTargetRoleSingular("basePart");
+        compositBasePart.setTargetRolePlural("baseParts");
+        compositBasePart.setTarget(basePart.getQualifiedName());
+        compositBasePart.setInverseAssociation("policy");
+        compositBasePart.setDerivedUnion(true);
+
+        IPolicyCmptTypeAssociation inverseBasePart = (IPolicyCmptTypeAssociation)basePart.newAssociation();
+        inverseBasePart.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        inverseBasePart.setTargetRoleSingular("policy");
+        inverseBasePart.setTarget(basePolicy.getQualifiedName());
+        inverseBasePart.setInverseAssociation("basePart");
+
+        IPolicyCmptTypeAssociation compositPart = (IPolicyCmptTypeAssociation)policy.newAssociation();
+        compositPart.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        compositPart.setTargetRoleSingular("part");
+        compositPart.setTargetRolePlural("parts");
+        compositPart.setTarget(part.getQualifiedName());
+        compositPart.setInverseAssociation("policy");
+        compositPart.setSubsettedDerivedUnion(compositBasePart.getName());
+
+        IPolicyCmptTypeAssociation inversePart = (IPolicyCmptTypeAssociation)part.newAssociation();
+        inversePart.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        inversePart.setTargetRoleSingular("policy");
+        inversePart.setTarget(basePolicy.getQualifiedName());
+        inversePart.setInverseAssociation("basePart");
+
+        MessageList messageList = compositPart.validate(ipsProject);
+        assertNotNull(messageList.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_MISMATCH));
+
+        messageList = inversePart.validate(ipsProject);
+        assertNotNull(messageList.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_MISMATCH));
+
+        inversePart.setSharedAssociation(true);
+
+        messageList = compositPart.validate(ipsProject);
+        assertNull(messageList.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_MISMATCH));
+
+        messageList = inversePart.validate(ipsProject);
+        assertNull(messageList.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_MISMATCH));
+    }
+
+    /**
+     * FIPS-85: check for MSGCODE_SHARED_ASSOCIATION_INVALID
+     */
+    @Test
+    public void testValidateSharedAssociationInvalid() throws Exception {
+        setOptionalConstraintSharedAssociation(true);
+        PolicyCmptType basePolicy = newPolicyCmptType(ipsProject, "basePolicy");
+        PolicyCmptType basePart = newPolicyCmptType(ipsProject, "basePart");
+        PolicyCmptType policy = newPolicyCmptType(ipsProject, "policy");
+        PolicyCmptType part = newPolicyCmptType(ipsProject, "part");
+
+        policy.setSupertype(basePolicy.getQualifiedName());
+        part.setSupertype(basePart.getQualifiedName());
+
+        IPolicyCmptTypeAssociation compositBasePart = (IPolicyCmptTypeAssociation)basePolicy.newAssociation();
+        compositBasePart.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        compositBasePart.setTargetRoleSingular("basePart");
+        compositBasePart.setTargetRolePlural("baseParts");
+        compositBasePart.setTarget(basePart.getQualifiedName());
+        compositBasePart.setInverseAssociation("policy");
+        compositBasePart.setDerivedUnion(true);
+
+        IPolicyCmptTypeAssociation inverseBasePart = (IPolicyCmptTypeAssociation)basePart.newAssociation();
+        inverseBasePart.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        inverseBasePart.setTargetRoleSingular("policy");
+        inverseBasePart.setTarget(basePolicy.getQualifiedName());
+        inverseBasePart.setInverseAssociation("basePart");
+
+        IPolicyCmptTypeAssociation compositPart = (IPolicyCmptTypeAssociation)policy.newAssociation();
+        compositPart.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        compositPart.setTargetRoleSingular("part");
+        compositPart.setTargetRolePlural("parts");
+        compositPart.setTarget(part.getQualifiedName());
+        compositPart.setInverseAssociation("policy");
+        compositPart.setSubsettedDerivedUnion(compositBasePart.getName());
+
+        IPolicyCmptTypeAssociation inversePart = (IPolicyCmptTypeAssociation)part.newAssociation();
+        inversePart.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        inversePart.setTargetRoleSingular("policyXXXXX");
+        inversePart.setTarget(basePolicy.getQualifiedName());
+        inversePart.setInverseAssociation("basePart");
+        inversePart.setSharedAssociation(true);
+
+        MessageList messageList = inversePart.validate(ipsProject);
+        assertNotNull(messageList.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_SHARED_ASSOCIATION_INVALID));
+
+        inversePart.setTargetRoleSingular("policy");
+        messageList = inversePart.validate(ipsProject);
+        assertNull(messageList.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_SHARED_ASSOCIATION_INVALID));
+
+        compositBasePart.setDerivedUnion(false);
+        messageList = inversePart.validate(ipsProject);
+        assertNotNull(messageList.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_SHARED_ASSOCIATION_INVALID));
+
+    }
+
     @Test
     public void testRemove() {
         assertEquals(1, pcType.getPolicyCmptTypeAssociations().size());
@@ -298,7 +412,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testInitFromXml() {
+    public void testInitFromXml() throws CoreException {
         Document doc = getTestDocument();
         association.initFromXml(doc.getDocumentElement());
         assertEquals("42", association.getId());
@@ -313,6 +427,13 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertEquals(Integer.MAX_VALUE, association.getMaxCardinality());
         assertEquals("Parts", association.getSubsettedDerivedUnion());
         assertEquals("Policy", association.getInverseAssociation());
+
+        // FIPS-85 shared association is only true when configured in ips project and association is
+        // a
+        // detail-to-master composition
+        association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        setOptionalConstraintSharedAssociation(true);
+        assertEquals(true, association.isSharedAssociation());
     }
 
     @Test
@@ -328,6 +449,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         association.setInverseAssociation("reverse");
         association.setMinCardinality(2);
         association.setMaxCardinality(3);
+        association.setSharedAssociation(true);
         IDescription description = association.getDescription(Locale.US);
         description.setText("blabla");
 
@@ -346,6 +468,8 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertEquals(2, copy.getMinCardinality());
         assertEquals(3, copy.getMaxCardinality());
         assertEquals("blabla", copy.getDescriptionText(Locale.US));
+        // FIPS-85 getting directly from xml element because the getter also check other conditions
+        assertEquals("true", element.getAttribute(IPolicyCmptTypeAssociation.PROPERTY_SHARED_ASSOCIATION));
     }
 
     @Test
@@ -486,6 +610,105 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAssociation relation2 = targetType.newPolicyCmptTypeAssociation();
         relation2.setTargetRoleSingular("reverseRelation");
         assertEquals(relation2, association.findInverseAssociation(ipsProject));
+
+        // FIPS-85 shared Association
+        association.setInverseAssociation("");
+        association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        assertNull(association.findInverseAssociation(ipsProject));
+
+        PolicyCmptType baseType = newPolicyCmptType(ipsProject, "baseType");
+        pcType.setSupertype(baseType.getQualifiedName());
+
+        IPolicyCmptTypeAssociation sharedHost = (IPolicyCmptTypeAssociation)baseType.newAssociation();
+        association.setTargetRoleSingular("abc");
+        sharedHost.setTargetRoleSingular("abc");
+        sharedHost.setTarget(association.getTarget());
+        sharedHost.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        assertNull(association.findInverseAssociation(ipsProject));
+
+        sharedHost.setInverseAssociation(relation2.getTargetRoleSingular());
+        assertNull(association.findInverseAssociation(ipsProject));
+
+        association.setSharedAssociation(true);
+        assertNull(association.findInverseAssociation(ipsProject));
+
+        setOptionalConstraintSharedAssociation(true);
+
+        assertEquals(relation2, association.findInverseAssociation(ipsProject));
+    }
+
+    @Test
+    public void testHasInverseAssociation() throws Exception {
+        assertFalse(association.hasInverseAssociation());
+
+        association.setInverseAssociation("abc");
+        assertTrue(association.hasInverseAssociation());
+
+        // FIPS-85
+        association.setInverseAssociation("");
+        PolicyCmptType baseType = newPolicyCmptType(ipsProject, "baseType");
+        pcType.setSupertype(baseType.getQualifiedName());
+        IPolicyCmptTypeAssociation sharedHost = (IPolicyCmptTypeAssociation)baseType.newAssociation();
+        association.setTargetRoleSingular("abc");
+        sharedHost.setTargetRoleSingular("abc");
+        sharedHost.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        association.setTarget(targetType.getName());
+        sharedHost.setTarget(targetType.getName());
+
+        assertFalse(association.hasInverseAssociation());
+
+        setOptionalConstraintSharedAssociation(true);
+        association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        association.setSharedAssociation(true);
+
+        assertFalse(association.hasInverseAssociation());
+
+        sharedHost.setInverseAssociation("asd");
+        assertTrue(association.hasInverseAssociation());
+    }
+
+    @Test
+    public void testIsInverseOfDerivedUnion() throws CoreException {
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        association.setDerivedUnion(true);
+
+        IPolicyCmptTypeAssociation inverse = targetType.newPolicyCmptTypeAssociation();
+        inverse.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        inverse.setTarget(association.getPolicyCmptType().getQualifiedName());
+
+        inverse.setInverseAssociation(association.getName());
+        association.setInverseAssociation(inverse.getName());
+
+        assertTrue(inverse.isInverseOfDerivedUnion());
+        assertFalse(association.isInverseOfDerivedUnion());
+
+        association.setDerivedUnion(false);
+
+        assertFalse(inverse.isInverseOfDerivedUnion());
+        assertFalse(association.isInverseOfDerivedUnion());
+
+        // FIPS-85
+        setOptionalConstraintSharedAssociation(true);
+        inverse.setSharedAssociation(true);
+        assertFalse(inverse.isInverseOfDerivedUnion());
+
+        PolicyCmptType baseType = newPolicyCmptType(ipsProject, "baseType");
+        targetType.setSupertype(baseType.getQualifiedName());
+        IPolicyCmptTypeAssociation sharedHost = (IPolicyCmptTypeAssociation)baseType.newAssociation();
+        sharedHost.setTargetRoleSingular("abc");
+        inverse.setTargetRoleSingular("abc");
+
+        assertFalse(inverse.isInverseOfDerivedUnion());
+
+        association.setDerivedUnion(true);
+
+        assertTrue(inverse.isInverseOfDerivedUnion());
+    }
+
+    private void setOptionalConstraintSharedAssociation(boolean enabled) throws CoreException {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setSharedDetailToMasterAssociations(enabled);
+        ipsProject.setProperties(properties);
     }
 
     @Test
@@ -727,23 +950,51 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsInverseOfDerivedUnion() throws CoreException {
-        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        association.setDerivedUnion(true);
+    public void testIsSharedAssociatiopn() throws Exception {
+        // FIPS-85
+        association.setSharedAssociation(false);
+        assertFalse(association.isSharedAssociation());
+        association.setSharedAssociation(true);
+        assertFalse(association.isSharedAssociation());
 
-        IPolicyCmptTypeAssociation inverse = targetType.newPolicyCmptTypeAssociation();
-        inverse.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
-        inverse.setTarget(association.getPolicyCmptType().getQualifiedName());
+        setOptionalConstraintSharedAssociation(true);
+        assertFalse(association.isSharedAssociation());
 
-        inverse.setInverseAssociation(association.getName());
-        association.setInverseAssociation(inverse.getName());
+        association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        assertTrue(association.isSharedAssociation());
 
-        assertTrue(inverse.isInverseOfDerivedUnion());
-        assertFalse(association.isInverseOfDerivedUnion());
+        setOptionalConstraintSharedAssociation(false);
+        assertFalse(association.isSharedAssociation());
 
-        association.setDerivedUnion(false);
+        setOptionalConstraintSharedAssociation(true);
+        association.setSharedAssociation(false);
+        assertFalse(association.isSharedAssociation());
+    }
 
-        assertFalse(inverse.isInverseOfDerivedUnion());
-        assertFalse(association.isInverseOfDerivedUnion());
+    @Test
+    public void testFindSharedAssociationHost() throws Exception {
+        // FIPS-85
+        association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        setOptionalConstraintSharedAssociation(true);
+
+        IPolicyCmptTypeAssociation host = association.findSharedAssociationHost(ipsProject);
+        assertNull("should find no shared association host", host);
+
+        PolicyCmptType superType = newPolicyCmptType(ipsProject, "superType");
+        pcType.setSupertype(superType.getQualifiedName());
+        IPolicyCmptTypeAssociation associationHost = (IPolicyCmptTypeAssociation)superType.newAssociation();
+        associationHost.setTargetRoleSingular(association.getTargetRoleSingular());
+
+        host = association.findSharedAssociationHost(ipsProject);
+        assertNull("should find no shared association host", host);
+
+        associationHost.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        host = association.findSharedAssociationHost(ipsProject);
+        assertNull("should find no shared association host", host);
+
+        associationHost.setTarget(association.getTarget());
+        host = association.findSharedAssociationHost(ipsProject);
+        assertEquals(associationHost, host);
+
     }
 }

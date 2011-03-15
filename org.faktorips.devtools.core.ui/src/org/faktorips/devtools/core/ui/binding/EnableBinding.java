@@ -23,18 +23,18 @@ import org.eclipse.swt.widgets.Control;
  */
 public class EnableBinding extends ControlPropertyBinding {
 
-    private boolean enabledIfObjectPropertyIsTrue;
+    private Object expectedValue;
 
-    public EnableBinding(Control control, Object object, String propertyName, boolean enabledIfTrue) {
-        super(control, object, propertyName, Boolean.TYPE);
-        this.enabledIfObjectPropertyIsTrue = enabledIfTrue;
+    public EnableBinding(Control control, Object object, String property, Object expectedValue) {
+        super(control, object, property, null);
+        this.expectedValue = expectedValue;
     }
 
     @Override
     public void updateUiIfNotDisposed() {
         try {
-            Boolean value = (Boolean)getProperty().getReadMethod().invoke(getObject(), new Object[0]);
-            boolean enabled = value.booleanValue() == enabledIfObjectPropertyIsTrue;
+            Object value = getProperty().getReadMethod().invoke(getObject(), new Object[0]);
+            boolean enabled = value != null && value.equals(expectedValue);
             getControl().setEnabled(enabled);
         } catch (Exception e) {
             // TODO catch Exception needs to be documented properly or specialized

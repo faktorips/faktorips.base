@@ -22,6 +22,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -48,6 +49,7 @@ import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.binding.ButtonTextBinding;
 import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
+import org.faktorips.devtools.core.ui.binding.EnableBinding;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
@@ -206,13 +208,33 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         // inverse association
         uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_inverseAssociationLabel);
-        Text inverseRelationText = uiToolkit.createText(workArea);
+        Composite inverseAssoComposite = uiToolkit.createComposite(workArea);
+        inverseAssoComposite.setLayout(uiToolkit.createNoMarginGridLayout(2, false));
+        inverseAssoComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+        Text inverseRelationText = uiToolkit.createText(inverseAssoComposite);
         bindingContext.bindContent(inverseRelationText, association,
                 IPolicyCmptTypeAssociation.PROPERTY_INVERSE_ASSOCIATION);
         InverseAssociationCompletionProcessor inverseAssociationCompletionProcessor = new InverseAssociationCompletionProcessor(
                 association);
         inverseAssociationCompletionProcessor.setComputeProposalForEmptyPrefix(true);
         CompletionUtil.createHandlerForText(inverseRelationText, inverseAssociationCompletionProcessor);
+
+        // shared associations
+        if (ipsProject.getProperties().isSharedDetailToMasterAssociations()) {
+            Button sharedAssociationCheck = uiToolkit.createButton(inverseAssoComposite,
+                    Messages.AssociationEditDialog_sharedAssociations, SWT.CHECK);
+            sharedAssociationCheck.setToolTipText(Messages.AssociationEditDialog_sharedAssociationsTooltip);
+            bindingContext.bindContent(sharedAssociationCheck, association,
+                    IPolicyCmptTypeAssociation.PROPERTY_SHARED_ASSOCIATION);
+            bindingContext.bindEnabled(inverseRelationText, association,
+                    IPolicyCmptTypeAssociation.PROPERTY_SHARED_ASSOCIATION, false);
+            bindingContext
+                    .add(new EnableBinding(sharedAssociationCheck, association,
+                            IPolicyCmptTypeAssociation.PROPERTY_ASSOCIATION_TYPE,
+                            AssociationType.COMPOSITION_DETAIL_TO_MASTER));
+        } else {
+            ((GridData)inverseRelationText.getLayoutData()).verticalSpan = 2;
+        }
 
         Composite info = uiToolkit.createGridComposite(c, 1, true, false);
         Label note = uiToolkit.createLabel(info, pmoAssociation.getConstrainedNote());

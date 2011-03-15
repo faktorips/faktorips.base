@@ -1089,76 +1089,6 @@ public abstract class GenAssociation extends GenTypePart {
             String varCopyMap,
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException;
 
-    /**
-     * Returns <code>true</code> if the association is the inverse of a derived union association,
-     * otherwise <code>false</code>. Note that due to performance reason this method should be used
-     * instead of calling PolicyCmptTypeAssociation#isInverseOfDerivedUnion because this method used
-     * the cached inverse association instead searching the inverse again.
-     */
-    public boolean isInverseOfDerivedUnionAssociation() {
-        if (inverseAssociation == null) {
-            return false;
-        }
-        return inverseAssociation.isDerivedUnion();
-    }
-
-    /**
-     * Returns the association generator of the corresponding inverse of a derived union. Returns
-     * <code>null</code> if the inverse of this association is missing or inverse association is no
-     * subset of a derived union. Note that more than one generators could be returned if the
-     * derived union is itself a subset of a derived union.
-     */
-    public List<GenAssociation> getGeneratorForInverseOfDerivedUnion() throws CoreException {
-        if (inverseAssociation == null || !inverseAssociation.isSubsetOfADerivedUnion()
-                || !isCompositionDetailToMaster()) {
-            return null;
-        }
-        // find the derived union the inverse of this (the master to detail association) is the
-        // subset for
-        IPolicyCmptTypeAssociation subsettedDerivedUnion = (IPolicyCmptTypeAssociation)inverseAssociation
-                .findSubsettedDerivedUnion(getIpsProject());
-        if (subsettedDerivedUnion == null) {
-            return null;
-        }
-
-        // find generator for the policy component type of the derived union
-        GenPolicyCmptType generatorForDerivedUnionHost = getGeneratorFor(subsettedDerivedUnion.getPolicyCmptType());
-        if (generatorForDerivedUnionHost == null) {
-            return null;
-        }
-
-        // find the generator for the derived union association
-        GenAssociation generatorForDerivedUnion = generatorForDerivedUnionHost.getGenerator(subsettedDerivedUnion);
-        if (generatorForDerivedUnion == null) {
-            return null;
-        }
-
-        List<GenAssociation> result = new ArrayList<GenAssociation>();
-        if (subsettedDerivedUnion.isSubsetOfADerivedUnion()) {
-            // special case if the derived union is itself a subset of a derived union
-            // then we need to add the corresponding generators too
-            GenAssociation generatorForInverseAssociation = generatorForDerivedUnion
-                    .getGeneratorForInverseAssociation();
-            if (generatorForInverseAssociation != null) {
-                List<GenAssociation> generatorForInverseOfDerivedUnion = generatorForInverseAssociation
-                        .getGeneratorForInverseOfDerivedUnion();
-                if (generatorForInverseOfDerivedUnion != null) {
-                    result.addAll(generatorForInverseOfDerivedUnion);
-                }
-            }
-        }
-
-        GenAssociation generatorForInverseAssociation = generatorForDerivedUnion.getGeneratorForInverseAssociation();
-        if (generatorForInverseAssociation != null) {
-            result.add(generatorForInverseAssociation);
-        }
-        if (result.size() == 0) {
-            return null;
-        }
-        // returns the generators of the inverse association of the derived union
-        return result;
-    }
-
     public GenAssociation getGeneratorForInverseAssociation() throws CoreException {
         if (inverseAssociation == null) {
             return null;
@@ -1170,7 +1100,7 @@ public abstract class GenAssociation extends GenTypePart {
         return generatorForTargetSide.getGenerator(inverseAssociation);
     }
 
-    private GenPolicyCmptType getGeneratorFor(IPolicyCmptType policyCmptType) throws CoreException {
+    GenPolicyCmptType getGeneratorFor(IPolicyCmptType policyCmptType) throws CoreException {
         StandardBuilderSet builderSet = getGenType().getBuilderSet();
         return builderSet.getGenerator(policyCmptType);
     }

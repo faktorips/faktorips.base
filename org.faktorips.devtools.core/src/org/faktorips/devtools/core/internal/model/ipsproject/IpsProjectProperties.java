@@ -74,9 +74,11 @@ import org.w3c.dom.NodeList;
  */
 public class IpsProjectProperties implements IIpsProjectProperties {
 
+    private final static String ATTRIBUTE_PERSISTENT_PROJECT = "persistentProject"; //$NON-NLS-1$
+
     private final static String OPTIONAL_CONSTRAINT_NAME_RULESWITHOUTREFERENCE = "rulesWithoutReferencesAllowed"; //$NON-NLS-1$
 
-    private final static String OPTIONAL_CONSTRAINT_UNSAFE_INVERSE_ASSOCIATIONS = "unsafeInverseAssociations"; //$NON-NLS-1$
+    private final static String OPTIONAL_CONSTRAINT_SHARED_ASSOCIATIONS = "sharedDetailToMasterAssociations"; //$NON-NLS-1$
 
     public final static IpsProjectProperties createFromXml(IpsProject ipsProject, Element element) {
         IpsProjectProperties data = new IpsProjectProperties();
@@ -123,7 +125,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean derivedUnionIsImplementedRuleEnabled = true;
     private boolean referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled = true;
     private boolean rulesWithoutReferencesAllowed = false;
-    private boolean unsafeInverseAssociations = false;
+    private boolean sharedDetailToMasterAssociations = false;
 
     private Map<String, String> requiredFeatures = new HashMap<String, String>();
 
@@ -167,12 +169,24 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             for (DynamicValueDatatype valuetype : valuetypes) {
                 list.add(valuetype.checkReadyToUse());
             }
+            validatePersistenceOption(list);
             validateSupportedLanguages(list);
             return list;
         } catch (RuntimeException e) {
             // if runtime exceptions are not converted into core exceptions the stack trace gets
             // lost in the logging file and they are hard to find
             throw new CoreException(new IpsStatus(e));
+        }
+    }
+
+    private void validatePersistenceOption(MessageList msgList) {
+        if (isPersistenceSupportEnabled()) {
+            String text = NLS.bind(Messages.IpsProjectProperties_error_persistenceAndSharedAssociationNotAllowed,
+                    OPTIONAL_CONSTRAINT_SHARED_ASSOCIATIONS, ATTRIBUTE_PERSISTENT_PROJECT);
+            if (isSharedDetailToMasterAssociations()) {
+                msgList.add(new Message(IIpsProjectProperties.MSGCODE_INVALID_OPTIONAL_CONSTRAINT, text, Message.ERROR,
+                        this));
+            }
         }
     }
 
@@ -420,7 +434,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         projectEl.setAttribute(
                 "javaProjectContainsClassesForDynamicDatatypes", "" + javaProjectContainsClassesForDynamicDatatypes); //$NON-NLS-1$ //$NON-NLS-2$
         projectEl.setAttribute("changesInTimeNamingConvention", changesInTimeConventionIdForGeneratedCode); //$NON-NLS-1$
-        projectEl.setAttribute("persistentProject", "" + persistentProject); //$NON-NLS-1$ //$NON-NLS-2$
+        projectEl.setAttribute(ATTRIBUTE_PERSISTENT_PROJECT, Boolean.toString(persistentProject));
 
         // required features
         createRequiredIpsFeaturesComment(projectEl);
@@ -499,8 +513,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         optionalConstraintsEl.appendChild(createConstraintElement(doc, OPTIONAL_CONSTRAINT_NAME_RULESWITHOUTREFERENCE,
                 rulesWithoutReferencesAllowed));
 
-        optionalConstraintsEl.appendChild(createConstraintElement(doc, OPTIONAL_CONSTRAINT_UNSAFE_INVERSE_ASSOCIATIONS,
-                isUnsafeInverseAssociations()));
+        optionalConstraintsEl.appendChild(createConstraintElement(doc, OPTIONAL_CONSTRAINT_SHARED_ASSOCIATIONS,
+                isSharedDetailToMasterAssociations()));
 
         // persistence options
         createPersistenceOptionsDescriptionComment(projectEl);
@@ -546,7 +560,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     public void initFromXml(IIpsProject ipsProject, Element element) {
         modelProject = Boolean.valueOf(element.getAttribute("modelProject")).booleanValue(); //$NON-NLS-1$
         productDefinitionProject = Boolean.valueOf(element.getAttribute("productDefinitionProject")).booleanValue(); //$NON-NLS-1$
-        persistentProject = Boolean.valueOf(element.getAttribute("persistentProject")).booleanValue(); //$NON-NLS-1$
+        persistentProject = Boolean.valueOf(element.getAttribute(ATTRIBUTE_PERSISTENT_PROJECT)).booleanValue();
         runtimeIdPrefix = element.getAttribute("runtimeIdPrefix"); //$NON-NLS-1$
         javaProjectContainsClassesForDynamicDatatypes = Boolean.valueOf(
                 element.getAttribute("javaProjectContainsClassesForDynamicDatatypes")).booleanValue(); //$NON-NLS-1$
@@ -730,8 +744,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled = enable;
             } else if (name.equals(OPTIONAL_CONSTRAINT_NAME_RULESWITHOUTREFERENCE)) {
                 rulesWithoutReferencesAllowed = enable;
-            } else if (name.equals(OPTIONAL_CONSTRAINT_UNSAFE_INVERSE_ASSOCIATIONS)) {
-                setUnsafeInverseAssociations(enable);
+            } else if (name.equals(OPTIONAL_CONSTRAINT_SHARED_ASSOCIATIONS)) {
+                setSharedDetailToMasterAssociations(enable);
             }
         }
     }
@@ -840,13 +854,13 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     @Override
-    public void setUnsafeInverseAssociations(boolean unsafeInverseAssociations) {
-        this.unsafeInverseAssociations = unsafeInverseAssociations;
+    public void setSharedDetailToMasterAssociations(boolean sharedDetailToMasterAssociations) {
+        this.sharedDetailToMasterAssociations = sharedDetailToMasterAssociations;
     }
 
     @Override
-    public boolean isUnsafeInverseAssociations() {
-        return unsafeInverseAssociations;
+    public boolean isSharedDetailToMasterAssociations() {
+        return sharedDetailToMasterAssociations;
     }
 
     @Override
@@ -1043,9 +1057,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "    <Constraint name=\"referencedProductComponentsAreValidOnThisGenerationsValidFromDate\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <!-- True to allow rules without references -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <Constraint name=\"" + OPTIONAL_CONSTRAINT_NAME_RULESWITHOUTREFERENCE + "\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
-                + "    <!-- True to allow unsafe inverse associations. If false you have to create an inverse association" //$NON-NLS-1$
-                + "         for every subset of a derived union, when the derived union has an inverse association  -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <Constraint name=\"" + OPTIONAL_CONSTRAINT_UNSAFE_INVERSE_ASSOCIATIONS + "\" enable=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$
+                + "    <!-- True to allow shared associations. Shared associations are detail-to-master associationis that can be used" //$NON-NLS-1$
+                + "         by multiple master-to-detail associations-->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <Constraint name=\"" + OPTIONAL_CONSTRAINT_SHARED_ASSOCIATIONS + "\" enable=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$
                 + SystemUtils.LINE_SEPARATOR
                 //
                 // Check if the inverse associations have to be type safe or not. Due to Issue

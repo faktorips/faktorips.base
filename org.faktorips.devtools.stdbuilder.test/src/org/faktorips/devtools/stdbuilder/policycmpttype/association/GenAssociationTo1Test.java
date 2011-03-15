@@ -14,11 +14,17 @@
 package org.faktorips.devtools.stdbuilder.policycmpttype.association;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -169,6 +175,37 @@ public class GenAssociationTo1Test extends GenAssociationTest {
 
     private String getPublishedInterfaceName(String name) {
         return genAssociationTo1.getJavaNamingConvention().getPublishedInterfaceName(name);
+    }
+
+    @Test
+    public void testIsInverseOfDerivedUnion() throws Exception {
+        setOptionalConstraintSharedAssociation(true);
+        assertFalse(genAssociationTo1.isInverseOfDerivedUnionAssociation());
+
+        IPolicyCmptTypeAssociation derivedUnion = (IPolicyCmptTypeAssociation)targetPolicyCmptType.newAssociation();
+        derivedUnion.setDerivedUnion(true);
+        derivedUnion.setTargetRoleSingular("derivedUnion");
+        association.setInverseAssociation("derivedUnion");
+
+        genAssociationTo1 = new GenAssociationTo1(genPolicyCmptType, association);
+        assertTrue(genAssociationTo1.isInverseOfDerivedUnionAssociation());
+
+        association.setInverseAssociation("");
+        IPolicyCmptType superType = newPolicyCmptType(ipsProject, "superType");
+        policyCmptType.setSupertype(superType.getQualifiedName());
+        IAssociation sharedHost = superType.newAssociation();
+
+    }
+
+    @Test
+    public void testGetGeneratorForInverseOfDerivedUnion() throws Exception {
+        // TODO FIPS-85
+    }
+
+    private void setOptionalConstraintSharedAssociation(boolean enabled) throws CoreException {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setSharedDetailToMasterAssociations(enabled);
+        ipsProject.setProperties(properties);
     }
 
 }

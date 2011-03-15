@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.association;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -157,6 +158,87 @@ public class GenAssociationTo1 extends GenAssociation {
      */
     public String getMethodNameGetRefObject(IPolicyCmptTypeAssociation association) {
         return getLocalizedText("METHOD_GET_REF_OBJECT_NAME", association.getTargetRoleSingular());
+    }
+
+    /**
+     * Returns <code>true</code> if the association is the inverse of a derived union association,
+     * otherwise <code>false</code>. Note that due to performance reason this method should be used
+     * instead of calling PolicyCmptTypeAssociation#isInverseOfDerivedUnion because this method used
+     * the cached inverse association instead searching the inverse again.
+     */
+    public boolean isInverseOfDerivedUnionAssociation() {
+        if (inverseAssociation == null) {
+            return false;
+        }
+        // FIPS-85: the inverse of a shared association is always the derived union of the shared
+        // association host. However we do not want to generate the methods like it is the inverse
+        // of a derived union
+        return inverseAssociation.isDerivedUnion() && !association.isSharedAssociation();
+    }
+
+    /**
+     * Returns the association generator of the corresponding inverse of a derived union. Returns
+     * <code>null</code> if the inverse of this association is missing or inverse association is no
+     * subset of a derived union. Note that more than one generators could be returned if the
+     * derived union is itself a subset of a derived union.
+     */
+    public List<GenAssociation> getGeneratorForInverseOfDerivedUnion() throws CoreException {
+        if (inverseAssociation == null
+                || (!inverseAssociation.isSubsetOfADerivedUnion() && !association.isSharedAssociation())
+                || !isCompositionDetailToMaster()) {
+            return null;
+        }
+        // find the derived union the inverse of this (the master to detail association) is the
+        // subset for
+        IPolicyCmptTypeAssociation subsettedDerivedUnion;
+        if (association.isSharedAssociation()) {
+            // FIPS-85: for shared associations, the subsetted derived union is the same as the
+            // inverse association
+            subsettedDerivedUnion = inverseAssociation;
+        } else {
+            subsettedDerivedUnion = (IPolicyCmptTypeAssociation)inverseAssociation
+                    .findSubsettedDerivedUnion(getIpsProject());
+        }
+        if (subsettedDerivedUnion == null) {
+            return null;
+        }
+
+        // find generator for the policy component type of the derived union
+        GenPolicyCmptType generatorForDerivedUnionHost = getGeneratorFor(subsettedDerivedUnion.getPolicyCmptType());
+        if (generatorForDerivedUnionHost == null) {
+            return null;
+        }
+
+        // find the generator for the derived union association
+        GenAssociation generatorForDerivedUnion = generatorForDerivedUnionHost.getGenerator(subsettedDerivedUnion);
+        if (generatorForDerivedUnion == null) {
+            return null;
+        }
+
+        List<GenAssociation> result = new ArrayList<GenAssociation>();
+        if (subsettedDerivedUnion.isSubsetOfADerivedUnion()) {
+            // special case if the derived union is itself a subset of a derived union
+            // then we need to add the corresponding generators too
+            GenAssociation generatorForInverseAssociation = generatorForDerivedUnion
+                    .getGeneratorForInverseAssociation();
+            if (generatorForInverseAssociation instanceof GenAssociationTo1) {
+                List<GenAssociation> generatorForInverseOfDerivedUnion = ((GenAssociationTo1)generatorForInverseAssociation)
+                        .getGeneratorForInverseOfDerivedUnion();
+                if (generatorForInverseOfDerivedUnion != null) {
+                    result.addAll(generatorForInverseOfDerivedUnion);
+                }
+            }
+        }
+
+        GenAssociation generatorForInverseAssociation = generatorForDerivedUnion.getGeneratorForInverseAssociation();
+        if (generatorForInverseAssociation != null) {
+            result.add(generatorForInverseAssociation);
+        }
+        if (result.size() == 0) {
+            return null;
+        }
+        // returns the generators of the inverse association of the derived union
+        return result;
     }
 
     /**

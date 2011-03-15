@@ -78,6 +78,8 @@ public interface IIpsProjectProperties {
      */
     public final static String MSGCODE_MORE_THAN_ONE_DEFAULT_LANGUAGE = MSGCODE_PREFIX + "MoreThanOneDefaultLanguage"; //$NON-NLS-1$
 
+    public static final String MSGCODE_INVALID_OPTIONAL_CONSTRAINT = MSGCODE_PREFIX + "invalidOptionalConstraint"; //$NON-NLS-1$
+
     /**
      * Returns the time stamp of the last persistent modification of this object.
      */
@@ -352,15 +354,15 @@ public interface IIpsProjectProperties {
      * 
      * @return true when unsafe inverse associations are allowed
      */
-    boolean isUnsafeInverseAssociations();
+    boolean isSharedDetailToMasterAssociations();
 
     /**
      * Set this parameter true when unsafe inverse association are allowed. Set false when only type
-     * safe inverse associations are allowed. . @see {@link #isUnsafeInverseAssociations()}
+     * safe inverse associations are allowed. . @see {@link #isSharedDetailToMasterAssociations()}
      * 
-     * @param typesafeInverseAssociations True to allow unsafe inverse associations
+     * @param sharedDetailToMasterAssociations True to allow unsafe inverse associations
      */
-    void setUnsafeInverseAssociations(boolean typesafeInverseAssociations);
+    void setSharedDetailToMasterAssociations(boolean sharedDetailToMasterAssociations);
 
     /**
      * @return The IDs of all required features.

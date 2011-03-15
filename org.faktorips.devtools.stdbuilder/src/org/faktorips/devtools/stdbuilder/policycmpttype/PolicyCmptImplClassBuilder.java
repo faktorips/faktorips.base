@@ -47,6 +47,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
+import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociationTo1;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.GenProductCmptType;
@@ -196,10 +197,12 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         for (IPolicyCmptTypeAssociation anAssociation : associations) {
             Set<String> associationNames = new HashSet<String>();
 
-            GenAssociation generator = getGenerator(anAssociation);
-            if (generator == null) {
+            GenAssociation anyGenerator = getGenerator(anAssociation);
+            // must be a to1 generator because is is a detail to master composition
+            if (!(anyGenerator instanceof GenAssociationTo1)) {
                 continue;
             }
+            GenAssociationTo1 generator = (GenAssociationTo1)anyGenerator;
             if (generator.isInverseOfDerivedUnionAssociation()
                     || !(anAssociation.getAssociationType() == AssociationType.COMPOSITION_DETAIL_TO_MASTER)) {
                 continue;
@@ -253,10 +256,13 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         List<IPolicyCmptTypeAssociation> result = new ArrayList<IPolicyCmptTypeAssociation>();
         List<IPolicyCmptTypeAssociation> associations = type.getPolicyCmptTypeAssociations();
         for (IPolicyCmptTypeAssociation policyCmptTypeAssociation : associations) {
-            GenAssociation generator = getGenerator(policyCmptTypeAssociation);
-            if (generator == null) {
+            GenAssociation anyGenerator = getGenerator(policyCmptTypeAssociation);
+            // must be a to1 generator because is is a detail to master composition
+            if (!(anyGenerator instanceof GenAssociationTo1)) {
                 continue;
             }
+            GenAssociationTo1 generator = (GenAssociationTo1)anyGenerator;
+
             if (generator.isInverseOfDerivedUnionAssociation()
                     || !(policyCmptTypeAssociation.getAssociationType() == AssociationType.COMPOSITION_DETAIL_TO_MASTER)) {
                 continue;
@@ -1455,7 +1461,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 detailToMasterAssociations.size());
         for (IPolicyCmptTypeAssociation association : detailToMasterAssociations) {
             GenAssociation generator = getGenerator(association);
-            if (generator == null || generator.isInverseOfDerivedUnionAssociation()) {
+            if (!(generator instanceof GenAssociationTo1)
+                    || ((GenAssociationTo1)generator).isInverseOfDerivedUnionAssociation()) {
                 continue;
             }
             inverseAssociationsWithoutDerivedUnion.add(association);

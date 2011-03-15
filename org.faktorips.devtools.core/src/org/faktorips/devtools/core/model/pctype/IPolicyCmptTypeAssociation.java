@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.model.pctype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -42,6 +43,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
 
     public final static String PROPERTY_PRODUCT_RELEVANT = "productRelevant"; //$NON-NLS-1$
     public final static String PROPERTY_INVERSE_ASSOCIATION = "inverseAssociation"; //$NON-NLS-1$
+    public final static String PROPERTY_SHARED_ASSOCIATION = "sharedAssociation"; //$NON-NLS-1$
     public final static String PROPERTY_SUBSETTING_DERIVED_UNION_APPLICABLE = "containerRelationApplicable"; //$NON-NLS-1$
 
     public final static String PROPERTY_TARGET_ROLE_SINGULAR_PRODUCTSIDE = "targetRoleSingularProductSide"; //$NON-NLS-1$
@@ -116,6 +118,12 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      */
     public final static String MSGCODE_INVERSE_ASSOCIATION_MUST_BE_SET_IF_TYPE_IS_DETAIL_TO_MASTER = MSGCODE_PREFIX
             + "InverseAssociationMustBeSetIfTypeIsDetailToMaster"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that in case of detail to master associations the inverse
+     * is always given.
+     */
+    public final static String MSGCODE_SHARED_ASSOCIATION_INVALID = MSGCODE_PREFIX + "invalidSharedAssociation"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that if the inverse of a derived union exists then the
@@ -351,5 +359,45 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * @see org.faktorips.devtools.core.model.ipsproject.IIpsProject#isPersistenceSupportEnabled
      */
     public IPersistentAssociationInfo getPersistenceAssociatonInfo();
+
+    /**
+     * Setting this association as shared association. Only valid for detail-to-master association
+     * with the same name as another detail-to-master association in the super type which has an
+     * inverse association and the optional constraint
+     * {@link IIpsProjectProperties#isSharedDetailToMasterAssociations()} is enabled.
+     * 
+     * 
+     * @param sharedAssociation The sharedAssociation to set.
+     */
+    void setSharedAssociation(boolean sharedAssociation);
+
+    /**
+     * Checking whether this association is a shared association or not. When the optional
+     * constraint {@link IIpsProjectProperties#isSharedDetailToMasterAssociations()} is enabled, a
+     * detail-to-master association could be marked as shared association. That means the
+     * {@link #getPolicyCmptType()} does not know exactly its parent model object class. Hence the
+     * {@link #getInverseAssociation()} of this association is empty. To get the correct inverse
+     * association the name of this association must be the same as the detail-to-master association
+     * in a super type.
+     * <p>
+     * Also read the discussion of FIPS-85.
+     * 
+     * @return Returns the true if this is an detail-to-master composition that is marked as shared
+     *         association and and the optional constraint
+     *         {@link IIpsProjectProperties#isSharedDetailToMasterAssociations()} is enabled.
+     */
+    boolean isSharedAssociation();
+
+    /**
+     * This method looks for an association with the same name in the super type hierarchy. The
+     * found association must have the same target as this association. The found association could
+     * be the shared association host of this association. However this method does not check if
+     * this association is marked as shared association!
+     * 
+     * @param ipsProject The project used to search from
+     * @return an association with the same name and target found in the super type hierarchy
+     * @throws CoreException in case of a core exception in the finder methods
+     */
+    IPolicyCmptTypeAssociation findSharedAssociationHost(IIpsProject ipsProject) throws CoreException;
 
 }

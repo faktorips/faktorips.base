@@ -68,34 +68,36 @@ public class NewPcTypeAssociationWizardTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAssociation relation21 = policyCmptType2.newPolicyCmptTypeAssociation();
         relation21.setAssociationType(AssociationType.ASSOCIATION);
 
+        NewPcTypeAssociationWizard wizard = new NewPcTypeAssociationWizard(relation21);
+        wizard.storeTargetPolicyCmptType(policyCmptType1);
+
         // don't find any association because no association on policyCmptType1 have policyCmptType2
         // as target
-        List<IAssociation> result = NewPcTypeAssociationWizard.getCorrespondingTargetAssociations(relation21,
-                policyCmptType1);
+        List<IAssociation> result = wizard.getExistingInverseAssociationCandidates();
         assertEquals(0, result.size());
 
         // don't find associations from supertype
         superRelation.setTarget(policyCmptType2.getName());
-        result = NewPcTypeAssociationWizard.getCorrespondingTargetAssociations(relation21, policyCmptType1);
+        result = wizard.getExistingInverseAssociationCandidates();
         assertEquals(0, result.size());
 
         relation12.setTarget(policyCmptType2.getName());
-        result = NewPcTypeAssociationWizard.getCorrespondingTargetAssociations(relation21, policyCmptType1);
+        result = wizard.getExistingInverseAssociationCandidates();
         assertEquals(1, result.size());
         assertTrue(result.contains(relation12));
 
         superRelation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         relation12.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
-        result = NewPcTypeAssociationWizard.getCorrespondingTargetAssociations(relation21, policyCmptType1);
+        result = wizard.getExistingInverseAssociationCandidates();
         assertEquals(0, result.size());
 
         relation21.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        result = NewPcTypeAssociationWizard.getCorrespondingTargetAssociations(relation21, policyCmptType1);
+        result = wizard.getExistingInverseAssociationCandidates();
         assertEquals(1, result.size());
         assertTrue(result.contains(relation12));
 
         relation21.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
-        result = NewPcTypeAssociationWizard.getCorrespondingTargetAssociations(relation21, policyCmptType1);
+        result = wizard.getExistingInverseAssociationCandidates();
         assertEquals(0, result.size());
     }
 
@@ -145,8 +147,9 @@ public class NewPcTypeAssociationWizardTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAssociation assMotorCoverage2 = police.newPolicyCmptTypeAssociation();
         assMotorCoverage2.setTargetRoleSingular("motorCoverage");
         assMotorCoverage2.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        List<IAssociation> correspondingTargetAssociations = NewPcTypeAssociationWizard
-                .getCorrespondingTargetAssociations(assMotorCoverage2, motorCoverage);
+        NewPcTypeAssociationWizard wizard = new NewPcTypeAssociationWizard(assMotorCoverage2);
+        wizard.storeTargetPolicyCmptType(motorCoverage);
+        List<IAssociation> correspondingTargetAssociations = wizard.getExistingInverseAssociationCandidates();
         assertEquals(0, correspondingTargetAssociations.size());
     }
 

@@ -454,8 +454,9 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      */
     public List<IAssociation> getExistingInverseAssociationCandidates() {
         try {
-            return NewPcTypeAssociationWizard
-                    .getCorrespondingTargetAssociations(getAssociation(), targetPolicyCmptType);
+            return targetPolicyCmptType.findAssociationsForTargetAndAssociationType(getAssociation()
+                    .getPolicyCmptType().getQualifiedName(), getAssociation().getAssociationType()
+                    .getCorrespondingAssociationType(), getAssociation().getIpsProject(), false);
         } catch (CoreException e) {
             showAndLogError(e);
         }
@@ -503,8 +504,11 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             inverseAssociationPropertyPage.setShowExistingAssociationDropDown(true);
             try {
                 // get all existing association that matches as inverse for the new association
-                List<IAssociation> existingAssociations = getCorrespondingTargetAssociations(association,
-                        targetPolicyCmptType);
+                List<IAssociation> existingAssociations = targetPolicyCmptType
+                        .findAssociationsForTargetAndAssociationType(
+                                association.getPolicyCmptType().getQualifiedName(), association.getAssociationType()
+                                        .getCorrespondingAssociationType(), association.getIpsProject(), false);
+
                 if (existingAssociations.size() > 0) {
                     String[] names = new String[existingAssociations.size()];
                     for (int i = 0; i < existingAssociations.size(); i++) {
@@ -566,29 +570,6 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         } catch (Exception e) {
             showAndLogError(e);
         }
-    }
-
-    /**
-     * Returns association from the target if:<br>
-     * <ul>
-     * <li>the target of the target association points to the source (policy component type of the
-     * given sourceAssociation)
-     * <li>the target association type is the corresponding association type of the source
-     * </ul>
-     * If no association is found on the target then an empty (not null) ArrayList is returned.
-     */
-    // TODO pk 30-09-2008 shouldn't this method be a method of IPolicyCmptTypeAssociation?
-    public static List<IAssociation> getCorrespondingTargetAssociations(IPolicyCmptTypeAssociation sourceAssociation,
-            IPolicyCmptType target) throws CoreException {
-        if (target == null) {
-            return EMPTY_ASSOCIATION_ARRAY_LIST;
-        }
-        String source = sourceAssociation.getPolicyCmptType().getQualifiedName();
-        AssociationType correspondingAssociationType = sourceAssociation.getAssociationType()
-                .getCorrespondingAssociationType();
-        List<IAssociation> associations = target.findAssociationsForTargetAndAssociationType(source,
-                correspondingAssociationType, sourceAssociation.getIpsProject(), false);
-        return associations;
     }
 
     /**

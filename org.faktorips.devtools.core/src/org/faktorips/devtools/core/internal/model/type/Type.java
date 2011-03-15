@@ -218,15 +218,25 @@ public abstract class Type extends BaseIpsObject implements IType {
             finder.start(this);
             return finder.getAssociationsFound();
         } else {
-            List<IAssociation> result = new ArrayList<IAssociation>();
-            List<IAssociation> associations = getAssociationsForTarget(target);
-            for (IAssociation association : associations) {
-                if (association.getAssociationType() == associationType) {
-                    result.add(association);
-                }
-            }
-            return result;
+            return findAssociationsForTargetAndAssociationTypeInternal(target, associationType, project);
         }
+    }
+
+    /**
+     * @param project the project used to find the associations
+     * @throws CoreException in case of an exception while finding a type or association
+     */
+    protected List<IAssociation> findAssociationsForTargetAndAssociationTypeInternal(String target,
+            AssociationType associationType,
+            IIpsProject project) throws CoreException {
+        List<IAssociation> result = new ArrayList<IAssociation>();
+        List<IAssociation> associations = getAssociationsForTarget(target);
+        for (IAssociation association : associations) {
+            if (association.getAssociationType() == associationType) {
+                result.add(association);
+            }
+        }
+        return result;
     }
 
     @Override
@@ -701,13 +711,9 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
 
         @Override
-        protected boolean visit(IType currentType) {
-            List<IAssociation> associations = currentType.getAssociationsForTarget(associationTarget);
-            for (IAssociation association : associations) {
-                if (association.getAssociationType() == associationType) {
-                    associationsFound.add(association);
-                }
-            }
+        protected boolean visit(IType currentType) throws CoreException {
+            associationsFound.addAll(((Type)currentType).findAssociationsForTargetAndAssociationTypeInternal(
+                    associationTarget, associationType, ipsProject));
             // Always continue because we search for all matching association.
             return true;
         }
@@ -954,11 +960,11 @@ public abstract class Type extends BaseIpsObject implements IType {
                     return true;
                 }
                 // TODO FIPS-85
-                // if (ipsProject.getProperties().isUnsafeInverseAssociations()) {
-                // if (inverseAssociationOfCandidate.equals(derivedUnion)) {
-                // return true;
-                // }
-                // }
+                if (ipsProject.getProperties().isSharedDetailToMasterAssociations()) {
+                    if (inverseAssociationOfCandidate.equals(derivedUnion)) {
+                        return true;
+                    }
+                }
             }
             return false;
         }

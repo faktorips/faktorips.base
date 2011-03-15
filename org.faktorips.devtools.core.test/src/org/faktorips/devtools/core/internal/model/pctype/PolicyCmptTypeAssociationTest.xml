@@ -11,6 +11,7 @@
           maxCardinality="*"
           qualified="true" 
           subsettedDerivedUnion="Parts" 
-          inverseAssociation="Policy">
+          inverseAssociation="Policy"
+          sharedAssociation="true">
           <Description locale="de">blabla</Description>
 </Association>
