@@ -21,11 +21,6 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * 
- * 
- * @author Alexander Weickmann
- */
 public class GenConstantAttributeTest extends GenPolicyCmptTypeAttributeTest {
 
     /** <tt>GenConstantAttribute</tt> generator for the published attribute. */

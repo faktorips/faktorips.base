@@ -28,11 +28,6 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * 
- * 
- * @author Alexander Weickmann
- */
 public class RefactoringParticipantHelperTest extends RefactoringParticipantTest {
 
     private MockParticipantHelper refactoringHelper;

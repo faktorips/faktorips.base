@@ -55,8 +55,8 @@ public abstract class GenProdAssociationTest extends ProductCmptTypeBuilderTest 
     }
 
     protected final void expectMethodGetRelatedCmptLink(int index, GenProdAssociation genProdAssociation, IType javaType) {
-        expectMethod(index, javaType, genProdAssociation.getMethodNameGet1RelatedCmptLink(), new String[] { "Q"
-                + javaInterfaceTargetType.getElementName() + ";" });
+        expectMethod(index, javaType, genProdAssociation.getMethodNameGet1RelatedCmptLink(),
+                unresolvedParam(javaInterfaceTargetType.getElementName()));
     }
 
     protected final void expectMethodGetCardinalityForAssociation(int index,
@@ -65,7 +65,7 @@ public abstract class GenProdAssociationTest extends ProductCmptTypeBuilderTest 
 
         try {
             expectMethod(index, javaType, genProdAssociation.getMethodNameGetCardinalityForAssociation(),
-                    new String[] { "Q" + javaInterfaceTargetType.getElementName() + ";" });
+                    unresolvedParam(javaInterfaceTargetType.getElementName()));
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }

@@ -20,11 +20,6 @@ import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.junit.Before;
 
-/**
- * 
- * 
- * @author Alexander Weickmann
- */
 public abstract class ProductCmptTypeBuilderTest extends AbstractStdBuilderTest {
 
     protected final static String PRODUCT_NAME = "ProductCmptType";

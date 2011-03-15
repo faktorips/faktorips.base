@@ -15,6 +15,8 @@ package org.faktorips.devtools.stdbuilder.productcmpttype.association;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Calendar;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
@@ -138,34 +140,35 @@ public class GenProdAssociationToManyTest extends GenProdAssociationTest {
     }
 
     private void expectMethodGetManyRelatedCmpts(int index, IType javaType) {
-        expectMethod(index, javaType, genAssociationToMany.getMethodNameGetManyRelatedCmpts(), new String[0]);
+        expectMethod(index, javaType, genAssociationToMany.getMethodNameGetManyRelatedCmpts());
     }
 
     private void expectMethodGetManyRelatedCmptGens(int index, IType javaType) {
         expectMethod(index, javaType, genAssociationToMany.getMethodNameGetManyRelatedCmpts(),
-                new String[] { "Ljava.util.Calendar;" });
+                resolvedParam(Calendar.class.getName()));
     }
 
     private void expectMethodGetRelatedCmptAtIndex(int index, IType javaType) {
-        expectMethod(index, javaType, genAssociationToMany.getMethodNameGetRelatedCmptAtIndex(), new String[] { "I" });
+        expectMethod(index, javaType, genAssociationToMany.getMethodNameGetRelatedCmptAtIndex(), intParam());
     }
 
     private void expectMethodGetManyRelatedCmptLinks(int index, IType javaType) {
-        expectMethod(index, javaType, genAssociationToMany.getMethodNameGetManyRelatedCmptLinks(), new String[0]);
+        expectMethod(index, javaType, genAssociationToMany.getMethodNameGetManyRelatedCmptLinks());
     }
 
     private void expectMethodGetNumOfRelatedCmpts(int index, IType javaType) {
-        expectMethod(index, javaType, genAssociationToMany.getMethodNameGetNumOfRelatedCmpts(), new String[0]);
+        expectMethod(index, javaType, genAssociationToMany.getMethodNameGetNumOfRelatedCmpts());
     }
 
     private void expectMethodAddRelatedCmpt(int index, IType javaType) {
-        expectMethod(index, javaType, genAssociationToMany.getMethodNameAddRelatedCmpt(), new String[] { "Q"
-                + javaInterfaceTargetType.getElementName() + ";" });
+        expectMethod(index, javaType, genAssociationToMany.getMethodNameAddRelatedCmpt(),
+                unresolvedParam(javaInterfaceTargetType.getElementName()));
     }
 
     private void expectMethodAddRelatedCmptWithCardinality(int index, IType javaType) {
-        expectMethod(index, javaType, genAssociationToMany.getMethodNameAddRelatedCmpt(), new String[] {
-                "Q" + javaInterfaceTargetType.getElementName() + ";", "Q" + IntegerRange.class.getSimpleName() + ";" });
+        expectMethod(index, javaType, genAssociationToMany.getMethodNameAddRelatedCmpt(),
+                unresolvedParam(javaInterfaceTargetType.getElementName()),
+                unresolvedParam(IntegerRange.class.getSimpleName()));
     }
 
 }

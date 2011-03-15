@@ -28,6 +28,7 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.Signature;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -98,7 +99,8 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
      * 
      * @param javaType The Java type the expected method belongs to
      * @param methodName The name of the expected method
-     * @param parameterTypeSignatures The parameter type signatures of the expected method
+     * @param parameterTypeSignatures The parameter type signatures of the expected method (use the
+     *            <tt>xxxParam(...)</tt> methods offered by this class)
      */
     protected final void expectMethod(IType javaType, String methodName, String... parameterTypeSignatures) {
         IMethod method = javaType.getMethod(methodName, parameterTypeSignatures);
@@ -112,11 +114,49 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
      *            elements
      * @param javaType The Java type the expected method belongs to
      * @param methodName The name of the expected method
-     * @param parameterTypeSignatures The parameter type signatures of the expected method
+     * @param parameterTypeSignatures The parameter type signatures of the expected method (use the
+     *            <tt>xxxParam(...)</tt> methods offered by this class)
      */
     protected final void expectMethod(int index, IType javaType, String methodName, String... parameterTypeSignatures) {
         IMethod method = javaType.getMethod(methodName, parameterTypeSignatures);
         assertEquals(method, generatedJavaElements.get(index));
+    }
+
+    protected final String intParam() {
+        return Signature.SIG_INT;
+    }
+
+    protected final String voidParam() {
+        return Signature.SIG_VOID;
+    }
+
+    protected final String booleanParam() {
+        return Signature.SIG_BOOLEAN;
+    }
+
+    protected final String stringParam() {
+        return Signature.createTypeSignature(String.class.getSimpleName(), false);
+    }
+
+    /**
+     * Returns the JDT type signature for unresolved types.
+     * <p>
+     * Use this method to create type signatures for types that are found in the source code or via
+     * import.
+     */
+    protected final String unresolvedParam(String unqualifiedTypeName) {
+        return Signature.createTypeSignature(unqualifiedTypeName, false);
+    }
+
+    /**
+     * Returns the JDT type signature for resolved types.
+     * <p>
+     * Use this method to create type signatures for types that are not found in the source code or
+     * via import (e.g. if a type is written fully qualified in the source code such as
+     * <tt>java.util.Calendar</tt>).
+     */
+    protected final String resolvedParam(String qualifiedTypeName) {
+        return Signature.createTypeSignature(qualifiedTypeName, true);
     }
 
 }

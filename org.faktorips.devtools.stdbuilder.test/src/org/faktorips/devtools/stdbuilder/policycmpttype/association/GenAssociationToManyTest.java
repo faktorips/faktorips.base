@@ -17,7 +17,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.Signature;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -277,7 +276,7 @@ public class GenAssociationToManyTest extends GenAssociationTest {
 
     private void expectMethodContainsObject(IType javaType) {
         expectMethod(javaType, genAssociationToMany.getMethodNameContainsObject(),
-                Signature.createTypeSignature(javaInterfaceTargetType.getElementName(), false));
+                unresolvedParam(javaInterfaceTargetType.getElementName()));
     }
 
     private void expectMethodGetAllRefObjects(IType javaType) {
@@ -286,26 +285,26 @@ public class GenAssociationToManyTest extends GenAssociationTest {
 
     private void expectMethodAddObject(IType javaType) {
         expectMethod(javaType, genAssociationToMany.getMethodNameAddObject(),
-                "Q" + javaInterfaceTargetType.getElementName() + ";");
+                unresolvedParam(javaInterfaceTargetType.getElementName()));
     }
 
     private void expectMethodAddObjectInternal(IType javaType) {
         expectMethod(javaType, genAssociationToMany.getMethodNameAddObjectInternal(),
-                "Q" + javaInterfaceTargetType.getElementName() + ";");
+                unresolvedParam(javaInterfaceTargetType.getElementName()));
     }
 
     private void expectMethodRemoveObject(IType javaType) {
         expectMethod(javaType, genAssociationToMany.getMethodNameRemoveObject(),
-                "Q" + javaInterfaceTargetType.getElementName() + ";");
+                unresolvedParam(javaInterfaceTargetType.getElementName()));
     }
 
     private void expectMethodGetRefObjectAtIndex(IType javaType) {
-        expectMethod(javaType, genAssociationToMany.getMethodNameGetRefObjectAtIndex(), "I");
+        expectMethod(javaType, genAssociationToMany.getMethodNameGetRefObjectAtIndex(), intParam());
     }
 
     private void expectMethodGetRefObjectByQualifier(IType javaType, IType javaInterfaceTargetConfiguringProductCmptType) {
-        expectMethod(javaType, genAssociationToMany.getMethodNameGetRefObject(), "Q"
-                + javaInterfaceTargetConfiguringProductCmptType.getElementName() + ";");
+        expectMethod(javaType, genAssociationToMany.getMethodNameGetRefObject(),
+                unresolvedParam(javaInterfaceTargetConfiguringProductCmptType.getElementName()));
     }
 
     private String getPublishedInterfaceName(String name) {

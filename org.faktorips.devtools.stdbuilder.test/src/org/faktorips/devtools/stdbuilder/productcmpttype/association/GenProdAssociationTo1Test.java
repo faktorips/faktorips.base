@@ -15,6 +15,8 @@ package org.faktorips.devtools.stdbuilder.productcmpttype.association;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Calendar;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.pctype.AssociationType;
@@ -108,20 +110,20 @@ public class GenProdAssociationTo1Test extends GenProdAssociationTest {
     }
 
     private void expectMethodGet1RelatedCmpt(int index, IType javaType) {
-        expectMethod(index, javaType, genAssociationTo1.getMethodNameGet1RelatedCmpt(), new String[0]);
+        expectMethod(index, javaType, genAssociationTo1.getMethodNameGet1RelatedCmpt());
     }
 
     private void expectMethodGet1RelatedCmptGen(int index, IType javaType) {
         expectMethod(index, javaType, genAssociationTo1.getMethodNameGet1RelatedCmpt(),
-                new String[] { "Ljava.util.Calendar;" });
+                resolvedParam(Calendar.class.getName()));
     }
 
     private void expectMethodGet1RelatedCmptLink(int index, GenProdAssociation genProdAssociation, IType javaType) {
-        expectMethod(index, javaType, genProdAssociation.getMethodNameGet1RelatedCmptLink(), new String[0]);
+        expectMethod(index, javaType, genProdAssociation.getMethodNameGet1RelatedCmptLink());
     }
 
     private void expectMethodSet1RelatedCmpt(int index, IType javaType) {
-        expectMethod(index, javaType, genAssociationTo1.getMethodNameSet1RelatedCmpt(), new String[] { "Q"
-                + javaInterfaceTargetType.getElementName() + ";" });
+        expectMethod(index, javaType, genAssociationTo1.getMethodNameSet1RelatedCmpt(),
+                unresolvedParam(javaInterfaceTargetType.getElementName()));
     }
 }

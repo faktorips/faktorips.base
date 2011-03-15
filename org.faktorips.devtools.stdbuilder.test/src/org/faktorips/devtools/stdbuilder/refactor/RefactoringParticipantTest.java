@@ -35,14 +35,6 @@ import org.junit.Before;
  * 
  * @author Alexander Weickmann
  */
-/**
- * 
- * @author Alexander Weickmann
- */
-/**
- * 
- * @author Alexander Weickmann
- */
 public abstract class RefactoringParticipantTest extends AbstractIpsRefactoringTest {
 
     protected IFolder modelFolder;

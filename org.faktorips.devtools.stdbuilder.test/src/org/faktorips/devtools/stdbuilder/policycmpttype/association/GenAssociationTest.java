@@ -79,8 +79,8 @@ public abstract class GenAssociationTest extends PolicyCmptTypeBuilderTest {
             IType javaType,
             IType javaInterfaceTargetConfiguringProductCmptType) {
 
-        expectMethod(javaType, genAssociation.getMethodNameNewChild(), "Q"
-                + javaInterfaceTargetConfiguringProductCmptType.getElementName() + ";");
+        expectMethod(javaType, genAssociation.getMethodNameNewChild(),
+                unresolvedParam(javaInterfaceTargetConfiguringProductCmptType.getElementName()));
     }
 
     protected final IProductCmptType setUpTargetConfigurable() throws CoreException {

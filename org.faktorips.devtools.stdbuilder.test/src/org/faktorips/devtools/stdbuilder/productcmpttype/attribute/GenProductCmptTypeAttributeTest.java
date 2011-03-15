@@ -25,11 +25,6 @@ import org.faktorips.devtools.stdbuilder.type.GenAttribute;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * 
- * 
- * @author Alexander Weickmann
- */
 public class GenProductCmptTypeAttributeTest extends ProductCmptTypeBuilderTest {
 
     /** A published <tt>IProductCmptTypeAttribute</tt> that can be used for tests. */
@@ -128,12 +123,12 @@ public class GenProductCmptTypeAttributeTest extends ProductCmptTypeBuilderTest 
     }
 
     private void expectGetterMethod(int index, IType javaType, GenAttribute genAttribute) {
-        expectMethod(index, javaType, genAttribute.getGetterMethodName(), new String[0]);
+        expectMethod(index, javaType, genAttribute.getGetterMethodName());
     }
 
     private void expectSetterMethod(int index, IType javaType, GenAttribute genAttribute) {
-        expectMethod(index, javaType, genAttribute.getSetterMethodName(), new String[] { "Q"
-                + genAttribute.getDatatype().getName() + ";" });
+        expectMethod(index, javaType, genAttribute.getSetterMethodName(), unresolvedParam(genAttribute.getDatatype()
+                .getName()));
     }
 
 }

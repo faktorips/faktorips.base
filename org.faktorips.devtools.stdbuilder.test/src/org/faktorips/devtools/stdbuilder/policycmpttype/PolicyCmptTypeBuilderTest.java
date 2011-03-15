@@ -19,11 +19,6 @@ import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.junit.Before;
 
-/**
- * 
- * 
- * @author Alexander Weickmann
- */
 public abstract class PolicyCmptTypeBuilderTest extends AbstractStdBuilderTest {
 
     protected final static String POLICY_NAME = "PolicyCmptType";

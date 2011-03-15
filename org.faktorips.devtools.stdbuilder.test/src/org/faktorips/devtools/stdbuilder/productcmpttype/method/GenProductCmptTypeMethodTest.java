@@ -26,11 +26,6 @@ import org.faktorips.devtools.stdbuilder.type.GenMethod;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * Tests concerning the generators for <tt>IProductCmptTypeMethod</tt>s.
- * 
- * @author Alexander Weickmann
- */
 public class GenProductCmptTypeMethodTest extends ProductCmptTypeBuilderTest {
 
     /** A published {@link IProductCmptTypeMethod} that can be used for tests. */
@@ -148,8 +143,7 @@ public class GenProductCmptTypeMethodTest extends ProductCmptTypeBuilderTest {
 
     private void expectMethod(int index, IType javaType, GenMethod genMethod) {
         String methodName = genMethod.getMethod().getName();
-        String[] parameterTypeSignatures = new String[] { "I", "V", "QString;" };
-        expectMethod(index, javaType, methodName, parameterTypeSignatures);
+        expectMethod(index, javaType, methodName, intParam(), voidParam(), stringParam());
     }
 
 }

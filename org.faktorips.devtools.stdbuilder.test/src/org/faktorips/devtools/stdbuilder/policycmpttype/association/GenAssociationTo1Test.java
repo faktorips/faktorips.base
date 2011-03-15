@@ -168,12 +168,12 @@ public class GenAssociationTo1Test extends GenAssociationTest {
 
     private void expectMethodSetObject(IType javaType) {
         expectMethod(javaType, genAssociationTo1.getMethodNameAddOrSetObject(),
-                "Q" + javaInterfaceTargetType.getElementName() + ";");
+                unresolvedParam(javaInterfaceTargetType.getElementName()));
     }
 
     private void expectMethodSetObjectInternal(IType javaType) {
         expectMethod(javaType, genAssociationTo1.getMethodNameAddOrSetObjectInternal(),
-                "Q" + javaInterfaceTargetType.getElementName() + ";");
+                unresolvedParam(javaInterfaceTargetType.getElementName()));
     }
 
     private String getPublishedInterfaceName(String name) {

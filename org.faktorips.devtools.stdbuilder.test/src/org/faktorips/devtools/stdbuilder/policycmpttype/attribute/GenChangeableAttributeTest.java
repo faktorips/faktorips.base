@@ -27,11 +27,6 @@ import org.faktorips.runtime.IValidationContext;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * 
- * 
- * @author Alexander Weickmann
- */
 public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
 
     private static final String SUB_POLICY_NAME = "SubPolicy";
@@ -312,12 +307,12 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
     }
 
     private void expectGetValueSetMethod(int index, IType javaType, GenChangeableAttribute genChangeableAttribute) {
-        expectMethod(index, javaType, genChangeableAttribute.getMethodNameGetSetOfAllowedValues(), new String[] { "Q"
-                + IValidationContext.class.getSimpleName() + ";" });
+        expectMethod(index, javaType, genChangeableAttribute.getMethodNameGetSetOfAllowedValues(),
+                unresolvedParam(IValidationContext.class.getSimpleName()));
     }
 
     private void expectGetDefaultValueMethod(int index, IType javaType, GenChangeableAttribute genChangeableAttribute) {
-        expectMethod(index, javaType, genChangeableAttribute.getMethodNameGetDefaultValue(), new String[0]);
+        expectMethod(index, javaType, genChangeableAttribute.getMethodNameGetDefaultValue());
     }
 
 }

@@ -19,11 +19,6 @@ import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * 
- * 
- * @author Alexander Weickmann
- */
 public class PolicyCmptInterfaceBuilderTest extends PolicyCmptTypeBuilderTest {
 
     private PolicyCmptInterfaceBuilder builder;

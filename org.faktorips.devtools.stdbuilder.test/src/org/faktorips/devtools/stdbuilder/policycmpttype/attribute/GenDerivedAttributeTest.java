@@ -20,11 +20,6 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * 
- * 
- * @author Alexander Weickmann
- */
 public class GenDerivedAttributeTest extends GenPolicyCmptTypeAttributeTest {
 
     /** <tt>GenDerivedAttribute</tt> generator for the published attribute. */

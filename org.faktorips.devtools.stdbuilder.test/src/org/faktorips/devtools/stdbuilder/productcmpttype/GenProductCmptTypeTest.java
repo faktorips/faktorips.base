@@ -45,21 +45,17 @@ public class GenProductCmptTypeTest extends ProductCmptTypeBuilderTest {
     }
 
     private void expectGetProductCmptMethod(IType javaType) {
-        expectMethod(javaType, genProductCmptType.getMethodNameGetProductCmpt(), new String[0]);
+        expectMethod(javaType, genProductCmptType.getMethodNameGetProductCmpt());
     }
 
     private void expectGetProductCmptGenMethod(IType javaType) {
-        expectMethod(javaType, genProductCmptType.getMethodNameGetProductCmptGeneration(), new String[0]);
+        expectMethod(javaType, genProductCmptType.getMethodNameGetProductCmptGeneration());
     }
 
     private void expectSetProductCmptMethod(IType javaType) {
-        expectMethod(
-                javaType,
-                genProductCmptType.getMethodNameSetProductCmpt(),
-                new String[] {
-                        "Q"
-                                + JavaGeneratorHelper.getJavaNamingConvention().getPublishedInterfaceName(
-                                        genProductCmptType.getType().getName()) + ";", "Z" });
+        expectMethod(javaType, genProductCmptType.getMethodNameSetProductCmpt(), unresolvedParam(JavaGeneratorHelper
+                .getJavaNamingConvention().getPublishedInterfaceName(genProductCmptType.getType().getName())),
+                booleanParam());
     }
 
 }

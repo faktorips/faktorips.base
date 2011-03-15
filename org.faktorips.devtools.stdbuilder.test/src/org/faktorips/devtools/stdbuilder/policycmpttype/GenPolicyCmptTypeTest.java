@@ -19,11 +19,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
 import org.junit.Test;
 
-/**
- * 
- * 
- * @author Alexander Weickmann
- */
 public class GenPolicyCmptTypeTest extends PolicyCmptTypeBuilderTest {
 
     @Test
@@ -42,7 +37,7 @@ public class GenPolicyCmptTypeTest extends PolicyCmptTypeBuilderTest {
     }
 
     private void expectCreatePolicyCmptMethod(IType javaType) {
-        expectMethod(javaType, genPolicyCmptType.getMethodNameCreatePolicyCmpt(), new String[0]);
+        expectMethod(javaType, genPolicyCmptType.getMethodNameCreatePolicyCmpt());
     }
 
 }
