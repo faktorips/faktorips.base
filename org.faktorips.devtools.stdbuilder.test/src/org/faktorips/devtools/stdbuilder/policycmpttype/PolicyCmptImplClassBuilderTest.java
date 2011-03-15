@@ -49,9 +49,10 @@ public class PolicyCmptImplClassBuilderTest extends PolicyCmptTypeBuilderTest {
     @Test
     public void testBuild() throws CoreException {
         /*
-         * The supertype of this subtype is missing on purpose for this testcase. This subtype
+         * The super type of this sub type is missing on purpose for this test case. This sub type
          * overrides an attribute that doesn't exist. There was a bug that caused a NPE for this
-         * scenario. This testcase makes sure that this bug will be found fast if it comes up again.
+         * scenario. This test case makes sure that this bug will be found fast if it comes up
+         * again.
          */
         PolicyCmptType b = newPolicyCmptType(ipsProject, "SubType");
         IPolicyCmptTypeAttribute bAttr = b.newPolicyCmptTypeAttribute();

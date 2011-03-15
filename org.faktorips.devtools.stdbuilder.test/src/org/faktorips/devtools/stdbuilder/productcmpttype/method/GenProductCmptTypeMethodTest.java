@@ -28,28 +28,20 @@ import org.junit.Test;
 
 public class GenProductCmptTypeMethodTest extends ProductCmptTypeBuilderTest {
 
-    /** A published {@link IProductCmptTypeMethod} that can be used for tests. */
     private IProductCmptTypeMethod publishedMethod;
 
-    /** A public {@link IProductCmptTypeMethod} that can be used for tests. */
     private IProductCmptTypeMethod publicMethod;
 
-    /** A published formula {@link IProductCmptTypeMethod} that can be used for tests. */
     private IProductCmptTypeMethod publishedFormulaMethod;
 
-    /** A public formula {@link IProductCmptTypeMethod} that can be used for tests. */
     private IProductCmptTypeMethod publicFormulaMethod;
 
-    /** {@link GenProductCmptTypeMethod} generator for the published method. */
     private GenProductCmptTypeMethod genPublishedMethod;
 
-    /** {@link GenProductCmptTypeMethod} generator for the public method. */
     private GenProductCmptTypeMethod genPublicMethod;
 
-    /** {@link GenProductCmptTypeMethod} generator for the published formula method. */
     private GenProductCmptTypeMethod genPublishedFormulaMethod;
 
-    /** {@link GenProductCmptTypeMethod} generator for the public formula method. */
     private GenProductCmptTypeMethod genPublicFormulaMethod;
 
     @Override
@@ -91,7 +83,7 @@ public class GenProductCmptTypeMethodTest extends ProductCmptTypeBuilderTest {
     public void testGetGeneratedJavaElementsForPublishedInterface() {
         genPublishedMethod.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
                 javaInterfaceGeneration, publishedMethod);
-        expectMethod(0, javaInterfaceGeneration, genPublishedMethod);
+        expectMethod(javaInterfaceGeneration, genPublishedMethod);
         assertEquals(1, generatedJavaElements.size());
 
         generatedJavaElements.clear();
@@ -104,7 +96,7 @@ public class GenProductCmptTypeMethodTest extends ProductCmptTypeBuilderTest {
     public void testGetGeneratedJavaElementsForPublishedInterfaceFormula() {
         genPublishedFormulaMethod.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
                 javaInterfaceGeneration, publishedFormulaMethod);
-        expectMethod(0, javaInterfaceGeneration, genPublishedFormulaMethod);
+        expectMethod(javaInterfaceGeneration, genPublishedFormulaMethod);
         assertEquals(1, generatedJavaElements.size());
 
         generatedJavaElements.clear();
@@ -117,13 +109,13 @@ public class GenProductCmptTypeMethodTest extends ProductCmptTypeBuilderTest {
     public void testGetGeneratedJavaElementsForImplementation() {
         genPublishedMethod.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
                 publishedMethod);
-        expectMethod(0, javaClassGeneration, genPublishedMethod);
+        expectMethod(javaClassGeneration, genPublishedMethod);
         assertEquals(1, generatedJavaElements.size());
 
         generatedJavaElements.clear();
         genPublicMethod.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
                 publicMethod);
-        expectMethod(0, javaClassGeneration, genPublicMethod);
+        expectMethod(javaClassGeneration, genPublicMethod);
         assertEquals(1, generatedJavaElements.size());
     }
 
@@ -131,19 +123,19 @@ public class GenProductCmptTypeMethodTest extends ProductCmptTypeBuilderTest {
     public void testGetGeneratedJavaElementsForImplementationFormula() {
         genPublishedFormulaMethod.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
                 publishedFormulaMethod);
-        expectMethod(0, javaClassGeneration, genPublishedFormulaMethod);
+        expectMethod(javaClassGeneration, genPublishedFormulaMethod);
         assertEquals(1, generatedJavaElements.size());
 
         generatedJavaElements.clear();
         genPublicFormulaMethod.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
                 publicFormulaMethod);
-        expectMethod(0, javaClassGeneration, genPublicFormulaMethod);
+        expectMethod(javaClassGeneration, genPublicFormulaMethod);
         assertEquals(1, generatedJavaElements.size());
     }
 
-    private void expectMethod(int index, IType javaType, GenMethod genMethod) {
+    private void expectMethod(IType javaType, GenMethod genMethod) {
         String methodName = genMethod.getMethod().getName();
-        expectMethod(index, javaType, methodName, intParam(), voidParam(), stringParam());
+        expectMethod(javaType, methodName, intParam(), voidParam(), stringParam());
     }
 
 }

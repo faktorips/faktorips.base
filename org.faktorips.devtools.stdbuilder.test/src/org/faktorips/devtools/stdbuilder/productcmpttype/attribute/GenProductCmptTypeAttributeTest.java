@@ -27,16 +27,12 @@ import org.junit.Test;
 
 public class GenProductCmptTypeAttributeTest extends ProductCmptTypeBuilderTest {
 
-    /** A published <tt>IProductCmptTypeAttribute</tt> that can be used for tests. */
     private IProductCmptTypeAttribute publishedAttribute;
 
-    /** A public <tt>IProductCmptTypeAttribute</tt> that can be used for tests. */
     private IProductCmptTypeAttribute publicAttribute;
 
-    /** <tt>GenProductCmptTypeAttribute</tt> generator for the published attribute. */
     private GenProductCmptTypeAttribute genPublishedAttribute;
 
-    /** <tt>GenProductCmptTypeAttribute</tt> generator for the public attribute. */
     private GenProductCmptTypeAttribute genPublicAttribute;
 
     @Override
@@ -63,13 +59,13 @@ public class GenProductCmptTypeAttributeTest extends ProductCmptTypeBuilderTest 
         genPublishedAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
                 javaInterfaceGeneration, publishedAttribute);
         expectStaticConstant(0, javaInterfaceGeneration, genPublishedAttribute);
-        expectGetterMethod(1, javaInterfaceGeneration, genPublishedAttribute);
+        expectGetterMethod(javaInterfaceGeneration, genPublishedAttribute);
         assertEquals(2, generatedJavaElements.size());
 
         generatedJavaElements.clear();
         genPublicAttribute.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
                 javaInterfaceGeneration, publicAttribute);
-        expectGetterMethod(0, javaInterfaceGeneration, genPublicAttribute);
+        expectGetterMethod(javaInterfaceGeneration, genPublicAttribute);
         assertEquals(1, generatedJavaElements.size());
     }
 
@@ -78,19 +74,18 @@ public class GenProductCmptTypeAttributeTest extends ProductCmptTypeBuilderTest 
         genPublishedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
                 publishedAttribute);
         expectMemberVar(0, javaClassGeneration, genPublishedAttribute);
-        expectGetterMethod(1, javaClassGeneration, genPublishedAttribute);
-        expectSetterMethod(2, javaClassGeneration, genPublishedAttribute);
-        expectGetterMethod(3, genPublishedAttribute.findGeneratedJavaTypeForPolicyCmptType(false),
-                genPublishedAttribute);
+        expectGetterMethod(javaClassGeneration, genPublishedAttribute);
+        expectSetterMethod(javaClassGeneration, genPublishedAttribute);
+        expectGetterMethod(genPublishedAttribute.findGeneratedJavaTypeForPolicyCmptType(false), genPublishedAttribute);
         assertEquals(4, generatedJavaElements.size());
 
         generatedJavaElements.clear();
         genPublicAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
                 publicAttribute);
         expectMemberVar(0, javaClassGeneration, genPublicAttribute);
-        expectGetterMethod(1, javaClassGeneration, genPublicAttribute);
-        expectSetterMethod(2, javaClassGeneration, genPublicAttribute);
-        expectGetterMethod(3, genPublicAttribute.findGeneratedJavaTypeForPolicyCmptType(false), genPublicAttribute);
+        expectGetterMethod(javaClassGeneration, genPublicAttribute);
+        expectSetterMethod(javaClassGeneration, genPublicAttribute);
+        expectGetterMethod(genPublicAttribute.findGeneratedJavaTypeForPolicyCmptType(false), genPublicAttribute);
         assertEquals(4, generatedJavaElements.size());
     }
 
@@ -101,16 +96,16 @@ public class GenProductCmptTypeAttributeTest extends ProductCmptTypeBuilderTest 
         genPublishedAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
                 publishedAttribute);
         expectMemberVar(0, javaClassGeneration, genPublishedAttribute);
-        expectGetterMethod(1, javaClassGeneration, genPublishedAttribute);
-        expectSetterMethod(2, javaClassGeneration, genPublishedAttribute);
+        expectGetterMethod(javaClassGeneration, genPublishedAttribute);
+        expectSetterMethod(javaClassGeneration, genPublishedAttribute);
         assertEquals(3, generatedJavaElements.size());
 
         generatedJavaElements.clear();
         genPublicAttribute.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
                 publicAttribute);
         expectMemberVar(0, javaClassGeneration, genPublicAttribute);
-        expectGetterMethod(1, javaClassGeneration, genPublicAttribute);
-        expectSetterMethod(2, javaClassGeneration, genPublicAttribute);
+        expectGetterMethod(javaClassGeneration, genPublicAttribute);
+        expectSetterMethod(javaClassGeneration, genPublicAttribute);
         assertEquals(3, generatedJavaElements.size());
     }
 
@@ -122,13 +117,13 @@ public class GenProductCmptTypeAttributeTest extends ProductCmptTypeBuilderTest 
         expectField(index, javaType, genAttribute.getMemberVarName());
     }
 
-    private void expectGetterMethod(int index, IType javaType, GenAttribute genAttribute) {
-        expectMethod(index, javaType, genAttribute.getGetterMethodName());
+    private void expectGetterMethod(IType javaType, GenAttribute genAttribute) {
+        expectMethod(javaType, genAttribute.getGetterMethodName());
     }
 
-    private void expectSetterMethod(int index, IType javaType, GenAttribute genAttribute) {
-        expectMethod(index, javaType, genAttribute.getSetterMethodName(), unresolvedParam(genAttribute.getDatatype()
-                .getName()));
+    private void expectSetterMethod(IType javaType, GenAttribute genAttribute) {
+        expectMethod(javaType, genAttribute.getSetterMethodName(),
+                unresolvedParam(genAttribute.getDatatype().getName()));
     }
 
 }

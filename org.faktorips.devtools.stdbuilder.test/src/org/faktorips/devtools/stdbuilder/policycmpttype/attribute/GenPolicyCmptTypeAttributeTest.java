@@ -24,7 +24,7 @@ import org.faktorips.util.ArgumentCheck;
 import org.junit.Before;
 
 /**
- * Abstract base class for tests concerning the generators for <tt>IPolicyCmptTypeAttribute</tt>s.
+ * Abstract base class for tests concerning the generators for {@link IPolicyCmptTypeAttribute}s.
  * <p>
  * Provides convenient methods.
  * 
@@ -32,22 +32,18 @@ import org.junit.Before;
  */
 public abstract class GenPolicyCmptTypeAttributeTest extends PolicyCmptTypeBuilderTest {
 
-    /** A published <tt>IPolicyCmptTypeAttribute</tt> that can be used for tests. */
     protected IPolicyCmptTypeAttribute publishedAttribute;
 
-    /** A public <tt>IPolicyCmptTypeAttribute</tt> that can be used for tests. */
     protected IPolicyCmptTypeAttribute publicAttribute;
 
-    /** The <tt>AttributeType</tt> set by subclasses for the test attributes. */
+    /** The {@link AttributeType} set by subclasses for the test attributes. */
     private AttributeType attributeType;
 
     /**
-     * Creates a <tt>GenPolicyCmptTypeAttributeTest</tt>.
+     * @param attributeType The {@link AttributeType} to apply to the
+     *            {@link IPolicyCmptTypeAttribute}s provided for testing.
      * 
-     * @param attributeType The <tt>AttributeType</tt> to apply to the
-     *            <tt>IPolicyCmptTypeAttribute</tt>s provided for testing.
-     * 
-     * @throws NullPointerException If <tt>attributeType</tt> is <tt>null</tt>.
+     * @throws NullPointerException If the parameter is null.
      */
     protected GenPolicyCmptTypeAttributeTest(AttributeType attributeType) {
         ArgumentCheck.notNull(attributeType);
@@ -80,13 +76,13 @@ public abstract class GenPolicyCmptTypeAttributeTest extends PolicyCmptTypeBuild
         expectField(index, javaType, genAttribute.getMemberVarName());
     }
 
-    protected final void expectGetterMethod(int index, IType javaType, GenAttribute genAttribute) {
-        expectMethod(index, javaType, genAttribute.getGetterMethodName());
+    protected final void expectGetterMethod(IType javaType, GenAttribute genAttribute) {
+        expectMethod(javaType, genAttribute.getGetterMethodName());
     }
 
-    protected final void expectSetterMethod(int index, IType javaType, GenAttribute genAttribute) {
-        expectMethod(index, javaType, genAttribute.getSetterMethodName(), unresolvedParam(genAttribute.getDatatype()
-                .getName()));
+    protected final void expectSetterMethod(IType javaType, GenAttribute genAttribute) {
+        expectMethod(javaType, genAttribute.getSetterMethodName(),
+                unresolvedParam(genAttribute.getDatatype().getName()));
     }
 
 }

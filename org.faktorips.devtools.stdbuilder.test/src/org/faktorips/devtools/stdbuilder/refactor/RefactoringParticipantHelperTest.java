@@ -82,6 +82,7 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
         protected Refactoring createJdtRefactoring(IJavaElement generatedJavaElement,
                 IJavaElement targetJavaElement,
                 RefactoringStatus status) {
+
             return null;
         }
 

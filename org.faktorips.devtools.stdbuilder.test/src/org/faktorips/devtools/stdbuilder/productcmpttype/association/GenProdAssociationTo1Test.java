@@ -45,10 +45,10 @@ public class GenProdAssociationTo1Test extends GenProdAssociationTest {
     public void testGetGeneratedJavaElementsForPublishedInterface() {
         genAssociationTo1.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterfaceGeneration,
                 association);
-        expectMethodGet1RelatedCmpt(0, javaInterfaceGeneration);
-        expectMethodGet1RelatedCmptGen(1, javaInterfaceGeneration);
-        expectMethodGet1RelatedCmptLink(2, genAssociationTo1, javaInterfaceGeneration);
-        expectMethodGetRelatedCmptLink(3, genAssociationTo1, javaInterfaceGeneration);
+        expectMethodGet1RelatedCmpt(javaInterfaceGeneration);
+        expectMethodGet1RelatedCmptGen(javaInterfaceGeneration);
+        expectMethodGet1RelatedCmptLink(genAssociationTo1, javaInterfaceGeneration);
+        expectMethodGetRelatedCmptLink(genAssociationTo1, javaInterfaceGeneration);
         assertEquals(4, generatedJavaElements.size());
     }
 
@@ -59,7 +59,12 @@ public class GenProdAssociationTo1Test extends GenProdAssociationTest {
         setUpConstrainsPolicyCmptTypeAssociation();
         genAssociationTo1.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterfaceGeneration,
                 association);
-        expectMethodGetCardinalityForAssociation(4, genAssociationTo1, javaInterfaceGeneration);
+        expectMethodGet1RelatedCmpt(javaInterfaceGeneration);
+        expectMethodGet1RelatedCmptGen(javaInterfaceGeneration);
+        expectMethodGet1RelatedCmptLink(genAssociationTo1, javaInterfaceGeneration);
+        expectMethodGetRelatedCmptLink(genAssociationTo1, javaInterfaceGeneration);
+        expectMethodGetCardinalityForAssociation(genAssociationTo1, javaInterfaceGeneration);
+        assertEquals(5, generatedJavaElements.size());
     }
 
     @Test
@@ -67,8 +72,8 @@ public class GenProdAssociationTo1Test extends GenProdAssociationTest {
         ProjectConfigurationUtil.setUpUseTypesafeCollections(ipsProject, false);
         genAssociationTo1.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterfaceGeneration,
                 association);
-        expectMethodGet1RelatedCmpt(0, javaInterfaceGeneration);
-        expectMethodGet1RelatedCmptGen(1, javaInterfaceGeneration);
+        expectMethodGet1RelatedCmpt(javaInterfaceGeneration);
+        expectMethodGet1RelatedCmptGen(javaInterfaceGeneration);
         assertEquals(2, generatedJavaElements.size());
     }
 
@@ -77,11 +82,11 @@ public class GenProdAssociationTo1Test extends GenProdAssociationTest {
         genAssociationTo1.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
                 association);
         expectFieldTo1Association(0, javaClassGeneration);
-        expectMethodGet1RelatedCmpt(1, javaClassGeneration);
-        expectMethodGet1RelatedCmptGen(2, javaClassGeneration);
-        expectMethodSet1RelatedCmpt(3, javaClassGeneration);
-        expectMethodGet1RelatedCmptLink(4, genAssociationTo1, javaClassGeneration);
-        expectMethodGetRelatedCmptLink(5, genAssociationTo1, javaClassGeneration);
+        expectMethodGet1RelatedCmpt(javaClassGeneration);
+        expectMethodGet1RelatedCmptGen(javaClassGeneration);
+        expectMethodSet1RelatedCmpt(javaClassGeneration);
+        expectMethodGet1RelatedCmptLink(genAssociationTo1, javaClassGeneration);
+        expectMethodGetRelatedCmptLink(genAssociationTo1, javaClassGeneration);
         assertEquals(6, generatedJavaElements.size());
     }
 
@@ -90,7 +95,13 @@ public class GenProdAssociationTo1Test extends GenProdAssociationTest {
         setUpConstrainsPolicyCmptTypeAssociation();
         genAssociationTo1.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
                 association);
-        expectMethodGetCardinalityForAssociation(6, genAssociationTo1, javaClassGeneration);
+        expectMethodGet1RelatedCmpt(javaClassGeneration);
+        expectMethodGet1RelatedCmptGen(javaClassGeneration);
+        expectMethodSet1RelatedCmpt(javaClassGeneration);
+        expectMethodGet1RelatedCmptLink(genAssociationTo1, javaClassGeneration);
+        expectMethodGetRelatedCmptLink(genAssociationTo1, javaClassGeneration);
+        expectMethodGetCardinalityForAssociation(genAssociationTo1, javaClassGeneration);
+        assertEquals(7, generatedJavaElements.size());
     }
 
     @Test
@@ -99,9 +110,9 @@ public class GenProdAssociationTo1Test extends GenProdAssociationTest {
         genAssociationTo1.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
                 association);
         expectFieldTo1Association(0, javaClassGeneration);
-        expectMethodGet1RelatedCmpt(1, javaClassGeneration);
-        expectMethodGet1RelatedCmptGen(2, javaClassGeneration);
-        expectMethodSet1RelatedCmpt(3, javaClassGeneration);
+        expectMethodGet1RelatedCmpt(javaClassGeneration);
+        expectMethodGet1RelatedCmptGen(javaClassGeneration);
+        expectMethodSet1RelatedCmpt(javaClassGeneration);
         assertEquals(4, generatedJavaElements.size());
     }
 
@@ -109,21 +120,21 @@ public class GenProdAssociationTo1Test extends GenProdAssociationTest {
         expectField(index, javaType, genAssociationTo1.getFieldNameTo1Association());
     }
 
-    private void expectMethodGet1RelatedCmpt(int index, IType javaType) {
-        expectMethod(index, javaType, genAssociationTo1.getMethodNameGet1RelatedCmpt());
+    private void expectMethodGet1RelatedCmpt(IType javaType) {
+        expectMethod(javaType, genAssociationTo1.getMethodNameGet1RelatedCmpt());
     }
 
-    private void expectMethodGet1RelatedCmptGen(int index, IType javaType) {
-        expectMethod(index, javaType, genAssociationTo1.getMethodNameGet1RelatedCmpt(),
+    private void expectMethodGet1RelatedCmptGen(IType javaType) {
+        expectMethod(javaType, genAssociationTo1.getMethodNameGet1RelatedCmpt(),
                 resolvedParam(Calendar.class.getName()));
     }
 
-    private void expectMethodGet1RelatedCmptLink(int index, GenProdAssociation genProdAssociation, IType javaType) {
-        expectMethod(index, javaType, genProdAssociation.getMethodNameGet1RelatedCmptLink());
+    private void expectMethodGet1RelatedCmptLink(GenProdAssociation genProdAssociation, IType javaType) {
+        expectMethod(javaType, genProdAssociation.getMethodNameGet1RelatedCmptLink());
     }
 
-    private void expectMethodSet1RelatedCmpt(int index, IType javaType) {
-        expectMethod(index, javaType, genAssociationTo1.getMethodNameSet1RelatedCmpt(),
+    private void expectMethodSet1RelatedCmpt(IType javaType) {
+        expectMethod(javaType, genAssociationTo1.getMethodNameSet1RelatedCmpt(),
                 unresolvedParam(javaInterfaceTargetType.getElementName()));
     }
 }

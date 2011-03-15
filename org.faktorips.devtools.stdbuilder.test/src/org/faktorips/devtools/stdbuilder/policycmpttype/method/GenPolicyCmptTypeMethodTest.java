@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptTypeBuilderTest;
@@ -27,22 +28,18 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests concerning the generators for <tt>IMethod</tt>s for <tt>IPolicyCmptType</tt>s.
+ * Tests concerning the generators for {@link IMethod}s of {@link IPolicyCmptType}s.
  * 
  * @author Alexander Weickmann
  */
 public class GenPolicyCmptTypeMethodTest extends PolicyCmptTypeBuilderTest {
 
-    /** A published <tt>IMethod</tt> that can be used for tests. */
     private IMethod publishedMethod;
 
-    /** A public <tt>IMethod</tt> that can be used for tests. */
     private IMethod publicMethod;
 
-    /** <tt>GenPolicyCmptTypeMethod</tt> generator for the published method. */
     private GenPolicyCmptTypeMethod genPublishedMethod;
 
-    /** <tt>GenPolicyCmptTypeMethod</tt> generator for the public method. */
     private GenPolicyCmptTypeMethod genPublicMethod;
 
     @Override
@@ -86,7 +83,7 @@ public class GenPolicyCmptTypeMethodTest extends PolicyCmptTypeBuilderTest {
     public void testGetGeneratedJavaElementsForPublishedInterface() {
         genPublishedMethod.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
                 publishedMethod);
-        expectMethod(0, javaInterface, genPublishedMethod);
+        expectMethod(javaInterface, genPublishedMethod);
         assertEquals(1, generatedJavaElements.size());
 
         generatedJavaElements.clear();
@@ -98,18 +95,18 @@ public class GenPolicyCmptTypeMethodTest extends PolicyCmptTypeBuilderTest {
     @Test
     public void testGetGeneratedJavaElementsForImplementation() {
         genPublishedMethod.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass, publishedMethod);
-        expectMethod(0, javaClass, genPublishedMethod);
+        expectMethod(javaClass, genPublishedMethod);
         assertEquals(1, generatedJavaElements.size());
 
         generatedJavaElements.clear();
         genPublicMethod.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass, publicMethod);
-        expectMethod(0, javaClass, genPublicMethod);
+        expectMethod(javaClass, genPublicMethod);
         assertEquals(1, generatedJavaElements.size());
     }
 
-    private void expectMethod(int index, IType javaType, GenMethod genMethod) {
+    private void expectMethod(IType javaType, GenMethod genMethod) {
         String methodName = genMethod.getMethod().getName();
-        expectMethod(index, javaType, methodName, intParam(), voidParam(), stringParam());
+        expectMethod(javaType, methodName, intParam(), voidParam(), stringParam());
     }
 
 }

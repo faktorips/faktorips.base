@@ -23,10 +23,8 @@ import org.junit.Test;
 
 public class GenConstantAttributeTest extends GenPolicyCmptTypeAttributeTest {
 
-    /** <tt>GenConstantAttribute</tt> generator for the published attribute. */
     private GenConstantAttribute genPublishedConstantAttribute;
 
-    /** <tt>GenConstantAttribute</tt> generator for the public attribute. */
     private GenConstantAttribute genPublicConstantAttribute;
 
     public GenConstantAttributeTest() {

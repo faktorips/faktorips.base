@@ -47,12 +47,12 @@ public class GenProdAssociationToManyTest extends GenProdAssociationTest {
     public void testGetGeneratedJavaElementsForPublishedInterface() {
         genAssociationToMany.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
                 javaInterfaceGeneration, association);
-        expectMethodGetManyRelatedCmpts(0, javaInterfaceGeneration);
-        expectMethodGetNumOfRelatedCmpts(1, javaInterfaceGeneration);
-        expectMethodGetManyRelatedCmptGens(2, javaInterfaceGeneration);
-        expectMethodGetRelatedCmptAtIndex(3, javaInterfaceGeneration);
-        expectMethodGetManyRelatedCmptLinks(4, javaInterfaceGeneration);
-        expectMethodGetRelatedCmptLink(5, genAssociationToMany, javaInterfaceGeneration);
+        expectMethodGetManyRelatedCmpts(javaInterfaceGeneration);
+        expectMethodGetNumOfRelatedCmpts(javaInterfaceGeneration);
+        expectMethodGetManyRelatedCmptGens(javaInterfaceGeneration);
+        expectMethodGetRelatedCmptAtIndex(javaInterfaceGeneration);
+        expectMethodGetManyRelatedCmptLinks(javaInterfaceGeneration);
+        expectMethodGetRelatedCmptLink(genAssociationToMany, javaInterfaceGeneration);
         assertEquals(6, generatedJavaElements.size());
     }
 
@@ -63,7 +63,14 @@ public class GenProdAssociationToManyTest extends GenProdAssociationTest {
         setUpConstrainsPolicyCmptTypeAssociation();
         genAssociationToMany.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
                 javaInterfaceGeneration, association);
-        expectMethodGetCardinalityForAssociation(6, genAssociationToMany, javaInterfaceGeneration);
+        expectMethodGetManyRelatedCmpts(javaInterfaceGeneration);
+        expectMethodGetNumOfRelatedCmpts(javaInterfaceGeneration);
+        expectMethodGetManyRelatedCmptGens(javaInterfaceGeneration);
+        expectMethodGetRelatedCmptAtIndex(javaInterfaceGeneration);
+        expectMethodGetManyRelatedCmptLinks(javaInterfaceGeneration);
+        expectMethodGetRelatedCmptLink(genAssociationToMany, javaInterfaceGeneration);
+        expectMethodGetCardinalityForAssociation(genAssociationToMany, javaInterfaceGeneration);
+        assertEquals(7, generatedJavaElements.size());
     }
 
     @Test
@@ -71,10 +78,10 @@ public class GenProdAssociationToManyTest extends GenProdAssociationTest {
         ProjectConfigurationUtil.setUpUseTypesafeCollections(ipsProject, false);
         genAssociationToMany.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
                 javaInterfaceGeneration, association);
-        expectMethodGetManyRelatedCmpts(0, javaInterfaceGeneration);
-        expectMethodGetNumOfRelatedCmpts(1, javaInterfaceGeneration);
-        expectMethodGetManyRelatedCmptGens(2, javaInterfaceGeneration);
-        expectMethodGetRelatedCmptAtIndex(3, javaInterfaceGeneration);
+        expectMethodGetManyRelatedCmpts(javaInterfaceGeneration);
+        expectMethodGetNumOfRelatedCmpts(javaInterfaceGeneration);
+        expectMethodGetManyRelatedCmptGens(javaInterfaceGeneration);
+        expectMethodGetRelatedCmptAtIndex(javaInterfaceGeneration);
         assertEquals(4, generatedJavaElements.size());
     }
 
@@ -83,8 +90,8 @@ public class GenProdAssociationToManyTest extends GenProdAssociationTest {
         association.setDerivedUnion(true);
         genAssociationToMany.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements,
                 javaInterfaceGeneration, association);
-        expectMethodGetManyRelatedCmpts(0, javaInterfaceGeneration);
-        expectMethodGetNumOfRelatedCmpts(1, javaInterfaceGeneration);
+        expectMethodGetManyRelatedCmpts(javaInterfaceGeneration);
+        expectMethodGetNumOfRelatedCmpts(javaInterfaceGeneration);
         assertEquals(2, generatedJavaElements.size());
     }
 
@@ -93,14 +100,14 @@ public class GenProdAssociationToManyTest extends GenProdAssociationTest {
         genAssociationToMany.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
                 association);
         expectFieldToManyAssociation(0, javaClassGeneration);
-        expectMethodGetManyRelatedCmpts(1, javaClassGeneration);
-        expectMethodGetManyRelatedCmptGens(2, javaClassGeneration);
-        expectMethodGetRelatedCmptAtIndex(3, javaClassGeneration);
-        expectMethodGetManyRelatedCmptLinks(4, javaClassGeneration);
-        expectMethodGetRelatedCmptLink(5, genAssociationToMany, javaClassGeneration);
-        expectMethodAddRelatedCmpt(6, javaClassGeneration);
-        expectMethodAddRelatedCmptWithCardinality(7, javaClassGeneration);
-        expectMethodGetNumOfRelatedCmpts(8, javaClassGeneration);
+        expectMethodGetManyRelatedCmpts(javaClassGeneration);
+        expectMethodGetManyRelatedCmptGens(javaClassGeneration);
+        expectMethodGetRelatedCmptAtIndex(javaClassGeneration);
+        expectMethodGetManyRelatedCmptLinks(javaClassGeneration);
+        expectMethodGetRelatedCmptLink(genAssociationToMany, javaClassGeneration);
+        expectMethodAddRelatedCmpt(javaClassGeneration);
+        expectMethodAddRelatedCmptWithCardinality(javaClassGeneration);
+        expectMethodGetNumOfRelatedCmpts(javaClassGeneration);
         assertEquals(9, generatedJavaElements.size());
     }
 
@@ -109,7 +116,17 @@ public class GenProdAssociationToManyTest extends GenProdAssociationTest {
         setUpConstrainsPolicyCmptTypeAssociation();
         genAssociationToMany.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
                 association);
-        expectMethodGetCardinalityForAssociation(9, genAssociationToMany, javaClassGeneration);
+        expectFieldToManyAssociation(0, javaClassGeneration);
+        expectMethodGetManyRelatedCmpts(javaClassGeneration);
+        expectMethodGetManyRelatedCmptGens(javaClassGeneration);
+        expectMethodGetRelatedCmptAtIndex(javaClassGeneration);
+        expectMethodGetManyRelatedCmptLinks(javaClassGeneration);
+        expectMethodGetRelatedCmptLink(genAssociationToMany, javaClassGeneration);
+        expectMethodAddRelatedCmpt(javaClassGeneration);
+        expectMethodAddRelatedCmptWithCardinality(javaClassGeneration);
+        expectMethodGetNumOfRelatedCmpts(javaClassGeneration);
+        expectMethodGetCardinalityForAssociation(genAssociationToMany, javaClassGeneration);
+        assertEquals(10, generatedJavaElements.size());
     }
 
     @Test
@@ -118,12 +135,12 @@ public class GenProdAssociationToManyTest extends GenProdAssociationTest {
         genAssociationToMany.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClassGeneration,
                 association);
         expectFieldToManyAssociation(0, javaClassGeneration);
-        expectMethodGetManyRelatedCmpts(1, javaClassGeneration);
-        expectMethodGetManyRelatedCmptGens(2, javaClassGeneration);
-        expectMethodGetRelatedCmptAtIndex(3, javaClassGeneration);
-        expectMethodAddRelatedCmpt(4, javaClassGeneration);
-        expectMethodAddRelatedCmptWithCardinality(5, javaClassGeneration);
-        expectMethodGetNumOfRelatedCmpts(6, javaClassGeneration);
+        expectMethodGetManyRelatedCmpts(javaClassGeneration);
+        expectMethodGetManyRelatedCmptGens(javaClassGeneration);
+        expectMethodGetRelatedCmptAtIndex(javaClassGeneration);
+        expectMethodAddRelatedCmpt(javaClassGeneration);
+        expectMethodAddRelatedCmptWithCardinality(javaClassGeneration);
+        expectMethodGetNumOfRelatedCmpts(javaClassGeneration);
         assertEquals(7, generatedJavaElements.size());
     }
 
@@ -139,34 +156,34 @@ public class GenProdAssociationToManyTest extends GenProdAssociationTest {
         expectField(index, javaType, genAssociationToMany.getFieldNameToManyAssociation());
     }
 
-    private void expectMethodGetManyRelatedCmpts(int index, IType javaType) {
-        expectMethod(index, javaType, genAssociationToMany.getMethodNameGetManyRelatedCmpts());
+    private void expectMethodGetManyRelatedCmpts(IType javaType) {
+        expectMethod(javaType, genAssociationToMany.getMethodNameGetManyRelatedCmpts());
     }
 
-    private void expectMethodGetManyRelatedCmptGens(int index, IType javaType) {
-        expectMethod(index, javaType, genAssociationToMany.getMethodNameGetManyRelatedCmpts(),
+    private void expectMethodGetManyRelatedCmptGens(IType javaType) {
+        expectMethod(javaType, genAssociationToMany.getMethodNameGetManyRelatedCmpts(),
                 resolvedParam(Calendar.class.getName()));
     }
 
-    private void expectMethodGetRelatedCmptAtIndex(int index, IType javaType) {
-        expectMethod(index, javaType, genAssociationToMany.getMethodNameGetRelatedCmptAtIndex(), intParam());
+    private void expectMethodGetRelatedCmptAtIndex(IType javaType) {
+        expectMethod(javaType, genAssociationToMany.getMethodNameGetRelatedCmptAtIndex(), intParam());
     }
 
-    private void expectMethodGetManyRelatedCmptLinks(int index, IType javaType) {
-        expectMethod(index, javaType, genAssociationToMany.getMethodNameGetManyRelatedCmptLinks());
+    private void expectMethodGetManyRelatedCmptLinks(IType javaType) {
+        expectMethod(javaType, genAssociationToMany.getMethodNameGetManyRelatedCmptLinks());
     }
 
-    private void expectMethodGetNumOfRelatedCmpts(int index, IType javaType) {
-        expectMethod(index, javaType, genAssociationToMany.getMethodNameGetNumOfRelatedCmpts());
+    private void expectMethodGetNumOfRelatedCmpts(IType javaType) {
+        expectMethod(javaType, genAssociationToMany.getMethodNameGetNumOfRelatedCmpts());
     }
 
-    private void expectMethodAddRelatedCmpt(int index, IType javaType) {
-        expectMethod(index, javaType, genAssociationToMany.getMethodNameAddRelatedCmpt(),
+    private void expectMethodAddRelatedCmpt(IType javaType) {
+        expectMethod(javaType, genAssociationToMany.getMethodNameAddRelatedCmpt(),
                 unresolvedParam(javaInterfaceTargetType.getElementName()));
     }
 
-    private void expectMethodAddRelatedCmptWithCardinality(int index, IType javaType) {
-        expectMethod(index, javaType, genAssociationToMany.getMethodNameAddRelatedCmpt(),
+    private void expectMethodAddRelatedCmptWithCardinality(IType javaType) {
+        expectMethod(javaType, genAssociationToMany.getMethodNameAddRelatedCmpt(),
                 unresolvedParam(javaInterfaceTargetType.getElementName()),
                 unresolvedParam(IntegerRange.class.getSimpleName()));
     }

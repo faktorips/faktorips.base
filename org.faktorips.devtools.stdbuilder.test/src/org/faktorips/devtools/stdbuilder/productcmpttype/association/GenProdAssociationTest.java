@@ -54,17 +54,14 @@ public abstract class GenProdAssociationTest extends ProductCmptTypeBuilderTest 
         association.setTargetRolePlural(TARGET_ROLE_PLURAL);
     }
 
-    protected final void expectMethodGetRelatedCmptLink(int index, GenProdAssociation genProdAssociation, IType javaType) {
-        expectMethod(index, javaType, genProdAssociation.getMethodNameGet1RelatedCmptLink(),
+    protected final void expectMethodGetRelatedCmptLink(GenProdAssociation genProdAssociation, IType javaType) {
+        expectMethod(javaType, genProdAssociation.getMethodNameGet1RelatedCmptLink(),
                 unresolvedParam(javaInterfaceTargetType.getElementName()));
     }
 
-    protected final void expectMethodGetCardinalityForAssociation(int index,
-            GenProdAssociation genProdAssociation,
-            IType javaType) {
-
+    protected final void expectMethodGetCardinalityForAssociation(GenProdAssociation genProdAssociation, IType javaType) {
         try {
-            expectMethod(index, javaType, genProdAssociation.getMethodNameGetCardinalityForAssociation(),
+            expectMethod(javaType, genProdAssociation.getMethodNameGetCardinalityForAssociation(),
                     unresolvedParam(javaInterfaceTargetType.getElementName()));
         } catch (CoreException e) {
             throw new RuntimeException(e);

@@ -108,32 +108,29 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Expects a specific method to be added to the list of generated Java elements.
-     * 
-     * @param index The position at which the method is expected in the list of generated Java
-     *            elements
-     * @param javaType The Java type the expected method belongs to
-     * @param methodName The name of the expected method
-     * @param parameterTypeSignatures The parameter type signatures of the expected method (use the
-     *            <tt>xxxParam(...)</tt> methods offered by this class)
+     * Returns the JDT signature for a primitive integer parameter.
      */
-    protected final void expectMethod(int index, IType javaType, String methodName, String... parameterTypeSignatures) {
-        IMethod method = javaType.getMethod(methodName, parameterTypeSignatures);
-        assertEquals(method, generatedJavaElements.get(index));
-    }
-
     protected final String intParam() {
         return Signature.SIG_INT;
     }
 
+    /**
+     * Returns the JDT signature for a void parameter.
+     */
     protected final String voidParam() {
         return Signature.SIG_VOID;
     }
 
+    /**
+     * Returns the JDT signature for a primitive boolean parameter.
+     */
     protected final String booleanParam() {
         return Signature.SIG_BOOLEAN;
     }
 
+    /**
+     * Returns the JDT signature for a {@link String} parameter.
+     */
     protected final String stringParam() {
         return Signature.createTypeSignature(String.class.getSimpleName(), false);
     }
