@@ -15,8 +15,6 @@ package org.faktorips.devtools.core.builder;
 
 import java.util.List;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnector;
 
 /**
@@ -28,6 +26,10 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnecto
 public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConnector {
 
     private String id;
+
+    public static String LOG4J_LEVEL_QNAME = "org.apache.log4j.Level"; //$NON-NLS-1$
+
+    public static String LOG4J_LOGGER_QNAME = "org.apache.log4j.Logger"; //$NON-NLS-1$
 
     @Override
     public String getId() {
@@ -87,12 +89,12 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
 
     @Override
     public String getLoggerClassName() {
-        return Logger.class.getName();
+        return LOG4J_LOGGER_QNAME;
     }
 
     @Override
     public String getLoggerInstanceStmt(String scopeExp, List<String> usedClasses) {
-        usedClasses.add(Logger.class.getName());
+        usedClasses.add(getLoggerClassName());
         return "Logger.getLogger(" + scopeExp + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
@@ -125,7 +127,7 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
 
         @Override
         public String buildError(String message) {
-            usedClasses.add(Level.class.getName());
+            usedClasses.add(LOG4J_LEVEL_QNAME);
             return ".isEnabledFor(Level.ERROR)"; //$NON-NLS-1$
         }
 
@@ -141,7 +143,7 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
 
         @Override
         public String buildWarning(String message) {
-            usedClasses.add(Level.class.getName());
+            usedClasses.add(LOG4J_LEVEL_QNAME);
             return ".isEnabledFor(Level.WARN)"; //$NON-NLS-1$
         }
 
