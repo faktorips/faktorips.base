@@ -1081,6 +1081,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             GenChangeableAttribute gen = (GenChangeableAttribute)genPolicyCmptType.getGenerator(a);
             gen.generateInitialization(builder, getIpsProject());
         }
+        builder.appendln(MARKER_BEGIN_USER_CODE);
+        builder.appendln(MARKER_END_USER_CODE);
         builder.methodEnd();
     }
 
