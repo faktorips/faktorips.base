@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
+import org.w3c.dom.Element;
 
 public class IpsObjectTest extends AbstractIpsPluginTest {
 
@@ -84,4 +85,9 @@ public class IpsObjectTest extends AbstractIpsPluginTest {
         assertNotNull(msgList.getMessageByCode(IIpsObject.MSGCODE_SAME_IPSOBJECT_IN_IPSOBEJECTPATH_AHEAD));
     }
 
+    @Test
+    public void testToXml() throws Exception {
+        Element xml = ipsObject.toXml(newDocument());
+        assertEquals(IIpsObject.XML_ATTRIBUTE_SPACE_VALUE, xml.getAttribute(IIpsObject.XML_ATTRIBUTE_SPACE));
+    }
 }

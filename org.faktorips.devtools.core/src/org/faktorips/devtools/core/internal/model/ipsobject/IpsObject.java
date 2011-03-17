@@ -193,7 +193,8 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
 
     @Override
     protected void propertiesToXml(Element element) {
-        // Empty implementation now, not removed because of subclasses calling super implementation.
+        // @see FIPS-80 why we need to set this attribute
+        element.setAttribute(XML_ATTRIBUTE_SPACE, XML_ATTRIBUTE_SPACE_VALUE);
     }
 
     @Override
