@@ -32,7 +32,9 @@
          <command
                commandId="org.faktorips.devtools.stdbuilder.ui.commands.OpenIpsObjectInJavaEditor"
                icon="icons/jumpToJavaEnum.gif"
-               style="push">
+               label="%org.faktorips.devtools.stdbuilder.ui.extensions.OpenEnumImplementationInJavaEditor_label"
+               style="push"
+               tooltip="%org.faktorips.devtools.stdbuilder.ui.extensions.OpenEnumImplementationInJavaEditor_tooltip">
          </command>
       </menuContribution>
    </extension>
