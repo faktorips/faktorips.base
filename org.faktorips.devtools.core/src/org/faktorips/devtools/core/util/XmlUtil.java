@@ -56,7 +56,10 @@ import org.xml.sax.SAXParseException;
  */
 public class XmlUtil {
 
-    // xml document builder
+    public static final String XML_ATTRIBUTE_SPACE = "xml:space"; //$NON-NLS-1$
+
+    public static final String XML_ATTRIBUTE_SPACE_VALUE = "preserve"; //$NON-NLS-1$
+
     /**
      * This is a thread local variable because the document builder is not thread safe.
      */

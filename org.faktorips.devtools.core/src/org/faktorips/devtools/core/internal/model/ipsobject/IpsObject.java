@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -194,7 +195,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     @Override
     protected void propertiesToXml(Element element) {
         // @see FIPS-80 why we need to set this attribute
-        element.setAttribute(XML_ATTRIBUTE_SPACE, XML_ATTRIBUTE_SPACE_VALUE);
+        element.setAttribute(XmlUtil.XML_ATTRIBUTE_SPACE, XmlUtil.XML_ATTRIBUTE_SPACE_VALUE);
     }
 
     @Override

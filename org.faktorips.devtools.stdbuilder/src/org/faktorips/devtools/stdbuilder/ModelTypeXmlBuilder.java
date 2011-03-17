@@ -72,6 +72,7 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
         Element modelTypeEl = doc.createElement("ModelType");
         modelTypeEl.setAttribute("name", type.getQualifiedName());
         modelTypeEl.setAttribute("class", stdBuilderSet.getGenerator(type).getQualifiedName(false));
+        modelTypeEl.setAttribute(XmlUtil.XML_ATTRIBUTE_SPACE, XmlUtil.XML_ATTRIBUTE_SPACE_VALUE);
         IType supertype = type.findSupertype(getIpsProject());
         if (supertype != null) {
             modelTypeEl.setAttribute("supertype", stdBuilderSet.getGenerator(supertype).getQualifiedName(false));

@@ -23,10 +23,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 
 public interface IIpsObject extends IIpsObjectPartContainer, IDescribedElement {
 
-    public static final String XML_ATTRIBUTE_SPACE = "xml:space"; //$NON-NLS-1$
-
-    public static final String XML_ATTRIBUTE_SPACE_VALUE = "preserve"; //$NON-NLS-1$
-
     /**
      * Prefix for all message codes of this class.
      */

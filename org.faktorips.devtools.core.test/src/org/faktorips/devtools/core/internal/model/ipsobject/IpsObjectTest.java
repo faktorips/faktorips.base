@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -88,6 +89,6 @@ public class IpsObjectTest extends AbstractIpsPluginTest {
     @Test
     public void testToXml() throws Exception {
         Element xml = ipsObject.toXml(newDocument());
-        assertEquals(IIpsObject.XML_ATTRIBUTE_SPACE_VALUE, xml.getAttribute(IIpsObject.XML_ATTRIBUTE_SPACE));
+        assertEquals(XmlUtil.XML_ATTRIBUTE_SPACE_VALUE, xml.getAttribute(XmlUtil.XML_ATTRIBUTE_SPACE));
     }
 }
