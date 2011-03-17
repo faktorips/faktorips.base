@@ -31,3 +31,4 @@ Export-Package: org.faktorips.devtools.htmlexport,
 Bundle-Vendor: Faktor Zehn AG
 Eclipse-ExtensibleAPI: true
 Bundle-ClassPath: .
+Import-Package: org.apache.commons.lang;version="[2.3.0,2.5.0)"

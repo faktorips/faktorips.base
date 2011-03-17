@@ -92,3 +92,4 @@ Export-Package: org.faktorips.devtools.core,
  org.faktorips.devtools.tableconversion
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.apache.commons.lang;version="[2.3.0,2.5.0)"

@@ -26,3 +26,5 @@ Bundle-ClassPath: .,
  lib/opencsv-1.8.jar,
  lib/poi-2.5.1-final-20040804.jar
 Eclipse-ExtensibleAPI: true
+Import-Package: org.apache.commons.lang;version="[2.3.0,2.5.0)",
+ org.apache.commons.lang.time;version="[2.3.0,2.5.0)"
