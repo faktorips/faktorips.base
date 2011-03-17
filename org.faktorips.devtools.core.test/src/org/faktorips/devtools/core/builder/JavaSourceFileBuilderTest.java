@@ -172,9 +172,9 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
 
     public static class StubJavaSourceFileBuilder extends JavaSourceFileBuilder {
 
-        private IIpsSrcFile ipsSrcFile;
+        private final IIpsSrcFile ipsSrcFile;
 
-        private boolean buildingPublishedSourceFile;
+        private final boolean buildingPublishedSourceFile;
 
         private IType generatedJavaImplementationType;
 
@@ -214,14 +214,6 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         @Override
         public boolean isBuildingPublishedSourceFile() {
             return buildingPublishedSourceFile;
-        }
-
-        public void setIpsSrcFile(IIpsSrcFile ipsSrcFile) {
-            this.ipsSrcFile = ipsSrcFile;
-        }
-
-        public void setBuildingPublishedSourceFile(boolean buildingPublishedSourceFile) {
-            this.buildingPublishedSourceFile = buildingPublishedSourceFile;
         }
 
         public void setGeneratedJavaImplementationType(IType generatedJavaImplementationType) {
