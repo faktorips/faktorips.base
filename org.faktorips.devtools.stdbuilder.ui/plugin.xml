@@ -45,7 +45,7 @@
       <command
             defaultHandler="org.faktorips.devtools.stdbuilder.ui.commands.OpenIpsObjectInJavaEditorHandler"
             id="org.faktorips.devtools.stdbuilder.ui.commands.OpenIpsObjectInJavaEditor"
-            name="name">
+            name="%org.faktorips.devtools.stdbuilder.ui.commands.OpenIpsObjectInJavaEditor">
       </command>
    </extension>
 

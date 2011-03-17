@@ -14,7 +14,6 @@
 package org.faktorips.devtools.stdbuilder.ui.commands;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.commands.Command;
@@ -26,7 +25,7 @@ import org.eclipse.core.commands.ParameterType;
 import org.eclipse.core.commands.ParameterValueConversionException;
 import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.commands.ICommandService;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -59,8 +58,7 @@ public class OpenIpsObjectInJavaEditorHandler extends IpsAbstractHandler {
         try {
             IIpsObject ipsObject = ipsSrcFile.getIpsObject();
             StandardBuilderSet builderSet = (StandardBuilderSet)ipsObject.getIpsProject().getIpsArtefactBuilderSet();
-            List<IJavaElement> generatedJavaElements = builderSet.getGeneratedJavaElements(ipsObject);
-            IJavaElement javaElement = generatedJavaElements.get(0);
+            IType generatedJavaImplementationType = builderSet.getGeneratedJavaImplementationType(ipsObject);
 
             /*
              * We need to copy the execution event because the event object does not allow to modify
@@ -69,7 +67,8 @@ public class OpenIpsObjectInJavaEditorHandler extends IpsAbstractHandler {
              */
             Map<String, String> jdtParameters = new HashMap<String, String>(1);
             ParameterType parameterType = openInJavaEditorCommand.getParameterType(JDT_PARAMETER_ID_ELEMENT_REF);
-            String stringParameterValue = parameterType.getValueConverter().convertToString(javaElement);
+            String stringParameterValue = parameterType.getValueConverter().convertToString(
+                    generatedJavaImplementationType);
             jdtParameters.put(JDT_PARAMETER_ID_ELEMENT_REF, stringParameterValue);
             ExecutionEvent copyEvent = new ExecutionEvent(openInJavaEditorCommand, jdtParameters, event.getTrigger(),
                     event.getApplicationContext());

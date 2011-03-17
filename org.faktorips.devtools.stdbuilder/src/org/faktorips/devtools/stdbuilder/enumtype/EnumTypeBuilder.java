@@ -88,14 +88,18 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         return false;
     }
 
-    /** Returns <code>true</code> if Java 5 enums are available. */
+    /**
+     * Returns <code>true</code> if Java 5 enums are available.
+     */
     private boolean isJava5EnumsAvailable() {
         return ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())
                 && getIpsProject().getIpsArtefactBuilderSet().getConfig()
                         .getPropertyValueAsBoolean(USE_JAVA_ENUM_TYPES_CONFIG_PROPERTY);
     }
 
-    /** Returns whether to generate an enum. */
+    /**
+     * Returns whether to generate an enum.
+     */
     private boolean useEnumGeneration() {
         IEnumType enumType = getEnumType();
 
@@ -114,7 +118,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         return true;
     }
 
-    /** Returns whether to generate a class. */
+    /**
+     * Returns whether to generate a class.
+     */
     private boolean useClassGeneration() {
         IEnumType enumType = getEnumType();
 
@@ -133,7 +139,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         }
     }
 
-    /** Returns whether to generate an interface. */
+    /**
+     * Returns whether to generate an interface.
+     */
     private boolean useInterfaceGeneration() {
         if (!(useEnumGeneration()) && !(useClassGeneration())) {
             return true;
@@ -172,7 +180,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     xmlAdapterBuilder.getQualifiedClassName(enumType));
         }
 
-        // Set supertype / implemented interface and ensure serialization
+        // Set super type / implemented interface and ensure serialization
         List<String> implementedInterfaces = new ArrayList<String>(5);
 
         if (enumType.hasSuperEnumType()) {
@@ -1144,7 +1152,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         methodBuilder.method(Modifier.PUBLIC, String.class, "toString", new String[0], new Class[0], methodBody, null); //$NON-NLS-1$
     }
 
-    /** Returns the enumeration type for that code is being generated. */
+    /**
+     * Returns the enumeration type for that code is being generated.
+     */
     private IEnumType getEnumType() {
         return (IEnumType)getIpsObject();
     }
@@ -1152,6 +1162,11 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     @Override
     public boolean isBuildingPublishedSourceFile() {
         return true;
+    }
+
+    @Override
+    protected IType getGeneratedJavaImplementationTypeThis(IIpsObject ipsObject) {
+        return getGeneratedJavaTypes(ipsObject).get(0);
     }
 
     @Override

@@ -705,14 +705,29 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * <p>
      * It could be that multiple implementation types are generated for an {@link IIpsObject}. In
      * this case only the type that we consider most relevant is returned.
+     * <p>
+     * Returns null if no Java implementation type is generated or if the information is not
+     * available.
      * 
      * @param ipsObject The {@link IIpsObject} to get the generated Java implementation type for
      * 
      * @throws NullPointerException If the parameter is null
      */
     public org.eclipse.jdt.core.IType getGeneratedJavaImplementationType(IIpsObject ipsObject) {
-        // TODO AW
-        return null;
+        ArgumentCheck.notNull(ipsObject);
+
+        org.eclipse.jdt.core.IType generatedJavaImplementationType = null;
+        for (IIpsArtefactBuilder builder : getArtefactBuilders()) {
+            if (!(builder instanceof JavaSourceFileBuilder)) {
+                continue;
+            }
+            JavaSourceFileBuilder javaBuilder = (JavaSourceFileBuilder)builder;
+            generatedJavaImplementationType = javaBuilder.getGeneratedJavaImplementationType(ipsObject);
+            if (generatedJavaImplementationType != null) {
+                break;
+            }
+        }
+        return generatedJavaImplementationType;
     }
 
     /**

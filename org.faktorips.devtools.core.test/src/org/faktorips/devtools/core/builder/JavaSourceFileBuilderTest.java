@@ -151,16 +151,6 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetGeneratedJavaImplementationTypeBuildingPublishedSourceFile() {
-        StubJavaSourceFileBuilder builder = new StubJavaSourceFileBuilder(null, true);
-        builder.setGeneratedJavaImplementationType(mock(IType.class));
-
-        IType generatedJavaImplementationType = builder.getGeneratedJavaImplementationType(ipsObject);
-
-        assertNull(generatedJavaImplementationType);
-    }
-
-    @Test
     public void testGetGeneratedJavaImplementationTypeNotABuilderForGivenIpsObject() {
         StubJavaSourceFileBuilder builder = new StubJavaSourceFileBuilder(mock(IIpsSrcFile.class), false);
         builder.setGeneratedJavaImplementationType(mock(IType.class));
@@ -207,7 +197,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        protected IType getGeneratedJavaImplementationTypeThis() {
+        protected IType getGeneratedJavaImplementationTypeThis(IIpsObject ipsObject) {
             return generatedJavaImplementationType;
         }
 

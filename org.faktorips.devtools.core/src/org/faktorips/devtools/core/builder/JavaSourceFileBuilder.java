@@ -1069,9 +1069,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     /**
      * Returns the Java implementation type this builder generates for the given {@link IIpsObject}.
      * <p>
-     * Returns null if this builder is not building an implementation type or if this builder is not
-     * a builder for the given {@link IIpsObject} or if this builder does not consider it's
-     * generated implementation type to be of main relevance.
+     * Returns null if this builder is not a builder for the given {@link IIpsObject} or if this
+     * builder does not consider it's generated implementation type to be of main relevance.
      * 
      * @param ipsObject The {@link IIpsObject} to get the generated Java implementation type for
      * 
@@ -1080,22 +1079,24 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     public final IType getGeneratedJavaImplementationType(IIpsObject ipsObject) {
         ArgumentCheck.notNull(ipsObject);
         try {
-            if (isBuildingPublishedSourceFile() || !isBuilderFor(ipsObject.getIpsSrcFile())) {
+            if (!isBuilderFor(ipsObject.getIpsSrcFile())) {
                 return null;
             }
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
-        return getGeneratedJavaImplementationTypeThis();
+        return getGeneratedJavaImplementationTypeThis(ipsObject);
     }
 
     /**
      * Subclasses should override and implement this method if they generate a Java implementation
-     * type that they consider of main relevance.
+     * type for the given {@link IIpsObject} that they consider of main relevance.
      * <p>
      * The default implementation always returns null.
+     * 
+     * @param ipsObject The {@link IIpsObject} to get the generated Java implementation type for
      */
-    protected IType getGeneratedJavaImplementationTypeThis() {
+    protected IType getGeneratedJavaImplementationTypeThis(IIpsObject ipsObject) {
         return null;
     }
 
