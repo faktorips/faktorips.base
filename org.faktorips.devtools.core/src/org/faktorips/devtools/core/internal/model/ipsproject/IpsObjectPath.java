@@ -736,7 +736,7 @@ public class IpsObjectPath implements IIpsObjectPath {
                 }
                 continue;
             } catch (CoreException e) {
-                IpsPlugin.log(e);
+                // may occur if the path does not exists in this entry
                 continue;
             }
         }
