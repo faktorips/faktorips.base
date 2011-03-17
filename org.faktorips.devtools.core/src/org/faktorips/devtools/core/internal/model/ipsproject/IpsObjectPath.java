@@ -549,8 +549,9 @@ public class IpsObjectPath implements IIpsObjectPath {
                 result.add((IProductCmpt)productCmptFile.getIpsObject());
                 continue;
             }
-            QualifiedNameType cmptTypeQnt = new QualifiedNameType(productCmptFile
-                    .getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE), IpsObjectType.PRODUCT_CMPT_TYPE);
+            QualifiedNameType cmptTypeQnt = new QualifiedNameType(
+                    productCmptFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE),
+                    IpsObjectType.PRODUCT_CMPT_TYPE);
             visitedEntries.clear();
             IIpsSrcFile typeFoundFile = findIpsSrcFile(cmptTypeQnt, visitedEntries);
             if (typeFoundFile == null) {
@@ -592,13 +593,11 @@ public class IpsObjectPath implements IIpsObjectPath {
     public Element toXml(Document doc) {
         Element element = doc.createElement(XML_TAG_NAME);
         element.setAttribute("outputDefinedPerSrcFolder", "" + outputDefinedPerSourceFolder); //$NON-NLS-1$ //$NON-NLS-2$
-        element
-                .setAttribute(
-                        "outputFolderMergableSources", outputFolderMergableSources == null ? "" : outputFolderMergableSources.getProjectRelativePath().toString()); //$NON-NLS-1$ //$NON-NLS-2$
+        element.setAttribute(
+                "outputFolderMergableSources", outputFolderMergableSources == null ? "" : outputFolderMergableSources.getProjectRelativePath().toString()); //$NON-NLS-1$ //$NON-NLS-2$
         element.setAttribute("basePackageMergable", basePackageMergable); //$NON-NLS-1$
-        element
-                .setAttribute(
-                        "outputFolderDerivedSources", outputFolderDerivedSources == null ? "" : outputFolderDerivedSources.getProjectRelativePath().toString()); //$NON-NLS-1$ //$NON-NLS-2$
+        element.setAttribute(
+                "outputFolderDerivedSources", outputFolderDerivedSources == null ? "" : outputFolderDerivedSources.getProjectRelativePath().toString()); //$NON-NLS-1$ //$NON-NLS-2$
         element.setAttribute("basePackageDerived", basePackageDerived); //$NON-NLS-1$
         // entries
         for (IIpsObjectPathEntry entrie : entries) {
@@ -746,7 +745,7 @@ public class IpsObjectPath implements IIpsObjectPath {
                 }
                 continue;
             } catch (CoreException e) {
-                IpsPlugin.log(e);
+                // may occur if the path does not exists in this entry
                 continue;
             }
         }
