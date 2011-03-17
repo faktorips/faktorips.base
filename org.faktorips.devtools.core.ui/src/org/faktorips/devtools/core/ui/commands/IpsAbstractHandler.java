@@ -51,7 +51,7 @@ public abstract class IpsAbstractHandler extends AbstractHandler {
         if (ipsSrcFile == null) {
             return null;
         }
-        showView(activePage, ipsSrcFile);
+        execute(event, activePage, ipsSrcFile);
         // return must be null - see jdoc
         return null;
     }
@@ -74,5 +74,6 @@ public abstract class IpsAbstractHandler extends AbstractHandler {
         }
     }
 
-    public abstract void showView(IWorkbenchPage activePage, IIpsSrcFile ipsSrcFile);
+    public abstract void execute(ExecutionEvent event, IWorkbenchPage activePage, IIpsSrcFile ipsSrcFile)
+            throws ExecutionException;
 }

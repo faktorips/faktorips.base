@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.commands;
 
+import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.ui.IWorkbenchPage;
@@ -38,7 +39,7 @@ import org.faktorips.devtools.core.ui.search.ReferencesToTableContentsSearchQuer
 public class SearchReferencesHandler extends IpsAbstractHandler {
 
     @Override
-    public void showView(IWorkbenchPage activePage, IIpsSrcFile ipsSrcFile) {
+    public void execute(ExecutionEvent event, IWorkbenchPage activePage, IIpsSrcFile ipsSrcFile) {
         IIpsObject selected;
         try {
             selected = ipsSrcFile.getIpsObject();

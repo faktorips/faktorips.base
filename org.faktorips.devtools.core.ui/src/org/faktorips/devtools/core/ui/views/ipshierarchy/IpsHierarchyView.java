@@ -66,7 +66,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ITypeHierarchy;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
-import org.faktorips.devtools.core.ui.IpsContextMenuId;
+import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
@@ -230,7 +230,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
         MenuManager manager = new MenuManager();
         manager.add(new Separator("open")); //$NON-NLS-1$
         manager.add(new OpenEditorAction(treeViewer));
-        manager.add(new Separator(IpsContextMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
+        manager.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
         manager.add(new GroupMarker(ModelExplorerContextMenuBuilder.GROUP_NAVIGATE));
         Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
         treeViewer.getControl().setMenu(contextMenu);

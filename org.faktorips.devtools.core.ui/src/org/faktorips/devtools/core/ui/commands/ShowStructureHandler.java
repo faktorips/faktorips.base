@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.commands;
 
+import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -31,7 +32,7 @@ import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStru
 public class ShowStructureHandler extends IpsAbstractHandler {
 
     @Override
-    public void showView(IWorkbenchPage activePage, IIpsSrcFile ipsSrcFile) {
+    public void execute(ExecutionEvent event, IWorkbenchPage activePage, IIpsSrcFile ipsSrcFile) {
         if (IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType())) {
 
             try {

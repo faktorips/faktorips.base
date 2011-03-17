@@ -48,6 +48,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.ui.StdBuilderUICommandId;
 
 /**
  * A dynamic menu contribution that consists of commands that allow the user to directly jump to the
@@ -57,11 +58,11 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
  */
 public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributionItem implements IWorkbenchContribution {
 
-    private static final String COMMAND_ID_OPEN_ELEMENT_IN_EDITOR = "org.eclipse.jdt.ui.commands.openElementInEditor";
+    // Unfortunately JDT does not expose these IDs via an enum or interface.
+    private static final String JDT_COMMAND_ID_OPEN_ELEMENT_IN_JAVA_EDITOR = "org.eclipse.jdt.ui.commands.openElementInEditor";
 
-    private static final String COMMAND_ID_NO_SOURCE_CODE_FOUND = "org.faktorips.devtools.stdbuilder.ui.commands.NoSourceCodeFound";
-
-    private static final String PARAMETER_ID_ELEMENT_REF = "elementRef";
+    // Unfortunately JDT does not expose these IDs via an enum or interface.
+    private static final String JDT_PARAMETER_ID_ELEMENT_REF = "elementRef";
 
     private IServiceLocator serviceLocator;
 
@@ -261,14 +262,14 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
 
     private IContributionItem createOpenInJavaEditorCommand(IJavaElement javaElement) {
         Map<String, Object> arguments = new HashMap<String, Object>(1);
-        arguments.put(PARAMETER_ID_ELEMENT_REF, javaElement);
+        arguments.put(JDT_PARAMETER_ID_ELEMENT_REF, javaElement);
 
-        return createCommand(COMMAND_ID_OPEN_ELEMENT_IN_EDITOR, arguments, getJavaElementIcon(javaElement),
+        return createCommand(JDT_COMMAND_ID_OPEN_ELEMENT_IN_JAVA_EDITOR, arguments, getJavaElementIcon(javaElement),
                 getJavaElementLabel(javaElement));
     }
 
     private IContributionItem createNoSourceCodeFoundCommand() {
-        return createCommand(COMMAND_ID_NO_SOURCE_CODE_FOUND, null, null, null);
+        return createCommand(StdBuilderUICommandId.COMMAND_NO_SOURCE_CODE_FOUND.getId(), null, null, null);
     }
 
     private IContributionItem createCommand(String commandId,

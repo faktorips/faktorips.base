@@ -14,20 +14,25 @@
 package org.faktorips.devtools.core.ui;
 
 /**
- * Enumerates all context menu IDs provided by Faktor-IPS.
+ * Enumerates all menu IDs, toolbar IDs and group IDs provided by Faktor-IPS.
  * 
  * @author Alexander Weickmann
  */
-public enum IpsContextMenuId {
+public enum IpsMenuId {
+
+    TOOLBAR_ENUM_TYPE_EDITOR_PAGE("org.faktorips.devtools.core.ui.editors.enumtype.toolbar"), //$NON-NLS-1$
 
     GROUP_JUMP_TO_SOURCE_CODE("jumpToSourceCode"); //$NON-NLS-1$
 
     private final String id;
 
-    private IpsContextMenuId(String id) {
+    private IpsMenuId(String id) {
         this.id = id;
     }
 
+    /**
+     * Returns the ID of this Faktor-IPS menu, toolbar or group.
+     */
     public String getId() {
         return id;
     }

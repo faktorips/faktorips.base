@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.ui.IpsContextMenuId;
+import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
@@ -146,7 +146,7 @@ public class MethodsSection extends SimpleIpsPartsSection {
 
         private void createContextMenu() {
             MenuManager menuManager = new MenuManager();
-            menuManager.add(new GroupMarker(IpsContextMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
+            menuManager.add(new GroupMarker(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
 
             Menu contextMenu = menuManager.createContextMenu(getViewer().getControl());
             getViewer().getControl().setMenu(contextMenu);

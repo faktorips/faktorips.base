@@ -1,3 +1,4 @@
+toolbar
 hyperlink
 enums
 enum

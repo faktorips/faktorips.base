@@ -27,12 +27,25 @@
             </visibleWhen>
          </menu>
       </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.faktorips.devtools.core.ui.editors.enumtype.toolbar?after=jumpToSourceCode">
+         <command
+               commandId="org.faktorips.devtools.stdbuilder.ui.commands.OpenIpsObjectInJavaEditor"
+               icon="icons/jumpToJavaEnum.gif"
+               style="push">
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
       <command
             id="org.faktorips.devtools.stdbuilder.ui.commands.NoSourceCodeFound"
             name="%org.faktorips.devtools.stdbuilder.ui.commands.NoSourceCodeFound">
+      </command>
+      <command
+            defaultHandler="org.faktorips.devtools.stdbuilder.ui.commands.OpenIpsObjectInJavaEditorHandler"
+            id="org.faktorips.devtools.stdbuilder.ui.commands.OpenIpsObjectInJavaEditor"
+            name="name">
       </command>
    </extension>
 

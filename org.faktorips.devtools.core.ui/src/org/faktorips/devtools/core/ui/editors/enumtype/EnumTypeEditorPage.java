@@ -14,15 +14,20 @@
 package org.faktorips.devtools.core.ui.editors.enumtype;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.action.ContributionManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.eclipse.ui.menus.IMenuService;
+import org.eclipse.ui.menus.MenuUtil;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
+import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.EnumImportExportAction;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
@@ -117,13 +122,18 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
         importAction = new EnumImportExportActionInEditor(getSite().getShell(), enumType, true);
         exportAction = new EnumImportExportActionInEditor(getSite().getShell(), enumType, false);
 
-        ScrolledForm form = getManagedForm().getForm();
-        form.getToolBarManager().add(importAction);
-        form.getToolBarManager().add(exportAction);
-
-        form.updateToolBar();
+        IToolBarManager toolbarManager = getManagedForm().getForm().getToolBarManager();
+        toolbarManager.add(importAction);
+        toolbarManager.add(exportAction);
+        toolbarManager.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
 
         updateToolbarActionEnabledStates();
+
+        IMenuService menuService = (IMenuService)getSite().getService(IMenuService.class);
+        menuService.populateContributionManager((ContributionManager)toolbarManager,
+                MenuUtil.toolbarUri(IpsMenuId.TOOLBAR_ENUM_TYPE_EDITOR_PAGE.getId()));
+
+        getManagedForm().getForm().updateToolBar();
     }
 
     /**

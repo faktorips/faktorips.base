@@ -58,7 +58,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrationOperation;
-import org.faktorips.devtools.core.ui.IpsContextMenuId;
+import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.actions.CleanUpTranslationsAction;
 import org.faktorips.devtools.core.ui.actions.CopyTableAction;
 import org.faktorips.devtools.core.ui.actions.CreateIpsArchiveAction;
@@ -196,7 +196,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         createOpenMenu(manager, selected, (IStructuredSelection)treeViewer.getSelection());
         manager.add(new Separator("reorg")); //$NON-NLS-1$
         createReorgActions(manager, selected);
-        manager.add(new Separator(IpsContextMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
+        manager.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
         manager.add(new GroupMarker(GROUP_NAVIGATE));
         manager.add(new Separator("misc")); //$NON-NLS-1$
         createRefreshAction(manager, selected);
