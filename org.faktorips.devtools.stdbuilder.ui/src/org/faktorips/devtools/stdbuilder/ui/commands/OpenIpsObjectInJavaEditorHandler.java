@@ -88,4 +88,20 @@ public class OpenIpsObjectInJavaEditorHandler extends IpsAbstractHandler {
         }
     }
 
+    /**
+     * Execution is only possible if the generated Java implementation type actually exists.
+     */
+    @Override
+    public boolean isEnabled() {
+        IIpsSrcFile ipsSrcFile = getCurrentlySelectedIpsSrcFile();
+        try {
+            IIpsObject ipsObject = ipsSrcFile.getIpsObject();
+            StandardBuilderSet builderSet = (StandardBuilderSet)ipsObject.getIpsProject().getIpsArtefactBuilderSet();
+            IType generatedJavaImplementationType = builderSet.getGeneratedJavaImplementationType(ipsObject);
+            return generatedJavaImplementationType.exists();
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

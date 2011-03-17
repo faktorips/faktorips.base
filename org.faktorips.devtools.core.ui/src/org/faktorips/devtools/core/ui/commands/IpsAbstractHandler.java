@@ -30,28 +30,18 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 
 public abstract class IpsAbstractHandler extends AbstractHandler {
+
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
-        IWorkbenchWindow activeWindow = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
-
-        TypedSelection<IAdaptable> typedSelection;
-
-        IWorkbenchPage activePage = activeWindow.getActivePage();
-
-        IWorkbenchPart part = activeWindow.getPartService().getActivePart();
-        if (part instanceof IEditorPart) {
-            typedSelection = getSelectionFromEditor(part);
-        } else {
-            typedSelection = getSelectionFromSelectionProvider();
-        }
-        if (typedSelection == null || !typedSelection.isValid()) {
-            return null;
-        }
-        IIpsSrcFile ipsSrcFile = (IIpsSrcFile)typedSelection.getFirstElement().getAdapter(IIpsSrcFile.class);
+        IIpsSrcFile ipsSrcFile = getCurrentlySelectedIpsSrcFile();
         if (ipsSrcFile == null) {
             return null;
         }
+
+        IWorkbenchWindow activeWindow = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
+        IWorkbenchPage activePage = activeWindow.getActivePage();
         execute(event, activePage, ipsSrcFile);
+
         // return must be null - see jdoc
         return null;
     }
@@ -76,4 +66,22 @@ public abstract class IpsAbstractHandler extends AbstractHandler {
 
     public abstract void execute(ExecutionEvent event, IWorkbenchPage activePage, IIpsSrcFile ipsSrcFile)
             throws ExecutionException;
+
+    protected IIpsSrcFile getCurrentlySelectedIpsSrcFile() {
+        IWorkbenchWindow activeWindow = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
+
+        IWorkbenchPart part = activeWindow.getPartService().getActivePart();
+        TypedSelection<IAdaptable> typedSelection;
+        if (part instanceof IEditorPart) {
+            typedSelection = getSelectionFromEditor(part);
+        } else {
+            typedSelection = getSelectionFromSelectionProvider();
+        }
+        if (typedSelection == null || !typedSelection.isValid()) {
+            return null;
+        }
+
+        return (IIpsSrcFile)typedSelection.getFirstElement().getAdapter(IIpsSrcFile.class);
+    }
+
 }
