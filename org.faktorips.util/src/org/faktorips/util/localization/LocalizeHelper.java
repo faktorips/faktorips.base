@@ -42,6 +42,9 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 
 /**
+ * THIS IS A UTIL CLASS TO COPY LOCALIZE-PROPERTY FILES. DO NOT USE ANY OF THESE METHODS IN
+ * PRODUCTIVE CODE
+ * 
  * Simple class to support developers in internationalisation-process.
  * 
  * All files named "messages.properties" in the source dir (recursively scanned) are compared to all
@@ -55,7 +58,7 @@ import org.apache.commons.lang.StringUtils;
  * 
  * @author Thorsten Guenther
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("all")
 public class LocalizeHelper {
 
     File sourceRoot;
