@@ -6,7 +6,6 @@
 		<ant antfile="build.xml" dir="../org.faktorips.dtflcommon" target="build.jars"/>
 		<ant antfile="build.xml" dir="../org.faktorips.fl" target="build.jars"/>
 		<ant antfile="build.xml" dir="../org.faktorips.runtime.java5" target="build.jars"/>
-		<ant antfile="build.xml" dir="../org.faktorips.nebula" target="build.jars"/>
 		<ant antfile="build.xml" dir="../org.faktorips.devtools.core" target="build.jars"/>
 		<ant antfile="build.xml" dir="../org.faktorips.devtools.stdbuilder" target="build.jars"/>
 		<ant antfile="build.xml" dir="../org.faktorips.devtools.ant" target="build.jars"/>

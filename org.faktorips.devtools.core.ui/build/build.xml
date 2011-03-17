@@ -74,13 +74,6 @@
                 <include name="build/results/*.jar"/>
             </patternset>
         </fileset>
-        <!-- depends on org.faktorips.nebula-->
-        <fileset dir="../../org.faktorips.nebula/">
-            <patternset>
-                <include name="lib/*.jar"/>
-                <include name="build/results/*.jar"/>
-            </patternset>
-        </fileset>
     </path>
     <property name="path" refid="classpath"/>
     

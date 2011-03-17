@@ -32,7 +32,6 @@ Require-Bundle: org.eclipse.ui;visibility:=reexport,
  org.eclipse.team.cvs.ui;bundle-version="3.3.100",
  org.faktorips.valuetypes.java5,
  org.faktorips.runtime.java5,
- org.faktorips.nebula;bundle-version="0.0.0",
  org.eclipse.core.databinding;bundle-version="1.1.0",
  org.eclipse.core.expressions,
  org.eclipse.equinox.security;bundle-version="1.0.1"
@@ -92,4 +91,6 @@ Bundle-Localization: plugin
 Bundle-ClassPath: .
 Bundle-Vendor: Faktor Zehn AG
 Eclipse-ExtensibleAPI: true
-Import-Package: org.apache.commons.lang;version="[2.3.0,2.5.0)"
+Import-Package: org.apache.commons.lang;version="[2.3.0,2.5.0)",
+ org.eclipse.nebula.jface.gridviewer,
+ org.eclipse.nebula.widgets.grid
