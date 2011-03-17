@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.junit.Before;
 import org.junit.Test;
@@ -87,9 +87,11 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
         }
 
         @Override
-        protected boolean initializeTargetJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet) {
+        protected boolean initializeTargetJavaElements(IIpsObjectPartContainer ipsObjectPartContainer,
+                StandardBuilderSet builderSet) {
+
             initializeTargetJavaElementsCalled = true;
-            setTargetJavaElements(builderSet.getGeneratedJavaElements(ipsElement));
+            setTargetJavaElements(builderSet.getGeneratedJavaElements(ipsObjectPartContainer));
             return true;
         }
 

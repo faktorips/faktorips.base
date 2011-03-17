@@ -22,6 +22,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.AbstractPcTypeBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -165,16 +166,18 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
 
     // TODO AW: This code could be on a higher abstraction level but the hierarchy doesn't allow it.
     @Override
-    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements, IIpsElement ipsElement) {
+    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
+            IIpsObjectPartContainer ipsObjectPartContainer) {
+
         IType type = null;
-        if (ipsElement instanceof IType) {
-            type = (IType)ipsElement;
-        } else if (ipsElement instanceof IAttribute) {
-            type = ((IAttribute)ipsElement).getType();
-        } else if (ipsElement instanceof IAssociation) {
-            type = ((IAssociation)ipsElement).getType();
-        } else if (ipsElement instanceof IMethod) {
-            type = ((IMethod)ipsElement).getType();
+        if (ipsObjectPartContainer instanceof IType) {
+            type = (IType)ipsObjectPartContainer;
+        } else if (ipsObjectPartContainer instanceof IAttribute) {
+            type = ((IAttribute)ipsObjectPartContainer).getType();
+        } else if (ipsObjectPartContainer instanceof IAssociation) {
+            type = ((IAssociation)ipsObjectPartContainer).getType();
+        } else if (ipsObjectPartContainer instanceof IMethod) {
+            type = ((IMethod)ipsObjectPartContainer).getType();
         } else {
             return;
         }
@@ -182,9 +185,9 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         GenType genType = getGenType(type);
         org.eclipse.jdt.core.IType javaType = getGeneratedJavaTypes(type).get(0);
         if (isBuildingPublishedSourceFile()) {
-            genType.getGeneratedJavaElementsForPublishedInterface(javaElements, javaType, ipsElement);
+            genType.getGeneratedJavaElementsForPublishedInterface(javaElements, javaType, ipsObjectPartContainer);
         } else {
-            genType.getGeneratedJavaElementsForImplementation(javaElements, javaType, ipsElement);
+            genType.getGeneratedJavaElementsForImplementation(javaElements, javaType, ipsObjectPartContainer);
         }
     }
 

@@ -30,8 +30,8 @@ import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.MoveParticipant;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
@@ -103,12 +103,14 @@ public class MoveRefactoringParticipant extends MoveParticipant {
         }
 
         @Override
-        protected boolean initializeTargetJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet) {
-            if (!(ipsElement instanceof IIpsObject)) {
+        protected boolean initializeTargetJavaElements(IIpsObjectPartContainer ipsObjectPartContainer,
+                StandardBuilderSet builderSet) {
+
+            if (!(ipsObjectPartContainer instanceof IIpsObject)) {
                 return false;
             }
 
-            IIpsObject ipsObject = (IIpsObject)ipsElement;
+            IIpsObject ipsObject = (IIpsObject)ipsObjectPartContainer;
             IIpsPackageFragment targetIpsPackageFragment = (IIpsPackageFragment)getArguments().getDestination();
             String newName = ipsObject.getName();
             boolean success = initTargetJavaElements(ipsObject, targetIpsPackageFragment, newName, builderSet);

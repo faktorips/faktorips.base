@@ -34,7 +34,6 @@ import org.faktorips.devtools.core.builder.ComplianceCheck;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.builder.TypeSection;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.EnumUtil;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -44,6 +43,7 @@ import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -1155,9 +1155,11 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     @Override
-    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements, IIpsElement ipsElement) {
-        if (ipsElement instanceof IEnumAttribute) {
-            IEnumAttribute enumAttribute = (IEnumAttribute)ipsElement;
+    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
+            IIpsObjectPartContainer ipsObjectPartContainer) {
+
+        if (ipsObjectPartContainer instanceof IEnumAttribute) {
+            IEnumAttribute enumAttribute = (IEnumAttribute)ipsObjectPartContainer;
             IEnumType enumType = enumAttribute.getEnumType();
             IType javaType = getGeneratedJavaTypes(enumType).get(0);
             if (isJava5EnumsAvailable()) {
@@ -1166,8 +1168,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                 getGeneratedJavaElementsForAttributeJava5EnumsNotAvailable(javaElements, enumAttribute, javaType);
             }
 
-        } else if (ipsElement instanceof IEnumLiteralNameAttributeValue) {
-            IEnumLiteralNameAttributeValue literalNameValue = (IEnumLiteralNameAttributeValue)ipsElement;
+        } else if (ipsObjectPartContainer instanceof IEnumLiteralNameAttributeValue) {
+            IEnumLiteralNameAttributeValue literalNameValue = (IEnumLiteralNameAttributeValue)ipsObjectPartContainer;
             IIpsObject parentIpsObject = literalNameValue.getEnumValue().getEnumValueContainer();
             IType javaType = getGeneratedJavaTypes(parentIpsObject).get(0);
             IField javaEnumLiteral = javaType.getField(literalNameValue.getValue());

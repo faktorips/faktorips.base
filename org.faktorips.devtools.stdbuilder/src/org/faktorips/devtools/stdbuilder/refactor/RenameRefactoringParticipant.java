@@ -29,10 +29,10 @@ import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RenameParticipant;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -128,13 +128,16 @@ public class RenameRefactoringParticipant extends RenameParticipant {
          * <tt>IEnumAttribute</tt> shall be renamed.
          */
         @Override
-        protected boolean initializeOriginalJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet) {
-            boolean success = super.initializeOriginalJavaElements(ipsElement, builderSet);
+        protected boolean initializeOriginalJavaElements(IIpsObjectPartContainer ipsObjectPartContainer,
+                StandardBuilderSet builderSet) {
+
+            boolean success = super.initializeOriginalJavaElements(ipsObjectPartContainer, builderSet);
             try {
-                if (ipsElement instanceof IPolicyCmptTypeAttribute) {
-                    success = initializeOriginalJavaElements((IPolicyCmptTypeAttribute)ipsElement, builderSet);
-                } else if (ipsElement instanceof IEnumAttribute) {
-                    success = initializeOriginalJavaElements((IEnumAttribute)ipsElement, builderSet);
+                if (ipsObjectPartContainer instanceof IPolicyCmptTypeAttribute) {
+                    success = initializeOriginalJavaElements((IPolicyCmptTypeAttribute)ipsObjectPartContainer,
+                            builderSet);
+                } else if (ipsObjectPartContainer instanceof IEnumAttribute) {
+                    success = initializeOriginalJavaElements((IEnumAttribute)ipsObjectPartContainer, builderSet);
                 }
             } catch (CoreException e) {
                 throw new RuntimeException(e);
@@ -178,28 +181,30 @@ public class RenameRefactoringParticipant extends RenameParticipant {
         }
 
         @Override
-        protected boolean initializeTargetJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet) {
-            if (ipsElement instanceof IAttribute) {
-                return initializeTargetJavaElements((IAttribute)ipsElement, builderSet);
+        protected boolean initializeTargetJavaElements(IIpsObjectPartContainer ipsObjectPartContainer,
+                StandardBuilderSet builderSet) {
 
-            } else if (ipsElement instanceof IAssociation) {
-                return initializeTargetJavaElements((IAssociation)ipsElement, builderSet);
+            if (ipsObjectPartContainer instanceof IAttribute) {
+                return initializeTargetJavaElements((IAttribute)ipsObjectPartContainer, builderSet);
 
-            } else if (ipsElement instanceof IIpsObject) {
-                IIpsObject ipsObject = (IIpsObject)ipsElement;
+            } else if (ipsObjectPartContainer instanceof IAssociation) {
+                return initializeTargetJavaElements((IAssociation)ipsObjectPartContainer, builderSet);
+
+            } else if (ipsObjectPartContainer instanceof IIpsObject) {
+                IIpsObject ipsObject = (IIpsObject)ipsObjectPartContainer;
                 IIpsPackageFragment targetIpsPackageFragment = ipsObject.getIpsPackageFragment();
                 String newName = getArguments().getNewName();
                 return initTargetJavaElements(ipsObject, targetIpsPackageFragment, newName, builderSet);
 
-            } else if (ipsElement instanceof IEnumAttribute) {
+            } else if (ipsObjectPartContainer instanceof IEnumAttribute) {
                 try {
-                    return initializeTargetJavaElements((IEnumAttribute)ipsElement, builderSet);
+                    return initializeTargetJavaElements((IEnumAttribute)ipsObjectPartContainer, builderSet);
                 } catch (CoreException e) {
                     throw new RuntimeException(e);
                 }
 
-            } else if (ipsElement instanceof IEnumLiteralNameAttributeValue) {
-                return initializeTargetJavaElements((IEnumLiteralNameAttributeValue)ipsElement, builderSet);
+            } else if (ipsObjectPartContainer instanceof IEnumLiteralNameAttributeValue) {
+                return initializeTargetJavaElements((IEnumLiteralNameAttributeValue)ipsObjectPartContainer, builderSet);
             }
 
             throw new RuntimeException("This kind of IPS element is not supported by the rename participant.");

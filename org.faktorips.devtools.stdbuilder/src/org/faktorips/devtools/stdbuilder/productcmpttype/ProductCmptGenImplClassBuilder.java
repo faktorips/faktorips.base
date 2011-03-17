@@ -29,9 +29,9 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.codegen.dthelpers.Java5ClassNames;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -874,19 +874,21 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     }
 
     @Override
-    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements, IIpsElement ipsElement) {
+    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
+            IIpsObjectPartContainer ipsObjectPartContainer) {
+
         IProductCmptType productCmptType = null;
-        if (ipsElement instanceof IProductCmptType) {
-            productCmptType = (IProductCmptType)ipsElement;
+        if (ipsObjectPartContainer instanceof IProductCmptType) {
+            productCmptType = (IProductCmptType)ipsObjectPartContainer;
 
-        } else if (ipsElement instanceof IProductCmptTypeAttribute) {
-            productCmptType = ((IProductCmptTypeAttribute)ipsElement).getProductCmptType();
+        } else if (ipsObjectPartContainer instanceof IProductCmptTypeAttribute) {
+            productCmptType = ((IProductCmptTypeAttribute)ipsObjectPartContainer).getProductCmptType();
 
-        } else if (ipsElement instanceof IProductCmptTypeAssociation) {
-            productCmptType = ((IProductCmptTypeAssociation)ipsElement).getProductCmptType();
+        } else if (ipsObjectPartContainer instanceof IProductCmptTypeAssociation) {
+            productCmptType = ((IProductCmptTypeAssociation)ipsObjectPartContainer).getProductCmptType();
 
-        } else if (ipsElement instanceof IProductCmptTypeMethod) {
-            productCmptType = (IProductCmptType)((IProductCmptTypeMethod)ipsElement).getIpsObject();
+        } else if (ipsObjectPartContainer instanceof IProductCmptTypeMethod) {
+            productCmptType = (IProductCmptType)((IProductCmptTypeMethod)ipsObjectPartContainer).getIpsObject();
 
         } else {
             return;
@@ -894,7 +896,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
 
         IType javaType = getGeneratedJavaTypes(productCmptType).get(0);
         GenProductCmptType genProductCmptType = getGenProductCmptType(productCmptType);
-        genProductCmptType.getGeneratedJavaElementsForImplementation(javaElements, javaType, ipsElement);
+        genProductCmptType.getGeneratedJavaElementsForImplementation(javaElements, javaType, ipsObjectPartContainer);
     }
 
     @Override

@@ -28,8 +28,8 @@ import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -107,10 +107,12 @@ public class PullUpRefactoringParticipant extends RefactoringParticipant {
         }
 
         @Override
-        protected boolean initializeTargetJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet) {
+        protected boolean initializeTargetJavaElements(IIpsObjectPartContainer ipsObjectPartContainer,
+                StandardBuilderSet builderSet) {
+
             boolean success = false;
-            if (ipsElement instanceof IAttribute) {
-                success = initializeTargetJavaElementsForAttribute((IAttribute)ipsElement, builderSet);
+            if (ipsObjectPartContainer instanceof IAttribute) {
+                success = initializeTargetJavaElementsForAttribute((IAttribute)ipsObjectPartContainer, builderSet);
             }
             return success;
         }

@@ -35,8 +35,8 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.resource.DeleteResourceChange;
 import org.eclipse.swt.widgets.Display;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.util.RefactorUtil;
@@ -55,15 +55,15 @@ import org.faktorips.util.ArgumentCheck;
 public abstract class RefactoringParticipantHelper {
 
     /**
-     * List containing the <tt>IJavaElement</tt>s generated originally for the <tt>IIpsElement</tt>
-     * to be refactored.
+     * List containing the <tt>IJavaElement</tt>s generated originally for the
+     * <tt>IIpsObjectPartContainer</tt> to be refactored.
      */
     private List<IJavaElement> originalJavaElements;
 
     /**
-     * List containing the <tt>IJavaElement</tt>s generated for the <tt>IIpsElement</tt> to be
-     * refactored as they will be after the refactoring. This information is needed to be able to
-     * provide the JDT refactorings with the correct new names for the <tt>IJavaElement</tt>s.
+     * List containing the <tt>IJavaElement</tt>s generated for the <tt>IIpsObjectPartContainer</tt>
+     * to be refactored as they will be after the refactoring. This information is needed to be able
+     * to provide the JDT refactorings with the correct new names for the <tt>IJavaElement</tt>s.
      */
     private List<IJavaElement> targetJavaElements;
 
@@ -149,7 +149,9 @@ public abstract class RefactoringParticipantHelper {
         return new NullChange();
     }
 
-    /** Executes the given <tt>Refactoring</tt>. */
+    /**
+     * Executes the given <tt>Refactoring</tt>.
+     */
     private void performRefactoring(final Refactoring refactoring, final IProgressMonitor pm) {
         Display.getDefault().syncExec(new Runnable() {
             @Override
@@ -167,47 +169,52 @@ public abstract class RefactoringParticipantHelper {
 
     /**
      * This implementation initializes the list of generated <tt>IJavaElement</tt>s for the provided
-     * <tt>IIpsElement</tt>.
+     * <tt>IIpsObjectPartContainer</tt>.
      * <p>
      * Returns <tt>false</tt> in case the element passed to this operation is not an
-     * <tt>IIpsElement</tt>. Else the subclass implementation is called to initialize the
-     * <tt>IJavaElement</tt>s that will be generated for the <tt>IIpsElement</tt> after the
-     * refactoring has finished and <tt>true</tt> is returned.
+     * <tt>IIpsObjectPartContainer</tt>. Else the subclass implementation is called to initialize
+     * the <tt>IJavaElement</tt>s that will be generated for the <tt>IIpsObjectPartContainer</tt>
+     * after the refactoring has finished and <tt>true</tt> is returned.
      */
     public final boolean initialize(Object element) {
-        if (!(element instanceof IIpsElement)) {
+        if (!(element instanceof IIpsObjectPartContainer)) {
             return false;
         }
 
-        IIpsElement ipsElement = (IIpsElement)element;
-        StandardBuilderSet builderSet = (StandardBuilderSet)ipsElement.getIpsProject().getIpsArtefactBuilderSet();
+        IIpsObjectPartContainer ipsObjectPartContainer = (IIpsObjectPartContainer)element;
+        StandardBuilderSet builderSet = (StandardBuilderSet)ipsObjectPartContainer.getIpsProject()
+                .getIpsArtefactBuilderSet();
 
-        boolean success = initializeOriginalJavaElements(ipsElement, builderSet);
+        boolean success = initializeOriginalJavaElements(ipsObjectPartContainer, builderSet);
         if (success) {
-            success = initializeTargetJavaElements(ipsElement, builderSet);
+            success = initializeTargetJavaElements(ipsObjectPartContainer, builderSet);
         }
         return success;
     }
 
     /**
-     * Initializes the original Java elements generated for the given <tt>IIpsElement</tt>. This
-     * implementation asks the builder set for the generated elements of the given
-     * <tt>IIpsElement</tt>. This behavior may be overwritten by subclasses.
+     * Initializes the original Java elements generated for the given
+     * <tt>IIpsObjectPartContainer</tt>. This implementation asks the builder set for the generated
+     * elements of the given <tt>IIpsObjectPartContainer</tt>. This behavior may be overwritten by
+     * subclasses.
      */
-    protected boolean initializeOriginalJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet) {
-        originalJavaElements = builderSet.getGeneratedJavaElements(ipsElement);
+    protected boolean initializeOriginalJavaElements(IIpsObjectPartContainer ipsObjectPartContainer,
+            StandardBuilderSet builderSet) {
+
+        originalJavaElements = builderSet.getGeneratedJavaElements(ipsObjectPartContainer);
         return true;
     }
 
     /**
      * Subclass implementation responsible for initializing the <tt>IJavaElement</tt>s that will be
-     * generated for the <tt>IIpsElement</tt> after the refactoring has finished.
+     * generated for the <tt>IIpsObjectPartContainer</tt> after the refactoring has finished.
      * 
-     * @param ipsElement The <tt>IIpsElement</tt> to be refactored.
+     * @param ipsObjectPartContainer The <tt>IIpsObjectPartContainer</tt> to be refactored.
      * @param builderSet A reference to the <tt>StandardBuilderSet</tt> to ask for generated Java
      *            elements.
      */
-    protected abstract boolean initializeTargetJavaElements(IIpsElement ipsElement, StandardBuilderSet builderSet);
+    protected abstract boolean initializeTargetJavaElements(IIpsObjectPartContainer ipsObjectPartContainer,
+            StandardBuilderSet builderSet);
 
     /**
      * Initializes the target <tt>IJavaElement</tt>s for the given <tt>IIpsObject</tt>.

@@ -18,9 +18,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.builder.DumyJavaSourceFileBuilder;
 import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
@@ -112,4 +117,38 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         assertNotNull(value);
         builder.afterBuild(ipsSrcFile);
     }
+
+    @Test
+    public void testGetGeneratedJavaImplementationType() throws CoreException {
+        JavaSourceFileBuilder spyBuilder = spy(builder);
+        when(spyBuilder.isBuildingPublishedSourceFile()).thenReturn(false);
+        IType mockJavaType = mock(IType.class);
+        when(spyBuilder.getGeneratedJavaImplementationTypeThis()).thenReturn(mockJavaType);
+        when(spyBuilder.isBuilderFor(ipsSrcFile)).thenReturn(true);
+
+        IType generatedJavaImplementationType = spyBuilder
+                .getGeneratedJavaImplementationType(ipsSrcFile.getIpsObject());
+
+        assertEquals(mockJavaType, generatedJavaImplementationType);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testGetGeneratedJavaImplementationTypeNullPointer() {
+        builder.getGeneratedJavaImplementationType(null);
+    }
+
+    @Test
+    public void testGetGeneratedJavaImplementationTypeBuildingPublishedSourceFile() throws CoreException {
+        JavaSourceFileBuilder spyBuilder = spy(builder);
+        when(spyBuilder.isBuildingPublishedSourceFile()).thenReturn(true);
+        IType mockJavaType = mock(IType.class);
+        when(spyBuilder.getGeneratedJavaImplementationTypeThis()).thenReturn(mockJavaType);
+        when(spyBuilder.isBuilderFor(ipsSrcFile)).thenReturn(true);
+
+        IType generatedJavaImplementationType = spyBuilder
+                .getGeneratedJavaImplementationType(ipsSrcFile.getIpsObject());
+
+        assertNull(generatedJavaImplementationType);
+    }
+
 }

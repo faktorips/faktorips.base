@@ -36,6 +36,8 @@ import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
@@ -699,22 +701,37 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     /**
+     * Returns the Java implementation type that is generated for the given {@link IIpsObject}.
+     * <p>
+     * It could be that multiple implementation types are generated for an {@link IIpsObject}. In
+     * this case only the type that we consider most relevant is returned.
+     * 
+     * @param ipsObject The {@link IIpsObject} to get the generated Java implementation type for
+     * 
+     * @throws NullPointerException If the parameter is null
+     */
+    public org.eclipse.jdt.core.IType getGeneratedJavaImplementationType(IIpsObject ipsObject) {
+        // TODO AW
+        return null;
+    }
+
+    /**
      * Returns a list containing all <tt>IJavaElement</tt>s this builder set generates for the given
-     * <tt>IIpsElement</tt>.
+     * <tt>IIpsObjectPartContainer</tt>.
      * <p>
      * Returns an empty list if no <tt>IJavaElement</tt>s are generated for the provided
-     * <tt>IIpsElement</tt>.
+     * <tt>IIpsObjectPartContainer</tt>.
      * <p>
      * The IPS model should be completely valid if calling this method or else the results may not
      * be exhaustive.
      * 
-     * @param ipsElement The <tt>IIpsElement</tt> to obtain the generated <tt>IJavaElement</tt>s
-     *            for.
+     * @param ipsObjectPartContainer The <tt>IIpsObjectPartContainer</tt> to obtain the generated
+     *            <tt>IJavaElement</tt>s for.
      * 
-     * @throws NullPointerException If <tt>ipsElement</tt> is <tt>null</tt>.
+     * @throws NullPointerException If the parameter is null
      */
-    public List<IJavaElement> getGeneratedJavaElements(IIpsElement ipsElement) {
-        ArgumentCheck.notNull(ipsElement);
+    public List<IJavaElement> getGeneratedJavaElements(IIpsObjectPartContainer ipsObjectPartContainer) {
+        ArgumentCheck.notNull(ipsObjectPartContainer);
 
         List<IJavaElement> javaElements = new ArrayList<IJavaElement>();
         for (IIpsArtefactBuilder builder : getArtefactBuilders()) {
@@ -725,10 +742,10 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                 continue;
             }
             JavaSourceFileBuilder javaBuilder = (JavaSourceFileBuilder)builder;
-            IIpsSrcFile ipsSrcFile = (IIpsSrcFile)ipsElement.getAdapter(IIpsSrcFile.class);
+            IIpsSrcFile ipsSrcFile = (IIpsSrcFile)ipsObjectPartContainer.getAdapter(IIpsSrcFile.class);
             try {
                 if (javaBuilder.isBuilderFor(ipsSrcFile)) {
-                    javaElements.addAll(javaBuilder.getGeneratedJavaElements(ipsElement));
+                    javaElements.addAll(javaBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
                 }
             } catch (CoreException e) {
                 IpsPlugin.log(e);
