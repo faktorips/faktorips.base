@@ -1069,16 +1069,24 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     /**
      * Returns the Java implementation type this builder generates for the given {@link IIpsObject}.
      * <p>
-     * Returns null if this builder is not building an implementation type or if this builder does
-     * not consider it's generated implementation type to be of main relevance.
+     * Returns null if this builder is not building an implementation type or if this builder is not
+     * a builder for the given {@link IIpsObject} or if this builder does not consider it's
+     * generated implementation type to be of main relevance.
      * 
      * @param ipsObject The {@link IIpsObject} to get the generated Java implementation type for
      * 
      * @throws NullPointerException If the parameter is null
      */
-    public IType getGeneratedJavaImplementationType(IIpsObject ipsObject) {
+    public final IType getGeneratedJavaImplementationType(IIpsObject ipsObject) {
         ArgumentCheck.notNull(ipsObject);
-        return isBuildingPublishedSourceFile() ? null : getGeneratedJavaImplementationTypeThis();
+        try {
+            if (isBuildingPublishedSourceFile() || !isBuilderFor(ipsObject.getIpsSrcFile())) {
+                return null;
+            }
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+        return getGeneratedJavaImplementationTypeThis();
     }
 
     /**

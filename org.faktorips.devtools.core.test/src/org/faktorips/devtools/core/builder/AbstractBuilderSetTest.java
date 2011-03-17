@@ -15,10 +15,14 @@ package org.faktorips.devtools.core.builder;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.abstracttest.builder.DumyJavaSourceFileBuilder;
 import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.util.LocalizedStringsSet;
@@ -53,12 +57,12 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
     @Test
     public void testGetBuilderByClass() {
         assertEquals(0, builderSet.getBuildersByClass(NotInBuilderSer.class).size());
-        assertEquals(5, builderSet.getBuildersByClass(DumyJavaSourceFileBuilder.class).size());
-        assertEquals(a, builderSet.getBuildersByClass(DumyJavaSourceFileBuilder.class).get(0));
-        assertEquals(b, builderSet.getBuildersByClass(DumyJavaSourceFileBuilder.class).get(1));
-        assertEquals(c, builderSet.getBuildersByClass(DumyJavaSourceFileBuilder.class).get(2));
-        assertEquals(d, builderSet.getBuildersByClass(DumyJavaSourceFileBuilder.class).get(3));
-        assertEquals(e, builderSet.getBuildersByClass(DumyJavaSourceFileBuilder.class).get(4));
+        assertEquals(5, builderSet.getBuildersByClass(StubJavaSourceFileBuilder.class).size());
+        assertEquals(a, builderSet.getBuildersByClass(StubJavaSourceFileBuilder.class).get(0));
+        assertEquals(b, builderSet.getBuildersByClass(StubJavaSourceFileBuilder.class).get(1));
+        assertEquals(c, builderSet.getBuildersByClass(StubJavaSourceFileBuilder.class).get(2));
+        assertEquals(d, builderSet.getBuildersByClass(StubJavaSourceFileBuilder.class).get(3));
+        assertEquals(e, builderSet.getBuildersByClass(StubJavaSourceFileBuilder.class).get(4));
         assertEquals(1, builderSet.getBuildersByClass(A.class).size());
         assertEquals(a, builderSet.getBuildersByClass(A.class).get(0));
         assertEquals(1, builderSet.getBuildersByClass(B.class).size());
@@ -73,26 +77,26 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
         assertEquals(e, builderSet.getBuildersByClass(EExtendsC.class).get(0));
     }
 
-    class A extends DumyJavaSourceFileBuilder {
+    class A extends StubJavaSourceFileBuilder {
 
         public A() throws CoreException {
-            super(new TestIpsArtefactBuilderSet(), "", new LocalizedStringsSet(DumyJavaSourceFileBuilder.class));
+            super(new TestIpsArtefactBuilderSet(), "", new LocalizedStringsSet(StubJavaSourceFileBuilder.class));
         }
 
     }
 
-    class B extends DumyJavaSourceFileBuilder {
+    class B extends StubJavaSourceFileBuilder {
 
         public B() throws CoreException {
-            super(new TestIpsArtefactBuilderSet(), "", new LocalizedStringsSet(DumyJavaSourceFileBuilder.class));
+            super(new TestIpsArtefactBuilderSet(), "", new LocalizedStringsSet(StubJavaSourceFileBuilder.class));
         }
 
     }
 
-    class C extends DumyJavaSourceFileBuilder {
+    class C extends StubJavaSourceFileBuilder {
 
         public C() throws CoreException {
-            super(new TestIpsArtefactBuilderSet(), "", new LocalizedStringsSet(DumyJavaSourceFileBuilder.class));
+            super(new TestIpsArtefactBuilderSet(), "", new LocalizedStringsSet(StubJavaSourceFileBuilder.class));
         }
 
     }
@@ -113,10 +117,47 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
 
     }
 
-    class NotInBuilderSer extends DumyJavaSourceFileBuilder {
+    class NotInBuilderSer extends StubJavaSourceFileBuilder {
 
         public NotInBuilderSer(IIpsArtefactBuilderSet builderSet) {
-            super(builderSet, "", new LocalizedStringsSet(DumyJavaSourceFileBuilder.class));
+            super(builderSet, "", new LocalizedStringsSet(StubJavaSourceFileBuilder.class));
+        }
+
+    }
+
+    private static class StubJavaSourceFileBuilder extends JavaSourceFileBuilder {
+
+        public boolean isBuilderFor = false;
+
+        public StubJavaSourceFileBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
+                LocalizedStringsSet localizedStringsSet) {
+
+            super(builderSet, kindId, localizedStringsSet);
+        }
+
+        @Override
+        protected String generate() throws CoreException {
+            return "";
+        }
+
+        @Override
+        public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
+            return isBuilderFor;
+        }
+
+        public void reset() {
+            isBuilderFor = false;
+        }
+
+        @Override
+        protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
+                IIpsObjectPartContainer ipsObjectPartContainer) {
+
+        }
+
+        @Override
+        public boolean isBuildingPublishedSourceFile() {
+            return false;
         }
 
     }
