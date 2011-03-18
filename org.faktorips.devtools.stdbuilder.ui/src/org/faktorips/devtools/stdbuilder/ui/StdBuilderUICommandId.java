@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.ui;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 
 /**
  * Enumerates all command IDs and command parameter IDs provided by the Faktor-IPS Standard Builder
@@ -26,8 +26,9 @@ public enum StdBuilderUICommandId {
     COMMAND_NO_SOURCE_CODE_FOUND("org.faktorips.devtools.stdbuilder.ui.commands.NoSourceCodeFound"),
 
     /**
-     * Capable of opening the generated Java types for a selected {@link IIpsObject}. Supports
-     * normal selection or indirect selection via opened editor.
+     * Opens a context menu that allows to navigate to the generated Java source code for a selected
+     * {@link IIpsObjectPartContainer}. Supports normal selection or indirect selection via opened
+     * editor.
      */
     COMMAND_OPEN_JUMP_TO_SOURCE_CODE_CONTEXT_MENU(
             "org.faktorips.devtools.stdbuilder.ui.commands.OpenJumpToSourceCodeContextMenu");
