@@ -13,7 +13,13 @@
 
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
+import org.eclipse.jface.action.ContributionManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.menus.IMenuService;
+import org.eclipse.ui.menus.MenuUtil;
+import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 
@@ -50,9 +56,22 @@ public class TestCaseTypeEditorPage extends IpsObjectEditorPage {
         formBody.setLayout(createPageLayout(1, false));
         section = new TestCaseTypeSection(formBody, toolkit, ((TestCaseTypeEditor)getEditor()).getTestCaseType(),
                 sectionTitle, sectionDetailTitle, getManagedForm().getForm());
+        createToolbarActions();
     }
 
     public void refreshInclStructuralChanges() {
         section.refreshTreeAndDetailArea();
     }
+
+    private void createToolbarActions() {
+        IToolBarManager toolbarManager = getManagedForm().getForm().getToolBarManager();
+        toolbarManager.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
+
+        IMenuService menuService = (IMenuService)getSite().getService(IMenuService.class);
+        menuService.populateContributionManager((ContributionManager)toolbarManager,
+                MenuUtil.toolbarUri(IpsMenuId.TOOLBAR_TEST_CASE_TYPE_EDITOR_PAGE.getId()));
+
+        getManagedForm().getForm().updateToolBar();
+    }
+
 }

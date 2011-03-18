@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.IType;
@@ -31,7 +32,13 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.ISources;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.CompoundContributionItem;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
@@ -76,8 +83,11 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     }
 
     @Override
-    protected IContributionItem[] getContributionItems() {
+    public IContributionItem[] getContributionItems() {
         IIpsElement selectedItem = getSelectedIpsElement();
+        if (selectedItem == null) {
+            return getContributionItemsForNoSourceCodeFound();
+        }
         if (selectedItem instanceof IIpsSrcFile) {
             try {
                 selectedItem = ((IIpsSrcFile)selectedItem).getIpsObject();
@@ -231,11 +241,38 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     }
 
     private IIpsElement getSelectedIpsElement() {
+        IWorkbenchWindow activeWindow = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
+        IWorkbenchPart part = activeWindow.getPartService().getActivePart();
+        if (part instanceof IEditorPart) {
+            TypedSelection<IAdaptable> typedSelection = getSelectionFromEditor(part);
+            IIpsSrcFile ipsSrcFile = (IIpsSrcFile)typedSelection.getFirstElement().getAdapter(IIpsSrcFile.class);
+            try {
+                return ipsSrcFile.getIpsObject();
+            } catch (CoreException e) {
+                /*
+                 * Recover from exception: If the IPS Object cannot be accessed inform the user
+                 * about the error and return null as selected IPS element.
+                 */
+                IpsPlugin.logAndShowErrorDialog(e);
+                return null;
+            }
+        }
+
         IEvaluationService evaluationService = (IEvaluationService)serviceLocator.getService(IEvaluationService.class);
         ISelection selection = (ISelection)evaluationService.getCurrentState().getVariable(
                 ISources.ACTIVE_MENU_SELECTION_NAME);
         TypedSelection<IIpsElement> typedSelection = TypedSelection.create(IIpsElement.class, selection);
         return typedSelection.getElement();
+    }
+
+    private TypedSelection<IAdaptable> getSelectionFromEditor(IWorkbenchPart part) {
+        IEditorInput input = ((IEditorPart)part).getEditorInput();
+        if (input instanceof IFileEditorInput) {
+            return new TypedSelection<IAdaptable>(IAdaptable.class, new StructuredSelection(
+                    ((IFileEditorInput)input).getFile()));
+        } else {
+            return null;
+        }
     }
 
     /**

@@ -20,7 +20,16 @@ package org.faktorips.devtools.core.ui;
  */
 public enum IpsMenuId {
 
-    TOOLBAR_ENUM_TYPE_EDITOR_PAGE("org.faktorips.devtools.core.ui.editors.enumtype.toolbar"), //$NON-NLS-1$
+    TOOLBAR_ENUM_TYPE_EDITOR_PAGE("org.faktorips.devtools.core.ui.editors.enumtype.enumTypeEditorPage.toolbar"), //$NON-NLS-1$
+
+    TOOLBAR_POLICY_CMPT_TYPE_EDITOR_PAGE(
+            "org.faktorips.devtools.core.ui.editors.pctype.policyCmptTypeEditorPage.toolbar"), //$NON-NLS-1$
+
+    TOOLBAR_PRODUCT_CMPT_TYPE_EDITOR_PAGE(
+            "org.faktorips.devtools.core.ui.editors.productcmpttype.productCmptTypeEditorPage.toolbar"), //$NON-NLS-1$
+
+    TOOLBAR_TEST_CASE_TYPE_EDITOR_PAGE(
+            "org.faktorips.devtools.core.ui.editors.testcasetype.testCaseTypeEditorPage.toolbar"), //$NON-NLS-1$
 
     GROUP_JUMP_TO_SOURCE_CODE("jumpToSourceCode"); //$NON-NLS-1$
 

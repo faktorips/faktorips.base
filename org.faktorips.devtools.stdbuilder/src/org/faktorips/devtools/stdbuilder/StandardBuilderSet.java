@@ -36,7 +36,6 @@ import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -698,36 +697,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         }
 
         return datatype.getJavaClassName();
-    }
-
-    /**
-     * Returns the Java implementation type that is generated for the given {@link IIpsObject}.
-     * <p>
-     * It could be that multiple implementation types are generated for an {@link IIpsObject}. In
-     * this case only the type that we consider most relevant is returned.
-     * <p>
-     * Returns null if no Java implementation type is generated or if the information is not
-     * available.
-     * 
-     * @param ipsObject The {@link IIpsObject} to get the generated Java implementation type for
-     * 
-     * @throws NullPointerException If the parameter is null
-     */
-    public org.eclipse.jdt.core.IType getGeneratedJavaImplementationType(IIpsObject ipsObject) {
-        ArgumentCheck.notNull(ipsObject);
-
-        org.eclipse.jdt.core.IType generatedJavaImplementationType = null;
-        for (IIpsArtefactBuilder builder : getArtefactBuilders()) {
-            if (!(builder instanceof JavaSourceFileBuilder)) {
-                continue;
-            }
-            JavaSourceFileBuilder javaBuilder = (JavaSourceFileBuilder)builder;
-            generatedJavaImplementationType = javaBuilder.getGeneratedJavaImplementationType(ipsObject);
-            if (generatedJavaImplementationType != null) {
-                break;
-            }
-        }
-        return generatedJavaImplementationType;
     }
 
     /**

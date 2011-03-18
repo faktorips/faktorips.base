@@ -1165,11 +1165,6 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     @Override
-    protected IType getGeneratedJavaImplementationTypeThis(IIpsObject ipsObject) {
-        return getGeneratedJavaTypes(ipsObject).get(0);
-    }
-
-    @Override
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
             IIpsObjectPartContainer ipsObjectPartContainer) {
 

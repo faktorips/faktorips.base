@@ -29,10 +29,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IType;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -50,8 +48,6 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
 
     private IIpsSrcFile ipsSrcFile;
 
-    private IIpsObject ipsObject;
-
     @Override
     @Before
     public void setUp() throws Exception {
@@ -59,7 +55,6 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
 
         ipsProject = newIpsProject();
         ipsSrcFile = newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy").getIpsSrcFile();
-        ipsObject = ipsSrcFile.getIpsObject();
 
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet();
         builderSet.setIpsProject(ipsProject);
@@ -133,40 +128,11 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         builder.afterBuild(ipsSrcFile);
     }
 
-    @Test
-    public void testGetGeneratedJavaImplementationType() {
-        StubJavaSourceFileBuilder builder = new StubJavaSourceFileBuilder(ipsSrcFile, false);
-        IType mockJavaType = mock(IType.class);
-        builder.setGeneratedJavaImplementationType(mockJavaType);
-
-        IType generatedJavaImplementationType = builder.getGeneratedJavaImplementationType(ipsObject);
-
-        assertEquals(mockJavaType, generatedJavaImplementationType);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testGetGeneratedJavaImplementationTypeNullPointer() {
-        StubJavaSourceFileBuilder builder = new StubJavaSourceFileBuilder(null, false);
-        builder.getGeneratedJavaImplementationType(null);
-    }
-
-    @Test
-    public void testGetGeneratedJavaImplementationTypeNotABuilderForGivenIpsObject() {
-        StubJavaSourceFileBuilder builder = new StubJavaSourceFileBuilder(mock(IIpsSrcFile.class), false);
-        builder.setGeneratedJavaImplementationType(mock(IType.class));
-
-        IType generatedJavaImplementationType = builder.getGeneratedJavaImplementationType(ipsObject);
-
-        assertNull(generatedJavaImplementationType);
-    }
-
     public static class StubJavaSourceFileBuilder extends JavaSourceFileBuilder {
 
         private final IIpsSrcFile ipsSrcFile;
 
         private final boolean buildingPublishedSourceFile;
-
-        private IType generatedJavaImplementationType;
 
         public StubJavaSourceFileBuilder(IIpsSrcFile ipsSrcFile, boolean buildingPublishedSourceFile) {
             this(mock(IIpsArtefactBuilderSet.class), "", null, ipsSrcFile, buildingPublishedSourceFile);
@@ -197,17 +163,8 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        protected IType getGeneratedJavaImplementationTypeThis(IIpsObject ipsObject) {
-            return generatedJavaImplementationType;
-        }
-
-        @Override
         public boolean isBuildingPublishedSourceFile() {
             return buildingPublishedSourceFile;
-        }
-
-        public void setGeneratedJavaImplementationType(IType generatedJavaImplementationType) {
-            this.generatedJavaImplementationType = generatedJavaImplementationType;
         }
 
     }

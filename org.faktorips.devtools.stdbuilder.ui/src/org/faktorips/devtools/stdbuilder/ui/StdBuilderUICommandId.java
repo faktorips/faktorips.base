@@ -29,7 +29,8 @@ public enum StdBuilderUICommandId {
      * Capable of opening the generated Java types for a selected {@link IIpsObject}. Supports
      * normal selection or indirect selection via opened editor.
      */
-    COMMAND_OPEN_IPS_OBJECT_IN_JAVA_EDITOR("org.faktorips.devtools.stdbuilder.ui.commands.OpenIpsObjectInJavaEditor");
+    COMMAND_OPEN_JUMP_TO_SOURCE_CODE_CONTEXT_MENU(
+            "org.faktorips.devtools.stdbuilder.ui.commands.OpenJumpToSourceCodeContextMenu");
 
     private String id;
 
