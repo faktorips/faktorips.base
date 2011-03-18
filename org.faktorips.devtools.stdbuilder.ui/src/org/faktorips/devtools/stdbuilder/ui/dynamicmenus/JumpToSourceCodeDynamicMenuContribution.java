@@ -241,6 +241,19 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     }
 
     private IIpsElement getSelectedIpsElement() {
+        // First try to use the evaluation service.
+        IEvaluationService evaluationService = (IEvaluationService)serviceLocator.getService(IEvaluationService.class);
+        Object selectedObject = evaluationService.getCurrentState().getVariable(ISources.ACTIVE_MENU_SELECTION_NAME);
+        if (selectedObject instanceof ISelection) {
+            TypedSelection<IIpsElement> typedSelection = TypedSelection.create(IIpsElement.class,
+                    (ISelection)selectedObject);
+            return typedSelection.getElement();
+        }
+
+        /*
+         * If the evaluation service doesn't provide a selection the user probably activated the
+         * menu via editor.
+         */
         IWorkbenchWindow activeWindow = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
         IWorkbenchPart part = activeWindow.getPartService().getActivePart();
         if (part instanceof IEditorPart) {
@@ -258,11 +271,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
             }
         }
 
-        IEvaluationService evaluationService = (IEvaluationService)serviceLocator.getService(IEvaluationService.class);
-        ISelection selection = (ISelection)evaluationService.getCurrentState().getVariable(
-                ISources.ACTIVE_MENU_SELECTION_NAME);
-        TypedSelection<IIpsElement> typedSelection = TypedSelection.create(IIpsElement.class, selection);
-        return typedSelection.getElement();
+        return null;
     }
 
     private TypedSelection<IAdaptable> getSelectionFromEditor(IWorkbenchPart part) {
