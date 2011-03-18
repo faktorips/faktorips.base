@@ -13,17 +13,23 @@
 
 package org.faktorips.devtools.core.ui.editors.tablestructure;
 
+import org.eclipse.jface.action.ContributionManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.menus.IMenuService;
+import org.eclipse.ui.menus.MenuUtil;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 
-public class StructurePage extends IpsObjectEditorPage {
+public class TableStructureEditorStructurePage extends IpsObjectEditorPage {
 
     final static String PAGE_ID = "Structure"; //$NON-NLS-1$
 
-    public StructurePage(TableStructureEditor editor) {
+    public TableStructureEditorStructurePage(TableStructureEditor editor) {
         super(editor, PAGE_ID, Messages.StructurePage_title);
     }
 
@@ -37,6 +43,7 @@ public class StructurePage extends IpsObjectEditorPage {
 
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
+        super.createPageContent(formBody, toolkit);
         formBody.setLayout(createPageLayout(1, false));
         new GeneralInfoSection(getTableStructure(), formBody, toolkit);
         Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
@@ -44,6 +51,15 @@ public class StructurePage extends IpsObjectEditorPage {
         new UniqueKeysSection(getTableStructure(), members, toolkit);
         new RangesSection(getTableStructure(), members, toolkit);
         new ForeignKeysSection(getTableStructure(), members, toolkit);
+    }
+
+    @Override
+    protected void createToolbarActions(IToolBarManager toolbarManager) {
+        toolbarManager.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
+
+        IMenuService menuService = (IMenuService)getSite().getService(IMenuService.class);
+        menuService.populateContributionManager((ContributionManager)toolbarManager,
+                MenuUtil.toolbarUri(IpsMenuId.TOOLBAR_TABLE_STRUCTURE_EDITOR_PAGE.getId()));
     }
 
 }

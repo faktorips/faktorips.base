@@ -32,7 +32,7 @@ public class TableStructureEditor extends IpsObjectEditor implements IModelDescr
 
     @Override
     protected void addPagesForParsableSrcFile() throws PartInitException {
-        addPage(new StructurePage(this));
+        addPage(new TableStructureEditorStructurePage(this));
     }
 
     @Override

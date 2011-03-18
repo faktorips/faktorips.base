@@ -53,25 +53,23 @@ public class TestCaseTypeEditorPage extends IpsObjectEditorPage {
 
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
+        super.createPageContent(formBody, toolkit);
         formBody.setLayout(createPageLayout(1, false));
         section = new TestCaseTypeSection(formBody, toolkit, ((TestCaseTypeEditor)getEditor()).getTestCaseType(),
                 sectionTitle, sectionDetailTitle, getManagedForm().getForm());
-        createToolbarActions();
     }
 
     public void refreshInclStructuralChanges() {
         section.refreshTreeAndDetailArea();
     }
 
-    private void createToolbarActions() {
-        IToolBarManager toolbarManager = getManagedForm().getForm().getToolBarManager();
+    @Override
+    protected void createToolbarActions(IToolBarManager toolbarManager) {
         toolbarManager.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
 
         IMenuService menuService = (IMenuService)getSite().getService(IMenuService.class);
         menuService.populateContributionManager((ContributionManager)toolbarManager,
                 MenuUtil.toolbarUri(IpsMenuId.TOOLBAR_TEST_CASE_TYPE_EDITOR_PAGE.getId()));
-
-        getManagedForm().getForm().updateToolBar();
     }
 
 }

@@ -103,9 +103,8 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
 
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
+        super.createPageContent(formBody, toolkit);
         formBody.setLayout(createPageLayout(1, false));
-
-        createToolbarActions();
 
         new EnumTypeGeneralInfoSection(enumType, formBody, toolkit);
 
@@ -118,22 +117,18 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
         }
     }
 
-    private void createToolbarActions() {
+    @Override
+    protected void createToolbarActions(IToolBarManager toolbarManager) {
         importAction = new EnumImportExportActionInEditor(getSite().getShell(), enumType, true);
         exportAction = new EnumImportExportActionInEditor(getSite().getShell(), enumType, false);
 
-        IToolBarManager toolbarManager = getManagedForm().getForm().getToolBarManager();
         toolbarManager.add(importAction);
         toolbarManager.add(exportAction);
         toolbarManager.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
 
-        updateToolbarActionEnabledStates();
-
         IMenuService menuService = (IMenuService)getSite().getService(IMenuService.class);
         menuService.populateContributionManager((ContributionManager)toolbarManager,
                 MenuUtil.toolbarUri(IpsMenuId.TOOLBAR_ENUM_TYPE_EDITOR_PAGE.getId()));
-
-        getManagedForm().getForm().updateToolBar();
     }
 
     /**

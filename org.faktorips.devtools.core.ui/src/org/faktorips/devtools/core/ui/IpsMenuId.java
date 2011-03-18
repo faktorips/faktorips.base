@@ -31,6 +31,9 @@ public enum IpsMenuId {
     TOOLBAR_TEST_CASE_TYPE_EDITOR_PAGE(
             "org.faktorips.devtools.core.ui.editors.testcasetype.testCaseTypeEditorPage.toolbar"), //$NON-NLS-1$
 
+    TOOLBAR_TABLE_STRUCTURE_EDITOR_PAGE(
+            "org.faktorips.devtools.core.ui.editors.tablestructure.tableStructureEditorPage.toolbar"), //$NON-NLS-1$
+
     GROUP_JUMP_TO_SOURCE_CODE("jumpToSourceCode"); //$NON-NLS-1$
 
     private final String id;

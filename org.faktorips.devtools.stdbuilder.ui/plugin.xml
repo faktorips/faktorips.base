@@ -68,6 +68,16 @@
          </command>
       </menuContribution>
       <menuContribution
+            locationURI="toolbar:org.faktorips.devtools.core.ui.editors.tablestructure.tableStructureEditorPage.toolbar?after=jumpToSourceCode">
+         <command
+               commandId="org.faktorips.devtools.stdbuilder.ui.commands.OpenJumpToSourceCodeContextMenu"
+               icon="icons/jumpToSourceCode.gif"
+               label="%org.faktorips.devtools.stdbuilder.ui.extensions.OpenJumpToSourceCodeContextMenu_label"
+               style="pulldown"
+               tooltip="%org.faktorips.devtools.stdbuilder.ui.extensions.OpenJumpToSourceCodeContextMenu_tooltip">
+         </command>
+      </menuContribution>
+      <menuContribution
             locationURI="menu:org.faktorips.devtools.stdbuilder.ui.commands.OpenJumpToSourceCodeContextMenu">
          <dynamic
                class="org.faktorips.devtools.stdbuilder.ui.dynamicmenus.JumpToSourceCodeDynamicMenuContribution"

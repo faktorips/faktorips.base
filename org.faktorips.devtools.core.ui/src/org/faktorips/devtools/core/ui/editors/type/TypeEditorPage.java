@@ -53,6 +53,7 @@ public abstract class TypeEditorPage extends IpsObjectEditorPage {
 
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
+        super.createPageContent(formBody, toolkit);
         formBody.setLayout(createPageLayout(numberlayoutColumns, false));
         createGeneralPageInfoSection(formBody, toolkit);
         if (twoSectionsWhenTrueOtherwiseFour) {

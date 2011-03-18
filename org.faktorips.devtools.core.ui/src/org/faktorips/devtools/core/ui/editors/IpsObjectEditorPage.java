@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -125,12 +126,27 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
 
     /**
      * Subclasses might implement this method to provide the visible content of this page.
+     * <p>
+     * The default implementation just creates the page toolbar.
      * 
      * @param formBody The root composite where the content of this page needs to be added to.
      * @param toolkit The layout conform toolkit to create widgets with.
      */
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
-        // Default implementation does nothing
+        IToolBarManager toolbarManager = getManagedForm().getForm().getToolBarManager();
+        createToolbarActions(toolbarManager);
+        getManagedForm().getForm().updateToolBar();
+    }
+
+    /**
+     * Subclasses might implement this method to provide actions to the page toolbar.
+     * <p>
+     * The default implementation does nothing.
+     * 
+     * @param toolbarManager The toolbar manager for the page toolbar to add actions to
+     */
+    protected void createToolbarActions(IToolBarManager toolbarManager) {
+        // The default implementation does nothing
     }
 
     /**
