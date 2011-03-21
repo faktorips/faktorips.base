@@ -43,6 +43,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.util.BeanUtil;
@@ -214,15 +216,26 @@ public final class MoveRenameIpsObjectHelper {
     }
 
     private Change performDeleteRefactoring(IIpsSrcFile fileToBeCopied, IProgressMonitor pm) throws CoreException {
-        Change undoDeleteChange;
         IPath resourcePath = fileToBeCopied.getCorrespondingResource().getFullPath();
         DeleteResourceChange deleteResourceChange = new DeleteResourceChange(resourcePath, true);
-        undoDeleteChange = deleteResourceChange.perform(pm);
-        return undoDeleteChange;
+        return deleteResourceChange.perform(pm);
     }
 
-    public void refactorIpsModel(IIpsPackageFragment targetIpsPackageFragment, String newName, IProgressMonitor pm)
-            throws CoreException {
+    public void refactorIpsModel(IIpsPackageFragment targetIpsPackageFragment,
+            String newName,
+            boolean adaptRuntimeId,
+            IProgressMonitor pm) throws CoreException {
+
+        if (adaptRuntimeId && toBeRefactored instanceof IProductCmpt) {
+            IProductCmpt productCmpt = (IProductCmpt)toBeRefactored;
+            IIpsProject ipsProject = productCmpt.getIpsProject();
+            IProductCmptNamingStrategy productCmptNamingStrategy = ipsProject.getProductCmptNamingStrategy();
+            String qualifiedNewName = targetIpsPackageFragment.getName().length() == 0 ? newName
+                    : targetIpsPackageFragment.getName() + '.' + newName;
+            String newRuntimeId = productCmptNamingStrategy.getUniqueRuntimeId(ipsProject, qualifiedNewName);
+            productCmpt.setRuntimeId(newRuntimeId);
+            productCmpt.getIpsSrcFile().save(true, pm);
+        }
 
         updateDependencies(targetIpsPackageFragment, newName);
         copySourceFileToTargetFile(targetIpsPackageFragment, newName, pm);

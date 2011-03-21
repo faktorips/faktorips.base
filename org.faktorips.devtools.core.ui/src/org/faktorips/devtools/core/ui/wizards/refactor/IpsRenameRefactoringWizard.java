@@ -144,9 +144,15 @@ public final class IpsRenameRefactoringWizard extends IpsRefactoringWizard {
         @Override
         protected void validateUserInputThis(RefactoringStatus status) throws CoreException {
             getIpsRenameProcessor().setNewName(newNameTextField.getText());
+
             if (getIpsRenameProcessor().isPluralNameRefactoringRequired()) {
                 getIpsRenameProcessor().setNewPluralName(newPluralNameTextField.getText());
             }
+
+            if (adaptRuntimeIdField != null) {
+                getIpsRenameProcessor().setAdaptRuntimeId(adaptRuntimeIdField.isChecked());
+            }
+
             status.merge(getIpsRenameProcessor().validateUserInput(new NullProgressMonitor()));
         }
 

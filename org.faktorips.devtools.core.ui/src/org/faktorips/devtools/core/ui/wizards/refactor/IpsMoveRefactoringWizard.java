@@ -174,14 +174,17 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
                 throw new RuntimeException("No selection available."); //$NON-NLS-1$
             }
 
-            IIpsPackageFragment targetFragment;
             if (selectedElement instanceof IIpsPackageFragment) {
-                targetFragment = (IIpsPackageFragment)selectedElement;
+                IIpsPackageFragment targetFragment = (IIpsPackageFragment)selectedElement;
+                getIpsMoveProcessor().setTargetIpsPackageFragment(targetFragment);
             } else {
                 throw new RuntimeException("Only package fragments are valid selections."); //$NON-NLS-1$
             }
 
-            getIpsMoveProcessor().setTargetIpsPackageFragment(targetFragment);
+            if (adaptRuntimeIdField != null) {
+                getIpsMoveProcessor().setAdaptRuntimeId(adaptRuntimeIdField.isChecked());
+            }
+
             status.merge(getIpsMoveProcessor().validateUserInput(new NullProgressMonitor()));
         }
 

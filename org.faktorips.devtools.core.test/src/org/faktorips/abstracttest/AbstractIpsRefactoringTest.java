@@ -367,7 +367,13 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
     protected final void performRenameRefactoring(IIpsObjectPartContainer ipsObjectPartContainer, String newName)
             throws CoreException {
 
-        performRenameRefactoring(ipsObjectPartContainer, newName, null);
+        performRenameRefactoring(ipsObjectPartContainer, newName, null, false);
+    }
+
+    protected final void performRenameRefactoring(IProductCmpt productCmpt, String newName, boolean adaptRuntimeId)
+            throws CoreException {
+
+        performRenameRefactoring(productCmpt, newName, null, adaptRuntimeId);
     }
 
     /**
@@ -377,6 +383,14 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
     protected final void performRenameRefactoring(IIpsObjectPartContainer ipsObjectPartContainer,
             String newName,
             String newPluralName) throws CoreException {
+
+        performRenameRefactoring(ipsObjectPartContainer, newName, newPluralName, false);
+    }
+
+    private void performRenameRefactoring(IIpsObjectPartContainer ipsObjectPartContainer,
+            String newName,
+            String newPluralName,
+            boolean adaptRuntimeId) throws CoreException {
 
         printValidationResult(ipsObjectPartContainer);
 
@@ -390,7 +404,16 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
             processor.setNewPluralName(newPluralName);
         }
 
+        processor.setAdaptRuntimeId(adaptRuntimeId);
+
         runRefactoring(renameRefactoring);
+    }
+
+    protected final void performMoveRefactoring(IProductCmpt productCmpt,
+            IIpsPackageFragment targetIpsPackageFragment,
+            boolean adaptRuntimeId) throws CoreException {
+
+        performMoveRefactoring((IIpsObjectPartContainer)productCmpt, targetIpsPackageFragment, adaptRuntimeId);
     }
 
     /**
@@ -400,6 +423,13 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
     protected final void performMoveRefactoring(IIpsObjectPartContainer ipsObjectPartContainer,
             IIpsPackageFragment targetIpsPackageFragment) throws CoreException {
 
+        performMoveRefactoring(ipsObjectPartContainer, targetIpsPackageFragment, false);
+    }
+
+    private void performMoveRefactoring(IIpsObjectPartContainer ipsObjectPartContainer,
+            IIpsPackageFragment targetIpsPackageFragment,
+            boolean adaptRuntimeId) throws CoreException {
+
         printValidationResult(ipsObjectPartContainer);
 
         saveIpsSourceFiles();
@@ -407,6 +437,7 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
         ProcessorBasedRefactoring moveRefactoring = ipsObjectPartContainer.getMoveRefactoring();
         IIpsMoveProcessor processor = (IIpsMoveProcessor)moveRefactoring.getProcessor();
         processor.setTargetIpsPackageFragment(targetIpsPackageFragment);
+        processor.setAdaptRuntimeId(adaptRuntimeId);
 
         runRefactoring(moveRefactoring);
     }
