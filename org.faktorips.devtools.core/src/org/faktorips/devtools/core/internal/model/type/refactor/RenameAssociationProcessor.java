@@ -48,7 +48,6 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
 
     public RenameAssociationProcessor(IAssociation association) {
         super(association, association.getName(), association.getTargetRolePlural());
-        setPluralNameRefactoringRequired(true);
 
         getIgnoredValidationMessageCodes().add(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_MISMATCH);
         getIgnoredValidationMessageCodes().add(IAssociation.MSGCODE_DERIVED_UNION_NOT_FOUND);
@@ -246,6 +245,11 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
     @Override
     public boolean isSourceFilesSavedRequired() {
         return false;
+    }
+
+    @Override
+    public boolean isPluralNameRefactoringRequired() {
+        return true;
     }
 
 }

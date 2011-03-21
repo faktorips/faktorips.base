@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.refactor;
 
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 
 /**
  * Describes a specific Faktor-IPS "Rename" refactoring.
@@ -41,6 +42,13 @@ public interface IIpsRenameProcessor extends IIpsRefactoringProcessor {
     public void setNewPluralName(String newPluralName);
 
     /**
+     * Sets whether the runtime ID of {@link IProductCmpt} should be adapted.
+     * 
+     * @param adaptRuntimeId Flag indicating whether to adapt runtime IDs.
+     */
+    public void setAdaptRuntimeId(boolean adaptRuntimeId);
+
+    /**
      * Returns the element's original name.
      */
     public String getOriginalName();
@@ -64,5 +72,10 @@ public interface IIpsRenameProcessor extends IIpsRefactoringProcessor {
      * Returns whether a plural name refactoring is required.
      */
     public boolean isPluralNameRefactoringRequired();
+
+    /**
+     * Returns whether the runtime ID of {@link IProductCmpt} should be adapted.
+     */
+    public boolean isAdaptRuntimeId();
 
 }

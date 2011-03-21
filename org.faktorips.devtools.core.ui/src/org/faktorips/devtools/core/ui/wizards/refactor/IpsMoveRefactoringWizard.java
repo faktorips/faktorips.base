@@ -34,9 +34,11 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.refactor.IIpsMoveProcessor;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 
 /**
  * A wizard to guide the user trough a Faktor-IPS move refactoring.
@@ -80,6 +82,12 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
         private TreeViewer treeViewer;
 
         /**
+         * Check box that enables the user to decide whether the runtime ID of an
+         * {@link IProductCmpt} should be adapted.
+         */
+        private Checkbox adaptRuntimeIdField;
+
+        /**
          * Creates the <tt>MoveUserInputPage</tt>.
          * 
          * @param ipsElement The <tt>IIpsElement</tt> to be moved.
@@ -90,7 +98,7 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
 
         @Override
         protected void setPromptMessage() {
-            setMessage(NLS.bind(Messages.MovePage_message, getIpsElementName(), getIpsElement().getName()));
+            setMessage(NLS.bind(Messages.MoveUserInputPage_message, getIpsElementName(), getIpsElement().getName()));
         }
 
         @Override
@@ -99,8 +107,15 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
             setControl(controlComposite);
 
             getUiToolkit().createLabel(controlComposite,
-                    NLS.bind(Messages.MovePage_labelChooseDestination, getIpsElement().getName()));
+                    NLS.bind(Messages.MoveUserInputPage_labelChooseDestination, getIpsElement().getName()));
             createTreeViewer(controlComposite);
+
+            if (getIpsElement() instanceof IProductCmpt) {
+                Composite fieldsComposite = getUiToolkit().createLabelEditColumnComposite(controlComposite);
+                getUiToolkit().createLabel(fieldsComposite, ""); //$NON-NLS-1$
+                adaptRuntimeIdField = getUiToolkit().createCheckbox(fieldsComposite,
+                        Messages.IpsRenameAndMoveUserInputPage_labelRefactorRuntimeId);
+            }
 
             setFocus();
             setPageComplete(false);
@@ -129,7 +144,7 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
                         if (selection.getFirstElement() instanceof IIpsPackageFragment) {
                             userInputChanged();
                         } else {
-                            setErrorMessage(Messages.MovePage_msgSelectOnlyPackages);
+                            setErrorMessage(Messages.MoveUserInputPage_msgSelectOnlyPackages);
                             setPageComplete(false);
                         }
                     }

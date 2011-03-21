@@ -36,13 +36,14 @@ public class Messages extends NLS {
     public static String RenameRefactoringWizard_title;
     public static String MoveRefactoringWizard_title;
 
-    public static String IpsRenameMovePage_labelNewName;
-    public static String IpsRenameMovePage_labelNewPluralName;
+    public static String RenameUserInputPage_labelNewName;
+    public static String RenameUserInputPage_labelNewPluralName;
+    public static String RenameUserInputPage_message;
 
-    public static String RenamePage_message;
+    public static String MoveUserInputPage_message;
+    public static String MoveUserInputPage_labelChooseDestination;
+    public static String MoveUserInputPage_msgSelectOnlyPackages;
 
-    public static String MovePage_message;
-    public static String MovePage_labelChooseDestination;
-    public static String MovePage_msgSelectOnlyPackages;
+    public static String IpsRenameAndMoveUserInputPage_labelRefactorRuntimeId;
 
 }

@@ -21,6 +21,7 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
 import org.faktorips.devtools.core.refactor.IpsRenameArguments;
 import org.faktorips.util.ArgumentCheck;
@@ -44,7 +45,8 @@ public abstract class IpsRenameProcessor extends IpsRefactoringProcessor impleme
     /** New plural name for the {@link IIpsElement} to be refactored. */
     private String newPluralName;
 
-    private boolean pluralNameRefactoringRequired;
+    /** Flag indicating whether the runtime ID of an {@link IProductCmpt} should be adapted. */
+    private boolean adaptRuntimeId;
 
     /**
      * @param ipsElement {@link IIpsElement} to be refactored
@@ -121,13 +123,14 @@ public abstract class IpsRenameProcessor extends IpsRefactoringProcessor impleme
         this.newPluralName = newPluralName;
     }
 
-    protected void setPluralNameRefactoringRequired(boolean pluralNameRefactoringRequired) {
-        this.pluralNameRefactoringRequired = pluralNameRefactoringRequired;
+    @Override
+    public void setAdaptRuntimeId(boolean adaptRuntimeId) {
+        this.adaptRuntimeId = adaptRuntimeId;
     }
 
     @Override
     public boolean isPluralNameRefactoringRequired() {
-        return pluralNameRefactoringRequired;
+        return false;
     }
 
     @Override
@@ -148,6 +151,11 @@ public abstract class IpsRenameProcessor extends IpsRefactoringProcessor impleme
     @Override
     public String getNewPluralName() {
         return newPluralName;
+    }
+
+    @Override
+    public boolean isAdaptRuntimeId() {
+        return adaptRuntimeId;
     }
 
 }
