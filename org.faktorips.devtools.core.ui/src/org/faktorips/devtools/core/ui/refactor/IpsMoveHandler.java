@@ -16,10 +16,10 @@ package org.faktorips.devtools.core.ui.refactor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
-import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.ui.wizards.move.MoveWizard;
 import org.faktorips.devtools.core.ui.wizards.refactor.IpsMoveRefactoringWizard;
+import org.faktorips.devtools.core.ui.wizards.refactor.IpsRefactoringWizard;
 
 /**
  * Provides the move workbench contribution which opens the appropriate Faktor-IPS refactoring
@@ -32,7 +32,7 @@ public class IpsMoveHandler extends IpsRefactoringHandler {
     public static final String CONTRIBUTION_ID = "org.eclipse.ui.edit.move"; //$NON-NLS-1$
 
     @Override
-    protected RefactoringWizard getRefactoringWizard(Refactoring refactoring, IIpsElement selectedIpsElement) {
+    protected IpsRefactoringWizard getRefactoringWizard(Refactoring refactoring, IIpsElement selectedIpsElement) {
         return new IpsMoveRefactoringWizard(refactoring, selectedIpsElement);
     }
 
