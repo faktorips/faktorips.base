@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -74,7 +75,8 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
      * @param toolkit The UI toolkit that shall be used to create UI elements.
      */
     public EnumAttributesSection(IpsObjectEditorPage editorPage, IEnumType enumType, Composite parent, UIToolkit toolkit) {
-        super(enumType, parent, Messages.EnumAttributesSection_title, toolkit);
+        super(enumType, parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE,
+                Messages.EnumAttributesSection_title, toolkit);
         this.editorPage = editorPage;
         enumAttributesComposite.createContextMenu();
 
@@ -83,6 +85,8 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         addMonitoredValidationMessageCode(IEnumType.MSGCODE_ENUM_TYPE_NO_USED_AS_ID_IN_FAKTOR_IPS_UI_ATTRIBUTE);
         addMonitoredValidationMessageCode(IEnumType.MSGCODE_ENUM_TYPE_NO_USED_AS_NAME_IN_FAKTOR_IPS_UI_ATTRIBUTE);
         addMonitoredValidationMessageCode(IEnumType.MSGCODE_ENUM_TYPE_NOT_INHERITED_ATTRIBUTES_IN_SUPERTYPE_HIERARCHY);
+
+        getSectionControl().setExpanded(true);
     }
 
     @Override
