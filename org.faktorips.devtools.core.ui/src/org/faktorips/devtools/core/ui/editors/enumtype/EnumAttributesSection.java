@@ -53,14 +53,12 @@ import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringHandler;
 import org.faktorips.devtools.core.ui.refactor.IpsRenameHandler;
-import org.faktorips.devtools.core.ui.wizards.enumtype.EnumTypePage;
-import org.faktorips.util.ArgumentCheck;
 
 /**
- * The UI section for the <tt>EnumTypePage</tt> that contains the <tt>IEnumAttribute</tt>s of the
- * <tt>IEnumType</tt> to be edited.
+ * The UI section for the {@link EnumTypeEditorPage} that contains the {@link IEnumAttribute}s of
+ * the {@link IEnumType} to be edited.
  * 
- * @see EnumTypePage
+ * @see EnumTypeEditorPage
  * 
  * @author Alexander Weickmann
  * 
@@ -70,16 +68,12 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
 
     private final IpsObjectEditorPage editorPage;
 
-    /** The UI composite for the section. */
-    EnumAttributesComposite enumAttributesComposite;
+    private EnumAttributesComposite enumAttributesComposite;
 
     /**
-     * Creates a new <tt>EnumAttributesSection</tt> containing the <tt>IEnumAttribute</tt>s of the
-     * given <tt>IEnumType</tt>.
-     * 
-     * @param enumType The <tt>IEnumType</tt> to show the <tt>IEnumAttribute</tt>s from.
-     * @param parent The parent UI composite.
-     * @param toolkit The UI toolkit that shall be used to create UI elements.
+     * @param enumType The {@link IEnumType} to show the {@link IEnumAttribute}s from
+     * @param parent The parent UI composite
+     * @param toolkit The UI toolkit that shall be used to create UI elements
      */
     public EnumAttributesSection(IpsObjectEditorPage editorPage, IEnumType enumType, Composite parent, UIToolkit toolkit) {
         super(enumType, parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE,
@@ -93,11 +87,34 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         addMonitoredValidationMessageCode(IEnumType.MSGCODE_ENUM_TYPE_NO_USED_AS_NAME_IN_FAKTOR_IPS_UI_ATTRIBUTE);
         addMonitoredValidationMessageCode(IEnumType.MSGCODE_ENUM_TYPE_NOT_INHERITED_ATTRIBUTES_IN_SUPERTYPE_HIERARCHY);
 
-        IPreferencesService preferencesService = Platform.getPreferencesService();
-        Boolean expanded = preferencesService.getBoolean(IpsUIPlugin.getDefault().getBundle().getSymbolicName(),
-                IpsUIPlugin.PREFERENCE_ID_ENUM_ATTRIBUTES_SECTION_EXPANDED, true, null);
-        getSectionControl().setExpanded(expanded);
+        initExpandedState();
+        addStorePreferenceExpansionListener();
+    }
 
+    /**
+     * Initializes the expanded state from the preferences.
+     * <p>
+     * If the edited {@link IEnumType} does not contain any values the section will be expanded
+     * independent of the stored preference.
+     */
+    private void initExpandedState() {
+        boolean expanded;
+        if (getEnumType().getEnumValuesCount() == 0) {
+            expanded = true;
+        } else {
+            IPreferencesService preferencesService = Platform.getPreferencesService();
+            String pluginId = IpsUIPlugin.getDefault().getBundle().getSymbolicName();
+            expanded = preferencesService.getBoolean(pluginId,
+                    IpsUIPlugin.PREFERENCE_ID_ENUM_ATTRIBUTES_SECTION_EXPANDED, true, null);
+        }
+        getSectionControl().setExpanded(expanded);
+    }
+
+    /**
+     * Stores the expanded state in the plug-in preferences as soon as the user changes the expanded
+     * state.
+     */
+    private void addStorePreferenceExpansionListener() {
         getSectionControl().addExpansionListener(new IExpansionListener() {
             @Override
             public void expansionStateChanging(ExpansionEvent e) {
@@ -115,7 +132,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
 
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
-        enumAttributesComposite = new EnumAttributesComposite(getEnumType(), parent, toolkit);
+        enumAttributesComposite = new EnumAttributesComposite(parent);
         return enumAttributesComposite;
     }
 
@@ -136,35 +153,19 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
     }
 
     /**
-     * A composite that shows an <tt>IEnumType</tt>'s attributes in a viewer and allows to edit
-     * these attributes in a dialog, to create new attributes, move attributes and to delete
-     * attributes.
+     * A composite that shows an {@link IEnumType}'s attributes in a viewer and allows to edit these
+     * attributes in a dialog, to create new attributes, move attributes and to delete attributes.
      */
     private class EnumAttributesComposite extends IpsPartsComposite implements ISelectionChangedListener {
 
-        /** The <tt>IEnumType</tt> being edited by the editor. */
-        private IEnumType enumType;
-
         /**
-         * Button that opens a dialog that enables the user to inherit attributes from the supertype
-         * hierarchy.
+         * Button that opens a dialog that enables the user to inherit attributes from the super
+         * type hierarchy.
          */
         private Button inheritButton;
 
-        /**
-         * Creates a new <tt>EnumAttributesComposite</tt> based upon the attributes of the given
-         * <tt>IEnumType</tt>.
-         * 
-         * @param enumType The <tt>IEnumType</tt> to show the <tt>IEnumAttribute</tt>s of.
-         * @param parent The parent UI composite.
-         * @param toolkit The UI toolkit to create new UI elements with.
-         * 
-         * @throws NullPointerException If <tt>enumType</tt> is <tt>null</tt>.
-         */
-        public EnumAttributesComposite(IEnumType enumType, Composite parent, UIToolkit toolkit) {
-            super(enumType, parent, toolkit);
-            ArgumentCheck.notNull(enumType);
-            this.enumType = enumType;
+        public EnumAttributesComposite(Composite parent) {
+            super(getEnumType(), parent, getToolkit());
             addSelectionChangedListener(this);
         }
 
@@ -190,7 +191,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
 
                 @Override
                 public Object[] getElements(Object inputElement) {
-                    return enumType.getEnumAttributesIncludeSupertypeCopies(true).toArray();
+                    return getEnumType().getEnumAttributesIncludeSupertypeCopies(true).toArray();
                 }
 
                 @Override
@@ -213,16 +214,16 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
 
         @Override
         protected IIpsObjectPart newIpsPart() throws CoreException {
-            IEnumAttribute newEnumAttribute = enumType.newEnumAttribute();
+            IEnumAttribute newEnumAttribute = getEnumType().newEnumAttribute();
 
             /*
              * If this is the first attribute to be created and the values are being defined in the
              * enum type then make sure that there will be one enum value available for editing.
              */
-            if (enumType.getEnumAttributesCountIncludeSupertypeCopies(true) == 1) {
-                if (enumType.isContainingValues() && !(enumType.isAbstract())) {
-                    if (enumType.getEnumValuesCount() == 0) {
-                        enumType.newEnumValue();
+            if (getEnumType().getEnumAttributesCountIncludeSupertypeCopies(true) == 1) {
+                if (getEnumType().isContainingValues() && !(getEnumType().isAbstract())) {
+                    if (getEnumType().getEnumValuesCount() == 0) {
+                        getEnumType().newEnumValue();
                     }
                 }
             }
@@ -233,11 +234,11 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         @Override
         protected void deleteIpsPart(IIpsObjectPart partToDelete) throws CoreException {
             IEnumAttribute enumAttributeToDelete = (IEnumAttribute)partToDelete;
-            enumType.deleteEnumAttributeWithValues(enumAttributeToDelete);
+            getEnumType().deleteEnumAttributeWithValues(enumAttributeToDelete);
 
             // Delete all enum values if there are no more enum attributes.
-            if (enumType.getEnumAttributesCountIncludeSupertypeCopies(enumType.isCapableOfContainingValues()) == 0) {
-                for (IEnumValue currentEnumValue : enumType.getEnumValues()) {
+            if (getEnumType().getEnumAttributesCountIncludeSupertypeCopies(getEnumType().isCapableOfContainingValues()) == 0) {
+                for (IEnumValue currentEnumValue : getEnumType().getEnumValues()) {
                     currentEnumValue.delete();
                 }
             }
@@ -246,11 +247,11 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         @Override
         protected int[] moveParts(int[] indexes, boolean up) {
             int newIndex = indexes[0];
-            List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(true);
+            List<IEnumAttribute> enumAttributes = getEnumType().getEnumAttributesIncludeSupertypeCopies(true);
 
             IEnumAttribute enumAttributeToMove = enumAttributes.get(newIndex);
             try {
-                newIndex = enumType.moveEnumAttribute(enumAttributeToMove, up);
+                newIndex = getEnumType().moveEnumAttribute(enumAttributeToMove, up);
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }
@@ -297,14 +298,15 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         }
 
         /**
-         * Disables the "Delete" - Button if the selected <tt>IIpsObjectPart</tt> is an
-         * <tt>IEnumLiteralNameAttribute</tt> while the <tt>IEnumType</tt> is needing to use it.
+         * Disables the "Delete" - Button if the selected {@link IIpsObjectPart} is an
+         * {@link IEnumLiteralNameAttribute} while the {@link IEnumType} is needing to use it.
          */
         @Override
         public void selectionChanged(SelectionChangedEvent event) {
             try {
                 setCanDelete(true);
-                if (getSelectedPart() instanceof IEnumLiteralNameAttribute && enumType.isCapableOfContainingValues()) {
+                if (getSelectedPart() instanceof IEnumLiteralNameAttribute
+                        && getEnumType().isCapableOfContainingValues()) {
                     setCanDelete(false);
                 }
             } catch (CoreException e) {
@@ -313,14 +315,14 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         }
 
         /**
-         * Opens a dialog enabling the user to inherit <tt>IEnumAttribute</tt>s from the super type
+         * Opens a dialog enabling the user to inherit {@link IEnumAttribute}s from the super type
          * hierarchy in a comfortable way.
          */
         private void inheritClicked() throws CoreException {
-            InheritEnumAttributesDialog dialog = new InheritEnumAttributesDialog(enumType, getShell());
+            InheritEnumAttributesDialog dialog = new InheritEnumAttributesDialog(getEnumType(), getShell());
             if (dialog.open() == Window.OK) {
                 IEnumAttribute[] attributesToOverwrite = dialog.getSelectedAttributes();
-                enumType.inheritEnumAttributes(Arrays.asList(attributesToOverwrite));
+                getEnumType().inheritEnumAttributes(Arrays.asList(attributesToOverwrite));
                 refresh();
             }
         }
