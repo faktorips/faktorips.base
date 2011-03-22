@@ -109,6 +109,7 @@ import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog.IpsOb
 import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings;
+import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.workbenchadapters.IWorkbenchAdapterProvider;
 import org.faktorips.devtools.core.ui.workbenchadapters.IpsElementWorkbenchAdapter;
 import org.faktorips.devtools.core.ui.workbenchadapters.IpsElementWorkbenchAdapterAdapterFactory;
@@ -146,8 +147,11 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      */
     public final static String CONFIG_PROPERTY_CLASS = "class"; //$NON-NLS-1$
 
-    /** The ID of the preference indicating whether the enum attributes section is expanded. */
-    public final static String PREFERENCE_ID_ENUM_ATTRIBUTES_SECTION_EXPANDED = "enumAttributesSectionExpanded"; //$NON-NLS-1$
+    /**
+     * The suffix that is used for the expanded state preference of {@link IpsSection}s. The full ID
+     * is constructed using the section ID plus this suffix.
+     */
+    public final static String PREFERENCE_ID_SUFFIX_SECTION_EXPANDED = "_expanded"; //$NON-NLS-1$
 
     /**
      * Setting key for the open ips object history

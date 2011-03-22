@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.internal.model.tablestructure.Column;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -33,7 +34,7 @@ import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 public class ColumnsSection extends SimpleIpsPartsSection {
 
     public ColumnsSection(ITableStructure table, Composite parent, UIToolkit toolkit) {
-        super(table, parent, Messages.ColumnsSection_title, toolkit);
+        super(table, parent, ExpandableComposite.TITLE_BAR, Messages.ColumnsSection_title, toolkit);
     }
 
     @Override

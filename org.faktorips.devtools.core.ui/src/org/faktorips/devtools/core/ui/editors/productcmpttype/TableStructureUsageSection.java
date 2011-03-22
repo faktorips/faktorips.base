@@ -26,6 +26,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -51,7 +52,8 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
     private TblsStructureUsageComposite tblsStructureUsageComposite;
 
     public TableStructureUsageSection(IProductCmptType productCmptType, Composite parent, UIToolkit toolkit) {
-        super(productCmptType, parent, Messages.TableStructureUsageSection_title, toolkit);
+        super(productCmptType, parent, ExpandableComposite.TITLE_BAR, Messages.TableStructureUsageSection_title,
+                toolkit);
         this.productCmptType = productCmptType;
     }
 

@@ -26,7 +26,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -45,6 +44,8 @@ import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
  */
 public class RulesSection extends SimpleIpsPartsSection {
 
+    private static final String ID = "org.faktorips.devtools.core.ui.editors.productcmpt.RulesSection"; //$NON-NLS-1$
+
     /**
      * The page owning this section.
      */
@@ -58,7 +59,7 @@ public class RulesSection extends SimpleIpsPartsSection {
      * @param toolkit The toolkit to help creating the ui
      */
     public RulesSection(ProductCmptPropertiesPage page, Composite parent, UIToolkit toolkit) {
-        super(page.getProductCmpt(), parent, Section.TITLE_BAR, Messages.RulesSection_title, toolkit);
+        super(ID, page.getProductCmpt(), parent, Messages.RulesSection_title, toolkit);
         this.page = page;
     }
 

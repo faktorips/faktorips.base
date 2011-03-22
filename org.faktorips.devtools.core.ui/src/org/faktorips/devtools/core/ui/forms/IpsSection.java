@@ -17,6 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -25,10 +29,14 @@ import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.forms.events.ExpansionEvent;
+import org.eclipse.ui.forms.events.IExpansionListener;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.ui.IDataChangeableReadAccessWithListenerSupport;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.IDataChangeableStateChangeListener;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.util.ArgumentCheck;
@@ -77,19 +85,36 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
 
     private Composite clientComposite;
 
+    private String id;
+
+    private boolean collapsable;
+
     /** Binding context to bind UI elements with model data. */
     protected BindingContext bindingContext;
 
     /**
-     * Creates a new <code>IpsSection</code>.
+     * Creates a new {@link IpsSection} with the style
+     * <tt>ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE</tt>.
      * 
-     * @param parent The parent UI composite.
-     * @param style The section style to use, see {@link Section}.
-     * @param layoutData How to layout the data within the section.
-     * @param toolkit The UI toolkit to create new UI elements with.
+     * @param parent The parent UI composite
+     * @param layoutData How to layout the data within the section
+     * @param toolkit The UI toolkit to create new UI elements with
      */
-    public IpsSection(Composite parent, int style, int layoutData, UIToolkit toolkit) {
+    protected IpsSection(String id, Composite parent, int layoutData, UIToolkit toolkit) {
+        this(parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE, layoutData, toolkit);
+        this.id = id;
+        collapsable = true;
+    }
+
+    /**
+     * @param parent The parent UI composite
+     * @param style The section style to use, see {@link Section}
+     * @param layoutData How to layout the data within the section
+     * @param toolkit The UI toolkit to create new UI elements with
+     */
+    protected IpsSection(Composite parent, int style, int layoutData, UIToolkit toolkit) {
         super(parent, SWT.NONE);
+        id = ""; //$NON-NLS-1$
 
         this.style = style;
         this.layoutData = layoutData;
@@ -119,7 +144,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
         setLayoutData(new GridData(layoutData));
         setLayout(toolkit.createNoMarginGridLayout(1, false));
 
-        // Create the ui section widget that is being wrapped by this composite
+        // Create the UI section widget that is being wrapped by this composite
         section = toolkit.getFormToolkit().createSection(this, style);
         section.setLayoutData(new GridData(layoutData));
 
@@ -129,6 +154,47 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
         initClientComposite(clientComposite, toolkit);
         section.setClient(clientComposite);
         toolkit.getFormToolkit().paintBordersFor(clientComposite);
+
+        if (collapsable) {
+            initExpandedState();
+            addStorePreferenceExpansionListener();
+        }
+    }
+
+    /**
+     * Initializes the expanded state from the preferences.
+     */
+    protected void initExpandedState() {
+        IPreferencesService preferencesService = Platform.getPreferencesService();
+        String pluginId = IpsUIPlugin.getDefault().getBundle().getSymbolicName();
+        String preferenceId = id + IpsUIPlugin.PREFERENCE_ID_SUFFIX_SECTION_EXPANDED;
+        boolean expanded = preferencesService.getBoolean(pluginId, preferenceId, true, null);
+        setExpanded(expanded);
+    }
+
+    /**
+     * Stores the expanded state in the plug-in preferences as soon as the user changes the expanded
+     * state.
+     */
+    private void addStorePreferenceExpansionListener() {
+        getSectionControl().addExpansionListener(new IExpansionListener() {
+            @Override
+            public void expansionStateChanging(ExpansionEvent e) {
+                // Nothing to do
+            }
+
+            @Override
+            public void expansionStateChanged(ExpansionEvent e) {
+                String pluginId = IpsUIPlugin.getDefault().getBundle().getSymbolicName();
+                IEclipsePreferences node = new InstanceScope().getNode(pluginId);
+                String preferenceId = id + IpsUIPlugin.PREFERENCE_ID_SUFFIX_SECTION_EXPANDED;
+                node.putBoolean(preferenceId, e.getState());
+            }
+        });
+    }
+
+    public final void setExpanded(boolean expanded) {
+        section.setExpanded(expanded);
     }
 
     /**

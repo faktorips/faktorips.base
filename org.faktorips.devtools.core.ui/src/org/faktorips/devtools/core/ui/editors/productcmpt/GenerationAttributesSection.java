@@ -26,7 +26,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -51,6 +50,8 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  * @author Thorsten Guenther
  */
 public class GenerationAttributesSection extends IpsSection {
+
+    private static final String ID = "org.faktorips.devtools.core.ui.editors.productcmpt.GenerationAttributesSection"; //$NON-NLS-1$
 
     /**
      * Generation which holds the informations to display
@@ -85,7 +86,7 @@ public class GenerationAttributesSection extends IpsSection {
      * @param toolkit The toolkit to use for easier ui-handling
      */
     public GenerationAttributesSection(IProductCmptGeneration generation, Composite parent, UIToolkit toolkit) {
-        super(parent, ExpandableComposite.TITLE_BAR, GridData.FILL_BOTH, toolkit);
+        super(ID, parent, GridData.FILL_BOTH, toolkit);
         this.generation = generation;
         initControls();
         setText(Messages.ProductAttributesSection_attribute);

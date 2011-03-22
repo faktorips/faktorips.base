@@ -29,7 +29,6 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
-import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
@@ -59,6 +58,8 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class FormulasSection extends IpsSection {
 
+    private static final String ID = "org.faktorips.devtools.core.ui.editors.productcmpt.FormulasSection"; //$NON-NLS-1$
+
     /** Generation which holds the informations to display */
     private IProductCmptGeneration generation;
 
@@ -78,7 +79,7 @@ public class FormulasSection extends IpsSection {
     private Label noFormulasLabel;
 
     public FormulasSection(IProductCmptGeneration generation, Composite parent, UIToolkit toolkit) {
-        super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
+        super(ID, parent, GridData.FILL_BOTH, toolkit);
         ArgumentCheck.notNull(generation);
 
         this.generation = generation;

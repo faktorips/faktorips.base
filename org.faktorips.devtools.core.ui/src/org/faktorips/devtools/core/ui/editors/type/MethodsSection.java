@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
@@ -47,7 +48,7 @@ public class MethodsSection extends SimpleIpsPartsSection {
     private MethodsComposite methodsComposite;
 
     public MethodsSection(IpsObjectEditorPage editorPage, IType type, Composite parent, UIToolkit toolkit) {
-        super(type, parent, Messages.MethodsSection_title, toolkit);
+        super(type, parent, ExpandableComposite.TITLE_BAR, Messages.MethodsSection_title, toolkit);
         this.editorPage = editorPage;
         methodsComposite.createContextMenu();
     }

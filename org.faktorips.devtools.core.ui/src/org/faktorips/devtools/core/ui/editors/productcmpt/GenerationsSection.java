@@ -32,7 +32,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -52,6 +51,8 @@ import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
  */
 public class GenerationsSection extends SimpleIpsPartsSection {
 
+    private static final String ID = "org.faktorips.devtools.core.ui.editors.productcmpt.GenerationsSection"; //$NON-NLS-1$
+
     /**
      * The page owning this section.
      */
@@ -61,11 +62,11 @@ public class GenerationsSection extends SimpleIpsPartsSection {
      * Create a new Section to display generations.
      * 
      * @param page The page owning this section.
-     * @param parent The composit which is parent for this section
-     * @param toolkit The toolkit to help creating the ui
+     * @param parent The composite which is parent for this section
+     * @param toolkit The toolkit to help creating the UI
      */
     public GenerationsSection(ProductCmptPropertiesPage page, Composite parent, UIToolkit toolkit) {
-        super(page.getProductCmpt(), parent, ExpandableComposite.TITLE_BAR, IpsPlugin.getDefault().getIpsPreferences()
+        super(ID, page.getProductCmpt(), parent, IpsPlugin.getDefault().getIpsPreferences()
                 .getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(), toolkit);
         this.page = page;
     }

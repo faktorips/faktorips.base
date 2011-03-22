@@ -17,10 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -35,16 +31,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.forms.events.ExpansionEvent;
-import org.eclipse.ui.forms.events.IExpansionListener;
-import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.IpsMenuId;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
@@ -66,6 +58,8 @@ import org.faktorips.devtools.core.ui.refactor.IpsRenameHandler;
  */
 public class EnumAttributesSection extends SimpleIpsPartsSection {
 
+    private static final String ID = "org.faktorips.devtools.core.ui.editors.enumtype.EnumAttributesSection"; //$NON-NLS-1$
+
     private final IpsObjectEditorPage editorPage;
 
     private EnumAttributesComposite enumAttributesComposite;
@@ -76,8 +70,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
      * @param toolkit The UI toolkit that shall be used to create UI elements
      */
     public EnumAttributesSection(IpsObjectEditorPage editorPage, IEnumType enumType, Composite parent, UIToolkit toolkit) {
-        super(enumType, parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE,
-                Messages.EnumAttributesSection_title, toolkit);
+        super(ID, enumType, parent, Messages.EnumAttributesSection_title, toolkit);
         this.editorPage = editorPage;
         enumAttributesComposite.createContextMenu();
 
@@ -86,48 +79,19 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         addMonitoredValidationMessageCode(IEnumType.MSGCODE_ENUM_TYPE_NO_USED_AS_ID_IN_FAKTOR_IPS_UI_ATTRIBUTE);
         addMonitoredValidationMessageCode(IEnumType.MSGCODE_ENUM_TYPE_NO_USED_AS_NAME_IN_FAKTOR_IPS_UI_ATTRIBUTE);
         addMonitoredValidationMessageCode(IEnumType.MSGCODE_ENUM_TYPE_NOT_INHERITED_ATTRIBUTES_IN_SUPERTYPE_HIERARCHY);
-
-        initExpandedState();
-        addStorePreferenceExpansionListener();
     }
 
     /**
-     * Initializes the expanded state from the preferences.
-     * <p>
      * If the edited {@link IEnumType} does not contain any values the section will be expanded
      * independent of the stored preference.
      */
-    private void initExpandedState() {
-        boolean expanded;
+    @Override
+    protected void initExpandedState() {
         if (getEnumType().getEnumValuesCount() == 0) {
-            expanded = true;
+            setExpanded(true);
         } else {
-            IPreferencesService preferencesService = Platform.getPreferencesService();
-            String pluginId = IpsUIPlugin.getDefault().getBundle().getSymbolicName();
-            expanded = preferencesService.getBoolean(pluginId,
-                    IpsUIPlugin.PREFERENCE_ID_ENUM_ATTRIBUTES_SECTION_EXPANDED, true, null);
+            super.initExpandedState();
         }
-        getSectionControl().setExpanded(expanded);
-    }
-
-    /**
-     * Stores the expanded state in the plug-in preferences as soon as the user changes the expanded
-     * state.
-     */
-    private void addStorePreferenceExpansionListener() {
-        getSectionControl().addExpansionListener(new IExpansionListener() {
-            @Override
-            public void expansionStateChanging(ExpansionEvent e) {
-                // Nothing to do
-            }
-
-            @Override
-            public void expansionStateChanged(ExpansionEvent e) {
-                IEclipsePreferences node = new InstanceScope().getNode(IpsUIPlugin.getDefault().getBundle()
-                        .getSymbolicName());
-                node.putBoolean(IpsUIPlugin.PREFERENCE_ID_ENUM_ATTRIBUTES_SECTION_EXPANDED, e.getState());
-            }
-        });
     }
 
     @Override

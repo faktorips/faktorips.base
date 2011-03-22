@@ -32,6 +32,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -88,7 +89,8 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
     }
 
     public PersistentAttributeSection(IPolicyCmptType ipsObject, Composite parent, UIToolkit toolkit) {
-        super(ipsObject, parent, Messages.PersistentAttributeSection_titleAttributes, toolkit);
+        super(ipsObject, parent, ExpandableComposite.TITLE_BAR, Messages.PersistentAttributeSection_titleAttributes,
+                toolkit);
     }
 
     @Override

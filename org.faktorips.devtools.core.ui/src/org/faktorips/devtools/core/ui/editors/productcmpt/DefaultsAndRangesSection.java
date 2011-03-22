@@ -25,7 +25,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.TimedEnumDatatypeUtil;
@@ -54,6 +53,8 @@ import org.faktorips.util.ArgumentCheck;
  * @author Thorsten Guenther
  */
 public class DefaultsAndRangesSection extends IpsSection {
+
+    private static final String ID = "org.faktorips.devtools.core.ui.editors.productcmpt.DefaultsAndRangesSection"; //$NON-NLS-1$
 
     /**
      * Generation which holds the informations to display
@@ -84,7 +85,7 @@ public class DefaultsAndRangesSection extends IpsSection {
      * Creates a new section to edit ranges and default-values.
      */
     public DefaultsAndRangesSection(IProductCmptGeneration generation, Composite parent, UIToolkit toolkit) {
-        super(parent, ExpandableComposite.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
+        super(ID, parent, GridData.FILL_HORIZONTAL, toolkit);
         ArgumentCheck.notNull(generation);
         this.generation = generation;
         initControls();

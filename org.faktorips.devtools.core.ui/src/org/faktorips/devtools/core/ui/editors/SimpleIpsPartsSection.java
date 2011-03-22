@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.editors;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -31,8 +30,8 @@ public abstract class SimpleIpsPartsSection extends IpsObjectPartContainerSectio
 
     private IpsPartsComposite partsComposite;
 
-    public SimpleIpsPartsSection(IIpsObject pdObject, Composite parent, String title, UIToolkit toolkit) {
-        super(pdObject, parent, ExpandableComposite.TITLE_BAR, GridData.FILL_BOTH, toolkit);
+    protected SimpleIpsPartsSection(String id, IIpsObject pdObject, Composite parent, String title, UIToolkit toolkit) {
+        super(id, pdObject, parent, GridData.FILL_BOTH, toolkit);
 
         ArgumentCheck.notNull(pdObject);
 
@@ -41,7 +40,7 @@ public abstract class SimpleIpsPartsSection extends IpsObjectPartContainerSectio
         setText(title);
     }
 
-    public SimpleIpsPartsSection(IIpsObject ipsObject, Composite parent, int style, String title, UIToolkit toolkit) {
+    protected SimpleIpsPartsSection(IIpsObject ipsObject, Composite parent, int style, String title, UIToolkit toolkit) {
         super(ipsObject, parent, style, GridData.FILL_BOTH, toolkit);
 
         ArgumentCheck.notNull(ipsObject);

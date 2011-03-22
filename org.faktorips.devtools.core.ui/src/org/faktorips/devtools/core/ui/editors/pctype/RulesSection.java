@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -35,7 +36,7 @@ import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 public class RulesSection extends SimpleIpsPartsSection {
 
     public RulesSection(IPolicyCmptType pcType, Composite parent, UIToolkit toolkit) {
-        super(pcType, parent, Messages.RulesSection_title, toolkit);
+        super(pcType, parent, ExpandableComposite.TITLE_BAR, Messages.RulesSection_title, toolkit);
     }
 
     public IPolicyCmptType getPcType() {

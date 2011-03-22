@@ -29,7 +29,6 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
-import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -56,6 +55,8 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  */
 public class ComponentPropertiesSection extends IpsSection {
 
+    private static final String ID = "org.faktorips.devtools.core.ui.editors.productcmpt.ComponentPropertiesSection"; //$NON-NLS-1$
+
     /** Product component which holds the informations to display. */
     private final IProductCmpt product;
 
@@ -81,7 +82,7 @@ public class ComponentPropertiesSection extends IpsSection {
     public ComponentPropertiesSection(IProductCmpt product, Composite parent, UIToolkit toolkit,
             ProductCmptEditor editor) {
 
-        super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
+        super(ID, parent, GridData.FILL_BOTH, toolkit);
 
         this.product = product;
         this.editor = editor;

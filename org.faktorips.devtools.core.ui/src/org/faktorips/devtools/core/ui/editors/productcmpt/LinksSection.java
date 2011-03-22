@@ -49,7 +49,6 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
@@ -78,6 +77,8 @@ import org.faktorips.util.message.MessageList;
  * @author Thorsten Guenther
  */
 public class LinksSection extends IpsSection implements ISelectionProviderActivation {
+
+    private static final String ID = "org.faktorips.devtools.core.ui.editors.productcmpt.LinksSection"; //$NON-NLS-1$
 
     /**
      * the generation the displayed informations are based on.
@@ -128,7 +129,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
      * @param toolkit The ui-toolkit to support drawing.
      */
     public LinksSection(IProductCmptGeneration generation, Composite parent, UIToolkit toolkit, IEditorSite site) {
-        super(parent, ExpandableComposite.TITLE_BAR, GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL, toolkit);
+        super(ID, parent, GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL, toolkit);
         ArgumentCheck.notNull(generation);
         this.generation = generation;
         this.site = site;

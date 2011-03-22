@@ -25,7 +25,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.DiscriminatorDatatype;
@@ -49,13 +48,16 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  */
 public class PersistentTypeInfoSection extends IpsSection {
 
+    private static final String ID = "org.faktorips.devtools.core.ui.editors.pctype.PersistentTypeInfoSection"; //$NON-NLS-1$
+
     private final IPolicyCmptType ipsObject;
+
     private UIToolkit uiToolkit;
 
     private List<Control> persistentComposites = new ArrayList<Control>();
 
     public PersistentTypeInfoSection(IPolicyCmptType ipsObject, Composite parent, UIToolkit toolkit) {
-        super(parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE, GridData.FILL_HORIZONTAL, toolkit);
+        super(ID, parent, GridData.FILL_HORIZONTAL, toolkit);
         this.ipsObject = ipsObject;
 
         initControls();
@@ -64,8 +66,11 @@ public class PersistentTypeInfoSection extends IpsSection {
     }
 
     private class EnabledControlsBindingByProperty extends ControlPropertyBinding {
+
         private UIToolkit toolkit;
+
         private boolean checkEnable = true;
+
         private Boolean oldValue;
 
         public EnabledControlsBindingByProperty(Control control, UIToolkit toolkit, String property, boolean checkEnable) {
@@ -220,13 +225,6 @@ public class PersistentTypeInfoSection extends IpsSection {
             bindingContext.bindContent(descriminatorColumnValueText, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE);
         }
-    }
-
-    /**
-     * Enables or disables the expanded state on this section.
-     */
-    public void setExpanded(boolean expanded) {
-        getSectionControl().setExpanded(expanded);
     }
 
     @Override

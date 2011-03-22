@@ -31,6 +31,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -89,7 +90,8 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
     }
 
     public PersistentAssociationSection(IPolicyCmptType ipsObject, Composite parent, UIToolkit toolkit) {
-        super(ipsObject, parent, Messages.PersistentAssociationSection_titleAssociations, toolkit);
+        super(ipsObject, parent, ExpandableComposite.TITLE_BAR,
+                Messages.PersistentAssociationSection_titleAssociations, toolkit);
     }
 
     @Override

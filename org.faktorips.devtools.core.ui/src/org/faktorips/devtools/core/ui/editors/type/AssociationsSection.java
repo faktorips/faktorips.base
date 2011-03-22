@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.IpsMenuId;
@@ -43,7 +44,7 @@ public abstract class AssociationsSection extends SimpleIpsPartsSection {
     private final IpsObjectEditorPage editorPage;
 
     protected AssociationsSection(IpsObjectEditorPage editorPage, IType type, Composite parent, UIToolkit toolkit) {
-        super(type, parent, Messages.AssociationsSection_title, toolkit);
+        super(type, parent, ExpandableComposite.TITLE_BAR, Messages.AssociationsSection_title, toolkit);
         this.editorPage = editorPage;
         getAssociationsComposite().createContextMenu();
     }

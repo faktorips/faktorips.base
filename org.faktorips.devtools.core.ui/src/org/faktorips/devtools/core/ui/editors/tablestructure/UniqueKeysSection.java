@@ -17,6 +17,7 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -29,7 +30,7 @@ import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 public class UniqueKeysSection extends SimpleIpsPartsSection {
 
     public UniqueKeysSection(ITableStructure table, Composite parent, UIToolkit toolkit) {
-        super(table, parent, Messages.UniqueKeysSection_title, toolkit);
+        super(table, parent, ExpandableComposite.TITLE_BAR, Messages.UniqueKeysSection_title, toolkit);
     }
 
     @Override

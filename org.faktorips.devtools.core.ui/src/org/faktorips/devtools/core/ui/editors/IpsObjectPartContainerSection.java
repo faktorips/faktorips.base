@@ -46,6 +46,13 @@ public abstract class IpsObjectPartContainerSection extends IpsSection {
 
     private final IIpsObjectPartContainer ipsObjectPartContainer;
 
+    protected IpsObjectPartContainerSection(String id, IIpsObjectPartContainer ipsObjectPartContainer,
+            Composite parent, int layoutData, UIToolkit toolkit) {
+
+        super(id, parent, layoutData, toolkit);
+        this.ipsObjectPartContainer = ipsObjectPartContainer;
+    }
+
     protected IpsObjectPartContainerSection(IIpsObjectPartContainer ipsObjectPartContainer, Composite parent,
             int style, int layoutData, UIToolkit toolkit) {
 
