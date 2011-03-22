@@ -146,6 +146,9 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      */
     public final static String CONFIG_PROPERTY_CLASS = "class"; //$NON-NLS-1$
 
+    /** The ID of the preference indicating whether the enum attributes section is expanded. */
+    public final static String PREFERENCE_ID_ENUM_ATTRIBUTES_SECTION_EXPANDED = "enumAttributesSectionExpanded"; //$NON-NLS-1$
+
     /**
      * Setting key for the open ips object history
      */

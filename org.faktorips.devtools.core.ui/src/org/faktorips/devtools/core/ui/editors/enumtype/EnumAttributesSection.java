@@ -17,6 +17,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -31,6 +35,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.forms.events.ExpansionEvent;
+import org.eclipse.ui.forms.events.IExpansionListener;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
@@ -38,6 +44,7 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.IpsMenuId;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
@@ -86,7 +93,24 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         addMonitoredValidationMessageCode(IEnumType.MSGCODE_ENUM_TYPE_NO_USED_AS_NAME_IN_FAKTOR_IPS_UI_ATTRIBUTE);
         addMonitoredValidationMessageCode(IEnumType.MSGCODE_ENUM_TYPE_NOT_INHERITED_ATTRIBUTES_IN_SUPERTYPE_HIERARCHY);
 
-        getSectionControl().setExpanded(true);
+        IPreferencesService preferencesService = Platform.getPreferencesService();
+        Boolean expanded = preferencesService.getBoolean(IpsUIPlugin.getDefault().getBundle().getSymbolicName(),
+                IpsUIPlugin.PREFERENCE_ID_ENUM_ATTRIBUTES_SECTION_EXPANDED, true, null);
+        getSectionControl().setExpanded(expanded);
+
+        getSectionControl().addExpansionListener(new IExpansionListener() {
+            @Override
+            public void expansionStateChanging(ExpansionEvent e) {
+                // Nothing to do
+            }
+
+            @Override
+            public void expansionStateChanged(ExpansionEvent e) {
+                IEclipsePreferences node = new InstanceScope().getNode(IpsUIPlugin.getDefault().getBundle()
+                        .getSymbolicName());
+                node.putBoolean(IpsUIPlugin.PREFERENCE_ID_ENUM_ATTRIBUTES_SECTION_EXPANDED, e.getState());
+            }
+        });
     }
 
     @Override
