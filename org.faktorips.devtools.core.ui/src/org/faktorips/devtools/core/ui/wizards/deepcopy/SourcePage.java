@@ -618,6 +618,9 @@ public class SourcePage extends WizardPage {
     void refreshVersionId() {
         if (getNamingStrategy() != null && getNamingStrategy().supportsVersionId()) {
             GregorianCalendar validFrom = getPresentationModel().getNewValidFrom();
+            if (validFrom == null) {
+                return;
+            }
             String newVersionId = getNamingStrategy().getNextVersionId(getStructure().getRoot().getProductCmpt(),
                     validFrom);
             if (!newVersionId.equals(getPresentationModel().getVersionId())) {
