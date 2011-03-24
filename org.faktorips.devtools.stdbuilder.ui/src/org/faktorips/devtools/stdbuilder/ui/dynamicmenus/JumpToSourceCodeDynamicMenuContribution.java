@@ -247,6 +247,9 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         if (selectedObject instanceof ISelection) {
             TypedSelection<IIpsElement> typedSelection = TypedSelection.create(IIpsElement.class,
                     (ISelection)selectedObject);
+            if (!typedSelection.isValid()) {
+                return null;
+            }
             return typedSelection.getElement();
         }
 
