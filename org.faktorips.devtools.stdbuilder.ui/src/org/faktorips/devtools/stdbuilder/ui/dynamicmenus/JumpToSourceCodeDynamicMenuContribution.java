@@ -244,8 +244,8 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         }
 
         /*
-         * If the evaluation service doesn't provide a selection the user probably activated the
-         * menu via editor.
+         * If the evaluation service doesn't provide a selection the user activated the menu via
+         * editor.
          */
         return getSelectedIpsElementFromEditor();
     }
