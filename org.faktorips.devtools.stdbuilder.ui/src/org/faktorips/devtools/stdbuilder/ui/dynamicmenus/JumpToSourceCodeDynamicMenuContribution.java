@@ -65,10 +65,10 @@ import org.faktorips.devtools.stdbuilder.ui.StdBuilderUICommandId;
  */
 public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributionItem implements IWorkbenchContribution {
 
-    // Unfortunately JDT does not expose these IDs via an enum or interface.
+    // Unfortunately JDT does not expose this ID via an enum or interface.
     private static final String JDT_COMMAND_ID_OPEN_ELEMENT_IN_JAVA_EDITOR = "org.eclipse.jdt.ui.commands.openElementInEditor";
 
-    // Unfortunately JDT does not expose these IDs via an enum or interface.
+    // Unfortunately JDT does not expose this ID via an enum or interface.
     private static final String JDT_PARAMETER_ID_ELEMENT_REF = "elementRef";
 
     private IServiceLocator serviceLocator;
@@ -120,10 +120,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     }
 
     private IContributionItem[] getContributionItemsForIpsObjectPartContainer() {
-        /*
-         * Obtain the Java types and their members which are generated for the IPS Object Part
-         * Container.
-         */
+        // Obtain the Java types and their members which are generated for the IPS Object Part
         Map<IType, Set<IMember>> javaTypesToJavaElements = getJavaTypesToJavaElementsMap();
 
         /*
@@ -132,7 +129,6 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
          * members.
          */
         List<IContributionItem> contributionItems = new ArrayList<IContributionItem>(javaTypesToJavaElements.size() * 3);
-
         List<IType> sortedJavaTypes = sortTypes(javaTypesToJavaElements.keySet());
         for (IType type : sortedJavaTypes) {
             if (!type.exists()) {
@@ -150,9 +146,9 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
 
         if (contributionItems.isEmpty()) {
             return getContributionItemsForNoSourceCodeFound();
-        } else {
-            return contributionItems.toArray(new IContributionItem[contributionItems.size()]);
         }
+
+        return contributionItems.toArray(new IContributionItem[contributionItems.size()]);
     }
 
     private Map<IType, Set<IMember>> getJavaTypesToJavaElementsMap() {
