@@ -297,9 +297,8 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         if (input instanceof IFileEditorInput) {
             return new TypedSelection<IAdaptable>(IAdaptable.class, new StructuredSelection(
                     ((IFileEditorInput)input).getFile()));
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**
