@@ -242,39 +242,54 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
 
     private IIpsElement getSelectedIpsElement() {
         // First try to use the evaluation service.
-        IEvaluationService evaluationService = (IEvaluationService)serviceLocator.getService(IEvaluationService.class);
-        Object selectedObject = evaluationService.getCurrentState().getVariable(ISources.ACTIVE_MENU_SELECTION_NAME);
-        if (selectedObject instanceof ISelection) {
-            TypedSelection<IIpsElement> typedSelection = TypedSelection.create(IIpsElement.class,
-                    (ISelection)selectedObject);
-            if (!typedSelection.isValid()) {
-                return null;
-            }
-            return typedSelection.getElement();
+        IIpsElement selectedIpsElement = getSelectedIpsElementFromEvaluationService();
+        if (selectedIpsElement != null) {
+            return selectedIpsElement;
         }
 
         /*
          * If the evaluation service doesn't provide a selection the user probably activated the
          * menu via editor.
          */
-        IWorkbenchWindow activeWindow = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
-        IWorkbenchPart part = activeWindow.getPartService().getActivePart();
-        if (part instanceof IEditorPart) {
-            TypedSelection<IAdaptable> typedSelection = getSelectionFromEditor(part);
-            IIpsSrcFile ipsSrcFile = (IIpsSrcFile)typedSelection.getFirstElement().getAdapter(IIpsSrcFile.class);
-            try {
-                return ipsSrcFile.getIpsObject();
-            } catch (CoreException e) {
-                /*
-                 * Recover from exception: If the IPS Object cannot be accessed inform the user
-                 * about the error and return null as selected IPS element.
-                 */
-                IpsPlugin.logAndShowErrorDialog(e);
-                return null;
+        return getSelectedIpsElementFromEditor();
+    }
+
+    private IIpsElement getSelectedIpsElementFromEvaluationService() {
+        IEvaluationService evaluationService = (IEvaluationService)serviceLocator.getService(IEvaluationService.class);
+        Object selectedObject = evaluationService.getCurrentState().getVariable(ISources.ACTIVE_MENU_SELECTION_NAME);
+        if (selectedObject instanceof ISelection) {
+            TypedSelection<IIpsElement> typedSelection = TypedSelection.create(IIpsElement.class,
+                    (ISelection)selectedObject);
+            if (typedSelection.isValid()) {
+                return typedSelection.getElement();
             }
         }
-
         return null;
+    }
+
+    private IIpsElement getSelectedIpsElementFromEditor() {
+        IWorkbenchWindow activeWindow = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
+        IWorkbenchPart part = activeWindow.getPartService().getActivePart();
+        if (!(part instanceof IEditorPart)) {
+            return null;
+        }
+
+        TypedSelection<IAdaptable> typedSelection = getSelectionFromEditor(part);
+        if (!typedSelection.isValid()) {
+            return null;
+        }
+
+        IIpsSrcFile ipsSrcFile = (IIpsSrcFile)typedSelection.getFirstElement().getAdapter(IIpsSrcFile.class);
+        try {
+            return ipsSrcFile.getIpsObject();
+        } catch (CoreException e) {
+            /*
+             * Recover from exception: If the IPS Object cannot be accessed inform the user about
+             * the error and return null as selected IPS element.
+             */
+            IpsPlugin.logAndShowErrorDialog(e);
+            return null;
+        }
     }
 
     private TypedSelection<IAdaptable> getSelectionFromEditor(IWorkbenchPart part) {
