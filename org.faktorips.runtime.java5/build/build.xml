@@ -33,17 +33,11 @@
 	
 	<!-- classpath: insert dependend project libs here! -->
 	<path id="classpath">
+		<!--
         <filelist dir="${buildproject.path}/lib">
                 <file name="junit.jar"/>
         </filelist>
-		
-		<!-- runtime depends on org.faktorips.util -->
-		<fileset dir="../../org.faktorips.util/" >
-		    <patternset>
-		    		<include name="lib/*.jar" /> 
-		    		<include name="build/results/*.jar" />
-		    </patternset>
-		</fileset>
+		-->
 		
 		<!-- runtime depends on org.faktorips.valuetypes.java5 -->
 		<fileset dir="../../org.faktorips.valuetypes.java5/" >
@@ -52,13 +46,6 @@
 		    	<include name="build/results/*.jar" />
 		    </patternset>
 		</fileset>
-		
-        <!-- jars in own project lib directory -->
-        <fileset dir="../lib/">
-            <patternset>
-                <include name="*.jar"/>
-            </patternset>
-        </fileset>
 	</path>
 	
 	<!-- calls default-target of template-buildfile -->
