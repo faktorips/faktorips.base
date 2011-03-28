@@ -379,7 +379,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
                             PROPERTY_SHARED_ASSOCIATION));
                     return;
                 }
-                if (!superAssociation.isInverseOfDerivedUnion()) {
+                if (!superAssociation.isInverseOfDerivedUnion() && !superAssociation.isSharedAssociation()) {
                     list.add(Message.newError(MSGCODE_SHARED_ASSOCIATION_INVALID,
                             Messages.PolicyCmptTypeAssociation_sharedAssociation_invalidAssociationHost, this,
                             PROPERTY_SHARED_ASSOCIATION));
@@ -518,7 +518,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         }
         String max = element.getAttribute(PROPERTY_MAX_CARDINALITY);
         if (max.equals("*")) { //$NON-NLS-1$
-            maxCardinality = CARDINALITY_MANY;
+        	maxCardinality = CARDINALITY_MANY;
         } else {
             try {
                 maxCardinality = Integer.parseInt(max);

@@ -402,6 +402,9 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         messageList = inversePart.validate(ipsProject);
         assertNotNull(messageList.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_SHARED_ASSOCIATION_INVALID));
 
+        inverseBasePart.setSharedAssociation(true);
+        messageList = inversePart.validate(ipsProject);
+        assertNull(messageList.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_SHARED_ASSOCIATION_INVALID));
     }
 
     @Test
