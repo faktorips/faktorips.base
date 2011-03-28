@@ -19,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Locale;
 
-import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
@@ -27,7 +26,6 @@ import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -44,7 +42,7 @@ import org.faktorips.fl.ExprCompiler;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AbstractParameterIdentifierResolverTest extends AbstractIpsPluginTest {
+public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderTest {
 
     private IPolicyCmptType policyCmptType;
     private IProductCmptType productCmptType;
@@ -52,7 +50,6 @@ public class AbstractParameterIdentifierResolverTest extends AbstractIpsPluginTe
     private IProductCmptTypeMethod method;
     private IPolicyCmptTypeAttribute attribute;
     private AbstractParameterIdentifierResolver resolver;
-    private IIpsProject ipsProject;
     private Locale locale;
 
     @Override
@@ -60,7 +57,6 @@ public class AbstractParameterIdentifierResolverTest extends AbstractIpsPluginTe
     public void setUp() throws Exception {
         super.setUp();
         locale = Locale.GERMAN;
-        ipsProject = this.newIpsProject();
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setBuilderSetId(StdBuilderPlugin.STANDARD_BUILDER_EXTENSION_ID);
         ipsProject.setProperties(props);

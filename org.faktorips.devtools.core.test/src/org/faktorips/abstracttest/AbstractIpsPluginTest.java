@@ -62,10 +62,12 @@ import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.core.search.TypeNameRequestor;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.faktorips.abstracttest.builder.TestArtefactBuilderSetInfo;
+import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.abstracttest.test.XmlAbstractTestCase;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.Util;
+import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.core.internal.model.DynamicEnumDatatype;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsModel;
@@ -88,6 +90,7 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
@@ -358,10 +361,10 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
         ipsProject.setIpsObjectPath(path);
 
-        // TODO: wichtig dies erzeugt eine Abhaengigkeit vom StdBuilder Projekt.
-        // Dies muss ueberarbeitet werden
+        AbstractArtefactBuilder builder = new TestBuilder();
+        setTestArtefactBuilder(ipsProject, builder);
+
         IIpsProjectProperties props = ipsProject.getProperties();
-        props.setBuilderSetId("org.faktorips.devtools.stdbuilder.ipsstdbuilderset");
         // @formatter:off
         props.setPredefinedDatatypesUsed(new String[] {
                 Datatype.DECIMAL.getName(),
@@ -377,6 +380,17 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         props.setMinRequiredVersionNumber(
                 "org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         ipsProject.setProperties(props);
+    }
+
+    protected void setTestArtefactBuilder(IIpsProject project, IIpsArtefactBuilder builder) throws CoreException {
+        IIpsProjectProperties props = project.getProperties();
+        props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
+        project.setProperties(props);
+        TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { builder });
+        builderSet.setIpsProject(project);
+        IIpsArtefactBuilderSetInfo[] builderSetInfos = new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(
+                builderSet) };
+        ((IpsModel)project.getIpsModel()).setIpsArtefactBuilderSetInfos(builderSetInfos);
     }
 
     private void addSystemLibraries(IJavaProject javaProject) throws JavaModelException {
@@ -1135,17 +1149,6 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         file.create(is, true, null);
     }
 
-    class ModelChangeListener implements ContentsChangeListener {
-
-        ContentChangeEvent lastEvent;
-
-        @Override
-        public void contentsChanged(ContentChangeEvent event) {
-            lastEvent = event;
-        }
-
-    }
-
     /**
      * Reads the first line of a file's contents from the given {@link InputStream}.
      */
@@ -1167,6 +1170,50 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         if (!file.exists()) {
             file.create(new ByteArrayInputStream(content.getBytes()), true, null);
         }
+    }
+
+    class ModelChangeListener implements ContentsChangeListener {
+
+        ContentChangeEvent lastEvent;
+
+        @Override
+        public void contentsChanged(ContentChangeEvent event) {
+            lastEvent = event;
+        }
+
+    }
+
+    private static class TestBuilder extends AbstractArtefactBuilder {
+
+        public TestBuilder() throws CoreException {
+            super(new TestIpsArtefactBuilderSet());
+            // TODO Auto-generated constructor stub
+        }
+
+        @Override
+        public String getName() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
+        public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
+            // TODO Auto-generated method stub
+
+        }
+
     }
 
 }

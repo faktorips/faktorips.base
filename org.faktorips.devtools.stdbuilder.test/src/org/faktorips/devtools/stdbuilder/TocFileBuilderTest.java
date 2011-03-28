@@ -24,13 +24,10 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IFormulaTestCase;
@@ -57,10 +54,8 @@ import org.w3c.dom.Document;
  * 
  * @author Jan Ortmann
  */
-public class TocFileBuilderTest extends AbstractIpsPluginTest {
+public class TocFileBuilderTest extends AbstractStdBuilderTest {
 
-    private IIpsProject project;
-    private StandardBuilderSet builderSet;
     private TableImplBuilder tableImplBuilder;
     private TocFileBuilder tocFileBuilder;
     private GregorianCalendar validFrom;
@@ -69,10 +64,6 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        project = newIpsProject("TestProject");
-        IIpsProjectProperties props = project.getProperties();
-        project.setProperties(props);
-        builderSet = (StandardBuilderSet)project.getIpsArtefactBuilderSet();
         tableImplBuilder = builderSet.getBuildersByClass(TableImplBuilder.class).get(0);
         tocFileBuilder = builderSet.getBuildersByClass(TocFileBuilder.class).get(0);
         validFrom = IpsPlugin.getDefault().getIpsPreferences().getWorkingDate();
@@ -81,23 +72,23 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
     @Test
     public void testGetToc() throws CoreException {
 
-        IPolicyCmptType type = newPolicyAndProductCmptType(project, "motor.MotorPolicy", "motor.MotorProduct");
-        IProductCmptType productCmptType = type.findProductCmptType(project);
+        IPolicyCmptType type = newPolicyAndProductCmptType(ipsProject, "motor.MotorPolicy", "motor.MotorProduct");
+        IProductCmptType productCmptType = type.findProductCmptType(ipsProject);
         newProductCmpt(productCmptType, "motor.MotorProduct");
 
         // toc should be empty as long as the project hasn't been builder
-        IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
+        IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
         TableOfContent toc = tocFileBuilder.getToc(root);
         assertEquals(0, toc.getEntries().size());
 
-        project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         toc = tocFileBuilder.getToc(root);
         assertEquals(3, toc.getEntries().size());
     }
 
     @Test
     public void testCreateTocEntryPolicyCmptType() throws CoreException {
-        IPolicyCmptType type = newPolicyCmptType(project, "test.Policy");
+        IPolicyCmptType type = newPolicyCmptType(ipsProject, "test.Policy");
         TocEntryObject entry = tocFileBuilder.createTocEntry(type);
         assertEquals("test.Policy", entry.getIpsObjectQualifiedName());
         assertEquals("test.Policy", entry.getIpsObjectId());
@@ -107,7 +98,7 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
 
     @Test
     public void testCreateTocEntryProductCmptType() throws CoreException {
-        IProductCmptType type = newProductCmptType(project, "test.Product");
+        IProductCmptType type = newProductCmptType(ipsProject, "test.Product");
         TocEntryObject entry = tocFileBuilder.createTocEntry(type);
         assertEquals("test.Product", entry.getIpsObjectQualifiedName());
         assertEquals("test.Product", entry.getIpsObjectId());
@@ -117,9 +108,9 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
 
     @Test
     public void testCreateTocEntryTable() throws CoreException {
-        ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE,
+        ITableStructure structure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
                 "motor.RateTableStructure");
-        ITableContents table = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "motor.RateTable");
+        ITableContents table = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "motor.RateTable");
         ITableContentsGeneration tableGen = (ITableContentsGeneration)table.newGeneration();
         tableGen.setValidFrom(validFrom);
         table.setTableStructure(structure.getQualifiedName());
@@ -138,14 +129,14 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
     @Test
     public void testToc() throws Exception {
         // create a product component: policyCmptType => 1 productCmptType => 2 productCmpt => 3
-        IPolicyCmptType type = newPolicyAndProductCmptType(project, "motor.MotorPolicy", "motor.MotorProduct");
-        IProductCmptType productCmptType = type.findProductCmptType(project);
+        IPolicyCmptType type = newPolicyAndProductCmptType(ipsProject, "motor.MotorPolicy", "motor.MotorProduct");
+        IProductCmptType productCmptType = type.findProductCmptType(ipsProject);
         IProductCmpt motorProduct = newProductCmpt(productCmptType, "motor.MotorProduct");
 
         // create a table content => 4
-        ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE,
+        ITableStructure structure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
                 "motor.RateTableStructure");
-        ITableContents table = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "motor.RateTable");
+        ITableContents table = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "motor.RateTable");
         ITableContentsGeneration tableGen = (ITableContentsGeneration)table.newGeneration();
         tableGen.setValidFrom(validFrom);
         table.setTableStructure(structure.getQualifiedName());
@@ -153,16 +144,17 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         table.getIpsSrcFile().save(true, null);
 
         // create another table content based on the same structure => 5
-        ITableContents table2 = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "motor.RateTable2");
+        ITableContents table2 = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS,
+                "motor.RateTable2");
         tableGen = (ITableContentsGeneration)table2.newGeneration();
         tableGen.setValidFrom(validFrom);
         table2.setTableStructure(structure.getQualifiedName());
         table2.getIpsSrcFile().save(true, null);
 
         // create a test case type and a test case => 6
-        ITestCaseType testCaseType = (ITestCaseType)newIpsObject(project, IpsObjectType.TEST_CASE_TYPE,
+        ITestCaseType testCaseType = (ITestCaseType)newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE,
                 "tests.PremiumCalcTest");
-        ITestCase testCase = (ITestCase)newIpsObject(project, IpsObjectType.TEST_CASE, "tests.PremiumCalcTestA");
+        ITestCase testCase = (ITestCase)newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "tests.PremiumCalcTestA");
         testCase.setTestCaseType(testCaseType.getQualifiedName());
         testCase.getIpsSrcFile().save(true, null);
 
@@ -176,12 +168,12 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         pcFromula.getIpsSrcFile().save(true, null);
 
         // now build
-        project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
-        IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
-        IFile tocFile = project.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root);
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
+        IFile tocFile = ipsProject.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root);
         assertTrue(tocFile.exists());
         assertTrue(tocFile.isDerived());
-        assertEquals(project.getXmlFileCharset(), tocFile.getCharset());
+        assertEquals(ipsProject.getXmlFileCharset(), tocFile.getCharset());
 
         // asserted objects in toc:
         // type, productCmptType, motorProduct, table, table2, testCase, pcFromula, pcFormula-Test
@@ -218,30 +210,30 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
 
         // no changes => toc file should remain untouched.
         long stamp = tocFile.getModificationStamp();
-        project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         assertEquals(stamp, tocFile.getModificationStamp());
         assertEquals(8, tocFileBuilder.getToc(root).getEntries().size());
 
         // delete the product cmpt => should be removed from toc => 7
         motorProduct.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
-        project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         assertEquals(7, tocFileBuilder.getToc(root).getEntries().size());
 
         // delete the table => should be removed from toc => 6
         table.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
-        project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         assertNull(tocFileBuilder.getToc(root).getEntry(
                 new QualifiedNameType("motor.RateTable", IpsObjectType.TABLE_CONTENTS)));
 
         // delete the second table => should be removed from toc => 5
         table2.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
-        project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         assertNull(tocFileBuilder.getToc(root).getEntry(
                 new QualifiedNameType("motor.RateTable2", IpsObjectType.TABLE_CONTENTS)));
 
         // delete test case => should be removed from toc => 4
         testCase.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
-        project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         assertNull(tocFileBuilder.getToc(root).getEntry(
                 new QualifiedNameType("tests.PremiumCalcTestA", IpsObjectType.TABLE_CONTENTS)));
 
@@ -250,7 +242,7 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         formulaTestEntry = tocFileBuilder.getToc(root).getEntry(pcFromula.getQualifiedNameType());
         assertNotNull(formulaTestEntry);
         pcFromula.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
-        project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         assertEquals(3, tocFileBuilder.getToc(root).getEntries().size());
 
         formulaTestEntry = tocFileBuilder.getToc(root).getEntry(pcFromula.getQualifiedNameType());
@@ -258,7 +250,7 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
 
         // check removing of table toc entries depending on the table structure type
         // create table content
-        ITableContents tableEnum = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS,
+        ITableContents tableEnum = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS,
                 "motor.RateTableEnum");
         tableGen = (ITableContentsGeneration)tableEnum.newGeneration();
         tableGen.setValidFrom(validFrom);
@@ -268,7 +260,7 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         tableEnum.getIpsSrcFile().save(true, null);
 
         // build
-        project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         TableOfContent builderToc = tocFileBuilder.getToc(root);
         assertNotNull(builderToc.getEntry(new QualifiedNameType("motor.RateTableEnum", IpsObjectType.TABLE_CONTENTS)));
     }
@@ -278,42 +270,42 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
     @Test
     public void testIfIdenticalTocFileIsNotWrittenAfterFullBuild() throws CoreException {
         // create a product component
-        IPolicyCmptType type = newPolicyAndProductCmptType(project, "motor.MotorPolicy", "motor.MotorProduct");
-        IProductCmptType productCmptType = type.findProductCmptType(project);
+        IPolicyCmptType type = newPolicyAndProductCmptType(ipsProject, "motor.MotorPolicy", "motor.MotorProduct");
+        IProductCmptType productCmptType = type.findProductCmptType(ipsProject);
         newProductCmpt(productCmptType, "motor.MotorProduct");
 
         // now make a full build
-        project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
-        IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
-        IFile tocFile = project.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root);
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
+        IFile tocFile = ipsProject.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root);
         assertTrue(tocFile.exists());
         long modStamp = tocFile.getModificationStamp();
 
         // now make a seond full build
-        project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         assertEquals(modStamp, tocFile.getModificationStamp());
     }
 
     @Test
     public void testCreateDeleteTocEntryFormulaTest() throws Exception {
         // create a product component
-        IPolicyCmptType type = newPolicyAndProductCmptType(project, "motor.MotorPolicy", "motor.MotorProduct");
-        IProductCmptType productCmptType = type.findProductCmptType(project);
+        IPolicyCmptType type = newPolicyAndProductCmptType(ipsProject, "motor.MotorPolicy", "motor.MotorProduct");
+        IProductCmptType productCmptType = type.findProductCmptType(ipsProject);
         IProductCmpt motorProduct = newProductCmpt(productCmptType, "motor.MotorProduct");
         IProductCmptGeneration generation = motorProduct.getProductCmptGeneration(0);
 
         // now make a full build
-        project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
-        IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
         TableOfContent toc = tocFileBuilder.getToc(root);
-        project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
 
         assertEquals(3, toc.getEntries().size());
 
         IFormula ce = generation.newFormula();
         IFormulaTestCase ftc = ce.newFormulaTestCase();
 
-        project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         toc = tocFileBuilder.getToc(root);
 
         assertEquals(4, toc.getEntries().size());
@@ -321,7 +313,7 @@ public class TocFileBuilderTest extends AbstractIpsPluginTest {
         // delete formula test of product cmpt, this triggers the deleting of the formula toc file
         // entry
         ftc.delete();
-        project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         toc = tocFileBuilder.getToc(root);
 
         assertEquals(3, toc.getEntries().size());

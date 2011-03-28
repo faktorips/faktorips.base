@@ -15,25 +15,22 @@ package org.faktorips.devtools.stdbuilder.testcase;
 
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestCaseBuilderTest extends AbstractIpsPluginTest {
+public class TestCaseBuilderTest extends AbstractStdBuilderTest {
 
-    private IIpsProject project;
     private ITestCaseType testCaseType;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        project = newIpsProject("TestProject");
-        testCaseType = (ITestCaseType)newIpsObject(project, IpsObjectType.TEST_CASE_TYPE, "testCaseType");
+        testCaseType = (ITestCaseType)newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE, "testCaseType");
         testCaseType.newInputTestValueParameter().setName("testValueParam1");
         testCaseType.newInputTestValueParameter().setName("testValueParam1");
         testCaseType.getIpsSrcFile().save(true, null);
@@ -41,11 +38,11 @@ public class TestCaseBuilderTest extends AbstractIpsPluginTest {
 
     @Test
     public void testBuildInvalidTestCase() throws CoreException {
-        ITestCase testCase = (ITestCase)newIpsObject(project, IpsObjectType.TEST_CASE, "testCase");
+        ITestCase testCase = (ITestCase)newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "testCase");
         testCase.setTestCaseType(testCaseType.getQualifiedName());
         testCase.newTestValue().setTestValueParameter("testValueParam1");
         testCase.getIpsSrcFile().save(true, null);
-        project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
     }
 
 }

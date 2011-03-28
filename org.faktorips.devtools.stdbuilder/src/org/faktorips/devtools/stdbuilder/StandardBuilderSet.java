@@ -91,6 +91,8 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class StandardBuilderSet extends DefaultBuilderSet {
 
+    public final static String ID = "org.faktorips.devtools.stdbuilder.ipsstdbuilderset";
+
     /**
      * Configuration property that enables/disables the generation of a copy method.
      * 

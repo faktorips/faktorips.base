@@ -16,7 +16,6 @@ package org.faktorips.devtools.stdbuilder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
@@ -28,7 +27,7 @@ import org.junit.Test;
  * 
  * @author Jan Ortmann
  */
-public class ProductCmptWithoutVersionIdTest extends AbstractIpsPluginTest {
+public class ProductCmptWithoutVersionIdTest extends AbstractStdBuilderTest {
 
     public ProductCmptWithoutVersionIdTest() {
         super();

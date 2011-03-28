@@ -15,7 +15,6 @@ package org.faktorips.devtools.stdbuilder;
 
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.junit.Test;
@@ -24,7 +23,7 @@ import org.junit.Test;
  * 
  * @author Jan Ortmann
  */
-public class MissingProductCmptTypeTest extends AbstractIpsPluginTest {
+public class MissingProductCmptTypeTest extends AbstractStdBuilderTest {
 
     public MissingProductCmptTypeTest() {
         super();

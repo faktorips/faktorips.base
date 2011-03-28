@@ -20,7 +20,10 @@ import java.util.Map;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.AbstractBuilderSet;
+import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
+import org.faktorips.devtools.core.builder.JavaGeneratorHelper;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -29,6 +32,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
@@ -125,13 +129,25 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
     @Override
     public IdentifierResolver createFlIdentifierResolver(IFormula formula, ExprCompiler exprCompiler)
             throws CoreException {
-        return null;
+
+        return new AbstractParameterIdentifierResolver(formula, exprCompiler) {
+            @Override
+            protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
+                return JavaGeneratorHelper.getJavaNamingConvention().getGetterMethodName(attribute.getName(), datatype);
+            }
+        };
     }
 
     @Override
     public IdentifierResolver createFlIdentifierResolverForFormulaTest(IFormula formula, ExprCompiler exprCompiler)
             throws CoreException {
-        return null;
+
+        return new AbstractParameterIdentifierResolver(formula, exprCompiler) {
+            @Override
+            protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
+                return JavaGeneratorHelper.getJavaNamingConvention().getGetterMethodName(attribute.getName(), datatype);
+            }
+        };
     }
 
     @Override

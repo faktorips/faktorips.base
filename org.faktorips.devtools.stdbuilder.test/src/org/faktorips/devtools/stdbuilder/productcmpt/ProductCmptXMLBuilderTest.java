@@ -20,10 +20,7 @@ import java.util.GregorianCalendar;
 
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -32,6 +29,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,9 +37,8 @@ import org.junit.Test;
  * 
  * @author Jan Ortmann
  */
-public class ProductCmptXMLBuilderTest extends AbstractIpsPluginTest {
+public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
 
-    private IIpsProject project;
     private IPolicyCmptType policyCmptType;
     private IProductCmptType productCmptType;
     private IProductCmpt productCmpt;
@@ -50,11 +47,8 @@ public class ProductCmptXMLBuilderTest extends AbstractIpsPluginTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        project = newIpsProject("TestProject");
-        IIpsProjectProperties props = project.getProperties();
-        project.setProperties(props);
-        policyCmptType = newPolicyAndProductCmptType(project, "Policy", "Product");
-        productCmptType = policyCmptType.findProductCmptType(project);
+        policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
+        productCmptType = policyCmptType.findProductCmptType(ipsProject);
 
         IProductCmptTypeMethod method = productCmptType.newProductCmptTypeMethod();
         method.setDatatype(Datatype.INTEGER.getQualifiedName());
@@ -62,7 +56,7 @@ public class ProductCmptXMLBuilderTest extends AbstractIpsPluginTest {
         method.setFormulaSignatureDefinition(true);
         method.setFormulaName("AgeCalculation");
 
-        assertTrue(productCmptType.isValid(project));
+        assertTrue(productCmptType.isValid(ipsProject));
 
         IProductCmptTypeAssociation rel = productCmptType.newProductCmptTypeAssociation();
         rel.setTargetRoleSingular("role");
@@ -93,15 +87,15 @@ public class ProductCmptXMLBuilderTest extends AbstractIpsPluginTest {
 
     @Test
     public void testBuild() throws CoreException {
-        project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
     }
 
     @Test
     public void testDelete() throws CoreException {
-        project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
 
         productCmpt.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
-        project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
     }
 
 }

@@ -16,7 +16,6 @@ package org.faktorips.devtools.stdbuilder;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.builder.DependencyGraph;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.model.IDependency;
@@ -29,7 +28,7 @@ import org.junit.Test;
  * 
  * @author Jan Ortmann
  */
-public class UpdateDependencyGraphTest extends AbstractIpsPluginTest {
+public class UpdateDependencyGraphTest extends AbstractStdBuilderTest {
 
     public UpdateDependencyGraphTest() {
         super();

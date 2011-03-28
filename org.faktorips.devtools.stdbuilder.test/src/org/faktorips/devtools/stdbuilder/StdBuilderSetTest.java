@@ -23,7 +23,6 @@ import java.util.Date;
 
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
@@ -37,7 +36,7 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class StdBuilderSetTest extends AbstractIpsPluginTest {
+public class StdBuilderSetTest extends AbstractStdBuilderTest {
 
     /*
      * #bug 1460

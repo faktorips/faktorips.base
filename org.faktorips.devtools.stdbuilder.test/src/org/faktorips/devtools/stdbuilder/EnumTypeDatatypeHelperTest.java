@@ -17,23 +17,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.junit.Test;
 
-public class EnumTypeDatatypeHelperTest extends AbstractIpsPluginTest {
-
-    private IIpsProject ipsProject;
+public class EnumTypeDatatypeHelperTest extends AbstractStdBuilderTest {
 
     @Test
     public void testHelper() throws Exception {
-        ipsProject = newIpsProject("TestProject");
         IEnumType paymentMode = newEnumType(ipsProject, "PaymentMode");
         paymentMode.setAbstract(false);
         paymentMode.setContainingValues(true);

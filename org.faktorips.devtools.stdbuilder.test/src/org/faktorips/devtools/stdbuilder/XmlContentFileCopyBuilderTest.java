@@ -21,20 +21,16 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
-import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.junit.Before;
 import org.junit.Test;
 
-public class XmlContentFileCopyBuilderTest extends AbstractIpsPluginTest {
+public class XmlContentFileCopyBuilderTest extends AbstractStdBuilderTest {
 
-    private IIpsProject project;
     private ITableStructure structure;
     private ITableContents contents;
     private IFolder destination;
@@ -44,11 +40,8 @@ public class XmlContentFileCopyBuilderTest extends AbstractIpsPluginTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        project = newIpsProject("TestProject");
-        IIpsProjectProperties props = project.getProperties();
-        project.setProperties(props);
-        structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "TestTable");
-        contents = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "TestTable");
+        structure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE, "TestTable");
+        contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "TestTable");
         contents.setTableStructure(structure.getQualifiedName());
         String packageString = getPackageStructure().getPackage(DefaultBuilderSet.KIND_TABLE_CONTENT,
                 contents.getIpsSrcFile());
@@ -64,21 +57,21 @@ public class XmlContentFileCopyBuilderTest extends AbstractIpsPluginTest {
     @Test
     public void testBuild() throws CoreException {
         assertFalse(getContentsFile().exists());
-        project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         assertTrue(getContentsFile().exists());
     }
 
     private IJavaPackageStructure getPackageStructure() {
-        return project.getIpsArtefactBuilderSet();
+        return ipsProject.getIpsArtefactBuilderSet();
     }
 
     @Test
     public void testDelete() throws CoreException {
         assertFalse(getContentsFile().exists());
-        project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         assertTrue(getContentsFile().exists());
         contents.getIpsSrcFile().getCorrespondingFile().delete(true, null);
-        project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         assertFalse(getContentsFile().exists());
     }
 

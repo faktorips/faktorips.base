@@ -23,17 +23,15 @@ import java.util.GregorianCalendar;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,9 +39,8 @@ import org.junit.Test;
  * 
  * @author Jan Ortmann
  */
-public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
+public class ProductCmptBuilderTest extends AbstractStdBuilderTest {
 
-    private IIpsProject project;
     private IPolicyCmptType type;
     private IProductCmptType productCmptType;
     private IProductCmpt productCmpt;
@@ -55,18 +52,15 @@ public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        project = newIpsProject("TestProject");
-        IIpsProjectProperties props = project.getProperties();
-        project.setProperties(props);
-        type = newPolicyAndProductCmptType(project, "Policy", "Product");
+        type = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
 
-        productCmptType = type.findProductCmptType(project);
+        productCmptType = type.findProductCmptType(ipsProject);
         IProductCmptTypeMethod method = productCmptType.newProductCmptTypeMethod();
         method.setDatatype(Datatype.INTEGER.getQualifiedName());
         method.setName("age");
         method.setFormulaSignatureDefinition(true);
         method.setFormulaName("AgeCalculation");
-        assertFalse(type.validate(project).containsErrorMsg());
+        assertFalse(type.validate(ipsProject).containsErrorMsg());
         type.getIpsSrcFile().save(true, null);
 
         productCmpt = newProductCmpt(productCmptType, "Product");
@@ -76,9 +70,9 @@ public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
         ce.setFormulaSignature(method.getFormulaName());
         ce.setExpression("42");
         productCmpt.getIpsSrcFile().save(true, null);
-        assertFalse(productCmpt.validate(project).containsErrorMsg());
+        assertFalse(productCmpt.validate(ipsProject).containsErrorMsg());
 
-        IIpsArtefactBuilder[] builders = project.getIpsArtefactBuilderSet().getArtefactBuilders();
+        IIpsArtefactBuilder[] builders = ipsProject.getIpsArtefactBuilderSet().getArtefactBuilders();
         for (IIpsArtefactBuilder builder2 : builders) {
             if (builder2 instanceof ProductCmptBuilder) {
                 builder = (ProductCmptBuilder)builder2;
@@ -91,7 +85,7 @@ public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
     public void testBuild() throws CoreException {
         // build should not throw an exception even if the reference to the type is missing
         productCmpt.getIpsSrcFile().save(true, null);
-        project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         assertTrue(builder.getGeneratedJavaFile(productCmptGen).exists());
     }
 
@@ -99,18 +93,18 @@ public class ProductCmptBuilderTest extends AbstractIpsPluginTest {
     public void testBuildMissingType() throws CoreException {
         productCmpt.setProductCmptType("");
         productCmpt.getIpsSrcFile().save(true, null);
-        project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         assertNull(builder.getGeneratedJavaFile(productCmptGen));
     }
 
     @Test
     public void testDelete() throws CoreException {
-        project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         IFile javaFile = builder.getGeneratedJavaFile(productCmptGen);
         assertTrue(javaFile.exists());
 
         productCmpt.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
-        project.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         assertFalse(javaFile.exists());
     }
 
