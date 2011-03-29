@@ -204,7 +204,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
             while ((line = br.readLine()) != null) {
                 generatedXml.append(line);
             }
-            String patternStr = ".*targetRuntimeId=\"(.*)\".*";
+            String patternStr = ".*targetRuntimeId=\"([^\"]*)\".*";
             Pattern pattern = Pattern.compile(patternStr);
             Matcher matcher = pattern.matcher(generatedXml);
             assertTrue(matcher.find());
