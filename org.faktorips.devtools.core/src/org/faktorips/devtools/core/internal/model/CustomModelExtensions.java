@@ -16,14 +16,12 @@ package org.faktorips.devtools.core.internal.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -51,18 +49,21 @@ import org.faktorips.util.ArgumentCheck;
 public class CustomModelExtensions implements ICustomModelExtensions {
 
     /** extension properties per ips object (or part) type, e.g. IAttribute. */
-    private Map<Class<?>, List<IExtensionPropertyDefinition>> typeExtensionPropertiesMap = null;
+    private final Map<Class<?>, List<IExtensionPropertyDefinition>> typeExtensionPropertiesMap;
 
-    private CustomValidationsPerType customValidationsPerType = null;
+    private final CustomValidationsPerType customValidationsPerType;
 
-    private Map<String, IProductCmptNamingStrategyFactory> productCmptNamingStrategies = new HashMap<String, IProductCmptNamingStrategyFactory>();
+    private final Map<String, IProductCmptNamingStrategyFactory> productCmptNamingStrategies;
 
-    private IpsModel ipsModel;
+    private final IpsModel ipsModel;
 
     public CustomModelExtensions(IpsModel ipsModel) {
         ArgumentCheck.notNull(ipsModel);
         this.ipsModel = ipsModel;
         customValidationsPerType = CustomValidationsPerType.createFromExtensions();
+        typeExtensionPropertiesMap = new HashMap<Class<?>, List<IExtensionPropertyDefinition>>();
+        initExtensionPropertiesFromConfiguration();
+        productCmptNamingStrategies = new HashMap<String, IProductCmptNamingStrategyFactory>();
         initProductCmptNamingStrategies();
     }
 
@@ -79,19 +80,7 @@ public class CustomModelExtensions implements ICustomModelExtensions {
     @Override
     public Set<IExtensionPropertyDefinition> getExtensionPropertyDefinitions(Class<?> type,
             boolean includeSupertypesAndInterfaces) {
-        if (typeExtensionPropertiesMap == null) {
-            initExtensionPropertiesFromConfiguration();
-        }
-        SortedSet<IExtensionPropertyDefinition> result = new TreeSet<IExtensionPropertyDefinition>(
-                new Comparator<IExtensionPropertyDefinition>() {
-
-                    @Override
-                    public int compare(IExtensionPropertyDefinition def1, IExtensionPropertyDefinition def2) {
-                        return def1.getPropertyId().compareTo(def2.getPropertyId());
-                    }
-
-                });
-
+        Set<IExtensionPropertyDefinition> result = new LinkedHashSet<IExtensionPropertyDefinition>();
         getIpsObjectExtensionProperties(type, includeSupertypesAndInterfaces, result);
         return result;
     }
@@ -117,9 +106,6 @@ public class CustomModelExtensions implements ICustomModelExtensions {
      * extension properties are discovered by extension point lookup.
      */
     public void addIpsObjectExtensionProperty(IExtensionPropertyDefinition property) {
-        if (typeExtensionPropertiesMap == null) {
-            typeExtensionPropertiesMap = new HashMap<Class<?>, List<IExtensionPropertyDefinition>>();
-        }
         List<IExtensionPropertyDefinition> props = typeExtensionPropertiesMap.get(property.getExtendedType());
         if (props == null) {
             props = new ArrayList<IExtensionPropertyDefinition>();
@@ -150,7 +136,6 @@ public class CustomModelExtensions implements ICustomModelExtensions {
     }
 
     private void initExtensionPropertiesFromConfiguration() {
-        typeExtensionPropertiesMap = new HashMap<Class<?>, List<IExtensionPropertyDefinition>>();
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         IExtensionPoint point = registry.getExtensionPoint(IpsPlugin.PLUGIN_ID, "objectExtensionProperty"); //$NON-NLS-1$
         IExtension[] extensions = point.getExtensions();
