@@ -109,6 +109,11 @@ public class IpsSrcFile extends AbstractIpsSrcFile {
     }
 
     @Override
+    public boolean exists() {
+        return getCorrespondingFile().exists();
+    }
+
+    @Override
     public boolean isMutable() {
         IFile file = (IFile)getEnclosingResource();
         return file.exists() && !file.isReadOnly();
