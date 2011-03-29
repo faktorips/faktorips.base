@@ -50,7 +50,7 @@ public class GenValidationRule extends GenTypePart {
 
     private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenValidationRule.class);
 
-    public GenValidationRule(GenPolicyCmptType genPolicyCmptType, IIpsObjectPartContainer part) throws CoreException {
+    public GenValidationRule(GenPolicyCmptType genPolicyCmptType, IIpsObjectPartContainer part) {
         super(genPolicyCmptType, part, LOCALIZED_STRINGS);
     }
 
@@ -265,7 +265,7 @@ public class GenValidationRule extends GenTypePart {
         body.append("return new ");
         body.appendClassName(Message.class);
         body.append('(');
-        body.append(getFieldNameForMsgCode(rule));
+        body.append(getFieldNameForMsgCode());
         body.append(", ");
         body.append(msgFrag.getMsgTextExpression());
         body.append(", ");
@@ -374,14 +374,14 @@ public class GenValidationRule extends GenTypePart {
         membersBuilder.append("public final static ");
         membersBuilder.appendClassName(String.class);
         membersBuilder.append(' ');
-        membersBuilder.append(getFieldNameForMsgCode(getValidationRule()));
+        membersBuilder.append(getFieldNameForMsgCode());
         membersBuilder.append(" = \"");
         membersBuilder.append(getValidationRule().getMessageCode());
         membersBuilder.appendln("\";");
     }
 
-    public String getFieldNameForMsgCode(IValidationRule rule) {
-        return getLocalizedText("FIELD_MSG_CODE_NAME", StringUtils.upperCase(rule.getName()));
+    public String getFieldNameForMsgCode() {
+        return getLocalizedText("FIELD_MSG_CODE_NAME", StringUtils.upperCase(getValidationRule().getName()));
     }
 
     private String getMethodNameCreateMessageForRule(IValidationRule rule) {
@@ -404,6 +404,7 @@ public class GenValidationRule extends GenTypePart {
             IType generatedJavaType,
             IIpsElement ipsElement) {
 
+        addFieldToGeneratedJavaElements(javaElements, generatedJavaType, getFieldNameForMsgCode());
     }
 
 }
