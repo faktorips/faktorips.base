@@ -155,7 +155,7 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
     public void testGetIpsArchive() {
         IIpsArchive archive = entry.getIpsArchive();
         assertNotNull(archive);
-        assertEquals(archivePath, archive.getArchivePath());
+        assertEquals(archivePath, archive.getLocation());
     }
 
     @Test
