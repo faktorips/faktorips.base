@@ -15,11 +15,14 @@ package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
 import javax.xml.transform.TransformerException;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -78,13 +81,33 @@ public class CopyProductCmptWizard extends Wizard implements INewIpsObjectWizard
     public boolean performFinish() {
         try {
             IIpsPackageFragment pack = productCmptPage.getIpsPackageFragment();
-            IIpsSrcFile srcFile = pack.createIpsFile(
+            final IIpsSrcFile srcFile = pack.createIpsFile(
                     getIpsObjectType().getFileName(productCmptPage.getIpsObjectName()),
                     getContentsOfIpsObject(sourceProductCmpt), true, null);
-            finishIpsObject((IProductCmpt)srcFile.getIpsObject());
-            srcFile.save(true, null);
-            IpsUIPlugin.getDefault().openEditor(srcFile);
-        } catch (Exception e) {
+            IpsPlugin.getDefault().getIpsModel()
+                    .executeModificationsWithSingleEvent(new SingleEventModification<Void>(srcFile) {
+
+                        @Override
+                        protected boolean execute() throws CoreException {
+                            finishIpsObject((IProductCmpt)srcFile.getIpsObject());
+                            srcFile.save(true, null);
+                            return true;
+                        }
+
+                        @Override
+                        protected Void getResult() {
+                            return null;
+                        }
+                    });
+
+            Display.getDefault().asyncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    IpsUIPlugin.getDefault().openEditor(srcFile);
+                }
+            });
+        } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
         return true;

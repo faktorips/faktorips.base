@@ -27,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
@@ -233,30 +234,31 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     private IEnumAttribute createNewEnumAttribute(final Class<? extends IEnumAttribute> attributeClass)
             throws CoreException {
 
-        return executeModificationsWithSingleEvent(new SingleEventModification<IEnumAttribute>() {
+        return getIpsModel().executeModificationsWithSingleEvent(
+                new SingleEventModification<IEnumAttribute>(getIpsSrcFile()) {
 
-            IEnumAttribute newEnumAttribute;
+                    IEnumAttribute newEnumAttribute;
 
-            @Override
-            public boolean execute() throws CoreException {
-                newEnumAttribute = (IEnumAttribute)newPart(attributeClass);
+                    @Override
+                    public boolean execute() throws CoreException {
+                        newEnumAttribute = (IEnumAttribute)newPart(attributeClass);
 
-                // Create new EnumAttributeValue objects on the EnumValues of this EnumType.
-                for (IEnumValue currentEnumValue : getEnumValues()) {
-                    if (attributeClass.equals(EnumLiteralNameAttribute.class)) {
-                        currentEnumValue.newEnumLiteralNameAttributeValue();
-                    } else {
-                        currentEnumValue.newEnumAttributeValue();
+                        // Create new EnumAttributeValue objects on the EnumValues of this EnumType.
+                        for (IEnumValue currentEnumValue : getEnumValues()) {
+                            if (attributeClass.equals(EnumLiteralNameAttribute.class)) {
+                                currentEnumValue.newEnumLiteralNameAttributeValue();
+                            } else {
+                                currentEnumValue.newEnumAttributeValue();
+                            }
+                        }
+                        return true;
                     }
-                }
-                return true;
-            }
 
-            @Override
-            public IEnumAttribute getResult() {
-                return newEnumAttribute;
-            }
-        });
+                    @Override
+                    public IEnumAttribute getResult() {
+                        return newEnumAttribute;
+                    }
+                });
     }
 
     @Override
@@ -337,7 +339,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             }
         }
 
-        return executeModificationsWithSingleEvent(new SingleEventModification<Integer>() {
+        return getIpsModel().executeModificationsWithSingleEvent(new SingleEventModification<Integer>(getIpsSrcFile()) {
             int[] newIndex = {};
 
             @Override
@@ -699,7 +701,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             handleEnumAttributeDeletion(index);
         }
 
-        executeModificationsWithSingleEvent(new SingleEventModification<Object>() {
+        getIpsModel().executeModificationsWithSingleEvent(new SingleEventModification<Object>(getIpsSrcFile()) {
 
             @Override
             public boolean execute() throws CoreException {

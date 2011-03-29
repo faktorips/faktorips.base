@@ -22,6 +22,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
@@ -137,41 +138,42 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
             return null;
         }
 
-        return executeModificationsWithSingleEvent(new SingleEventModification<IEnumValue>() {
+        return getIpsModel().executeModificationsWithSingleEvent(
+                new SingleEventModification<IEnumValue>(getIpsSrcFile()) {
 
-            IEnumValue newEnumValue;
+                    IEnumValue newEnumValue;
 
-            @Override
-            public boolean execute() throws CoreException {
-                // Create new enumeration value.
-                newEnumValue = (IEnumValue)newPart(EnumValue.class);
+                    @Override
+                    public boolean execute() throws CoreException {
+                        // Create new enumeration value.
+                        newEnumValue = (IEnumValue)newPart(EnumValue.class);
 
-                /*
-                 * Add as many enumeration attribute values as there are enumeration attributes in
-                 * the enumeration type.
-                 */
-                boolean includeLiteralNames = EnumValueContainer.this instanceof IEnumType;
-                for (IEnumAttribute enumAttribute : enumType
-                        .getEnumAttributesIncludeSupertypeCopies(includeLiteralNames)) {
-                    if (enumAttribute.isEnumLiteralNameAttribute()) {
-                        newEnumValue.newEnumLiteralNameAttributeValue();
-                    } else {
-                        newEnumValue.newEnumAttributeValue();
+                        /*
+                         * Add as many enumeration attribute values as there are enumeration
+                         * attributes in the enumeration type.
+                         */
+                        boolean includeLiteralNames = EnumValueContainer.this instanceof IEnumType;
+                        for (IEnumAttribute enumAttribute : enumType
+                                .getEnumAttributesIncludeSupertypeCopies(includeLiteralNames)) {
+                            if (enumAttribute.isEnumLiteralNameAttribute()) {
+                                newEnumValue.newEnumLiteralNameAttributeValue();
+                            } else {
+                                newEnumValue.newEnumAttributeValue();
+                            }
+                        }
+                        return true;
                     }
-                }
-                return true;
-            }
 
-            @Override
-            public IEnumValue getResult() {
-                return newEnumValue;
-            }
+                    @Override
+                    public IEnumValue getResult() {
+                        return newEnumValue;
+                    }
 
-            @Override
-            public ContentChangeEvent modificationEvent() {
-                return ContentChangeEvent.newPartAddedEvent(newEnumValue);
-            }
-        });
+                    @Override
+                    public ContentChangeEvent modificationEvent() {
+                        return ContentChangeEvent.newPartAddedEvent(newEnumValue);
+                    }
+                });
     }
 
     @Override
@@ -187,7 +189,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
             return new int[0];
         }
 
-        return executeModificationsWithSingleEvent(new SingleEventModification<int[]>() {
+        return getIpsModel().executeModificationsWithSingleEvent(new SingleEventModification<int[]>(getIpsSrcFile()) {
             int[] indizes = new int[numberToMove];
 
             @Override
@@ -467,28 +469,29 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         }
 
         try {
-            return executeModificationsWithSingleEvent(new SingleEventModification<Boolean>() {
+            return getIpsModel().executeModificationsWithSingleEvent(
+                    new SingleEventModification<Boolean>(getIpsSrcFile()) {
 
-                private Boolean changed;
+                        private Boolean changed;
 
-                @Override
-                protected boolean execute() throws CoreException {
-                    changed = false;
-                    for (IEnumValue currentEnumValue : enumValuesToDelete) {
-                        if (!(enumValues.contains(currentEnumValue))) {
-                            continue;
+                        @Override
+                        protected boolean execute() throws CoreException {
+                            changed = false;
+                            for (IEnumValue currentEnumValue : enumValuesToDelete) {
+                                if (!(enumValues.contains(currentEnumValue))) {
+                                    continue;
+                                }
+                                currentEnumValue.delete();
+                                changed = true;
+                            }
+                            return changed;
                         }
-                        currentEnumValue.delete();
-                        changed = true;
-                    }
-                    return changed;
-                }
 
-                @Override
-                protected Boolean getResult() {
-                    return changed;
-                }
-            });
+                        @Override
+                        protected Boolean getResult() {
+                            return changed;
+                        }
+                    });
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }

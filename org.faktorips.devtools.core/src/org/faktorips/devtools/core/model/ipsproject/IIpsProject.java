@@ -861,17 +861,6 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public MessageList checkForDuplicateRuntimeIds(IIpsSrcFile[] cmptsToCheck) throws CoreException;
 
     /**
-     * Searches all product components in the IPS object path for duplicate runtime IDs.
-     * 
-     * @return A list of messages. For each combination of two product components with duplicate
-     *         runtime id a new message is created. This message has two invalid object properties,
-     *         each containing one of the two product components.
-     * 
-     * @throws CoreException if an error occurs during search.
-     */
-    public MessageList checkForDuplicateRuntimeIds() throws CoreException;
-
-    /**
      * Returns <code>true</code> if the given resource will be excluded from the product definition.<br>
      * If the given resource is relevant for the product definition the method returns
      * <code>false</code>. Returns <code>false</code> if resource is <code>null</code>.

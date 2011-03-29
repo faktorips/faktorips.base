@@ -1737,25 +1737,14 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public MessageList checkForDuplicateRuntimeIds() throws CoreException {
-        return checkForDuplicateRuntimeIdsInternal(findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT), true);
-    }
-
-    @Override
     public MessageList checkForDuplicateRuntimeIds(IIpsSrcFile[] cmptsToCheck) throws CoreException {
-        return checkForDuplicateRuntimeIdsInternal(cmptsToCheck, false);
+        return checkForDuplicateRuntimeIdsInternal(cmptsToCheck);
     }
 
     /**
      * Check product cmpts for duplicate runtime id.
      * 
      * @param cmptsToCheck List of product components to check.
-     * 
-     * @param all <code>true</code> to indicate that the given array of product components is the
-     *            whole list of all available product components or <code>false</code> for only a
-     *            subset of product components. If <code>false</code> is provided, a list of all
-     *            product components is build and all given product components are checked against
-     *            this list.
      * 
      * @return A message list containing messages for each combination of a given product component
      *         with the same runtime id as another one. The message has either one invalid object
@@ -1765,50 +1754,25 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * 
      * @throws CoreException if an error occurs during processing.
      */
-    private MessageList checkForDuplicateRuntimeIdsInternal(IIpsSrcFile[] cmptsToCheck, boolean all)
-            throws CoreException {
+    private MessageList checkForDuplicateRuntimeIdsInternal(IIpsSrcFile[] cmptsToCheck) throws CoreException {
 
-        IIpsSrcFile[] baseCheck;
-        if (all) {
-            baseCheck = cmptsToCheck;
-        } else {
-            baseCheck = findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
-        }
+        IIpsSrcFile[] baseCheck = findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
 
         MessageList result = new MessageList();
         IProductCmptNamingStrategy strategyI = null;
         IProductCmptNamingStrategy strategyJ = null;
-        for (int i = 0; i < cmptsToCheck.length; i++) {
-            ArgumentCheck.equals(cmptsToCheck[i].getIpsObjectType(), IpsObjectType.PRODUCT_CMPT_TYPE);
-
-            IIpsSrcFile productCmptToCheck = cmptsToCheck[i];
+        for (IIpsSrcFile productCmptToCheck : cmptsToCheck) {
+            ArgumentCheck.equals(productCmptToCheck.getIpsObjectType(), IpsObjectType.PRODUCT_CMPT_TYPE);
             strategyI = productCmptToCheck.getIpsProject().getProductCmptNamingStrategy();
-
-            if (all) {
-                // because we process the same array with index j as with index
-                // i, index j can start allways with i+1 without missing some product
-                // component combinations.
-                for (int j = i + 1; j < cmptsToCheck.length; j++) {
-                    ArgumentCheck.equals(cmptsToCheck[j].getIpsObjectType(), IpsObjectType.PRODUCT_CMPT_TYPE);
-                    IIpsSrcFile productCmptToCheckB = cmptsToCheck[j];
+            for (IIpsSrcFile element : baseCheck) {
+                ArgumentCheck.equals(element.getIpsObjectType(), IpsObjectType.PRODUCT_CMPT_TYPE);
+                IIpsSrcFile productCmptToCheckB = element;
+                if (!productCmptToCheck.getQualifiedNameType().equals((productCmptToCheckB.getQualifiedNameType()))) {
                     strategyJ = productCmptToCheckB.getIpsProject().getProductCmptNamingStrategy();
                     boolean duplicate = checkSameRuntimeId(strategyI, productCmptToCheck, productCmptToCheckB, result,
-                            true);
+                            false);
                     if (!duplicate && !strategyI.equals(strategyJ)) {
-                        checkSameRuntimeId(strategyJ, productCmptToCheck, productCmptToCheckB, result, true);
-                    }
-                }
-            } else {
-                for (IIpsSrcFile element : baseCheck) {
-                    ArgumentCheck.equals(element.getIpsObjectType(), IpsObjectType.PRODUCT_CMPT_TYPE);
-                    IIpsSrcFile productCmptToCheckB = element;
-                    if (!productCmptToCheck.getQualifiedNameType().equals((productCmptToCheckB.getQualifiedNameType()))) {
-                        strategyJ = productCmptToCheckB.getIpsProject().getProductCmptNamingStrategy();
-                        boolean duplicate = checkSameRuntimeId(strategyI, productCmptToCheck, productCmptToCheckB,
-                                result, false);
-                        if (!duplicate && !strategyI.equals(strategyJ)) {
-                            checkSameRuntimeId(strategyJ, productCmptToCheck, productCmptToCheckB, result, false);
-                        }
+                        checkSameRuntimeId(strategyJ, productCmptToCheck, productCmptToCheckB, result, false);
                     }
                 }
             }

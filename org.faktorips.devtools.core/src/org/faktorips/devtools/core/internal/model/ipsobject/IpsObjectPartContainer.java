@@ -268,35 +268,6 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     }
 
-    /**
-     * This method executes the logic that is implemented in the provided
-     * {@link SingleEventModification} and makes sure that only the {@link ContentChangeEvent} that
-     * is provided by the {@link SingleEventModification} is fired. No events are fired during the
-     * method execution.
-     * 
-     * @throws CoreException delegates the exceptions from the execute() method of the
-     *             {@link SingleEventModification}
-     */
-    protected <T> T executeModificationsWithSingleEvent(SingleEventModification<T> modifications) throws CoreException {
-        boolean successful = false;
-        try {
-            ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
-            successful = modifications.execute();
-        } catch (CoreException e) {
-            throw e;
-        } finally {
-            ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
-        }
-        if (successful) {
-            IpsSrcFileContent content = ((IpsModel)getIpsModel()).getIpsSrcFileContent(getIpsSrcFile());
-            if (content != null) {
-                content.markAsUnmodified();
-            }
-            objectHasChanged(modifications.modificationEvent());
-        }
-        return modifications.getResult();
-    }
-
     private void checkExtProperty(String propertyId) {
         if (!isExtPropertyDefinitionAvailable(propertyId)) {
             throw new IllegalArgumentException("Extension property " + propertyId + " is not defined for type " //$NON-NLS-1$ //$NON-NLS-2$
@@ -1124,48 +1095,6 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     @Override
     public String getLastResortPluralCaption() {
         return ""; //$NON-NLS-1$
-    }
-
-    /**
-     * An internal abstract class that is used to execute modifications on
-     * {@link IpsObjectPartContainer}s that would otherwise cause multiple
-     * {@link ContentChangeEvent}s. To suppress the unwanted events and to fire a single event
-     * instead when all the modifications are completed one needs to implement this interface and
-     * execute it by means of the
-     * {@link IpsObjectPartContainer#executeModificationsWithSingleEvent(SingleEventModification)}
-     * method.
-     * 
-     * @author Peter Kuntz
-     */
-    public abstract class SingleEventModification<T> {
-
-        /**
-         * Is called by the framework. The modifications are supposed to be implemented within this
-         * method.
-         * 
-         * @return true if the modifications have been successful and an event needs to be fired
-         *         afterwards
-         * 
-         * @throws CoreException exceptions within this method
-         */
-        protected abstract boolean execute() throws CoreException;
-
-        /**
-         * Returns the {@link ContentChangeEvent} that is fired after the {@link #execute()} method
-         * has been executed. By default a whole content change event is fired.
-         */
-        protected ContentChangeEvent modificationEvent() {
-            return ContentChangeEvent.newWholeContentChangedEvent(getIpsSrcFile());
-        }
-
-        /**
-         * Returns the result of the execution if available. Returns <code>null</code> if the
-         * execution doesn't have a result that needs to be returned.
-         * 
-         * @return the result of the execution or <code>null</code> if none needs to be returned
-         */
-        protected abstract T getResult();
-
     }
 
 }

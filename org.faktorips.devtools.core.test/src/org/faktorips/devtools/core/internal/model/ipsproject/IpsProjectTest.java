@@ -1833,18 +1833,19 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     @Test
     public void testCheckForDuplicateRuntimeIds() throws CoreException {
         IIpsProject prj = newIpsProject("PRJ1");
+
         IProductCmpt cmpt1 = newProductCmpt(prj, "product1");
         IProductCmpt cmpt2 = newProductCmpt(prj, "product2");
         cmpt1.setRuntimeId("Egon");
         cmpt2.setRuntimeId("Egon");
         assertEquals(cmpt1.getRuntimeId(), cmpt2.getRuntimeId());
 
-        MessageList ml = prj.checkForDuplicateRuntimeIds();
-        assertEquals(1, ml.size());
+        MessageList ml = prj.checkForDuplicateRuntimeIds(prj.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT));
+        assertEquals(2, ml.size());
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
 
         cmpt2.setRuntimeId("Hugo");
-        ml = prj.checkForDuplicateRuntimeIds();
+        ml = prj.checkForDuplicateRuntimeIds(prj.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT));
         assertEquals(0, ml.size());
         assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
 
@@ -1852,16 +1853,16 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IProductCmpt cmpt3 = newProductCmpt(ipsProject, "product3");
         cmpt3.setRuntimeId("Egon");
         cmpt2.setRuntimeId("Egon");
-        ml = prj.checkForDuplicateRuntimeIds();
-        assertEquals(1, ml.size());
+        ml = prj.checkForDuplicateRuntimeIds(prj.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT));
+        assertEquals(2, ml.size());
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
 
         // test that linked projects will be checked against each other
         IIpsObjectPath objectPath = prj.getIpsObjectPath();
         objectPath.newIpsProjectRefEntry(ipsProject);
         prj.setIpsObjectPath(objectPath);
-        ml = prj.checkForDuplicateRuntimeIds();
-        assertEquals(ml.toString(), 3, ml.size());
+        ml = prj.checkForDuplicateRuntimeIds(prj.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT));
+        assertEquals(ml.toString(), 6, ml.size());
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
 
         ml = prj.checkForDuplicateRuntimeIds(new IIpsSrcFile[] { cmpt3.getIpsSrcFile() });
