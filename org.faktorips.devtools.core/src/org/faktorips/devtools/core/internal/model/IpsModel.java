@@ -158,6 +158,11 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     private Map<Datatype, DatatypeHelper> datatypeHelpersMap = null;
 
     /**
+     * A map containing the project for every name.
+     */
+    private Map<String, IpsProject> projectMap = Collections.synchronizedMap(new HashMap<String, IpsProject>());
+
+    /**
      * A map containing the data for each ips project. The name of the project is used as the key
      * and the value is an instance of IpsProjectData.
      */
@@ -472,12 +477,17 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     @Override
     public IIpsProject getIpsProject(String name) {
-        return new IpsProject(this, name);
+        IpsProject ipsProject = projectMap.get(name);
+        if (ipsProject == null) {
+            ipsProject = new IpsProject(this, name);
+            projectMap.put(name, ipsProject);
+        }
+        return ipsProject;
     }
 
     @Override
     public IIpsProject getIpsProject(IProject project) {
-        return new IpsProject(this, project.getName());
+        return getIpsProject(project.getName());
     }
 
     /**
@@ -1732,6 +1742,30 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 return false;
             }
         }
+    }
+
+    @Override
+    public <T> T executeModificationsWithSingleEvent(SingleEventModification<T> modifications) throws CoreException {
+        boolean successful = false;
+        IIpsSrcFile ipsSrcFile = modifications.getIpsSrcFile();
+        try {
+            stopBroadcastingChangesMadeByCurrentThread();
+            successful = modifications.execute();
+        } catch (CoreException e) {
+            throw e;
+        } finally {
+            resumeBroadcastingChangesMadeByCurrentThread();
+        }
+        if (successful) {
+            IpsSrcFileContent content = getIpsSrcFileContent(ipsSrcFile);
+            if (content != null) {
+                content.markAsUnmodified();
+                content.ipsObjectChanged(modifications.modificationEvent());
+            } else {
+                ipsSrcFileContentHasChanged(modifications.modificationEvent());
+            }
+        }
+        return modifications.getResult();
     }
 
 }

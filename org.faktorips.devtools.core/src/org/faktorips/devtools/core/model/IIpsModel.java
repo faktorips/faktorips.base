@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
@@ -321,5 +322,16 @@ public interface IIpsModel extends IIpsElement {
      * @return true if the listener was removed
      */
     boolean removeIpsSrcFilesChangedListener(IIpsSrcFilesChangeListener listener);
+
+    /**
+     * This method executes the logic that is implemented in the provided
+     * {@link SingleEventModification} and makes sure that only the {@link ContentChangeEvent} that
+     * is provided by the {@link SingleEventModification} is fired. No events are fired during the
+     * method execution.
+     * 
+     * @throws CoreException delegates the exceptions from the execute() method of the
+     *             {@link SingleEventModification}
+     */
+    <T> T executeModificationsWithSingleEvent(SingleEventModification<T> modifications) throws CoreException;
 
 }
