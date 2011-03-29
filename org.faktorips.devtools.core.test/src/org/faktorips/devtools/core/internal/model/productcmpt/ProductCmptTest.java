@@ -117,6 +117,11 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     @Test
     public void testValidate_InconsitencyInTypeHierarch() throws Exception {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
+        ProductCmpt product = newProductCmpt(type, "products.Testproduct");
+
+        MessageList ml = product.validate(type.getIpsProject());
+        assertNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
+
         IProductCmptType supertype = newProductCmptType(ipsProject, "SuperProduct");
         IProductCmptType supersupertype = newProductCmptType(ipsProject, "SuperSuperProduct");
 
@@ -124,10 +129,8 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         supertype.setSupertype(supersupertype.getQualifiedName());
         supersupertype.setSupertype("abc");
 
-        MessageList ml = type.validate(type.getIpsProject());
+        ml = type.validate(type.getIpsProject());
         assertNotNull(ml.getMessageByCode(IType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
-
-        ProductCmpt product = super.newProductCmpt(type, "products.Testproduct");
 
         ml = product.validate(type.getIpsProject());
         assertNotNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));

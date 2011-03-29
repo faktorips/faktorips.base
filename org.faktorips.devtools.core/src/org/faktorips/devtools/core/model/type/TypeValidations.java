@@ -79,6 +79,9 @@ public class TypeValidations {
      * @param ipsProject the project that is used as reference to find other objects
      */
     public static Message validateTypeHierachy(IType type, IIpsProject ipsProject) throws CoreException {
+        if (StringUtils.isEmpty(type.getSupertype())) {
+            return null;
+        }
         IType superType = type.findSupertype(ipsProject);
         if (superType == null) {
             String text = NLS.bind(Messages.Type_msg_supertypeNotFound, type.getSupertype());
