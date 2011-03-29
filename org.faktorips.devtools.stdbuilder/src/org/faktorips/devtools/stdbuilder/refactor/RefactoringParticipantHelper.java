@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.NullChange;
@@ -75,7 +76,7 @@ public abstract class RefactoringParticipantHelper {
     public final RefactoringStatus checkConditions(IProgressMonitor pm) throws OperationCanceledException {
         RefactoringStatus status = new RefactoringStatus();
 
-        for (int i = 0; i < originalJavaElements.size(); i++) {
+        for (int i = 0; i < getNumberOfJavaElementsToRefactor(); i++) {
             IJavaElement javaElement = originalJavaElements.get(i);
 
             // The refactoring may be executed without present Java code.
@@ -116,8 +117,16 @@ public abstract class RefactoringParticipantHelper {
      * @see RefactoringParticipant#createChange(IProgressMonitor)
      */
     public final Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
-        for (int i = 0; i < originalJavaElements.size(); i++) {
-            IJavaElement originalJavaElement = originalJavaElements.get(i);
+        /*
+         * The Java elements need to be sorted in such a way that types are processed after
+         * everything else because otherwise members may not be found anymore (because the type they
+         * refer to does no longer exist).
+         */
+        List<IJavaElement> sortedOriginalJavaElements = sortJavaElements(originalJavaElements);
+        List<IJavaElement> sortedTargetJavaElements = sortJavaElements(targetJavaElements);
+
+        for (int i = 0; i < getNumberOfJavaElementsToRefactor(); i++) {
+            IJavaElement originalJavaElement = sortedOriginalJavaElements.get(i);
 
             /*
              * Do not try to refactor non-existing Java elements as the user may want to try to
@@ -138,7 +147,7 @@ public abstract class RefactoringParticipantHelper {
              * become invalid when refactorings are performed. Because of that new instances are
              * created here.
              */
-            IJavaElement targetJavaElement = targetJavaElements.get(i);
+            IJavaElement targetJavaElement = sortedTargetJavaElements.get(i);
             Refactoring jdtRefactoring = createJdtRefactoring(originalJavaElement, targetJavaElement,
                     new RefactoringStatus());
             if (jdtRefactoring != null) {
@@ -147,6 +156,25 @@ public abstract class RefactoringParticipantHelper {
         }
 
         return new NullChange();
+    }
+
+    /**
+     * Creates and returns a sorted version of the given list of Java elements.
+     * <p>
+     * The elements will be sorted in such a way that types are located at the very end of the list.
+     */
+    private List<IJavaElement> sortJavaElements(List<IJavaElement> javaElements) {
+        List<IType> collectedTypes = new ArrayList<IType>(2);
+        List<IJavaElement> sortedJavaElements = new ArrayList<IJavaElement>(getNumberOfJavaElementsToRefactor());
+        for (int i = 0; i < getNumberOfJavaElementsToRefactor(); i++) {
+            if (javaElements.get(i).getElementType() == IJavaElement.TYPE) {
+                collectedTypes.add((IType)javaElements.get(i));
+            } else {
+                sortedJavaElements.add(javaElements.get(i));
+            }
+        }
+        sortedJavaElements.addAll(collectedTypes);
+        return sortedJavaElements;
     }
 
     /**
@@ -308,5 +336,9 @@ public abstract class RefactoringParticipantHelper {
     protected abstract Refactoring createJdtRefactoring(IJavaElement originalJavaElement,
             IJavaElement targetJavaElement,
             RefactoringStatus status) throws CoreException;
+
+    private int getNumberOfJavaElementsToRefactor() {
+        return originalJavaElements.size();
+    }
 
 }
