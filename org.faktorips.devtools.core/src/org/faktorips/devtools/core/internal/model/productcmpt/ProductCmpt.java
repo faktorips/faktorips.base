@@ -29,7 +29,6 @@ import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -48,7 +47,7 @@ import org.faktorips.devtools.core.model.productcmpt.ProductCmptValidations;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -146,20 +145,17 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
         IProductCmptType type = ProductCmptValidations.validateProductCmptType(this, productCmptType, list, ipsProject);
-        if (type != null) {
-            try {
-                MessageList list3 = type.validate(ipsProject);
-                if (list3.getMessageByCode(IType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY) != null
-                        || list3.getMessageByCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND) != null
-                        || list3.getMessageByCode(IType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY) != null) {
-                    String typeLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(type);
-                    String msg = NLS.bind(Messages.ProductCmpt_msgInvalidTypeHierarchy, typeLabel);
-                    list.add(new Message(MSGCODE_INCONSISTENT_TYPE_HIERARCHY, msg, Message.ERROR, type,
-                            IIpsElement.PROPERTY_NAME));
-                }
-            } catch (Exception e) {
-                throw new CoreException(new IpsStatus("Error during validate of product component type", e)); //$NON-NLS-1$
-            }
+        if (type == null) {
+            return;
+        }
+        Message message = TypeValidations.validateTypeHierachy(type, ipsProject);
+        if (message != null) {
+            String typeLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(type);
+            String msg = NLS.bind(Messages.ProductCmpt_msgInvalidTypeHierarchy, typeLabel);
+            list.add(new Message(MSGCODE_INCONSISTENT_TYPE_HIERARCHY, msg, Message.ERROR, type,
+                    PROPERTY_PRODUCT_CMPT_TYPE));
+            // do not continue validation if hierarchy is invalid
+            return;
         }
         IProductCmptNamingStrategy strategy = ipsProject.getProductCmptNamingStrategy();
         MessageList list2 = strategy.validate(getName());

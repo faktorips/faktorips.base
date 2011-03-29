@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.model.type;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.type.Messages;
@@ -69,6 +70,57 @@ public class TypeValidations {
 
         }
         return null;
+    }
+
+    /**
+     * Validates the type hierarchy of the given type. Add
+     * 
+     * @param type The type of which you want to validate the hierarchy
+     * @param ipsProject the project that is used as reference to find other objects
+     */
+    public static Message validateTypeHierachy(IType type, IIpsProject ipsProject) throws CoreException {
+        IType superType = type.findSupertype(ipsProject);
+        if (superType == null) {
+            String text = NLS.bind(Messages.Type_msg_supertypeNotFound, type.getSupertype());
+            return new Message(IType.MSGCODE_SUPERTYPE_NOT_FOUND, text, Message.ERROR, type, IType.PROPERTY_SUPERTYPE);
+        }
+
+        SupertypesValidator validator = new SupertypesValidator(ipsProject);
+
+        validator.start(superType);
+
+        if (!validator.result) {
+            String text = Messages.Type_msg_TypeHierarchyInconsistent;
+            return new Message(IType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY, text, Message.ERROR, type,
+                    IType.PROPERTY_SUPERTYPE);
+        }
+
+        if (validator.cycleDetected()) {
+            String msg = Messages.Type_msg_cycleInTypeHierarchy;
+            return new Message(IType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY, msg.toString(), Message.ERROR, type,
+                    IType.PROPERTY_SUPERTYPE);
+        }
+        return null;
+    }
+
+    private static class SupertypesValidator extends TypeHierarchyVisitor {
+
+        private boolean result;
+
+        public SupertypesValidator(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        @Override
+        protected boolean visit(IType currentType) throws CoreException {
+            if (StringUtils.isEmpty(currentType.getSupertype())) {
+                // there should be no more super type
+                result = true;
+                return false;
+            }
+            return result = currentType.findSupertype(ipsProject) != null;
+        }
+
     }
 
     private TypeValidations() {

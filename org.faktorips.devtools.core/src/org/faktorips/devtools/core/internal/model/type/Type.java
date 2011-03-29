@@ -39,6 +39,7 @@ import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
+import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -420,7 +421,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         duplicateValidator.start(this);
         duplicateValidator.addMessagesForDuplicates(list);
         if (hasSupertype()) {
-            validateSupertype(list, ipsProject);
+            list.add(TypeValidations.validateTypeHierachy(this, ipsProject));
         }
         if (!isAbstract()) {
             validateIfAllAbstractMethodsAreImplemented(getIpsProject(), list);
@@ -441,34 +442,6 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     protected DuplicatePropertyNameValidator createDuplicatePropertyNameValidator(IIpsProject ipsProject) {
         return new DuplicatePropertyNameValidator(ipsProject);
-    }
-
-    private void validateSupertype(MessageList list, IIpsProject ipsProject) throws CoreException {
-        IType supertypeObj = findSupertype(ipsProject);
-        if (supertypeObj == null) {
-            String text = NLS.bind(Messages.Type_msg_supertypeNotFound, supertype);
-            list.add(new Message(MSGCODE_SUPERTYPE_NOT_FOUND, text, Message.ERROR, this, IType.PROPERTY_SUPERTYPE));
-        } else {
-            SupertypesCollector collector = new SupertypesCollector(ipsProject);
-            collector.start(supertypeObj);
-            if (collector.cycleDetected()) {
-                String msg = Messages.Type_msg_cycleInTypeHierarchy;
-                list.add(new Message(MSGCODE_CYCLE_IN_TYPE_HIERARCHY, msg.toString(), Message.ERROR, this,
-                        IType.PROPERTY_SUPERTYPE));
-            } else {
-                for (IType supertype : collector.supertypes) {
-                    MessageList superResult = supertype.validate(ipsProject);
-                    if (!superResult.isEmpty()) {
-                        if (superResult.getMessageByCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND) != null) {
-                            String text = Messages.Type_msg_TypeHierarchyInconsistent;
-                            list.add(new Message(MSGCODE_INCONSISTENT_TYPE_HIERARCHY, text, Message.ERROR, this,
-                                    PROPERTY_SUPERTYPE));
-                            return;
-                        }
-                    }
-                }
-            }
-        }
     }
 
     /**
@@ -578,22 +551,6 @@ public abstract class Type extends BaseIpsObject implements IType {
                 addDetails(details, dependency, relation, IAssociation.PROPERTY_TARGET);
             }
         }
-    }
-
-    private static class SupertypesCollector extends TypeHierarchyVisitor {
-
-        private List<IType> supertypes = new ArrayList<IType>();
-
-        public SupertypesCollector(IIpsProject ipsProject) {
-            super(ipsProject);
-        }
-
-        @Override
-        protected boolean visit(IType currentType) throws CoreException {
-            supertypes.add(currentType);
-            return true;
-        }
-
     }
 
     private class MethodOverrideCandidatesFinder extends TypeHierarchyVisitor {
