@@ -164,7 +164,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
     }
 
     /**
-     * This drop listener is only responsible to view new objects not to drag into the structure.
+     * This drop listener is only responsible to show new objects not to drag into the structure.
      * For creating new links {@link LinkDropListener} is used.
      * 
      * @author dirmeier
