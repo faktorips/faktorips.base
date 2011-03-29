@@ -47,7 +47,7 @@ public class IpsElementWorkbenchAdapterAdapterFactory implements IAdapterFactory
     @Override
     @SuppressWarnings("unchecked")
     // eclipse api is not type safe
-    public Object getAdapter(Object adaptableObject, Class adapterType) {
+    public Object getAdapter(Object adaptableObject, @SuppressWarnings("rawtypes") Class adapterType) {
         if (!adapterType.isAssignableFrom(IpsElementWorkbenchAdapter.class)) {
             return null;
         }
