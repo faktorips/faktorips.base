@@ -14,7 +14,6 @@
 package org.faktorips.devtools.stdbuilder.ui.dynamicmenus;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -49,8 +48,6 @@ import org.eclipse.ui.services.IServiceLocator;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
@@ -188,15 +185,8 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
      * <li>IProduct
      * <li>Product
      * </ol>
-     * <p>
-     * No sorting is done if the selected {@link IIpsObjectPartContainer} is an {@link IEnumType} or
-     * {@link IEnumAttribute}.
      */
     private List<IType> sortTypes(Set<IType> javaTypes) {
-        if (selectedIpsObjectPartContainer instanceof IEnumType
-                || selectedIpsObjectPartContainer instanceof IEnumAttribute) {
-            return Arrays.asList(javaTypes.toArray(new IType[javaTypes.size()]));
-        }
         List<IType> sortedTypes = new ArrayList<IType>(javaTypes.size());
         for (IType type : javaTypes) {
             if (isInterfaceType(type)) {
@@ -204,6 +194,14 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
                 IType implementation = getImplementationForInterface(javaTypes, type);
                 if (implementation != null) {
                     sortedTypes.add(implementation);
+                }
+            }
+        }
+        // Add types that could not be sorted by interface
+        if (sortedTypes.size() != javaTypes.size()) {
+            for (IType type : javaTypes) {
+                if (!sortedTypes.contains(type)) {
+                    sortedTypes.add(type);
                 }
             }
         }
