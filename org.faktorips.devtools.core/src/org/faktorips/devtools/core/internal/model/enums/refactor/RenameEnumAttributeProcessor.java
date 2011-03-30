@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.util.message.MessageList;
 
 /**
- * This is the "Rename Enumeration Attribute" - refactoring.
+ * This is the "Rename Enumeration Attribute" - refactoring .
  * 
  * @author Alexander Weickmann
  */
