@@ -13,10 +13,14 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
+import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.unresolvedParam;
 import static org.junit.Assert.assertEquals;
 
 import org.faktorips.devtools.core.internal.model.pctype.ValidationRule;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.runtime.IValidationContext;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,7 +42,7 @@ public class GenValidationRuleTest extends PolicyCmptTypeBuilderTest {
     }
 
     @Test
-    public void testGetGeneratedJavaElementsForPublishedInterfaceValidatedAttributesNotDefinedInSourceCode() {
+    public void testGetGeneratedJavaElementsForPublishedInterfaceValidatedAttributesNotDefinedInSourcecode() {
         genValidationRule.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
                 validationRule);
 
@@ -47,7 +51,7 @@ public class GenValidationRuleTest extends PolicyCmptTypeBuilderTest {
     }
 
     @Test
-    public void testGetGeneratedJavaElementsForPublishedInterfaceValidatedAttributesDefinedInSourceCode() {
+    public void testGetGeneratedJavaElementsForPublishedInterfaceValidatedAttributesDefinedInSourcecode() {
         validationRule.setValidatedAttrSpecifiedInSrc(true);
 
         genValidationRule.getGeneratedJavaElementsForPublishedInterface(generatedJavaElements, javaInterface,
@@ -55,6 +59,38 @@ public class GenValidationRuleTest extends PolicyCmptTypeBuilderTest {
 
         expectField(0, javaInterface, genValidationRule.getFieldNameForMsgCode());
         assertEquals(1, generatedJavaElements.size());
+    }
+
+    @Test
+    public void testGetGeneratedJavaElementsForImplementationValidatedAttributesNotDefinedInSourcecode() {
+        genValidationRule.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass, validationRule);
+
+        expectExecRuleMethod();
+        expectCreateMessageForRuleMethod(false);
+    }
+
+    @Test
+    public void testGetGeneratedJavaElementsForImplementationValidatedAttributesDefinedInSourcecode() {
+        validationRule.setValidatedAttrSpecifiedInSrc(true);
+
+        genValidationRule.getGeneratedJavaElementsForImplementation(generatedJavaElements, javaClass, validationRule);
+
+        expectExecRuleMethod();
+        expectCreateMessageForRuleMethod(true);
+    }
+
+    private void expectExecRuleMethod() {
+        expectMethod(javaClass, genValidationRule.getMethodNameExecRule(), unresolvedParam(MessageList.class),
+                unresolvedParam(IValidationContext.class));
+    }
+
+    private void expectCreateMessageForRuleMethod(boolean attributesDefinedInSourceCode) {
+        String[] parameters = new String[] { unresolvedParam(IValidationContext.class) };
+        if (attributesDefinedInSourceCode) {
+            parameters = new String[] { unresolvedParam(IValidationContext.class),
+                    unresolvedParam(ObjectProperty.class.getSimpleName() + "[]") };
+        }
+        expectMethod(javaClass, genValidationRule.getMethodNameCreateMessageForRule(), parameters);
     }
 
 }

@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpttype.association;
 
+import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.intParam;
+import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.resolvedParam;
+import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.unresolvedParam;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Calendar;
@@ -184,8 +187,7 @@ public class GenProdAssociationToManyTest extends GenProdAssociationTest {
 
     private void expectMethodAddRelatedCmptWithCardinality(IType javaType) {
         expectMethod(javaType, genAssociationToMany.getMethodNameAddRelatedCmpt(),
-                unresolvedParam(javaInterfaceTargetType.getElementName()),
-                unresolvedParam(IntegerRange.class.getSimpleName()));
+                unresolvedParam(javaInterfaceTargetType.getElementName()), unresolvedParam(IntegerRange.class));
     }
 
 }

@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.association;
 
+import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.intParam;
+import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.unresolvedParam;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.runtime.CoreException;

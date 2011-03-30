@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.attribute;
 
+import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.unresolvedParam;
+
 import org.eclipse.jdt.core.IType;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;

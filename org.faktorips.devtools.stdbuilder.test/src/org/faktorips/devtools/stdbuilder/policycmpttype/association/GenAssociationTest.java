@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.association;
 
+import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.unresolvedParam;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;

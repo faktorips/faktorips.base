@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.method;
 
+import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.intParam;
+import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.stringParam;
+import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.voidParam;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 

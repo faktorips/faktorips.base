@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpttype;
 
+import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.booleanParam;
+import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.unresolvedParam;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.runtime.CoreException;

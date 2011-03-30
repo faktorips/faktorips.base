@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
+import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.unresolvedParam;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -159,7 +161,7 @@ public class GenValidationRule extends GenTypePart {
         body.appendOpenBracket();
         boolean generateToDo = false;
         body.append("ml.add(");
-        body.append(getMethodNameCreateMessageForRule(rule));
+        body.append(getMethodNameCreateMessageForRule());
         MessageFragment msgFrag = MessageFragment.createMessageFragment(rule.getMessageText(),
                 MessageFragment.VALUES_AS_PARAMETER_NAMES);
         body.append("(context");
@@ -201,7 +203,7 @@ public class GenValidationRule extends GenTypePart {
         }
 
         builder.method(java.lang.reflect.Modifier.PROTECTED, Datatype.PRIMITIVE_BOOLEAN.getJavaClassName(),
-                getMethodNameExecRule(rule), new String[] { "ml", parameterValidationContext }, new String[] {
+                getMethodNameExecRule(), new String[] { "ml", parameterValidationContext }, new String[] {
                         MessageList.class.getName(), IValidationContext.class.getName() }, body, javaDoc,
                 javaDocAnnotation);
     }
@@ -280,7 +282,7 @@ public class GenValidationRule extends GenTypePart {
 
         String javaDoc = getLocalizedText("CREATE_MESSAGE_JAVADOC", rule.getName());
         builder.method(java.lang.reflect.Modifier.PROTECTED, Message.class.getName(),
-                getMethodNameCreateMessageForRule(rule), methodParamNames.toArray(new String[methodParamNames.size()]),
+                getMethodNameCreateMessageForRule(), methodParamNames.toArray(new String[methodParamNames.size()]),
                 methodParamTypes.toArray(new String[methodParamTypes.size()]), body, javaDoc,
                 JavaSourceFileBuilder.ANNOTATION_GENERATED);
     }
@@ -384,19 +386,12 @@ public class GenValidationRule extends GenTypePart {
         return getLocalizedText("FIELD_MSG_CODE_NAME", StringUtils.upperCase(getValidationRule().getName()));
     }
 
-    private String getMethodNameCreateMessageForRule(IValidationRule rule) {
-        return "createMessageForRule" + StringUtils.capitalize(rule.getName());
+    public String getMethodNameCreateMessageForRule() {
+        return "createMessageForRule" + StringUtils.capitalize(getValidationRule().getName());
     }
 
-    private String getMethodNameExecRule(IValidationRule r) {
-        return StringUtils.uncapitalize(r.getName());
-    }
-
-    @Override
-    public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
-            IType generatedJavaType,
-            IIpsElement ipsElement) {
-
+    public String getMethodNameExecRule() {
+        return StringUtils.uncapitalize(getValidationRule().getName());
     }
 
     @Override
@@ -404,6 +399,36 @@ public class GenValidationRule extends GenTypePart {
             IType generatedJavaType,
             IIpsElement ipsElement) {
 
+        addMsgCodeFieldToGeneratedJavaElements(javaElements, generatedJavaType);
+    }
+
+    @Override
+    public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
+            IType generatedJavaType,
+            IIpsElement ipsElement) {
+
+        addExecRuleMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+        addCreateMessageForRuleMethodToGeneratedJavaElements(javaElements, generatedJavaType);
+    }
+
+    private void addCreateMessageForRuleMethodToGeneratedJavaElements(List<IJavaElement> javaElements,
+            IType generatedJavaType) {
+
+        String[] parameters = new String[] { unresolvedParam(IValidationContext.class) };
+        if (getValidationRule().isValidatedAttrSpecifiedInSrc()) {
+            parameters = new String[] { unresolvedParam(IValidationContext.class),
+                    unresolvedParam(ObjectProperty.class.getSimpleName() + "[]") };
+        }
+        addMethodToGeneratedJavaElements(javaElements, generatedJavaType, getMethodNameCreateMessageForRule(),
+                parameters);
+    }
+
+    private void addExecRuleMethodToGeneratedJavaElements(List<IJavaElement> javaElements, IType generatedJavaType) {
+        addMethodToGeneratedJavaElements(javaElements, generatedJavaType, getMethodNameExecRule(),
+                unresolvedParam(MessageList.class), unresolvedParam(IValidationContext.class));
+    }
+
+    private void addMsgCodeFieldToGeneratedJavaElements(List<IJavaElement> javaElements, IType generatedJavaType) {
         addFieldToGeneratedJavaElements(javaElements, generatedJavaType, getFieldNameForMsgCode());
     }
 

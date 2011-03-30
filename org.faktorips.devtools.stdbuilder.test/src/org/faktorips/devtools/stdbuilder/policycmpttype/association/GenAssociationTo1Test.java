@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.association;
 
+import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.unresolvedParam;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

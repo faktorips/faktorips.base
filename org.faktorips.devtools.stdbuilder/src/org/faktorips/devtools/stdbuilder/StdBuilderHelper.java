@@ -31,7 +31,107 @@ import org.faktorips.devtools.core.util.QNameUtil;
  * 
  * @author Jan Ortmann
  */
-public class StdBuilderHelper {
+public final class StdBuilderHelper {
+
+    /**
+     * Returns the JDT signature for a primitive integer parameter.
+     */
+    public static String intParam() {
+        return Signature.SIG_INT;
+    }
+
+    /**
+     * Returns the JDT signature for a void parameter.
+     */
+    public static String voidParam() {
+        return Signature.SIG_VOID;
+    }
+
+    /**
+     * Returns the JDT signature for a primitive boolean parameter.
+     */
+    public static String booleanParam() {
+        return Signature.SIG_BOOLEAN;
+    }
+
+    /**
+     * Returns the JDT signature for a primitive byte parameter.
+     */
+    public static String byteParam() {
+        return Signature.SIG_BYTE;
+    }
+
+    /**
+     * Returns the JDT signature for a primitive char parameter.
+     */
+    public static String charParam() {
+        return Signature.SIG_CHAR;
+    }
+
+    /**
+     * Returns the JDT signature for a primitive double parameter.
+     */
+    public static String doubleParam() {
+        return Signature.SIG_DOUBLE;
+    }
+
+    /**
+     * Returns the JDT signature for a primitive float parameter.
+     */
+    public static String floatParam() {
+        return Signature.SIG_FLOAT;
+    }
+
+    /**
+     * Returns the JDT signature for a primitive long parameter.
+     */
+    public static String longParam() {
+        return Signature.SIG_LONG;
+    }
+
+    /**
+     * Returns the JDT signature for a primitive short parameter.
+     */
+    public static String shortParam() {
+        return Signature.SIG_SHORT;
+    }
+
+    /**
+     * Returns the JDT signature for a {@link String} parameter.
+     */
+    public static String stringParam() {
+        return Signature.createTypeSignature(String.class.getSimpleName(), false);
+    }
+
+    /**
+     * Returns the JDT type signature for unresolved types.
+     * <p>
+     * Use this method to create type signatures for types that are found in the source code or via
+     * import.
+     */
+    public static String unresolvedParam(String unqualifiedTypeName) {
+        return Signature.createTypeSignature(unqualifiedTypeName, false);
+    }
+
+    /**
+     * Shortcut for <tt>unresolvedParam(class_.getSimpleName())</tt>.
+     * 
+     * @see #unresolvedParam(String)
+     */
+    public static String unresolvedParam(Class<?> class_) {
+        return unresolvedParam(class_.getSimpleName());
+    }
+
+    /**
+     * Returns the JDT type signature for resolved types.
+     * <p>
+     * Use this method to create type signatures for types that are not found in the source code or
+     * via import (e.g. if a type is written fully qualified in the source code such as
+     * <tt>java.util.Calendar</tt>).
+     */
+    public static String resolvedParam(String qualifiedTypeName) {
+        return Signature.createTypeSignature(qualifiedTypeName, true);
+    }
 
     /**
      * Returns the JDT type signature for the given {@link Datatype}.
@@ -50,7 +150,7 @@ public class StdBuilderHelper {
      * 
      * @see Signature
      */
-    public final static String transformDatatypeToJdtTypeSignature(Datatype datatype,
+    public static String transformDatatypeToJdtTypeSignature(Datatype datatype,
             boolean resolveToPublishedInterface,
             StandardBuilderSet builderSet,
             IIpsProject ipsProject) {
@@ -66,7 +166,7 @@ public class StdBuilderHelper {
         return Signature.createTypeSignature(unqualifiedJavaClassName, false);
     }
 
-    public final static String transformDatatypeToJavaClassName(String qualifiedDatatypeName,
+    public static String transformDatatypeToJavaClassName(String qualifiedDatatypeName,
             boolean resolveToPublishedInterface,
             StandardBuilderSet builderSet,
             IIpsProject ipsProject) throws CoreException {
@@ -98,7 +198,7 @@ public class StdBuilderHelper {
         throw new RuntimeException("Can't get Java class name for datatype " + qualifiedDatatypeName);
     }
 
-    public final static String[] transformParameterTypesToJavaClassNames(IParameter[] params,
+    public static String[] transformParameterTypesToJavaClassNames(IParameter[] params,
             boolean resolveToPublishedInterface,
             StandardBuilderSet builderSet,
             IIpsProject ipsProject) throws CoreException {
@@ -119,7 +219,7 @@ public class StdBuilderHelper {
      * datatype is retrieved from the IpsProject and returned. If the datatype is not primitive the
      * provided datatype will be returned.
      */
-    public final static DatatypeHelper getDatatypeHelperForValueSet(IIpsProject project, DatatypeHelper helper) {
+    public static DatatypeHelper getDatatypeHelperForValueSet(IIpsProject project, DatatypeHelper helper) {
         if (helper.getDatatype().isPrimitive()) {
             return project.getDatatypeHelper((((ValueDatatype)helper.getDatatype()).getWrapperType()));
         }

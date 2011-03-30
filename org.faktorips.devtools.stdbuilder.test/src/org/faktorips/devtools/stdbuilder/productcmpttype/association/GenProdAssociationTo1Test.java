@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpttype.association;
 
+import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.resolvedParam;
+import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.unresolvedParam;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Calendar;

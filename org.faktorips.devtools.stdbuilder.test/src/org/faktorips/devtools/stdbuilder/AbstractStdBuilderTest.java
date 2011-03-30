@@ -28,7 +28,6 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.Signature;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.builder.JavaGeneratorHelper;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
@@ -147,97 +146,6 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
     protected final void expectMethod(IType javaType, String methodName, String... parameterTypeSignatures) {
         IMethod method = javaType.getMethod(methodName, parameterTypeSignatures);
         assertTrue(generatedJavaElements.contains(method));
-    }
-
-    /**
-     * Returns the JDT signature for a primitive integer parameter.
-     */
-    protected final String intParam() {
-        return Signature.SIG_INT;
-    }
-
-    /**
-     * Returns the JDT signature for a void parameter.
-     */
-    protected final String voidParam() {
-        return Signature.SIG_VOID;
-    }
-
-    /**
-     * Returns the JDT signature for a primitive boolean parameter.
-     */
-    protected final String booleanParam() {
-        return Signature.SIG_BOOLEAN;
-    }
-
-    /**
-     * Returns the JDT signature for a primitive byte parameter.
-     */
-    protected final String byteParam() {
-        return Signature.SIG_BYTE;
-    }
-
-    /**
-     * Returns the JDT signature for a primitive char parameter.
-     */
-    protected final String charParam() {
-        return Signature.SIG_CHAR;
-    }
-
-    /**
-     * Returns the JDT signature for a primitive double parameter.
-     */
-    protected final String doubleParam() {
-        return Signature.SIG_DOUBLE;
-    }
-
-    /**
-     * Returns the JDT signature for a primitive float parameter.
-     */
-    protected final String floatParam() {
-        return Signature.SIG_FLOAT;
-    }
-
-    /**
-     * Returns the JDT signature for a primitive long parameter.
-     */
-    protected final String longParam() {
-        return Signature.SIG_LONG;
-    }
-
-    /**
-     * Returns the JDT signature for a primitive short parameter.
-     */
-    protected final String shortParam() {
-        return Signature.SIG_SHORT;
-    }
-
-    /**
-     * Returns the JDT signature for a {@link String} parameter.
-     */
-    protected final String stringParam() {
-        return Signature.createTypeSignature(String.class.getSimpleName(), false);
-    }
-
-    /**
-     * Returns the JDT type signature for unresolved types.
-     * <p>
-     * Use this method to create type signatures for types that are found in the source code or via
-     * import.
-     */
-    protected final String unresolvedParam(String unqualifiedTypeName) {
-        return Signature.createTypeSignature(unqualifiedTypeName, false);
-    }
-
-    /**
-     * Returns the JDT type signature for resolved types.
-     * <p>
-     * Use this method to create type signatures for types that are not found in the source code or
-     * via import (e.g. if a type is written fully qualified in the source code such as
-     * <tt>java.util.Calendar</tt>).
-     */
-    protected final String resolvedParam(String qualifiedTypeName) {
-        return Signature.createTypeSignature(qualifiedTypeName, true);
     }
 
 }

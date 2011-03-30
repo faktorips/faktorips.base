@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.attribute;
 
+import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.unresolvedParam;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -308,7 +309,7 @@ public class GenChangeableAttributeTest extends GenPolicyCmptTypeAttributeTest {
 
     private void expectGetValueSetMethod(IType javaType, GenChangeableAttribute genChangeableAttribute) {
         expectMethod(javaType, genChangeableAttribute.getMethodNameGetSetOfAllowedValues(),
-                unresolvedParam(IValidationContext.class.getSimpleName()));
+                unresolvedParam(IValidationContext.class));
     }
 
     private void expectGetDefaultValueMethod(IType javaType, GenChangeableAttribute genChangeableAttribute) {
