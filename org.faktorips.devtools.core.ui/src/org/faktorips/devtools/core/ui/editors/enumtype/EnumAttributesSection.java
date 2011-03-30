@@ -17,8 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -29,22 +27,17 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.ui.IpsMenuId;
-import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
-import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
-import org.faktorips.devtools.core.ui.refactor.IpsRefactoringHandler;
-import org.faktorips.devtools.core.ui.refactor.IpsRenameHandler;
 
 /**
  * The UI section for the {@link EnumTypeEditorPage} that contains the {@link IEnumAttribute}s of
@@ -60,8 +53,6 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
 
     private static final String ID = "org.faktorips.devtools.core.ui.editors.enumtype.EnumAttributesSection"; //$NON-NLS-1$
 
-    private final IpsObjectEditorPage editorPage;
-
     private EnumAttributesComposite enumAttributesComposite;
 
     /**
@@ -69,10 +60,8 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
      * @param parent The parent UI composite
      * @param toolkit The UI toolkit that shall be used to create UI elements
      */
-    public EnumAttributesSection(IpsObjectEditorPage editorPage, IEnumType enumType, Composite parent, UIToolkit toolkit) {
-        super(ID, enumType, parent, Messages.EnumAttributesSection_title, toolkit);
-        this.editorPage = editorPage;
-        enumAttributesComposite.createContextMenu();
+    public EnumAttributesSection(IEnumType enumType, Composite parent, IWorkbenchPartSite site, UIToolkit toolkit) {
+        super(ID, enumType, parent, site, Messages.EnumAttributesSection_title, toolkit);
 
         addMonitoredValidationMessageCode(IEnumType.MSGCODE_ENUM_TYPE_MULTIPLE_LITERAL_NAME_ATTRIBUTES);
         addMonitoredValidationMessageCode(IEnumType.MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE);
@@ -129,24 +118,8 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         private Button inheritButton;
 
         public EnumAttributesComposite(Composite parent) {
-            super(getEnumType(), parent, getToolkit());
+            super(getEnumType(), parent, getSite(), true, true, true, true, true, true, true, getToolkit());
             addSelectionChangedListener(this);
-        }
-
-        private void createContextMenu() {
-            MenuManager refactorSubmenu = new MenuManager(Messages.EnumAttributesSection_submenuRefactor);
-            refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsRenameHandler.CONTRIBUTION_ID));
-
-            MenuManager menuManager = new MenuManager();
-            menuManager.add(refactorSubmenu);
-            menuManager.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
-
-            Menu contextMenu = menuManager.createContextMenu(getViewer().getControl());
-            getViewer().getControl().setMenu(contextMenu);
-            editorPage.getSite().registerContextMenu(menuManager, getSelectionProvider());
-            editorPage.getSite().setSelectionProvider(getSelectionProvider());
-
-            menuManager.addMenuListener(MenuCleaner.createAdditionsCleaner());
         }
 
         @Override

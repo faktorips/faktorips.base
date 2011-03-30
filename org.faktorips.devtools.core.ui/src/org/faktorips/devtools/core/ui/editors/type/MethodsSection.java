@@ -14,8 +14,6 @@
 package org.faktorips.devtools.core.ui.editors.type;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.action.GroupMarker;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
@@ -24,17 +22,14 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.ui.IpsMenuId;
-import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
-import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 
@@ -43,14 +38,10 @@ import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
  */
 public class MethodsSection extends SimpleIpsPartsSection {
 
-    private final IpsObjectEditorPage editorPage;
-
     private MethodsComposite methodsComposite;
 
-    public MethodsSection(IpsObjectEditorPage editorPage, IType type, Composite parent, UIToolkit toolkit) {
-        super(type, parent, ExpandableComposite.TITLE_BAR, Messages.MethodsSection_title, toolkit);
-        this.editorPage = editorPage;
-        methodsComposite.createContextMenu();
+    public MethodsSection(IType type, Composite parent, IWorkbenchPartSite site, UIToolkit toolkit) {
+        super(type, parent, site, ExpandableComposite.TITLE_BAR, Messages.MethodsSection_title, toolkit);
     }
 
     @Override
@@ -82,7 +73,7 @@ public class MethodsSection extends SimpleIpsPartsSection {
         private Button overrideButton;
 
         private MethodsComposite(IType type, Composite parent, UIToolkit toolkit) {
-            super(type, parent, toolkit);
+            super(type, parent, getSite(), true, true, true, true, true, false, true, toolkit);
         }
 
         @Override
@@ -143,17 +134,6 @@ public class MethodsSection extends SimpleIpsPartsSection {
         public void setDataChangeable(boolean flag) {
             super.setDataChangeable(flag);
             overrideButton.setEnabled(flag);
-        }
-
-        private void createContextMenu() {
-            MenuManager menuManager = new MenuManager();
-            menuManager.add(new GroupMarker(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
-
-            Menu contextMenu = menuManager.createContextMenu(getViewer().getControl());
-            getViewer().getControl().setMenu(contextMenu);
-            editorPage.getSite().registerContextMenu(menuManager, getSelectionProvider());
-
-            menuManager.addMenuListener(MenuCleaner.createAdditionsCleaner());
         }
 
         @Override

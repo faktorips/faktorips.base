@@ -34,7 +34,7 @@ import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 public class ColumnsSection extends SimpleIpsPartsSection {
 
     public ColumnsSection(ITableStructure table, Composite parent, UIToolkit toolkit) {
-        super(table, parent, ExpandableComposite.TITLE_BAR, Messages.ColumnsSection_title, toolkit);
+        super(table, parent, null, ExpandableComposite.TITLE_BAR, Messages.ColumnsSection_title, toolkit);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class ColumnsSection extends SimpleIpsPartsSection {
     private class ColumnsComposite extends IpsPartsComposite {
 
         public ColumnsComposite(IIpsObject pdObject, Composite parent, UIToolkit toolkit) {
-            super(pdObject, parent, toolkit);
+            super(pdObject, parent, getSite(), toolkit);
         }
 
         public ITableStructure getTable() {

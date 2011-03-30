@@ -18,6 +18,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -26,7 +27,6 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
-import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.type.AssociationsSection;
 
@@ -35,23 +35,15 @@ import org.faktorips.devtools.core.ui.editors.type.AssociationsSection;
  */
 public class ProductCmptTypeAssociationsSection extends AssociationsSection {
 
-    private ProductCmptTypeAssociationsComposite associationsComposite;
+    public ProductCmptTypeAssociationsSection(IProductCmptType productCmptType, Composite parent,
+            IWorkbenchPartSite site, UIToolkit toolkit) {
 
-    public ProductCmptTypeAssociationsSection(IpsObjectEditorPage editorPage, IProductCmptType productCmptType,
-            Composite parent, UIToolkit toolkit) {
-
-        super(editorPage, productCmptType, parent, toolkit);
+        super(productCmptType, parent, site, toolkit);
     }
 
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
-        associationsComposite = new ProductCmptTypeAssociationsComposite(getProductCmptType(), parent, toolkit);
-        return associationsComposite;
-    }
-
-    @Override
-    protected AssociationsComposite getAssociationsComposite() {
-        return associationsComposite;
+        return new ProductCmptTypeAssociationsComposite(getProductCmptType(), parent, toolkit);
     }
 
     public IProductCmptType getProductCmptType() {

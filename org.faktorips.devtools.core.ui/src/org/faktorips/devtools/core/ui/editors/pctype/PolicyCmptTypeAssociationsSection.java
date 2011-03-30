@@ -24,6 +24,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -33,7 +34,6 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
-import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.pctype.associationwizard.NewPcTypeAssociationWizard;
 import org.faktorips.devtools.core.ui.editors.type.AssociationsSection;
@@ -41,23 +41,15 @@ import org.faktorips.util.memento.Memento;
 
 public class PolicyCmptTypeAssociationsSection extends AssociationsSection {
 
-    private PolicyCmptTypeAssociationsComposite associationsComposite;
+    public PolicyCmptTypeAssociationsSection(IPolicyCmptType policyCmptType, Composite parent, IWorkbenchPartSite site,
+            UIToolkit toolkit) {
 
-    public PolicyCmptTypeAssociationsSection(IpsObjectEditorPage editorPage, IPolicyCmptType policyCmptType,
-            Composite parent, UIToolkit toolkit) {
-
-        super(editorPage, policyCmptType, parent, toolkit);
+        super(policyCmptType, parent, site, toolkit);
     }
 
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
-        associationsComposite = new PolicyCmptTypeAssociationsComposite(getPolicyCmptType(), parent, toolkit);
-        return associationsComposite;
-    }
-
-    @Override
-    protected AssociationsComposite getAssociationsComposite() {
-        return associationsComposite;
+        return new PolicyCmptTypeAssociationsComposite(getPolicyCmptType(), parent, toolkit);
     }
 
     private IPolicyCmptType getPolicyCmptType() {

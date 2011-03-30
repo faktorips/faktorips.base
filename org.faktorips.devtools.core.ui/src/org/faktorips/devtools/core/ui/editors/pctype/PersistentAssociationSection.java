@@ -90,7 +90,7 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
     }
 
     public PersistentAssociationSection(IPolicyCmptType ipsObject, Composite parent, UIToolkit toolkit) {
-        super(ipsObject, parent, ExpandableComposite.TITLE_BAR,
+        super(ipsObject, parent, null, ExpandableComposite.TITLE_BAR,
                 Messages.PersistentAssociationSection_titleAssociations, toolkit);
     }
 

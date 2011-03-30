@@ -42,7 +42,6 @@ public class Messages extends NLS {
 
     public static String EnumAttributesSection_title;
     public static String EnumAttributessection_buttonInherit;
-    public static String EnumAttributesSection_submenuRefactor;
 
     public static String EnumAttributeEditDialog_title;
     public static String EnumAttributeEditDialog_generalTitle;

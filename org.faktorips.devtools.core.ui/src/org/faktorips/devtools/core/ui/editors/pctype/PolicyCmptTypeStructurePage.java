@@ -46,10 +46,10 @@ class PolicyCmptTypeStructurePage extends PolicyCmptTypeEditorPage {
         createPersistenceTypeInfoSectionIfNecessary(formBody, toolkit);
 
         Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
-        new PolicyCmptTypeAttributesSection(this, (IPolicyCmptType)getIpsObject(), members, toolkit);
-        new PolicyCmptTypeAssociationsSection(this, (IPolicyCmptType)getIpsObject(), members, toolkit);
-        new MethodsSection(this, (IPolicyCmptType)getIpsObject(), members, toolkit);
-        new RulesSection((IPolicyCmptType)getIpsObject(), members, toolkit);
+        new PolicyCmptTypeAttributesSection((IPolicyCmptType)getIpsObject(), members, getSite(), toolkit);
+        new PolicyCmptTypeAssociationsSection((IPolicyCmptType)getIpsObject(), members, getSite(), toolkit);
+        new MethodsSection((IPolicyCmptType)getIpsObject(), members, getSite(), toolkit);
+        new RulesSection((IPolicyCmptType)getIpsObject(), members, getSite(), toolkit);
     }
 
     @Override
@@ -57,8 +57,8 @@ class PolicyCmptTypeStructurePage extends PolicyCmptTypeEditorPage {
         createPersistenceTypeInfoSectionIfNecessary(formBody, toolkit);
 
         Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
-        new PolicyCmptTypeAttributesSection(this, (IPolicyCmptType)getIpsObject(), members, toolkit);
-        new PolicyCmptTypeAssociationsSection(this, (IPolicyCmptType)getIpsObject(), members, toolkit);
+        new PolicyCmptTypeAttributesSection((IPolicyCmptType)getIpsObject(), members, getSite(), toolkit);
+        new PolicyCmptTypeAssociationsSection((IPolicyCmptType)getIpsObject(), members, getSite(), toolkit);
     }
 
     @Override

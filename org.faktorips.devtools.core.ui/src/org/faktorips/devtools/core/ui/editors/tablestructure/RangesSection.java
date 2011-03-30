@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 public class RangesSection extends SimpleIpsPartsSection {
 
     public RangesSection(ITableStructure table, Composite parent, UIToolkit toolkit) {
-        super(table, parent, ExpandableComposite.TITLE_BAR, Messages.RangesSection_title, toolkit);
+        super(table, parent, null, ExpandableComposite.TITLE_BAR, Messages.RangesSection_title, toolkit);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class RangesSection extends SimpleIpsPartsSection {
     private class RangesComposite extends IpsPartsComposite {
 
         public RangesComposite(IIpsObject pdObject, Composite parent, UIToolkit toolkit) {
-            super(pdObject, parent, toolkit);
+            super(pdObject, parent, getSite(), toolkit);
         }
 
         public ITableStructure getTableStructure() {

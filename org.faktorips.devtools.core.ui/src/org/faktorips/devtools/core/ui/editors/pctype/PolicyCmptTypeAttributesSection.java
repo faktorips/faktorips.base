@@ -24,6 +24,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -31,7 +32,6 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IDeleteListener;
-import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.type.AttributesSection;
 
@@ -39,10 +39,10 @@ public class PolicyCmptTypeAttributesSection extends AttributesSection {
 
     private PolicyCmptTypeAttributesComposite attributesComposite;
 
-    public PolicyCmptTypeAttributesSection(IpsObjectEditorPage editorPage, IPolicyCmptType policyCmptType,
-            Composite parent, UIToolkit toolkit) {
+    public PolicyCmptTypeAttributesSection(IPolicyCmptType policyCmptType, Composite parent, IWorkbenchPartSite site,
+            UIToolkit toolkit) {
 
-        super(editorPage, policyCmptType, parent, toolkit);
+        super(policyCmptType, parent, site, toolkit);
     }
 
     @Override
@@ -55,11 +55,6 @@ public class PolicyCmptTypeAttributesSection extends AttributesSection {
     protected void performRefresh() {
         super.performRefresh();
         attributesComposite.updateOverrideButtonEnabledState();
-    }
-
-    @Override
-    protected AttributesComposite getAttributesComposite() {
-        return attributesComposite;
     }
 
     private IPolicyCmptType getPolicyCmptType() {

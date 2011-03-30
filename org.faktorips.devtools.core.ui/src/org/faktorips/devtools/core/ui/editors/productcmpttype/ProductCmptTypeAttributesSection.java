@@ -16,13 +16,13 @@ package org.faktorips.devtools.core.ui.editors.productcmpttype;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
-import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.type.AttributesSection;
 
@@ -31,23 +31,15 @@ import org.faktorips.devtools.core.ui.editors.type.AttributesSection;
  */
 public class ProductCmptTypeAttributesSection extends AttributesSection {
 
-    private ProductCmptTypeAttributesComposite attributesComposite;
+    public ProductCmptTypeAttributesSection(IProductCmptType productCmptType, Composite parent,
+            IWorkbenchPartSite site, UIToolkit toolkit) {
 
-    public ProductCmptTypeAttributesSection(IpsObjectEditorPage editorPage, IProductCmptType productCmptType,
-            Composite parent, UIToolkit toolkit) {
-
-        super(editorPage, productCmptType, parent, toolkit);
+        super(productCmptType, parent, site, toolkit);
     }
 
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
-        attributesComposite = new ProductCmptTypeAttributesComposite(getProductCmptType(), parent, toolkit);
-        return attributesComposite;
-    }
-
-    @Override
-    protected AttributesComposite getAttributesComposite() {
-        return attributesComposite;
+        return new ProductCmptTypeAttributesComposite(getProductCmptType(), parent, toolkit);
     }
 
     private IProductCmptType getProductCmptType() {

@@ -89,8 +89,8 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
     }
 
     public PersistentAttributeSection(IPolicyCmptType ipsObject, Composite parent, UIToolkit toolkit) {
-        super(ipsObject, parent, ExpandableComposite.TITLE_BAR, Messages.PersistentAttributeSection_titleAttributes,
-                toolkit);
+        super(ipsObject, parent, null, ExpandableComposite.TITLE_BAR,
+                Messages.PersistentAttributeSection_titleAttributes, toolkit);
     }
 
     @Override

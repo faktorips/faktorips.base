@@ -20,19 +20,14 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.ui.IpsMenuId;
-import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
-import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
-import org.faktorips.devtools.core.ui.refactor.IpsRefactoringHandler;
-import org.faktorips.devtools.core.ui.refactor.IpsRenameHandler;
 
 /**
  * A section to display and edit a type's associations.
@@ -41,15 +36,9 @@ import org.faktorips.devtools.core.ui.refactor.IpsRenameHandler;
  */
 public abstract class AssociationsSection extends SimpleIpsPartsSection {
 
-    private final IpsObjectEditorPage editorPage;
-
-    protected AssociationsSection(IpsObjectEditorPage editorPage, IType type, Composite parent, UIToolkit toolkit) {
-        super(type, parent, ExpandableComposite.TITLE_BAR, Messages.AssociationsSection_title, toolkit);
-        this.editorPage = editorPage;
-        getAssociationsComposite().createContextMenu();
+    protected AssociationsSection(IType type, Composite parent, IWorkbenchPartSite site, UIToolkit toolkit) {
+        super(type, parent, site, ExpandableComposite.TITLE_BAR, Messages.AssociationsSection_title, toolkit);
     }
-
-    protected abstract AssociationsComposite getAssociationsComposite();
 
     protected IType getType() {
         return (IType)getIpsObject();
@@ -70,7 +59,7 @@ public abstract class AssociationsSection extends SimpleIpsPartsSection {
         protected AssociationsComposite(IType type, Composite parent, boolean canCreate, boolean canEdit,
                 boolean canDelete, boolean canMove, boolean showEditButton, UIToolkit toolkit) {
 
-            super(type, parent, canCreate, canEdit, canDelete, canMove, showEditButton, toolkit);
+            super(type, parent, getSite(), canCreate, canEdit, canDelete, canMove, showEditButton, true, true, toolkit);
             openTargetAction = createOpenTargetAction();
         }
 
@@ -81,21 +70,10 @@ public abstract class AssociationsSection extends SimpleIpsPartsSection {
             return getType().newAssociation();
         }
 
-        private void createContextMenu() {
-            MenuManager refactorSubmenu = new MenuManager(Messages.AssociationsSection_submenuRefactor);
-            refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsRenameHandler.CONTRIBUTION_ID));
-
-            MenuManager menuManager = new MenuManager();
-            menuManager.add(refactorSubmenu);
-            menuManager.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
-            menuManager.add(new Separator());
-            menuManager.add(openTargetAction);
-
-            Menu contextMenu = menuManager.createContextMenu(getViewer().getControl());
-            getViewer().getControl().setMenu(contextMenu);
-            editorPage.getSite().registerContextMenu(menuManager, getSelectionProvider());
-
-            menuManager.addMenuListener(MenuCleaner.createAdditionsCleaner());
+        @Override
+        protected void createContextMenuThis(MenuManager contextMenuManager) {
+            contextMenuManager.add(new Separator());
+            contextMenuManager.add(openTargetAction);
         }
 
         @Override

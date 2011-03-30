@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -35,8 +36,8 @@ import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
  */
 public class RulesSection extends SimpleIpsPartsSection {
 
-    public RulesSection(IPolicyCmptType pcType, Composite parent, UIToolkit toolkit) {
-        super(pcType, parent, ExpandableComposite.TITLE_BAR, Messages.RulesSection_title, toolkit);
+    public RulesSection(IPolicyCmptType pcType, Composite parent, IWorkbenchPartSite site, UIToolkit toolkit) {
+        super(pcType, parent, site, ExpandableComposite.TITLE_BAR, Messages.RulesSection_title, toolkit);
     }
 
     public IPolicyCmptType getPcType() {
@@ -55,7 +56,7 @@ public class RulesSection extends SimpleIpsPartsSection {
     private class RulesComposite extends IpsPartsComposite {
 
         RulesComposite(IIpsObject pdObject, Composite parent, UIToolkit toolkit) {
-            super(pdObject, parent, toolkit);
+            super(pdObject, parent, getSite(), true, true, true, true, true, false, true, toolkit);
         }
 
         @Override

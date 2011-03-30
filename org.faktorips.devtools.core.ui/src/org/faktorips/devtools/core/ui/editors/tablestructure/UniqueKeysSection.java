@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 public class UniqueKeysSection extends SimpleIpsPartsSection {
 
     public UniqueKeysSection(ITableStructure table, Composite parent, UIToolkit toolkit) {
-        super(table, parent, ExpandableComposite.TITLE_BAR, Messages.UniqueKeysSection_title, toolkit);
+        super(table, parent, null, ExpandableComposite.TITLE_BAR, Messages.UniqueKeysSection_title, toolkit);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class UniqueKeysSection extends SimpleIpsPartsSection {
     private class UniqueKeysComposite extends IpsPartsComposite {
 
         public UniqueKeysComposite(IIpsObject pdObject, Composite parent, UIToolkit toolkit) {
-            super(pdObject, parent, toolkit);
+            super(pdObject, parent, getSite(), toolkit);
         }
 
         public ITableStructure getTableStructure() {

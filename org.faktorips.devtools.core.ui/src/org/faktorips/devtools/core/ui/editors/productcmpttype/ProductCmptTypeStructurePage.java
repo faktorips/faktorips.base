@@ -46,17 +46,17 @@ class ProductCmptTypeStructurePage extends ProductCmptTypeEditorPage {
     @Override
     protected void createContentForSingleStructurePage(Composite formBody, UIToolkit toolkit) {
         Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
-        new ProductCmptTypeAttributesSection(this, getProductCmptType(), members, toolkit);
-        new ProductCmptTypeAssociationsSection(this, getProductCmptType(), members, toolkit);
-        new ProductCmptTypeMethodsSection(this, getProductCmptType(), members, toolkit);
+        new ProductCmptTypeAttributesSection(getProductCmptType(), members, getSite(), toolkit);
+        new ProductCmptTypeAssociationsSection(getProductCmptType(), members, getSite(), toolkit);
+        new ProductCmptTypeMethodsSection(getProductCmptType(), members, getSite(), toolkit);
         new TableStructureUsageSection(getProductCmptType(), members, toolkit);
     }
 
     @Override
     protected void createContentForSplittedStructurePage(Composite formBody, UIToolkit toolkit) {
         Composite members = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
-        new ProductCmptTypeAttributesSection(this, getProductCmptType(), members, toolkit);
-        new ProductCmptTypeAssociationsSection(this, getProductCmptType(), members, toolkit);
+        new ProductCmptTypeAttributesSection(getProductCmptType(), members, getSite(), toolkit);
+        new ProductCmptTypeAssociationsSection(getProductCmptType(), members, getSite(), toolkit);
     }
 
 }

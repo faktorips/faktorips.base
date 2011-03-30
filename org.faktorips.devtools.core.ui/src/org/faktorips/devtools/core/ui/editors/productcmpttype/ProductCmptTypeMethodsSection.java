@@ -15,12 +15,12 @@ package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
-import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.type.MethodsSection;
 
 /**
@@ -28,10 +28,10 @@ import org.faktorips.devtools.core.ui.editors.type.MethodsSection;
  */
 public class ProductCmptTypeMethodsSection extends MethodsSection {
 
-    public ProductCmptTypeMethodsSection(IpsObjectEditorPage editorPage, IProductCmptType type, Composite parent,
+    public ProductCmptTypeMethodsSection(IProductCmptType type, Composite parent, IWorkbenchPartSite site,
             UIToolkit toolkit) {
 
-        super(editorPage, type, parent, toolkit);
+        super(type, parent, site, toolkit);
         setText(Messages.ProductCmptTypeMethodsSection_title);
     }
 

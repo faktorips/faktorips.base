@@ -59,7 +59,7 @@ public class RulesSection extends SimpleIpsPartsSection {
      * @param toolkit The toolkit to help creating the ui
      */
     public RulesSection(ProductCmptPropertiesPage page, Composite parent, UIToolkit toolkit) {
-        super(ID, page.getProductCmpt(), parent, Messages.RulesSection_title, toolkit);
+        super(ID, page.getProductCmpt(), parent, page.getSite(), Messages.RulesSection_title, toolkit);
         this.page = page;
     }
 
@@ -73,10 +73,11 @@ public class RulesSection extends SimpleIpsPartsSection {
      * attributes in a dialog, create new attributes and delete attributes.
      */
     public class RulesComposite extends IpsPartsComposite {
+
         private Text descriptionText;
 
         public RulesComposite(IProductCmpt product, Composite parent, UIToolkit toolkit) {
-            super(product, parent, false, false, false, false, false, toolkit);
+            super(product, parent, getSite(), false, false, false, false, false, false, false, toolkit);
         }
 
         @Override

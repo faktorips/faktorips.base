@@ -34,14 +34,14 @@ public class ProductCmptTypeBehaviourPage extends ProductCmptTypeEditorPage {
 
     @Override
     protected void createContentForSingleStructurePage(Composite parentContainer, UIToolkit toolkit) {
-        new ProductCmptTypeMethodsSection(this, getProductCmptType(), parentContainer, toolkit);
+        new ProductCmptTypeMethodsSection(getProductCmptType(), parentContainer, getSite(), toolkit);
         new TableStructureUsageSection(getProductCmptType(), parentContainer, toolkit);
 
     }
 
     @Override
     protected void createContentForSplittedStructurePage(Composite parentContainer, UIToolkit toolkit) {
-        new ProductCmptTypeMethodsSection(this, getProductCmptType(), parentContainer, toolkit);
+        new ProductCmptTypeMethodsSection(getProductCmptType(), parentContainer, getSite(), toolkit);
         new TableStructureUsageSection(getProductCmptType(), parentContainer, toolkit);
     }
 

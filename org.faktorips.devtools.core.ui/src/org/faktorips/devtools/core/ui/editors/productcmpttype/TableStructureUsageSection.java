@@ -52,7 +52,7 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
     private TblsStructureUsageComposite tblsStructureUsageComposite;
 
     public TableStructureUsageSection(IProductCmptType productCmptType, Composite parent, UIToolkit toolkit) {
-        super(productCmptType, parent, ExpandableComposite.TITLE_BAR, Messages.TableStructureUsageSection_title,
+        super(productCmptType, parent, null, ExpandableComposite.TITLE_BAR, Messages.TableStructureUsageSection_title,
                 toolkit);
         this.productCmptType = productCmptType;
     }
@@ -201,7 +201,7 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
         }
 
         public TblsStructureUsageComposite(IProductCmptType productCmptType, Composite parent, UIToolkit toolkit) {
-            super(productCmptType, parent, toolkit);
+            super(productCmptType, parent, getSite(), toolkit);
         }
 
         @Override

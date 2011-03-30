@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.editors;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -26,28 +27,38 @@ import org.faktorips.util.ArgumentCheck;
  */
 public abstract class SimpleIpsPartsSection extends IpsObjectPartContainerSection {
 
-    private IIpsObject ipsObject;
+    private final IIpsObject ipsObject;
+
+    private final IWorkbenchPartSite site;
 
     private IpsPartsComposite partsComposite;
 
-    protected SimpleIpsPartsSection(String id, IIpsObject pdObject, Composite parent, String title, UIToolkit toolkit) {
-        super(id, pdObject, parent, GridData.FILL_BOTH, toolkit);
+    protected SimpleIpsPartsSection(String id, IIpsObject ipsObject, Composite parent, IWorkbenchPartSite site,
+            String title, UIToolkit toolkit) {
 
-        ArgumentCheck.notNull(pdObject);
+        super(id, ipsObject, parent, GridData.FILL_BOTH, toolkit);
 
-        ipsObject = pdObject;
+        ArgumentCheck.notNull(ipsObject);
+
+        this.ipsObject = ipsObject;
+        this.site = site;
         initControls();
         setText(title);
+        partsComposite.createContextMenu();
     }
 
-    protected SimpleIpsPartsSection(IIpsObject ipsObject, Composite parent, int style, String title, UIToolkit toolkit) {
+    protected SimpleIpsPartsSection(IIpsObject ipsObject, Composite parent, IWorkbenchPartSite site, int style,
+            String title, UIToolkit toolkit) {
+
         super(ipsObject, parent, style, GridData.FILL_BOTH, toolkit);
 
         ArgumentCheck.notNull(ipsObject);
 
         this.ipsObject = ipsObject;
+        this.site = site;
         initControls();
         setText(title);
+        partsComposite.createContextMenu();
     }
 
     @Override
@@ -102,6 +113,10 @@ public abstract class SimpleIpsPartsSection extends IpsObjectPartContainerSectio
 
     protected IpsPartsComposite getPartsComposite() {
         return partsComposite;
+    }
+
+    protected IWorkbenchPartSite getSite() {
+        return site;
     }
 
 }

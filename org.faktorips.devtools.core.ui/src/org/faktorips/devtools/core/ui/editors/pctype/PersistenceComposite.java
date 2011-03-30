@@ -35,7 +35,7 @@ import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 public abstract class PersistenceComposite extends IpsPartsComposite {
 
     public PersistenceComposite(IIpsObject ipsObject, Composite parent, UIToolkit toolkit) {
-        super(ipsObject, parent, toolkit);
+        super(ipsObject, parent, null, toolkit);
     }
 
     /**

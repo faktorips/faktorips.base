@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 public class ForeignKeysSection extends SimpleIpsPartsSection {
 
     public ForeignKeysSection(ITableStructure table, Composite parent, UIToolkit toolkit) {
-        super(table, parent, ExpandableComposite.TITLE_BAR, Messages.ForeignKeysSection_title, toolkit);
+        super(table, parent, null, ExpandableComposite.TITLE_BAR, Messages.ForeignKeysSection_title, toolkit);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class ForeignKeysSection extends SimpleIpsPartsSection {
     private class ForeignKeysComposite extends IpsPartsComposite {
 
         public ForeignKeysComposite(IIpsObject pdObject, Composite parent, UIToolkit toolkit) {
-            super(pdObject, parent, toolkit);
+            super(pdObject, parent, getSite(), toolkit);
         }
 
         public ITableStructure getTableStructure() {

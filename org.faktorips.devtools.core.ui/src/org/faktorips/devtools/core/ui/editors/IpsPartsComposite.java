@@ -16,6 +16,8 @@ package org.faktorips.devtools.core.ui.editors;
 import java.util.ArrayList;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -34,16 +36,22 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
+import org.faktorips.devtools.core.ui.IpsMenuId;
+import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.refactor.IpsRefactoringHandler;
+import org.faktorips.devtools.core.ui.refactor.IpsRenameHandler;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.message.MessageList;
 
@@ -55,13 +63,41 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         ISelectionProvider, IDataChangeableReadWriteAccess {
 
     /** The object the parts belong to. */
-    private IIpsObject ipsObject;
+    private final IIpsObject ipsObject;
+
+    private final IWorkbenchPartSite site;
+
+    private final UIToolkit uiToolkit;
+
+    /**
+     * Flag that controls whether the edit button is shown (edit is also possible via double click).
+     */
+    private final boolean showEditButton;
+
+    /** Flag that controls whether the refactor context menu will be provided. */
+    private final boolean refactoringSupported;
+
+    /** Flag that controls whether the jump to source code context menu will be provided. */
+    private final boolean jumpToSourceCodeSupported;
+
+    /** The table view of this composite */
+    private TableViewer viewer;
 
     protected Button newButton;
+
     protected Button editButton;
+
     protected Button deleteButton;
+
     protected Button upButton;
+
     protected Button downButton;
+
+    /** Table to show the content */
+    private Table table;
+
+    /** Listener to start editing on double click. */
+    private MouseAdapter editDoubleClickListener;
 
     /** Flag that controls if a new part can be created. */
     private boolean canCreate;
@@ -75,39 +111,64 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     /** Flag that controls if parts can be moved. */
     private boolean canMove;
 
-    /** Table to show the content */
-    private Table table;
-
-    /** Listener to start editing on double click. */
-    private MouseAdapter editDoubleClickListener;
-
-    /**
-     * Flag that control if the edit button is shown (edit is also possible via double click.
-     */
-    private boolean showEditButton;
-
-    /** The table view of this composite */
-    private TableViewer viewer;
-
-    private UIToolkit uiToolkit;
-
-    public IpsPartsComposite(IIpsObject pdObject, Composite parent, UIToolkit toolkit) {
-        this(pdObject, parent, true, true, true, true, true, toolkit);
+    protected IpsPartsComposite(IIpsObject pdObject, Composite parent, IWorkbenchPartSite site, UIToolkit toolkit) {
+        this(pdObject, parent, site, true, true, true, true, true, false, false, toolkit);
     }
 
-    public IpsPartsComposite(IIpsObject ipsObject, Composite parent, boolean canCreate, boolean canEdit,
-            boolean canDelete, boolean canMove, boolean showEditButton, UIToolkit toolkit) {
+    protected IpsPartsComposite(IIpsObject ipsObject, Composite parent, IWorkbenchPartSite site, boolean canCreate,
+            boolean canEdit, boolean canDelete, boolean canMove, boolean showEditButton, boolean refactoringSupported,
+            boolean jumpToSourceCodeSupported, UIToolkit uiToolkit) {
 
         super(parent);
+
         this.ipsObject = ipsObject;
+        this.site = site;
         this.canCreate = canCreate;
         this.canEdit = canEdit;
         this.canDelete = canDelete;
         this.canMove = canMove;
         this.showEditButton = showEditButton;
-        uiToolkit = toolkit;
-        initControls(toolkit);
-        toolkit.getFormToolkit().adapt(this);
+        this.refactoringSupported = refactoringSupported;
+        this.jumpToSourceCodeSupported = jumpToSourceCodeSupported;
+        this.uiToolkit = uiToolkit;
+
+        initControls(uiToolkit);
+        uiToolkit.getFormToolkit().adapt(this);
+    }
+
+    void createContextMenu() {
+        MenuManager contextMenuManager = new MenuManager();
+
+        if (refactoringSupported) {
+            MenuManager refactorSubmenu = new MenuManager(Messages.IpsPartsComposite_submenuRefactor);
+            refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsRenameHandler.CONTRIBUTION_ID));
+            contextMenuManager.add(refactorSubmenu);
+        }
+
+        if (jumpToSourceCodeSupported) {
+            contextMenuManager.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
+        }
+
+        createContextMenuThis(contextMenuManager);
+
+        if (!contextMenuManager.isEmpty()) {
+            Menu contextMenu = contextMenuManager.createContextMenu(getViewer().getControl());
+            getViewer().getControl().setMenu(contextMenu);
+            site.registerContextMenu(contextMenuManager, getSelectionProvider());
+
+            contextMenuManager.addMenuListener(MenuCleaner.createAdditionsCleaner());
+        }
+    }
+
+    /**
+     * Allows subclasses to make additions to the context menu.
+     * <p>
+     * The default implementation does nothing.
+     * 
+     * @param contextMenuManager The {@link MenuManager} for the context menu to add menu items to
+     */
+    protected void createContextMenuThis(MenuManager contextMenuManager) {
+        // Empty default implementation
     }
 
     /**
@@ -128,11 +189,6 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     @Override
     public boolean isDataChangeable() {
         return canCreate || canEdit || canMove || canDelete;
-    }
-
-    /** Determines whether the refactor context menu is shown. */
-    public boolean isRefactoringSupported() {
-        return false;
     }
 
     @Override

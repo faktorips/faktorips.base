@@ -66,7 +66,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
      * @param toolkit The toolkit to help creating the UI
      */
     public GenerationsSection(ProductCmptPropertiesPage page, Composite parent, UIToolkit toolkit) {
-        super(ID, page.getProductCmpt(), parent, IpsPlugin.getDefault().getIpsPreferences()
+        super(ID, page.getProductCmpt(), parent, page.getSite(), IpsPlugin.getDefault().getIpsPreferences()
                 .getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(), toolkit);
         this.page = page;
     }
@@ -138,7 +138,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
         private OpenGenerationInEditorAction openAction;
 
         public GenerationsComposite(ITimedIpsObject ipsObject, Composite parent, UIToolkit toolkit) {
-            super(ipsObject, parent, false, true, true, false, true, toolkit);
+            super(ipsObject, parent, getSite(), false, true, true, false, true, false, false, toolkit);
 
             super.setEditDoubleClickListenerEnabled(false);
 
