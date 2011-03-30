@@ -178,6 +178,8 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
             type = ((IAssociation)ipsObjectPartContainer).getType();
         } else if (ipsObjectPartContainer instanceof IMethod) {
             type = ((IMethod)ipsObjectPartContainer).getType();
+        } else if (ipsObjectPartContainer instanceof IValidationRule) {
+            type = (IType)ipsObjectPartContainer.getParent();
         } else {
             return;
         }
