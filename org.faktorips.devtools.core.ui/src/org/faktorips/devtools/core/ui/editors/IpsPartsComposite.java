@@ -16,6 +16,8 @@ package org.faktorips.devtools.core.ui.editors;
 import java.util.ArrayList;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -152,11 +154,20 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         createContextMenuThis(contextMenuManager);
 
         if (!contextMenuManager.isEmpty()) {
-            Menu contextMenu = contextMenuManager.createContextMenu(getViewer().getControl());
+            final Menu contextMenu = contextMenuManager.createContextMenu(getViewer().getControl());
             getViewer().getControl().setMenu(contextMenu);
             site.registerContextMenu(contextMenuManager, getSelectionProvider());
 
             contextMenuManager.addMenuListener(MenuCleaner.createAdditionsCleaner());
+            // Hide the context menu if nothing is selected
+            contextMenuManager.addMenuListener(new IMenuListener() {
+                @Override
+                public void menuAboutToShow(IMenuManager manager) {
+                    if (getSelection().isEmpty()) {
+                        contextMenu.setVisible(false);
+                    }
+                }
+            });
         }
     }
 

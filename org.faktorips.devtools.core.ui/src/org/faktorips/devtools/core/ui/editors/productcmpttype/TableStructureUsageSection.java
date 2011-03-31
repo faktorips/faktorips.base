@@ -168,10 +168,9 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
             contextMenuManager.addMenuListener(new IMenuListener() {
                 @Override
                 public void menuAboutToShow(IMenuManager manager) {
-                    if (getViewer().getSelection().isEmpty()) {
-                        return;
+                    if (!getSelection().isEmpty()) {
+                        openAction.updateLabelFromSelection(getViewer().getSelection());
                     }
-                    openAction.updateLabelFromSelection(getViewer().getSelection());
                 }
             });
         }
