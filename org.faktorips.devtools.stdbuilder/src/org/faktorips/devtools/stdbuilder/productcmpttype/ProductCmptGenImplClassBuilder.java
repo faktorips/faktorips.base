@@ -885,7 +885,10 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             productCmptType = ((IProductCmptTypeAssociation)ipsObjectPartContainer).getProductCmptType();
 
         } else if (ipsObjectPartContainer instanceof IProductCmptTypeMethod) {
-            productCmptType = (IProductCmptType)((IProductCmptTypeMethod)ipsObjectPartContainer).getIpsObject();
+            productCmptType = ((IProductCmptTypeMethod)ipsObjectPartContainer).getProductCmptType();
+
+        } else if (ipsObjectPartContainer instanceof ITableStructureUsage) {
+            productCmptType = ((ITableStructureUsage)ipsObjectPartContainer).getProductCmptType();
 
         } else {
             return;

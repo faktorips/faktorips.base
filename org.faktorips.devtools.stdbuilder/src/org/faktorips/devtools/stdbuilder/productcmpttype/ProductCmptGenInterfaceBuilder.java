@@ -215,6 +215,9 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
         } else if (ipsObjectPartContainer instanceof IProductCmptTypeMethod) {
             productCmptType = (IProductCmptType)((IProductCmptTypeMethod)ipsObjectPartContainer).getIpsObject();
 
+        } else if (ipsObjectPartContainer instanceof ITableStructureUsage) {
+            productCmptType = ((ITableStructureUsage)ipsObjectPartContainer).getProductCmptType();
+
         } else {
             return;
         }

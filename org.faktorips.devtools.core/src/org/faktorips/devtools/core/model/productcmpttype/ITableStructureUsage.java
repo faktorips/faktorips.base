@@ -127,4 +127,9 @@ public interface ITableStructureUsage extends IIpsObjectPart, IProdDefProperty {
      */
     public boolean isMandatoryTableContent();
 
+    /**
+     * Returns the {@link IProductCmptType} this table structure usage belongs to.
+     */
+    public IProductCmptType getProductCmptType();
+
 }

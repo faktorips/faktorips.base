@@ -49,7 +49,7 @@ class ProductCmptTypeStructurePage extends ProductCmptTypeEditorPage {
         new ProductCmptTypeAttributesSection(getProductCmptType(), members, getSite(), toolkit);
         new ProductCmptTypeAssociationsSection(getProductCmptType(), members, getSite(), toolkit);
         new ProductCmptTypeMethodsSection(getProductCmptType(), members, getSite(), toolkit);
-        new TableStructureUsageSection(getProductCmptType(), members, toolkit);
+        new TableStructureUsageSection(getProductCmptType(), members, getSite(), toolkit);
     }
 
     @Override

@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpttype.tableusage;
 
+import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.stringParam;
+
 import java.lang.reflect.Modifier;
 import java.util.List;
 
@@ -180,6 +182,10 @@ public class GenTableStructureUsage extends GenTypePart {
             IType generatedJavaType,
             IIpsElement ipsElement) {
 
+        addFieldToGeneratedJavaElements(javaElements, generatedJavaType, getMemberVarName());
+        addMethodToGeneratedJavaElements(javaElements, generatedJavaType, getMethodNameGetTableUsage());
+        addMethodToGeneratedJavaElements(javaElements, generatedJavaType, getMethodNameSetUsedTableName(),
+                stringParam());
     }
 
     @Override
@@ -187,6 +193,7 @@ public class GenTableStructureUsage extends GenTypePart {
             IType generatedJavaType,
             IIpsElement ipsElement) {
 
+        // No Java elements are generated for the published interface
     }
 
 }

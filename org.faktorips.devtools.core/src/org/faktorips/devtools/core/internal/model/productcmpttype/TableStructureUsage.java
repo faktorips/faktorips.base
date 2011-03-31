@@ -62,7 +62,8 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         // Default constructor provided for testing purposes.
     }
 
-    IProductCmptType getProductCmptType() {
+    @Override
+    public IProductCmptType getProductCmptType() {
         return (IProductCmptType)getParent();
     }
 

@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -24,8 +25,8 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -49,10 +50,10 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
 
     private IProductCmptType productCmptType;
 
-    private TblsStructureUsageComposite tblsStructureUsageComposite;
+    public TableStructureUsageSection(IProductCmptType productCmptType, Composite parent, IWorkbenchPartSite site,
+            UIToolkit toolkit) {
 
-    public TableStructureUsageSection(IProductCmptType productCmptType, Composite parent, UIToolkit toolkit) {
-        super(productCmptType, parent, null, ExpandableComposite.TITLE_BAR, Messages.TableStructureUsageSection_title,
+        super(productCmptType, parent, site, ExpandableComposite.TITLE_BAR, Messages.TableStructureUsageSection_title,
                 toolkit);
         this.productCmptType = productCmptType;
     }
@@ -120,9 +121,7 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
 
     @Override
     protected IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit) {
-        tblsStructureUsageComposite = new TblsStructureUsageComposite((IProductCmptType)getIpsObject(), parent, toolkit);
-        tblsStructureUsageComposite.initContextMenu();
-        return tblsStructureUsageComposite;
+        return new TblsStructureUsageComposite((IProductCmptType)getIpsObject(), parent, toolkit);
     }
 
     /**
@@ -157,51 +156,24 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
 
         private OpenTableStructuresInEditorAction openAction;
 
-        public void initContextMenu() {
-            openAction = new OpenTableStructuresInEditorAction(getViewer());
-            buildContextMenu();
+        public TblsStructureUsageComposite(IProductCmptType productCmptType, Composite parent, UIToolkit toolkit) {
+            super(productCmptType, parent, getSite(), true, true, true, true, true, false, true, toolkit);
         }
 
-        private void buildContextMenu() {
-            final MenuManager menuManager = new MenuManager();
-            menuManager.setRemoveAllWhenShown(true);
-            // display menu only if one element is selected
-            menuManager.addMenuListener(new IMenuListener() {
+        @Override
+        protected void createContextMenuThis(final MenuManager contextMenuManager) {
+            openAction = new OpenTableStructuresInEditorAction(getViewer());
+            contextMenuManager.add(new Separator());
+            contextMenuManager.add(openAction);
+            contextMenuManager.addMenuListener(new IMenuListener() {
                 @Override
                 public void menuAboutToShow(IMenuManager manager) {
-                    ISelection selection = getViewer().getSelection();
-                    if (selection.isEmpty()) {
+                    if (getViewer().getSelection().isEmpty()) {
                         return;
                     }
-                    openAction.updateLabelFromSelection(selection);
-                    menuManager.add(openAction);
+                    openAction.updateLabelFromSelection(getViewer().getSelection());
                 }
             });
-
-            Menu menu = menuManager.createContextMenu(getViewer().getControl());
-            getViewer().getControl().setMenu(menu);
-        }
-
-        private class TblsStructureUsageContentProvider implements IStructuredContentProvider {
-
-            @Override
-            public Object[] getElements(Object inputElement) {
-                return productCmptType.getTableStructureUsages().toArray();
-            }
-
-            @Override
-            public void dispose() {
-                // nothing to do
-            }
-
-            @Override
-            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-                // nothing to do
-            }
-        }
-
-        public TblsStructureUsageComposite(IProductCmptType productCmptType, Composite parent, UIToolkit toolkit) {
-            super(productCmptType, parent, getSite(), toolkit);
         }
 
         @Override
@@ -234,6 +206,24 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
         @Override
         protected void openLink() {
             openAction.run();
+        }
+
+        private class TblsStructureUsageContentProvider implements IStructuredContentProvider {
+
+            @Override
+            public Object[] getElements(Object inputElement) {
+                return productCmptType.getTableStructureUsages().toArray();
+            }
+
+            @Override
+            public void dispose() {
+                // nothing to do
+            }
+
+            @Override
+            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+                // nothing to do
+            }
         }
 
     }
