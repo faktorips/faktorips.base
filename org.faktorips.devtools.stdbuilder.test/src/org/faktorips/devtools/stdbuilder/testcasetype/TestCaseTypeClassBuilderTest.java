@@ -13,14 +13,17 @@
 
 package org.faktorips.devtools.stdbuilder.testcasetype;
 
-import static org.junit.Assert.assertTrue;
+import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.stringParam;
+import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.unresolvedParam;
 
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
+import org.faktorips.runtime.test.IpsTestResult;
 import org.junit.Before;
 import org.junit.Test;
+import org.w3c.dom.Element;
 
 public class TestCaseTypeClassBuilderTest extends AbstractStdBuilderTest {
 
@@ -30,6 +33,8 @@ public class TestCaseTypeClassBuilderTest extends AbstractStdBuilderTest {
 
     private ITestCaseType testCaseType;
 
+    private IType javaClass;
+
     @Override
     @Before
     public void setUp() throws Exception {
@@ -37,16 +42,19 @@ public class TestCaseTypeClassBuilderTest extends AbstractStdBuilderTest {
 
         testCaseType = newTestCaseType(ipsProject, TEST_CASE_TYPE_NAME);
         builder = new TestCaseTypeClassBuilder(builderSet, DefaultBuilderSet.KIND_TEST_CASE_TYPE_CLASS);
+        javaClass = getGeneratedJavaClass(testCaseType, false, builder.getKindId(), TEST_CASE_TYPE_NAME);
     }
 
     @Test
     public void testGetGeneratedJavaElements() {
         generatedJavaElements = builder.getGeneratedJavaElements(testCaseType);
-        assertTrue(generatedJavaElements.contains(getGeneratedJavaClass()));
-    }
 
-    private IType getGeneratedJavaClass() {
-        return getGeneratedJavaClass(testCaseType, false, builder.getKindId(), TEST_CASE_TYPE_NAME);
+        expectType(javaClass);
+        expectMethod(javaClass, javaClass.getElementName(), stringParam());
+        expectMethod(javaClass, builder.getMethodNameExecuteBusinessLogic());
+        expectMethod(javaClass, builder.getMethodNameExecuteAsserts(), unresolvedParam(IpsTestResult.class));
+        expectMethod(javaClass, builder.getMethodNameInitInputFromXml(), unresolvedParam(Element.class));
+        expectMethod(javaClass, builder.getMethodNameInitExpectedResultFromXml(), unresolvedParam(Element.class));
     }
 
 }

@@ -23,7 +23,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.NullChange;
@@ -79,9 +81,22 @@ public abstract class RefactoringParticipantHelper {
         for (int i = 0; i < getNumberOfJavaElementsToRefactor(); i++) {
             IJavaElement javaElement = originalJavaElements.get(i);
 
-            // The refactoring may be executed without present Java code.
+            // The refactoring may be executed without present Java code
             if (!(javaElement.exists())) {
                 continue;
+            }
+
+            // Ignore constructors as they will not be refactored
+            if (javaElement instanceof IMethod) {
+                try {
+                    if (((IMethod)javaElement).isConstructor()) {
+                        continue;
+                    }
+                } catch (JavaModelException e) {
+                    RefactoringStatus errorStatus = new RefactoringStatus();
+                    errorStatus.addFatalError(e.getLocalizedMessage());
+                    return errorStatus;
+                }
             }
 
             try {
@@ -139,6 +154,13 @@ public abstract class RefactoringParticipantHelper {
              */
             if (!(originalJavaElement.exists())) {
                 continue;
+            }
+
+            // Do not refactor constructors
+            if (originalJavaElement instanceof IMethod) {
+                if (((IMethod)originalJavaElement).isConstructor()) {
+                    continue;
+                }
             }
 
             /*

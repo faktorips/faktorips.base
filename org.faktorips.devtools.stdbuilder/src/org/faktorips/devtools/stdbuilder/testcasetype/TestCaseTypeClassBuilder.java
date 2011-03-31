@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.stdbuilder.testcasetype;
 
+import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.stringParam;
+import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.unresolvedParam;
+
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -27,6 +30,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -361,7 +365,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         buildInitForTestPolicyCmptParameter(body, testCaseType.getInputTestPolicyCmptTypeParameters(), inputPrefix,
                 true);
         buildInitForTestValueParameter(body, testCaseType.getInputTestValueParameters(), inputPrefix);
-        buildMethodInit(codeBuilder, "initInputFromXml", body, javaDoc);
+        buildMethodInit(codeBuilder, getMethodNameInitInputFromXml(), body, javaDoc);
     }
 
     /*
@@ -378,7 +382,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
                 expectedResultPrefix, false);
         buildInitForTestValueParameter(body, testCaseType.getExpectedResultTestValueParameters(), expectedResultPrefix);
         buildInitForTestRuleParameter(body, testCaseType.getTestRuleParameters(), expectedResultPrefix);
-        buildMethodInit(codeBuilder, "initExpectedResultFromXml", body, javaDoc);
+        buildMethodInit(codeBuilder, getMethodNameInitExpectedResultFromXml(), body, javaDoc);
     }
 
     /*
@@ -642,8 +646,8 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         body.appendln(MARKER_END_USER_CODE);
         codeBuilder.javaDoc(javaDoc, ANNOTATION_RESTRAINED_MODIFIABLE);
         appendOverrideAnnotation(codeBuilder, false);
-        codeBuilder.method(Modifier.PUBLIC, "void", "executeBusinessLogic", EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY,
-                body, null);
+        codeBuilder.method(Modifier.PUBLIC, "void", getMethodNameExecuteBusinessLogic(), EMPTY_STRING_ARRAY,
+                EMPTY_STRING_ARRAY, body, null);
     }
 
     private void appendln(StringBuffer sb, String line) {
@@ -655,8 +659,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * Generates the method executeAsserts. <p> Example: <p> <pre> public void
      * executeAsserts(IpsTestResult result) throws Exception { } </pre>
      */
-    private void buildMethodExecuteAsserts(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType)
-            throws CoreException {
+    private void buildMethodExecuteAsserts(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType) {
         StringBuffer javaDoc = new StringBuffer();
         appendln(javaDoc, getLocalizedText(getIpsSrcFile(), EXECUTEASSERTS_JAVADOC));
         appendln(javaDoc, " ");
@@ -682,8 +685,24 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         body.appendln(MARKER_END_USER_CODE);
         codeBuilder.javaDoc(javaDoc.toString(), ANNOTATION_RESTRAINED_MODIFIABLE);
         appendOverrideAnnotation(codeBuilder, false);
-        codeBuilder.method(Modifier.PUBLIC, "void", "executeAsserts", new String[] { "result" },
+        codeBuilder.method(Modifier.PUBLIC, "void", getMethodNameExecuteAsserts(), new String[] { "result" },
                 new String[] { IpsTestResult.class.getName() }, body, null);
+    }
+
+    public String getMethodNameInitInputFromXml() {
+        return "initInputFromXml";
+    }
+
+    public String getMethodNameInitExpectedResultFromXml() {
+        return "initExpectedResultFromXml";
+    }
+
+    public String getMethodNameExecuteBusinessLogic() {
+        return "executeBusinessLogic";
+    }
+
+    public String getMethodNameExecuteAsserts() {
+        return "executeAsserts";
     }
 
     /*
@@ -940,6 +959,16 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
             IIpsObjectPartContainer ipsObjectPartContainer) {
 
+        ITestCaseType testCaseType = (ITestCaseType)ipsObjectPartContainer;
+        IType javaType = getGeneratedJavaTypes(testCaseType).get(0);
+        javaElements.add(javaType.getMethod(javaType.getElementName(), new String[] { stringParam() }));
+        javaElements.add(javaType.getMethod(getMethodNameExecuteBusinessLogic(), new String[0]));
+        javaElements.add(javaType.getMethod(getMethodNameExecuteAsserts(),
+                new String[] { unresolvedParam(IpsTestResult.class) }));
+        javaElements.add(javaType.getMethod(getMethodNameInitInputFromXml(),
+                new String[] { unresolvedParam(Element.class) }));
+        javaElements.add(javaType.getMethod(getMethodNameInitExpectedResultFromXml(),
+                new String[] { unresolvedParam(Element.class) }));
     }
 
     @Override

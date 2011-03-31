@@ -123,7 +123,16 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Expects a specific field to be added to the list of generated Java elements.
+     * Expects a specific {@link IType} to be added to the list of generated Java elements.
+     * 
+     * @param type The {@link IType} that is expected to be contained in the generated Java elements
+     */
+    protected final void expectType(IType type) {
+        assertTrue(generatedJavaElements.contains(type));
+    }
+
+    /**
+     * Expects a specific {@link IField} to be added to the list of generated Java elements.
      * 
      * @param index The position at which the field is expected in the list of generated Java
      *            elements
@@ -136,7 +145,7 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Expects a specific method to be added to the list of generated Java elements.
+     * Expects a specific {@IMethod} to be added to the list of generated Java elements.
      * 
      * @param javaType The Java type the expected method belongs to
      * @param methodName The name of the expected method
