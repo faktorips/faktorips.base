@@ -91,7 +91,7 @@ public class Migration_3_2_0 extends DefaultMigration {
 
     @Override
     public String getTargetVersion() {
-        return "3.2.0"; //$NON-NLS-1$
+        return "3.2.0.rfinal"; //$NON-NLS-1$
     }
 
     public static class Factory implements IIpsProjectMigrationOperationFactory {
