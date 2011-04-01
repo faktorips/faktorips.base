@@ -205,13 +205,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
         ArgumentCheck.notNull(ipsProject);
 
-        List<IEnumType> superEnumTypes = findAllSuperEnumTypes(ipsProject);
-        List<IEnumType> completeHierarchy = new ArrayList<IEnumType>(superEnumTypes.size() + 1);
-        completeHierarchy.add(this);
-        completeHierarchy.addAll(superEnumTypes);
-
         List<IEnumAttribute> attributesList = new ArrayList<IEnumAttribute>();
-        for (IEnumType currentEnumType : completeHierarchy) {
+        attributesList.addAll(getEnumAttributes(includeLiteralName));
+        for (IEnumType currentEnumType : findAllSuperEnumTypes(ipsProject)) {
             attributesList.addAll(currentEnumType.getEnumAttributes(includeLiteralName));
         }
         return attributesList;
