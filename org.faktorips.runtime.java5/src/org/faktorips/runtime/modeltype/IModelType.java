@@ -110,14 +110,6 @@ public interface IModelType extends IModelElement {
     public List<IModelTypeLabel> getDeclaredLabels();
 
     /**
-     * Returns the label at the given index. Labels defined in the type's super types are not
-     * returned.
-     * 
-     * @throws IndexOutOfBoundsException If no label exists for the given index
-     */
-    public IModelTypeLabel getDeclaredLabel(int index);
-
-    /**
      * Returns the label for the given locale. Labels defined in the type's super types are not
      * considered.
      * 

@@ -62,10 +62,6 @@ public class ModelType extends AbstractModelElement implements IModelType {
         return label;
     }
 
-    public IModelTypeLabel getDeclaredLabel(int index) {
-        return labels.get(index);
-    }
-
     public List<IModelTypeLabel> getDeclaredLabels() {
         return Collections.unmodifiableList(labels);
     }
