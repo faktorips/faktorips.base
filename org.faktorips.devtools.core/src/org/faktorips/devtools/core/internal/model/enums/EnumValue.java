@@ -225,7 +225,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
         // Remove unique identifier entries of this EnumValue from the validation cache.
         IIpsProject ipsProject = getIpsProject();
         EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumValueContainer();
-        if (enumValueContainerImpl.isUniqueIdentifierValidationCacheInitialized()) {
+        if (enumValueContainerImpl.isUniqueIdentifierCacheInitialized()) {
             try {
                 IEnumType referencedEnumType = getEnumValueContainer().findEnumType(ipsProject);
                 if (referencedEnumType != null) {
@@ -236,7 +236,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
                     for (int i = 0; i < uniqueEnumAttributeValues.size(); i++) {
                         IEnumAttributeValue currentEnumAttributeValue = uniqueEnumAttributeValues.get(i);
                         IEnumAttribute currentReferencedEnumAttribute = uniqueEnumAttributes.get(i);
-                        enumValueContainerImpl.removeValidationCacheUniqueIdentifierEntry(
+                        enumValueContainerImpl.removeCacheEntry(
                                 referencedEnumType.getIndexOfEnumAttribute(currentReferencedEnumAttribute),
                                 currentEnumAttributeValue.getValue(), currentEnumAttributeValue);
                     }

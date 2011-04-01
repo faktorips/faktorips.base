@@ -378,11 +378,11 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         // Update unique identifier validation cache.
         if (oldIsUniqueIdentifier != uniqueIdentifier) {
             EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumType();
-            if (enumValueContainerImpl.isUniqueIdentifierValidationCacheInitialized()) {
+            if (enumValueContainerImpl.isUniqueIdentifierCacheInitialized()) {
                 IEnumType enumType = getEnumType();
                 int index = enumType.getIndexOfEnumAttribute(this);
                 if (uniqueIdentifier) {
-                    enumValueContainerImpl.addUniqueIdentifierToValidationCache(index);
+                    enumValueContainerImpl.addUniqueIdentifierToCache(index, isIdentifier());
                     /*
                      * Add all the unique identifier values of the column to the unique identifier
                      * validation cache.
@@ -390,13 +390,13 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                     List<IEnumAttribute> newUniqueAttributeList = new ArrayList<IEnumAttribute>(1);
                     newUniqueAttributeList.add(this);
                     try {
-                        enumValueContainerImpl.initValidationCacheUniqueIdentifierEntries(newUniqueAttributeList,
+                        enumValueContainerImpl.initCacheEntries(newUniqueAttributeList,
                                 enumType);
                     } catch (CoreException e) {
                         throw new RuntimeException(e);
                     }
                 } else {
-                    enumValueContainerImpl.removeUniqueIdentifierFromValidationCache(index);
+                    enumValueContainerImpl.removeUniqueIdentifierFromCache(index);
                 }
             }
         }
@@ -432,6 +432,21 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     public void setIdentifier(boolean usedAsIdInFaktorIpsUi) {
         boolean oldUsedAsIdInFaktorIpsUi = identifier;
         identifier = usedAsIdInFaktorIpsUi;
+
+        // Update unique identifier validation cache.
+        if (oldUsedAsIdInFaktorIpsUi != identifier) {
+            EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumType();
+            if (enumValueContainerImpl.isUniqueIdentifierCacheInitialized()) {
+                if (usedAsIdInFaktorIpsUi) {
+                    enumValueContainerImpl.addDefaultIdentifierToCache(getEnumType().getIndexOfEnumAttribute(
+                            this));
+                } else {
+                    enumValueContainerImpl.removeDefaultIdentifierFromCache(getEnumType()
+                            .getIndexOfEnumAttribute(this));
+                }
+            }
+        }
+
         valueChanged(oldUsedAsIdInFaktorIpsUi, usedAsIdInFaktorIpsUi);
     }
 

@@ -158,9 +158,9 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         integerNewAttributeValue.setValue("4");
         booleanNewAttributeValue.setValue("false");
 
-        assertTrue(stringNewAttributeValue.isValid());
-        assertTrue(integerNewAttributeValue.isValid());
-        assertTrue(booleanNewAttributeValue.isValid());
+        assertTrue(stringNewAttributeValue.isValid(ipsProject));
+        assertTrue(integerNewAttributeValue.isValid(ipsProject));
+        assertTrue(booleanNewAttributeValue.isValid(ipsProject));
 
         IIpsModel ipsModel = getIpsModel();
 

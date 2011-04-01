@@ -136,7 +136,7 @@ public class DatatypeFormatter {
 
     private IEnumValue getEnumValue(EnumTypeDatatypeAdapter datatypeAdapter, String id) throws CoreException {
         IEnumValueContainer valueContainer = datatypeAdapter.getEnumValueContainer();
-        return valueContainer.findEnumValue(id, valueContainer.getIpsProject());
+        return valueContainer.getEnumValue(id);
     }
 
     /**

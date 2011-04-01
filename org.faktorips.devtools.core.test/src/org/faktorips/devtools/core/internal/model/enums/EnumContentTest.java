@@ -88,7 +88,7 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testValidateThis() throws CoreException {
-        assertTrue(genderEnumContent.isValid());
+        assertTrue(genderEnumContent.isValid(ipsProject));
     }
 
     @Test

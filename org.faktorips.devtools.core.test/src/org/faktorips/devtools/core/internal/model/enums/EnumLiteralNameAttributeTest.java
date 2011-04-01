@@ -90,7 +90,7 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
     public void testValidateDefaultValueProviderAttribute() throws CoreException {
         // Test pass validation if no default value provider attribute specified.
         literalNameAttribute.setDefaultValueProviderAttribute("");
-        assertTrue(literalNameAttribute.isValid());
+        assertTrue(literalNameAttribute.isValid(ipsProject));
 
         // Test not existing default value provider attribute.
         literalNameAttribute.setDefaultValueProviderAttribute("foo");

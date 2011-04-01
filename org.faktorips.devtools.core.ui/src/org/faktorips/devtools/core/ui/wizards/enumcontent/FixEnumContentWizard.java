@@ -137,7 +137,7 @@ public class FixEnumContentWizard extends Wizard {
                             moveAttributeValues();
                         }
                         enumContent.setEnumType(newEnumType.getQualifiedName());
-                        enumContent.clearUniqueIdentifierValidationCache();
+                        enumContent.clearUniqueIdentifierCache();
                     }
                 };
                 enumContent.getIpsModel().runAndQueueChangeEvents(workspaceRunnable, null);

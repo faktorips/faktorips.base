@@ -330,9 +330,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         JavaCodeFragment fragment = new JavaCodeFragment();
         if (enumTypeAdapter.getEnumType().isContainingValues()) {
-            // TODO pk is this the right ips project that is provided to the finder method??
-            IEnumValue enumValue = enumTypeAdapter.getEnumValueContainer().findEnumValue(value,
-                    enumTypeAdapter.getEnumValueContainer().getIpsProject());
+            IEnumValue enumValue = enumTypeAdapter.getEnumValueContainer().getEnumValue(value);
             if (enumValue == null) {
                 return fragment;
             }

@@ -39,19 +39,31 @@ public interface IEnumValueContainer extends IIpsObject {
     public List<IEnumValue> getEnumValues();
 
     /**
+     * Calls {@link #getEnumValue(String)}.
+     * 
+     * @throws CoreException If an exception occurs will processing.
+     * 
+     * @deprecated Use {@link #getEnumValue(String)} instead.
+     */
+    // Deprecated since version 3.3.0
+    @Deprecated
+    public IEnumValue findEnumValue(String identifierAttributeValue, IIpsProject ipsProject) throws CoreException;
+
+    /**
      * Returns the <tt>IEnumValue</tt> for the provided value of the identifier attribute.
      * <p>
-     * This method can only be applied to <tt>IEnumValueContainer</tt>s that contain there own
+     * This method can only be applied to <tt>IEnumValueContainer</tt>s that contain their own
      * values. Especially this doesn't hold true for <tt>IEnumType</tt>s which delegate their
      * content to a separate <tt>IEnumContent</tt>. For those cases <tt>null</tt> will be returned
      * by this method.
      * <p>
      * Returns <tt>null</tt> if no <tt>IEnumValue</tt> could be found for the given identifier
-     * attribute value or if the referenced <tt>IEnumType</tt> could not be found.
+     * attribute value or if the referenced <tt>IEnumType</tt> isn't known.
      * 
-     * @throws CoreException If an exception occurs will processing.
+     * @param identifierAttributeValue The value of the default identifier attribute that identifies
+     *            the <tt>IEnumValue</tt> to retrieve
      */
-    public IEnumValue findEnumValue(String identifierAttributeValue, IIpsProject ipsProject) throws CoreException;
+    public IEnumValue getEnumValue(String identifierAttributeValue);
 
     /**
      * Creates a new list and collects the values of the enumeration attribute that is marked as the
@@ -118,11 +130,15 @@ public interface IEnumValueContainer extends IIpsObject {
      */
     public int getIndexOfEnumValue(IEnumValue enumValue);
 
-    /** Deletes all <tt>IEnumValue</tt>s from this <tt>IEnumValueContainer</tt>. */
+    /**
+     * Deletes all <tt>IEnumValue</tt>s from this <tt>IEnumValueContainer</tt>.
+     */
     public void clear();
 
-    /** Clears the unique identifier validation cache. */
-    public void clearUniqueIdentifierValidationCache();
+    /**
+     * Clears the unique identifier cache.
+     */
+    public void clearUniqueIdentifierCache();
 
     /**
      * Deletes the given <tt>IEnumValue</tt>s from this <tt>IEnumValueContainer</tt>. This operation

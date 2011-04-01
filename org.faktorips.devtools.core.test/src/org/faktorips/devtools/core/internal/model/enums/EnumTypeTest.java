@@ -480,7 +480,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testValidateThis() throws CoreException {
-        assertTrue(genderEnumType.isValid());
+        assertTrue(genderEnumType.isValid(ipsProject));
     }
 
     @Test
@@ -502,7 +502,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertNotNull(validationMessageList.getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_SUPERTYPE_IS_NOT_ABSTRACT));
         superEnumType.setAbstract(true);
         ipsModel.clearValidationCache();
-        assertTrue(genderEnumType.isValid());
+        assertTrue(genderEnumType.isValid(ipsProject));
     }
 
     @Test
@@ -530,7 +530,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
         // Test abstract super enumeration type to be valid despite missing inherited attribute.
         ipsModel.clearValidationCache();
-        assertTrue(superEnumType.isValid());
+        assertTrue(superEnumType.isValid(ipsProject));
 
         attr1 = genderEnumType.newEnumAttribute();
         attr1.setName("attr1");
@@ -539,7 +539,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         attr2.setName("attr2");
         attr2.setInherited(true);
         ipsModel.clearValidationCache();
-        assertTrue(genderEnumType.isValid());
+        assertTrue(genderEnumType.isValid(ipsProject));
     }
 
     @Test
@@ -551,17 +551,17 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
         genderEnumType.setAbstract(true);
         getIpsModel().clearValidationCache();
-        assertTrue(genderEnumType.isValid());
+        assertTrue(genderEnumType.isValid(ipsProject));
 
         genderEnumType.setAbstract(false);
         genderEnumType.setContainingValues(false);
         getIpsModel().clearValidationCache();
-        assertTrue(genderEnumType.isValid());
+        assertTrue(genderEnumType.isValid(ipsProject));
 
         genderEnumType.setContainingValues(true);
         genderEnumType.newEnumLiteralNameAttribute();
         getIpsModel().clearValidationCache();
-        assertTrue(genderEnumType.isValid());
+        assertTrue(genderEnumType.isValid(ipsProject));
 
         IEnumLiteralNameAttribute literal2 = genderEnumType.newEnumLiteralNameAttribute();
         literal2.setName("LITERAL_NAME2");
@@ -858,13 +858,13 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testGetEnumValue() throws Exception {
-        IEnumValue annually = paymentMode.findEnumValue("P1", ipsProject);
+        IEnumValue annually = paymentMode.getEnumValue("P1");
         assertNotNull(annually);
-        IEnumValue monthly = paymentMode.findEnumValue("P2", ipsProject);
+        IEnumValue monthly = paymentMode.getEnumValue("P2");
         assertNotNull(monthly);
-        IEnumValue quarterly = paymentMode.findEnumValue("P3", ipsProject);
+        IEnumValue quarterly = paymentMode.getEnumValue("P3");
         assertNull(quarterly);
-        assertNull(paymentMode.findEnumValue(null, ipsProject));
+        assertNull(paymentMode.getEnumValue(null));
     }
 
     @Test

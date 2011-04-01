@@ -22,6 +22,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
@@ -31,7 +32,6 @@ import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
@@ -53,15 +53,23 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
 
     /**
      * A map of maps. Each map inside the map stores all values of a unique identifier and
-     * associates them with a list of <tt>IEnumAttributeValue</tt>s. This list is intended to be
-     * used to validate unique identifiers. Each entry of the outer map stands for another unique
-     * identifier. The number that is used as the key for each unique identifier is meant to be the
-     * index of the <tt>IEnumAttribute</tt> being the unique identifier.
+     * associates them with a list of all <tt>IEnumAttributeValue</tt>s referring to unique
+     * identifiers in this row. This list is intended to be used to validate unique identifiers.
+     * Each entry of the outer map stands for another unique identifier. The number that is used as
+     * the key for each unique identifier is meant to be the index of the <tt>IEnumAttribute</tt>
+     * being the unique identifier.
      */
-    private Map<Integer, Map<String, List<IEnumAttributeValue>>> uniqueIdentifierValidationCache;
+    private Map<Integer, Map<String, List<IEnumAttributeValue>>> uniqueIdentifierCache;
 
-    /** Flag indicating whether the unique identifier validation cache has been already initialized. */
-    private boolean uniqueIdentifierValidationCacheInitialized;
+    /**
+     * The index of the default identifier (can be used to query the {@link #uniqueIdentifierCache}
+     * for the default identifier value. This is a list because there can be multiple default
+     * identifiers (although this state is invalid).
+     */
+    private List<Integer> cachedDefaultIdentifierIndices = new ArrayList<Integer>();
+
+    /** Flag indicating whether the unique identifier cache has been already initialized. */
+    private boolean uniqueIdentifierCacheInitialized;
 
     /**
      * Creates a new <tt>EnumValueContainer</tt>.
@@ -73,16 +81,13 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
 
         enumValues = new IpsObjectPartCollection<IEnumValue>(this, EnumValue.class, IEnumValue.class,
                 IEnumValue.XML_TAG);
-        uniqueIdentifierValidationCache = new HashMap<Integer, Map<String, List<IEnumAttributeValue>>>();
+        uniqueIdentifierCache = new HashMap<Integer, Map<String, List<IEnumAttributeValue>>>();
     }
 
     @Override
     public List<IEnumValue> getEnumValues() {
         List<IEnumValue> valuesList = new ArrayList<IEnumValue>();
-        IIpsObjectPart[] parts = enumValues.getParts();
-        for (IIpsObjectPart currentObjectPart : parts) {
-            valuesList.add((IEnumValue)currentObjectPart);
-        }
+        valuesList.addAll(enumValues.asList());
         return valuesList;
     }
 
@@ -110,23 +115,33 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
 
     @Override
     public IEnumValue findEnumValue(String identifierAttributeValue, IIpsProject ipsProject) throws CoreException {
+        return getEnumValue(identifierAttributeValue);
+    }
+
+    @Override
+    public IEnumValue getEnumValue(String identifierAttributeValue) {
         if (identifierAttributeValue == null) {
             return null;
         }
 
-        IEnumType enumType = findEnumType(ipsProject);
-        IEnumAttribute identifierAttribute = enumType.findIdentiferAttribute(ipsProject);
-        for (IEnumValue enumValue : getEnumValues()) {
-            IEnumAttributeValue value = enumValue.getEnumAttributeValue(identifierAttribute);
-            if (value == null) {
-                continue;
-            }
-            if (identifierAttributeValue.equals(value.getValue())) {
-                return enumValue;
-            }
+        initUniqueIdentifierCache();
+
+        if (cachedDefaultIdentifierIndices.isEmpty()) {
+            return null;
         }
 
-        return null;
+        Integer defaultIdentifierIndex = cachedDefaultIdentifierIndices.get(0);
+        Map<String, List<IEnumAttributeValue>> cachedValues = uniqueIdentifierCache.get(defaultIdentifierIndex);
+        if (cachedValues == null) {
+            return null;
+        }
+
+        List<IEnumAttributeValue> cachedAttributeValues = cachedValues.get(identifierAttributeValue);
+        if (cachedAttributeValues == null || cachedAttributeValues.isEmpty()) {
+            return null;
+        }
+
+        return cachedAttributeValues.get(0).getEnumValue();
     }
 
     @Override
@@ -221,18 +236,21 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
 
     @Override
     public void clear() {
-        clearUniqueIdentifierValidationCache();
+        clearUniqueIdentifierCache();
         enumValues.clear();
         objectHasChanged();
     }
 
     /**
-     * Adds a new map for a unique key to the list of maps maintained by this
-     * <tt>EnumValueContainer</tt> for unique identifier validation.
+     * Adds a new map of values to {@link IEnumAttributeValue}s for a unique key to the unique
+     * identifier cache.
      */
-    void addUniqueIdentifierToValidationCache(int uniqueEnumAttributeIndex) {
-        uniqueIdentifierValidationCache.put(new Integer(uniqueEnumAttributeIndex),
+    void addUniqueIdentifierToCache(int uniqueEnumAttributeIndex, boolean defaultIdentifier) {
+        uniqueIdentifierCache.put(new Integer(uniqueEnumAttributeIndex),
                 new HashMap<String, List<IEnumAttributeValue>>());
+        if (defaultIdentifier) {
+            cachedDefaultIdentifierIndices.add(uniqueEnumAttributeIndex);
+        }
     }
 
     /**
@@ -241,21 +259,29 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
      * <p>
      * Does nothing if there exists no entry for this unique identifier.
      */
-    void removeUniqueIdentifierFromValidationCache(int uniqueEnumAttributeIndex) {
-        uniqueIdentifierValidationCache.remove(new Integer(uniqueEnumAttributeIndex));
+    void removeUniqueIdentifierFromCache(int uniqueEnumAttributeIndex) {
+        uniqueIdentifierCache.remove(new Integer(uniqueEnumAttributeIndex));
+        cachedDefaultIdentifierIndices.remove(Integer.valueOf(uniqueEnumAttributeIndex));
+    }
+
+    void addDefaultIdentifierToCache(int identifierIndex) {
+        cachedDefaultIdentifierIndices.add(identifierIndex);
+    }
+
+    void removeDefaultIdentifierFromCache(int identifierIndex) {
+        cachedDefaultIdentifierIndices.remove(Integer.valueOf(identifierIndex));
     }
 
     /**
      * Returns whether the unique identifier validation cache contains a mapping for the given
      * unique <tt>IEnumAttribute</tt> identified by it's index.
      */
-    boolean containsValidationCacheUniqueIdentifier(int uniqueEnumAttributeIndex) {
-        return uniqueIdentifierValidationCache.containsKey(new Integer(uniqueEnumAttributeIndex));
+    boolean containsCacheUniqueIdentifier(int uniqueEnumAttributeIndex) {
+        return uniqueIdentifierCache.containsKey(new Integer(uniqueEnumAttributeIndex));
     }
 
     /**
-     * Handles the deletion of <tt>IEnumAttribute</tt>s in respect to the unique identifier
-     * validation cache.
+     * Handles the deletion of <tt>IEnumAttribute</tt>s with respect to the unique identifier cache.
      * 
      * @param enumAttributeIndex The index of the deleted <tt>IEnumAttribute</tt>.
      */
@@ -267,18 +293,18 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         for (Integer key : keyArray) {
             int keyValue = key.intValue();
             if (keyValue > enumAttributeIndex) {
-                movingMaps.add(uniqueIdentifierValidationCache.get(new Integer(keyValue)));
+                movingMaps.add(uniqueIdentifierCache.get(new Integer(keyValue)));
                 movingKeys.add(new Integer(keyValue));
             }
         }
         for (int i = 0; i < movingMaps.size(); i++) {
             int newKeyValue = movingKeys.get(i) - 1;
-            uniqueIdentifierValidationCache.put(new Integer(newKeyValue), movingMaps.get(i));
+            uniqueIdentifierCache.put(new Integer(newKeyValue), movingMaps.get(i));
         }
     }
 
     /**
-     * Registers a unique identifier value to the validation cache.
+     * Registers a unique identifier value to the unique identifier cache.
      * <p>
      * If the given <tt>uniqueIdentifier</tt> is <tt>null</tt> this operation will do nothing.
      * 
@@ -287,22 +313,18 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
      * @param enumAttributeValue The <tt>IEnumAttributeValue</tt> that stores the entry.
      * 
      * @throws NullPointerException If <tt>enumAttributeValue</tt> is <tt>null</tt>.
-     * @throws IllegalArgumentException If there is no unique identifier in the validation cache
-     *             corresponding to the <tt>uniqueEnumAttributeIndex</tt>.
+     * @throws IllegalArgumentException If there is no unique identifier in the cache corresponding
+     *             to the <tt>uniqueEnumAttributeIndex</tt>.
      */
-    void addValidationCacheUniqueIdentifierEntry(int uniqueEnumAttributeIndex,
-            String uniqueIdentifier,
-            IEnumAttributeValue enumAttributeValue) {
-
+    void addCacheEntry(int uniqueEnumAttributeIndex, String uniqueIdentifier, IEnumAttributeValue enumAttributeValue) {
         ArgumentCheck.notNull(enumAttributeValue);
-        Integer outerKey = new Integer(uniqueEnumAttributeIndex);
-        ArgumentCheck.isTrue(uniqueIdentifierValidationCache.containsKey(outerKey));
+        ArgumentCheck.isTrue(uniqueIdentifierCache.containsKey(uniqueEnumAttributeIndex));
 
         if (uniqueIdentifier == null) {
             return;
         }
 
-        Map<String, List<IEnumAttributeValue>> identifierMap = uniqueIdentifierValidationCache.get(outerKey);
+        Map<String, List<IEnumAttributeValue>> identifierMap = uniqueIdentifierCache.get(uniqueEnumAttributeIndex);
         List<IEnumAttributeValue> enumAttributeValues = null;
         if (identifierMap.containsKey(uniqueIdentifier)) {
             enumAttributeValues = identifierMap.get(uniqueIdentifier);
@@ -314,9 +336,10 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     }
 
     /**
-     * Removes a unique identifier from the validation cache. If the map for the given unique
-     * identifier value is empty after the operation (contains no <tt>IEnumAttributeValue</tt>s
-     * anymore), it will be removed from the cache, too.
+     * Removes a unique identifier from the cache.
+     * <p>
+     * If the map for the given unique identifier value is empty after the operation (contains no
+     * <tt>IEnumAttributeValue</tt>s anymore), it will be removed from the cache, too.
      * <p>
      * This operation does nothing if the given <tt>uniqueIdentifier</tt> is <tt>null</tt> or there
      * is no such unique stored in the cache.
@@ -327,18 +350,15 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
      * 
      * @throws NullPointerException If <tt>enumAttributeValue</tt> is <tt>null</tt>.
      */
-    void removeValidationCacheUniqueIdentifierEntry(int uniqueEnumAttributeIndex,
-            String uniqueIdentifier,
-            IEnumAttributeValue enumAttributeValue) {
-
+    void removeCacheEntry(int uniqueEnumAttributeIndex, String uniqueIdentifier, IEnumAttributeValue enumAttributeValue) {
         ArgumentCheck.notNull(enumAttributeValue);
         Integer outerKey = new Integer(uniqueEnumAttributeIndex);
 
-        if (uniqueIdentifier == null || !(uniqueIdentifierValidationCache.containsKey(outerKey))) {
+        if (uniqueIdentifier == null || !(uniqueIdentifierCache.containsKey(outerKey))) {
             return;
         }
 
-        Map<String, List<IEnumAttributeValue>> identifierMap = uniqueIdentifierValidationCache.get(outerKey);
+        Map<String, List<IEnumAttributeValue>> identifierMap = uniqueIdentifierCache.get(outerKey);
         List<IEnumAttributeValue> enumAttributeValues = identifierMap.get(uniqueIdentifier);
         if (enumAttributeValues != null) {
             enumAttributeValues.remove(enumAttributeValue);
@@ -348,50 +368,63 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         }
     }
 
-    /** Returns whether the unique identifier validation cache has already been initialized. */
-    boolean isUniqueIdentifierValidationCacheInitialized() {
-        return uniqueIdentifierValidationCacheInitialized;
-    }
-
     /**
-     * Initializes the unique identifier validation cache. The operation might also fail. Returns
-     * <tt>true</tt> on success, <tt>false</tt> on failure.
+     * Returns whether the unique identifier cache has already been initialized.
      */
-    boolean initUniqueIdentifierValidationCache() throws CoreException {
-        uniqueIdentifierValidationCache.clear();
-        uniqueIdentifierValidationCacheInitialized = initUniqueIdentifierValidationCacheImpl();
-        return uniqueIdentifierValidationCacheInitialized;
+    boolean isUniqueIdentifierCacheInitialized() {
+        return uniqueIdentifierCacheInitialized;
     }
 
     /**
-     * Subclass implementation needs to initialize the validation cache.
+     * Initializes the unique identifier validation cache.
+     * <p>
+     * The operation might also fail. Returns <tt>true</tt> on success (or if the cache was already
+     * initialized), <tt>false</tt> on failure.
+     */
+    boolean initUniqueIdentifierCache() {
+        if (uniqueIdentifierCacheInitialized) {
+            return true;
+        }
+        clearUniqueIdentifierCache();
+        try {
+            uniqueIdentifierCacheInitialized = initUniqueIdentifierCacheImpl();
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+            uniqueIdentifierCacheInitialized = false;
+        }
+        return uniqueIdentifierCacheInitialized;
+    }
+
+    /**
+     * Subclass implementation needs to initialize the unique identifier cache.
      * <p>
      * Must return <tt>true</tt> if the operation was successful, <tt>false</tt> if not.
      * 
      * @throws CoreException May throw this kind of exception if the need arises.
      */
-    abstract boolean initUniqueIdentifierValidationCacheImpl() throws CoreException;
+    abstract boolean initUniqueIdentifierCacheImpl() throws CoreException;
 
-    /** Initializes the unique identifier entries. */
-    void initValidationCacheUniqueIdentifierEntries(List<IEnumAttribute> uniqueEnumAttributes, IEnumType enumType)
-            throws CoreException {
-
+    /**
+     * Initializes the unique identifier entries.
+     */
+    void initCacheEntries(List<IEnumAttribute> uniqueEnumAttributes, IEnumType enumType) throws CoreException {
         ArgumentCheck.notNull(uniqueEnumAttributes);
+
         for (IEnumValue currentEnumValue : getEnumValues()) {
             List<IEnumAttributeValue> uniqueEnumAttributeValues = currentEnumValue.findUniqueEnumAttributeValues(
                     uniqueEnumAttributes, getIpsProject());
             for (int i = 0; i < uniqueEnumAttributeValues.size(); i++) {
                 IEnumAttributeValue currentUniqueAttributeValue = uniqueEnumAttributeValues.get(i);
                 int currentReferencedAttributeIndex = enumType.getIndexOfEnumAttribute(uniqueEnumAttributes.get(i));
-                addValidationCacheUniqueIdentifierEntry(currentReferencedAttributeIndex,
-                        currentUniqueAttributeValue.getValue(), currentUniqueAttributeValue);
+                addCacheEntry(currentReferencedAttributeIndex, currentUniqueAttributeValue.getValue(),
+                        currentUniqueAttributeValue);
             }
         }
     }
 
     /**
-     * Returns the list from the unique identifier validation cache corresponding to the given
-     * unique identifier value for the given unique identifier (given as index of the corresponding
+     * Returns the list from the unique identifier cache corresponding to the given unique
+     * identifier value for the given unique identifier (given as index of the corresponding
      * <tt>IEnumAttribute</tt>).
      * 
      * @param enumAttributeIndex The index of the <tt>IEnumAttribute</tt>.
@@ -399,30 +432,35 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
      * 
      * @throws NullPointerException If <tt>uniqueIdentifierValue</tt> is <tt>null</tt>.
      */
-    List<IEnumAttributeValue> getValidationCacheListForUniqueIdentifier(int enumAttributeIndex,
-            String uniqueIdentifierValue) {
-
+    List<IEnumAttributeValue> getCacheListForUniqueIdentifier(int enumAttributeIndex, String uniqueIdentifierValue) {
         ArgumentCheck.notNull(uniqueIdentifierValue);
         Integer outerKey = new Integer(enumAttributeIndex);
-        ArgumentCheck.isTrue(uniqueIdentifierValidationCache.containsKey(outerKey));
-        return uniqueIdentifierValidationCache.get(outerKey).get(uniqueIdentifierValue);
+        ArgumentCheck.isTrue(uniqueIdentifierCache.containsKey(outerKey));
+        return uniqueIdentifierCache.get(outerKey).get(uniqueIdentifierValue);
     }
 
     /**
-     * Handles the movement of <tt>IEnumAttribute</tt>s in respect to the unique identifier
-     * validation cache.
+     * Handles the movement of <tt>IEnumAttribute</tt>s in respect to the unique identifier cache.
      * 
      * @param enumAttributeIndex The index identifying the moved <tt>IEnumAttribute</tt>.
      * @param up Flag indicating whether the <tt>IEnumAttribute</tt> was moved up or down.
      */
-    void handleMoveEnumAttributeForUniqueIdentifierValidationCache(int enumAttributeIndex, boolean up) {
+    void handleMoveEnumAttribute(int enumAttributeIndex, boolean up) {
         int modification = up ? -1 : 1;
         int otherAffectedIndex = enumAttributeIndex + modification;
+        if (cachedDefaultIdentifierIndices.contains(enumAttributeIndex)) {
+            int listIndex = cachedDefaultIdentifierIndices.indexOf(enumAttributeIndex);
+            cachedDefaultIdentifierIndices.set(listIndex, enumAttributeIndex + modification);
+        }
+        if (cachedDefaultIdentifierIndices.contains(otherAffectedIndex)) {
+            int listIndex = cachedDefaultIdentifierIndices.indexOf(otherAffectedIndex);
+            cachedDefaultIdentifierIndices.set(listIndex, otherAffectedIndex - modification);
+        }
 
         Integer key = new Integer(enumAttributeIndex);
         Integer otherKey = new Integer(otherAffectedIndex);
-        Map<String, List<IEnumAttributeValue>> keyMap = uniqueIdentifierValidationCache.get(key);
-        Map<String, List<IEnumAttributeValue>> otherKeyMap = uniqueIdentifierValidationCache.get(otherKey);
+        Map<String, List<IEnumAttributeValue>> keyMap = uniqueIdentifierCache.get(key);
+        Map<String, List<IEnumAttributeValue>> otherKeyMap = uniqueIdentifierCache.get(otherKey);
 
         // At least one of the two affected keys must be existent in the validation cache.
         boolean keyAffected = keyMap != null;
@@ -432,34 +470,35 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         }
 
         if (keyAffected) {
-            removeUniqueIdentifierFromValidationCache(key);
+            removeUniqueIdentifierFromCache(key);
         }
         if (otherKeyAffected) {
-            removeUniqueIdentifierFromValidationCache(otherKey);
+            removeUniqueIdentifierFromCache(otherKey);
         }
         if (keyAffected) {
-            uniqueIdentifierValidationCache.put(new Integer(enumAttributeIndex + modification), keyMap);
+            uniqueIdentifierCache.put(new Integer(enumAttributeIndex + modification), keyMap);
         }
         if (otherKeyAffected) {
-            uniqueIdentifierValidationCache.put(new Integer(otherAffectedIndex - modification), otherKeyMap);
+            uniqueIdentifierCache.put(new Integer(otherAffectedIndex - modification), otherKeyMap);
         }
     }
 
     Integer[] getCachedUniqueIdentifierKeys() {
-        Set<Integer> keys = uniqueIdentifierValidationCache.keySet();
+        Set<Integer> keys = uniqueIdentifierCache.keySet();
         return keys.toArray(new Integer[keys.size()]);
     }
 
     @Override
-    public void clearUniqueIdentifierValidationCache() {
-        uniqueIdentifierValidationCache.clear();
-        uniqueIdentifierValidationCacheInitialized = false;
+    public void clearUniqueIdentifierCache() {
+        uniqueIdentifierCache.clear();
+        cachedDefaultIdentifierIndices.clear();
+        uniqueIdentifierCacheInitialized = false;
     }
 
     @Override
     public void initFromXml(Element element) {
         super.initFromXml(element);
-        clearUniqueIdentifierValidationCache();
+        clearUniqueIdentifierCache();
     }
 
     @Override

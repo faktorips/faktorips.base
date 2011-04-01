@@ -168,7 +168,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testValidateThis() throws CoreException {
-        assertTrue(genderEnumAttributeId.isValid());
+        assertTrue(genderEnumAttributeId.isValid(ipsProject));
     }
 
     @Test
@@ -314,7 +314,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         inheritedAttribute.setName("foo");
         inheritedAttribute.setInherited(true);
 
-        assertTrue(inheritedAttribute.isValid());
+        assertTrue(inheritedAttribute.isValid(ipsProject));
     }
 
     @Test
@@ -330,7 +330,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         toInheritAttribute.setName("foo");
         toInheritAttribute.setDatatype(Datatype.STRING.getQualifiedName());
 
-        assertTrue(inheritedAttribute.isValid());
+        assertTrue(inheritedAttribute.isValid(ipsProject));
     }
 
     @Test

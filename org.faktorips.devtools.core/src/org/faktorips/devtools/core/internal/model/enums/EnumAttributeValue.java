@@ -159,14 +159,14 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
          */
         IEnumValue enumValue = getEnumValue();
         EnumValueContainer enumValueContainerImpl = (EnumValueContainer)enumValue.getEnumValueContainer();
-        if (enumValueContainerImpl.isUniqueIdentifierValidationCacheInitialized()) {
+        if (enumValueContainerImpl.isUniqueIdentifierCacheInitialized()) {
             try {
                 IEnumAttribute referencedEnumAttribute = findEnumAttribute(getIpsProject());
                 IEnumType enumType = referencedEnumAttribute.getEnumType();
                 int index = enumType.getIndexOfEnumAttribute(referencedEnumAttribute);
-                if (enumValueContainerImpl.containsValidationCacheUniqueIdentifier(index)) {
-                    enumValueContainerImpl.removeValidationCacheUniqueIdentifierEntry(index, oldValue, this);
-                    enumValueContainerImpl.addValidationCacheUniqueIdentifierEntry(index, value, this);
+                if (enumValueContainerImpl.containsCacheUniqueIdentifier(index)) {
+                    enumValueContainerImpl.removeCacheEntry(index, oldValue, this);
+                    enumValueContainerImpl.addCacheEntry(index, value, this);
                 }
             } catch (CoreException e) {
                 throw new RuntimeException(e);
@@ -210,11 +210,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
 
         // Unique identifier and literal name validations.
         EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumValue().getEnumValueContainer();
-        boolean cacheInitialized = true;
-        if (!(enumValueContainerImpl.isUniqueIdentifierValidationCacheInitialized())) {
-            cacheInitialized = enumValueContainerImpl.initUniqueIdentifierValidationCache();
-        }
-
+        boolean cacheInitialized = enumValueContainerImpl.initUniqueIdentifierCache();
         if (cacheInitialized) {
             if (isUniqueIdentifierEnumAttributeValue(enumAttribute, enumType)) {
                 validateUniqueIdentifierEnumAttributeValue(list, enumAttribute);
@@ -247,8 +243,8 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         // A unique identifier EnumAttributeValue must be truly unique.
         EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumValue().getEnumValueContainer();
         IEnumType enumType = enumAttribute.getEnumType();
-        List<IEnumAttributeValue> cachedAttributeValues = enumValueContainerImpl
-                .getValidationCacheListForUniqueIdentifier(enumType.getIndexOfEnumAttribute(enumAttribute), getValue());
+        List<IEnumAttributeValue> cachedAttributeValues = enumValueContainerImpl.getCacheListForUniqueIdentifier(
+                enumType.getIndexOfEnumAttribute(enumAttribute), getValue());
         if (cachedAttributeValues != null) {
             if (cachedAttributeValues.size() > 1) {
                 text = NLS.bind(Messages.EnumAttributeValue_UniqueIdentifierValueNotUnique, value);
@@ -265,8 +261,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      */
     private boolean isUniqueIdentifierEnumAttributeValue(IEnumAttribute enumAttribute, IEnumType enumType) {
         EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumValue().getEnumValueContainer();
-        return enumValueContainerImpl.containsValidationCacheUniqueIdentifier(enumType
-                .getIndexOfEnumAttribute(enumAttribute));
+        return enumValueContainerImpl.containsCacheUniqueIdentifier(enumType.getIndexOfEnumAttribute(enumAttribute));
     }
 
     @Override

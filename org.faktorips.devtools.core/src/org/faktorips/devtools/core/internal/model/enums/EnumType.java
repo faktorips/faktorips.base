@@ -287,13 +287,14 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    public boolean initUniqueIdentifierValidationCacheImpl() throws CoreException {
+    public boolean initUniqueIdentifierCacheImpl() throws CoreException {
         IIpsProject ipsProject = getIpsProject();
         List<IEnumAttribute> uniqueEnumAttributes = findUniqueEnumAttributes(true, ipsProject);
         for (IEnumAttribute currentUniqueAttribute : uniqueEnumAttributes) {
-            addUniqueIdentifierToValidationCache(getIndexOfEnumAttribute(currentUniqueAttribute));
+            addUniqueIdentifierToCache(getIndexOfEnumAttribute(currentUniqueAttribute),
+                    EnumUtil.findEnumAttributeIsIdentifier(currentUniqueAttribute, getIpsProject()));
         }
-        initValidationCacheUniqueIdentifierEntries(uniqueEnumAttributes, this);
+        initCacheEntries(uniqueEnumAttributes, this);
         return true;
     }
 
@@ -351,8 +352,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
                 }
 
                 // Update unique identifier validation cache.
-                if (isUniqueIdentifierValidationCacheInitialized()) {
-                    handleMoveEnumAttributeForUniqueIdentifierValidationCache(indexToMove, up);
+                if (isUniqueIdentifierCacheInitialized()) {
+                    handleMoveEnumAttribute(indexToMove, up);
                 }
                 if (newIndex[0] != indexToMove) {
                     return true;
@@ -690,9 +691,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
 
         // Update unique identifier validation cache if necessary.
-        if (isUniqueIdentifierValidationCacheInitialized()) {
+        if (isUniqueIdentifierCacheInitialized()) {
             int index = getIndexOfEnumAttribute(enumAttribute);
-            removeUniqueIdentifierFromValidationCache(index);
+            removeUniqueIdentifierFromCache(index);
             handleEnumAttributeDeletion(index);
         }
 
