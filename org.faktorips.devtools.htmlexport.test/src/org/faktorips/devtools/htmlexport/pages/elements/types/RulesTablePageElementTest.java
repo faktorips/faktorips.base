@@ -76,7 +76,7 @@ public class RulesTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
 
         int row = 2;
 
-        List<IValidationRule> rules = policy.getRules();
+        List<IValidationRule> rules = policy.getValidationRules();
         for (IValidationRule rule : rules) {
             assertXPathFromTable(objectContentPage, "//tr[" + row + "][td='" + rule.getName() + "']");
             assertXPathFromTable(objectContentPage, "//tr[" + row + "][td='" + rule.getMessageCode() + "']");
