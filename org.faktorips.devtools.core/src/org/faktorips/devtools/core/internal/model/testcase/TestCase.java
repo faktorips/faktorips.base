@@ -853,7 +853,7 @@ public class TestCase extends IpsObject implements ITestCase {
         if (pct == null) {
             return;
         }
-        validationRules.addAll(pct.getRules());
+        validationRules.addAll(pct.getValidationRules());
         IProductCmpt pc = testPolicyCmpt.findProductCmpt(ipsProject);
         if (pc == null) {
             return;

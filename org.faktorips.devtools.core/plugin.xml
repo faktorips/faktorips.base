@@ -388,7 +388,7 @@
    <extension
          point="org.faktorips.devtools.core.ipsMigrationOperation">
       <migrationOperation
-            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_2_0$Factory"
+            class="org.faktorips.devtools.core.internal.migration.Migration_3_2_0$Factory"
             targetVersion="3.2.0">
       </migrationOperation>
    </extension>

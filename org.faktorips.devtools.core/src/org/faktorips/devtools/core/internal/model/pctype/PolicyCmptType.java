@@ -234,8 +234,13 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     @Override
-    public List<IValidationRule> getRules() {
+    public List<IValidationRule> getValidationRules() {
         return rules.asList();
+    }
+
+    @Override
+    public IValidationRule getValidationRule(String ruleName) {
+        return rules.getPartByName(ruleName);
     }
 
     @Override
@@ -329,7 +334,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     public void validateDuplicateRulesNames(MessageList msgList) throws CoreException {
-        for (IValidationRule rule : getRules()) {
+        for (IValidationRule rule : getValidationRules()) {
             CheckValidationRuleVisitor visitor = new CheckValidationRuleVisitor(rule, msgList);
             visitor.start(this);
         }
@@ -473,25 +478,23 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
             this.msgList = msgList;
         }
 
-        // TODO internationalize messages
         @Override
         protected boolean visit(IPolicyCmptType currentType) {
-            for (IValidationRule validationRule : currentType.getRules()) {
+            for (IValidationRule validationRule : currentType.getValidationRules()) {
                 if (validationRule == rule) {
                     continue;
                 }
                 if (validationRule.getName().equals(rule.getName())) {
-                    String text = "There exists another validation rule with the same name in this type or within the supertype hierarchy.";
+                    String text = Messages.PolicyCmptType_msgDuplicateRuleName;
                     msgList.add(new Message(IValidationRule.MSGCODE_DUPLICATE_RULE_NAME, text, Message.ERROR, rule,
                             IIpsElement.PROPERTY_NAME));
                 }
             }
             for (IMethod method : currentType.getMethods()) {
                 if (method.getNumOfParameters() == 0 && method.getName().equals(rule.getName())) {
-                    String text = NLS
-                            .bind("The name of this validation rule: {0} collides with the name of a method within this type or within the supertype hierarchy.",
-                                    rule.getName());
-                    msgList.add(new Message(IValidationRule.MSGCODE_VALIDATION_RULE_METHOD_NAME_COLLISION, text,
+                    String text = NLS.bind(Messages.PolicyCmptType_msgRuleMethodNameConflict,
+                            rule.getName());
+                    msgList.add(new Message(IValidationRule.MSGCODE_VALIDATION_RULE_METHOD_NAME_CONFLICT, text,
                             Message.ERROR, rule, IIpsElement.PROPERTY_NAME));
                 }
             }
@@ -636,9 +639,9 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
              * derived union
              */
             if (!isInverseSubsetted(policyCmptTypeAssociation, candidateSubsets)) {
-                String text = NLS
-                        .bind(org.faktorips.devtools.core.internal.model.type.Messages.Type_msg_MustImplementInverseDerivedUnion,
-                                association.getName(), association.getType().getQualifiedName());
+                String text = NLS.bind(
+                        Messages.PolicyCmptType_msgInverseDerivedUnionNotSepcified,
+                        association.getName(), association.getType().getQualifiedName());
                 msgList.add(new Message(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION, text, Message.ERROR, this,
                         IType.PROPERTY_ABSTRACT));
             }

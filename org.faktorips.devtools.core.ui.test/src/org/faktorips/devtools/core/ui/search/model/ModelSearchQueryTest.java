@@ -431,12 +431,12 @@ public class ModelSearchQueryTest extends TestCase {
         Rules.add(notMatchingRule);
         Rules.add(matchingRule);
 
-        when(type1.getRules()).thenReturn(Rules);
+        when(type1.getValidationRules()).thenReturn(Rules);
 
         IValidationRule nameMatchingRuleAtWrongClass = mock(IValidationRule.class);
         when(nameMatchingRuleAtWrongClass.getName()).thenReturn("MatchingMethodAtWrongClass");
 
-        when(type2.getRules()).thenReturn(Collections.singletonList(nameMatchingRuleAtWrongClass));
+        when(type2.getValidationRules()).thenReturn(Collections.singletonList(nameMatchingRuleAtWrongClass));
 
         IStatus status = query.run(new NullProgressMonitor());
 

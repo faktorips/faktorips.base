@@ -49,6 +49,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueComparator;
 import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -75,6 +76,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     private List<ITableContentUsage> tableContentUsages = new ArrayList<ITableContentUsage>(0);
 
     private List<IFormula> formulas = new ArrayList<IFormula>(0);
+
+    private List<IValidationRuleConfig> validationRuleConfigurations = new ArrayList<IValidationRuleConfig>(0);
 
     public ProductCmptGeneration(ITimedIpsObject ipsObject, String id) {
         super(ipsObject, id);

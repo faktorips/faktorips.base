@@ -60,6 +60,9 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
 
     private boolean validatedAttrSpecifiedInSrc = false;
 
+    private boolean configurableByProductComponent = false;
+    private boolean activatedByDefault = false;
+
     /**
      * Flag which is <code>true</code> if this rule is a default rule for validating the value of an
      * attribute against the value set defined for the attribute. Default means, that the rule is
@@ -306,6 +309,9 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
                 .booleanValue();
         validatedAttrSpecifiedInSrc = Boolean.valueOf(element.getAttribute(PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC))
                 .booleanValue();
+        configurableByProductComponent = Boolean.valueOf(
+                element.getAttribute(PROPERTY_CONFIGUREDABLE_BY_PRODUCT_COMPONENT)).booleanValue();
+        activatedByDefault = Boolean.valueOf(element.getAttribute(PROPERTY_ACTIVATED_BY_DEFAULT)).booleanValue();
 
         NodeList nl = element.getChildNodes();
         functions.clear();
@@ -335,6 +341,9 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         newElement.setAttribute(PROPERTY_MESSAGE_SEVERITY, msgSeverity.getId());
         newElement.setAttribute(PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC, String.valueOf(validatedAttrSpecifiedInSrc));
         newElement.setAttribute(PROPERTY_CHECK_AGAINST_VALUE_SET_RULE, String.valueOf(checkValueAgainstValueSetRule));
+        newElement.setAttribute(PROPERTY_CONFIGUREDABLE_BY_PRODUCT_COMPONENT,
+                String.valueOf(configurableByProductComponent));
+        newElement.setAttribute(PROPERTY_ACTIVATED_BY_DEFAULT, String.valueOf(activatedByDefault));
         Document doc = newElement.getOwnerDocument();
         for (int i = 0; i < functions.size(); i++) {
             Element fctElement = doc.createElement("BusinessFunction"); //$NON-NLS-1$
@@ -402,6 +411,30 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         boolean oldValue = isCheckValueAgainstValueSetRule();
         checkValueAgainstValueSetRule = isAttributeValueValidationRule;
         valueChanged(oldValue, isAttributeValueValidationRule);
+    }
+
+    @Override
+    public boolean isConfigurableByProductComponent() {
+        return configurableByProductComponent;
+    }
+
+    @Override
+    public void setConfigurableByProductComponent(boolean configurable) {
+        boolean oldValue = isConfigurableByProductComponent();
+        configurableByProductComponent = configurable;
+        valueChanged(oldValue, configurable);
+    }
+
+    @Override
+    public boolean isActivatedByDefault() {
+        return activatedByDefault;
+    }
+
+    @Override
+    public void setActivatedByDefault(boolean activated) {
+        boolean oldValue = isActivatedByDefault();
+        activatedByDefault = activated;
+        valueChanged(oldValue, activated);
     }
 
 }

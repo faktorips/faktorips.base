@@ -100,7 +100,7 @@ public class RulesSection extends SimpleIpsPartsSection {
 
             @Override
             public Object[] getElements(Object inputElement) {
-                return getPcType().getRules().toArray();
+                return getPcType().getValidationRules().toArray();
             }
 
             @Override

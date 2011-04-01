@@ -6,29 +6,23 @@
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
+ * http://www.faktorzehn.org/fips:lizenz eingesehen werden kann.
  * 
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.search.model.finder;
-
-import java.util.Collections;
-import java.util.List;
+package org.faktorips.devtools.core.model.productcmpt;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 
-public class ValidationRuleFinder extends AbstractIpsObjectPartFinder {
+public interface IValidationRuleConfig extends IIpsObjectPart {
 
-    @Override
-    protected List<? extends IIpsObjectPart> getIpsObjectParts(IType type) {
-        if (type instanceof IPolicyCmptType) {
-            IPolicyCmptType policyCmptType = (IPolicyCmptType)type;
-            return policyCmptType.getValidationRules();
-        }
-        return Collections.emptyList();
-    }
+    /**
+     * Returns whether the configured {@link IValidationRule} is active.
+     * 
+     * @return <code>true</code> if the rule is activated, <code>false</code> otherwise.
+     */
+    public boolean getValidationRuleActive();
 
 }

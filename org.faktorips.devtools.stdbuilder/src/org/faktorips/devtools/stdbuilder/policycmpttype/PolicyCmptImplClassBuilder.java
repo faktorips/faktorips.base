@@ -945,7 +945,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         body.appendOpenBracket();
         body.append(" return false;");
         body.appendCloseBracket();
-        List<IValidationRule> rules = getPcType().getRules();
+        List<IValidationRule> rules = getPcType().getValidationRules();
         for (IValidationRule r : rules) {
             if (!r.validate(getIpsProject()).containsErrorMsg()) {
                 body.append("if(!");

@@ -327,7 +327,11 @@ public class Messages extends NLS {
 
     public static String AttributeEditDialog_msgWarningManualyCodeMergeNecessary;
 
+    public static String RuleEditDialog_ActivatedByDefault_CheckboxLabel;
+
     public static String RuleEditDialog_attrTitle;
+
+    public static String RuleEditDialog_Configurable_CheckboxLabel;
     public static String RuleEditDialog_contains;
     public static String RuleEditDialog_functionTitle;
     public static String RuleEditDialog_labelApplyInAllBusinessFunctions;
@@ -338,6 +342,8 @@ public class Messages extends NLS {
     public static String RuleEditDialog_labelText;
     public static String RuleEditDialog_messageGroupTitle;
     public static String RuleEditDialog_messageTitle;
+
+    public static String RuleEditDialog_ProductConfig_label;
     public static String RuleEditDialog_title;
     public static String RuleFunctionsControl_title;
     public static String RuleFunctionsControl_titleColum1;

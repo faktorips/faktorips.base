@@ -92,7 +92,7 @@ public class PolicyCmptTypeAttributesSection extends AttributesSection {
 
                 private IValidationRule findValidationRule(IIpsObjectPart part) {
                     String name = part.getName();
-                    List<IValidationRule> rules = getPolicyCmptType().getRules();
+                    List<IValidationRule> rules = getPolicyCmptType().getValidationRules();
                     for (IValidationRule rule : rules) {
                         if (!rule.isCheckValueAgainstValueSetRule()) {
                             continue;

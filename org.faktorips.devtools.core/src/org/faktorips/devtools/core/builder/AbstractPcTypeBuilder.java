@@ -148,7 +148,7 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
     protected void generateCodeForValidationRules(JavaCodeFragmentBuilder constantBuilder,
             JavaCodeFragmentBuilder memberVarBuilder,
             JavaCodeFragmentBuilder methodBuilder) throws CoreException {
-        List<IValidationRule> rules = getPcType().getRules();
+        List<IValidationRule> rules = getPcType().getValidationRules();
         for (IValidationRule rule : rules) {
             try {
                 if (!rule.validate(getIpsProject()).containsErrorMsg()) {

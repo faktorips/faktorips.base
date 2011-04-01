@@ -55,7 +55,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     @Test
     public void testRemove() {
         rule.delete();
-        assertEquals(0, pcType.getRules().size());
+        assertEquals(0, pcType.getValidationRules().size());
         assertTrue(ipsSrcFile.isDirty());
     }
 

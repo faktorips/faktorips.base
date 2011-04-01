@@ -103,7 +103,7 @@ public class GenPolicyCmptType extends GenType {
     }
 
     private void createGeneratorsForValidationRules() throws CoreException {
-        List<IValidationRule> validationRules = getPolicyCmptType().getRules();
+        List<IValidationRule> validationRules = getPolicyCmptType().getValidationRules();
         for (IValidationRule validationRule : validationRules) {
             if (validationRule.isValid(getPolicyCmptType().getIpsProject())) {
                 GenValidationRule generator = new GenValidationRule(this, validationRule);

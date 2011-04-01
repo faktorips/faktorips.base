@@ -375,15 +375,15 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
 
     @Test
     public void testGetRules() {
-        assertEquals(0, policyCmptType.getRules().size());
+        assertEquals(0, policyCmptType.getValidationRules().size());
         IValidationRule r1 = policyCmptType.newRule();
         IValidationRule r2 = policyCmptType.newRule();
-        assertSame(r1, policyCmptType.getRules().get(0));
-        assertSame(r2, policyCmptType.getRules().get(1));
+        assertSame(r1, policyCmptType.getValidationRules().get(0));
+        assertSame(r2, policyCmptType.getValidationRules().get(1));
 
         // make sure a defensive copy is returned.
-        policyCmptType.getRules().clear();
-        assertNotNull(policyCmptType.getRules().get(0));
+        policyCmptType.getValidationRules().clear();
+        assertNotNull(policyCmptType.getValidationRules().get(0));
     }
 
     @Test
@@ -611,7 +611,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         List<IMethod> m = policyCmptType.getMethods();
         assertEquals(1, m.size());
 
-        List<IValidationRule> rules = policyCmptType.getRules();
+        List<IValidationRule> rules = policyCmptType.getValidationRules();
         assertEquals(1, rules.size());
 
         List<IPolicyCmptTypeAssociation> r = policyCmptType.getPolicyCmptTypeAssociations();
@@ -627,7 +627,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertSame(a.get(0), policyCmptType.getPolicyCmptTypeAttributes().get(0));
         assertSame(r.get(0), policyCmptType.getPolicyCmptTypeAssociations().get(0));
         assertSame(m.get(0), policyCmptType.getMethods().get(0));
-        assertSame(rules.get(0), policyCmptType.getRules().get(0));
+        assertSame(rules.get(0), policyCmptType.getValidationRules().get(0));
     }
 
     @Test
@@ -672,7 +672,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         List<IMethod> methods = copy.getMethods();
         assertEquals("m1", methods.get(0).getName());
         assertEquals("m2", methods.get(1).getName());
-        List<IValidationRule> rules = copy.getRules();
+        List<IValidationRule> rules = copy.getValidationRules();
         assertEquals("rule1", rules.get(0).getName());
         assertEquals("rule2", rules.get(1).getName());
         List<IPolicyCmptTypeAssociation> relations = copy.getPolicyCmptTypeAssociations();
@@ -817,11 +817,11 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         method.setName("aRule");
         method.setDatatype(Datatype.VOID.getName());
         msgList = policyCmptType.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IValidationRule.MSGCODE_VALIDATION_RULE_METHOD_NAME_COLLISION));
+        assertNotNull(msgList.getMessageByCode(IValidationRule.MSGCODE_VALIDATION_RULE_METHOD_NAME_CONFLICT));
 
         method.newParameter(Datatype.STRING.getQualifiedName(), "aParam");
         msgList = policyCmptType.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IValidationRule.MSGCODE_VALIDATION_RULE_METHOD_NAME_COLLISION));
+        assertNull(msgList.getMessageByCode(IValidationRule.MSGCODE_VALIDATION_RULE_METHOD_NAME_CONFLICT));
     }
 
     @Test

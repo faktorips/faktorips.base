@@ -71,6 +71,9 @@ public class Messages extends NLS {
     public static String PolicyCmptType_msgSubtypeConfigurableWhenSupertypeConfigurable;
     public static String PolicyCmptType_productCmptType;
     public static String PolicyCmptType_TheTypeDoesNotConfigureThisType;
+    public static String PolicyCmptType_msgDuplicateRuleName;
+    public static String PolicyCmptType_msgInverseDerivedUnionNotSepcified;
+    public static String PolicyCmptType_msgRuleMethodNameConflict;
 
     public static String PolicyCmptTypeAssociation_Association_msg_InverseAssociationMustNotBeEmpty;
     public static String PolicyCmptTypeAssociation_Association_msg_InverseAssociationMustNotBeEmptyIfDerivedUnionHasInverse;

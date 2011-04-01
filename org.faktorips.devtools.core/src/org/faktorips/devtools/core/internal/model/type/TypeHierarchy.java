@@ -308,7 +308,7 @@ public class TypeHierarchy implements ITypeHierarchy {
         List<IType> types = getAllSupertypesInclSelf(type);
         for (IType type2 : types) {
             if (type2 instanceof IPolicyCmptType) {
-                List<IValidationRule> typeRules = ((IPolicyCmptType)type2).getRules();
+                List<IValidationRule> typeRules = ((IPolicyCmptType)type2).getValidationRules();
                 for (Object nextRule : typeRules) {
                     rules.add((IValidationRule)nextRule);
                 }

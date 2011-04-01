@@ -259,7 +259,13 @@ public interface IPolicyCmptType extends IType {
     /**
      * Returns the type's validation rules.
      */
-    public List<IValidationRule> getRules();
+    public List<IValidationRule> getValidationRules();
+
+    /**
+     * Returns this type's validation rule with the given name or <code>null</code> if no rule
+     * exists with this name.
+     */
+    public IValidationRule getValidationRule(String ruleName);
 
     /**
      * Creates a new validation rule and returns it.
