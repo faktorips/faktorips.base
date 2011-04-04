@@ -27,18 +27,22 @@
 	<!-- These are the settings for merging annotations -->
 	<!-- Defining the custom tag to keep custom annotations:
 	does match any @generated or @restrainedmodifiable that is not followed by @customizedAnnotations -->
-	<merge:dictionaryPattern name="KeepAnnotations" select="Member/getComment" match="@\s*((g)enerated|restrainedmodifiable)(?![\s\S]*@\s*customizedAnnotations(.*(CONTENT\-CHANGED|ALL).*|\s*)(\n\r?|\r\n?))"/>
-	<merge:dictionaryPattern name="KeepAnnotations" select="Member/getComment" match="@\s*(generate(d)|restrainedmodifiable)(?![\s\S]*@\s*customizedAnnotations(.*(REMOVED|ALL).*|\s*)(\n\r?|\r\n?))"/>
-	<merge:dictionaryPattern name="KeepAnnotations" select="Member/getComment" match="@\s*(g(e)nerated|restrainedmodifiable)(?![\s\S]*@\s*customizedAnnotations(.*(ADDED|ALL).*|\s*)(\n\r?|\r\n?))"/>
+	<merge:dictionaryPattern name="customizedAnnotationsCONTENT" select="Member/getComment" match="@\s*(g(e)nerated|r(e)strainedmodifiable)(?![\s\S]*@\s*customizedAnnotations(.*(CONTENT\-CHANGED|ALL).*|\s*)(\n\r?|\r\n?))"/>
+	<merge:dictionaryPattern name="customizedAnnotationsREMOVED" select="Member/getComment" match="@\s*(generate(d)|restraine(d)modifiable)(?![\s\S]*@\s*customizedAnnotations(.*(REMOVED|ALL).*|\s*)(\n\r?|\r\n?))"/>
+	<merge:dictionaryPattern name="customizedAnnotationsADDED" select="Member/getComment" match="@\s*(gener(a)ted|restr(a)inedmodifiable)(?![\s\S]*@\s*customizedAnnotations(.*(ADDED|ALL).*|\s*)(\n\r?|\r\n?))"/>
 	<!-- overwrite the content of annotations -->
-	<merge:pull sourceGet="Annotation/getContents" targetParentMarkup="^g$" targetPut="Annotation/setContents"/>
+	<merge:pull sourceGet="Annotation/getContents" targetParentMarkup="^e$" targetPut="Annotation/setContents"/>
 	<!-- only write the annotation if the parent is maked as generated -->
 	<merge:push targetParentMarkup="^d$" select="Annotation"/>
 	<!-- Remove annotations of generated target nodes if the annotation is not in the source -->
-	<merge:sweep parentMarkup="^e$" select="Annotation" />
+	<merge:sweep parentMarkup="^a$" select="Annotation" />	
 
 	<merge:sweep markup="^gen$" select="Member"/>
+	
+	<!--
+	This would be the code to comment out not used restraintmodifiable - however we decided to let them in 
 	<merge:sweep markup="^restrained$" action="comment" select="Member"/>
+	 -->
 
 	<!-- Overwrite the java doc comment before @generated or @restrainedmodifiable and use the customized java doc comment after @generated 
 	<merge:pull targetMarkup="^gen$|^restrained$" sourceGet="Member/getComment" sourceTransfer="@\s*(?:generated|restrainedmodifiable)(.*\n)?(.*)?" targetPut="Member/setComment"/>
