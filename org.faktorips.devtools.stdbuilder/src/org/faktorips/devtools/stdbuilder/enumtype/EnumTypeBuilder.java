@@ -183,15 +183,12 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         // Set super type / implemented interface and ensure serialization
         List<String> implementedInterfaces = new ArrayList<String>(5);
 
-        if (enumType.hasSuperEnumType()) {
-            IEnumType superEnumType = enumType.findSuperEnumType(getIpsProject());
-            if (superEnumType != null) {
-                if (useEnumGeneration() || useInterfaceGeneration()
-                        || (useClassGeneration() && isJava5EnumsAvailable())) {
-                    implementedInterfaces.add(getQualifiedClassName(superEnumType));
-                } else {
-                    mainSection.setSuperClass(getQualifiedClassName(superEnumType));
-                }
+        IEnumType superEnumType = enumType.findSuperEnumType(getIpsProject());
+        if (superEnumType != null) {
+            if (useEnumGeneration() || useInterfaceGeneration() || (useClassGeneration() && isJava5EnumsAvailable())) {
+                implementedInterfaces.add(getQualifiedClassName(superEnumType));
+            } else {
+                mainSection.setSuperClass(getQualifiedClassName(superEnumType));
             }
         }
         if (useClassGeneration()) {

@@ -639,6 +639,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     public IEnumType findSuperEnumType(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
+        if (!hasSuperEnumType()) {
+            return null;
+        }
+
         IIpsSrcFile enumTypeSrcFile = ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, superEnumType);
         if (enumTypeSrcFile != null && enumTypeSrcFile.exists()) {
             return (IEnumType)enumTypeSrcFile.getIpsObject();

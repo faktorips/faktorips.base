@@ -247,10 +247,8 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
                     }
 
                     // Disallow if it is a subtype of the parent EnumType.
-                    if (enumType.hasSuperEnumType()) {
-                        if (enumType.findAllSuperEnumTypes(ipsProject).contains(parentEnumType)) {
-                            disallowedDatatypes.add(adapter);
-                        }
+                    if (enumType.isSubEnumTypeOf(parentEnumType, ipsProject)) {
+                        disallowedDatatypes.add(adapter);
                     }
                 }
             }
