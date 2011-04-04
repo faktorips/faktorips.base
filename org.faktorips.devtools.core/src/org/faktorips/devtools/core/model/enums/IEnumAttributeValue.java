@@ -108,28 +108,6 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
     public void setValue(String value);
 
     /**
-     * Sets the actual value, transformed to a valid literal name.
-     * <p>
-     * This could be a programming language dependent implementation in the future but for now all
-     * letters will be transformed to upper case letters and all spaces will be transformed to
-     * underscores.
-     * 
-     * @param value The new value. May also be <tt>null</tt>. Will be transformed to a valid literal
-     *            name.
-     * 
-     * @deprecated This method is useless since version 3.0 as literal names are now set by casting
-     *             the <tt>IEnumAttributeValue</tt> to <tt>IEnumLiteralNameAttributeValue</tt> and
-     *             calling {@link IEnumLiteralNameAttributeValue#setValue(String)}. The cast should
-     *             only be done after calling {@link #isEnumLiteralNameAttributeValue()}.
-     * 
-     * @see #isEnumLiteralNameAttributeValue()
-     * @see IEnumLiteralNameAttributeValue#setValue(String)
-     */
-    @Deprecated
-    // Deprecated since 3.0
-    public void setValueAsLiteralName(String value);
-
-    /**
      * Returns the <tt>IEnumValue</tt> this <tt>IEnumAttributeValue</tt> belongs to.
      * <p>
      * This is a shortcut for: <tt>(IEnumValue)this.getParent();</tt>

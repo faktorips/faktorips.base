@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
@@ -267,22 +266,6 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     @Override
     public IEnumValue getEnumValue() {
         return (IEnumValue)getParent();
-    }
-
-    @Override
-    public void setValueAsLiteralName(String value) {
-        if (value == null) {
-            setValue(null);
-            return;
-        }
-
-        String val = JavaNamingConvention.ECLIPSE_STANDARD.getConstantClassVarName(value);
-        val = val.replaceAll("[Ää]", "AE"); //$NON-NLS-1$ //$NON-NLS-2$
-        val = val.replaceAll("[Öö]", "OE"); //$NON-NLS-1$ //$NON-NLS-2$
-        val = val.replaceAll("[Üü]", "UE"); //$NON-NLS-1$ //$NON-NLS-2$
-        val = val.replaceAll("[ß]", "SS"); //$NON-NLS-1$ //$NON-NLS-2$
-        val = val.replaceAll("[^A-Za-z0-9]", "_"); //$NON-NLS-1$ //$NON-NLS-2$
-        setValue(val);
     }
 
 }
