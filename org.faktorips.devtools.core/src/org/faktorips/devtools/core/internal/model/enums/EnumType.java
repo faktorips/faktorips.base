@@ -551,7 +551,6 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
     }
 
-    @Override
     public int getEnumLiteralNameAttributesCount() {
         int count = 0;
         for (IEnumAttribute currentEnumAttribute : enumAttributes) {

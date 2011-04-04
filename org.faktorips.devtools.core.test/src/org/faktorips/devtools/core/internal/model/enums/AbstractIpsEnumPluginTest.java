@@ -68,7 +68,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
     protected IEnumValue genderEnumValueMale;
     protected IEnumValue genderEnumValueFemale;
 
-    protected IEnumType paymentMode;
+    protected EnumType paymentMode;
 
     protected ContentsChangeCounter contentsChangeCounter;
 
