@@ -857,17 +857,6 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testGetEnumValue() throws Exception {
-        IEnumValue annually = paymentMode.getEnumValue("P1");
-        assertNotNull(annually);
-        IEnumValue monthly = paymentMode.getEnumValue("P2");
-        assertNotNull(monthly);
-        IEnumValue quarterly = paymentMode.getEnumValue("P3");
-        assertNull(quarterly);
-        assertNull(paymentMode.getEnumValue(null));
-    }
-
-    @Test
     public void testFindInheritEnumAttributeCandidates() throws CoreException {
         try {
             genderEnumType.findInheritEnumAttributeCandidates(null);

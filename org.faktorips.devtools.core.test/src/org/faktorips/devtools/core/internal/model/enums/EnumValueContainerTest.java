@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.enums;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -272,4 +273,20 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         millisDifference = System.currentTimeMillis() - millisBefore;
         System.out.println("Second validation took " + millisDifference / 1000 + " seconds.");
     }
+
+    @Test
+    public void testGetEnumValue() throws CoreException {
+        assertNull(paymentMode.getEnumValue(null));
+
+        assertNotNull(paymentMode.getEnumValue("P1"));
+        assertNotNull(paymentMode.getEnumValue("P2"));
+        assertNull(paymentMode.getEnumValue("P3"));
+
+        IEnumValue newEnumValue = paymentMode.newEnumValue();
+        newEnumValue.setEnumAttributeValue(0, "NEW");
+        newEnumValue.setEnumAttributeValue(1, "P4");
+        newEnumValue.setEnumAttributeValue(2, "new");
+        assertNotNull(paymentMode.getEnumValue("P4"));
+    }
+
 }
