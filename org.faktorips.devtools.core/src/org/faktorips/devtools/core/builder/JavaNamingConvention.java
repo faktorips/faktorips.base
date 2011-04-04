@@ -135,10 +135,6 @@ public class JavaNamingConvention {
      * Returns the method name for the method with that the property is read.
      */
     public String getGetterMethodName(String propertyName, Class<?> datatype) {
-        /*
-         * FIXME: AW: This will not work correctly I think if you pass for example
-         * Datatype.PRIMITIVE_BOOLEAN.getClass()
-         */
         if (datatype.equals(Boolean.TYPE)) {
             return "is" + StringUtils.capitalize(propertyName); //$NON-NLS-1$
         }
@@ -149,7 +145,7 @@ public class JavaNamingConvention {
      * Returns the method name for the method with that the property is read.
      */
     public String getGetterMethodName(String propertyName, Datatype datatype) {
-        // FIXME AW: Isn't Datatype.BOOLEAN missing in the if clause?
+        // The is... instead of get... method is only generated for primitive boolean
         if (datatype.equals(Datatype.PRIMITIVE_BOOLEAN)) {
             return "is" + StringUtils.capitalize(propertyName); //$NON-NLS-1$
         }
