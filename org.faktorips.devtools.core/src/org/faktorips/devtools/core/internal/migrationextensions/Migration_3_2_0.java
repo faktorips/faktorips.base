@@ -11,12 +11,13 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.migration;
+package org.faktorips.devtools.core.internal.migrationextensions;
 
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.migration.DefaultMigration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -91,7 +92,7 @@ public class Migration_3_2_0 extends DefaultMigration {
 
     @Override
     public String getTargetVersion() {
-        return "3.2.0.rfinal"; //$NON-NLS-1$
+        return "3.2.0"; //$NON-NLS-1$
     }
 
     public static class Factory implements IIpsProjectMigrationOperationFactory {
