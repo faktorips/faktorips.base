@@ -780,62 +780,50 @@ schutz” abgerufen und ausgedruckt werden.
          optional="true"/>
 
    <requires>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="org.eclipse.jdt.launching"/>
-      <import plugin="org.eclipse.jdt.ui"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import plugin="org.eclipse.emf.codegen"/>
-      <import plugin="org.eclipse.text"/>
-      <import plugin="org.eclipse.ui.forms"/>
       <import plugin="org.apache.ant"/>
       <import plugin="org.eclipse.core.runtime.compatibility"/>
-      <import plugin="org.eclipse.ltk.core.refactoring"/>
-      <import plugin="org.eclipse.search"/>
-      <import plugin="org.eclipse.team.cvs.ui"/>
-      <import plugin="org.eclipse.team.ui"/>
-      <import plugin="org.eclipse.debug.core"/>
-      <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.eclipse.compare"/>
+      <import plugin="org.eclipse.ant.core"/>
+      <import plugin="org.eclipse.ui.ide" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="org.eclipse.jdt" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.core" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.resources" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.eclipse.ltk.core.refactoring" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jface.text" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.search" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.team.cvs.ui" version="3.3.100" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.team.ui" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.debug.core" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.compare" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.team.cvs.core"/>
       <import plugin="org.eclipse.update.core"/>
-      <import plugin="org.eclipse.debug.ui"/>
-      <import plugin="org.eclipse.jdt.debug.ui"/>
+      <import plugin="org.eclipse.debug.ui" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.emf.codegen"/>
+      <import plugin="org.eclipse.jdt.debug.ui" version="3.3.0" match="greaterOrEqual"/>
       <import plugin="com.ibm.icu"/>
-      <import plugin="org.eclipse.team.core"/>
-      <import plugin="org.eclipse.gef"/>
-      <import plugin="org.eclipse.core.filesystem" version="1.2.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jdt.core.manipulation"/>
-      <import plugin="org.eclipse.ltk.core.refactoring" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.junit4"/>
+      <import plugin="org.eclipse.team.core" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.gef" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.resources" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jface.text" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.filesystem" version="1.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.pde.core" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.core.manipulation"/>
+      <import plugin="org.eclipse.text"/>
+      <import plugin="org.eclipse.jdt.ui" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.junit" version="3.8.2" match="greaterOrEqual"/>
+      <import plugin="javax.xml.stream"/>
+      <import plugin="org.eclipse.ui.forms"/>
       <import plugin="org.eclipse.ui.workbench.texteditor" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.views" version="3.3.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.views.properties.tabbed" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.ide" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jdt" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jdt.core" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jdt.ui" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jdt.debug.ui" version="3.3.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.debug.core" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ltk.ui.refactoring" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.debug.ui" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.search" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.compare" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.team.core" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.team.ui" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.team.cvs.ui" version="3.3.100" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.databinding" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.expressions"/>
+      <import plugin="org.eclipse.core.expressions" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.security" version="1.0.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.swt" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jface" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.nebula.widgets.grid"/>
+      <import plugin="javax.xml"/>
+      <import plugin="javax.activation"/>
    </requires>
 
    <plugin
