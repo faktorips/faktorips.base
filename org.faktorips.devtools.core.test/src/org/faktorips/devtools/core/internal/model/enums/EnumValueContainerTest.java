@@ -275,18 +275,18 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testGetEnumValue() throws CoreException {
-        assertNull(paymentMode.getEnumValue(null));
+    public void testFindEnumValue() throws CoreException {
+        assertNull(paymentMode.findEnumValue(null, ipsProject));
 
-        assertNotNull(paymentMode.getEnumValue("P1"));
-        assertNotNull(paymentMode.getEnumValue("P2"));
-        assertNull(paymentMode.getEnumValue("P3"));
+        assertNotNull(paymentMode.findEnumValue("P1", ipsProject));
+        assertNotNull(paymentMode.findEnumValue("P2", ipsProject));
+        assertNull(paymentMode.findEnumValue("P3", ipsProject));
 
         IEnumValue newEnumValue = paymentMode.newEnumValue();
         newEnumValue.setEnumAttributeValue(0, "NEW");
         newEnumValue.setEnumAttributeValue(1, "P4");
         newEnumValue.setEnumAttributeValue(2, "new");
-        assertNotNull(paymentMode.getEnumValue("P4"));
+        assertNotNull(paymentMode.findEnumValue("P4", ipsProject));
     }
 
 }

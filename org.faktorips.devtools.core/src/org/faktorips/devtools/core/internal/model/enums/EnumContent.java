@@ -116,8 +116,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     @Override
-    public boolean initUniqueIdentifierCacheImpl() throws CoreException {
-        IIpsProject ipsProject = getIpsProject();
+    public boolean initUniqueIdentifierCacheImpl(IIpsProject ipsProject) throws CoreException {
         IEnumType referencedEnumType = findEnumType(ipsProject);
 
         /*
@@ -132,7 +131,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         List<IEnumAttribute> uniqueEnumAttributes = referencedEnumType.findUniqueEnumAttributes(false, ipsProject);
         for (IEnumAttribute currentUniqueAttribute : uniqueEnumAttributes) {
             addUniqueIdentifierToCache(referencedEnumType.getIndexOfEnumAttribute(currentUniqueAttribute),
-                    EnumUtil.findEnumAttributeIsIdentifier(currentUniqueAttribute, getIpsProject()));
+                    EnumUtil.findEnumAttributeIsIdentifier(currentUniqueAttribute, ipsProject));
         }
         initCacheEntries(uniqueEnumAttributes, referencedEnumType);
         return true;

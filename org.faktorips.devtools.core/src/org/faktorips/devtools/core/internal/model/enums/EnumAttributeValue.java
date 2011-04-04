@@ -210,7 +210,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
 
         // Unique identifier and literal name validations.
         EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumValue().getEnumValueContainer();
-        boolean cacheInitialized = enumValueContainerImpl.initUniqueIdentifierCache();
+        boolean cacheInitialized = enumValueContainerImpl.initUniqueIdentifierCache(ipsProject);
         if (cacheInitialized) {
             if (isUniqueIdentifierEnumAttributeValue(enumAttribute, enumType)) {
                 validateUniqueIdentifierEnumAttributeValue(list, enumAttribute);

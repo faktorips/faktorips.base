@@ -114,17 +114,12 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     }
 
     @Override
-    public IEnumValue findEnumValue(String identifierAttributeValue, IIpsProject ipsProject) throws CoreException {
-        return getEnumValue(identifierAttributeValue);
-    }
-
-    @Override
-    public IEnumValue getEnumValue(String identifierAttributeValue) {
+    public IEnumValue findEnumValue(String identifierAttributeValue, IIpsProject ipsProject) {
         if (identifierAttributeValue == null) {
             return null;
         }
 
-        initUniqueIdentifierCache();
+        initUniqueIdentifierCache(ipsProject);
 
         if (cachedDefaultIdentifierIndices.isEmpty()) {
             return null;
@@ -380,14 +375,17 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
      * <p>
      * The operation might also fail. Returns <tt>true</tt> on success (or if the cache was already
      * initialized), <tt>false</tt> on failure.
+     * 
+     * @param ipsProject The {@link IIpsProject} to use for the search of the referenced enumeration
+     *            type and it's super types
      */
-    boolean initUniqueIdentifierCache() {
+    boolean initUniqueIdentifierCache(IIpsProject ipsProject) {
         if (uniqueIdentifierCacheInitialized) {
             return true;
         }
         clearUniqueIdentifierCache();
         try {
-            uniqueIdentifierCacheInitialized = initUniqueIdentifierCacheImpl();
+            uniqueIdentifierCacheInitialized = initUniqueIdentifierCacheImpl(ipsProject);
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             uniqueIdentifierCacheInitialized = false;
@@ -400,9 +398,12 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
      * <p>
      * Must return <tt>true</tt> if the operation was successful, <tt>false</tt> if not.
      * 
+     * @param ipsProject The {@link IIpsProject} to use for the search of the referenced enumeration
+     *            type and it's super types
+     * 
      * @throws CoreException May throw this kind of exception if the need arises.
      */
-    abstract boolean initUniqueIdentifierCacheImpl() throws CoreException;
+    abstract boolean initUniqueIdentifierCacheImpl(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Initializes the unique identifier entries.

@@ -39,17 +39,6 @@ public interface IEnumValueContainer extends IIpsObject {
     public List<IEnumValue> getEnumValues();
 
     /**
-     * Calls {@link #getEnumValue(String)}.
-     * 
-     * @throws CoreException If an exception occurs will processing.
-     * 
-     * @deprecated Use {@link #getEnumValue(String)} instead.
-     */
-    // Deprecated since version 3.3.0
-    @Deprecated
-    public IEnumValue findEnumValue(String identifierAttributeValue, IIpsProject ipsProject) throws CoreException;
-
-    /**
      * Returns the <tt>IEnumValue</tt> for the provided value of the identifier attribute.
      * <p>
      * This method can only be applied to <tt>IEnumValueContainer</tt>s that contain their own
@@ -62,8 +51,10 @@ public interface IEnumValueContainer extends IIpsObject {
      * 
      * @param identifierAttributeValue The value of the default identifier attribute that identifies
      *            the <tt>IEnumValue</tt> to retrieve
+     * @param ipsProject The IPS project used as the starting point to search for the enumeration
+     *            type if necessary
      */
-    public IEnumValue getEnumValue(String identifierAttributeValue);
+    public IEnumValue findEnumValue(String identifierAttributeValue, IIpsProject ipsProject) throws CoreException;
 
     /**
      * Creates a new list and collects the values of the enumeration attribute that is marked as the

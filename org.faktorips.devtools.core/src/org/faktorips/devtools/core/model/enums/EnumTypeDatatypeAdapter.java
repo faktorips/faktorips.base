@@ -108,7 +108,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
 
         try {
             IIpsProject ipsProject = getEnumValueContainer().getIpsProject();
-            IEnumValue enumValue = getEnumValueContainer().getEnumValue(id);
+            IEnumValue enumValue = getEnumValueContainer().findEnumValue(id, ipsProject);
             if (enumValue == null) {
                 return null;
             }

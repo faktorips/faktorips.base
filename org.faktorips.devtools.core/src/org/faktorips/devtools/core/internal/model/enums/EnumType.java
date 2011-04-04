@@ -287,12 +287,11 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    public boolean initUniqueIdentifierCacheImpl() throws CoreException {
-        IIpsProject ipsProject = getIpsProject();
+    public boolean initUniqueIdentifierCacheImpl(IIpsProject ipsProject) throws CoreException {
         List<IEnumAttribute> uniqueEnumAttributes = findUniqueEnumAttributes(true, ipsProject);
         for (IEnumAttribute currentUniqueAttribute : uniqueEnumAttributes) {
             addUniqueIdentifierToCache(getIndexOfEnumAttribute(currentUniqueAttribute),
-                    EnumUtil.findEnumAttributeIsIdentifier(currentUniqueAttribute, getIpsProject()));
+                    EnumUtil.findEnumAttributeIsIdentifier(currentUniqueAttribute, ipsProject));
         }
         initCacheEntries(uniqueEnumAttributes, this);
         return true;
