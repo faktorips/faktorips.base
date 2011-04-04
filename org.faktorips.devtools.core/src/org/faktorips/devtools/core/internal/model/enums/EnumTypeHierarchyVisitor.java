@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * 
  * @author Peter Kuntz
  */
-public abstract class EnumTypeHierachyVisitor extends HierarchyVisitor<IEnumType> {
+public abstract class EnumTypeHierarchyVisitor extends HierarchyVisitor<IEnumType> {
 
     /**
      * Creates a new <tt>EnumTypeHierachyVisitor</tt>.
@@ -31,7 +31,7 @@ public abstract class EnumTypeHierachyVisitor extends HierarchyVisitor<IEnumType
      * @param ipsProject The IPS project which IPS object path is used to search for
      *            <tt>IEnumType</tt>s.
      */
-    public EnumTypeHierachyVisitor(IIpsProject ipsProject) {
+    public EnumTypeHierarchyVisitor(IIpsProject ipsProject) {
         super(ipsProject);
     }
 

@@ -21,7 +21,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.enums.EnumTypeHierachyVisitor;
+import org.faktorips.devtools.core.internal.model.enums.EnumTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -115,7 +115,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
      * @author dicker
      * 
      */
-    private static class SupertypeHierarchieVisitor extends EnumTypeHierachyVisitor {
+    private static class SupertypeHierarchieVisitor extends EnumTypeHierarchyVisitor {
         List<IEnumType> superTypes = new ArrayList<IEnumType>();
 
         public SupertypeHierarchieVisitor(IIpsProject ipsProject) {

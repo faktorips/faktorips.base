@@ -18,7 +18,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.internal.model.enums.EnumTypeHierachyVisitor;
+import org.faktorips.devtools.core.internal.model.enums.EnumTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -168,7 +168,7 @@ public class EnumTypeValidations {
         // Prohibit initialization.
     }
 
-    private static class SupertypeCollector extends EnumTypeHierachyVisitor {
+    private static class SupertypeCollector extends EnumTypeHierarchyVisitor {
 
         private List<IEnumType> superTypes = new ArrayList<IEnumType>();
 

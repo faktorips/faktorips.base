@@ -429,24 +429,26 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    public IEnumAttribute findEnumAttributeIncludeSupertypeOriginals(IIpsProject ipsProject, String name)
+    public IEnumAttribute findEnumAttributeIncludeSupertypeOriginals(IIpsProject ipsProject, final String name)
             throws CoreException {
 
         ArgumentCheck.notNull(new Object[] { ipsProject, name });
 
-        if (getEnumAttribute(name) != null) {
-            return getEnumAttribute(name);
-        }
-
-        for (IEnumType currentEnumType : findAllSuperEnumTypes(ipsProject)) {
-            IEnumAttribute enumAttribute = currentEnumType.getEnumAttribute(name);
-            if (enumAttribute != null) {
-                return enumAttribute;
+        final List<IEnumAttribute> result = new ArrayList<IEnumAttribute>(1);
+        EnumTypeHierarchyVisitor visitor = new EnumTypeHierarchyVisitor(ipsProject) {
+            @Override
+            protected boolean visit(IEnumType currentType) throws CoreException {
+                IEnumAttribute enumAttribute = currentType.getEnumAttribute(name);
+                if (enumAttribute != null) {
+                    result.add(enumAttribute);
+                    return false;
+                }
+                return true;
             }
-        }
+        };
+        visitor.start(this);
 
-        // No IEnumAttribute with the given name found.
-        return null;
+        return result.isEmpty() ? null : result.get(0);
     }
 
     @Override
@@ -752,7 +754,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         final List<IEnumType> superEnumTypes = new ArrayList<IEnumType>();
         IEnumType directSuperEnumType = findSuperEnumType(ipsProject);
         if (directSuperEnumType != null) {
-            EnumTypeHierachyVisitor collector = new EnumTypeHierachyVisitor(getIpsProject()) {
+            EnumTypeHierarchyVisitor collector = new EnumTypeHierarchyVisitor(getIpsProject()) {
                 @Override
                 protected boolean visit(IEnumType currentType) throws CoreException {
                     superEnumTypes.add(currentType);
@@ -944,7 +946,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return !isAbstract && containingValues;
     }
 
-    private static class IsSubEnumTypeOfVisitor extends EnumTypeHierachyVisitor {
+    private static class IsSubEnumTypeOfVisitor extends EnumTypeHierarchyVisitor {
 
         private IEnumType superEnumTypeCandidate;
 
