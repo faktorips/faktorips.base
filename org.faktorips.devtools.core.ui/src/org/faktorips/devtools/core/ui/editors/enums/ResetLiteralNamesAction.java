@@ -18,10 +18,10 @@ import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TableViewer;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.builder.JavaGeneratorHelper;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -85,11 +85,12 @@ public class ResetLiteralNamesAction extends Action {
         int indexLiteralName = enumType.getIndexOfEnumAttribute(literalNameAttribute);
         for (IEnumValue currentEnumValue : enumType.getEnumValues()) {
             List<IEnumAttributeValue> attributeValues = currentEnumValue.getEnumAttributeValues();
-            String defaultValue = (indexDefaultProvider == -1) ? IpsPlugin.getDefault().getIpsPreferences()
-                    .getNullPresentation() : attributeValues.get(indexDefaultProvider).getValue();
-            IEnumLiteralNameAttributeValue literalNameAttributeValue = (IEnumLiteralNameAttributeValue)attributeValues
-                    .get(indexLiteralName);
-            literalNameAttributeValue.setValue(defaultValue);
+            String nullPresentation = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+            String defaultProviderValue = indexDefaultProvider == -1 ? nullPresentation : attributeValues.get(
+                    indexDefaultProvider).getValue();
+            String literalNameValue = defaultProviderValue.equals(nullPresentation) ? null : JavaGeneratorHelper
+                    .getJavaNamingConvention().getEnumLiteral(defaultProviderValue);
+            attributeValues.get(indexLiteralName).setValue(literalNameValue);
         }
 
         enumValuesTableViewer.refresh();

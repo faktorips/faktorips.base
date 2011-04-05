@@ -59,6 +59,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.builder.JavaGeneratorHelper;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enums.EnumUtil;
@@ -695,23 +696,30 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
                     return;
                 }
 
-                if (newValue.length() > 0) {
-                    if (newValue.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) {
-                        newValue = null;
-                    }
-                    enumValue.getEnumLiteralNameAttributeValue().setValue(newValue);
-                    IEnumLiteralNameAttribute literalNameAttribute = enumType.getEnumLiteralNameAttribute();
-                    IEnumAttribute providerAttribute = enumType
-                            .getEnumAttributeIncludeSupertypeCopies(literalNameAttribute
-                                    .getDefaultValueProviderAttribute());
-                    try {
-                        enumValue.setEnumAttributeValue(providerAttribute, newValue);
-                    } catch (CoreException e) {
-                        throw new RuntimeException(e);
-                    }
-                    defaultProviderValues.put(enumValue, newValue);
-                    enumValuesTableViewer.refresh();
+                // Return if the new value is empty
+                if (newValue.length() == 0) {
+                    return;
                 }
+
+                // Handle null representation
+                if (newValue.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) {
+                    newValue = null;
+                }
+
+                // Set the new value for the enum literal name
+                String literalNameValue = newValue != null ? JavaGeneratorHelper.getJavaNamingConvention()
+                        .getEnumLiteral(newValue) : null;
+                enumValue.getEnumLiteralNameAttributeValue().setValue(literalNameValue);
+                IEnumLiteralNameAttribute literalNameAttribute = enumType.getEnumLiteralNameAttribute();
+                IEnumAttribute providerAttribute = enumType.getEnumAttributeIncludeSupertypeCopies(literalNameAttribute
+                        .getDefaultValueProviderAttribute());
+                try {
+                    enumValue.setEnumAttributeValue(providerAttribute, newValue);
+                } catch (CoreException e) {
+                    throw new RuntimeException(e);
+                }
+                defaultProviderValues.put(enumValue, newValue);
+                enumValuesTableViewer.refresh();
             }
 
             @Override

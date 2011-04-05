@@ -39,48 +39,6 @@ public class EnumLiteralNameAttributeValueTest extends AbstractIpsEnumPluginTest
     }
 
     @Test
-    public void testSetValue() {
-        literalNameAttributeValue.setValue("foo");
-        assertEquals("FOO", literalNameAttributeValue.getValue());
-    }
-
-    @Test
-    public void testSetValueNull() {
-        literalNameAttributeValue.setValue(null);
-        assertNull(literalNameAttributeValue.getValue());
-    }
-
-    @Test
-    public void testSetValueInvalidCharacters() {
-        literalNameAttributeValue.setValue("foo $$%bar");
-        assertEquals("FOO____BAR", literalNameAttributeValue.getValue());
-    }
-
-    @Test
-    public void testSetValueUmlaut() {
-        literalNameAttributeValue.setValue("fooÄbar");
-        assertEquals("FOOAEBAR", literalNameAttributeValue.getValue());
-
-        literalNameAttributeValue.setValue("fooäbar");
-        assertEquals("FOOAEBAR", literalNameAttributeValue.getValue());
-
-        literalNameAttributeValue.setValue("fooÖbar");
-        assertEquals("FOOOEBAR", literalNameAttributeValue.getValue());
-
-        literalNameAttributeValue.setValue("fooöbar");
-        assertEquals("FOOOEBAR", literalNameAttributeValue.getValue());
-
-        literalNameAttributeValue.setValue("fooÜbar");
-        assertEquals("FOOUEBAR", literalNameAttributeValue.getValue());
-
-        literalNameAttributeValue.setValue("fooübar");
-        assertEquals("FOOUEBAR", literalNameAttributeValue.getValue());
-
-        literalNameAttributeValue.setValue("fooßbar");
-        assertEquals("FOOSSBAR", literalNameAttributeValue.getValue());
-    }
-
-    @Test
     public void testGetName() {
         literalNameAttributeValue.setValue("FOOBAR");
         assertEquals("FOOBAR", literalNameAttributeValue.getName());
