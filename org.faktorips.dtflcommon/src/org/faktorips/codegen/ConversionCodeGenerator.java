@@ -19,7 +19,9 @@ import java.util.List;
 import org.faktorips.codegen.conversion.BigDecimalToDecimalCg;
 import org.faktorips.codegen.conversion.BooleanToPrimitiveBooleanCg;
 import org.faktorips.codegen.conversion.DecimalToBigDecimalCg;
+import org.faktorips.codegen.conversion.DecimalToDoubleCg;
 import org.faktorips.codegen.conversion.DecimalToIntegerCg;
+import org.faktorips.codegen.conversion.DoubleToDecimalCg;
 import org.faktorips.codegen.conversion.IntegerToDecimalCg;
 import org.faktorips.codegen.conversion.IntegerToLongCg;
 import org.faktorips.codegen.conversion.IntegerToPrimitiveIntCg;
@@ -75,6 +77,8 @@ public class ConversionCodeGenerator implements ConversionMatrix {
         ccg.add(new PrimitiveLongToPrimitiveIntCg());
         ccg.add(new BigDecimalToDecimalCg());
         ccg.add(new DecimalToBigDecimalCg());
+        ccg.add(new DoubleToDecimalCg());
+        ccg.add(new DecimalToDoubleCg());
         return ccg;
     }
 

@@ -84,6 +84,20 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
         return new Decimal(value);
     }
 
+    /**
+     * Getting a decimal from a double value.
+     * 
+     * @param value the double value you want a decimal for
+     * @return the decimal representing the double value
+     * @since 3.3
+     */
+    public final static Decimal valueOf(Double value) {
+        if (value == null) {
+            return NULL;
+        }
+        return Decimal.valueOf(BigDecimal.valueOf(value));
+    }
+
     public final static Decimal valueOf(Integer value) {
         if (value == null) {
             return NULL;
