@@ -1065,22 +1065,17 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         if (StringUtils.isNotEmpty(getPcType().getSupertype())) {
             builder.append("super." + genPolicyCmptType.getMethodNameInitialize() + "();");
         }
-        if (selectedValues.isEmpty()) {
-            builder.methodEnd();
-            return;
+        if (!selectedValues.isEmpty() && getProductCmptType() != null) {
+            String method = getGenProductCmptType().getMethodNameGetProductCmptGeneration();
+            builder.appendln("if (" + method + "()==null) {");
+            builder.appendln("return;");
+            builder.appendln("}");
+            for (IPolicyCmptTypeAttribute a : selectedValues) {
+                GenChangeableAttribute gen = (GenChangeableAttribute)genPolicyCmptType.getGenerator(a);
+                gen.generateInitialization(builder, getIpsProject());
+            }
         }
-        if (getProductCmptType() == null) {
-            builder.methodEnd();
-            return;
-        }
-        String method = getGenProductCmptType().getMethodNameGetProductCmptGeneration();
-        builder.appendln("if (" + method + "()==null) {");
-        builder.appendln("return;");
-        builder.appendln("}");
-        for (IPolicyCmptTypeAttribute a : selectedValues) {
-            GenChangeableAttribute gen = (GenChangeableAttribute)genPolicyCmptType.getGenerator(a);
-            gen.generateInitialization(builder, getIpsProject());
-        }
+        builder.appendln();
         builder.appendln(MARKER_BEGIN_USER_CODE);
         builder.appendln(MARKER_END_USER_CODE);
         builder.methodEnd();
@@ -1164,20 +1159,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      * Code sample
      * 
      * <pre>
-     * protected void initPropertiesFromXml(HashMap propMap) {
-     *     if (propMap.containsKey(&quot;prop0&quot;)) {
-     *         prop0 = (String)propMap.get(&quot;prop0&quot;);
-     *     }
-     *     if (propMap.containsKey(&quot;prop1&quot;)) {
-     *         prop1 = (String)propMap.get(&quot;prop1&quot;);
-     *     }
-     * }
-     * </pre>
-     * 
-     * Java 5 code sample
-     * 
-     * <pre>
-     * protected void initPropertiesFromXml(HashMap propMap) {
+     * protected void initPropertiesFromXml(HashMap propMap, IRuntimeRepository productRepository) {
      *     final Map&lt;String, String&gt; checkedPropMap = (Map&lt;String, String&gt;)propMap;
      *     if (checkedPropMap.containsKey(&quot;prop0&quot;)) {
      *         prop0 = checkedPropMap.get(&quot;prop0&quot;);
@@ -1199,11 +1181,13 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 first = false;
                 builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
                 appendOverrideAnnotation(builder, false);
-                builder.methodBegin(java.lang.reflect.Modifier.PROTECTED, Void.TYPE.getName(),
-                        MethodNames.INIT_PROPERTIES_FROM_XML, new String[] { "propMap", "productRepository" },
+                builder.methodBegin(
+                        java.lang.reflect.Modifier.PROTECTED,
+                        Void.TYPE.getName(),
+                        MethodNames.INIT_PROPERTIES_FROM_XML,
+                        new String[] { "propMap", "productRepository" },
                         new String[] {
-                                isUseTypesafeCollections() ? Map.class.getName() + "<" + String.class.getName() + ","
-                                        + String.class.getName() + ">" : HashMap.class.getName(),
+                                Map.class.getName() + "<" + String.class.getName() + "," + String.class.getName() + ">",
                                 IRuntimeRepository.class.getName() });
                 builder.appendln("super." + MethodNames.INIT_PROPERTIES_FROM_XML + "(propMap, productRepository);");
             }
