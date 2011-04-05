@@ -33,7 +33,7 @@ public class Messages extends NLS {
     public static String EnumAttributeValue_UniqueIdentifierValueEmpty;
     public static String EnumAttributeValue_UniqueIdentifierValueNotUnique;
 
-    public static String EnumLiteralNameAttributeValue_ValueIsNumber;
+    public static String EnumLiteralNameAttributeValue_ValueIsNotAValidJavaIdentifier;
 
     public static String EnumAttribute_NameMissing;
     public static String EnumAttribute_NameNotAValidFieldName;

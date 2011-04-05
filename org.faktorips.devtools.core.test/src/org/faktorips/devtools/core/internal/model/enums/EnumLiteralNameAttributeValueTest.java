@@ -46,12 +46,27 @@ public class EnumLiteralNameAttributeValueTest extends AbstractIpsEnumPluginTest
 
     @Test
     public void testValidateNumber() throws CoreException {
-        literalNameAttributeValue.setValue("42");
+        expectInvalidLiteralNameValidationMessage("42");
+    }
+
+    @Test
+    public void testValidateNumberNotAtBeginning() throws CoreException {
+        literalNameAttributeValue.setValue("foo12bar");
+        assertTrue(literalNameAttributeValue.isValid(ipsProject));
+    }
+
+    @Test
+    public void testValidateSpecialCharacter() throws CoreException {
+        expectInvalidLiteralNameValidationMessage("foo%% bar &//");
+    }
+
+    private void expectInvalidLiteralNameValidationMessage(String value) throws CoreException {
+        literalNameAttributeValue.setValue(value);
         MessageList messages = literalNameAttributeValue.validate(ipsProject);
         assertEquals(1, messages.getNoOfMessages(Message.ERROR));
         Message message = messages.getFirstMessage(Message.ERROR);
         assertEquals(message.getCode(),
-                IEnumLiteralNameAttributeValue.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_VALUE_IS_NUMBER);
+                IEnumLiteralNameAttributeValue.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_VALUE_IS_NO_VALID_JAVA_IDENTIFIER);
         assertEquals(message.getInvalidObjectProperties()[0], new ObjectProperty(literalNameAttributeValue,
                 IEnumAttributeValue.PROPERTY_VALUE));
     }
@@ -69,7 +84,7 @@ public class EnumLiteralNameAttributeValueTest extends AbstractIpsEnumPluginTest
         assertEquals(1, messages.getNoOfMessages(Message.ERROR));
         Message message = messages.getFirstMessage(Message.ERROR);
         assertEquals(message.getCode(),
-                IEnumLiteralNameAttributeValue.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_VALUE_IS_NUMBER);
+                IEnumLiteralNameAttributeValue.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_VALUE_IS_NO_VALID_JAVA_IDENTIFIER);
         assertEquals(message.getInvalidObjectProperties()[0], new ObjectProperty(literalNameAttributeValue,
                 IEnumAttributeValue.PROPERTY_VALUE));
     }
@@ -80,7 +95,7 @@ public class EnumLiteralNameAttributeValueTest extends AbstractIpsEnumPluginTest
         MessageList messages = literalNameAttributeValue.validate(ipsProject);
         assertEquals(1, messages.getNoOfMessages(Message.ERROR));
         assertNull(messages
-                .getMessageByCode(IEnumLiteralNameAttributeValue.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_VALUE_IS_NUMBER));
+                .getMessageByCode(IEnumLiteralNameAttributeValue.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_VALUE_IS_NO_VALID_JAVA_IDENTIFIER));
     }
 
 }

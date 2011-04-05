@@ -45,13 +45,21 @@ public class EnumLiteralNameAttributeValue extends EnumAttributeValue implements
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
 
-        if (getValue() != null) {
-            char[] charArray = getValue().toCharArray();
-            if (charArray.length > 0 && Character.isDigit(charArray[0])) {
-                String text = NLS.bind(Messages.EnumLiteralNameAttributeValue_ValueIsNumber, getValue());
-                Message msg = new Message(MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_VALUE_IS_NUMBER, text, Message.ERROR,
-                        this, PROPERTY_VALUE);
+        if (getValue() == null) {
+            return;
+        }
+
+        char[] characters = getValue().toCharArray();
+        for (int i = 0; i < characters.length; i++) {
+            boolean validCharacter = i == 0 ? Character.isJavaIdentifierStart(characters[i]) : Character
+                    .isJavaIdentifierPart(characters[i]);
+            if (!validCharacter) {
+                String text = NLS.bind(Messages.EnumLiteralNameAttributeValue_ValueIsNotAValidJavaIdentifier,
+                        getValue());
+                Message msg = new Message(MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_VALUE_IS_NO_VALID_JAVA_IDENTIFIER, text,
+                        Message.ERROR, this, PROPERTY_VALUE);
                 list.add(msg);
+                break;
             }
         }
     }
