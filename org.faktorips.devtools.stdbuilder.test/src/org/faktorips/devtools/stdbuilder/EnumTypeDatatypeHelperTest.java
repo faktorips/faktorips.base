@@ -62,7 +62,6 @@ public class EnumTypeDatatypeHelperTest extends AbstractStdBuilderTest {
         id.setIdentifier(true);
 
         fragment = enumHelper.newInstanceFromExpression("getValue()");
-        System.out.println(fragment.getSourcecode());
         assertTrue(fragment.getSourcecode().indexOf("PaymentMode.getValueById(getValue())") >= 0);
 
         fragment = enumHelper.nullExpression();
