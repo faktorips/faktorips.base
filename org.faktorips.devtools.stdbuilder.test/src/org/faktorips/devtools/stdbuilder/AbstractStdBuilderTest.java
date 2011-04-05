@@ -32,7 +32,6 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.builder.JavaGeneratorHelper;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.junit.Before;
@@ -62,10 +61,10 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Override
-    protected void setTestArtefactBuilder(IIpsProject project, IIpsArtefactBuilder builder) throws CoreException {
-        IIpsProjectProperties props = project.getProperties();
-        props.setBuilderSetId(StandardBuilderSet.ID);
-        project.setProperties(props);
+    protected void setTestArtefactBuilderSet(IIpsProjectProperties properties, IIpsProject project)
+            throws CoreException {
+
+        properties.setBuilderSetId(StandardBuilderSet.ID);
     }
 
     /**

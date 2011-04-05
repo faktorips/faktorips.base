@@ -24,7 +24,6 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.abstracttest.AbstractIpsRefactoringTest;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
@@ -95,10 +94,10 @@ public abstract class RefactoringParticipantTest extends AbstractIpsRefactoringT
     }
 
     @Override
-    protected void setTestArtefactBuilder(IIpsProject project, IIpsArtefactBuilder builder) throws CoreException {
-        IIpsProjectProperties props = project.getProperties();
-        props.setBuilderSetId(StandardBuilderSet.ID);
-        project.setProperties(props);
+    protected void setTestArtefactBuilderSet(IIpsProjectProperties properties, IIpsProject project)
+            throws CoreException {
+
+        properties.setBuilderSetId(StandardBuilderSet.ID);
     }
 
     private void setUpFolders() {

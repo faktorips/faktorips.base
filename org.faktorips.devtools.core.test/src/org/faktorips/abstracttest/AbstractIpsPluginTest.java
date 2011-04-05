@@ -361,10 +361,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
         ipsProject.setIpsObjectPath(path);
 
-        AbstractArtefactBuilder builder = new TestBuilder();
-        setTestArtefactBuilder(ipsProject, builder);
-
         IIpsProjectProperties props = ipsProject.getProperties();
+        setTestArtefactBuilderSet(props, ipsProject);
         // @formatter:off
         props.setPredefinedDatatypesUsed(new String[] {
                 Datatype.DECIMAL.getName(),
@@ -382,10 +380,11 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         ipsProject.setProperties(props);
     }
 
-    protected void setTestArtefactBuilder(IIpsProject project, IIpsArtefactBuilder builder) throws CoreException {
-        IIpsProjectProperties props = project.getProperties();
-        props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
-        project.setProperties(props);
+    protected void setTestArtefactBuilderSet(IIpsProjectProperties properties, IIpsProject project)
+            throws CoreException {
+
+        AbstractArtefactBuilder builder = new TestBuilder();
+        properties.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { builder });
         builderSet.setIpsProject(project);
         IIpsArtefactBuilderSetInfo[] builderSetInfos = new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(

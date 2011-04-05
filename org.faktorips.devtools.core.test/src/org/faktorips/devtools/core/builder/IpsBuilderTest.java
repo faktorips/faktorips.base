@@ -587,7 +587,8 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     public void testIsFullBuildTriggeredAfterChangesToIpsProjectFile() throws CoreException {
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         AssertThatFullBuildIsTriggeredBuilder builder = new AssertThatFullBuildIsTriggeredBuilder();
-        setTestArtefactBuilder(ipsProject, builder); // this changes the properties file!
+        // this changes the properties file!
+        setTestArtefactBuilder(ipsProject, builder);
         builder.buildKind = -1;
         builder.called = false;
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
@@ -927,4 +928,16 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
                 false);
         assertEquals(ipsProject, builderSet.getIpsProject());
     }
+
+    private void setTestArtefactBuilder(IIpsProject project, IIpsArtefactBuilder builder) throws CoreException {
+        IIpsProjectProperties props = project.getProperties();
+        props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
+        project.setProperties(props);
+        TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { builder });
+        builderSet.setIpsProject(project);
+        IIpsArtefactBuilderSetInfo[] builderSetInfos = new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(
+                builderSet) };
+        ((IpsModel)project.getIpsModel()).setIpsArtefactBuilderSetInfos(builderSetInfos);
+    }
+
 }
