@@ -507,16 +507,16 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             tocFileBuilder.setPolicyModelTypeXmlBuilder(policyModelTypeBuilder);
             tocFileBuilder.setProductModelTypeXmlBuilder(productModelTypeBuilder);
             tocFileBuilder.setGenerateEntriesForModelTypes(true);
-            return new IIpsArtefactBuilder[] { tableImplBuilder, tableRowBuilder, productCmptGenInterfaceBuilder,
-                    productCmptGenImplClassBuilder, productCmptInterfaceBuilder, productCmptImplClassBuilder,
+            return new IIpsArtefactBuilder[] { tableImplBuilder, tableRowBuilder, productCmptInterfaceBuilder,
+                    productCmptImplClassBuilder, productCmptGenInterfaceBuilder, productCmptGenImplClassBuilder,
                     policyCmptImplClassBuilder, policyCmptInterfaceBuilder, productCmptGenerationImplBuilder,
                     tableContentCopyBuilder, productCmptContentCopyBuilder, testCaseTypeClassBuilder, testCaseBuilder,
                     formulaTestBuilder, tocFileBuilder, policyModelTypeBuilder, productModelTypeBuilder,
                     businessFunctionBuilder, enumTypeBuilder, enumContentBuilder, enumXmlAdapterBuilder };
         } else {
             tocFileBuilder.setGenerateEntriesForModelTypes(false);
-            return new IIpsArtefactBuilder[] { tableImplBuilder, tableRowBuilder, productCmptGenInterfaceBuilder,
-                    productCmptGenImplClassBuilder, productCmptInterfaceBuilder, productCmptImplClassBuilder,
+            return new IIpsArtefactBuilder[] { tableImplBuilder, tableRowBuilder, productCmptInterfaceBuilder,
+                    productCmptImplClassBuilder, productCmptGenInterfaceBuilder, productCmptGenImplClassBuilder,
                     policyCmptImplClassBuilder, policyCmptInterfaceBuilder, productCmptGenerationImplBuilder,
                     tableContentCopyBuilder, productCmptContentCopyBuilder, testCaseTypeClassBuilder, testCaseBuilder,
                     formulaTestBuilder, tocFileBuilder, businessFunctionBuilder, enumTypeBuilder, enumContentBuilder };

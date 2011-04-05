@@ -878,7 +878,9 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
             IIpsObjectPartContainer ipsObjectPartContainer) {
 
         IProductCmptType productCmptType = null;
-        if (ipsObjectPartContainer instanceof IProductCmptTypeAttribute) {
+        if (ipsObjectPartContainer instanceof IProductCmptType) {
+            productCmptType = (IProductCmptType)ipsObjectPartContainer;
+        } else if (ipsObjectPartContainer instanceof IProductCmptTypeAttribute) {
             productCmptType = ((IProductCmptTypeAttribute)ipsObjectPartContainer).getProductCmptType();
 
         } else if (ipsObjectPartContainer instanceof IProductCmptTypeAssociation) {

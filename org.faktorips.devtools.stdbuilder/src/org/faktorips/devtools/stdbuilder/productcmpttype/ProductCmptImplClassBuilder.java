@@ -22,7 +22,6 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -431,12 +430,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
             IIpsObjectPartContainer ipsObjectPartContainer) {
 
-        if (ipsObjectPartContainer instanceof IProductCmptType) {
-            IProductCmptType productCmptType = (IProductCmptType)ipsObjectPartContainer;
-            IType javaType = getGeneratedJavaTypes(productCmptType).get(0);
-            getGenProductCmptType(productCmptType).getGeneratedJavaElementsForImplementation(javaElements, javaType,
-                    ipsObjectPartContainer);
-        }
+        // Nothing to do
     }
 
     @Override
