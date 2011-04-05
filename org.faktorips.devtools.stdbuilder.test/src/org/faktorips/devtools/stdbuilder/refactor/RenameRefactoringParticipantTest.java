@@ -318,8 +318,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
 
         IType javaType = getJavaType("", "ValuedEnumType", true, false);
         assertFalse(javaType.getField("FOO").exists());
-        assertFalse(javaType.getField("bar").exists());
-        assertTrue(javaType.getField("BAR").exists());
+        assertTrue(javaType.getField("bar").exists());
     }
 
     @Test

@@ -477,7 +477,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         // Create enumeration definition source fragment
         appendLocalizedJavaDoc("ENUMVALUE", getEnumType(), enumDefinitionBuilder); //$NON-NLS-1$
         JavaCodeFragment enumDefinitionFragment = new JavaCodeFragment();
-        enumDefinitionFragment.append(literalEnumAttributeValue.getValue().toUpperCase());
+        enumDefinitionFragment.append(literalEnumAttributeValue.getValue());
         enumDefinitionFragment.append(" ("); //$NON-NLS-1$
         appendEnumValueParameters(enumAttributeValues, enumDefinitionFragment);
         enumDefinitionFragment.append(')');
@@ -519,7 +519,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
         DatatypeHelper datatypeHelper = getIpsProject().findDatatypeHelper(enumType.getQualifiedName());
         constantBuilder.varDeclaration(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL,
-                datatypeHelper.getJavaClassName(), literalEnumAttributeValue.getValue().toUpperCase(), initExpression);
+                datatypeHelper.getJavaClassName(), literalEnumAttributeValue.getValue(), initExpression);
         constantBuilder.appendln(' ');
     }
 
