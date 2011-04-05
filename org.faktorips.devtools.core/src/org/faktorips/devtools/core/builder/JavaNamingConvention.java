@@ -208,6 +208,37 @@ public class JavaNamingConvention {
         return StringUtils.capitalize(name);
     }
 
+    /**
+     * Returns the Java enumeration literal for the given name.
+     * <p>
+     * Java enumeration literals consist of all upper case characters whereas each character must be
+     * valid to use in a Java identifier. Any invalid character will be transformed to an underscore
+     * while umlaute will be replaced with replacement characters (e.g. AE for Ä).
+     * <p>
+     * Note that this is not part of an official naming convention. We defined this on ourselves.
+     */
+    public String getEnumLiteral(String name) {
+        // Transform to all upper case
+        String enumLiteral = StringUtils.upperCase(name);
+
+        // Replace umlaute
+        enumLiteral = enumLiteral.replaceAll("[Ää]", "AE"); //$NON-NLS-1$ //$NON-NLS-2$
+        enumLiteral = enumLiteral.replaceAll("[Öö]", "OE"); //$NON-NLS-1$ //$NON-NLS-2$
+        enumLiteral = enumLiteral.replaceAll("[Üü]", "UE"); //$NON-NLS-1$ //$NON-NLS-2$
+        enumLiteral = enumLiteral.replaceAll("[ß]", "SS"); //$NON-NLS-1$ //$NON-NLS-2$
+
+        // Replace characters that are not valid for Java identifiers
+        char[] characters = enumLiteral.toCharArray();
+        for (int i = 0; i < characters.length; i++) {
+            if ((i == 0 && !Character.isJavaIdentifierStart(characters[i]))
+                    || (i > 0 && !Character.isJavaIdentifierPart(characters[i]))) {
+                characters[i] = '_';
+            }
+        }
+
+        return String.valueOf(characters);
+    }
+
     public String getToDoMarker() {
         return "TODO"; //$NON-NLS-1$
     }

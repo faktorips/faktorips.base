@@ -1,3 +1,4 @@
+umlaute
 toolbar
 hyperlink
 enums
