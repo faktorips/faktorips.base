@@ -454,8 +454,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         if (literalNameAttributeValue.getValue() == null) {
             return ""; //$NON-NLS-1$
         }
-
-        return literalNameAttributeValue.getValue().toUpperCase();
+        return literalNameAttributeValue.getValue();
     }
 
     /**
