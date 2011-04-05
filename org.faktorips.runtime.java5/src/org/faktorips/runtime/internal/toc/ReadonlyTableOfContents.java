@@ -178,7 +178,7 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
             return null;
         }
         if (versionId == null) {
-            throw new RuntimeException("Not implemented yet!");
+            throw new RuntimeException("VersionId must not be null!");
         }
         List<VersionIdTocEntry> versions = getVersionList(kindId);
         for (VersionIdTocEntry each : versions) {
