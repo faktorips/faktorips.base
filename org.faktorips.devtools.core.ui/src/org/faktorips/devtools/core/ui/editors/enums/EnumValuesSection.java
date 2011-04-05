@@ -257,9 +257,11 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     }
 
     private void loadDialogSettings() {
-        IDialogSettings settings = IpsPlugin.getDefault().getDialogSettings();
+        IDialogSettings settings = IpsUIPlugin.getDefault().getDialogSettings();
         if (enumTypeEditing) {
-            lockAndSynchronizeLiteralNames = settings.getBoolean(SETTINGS_KEY_LOCK_AND_SYNC);
+            String synchronizeSetting = settings.get(SETTINGS_KEY_LOCK_AND_SYNC);
+            lockAndSynchronizeLiteralNames = synchronizeSetting == null ? true : settings
+                    .getBoolean(SETTINGS_KEY_LOCK_AND_SYNC);
         } else {
             lockAndSynchronizeLiteralNames = false;
         }
@@ -438,7 +440,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         lockAndSynchronizeLiteralNames = !(lockAndSynchronizeLiteralNames);
         lockAndSyncLiteralNameAction.setChecked(lockAndSynchronizeLiteralNames);
 
-        IDialogSettings settings = IpsPlugin.getDefault().getDialogSettings();
+        IDialogSettings settings = IpsUIPlugin.getDefault().getDialogSettings();
         settings.put(SETTINGS_KEY_LOCK_AND_SYNC, lockAndSynchronizeLiteralNames);
 
         updateSkippedColumns();
