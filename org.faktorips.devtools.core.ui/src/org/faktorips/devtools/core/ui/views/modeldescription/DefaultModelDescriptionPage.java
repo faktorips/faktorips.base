@@ -242,6 +242,7 @@ abstract public class DefaultModelDescriptionPage extends Page implements IIpsSr
             FormText client = toolkit.createFormText(clientGroup, true);
             client.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
             client.setBackground(excomposite.getBackground());
+            client.setWhitespaceNormalized(false);
             if (StringUtils.isEmpty(description) && !item.hasChildren()) {
                 client.setColor("gray", colorGray); //$NON-NLS-1$
                 sb.append("<form>"); //$NON-NLS-1$
@@ -256,7 +257,6 @@ abstract public class DefaultModelDescriptionPage extends Page implements IIpsSr
                 client.setText(sb.toString(), false, true);
             }
             // don't ignore whitespaces and newlines
-            client.setWhitespaceNormalized(false);
         }
 
         if (item.hasChildren()) {
