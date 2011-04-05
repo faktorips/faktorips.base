@@ -94,17 +94,9 @@ public abstract class IpsPartEditDialog extends EditDialog {
     protected Control createContents(Composite parent) {
         Control control = super.createContents(parent);
         connectToModel();
-        updateUI();
+        uiController.updateUI();
         setTitle(buildTitle());
         return control;
-    }
-
-    /**
-     * Updates this dialog's ui. Subclasses my override but must make sure updateUI() is called on
-     * the {@link #uiController} (e.g. call super).
-     */
-    public void updateUI() {
-        uiController.updateUI();
     }
 
     @Override

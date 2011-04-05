@@ -492,9 +492,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
             }
             for (IMethod method : currentType.getMethods()) {
                 if (method.getNumOfParameters() == 0 && method.getName().equals(rule.getName())) {
-                    String text = NLS.bind(Messages.PolicyCmptType_msgRuleMethodNameConflict,
-                            rule.getName());
-                    msgList.add(new Message(IValidationRule.MSGCODE_VALIDATION_RULE_METHOD_NAME_CONFLICT, text,
+                    String text = NLS.bind(Messages.PolicyCmptType_msgRuleMethodNameConflict, rule.getName());
+                    msgList.add(new Message(IValidationRule.MSGCODE_VALIDATION_RULE_METHOD_NAME_COLLISION, text,
                             Message.ERROR, rule, IIpsElement.PROPERTY_NAME));
                 }
             }
@@ -639,8 +638,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
              * derived union
              */
             if (!isInverseSubsetted(policyCmptTypeAssociation, candidateSubsets)) {
-                String text = NLS.bind(
-                        Messages.PolicyCmptType_msgInverseDerivedUnionNotSepcified,
+                String text = NLS.bind(Messages.PolicyCmptType_msgInverseDerivedUnionNotSepcified,
                         association.getName(), association.getType().getQualifiedName());
                 msgList.add(new Message(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION, text, Message.ERROR, this,
                         IType.PROPERTY_ABSTRACT));
