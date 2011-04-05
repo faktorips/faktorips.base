@@ -62,19 +62,16 @@ public class RenameRefactoringParticipant extends RenameParticipant {
     public RefactoringStatus checkConditions(IProgressMonitor pm, CheckConditionsContext context)
             throws OperationCanceledException {
 
-        System.out.println("Participant check conditions"); // TODO AW Test sysout
         return refactoringHelper.checkConditions(pm);
     }
 
     @Override
     public Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
-        System.out.println("Participant create change"); // TODO AW Test sysout
         return refactoringHelper.createChange(pm);
     }
 
     @Override
     protected boolean initialize(Object element) {
-        System.out.println("Participant initialize"); // TODO AW Test sysout
         return refactoringHelper.initialize(element);
     }
 
@@ -97,8 +94,6 @@ public class RenameRefactoringParticipant extends RenameParticipant {
 
             String oldName = originalJavaElement.getElementName();
             String newName = targetJavaElement.getElementName();
-            System.out.println("old name: " + oldName); // TODO AW Test sysout
-            System.out.println("new name: " + newName); // TODO AW Test sysout
 
             if (newName.equals(oldName) || newName.isEmpty()) {
                 return null;
