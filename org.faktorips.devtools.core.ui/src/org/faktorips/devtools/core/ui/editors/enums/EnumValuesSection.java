@@ -692,12 +692,6 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
                     return;
                 }
 
-                // Return if the new value equals the old value.
-                String oldValue = defaultProviderValues.get(enumValue);
-                if (newValue.equals(oldValue)) {
-                    return;
-                }
-
                 // Return if the new value is empty
                 if (newValue.length() == 0) {
                     return;
