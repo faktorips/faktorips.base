@@ -72,24 +72,10 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
 
     @Override
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
-        StandardBuilderSet stdBuilderSet = (StandardBuilderSet)getBuilderSet();
-        IType type = (IType)ipsSrcFile.getIpsObject();
         doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
-        Element modelTypeEl = doc.createElement(IModelType.XML_TAG);
-        modelTypeEl.setAttribute(IModelElement.PROPERTY_NAME, type.getQualifiedName());
-        modelTypeEl.setAttribute(IModelType.PROPERTY_CLASS, stdBuilderSet.getGenerator(type).getQualifiedName(false));
-        modelTypeEl.setAttribute(XmlUtil.XML_ATTRIBUTE_SPACE, XmlUtil.XML_ATTRIBUTE_SPACE_VALUE);
-        IType supertype = type.findSupertype(getIpsProject());
-        if (supertype != null) {
-            modelTypeEl.setAttribute(IModelType.PROPERTY_SUPERTYPE, stdBuilderSet.getGenerator(supertype)
-                    .getQualifiedName(false));
-        } else {
-            modelTypeEl.setAttribute(IModelType.PROPERTY_SUPERTYPE, null);
-        }
-        addLabels(type, modelTypeEl);
-        addExtensionProperties(modelTypeEl, type);
-        addAssociations(type, modelTypeEl);
-        addAttributes(type, modelTypeEl);
+
+        IType type = (IType)ipsSrcFile.getIpsObject();
+        Element modelTypeEl = createModelType(type);
 
         try {
             super.build(ipsSrcFile, XmlUtil.nodeToString(modelTypeEl, ipsSrcFile.getIpsProject().getXmlFileCharset()));
@@ -98,117 +84,139 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
         }
     }
 
+    private Element createModelType(IType type) throws CoreException {
+        Element modelTypeEl = doc.createElement(IModelType.XML_TAG);
+        modelTypeEl.setAttribute(IModelElement.PROPERTY_NAME, type.getQualifiedName());
+        modelTypeEl.setAttribute(IModelType.PROPERTY_CLASS, getStandardBuilderSet().getGenerator(type)
+                .getQualifiedName(false));
+        modelTypeEl.setAttribute(XmlUtil.XML_ATTRIBUTE_SPACE, XmlUtil.XML_ATTRIBUTE_SPACE_VALUE);
+        IType supertype = type.findSupertype(getIpsProject());
+        if (supertype != null) {
+            modelTypeEl.setAttribute(IModelType.PROPERTY_SUPERTYPE, getStandardBuilderSet().getGenerator(supertype)
+                    .getQualifiedName(false));
+        } else {
+            modelTypeEl.setAttribute(IModelType.PROPERTY_SUPERTYPE, null);
+        }
+
+        addLabels(type, modelTypeEl);
+        addExtensionProperties(modelTypeEl, type);
+        addAssociations(type, modelTypeEl);
+        addAttributes(type, modelTypeEl);
+
+        return modelTypeEl;
+    }
+
     private void addAssociations(IType model, Element modelType) throws CoreException {
         List<IAssociation> associations = model.getAssociations();
-        if (associations.size() > 0) {
-            Element modelTypeAssociations = doc.createElement(IModelTypeAssociation.XML_WRAPPER_TAG);
-            modelType.appendChild(modelTypeAssociations);
-            for (IAssociation association : associations) {
-                if (association.isValid(model.getIpsProject())) {
-                    Element modelTypeAssociation = doc.createElement(IModelTypeAssociation.XML_TAG);
-                    modelTypeAssociations.appendChild(modelTypeAssociation);
-                    modelTypeAssociation.setAttribute(IModelElement.PROPERTY_NAME, association.getTargetRoleSingular());
-                    modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_NAME_PLURAL,
-                            association.getTargetRolePlural());
-                    String targetName = association.getTarget();
-                    if (targetName != null && targetName.length() > 0) {
-                        if (model instanceof IPolicyCmptType) {
-                            modelTypeAssociation.setAttribute(
-                                    IModelTypeAssociation.PROPERTY_TARGET,
-                                    ((StandardBuilderSet)getBuilderSet()).getGenerator(
-                                            getIpsProject().findPolicyCmptType(targetName)).getQualifiedName(false));
-                        } else if (model instanceof IProductCmptType) {
-                            modelTypeAssociation.setAttribute(
-                                    IModelTypeAssociation.PROPERTY_TARGET,
-                                    ((StandardBuilderSet)getBuilderSet()).getGenerator(
-                                            getIpsProject().findProductCmptType(targetName)).getQualifiedName(false));
-                        }
-                    } else {
-                        modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_TARGET, null);
+        if (associations.size() <= 0) {
+            return;
+        }
+        Element modelTypeAssociations = doc.createElement(IModelTypeAssociation.XML_WRAPPER_TAG);
+        modelType.appendChild(modelTypeAssociations);
+        for (IAssociation association : associations) {
+            if (association.isValid(model.getIpsProject())) {
+                Element modelTypeAssociation = doc.createElement(IModelTypeAssociation.XML_TAG);
+                modelTypeAssociations.appendChild(modelTypeAssociation);
+                modelTypeAssociation.setAttribute(IModelElement.PROPERTY_NAME, association.getTargetRoleSingular());
+                modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_NAME_PLURAL,
+                        association.getTargetRolePlural());
+                String targetName = association.getTarget();
+                if (targetName != null && targetName.length() > 0) {
+                    if (model instanceof IPolicyCmptType) {
+                        modelTypeAssociation.setAttribute(
+                                IModelTypeAssociation.PROPERTY_TARGET,
+                                ((StandardBuilderSet)getBuilderSet()).getGenerator(
+                                        getIpsProject().findPolicyCmptType(targetName)).getQualifiedName(false));
+                    } else if (model instanceof IProductCmptType) {
+                        modelTypeAssociation.setAttribute(
+                                IModelTypeAssociation.PROPERTY_TARGET,
+                                ((StandardBuilderSet)getBuilderSet()).getGenerator(
+                                        getIpsProject().findProductCmptType(targetName)).getQualifiedName(false));
                     }
-                    modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_MIN_CARDINALITY,
-                            Integer.toString(association.getMinCardinality()));
-                    modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_MAX_CARDINALITY,
-                            Integer.toString(association.getMaxCardinality()));
-                    modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_ASSOCIATION_TYPE,
-                            getAssociantionType(association));
-                    modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_TARGET_ROLE_PLURAL_REQUIRED,
-                            Boolean.toString(association.isTargetRolePluralRequired()));
-                    modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_DERIVED_UNION,
-                            Boolean.toString(association.isDerivedUnion()));
-                    modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_SUBSET_OF_A_DERIVED_UNION,
-                            Boolean.toString(association.isSubsetOfADerivedUnion()));
-                    try {
-                        modelTypeAssociation
-                                .setAttribute(
-                                        IModelTypeAssociation.PROPERTY_PRODUCT_RELEVANT,
-                                        Boolean.toString(association instanceof IPolicyCmptTypeAssociation ? ((IPolicyCmptTypeAssociation)association)
-                                                .isConstrainedByProductStructure(getIpsProject()) : true));
-                    } catch (DOMException e) {
-                        // don't bother
-                    } catch (CoreException e) {
-                        // don't bother
-                    }
-
-                    if (association instanceof IPolicyCmptTypeAssociation) {
-                        IPolicyCmptTypeAssociation pcTypeAsso = (IPolicyCmptTypeAssociation)association;
-                        modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_INVERSE_ASSOCIATION,
-                                pcTypeAsso.getInverseAssociation());
-                    }
-
-                    addLabels(association, modelTypeAssociation);
-                    addExtensionProperties(modelTypeAssociation, association);
+                } else {
+                    modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_TARGET, null);
                 }
+                modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_MIN_CARDINALITY,
+                        Integer.toString(association.getMinCardinality()));
+                modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_MAX_CARDINALITY,
+                        Integer.toString(association.getMaxCardinality()));
+                modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_ASSOCIATION_TYPE,
+                        getAssociationType(association));
+                modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_TARGET_ROLE_PLURAL_REQUIRED,
+                        Boolean.toString(association.isTargetRolePluralRequired()));
+                modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_DERIVED_UNION,
+                        Boolean.toString(association.isDerivedUnion()));
+                modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_SUBSET_OF_A_DERIVED_UNION,
+                        Boolean.toString(association.isSubsetOfADerivedUnion()));
+                try {
+                    modelTypeAssociation
+                            .setAttribute(
+                                    IModelTypeAssociation.PROPERTY_PRODUCT_RELEVANT,
+                                    Boolean.toString(association instanceof IPolicyCmptTypeAssociation ? ((IPolicyCmptTypeAssociation)association)
+                                            .isConstrainedByProductStructure(getIpsProject()) : true));
+                } catch (DOMException e) {
+                    // don't bother
+                } catch (CoreException e) {
+                    // don't bother
+                }
+
+                if (association instanceof IPolicyCmptTypeAssociation) {
+                    IPolicyCmptTypeAssociation pcTypeAsso = (IPolicyCmptTypeAssociation)association;
+                    modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_INVERSE_ASSOCIATION,
+                            pcTypeAsso.getInverseAssociation());
+                }
+
+                addLabels(association, modelTypeAssociation);
+                addExtensionProperties(modelTypeAssociation, association);
             }
         }
     }
 
     private void addAttributes(IType model, Element modelType) throws CoreException {
         List<? extends IAttribute> attributes = model.getAttributes();
-        if (attributes.size() > 0) {
-            Element modelTypeAttributes = doc.createElement(IModelTypeAttribute.XML_WRAPPER_TAG);
-            modelType.appendChild(modelTypeAttributes);
-            for (IAttribute attribute : attributes) {
-                if (attribute.isValid(model.getIpsProject())) {
-                    Element modelTypeAttribute = doc.createElement(IModelTypeAttribute.XML_TAG);
-                    modelTypeAttributes.appendChild(modelTypeAttribute);
-                    modelTypeAttribute.setAttribute(IModelElement.PROPERTY_NAME, attribute.getName());
-                    if (model instanceof IPolicyCmptType) {
-                        GenPolicyCmptTypeAttribute genPolicyCmptTypeAttribute = ((StandardBuilderSet)getBuilderSet())
-                                .getGenerator((IPolicyCmptType)model).getGenerator((IPolicyCmptTypeAttribute)attribute);
-                        if (genPolicyCmptTypeAttribute != null) {
-                            modelTypeAttribute.setAttribute(IModelTypeAttribute.PROPERTY_DATATYPE,
-                                    genPolicyCmptTypeAttribute.getDatatype().getJavaClassName());
-                        }
-                    } else if (model instanceof IProductCmptType) {
-                        GenProductCmptTypeAttribute genAttribute = ((StandardBuilderSet)getBuilderSet()).getGenerator(
-                                (IProductCmptType)model).getGenerator((IProductCmptTypeAttribute)attribute);
-                        if (genAttribute != null) {
-                            modelTypeAttribute.setAttribute(IModelTypeAttribute.PROPERTY_DATATYPE, genAttribute
-                                    .getDatatype().getJavaClassName());
-                        }
-                    } else {
-                        modelTypeAttribute.setAttribute(IModelTypeAttribute.PROPERTY_DATATYPE, null);
+        if (attributes.size() <= 0) {
+            return;
+        }
+        Element modelTypeAttributes = doc.createElement(IModelTypeAttribute.XML_WRAPPER_TAG);
+        modelType.appendChild(modelTypeAttributes);
+        for (IAttribute attribute : attributes) {
+            if (attribute.isValid(model.getIpsProject())) {
+                Element modelTypeAttribute = doc.createElement(IModelTypeAttribute.XML_TAG);
+                modelTypeAttributes.appendChild(modelTypeAttribute);
+                modelTypeAttribute.setAttribute(IModelElement.PROPERTY_NAME, attribute.getName());
+                if (model instanceof IPolicyCmptType) {
+                    GenPolicyCmptTypeAttribute genPolicyCmptTypeAttribute = ((StandardBuilderSet)getBuilderSet())
+                            .getGenerator((IPolicyCmptType)model).getGenerator((IPolicyCmptTypeAttribute)attribute);
+                    if (genPolicyCmptTypeAttribute != null) {
+                        modelTypeAttribute.setAttribute(IModelTypeAttribute.PROPERTY_DATATYPE,
+                                genPolicyCmptTypeAttribute.getDatatype().getJavaClassName());
                     }
-                    modelTypeAttribute.setAttribute(IModelTypeAttribute.PROPERTY_VALUE_SET_TYPE,
-                            getValueSetType(attribute));
-                    modelTypeAttribute.setAttribute(IModelTypeAttribute.PROPERTY_ATTRIBUTE_TYPE,
-                            getAttributeType(attribute));
-                    modelTypeAttribute
-                            .setAttribute(
-                                    IModelTypeAttribute.PROPERTY_PRODUCT_RELEVANT,
-                                    Boolean.toString(attribute instanceof IPolicyCmptTypeAttribute ? ((IPolicyCmptTypeAttribute)attribute)
-                                            .isProductRelevant() : true));
-                    addLabels(attribute, modelTypeAttribute);
-                    addExtensionProperties(modelTypeAttribute, attribute);
+                } else if (model instanceof IProductCmptType) {
+                    GenProductCmptTypeAttribute genAttribute = ((StandardBuilderSet)getBuilderSet()).getGenerator(
+                            (IProductCmptType)model).getGenerator((IProductCmptTypeAttribute)attribute);
+                    if (genAttribute != null) {
+                        modelTypeAttribute.setAttribute(IModelTypeAttribute.PROPERTY_DATATYPE, genAttribute
+                                .getDatatype().getJavaClassName());
+                    }
+                } else {
+                    modelTypeAttribute.setAttribute(IModelTypeAttribute.PROPERTY_DATATYPE, null);
                 }
+                modelTypeAttribute
+                        .setAttribute(IModelTypeAttribute.PROPERTY_VALUE_SET_TYPE, getValueSetType(attribute));
+                modelTypeAttribute.setAttribute(IModelTypeAttribute.PROPERTY_ATTRIBUTE_TYPE,
+                        getAttributeType(attribute));
+                modelTypeAttribute.setAttribute(IModelTypeAttribute.PROPERTY_PRODUCT_RELEVANT, Boolean
+                        .toString(attribute instanceof IPolicyCmptTypeAttribute ? ((IPolicyCmptTypeAttribute)attribute)
+                                .isProductRelevant() : true));
+                addLabels(attribute, modelTypeAttribute);
+                addExtensionProperties(modelTypeAttribute, attribute);
             }
         }
     }
 
     private void addLabels(ILabeledElement model, Element runtimeModelElement) {
         List<ILabel> labels = model.getLabels();
-        if (labels.size() == 0) {
+        if (labels.size() <= 0) {
             return;
         }
         Element runtimeLabels = doc.createElement(IModelTypeLabel.XML_WRAPPER_TAG);
@@ -246,7 +254,7 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
         }
     }
 
-    private String getAssociantionType(IAssociation association) {
+    private String getAssociationType(IAssociation association) {
         AssociationType associationType = association.getAssociationType();
         if (associationType.equals(AssociationType.ASSOCIATION)) {
             return "Association";
@@ -297,7 +305,7 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
     }
 
     /**
-     * Returns the path to the (generated) xml resource as used by the Class.getResourceAsStream()
+     * Returns the path to the (generated) XML resource as used by the Class.getResourceAsStream()
      * Method.
      * 
      * @see Class#getResourceAsStream(java.lang.String)
@@ -305,6 +313,10 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
     public String getXmlResourcePath(IType type) throws CoreException {
         String packageInternal = getBuilderSet().getPackage(DefaultBuilderSet.KIND_MODEL_TYPE, type.getIpsSrcFile());
         return packageInternal.replace('.', '/') + '/' + type.getName() + ".xml";
+    }
+
+    private StandardBuilderSet getStandardBuilderSet() {
+        return (StandardBuilderSet)getBuilderSet();
     }
 
 }
