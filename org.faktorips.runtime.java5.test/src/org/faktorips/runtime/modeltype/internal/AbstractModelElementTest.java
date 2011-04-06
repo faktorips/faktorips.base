@@ -19,40 +19,57 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
-import org.faktorips.runtime.InMemoryRuntimeRepository;
+import org.faktorips.runtime.IRuntimeRepository;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 public class AbstractModelElementTest {
 
-    private final InMemoryRuntimeRepository repository = new InMemoryRuntimeRepository();
+    @Mock
+    private IRuntimeRepository repository;
+
+    private AbstractModelElement element;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        element = new TestModelElement(repository);
+    }
 
     @Test
     public void testGetExtensionPropertyValue() {
-        ModelType type = new ModelType(repository);
-        assertNull(type.getExtensionPropertyValue("prop0"));
+        assertNull(element.getExtensionPropertyValue("prop0"));
 
-        type.setExtensionPropertyValue("prop0", new Integer(42));
-        assertEquals(new Integer(42), type.getExtensionPropertyValue("prop0"));
-        assertNull(type.getExtensionPropertyValue("prop1"));
+        element.setExtensionPropertyValue("prop0", new Integer(42));
+        assertEquals(new Integer(42), element.getExtensionPropertyValue("prop0"));
+        assertNull(element.getExtensionPropertyValue("prop1"));
     }
 
     @Test
     public void testGetExtensionPropertyIds() {
-        ModelType type = new ModelType(repository);
-
-        Set<String> ids = type.getExtensionPropertyIds();
+        Set<String> ids = element.getExtensionPropertyIds();
         assertEquals(0, ids.size());
 
-        type.setExtensionPropertyValue("prop0", new Integer(42));
-        ids = type.getExtensionPropertyIds();
+        element.setExtensionPropertyValue("prop0", new Integer(42));
+        ids = element.getExtensionPropertyIds();
         assertEquals(1, ids.size());
         assertTrue(ids.contains("prop0"));
 
-        type.setExtensionPropertyValue("prop1", new Integer(42));
-        ids = type.getExtensionPropertyIds();
+        element.setExtensionPropertyValue("prop1", new Integer(42));
+        ids = element.getExtensionPropertyIds();
         assertEquals(2, ids.size());
         assertTrue(ids.contains("prop0"));
         assertTrue(ids.contains("prop1"));
+    }
+
+    private static class TestModelElement extends AbstractModelElement {
+
+        public TestModelElement(IRuntimeRepository repository) {
+            super(repository);
+        }
+
     }
 
 }
