@@ -18,14 +18,15 @@ import java.util.Locale;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.faktorips.runtime.modeltype.IModelTypeLabel;
+import org.faktorips.runtime.modeltype.ILabel;
+import org.faktorips.runtime.modeltype.IModelElement;
 
 /**
  * @author Alexander Weickmann
  */
-public class ModelTypeLabel extends AbstractModelElement implements IModelTypeLabel {
+public class Label extends AbstractModelElement implements ILabel {
 
-    private ModelType modelType;
+    private IModelElement modelElement;
 
     private Locale locale;
 
@@ -33,13 +34,13 @@ public class ModelTypeLabel extends AbstractModelElement implements IModelTypeLa
 
     private String pluralValue;
 
-    public ModelTypeLabel(ModelType modelType) {
-        super(modelType.getAbstractRepository());
-        this.modelType = modelType;
+    public Label(IModelElement modelElement) {
+        super(modelElement.getRepository());
+        this.modelElement = modelElement;
     }
 
-    public ModelType getModelType() {
-        return modelType;
+    public IModelElement getModelElement() {
+        return modelElement;
     }
 
     public Locale getLocale() {

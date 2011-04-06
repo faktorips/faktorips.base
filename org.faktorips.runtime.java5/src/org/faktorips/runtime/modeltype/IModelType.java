@@ -14,7 +14,6 @@
 package org.faktorips.runtime.modeltype;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * 
@@ -102,19 +101,5 @@ public interface IModelType extends IModelElement {
      * @throws IllegalArgumentException if no association with the given <code>name</code> exists.
      */
     public IModelTypeAssociation getDeclaredAssociation(String name);
-
-    /**
-     * Returns a list containing all labels declared in this model type. Labels defined in the
-     * type's super types are not returned.
-     */
-    public List<IModelTypeLabel> getDeclaredLabels();
-
-    /**
-     * Returns the label for the given locale. Labels defined in the type's super types are not
-     * considered.
-     * 
-     * @throws IllegalArgumentException If no label with the given locale exists
-     */
-    public IModelTypeLabel getDeclaredLabel(Locale locale);
 
 }

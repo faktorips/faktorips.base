@@ -15,6 +15,7 @@ package org.faktorips.runtime.modeltype.internal;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,7 +24,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.faktorips.runtime.IRuntimeRepository;
-import org.faktorips.runtime.internal.AbstractRuntimeRepository;
+import org.faktorips.runtime.modeltype.ILabel;
 import org.faktorips.runtime.modeltype.IModelElement;
 
 /**
@@ -33,11 +34,20 @@ import org.faktorips.runtime.modeltype.IModelElement;
 public class AbstractModelElement implements IModelElement {
 
     private Map<String, Object> extPropertyValues;
-    private String name;
-    private AbstractRuntimeRepository repository;
 
-    public AbstractModelElement(AbstractRuntimeRepository repository) {
+    private String name;
+
+    private IRuntimeRepository repository;
+
+    private Map<Locale, ILabel> labelsByLocale = new HashMap<Locale, ILabel>();
+
+    public AbstractModelElement(IRuntimeRepository repository) {
         this.repository = repository;
+    }
+
+    public String getLabel(Locale locale) {
+        ILabel label = labelsByLocale.get(locale);
+        return label == null ? getName() : label.getValue();
     }
 
     public Object getExtensionPropertyValue(String propertyId) {
@@ -67,6 +77,34 @@ public class AbstractModelElement implements IModelElement {
                 this.name = parser.getAttributeValue(i);
             }
         }
+        for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
+            switch (event) {
+                case XMLStreamConstants.START_ELEMENT:
+                    if (parser.getLocalName().equals("Labels")) {
+                        initLabelsFromXml(parser);
+                    }
+                    break;
+            }
+        }
+    }
+
+    private void initLabelsFromXml(XMLStreamReader parser) throws XMLStreamException {
+        for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
+            switch (event) {
+                case XMLStreamConstants.START_ELEMENT:
+                    if (parser.getLocalName().equals("Label")) {
+                        ILabel label = new Label(this);
+                        label.initFromXml(parser);
+                        labelsByLocale.put(label.getLocale(), label);
+                    }
+                    break;
+                case XMLStreamConstants.END_ELEMENT:
+                    if (parser.getLocalName().equals("Labels")) {
+                        return;
+                    }
+                    break;
+            }
+        }
     }
 
     public Set<String> getExtensionPropertyIds() {
@@ -81,7 +119,7 @@ public class AbstractModelElement implements IModelElement {
             switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
                     if (parser.getLocalName().equals("Value")) {
-                        initExtPropertyValueFromXML(parser);
+                        initExtPropertyValueFromXml(parser);
                     }
                     break;
                 case XMLStreamConstants.END_ELEMENT:
@@ -93,7 +131,7 @@ public class AbstractModelElement implements IModelElement {
         }
     }
 
-    private void initExtPropertyValueFromXML(XMLStreamReader parser) throws XMLStreamException {
+    private void initExtPropertyValueFromXml(XMLStreamReader parser) throws XMLStreamException {
         String id = null;
         boolean isNull = true;
         StringBuilder value = new StringBuilder();
@@ -127,10 +165,6 @@ public class AbstractModelElement implements IModelElement {
     }
 
     public IRuntimeRepository getRepository() {
-        return repository;
-    }
-
-    protected AbstractRuntimeRepository getAbstractRepository() {
         return repository;
     }
 

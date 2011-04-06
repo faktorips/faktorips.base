@@ -386,4 +386,9 @@ public interface IRuntimeRepository {
      */
     public IFormulaEvaluatorFactory getFormulaEvaluatorFactory();
 
+    /**
+     * Returns the class loader that is used to load Java classes by this repository.
+     */
+    public ClassLoader getClassLoader();
+
 }

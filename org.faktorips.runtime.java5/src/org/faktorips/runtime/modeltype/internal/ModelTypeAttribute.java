@@ -33,7 +33,7 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
     private boolean isProductRelevant = false;
 
     public ModelTypeAttribute(ModelType modelType) {
-        super(modelType.getAbstractRepository());
+        super(modelType.getRepository());
         this.modelType = modelType;
     }
 

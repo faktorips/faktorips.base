@@ -38,7 +38,7 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
     private String inverseAssociation;
 
     public ModelTypeAssociation(ModelType modelType) {
-        super(modelType.getAbstractRepository());
+        super(modelType.getRepository());
         this.modelType = modelType;
     }
 

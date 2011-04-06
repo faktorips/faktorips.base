@@ -83,10 +83,10 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     }
 
     /**
-     * Returns the class loader that is used to load Java classes by this repository.
+     * {@inheritDoc}
      * <p>
-     * The default implementation returns the class loader with which this repository class has been
-     * loaded.
+     * This default implementation returns the class loader with which this repository class has
+     * been loaded.
      */
     public ClassLoader getClassLoader() {
         return getClass().getClassLoader();

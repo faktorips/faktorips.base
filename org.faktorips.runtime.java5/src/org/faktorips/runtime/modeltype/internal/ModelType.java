@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.xml.stream.XMLStreamConstants;
@@ -28,7 +27,6 @@ import org.faktorips.runtime.internal.AbstractRuntimeRepository;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute;
-import org.faktorips.runtime.modeltype.IModelTypeLabel;
 import org.faktorips.runtime.modeltype.TypeHierarchyVisitor;
 
 /**
@@ -43,27 +41,11 @@ public class ModelType extends AbstractModelElement implements IModelType {
     private List<IModelTypeAttribute> attributes = new ArrayList<IModelTypeAttribute>();
     private Map<String, IModelTypeAttribute> attributesByName = new HashMap<String, IModelTypeAttribute>();
 
-    private List<IModelTypeLabel> labels = new ArrayList<IModelTypeLabel>();
-    private Map<Locale, IModelTypeLabel> labelsByLocale = new HashMap<Locale, IModelTypeLabel>();
-
     private String className;
     private String superTypeName;
 
     public ModelType(AbstractRuntimeRepository repository) {
         super(repository);
-    }
-
-    public IModelTypeLabel getDeclaredLabel(Locale locale) {
-        IModelTypeLabel label = labelsByLocale.get(locale);
-        if (label == null) {
-            throw new IllegalArgumentException("The type " + this + " hasn't got a declared label for the locale "
-                    + locale.getLanguage());
-        }
-        return label;
-    }
-
-    public List<IModelTypeLabel> getDeclaredLabels() {
-        return Collections.unmodifiableList(labels);
     }
 
     public IModelTypeAssociation getDeclaredAssociation(int index) {
@@ -129,7 +111,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
 
     public IModelType getSuperType() {
         if (superTypeName != null && superTypeName.length() > 0) {
-            Class superclass = loadClass(superTypeName);
+            Class<?> superclass = loadClass(superTypeName);
             return getRepository().getModelType(superclass);
         }
         return null;
@@ -151,18 +133,16 @@ public class ModelType extends AbstractModelElement implements IModelType {
                     if (parser.getLocalName().equals("ExtensionProperties")) {
                         initExtPropertiesFromXml(parser);
                     } else if (parser.getLocalName().equals("ModelTypeAttributes")) {
-                        initModelTypeAttributesFromXML(parser);
+                        initModelTypeAttributesFromXml(parser);
                     } else if (parser.getLocalName().equals("ModelTypeAssociations")) {
-                        initModelTypeAssociationsFromXML(parser);
-                    } else if (parser.getLocalName().equals("ModelTypeLabels")) {
-                        initModelTypeLabelsFromXML(parser);
+                        initModelTypeAssociationsFromXml(parser);
                     }
                     break;
             }
         }
     }
 
-    public void initModelTypeAttributesFromXML(XMLStreamReader parser) throws XMLStreamException {
+    private void initModelTypeAttributesFromXml(XMLStreamReader parser) throws XMLStreamException {
         for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
             switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
@@ -182,7 +162,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
         }
     }
 
-    public void initModelTypeAssociationsFromXML(XMLStreamReader parser) throws XMLStreamException {
+    private void initModelTypeAssociationsFromXml(XMLStreamReader parser) throws XMLStreamException {
         for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
             switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
@@ -195,26 +175,6 @@ public class ModelType extends AbstractModelElement implements IModelType {
                     break;
                 case XMLStreamConstants.END_ELEMENT:
                     if (parser.getLocalName().equals("ModelTypeAssociations")) {
-                        return;
-                    }
-                    break;
-            }
-        }
-    }
-
-    public void initModelTypeLabelsFromXML(XMLStreamReader parser) throws XMLStreamException {
-        for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
-            switch (event) {
-                case XMLStreamConstants.START_ELEMENT:
-                    if (parser.getLocalName().equals("ModelTypeLabel")) {
-                        IModelTypeLabel label = new ModelTypeLabel(this);
-                        label.initFromXml(parser);
-                        labels.add(label);
-                        labelsByLocale.put(label.getLocale(), label);
-                    }
-                    break;
-                case XMLStreamConstants.END_ELEMENT:
-                    if (parser.getLocalName().equals("ModelTypeLabels")) {
                         return;
                     }
                     break;

@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -51,7 +52,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * A builder writing meta information from design time objects to xml files for later use at
+ * A builder writing meta information from design time objects to XML files for later use at
  * runtime.
  * 
  * @author Daniel Hohenberger
@@ -79,10 +80,10 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
         } else {
             modelTypeEl.setAttribute("supertype", null);
         }
+        addLabels(type, modelTypeEl);
         addExtensionProperties(modelTypeEl, type);
         addAssociations(type, modelTypeEl);
         addAttributes(type, modelTypeEl);
-        addLabels(type, modelTypeEl);
 
         try {
             super.build(ipsSrcFile, XmlUtil.nodeToString(modelTypeEl, ipsSrcFile.getIpsProject().getXmlFileCharset()));
@@ -145,6 +146,7 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
                         modelTypeAssociation.setAttribute("inverseAssociation", pcTypeAsso.getInverseAssociation());
                     }
 
+                    addLabels(association, modelTypeAssociation);
                     addExtensionProperties(modelTypeAssociation, association);
                 }
             }
@@ -184,26 +186,27 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
                                     "isProductRelevant",
                                     Boolean.toString(attribute instanceof IPolicyCmptTypeAttribute ? ((IPolicyCmptTypeAttribute)attribute)
                                             .isProductRelevant() : true));
+                    addLabels(attribute, modelTypeAttribute);
                     addExtensionProperties(modelTypeAttribute, attribute);
                 }
             }
         }
     }
 
-    private void addLabels(IType model, Element modelType) {
+    private void addLabels(ILabeledElement model, Element runtimeModelElement) {
         List<ILabel> labels = model.getLabels();
         if (labels.size() == 0) {
             return;
         }
-        Element modelTypeLabels = doc.createElement("ModelTypeLabels");
-        modelType.appendChild(modelTypeLabels);
+        Element runtimeLabels = doc.createElement("Labels");
+        runtimeModelElement.appendChild(runtimeLabels);
         for (ILabel label : labels) {
-            Element modelTypeLabel = doc.createElement("ModelTypeLabel");
-            modelTypeLabels.appendChild(modelTypeLabel);
+            Element runtimeLabel = doc.createElement("Label");
+            runtimeLabels.appendChild(runtimeLabel);
             Locale locale = label.getLocale();
-            modelTypeLabel.setAttribute(ILabel.PROPERTY_LOCALE, locale == null ? "" : locale.getLanguage());
-            modelTypeLabel.setAttribute(ILabel.PROPERTY_VALUE, label.getValue());
-            modelTypeLabel.setAttribute(ILabel.PROPERTY_PLURAL_VALUE, label.getPluralValue());
+            runtimeLabel.setAttribute(ILabel.PROPERTY_LOCALE, locale == null ? "" : locale.getLanguage());
+            runtimeLabel.setAttribute(ILabel.PROPERTY_VALUE, label.getValue());
+            runtimeLabel.setAttribute(ILabel.PROPERTY_PLURAL_VALUE, label.getPluralValue());
         }
     }
 

@@ -13,6 +13,7 @@
 
 package org.faktorips.runtime.modeltype;
 
+import java.util.Locale;
 import java.util.Set;
 
 import javax.xml.stream.XMLStreamException;
@@ -64,5 +65,12 @@ public interface IModelElement {
      * <code>null</code>.
      */
     public IRuntimeRepository getRepository();
+
+    /**
+     * Returns the label for the given locale.
+     * <p>
+     * Returns the element's name if no label with the given locale exists.
+     */
+    public String getLabel(Locale locale);
 
 }

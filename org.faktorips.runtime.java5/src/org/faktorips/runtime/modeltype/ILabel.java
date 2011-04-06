@@ -18,7 +18,12 @@ import java.util.Locale;
 /**
  * @author Alexander Weickmann
  */
-public interface IModelTypeLabel extends IModelElement {
+public interface ILabel extends IModelElement {
+
+    /**
+     * Returns the model element this label belongs to.
+     */
+    public IModelElement getModelElement();
 
     /**
      * Returns the locale of this label.
