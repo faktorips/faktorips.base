@@ -34,64 +34,6 @@ public abstract class IpsTestCase2 extends IpsTestCaseBase {
     // map containing extension attributes
     private Map<ModelObjectAttribute, Object> extensionAttributes = new HashMap<ModelObjectAttribute, Object>();
 
-    /*
-     * Wrapper class stores all extension attributes.
-     */
-    private class ModelObjectAttribute {
-        private IModelObject modelObject;
-        private String attributeName;
-
-        public ModelObjectAttribute(IModelObject modelObject, String attributeName) {
-            super();
-            this.modelObject = modelObject;
-            this.attributeName = attributeName;
-        }
-
-        /**
-         * Returns the model object
-         */
-        public IModelObject getModelObject() {
-            return modelObject;
-        }
-
-        /**
-         * Returns the attribute name of the model object this wrapper object belongs to
-         */
-        public String getAttributeName() {
-            return attributeName;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean equals(Object other) {
-            if ((this == other)) {
-                return true;
-            }
-            if ((other == null)) {
-                return false;
-            }
-            if (!(other instanceof ModelObjectAttribute)) {
-                return false;
-            }
-            ModelObjectAttribute castOther = (ModelObjectAttribute)other;
-            return (this.getAttributeName() != null && this.getAttributeName().equals(castOther.getAttributeName()))
-                    && (this.getModelObject() != null && this.getModelObject().equals(castOther.getModelObject()));
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int hashCode() {
-            int result = 17;
-            result = 37 * result + (getModelObject() == null ? 0 : getModelObject().hashCode());
-            result = 37 * result + (getAttributeName() == null ? 0 : getAttributeName().hashCode());
-            return result;
-        }
-    }
-
     public IpsTestCase2(String qName) {
         super(qName);
     }
@@ -122,17 +64,11 @@ public abstract class IpsTestCase2 extends IpsTestCaseBase {
      */
     protected abstract void initExpectedResultFromXml(Element resultEl);
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "TestCase " + getQualifiedName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int countTestCases() {
         return 1;
@@ -150,4 +86,59 @@ public abstract class IpsTestCase2 extends IpsTestCaseBase {
     public Object getExtensionAttributeValue(IModelObject modelObject, String attributeName) {
         return extensionAttributes.get(new ModelObjectAttribute(modelObject, attributeName));
     }
+
+    /*
+     * Wrapper class stores all extension attributes.
+     */
+    private class ModelObjectAttribute {
+
+        private IModelObject modelObject;
+        private String attributeName;
+
+        public ModelObjectAttribute(IModelObject modelObject, String attributeName) {
+            super();
+            this.modelObject = modelObject;
+            this.attributeName = attributeName;
+        }
+
+        /**
+         * Returns the model object
+         */
+        public IModelObject getModelObject() {
+            return modelObject;
+        }
+
+        /**
+         * Returns the attribute name of the model object this wrapper object belongs to
+         */
+        public String getAttributeName() {
+            return attributeName;
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if ((this == other)) {
+                return true;
+            }
+            if ((other == null)) {
+                return false;
+            }
+            if (!(other instanceof ModelObjectAttribute)) {
+                return false;
+            }
+            ModelObjectAttribute castOther = (ModelObjectAttribute)other;
+            return (this.getAttributeName() != null && this.getAttributeName().equals(castOther.getAttributeName()))
+                    && (this.getModelObject() != null && this.getModelObject().equals(castOther.getModelObject()));
+        }
+
+        @Override
+        public int hashCode() {
+            int result = 17;
+            result = 37 * result + (getModelObject() == null ? 0 : getModelObject().hashCode());
+            result = 37 * result + (getAttributeName() == null ? 0 : getAttributeName().hashCode());
+            return result;
+        }
+
+    }
+
 }

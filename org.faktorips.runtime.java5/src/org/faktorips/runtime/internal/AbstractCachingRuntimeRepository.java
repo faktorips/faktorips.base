@@ -50,7 +50,6 @@ import org.faktorips.runtime.caching.IComputable;
  * There is still potentially more performance by synchronizing for different keys instead of
  * blocking for every cache instance. This would be more complicated and should be well-considered.
  * 
- * 
  * @author dirmeier
  */
 public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRepository {
@@ -154,9 +153,6 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
 
     protected abstract <T> List<T> getNotCachedEnumValues(Class<T> clazz);
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected ITable getTableInternal(String qualifiedTableName) {
         try {
@@ -168,9 +164,6 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
 
     protected abstract ITable getNotCachedTable(String qualifiedTableName);
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected List<XmlAdapter<?, ?>> getAllInternalEnumXmlAdapters(IRuntimeRepository repository) {
         if (!enumXmlAdapters.isEmpty()) {

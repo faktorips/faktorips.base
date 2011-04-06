@@ -155,9 +155,6 @@ public class SocketIpsTestRunner extends AbstractIpsTestRunner {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected List<IRuntimeRepository> createRepositories() throws Exception {
         List<String> repositoryNameList = getRepositoryListFromInputString(getRepositoryPackages());
@@ -206,9 +203,6 @@ public class SocketIpsTestRunner extends AbstractIpsTestRunner {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void testStarted(IpsTest2 test) {
         // format: TEST_CASE_STARTED<qualifiedName>{<fullPath>}
         writer.print(TEST_STARTED);
@@ -226,17 +220,11 @@ public class SocketIpsTestRunner extends AbstractIpsTestRunner {
         writer.print("}");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void testFinished(IpsTest2 test) {
         writer.print(TEST_FINISHED);
         writer.println(test.getQualifiedName());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void testFailureOccured(IpsTestFailure failure) {
         if (failure.isError()) {
             postError(failure.getThrowable(), failure.getTestCase().getQualifiedName());
@@ -307,4 +295,5 @@ public class SocketIpsTestRunner extends AbstractIpsTestRunner {
         writer.println();
         writer.println(TEST_ERROR_END);
     }
+
 }

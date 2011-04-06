@@ -254,4 +254,5 @@ public abstract class AbstractIpsTestRunner implements IpsTestListener {
      * Creates the repositories. Where the test will be searched.
      */
     protected abstract List<IRuntimeRepository> createRepositories() throws Exception;
+
 }

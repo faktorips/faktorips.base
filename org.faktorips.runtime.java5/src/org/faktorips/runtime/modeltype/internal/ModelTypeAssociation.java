@@ -42,45 +42,26 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
         this.modelType = modelType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IModelType getModelType() {
         return modelType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public AssociationType getAssociationType() {
         return associationType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int getMaxCardinality() {
         return maxCardinality;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int getMinCardinality() {
         return minCardinality;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getNamePlural() {
         return namePlural;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     */
     public IModelType getTarget() throws ClassNotFoundException {
         if (targetJavaClassName != null && targetJavaClassName.length() > 0) {
             Class<?> targetClass = loadClass(targetJavaClassName);
@@ -89,16 +70,10 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isProductRelevant() {
         return isProductRelevant;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void initFromXml(XMLStreamReader parser) throws XMLStreamException {
         super.initFromXml(parser);
@@ -131,9 +106,6 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
         initExtPropertiesFromXml(parser);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getUsedName());

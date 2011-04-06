@@ -73,58 +73,34 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         this.versionId = versionId;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getKindId() {
         return productKindId;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getVersionId() {
         return versionId;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public final String getId() {
         return id;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public DateTime getValidTo() {
         return validTo;
     }
 
-    /**
-     * @param validTo The validTo to set.
-     */
     public void setValidTo(DateTime validTo) {
         this.validTo = validTo;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public final IRuntimeRepository getRepository() {
         return repository;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public final IProductComponentGeneration getGenerationBase(Calendar effectiveDate) {
         return repository.getProductComponentGeneration(id, effectiveDate);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IProductComponentGeneration getLatestProductComponentGeneration() {
         return getRepository().getLatestProductComponentGeneration(this);
     }
@@ -139,9 +115,6 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         initExtensionPropertiesFromXml(cmptElement);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return id;

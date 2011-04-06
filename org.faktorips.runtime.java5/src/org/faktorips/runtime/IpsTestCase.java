@@ -47,8 +47,6 @@ public abstract class IpsTestCase extends TestCase {
      * Implementation of the JUnit <code>Test</code> method that reads the test case data (input,
      * expected output) from the test's resource, executes the business functions and compares the
      * expected result with the actual result.
-     * 
-     * {@inheritDoc}
      */
     @Override
     protected void runTest() throws Throwable {

@@ -92,16 +92,10 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         return getClass().getClassLoader();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public final void addDirectlyReferencedRepository(IRuntimeRepository repository) {
         if (!(repository instanceof AbstractRuntimeRepository)) {
             throw new IllegalArgumentException(
@@ -110,16 +104,10 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         repositories.add(repository);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public List<IRuntimeRepository> getDirectlyReferencedRepositories() {
         return Collections.unmodifiableList(repositories);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public List<IRuntimeRepository> getAllReferencedRepositories() {
         if (allRepositories != null) {
             return allRepositories;
@@ -142,9 +130,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         return allRepositories;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public final IProductComponent getProductComponent(String id) {
         IProductComponent pc = getProductComponentInternal(id);
         if (pc != null) {
@@ -159,9 +144,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public final IProductComponent getExistingProductComponent(String id) throws ProductCmptNotFoundException {
         if (id == null) {
             return null;
@@ -179,9 +161,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      */
     protected abstract IProductComponent getProductComponentInternal(String id);
 
-    /**
-     * {@inheritDoc}
-     */
     public final IProductComponent getProductComponent(String kindId, String versionId) {
         IProductComponent pc = getProductComponentInternal(kindId, versionId);
         if (pc != null) {
@@ -202,9 +181,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      */
     protected abstract IProductComponent getProductComponentInternal(String kindId, String versionId);
 
-    /**
-     * {@inheritDoc}
-     */
     public final List<IProductComponent> getAllProductComponents(String kindId) {
         List<IProductComponent> result = new ArrayList<IProductComponent>();
         if (kindId == null) {
@@ -224,9 +200,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      */
     protected abstract void getAllProductComponents(String kindId, List<IProductComponent> result);
 
-    /**
-     * {@inheritDoc}
-     */
     public IProductComponentGeneration getExistingProductComponentGeneration(String id, Calendar effectiveDate) {
         IProductComponentGeneration gen = getProductComponentGeneration(id, effectiveDate);
         if (gen != null) {
@@ -239,9 +212,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         throw new ProductCmptGenerationNotFoundException(name, id, effectiveDate, true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public final IProductComponentGeneration getProductComponentGeneration(String id, Calendar effectiveDate) {
 
         IProductComponentGeneration pcGen = getProductComponentGenerationInternal(id, effectiveDate);
@@ -270,9 +240,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     protected abstract IProductComponentGeneration getProductComponentGenerationInternal(String id,
             Calendar effectiveDate);
 
-    /**
-     * {@inheritDoc}
-     */
     public final List<IProductComponent> getAllProductComponents(Class<?> productCmptClass) {
         List<IProductComponent> result = new ArrayList<IProductComponent>();
         getAllProductComponentsInternal(productCmptClass, result);
@@ -300,9 +267,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public final List<IProductComponent> getAllProductComponents() {
         List<IProductComponent> result = new ArrayList<IProductComponent>();
         getAllProductComponents(result);
@@ -319,9 +283,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      */
     protected abstract void getAllProductComponents(List<IProductComponent> result);
 
-    /**
-     * {@inheritDoc}
-     */
     public final List<IProductComponentGeneration> getProductComponentGenerations(IProductComponent productCmpt) {
         List<IProductComponentGeneration> result = new ArrayList<IProductComponentGeneration>();
         getProductComponentGenerations(productCmpt, result);
@@ -339,9 +300,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     public abstract void getProductComponentGenerations(IProductComponent productCmpt,
             List<IProductComponentGeneration> result);
 
-    /**
-     * {@inheritDoc}
-     */
     public final List<String> getAllProductComponentIds() {
         List<String> result = new ArrayList<String>();
         getAllProductComponentIds(result);
@@ -358,9 +316,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      */
     protected abstract void getAllProductComponentIds(List<String> result);
 
-    /**
-     * {@inheritDoc}
-     */
     public List<ITable> getAllTables() {
         List<ITable> result = new ArrayList<ITable>();
         getAllTables(result);
@@ -628,10 +583,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     protected abstract IProductComponentGeneration getLatestProductComponentGenerationInternal(IProductComponent productCmpt);
 
-    /**
-     * 
-     * {@inheritDoc}
-     */
     public IModelType getModelType(Class<?> modelObjectClass) {
         if (modelTypes.containsKey(modelObjectClass)) {
             return modelTypes.get(modelObjectClass);
@@ -857,9 +808,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     /**
      * For default there is no formula evaluation supported.
-     * 
+     * <p>
      * If you want to support formula evaluation you have to override this method
-     * 
      */
     public IFormulaEvaluatorFactory getFormulaEvaluatorFactory() {
         return null;

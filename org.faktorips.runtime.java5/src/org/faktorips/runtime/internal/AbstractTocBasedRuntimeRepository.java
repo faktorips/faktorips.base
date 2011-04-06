@@ -57,25 +57,16 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
 
     protected abstract IReadonlyTableOfContents loadTableOfContents();
 
-    /**
-     * @param toc The toc to set.
-     */
     private void setTableOfContents(IReadonlyTableOfContents toc) {
         this.toc = toc;
     }
 
-    /**
-     * @return Returns the toc.
-     */
     protected IReadonlyTableOfContents getTableOfContents() {
         return toc;
     }
 
     protected abstract <T> List<T> createEnumValues(EnumContentTocEntry tocEntry, Class<T> clazz);
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected final IProductComponent getProductComponentInternal(String kindId, String versionId) {
         ProductCmptTocEntry entry = toc.getProductCmptTocEntry(kindId, versionId);
@@ -99,9 +90,6 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void getAllProductComponentIds(List<String> result) {
         List<ProductCmptTocEntry> entries = toc.getProductCmptTocEntries();
@@ -112,9 +100,6 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
 
     protected abstract IProductComponent createProductCmpt(ProductCmptTocEntry tocEntry);
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IProductComponentGeneration getProductComponentGenerationInternal(String id, Calendar effectiveDate) {
         ProductCmptTocEntry tocEntry = toc.getProductCmptTocEntry(id);
@@ -142,9 +127,6 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
         return getProductComponentGenerationInternal(id, generationTocEntry.getValidFrom());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IProductComponentGeneration getPreviousProductComponentGenerationInternal(IProductComponentGeneration generation) {
         String id = generation.getProductComponent().getId();
@@ -159,9 +141,6 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
         return getProductComponentGenerationInternal(id, generationTocEntry.getValidFrom());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IProductComponentGeneration getLatestProductComponentGenerationInternal(IProductComponent productCmpt) {
         if (productCmpt == null) {

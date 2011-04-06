@@ -54,4 +54,5 @@ public class EnumValues {
     public int getNumberOfValues() {
         return values.length;
     }
+
 }

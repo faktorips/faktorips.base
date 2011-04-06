@@ -24,11 +24,9 @@ public abstract class IpsFormulaTestCase extends IpsTestCaseBase {
         super(qName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int countTestCases() {
         return 1;
     }
+
 }

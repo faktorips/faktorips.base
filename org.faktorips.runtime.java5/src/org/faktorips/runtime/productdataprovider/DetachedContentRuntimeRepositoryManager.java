@@ -39,7 +39,6 @@ public class DetachedContentRuntimeRepositoryManager extends AbstractRuntimeRepo
     /**
      * This is the constructor for the {@link DetachedContentRuntimeRepositoryManager}. The
      * constructor is only called from the internal {@link Builder}.
-     * 
      */
     private DetachedContentRuntimeRepositoryManager(Builder builder) {
         this.builder = builder;

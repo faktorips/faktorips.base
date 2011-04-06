@@ -76,16 +76,10 @@ public class ProductComponentLink<E extends IProductComponent> extends RuntimeOb
         this.cardinality = cardinality;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public CardinalityRange getCardinality() {
         return cardinality;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void initFromXml(Element element) {
         associationName = element.getAttribute("association");
         targetId = element.getAttribute("targetRuntimeId");
@@ -103,9 +97,6 @@ public class ProductComponentLink<E extends IProductComponent> extends RuntimeOb
         initExtensionPropertiesFromXml(element);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @SuppressWarnings("unchecked")
     public E getTarget() {
         try {
@@ -115,23 +106,14 @@ public class ProductComponentLink<E extends IProductComponent> extends RuntimeOb
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getTargetId() {
         return targetId;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getAssociationName() {
         return associationName;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(targetId);

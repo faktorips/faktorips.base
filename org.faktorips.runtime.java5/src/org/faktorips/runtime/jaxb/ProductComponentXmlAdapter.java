@@ -20,11 +20,9 @@ import org.faktorips.runtime.IRuntimeRepository;
 
 /**
  * Custom JAXB marshaling/unmarshaling for product components.
- * 
  * <p>
  * When marshaling/unmarshaling a configurable policy component, the link to its product component
  * is preserved in XML by the means of the product component ID.
- * </p>
  */
 public class ProductComponentXmlAdapter extends XmlAdapter<String, IProductComponent> {
 
@@ -39,8 +37,6 @@ public class ProductComponentXmlAdapter extends XmlAdapter<String, IProductCompo
     }
 
     /**
-     * {@inheritDoc}
-     * 
      * Returns the ID for the specified product component.
      */
     @Override
@@ -53,8 +49,6 @@ public class ProductComponentXmlAdapter extends XmlAdapter<String, IProductCompo
     }
 
     /**
-     * {@inheritDoc}
-     * 
      * Returns the product component for the specified ID.
      */
     @Override

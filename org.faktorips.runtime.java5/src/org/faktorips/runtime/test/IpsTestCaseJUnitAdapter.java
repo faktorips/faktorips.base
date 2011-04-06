@@ -64,8 +64,6 @@ public class IpsTestCaseJUnitAdapter extends TestCase implements IpsTestListener
 
     /**
      * Runs the ips test case.
-     * 
-     * {@inheritDoc}
      */
     @Override
     public void runTest() throws Throwable {
@@ -128,24 +126,16 @@ public class IpsTestCaseJUnitAdapter extends TestCase implements IpsTestListener
         return MessageFormat.format(failureFormat, failureDetails.toArray());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void testStarted(IpsTest2 test) {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void testFinished(IpsTest2 arg0) {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void testFailureOccured(IpsTestFailure f) {
         failures.add(f);
     }
+
 }

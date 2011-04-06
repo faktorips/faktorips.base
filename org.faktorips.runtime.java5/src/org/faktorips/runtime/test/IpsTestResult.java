@@ -25,9 +25,6 @@ public class IpsTestResult {
     private List<IpsTestListener> listeners = new ArrayList<IpsTestListener>();
     private List<IpsTestFailure> failures = new ArrayList<IpsTestFailure>(100);
 
-    /**
-     * 
-     */
     public IpsTestResult() {
         super();
     }
@@ -78,4 +75,5 @@ public class IpsTestResult {
             listener.testFailureOccured(failure);
         }
     }
+
 }

@@ -49,11 +49,9 @@ public class ProductCmptNotFoundException extends RuntimeException {
         return repositoryName;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "ProductComponent " + productCmptId + " not found in repository " + repositoryName;
     }
+
 }

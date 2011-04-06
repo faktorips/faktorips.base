@@ -65,9 +65,6 @@ public class MsgReplacementParameter implements Serializable {
         return value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof MsgReplacementParameter)) {
@@ -78,17 +75,11 @@ public class MsgReplacementParameter implements Serializable {
                 && ((value == null && other.value == null) || (value != null && value.equals(other.value)));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return name.hashCode();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return name + "=" + value;

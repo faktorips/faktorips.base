@@ -58,16 +58,10 @@ public class GenerationTocEntry extends TocEntry {
         }
     }
 
-    /**
-     * @return Returns the parent entry.
-     */
     public ProductCmptTocEntry getParent() {
         return parent;
     }
 
-    /**
-     * @return Returns the validFrom.
-     */
     public DateTime getValidFrom() {
         return validFrom;
     }
@@ -91,9 +85,6 @@ public class GenerationTocEntry extends TocEntry {
         element.setAttribute(PROPERTY_VALID_FROM, validFrom.toIsoFormat());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return parent.toString() + " " + validFrom;

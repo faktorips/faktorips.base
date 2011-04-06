@@ -91,9 +91,6 @@ public abstract class TocEntryObject extends TocEntry {
         entryElement.setAttribute(PROPERTY_IPS_OBJECT_QNAME, ipsObjectQualifiedName);
     }
 
-    /**
-     * Overridden.
-     */
     @Override
     public String toString() {
         return new StringBuffer().append("TocEntry(").append(getXmlElementTag()).append(':').append(ipsObjectId)

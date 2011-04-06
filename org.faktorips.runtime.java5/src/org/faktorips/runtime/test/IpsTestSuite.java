@@ -58,9 +58,6 @@ public class IpsTestSuite extends IpsTest2 {
         return tests.size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int countTestCases() {
         int count = 0;
@@ -85,9 +82,6 @@ public class IpsTestSuite extends IpsTest2 {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run(IpsTestResult result) {
         for (IpsTest2 test : tests) {
@@ -95,11 +89,9 @@ public class IpsTestSuite extends IpsTest2 {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "TestSuite " + getQualifiedName();
     }
+
 }

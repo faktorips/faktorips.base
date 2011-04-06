@@ -57,9 +57,6 @@ public abstract class AbstractModelObject implements IModelObject {
         // empty default implementation
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public MessageList validate(IValidationContext context) {
         if (context == null) {
             throw new NullPointerException();
@@ -275,4 +272,5 @@ public abstract class AbstractModelObject implements IModelObject {
             throws Exception {
         return null;
     }
+
 }

@@ -245,9 +245,6 @@ public class ReadOnlyBinaryRangeTree implements Serializable {
      */
     private static class OneColumnNodeVisitor implements NodeVisitor, Serializable {
 
-        /**
-         * 
-         */
         private static final long serialVersionUID = 8409704039187989276L;
         private Comparable key;
         private int keyForSmallestMax = -1;
@@ -332,9 +329,6 @@ public class ReadOnlyBinaryRangeTree implements Serializable {
      */
     private static class TwoColumnNodeVisitor implements NodeVisitor, Serializable {
 
-        /**
-         * 
-         */
         private static final long serialVersionUID = 42L;
         private int foundIndex = -1;
         private Comparable key;
@@ -375,9 +369,6 @@ public class ReadOnlyBinaryRangeTree implements Serializable {
      */
     public static class Node implements Serializable {
 
-        /**
-         * 
-         */
         private static final long serialVersionUID = -3023843176585381905L;
         protected Comparable key;
         protected Node left;
@@ -407,9 +398,6 @@ public class ReadOnlyBinaryRangeTree implements Serializable {
     }
 
     public static class TwoColumnKey implements Comparable, Serializable {
-        /**
-         * 
-         */
         private static final long serialVersionUID = 42L;
         private final Comparable lowerBound;
         private final Comparable upperBound;

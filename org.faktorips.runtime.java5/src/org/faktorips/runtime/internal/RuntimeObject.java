@@ -51,16 +51,10 @@ public class RuntimeObject implements IRuntimeObject {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Set<String> getExtensionPropertyIds() {
         return extPropertyValues.keySet();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Object getExtensionPropertyValue(String propertyId) {
         return extPropertyValues.get(propertyId);
     }

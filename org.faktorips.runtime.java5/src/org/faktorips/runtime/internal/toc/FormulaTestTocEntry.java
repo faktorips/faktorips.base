@@ -45,16 +45,10 @@ public class FormulaTestTocEntry extends TestCaseTocEntry {
         this.versionId = versionId;
     }
 
-    /**
-     * @return Returns the kindId.
-     */
     public String getKindId() {
         return kindId;
     }
 
-    /**
-     * @return Returns the versionId.
-     */
     public String getVersionId() {
         return versionId;
     }

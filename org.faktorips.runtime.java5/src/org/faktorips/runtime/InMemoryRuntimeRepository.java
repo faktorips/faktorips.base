@@ -128,7 +128,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     /**
      * InMemoryRepository also searches for tables that are instances of subclasses of the given
      * tableClass. This allows to mock a table class for testing purposes.
-     * 
+     * <p>
      * {@inheritDoc}
      */
     @Override

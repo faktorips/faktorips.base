@@ -47,16 +47,10 @@ public class ValidationContext implements IValidationContext {
         this(Locale.getDefault());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Locale getLocale() {
         return locale;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public Object getValue(String propertyName) {
         return propertyValues.get(propertyName);
     }
@@ -70,4 +64,5 @@ public class ValidationContext implements IValidationContext {
     public void setValue(String propertyName, Object value) {
         propertyValues.put(propertyName, value);
     }
+
 }

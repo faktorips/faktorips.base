@@ -56,9 +56,6 @@ public class TableSaxHandler extends DefaultHandler {
         this.productRepository = productRepository;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if (ROW.equals(qName)) {
@@ -73,9 +70,6 @@ public class TableSaxHandler extends DefaultHandler {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         if (ROW.equals(qName)) {
@@ -86,9 +80,6 @@ public class TableSaxHandler extends DefaultHandler {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void characters(char[] buf, int offset, int len) throws SAXException {
         if (!insideValueNode) {

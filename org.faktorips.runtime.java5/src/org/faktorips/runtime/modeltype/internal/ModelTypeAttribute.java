@@ -41,10 +41,6 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
         return modelType;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     */
     public Class<?> getDatatype() throws ClassNotFoundException {
         if (datatype == null) {
             datatype = findDatatype();
@@ -52,30 +48,18 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
         return datatype;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public AttributeType getAttributeType() {
         return attributeType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ValueSetType getValueSetType() {
         return valueSetType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isProductRelevant() {
         return isProductRelevant;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void initFromXml(XMLStreamReader parser) throws XMLStreamException {
         super.initFromXml(parser);
@@ -144,9 +128,6 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
         return loadClass(actualName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getName());

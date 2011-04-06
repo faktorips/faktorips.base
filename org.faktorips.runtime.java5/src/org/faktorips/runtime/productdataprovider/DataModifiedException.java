@@ -20,9 +20,6 @@ package org.faktorips.runtime.productdataprovider;
  */
 public class DataModifiedException extends Exception {
 
-    /**
-     * Comment for <code>serialVersionUID</code>
-     */
     private static final long serialVersionUID = 1L;
     public final String oldVersion;
     public final String newVersion;

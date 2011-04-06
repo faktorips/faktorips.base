@@ -127,9 +127,6 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
         return productDataVersion;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         StringBuffer buf = new StringBuffer("TOC");

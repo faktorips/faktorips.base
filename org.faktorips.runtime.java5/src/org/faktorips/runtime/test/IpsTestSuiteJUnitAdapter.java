@@ -59,4 +59,5 @@ public class IpsTestSuiteJUnitAdapter extends TestSuite {
             addTest(createJUnitTest(ipsTest));
         }
     }
+
 }

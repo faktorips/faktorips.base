@@ -28,9 +28,6 @@ import java.util.Vector;
  */
 public class IpsPropertyChangeSupport extends PropertyChangeSupport {
 
-    /**
-     * Generated <code>serialVersionUID</code>
-     */
     private static final long serialVersionUID = -236185652576376253L;
 
     private final Object sourceBean;

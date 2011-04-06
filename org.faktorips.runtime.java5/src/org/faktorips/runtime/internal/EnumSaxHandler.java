@@ -38,9 +38,6 @@ public class EnumSaxHandler extends DefaultHandler {
 
     private StringBuilder enumValue = new StringBuilder();
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         if (ENUM_VALUE_NAME.equals(qName)) {
@@ -54,9 +51,6 @@ public class EnumSaxHandler extends DefaultHandler {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if (ENUM_VALUE_NAME.equals(qName)) {
@@ -71,9 +65,6 @@ public class EnumSaxHandler extends DefaultHandler {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void characters(char[] buf, int offset, int len) throws SAXException {
         if (nextAttributeValue) {
@@ -89,4 +80,5 @@ public class EnumSaxHandler extends DefaultHandler {
     public List<List<String>> getEnumValueList() {
         return enumValues;
     }
+
 }

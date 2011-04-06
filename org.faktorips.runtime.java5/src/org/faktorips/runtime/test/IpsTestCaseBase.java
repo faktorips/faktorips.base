@@ -25,9 +25,6 @@ public abstract class IpsTestCaseBase extends IpsTest2 {
         super(qName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run(IpsTestResult result) {
         result.run(this);
@@ -419,4 +416,5 @@ public abstract class IpsTestCaseBase extends IpsTest2 {
         IpsTestFailure failure = new IpsTestFailure(this, expectedValue, actualValue, testObject, attribute, message);
         result.addFailure(failure);
     }
+
 }

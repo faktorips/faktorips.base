@@ -50,9 +50,6 @@ public class CmdLineIpsTestRunner extends AbstractIpsTestRunner {
         setRepositoryPackages(repositoryPackages);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected List<IRuntimeRepository> createRepositories() throws ParserConfigurationException {
         List<String> repositoryNameList = getRepositoryListFromInputString(getRepositoryPackages());
@@ -63,23 +60,14 @@ public class CmdLineIpsTestRunner extends AbstractIpsTestRunner {
         return runtimeRepositories;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void testStarted(IpsTest2 test) {
         System.out.println("Test " + test.getQualifiedName() + " started.");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void testFinished(IpsTest2 test) {
         System.out.println("Test " + test.getQualifiedName() + " finished.");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void testFailureOccured(IpsTestFailure failure) {
         System.out.println("Test failed. Expected " + failure.getExpectedValue() + " but was "
                 + failure.getActualValue());

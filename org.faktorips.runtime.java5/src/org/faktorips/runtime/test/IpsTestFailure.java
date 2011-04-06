@@ -88,7 +88,7 @@ public class IpsTestFailure {
 
     /**
      * Returns the name of the attribute in the test object where the actual value is not the one
-     * exptected. If this is an error the method returns <code>null</code>.
+     * expected. If this is an error the method returns <code>null</code>.
      */
     public String getTestedAttribute() {
         return testedAttribute;
@@ -124,7 +124,7 @@ public class IpsTestFailure {
     }
 
     /**
-     * Returns the actual value found after exectuing the business logic.
+     * Returns the actual value found after executing the business logic.
      */
     public Object getActualValue() {
         return actualValue;
@@ -139,11 +139,12 @@ public class IpsTestFailure {
     }
 
     /**
-     * Returns a string representation of the ips test failure.
+     * Returns a string representation of the IPS test failure.
      */
     @Override
     public String toString() {
         return "Failure in: " + testCase.getQualifiedName() + ", Object: " + testObject + ", Attribute: "
                 + testedAttribute + ", Actual value: " + actualValue + ", Expected value: " + expectedValue;
     }
+
 }

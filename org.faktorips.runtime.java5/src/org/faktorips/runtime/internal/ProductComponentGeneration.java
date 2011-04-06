@@ -52,9 +52,6 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
         this.productCmpt = productCmpt;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public final IProductComponent getProductComponent() {
         return productCmpt;
     }
@@ -67,9 +64,6 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
         return getRepository().getNextProductComponentGeneration(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IRuntimeRepository getRepository() {
         return productCmpt.getRepository();
     }
@@ -78,9 +72,6 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
         return validFrom.toDate(zone).getTime();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public final Date getValidFrom(TimeZone zone) {
         return validFrom.toDate(zone);
     }
@@ -102,9 +93,6 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
         validFrom = newValidFrom;
     }
 
-    /**
-     * @return Returns the formulaEvaluator.
-     */
     public IFormulaEvaluator getFormulaEvaluator() {
         return formulaEvaluator;
     }
@@ -305,9 +293,6 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
         cardinalityMap.put(targetId, new IntegerRange(minCardinality, maxCardinality));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return getProductComponent().getId() + "-" + validFrom;
@@ -320,17 +305,12 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
         this.productCmpt = productCmpt;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IProductComponentLink<? extends IProductComponent> getLink(String linkName, IProductComponent target) {
         throw new RuntimeException("Not implemented yet.");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public List<IProductComponentLink<? extends IProductComponent>> getLinks() {
         throw new RuntimeException("Not implemented yet.");
     }
+
 }

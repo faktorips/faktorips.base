@@ -103,9 +103,6 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         enumXmlAdapterTocEntryMap = new HashMap<String, EnumXmlAdapterTocEntry>(tocSize / 4);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void internalAddEntry(TocEntryObject entry) {
         if (entry instanceof ProductCmptTocEntry) {
@@ -153,25 +150,16 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         throw new IllegalArgumentException("Unknown entry type " + entry);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<ProductCmptTocEntry> getProductCmptTocEntries() {
         return new ArrayList<ProductCmptTocEntry>(pcIdTocEntryMap.values());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ProductCmptTocEntry getProductCmptTocEntry(String id) {
         return pcIdTocEntryMap.get(id);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ProductCmptTocEntry getProductCmptTocEntry(String kindId, String versionId) {
         if (kindId == null) {
@@ -189,9 +177,6 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<ProductCmptTocEntry> getProductCmptTocEntries(String kindId) {
         List<ProductCmptTocEntry> result = new ArrayList<ProductCmptTocEntry>();
@@ -211,57 +196,36 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         return versions;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<TableContentTocEntry> getTableTocEntries() {
         return new ArrayList<TableContentTocEntry>(tableContentNameTocEntryMap.values());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public TableContentTocEntry getTableTocEntryByClassname(String implementationClass) {
         return tableImplClassTocEntryMap.get(implementationClass);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public TableContentTocEntry getTableTocEntryByQualifiedTableName(String qualifiedTableName) {
         return tableContentNameTocEntryMap.get(qualifiedTableName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<TestCaseTocEntry> getTestCaseTocEntries() {
         return new ArrayList<TestCaseTocEntry>(testCaseNameTocEntryMap.values());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public TestCaseTocEntry getTestCaseTocEntryByQName(String qName) {
         return testCaseNameTocEntryMap.get(qName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Set<ModelTypeTocEntry> getModelTypeTocEntries() {
         return new HashSet<ModelTypeTocEntry>(modelTypeNameTocEntryMap.values());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public EnumContentTocEntry getEnumContentTocEntry(String className) {
         return enumContentImplClassTocEntryMap.get(className);

@@ -277,37 +277,22 @@ public class ModelObjectDelta implements IModelObjectDelta {
         children.add(childDelta);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IModelObject getOriginalObject() {
         return original;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IModelObject getReferenceObject() {
         return referenceObject;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int getKind() {
         return kind;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int getKindOfChange() {
         return kindOfChange;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String getAssociation() {
         return association;
     }
@@ -379,23 +364,14 @@ public class ModelObjectDelta implements IModelObjectDelta {
         kindOfChange |= PROPERTY_CHANGED;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isClassChanged() {
         return (kindOfChange & CLASS_CHANGED) > 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isPropertyChanged() {
         return (kindOfChange & PROPERTY_CHANGED) > 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public List<String> getChangedProperties() {
         if (changedProperties == null) {
             return new ArrayList<String>(0);
@@ -403,9 +379,6 @@ public class ModelObjectDelta implements IModelObjectDelta {
         return new ArrayList<String>(changedProperties);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isPropertyChanged(String propertyName) {
         if (changedProperties == null || propertyName == null) {
             return false;
@@ -420,72 +393,42 @@ public class ModelObjectDelta implements IModelObjectDelta {
         kind |= MOVED;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isMoved() {
         return (kind & MOVED) > 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isDifferentObjectAtPosition() {
         return (kind & DIFFERENT_OBJECT_AT_POSITION) > 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isAdded() {
         return (kind & ADDED) > 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isChanged() {
         return (kind & CHANGED) > 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isChildChanged() {
         return (kindOfChange & CHILD_CHANGED) > 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isEmpty() {
         return kind == EMPTY;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isRemoved() {
         return (kind & REMOVED) > 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isStructureChanged() {
         return (kindOfChange & STRUCTURE_CHANGED) > 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public List<IModelObjectDelta> getChildDeltas() {
         return Collections.unmodifiableList(children);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public List<IModelObjectDelta> getChildDeltas(int kind) {
         final List<IModelObjectDelta> childrenOfKind = new ArrayList<IModelObjectDelta>();
         for (IModelObjectDelta child : children) {
@@ -496,9 +439,6 @@ public class ModelObjectDelta implements IModelObjectDelta {
         return childrenOfKind;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void accept(IModelObjectDeltaVisitor visitor) {
         if (visitor.visit(this)) {
             for (int i = 0; i < children.size(); i++) {
@@ -507,9 +447,6 @@ public class ModelObjectDelta implements IModelObjectDelta {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer();

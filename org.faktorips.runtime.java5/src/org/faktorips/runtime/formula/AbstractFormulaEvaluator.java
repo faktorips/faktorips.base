@@ -38,9 +38,6 @@ public abstract class AbstractFormulaEvaluator implements IFormulaEvaluator {
         this.productCmptGeneration = gen;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IProductComponentGeneration getProductComponentGeneration() {
         return productCmptGeneration;
     }

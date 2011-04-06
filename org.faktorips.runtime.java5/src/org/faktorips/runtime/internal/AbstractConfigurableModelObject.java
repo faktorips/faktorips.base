@@ -65,9 +65,6 @@ public abstract class AbstractConfigurableModelObject extends AbstractModelObjec
         this.productCmptGeneration = null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public IProductComponent getProductComponent() {
         return productCmpt;
     }
@@ -139,9 +136,6 @@ public abstract class AbstractConfigurableModelObject extends AbstractModelObjec
         // subclasses may override this method
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void initFromXml(Element objectEl,
             boolean initWithProductDefaultsBeforeReadingXmlData,
@@ -150,9 +144,6 @@ public abstract class AbstractConfigurableModelObject extends AbstractModelObjec
         initFromXml(objectEl, initWithProductDefaultsBeforeReadingXmlData, productRepository, store, null, null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void initFromXml(Element objectEl,
             boolean initWithProductDefaultsBeforeReadingXmlData,
@@ -162,9 +153,6 @@ public abstract class AbstractConfigurableModelObject extends AbstractModelObjec
         initFromXml(objectEl, initWithProductDefaultsBeforeReadingXmlData, productRepository, store, xmlCallback, "");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void initFromXml(Element objectEl,
             boolean initWithProductDefaultsBeforeReadingXmlData,
@@ -184,4 +172,5 @@ public abstract class AbstractConfigurableModelObject extends AbstractModelObjec
         super.initFromXml(objectEl, initWithProductDefaultsBeforeReadingXmlData, productRepository, store, xmlCallback,
                 currPath);
     }
+
 }

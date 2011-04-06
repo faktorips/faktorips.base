@@ -141,17 +141,11 @@ public class DateTime implements Comparable<DateTime>, Serializable {
         return year + "-" + (month < 10 ? "0" + month : "" + month) + "-" + (day < 10 ? "0" + day : "" + day);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return hashCode;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof DateTime)) {
@@ -167,9 +161,6 @@ public class DateTime implements Comparable<DateTime>, Serializable {
         return toIsoFormat() + ' ' + hour + ':' + minute + ':' + second;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public int compareTo(DateTime other) {
         if (year != other.year) {
             return year - other.year;
@@ -188,4 +179,5 @@ public class DateTime implements Comparable<DateTime>, Serializable {
         }
         return second - other.second;
     }
+
 }

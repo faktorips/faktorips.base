@@ -90,16 +90,10 @@ public class DefaultCacheFactory extends AbstractCacheFactory implements ICacheF
         return new Memoizer<K, V>(computable, initSize, laodFactor, concurrencyLevel);
     }
 
-    /**
-     * @param concurrencyLevel The concurrencyLevel to set.
-     */
     public void setConcurrencyLevel(int concurrencyLevel) {
         this.concurrencyLevel = concurrencyLevel;
     }
 
-    /**
-     * @return Returns the concurrencyLevel.
-     */
     public int getConcurrencyLevel() {
         return concurrencyLevel;
     }

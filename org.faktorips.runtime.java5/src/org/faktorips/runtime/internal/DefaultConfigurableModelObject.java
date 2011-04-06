@@ -69,9 +69,6 @@ public class DefaultConfigurableModelObject extends AbstractConfigurableModelObj
         this.effectiveFrom = effectiveFrom;
     }
 
-    /**
-     * Overridden.
-     */
     public Calendar getEffectiveFromAsCalendar() {
         return effectiveFrom;
     }
@@ -95,26 +92,17 @@ public class DefaultConfigurableModelObject extends AbstractConfigurableModelObj
         // empty default implementation
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected AbstractModelObject createChildFromXml(Element childEl) {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IUnresolvedReference createUnresolvedReference(Object objectId, String targetRole, String targetId)
             throws Exception {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void removeChildModelObjectInternal(IModelObject child) {
         // empty default implementation
