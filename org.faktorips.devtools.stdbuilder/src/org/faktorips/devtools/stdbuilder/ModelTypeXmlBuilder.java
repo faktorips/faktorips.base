@@ -47,6 +47,8 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProductCmptTypeAttribute;
+import org.faktorips.runtime.modeltype.IModelElement;
+import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute;
 import org.faktorips.runtime.modeltype.IModelTypeLabel;
@@ -73,15 +75,16 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
         StandardBuilderSet stdBuilderSet = (StandardBuilderSet)getBuilderSet();
         IType type = (IType)ipsSrcFile.getIpsObject();
         doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
-        Element modelTypeEl = doc.createElement("ModelType");
-        modelTypeEl.setAttribute("name", type.getQualifiedName());
-        modelTypeEl.setAttribute("class", stdBuilderSet.getGenerator(type).getQualifiedName(false));
+        Element modelTypeEl = doc.createElement(IModelType.XML_TAG);
+        modelTypeEl.setAttribute(IModelElement.PROPERTY_NAME, type.getQualifiedName());
+        modelTypeEl.setAttribute(IModelType.PROPERTY_CLASS, stdBuilderSet.getGenerator(type).getQualifiedName(false));
         modelTypeEl.setAttribute(XmlUtil.XML_ATTRIBUTE_SPACE, XmlUtil.XML_ATTRIBUTE_SPACE_VALUE);
         IType supertype = type.findSupertype(getIpsProject());
         if (supertype != null) {
-            modelTypeEl.setAttribute("supertype", stdBuilderSet.getGenerator(supertype).getQualifiedName(false));
+            modelTypeEl.setAttribute(IModelType.PROPERTY_SUPERTYPE, stdBuilderSet.getGenerator(supertype)
+                    .getQualifiedName(false));
         } else {
-            modelTypeEl.setAttribute("supertype", null);
+            modelTypeEl.setAttribute(IModelType.PROPERTY_SUPERTYPE, null);
         }
         addLabels(type, modelTypeEl);
         addExtensionProperties(modelTypeEl, type);
@@ -104,8 +107,9 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
                 if (association.isValid(model.getIpsProject())) {
                     Element modelTypeAssociation = doc.createElement(IModelTypeAssociation.XML_TAG);
                     modelTypeAssociations.appendChild(modelTypeAssociation);
-                    modelTypeAssociation.setAttribute("name", association.getTargetRoleSingular());
-                    modelTypeAssociation.setAttribute("namePlural", association.getTargetRolePlural());
+                    modelTypeAssociation.setAttribute(IModelElement.PROPERTY_NAME, association.getTargetRoleSingular());
+                    modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_NAME_PLURAL,
+                            association.getTargetRolePlural());
                     String targetName = association.getTarget();
                     if (targetName != null && targetName.length() > 0) {
                         if (model instanceof IPolicyCmptType) {
@@ -120,7 +124,7 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
                                             getIpsProject().findProductCmptType(targetName)).getQualifiedName(false));
                         }
                     } else {
-                        modelTypeAssociation.setAttribute("target", null);
+                        modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_TARGET, null);
                     }
                     modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_MIN_CARDINALITY,
                             Integer.toString(association.getMinCardinality()));
@@ -168,7 +172,7 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
                 if (attribute.isValid(model.getIpsProject())) {
                     Element modelTypeAttribute = doc.createElement(IModelTypeAttribute.XML_TAG);
                     modelTypeAttributes.appendChild(modelTypeAttribute);
-                    modelTypeAttribute.setAttribute("name", attribute.getName());
+                    modelTypeAttribute.setAttribute(IModelElement.PROPERTY_NAME, attribute.getName());
                     if (model instanceof IPolicyCmptType) {
                         GenPolicyCmptTypeAttribute genPolicyCmptTypeAttribute = ((StandardBuilderSet)getBuilderSet())
                                 .getGenerator((IPolicyCmptType)model).getGenerator((IPolicyCmptTypeAttribute)attribute);
@@ -222,17 +226,17 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
     private void addExtensionProperties(Element modelElement, IExtensionPropertyAccess element) {
         IExtensionPropertyDefinition[] extensionPropertyDefinitions = getIpsProject().getIpsModel()
                 .getExtensionPropertyDefinitions(element.getClass(), true);
-        Element extensionProperties = doc.createElement("ExtensionProperties");
+        Element extensionProperties = doc.createElement(IModelElement.EXTENSION_PROPERTIES_XML_WRAPPER_TAG);
         modelElement.appendChild(extensionProperties);
         for (IExtensionPropertyDefinition extensionPropertyDefinition : extensionPropertyDefinitions) {
             String propertyId = extensionPropertyDefinition.getPropertyId();
             if (extensionPropertyDefinition instanceof StringExtensionPropertyDefinition
                     && element.isExtPropertyDefinitionAvailable(propertyId)) {
                 // TODO enable non-String extension properties
-                Element extensionProperty = doc.createElement("Value");
-                extensionProperty.setAttribute("isNull",
+                Element extensionProperty = doc.createElement(IModelElement.EXTENSION_PROPERTIES_XML_TAG);
+                extensionProperty.setAttribute(IModelElement.EXTENSION_PROPERTIES_PROPERTY_NULL,
                         Boolean.toString(element.getExtPropertyValue(propertyId) == null));
-                extensionProperty.setAttribute("id", propertyId);
+                extensionProperty.setAttribute(IModelElement.EXTENSION_PROPERTIES_PROPERTY_ID, propertyId);
                 if (element.getExtPropertyValue(propertyId) != null) {
                     extensionProperty.appendChild(doc.createCDATASection(element.getExtPropertyValue(propertyId)
                             .toString()));

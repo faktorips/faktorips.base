@@ -121,16 +121,16 @@ public class ModelType extends AbstractModelElement implements IModelType {
     public void initFromXml(XMLStreamReader parser) throws XMLStreamException {
         super.initFromXml(parser);
         for (int i = 0; i < parser.getAttributeCount(); i++) {
-            if (parser.getAttributeLocalName(i).equals("class")) {
+            if (parser.getAttributeLocalName(i).equals(PROPERTY_CLASS)) {
                 this.className = parser.getAttributeValue(i);
-            } else if (parser.getAttributeLocalName(i).equals("supertype")) {
+            } else if (parser.getAttributeLocalName(i).equals(PROPERTY_SUPERTYPE)) {
                 this.superTypeName = parser.getAttributeValue(i);
             }
         }
         for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
             switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
-                    if (parser.getLocalName().equals("ExtensionProperties")) {
+                    if (parser.getLocalName().equals(EXTENSION_PROPERTIES_XML_WRAPPER_TAG)) {
                         initExtPropertiesFromXml(parser);
                     } else if (parser.getLocalName().equals(IModelTypeAttribute.XML_WRAPPER_TAG)) {
                         initModelTypeAttributesFromXml(parser);

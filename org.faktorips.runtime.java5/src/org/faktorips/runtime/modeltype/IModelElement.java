@@ -28,6 +28,16 @@ import org.faktorips.runtime.IRuntimeRepository;
  */
 public interface IModelElement {
 
+    public static final String PROPERTY_NAME = "name";
+
+    public static final String EXTENSION_PROPERTIES_XML_TAG = "Value";
+
+    public static final String EXTENSION_PROPERTIES_XML_WRAPPER_TAG = "ExtensionProperties";
+
+    public static final String EXTENSION_PROPERTIES_PROPERTY_ID = "id";
+
+    public static final String EXTENSION_PROPERTIES_PROPERTY_NULL = "isNull";
+
     /**
      * @param propertyId the id of the desired extension property. Returns the value of the
      *            extension property defined by the given <code>propertyId</code> or

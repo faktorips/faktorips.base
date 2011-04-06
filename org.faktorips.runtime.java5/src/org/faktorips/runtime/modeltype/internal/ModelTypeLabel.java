@@ -58,12 +58,12 @@ public class ModelTypeLabel extends AbstractModelElement implements IModelTypeLa
     @Override
     public void initFromXml(XMLStreamReader parser) throws XMLStreamException {
         for (int i = 0; i < parser.getAttributeCount(); i++) {
-            if (parser.getAttributeLocalName(i).equals(IModelTypeLabel.PROPERTY_LOCALE)) {
+            if (parser.getAttributeLocalName(i).equals(PROPERTY_LOCALE)) {
                 String localeCode = parser.getAttributeValue(i);
                 locale = localeCode.length() == 0 ? null : new Locale(localeCode);
-            } else if (parser.getAttributeLocalName(i).equals(IModelTypeLabel.PROPERTY_VALUE)) {
+            } else if (parser.getAttributeLocalName(i).equals(PROPERTY_VALUE)) {
                 value = parser.getAttributeValue(i);
-            } else if (parser.getAttributeLocalName(i).equals(IModelTypeLabel.PROPERTY_PLURAL_VALUE)) {
+            } else if (parser.getAttributeLocalName(i).equals(PROPERTY_PLURAL_VALUE)) {
                 pluralValue = parser.getAttributeValue(i);
             }
         }

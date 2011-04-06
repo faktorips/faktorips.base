@@ -73,7 +73,7 @@ public class AbstractModelElement implements IModelElement {
 
     public void initFromXml(XMLStreamReader parser) throws XMLStreamException {
         for (int i = 0; i < parser.getAttributeCount(); i++) {
-            if (parser.getAttributeLocalName(i).equals("name")) {
+            if (parser.getAttributeLocalName(i).equals(PROPERTY_NAME)) {
                 this.name = parser.getAttributeValue(i);
             }
         }
@@ -118,12 +118,12 @@ public class AbstractModelElement implements IModelElement {
         for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
             switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
-                    if (parser.getLocalName().equals("Value")) {
+                    if (parser.getLocalName().equals(EXTENSION_PROPERTIES_XML_TAG)) {
                         initExtPropertyValueFromXml(parser);
                     }
                     break;
                 case XMLStreamConstants.END_ELEMENT:
-                    if (parser.getLocalName().equals("ExtensionProperties")) {
+                    if (parser.getLocalName().equals(EXTENSION_PROPERTIES_XML_WRAPPER_TAG)) {
                         return;
                     }
                     break;
@@ -136,9 +136,9 @@ public class AbstractModelElement implements IModelElement {
         boolean isNull = true;
         StringBuilder value = new StringBuilder();
         for (int i = 0; i < parser.getAttributeCount(); i++) {
-            if (parser.getAttributeLocalName(i).equals("id")) {
+            if (parser.getAttributeLocalName(i).equals(EXTENSION_PROPERTIES_PROPERTY_ID)) {
                 id = parser.getAttributeValue(i);
-            } else if (parser.getAttributeLocalName(i).equals("isNull")) {
+            } else if (parser.getAttributeLocalName(i).equals(EXTENSION_PROPERTIES_PROPERTY_NULL)) {
                 isNull = Boolean.valueOf(parser.getAttributeValue(i)).booleanValue();
             }
         }
@@ -154,7 +154,7 @@ public class AbstractModelElement implements IModelElement {
                         value.append(parser.getText().trim());
                         break;
                     case XMLStreamConstants.END_ELEMENT:
-                        if (parser.getLocalName().equals("Value")) {
+                        if (parser.getLocalName().equals(EXTENSION_PROPERTIES_XML_TAG)) {
                             setExtensionPropertyValue(id, value.toString());
                             return;
                         }

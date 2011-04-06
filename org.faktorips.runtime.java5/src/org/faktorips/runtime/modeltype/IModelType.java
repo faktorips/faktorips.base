@@ -21,6 +21,12 @@ import java.util.List;
  */
 public interface IModelType extends IModelElement {
 
+    public static final String XML_TAG = "ModelType";
+
+    public static final String PROPERTY_CLASS = "class";
+
+    public static final String PROPERTY_SUPERTYPE = "supertype";
+
     /**
      * Returns the Java class for this type.
      * 

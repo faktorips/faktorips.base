@@ -78,29 +78,28 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
     public void initFromXml(XMLStreamReader parser) throws XMLStreamException {
         super.initFromXml(parser);
         for (int i = 0; i < parser.getAttributeCount(); i++) {
-            if (parser.getAttributeLocalName(i).equals("namePlural")) {
+            if (parser.getAttributeLocalName(i).equals(IModelTypeAssociation.PROPERTY_NAME_PLURAL)) {
                 namePlural = parser.getAttributeValue(i);
                 if (namePlural.length() == 0) {
                     namePlural = null;
                 }
-            } else if (parser.getAttributeLocalName(i).equals(IModelTypeAssociation.PROPERTY_TARGET)) {
+            } else if (parser.getAttributeLocalName(i).equals(PROPERTY_TARGET)) {
                 targetJavaClassName = parser.getAttributeValue(i);
-            } else if (parser.getAttributeLocalName(i).equals(IModelTypeAssociation.PROPERTY_MIN_CARDINALITY)) {
+            } else if (parser.getAttributeLocalName(i).equals(PROPERTY_MIN_CARDINALITY)) {
                 minCardinality = Integer.parseInt(parser.getAttributeValue(i));
-            } else if (parser.getAttributeLocalName(i).equals(IModelTypeAssociation.PROPERTY_MAX_CARDINALITY)) {
+            } else if (parser.getAttributeLocalName(i).equals(PROPERTY_MAX_CARDINALITY)) {
                 maxCardinality = Integer.parseInt(parser.getAttributeValue(i));
-            } else if (parser.getAttributeLocalName(i).equals(IModelTypeAssociation.PROPERTY_ASSOCIATION_TYPE)) {
+            } else if (parser.getAttributeLocalName(i).equals(PROPERTY_ASSOCIATION_TYPE)) {
                 associationType = AssociationType.valueOf(parser.getAttributeValue(i));
-            } else if (parser.getAttributeLocalName(i).equals(IModelTypeAssociation.PROPERTY_PRODUCT_RELEVANT)) {
+            } else if (parser.getAttributeLocalName(i).equals(PROPERTY_PRODUCT_RELEVANT)) {
                 isProductRelevant = Boolean.valueOf(parser.getAttributeValue(i));
-            } else if (parser.getAttributeLocalName(i).equals(IModelTypeAssociation.PROPERTY_DERIVED_UNION)) {
+            } else if (parser.getAttributeLocalName(i).equals(PROPERTY_DERIVED_UNION)) {
                 isDerivedUnion = Boolean.valueOf(parser.getAttributeValue(i));
-            } else if (parser.getAttributeLocalName(i).equals(IModelTypeAssociation.PROPERTY_SUBSET_OF_A_DERIVED_UNION)) {
+            } else if (parser.getAttributeLocalName(i).equals(PROPERTY_SUBSET_OF_A_DERIVED_UNION)) {
                 isSubsetOfADerivedUnion = Boolean.valueOf(parser.getAttributeValue(i));
-            } else if (parser.getAttributeLocalName(i).equals(
-                    IModelTypeAssociation.PROPERTY_TARGET_ROLE_PLURAL_REQUIRED)) {
+            } else if (parser.getAttributeLocalName(i).equals(PROPERTY_TARGET_ROLE_PLURAL_REQUIRED)) {
                 isTargetRolePluralRequired = Boolean.valueOf(parser.getAttributeValue(i));
-            } else if (parser.getAttributeLocalName(i).equals(IModelTypeAssociation.PROPERTY_INVERSE_ASSOCIATION)) {
+            } else if (parser.getAttributeLocalName(i).equals(PROPERTY_INVERSE_ASSOCIATION)) {
                 inverseAssociation = parser.getAttributeValue(i);
             }
         }

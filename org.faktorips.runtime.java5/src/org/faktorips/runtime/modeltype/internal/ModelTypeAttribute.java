@@ -69,13 +69,13 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
     public void initFromXml(XMLStreamReader parser) throws XMLStreamException {
         super.initFromXml(parser);
         for (int i = 0; i < parser.getAttributeCount(); i++) {
-            if (parser.getAttributeLocalName(i).equals(IModelTypeAttribute.PROPERTY_DATATYPE)) {
+            if (parser.getAttributeLocalName(i).equals(PROPERTY_DATATYPE)) {
                 datatypeName = parser.getAttributeValue(i);
-            } else if (parser.getAttributeLocalName(i).equals(IModelTypeAttribute.PROPERTY_VALUE_SET_TYPE)) {
+            } else if (parser.getAttributeLocalName(i).equals(PROPERTY_VALUE_SET_TYPE)) {
                 valueSetType = ValueSetType.valueOf(parser.getAttributeValue(i));
-            } else if (parser.getAttributeLocalName(i).equals(IModelTypeAttribute.PROPERTY_ATTRIBUTE_TYPE)) {
+            } else if (parser.getAttributeLocalName(i).equals(PROPERTY_ATTRIBUTE_TYPE)) {
                 attributeType = AttributeType.forName(parser.getAttributeValue(i));
-            } else if (parser.getAttributeLocalName(i).equals(IModelTypeAttribute.PROPERTY_PRODUCT_RELEVANT)) {
+            } else if (parser.getAttributeLocalName(i).equals(PROPERTY_PRODUCT_RELEVANT)) {
                 isProductRelevant = Boolean.valueOf(parser.getAttributeValue(i));
             }
         }

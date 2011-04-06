@@ -23,6 +23,8 @@ public interface IModelTypeAssociation extends IModelElement {
 
     public static final String XML_WRAPPER_TAG = "ModelTypeAssociations";
 
+    public static final String PROPERTY_NAME_PLURAL = "namePlural";
+
     public static final String PROPERTY_TARGET = "target";
 
     public static final String PROPERTY_MIN_CARDINALITY = "minCardinality";
