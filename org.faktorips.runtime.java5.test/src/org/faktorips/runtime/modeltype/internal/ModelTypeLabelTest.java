@@ -23,24 +23,24 @@ import java.util.Locale;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.faktorips.runtime.modeltype.ILabel;
+import org.faktorips.runtime.modeltype.IModelTypeLabel;
 import org.faktorips.runtime.modeltype.IModelElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-public class LabelTest {
+public class ModelTypeLabelTest {
 
     @Mock
     private IModelElement parentModelElement;
 
-    private ILabel label;
+    private IModelTypeLabel label;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        label = new Label(parentModelElement);
+        label = new ModelTypeLabel(parentModelElement);
     }
 
     @Test

@@ -147,7 +147,7 @@ r1=supertype</panel_attributes>
       <w>270</w>
       <h>150</h>
     </coordinates>
-    <panel_attributes>Label
+    <panel_attributes>ModelTypeLabel
 --
 +locale : Locale
 +value : String

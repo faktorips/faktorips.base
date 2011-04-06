@@ -24,7 +24,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.faktorips.runtime.IRuntimeRepository;
-import org.faktorips.runtime.modeltype.ILabel;
+import org.faktorips.runtime.modeltype.IModelTypeLabel;
 import org.faktorips.runtime.modeltype.IModelElement;
 
 /**
@@ -39,14 +39,14 @@ public class AbstractModelElement implements IModelElement {
 
     private IRuntimeRepository repository;
 
-    private Map<Locale, ILabel> labelsByLocale = new HashMap<Locale, ILabel>();
+    private Map<Locale, IModelTypeLabel> labelsByLocale = new HashMap<Locale, IModelTypeLabel>();
 
     public AbstractModelElement(IRuntimeRepository repository) {
         this.repository = repository;
     }
 
     public String getLabel(Locale locale) {
-        ILabel label = labelsByLocale.get(locale);
+        IModelTypeLabel label = labelsByLocale.get(locale);
         return label == null ? getName() : label.getValue();
     }
 
@@ -81,19 +81,19 @@ public class AbstractModelElement implements IModelElement {
             switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
                     if (parser.getLocalName().equals("Labels")) {
-                        initLabelsFromXml(parser);
+                        initModelTypeLabelsFromXml(parser);
                     }
                     break;
             }
         }
     }
 
-    private void initLabelsFromXml(XMLStreamReader parser) throws XMLStreamException {
+    private void initModelTypeLabelsFromXml(XMLStreamReader parser) throws XMLStreamException {
         for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
             switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
                     if (parser.getLocalName().equals("Label")) {
-                        ILabel label = new Label(this);
+                        IModelTypeLabel label = new ModelTypeLabel(this);
                         label.initFromXml(parser);
                         labelsByLocale.put(label.getLocale(), label);
                     }
