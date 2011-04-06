@@ -57,7 +57,6 @@ public class Label extends AbstractModelElement implements ILabel {
 
     @Override
     public void initFromXml(XMLStreamReader parser) throws XMLStreamException {
-        super.initFromXml(parser);
         for (int i = 0; i < parser.getAttributeCount(); i++) {
             if (parser.getAttributeLocalName(i).equals("locale")) {
                 String localeCode = parser.getAttributeValue(i);
