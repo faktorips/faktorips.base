@@ -47,6 +47,7 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProductCmptTypeAttribute;
+import org.faktorips.runtime.modeltype.IModelTypeAttribute;
 import org.faktorips.runtime.modeltype.IModelTypeLabel;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -157,34 +158,37 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
     private void addAttributes(IType model, Element modelType) throws CoreException {
         List<? extends IAttribute> attributes = model.getAttributes();
         if (attributes.size() > 0) {
-            Element modelTypeAttributes = doc.createElement("ModelTypeAttributes");
+            Element modelTypeAttributes = doc.createElement(IModelTypeAttribute.XML_WRAPPER_TAG);
             modelType.appendChild(modelTypeAttributes);
             for (IAttribute attribute : attributes) {
                 if (attribute.isValid(model.getIpsProject())) {
-                    Element modelTypeAttribute = doc.createElement("ModelTypeAttribute");
+                    Element modelTypeAttribute = doc.createElement(IModelTypeAttribute.XML_TAG);
                     modelTypeAttributes.appendChild(modelTypeAttribute);
                     modelTypeAttribute.setAttribute("name", attribute.getName());
                     if (model instanceof IPolicyCmptType) {
                         GenPolicyCmptTypeAttribute genPolicyCmptTypeAttribute = ((StandardBuilderSet)getBuilderSet())
                                 .getGenerator((IPolicyCmptType)model).getGenerator((IPolicyCmptTypeAttribute)attribute);
                         if (genPolicyCmptTypeAttribute != null) {
-                            modelTypeAttribute.setAttribute("datatype", genPolicyCmptTypeAttribute.getDatatype()
-                                    .getJavaClassName());
+                            modelTypeAttribute.setAttribute(IModelTypeAttribute.PROPERTY_DATATYPE,
+                                    genPolicyCmptTypeAttribute.getDatatype().getJavaClassName());
                         }
                     } else if (model instanceof IProductCmptType) {
                         GenProductCmptTypeAttribute genAttribute = ((StandardBuilderSet)getBuilderSet()).getGenerator(
                                 (IProductCmptType)model).getGenerator((IProductCmptTypeAttribute)attribute);
                         if (genAttribute != null) {
-                            modelTypeAttribute.setAttribute("datatype", genAttribute.getDatatype().getJavaClassName());
+                            modelTypeAttribute.setAttribute(IModelTypeAttribute.PROPERTY_DATATYPE, genAttribute
+                                    .getDatatype().getJavaClassName());
                         }
                     } else {
-                        modelTypeAttribute.setAttribute("datatype", null);
+                        modelTypeAttribute.setAttribute(IModelTypeAttribute.PROPERTY_DATATYPE, null);
                     }
-                    modelTypeAttribute.setAttribute("valueSetType", getValueSetType(attribute));
-                    modelTypeAttribute.setAttribute("attributeType", getAttributeType(attribute));
+                    modelTypeAttribute.setAttribute(IModelTypeAttribute.PROPERTY_VALUE_SET_TYPE,
+                            getValueSetType(attribute));
+                    modelTypeAttribute.setAttribute(IModelTypeAttribute.PROPERTY_ATTRIBUTE_TYPE,
+                            getAttributeType(attribute));
                     modelTypeAttribute
                             .setAttribute(
-                                    "isProductRelevant",
+                                    IModelTypeAttribute.PROPERTY_PRODUCT_RELEVANT,
                                     Boolean.toString(attribute instanceof IPolicyCmptTypeAttribute ? ((IPolicyCmptTypeAttribute)attribute)
                                             .isProductRelevant() : true));
                     addLabels(attribute, modelTypeAttribute);

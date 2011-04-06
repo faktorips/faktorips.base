@@ -26,10 +26,15 @@ import org.faktorips.runtime.modeltype.IModelTypeAttribute;
 public class ModelTypeAttribute extends AbstractModelElement implements IModelTypeAttribute {
 
     private ModelType modelType;
+
     private Class<?> datatype;
+
     private String datatypeName;
+
     private ValueSetType valueSetType = ValueSetType.AllValues;
+
     private AttributeType attributeType = AttributeType.CHANGEABLE;
+
     private boolean isProductRelevant = false;
 
     public ModelTypeAttribute(ModelType modelType) {
@@ -64,13 +69,13 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
     public void initFromXml(XMLStreamReader parser) throws XMLStreamException {
         super.initFromXml(parser);
         for (int i = 0; i < parser.getAttributeCount(); i++) {
-            if (parser.getAttributeLocalName(i).equals("datatype")) {
+            if (parser.getAttributeLocalName(i).equals(IModelTypeAttribute.PROPERTY_DATATYPE)) {
                 datatypeName = parser.getAttributeValue(i);
-            } else if (parser.getAttributeLocalName(i).equals("valueSetType")) {
+            } else if (parser.getAttributeLocalName(i).equals(IModelTypeAttribute.PROPERTY_VALUE_SET_TYPE)) {
                 valueSetType = ValueSetType.valueOf(parser.getAttributeValue(i));
-            } else if (parser.getAttributeLocalName(i).equals("attributeType")) {
+            } else if (parser.getAttributeLocalName(i).equals(IModelTypeAttribute.PROPERTY_ATTRIBUTE_TYPE)) {
                 attributeType = AttributeType.forName(parser.getAttributeValue(i));
-            } else if (parser.getAttributeLocalName(i).equals("isProductRelevant")) {
+            } else if (parser.getAttributeLocalName(i).equals(IModelTypeAttribute.PROPERTY_PRODUCT_RELEVANT)) {
                 isProductRelevant = Boolean.valueOf(parser.getAttributeValue(i));
             }
         }

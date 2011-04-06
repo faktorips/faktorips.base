@@ -19,6 +19,18 @@ package org.faktorips.runtime.modeltype;
  */
 public interface IModelTypeAttribute extends IModelElement {
 
+    public static final String XML_TAG = "ModelTypeAttribute";
+
+    public static final String XML_WRAPPER_TAG = "ModelTypeAttributes";
+
+    public static final String PROPERTY_DATATYPE = "datatype";
+
+    public static final String PROPERTY_VALUE_SET_TYPE = "valueSetType";
+
+    public static final String PROPERTY_ATTRIBUTE_TYPE = "attributeType";
+
+    public static final String PROPERTY_PRODUCT_RELEVANT = "isProductRelevant";
+
     /**
      * Returns the model type this attribute belongs to.
      */
@@ -36,13 +48,37 @@ public interface IModelTypeAttribute extends IModelElement {
     public AttributeType getAttributeType();
 
     /**
+     * Returns the type of value set restricting this attribute
+     */
+    public ValueSetType getValueSetType();
+
+    /**
+     * Returns if this attribute is product relevant.
+     */
+    public boolean isProductRelevant();
+
+    /**
+     * Enum defining the possible value set types.
+     */
+    public static enum ValueSetType {
+        Enum,
+        Range,
+        AllValues;
+    }
+
+    /**
      * Enum defining the possible attribute types.
      */
-    public enum AttributeType {
+    public static enum AttributeType {
+
         CHANGEABLE("changeable"),
+
         CONSTANT("constant"),
+
         DERIVED_ON_THE_FLY("derived"),
+
         DERIVED_BY_EXPLICIT_METHOD_CALL("computed");
+
         private final String xmlName;
 
         private AttributeType(String xmlName) {
@@ -70,24 +106,5 @@ public interface IModelTypeAttribute extends IModelElement {
             return null;
         }
     }
-
-    /**
-     * Returns the type of value set restricting this attribute
-     */
-    public ValueSetType getValueSetType();
-
-    /**
-     * Enum defining the possible value set types.
-     */
-    public enum ValueSetType {
-        Enum,
-        Range,
-        AllValues;
-    }
-
-    /**
-     * Returns if this attribute is product relevant.
-     */
-    public boolean isProductRelevant();
 
 }
