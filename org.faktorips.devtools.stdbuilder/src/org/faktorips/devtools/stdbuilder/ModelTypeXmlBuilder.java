@@ -47,6 +47,7 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProductCmptTypeAttribute;
+import org.faktorips.runtime.modeltype.IModelTypeLabel;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -198,15 +199,15 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
         if (labels.size() == 0) {
             return;
         }
-        Element runtimeLabels = doc.createElement("Labels");
+        Element runtimeLabels = doc.createElement(IModelTypeLabel.XML_WRAPPER_TAG);
         runtimeModelElement.appendChild(runtimeLabels);
         for (ILabel label : labels) {
-            Element runtimeLabel = doc.createElement("Label");
+            Element runtimeLabel = doc.createElement(IModelTypeLabel.XML_TAG);
             runtimeLabels.appendChild(runtimeLabel);
             Locale locale = label.getLocale();
-            runtimeLabel.setAttribute(ILabel.PROPERTY_LOCALE, locale == null ? "" : locale.getLanguage());
-            runtimeLabel.setAttribute(ILabel.PROPERTY_VALUE, label.getValue());
-            runtimeLabel.setAttribute(ILabel.PROPERTY_PLURAL_VALUE, label.getPluralValue());
+            runtimeLabel.setAttribute(IModelTypeLabel.PROPERTY_LOCALE, locale == null ? "" : locale.getLanguage());
+            runtimeLabel.setAttribute(IModelTypeLabel.PROPERTY_VALUE, label.getValue());
+            runtimeLabel.setAttribute(IModelTypeLabel.PROPERTY_PLURAL_VALUE, label.getPluralValue());
         }
     }
 

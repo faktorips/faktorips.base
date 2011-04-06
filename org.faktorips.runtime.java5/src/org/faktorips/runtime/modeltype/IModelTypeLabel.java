@@ -21,10 +21,16 @@ import java.util.Locale;
 public interface IModelTypeLabel extends IModelElement {
 
     /** The XML tag for this model element. */
-    public static final String XML_TAG = "Label";
+    public static final String XML_TAG = "ModelTypeLabel";
 
     /** The XML tag in which tags of this model element are wrapped. */
-    public static final String WRAPPER_XML_TAG = "Labels";
+    public static final String XML_WRAPPER_TAG = "ModelTypeLabels";
+
+    public static final String PROPERTY_LOCALE = "locale";
+
+    public static final String PROPERTY_VALUE = "value";
+
+    public static final String PROPERTY_PLURAL_VALUE = "pluralValue";
 
     /**
      * Returns the model element this label belongs to.

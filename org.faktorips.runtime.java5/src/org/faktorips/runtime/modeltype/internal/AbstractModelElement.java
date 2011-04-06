@@ -24,8 +24,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.faktorips.runtime.IRuntimeRepository;
-import org.faktorips.runtime.modeltype.IModelTypeLabel;
 import org.faktorips.runtime.modeltype.IModelElement;
+import org.faktorips.runtime.modeltype.IModelTypeLabel;
 
 /**
  * 
@@ -80,7 +80,7 @@ public class AbstractModelElement implements IModelElement {
         for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
             switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
-                    if (parser.getLocalName().equals("Labels")) {
+                    if (parser.getLocalName().equals(IModelTypeLabel.XML_WRAPPER_TAG)) {
                         initModelTypeLabelsFromXml(parser);
                     }
                     break;
@@ -92,14 +92,14 @@ public class AbstractModelElement implements IModelElement {
         for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
             switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
-                    if (parser.getLocalName().equals("Label")) {
+                    if (parser.getLocalName().equals(IModelTypeLabel.XML_TAG)) {
                         IModelTypeLabel label = new ModelTypeLabel(this);
                         label.initFromXml(parser);
                         labelsByLocale.put(label.getLocale(), label);
                     }
                     break;
                 case XMLStreamConstants.END_ELEMENT:
-                    if (parser.getLocalName().equals("Labels")) {
+                    if (parser.getLocalName().equals(IModelTypeLabel.XML_WRAPPER_TAG)) {
                         return;
                     }
                     break;
