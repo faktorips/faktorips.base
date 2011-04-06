@@ -383,13 +383,25 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     protected void setTestArtefactBuilderSet(IIpsProjectProperties properties, IIpsProject project)
             throws CoreException {
 
-        AbstractArtefactBuilder builder = new TestBuilder();
-        properties.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
-        TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { builder });
+        // Create the builder set for the project
+        TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet(
+                new IIpsArtefactBuilder[] { new TestBuilder() });
         builderSet.setIpsProject(project);
-        IIpsArtefactBuilderSetInfo[] builderSetInfos = new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(
-                builderSet) };
-        ((IpsModel)project.getIpsModel()).setIpsArtefactBuilderSetInfos(builderSetInfos);
+
+        // Set the builder set id in the project's properties
+        properties.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
+
+        // Add the new builder set to the builder set infos of the IPS model
+        IpsModel ipsModel = (IpsModel)IpsPlugin.getDefault().getIpsModel();
+        IIpsArtefactBuilderSetInfo[] builderSetInfos = ipsModel.getIpsArtefactBuilderSetInfos();
+        List<IIpsArtefactBuilderSetInfo> newBuilderSetInfos = new ArrayList<IIpsArtefactBuilderSetInfo>(
+                builderSetInfos.length + 1);
+        for (IIpsArtefactBuilderSetInfo info : builderSetInfos) {
+            newBuilderSetInfos.add(info);
+        }
+        newBuilderSetInfos.add(new TestArtefactBuilderSetInfo(builderSet));
+        ipsModel.setIpsArtefactBuilderSetInfos(newBuilderSetInfos
+                .toArray(new IIpsArtefactBuilderSetInfo[newBuilderSetInfos.size()]));
     }
 
     private void addSystemLibraries(IJavaProject javaProject) throws JavaModelException {
