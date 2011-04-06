@@ -47,6 +47,7 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProductCmptTypeAttribute;
+import org.faktorips.runtime.modeltype.IModelTypeAssociation;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute;
 import org.faktorips.runtime.modeltype.IModelTypeLabel;
 import org.w3c.dom.DOMException;
@@ -97,11 +98,11 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
     private void addAssociations(IType model, Element modelType) throws CoreException {
         List<IAssociation> associations = model.getAssociations();
         if (associations.size() > 0) {
-            Element modelTypeAssociations = doc.createElement("ModelTypeAssociations");
+            Element modelTypeAssociations = doc.createElement(IModelTypeAssociation.XML_WRAPPER_TAG);
             modelType.appendChild(modelTypeAssociations);
             for (IAssociation association : associations) {
                 if (association.isValid(model.getIpsProject())) {
-                    Element modelTypeAssociation = doc.createElement("ModelTypeAssociation");
+                    Element modelTypeAssociation = doc.createElement(IModelTypeAssociation.XML_TAG);
                     modelTypeAssociations.appendChild(modelTypeAssociation);
                     modelTypeAssociation.setAttribute("name", association.getTargetRoleSingular());
                     modelTypeAssociation.setAttribute("namePlural", association.getTargetRolePlural());
@@ -109,32 +110,34 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
                     if (targetName != null && targetName.length() > 0) {
                         if (model instanceof IPolicyCmptType) {
                             modelTypeAssociation.setAttribute(
-                                    "target",
+                                    IModelTypeAssociation.PROPERTY_TARGET,
                                     ((StandardBuilderSet)getBuilderSet()).getGenerator(
                                             getIpsProject().findPolicyCmptType(targetName)).getQualifiedName(false));
                         } else if (model instanceof IProductCmptType) {
                             modelTypeAssociation.setAttribute(
-                                    "target",
+                                    IModelTypeAssociation.PROPERTY_TARGET,
                                     ((StandardBuilderSet)getBuilderSet()).getGenerator(
                                             getIpsProject().findProductCmptType(targetName)).getQualifiedName(false));
                         }
                     } else {
                         modelTypeAssociation.setAttribute("target", null);
                     }
-                    modelTypeAssociation.setAttribute("minCardinality",
+                    modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_MIN_CARDINALITY,
                             Integer.toString(association.getMinCardinality()));
-                    modelTypeAssociation.setAttribute("maxCardinality",
+                    modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_MAX_CARDINALITY,
                             Integer.toString(association.getMaxCardinality()));
-                    modelTypeAssociation.setAttribute("associationType", getAssociantionType(association));
-                    modelTypeAssociation.setAttribute("isTargetRolePluralRequired",
+                    modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_ASSOCIATION_TYPE,
+                            getAssociantionType(association));
+                    modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_TARGET_ROLE_PLURAL_REQUIRED,
                             Boolean.toString(association.isTargetRolePluralRequired()));
-                    modelTypeAssociation.setAttribute("isDerivedUnion", Boolean.toString(association.isDerivedUnion()));
-                    modelTypeAssociation.setAttribute("isSubsetOfADerivedUnion",
+                    modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_DERIVED_UNION,
+                            Boolean.toString(association.isDerivedUnion()));
+                    modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_SUBSET_OF_A_DERIVED_UNION,
                             Boolean.toString(association.isSubsetOfADerivedUnion()));
                     try {
                         modelTypeAssociation
                                 .setAttribute(
-                                        "isProductRelevant",
+                                        IModelTypeAssociation.PROPERTY_PRODUCT_RELEVANT,
                                         Boolean.toString(association instanceof IPolicyCmptTypeAssociation ? ((IPolicyCmptTypeAssociation)association)
                                                 .isConstrainedByProductStructure(getIpsProject()) : true));
                     } catch (DOMException e) {
@@ -145,7 +148,8 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
 
                     if (association instanceof IPolicyCmptTypeAssociation) {
                         IPolicyCmptTypeAssociation pcTypeAsso = (IPolicyCmptTypeAssociation)association;
-                        modelTypeAssociation.setAttribute("inverseAssociation", pcTypeAsso.getInverseAssociation());
+                        modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_INVERSE_ASSOCIATION,
+                                pcTypeAsso.getInverseAssociation());
                     }
 
                     addLabels(association, modelTypeAssociation);
@@ -283,9 +287,6 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean buildsDerivedArtefacts() {
         return true;

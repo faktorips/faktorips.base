@@ -134,7 +134,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
                         initExtPropertiesFromXml(parser);
                     } else if (parser.getLocalName().equals(IModelTypeAttribute.XML_WRAPPER_TAG)) {
                         initModelTypeAttributesFromXml(parser);
-                    } else if (parser.getLocalName().equals("ModelTypeAssociations")) {
+                    } else if (parser.getLocalName().equals(IModelTypeAssociation.XML_WRAPPER_TAG)) {
                         initModelTypeAssociationsFromXml(parser);
                     }
                     break;
@@ -166,7 +166,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
         for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
             switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
-                    if (parser.getLocalName().equals("ModelTypeAssociation")) {
+                    if (parser.getLocalName().equals(IModelTypeAssociation.XML_TAG)) {
                         IModelTypeAssociation association = new ModelTypeAssociation(this);
                         association.initFromXml(parser);
                         associations.add(association);
@@ -174,7 +174,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
                     }
                     break;
                 case XMLStreamConstants.END_ELEMENT:
-                    if (parser.getLocalName().equals("ModelTypeAssociations")) {
+                    if (parser.getLocalName().equals(IModelTypeAssociation.XML_WRAPPER_TAG)) {
                         return;
                     }
                     break;

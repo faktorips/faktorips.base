@@ -19,6 +19,28 @@ package org.faktorips.runtime.modeltype;
  */
 public interface IModelTypeAssociation extends IModelElement {
 
+    public static final String XML_TAG = "ModelTypeAssociation";
+
+    public static final String XML_WRAPPER_TAG = "ModelTypeAssociations";
+
+    public static final String PROPERTY_TARGET = "target";
+
+    public static final String PROPERTY_MIN_CARDINALITY = "minCardinality";
+
+    public static final String PROPERTY_MAX_CARDINALITY = "maxCardinality";
+
+    public static final String PROPERTY_ASSOCIATION_TYPE = "associationType";
+
+    public static final String PROPERTY_PRODUCT_RELEVANT = "isProductRelevant";
+
+    public static final String PROPERTY_DERIVED_UNION = "isDerivedUnion";
+
+    public static final String PROPERTY_SUBSET_OF_A_DERIVED_UNION = "isSubsetOfADerivedUnion";
+
+    public static final String PROPERTY_TARGET_ROLE_PLURAL_REQUIRED = "isTargetRolePluralRequired";
+
+    public static final String PROPERTY_INVERSE_ASSOCIATION = "inverseAssociation";
+
     /**
      * Returns the model type this association belongs to.
      */
