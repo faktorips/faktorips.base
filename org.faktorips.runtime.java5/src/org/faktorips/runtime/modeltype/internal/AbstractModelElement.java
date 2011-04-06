@@ -47,7 +47,12 @@ public class AbstractModelElement implements IModelElement {
 
     public String getLabel(Locale locale) {
         IModelTypeLabel label = labelsByLocale.get(locale);
-        return label == null ? getName() : label.getValue();
+        return label == null || label.getValue().length() == 0 ? getName() : label.getValue();
+    }
+
+    public String getLabelForPlural(Locale locale) {
+        IModelTypeLabel label = labelsByLocale.get(locale);
+        return label == null || label.getPluralValue().length() == 0 ? getName() : label.getPluralValue();
     }
 
     public Object getExtensionPropertyValue(String propertyId) {

@@ -79,8 +79,15 @@ public interface IModelElement {
     /**
      * Returns the label for the given locale.
      * <p>
-     * Returns the element's name if no label with the given locale exists.
+     * Returns the element's name if no label for the given locale exists.
      */
     public String getLabel(Locale locale);
+
+    /**
+     * Returns the plural label for the given locale.
+     * <p>
+     * Returns the element's name if no plural label for the given locale exists.
+     */
+    public String getLabelForPlural(Locale locale);
 
 }
