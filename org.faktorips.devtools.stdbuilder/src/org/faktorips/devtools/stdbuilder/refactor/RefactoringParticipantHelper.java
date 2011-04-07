@@ -41,6 +41,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.util.RefactorUtil;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
@@ -222,9 +223,11 @@ public abstract class RefactoringParticipantHelper {
      * <tt>IIpsObjectPartContainer</tt>.
      * <p>
      * Returns <tt>false</tt> in case the element passed to this operation is not an
-     * <tt>IIpsObjectPartContainer</tt>. Else the subclass implementation is called to initialize
-     * the <tt>IJavaElement</tt>s that will be generated for the <tt>IIpsObjectPartContainer</tt>
-     * after the refactoring has finished and <tt>true</tt> is returned.
+     * <tt>IIpsObjectPartContainer</tt> or if the parent <tt>IIpsProject</tt>'s builder set is not
+     * the <tt>StandardBuilderSet</tt>. Otherwise the subclass implementation is called to
+     * initialize the <tt>IJavaElement</tt>s that will be generated for the
+     * <tt>IIpsObjectPartContainer</tt> after the refactoring has finished and <tt>true</tt> is
+     * returned.
      */
     public final boolean initialize(Object element) {
         if (!(element instanceof IIpsObjectPartContainer)) {
@@ -232,13 +235,18 @@ public abstract class RefactoringParticipantHelper {
         }
 
         IIpsObjectPartContainer ipsObjectPartContainer = (IIpsObjectPartContainer)element;
-        StandardBuilderSet builderSet = (StandardBuilderSet)ipsObjectPartContainer.getIpsProject()
+        IIpsArtefactBuilderSet ipsArtefactBuilderSet = ipsObjectPartContainer.getIpsProject()
                 .getIpsArtefactBuilderSet();
-
-        boolean success = initializeOriginalJavaElements(ipsObjectPartContainer, builderSet);
-        if (success) {
-            success = initializeTargetJavaElements(ipsObjectPartContainer, builderSet);
+        if (!(ipsArtefactBuilderSet instanceof StandardBuilderSet)) {
+            return false;
         }
+
+        StandardBuilderSet standardBuilderSet = (StandardBuilderSet)ipsArtefactBuilderSet;
+        boolean success = initializeOriginalJavaElements(ipsObjectPartContainer, standardBuilderSet);
+        if (success) {
+            success = initializeTargetJavaElements(ipsObjectPartContainer, standardBuilderSet);
+        }
+
         return success;
     }
 

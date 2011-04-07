@@ -13,70 +13,72 @@
 
 package org.faktorips.devtools.stdbuilder.refactor;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 public class RefactoringParticipantHelperTest extends RefactoringParticipantTest {
 
-    private MockParticipantHelper refactoringHelper;
+    @Mock
+    private IIpsObjectPartContainer mockIpsObjectPartContainer;
+
+    @Mock
+    private IIpsProject mockIpsProject;
+
+    @Mock
+    private StandardBuilderSet mockStandardBuilderSet;
+
+    private TestParticipantHelper spyRefactoringHelper;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        refactoringHelper = new MockParticipantHelper();
+        MockitoAnnotations.initMocks(this);
+        TestParticipantHelper refactoringHelper = new TestParticipantHelper();
+        spyRefactoringHelper = spy(refactoringHelper);
     }
 
     @Test
     public void testInitializeNonIpsElement() {
-        assertFalse(refactoringHelper.initialize(new Object()));
-        assertFalse(refactoringHelper.initializeTargetJavaElementsCalled);
+        assertFalse(spyRefactoringHelper.initialize(new Object()));
     }
 
     @Test
-    public void testInitializeIpsElement() {
-        assertTrue(refactoringHelper.initialize(policyCmptType));
-        assertTrue(refactoringHelper.initializeTargetJavaElementsCalled);
+    public void testInitializeIpsObjectPartContainer() {
+        when(mockIpsObjectPartContainer.getIpsProject()).thenReturn(mockIpsProject);
+        when(mockIpsProject.getIpsArtefactBuilderSet()).thenReturn(mockStandardBuilderSet);
+
+        assertTrue(spyRefactoringHelper.initialize(mockIpsObjectPartContainer));
+
+        verify(spyRefactoringHelper).initializeTargetJavaElements(mockIpsObjectPartContainer, mockStandardBuilderSet);
     }
 
     @Test
-    public void testCheckConditions() throws CoreException {
-        refactoringHelper.initialize(policyCmptType);
-        performFullBuild();
-        RefactoringStatus status = refactoringHelper.checkConditions(new NullProgressMonitor());
+    public void testInitializeNoStandardBuilderSetGiven() {
+        when(mockIpsObjectPartContainer.getIpsProject()).thenReturn(mockIpsProject);
+        IIpsArtefactBuilderSet mockBuilderSet = mock(IIpsArtefactBuilderSet.class);
+        when(mockIpsProject.getIpsArtefactBuilderSet()).thenReturn(mockBuilderSet);
 
-        assertFalse(status.hasFatalError());
-        assertEquals(0, status.getEntries().length);
+        assertFalse(spyRefactoringHelper.initialize(mockIpsObjectPartContainer));
     }
 
-    @Test
-    public void testCreateChange() throws OperationCanceledException, CoreException {
-        refactoringHelper.initialize(policyCmptType);
-        performFullBuild();
-        refactoringHelper.createChange(new NullProgressMonitor());
-    }
-
-    @Test
-    public void testCreateChangeJavaElementsNotExisting() throws OperationCanceledException, CoreException {
-        refactoringHelper.initialize(policyCmptType);
-        refactoringHelper.createChange(new NullProgressMonitor());
-    }
-
-    private static class MockParticipantHelper extends RefactoringParticipantHelper {
-
-        private boolean initializeTargetJavaElementsCalled;
+    public static class TestParticipantHelper extends RefactoringParticipantHelper {
 
         @Override
         protected Refactoring createJdtRefactoring(IJavaElement generatedJavaElement,
@@ -90,8 +92,6 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
         protected boolean initializeTargetJavaElements(IIpsObjectPartContainer ipsObjectPartContainer,
                 StandardBuilderSet builderSet) {
 
-            initializeTargetJavaElementsCalled = true;
-            setTargetJavaElements(builderSet.getGeneratedJavaElements(ipsObjectPartContainer));
             return true;
         }
 
