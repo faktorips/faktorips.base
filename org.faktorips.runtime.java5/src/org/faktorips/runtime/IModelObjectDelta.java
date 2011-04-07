@@ -49,7 +49,7 @@ public interface IModelObjectDelta {
     /**
      * Delta kind constant indicating that the model object has been moved, meaning it's position in
      * the ordered list of objects has been changed. This type of delta is only returned if the
-     * computation method is {@link IDeltaComputationOptions#COMPUTE_BY_OBJECT}.
+     * computation method is {@link IDeltaComputationOptions.ComputationMethod#BY_OBJECT}.
      * <p>
      * Note that an object can be moved and changed! In this case getKind() returns MOVED & CHANGED.
      */
@@ -58,7 +58,7 @@ public interface IModelObjectDelta {
     /**
      * Delta kind constant indicating that a different model object is now at a given position. This
      * type of delta is only returned if the computation method is
-     * {@link IDeltaComputationOptions#COMPUTE_BY_POSITION}.
+     * {@link IDeltaComputationOptions.ComputationMethod#BY_POSITION}.
      */
     public static final int DIFFERENT_OBJECT_AT_POSITION = 2;
 
@@ -78,8 +78,9 @@ public interface IModelObjectDelta {
     /**
      * Delta change type constant indicating that the object's structure has changed, that means
      * either a child has been added, removed or changed its position (if the computation method is
-     * {@link IDeltaComputationOptions#COMPUTE_BY_OBJECT} or a different object is now at a given
-     * position (if the computation method is {@link IDeltaComputationOptions#COMPUTE_BY_OBJECT}.
+     * {@link IDeltaComputationOptions.ComputationMethod#BY_OBJECT} or a different object is now at
+     * a given position (if the computation method is
+     * {@link IDeltaComputationOptions.ComputationMethod#BY_OBJECT}.
      */
     public static final int STRUCTURE_CHANGED = 1;
 
@@ -162,14 +163,14 @@ public interface IModelObjectDelta {
     /**
      * Returns <code>true</code> if this model object has changed its position in the ordered
      * association. This type of delta is only returned if the computation method is
-     * {@link IDeltaComputationOptions#COMPUTE_BY_OBJECT}.
+     * {@link IDeltaComputationOptions.ComputationMethod#BY_OBJECT}.
      */
     public boolean isMoved();
 
     /**
      * Returns <code>true</code> if a different model object is at a position, otherwise
      * <code>false</code>. This type of delta is only returned if the computation method is
-     * {@link IDeltaComputationOptions#COMPUTE_BY_POSITION}.
+     * {@link IDeltaComputationOptions.ComputationMethod#BY_POSITION}.
      */
     public boolean isDifferentObjectAtPosition();
 

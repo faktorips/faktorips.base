@@ -25,7 +25,7 @@ import org.faktorips.runtime.internal.AbstractCacheFactory;
  * 
  * @author Jan Ortmann
  */
-public class DefaultCacheFactory extends AbstractCacheFactory implements ICacheFactory {
+public class DefaultCacheFactory extends AbstractCacheFactory {
 
     private Map<Class<?>, Integer> initialSizeMap = new HashMap<Class<?>, Integer>();
 

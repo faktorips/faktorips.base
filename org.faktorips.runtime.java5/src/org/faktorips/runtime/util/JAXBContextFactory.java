@@ -78,9 +78,9 @@ public class JAXBContextFactory {
     public static JAXBContext newContext(IRuntimeRepository repository, ClassLoader cl) throws JAXBException,
             ClassNotFoundException {
         Set<String> classNames = repository.getAllModelTypeImplementationClasses();
-        List<Class> classes = new ArrayList<Class>(classNames.size());
+        List<Class<?>> classes = new ArrayList<Class<?>>(classNames.size());
         for (String className : classNames) {
-            Class clazz = cl.loadClass(className);
+            Class<?> clazz = cl.loadClass(className);
             if (AbstractModelObject.class.isAssignableFrom(clazz)) {
                 classes.add(clazz);
             }

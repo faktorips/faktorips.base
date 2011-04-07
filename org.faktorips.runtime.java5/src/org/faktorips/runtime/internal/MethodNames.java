@@ -45,7 +45,7 @@ public class MethodNames {
     public final static String GET_PRODUCT_COMPONENT = "getProductComponent";
 
     /**
-     * @see org.faktorips.runtime.IConfigurableModelObject#setProductComponent()
+     * @see AbstractConfigurableModelObject#setProductComponent(org.faktorips.runtime.IProductComponent)
      */
     public final static String SET_PRODUCT_COMPONENT = "setProductComponent";
 
@@ -82,7 +82,7 @@ public class MethodNames {
     public final static String IS_MODIFIABLE = "isModifiable";
 
     /**
-     * @see org.faktorips.runtime.IModelObjectPart#getParentModelObject()
+     * @see org.faktorips.runtime.IDependantObject#getParentModelObject()
      */
     public final static String GET_PARENT = "getParentModelObject";
 
@@ -108,7 +108,8 @@ public class MethodNames {
     public final static String GET_EXISTING_PRODUCT_COMPONENT_GENERATION = "getExistingProductComponentGeneration";
 
     /**
-     * @see AbstractConfigurableModelObject#initPropertiesFromXml(java.util.HashMap)
+     * @see AbstractConfigurableModelObject#initPropertiesFromXml(java.util.Map,
+     *      org.faktorips.runtime.IRuntimeRepository)
      */
     public final static String INIT_PROPERTIES_FROM_XML = "initPropertiesFromXml";
 
@@ -166,7 +167,7 @@ public class MethodNames {
 
     /**
      * @see ModelObjectDelta#newDelta(org.faktorips.runtime.IModelObject,
-     *      org.faktorips.runtime.IModelObject)
+     *      org.faktorips.runtime.IModelObject, org.faktorips.runtime.IDeltaComputationOptions)
      */
     public final static String MODELOBJECTDELTA_NEW_DELTA = "newDelta";
 

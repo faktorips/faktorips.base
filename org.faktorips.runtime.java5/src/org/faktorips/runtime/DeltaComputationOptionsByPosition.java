@@ -18,7 +18,8 @@ package org.faktorips.runtime;
  * 
  * TODO the following reference does not exist
  * 
- * @see IDeltaComputationOptions#createChildDeltasByPosition(String)
+ * 
+ * @see IDeltaComputationOptions.ComputationMethod#BY_POSITION
  * 
  * @author Jan Ortmann
  */
