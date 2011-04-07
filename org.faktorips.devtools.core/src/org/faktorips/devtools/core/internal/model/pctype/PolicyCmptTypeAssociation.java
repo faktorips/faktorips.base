@@ -309,7 +309,13 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
                 ipsProject);
         if (associationHost != null && associationHost.getTarget().equals(getTarget())
                 && associationHost.getAssociationType().isCompositionDetailToMaster()) {
-            return associationHost;
+            if (associationHost.isSharedAssociation()) {
+                // if the found association host is a shared association by itself we have to finde
+                // its association host
+                return associationHost.findSharedAssociationHost(ipsProject);
+            } else {
+                return associationHost;
+            }
         } else {
             return null;
         }
@@ -518,7 +524,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         }
         String max = element.getAttribute(PROPERTY_MAX_CARDINALITY);
         if (max.equals("*")) { //$NON-NLS-1$
-        	maxCardinality = CARDINALITY_MANY;
+            maxCardinality = CARDINALITY_MANY;
         } else {
             try {
                 maxCardinality = Integer.parseInt(max);

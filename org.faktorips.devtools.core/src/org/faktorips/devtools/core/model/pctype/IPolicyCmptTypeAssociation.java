@@ -390,10 +390,10 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     boolean isSharedAssociation();
 
     /**
-     * This method looks for an association with the same name in the super type hierarchy. The
-     * found association must have the same target as this association. The found association could
-     * be the shared association host of this association. However this method does not check if
-     * this association is marked as shared association!
+     * This method looks for an association with the same name in the super type hierarchy that is
+     * not a shared association by itself. The found association must have the same target as this
+     * association. The found association could be the shared association host of this association.
+     * However this method does not check if this association is marked as shared association!
      * 
      * @param ipsProject The project used to search from
      * @return an association with the same name and target found in the super type hierarchy
