@@ -18,14 +18,10 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
@@ -34,8 +30,6 @@ import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
@@ -70,7 +64,6 @@ import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.refactor.IIpsMoveProcessor;
 import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
 import org.faktorips.util.message.Message;
@@ -195,33 +188,7 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
     @Override
     @Before
     public void setUp() throws Exception {
-        IpsPlugin.getDefault().setSuppressLoggingDuringTest(false);
-        ((IpsModel)IpsPlugin.getDefault().getIpsModel()).stopListeningToResourceChanges();
-        IpsPlugin.getDefault().setFeatureVersionManagers(
-                new IIpsFeatureVersionManager[] { new TestIpsFeatureVersionManager() });
-        setAutoBuild(false);
-        IpsPlugin.getDefault().getIpsPreferences().setWorkingDate(new GregorianCalendar());
-
-        IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-            @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
-                if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                    System.out.println("AbstractIpsPlugin.setUp(): Start deleting projects.");
-                }
-                waitForIndexer();
-                IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-                for (IProject project : projects) {
-                    project.close(null);
-                    project.delete(true, true, null);
-                }
-                if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                    System.out.println("AbstractIpsPlugin.setUp(): Projects deleted.");
-                }
-                IpsPlugin.getDefault().reinitModel(); // also starts the listening process
-            }
-        };
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
+        super.setUp();
 
         ipsProject = newIpsProject();
 
