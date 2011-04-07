@@ -13,11 +13,14 @@
 
 package org.faktorips.runtime.modeltype.internal;
 
+import java.util.Locale;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation;
+import org.faktorips.runtime.modeltype.IModelTypeLabel;
 
 /**
  * 
@@ -40,6 +43,11 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
     public ModelTypeAssociation(ModelType modelType) {
         super(modelType.getRepository());
         this.modelType = modelType;
+    }
+
+    public String getLabelForPlural(Locale locale) {
+        IModelTypeLabel label = labelsByLocale.get(locale);
+        return label == null || label.getPluralValue().length() == 0 ? getNamePlural() : label.getPluralValue();
     }
 
     public IModelType getModelType() {

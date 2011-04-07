@@ -13,6 +13,8 @@
 
 package org.faktorips.runtime.modeltype;
 
+import java.util.Locale;
+
 /**
  * 
  * @author Daniel Hohenberger
@@ -113,5 +115,12 @@ public interface IModelTypeAssociation extends IModelElement {
      * @return The name of the inverse association or null for product component associations
      */
     public String getInverseAssociation();
+
+    /**
+     * Returns the plural label for the given locale.
+     * <p>
+     * Returns the association's plural name if no plural label for the given locale exists.
+     */
+    public String getLabelForPlural(Locale locale);
 
 }

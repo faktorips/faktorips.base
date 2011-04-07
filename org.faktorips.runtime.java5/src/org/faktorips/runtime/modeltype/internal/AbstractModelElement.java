@@ -39,7 +39,7 @@ public class AbstractModelElement implements IModelElement {
 
     private IRuntimeRepository repository;
 
-    private Map<Locale, IModelTypeLabel> labelsByLocale = new HashMap<Locale, IModelTypeLabel>();
+    protected Map<Locale, IModelTypeLabel> labelsByLocale = new HashMap<Locale, IModelTypeLabel>();
 
     public AbstractModelElement(IRuntimeRepository repository) {
         this.repository = repository;
@@ -48,11 +48,6 @@ public class AbstractModelElement implements IModelElement {
     public String getLabel(Locale locale) {
         IModelTypeLabel label = labelsByLocale.get(locale);
         return label == null || label.getValue().length() == 0 ? getName() : label.getValue();
-    }
-
-    public String getLabelForPlural(Locale locale) {
-        IModelTypeLabel label = labelsByLocale.get(locale);
-        return label == null || label.getPluralValue().length() == 0 ? getName() : label.getPluralValue();
     }
 
     public Object getExtensionPropertyValue(String propertyId) {
