@@ -41,9 +41,11 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
 
     public final static String ID = "testbuilderset";
 
-    private boolean inverseRelationLinkRequiredFor2WayCompositions = false;
-    private boolean roleNamePluralRequiredForTo1Relations = true;
-    private boolean isAggregateRootBuilder = false;
+    private boolean inverseRelationLinkRequiredFor2WayCompositions;
+
+    private boolean roleNamePluralRequiredForTo1Relations;
+
+    private boolean isAggregateRootBuilder;
 
     public TestIpsArtefactBuilderSet() throws CoreException {
         this(new IIpsArtefactBuilder[0]);

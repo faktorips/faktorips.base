@@ -322,7 +322,6 @@ public class AssociationTest extends AbstractIpsPluginTest {
     public void testValidationTargetRolePluralMustBeSet() throws Exception {
         TestIpsArtefactBuilderSet builderset = new TestIpsArtefactBuilderSet();
         builderset.setIpsProject(association.getIpsProject());
-        builderset.setRoleNamePluralRequiredForTo1Relations(false);
         setArtefactBuildset(association.getIpsProject(), builderset);
 
         association.setMinCardinality(1);
