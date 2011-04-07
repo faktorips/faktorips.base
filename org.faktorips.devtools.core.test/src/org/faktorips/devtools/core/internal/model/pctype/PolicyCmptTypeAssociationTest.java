@@ -404,7 +404,21 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
 
         inverseBasePart.setSharedAssociation(true);
         messageList = inversePart.validate(ipsProject);
-        assertNull(messageList.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_SHARED_ASSOCIATION_INVALID));
+        assertNotNull(messageList.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_SHARED_ASSOCIATION_INVALID));
+
+        PolicyCmptType baseSuperPart = newPolicyCmptType(ipsProject, "baseSuperPart");
+        basePart.setSupertype(baseSuperPart.getQualifiedName());
+        IPolicyCmptTypeAssociation inverseBaseSuperPart = (IPolicyCmptTypeAssociation)baseSuperPart.newAssociation();
+        inverseBaseSuperPart.setTargetRoleSingular("policy");
+        inverseBaseSuperPart.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        inverseBaseSuperPart.setTarget(basePolicy.getQualifiedName());
+        inverseBaseSuperPart.setInverseAssociation("basePart");
+        compositBasePart.setDerivedUnion(true);
+
+        messageList = inversePart.validate(ipsProject);
+        assertNull(messageList.toString(),
+                messageList.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_SHARED_ASSOCIATION_INVALID));
+
     }
 
     @Test
