@@ -114,13 +114,13 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
             }
         }
 
-        for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
+        outer: for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
             switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
                     if (parser.getLocalName().equals(IModelTypeLabel.XML_WRAPPER_TAG)) {
                         initModelTypeLabelsFromXml(parser);
                     }
-                    break;
+                    break outer;
             }
         }
 
