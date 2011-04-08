@@ -15,6 +15,7 @@ package org.faktorips.runtime.modeltype.internal;
 
 import java.util.Locale;
 
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -85,6 +86,7 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
     @Override
     public void initFromXml(XMLStreamReader parser) throws XMLStreamException {
         super.initFromXml(parser);
+
         for (int i = 0; i < parser.getAttributeCount(); i++) {
             if (parser.getAttributeLocalName(i).equals(IModelTypeAssociation.PROPERTY_NAME_PLURAL)) {
                 namePlural = parser.getAttributeValue(i);
@@ -111,6 +113,17 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
                 inverseAssociation = parser.getAttributeValue(i);
             }
         }
+
+        for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
+            switch (event) {
+                case XMLStreamConstants.START_ELEMENT:
+                    if (parser.getLocalName().equals(IModelTypeLabel.XML_WRAPPER_TAG)) {
+                        initModelTypeLabelsFromXml(parser);
+                    }
+                    break;
+            }
+        }
+
         initExtPropertiesFromXml(parser);
     }
 

@@ -27,6 +27,7 @@ import org.faktorips.runtime.internal.AbstractRuntimeRepository;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute;
+import org.faktorips.runtime.modeltype.IModelTypeLabel;
 import org.faktorips.runtime.modeltype.TypeHierarchyVisitor;
 
 /**
@@ -120,6 +121,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
     @Override
     public void initFromXml(XMLStreamReader parser) throws XMLStreamException {
         super.initFromXml(parser);
+
         for (int i = 0; i < parser.getAttributeCount(); i++) {
             if (parser.getAttributeLocalName(i).equals(PROPERTY_CLASS)) {
                 this.className = parser.getAttributeValue(i);
@@ -127,6 +129,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
                 this.superTypeName = parser.getAttributeValue(i);
             }
         }
+
         for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
             switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
@@ -136,6 +139,8 @@ public class ModelType extends AbstractModelElement implements IModelType {
                         initModelTypeAttributesFromXml(parser);
                     } else if (parser.getLocalName().equals(IModelTypeAssociation.XML_WRAPPER_TAG)) {
                         initModelTypeAssociationsFromXml(parser);
+                    } else if (parser.getLocalName().equals(IModelTypeLabel.XML_WRAPPER_TAG)) {
+                        initModelTypeLabelsFromXml(parser);
                     }
                     break;
             }
