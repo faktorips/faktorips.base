@@ -273,6 +273,11 @@ public class ComponentPropertiesSection extends IpsSection {
             IIpsProject ipsProject = product.getIpsProject();
             IProductCmptNamingStrategy namingStrategy = ipsProject.getProductCmptNamingStrategy();
             try {
+                /*
+                 * First set the runtime ID to null so that in fact nothing happens when the button
+                 * is clicked while the runtime ID equals the runtime ID that would be generated.
+                 */
+                product.setRuntimeId(null);
                 String generatedRuntimeId = namingStrategy.getUniqueRuntimeId(ipsProject, product.getName());
                 product.setRuntimeId(generatedRuntimeId);
             } catch (CoreException e) {
