@@ -52,11 +52,15 @@ public class ResourceAdapterFactory extends AbstractIpsAdapterFactory {
             return adaptToIpsObject(adaptToIpsSrcFile(adaptableObject));
         }
 
+        if (IIpsElement.class.equals(adapterType)) {
+            return adaptToIpsElement(adaptableObject);
+        }
+
         return null;
     }
 
     private IIpsSrcFile adaptToIpsSrcFile(Object adaptableObject) {
-        IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement((IResource)adaptableObject);
+        IIpsElement element = adaptToIpsElement(adaptableObject);
         if (element != null) {
             Object file = element.getAdapter(IIpsSrcFile.class);
             if (file == null) {
@@ -68,9 +72,13 @@ public class ResourceAdapterFactory extends AbstractIpsAdapterFactory {
         }
     }
 
+    private IIpsElement adaptToIpsElement(Object adaptableObject) {
+        return IpsPlugin.getDefault().getIpsModel().getIpsElement((IResource)adaptableObject);
+    }
+
     @Override
     public Class<?>[] getAdapterList() {
-        return new Class[] { IIpsSrcFile.class, IProductCmpt.class, IType.class, IIpsObject.class };
+        return new Class[] { IIpsSrcFile.class, IProductCmpt.class, IType.class, IIpsObject.class, IIpsElement.class };
     }
 
 }
