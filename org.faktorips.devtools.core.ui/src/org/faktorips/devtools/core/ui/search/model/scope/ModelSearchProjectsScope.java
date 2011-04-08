@@ -11,16 +11,24 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.search.model.finder;
+package org.faktorips.devtools.core.ui.search.model.scope;
 
 import java.util.List;
-import java.util.Set;
 
-import org.eclipse.search.ui.text.Match;
-import org.faktorips.devtools.core.model.type.IType;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 
-public interface IpsObjectPartFinder {
+public class ModelSearchProjectsScope extends AbstractModelSearchScope {
 
-    public List<Match> findMatchingIpsObjectParts(Set<IType> searchedTypes, String searchTerm);
+    protected final ISelection selection;
+
+    public ModelSearchProjectsScope(ISelection selection) {
+        this.selection = selection;
+    }
+
+    @Override
+    protected List<?> getSelectedObjects() {
+        return ((IStructuredSelection)selection).toList();
+    }
 
 }

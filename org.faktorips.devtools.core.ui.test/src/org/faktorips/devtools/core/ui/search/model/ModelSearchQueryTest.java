@@ -13,15 +13,17 @@
 
 package org.faktorips.devtools.core.ui.search.model;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -33,56 +35,54 @@ import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTyp
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.ui.search.model.scope.ModelSearchScope;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
-public class ModelSearchQueryTest extends TestCase {
-
-    private final static IpsObjectType[] IPS_OBJECT_TYPES = new IpsObjectType[] { IpsObjectType.POLICY_CMPT_TYPE,
-            IpsObjectType.PRODUCT_CMPT_TYPE };
+public class ModelSearchQueryTest {
 
     private ModelSearchPresentationModel model;
-    private ModelSearchFaktoripsResources resources;
     private ModelSearchQuery query;
     private ModelSearchResult searchResult;
 
-    @Override
-    @Before
-    protected void setUp() throws Exception {
-        model = Mockito.mock(ModelSearchPresentationModel.class);
-        resources = mock(ModelSearchFaktoripsResources.class);
+    private ModelSearchScope scope;
 
-        query = new ModelSearchQuery(model, resources);
+    @Before
+    public void setUp() throws Exception {
+        model = mock(ModelSearchPresentationModel.class);
+
+        scope = mock(ModelSearchScope.class);
+
+        when(model.getSearchScope()).thenReturn(scope);
+
+        query = new ModelSearchQuery(model);
         searchResult = (ModelSearchResult)query.getSearchResult();
     }
 
     @Test
     public void testSucheKlassenName() throws CoreException {
 
-        IIpsProject project = mock(IIpsProject.class);
-
-        when(model.getSelectedProjects()).thenReturn(Collections.singletonList(project));
         when(model.getTypeName()).thenReturn("SrcF");
 
         IIpsSrcFile srcFile1 = mock(IpsSrcFile.class);
         when(srcFile1.getName()).thenReturn("SrcFile1");
+        when(srcFile1.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
         IIpsSrcFile srcFile2 = mock(IpsSrcFile.class);
         when(srcFile2.getName()).thenReturn("SourceFile2");
+        when(srcFile2.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
-        List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
+        Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
         srcFiles.add(srcFile1);
         srcFiles.add(srcFile2);
 
-        when(resources.getIpsSourceFiles(Collections.singletonList(project), IPS_OBJECT_TYPES)).thenReturn(srcFiles);
+        when(scope.getSelectedIpsSrcFiles()).thenReturn(srcFiles);
 
         IStatus status = query.run(new NullProgressMonitor());
 
@@ -109,13 +109,8 @@ public class ModelSearchQueryTest extends TestCase {
     @Test
     public void testCoreException() throws CoreException {
 
-        IIpsProject project = mock(IIpsProject.class);
-
-        when(model.getSelectedProjects()).thenReturn(Collections.singletonList(project));
-
         IStatus exceptionStatus = new IpsStatus(IStatus.ERROR, "xyz");
-        when(resources.getIpsSourceFiles(Collections.singletonList(project), IPS_OBJECT_TYPES)).thenThrow(
-                new CoreException(exceptionStatus));
+        when(scope.getSelectedIpsSrcFiles()).thenThrow(new CoreException(exceptionStatus));
 
         IStatus status = query.run(new NullProgressMonitor());
 
@@ -124,9 +119,7 @@ public class ModelSearchQueryTest extends TestCase {
 
     @Test
     public void testSucheAttribute() throws CoreException {
-        IIpsProject project = mock(IIpsProject.class);
 
-        when(model.getSelectedProjects()).thenReturn(Collections.singletonList(project));
         when(model.getTypeName()).thenReturn("SrcF");
         when(model.getSearchTerm()).thenReturn("MatchingAttr");
 
@@ -134,15 +127,17 @@ public class ModelSearchQueryTest extends TestCase {
 
         IIpsSrcFile srcFile1 = mock(IpsSrcFile.class);
         when(srcFile1.getName()).thenReturn("SrcFile1");
+        when(srcFile1.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
         IIpsSrcFile srcFile2 = mock(IpsSrcFile.class);
         when(srcFile2.getName()).thenReturn("SourceFile2");
+        when(srcFile2.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
-        List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
+        Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
         srcFiles.add(srcFile1);
         srcFiles.add(srcFile2);
 
-        when(resources.getIpsSourceFiles(Collections.singletonList(project), IPS_OBJECT_TYPES)).thenReturn(srcFiles);
+        when(scope.getSelectedIpsSrcFiles()).thenReturn(srcFiles);
 
         IType type1 = mock(IType.class);
         when(type1.getName()).thenReturn("SrcFile1");
@@ -150,8 +145,8 @@ public class ModelSearchQueryTest extends TestCase {
         IType type2 = mock(IType.class);
         when(type2.getName()).thenReturn("SourceFile2");
 
-        when(resources.getType(srcFile1)).thenReturn(type1);
-        when(resources.getType(srcFile2)).thenReturn(type2);
+        when(srcFile1.getIpsObject()).thenReturn(type1);
+        when(srcFile2.getIpsObject()).thenReturn(type2);
 
         IAttribute matchingAttribute = mock(IAttribute.class);
         when(matchingAttribute.getName()).thenReturn("MatchingAttribute");
@@ -191,9 +186,7 @@ public class ModelSearchQueryTest extends TestCase {
 
     @Test
     public void testSucheMethoden() throws CoreException {
-        IIpsProject project = mock(IIpsProject.class);
 
-        when(model.getSelectedProjects()).thenReturn(Collections.singletonList(project));
         when(model.getTypeName()).thenReturn("SrcF");
         when(model.getSearchTerm()).thenReturn("MatchingMet");
 
@@ -201,15 +194,17 @@ public class ModelSearchQueryTest extends TestCase {
 
         IIpsSrcFile srcFile1 = mock(IpsSrcFile.class);
         when(srcFile1.getName()).thenReturn("SrcFile1");
+        when(srcFile1.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
         IIpsSrcFile srcFile2 = mock(IpsSrcFile.class);
         when(srcFile2.getName()).thenReturn("SourceFile2");
+        when(srcFile2.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
-        List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
+        Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
         srcFiles.add(srcFile1);
         srcFiles.add(srcFile2);
 
-        when(resources.getIpsSourceFiles(Collections.singletonList(project), IPS_OBJECT_TYPES)).thenReturn(srcFiles);
+        when(scope.getSelectedIpsSrcFiles()).thenReturn(srcFiles);
 
         IType type1 = mock(IType.class);
         when(type1.getName()).thenReturn("SrcFile1");
@@ -217,8 +212,8 @@ public class ModelSearchQueryTest extends TestCase {
         IType type2 = mock(IType.class);
         when(type2.getName()).thenReturn("SourceFile2");
 
-        when(resources.getType(srcFile1)).thenReturn(type1);
-        when(resources.getType(srcFile2)).thenReturn(type2);
+        when(srcFile1.getIpsObject()).thenReturn(type1);
+        when(srcFile2.getIpsObject()).thenReturn(type2);
 
         IMethod matchingMethod = mock(IMethod.class);
         when(matchingMethod.getName()).thenReturn("MatchingMethod");
@@ -258,9 +253,7 @@ public class ModelSearchQueryTest extends TestCase {
 
     @Test
     public void testSucheAssoziationen() throws CoreException {
-        IIpsProject project = mock(IIpsProject.class);
 
-        when(model.getSelectedProjects()).thenReturn(Collections.singletonList(project));
         when(model.getTypeName()).thenReturn("SrcF");
         when(model.getSearchTerm()).thenReturn("MatchingMet");
 
@@ -268,15 +261,17 @@ public class ModelSearchQueryTest extends TestCase {
 
         IIpsSrcFile srcFile1 = mock(IpsSrcFile.class);
         when(srcFile1.getName()).thenReturn("SrcFile1");
+        when(srcFile1.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
         IIpsSrcFile srcFile2 = mock(IpsSrcFile.class);
         when(srcFile2.getName()).thenReturn("SourceFile2");
+        when(srcFile2.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
-        List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
+        Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
         srcFiles.add(srcFile1);
         srcFiles.add(srcFile2);
 
-        when(resources.getIpsSourceFiles(Collections.singletonList(project), IPS_OBJECT_TYPES)).thenReturn(srcFiles);
+        when(scope.getSelectedIpsSrcFiles()).thenReturn(srcFiles);
 
         IType type1 = mock(IType.class);
         when(type1.getName()).thenReturn("SrcFile1");
@@ -284,8 +279,8 @@ public class ModelSearchQueryTest extends TestCase {
         IType type2 = mock(IType.class);
         when(type2.getName()).thenReturn("SourceFile2");
 
-        when(resources.getType(srcFile1)).thenReturn(type1);
-        when(resources.getType(srcFile2)).thenReturn(type2);
+        when(srcFile1.getIpsObject()).thenReturn(type1);
+        when(srcFile2.getIpsObject()).thenReturn(type2);
 
         IAssociation matchingAssociation = mock(IAssociation.class);
         when(matchingAssociation.getName()).thenReturn("MatchingMethod");
@@ -325,9 +320,7 @@ public class ModelSearchQueryTest extends TestCase {
 
     @Test
     public void testSucheTableStructureUsages() throws CoreException {
-        IIpsProject project = mock(IIpsProject.class);
 
-        when(model.getSelectedProjects()).thenReturn(Collections.singletonList(project));
         when(model.getTypeName()).thenReturn("SrcF");
         when(model.getSearchTerm()).thenReturn("MatchingMet");
 
@@ -335,15 +328,17 @@ public class ModelSearchQueryTest extends TestCase {
 
         IIpsSrcFile srcFile1 = mock(IpsSrcFile.class);
         when(srcFile1.getName()).thenReturn("SrcFile1");
+        when(srcFile1.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
         IIpsSrcFile srcFile2 = mock(IpsSrcFile.class);
         when(srcFile2.getName()).thenReturn("SourceFile2");
+        when(srcFile2.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
-        List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
+        Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
         srcFiles.add(srcFile1);
         srcFiles.add(srcFile2);
 
-        when(resources.getIpsSourceFiles(Collections.singletonList(project), IPS_OBJECT_TYPES)).thenReturn(srcFiles);
+        when(scope.getSelectedIpsSrcFiles()).thenReturn(srcFiles);
 
         ProductCmptType type1 = mock(ProductCmptType.class);
         when(type1.getName()).thenReturn("SrcFile1");
@@ -351,8 +346,8 @@ public class ModelSearchQueryTest extends TestCase {
         ProductCmptType type2 = mock(ProductCmptType.class);
         when(type2.getName()).thenReturn("SourceFile2");
 
-        when(resources.getType(srcFile1)).thenReturn(type1);
-        when(resources.getType(srcFile2)).thenReturn(type2);
+        when(srcFile1.getIpsObject()).thenReturn(type1);
+        when(srcFile2.getIpsObject()).thenReturn(type2);
 
         ITableStructureUsage matchingTableStructureUsage = mock(ITableStructureUsage.class);
         when(matchingTableStructureUsage.getName()).thenReturn("MatchingMethod");
@@ -392,9 +387,7 @@ public class ModelSearchQueryTest extends TestCase {
 
     @Test
     public void testSucheRules() throws CoreException {
-        IIpsProject project = mock(IIpsProject.class);
 
-        when(model.getSelectedProjects()).thenReturn(Collections.singletonList(project));
         when(model.getTypeName()).thenReturn("SrcF");
         when(model.getSearchTerm()).thenReturn("MatchingMet");
 
@@ -402,15 +395,17 @@ public class ModelSearchQueryTest extends TestCase {
 
         IIpsSrcFile srcFile1 = mock(IpsSrcFile.class);
         when(srcFile1.getName()).thenReturn("SrcFile1");
+        when(srcFile1.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
         IIpsSrcFile srcFile2 = mock(IpsSrcFile.class);
         when(srcFile2.getName()).thenReturn("SourceFile2");
+        when(srcFile2.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
-        List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
+        Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
         srcFiles.add(srcFile1);
         srcFiles.add(srcFile2);
 
-        when(resources.getIpsSourceFiles(Collections.singletonList(project), IPS_OBJECT_TYPES)).thenReturn(srcFiles);
+        when(scope.getSelectedIpsSrcFiles()).thenReturn(srcFiles);
 
         PolicyCmptType type1 = mock(PolicyCmptType.class);
         when(type1.getName()).thenReturn("SrcFile1");
@@ -418,8 +413,8 @@ public class ModelSearchQueryTest extends TestCase {
         PolicyCmptType type2 = mock(PolicyCmptType.class);
         when(type2.getName()).thenReturn("SourceFile2");
 
-        when(resources.getType(srcFile1)).thenReturn(type1);
-        when(resources.getType(srcFile2)).thenReturn(type2);
+        when(srcFile1.getIpsObject()).thenReturn(type1);
+        when(srcFile2.getIpsObject()).thenReturn(type2);
 
         IValidationRule matchingRule = mock(IValidationRule.class);
         when(matchingRule.getName()).thenReturn("MatchingMethod");

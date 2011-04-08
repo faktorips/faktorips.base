@@ -14,14 +14,11 @@
 package org.faktorips.devtools.core.ui.search.model;
 
 import java.beans.PropertyChangeEvent;
-import java.util.Arrays;
-import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.search.ui.ISearchPageContainer;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
+import org.faktorips.devtools.core.ui.search.model.scope.ModelSearchScope;
 
 public class ModelSearchPresentationModel extends PresentationModelObject {
 
@@ -29,6 +26,8 @@ public class ModelSearchPresentationModel extends PresentationModelObject {
     public static final String SEARCH_STRING = "searchString"; //$NON-NLS-1$
 
     private IIpsProject project;
+
+    private ModelSearchScope searchScope;
 
     private String searchTerm;
     private String typeName;
@@ -112,8 +111,11 @@ public class ModelSearchPresentationModel extends PresentationModelObject {
         this.searchValidationRules = searchValidationRules;
     }
 
-    public List<IIpsProject> getSelectedProjects() throws CoreException {
-        IIpsProject[] ipsProjects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
-        return Arrays.asList(ipsProjects);
+    public void setSearchScope(ModelSearchScope searchScope) {
+        this.searchScope = searchScope;
+    }
+
+    public ModelSearchScope getSearchScope() {
+        return searchScope;
     }
 }

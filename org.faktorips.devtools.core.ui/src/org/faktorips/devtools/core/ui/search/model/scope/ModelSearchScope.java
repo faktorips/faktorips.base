@@ -11,16 +11,23 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.search.model.finder;
+package org.faktorips.devtools.core.ui.search.model.scope;
 
-import java.util.List;
 import java.util.Set;
 
-import org.eclipse.search.ui.text.Match;
-import org.faktorips.devtools.core.model.type.IType;
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
-public interface IpsObjectPartFinder {
+/**
+ * The ModelSearchScope defines, where the search should look for its results.
+ * 
+ * @author dicker
+ */
+public interface ModelSearchScope {
 
-    public List<Match> findMatchingIpsObjectParts(Set<IType> searchedTypes, String searchTerm);
-
+    /**
+     * @return Set of srcFile, which are related in this Scope
+     * @throws CoreException
+     */
+    public Set<IIpsSrcFile> getSelectedIpsSrcFiles() throws CoreException;
 }

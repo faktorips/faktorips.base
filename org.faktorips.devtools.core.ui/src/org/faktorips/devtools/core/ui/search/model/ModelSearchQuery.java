@@ -14,7 +14,9 @@
 package org.faktorips.devtools.core.ui.search.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -40,17 +42,11 @@ public class ModelSearchQuery implements ISearchQuery {
 
     private final ModelSearchPresentationModel model;
     private final ModelSearchResult searchResult;
-    private final ModelSearchFaktoripsResources resources;
     private final StringMatcher stringMatcher = new StringMatcher();
 
-    protected ModelSearchQuery(ModelSearchPresentationModel model, ModelSearchFaktoripsResources resources) {
+    protected ModelSearchQuery(ModelSearchPresentationModel model) {
         this.model = model;
         this.searchResult = new ModelSearchResult(this);
-        this.resources = resources;
-    }
-
-    public ModelSearchQuery(ModelSearchPresentationModel model) {
-        this(model, new ModelSearchFaktoripsResources());
     }
 
     @Override
@@ -60,16 +56,14 @@ public class ModelSearchQuery implements ISearchQuery {
         monitor.beginTask(this.getLabel(), 2);
 
         try {
-            List<IIpsSrcFile> searchedSrcFiles = getMatchingSrcFiles();
-
-            model.getSelectedProjects();
+            Set<IIpsSrcFile> searchedSrcFiles = getMatchingSrcFiles();
 
             if (justClassNameSearched()) {
                 for (IIpsSrcFile srcFile : searchedSrcFiles) {
                     searchResult.addMatch(new Match(srcFile, 0, 0));
                 }
             } else {
-                List<IType> searchedTypes = getTypes(searchedSrcFiles);
+                Set<IType> searchedTypes = getTypes(searchedSrcFiles);
 
                 List<IpsObjectPartFinder> finders = findFinders();
 
@@ -111,7 +105,7 @@ public class ModelSearchQuery implements ISearchQuery {
         return finders;
     }
 
-    protected void findAttributes(List<IType> searchedTypes, IpsObjectPartFinder finder) {
+    protected void findAttributes(Set<IType> searchedTypes, IpsObjectPartFinder finder) {
         List<Match> matches = finder.findMatchingIpsObjectParts(searchedTypes, model.getSearchTerm());
         if (matches.isEmpty()) {
             return;
@@ -122,24 +116,25 @@ public class ModelSearchQuery implements ISearchQuery {
         }
     }
 
-    protected List<IType> getTypes(List<IIpsSrcFile> searchedSrcFiles) throws CoreException {
-        List<IType> types = new ArrayList<IType>(searchedSrcFiles.size());
+    protected Set<IType> getTypes(Set<IIpsSrcFile> searchedSrcFiles) throws CoreException {
+        Set<IType> types = new HashSet<IType>(searchedSrcFiles.size());
 
         for (IIpsSrcFile srcFile : searchedSrcFiles) {
-            IType type = resources.getType(srcFile);
-            if (type != null) {
-                types.add(type);
+            if (srcFile.getIpsObjectType() == IpsObjectType.POLICY_CMPT_TYPE
+                    || srcFile.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT_TYPE) {
+
+                types.add((IType)srcFile.getIpsObject());
             }
         }
 
         return types;
     }
 
-    private List<IIpsSrcFile> getMatchingSrcFiles() throws CoreException {
-        List<IIpsSrcFile> searchedTypes = getSearchedTypes();
+    private Set<IIpsSrcFile> getMatchingSrcFiles() throws CoreException {
+        Set<IIpsSrcFile> searchedTypes = getSelectedTypes();
 
         if (StringUtils.isNotBlank(model.getTypeName())) {
-            List<IIpsSrcFile> hits = new ArrayList<IIpsSrcFile>();
+            Set<IIpsSrcFile> hits = new HashSet<IIpsSrcFile>();
             for (IIpsSrcFile srcFile : searchedTypes) {
                 if (isMatching(model.getTypeName(), srcFile.getName())) {
                     hits.add(srcFile);
@@ -154,12 +149,27 @@ public class ModelSearchQuery implements ISearchQuery {
         return stringMatcher.isMatching(searchTerm, text);
     }
 
-    private List<IIpsSrcFile> getSearchedTypes() throws CoreException {
-        return resources.getIpsSourceFiles(model.getSelectedProjects(), getIpsObjectTypeFilter());
+    private Set<IIpsSrcFile> getSelectedTypes() throws CoreException {
+        Set<IIpsSrcFile> ipsSrcFilesInScope = model.getSearchScope().getSelectedIpsSrcFiles();
+
+        Set<IIpsSrcFile> selectedSrcFiles = new HashSet<IIpsSrcFile>();
+
+        List<IpsObjectType> objectTypes = getIpsObjectTypeFilter();
+        for (IIpsSrcFile srcFile : ipsSrcFilesInScope) {
+            if (objectTypes.contains(srcFile.getIpsObjectType())) {
+                selectedSrcFiles.add(srcFile);
+            }
+        }
+
+        return selectedSrcFiles;
+
     }
 
-    private IpsObjectType[] getIpsObjectTypeFilter() {
-        return new IpsObjectType[] { IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE };
+    private List<IpsObjectType> getIpsObjectTypeFilter() {
+        List<IpsObjectType> objectTypes = new ArrayList<IpsObjectType>();
+        objectTypes.add(IpsObjectType.POLICY_CMPT_TYPE);
+        objectTypes.add(IpsObjectType.PRODUCT_CMPT_TYPE);
+        return objectTypes;
     }
 
     private boolean justClassNameSearched() {

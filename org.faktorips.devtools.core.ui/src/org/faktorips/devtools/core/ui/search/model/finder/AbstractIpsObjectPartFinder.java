@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.search.model.finder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.search.ui.text.Match;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -25,7 +26,7 @@ public abstract class AbstractIpsObjectPartFinder implements IpsObjectPartFinder
     private final StringMatcher stringMatcher = new StringMatcher();
 
     @Override
-    public List<Match> findMatchingIpsObjectParts(List<IType> searchedTypes, String searchTerm) {
+    public List<Match> findMatchingIpsObjectParts(Set<IType> searchedTypes, String searchTerm) {
         List<Match> matches = new ArrayList<Match>();
         for (IType type : searchedTypes) {
             List<? extends IIpsObjectPart> ipsObjectParts = getIpsObjectParts(type);

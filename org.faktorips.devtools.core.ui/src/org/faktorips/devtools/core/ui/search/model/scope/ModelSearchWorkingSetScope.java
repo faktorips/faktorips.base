@@ -11,16 +11,31 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.search.model.finder;
+package org.faktorips.devtools.core.ui.search.model.scope;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
-import org.eclipse.search.ui.text.Match;
-import org.faktorips.devtools.core.model.type.IType;
+import org.eclipse.ui.IWorkingSet;
 
-public interface IpsObjectPartFinder {
+public class ModelSearchWorkingSetScope extends AbstractModelSearchScope {
 
-    public List<Match> findMatchingIpsObjectParts(Set<IType> searchedTypes, String searchTerm);
+    private final IWorkingSet[] workingSets;
+
+    public ModelSearchWorkingSetScope(IWorkingSet[] workingSets) {
+        this.workingSets = workingSets;
+    }
+
+    @Override
+    protected List<?> getSelectedObjects() {
+        List<Object> selectedObjects = new ArrayList<Object>();
+
+        for (IWorkingSet workingSet : workingSets) {
+            selectedObjects.addAll(Arrays.asList(workingSet.getElements()));
+        }
+
+        return selectedObjects;
+    }
 
 }
