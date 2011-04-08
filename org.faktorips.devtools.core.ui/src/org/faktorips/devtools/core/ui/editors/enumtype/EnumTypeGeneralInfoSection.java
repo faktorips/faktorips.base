@@ -20,7 +20,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
-import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
@@ -53,6 +52,8 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsChangeListener {
 
+    private static final String ID = "org.faktorips.devtools.core.ui.editors.enumtype.EnumTypeGeneralInfoSection"; //$NON-NLS-1$
+
     /** The <tt>IEnumType</tt> the editor is currently editing. */
     private IEnumType enumType;
 
@@ -75,7 +76,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
      * @throws NullPointerException If <tt>enumType</tt> is <tt>null</tt>.
      */
     public EnumTypeGeneralInfoSection(IEnumType enumType, Composite parent, UIToolkit toolkit) {
-        super(parent, ExpandableComposite.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
+        super(ID, parent, GridData.FILL_HORIZONTAL, toolkit);
         ArgumentCheck.notNull(enumType);
 
         this.enumType = enumType;
