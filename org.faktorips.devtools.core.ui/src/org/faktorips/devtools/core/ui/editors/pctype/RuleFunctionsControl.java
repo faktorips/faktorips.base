@@ -57,6 +57,7 @@ public class RuleFunctionsControl extends EditTableControl {
 
     public RuleFunctionsControl(IValidationRule rule, Composite parent) {
         super(rule, parent, SWT.NONE, Messages.RuleFunctionsControl_title);
+        initCellEditorsAndConfigureTableViewer();
         new MessageService(getTableViewer());
     }
 

@@ -113,7 +113,7 @@ public class CompletionUtil {
         contentAssistant.setInformationControlCreator(new IInformationControlCreator() {
             @Override
             public IInformationControl createInformationControl(Shell parent) {
-                return new DefaultInformationControl(parent, SWT.NONE, new HTMLTextPresenter(true));
+                return new DefaultInformationControl(parent, new HTMLTextPresenter(true));
             }
         });
         return contentAssistant;

@@ -15,21 +15,22 @@ package org.faktorips.devtools.core.ui.controls.valuesets;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.UIController;
-import org.faktorips.devtools.core.ui.controls.ListChooser;
+import org.faktorips.devtools.core.ui.controls.chooser.ListChooser;
+import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.values.ObjectUtil;
 
@@ -38,7 +39,7 @@ import org.faktorips.values.ObjectUtil;
  * the set that is defined in the control can be provided by another value set (source value set) or
  * by an {@link EnumDatatype}.
  * 
- * @author Thorsten Guenther
+ * @author Thorsten Guenther, Stefan Widmaier
  */
 public class EnumSubsetChooser extends ListChooser implements IValueSetEditControl {
 
@@ -58,17 +59,6 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
      * <code>null</code> then the value datatype MUST be an EnumDatatype!
      */
     private ValueDatatype valueDatatype;
-
-    /**
-     * The controller to notify of changes to the target value set
-     */
-    private UIController uiController;
-
-    /**
-     * Mapping of the formatted values to underlying values. For enums the formatted value is the
-     * enum-name and the unformatted value is the enum-id.
-     */
-    private Map<String, String> formattedValue2Value = new HashMap<String, String>();
 
     /**
      * Creates a new chooser where the allowed values are defined by the given EnumDatatype.
@@ -100,8 +90,7 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
         targetValueSet = target;
         sourceValueSet = source;
         setValueDatatype(datatype);
-        this.uiController = uiController;
-        setContents();
+        init(getAdditionalSourceValues(), Arrays.asList(targetValueSet.getValues()));
     }
 
     public boolean allowedValuesAreDefinedBySourceValueSet() {
@@ -132,22 +121,6 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
             return;
         }
         valueDatatype = newDatatype;
-        formattedValue2Value = new HashMap<String, String>();
-        fillFormattedValue2ValueMap(getTargetValues());
-        fillFormattedValue2ValueMap(getAdditionalSourceValues());
-    }
-
-    private void fillFormattedValue2ValueMap(String[] values) {
-        for (String value : values) {
-            String formattedValue = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
-                    .formatValue(valueDatatype, value);
-            formattedValue2Value.put(formattedValue, value);
-        }
-    }
-
-    private void setContents() {
-        super.setTargetContent(formatValues(getTargetValues()));
-        super.setSourceContent(formatValues(getAdditionalSourceValues()));
     }
 
     public IEnumValueSet getSourceValueSet() {
@@ -196,75 +169,27 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
      * @throws NullPointerException if newSet is <code>null</code>.
      */
     public void setEnumValueSet(IEnumValueSet valueSet, ValueDatatype newDatatype) {
-        setValueDatatype(valueDatatype);
         targetValueSet = valueSet;
-        setContents();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void valuesAdded(String[] values) {
-        for (String value : values) {
-            targetValueSet.addValue(getValueForFormattedValue(value));
-        }
-        uiController.updateUI();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void valuesRemoved(String[] values) {
-        for (String value : values) {
-            targetValueSet.removeValue(getValueForFormattedValue(value));
-        }
-        uiController.updateUI();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void valueMoved(String textShown, int oldIndex, int newIndex, boolean up) {
-        String tmp = targetValueSet.getValue(newIndex);
-        targetValueSet.setValue(newIndex, getValueForFormattedValue(textShown));
-        targetValueSet.setValue(oldIndex, tmp);
-    }
-
-    /**
-     * Returns the value id for the given human readable name.
-     */
-    private String getValueForFormattedValue(String name) {
-        return formattedValue2Value.get(name);
-    }
-
-    /**
-     * Returns all values in the target value set.
-     */
-    private String[] getTargetValues() {
-        return targetValueSet.getValues();
+        setValueDatatype(valueDatatype);
+        init(getAdditionalSourceValues(), Arrays.asList(targetValueSet.getValues()));
     }
 
     /**
      * Returns all values the user can add to the (target) value set he is editing. Values already
      * in the target set, are not returned.
      */
-    private String[] getAdditionalSourceValues() {
-        String[] values = new String[0];
+    private List<String> getAdditionalSourceValues() {
+        List<String> values = new ArrayList<String>();
         if (allowedValuesAreDefinedBySourceValueSet()) {
-            values = targetValueSet.getValuesNotContained(sourceValueSet);
+            values = Arrays.asList(targetValueSet.getValuesNotContained(sourceValueSet));
         } else {
             List<String> targetIds = Arrays.asList(targetValueSet.getValues());
             String[] allIds = getEnumDatatype().getAllValueIds(true);
-            List<String> result = new ArrayList<String>();
             for (int i = 0; i < allIds.length; i++) {
                 if (!targetIds.contains(allIds[i])) {
-                    result.add(allIds[i]);
+                    values.add(allIds[i]);
                 }
             }
-            values = result.toArray(new String[result.size()]);
         }
         return values;
     }
@@ -273,26 +198,22 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
      * Returns all values the user can add to the (target) value set whether the value is already in
      * the target set or not.
      */
-    public String[] getAllSourceValues() {
+    public List<String> getAllSourceValues() {
         if (allowedValuesAreDefinedByEnumDatatype()) {
-            return getEnumDatatype().getAllValueIds(true);
+            return Arrays.asList(getEnumDatatype().getAllValueIds(true));
         } else {
-            return sourceValueSet.getValues();
+            return Arrays.asList(sourceValueSet.getValues());
         }
     }
 
-    /**
-     * Formats the values accroding to the datatype specific formatter obtained by
-     * {@link IpsPreferences#getDatatypeFormatter()}.
-     */
-    private String[] formatValues(String[] values) {
-        List<String> result = new ArrayList<String>();
-        for (String value : values) {
-            String name = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
-                    .formatValue(valueDatatype, value);
-            result.add(name);
+    @Override
+    protected void update(List<String> prdefinedValues, List<String> resultingValues) {
+        for (String value : targetValueSet.getValues()) {
+            targetValueSet.removeValue(value);
         }
-        return result.toArray(new String[result.size()]);
+        for (String newValue : resultingValues) {
+            targetValueSet.addValue(newValue);
+        }
     }
 
     /**
@@ -300,9 +221,6 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
      */
     @Override
     public MessageList getMessagesFor(String value) {
-        if (formattedValue2Value != null) {
-            value = formattedValue2Value.get(value);
-        }
         if (sourceValueSet == null) {
             return new MessageList();
         }
@@ -313,5 +231,37 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
         MessageList result = new MessageList();
         sourceValueSet.containsValue(valueId, result, targetValueSet, null);
         return result;
+    }
+
+    @Override
+    protected ITableLabelProvider createLabelProvider() {
+        return new TableLabelProvider();
+    }
+
+    private class TableLabelProvider extends LabelProvider implements ITableLabelProvider {
+
+        @Override
+        public Image getColumnImage(Object element, int columnIndex) {
+            if (columnIndex != IMG_COLUMN) {
+                return null;
+            }
+            MessageList messages = getMessagesFor((String)element);
+            if (!messages.isEmpty()) {
+                return IpsUIPlugin.getImageHandling().getImage(
+                        IpsProblemOverlayIcon.getOverlay(messages.getSeverity()), false);
+            }
+            return null;
+        }
+
+        @Override
+        public String getColumnText(Object element, int columnIndex) {
+            if (columnIndex == IMG_COLUMN) {
+                return ""; //$NON-NLS-1$
+            }
+            String formattedString = IpsUIPlugin.getDefault().getDatatypeFormatter()
+                    .formatValue(valueDatatype, element.toString());
+            return formattedString;
+        }
+
     }
 }

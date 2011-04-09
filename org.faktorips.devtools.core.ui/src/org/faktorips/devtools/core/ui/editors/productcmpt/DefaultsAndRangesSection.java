@@ -31,6 +31,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.TimedEnumDatatypeUtil;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -45,6 +46,7 @@ import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.PreviewTextButtonField;
+import org.faktorips.devtools.core.ui.controls.TextComboControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
 
@@ -210,7 +212,7 @@ public class DefaultsAndRangesSection extends IpsSection {
         toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_valueSet);
         AnyValueSetControl valueSetCtrl = new AnyValueSetControl(rootPane, toolkit, element, getShell(), controller);
         valueSetCtrl.setDataChangeable(isDataChangeable());
-        valueSetCtrl.setText(element.getValueSet().toShortString());
+        valueSetCtrl.setText(IpsUIPlugin.getDefault().getDatatypeFormatter().formatValueSet(element.getValueSet()));
         PreviewTextButtonField ptbf = new PreviewTextButtonField(valueSetCtrl);
         controller.add(ptbf, element, IConfigElement.PROPERTY_VALUE_SET);
         GridData data = (GridData)valueSetCtrl.getLayoutData();
@@ -220,49 +222,54 @@ public class DefaultsAndRangesSection extends IpsSection {
     }
 
     private void createEditControlsForRange(IRangeValueSet range, IpsObjectUIController controller) {
-        Text lower;
-        Text upper;
-        Text step;
+        EditField lowerField;
+        EditField upperField;
+        EditField stepField;
+
+        ValueDatatype datatype = ((RangeValueSet)range).getValueDatatype();
+        ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
         if (!IpsPlugin.getDefault().getIpsPreferences().isRangeEditFieldsInOneRow()) {
             toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_minimum);
-            lower = toolkit.createText(rootPane);
-            addFocusControl(lower);
+            lowerField = controlFactory.createEditField(toolkit, rootPane, datatype, range, range.getIpsProject());
+            addFocusControl(lowerField.getControl());
 
             toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
             toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_maximum);
-            upper = toolkit.createText(rootPane);
-            addFocusControl(upper);
+            upperField = controlFactory.createEditField(toolkit, rootPane, datatype, range, range.getIpsProject());
+            addFocusControl(upperField.getControl());
 
             toolkit.createFormLabel(rootPane, ""); //$NON-NLS-1$
             toolkit.createFormLabel(rootPane, Messages.PolicyAttributesSection_step);
-            step = toolkit.createText(rootPane);
-            addFocusControl(step);
+            stepField = controlFactory.createEditField(toolkit, rootPane, datatype, range, range.getIpsProject());
+            addFocusControl(stepField.getControl());
         } else {
             toolkit.createFormLabel(rootPane, Messages.DefaultsAndRangesSection_minMaxStepLabel);
             Composite rangeComposite = toolkit.createGridComposite(rootPane, 3, false, false);
-            // need to see boarders
+            // need to see borders
             ((GridLayout)rangeComposite.getLayout()).marginWidth = 1;
             ((GridLayout)rangeComposite.getLayout()).marginHeight = 2;
 
-            lower = toolkit.createText(rangeComposite);
-            initTextField(lower, 50);
+            lowerField = controlFactory
+                    .createEditField(toolkit, rangeComposite, datatype, range, range.getIpsProject());
+            initTextField(((TextComboControl)lowerField.getControl()).getTextControl(), 50);
 
-            upper = toolkit.createText(rangeComposite);
-            initTextField(upper, 50);
+            upperField = controlFactory
+                    .createEditField(toolkit, rangeComposite, datatype, range, range.getIpsProject());
+            initTextField(((TextComboControl)upperField.getControl()).getTextControl(), 50);
 
-            step = toolkit.createText(rangeComposite);
-            initTextField(step, 50);
+            stepField = controlFactory.createEditField(toolkit, rangeComposite, datatype, range, range.getIpsProject());
+            initTextField(((TextComboControl)stepField.getControl()).getTextControl(), 50);
 
             toolkit.getFormToolkit().paintBordersFor(rangeComposite);
         }
 
-        editControls.add(lower);
-        editControls.add(upper);
-        editControls.add(step);
+        editControls.add(lowerField.getControl());
+        editControls.add(upperField.getControl());
+        editControls.add(stepField.getControl());
 
-        controller.add(upper, range, IRangeValueSet.PROPERTY_UPPERBOUND);
-        controller.add(lower, range, IRangeValueSet.PROPERTY_LOWERBOUND);
-        controller.add(step, range, IRangeValueSet.PROPERTY_STEP);
+        controller.add(upperField, range, IRangeValueSet.PROPERTY_UPPERBOUND);
+        controller.add(lowerField, range, IRangeValueSet.PROPERTY_LOWERBOUND);
+        controller.add(stepField, range, IRangeValueSet.PROPERTY_STEP);
     }
 
     private void initTextField(Text text, int widthHint) {

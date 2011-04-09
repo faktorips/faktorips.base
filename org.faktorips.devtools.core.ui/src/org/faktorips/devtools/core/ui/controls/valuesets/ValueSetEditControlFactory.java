@@ -16,9 +16,11 @@ package org.faktorips.devtools.core.ui.controls.valuesets;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.UIController;
 
@@ -41,6 +43,7 @@ public class ValueSetEditControlFactory {
      * @param parent The parent composite.
      * @param toolkit The ui toolkit to use.
      * @param uiController The ui controller.
+     * @param ipsProject the {@link IValueSetOwner}'s {@link IIpsProject}
      * 
      * @return The new composite.
      */
@@ -48,17 +51,20 @@ public class ValueSetEditControlFactory {
             ValueDatatype valueDatatype,
             Composite parent,
             UIToolkit toolkit,
-            UIController uiController) {
+            UIController uiController,
+            IIpsProject ipsProject) {
 
         if (valueSet.isRange() && !valueSet.isAbstract()) {
-            return new RangeEditControl(parent, toolkit, (IRangeValueSet)valueSet, uiController);
+            return new RangeEditControl(parent, toolkit, valueDatatype, (IRangeValueSet)valueSet, uiController);
         }
         if (valueSet.canBeUsedAsSupersetForAnotherEnumValueSet()) {
             IEnumValueSet enumValueSet = (IEnumValueSet)valueSet;
             if (valueDatatype.isEnum()) {
-                return new EnumSubsetChooser(parent, toolkit, null, enumValueSet, valueDatatype, uiController);
+                EnumSubsetChooser chooser = new EnumSubsetChooser(parent, toolkit, null, enumValueSet, valueDatatype,
+                        uiController);
+                return chooser;
             }
-            return new EnumValueSetEditControl(enumValueSet, parent);
+            return new EnumValueSetEditControl(parent, valueDatatype, enumValueSet, ipsProject);
         }
         throw new RuntimeException("Can't create edit control for value set " + valueSet + " and datatype " //$NON-NLS-1$ //$NON-NLS-2$
                 + valueDatatype);

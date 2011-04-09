@@ -204,7 +204,8 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         // Creates a new composite to edit the current value set
         Group group = createGroupAroundValueSet(parent, valueSet.getValueSetType().getName());
         ValueSetEditControlFactory factory = new ValueSetEditControlFactory();
-        Control c = factory.newControl(valueSet, valueDatatype, group, toolkit, uiController);
+        Control c = factory.newControl(valueSet, valueDatatype, group, toolkit, uiController,
+                valueSetOwner.getIpsProject());
         c.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_BOTH));
         setValueSetEditControl(c);
         return group;

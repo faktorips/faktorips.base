@@ -18,20 +18,22 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
+import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.UIController;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
-import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.ControlComposite;
 import org.faktorips.devtools.core.ui.controls.Messages;
@@ -45,28 +47,25 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
 
     private UIToolkit uiToolkit;
 
-    // lower and button controls
-    private Text lower;
-    private Text upper;
-    private Text step;
     private IRangeValueSet range;
-    private TextField lowerfield;
-    private TextField upperfield;
-    private TextField stepfield;
+    private EditField lowerfield;
+    private EditField upperfield;
+    private EditField stepfield;
     private IpsObjectUIController uiController;
     private Checkbox containsNullCB;
     private CheckboxField containsNullField;
 
     private boolean dataChangeable;
 
-    public RangeEditControl(Composite parent, UIToolkit toolkit, IRangeValueSet range, UIController uiController) {
+    public RangeEditControl(Composite parent, UIToolkit toolkit, ValueDatatype valueDatatype, IRangeValueSet range,
+            UIController uiController) {
         super(parent, SWT.NONE);
         this.range = range;
         uiToolkit = toolkit;
 
         setLayout();
         Composite workArea = createWorkArea(uiToolkit, this);
-        createTextControls(uiToolkit, workArea);
+        createTextControls(uiToolkit, workArea, valueDatatype, range, range.getIpsProject());
 
         if (uiController instanceof IpsObjectUIController) {
             this.uiController = (IpsObjectUIController)uiController;
@@ -105,18 +104,25 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
         return workArea;
     }
 
-    private void createTextControls(UIToolkit toolkit, Composite workArea) {
+    private void createTextControls(UIToolkit toolkit,
+            Composite workArea,
+            ValueDatatype valueDatatype,
+            IValueSet valueSet,
+            IIpsProject ipsProject) {
+        ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault()
+                .getValueDatatypeControlFactory(valueDatatype);
+
         toolkit.createFormLabel(workArea, Messages.RangeEditControl_labelMinimum);
-        lower = toolkit.createText(workArea);
-        lower.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
+        lowerfield = ctrlFactory.createEditField(uiToolkit, workArea, valueDatatype, valueSet, ipsProject);
+        lowerfield.getControl().setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
 
         toolkit.createLabel(workArea, Messages.RangeEditControl_labelMaximum);
-        upper = toolkit.createText(workArea);
-        upper.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
+        upperfield = ctrlFactory.createEditField(uiToolkit, workArea, valueDatatype, valueSet, ipsProject);
+        upperfield.getControl().setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
 
         toolkit.createFormLabel(workArea, Messages.RangeEditControl_labelStep);
-        step = toolkit.createText(workArea);
-        step.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
+        stepfield = ctrlFactory.createEditField(uiToolkit, workArea, valueDatatype, valueSet, ipsProject);
+        stepfield.getControl().setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
 
         toolkit.createLabel(
                 workArea,
@@ -131,9 +137,6 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
     }
 
     private void connectToModel() {
-        upperfield = new TextField(upper);
-        lowerfield = new TextField(lower);
-        stepfield = new TextField(step);
         containsNullField = new CheckboxField(containsNullCB);
         uiController.add(upperfield, range, IRangeValueSet.PROPERTY_UPPERBOUND);
         uiController.add(lowerfield, range, IRangeValueSet.PROPERTY_LOWERBOUND);
@@ -191,52 +194,40 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
     }
 
     public void setLower(String newText) {
-        lower.setText(newText);
+        lowerfield.setText(newText);
     }
 
     public String getLower() {
-        return lower.getText();
+        return lowerfield.getText();
     }
 
     public void setUpper(String newText) {
-        upper.setText(newText);
+        upperfield.setText(newText);
     }
 
     public String getUpper() {
-        return upper.getText();
+        return upperfield.getText();
     }
 
     public void setStep(String newText) {
-        step.setText(newText);
+        stepfield.setText(newText);
     }
 
     public String getStep() {
-        return step.getText();
-    }
-
-    public Text getLowerControl() {
-        return lower;
-    }
-
-    public Text getStepControl() {
-        return step;
-    }
-
-    public Text getUpperControl() {
-        return upper;
+        return stepfield.getText();
     }
 
     @Override
     public boolean setFocus() {
-        return lower.setFocus();
+        return lowerfield.getControl().setFocus();
     }
 
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-        upper.setEnabled(enabled);
-        lower.setEnabled(enabled);
-        step.setEnabled(enabled);
+        upperfield.getControl().setEnabled(enabled);
+        lowerfield.getControl().setEnabled(enabled);
+        stepfield.getControl().setEnabled(enabled);
     }
 
     /**
@@ -254,9 +245,9 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
     public void setDataChangeable(boolean changeable) {
         dataChangeable = changeable;
 
-        uiToolkit.setDataChangeable(lower, changeable);
-        uiToolkit.setDataChangeable(upper, changeable);
-        uiToolkit.setDataChangeable(step, changeable);
+        uiToolkit.setDataChangeable(lowerfield.getControl(), changeable);
+        uiToolkit.setDataChangeable(upperfield.getControl(), changeable);
+        uiToolkit.setDataChangeable(stepfield.getControl(), changeable);
         uiToolkit.setDataChangeable(containsNullCB, changeable);
     }
 }

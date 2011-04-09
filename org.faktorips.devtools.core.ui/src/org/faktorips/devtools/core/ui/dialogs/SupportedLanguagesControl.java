@@ -44,6 +44,7 @@ public final class SupportedLanguagesControl extends EditTableControl {
 
     public SupportedLanguagesControl(Composite parent) {
         super(new ArrayList<Locale>(2), parent, SWT.NONE, null);
+        initCellEditorsAndConfigureTableViewer();
         setDataChangeable(true);
     }
 

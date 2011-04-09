@@ -55,6 +55,7 @@ public class ValidatedAttributesControl extends EditTableControl {
 
     public ValidatedAttributesControl(Object modelObject, Composite parent) {
         super(modelObject, parent, SWT.NONE, Messages.ValidatedAttributesControl_description);
+        initCellEditorsAndConfigureTableViewer();
         new MessageService(getTableViewer());
     }
 

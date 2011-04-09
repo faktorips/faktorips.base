@@ -21,11 +21,19 @@ import org.faktorips.datatype.classtypes.DoubleDatatype;
 import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
 import org.faktorips.datatype.classtypes.IntegerDatatype;
 import org.faktorips.datatype.classtypes.LongDatatype;
+import org.faktorips.datatype.classtypes.MoneyDatatype;
 import org.faktorips.devtools.core.DatatypeFormatter;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
+import org.faktorips.devtools.core.internal.model.valueset.Messages;
+import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
+import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
+import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
+import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.controller.fields.DateISOStringFormat;
 import org.faktorips.devtools.core.ui.controller.fields.DoubleFormat;
 import org.faktorips.devtools.core.ui.controller.fields.IntegerFormat;
+import org.faktorips.values.Money;
 
 public class UIDatatypeFormatter {
 
@@ -56,6 +64,56 @@ public class UIDatatypeFormatter {
                 || datatype == ValueDatatype.PRIMITIVE_INT || datatype == ValueDatatype.PRIMITIVE_LONG) {
             return new IntegerFormat().format(value);
         }
+        if (datatype instanceof MoneyDatatype) {
+            Money money = Money.valueOf(value);
+            StringBuffer sb = new StringBuffer();
+            if (money.isNull()) {
+                sb.append(""); //$NON-NLS-1$
+            } else {
+                sb.append(new DoubleFormat().format(money.getAmount().toString()));
+                sb.append(" "); //$NON-NLS-1$
+                sb.append(money.getCurrency().toString());
+            }
+            return sb.toString();
+        }
         return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(datatype, value);
+    }
+
+    public String formatValueSet(IValueSet valueSet) {
+        if (valueSet instanceof EnumValueSet) {
+            EnumValueSet enumValueSet = (EnumValueSet)valueSet;
+            ValueDatatype type = enumValueSet.getValueDatatype();
+            StringBuffer buffer = new StringBuffer();
+            buffer.append("["); //$NON-NLS-1$
+            for (String id : enumValueSet.getValues()) {
+                String formatedEnumText = formatValue(type, id);
+                buffer.append(formatedEnumText);
+                buffer.append(" | "); //$NON-NLS-1$
+            }
+            if (buffer.length() > 3) {
+                /*
+                 * Remove the separator after the last value (" | ")
+                 */
+                buffer.delete(buffer.length() - 3, buffer.length());
+            }
+            buffer.append("]"); //$NON-NLS-1$
+            return buffer.toString();
+        } else if (valueSet instanceof IRangeValueSet) {
+            RangeValueSet rangeValueSet = (RangeValueSet)valueSet;
+            StringBuffer sb = new StringBuffer();
+            sb.append('[');
+            sb.append((rangeValueSet.getLowerBound() == null ? "unlimited" : rangeValueSet.getLowerBound())); //$NON-NLS-1$
+            sb.append('-');
+            sb.append((rangeValueSet.getUpperBound() == null ? "unlimited" : rangeValueSet.getUpperBound())); //$NON-NLS-1$
+            sb.append(']');
+            if (rangeValueSet.getStep() != null) {
+                sb.append(Messages.RangeValueSet_0);
+                sb.append(rangeValueSet.getStep());
+            }
+            return sb.toString();
+        } else if (valueSet instanceof IUnrestrictedValueSet) {
+            return "[" + org.faktorips.devtools.core.model.valueset.Messages.ValueSetType__allValues + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        return ""; //$NON-NLS-1$
     }
 }
