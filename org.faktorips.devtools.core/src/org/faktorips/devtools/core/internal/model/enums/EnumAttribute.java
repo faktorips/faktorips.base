@@ -382,7 +382,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                 IEnumType enumType = getEnumType();
                 int index = enumType.getIndexOfEnumAttribute(this);
                 if (uniqueIdentifier) {
-                    enumValueContainerImpl.addUniqueIdentifierToCache(index, isIdentifier());
+                    enumValueContainerImpl.addUniqueIdentifierToCache(index);
                     /*
                      * Add all the unique identifier values of the column to the unique identifier
                      * validation cache.
@@ -390,8 +390,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                     List<IEnumAttribute> newUniqueAttributeList = new ArrayList<IEnumAttribute>(1);
                     newUniqueAttributeList.add(this);
                     try {
-                        enumValueContainerImpl.initCacheEntries(newUniqueAttributeList,
-                                enumType);
+                        enumValueContainerImpl.initCacheEntries(newUniqueAttributeList, enumType);
                     } catch (CoreException e) {
                         throw new RuntimeException(e);
                     }
@@ -432,21 +431,6 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     public void setIdentifier(boolean usedAsIdInFaktorIpsUi) {
         boolean oldUsedAsIdInFaktorIpsUi = identifier;
         identifier = usedAsIdInFaktorIpsUi;
-
-        // Update unique identifier validation cache.
-        if (oldUsedAsIdInFaktorIpsUi != identifier) {
-            EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumType();
-            if (enumValueContainerImpl.isUniqueIdentifierCacheInitialized()) {
-                if (usedAsIdInFaktorIpsUi) {
-                    enumValueContainerImpl.addDefaultIdentifierToCache(getEnumType().getIndexOfEnumAttribute(
-                            this));
-                } else {
-                    enumValueContainerImpl.removeDefaultIdentifierFromCache(getEnumType()
-                            .getIndexOfEnumAttribute(this));
-                }
-            }
-        }
-
         valueChanged(oldUsedAsIdInFaktorIpsUi, usedAsIdInFaktorIpsUi);
     }
 

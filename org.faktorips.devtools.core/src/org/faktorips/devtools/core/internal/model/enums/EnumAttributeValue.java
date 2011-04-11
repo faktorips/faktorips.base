@@ -20,6 +20,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.model.enums.EnumUtil;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
@@ -156,8 +157,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
          * Update unique identifier validation cache if this EnumAttributeValue refers to a unique
          * EnumAttribute.
          */
-        IEnumValue enumValue = getEnumValue();
-        EnumValueContainer enumValueContainerImpl = (EnumValueContainer)enumValue.getEnumValueContainer();
+        EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumValue().getEnumValueContainer();
         if (enumValueContainerImpl.isUniqueIdentifierCacheInitialized()) {
             try {
                 IEnumAttribute referencedEnumAttribute = findEnumAttribute(getIpsProject());
@@ -170,6 +170,16 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }
+        }
+
+        // Update enum value by identifier map
+        try {
+            IEnumAttribute referencedEnumAttribute = findEnumAttribute(getIpsProject());
+            if (EnumUtil.findEnumAttributeIsIdentifier(referencedEnumAttribute, getIpsProject())) {
+                enumValueContainerImpl.updateEnumValuesByIdentifierMapEntry(oldValue, value, getEnumValue());
+            }
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
         }
 
         valueChanged(oldValue, value);

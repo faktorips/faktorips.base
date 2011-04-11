@@ -21,6 +21,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -287,6 +288,19 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         newEnumValue.setEnumAttributeValue(1, "P4");
         newEnumValue.setEnumAttributeValue(2, "new");
         assertNotNull(paymentMode.findEnumValue("P4", ipsProject));
+    }
+
+    @Test
+    public void testFindEnumValueIdentifierUsedTwice() throws CoreException {
+        IEnumValue enumValue1 = paymentMode.getEnumValues().get(0);
+        IEnumValue enumValue2 = paymentMode.getEnumValues().get(1);
+        enumValue1.getEnumAttributeValues().get(1).setValue("Identifier");
+        enumValue2.getEnumAttributeValues().get(1).setValue("Identifier");
+
+        assertEquals(enumValue1, paymentMode.findEnumValue("Identifier", ipsProject));
+
+        paymentMode.deleteEnumValues(Arrays.asList(enumValue1));
+        assertEquals(enumValue2, paymentMode.findEnumValue("Identifier", ipsProject));
     }
 
 }

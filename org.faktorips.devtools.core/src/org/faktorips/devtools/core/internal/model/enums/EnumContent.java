@@ -24,7 +24,6 @@ import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.enums.EnumContentValidations;
-import org.faktorips.devtools.core.model.enums.EnumUtil;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeReference;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
@@ -130,8 +129,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
 
         List<IEnumAttribute> uniqueEnumAttributes = referencedEnumType.findUniqueEnumAttributes(false, ipsProject);
         for (IEnumAttribute currentUniqueAttribute : uniqueEnumAttributes) {
-            addUniqueIdentifierToCache(referencedEnumType.getIndexOfEnumAttribute(currentUniqueAttribute),
-                    EnumUtil.findEnumAttributeIsIdentifier(currentUniqueAttribute, ipsProject));
+            addUniqueIdentifierToCache(referencedEnumType.getIndexOfEnumAttribute(currentUniqueAttribute));
         }
         initCacheEntries(uniqueEnumAttributes, referencedEnumType);
         return true;

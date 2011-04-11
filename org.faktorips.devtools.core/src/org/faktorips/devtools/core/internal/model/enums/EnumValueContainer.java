@@ -61,19 +61,31 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
      */
     private Map<Integer, Map<String, List<IEnumAttributeValue>>> uniqueIdentifierCache;
 
-    /**
-     * The index of the default identifier (can be used to query the {@link #uniqueIdentifierCache}
-     * for the default identifier value. This is a list because there can be multiple default
-     * identifiers (although this state is invalid).
-     */
-    private List<Integer> cachedDefaultIdentifierIndices = new ArrayList<Integer>();
-
     /** Flag indicating whether the unique identifier cache has been already initialized. */
     private boolean uniqueIdentifierCacheInitialized;
 
     /**
-     * Creates a new <tt>EnumValueContainer</tt>.
-     * 
+     * Maps values of the identifier attribute to concrete {@link IEnumValue}s. Used for quick
+     * {@link IEnumValue} access by identifier value.
+     * <p>
+     * One identifier value is mapped to a list of {@link IEnumValue}s because the same identifier
+     * value could be used several times (which is not valid but possible).
+     */
+    private final Map<String, List<IEnumValue>> enumValuesByIdentifier = new HashMap<String, List<IEnumValue>>();
+
+    private boolean enumValuesByIdentifierMapInitialized;
+
+    /**
+     * The {@link IEnumAttribute} that is marked as default identifier. Values for this attribute
+     * are used to access the corresponding {@link IEnumValue}s.
+     * <p>
+     * This reference is set when loading an {@link IEnumValueContainer} and checked on every enum
+     * value access. If it does no longer exist or if it is no longer the default identifier
+     * attribute the reference is updated accordingly.
+     */
+    private IEnumAttribute identifierAttribute;
+
+    /**
      * @param file The IPS source file in which this IPS object will be stored in.
      */
     protected EnumValueContainer(IIpsSrcFile file) {
@@ -114,29 +126,81 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     }
 
     @Override
-    public IEnumValue findEnumValue(String identifierAttributeValue, IIpsProject ipsProject) {
+    public IEnumValue findEnumValue(String identifierAttributeValue, IIpsProject ipsProject) throws CoreException {
         if (identifierAttributeValue == null) {
             return null;
         }
 
-        initUniqueIdentifierCache(ipsProject);
-
-        if (cachedDefaultIdentifierIndices.isEmpty()) {
+        checkIdentifierAttribute(ipsProject);
+        if (identifierAttribute == null) {
             return null;
         }
 
-        Integer defaultIdentifierIndex = cachedDefaultIdentifierIndices.get(0);
-        Map<String, List<IEnumAttributeValue>> cachedValues = uniqueIdentifierCache.get(defaultIdentifierIndex);
-        if (cachedValues == null) {
+        List<IEnumValue> enumValues = enumValuesByIdentifier.get(identifierAttributeValue);
+        if (enumValues == null || enumValues.size() == 0) {
             return null;
         }
 
-        List<IEnumAttributeValue> cachedAttributeValues = cachedValues.get(identifierAttributeValue);
-        if (cachedAttributeValues == null || cachedAttributeValues.isEmpty()) {
-            return null;
-        }
+        return enumValues.get(0);
+    }
 
-        return cachedAttributeValues.get(0).getEnumValue();
+    /**
+     * Ensures that the default identifier attribute is set and still marked as such.
+     * <p>
+     * If that is not the case the correct identifier attribute is searched (it also might become
+     * null if none can be found) and the enum value by identifier map is re-initialized.
+     */
+    private void checkIdentifierAttribute(IIpsProject ipsProject) throws CoreException {
+        if (identifierAttribute == null || identifierAttribute.isDeleted() || identifierAttribute.isInherited()
+                || !identifierAttribute.isIdentifier()) {
+            identifierAttribute = findEnumType(ipsProject).findIdentiferAttribute(ipsProject);
+            if (identifierAttribute != null) {
+                reinitEnumValuesByIdentifierMap();
+            }
+        }
+    }
+
+    /**
+     * Re-initializes the enum value by identifier map.
+     * <p>
+     * This operation may only be called if a valid identifier attribute is set.
+     */
+    private void reinitEnumValuesByIdentifierMap() {
+        enumValuesByIdentifier.clear();
+        for (IEnumValue enumValue : enumValues) {
+            IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValue(identifierAttribute);
+            if (enumAttributeValue == null) {
+                continue;
+            }
+            String identifier = enumAttributeValue.getValue();
+            if (identifier != null && identifier.length() > 0) {
+                List<IEnumValue> enumValues = enumValuesByIdentifier.get(identifier);
+                if (enumValues == null) {
+                    enumValues = new ArrayList<IEnumValue>(1);
+                }
+                enumValues.add(enumValue);
+                enumValuesByIdentifier.put(identifier, enumValues);
+            }
+        }
+        enumValuesByIdentifierMapInitialized = true;
+    }
+
+    /**
+     * Needs to be called when an identifier value has changed so that the enum values by identifier
+     * map can be adjusted accordingly.
+     */
+    void updateEnumValuesByIdentifierMapEntry(String oldIdentifierValue, String newIdentifierValue, IEnumValue enumValue) {
+        if (!enumValuesByIdentifierMapInitialized) {
+            return;
+        }
+        List<IEnumValue> enumValues = enumValuesByIdentifier.get(oldIdentifierValue);
+        if (enumValues == null) {
+            enumValues = new ArrayList<IEnumValue>(1);
+            enumValues.add(enumValue);
+        } else {
+            enumValuesByIdentifier.remove(oldIdentifierValue);
+        }
+        enumValuesByIdentifier.put(newIdentifierValue, enumValues);
     }
 
     @Override
@@ -171,6 +235,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
                                 newEnumValue.newEnumAttributeValue();
                             }
                         }
+
                         return true;
                     }
 
@@ -200,7 +265,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         }
 
         return getIpsModel().executeModificationsWithSingleEvent(new SingleEventModification<int[]>(getIpsSrcFile()) {
-            int[] indizes = new int[numberToMove];
+            int[] indices = new int[numberToMove];
 
             @Override
             public boolean execute() throws CoreException {
@@ -210,15 +275,15 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
                     if (index == -1) {
                         throw new NoSuchElementException();
                     }
-                    indizes[i] = index;
+                    indices[i] = index;
                 }
-                indizes = enumValues.moveParts(indizes, up);
+                indices = enumValues.moveParts(indices, up);
                 return true;
             }
 
             @Override
             public int[] getResult() {
-                return indizes;
+                return indices;
             }
         });
     }
@@ -240,12 +305,9 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
      * Adds a new map of values to {@link IEnumAttributeValue}s for a unique key to the unique
      * identifier cache.
      */
-    void addUniqueIdentifierToCache(int uniqueEnumAttributeIndex, boolean defaultIdentifier) {
+    void addUniqueIdentifierToCache(int uniqueEnumAttributeIndex) {
         uniqueIdentifierCache.put(new Integer(uniqueEnumAttributeIndex),
                 new HashMap<String, List<IEnumAttributeValue>>());
-        if (defaultIdentifier) {
-            cachedDefaultIdentifierIndices.add(uniqueEnumAttributeIndex);
-        }
     }
 
     /**
@@ -256,15 +318,6 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
      */
     void removeUniqueIdentifierFromCache(int uniqueEnumAttributeIndex) {
         uniqueIdentifierCache.remove(new Integer(uniqueEnumAttributeIndex));
-        cachedDefaultIdentifierIndices.remove(Integer.valueOf(uniqueEnumAttributeIndex));
-    }
-
-    void addDefaultIdentifierToCache(int identifierIndex) {
-        cachedDefaultIdentifierIndices.add(identifierIndex);
-    }
-
-    void removeDefaultIdentifierFromCache(int identifierIndex) {
-        cachedDefaultIdentifierIndices.remove(Integer.valueOf(identifierIndex));
     }
 
     /**
@@ -449,14 +502,6 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     void handleMoveEnumAttribute(int enumAttributeIndex, boolean up) {
         int modification = up ? -1 : 1;
         int otherAffectedIndex = enumAttributeIndex + modification;
-        if (cachedDefaultIdentifierIndices.contains(enumAttributeIndex)) {
-            int listIndex = cachedDefaultIdentifierIndices.indexOf(enumAttributeIndex);
-            cachedDefaultIdentifierIndices.set(listIndex, enumAttributeIndex + modification);
-        }
-        if (cachedDefaultIdentifierIndices.contains(otherAffectedIndex)) {
-            int listIndex = cachedDefaultIdentifierIndices.indexOf(otherAffectedIndex);
-            cachedDefaultIdentifierIndices.set(listIndex, otherAffectedIndex - modification);
-        }
 
         Integer key = new Integer(enumAttributeIndex);
         Integer otherKey = new Integer(otherAffectedIndex);
@@ -492,7 +537,6 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     @Override
     public void clearUniqueIdentifierCache() {
         uniqueIdentifierCache.clear();
-        cachedDefaultIdentifierIndices.clear();
         uniqueIdentifierCacheInitialized = false;
     }
 
@@ -517,13 +561,29 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
                         @Override
                         protected boolean execute() throws CoreException {
                             changed = false;
+
                             for (IEnumValue currentEnumValue : enumValuesToDelete) {
                                 if (!(enumValues.contains(currentEnumValue))) {
                                     continue;
                                 }
+
                                 currentEnumValue.delete();
+
+                                // Update enum value by identifier map
+                                if (currentEnumValue.getEnumAttributeValue(identifierAttribute) != null) {
+                                    String identifier = currentEnumValue.getEnumAttributeValue(identifierAttribute)
+                                            .getValue();
+                                    if (identifier != null) {
+                                        List<IEnumValue> enumValues = enumValuesByIdentifier.get(identifier);
+                                        if (enumValues != null) {
+                                            enumValues.remove(currentEnumValue);
+                                        }
+                                    }
+                                }
+
                                 changed = true;
                             }
+
                             return changed;
                         }
 
@@ -531,6 +591,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
                         protected Boolean getResult() {
                             return changed;
                         }
+
                     });
         } catch (CoreException e) {
             throw new RuntimeException(e);

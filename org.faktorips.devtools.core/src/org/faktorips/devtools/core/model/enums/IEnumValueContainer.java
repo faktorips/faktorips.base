@@ -47,12 +47,16 @@ public interface IEnumValueContainer extends IIpsObject {
      * by this method.
      * <p>
      * Returns <tt>null</tt> if no <tt>IEnumValue</tt> could be found for the given identifier
-     * attribute value or if the referenced <tt>IEnumType</tt> isn't known.
+     * attribute value, if the referenced <tt>IEnumType</tt> isn't known or no valid identifier
+     * attribute can be found.
      * 
      * @param identifierAttributeValue The value of the default identifier attribute that identifies
      *            the <tt>IEnumValue</tt> to retrieve
      * @param ipsProject The IPS project used as the starting point to search for the enumeration
      *            type if necessary
+     * 
+     * @throws CoreException If an error occurs while searching for the referenced
+     *             <tt>IEnumType</tt> or the identifier <tt>IEnumAttribute</tt>
      */
     public IEnumValue findEnumValue(String identifierAttributeValue, IIpsProject ipsProject) throws CoreException;
 
