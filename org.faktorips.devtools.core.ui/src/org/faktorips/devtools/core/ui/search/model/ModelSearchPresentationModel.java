@@ -15,8 +15,6 @@ package org.faktorips.devtools.core.ui.search.model;
 
 import java.beans.PropertyChangeEvent;
 
-import org.eclipse.search.ui.ISearchPageContainer;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.search.model.scope.ModelSearchScope;
 
@@ -24,8 +22,6 @@ public class ModelSearchPresentationModel extends PresentationModelObject {
 
     public static final String CLASS_NAME = "className"; //$NON-NLS-1$
     public static final String SEARCH_STRING = "searchString"; //$NON-NLS-1$
-
-    private IIpsProject project;
 
     private ModelSearchScope searchScope;
 
@@ -37,9 +33,6 @@ public class ModelSearchPresentationModel extends PresentationModelObject {
     private boolean searchAssociations = true;
     private boolean searchTableStructureUsages = true;
     private boolean searchValidationRules = true;
-
-    // TODO Interface raus - eigentlich braucts nur die getter
-    private ISearchPageContainer searchPageContainer;
 
     public String getTypeName() {
         return typeName;
@@ -59,15 +52,6 @@ public class ModelSearchPresentationModel extends PresentationModelObject {
         String oldValue = searchTerm;
         this.searchTerm = newValue;
         notifyListeners(new PropertyChangeEvent(this, SEARCH_STRING, oldValue, newValue));
-    }
-
-    // TODO PROJEKT SPAETER RAUSNEHMEN und durch ISTRucturedSelection ersetzen
-    public void setProject(IIpsProject project) {
-        this.project = project;
-    }
-
-    public IIpsProject getProject() {
-        return project;
     }
 
     protected boolean isSearchAttributes() {

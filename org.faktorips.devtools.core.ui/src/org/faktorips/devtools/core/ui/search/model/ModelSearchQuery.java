@@ -58,7 +58,7 @@ public class ModelSearchQuery implements ISearchQuery {
         try {
             Set<IIpsSrcFile> searchedSrcFiles = getMatchingSrcFiles();
 
-            if (justClassNameSearched()) {
+            if (isJustTypeNameSearch()) {
                 for (IIpsSrcFile srcFile : searchedSrcFiles) {
                     searchResult.addMatch(new Match(srcFile, 0, 0));
                 }
@@ -77,7 +77,8 @@ public class ModelSearchQuery implements ISearchQuery {
         }
 
         monitor.done();
-        return new IpsStatus(IStatus.OK, 0, "NOCHMAL GUT GEGANGEN", null);
+        return new IpsStatus(IStatus.OK, 0,
+                org.faktorips.devtools.core.ui.search.model.Messages.ModelSearchQuery_okStatus, null);
     }
 
     private List<IpsObjectPartFinder> findFinders() {
@@ -172,13 +173,55 @@ public class ModelSearchQuery implements ISearchQuery {
         return objectTypes;
     }
 
-    private boolean justClassNameSearched() {
+    private boolean isJustTypeNameSearch() {
         return StringUtils.isEmpty(model.getSearchTerm());
     }
 
     @Override
     public String getLabel() {
-        return model.toString();
+        return Messages.ModelSearchQuery_faktorIpsModelSearchLabel;
+    }
+
+    protected String getResultLabel(int matchingCount) {
+        List<Object> args = new ArrayList<Object>();
+
+        String message;
+        if (isJustTypeNameSearch()) {
+            args.add(model.getTypeName());
+
+            if (matchingCount == 1) {
+                message = Messages.ModelSearchQuery_labelHitTypeName;
+            } else {
+                args.add(matchingCount);
+                message = Messages.ModelSearchQuery_labelHitsTypeName;
+            }
+        } else {
+            args.add(model.getSearchTerm());
+
+            if (StringUtils.isEmpty(model.getTypeName())) {
+                if (matchingCount == 1) {
+                    message = Messages.ModelSearchQuery_labelHitSearchTerm;
+                } else {
+                    args.add(matchingCount);
+                    message = Messages.ModelSearchQuery_labelHitsSearchTerm;
+                }
+
+            } else {
+                args.add(model.getTypeName());
+                if (matchingCount == 1) {
+                    message = Messages.ModelSearchQuery_labelHitSearchTermAndTypeName;
+                } else {
+                    args.add(matchingCount);
+                    message = Messages.ModelSearchQuery_labelHitsSearchTermAndTypeName;
+                }
+            }
+        }
+
+        args.add(model.getSearchScope().getScopeDescription());
+
+        String resultLabel = Messages.bind(message, args.toArray());
+
+        return resultLabel;
     }
 
     @Override

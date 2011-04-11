@@ -13,25 +13,19 @@
 
 package org.faktorips.devtools.core.ui.search.model.scope;
 
-import java.util.Arrays;
-import java.util.List;
+import org.eclipse.osgi.util.NLS;
 
-import org.eclipse.core.resources.ResourcesPlugin;
-
-public class ModelSearchWorkspaceScope extends AbstractModelSearchScope {
-
-    @Override
-    protected List<?> getSelectedObjects() {
-        return Arrays.asList(ResourcesPlugin.getWorkspace().getRoot().getProjects());
+public class Messages extends NLS {
+    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.search.model.scope.messages"; //$NON-NLS-1$
+    public static String ModelSearchScope_scopeWithMoreThanTwoSelectedElements;
+    public static String ModelSearchScope_scopeWithOneSelectedElement;
+    public static String ModelSearchScope_scopeWithTwoSelectedElements;
+    public static String ModelSearchScope_undefinedScope;
+    static {
+        // initialize resource bundle
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
-    @Override
-    public String getScopeDescription() {
-        return getScopeTypeLabel(true);
-    }
-
-    @Override
-    protected String getScopeTypeLabel(boolean singular) {
-        return "workspace";
+    private Messages() {
     }
 }

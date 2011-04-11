@@ -60,7 +60,7 @@ public class ModelSearchResult extends AbstractTextSearchResult {
 
     @Override
     public String getLabel() {
-        return getMatchCount() + "Model Search: " + query.getLabel();
+        return query.getResultLabel(getMatchCount());
     }
 
     @Override

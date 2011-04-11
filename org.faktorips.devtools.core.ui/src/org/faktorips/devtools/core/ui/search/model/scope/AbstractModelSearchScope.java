@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.search.model.scope;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -33,19 +34,69 @@ public abstract class AbstractModelSearchScope implements ModelSearchScope {
     public Set<IIpsSrcFile> getSelectedIpsSrcFiles() throws CoreException {
         Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
 
-        List<?> selectedObjects = getSelectedObjects();
-
-        for (Object object : selectedObjects) {
-            IResource resource = getResource(object);
-
-            if (resource == null) {
-                continue;
-            }
+        for (IResource resource : getSelectedResources()) {
             addResource(srcFiles, resource);
         }
 
         return srcFiles;
     }
+
+    protected List<IResource> getSelectedResources() {
+
+        List<IResource> resources = new ArrayList<IResource>();
+
+        for (Object object : getSelectedObjects()) {
+            IResource resource = getResource(object);
+
+            if (resource == null) {
+                continue;
+            }
+
+            resources.add(resource);
+        }
+        return resources;
+    }
+
+    protected List<String> getNamesOfSelectedObjects() {
+
+        List<String> names = new ArrayList<String>();
+
+        for (IResource resource : getSelectedResources()) {
+            names.add(resource.getName());
+        }
+
+        return names;
+
+    }
+
+    @Override
+    public String getScopeDescription() {
+
+        List<String> namesOfSelectedObjects = getNamesOfSelectedObjects();
+
+        int countSelectedResources = namesOfSelectedObjects.size();
+        if (countSelectedResources == 0) {
+            return Messages.ModelSearchScope_undefinedScope;
+        }
+
+        String scopeType = getScopeTypeLabel(countSelectedResources == 1);
+
+        switch (countSelectedResources) {
+            case 1:
+                return Messages.bind(Messages.ModelSearchScope_scopeWithOneSelectedElement, new String[] { scopeType,
+                        namesOfSelectedObjects.get(0) });
+
+            case 2:
+                return Messages.bind(Messages.ModelSearchScope_scopeWithTwoSelectedElements, new String[] { scopeType,
+                        namesOfSelectedObjects.get(0), namesOfSelectedObjects.get(1) });
+
+            default:
+                return Messages.bind(Messages.ModelSearchScope_scopeWithMoreThanTwoSelectedElements, new String[] {
+                        scopeType, namesOfSelectedObjects.get(0), namesOfSelectedObjects.get(1) });
+        }
+    }
+
+    protected abstract String getScopeTypeLabel(boolean singular);
 
     private void addResource(Set<IIpsSrcFile> srcFiles, IResource resource) throws CoreException {
         IIpsElement element = (IIpsElement)resource.getAdapter(IIpsElement.class);

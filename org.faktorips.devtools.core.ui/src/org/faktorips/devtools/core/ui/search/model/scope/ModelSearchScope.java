@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
 /**
- * The ModelSearchScope defines, where the search should look for its results.
+ * The ModelSearchScope defines, where the search should get its results.
  * 
  * @author dicker
  */
@@ -30,4 +30,11 @@ public interface ModelSearchScope {
      * @throws CoreException
      */
     public Set<IIpsSrcFile> getSelectedIpsSrcFiles() throws CoreException;
+
+    /**
+     * returns the description of the scope
+     * 
+     * @return String
+     */
+    public String getScopeDescription();
 }

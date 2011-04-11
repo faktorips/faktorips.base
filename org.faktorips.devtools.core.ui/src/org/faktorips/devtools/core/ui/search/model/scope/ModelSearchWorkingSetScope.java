@@ -38,4 +38,20 @@ public class ModelSearchWorkingSetScope extends AbstractModelSearchScope {
         return selectedObjects;
     }
 
+    @Override
+    protected String getScopeTypeLabel(boolean singular) {
+        return singular ? "working set" : "working sets";
+    }
+
+    @Override
+    protected List<String> getNamesOfSelectedObjects() {
+        List<String> namesOfSelectedObjects = new ArrayList<String>();
+
+        for (IWorkingSet workingSet : workingSets) {
+            namesOfSelectedObjects.add(workingSet.getName());
+        }
+
+        return namesOfSelectedObjects;
+    }
+
 }

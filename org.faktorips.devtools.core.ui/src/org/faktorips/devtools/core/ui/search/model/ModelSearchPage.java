@@ -24,7 +24,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.search.model.scope.ModelSearchProjectsScope;
@@ -55,28 +54,29 @@ public class ModelSearchPage extends DialogPage implements ISearchPage {
 
         Composite grid = toolkit.createLabelEditColumnComposite(composite);
 
-        new Label(grid, SWT.NONE).setText("Class Names");
+        new Label(grid, SWT.NONE).setText(Messages.ModelSearchPage_labelTypeName);
         txtTypeName = toolkit.createText(grid);
         txtTypeName.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
 
-        new Label(grid, SWT.NONE).setText("Search string");
+        new Label(grid, SWT.NONE).setText(Messages.ModelSearchPage_labelSearchTerm);
         txtSearchTerm = toolkit.createText(grid);
 
-        Group group = toolkit.createGridGroup(composite, "Search For", 2, true);
+        Group group = toolkit.createGridGroup(composite, Messages.ModelSearchPage_groupLabelSearchFor, 2, true);
 
-        ckbSearchAttributes = toolkit.createCheckbox(group, "Attributes");
+        ckbSearchAttributes = toolkit.createCheckbox(group, Messages.ModelSearchPage_labelAttributes);
         ckbSearchAttributes.setChecked(true);
 
-        ckbSearchMethods = toolkit.createCheckbox(group, "Methods and Formulas");
+        ckbSearchMethods = toolkit.createCheckbox(group, Messages.ModelSearchPage_labelMethodsAndFormulas);
         ckbSearchMethods.setChecked(true);
 
-        ckbSearchAssociations = toolkit.createCheckbox(group, "Associations");
+        ckbSearchAssociations = toolkit.createCheckbox(group, Messages.ModelSearchPage_labelAssociations);
         ckbSearchAssociations.setChecked(true);
 
-        ckbSearchTableStructureUsages = toolkit.createCheckbox(group, "Table Structure Usages");
+        ckbSearchTableStructureUsages = toolkit
+                .createCheckbox(group, Messages.ModelSearchPage_labelTableStructureUsage);
         ckbSearchTableStructureUsages.setChecked(true);
 
-        ckbSearchValidationRules = toolkit.createCheckbox(group, "Rules");
+        ckbSearchValidationRules = toolkit.createCheckbox(group, Messages.ModelSearchPage_labelRules);
         ckbSearchValidationRules.setChecked(true);
 
         setControl(grid);
@@ -96,7 +96,6 @@ public class ModelSearchPage extends DialogPage implements ISearchPage {
         model.setSearchValidationRules(ckbSearchValidationRules.isChecked());
 
         model.setSearchScope(createSearchScope());
-        model.setProject(IpsPlugin.getDefault().getIpsModel().getIpsProject("Produkt.Kfz.Modell"));
 
         ModelSearchQuery query = new ModelSearchQuery(model);
 

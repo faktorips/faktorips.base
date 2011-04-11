@@ -13,8 +13,12 @@
 
 package org.faktorips.devtools.core.ui.search.model.scope;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
@@ -28,7 +32,28 @@ public class ModelSearchProjectsScope extends AbstractModelSearchScope {
 
     @Override
     protected List<?> getSelectedObjects() {
-        return ((IStructuredSelection)selection).toList();
+        List<?> list = ((IStructuredSelection)selection).toList();
+
+        List<IProject> selectedProjects = new ArrayList<IProject>();
+        for (Object object : list) {
+            if (object instanceof IAdaptable) {
+                IAdaptable adaptable = (IAdaptable)object;
+                IResource resource = (IResource)adaptable.getAdapter(IResource.class);
+                if (resource == null) {
+                    continue;
+                }
+                IProject project = resource.getProject();
+                if (project != null && !selectedProjects.contains(project)) {
+                    selectedProjects.add(project);
+                }
+            }
+        }
+        return selectedProjects;
+    }
+
+    @Override
+    protected String getScopeTypeLabel(boolean singular) {
+        return singular ? "project" : "projects";
     }
 
 }

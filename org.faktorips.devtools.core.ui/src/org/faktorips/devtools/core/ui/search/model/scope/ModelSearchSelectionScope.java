@@ -13,11 +13,27 @@
 
 package org.faktorips.devtools.core.ui.search.model.scope;
 
-import org.eclipse.jface.viewers.ISelection;
+import java.util.List;
 
-public class ModelSearchSelectionScope extends ModelSearchProjectsScope {
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+
+public class ModelSearchSelectionScope extends AbstractModelSearchScope {
+
+    ISelection selection;
 
     public ModelSearchSelectionScope(ISelection selection) {
-        super(selection);
+        this.selection = selection;
     }
+
+    @Override
+    protected String getScopeTypeLabel(boolean singular) {
+        return ""; //$NON-NLS-1$
+    }
+
+    @Override
+    protected List<?> getSelectedObjects() {
+        return ((IStructuredSelection)selection).toList();
+    }
+
 }
