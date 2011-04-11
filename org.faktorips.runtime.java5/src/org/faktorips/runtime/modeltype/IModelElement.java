@@ -30,6 +30,16 @@ public interface IModelElement {
 
     public static final String PROPERTY_NAME = "name";
 
+    public static final String LABELS_XML_TAG = "Label";
+
+    public static final String LABELS_XML_WRAPPER_TAG = "Labels";
+
+    public static final String LABELS_PROPERTY_LOCALE = "locale";
+
+    public static final String LABELS_PROPERTY_VALUE = "value";
+
+    public static final String LABELS_PROPERTY_PLURAL_VALUE = "pluralValue";
+
     public static final String EXTENSION_PROPERTIES_XML_TAG = "Value";
 
     public static final String EXTENSION_PROPERTIES_XML_WRAPPER_TAG = "ExtensionProperties";

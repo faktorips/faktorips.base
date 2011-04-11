@@ -24,10 +24,10 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.faktorips.runtime.internal.AbstractRuntimeRepository;
+import org.faktorips.runtime.modeltype.IModelElement;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute;
-import org.faktorips.runtime.modeltype.IModelTypeLabel;
 import org.faktorips.runtime.modeltype.TypeHierarchyVisitor;
 
 /**
@@ -139,8 +139,8 @@ public class ModelType extends AbstractModelElement implements IModelType {
                         initModelTypeAttributesFromXml(parser);
                     } else if (parser.getLocalName().equals(IModelTypeAssociation.XML_WRAPPER_TAG)) {
                         initModelTypeAssociationsFromXml(parser);
-                    } else if (parser.getLocalName().equals(IModelTypeLabel.XML_WRAPPER_TAG)) {
-                        initModelTypeLabelsFromXml(parser);
+                    } else if (parser.getLocalName().equals(IModelElement.LABELS_XML_WRAPPER_TAG)) {
+                        initLabelsFromXml(parser);
                     }
                     break;
             }

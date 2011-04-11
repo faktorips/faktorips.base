@@ -13,21 +13,23 @@
 
 package org.faktorips.runtime.modeltype.internal;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation;
-import org.faktorips.runtime.modeltype.IModelTypeLabel;
 
 /**
  * 
  * @author Daniel Hohenberger
  */
 public class ModelTypeAssociation extends AbstractModelElement implements IModelTypeAssociation {
+
+    private final Map<Locale, String> pluralLabelsByLocale = new HashMap<Locale, String>();
 
     private ModelType modelType;
     private AssociationType associationType = AssociationType.Association;
@@ -47,8 +49,8 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
     }
 
     public String getLabelForPlural(Locale locale) {
-        IModelTypeLabel label = labelsByLocale.get(locale);
-        return label == null || label.getPluralValue().length() == 0 ? getNamePlural() : label.getPluralValue();
+        String label = pluralLabelsByLocale.get(locale);
+        return label == null || label.length() == 0 ? getNamePlural() : label;
     }
 
     public IModelType getModelType() {
@@ -114,17 +116,15 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
             }
         }
 
-        outer: for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
-            switch (event) {
-                case XMLStreamConstants.START_ELEMENT:
-                    if (parser.getLocalName().equals(IModelTypeLabel.XML_WRAPPER_TAG)) {
-                        initModelTypeLabelsFromXml(parser);
-                    }
-                    break outer;
-            }
-        }
+        parser.next();
+        initLabelsFromXml(parser);
 
         initExtPropertiesFromXml(parser);
+    }
+
+    @Override
+    protected void initPluralLabel(Locale locale, String pluralValue) {
+        pluralLabelsByLocale.put(locale, pluralValue);
     }
 
     @Override

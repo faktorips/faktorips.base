@@ -140,21 +140,6 @@ r1=supertype</panel_attributes>
     <additional_attributes>30;30;30;110</additional_attributes>
   </element>
   <element>
-    <type>com.umlet.element.Class</type>
-    <coordinates>
-      <x>960</x>
-      <y>230</y>
-      <w>270</w>
-      <h>150</h>
-    </coordinates>
-    <panel_attributes>ModelTypeLabel
---
-+locale : Locale
-+value : String
-+pluralValue : String</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>770</x>
@@ -168,34 +153,12 @@ r1=supertype</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1060</x>
-      <y>160</y>
-      <w>50</w>
-      <h>90</h>
-    </coordinates>
-    <panel_attributes>lt=-</panel_attributes>
-    <additional_attributes>30;30;30;70</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
       <x>220</x>
       <y>160</y>
-      <w>890</w>
+      <w>600</w>
       <h>50</h>
     </coordinates>
     <panel_attributes>lt=-</panel_attributes>
-    <additional_attributes>870;30;30;30</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>620</x>
-      <y>60</y>
-      <w>550</w>
-      <h>190</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>30;30;530;30;530;170</additional_attributes>
+    <additional_attributes>580;30;30;30</additional_attributes>
   </element>
 </diagram>

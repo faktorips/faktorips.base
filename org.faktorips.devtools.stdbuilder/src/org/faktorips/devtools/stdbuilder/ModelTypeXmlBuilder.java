@@ -51,7 +51,6 @@ import org.faktorips.runtime.modeltype.IModelElement;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute;
-import org.faktorips.runtime.modeltype.IModelTypeLabel;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -219,15 +218,17 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
         if (labels.size() <= 0) {
             return;
         }
-        Element runtimeLabels = doc.createElement(IModelTypeLabel.XML_WRAPPER_TAG);
+        Element runtimeLabels = doc.createElement(IModelElement.LABELS_XML_WRAPPER_TAG);
         runtimeModelElement.appendChild(runtimeLabels);
         for (ILabel label : labels) {
-            Element runtimeLabel = doc.createElement(IModelTypeLabel.XML_TAG);
+            Element runtimeLabel = doc.createElement(IModelElement.LABELS_XML_TAG);
             runtimeLabels.appendChild(runtimeLabel);
             Locale locale = label.getLocale();
-            runtimeLabel.setAttribute(IModelTypeLabel.PROPERTY_LOCALE, locale == null ? "" : locale.getLanguage());
-            runtimeLabel.setAttribute(IModelTypeLabel.PROPERTY_VALUE, label.getValue());
-            runtimeLabel.setAttribute(IModelTypeLabel.PROPERTY_PLURAL_VALUE, label.getPluralValue());
+            runtimeLabel.setAttribute(IModelElement.LABELS_PROPERTY_LOCALE, locale == null ? "" : locale.getLanguage());
+            runtimeLabel.setAttribute(IModelElement.LABELS_PROPERTY_VALUE, label.getValue());
+            if (model instanceof IAssociation) {
+                runtimeLabel.setAttribute(IModelElement.LABELS_PROPERTY_PLURAL_VALUE, label.getPluralValue());
+            }
         }
     }
 

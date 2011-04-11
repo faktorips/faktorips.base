@@ -25,7 +25,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.modeltype.IModelElement;
-import org.faktorips.runtime.modeltype.IModelTypeLabel;
 
 /**
  * 
@@ -33,21 +32,21 @@ import org.faktorips.runtime.modeltype.IModelTypeLabel;
  */
 public class AbstractModelElement implements IModelElement {
 
+    private final Map<Locale, String> labelsByLocale = new HashMap<Locale, String>();
+
     private Map<String, Object> extPropertyValues;
 
     private String name;
 
     private IRuntimeRepository repository;
 
-    protected Map<Locale, IModelTypeLabel> labelsByLocale = new HashMap<Locale, IModelTypeLabel>();
-
     public AbstractModelElement(IRuntimeRepository repository) {
         this.repository = repository;
     }
 
     public String getLabel(Locale locale) {
-        IModelTypeLabel label = labelsByLocale.get(locale);
-        return label == null || label.getValue().length() == 0 ? getName() : label.getValue();
+        String label = labelsByLocale.get(locale);
+        return label == null || label.length() == 0 ? getName() : label;
     }
 
     public Object getExtensionPropertyValue(String propertyId) {
@@ -79,23 +78,50 @@ public class AbstractModelElement implements IModelElement {
         }
     }
 
-    protected final void initModelTypeLabelsFromXml(XMLStreamReader parser) throws XMLStreamException {
+    protected final void initLabelsFromXml(XMLStreamReader parser) throws XMLStreamException {
         for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
             switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
-                    if (parser.getLocalName().equals(IModelTypeLabel.XML_TAG)) {
-                        IModelTypeLabel label = new ModelTypeLabel(this);
-                        label.initFromXml(parser);
-                        labelsByLocale.put(label.getLocale(), label);
+                    if (parser.getLocalName().equals(IModelElement.LABELS_XML_TAG)) {
+                        initLabelFromXml(parser);
                     }
                     break;
                 case XMLStreamConstants.END_ELEMENT:
-                    if (parser.getLocalName().equals(IModelTypeLabel.XML_WRAPPER_TAG)) {
+                    if (parser.getLocalName().equals(IModelElement.LABELS_XML_WRAPPER_TAG)) {
                         return;
                     }
                     break;
             }
         }
+    }
+
+    private void initLabelFromXml(XMLStreamReader parser) {
+        Locale locale = null;
+        String value = null;
+        String pluralValue = null;
+        for (int i = 0; i < parser.getAttributeCount(); i++) {
+            if (parser.getAttributeLocalName(i).equals(IModelElement.LABELS_PROPERTY_LOCALE)) {
+                String localeCode = parser.getAttributeValue(i);
+                locale = localeCode.length() == 0 ? null : new Locale(localeCode);
+            } else if (parser.getAttributeLocalName(i).equals(IModelElement.LABELS_PROPERTY_VALUE)) {
+                value = parser.getAttributeValue(i);
+            } else if (parser.getAttributeLocalName(i).equals(IModelElement.LABELS_PROPERTY_PLURAL_VALUE)) {
+                pluralValue = parser.getAttributeValue(i);
+            }
+        }
+        labelsByLocale.put(locale, value);
+        initPluralLabel(locale, pluralValue);
+    }
+
+    /**
+     * The default implementation does nothing. This method should be overridden by model elements
+     * that need the plural value.
+     * 
+     * @param locale The locale of the label
+     * @param pluralValue The plural value of the label
+     */
+    protected void initPluralLabel(Locale locale, String pluralValue) {
+        // Empty default implementation
     }
 
     public Set<String> getExtensionPropertyIds() {

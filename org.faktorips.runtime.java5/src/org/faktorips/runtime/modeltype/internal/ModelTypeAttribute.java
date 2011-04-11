@@ -13,13 +13,11 @@
 
 package org.faktorips.runtime.modeltype.internal;
 
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute;
-import org.faktorips.runtime.modeltype.IModelTypeLabel;
 
 /**
  * 
@@ -83,15 +81,8 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
             }
         }
 
-        outer: for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
-            switch (event) {
-                case XMLStreamConstants.START_ELEMENT:
-                    if (parser.getLocalName().equals(IModelTypeLabel.XML_WRAPPER_TAG)) {
-                        initModelTypeLabelsFromXml(parser);
-                    }
-                    break outer;
-            }
-        }
+        parser.next();
+        initLabelsFromXml(parser);
 
         initExtPropertiesFromXml(parser);
     }
