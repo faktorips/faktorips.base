@@ -181,4 +181,8 @@ public class MethodNames {
      */
     public final static String VISITOR_VISIT = "visit";
 
+    public final static String METHOD_NEW_COPY = "newCopyInternal";
+
+    public final static String METHOD_COPY_ASSOCIATIONS = "copyAssociationsInternal";
+
 }
