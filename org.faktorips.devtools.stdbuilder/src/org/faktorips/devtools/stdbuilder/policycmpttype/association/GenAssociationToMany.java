@@ -36,7 +36,6 @@ import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
-import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.runtime.internal.MethodNames;
 
 /**
@@ -741,7 +740,7 @@ public class GenAssociationToMany extends GenAssociation {
         methodsBuilder.append(" = ( ");
         methodsBuilder.appendClassName(targetTypeQName);
 
-        methodsBuilder.append(")").append(varOrig).append(".").append(PolicyCmptImplClassBuilder.METHOD_NEW_COPY) //
+        methodsBuilder.append(")").append(varOrig).append(".").append(MethodNames.METHOD_NEW_COPY) //
                 .append("(").append(copyMapName).append(");");
 
         if (inverseAssociation != null) {
@@ -1142,7 +1141,7 @@ public class GenAssociationToMany extends GenAssociation {
                 .append('(').append(unqTargetImplName).append(')').append(varCopyMap) //
                 .append(".get(").append(varName).appendln(");");
         methodsBuilder.append("((").append(unqTargetImplName).append(')').append(varName).append(").") //
-                .append(PolicyCmptImplClassBuilder.METHOD_COPY_ASSOCIATIONS) //
+                .append(MethodNames.METHOD_COPY_ASSOCIATIONS) //
                 .append('(').append(varCopyTarget).append(", ").append(varCopyMap).append(");");
         methodsBuilder.appendln("}");
     }

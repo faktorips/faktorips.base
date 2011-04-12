@@ -74,10 +74,6 @@ import org.w3c.dom.Element;
 
 public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
-    public final static String METHOD_COPY_ASSOCIATIONS = "copyAssociationsInternal";
-
-    public final static String METHOD_NEW_COPY = "newCopyInternal";
-
     public PolicyCmptImplClassBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(PolicyCmptImplClassBuilder.class));
         setMergeEnabled(true);
@@ -301,9 +297,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         String varName = "newCopy";
         methodsBuilder.append(getUnqualifiedClassName()).append(' ').append(varName) //
                 .append(" = (").append(getUnqualifiedClassName()).append(')') //
-                .append(METHOD_NEW_COPY).append('(').append(varCopyMap).appendln(");");
+                .append(MethodNames.METHOD_NEW_COPY).append('(').append(varCopyMap).appendln(");");
         // copyAssociations(newCopy, copyMap);
-        methodsBuilder.methodCall(METHOD_COPY_ASSOCIATIONS, new String[] { varName, varCopyMap }, true);
+        methodsBuilder.methodCall(MethodNames.METHOD_COPY_ASSOCIATIONS, new String[] { varName, varCopyMap }, true);
         // return newCopy
         methodsBuilder.appendln("return " + varName + ";");
         methodsBuilder.closeBracket();
@@ -350,7 +346,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
         methodsBuilder.addImport(Map.class);
 
-        methodsBuilder.signature(modifier, IModelObject.class.getName(), METHOD_NEW_COPY, new String[] { varCopyMap },
+        methodsBuilder.signature(modifier, IModelObject.class.getName(), MethodNames.METHOD_NEW_COPY, new String[] { varCopyMap },
                 new String[] { getHashMapFragment(false).getSourcecode() });
 
         if (isAbstract) {
@@ -511,11 +507,11 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
 
         methodsBuilder.addImport(Map.class);
-        methodsBuilder.methodBegin(Modifier.PUBLIC, "void", METHOD_COPY_ASSOCIATIONS, new String[] { varAbstractCopy,
+        methodsBuilder.methodBegin(Modifier.PUBLIC, "void", MethodNames.METHOD_COPY_ASSOCIATIONS, new String[] { varAbstractCopy,
                 varCopyMap }, new String[] { IModelObject.class.getName(), getHashMapFragment(false).getSourcecode() });
 
         if (getPcType().hasSupertype()) {
-            methodsBuilder.appendln("super.").append(METHOD_COPY_ASSOCIATIONS) //
+            methodsBuilder.appendln("super.").append(MethodNames.METHOD_COPY_ASSOCIATIONS) //
                     .append("(").append(varAbstractCopy).append(", ").append(varCopyMap).append(");");
         }
 
