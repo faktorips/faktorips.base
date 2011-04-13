@@ -20,6 +20,7 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.faktorips.runtime.internal.StringUtils;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation;
 
@@ -50,7 +51,7 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
 
     public String getLabelForPlural(Locale locale) {
         String label = pluralLabelsByLocale.get(locale);
-        return label == null || label.length() == 0 ? getNamePlural() : label;
+        return StringUtils.isEmpty(label) ? getNamePlural() : label;
     }
 
     public IModelType getModelType() {

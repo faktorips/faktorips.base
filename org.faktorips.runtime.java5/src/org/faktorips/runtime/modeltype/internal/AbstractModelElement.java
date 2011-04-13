@@ -24,6 +24,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.internal.StringUtils;
 import org.faktorips.runtime.modeltype.IModelElement;
 
 /**
@@ -46,7 +47,7 @@ public class AbstractModelElement implements IModelElement {
 
     public String getLabel(Locale locale) {
         String label = labelsByLocale.get(locale);
-        return label == null || label.length() == 0 ? getName() : label;
+        return StringUtils.isEmpty(label) ? getName() : label;
     }
 
     public Object getExtensionPropertyValue(String propertyId) {
