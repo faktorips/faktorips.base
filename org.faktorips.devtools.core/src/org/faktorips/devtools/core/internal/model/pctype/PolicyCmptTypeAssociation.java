@@ -385,7 +385,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
                             PROPERTY_SHARED_ASSOCIATION));
                     return;
                 }
-                if (!superAssociation.isInverseOfDerivedUnion() && !superAssociation.isSharedAssociation()) {
+                if (!superAssociation.isInverseOfDerivedUnion()) {
                     list.add(Message.newError(MSGCODE_SHARED_ASSOCIATION_INVALID,
                             Messages.PolicyCmptTypeAssociation_sharedAssociation_invalidAssociationHost, this,
                             PROPERTY_SHARED_ASSOCIATION));
