@@ -799,7 +799,11 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                 }
             }
         }
-        methodsBuilder.appendln("return null;"); //$NON-NLS-1$
+        if (getProductCmptType().hasSupertype()) {
+            methodsBuilder.append("return super.getLink(linkName, target);");
+        } else {
+            methodsBuilder.appendln("return null;"); //$NON-NLS-1$
+        }
         methodsBuilder.closeBracket();
     }
 
