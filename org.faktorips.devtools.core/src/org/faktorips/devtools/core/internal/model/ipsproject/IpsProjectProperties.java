@@ -1024,7 +1024,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     private void createProductReleaseComment(Element parentEl) {
-        // TODO Auto-generated method stub
         String s = "Product Release" + SystemUtils.LINE_SEPARATOR + " " + SystemUtils.LINE_SEPARATOR + //$NON-NLS-1$ //$NON-NLS-2$
                 "In this section, the product defintion release is configured. You could reference an release extension" //$NON-NLS-1$
                 + SystemUtils.LINE_SEPARATOR
