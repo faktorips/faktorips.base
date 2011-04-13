@@ -132,38 +132,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
             return null;
         }
 
-        IEnumValue enumValue = enumValuesByIdentifier.get(identifierAttributeValue);
-        if (enumValue == null) {
-            /*
-             * If no enum value is found in the map for the given identifier attribute value it is
-             * still very possible that such an enum value exists (because the map might not be
-             * up-to-date, e.g. if the identifier value has been changed).
-             */
-            for (IEnumValue currentEnumValue : enumValues) {
-                IEnumAttributeValue enumAttributeValue = currentEnumValue.getEnumAttributeValue(identifierAttribute);
-                if (enumAttributeValue == null) {
-                    continue;
-                }
-                String newIdentifier = enumAttributeValue.getValue();
-                if (newIdentifier != null && newIdentifier.equals(identifierAttributeValue)) {
-                    enumValue = currentEnumValue;
-                    /*
-                     * Now that we found the enum value that was not in the map we need to find and
-                     * remove the old key and add the new one.
-                     */
-                    for (String storedIdentifier : enumValuesByIdentifier.keySet()) {
-                        if (enumValuesByIdentifier.get(storedIdentifier) == enumValue) {
-                            enumValuesByIdentifier.remove(storedIdentifier);
-                            enumValuesByIdentifier.put(newIdentifier, enumValue);
-                            break;
-                        }
-                    }
-                    break;
-                }
-            }
-        }
-
-        return enumValue;
+        return getEnumValueForValidIdentifierAttribute(identifierAttributeValue);
     }
 
     /**
@@ -199,6 +168,43 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
                 enumValuesByIdentifier.put(identifier, enumValue);
             }
         }
+    }
+
+    private IEnumValue getEnumValueForValidIdentifierAttribute(String identifierAttributeValue) {
+        IEnumValue enumValue = enumValuesByIdentifier.get(identifierAttributeValue);
+        if (enumValue != null) {
+            return enumValue;
+        }
+
+        /*
+         * If no enum value is found in the map for the given identifier attribute value it is still
+         * very possible that such an enum value exists (because the map might not be up-to-date,
+         * e.g. if the identifier value has been changed).
+         */
+        for (IEnumValue currentEnumValue : enumValues) {
+            IEnumAttributeValue enumAttributeValue = currentEnumValue.getEnumAttributeValue(identifierAttribute);
+            if (enumAttributeValue == null) {
+                continue;
+            }
+            String newIdentifier = enumAttributeValue.getValue();
+            if (newIdentifier != null && newIdentifier.equals(identifierAttributeValue)) {
+                enumValue = currentEnumValue;
+                /*
+                 * Now that we found the enum value that was not in the map we need to find and
+                 * remove the old key and add the new one.
+                 */
+                for (String storedIdentifier : enumValuesByIdentifier.keySet()) {
+                    if (enumValuesByIdentifier.get(storedIdentifier) == enumValue) {
+                        enumValuesByIdentifier.remove(storedIdentifier);
+                        enumValuesByIdentifier.put(newIdentifier, enumValue);
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+
+        return enumValue;
     }
 
     @Override
