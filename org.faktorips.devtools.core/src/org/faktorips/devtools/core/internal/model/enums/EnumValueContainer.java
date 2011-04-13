@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
@@ -67,13 +68,8 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     /**
      * Maps values of the identifier attribute to concrete {@link IEnumValue}s. Used for quick
      * {@link IEnumValue} access by identifier value.
-     * <p>
-     * One identifier value is mapped to a list of {@link IEnumValue}s because the same identifier
-     * value could be used several times (which is not valid but possible).
      */
-    private final Map<String, List<IEnumValue>> enumValuesByIdentifier = new HashMap<String, List<IEnumValue>>();
-
-    private boolean enumValuesByIdentifierMapInitialized;
+    private final Map<String, IEnumValue> enumValuesByIdentifier = new HashMap<String, IEnumValue>();
 
     /**
      * The {@link IEnumAttribute} that is marked as default identifier. Values for this attribute
@@ -136,12 +132,38 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
             return null;
         }
 
-        List<IEnumValue> enumValues = enumValuesByIdentifier.get(identifierAttributeValue);
-        if (enumValues == null || enumValues.size() == 0) {
-            return null;
+        IEnumValue enumValue = enumValuesByIdentifier.get(identifierAttributeValue);
+        if (enumValue == null) {
+            /*
+             * If no enum value is found in the map for the given identifier attribute value it is
+             * still very possible that such an enum value exists (because the map might not be
+             * up-to-date, e.g. if the identifier value has been changed).
+             */
+            for (IEnumValue currentEnumValue : enumValues) {
+                IEnumAttributeValue enumAttributeValue = currentEnumValue.getEnumAttributeValue(identifierAttribute);
+                if (enumAttributeValue == null) {
+                    continue;
+                }
+                String newIdentifier = enumAttributeValue.getValue();
+                if (newIdentifier != null && newIdentifier.equals(identifierAttributeValue)) {
+                    enumValue = currentEnumValue;
+                    /*
+                     * Now that we found the enum value that was not in the map we need to find and
+                     * remove the old key and add the new one.
+                     */
+                    for (String storedIdentifier : enumValuesByIdentifier.keySet()) {
+                        if (enumValuesByIdentifier.get(storedIdentifier) == enumValue) {
+                            enumValuesByIdentifier.remove(storedIdentifier);
+                            enumValuesByIdentifier.put(newIdentifier, enumValue);
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
         }
 
-        return enumValues.get(0);
+        return enumValue;
     }
 
     /**
@@ -174,33 +196,9 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
             }
             String identifier = enumAttributeValue.getValue();
             if (identifier != null && identifier.length() > 0) {
-                List<IEnumValue> enumValues = enumValuesByIdentifier.get(identifier);
-                if (enumValues == null) {
-                    enumValues = new ArrayList<IEnumValue>(1);
-                }
-                enumValues.add(enumValue);
-                enumValuesByIdentifier.put(identifier, enumValues);
+                enumValuesByIdentifier.put(identifier, enumValue);
             }
         }
-        enumValuesByIdentifierMapInitialized = true;
-    }
-
-    /**
-     * Needs to be called when an identifier value has changed so that the enum values by identifier
-     * map can be adjusted accordingly.
-     */
-    void updateEnumValuesByIdentifierMapEntry(String oldIdentifierValue, String newIdentifierValue, IEnumValue enumValue) {
-        if (!enumValuesByIdentifierMapInitialized) {
-            return;
-        }
-        List<IEnumValue> enumValues = enumValuesByIdentifier.get(oldIdentifierValue);
-        if (enumValues == null) {
-            enumValues = new ArrayList<IEnumValue>(1);
-            enumValues.add(enumValue);
-        } else {
-            enumValuesByIdentifier.remove(oldIdentifierValue);
-        }
-        enumValuesByIdentifier.put(newIdentifierValue, enumValues);
     }
 
     @Override
@@ -566,21 +564,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
                                 if (!(enumValues.contains(currentEnumValue))) {
                                     continue;
                                 }
-
                                 currentEnumValue.delete();
-
-                                // Update enum value by identifier map
-                                if (currentEnumValue.getEnumAttributeValue(identifierAttribute) != null) {
-                                    String identifier = currentEnumValue.getEnumAttributeValue(identifierAttribute)
-                                            .getValue();
-                                    if (identifier != null) {
-                                        List<IEnumValue> enumValues = enumValuesByIdentifier.get(identifier);
-                                        if (enumValues != null) {
-                                            enumValues.remove(currentEnumValue);
-                                        }
-                                    }
-                                }
-
                                 changed = true;
                             }
 
@@ -596,6 +580,26 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    protected boolean removePartThis(IIpsObjectPart part) {
+        boolean removed = super.removePartThis(part);
+        if (removed && part instanceof IEnumValue) {
+            /*
+             * If the removed part was an enum value we need to also remove it from the enum values
+             * by identifier map.
+             */
+            IEnumValue enumValue = (IEnumValue)part;
+            for (String identifier : enumValuesByIdentifier.keySet()) {
+                IEnumValue storedEnumValue = enumValuesByIdentifier.get(identifier);
+                if (storedEnumValue == enumValue) {
+                    enumValuesByIdentifier.remove(identifier);
+                    break;
+                }
+            }
+        }
+        return removed;
     }
 
 }

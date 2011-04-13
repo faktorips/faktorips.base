@@ -297,10 +297,31 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         enumValue1.getEnumAttributeValues().get(1).setValue("Identifier");
         enumValue2.getEnumAttributeValues().get(1).setValue("Identifier");
 
-        assertEquals(enumValue1, paymentMode.findEnumValue("Identifier", ipsProject));
-
-        paymentMode.deleteEnumValues(Arrays.asList(enumValue1));
         assertEquals(enumValue2, paymentMode.findEnumValue("Identifier", ipsProject));
+
+        paymentMode.deleteEnumValues(Arrays.asList(enumValue2));
+        assertEquals(enumValue1, paymentMode.findEnumValue("Identifier", ipsProject));
+    }
+
+    @Test
+    public void testFindEnumValueIdentifierChanged() throws CoreException {
+        IEnumValue enumValue = paymentMode.getEnumValues().get(0);
+
+        assertEquals(enumValue, paymentMode.findEnumValue("P1", ipsProject));
+
+        enumValue.getEnumAttributeValues().get(1).setValue("ChangedIdentifier");
+        assertEquals(enumValue, paymentMode.findEnumValue("ChangedIdentifier", ipsProject));
+    }
+
+    @Test
+    public void testFindEnumValueIdentifierAttributeChanged() throws CoreException {
+        IEnumAttribute id = paymentMode.getEnumAttribute("id");
+        id.setIdentifier(false);
+
+        IEnumAttribute name = paymentMode.getEnumAttribute("name");
+        name.setIdentifier(true);
+
+        assertEquals(paymentMode.getEnumValues().get(0), paymentMode.findEnumValue("monthly", ipsProject));
     }
 
 }
