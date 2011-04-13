@@ -82,6 +82,8 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
         }
 
         parser.next();
+        initDescriptionsFromXml(parser);
+        parser.next();
         initLabelsFromXml(parser);
 
         initExtPropertiesFromXml(parser);

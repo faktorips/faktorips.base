@@ -24,6 +24,8 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.internal.model.type.AssociationType;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -84,25 +86,26 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
     }
 
     private Element createModelType(IType type) throws CoreException {
-        Element modelTypeEl = doc.createElement(IModelType.XML_TAG);
-        modelTypeEl.setAttribute(IModelElement.PROPERTY_NAME, type.getQualifiedName());
-        modelTypeEl.setAttribute(IModelType.PROPERTY_CLASS, getStandardBuilderSet().getGenerator(type)
+        Element modelTypeElement = doc.createElement(IModelType.XML_TAG);
+        modelTypeElement.setAttribute(IModelElement.PROPERTY_NAME, type.getQualifiedName());
+        modelTypeElement.setAttribute(IModelType.PROPERTY_CLASS, getStandardBuilderSet().getGenerator(type)
                 .getQualifiedName(false));
-        modelTypeEl.setAttribute(XmlUtil.XML_ATTRIBUTE_SPACE, XmlUtil.XML_ATTRIBUTE_SPACE_VALUE);
+        modelTypeElement.setAttribute(XmlUtil.XML_ATTRIBUTE_SPACE, XmlUtil.XML_ATTRIBUTE_SPACE_VALUE);
         IType supertype = type.findSupertype(getIpsProject());
         if (supertype != null) {
-            modelTypeEl.setAttribute(IModelType.PROPERTY_SUPERTYPE, getStandardBuilderSet().getGenerator(supertype)
-                    .getQualifiedName(false));
+            modelTypeElement.setAttribute(IModelType.PROPERTY_SUPERTYPE, getStandardBuilderSet()
+                    .getGenerator(supertype).getQualifiedName(false));
         } else {
-            modelTypeEl.setAttribute(IModelType.PROPERTY_SUPERTYPE, null);
+            modelTypeElement.setAttribute(IModelType.PROPERTY_SUPERTYPE, null);
         }
 
-        addLabels(type, modelTypeEl);
-        addExtensionProperties(modelTypeEl, type);
-        addAssociations(type, modelTypeEl);
-        addAttributes(type, modelTypeEl);
+        addLabels(type, modelTypeElement);
+        addDescriptions(type, modelTypeElement);
+        addExtensionProperties(type, modelTypeElement);
+        addAssociations(type, modelTypeElement);
+        addAttributes(type, modelTypeElement);
 
-        return modelTypeEl;
+        return modelTypeElement;
     }
 
     private void addAssociations(IType model, Element modelType) throws CoreException {
@@ -165,8 +168,9 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
                             pcTypeAsso.getInverseAssociation());
                 }
 
+                addDescriptions(association, modelTypeAssociation);
                 addLabels(association, modelTypeAssociation);
-                addExtensionProperties(modelTypeAssociation, association);
+                addExtensionProperties(association, modelTypeAssociation);
             }
         }
     }
@@ -207,8 +211,10 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
                 modelTypeAttribute.setAttribute(IModelTypeAttribute.PROPERTY_PRODUCT_RELEVANT, Boolean
                         .toString(attribute instanceof IPolicyCmptTypeAttribute ? ((IPolicyCmptTypeAttribute)attribute)
                                 .isProductRelevant() : true));
+
+                addDescriptions(attribute, modelTypeAttribute);
                 addLabels(attribute, modelTypeAttribute);
-                addExtensionProperties(modelTypeAttribute, attribute);
+                addExtensionProperties(attribute, modelTypeAttribute);
             }
         }
     }
@@ -232,7 +238,24 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
         }
     }
 
-    private void addExtensionProperties(Element modelElement, IExtensionPropertyAccess element) {
+    private void addDescriptions(IDescribedElement model, Element runtimeModelElement) {
+        List<IDescription> descriptions = model.getDescriptions();
+        if (descriptions.size() <= 0) {
+            return;
+        }
+        Element runtimeDescriptions = doc.createElement(IModelElement.DESCRIPTIONS_XML_WRAPPER_TAG);
+        runtimeModelElement.appendChild(runtimeDescriptions);
+        for (IDescription description : descriptions) {
+            Element runtimeDescription = doc.createElement(IModelElement.DESCRIPTIONS_XML_TAG);
+            runtimeDescriptions.appendChild(runtimeDescription);
+            Locale locale = description.getLocale();
+            runtimeDescription.setAttribute(IModelElement.DESCRIPTIONS_PROPERTY_LOCALE,
+                    locale == null ? "" : locale.getLanguage());
+            runtimeDescription.setTextContent(description.getText());
+        }
+    }
+
+    private void addExtensionProperties(IExtensionPropertyAccess element, Element modelElement) {
         IExtensionPropertyDefinition[] extensionPropertyDefinitions = getIpsProject().getIpsModel()
                 .getExtensionPropertyDefinitions(element.getClass(), true);
         Element extensionProperties = doc.createElement(IModelElement.EXTENSION_PROPERTIES_XML_WRAPPER_TAG);

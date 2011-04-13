@@ -35,6 +35,8 @@ public class AbstractModelElement implements IModelElement {
 
     private final Map<Locale, String> labelsByLocale = new HashMap<Locale, String>();
 
+    private final Map<Locale, String> descriptionsByLocale = new HashMap<Locale, String>();
+
     private Map<String, Object> extPropertyValues;
 
     private String name;
@@ -48,6 +50,11 @@ public class AbstractModelElement implements IModelElement {
     public String getLabel(Locale locale) {
         String label = labelsByLocale.get(locale);
         return StringUtils.isEmpty(label) ? getName() : label;
+    }
+
+    public String getDescription(Locale locale) {
+        String description = descriptionsByLocale.get(locale);
+        return StringUtils.isEmpty(description) ? "" : description;
     }
 
     public Object getExtensionPropertyValue(String propertyId) {
@@ -79,6 +86,41 @@ public class AbstractModelElement implements IModelElement {
         }
     }
 
+    protected final void initDescriptionsFromXml(XMLStreamReader parser) throws XMLStreamException {
+        Locale currentLocale = null;
+        for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
+            switch (event) {
+                case XMLStreamConstants.START_ELEMENT:
+                    if (parser.getLocalName().equals(IModelElement.DESCRIPTIONS_XML_TAG)) {
+                        currentLocale = initDescriptionFromXml(parser);
+                    }
+                    break;
+                case XMLStreamConstants.CHARACTERS:
+                    if (currentLocale != null && !parser.isWhiteSpace()) {
+                        descriptionsByLocale.put(currentLocale, parser.getText());
+                        currentLocale = null;
+                    }
+                    break;
+                case XMLStreamConstants.END_ELEMENT:
+                    if (parser.getLocalName().equals(IModelElement.DESCRIPTIONS_XML_WRAPPER_TAG)) {
+                        return;
+                    }
+                    break;
+            }
+        }
+    }
+
+    private Locale initDescriptionFromXml(XMLStreamReader parser) {
+        Locale locale = null;
+        for (int i = 0; i < parser.getAttributeCount(); i++) {
+            if (parser.getAttributeLocalName(i).equals(IModelElement.DESCRIPTIONS_PROPERTY_LOCALE)) {
+                String localeCode = parser.getAttributeValue(i);
+                locale = StringUtils.isEmpty(localeCode) ? null : new Locale(localeCode);
+            }
+        }
+        return locale;
+    }
+
     protected final void initLabelsFromXml(XMLStreamReader parser) throws XMLStreamException {
         for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
             switch (event) {
@@ -103,7 +145,7 @@ public class AbstractModelElement implements IModelElement {
         for (int i = 0; i < parser.getAttributeCount(); i++) {
             if (parser.getAttributeLocalName(i).equals(IModelElement.LABELS_PROPERTY_LOCALE)) {
                 String localeCode = parser.getAttributeValue(i);
-                locale = localeCode.length() == 0 ? null : new Locale(localeCode);
+                locale = StringUtils.isEmpty(localeCode) ? null : new Locale(localeCode);
             } else if (parser.getAttributeLocalName(i).equals(IModelElement.LABELS_PROPERTY_VALUE)) {
                 value = parser.getAttributeValue(i);
             } else if (parser.getAttributeLocalName(i).equals(IModelElement.LABELS_PROPERTY_PLURAL_VALUE)) {

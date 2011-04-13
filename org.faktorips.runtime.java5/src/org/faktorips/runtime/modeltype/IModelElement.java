@@ -30,6 +30,12 @@ public interface IModelElement {
 
     public static final String PROPERTY_NAME = "name";
 
+    public static final String DESCRIPTIONS_XML_TAG = "Description";
+
+    public static final String DESCRIPTIONS_XML_WRAPPER_TAG = "Descriptions";
+
+    public static final String DESCRIPTIONS_PROPERTY_LOCALE = "locale";
+
     public static final String LABELS_XML_TAG = "Label";
 
     public static final String LABELS_XML_WRAPPER_TAG = "Labels";
@@ -89,8 +95,15 @@ public interface IModelElement {
     /**
      * Returns the label for the given locale.
      * <p>
-     * Returns the element's name if no label for the given locale exists.
+     * Returns the element's name if no label exists for the given locale.
      */
     public String getLabel(Locale locale);
+
+    /**
+     * Returns the description for the given locale.
+     * <p>
+     * Returns an empty string if no description exists for the given locale.
+     */
+    public String getDescription(Locale locale);
 
 }

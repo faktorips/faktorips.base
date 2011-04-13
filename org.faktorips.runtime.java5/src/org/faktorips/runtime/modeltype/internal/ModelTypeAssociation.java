@@ -118,6 +118,8 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
         }
 
         parser.next();
+        initDescriptionsFromXml(parser);
+        parser.next();
         initLabelsFromXml(parser);
 
         initExtPropertiesFromXml(parser);

@@ -139,6 +139,8 @@ public class ModelType extends AbstractModelElement implements IModelType {
                         initModelTypeAttributesFromXml(parser);
                     } else if (parser.getLocalName().equals(IModelTypeAssociation.XML_WRAPPER_TAG)) {
                         initModelTypeAssociationsFromXml(parser);
+                    } else if (parser.getLocalName().equals(IModelElement.DESCRIPTIONS_XML_WRAPPER_TAG)) {
+                        initDescriptionsFromXml(parser);
                     } else if (parser.getLocalName().equals(IModelElement.LABELS_XML_WRAPPER_TAG)) {
                         initLabelsFromXml(parser);
                     }
