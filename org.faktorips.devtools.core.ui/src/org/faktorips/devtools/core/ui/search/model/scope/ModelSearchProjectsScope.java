@@ -32,19 +32,22 @@ public class ModelSearchProjectsScope extends AbstractModelSearchScope {
 
     @Override
     protected List<?> getSelectedObjects() {
-        List<?> list = ((IStructuredSelection)selection).toList();
-
         List<IProject> selectedProjects = new ArrayList<IProject>();
-        for (Object object : list) {
-            if (object instanceof IAdaptable) {
-                IAdaptable adaptable = (IAdaptable)object;
-                IResource resource = (IResource)adaptable.getAdapter(IResource.class);
-                if (resource == null) {
-                    continue;
-                }
-                IProject project = resource.getProject();
-                if (project != null && !selectedProjects.contains(project)) {
-                    selectedProjects.add(project);
+
+        if (selection instanceof IStructuredSelection) {
+            List<?> list = ((IStructuredSelection)selection).toList();
+
+            for (Object object : list) {
+                if (object instanceof IAdaptable) {
+                    IAdaptable adaptable = (IAdaptable)object;
+                    IResource resource = (IResource)adaptable.getAdapter(IResource.class);
+                    if (resource == null) {
+                        continue;
+                    }
+                    IProject project = resource.getProject();
+                    if (project != null && !selectedProjects.contains(project)) {
+                        selectedProjects.add(project);
+                    }
                 }
             }
         }
