@@ -134,7 +134,6 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
                         return IpsUIPlugin.getImageHandling().getImage(association);
                     }
                 } catch (Exception e) {
-                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.log(e);
                 }
                 return IpsUIPlugin.getImageHandling().getImage(

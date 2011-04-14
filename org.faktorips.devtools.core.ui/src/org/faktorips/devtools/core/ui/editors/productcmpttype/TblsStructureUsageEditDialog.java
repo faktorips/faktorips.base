@@ -170,7 +170,6 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog {
                 try {
                     addClicked();
                 } catch (Exception ex) {
-                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -186,7 +185,6 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog {
                 try {
                     removedClicked();
                 } catch (Exception ex) {
-                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -202,7 +200,6 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog {
                 try {
                     moveClicked(true);
                 } catch (Exception ex) {
-                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -218,7 +215,6 @@ public class TblsStructureUsageEditDialog extends IpsPartEditDialog {
                 try {
                     moveClicked(false);
                 } catch (Exception ex) {
-                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }

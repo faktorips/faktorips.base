@@ -384,7 +384,6 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 try {
                     newPart();
                 } catch (Exception ex) {
-                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -405,7 +404,6 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 try {
                     editPart();
                 } catch (Exception ex) {
-                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -426,7 +424,6 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 try {
                     deletePart();
                 } catch (Exception ex) {
-                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -447,7 +444,6 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 try {
                     moveParts(true);
                 } catch (Exception ex) {
-                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -465,7 +461,6 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 try {
                     moveParts(false);
                 } catch (Exception ex) {
-                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -580,7 +575,6 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 }
             }
         } catch (Exception e) {
-            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.logAndShowErrorDialog(e);
         }
 
@@ -611,7 +605,6 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 }
             }
         } catch (Exception e) {
-            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.logAndShowErrorDialog(e);
         }
 
@@ -638,7 +631,6 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             }
             fireDeleted(part);
         } catch (Exception e) {
-            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.logAndShowErrorDialog(e);
         }
 

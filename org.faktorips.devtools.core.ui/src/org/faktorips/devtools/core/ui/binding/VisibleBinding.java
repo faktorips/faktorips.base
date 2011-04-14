@@ -33,7 +33,6 @@ public class VisibleBinding extends ControlPropertyBinding {
             Boolean value = (Boolean)getProperty().getReadMethod().invoke(getObject(), new Object[0]);
             getControl().setVisible(value.booleanValue());
         } catch (Exception e) {
-            // TODO catch Exception needs to be documented properly or specialized
             throw new RuntimeException(e);
         }
     }

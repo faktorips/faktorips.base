@@ -45,7 +45,6 @@ public class ButtonTextBinding extends ControlPropertyBinding {
                 ((Button)getControl()).setText(value);
             }
         } catch (Exception e) {
-            // TODO catch Exception needs to be documented properly or specialized
             throw new RuntimeException(e);
         }
     }

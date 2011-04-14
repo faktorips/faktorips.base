@@ -626,7 +626,6 @@ public class IpsTestRunner implements IIpsTestRunner {
                 server.close();
             }
         } catch (Exception e) {
-            // TODO catch Exception needs to be documented properly or specialized
             /*
              * error durring socket listening notify the listener itself, because there is no
              * connection to a runner (connection failed)

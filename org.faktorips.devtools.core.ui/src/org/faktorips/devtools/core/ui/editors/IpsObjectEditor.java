@@ -258,7 +258,6 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         } catch (CoreException e) {
             throw new PartInitException(e.getStatus());
         } catch (Exception e) {
-            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.log(e);
             throw new PartInitException(e.getMessage());
         }
@@ -345,7 +344,6 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             }
 
         } catch (Exception e) {
-            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.log(e);
         }
     }

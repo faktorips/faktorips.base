@@ -100,7 +100,6 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
             try {
                 mapping.setPropertyValue();
             } catch (Exception e) {
-                // TODO catch Exception needs to be documented properly or specialized
                 IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
                         + " of object " + mapping.getObject(), e)); //$NON-NLS-1$
             }
@@ -115,7 +114,6 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
             try {
                 mapping.setControlValue();
             } catch (Exception e) {
-                // TODO catch Exception needs to be documented properly or specialized
                 IpsPlugin.log(new IpsStatus("Error updating control for property " + mapping.getPropertyName() //$NON-NLS-1$
                         + " of object " + mapping.getObject(), e)); //$NON-NLS-1$
             }
@@ -131,7 +129,6 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
                 try {
                     mapping.setPropertyValue();
                 } catch (Exception ex) {
-                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
                             + " of object " + mapping.getObject(), ex)); //$NON-NLS-1$
                 }

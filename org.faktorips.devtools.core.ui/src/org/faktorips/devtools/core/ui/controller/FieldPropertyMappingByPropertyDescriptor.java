@@ -109,7 +109,6 @@ public class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMa
             field.setValue(propertyValue, false);
 
         } catch (Exception e) {
-            // TODO catch Exception needs to be documented properly or specialized
             throw new RuntimeException("Error setting value in control for property " + property.getName(), e); //$NON-NLS-1$
         }
     }
@@ -119,7 +118,6 @@ public class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMa
             Method getter = property.getReadMethod();
             return getter.invoke(object, new Object[0]);
         } catch (Exception e) {
-            // TODO catch Exception needs to be documented properly or specialized
             throw new RuntimeException("Error getting property value " + property.getName()); //$NON-NLS-1$
         }
     }

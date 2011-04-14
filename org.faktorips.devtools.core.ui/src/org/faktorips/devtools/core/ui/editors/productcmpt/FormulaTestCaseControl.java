@@ -553,7 +553,6 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
 
             formulaTestCaseTableViewer.setSelection(new StructuredSelection(newFormulaTestCase));
         } catch (Exception e) {
-            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
@@ -598,7 +597,6 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
             repackAndResfreshForumlaTestCaseTable();
             uiController.updateUI();
         } catch (Exception e) {
-            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
@@ -681,7 +679,6 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
                         formula.findValueDatatype(ipsProject);
                         element.setActualResult(result == null ? "" : result.toString()); //$NON-NLS-1$
                     } catch (Exception e) {
-                        // TODO catch Exception needs to be documented properly or specialized
                         IpsPlugin.logAndShowErrorDialog(e);
                     }
                     int testResultStatus = getFormulaTestCaseTestStatus(element);

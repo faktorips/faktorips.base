@@ -452,7 +452,6 @@ public class TestCaseTypeSection extends IpsSection {
                         clickedEvent(e);
                     }
                 } catch (Exception ex) {
-                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -813,7 +812,6 @@ public class TestCaseTypeSection extends IpsSection {
                 }
 
             } catch (Exception e1) {
-                // TODO catch Exception needs to be documented properly or specialized
                 throw new RuntimeException(e1);
             }
         }
@@ -845,7 +843,6 @@ public class TestCaseTypeSection extends IpsSection {
             try {
                 addParameterClicked();
             } catch (Exception e) {
-                // TODO catch Exception needs to be documented properly or specialized
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }
@@ -898,7 +895,6 @@ public class TestCaseTypeSection extends IpsSection {
             try {
                 moveUpClicked(selection);
             } catch (Exception e) {
-                // TODO catch Exception needs to be documented properly or specialized
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }
@@ -925,7 +921,6 @@ public class TestCaseTypeSection extends IpsSection {
             try {
                 moveDownClicked(selection);
             } catch (Exception e) {
-                // TODO catch Exception needs to be documented properly or specialized
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }
@@ -1822,7 +1817,6 @@ public class TestCaseTypeSection extends IpsSection {
                 try {
                     removeClicked();
                 } catch (Exception ex) {
-                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -1838,7 +1832,6 @@ public class TestCaseTypeSection extends IpsSection {
                 try {
                     addParameterClicked();
                 } catch (Exception ex) {
-                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -1854,7 +1847,6 @@ public class TestCaseTypeSection extends IpsSection {
                 try {
                     moveUpClicked(getSelectedObjectInTree());
                 } catch (Exception ex) {
-                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -1870,7 +1862,6 @@ public class TestCaseTypeSection extends IpsSection {
                 try {
                     moveDownClicked(getSelectedObjectInTree());
                 } catch (Exception ex) {
-                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -2378,7 +2369,6 @@ public class TestCaseTypeSection extends IpsSection {
                 try {
                     super.valueChanged(e);
                 } catch (Exception ex) {
-                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }

@@ -650,7 +650,6 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
                 objectProperty.getProperty());
     }
 
-    // TODO AW: Internationalize message
     private void addMessageDuplicateColumnName(MessageList msgList, ObjectProperty objectProperty, String detailText) {
         msgList.add(new Message(MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME, NLS.bind(
                 Messages.PersistentTypeInfo_msgDuplicateColumnName, detailText), Message.ERROR, objectProperty));

@@ -65,13 +65,12 @@ public class ProductCmptTypeValidations {
             IProductCmptType superType,
             IPolicyCmptType superPcType) throws CoreException {
 
-        // FIXME AW: This method is completely broken!
-
         IProductCmptType productCmptTypeOfPolicyCmptSupertype = null;
         if (superPcType != null) {
             productCmptTypeOfPolicyCmptSupertype = superPcType.findProductCmptType(ipsProject);
             return null;
         }
+        // FIXME AW: This method is completely broken!
         if (productCmptTypeOfPolicyCmptSupertype == null) {
             return null;
         }

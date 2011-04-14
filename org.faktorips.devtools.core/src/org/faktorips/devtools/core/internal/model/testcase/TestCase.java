@@ -974,7 +974,6 @@ public class TestCase extends IpsObject implements ITestCase {
                 return true;
             }
         } catch (Exception e) {
-            // TODO catch Exception needs to be documented properly or specialized
             // TODO ignored exception needs to be documented properly (why is it OK to ignore?)
             // ignore exceptions
         }

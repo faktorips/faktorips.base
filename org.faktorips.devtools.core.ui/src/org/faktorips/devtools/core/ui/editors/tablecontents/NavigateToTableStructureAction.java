@@ -48,7 +48,6 @@ class NavigateToTableStructureAction extends Action {
                 IpsUIPlugin.getDefault().openEditor(tableStructure);
             }
         } catch (Exception e) {
-            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }

@@ -69,7 +69,6 @@ public class GeneralInfoSection extends IpsSection {
                 try {
                     IpsUIPlugin.getDefault().openEditor(productCmptType.findSupertype(productCmptType.getIpsProject()));
                 } catch (Exception e) {
-                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
 
@@ -102,7 +101,6 @@ public class GeneralInfoSection extends IpsSection {
                         IpsUIPlugin.getDefault().openEditor(policyCmptType);
                     }
                 } catch (Exception e) {
-                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
             }

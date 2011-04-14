@@ -313,7 +313,6 @@ public class GenerationsSection extends SimpleIpsPartsSection {
                         }
                     }
                 } catch (Exception e) {
-                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
             }

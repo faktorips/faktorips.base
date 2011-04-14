@@ -43,7 +43,6 @@ public class UnparsableFilePage extends IpsObjectEditorPage {
                     .getContentFromEnclosingResource(), charSet);
             xmlText.setText(text);
         } catch (Exception e) {
-            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.log(e);
         }
     }

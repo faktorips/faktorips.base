@@ -142,7 +142,6 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
                 }
             }
         } catch (Exception e) {
-            // TODO catch Exception needs to be documented properly or specialized
             // TODO catches all exceptions while throwing Exception?
             setErrorMessage(Messages.IpsObjectCompletionProcessor_msgInternalError);
             IpsPlugin.log(e);

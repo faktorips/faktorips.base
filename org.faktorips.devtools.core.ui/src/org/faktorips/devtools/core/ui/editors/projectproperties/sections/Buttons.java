@@ -37,7 +37,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.forms.widgets.Section;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
@@ -180,7 +179,6 @@ public abstract class Buttons extends ViewerButtonComposite implements ISelectio
 
     @Override
     protected Viewer createViewer(Composite parent, UIToolkit toolkit) {
-        // initControls();
         table = createTable(parent, toolkit);
 
         setEditDoubleClickListenerEnabled(true);
@@ -190,70 +188,29 @@ public abstract class Buttons extends ViewerButtonComposite implements ISelectio
 
         viewer.setContentProvider(createContentProvider());
         ILabelProvider lp = createLabelProvider();
-        // final MessageCueLabelProvider messageCueLabelProvider = new MessageCueLabelProvider(lp,
-        // ipsObject
-        // .getIpsProject());
         viewer.setLabelProvider(lp);
         fillViewer();
-        // new TableMessageHoverService(viewer) {
-        //
-        // @Override
-        // protected MessageList getMessagesFor(Object element) throws CoreException {
-        // return messageCueLabelProvider.getMessages(element);
-        // }
-        //
-        // };
-        //
-        // viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-        //
-        // @Override
-        // public void selectionChanged(SelectionChangedEvent event) {
-        // StructuredSelection selection = (StructuredSelection)event.getSelection();
-        // String firstElement = (String)selection.getFirstElement();
-        // if (!isPredefinedDatatype(firstElement)) {
-        // Datatype definedDatatype = getDefinedDatatype(firstElement);
-        // setDatatypeInformation(definedDatatype);
-        //
-        // }
-        // }
-        //
-        // });
         return viewer;
     }
 
     public void createDefinedDatatypeTable() {
-        // toolkit.createFormLabel(composite, propertyName);
-        // Text maxTableNameLengthText = toolkit.createText(composite);
-        // maxTableNameLengthText.setText();
+
     }
 
     abstract protected void fillViewer();
 
     protected void initControls() {
-        // Adapt this section to the form toolkit
-        // uiToolkit.getFormToolkit().adapt(this);
-        //
-        // // Set layout
-        // setLayoutData(layoutData);
-        // setLayout(uiToolkit.createNoMarginGridLayout(1, false));
-
-        // Create the ui section widget that is being wrapped by this composite
+        // Create the UI section widget that is being wrapped by this composite
         section = uiToolkit.getFormToolkit().createSection(this, style);
         section.setLayoutData(layoutData);
-
-        // Create the client composite for the section
-        // Composite client = uiToolkit.createGridComposite(section, 1, false, false);
-        // client.setLayoutData(layoutData);
-        // // initClientComposite(client, uiToolkit);
-        // section.setClient(client);
-        // uiToolkit.getFormToolkit().paintBordersFor(client);
     }
 
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
+
     }
 
     public void setText(String text) {
-        // section.setText(text);
+
     }
 
     /**
@@ -370,7 +327,6 @@ public abstract class Buttons extends ViewerButtonComposite implements ISelectio
                 try {
                     newPart();
                 } catch (Exception ex) {
-                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -391,7 +347,6 @@ public abstract class Buttons extends ViewerButtonComposite implements ISelectio
                 try {
                     editPart();
                 } catch (Exception ex) {
-                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -412,7 +367,6 @@ public abstract class Buttons extends ViewerButtonComposite implements ISelectio
                 try {
                     deleteDatatype();
                 } catch (Exception ex) {
-                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -433,7 +387,6 @@ public abstract class Buttons extends ViewerButtonComposite implements ISelectio
                 try {
                     moveParts(true);
                 } catch (Exception ex) {
-                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -451,7 +404,6 @@ public abstract class Buttons extends ViewerButtonComposite implements ISelectio
                 try {
                     moveParts(false);
                 } catch (Exception ex) {
-                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -561,7 +513,6 @@ public abstract class Buttons extends ViewerButtonComposite implements ISelectio
             return;
         }
         ISelection selection = viewer.getSelection();
-        Datatype datatype = null;
         EditDialog dialog = null;
         if (selection instanceof StructuredSelection) {
             StructuredSelection structuredSelection = (StructuredSelection)selection;
@@ -574,21 +525,7 @@ public abstract class Buttons extends ViewerButtonComposite implements ISelectio
         if (dialog == null) {
             return;
         }
-
-        // dialog.setDataChangeable(isDataChangeable());
         dialog.open();
-        if (dialog.getReturnCode() == Window.CANCEL) {
-            // part.setState(memento);
-            // if (!dirty) {
-            // file.markAsClean();
-            // }
-            // }
-            // } catch (Exception e) {
-            // // TODO catch Exception needs to be documented properly or specialized
-            // IpsPlugin.logAndShowErrorDialog(e);
-        }
-        //
-        // refresh();
     }
 
     private void deleteDatatype() {
@@ -612,15 +549,6 @@ public abstract class Buttons extends ViewerButtonComposite implements ISelectio
     }
 
     public abstract void deleteItem();
-
-    // public Datatype getDefinedDatatype(String part) {
-    // for (Datatype definedDatatype : definedDatatypes) {
-    // if (definedDatatype.getName().equals(part)) {
-    // return definedDatatype;
-    // }
-    // }
-    // return null;
-    // }
 
     /**
      * Adds the listener as one being notified when the selected part changes.
@@ -697,22 +625,6 @@ public abstract class Buttons extends ViewerButtonComposite implements ISelectio
         deleteListeners.remove(listener);
     }
 
-    private boolean fireAboutToDelete(IIpsObjectPart part) {
-        for (IDeleteListener listener : deleteListeners) {
-            boolean accept = listener.aboutToDelete(part);
-            if (!accept) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private void fireDeleted(IIpsObjectPart part) {
-        for (IDeleteListener listener : deleteListeners) {
-            listener.deleted(part);
-        }
-    }
-
     @Override
     public ISelectionProvider getSelectionProvider() {
         return viewer;
@@ -724,14 +636,6 @@ public abstract class Buttons extends ViewerButtonComposite implements ISelectio
             return false;
         }
         return viewer.getTable().getDisplay().getCursorControl() == viewer.getTable() ? true : false;
-    }
-
-    private void setiIpsProjectProperties(IIpsProjectProperties iIpsProjectProperties) {
-        this.iIpsProjectProperties = iIpsProjectProperties;
-    }
-
-    private IIpsProjectProperties getiIpsProjectProperties() {
-        return iIpsProjectProperties;
     }
 
 }

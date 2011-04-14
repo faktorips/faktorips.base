@@ -738,7 +738,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             try {
                 addClicked();
             } catch (Exception e) {
-                // TODO catch Exception needs to be documented properly or specialized
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }
@@ -765,7 +764,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             try {
                 changeProductCmpt();
             } catch (Exception e) {
-                // TODO catch Exception needs to be documented properly or specialized
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }
@@ -792,7 +790,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             try {
                 resetProductCmptToEmpty();
             } catch (Exception e) {
-                // TODO catch Exception needs to be documented properly or specialized
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }
@@ -819,7 +816,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             try {
                 removeClicked();
             } catch (Exception e) {
-                // TODO catch Exception needs to be documented properly or specialized
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }
@@ -862,7 +858,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                     throw new RuntimeException("Move action not supported for: " + firstElement.getClass().getName()); //$NON-NLS-1$
                 }
             } catch (Exception e) {
-                // TODO catch Exception needs to be documented properly or specialized
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }
@@ -993,7 +988,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 testCaseTypeChanged = true;
             }
         } catch (Exception e) {
-            // TODO catch Exception needs to be documented properly or specialized
             throw new RuntimeException(e);
         }
     }
@@ -1656,7 +1650,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 try {
                     addClicked();
                 } catch (Exception ex) {
-                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -1672,7 +1665,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 try {
                     removeClicked();
                 } catch (Exception ex) {
-                    // TODO catch Exception needs to be documented properly or specialized
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -2571,7 +2563,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 }
             }
         } catch (Exception e) {
-            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.logAndShowErrorDialog(e);
         }
         return null;

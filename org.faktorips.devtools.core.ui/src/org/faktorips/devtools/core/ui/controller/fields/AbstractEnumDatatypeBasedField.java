@@ -66,7 +66,6 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
                 setValue(currentValue, false);
                 return;
             } catch (Exception e) {
-                // TODO catch Exception needs to be documented properly or specialized
                 // ignore exception, select first element instead if available
             }
             if (ids != null && ids.size() > 0) {

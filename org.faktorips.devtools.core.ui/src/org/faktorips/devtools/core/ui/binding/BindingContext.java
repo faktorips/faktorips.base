@@ -519,7 +519,6 @@ public class BindingContext {
             try {
                 binding.updateUI();
             } catch (Exception e) {
-                // TODO catch Exception needs to be documented properly or specialized
                 IpsPlugin.log(new IpsStatus("Error updating ui with control binding " + binding)); //$NON-NLS-1$
             }
         }

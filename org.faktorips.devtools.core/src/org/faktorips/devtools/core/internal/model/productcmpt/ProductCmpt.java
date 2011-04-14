@@ -87,7 +87,6 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             String kindName = stratgey.getKindId(getName());
             return new ProductCmptKind(kindName, getIpsProject().getRuntimeIdPrefix() + kindName);
         } catch (Exception e) {
-            // TODO catch Exception needs to be documented properly or specialized
             return null; // error in parsing the name results in a "not found" for the client
         }
     }

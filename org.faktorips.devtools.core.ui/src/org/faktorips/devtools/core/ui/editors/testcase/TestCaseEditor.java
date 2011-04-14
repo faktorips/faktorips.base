@@ -86,7 +86,6 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
         try {
             return (ITestCase)getIpsSrcFile().getIpsObject();
         } catch (Exception e) {
-            // TODO catch Exception needs to be documented properly or specialized
             IpsPlugin.logAndShowErrorDialog(e);
             throw new RuntimeException(e);
         }

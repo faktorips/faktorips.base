@@ -61,7 +61,6 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
                 return testCase.isTypeOrDefault(param, TestParameterType.INPUT);
             }
         } catch (Exception e) {
-            // TODO catch Exception needs to be documented properly or specialized
             // TODO ignored exception needs to be documented properly (why is it OK to ignore?)
             // ignore exception check type of root
         }
@@ -85,7 +84,6 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
                 return testCase.isTypeOrDefault(param, TestParameterType.EXPECTED_RESULT);
             }
         } catch (Exception e) {
-            // TODO catch Exception needs to be documented properly or specialized
             // TODO ignored exception needs to be documented properly (why is it OK to ignore?)
             // ignore exception check type of root
         }
@@ -108,7 +106,6 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
                 return testCase.isTypeOrDefault(param, TestParameterType.COMBINED);
             }
         } catch (Exception e) {
-            // TODO catch Exception needs to be documented properly or specialized
             // TODO ignored exception needs to be documented properly (why is it OK to ignore?)
             // ignore exception check type of root
         }
