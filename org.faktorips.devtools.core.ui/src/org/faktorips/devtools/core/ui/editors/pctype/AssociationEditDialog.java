@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -38,9 +37,9 @@ import org.faktorips.devtools.core.internal.model.type.AssociationType;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
-import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.FetchType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.FetchType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -82,10 +81,6 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     private IPolicyCmptTypeAssociation inverseAssociation;
     private Composite joinColumnComposite;
     private Composite cascadeTypesComposite;
-
-    // workaround (MBT#280): see showWarningIfManuallyCodeFixWasNecessary
-    private boolean manuallyCodeFixNecessary;
-    private String currentMessage;
 
     public AssociationEditDialog(IPolicyCmptTypeAssociation relation2, Shell parentShell) {
         super(relation2, parentShell, Messages.AssociationEditDialog_title, true);
@@ -376,10 +371,9 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         GridData layoutData = (GridData)group.getLayoutData();
         layoutData.grabExcessVerticalSpace = false;
 
-        bindingContext.bindContent(
-                uiToolkit.createCheckbox(group, Messages.AssociationEditDialog_labelOverwriteDefaultCascadeTypes),
-                association.getPersistenceAssociatonInfo(),
-                IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_OVERWRITE_DEFAULT);
+        bindingContext.bindContent(uiToolkit.createCheckbox(group,
+                Messages.AssociationEditDialog_labelOverwriteDefaultCascadeTypes), association
+                .getPersistenceAssociatonInfo(), IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_OVERWRITE_DEFAULT);
 
         cascadeTypesComposite = uiToolkit.createLabelEditColumnComposite(group);
         cascadeTypesComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -463,10 +457,9 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                 uiToolkit.createLabel(groupJoinColumn,
                         Messages.AssociationEditDialog_noteForeignKeyColumnDefinedInInverseAssociation);
             } else if (persistentAssociationInfo.isForeignKeyColumnCreatedOnTargetSide(inverseAssociation)) {
-                uiToolkit.createLabel(
-                        groupJoinColumn,
-                        NLS.bind(Messages.AssociationEditDialog_noteForeignKeyIsColumnOfTheTargetEntity,
-                                StringUtil.unqualifiedName(association.getTarget())));
+                uiToolkit.createLabel(groupJoinColumn, NLS.bind(
+                        Messages.AssociationEditDialog_noteForeignKeyIsColumnOfTheTargetEntity, StringUtil
+                                .unqualifiedName(association.getTarget())));
             }
         }
         return groupJoinColumn;
@@ -599,7 +592,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                 if (matchingAss != null) {
                     String type = matchingAss.getProductCmptType().getName();
                     return NLS.bind(Messages.AssociationEditDialog_noteAssociationIsConstrainedByProductStructure,
-                            type, matchingAss.getTargetRoleSingular()) + StringUtils.rightPad("\n", 120); //$NON-NLS-1$
+                            type, matchingAss.getTargetRoleSingular())
+                            + StringUtils.rightPad("\n", 120); //$NON-NLS-1$
                 } else {
                     String note = Messages.AssociationEditDialog_noteAssociationNotConstrainedByProductStructure;
                     IProductCmptType sourceProductType = association.getPolicyCmptType()
@@ -629,47 +623,6 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             }
         }
 
-    }
-
-    // workaround (MBT#280): see showWarningIfManuallyCodeFixWasNecessary
-    @Override
-    protected void updateMessageArea() {
-        super.updateMessageArea();
-        showWarningIfManuallyCodeFixWasNecessary();
-    }
-
-    // workaround (MBT#280): see showWarningIfManuallyCodeFixWasNecessary
-    @Override
-    public void setMessage(String newMessage) {
-        super.setMessage(newMessage);
-        currentMessage = newMessage;
-    }
-
-    // workaround (MBT#280): see showWarningIfManuallyCodeFixWasNecessary
-    @Override
-    public void setMessage(String newMessage, int newType) {
-        super.setMessage(newMessage, newType);
-        currentMessage = newMessage; // "no getter available"
-    }
-
-    /*
-     * Show a warning if manually code fix is necessary, see
-     * PersistentAssociationInfo.manuallyCodeFixNecessary
-     */
-    private void showWarningIfManuallyCodeFixWasNecessary() {
-        if (currentMessage != null || !ipsProject.getProperties().isPersistenceSupportEnabled()) {
-            return;
-        }
-
-        PersistentAssociationInfo persistenceAssociationInfo = (PersistentAssociationInfo)association
-                .getPersistenceAssociatonInfo();
-        if (persistenceAssociationInfo.isManuallyCodeFixNecessary() || manuallyCodeFixNecessary) {
-            manuallyCodeFixNecessary = true;
-            String text = NLS.bind(Messages.AttributeEditDialog_msgWarningManualyCodeMergeNecessary,
-                    association.getName());
-            setMessage(text, IMessageProvider.WARNING);
-            persistenceAssociationInfo.resetManuallyCodeFixNecessary();
-        }
     }
 
     @Override

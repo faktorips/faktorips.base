@@ -29,7 +29,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-import org.faktorips.values.ObjectUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -60,18 +59,9 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
 
     private IIpsObjectPart policyComponentTypeAttribute;
 
-    // workaround (MBT#280), due to problem in jmerge (MBT#223)
-    private boolean manuallyCodeFixNecessary = false;
-
     public PersistentAttributeInfo(IIpsObjectPart ipsObject, String id) {
         super(ipsObject, id);
         policyComponentTypeAttribute = ipsObject;
-    }
-
-    private void checkIfManuallyCodeFixIsNecessary(Object oldValue, Object newValue) {
-        if (!ObjectUtil.equals(oldValue, newValue)) {
-            manuallyCodeFixNecessary = true;
-        }
     }
 
     @Override
@@ -129,7 +119,6 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         ArgumentCheck.notNull(newTableColumnName);
         String oldValue = tableColumnName;
         tableColumnName = newTableColumnName;
-        checkIfManuallyCodeFixIsNecessary(oldValue, newTableColumnName);
         valueChanged(oldValue, tableColumnName);
     }
 
@@ -137,7 +126,6 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     public void setTableColumnNullable(boolean nullable) {
         boolean oldValue = tableColumnNullable;
         tableColumnNullable = nullable;
-        checkIfManuallyCodeFixIsNecessary(oldValue, nullable);
         valueChanged(oldValue, nullable);
     }
 
@@ -145,7 +133,6 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     public void setTableColumnPrecision(int precision) {
         int oldValue = tableColumnPrecision;
         tableColumnPrecision = precision;
-        checkIfManuallyCodeFixIsNecessary(oldValue, precision);
         valueChanged(oldValue, precision);
     }
 
@@ -153,7 +140,6 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     public void setTableColumnScale(int scale) {
         int oldValue = tableColumnScale;
         tableColumnScale = scale;
-        checkIfManuallyCodeFixIsNecessary(oldValue, scale);
         valueChanged(oldValue, scale);
     }
 
@@ -161,7 +147,6 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     public void setTableColumnSize(int newTableColumnSize) {
         int oldValue = tableColumnSize;
         tableColumnSize = newTableColumnSize;
-        checkIfManuallyCodeFixIsNecessary(oldValue, newTableColumnSize);
         valueChanged(oldValue, newTableColumnSize);
     }
 
@@ -169,7 +154,6 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     public void setTableColumnUnique(boolean unique) {
         boolean oldValue = tableColumnUnique;
         tableColumnUnique = unique;
-        checkIfManuallyCodeFixIsNecessary(oldValue, unique);
         valueChanged(oldValue, unique);
     }
 
@@ -185,7 +169,6 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         ArgumentCheck.notNull(converterQualifiedClassName);
         String oldValue = this.converterQualifiedClassName;
         this.converterQualifiedClassName = converterQualifiedClassName;
-        checkIfManuallyCodeFixIsNecessary(oldValue, converterQualifiedClassName);
         valueChanged(oldValue, converterQualifiedClassName);
     }
 
@@ -194,7 +177,6 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         ArgumentCheck.notNull(sqlColumnDefinition);
         String oldValue = this.sqlColumnDefinition;
         this.sqlColumnDefinition = sqlColumnDefinition;
-        checkIfManuallyCodeFixIsNecessary(oldValue, sqlColumnDefinition);
         valueChanged(oldValue, sqlColumnDefinition);
     }
 
@@ -312,19 +294,5 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
             msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS, text, Message.ERROR, this,
                     IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE));
         }
-    }
-
-    /**
-     * Resets the flag manually code fix necessary, workaround (MBT#280)
-     */
-    public void resetManuallyCodeFixNecessary() {
-        manuallyCodeFixNecessary = false;
-    }
-
-    /**
-     * Returns <code>true</code> im manually code fixing is necessary, workaround (MBT#280)
-     */
-    public boolean isManuallyCodeFixNecessary() {
-        return manuallyCodeFixNecessary;
     }
 }

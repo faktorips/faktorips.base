@@ -18,7 +18,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -43,7 +42,6 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.pctype.PersistentAttributeInfo;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
@@ -52,12 +50,12 @@ import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
-import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo.DateTimeMapping;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
+import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo.DateTimeMapping;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -124,10 +122,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     private Group configGroup;
 
     private Checkbox validationRuleAdded;
-
-    // workaround (MBT#280): see showWarningIfManuallyCodeFixWasNecessary
-    private boolean manuallyCodeFixNecessary;
-    private String currentMessage;
 
     /**
      * TextField to link the name input control with the rule name
@@ -472,8 +466,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 if (StringUtils.isEmpty(signature)) {
                     signature = Messages.AttributeEditDialog_emptyString;
                 }
-                String text = NLS.bind(Messages.AttributeEditDialog_questionCreateMethod,
-                        productCmptType.getQualifiedName(), signature);
+                String text = NLS.bind(Messages.AttributeEditDialog_questionCreateMethod, productCmptType
+                        .getQualifiedName(), signature);
                 if (MessageDialog.openQuestion(getShell(), Messages.AttributeEditDialog_MethodDoesNotExist, text)) {
                     createMethodAndOpenDialog();
                 }
@@ -519,8 +513,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         try {
             productCmptType = policyCmptType.findProductCmptType(ipsProject);
             if (productCmptType == null) {
-                String text = NLS.bind(Messages.AttributeEditDialog_TypeCantBeFound,
-                        policyCmptType.getProductCmptType());
+                String text = NLS.bind(Messages.AttributeEditDialog_TypeCantBeFound, policyCmptType
+                        .getProductCmptType());
                 MessageDialog.openInformation(getShell(), Messages.AttributeEditDialog_Info, text);
             }
         } catch (CoreException e) {
@@ -829,8 +823,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                             uiToolkit.setDataChangeable(group, false);
                             return;
                         }
-                        uiToolkit.setDataChangeable(persistencePage.getControl(),
-                                ((IPersistentTypeInfo)getObject()).isEnabled());
+                        uiToolkit.setDataChangeable(persistencePage.getControl(), ((IPersistentTypeInfo)getObject())
+                                .isEnabled());
                     }
                 });
 
@@ -907,47 +901,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             uiToolkit.setDataChangeable(temporalMappingField.getControl(), needsTemporalType);
         } catch (CoreException e) {
             // validation error, displayed in dialog message area
-        }
-    }
-
-    // workaround (MBT#280): see showWarningIfManuallyCodeFixWasNecessary
-    @Override
-    protected void updateMessageArea() {
-        super.updateMessageArea();
-        showWarningIfManuallyCodeFixWasNecessary();
-    }
-
-    // workaround (MBT#280): see showWarningIfManuallyCodeFixWasNecessary
-    @Override
-    public void setMessage(String newMessage) {
-        super.setMessage(newMessage);
-        currentMessage = newMessage; // "no getter available"
-    }
-
-    // workaround (MBT#280): see showWarningIfManuallyCodeFixWasNecessary
-    @Override
-    public void setMessage(String newMessage, int newType) {
-        super.setMessage(newMessage, newType);
-        currentMessage = newMessage;
-    }
-
-    /*
-     * Show a warning if manually code fix is necessary, see
-     * PersistentAssociationInfo.manuallyCodeFixNecessary
-     */
-    private void showWarningIfManuallyCodeFixWasNecessary() {
-        if (currentMessage != null || !ipsProject.getProperties().isPersistenceSupportEnabled()) {
-            return;
-        }
-
-        PersistentAttributeInfo persistenceAttributeInfo = (PersistentAttributeInfo)attribute
-                .getPersistenceAttributeInfo();
-        if (persistenceAttributeInfo.isManuallyCodeFixNecessary() || manuallyCodeFixNecessary) {
-            manuallyCodeFixNecessary = true;
-            String text = NLS.bind(Messages.AttributeEditDialog_msgWarningManualyCodeMergeNecessary,
-                    attribute.getName());
-            setMessage(text, IMessageProvider.WARNING);
-            persistenceAttributeInfo.resetManuallyCodeFixNecessary();
         }
     }
 

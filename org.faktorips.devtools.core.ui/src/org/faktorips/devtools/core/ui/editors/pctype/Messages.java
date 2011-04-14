@@ -325,8 +325,6 @@ public class Messages extends NLS {
 
     public static String AttributeEditDialog_valuesetTitle;
 
-    public static String AttributeEditDialog_msgWarningManualyCodeMergeNecessary;
-
     public static String RuleEditDialog_ActivatedByDefault_CheckboxLabel;
 
     public static String RuleEditDialog_attrTitle;

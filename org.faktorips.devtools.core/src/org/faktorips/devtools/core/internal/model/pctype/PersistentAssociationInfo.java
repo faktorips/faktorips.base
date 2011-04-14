@@ -27,7 +27,6 @@ import org.faktorips.devtools.core.util.PersistenceUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-import org.faktorips.values.ObjectUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -62,9 +61,6 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     private FetchType fetchType = FetchType.LAZY;
 
     private IIpsObjectPart policyComponentTypeAssociation;
-
-    // workaround (MBT#280), due to problem in jmerge (MBT#223)
-    private boolean manuallyCodeFixNecessary = false;
 
     public PersistentAssociationInfo(IIpsObjectPart ipsObject, String id) {
         super(ipsObject, id);
@@ -133,14 +129,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         }
         boolean oldValue = this.cascadeTypeOverwriteDefault;
         this.cascadeTypeOverwriteDefault = cascadeTypeOverwriteDefault;
-        checkIfManuallyCodeFixIsNecessary(oldValue, cascadeTypeOverwriteDefault);
         valueChanged(oldValue, cascadeTypeOverwriteDefault);
-    }
-
-    private void checkIfManuallyCodeFixIsNecessary(Object oldValue, Object newValue) {
-        if (!ObjectUtil.equals(oldValue, newValue)) {
-            manuallyCodeFixNecessary = true;
-        }
     }
 
     @Override
@@ -178,7 +167,6 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     public void setCascadeTypePersist(boolean cascadeTypePersist) {
         boolean oldValue = this.cascadeTypePersist;
         this.cascadeTypePersist = cascadeTypePersist;
-        checkIfManuallyCodeFixIsNecessary(oldValue, cascadeTypePersist);
         valueChanged(oldValue, cascadeTypePersist);
     }
 
@@ -191,7 +179,6 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     public void setCascadeTypeMerge(boolean cascadeTypeMerge) {
         boolean oldValue = this.cascadeTypeMerge;
         this.cascadeTypeMerge = cascadeTypeMerge;
-        checkIfManuallyCodeFixIsNecessary(oldValue, cascadeTypeMerge);
         valueChanged(oldValue, cascadeTypeMerge);
     }
 
@@ -204,7 +191,6 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     public void setCascadeTypeRemove(boolean cascadeTypeRemove) {
         boolean oldValue = this.cascadeTypeRemove;
         this.cascadeTypeRemove = cascadeTypeRemove;
-        checkIfManuallyCodeFixIsNecessary(oldValue, cascadeTypeRemove);
         valueChanged(oldValue, cascadeTypeRemove);
     }
 
@@ -217,7 +203,6 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     public void setCascadeTypeRefresh(boolean cascadeTypeRefresh) {
         boolean oldValue = this.cascadeTypeRefresh;
         this.cascadeTypeRefresh = cascadeTypeRefresh;
-        checkIfManuallyCodeFixIsNecessary(oldValue, cascadeTypeRefresh);
         valueChanged(oldValue, cascadeTypeRefresh);
     }
 
@@ -270,7 +255,6 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         ArgumentCheck.notNull(fetchType);
         FetchType oldValue = this.fetchType;
         this.fetchType = fetchType;
-        checkIfManuallyCodeFixIsNecessary(oldValue, fetchType);
         valueChanged(oldValue, fetchType);
     }
 
@@ -279,7 +263,6 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         ArgumentCheck.notNull(newJoinTableName);
         String oldValue = joinTableName;
         joinTableName = newJoinTableName;
-        checkIfManuallyCodeFixIsNecessary(oldValue, newJoinTableName);
         valueChanged(oldValue, joinTableName);
     }
 
@@ -288,7 +271,6 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         ArgumentCheck.notNull(newSourceColumnName);
         String oldValue = sourceColumnName;
         sourceColumnName = newSourceColumnName;
-        checkIfManuallyCodeFixIsNecessary(oldValue, sourceColumnName);
         valueChanged(oldValue, sourceColumnName);
     }
 
@@ -297,7 +279,6 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         ArgumentCheck.notNull(newTargetColumnName);
         String oldValue = targetColumnName;
         targetColumnName = newTargetColumnName;
-        checkIfManuallyCodeFixIsNecessary(oldValue, targetColumnName);
         valueChanged(oldValue, targetColumnName);
     }
 
@@ -306,7 +287,6 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         ArgumentCheck.notNull(newJoinColumnName);
         String oldValue = joinColumnName;
         joinColumnName = newJoinColumnName;
-        checkIfManuallyCodeFixIsNecessary(oldValue, joinColumnName);
         valueChanged(oldValue, joinColumnName);
     }
 
@@ -314,7 +294,6 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     public void setJoinColumnNullable(boolean nullable) {
         boolean oldValue = joinColumnNullable;
         joinColumnNullable = nullable;
-        checkIfManuallyCodeFixIsNecessary(oldValue, joinColumnNullable);
         valueChanged(oldValue, joinColumnNullable);
     }
 
@@ -344,7 +323,6 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     public void setOrphanRemoval(boolean orphanRemoval) {
         boolean oldValue = this.orphanRemoval;
         this.orphanRemoval = orphanRemoval;
-        checkIfManuallyCodeFixIsNecessary(oldValue, orphanRemoval);
         valueChanged(oldValue, orphanRemoval);
     }
 
@@ -793,19 +771,5 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         } else if (!mustBeEmpty && !PersistenceUtil.isValidDatabaseIdentifier(value)) {
             msgList.add(new Message(msgCodeInValid, invalidText, Message.ERROR, this, property));
         }
-    }
-
-    /**
-     * Resets the flag manually code fix necessary, workaround (MBT#280)
-     */
-    public void resetManuallyCodeFixNecessary() {
-        manuallyCodeFixNecessary = false;
-    }
-
-    /**
-     * Returns <code>true</code> im manually code fixing is necessary, workaround (MBT#280)
-     */
-    public boolean isManuallyCodeFixNecessary() {
-        return manuallyCodeFixNecessary;
     }
 }
