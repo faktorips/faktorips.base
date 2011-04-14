@@ -531,7 +531,9 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
      */
     @Override
     public void generateCodeForGetLinks(JavaCodeFragmentBuilder methodsBuilder) {
+        methodsBuilder.appendln("if(" + getMethodNameGet1RelatedCmptLink() + "() != null){");
         methodsBuilder.appendln("list.add(" + getMethodNameGet1RelatedCmptLink() + "());");
+        methodsBuilder.appendln("}");
     }
 
     @Override
@@ -589,11 +591,8 @@ public class GenProdAssociationTo1 extends GenProdAssociation {
             IType generatedJavaType) {
 
         try {
-            IMethod method = generatedJavaType
-                    .getMethod(
-                            getMethodNameSet1RelatedCmpt(),
-                            new String[] { "Q"
-                                    + QNameUtil.getUnqualifiedName(getQualifiedInterfaceClassNameForTarget()) + ";" });
+            IMethod method = generatedJavaType.getMethod(getMethodNameSet1RelatedCmpt(), new String[] { "Q"
+                    + QNameUtil.getUnqualifiedName(getQualifiedInterfaceClassNameForTarget()) + ";" });
             javaElements.add(method);
         } catch (CoreException e) {
             throw new RuntimeException(e);
