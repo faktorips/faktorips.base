@@ -24,7 +24,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.faktorips.datatype.Datatype;
@@ -46,7 +45,6 @@ import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.PreviewTextButtonField;
-import org.faktorips.devtools.core.ui.controls.TextComboControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
 
@@ -251,14 +249,14 @@ public class DefaultsAndRangesSection extends IpsSection {
 
             lowerField = controlFactory
                     .createEditField(toolkit, rangeComposite, datatype, range, range.getIpsProject());
-            initTextField(((TextComboControl)lowerField.getControl()).getTextControl(), 50);
+            initTextField(lowerField.getControl(), 50);
 
             upperField = controlFactory
                     .createEditField(toolkit, rangeComposite, datatype, range, range.getIpsProject());
-            initTextField(((TextComboControl)upperField.getControl()).getTextControl(), 50);
+            initTextField(upperField.getControl(), 50);
 
             stepField = controlFactory.createEditField(toolkit, rangeComposite, datatype, range, range.getIpsProject());
-            initTextField(((TextComboControl)stepField.getControl()).getTextControl(), 50);
+            initTextField(stepField.getControl(), 50);
 
             toolkit.getFormToolkit().paintBordersFor(rangeComposite);
         }
@@ -272,13 +270,15 @@ public class DefaultsAndRangesSection extends IpsSection {
         controller.add(stepField, range, IRangeValueSet.PROPERTY_STEP);
     }
 
-    private void initTextField(Text text, int widthHint) {
-        GridData gd = (GridData)text.getLayoutData();
-        gd.widthHint = widthHint;
-        text.setLayoutData(gd);
+    private void initTextField(Control control, int widthHint) {
+        if (control.getLayoutData() instanceof GridData) {
+            GridData gd = (GridData)control.getLayoutData();
+            gd.widthHint = widthHint;
+            control.setLayoutData(gd);
+        }
 
-        addFocusControl(text);
-        editControls.add(text);
+        addFocusControl(control);
+        editControls.add(control);
     }
 
     @Override
