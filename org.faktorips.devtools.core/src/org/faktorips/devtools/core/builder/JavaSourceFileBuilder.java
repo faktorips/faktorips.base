@@ -266,7 +266,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * Returns the Java naming convention to be used.
      */
     public IJavaNamingConvention getJavaNamingConvention() {
-        return ipsObject.getIpsProject().getJavaNamingConvention();
+        return getIpsProject().getJavaNamingConvention();
     }
 
     /**
