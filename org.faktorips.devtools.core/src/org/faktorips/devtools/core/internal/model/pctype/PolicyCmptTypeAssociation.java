@@ -301,16 +301,11 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
 
     @Override
     public IPolicyCmptTypeAssociation findSharedAssociationHost(IIpsProject ipsProject) throws CoreException {
-        IType supertype = getType().findSupertype(ipsProject);
-        if (supertype == null) {
-            return null;
-        }
-        IPolicyCmptTypeAssociation associationHost = (IPolicyCmptTypeAssociation)supertype.findAssociation(getName(),
-                ipsProject);
+        IPolicyCmptTypeAssociation associationHost = findSuperAssociationWithSameName(ipsProject);
         if (associationHost != null && associationHost.getTarget().equals(getTarget())
                 && associationHost.getAssociationType().isCompositionDetailToMaster()) {
             if (associationHost.isSharedAssociation()) {
-                // if the found association host is a shared association by itself we have to finde
+                // if the found association host is a shared association by itself we have to find
                 // its association host
                 return associationHost.findSharedAssociationHost(ipsProject);
             } else {
@@ -319,6 +314,25 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         } else {
             return null;
         }
+    }
+
+    @Override
+    public IPolicyCmptTypeAssociation findSuperAssociationWithSameName(final IIpsProject ipsProject)
+            throws CoreException {
+        IType supertype = getType().findSupertype(ipsProject);
+        if (supertype == null) {
+            return null;
+        }
+        IPolicyCmptTypeAssociation associationHost = (IPolicyCmptTypeAssociation)supertype.findAssociation(getName(),
+                ipsProject);
+        return associationHost;
+    }
+
+    @Override
+    public boolean hasSuperAssociationWithSameNameNotInverseOfDerivedUnion(final IIpsProject ipsProject)
+            throws CoreException {
+        IPolicyCmptTypeAssociation superAssociationWithSameName = findSuperAssociationWithSameName(ipsProject);
+        return (superAssociationWithSameName != null && !superAssociationWithSameName.isInverseOfDerivedUnion());
     }
 
     @Override
