@@ -187,6 +187,9 @@ public class GenAssociationTo1 extends GenAssociation {
                 && (inverseAssociation == null || !inverseAssociation.isSubsetOfADerivedUnion() || !isCompositionDetailToMaster())) {
             return null;
         }
+        if (association.hasSuperAssociationWithSameNameNotInverseOfDerivedUnion(getIpsProject())) {
+            return null;
+        }
         // find the derived union the inverse of this (the master to detail association) is the
         // subset for
         IPolicyCmptTypeAssociation subsettedDerivedUnion;
