@@ -23,7 +23,6 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.AbstractBuilderSet;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
-import org.faktorips.devtools.core.builder.JavaGeneratorHelper;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -135,7 +134,8 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
         return new AbstractParameterIdentifierResolver(formula, exprCompiler) {
             @Override
             protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
-                return JavaGeneratorHelper.getJavaNamingConvention().getGetterMethodName(attribute.getName(), datatype);
+                return attribute.getIpsProject().getJavaNamingConvention()
+                        .getGetterMethodName(attribute.getName(), datatype);
             }
         };
     }
@@ -147,7 +147,8 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
         return new AbstractParameterIdentifierResolver(formula, exprCompiler) {
             @Override
             protected String getParameterAttributGetterName(IAttribute attribute, Datatype datatype) {
-                return JavaGeneratorHelper.getJavaNamingConvention().getGetterMethodName(attribute.getName(), datatype);
+                return attribute.getIpsProject().getJavaNamingConvention()
+                        .getGetterMethodName(attribute.getName(), datatype);
             }
         };
     }

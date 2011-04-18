@@ -97,11 +97,4 @@ public final class JavaGeneratorHelper {
         return "{@inheritDoc}"; //$NON-NLS-1$
     }
 
-    /**
-     * Returns the default java naming convention.
-     */
-    public final static JavaNamingConvention getJavaNamingConvention() {
-        return JavaNamingConvention.ECLIPSE_STANDARD;
-    }
-
 }

@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TableViewer;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.builder.JavaGeneratorHelper;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
@@ -88,7 +87,7 @@ public class ResetLiteralNamesAction extends Action {
             String nullPresentation = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
             String defaultProviderValue = indexDefaultProvider == -1 ? nullPresentation : attributeValues.get(
                     indexDefaultProvider).getValue();
-            String literalNameValue = defaultProviderValue.equals(nullPresentation) ? null : JavaGeneratorHelper
+            String literalNameValue = defaultProviderValue.equals(nullPresentation) ? null : enumType.getIpsProject()
                     .getJavaNamingConvention().getEnumLiteral(defaultProviderValue);
             attributeValues.get(indexLiteralName).setValue(literalNameValue);
         }

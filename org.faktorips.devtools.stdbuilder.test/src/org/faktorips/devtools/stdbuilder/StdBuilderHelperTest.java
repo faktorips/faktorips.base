@@ -85,8 +85,8 @@ public class StdBuilderHelperTest extends AbstractStdBuilderTest {
 
         IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, qualifiedName);
 
-        String expectedSignature = Signature.createTypeSignature(builderSet.getJavaNamingConvention()
-                .getPublishedInterfaceName(name), false);
+        String expectedSignature = Signature.createTypeSignature(
+                getJavaNamingConvention().getPublishedInterfaceName(name), false);
         assertEquals(expectedSignature,
                 StdBuilderHelper.transformDatatypeToJdtTypeSignature(policyCmptType, true, builderSet, ipsProject));
     }

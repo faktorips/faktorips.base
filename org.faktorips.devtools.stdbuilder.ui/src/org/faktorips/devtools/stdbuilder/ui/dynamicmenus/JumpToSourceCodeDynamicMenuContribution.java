@@ -50,6 +50,7 @@ import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.ui.StdBuilderUICommandId;
@@ -230,8 +231,8 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         return null;
     }
 
-    private JavaNamingConvention getJavaNamingConvention() {
-        return builderSet.getJavaNamingConvention();
+    private IJavaNamingConvention getJavaNamingConvention() {
+        return selectedIpsObjectPartContainer.getIpsProject().getJavaNamingConvention();
     }
 
     private IIpsElement getSelectedIpsElement() {

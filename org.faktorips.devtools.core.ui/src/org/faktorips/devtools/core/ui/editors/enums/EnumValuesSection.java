@@ -59,7 +59,6 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.builder.JavaGeneratorHelper;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enums.EnumUtil;
@@ -703,8 +702,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
                 }
 
                 // Set the new value for the enum literal name
-                String literalNameValue = newValue != null ? JavaGeneratorHelper.getJavaNamingConvention()
-                        .getEnumLiteral(newValue) : null;
+                String literalNameValue = newValue != null ? ipsProject.getJavaNamingConvention().getEnumLiteral(
+                        newValue) : null;
                 enumValue.getEnumLiteralNameAttributeValue().setValue(literalNameValue);
                 IEnumLiteralNameAttribute literalNameAttribute = enumType.getEnumLiteralNameAttribute();
                 IEnumAttribute providerAttribute = enumType.getEnumAttributeIncludeSupertypeCopies(literalNameAttribute

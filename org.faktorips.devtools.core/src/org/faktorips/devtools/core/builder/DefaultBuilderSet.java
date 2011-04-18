@@ -77,14 +77,6 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet {
     private final static String INTERNAL_PACKAGE = "internal"; //$NON-NLS-1$
 
     /**
-     * Returns the Java naming convention to be used.
-     */
-    // TODO duplicate method in JavaSourceFileBuilder
-    public JavaNamingConvention getJavaNamingConvention() {
-        return JavaNamingConvention.ECLIPSE_STANDARD;
-    }
-
-    /**
      * Returns the name of the (Java) package that contains the artefacts specified by the
      * parameters generated for the given ips source file.
      * 

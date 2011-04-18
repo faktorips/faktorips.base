@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -226,8 +227,8 @@ public abstract class JavaGeneratorForIpsPart {
         return localizedTextHelper.getLocalizedToDo(keyPrefix, replacement, getLanguageUsedInGeneratedSourceCode());
     }
 
-    public JavaNamingConvention getJavaNamingConvention() {
-        return JavaGeneratorHelper.getJavaNamingConvention();
+    public IJavaNamingConvention getJavaNamingConvention() {
+        return ipsPart.getIpsProject().getJavaNamingConvention();
     }
 
     /**

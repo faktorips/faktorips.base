@@ -65,6 +65,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -264,8 +265,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     /**
      * Returns the Java naming convention to be used.
      */
-    public JavaNamingConvention getJavaNamingConvention() {
-        return JavaGeneratorHelper.getJavaNamingConvention();
+    public IJavaNamingConvention getJavaNamingConvention() {
+        return ipsObject.getIpsProject().getJavaNamingConvention();
     }
 
     /**

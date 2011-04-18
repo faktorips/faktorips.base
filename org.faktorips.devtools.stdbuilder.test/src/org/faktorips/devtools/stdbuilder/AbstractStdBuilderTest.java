@@ -29,11 +29,11 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.builder.JavaGeneratorHelper;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
 import org.junit.Before;
 
 /**
@@ -75,7 +75,8 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
             String kindId,
             String conceptName) {
 
-        String javaTypeName = JavaGeneratorHelper.getJavaNamingConvention().getImplementationClassName(conceptName);
+        String javaTypeName = ipsObject.getIpsProject().getJavaNamingConvention()
+                .getImplementationClassName(conceptName);
         return getGeneratedJavaType(ipsObject, derivedSource, kindId, javaTypeName);
     }
 
@@ -98,7 +99,8 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
             String kindId,
             String conceptName) {
 
-        String javaTypeName = JavaGeneratorHelper.getJavaNamingConvention().getPublishedInterfaceName(conceptName);
+        String javaTypeName = ipsObject.getIpsProject().getJavaNamingConvention()
+                .getPublishedInterfaceName(conceptName);
         return getGeneratedJavaType(ipsObject, derivedSource, kindId, javaTypeName);
     }
 
@@ -154,6 +156,10 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
     protected final void expectMethod(IType javaType, String methodName, String... parameterTypeSignatures) {
         IMethod method = javaType.getMethod(methodName, parameterTypeSignatures);
         assertTrue(generatedJavaElements.contains(method));
+    }
+
+    protected final IJavaNamingConvention getJavaNamingConvention() {
+        return ipsProject.getJavaNamingConvention();
     }
 
 }

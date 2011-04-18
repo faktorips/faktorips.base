@@ -143,6 +143,11 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public IJavaProject getJavaProject();
 
     /**
+     * Returns the Java naming convention that is used in this project.
+     */
+    public IJavaNamingConvention getJavaNamingConvention();
+
+    /**
      * Returns a new ClassLoader that loads the classes that are accessible via the Java project's
      * build path. The parent of the new class loader is the System class loader.
      * 

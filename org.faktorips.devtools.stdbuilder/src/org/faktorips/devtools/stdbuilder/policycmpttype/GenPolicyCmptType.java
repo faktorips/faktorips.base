@@ -200,7 +200,7 @@ public class GenPolicyCmptType extends GenType {
     @Override
     public String getUnqualifiedClassName(boolean forInterface) throws CoreException {
         if (forInterface) {
-            return getBuilderSet().getJavaNamingConvention().getPublishedInterfaceName(getPolicyCmptType().getName());
+            return getJavaNamingConvention().getPublishedInterfaceName(getPolicyCmptType().getName());
         }
         return StringUtil.getFilenameWithoutExtension(getPolicyCmptType().getName());
     }

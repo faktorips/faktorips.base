@@ -32,7 +32,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
-import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.EnumUtil;
@@ -48,6 +47,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.runtime.IRuntimeRepository;
@@ -625,7 +625,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         // Build method arguments
         String[] argumentNames = new String[validEnumAttributes.size()];
         String[] argumentClasses = new String[validEnumAttributes.size()];
-        JavaNamingConvention javaNamingConvention = getJavaNamingConvention();
+        IJavaNamingConvention javaNamingConvention = getJavaNamingConvention();
         for (int i = 0; i < validEnumAttributes.size(); i++) {
             IEnumAttribute currentEnumAttribute = validEnumAttributes.get(i);
             String attributeName = currentEnumAttribute.getName();

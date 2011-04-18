@@ -19,7 +19,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
-import org.faktorips.devtools.core.builder.JavaGeneratorHelper;
 import org.junit.Test;
 
 public class GenProductCmptTypeTest extends ProductCmptTypeBuilderTest {
@@ -55,9 +54,11 @@ public class GenProductCmptTypeTest extends ProductCmptTypeBuilderTest {
     }
 
     private void expectSetProductCmptMethod(IType javaType) {
-        expectMethod(javaType, genProductCmptType.getMethodNameSetProductCmpt(), unresolvedParam(JavaGeneratorHelper
-                .getJavaNamingConvention().getPublishedInterfaceName(genProductCmptType.getType().getName())),
-                booleanParam());
+        expectMethod(
+                javaType,
+                genProductCmptType.getMethodNameSetProductCmpt(),
+                unresolvedParam(getJavaNamingConvention().getPublishedInterfaceName(
+                        genProductCmptType.getType().getName())), booleanParam());
     }
 
 }

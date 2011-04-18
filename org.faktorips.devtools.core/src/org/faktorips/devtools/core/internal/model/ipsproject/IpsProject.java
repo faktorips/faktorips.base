@@ -60,6 +60,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.IpsBuilder;
+import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.IpsModel;
@@ -82,6 +83,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
 import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
 import org.faktorips.devtools.core.model.ipsproject.IVersionFormat;
@@ -115,16 +117,18 @@ import org.w3c.dom.Element;
 public class IpsProject extends IpsElement implements IIpsProject {
 
     /**
-     * The file extension for ips projects.
+     * The file extension for IPS projects.
      */
     public final static String PROPERTY_FILE_EXTENSION = "ipsproject"; //$NON-NLS-1$
 
     /**
-     * The file extension for ips projects but with a dot added before.
+     * The file extension for IPS projects but with a dot added before.
      */
     public final static String PROPERTY_FILE_EXTENSION_INCL_DOT = "." + PROPERTY_FILE_EXTENSION; //$NON-NLS-1$
 
-    /** The underlying plattform project */
+    private final IJavaNamingConvention javaNamingConvention = new JavaNamingConvention();
+
+    /** The underlying platform project */
     private IProject project;
 
     private IIpsProjectNamingConventions namingConventions = null;
@@ -257,6 +261,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public IJavaProject getJavaProject() {
         return JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()).getJavaProject(getName());
+    }
+
+    @Override
+    public IJavaNamingConvention getJavaNamingConvention() {
+        return javaNamingConvention;
     }
 
     @Override
