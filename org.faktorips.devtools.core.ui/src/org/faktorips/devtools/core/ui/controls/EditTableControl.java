@@ -67,8 +67,11 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 
     private Label tableLabel;
 
-    public EditTableControl(Object modelObject, Composite parent, int style, String label) {
+    public EditTableControl(Composite parent, int style) {
         super(parent, style);
+    }
+
+    public void initialize(Object modelObject, String label) {
         initModelObject(modelObject);
         setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout layout = new GridLayout();

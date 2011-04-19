@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.ipsproject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -98,6 +99,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private final static String RELEASE_EXTENSION_ID_ATTRIBUTE = "releaseExtensionId"; //$NON-NLS-1$
 
     private static final String PRODUCT_RELEASE = "productRelease"; //$NON-NLS-1$
+
+    private static final String DEFAULT_CURRENCY_ELEMENT = "DefaultCurrency"; //$NON-NLS-1$
+    private static final String DEFAULT_CURRENCY_VALUE_ATTR = "value"; //$NON-NLS-1$
+
     /**
      * The id of the release extension that is associatied with this project
      */
@@ -133,6 +138,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private Set<ISupportedLanguage> supportedLanguages = new LinkedHashSet<ISupportedLanguage>(2);
 
     private IProductCmptNamingStrategy defaultCmptNamingStrategy;
+
+    // default currency for this project - default is EUR
+    private Currency defaultCurrency = Currency.getInstance("EUR"); //$NON-NLS-1$
 
     public IpsProjectProperties() {
         super();
@@ -526,6 +534,13 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             supportedLanguagesEl.appendChild(supportedLanguage.toXml(doc));
         }
 
+        // default currency
+        String s = "Setting the default currency for this project using the ISO 4217 code of the currency (e.g. EUR for euro or USD for US Dollar)"; //$NON-NLS-1$
+        createDescriptionComment(s, projectEl);
+        Element defaultCurrencyElement = doc.createElement(DEFAULT_CURRENCY_ELEMENT);
+        defaultCurrencyElement.setAttribute(DEFAULT_CURRENCY_VALUE_ATTR, defaultCurrency.getCurrencyCode());
+        projectEl.appendChild(defaultCurrencyElement);
+
         return projectEl;
     }
 
@@ -587,6 +602,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         initPersistenceOptions(element);
 
         initSupportedLanguages(element);
+
+        initDefaultCurrency(element);
     }
 
     private void initRequiredFeatures(Element el) {
@@ -743,6 +760,20 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 supportedLanguage.initFromXml(childElement);
                 supportedLanguages.add(supportedLanguage);
             }
+        }
+    }
+
+    private void initDefaultCurrency(Element element) {
+        Element defaultCurrencyElement = XmlUtil.getFirstElement(element, DEFAULT_CURRENCY_ELEMENT);
+        if (defaultCurrencyElement == null) {
+            // use default value;
+            return;
+        }
+        String value = defaultCurrencyElement.getAttribute(DEFAULT_CURRENCY_VALUE_ATTR);
+        try {
+            defaultCurrency = Currency.getInstance(value);
+        } catch (IllegalArgumentException e) {
+            // use default value
         }
     }
 
@@ -1283,6 +1314,16 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         if (language != null) {
             supportedLanguages.remove(language);
         }
+    }
+
+    @Override
+    public void setDefaultCurrency(Currency defaultCurrency) {
+        this.defaultCurrency = defaultCurrency;
+    }
+
+    @Override
+    public Currency getDefaultCurrency() {
+        return defaultCurrency;
     }
 
     @Override

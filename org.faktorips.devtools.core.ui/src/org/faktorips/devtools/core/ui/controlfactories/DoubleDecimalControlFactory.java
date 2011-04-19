@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.controlfactories;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridTreeViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
@@ -26,7 +27,7 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.fields.DoubleFormat;
+import org.faktorips.devtools.core.ui.controller.fields.DecimalNumberFormat;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 import org.faktorips.devtools.core.ui.table.FormattingTextCellEditor;
 import org.faktorips.devtools.core.ui.table.GridTableViewerTraversalStrategy;
@@ -51,14 +52,14 @@ public class DoubleDecimalControlFactory extends ValueDatatypeControlFactory {
     }
 
     @Override
-    public EditField createEditField(UIToolkit toolkit,
+    public EditField<String> createEditField(UIToolkit toolkit,
             Composite parent,
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
 
-        return new FormattingTextField((Text)createControl(toolkit, parent, datatype, valueSet, ipsProject),
-                new DoubleFormat());
+        return new FormattingTextField<String>((Text)createControl(toolkit, parent, datatype, valueSet, ipsProject),
+                DecimalNumberFormat.newInstance(datatype));
 
     }
 
@@ -68,7 +69,7 @@ public class DoubleDecimalControlFactory extends ValueDatatypeControlFactory {
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
-        return toolkit.createText(parent);
+        return toolkit.createText(parent, getDefaultAlignment());
     }
 
     /**
@@ -131,7 +132,7 @@ public class DoubleDecimalControlFactory extends ValueDatatypeControlFactory {
             IIpsProject ipsProject) {
 
         Text textControl = (Text)createControl(toolkit, parent, dataType, valueSet, ipsProject);
-        DoubleFormat format = new DoubleFormat();
+        DecimalNumberFormat format = DecimalNumberFormat.newInstance(dataType);
         IpsCellEditor tableCellEditor = new FormattingTextCellEditor(textControl, format);
         return tableCellEditor;
     }
@@ -147,4 +148,10 @@ public class DoubleDecimalControlFactory extends ValueDatatypeControlFactory {
         IpsCellEditor cellEditor = createCellEditor(toolkit, dataType, valueSet, gridViewer.getGrid(), ipsProject);
         return cellEditor;
     }
+
+    @Override
+    public int getDefaultAlignment() {
+        return SWT.RIGHT;
+    }
+
 }

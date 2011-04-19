@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.util.ArgumentCheck;
 
-public class LabelField extends DefaultEditField {
+public class LabelField extends StringValueEditField {
 
     private Label label;
 
@@ -45,13 +45,13 @@ public class LabelField extends DefaultEditField {
     }
 
     @Override
-    public Object parseContent() {
+    public String parseContent() {
         return super.prepareObjectForGet(label.getText());
     }
 
     @Override
-    public void setValue(Object newValue) {
-        label.setText((String)super.prepareObjectForSet(newValue));
+    public void setValue(String newValue) {
+        label.setText(super.prepareObjectForSet(newValue));
     }
 
     @Override

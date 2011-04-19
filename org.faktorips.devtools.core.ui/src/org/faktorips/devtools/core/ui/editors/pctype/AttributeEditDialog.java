@@ -112,7 +112,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     private Text nameText;
 
-    private EditField defaultValueField;
+    private EditField<String> defaultValueField;
 
     private ValueSetSpecificationControl valueSetSpecificationControl;
     private DatatypeRefControl datatypeControl;
@@ -317,7 +317,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_lableOverwrites);
         final Checkbox cb = new Checkbox(workArea, uiToolkit);
         cb.setText(Messages.AttributeEditDialog_overwritesNote);
-        EditField overwrittenField = bindingContext.bindContent(cb, attribute,
+        EditField<Boolean> overwrittenField = bindingContext.bindContent(cb, attribute,
                 IPolicyCmptTypeAttribute.PROPERTY_OVERWRITES);
         overwrittenField.addChangeListener(new ValueChangeListener() {
             @Override

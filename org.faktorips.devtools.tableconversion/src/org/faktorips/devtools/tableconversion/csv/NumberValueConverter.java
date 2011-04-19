@@ -22,7 +22,7 @@ import org.faktorips.devtools.tableconversion.ITableFormat;
 public abstract class NumberValueConverter extends AbstractValueConverter {
 
     /**
-     * Uses the properties of the given table format to retrieve a custom DecimalFormat. One can
+     * Uses the properties of the given table format to retrieve a custom DecimalNumberFormat. One can
      * configure the table format by setting the properties
      * <code>CSVTableFormat.PROPERTY_DECIMAL_SEPARATOR_CHAR</code> and
      * <code>CSVTableFormat.PROPERTY_DECIMAL_GROUPING_CHAR</code> on the given ITableFormat

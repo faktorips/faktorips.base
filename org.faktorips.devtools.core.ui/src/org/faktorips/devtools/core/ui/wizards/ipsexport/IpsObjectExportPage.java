@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
-import org.faktorips.devtools.core.ui.controller.fields.ComboField;
+import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
@@ -68,7 +68,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
     protected TextButtonField filenameField;
     protected TextButtonField projectField;
     protected CheckboxField exportWithColumnHeaderRowField;
-    private ComboField fileFormatField;
+    private StringValueComboField fileFormatField;
 
     protected ITableFormat[] formats;
 
@@ -315,7 +315,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
             fileFormatControl.add(format.getName());
         }
         fileFormatControl.select(0);
-        fileFormatField = new ComboField(fileFormatControl);
+        fileFormatField = new StringValueComboField(fileFormatControl);
         fileFormatField.addChangeListener(this);
 
         toolkit.createFormLabel(lowerComposite, Messages.IpsObjectExportPage_labelName);

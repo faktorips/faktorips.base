@@ -53,8 +53,16 @@ public class ValidatedAttributesControl extends EditTableControl {
 
     private IValidationRule rule;
 
-    public ValidatedAttributesControl(Object modelObject, Composite parent) {
-        super(modelObject, parent, SWT.NONE, Messages.ValidatedAttributesControl_description);
+    public ValidatedAttributesControl(Composite parent) {
+        super(parent, SWT.NONE);
+    }
+
+    @Override
+    public void initialize(Object modelObject, String label) {
+        if (label == null) {
+            label = Messages.ValidatedAttributesControl_description;
+        }
+        super.initialize(modelObject, label);
         initCellEditorsAndConfigureTableViewer();
         new MessageService(getTableViewer());
     }

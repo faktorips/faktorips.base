@@ -30,10 +30,10 @@ import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.ui.controller.fields.DecimalNumberFormat;
 import org.faktorips.devtools.core.ui.controller.fields.DateISOStringFormat;
-import org.faktorips.devtools.core.ui.controller.fields.DoubleFormat;
-import org.faktorips.devtools.core.ui.controller.fields.IntegerFormat;
-import org.faktorips.values.Money;
+import org.faktorips.devtools.core.ui.controller.fields.IntegerNumberFormat;
+import org.faktorips.devtools.core.ui.controller.fields.MoneyFormat;
 
 public class UIDatatypeFormatter {
 
@@ -55,26 +55,20 @@ public class UIDatatypeFormatter {
         }
         if (datatype instanceof DoubleDatatype || datatype instanceof DecimalDatatype
                 || datatype instanceof BigDecimalDatatype) {
-            return new DoubleFormat().format(value);
+            return DecimalNumberFormat.newInstance(datatype).format(value);
         }
         if (datatype instanceof GregorianCalendarDatatype || datatype instanceof DateDatatype) {
             return new DateISOStringFormat().format(value);
         }
         if (datatype instanceof IntegerDatatype || datatype instanceof LongDatatype
                 || datatype == ValueDatatype.PRIMITIVE_INT || datatype == ValueDatatype.PRIMITIVE_LONG) {
-            return new IntegerFormat().format(value);
+            return IntegerNumberFormat.newInstance(datatype).format(value);
         }
         if (datatype instanceof MoneyDatatype) {
-            Money money = Money.valueOf(value);
-            StringBuffer sb = new StringBuffer();
-            if (money.isNull()) {
-                sb.append(""); //$NON-NLS-1$
-            } else {
-                sb.append(new DoubleFormat().format(money.getAmount().toString()));
-                sb.append(" "); //$NON-NLS-1$
-                sb.append(money.getCurrency().toString());
-            }
-            return sb.toString();
+            MoneyFormat moneyFormat = MoneyFormat.newInstance(null);
+            moneyFormat.setAddCurrencySymbol(true);
+            String result = moneyFormat.format(value);
+            return result;
         }
         return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(datatype, value);
     }

@@ -21,6 +21,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.enums.EnumValue;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
@@ -48,10 +49,10 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
 
     private NewChildParameterWizard wizard;
 
-    private EditField editFieldAssociation;
-    private EditField editFieldTarget;
-    private EditField editFieldName;
-    private EditField editFieldParamType;
+    private EditField<String> editFieldAssociation;
+    private EditField<String> editFieldTarget;
+    private EditField<String> editFieldName;
+    private EditField<EnumValue> editFieldParamType;
 
     private String prevAssociation;
     private IPolicyCmptTypeAssociation association;
@@ -162,7 +163,7 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
         });
     }
 
-    private boolean validatePage() throws CoreException {
+    private boolean validatePage() {
         setErrorMessage(null);
         if (association == null) {
             setErrorMessage(NLS.bind(Messages.NewChildParamWizardPage_Error_AssociationDoesNotExists,
@@ -188,11 +189,7 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
      */
     private void updateSetPageComplete() {
         boolean completeAllowed = false;
-        try {
-            completeAllowed = validatePage();
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
+        completeAllowed = validatePage();
         super.setPageComplete(completeAllowed);
     }
 

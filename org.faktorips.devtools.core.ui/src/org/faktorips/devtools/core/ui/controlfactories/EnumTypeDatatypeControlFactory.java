@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.controlfactories;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridTreeViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -53,7 +54,7 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
     }
 
     @Override
-    public EditField createEditField(UIToolkit toolkit,
+    public EditField<String> createEditField(UIToolkit toolkit,
             Composite parent,
             ValueDatatype datatype,
             IValueSet valueSet,
@@ -116,7 +117,7 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
             int columnIndex,
             IIpsProject ipsProject) {
 
-        EditField editField = createEditField(toolkit, tableViewer.getTable(), datatype, valueSet, ipsProject);
+        EditField<String> editField = createEditField(toolkit, tableViewer.getTable(), datatype, valueSet, ipsProject);
         editField.getControl().setData(editField);
         ComboCellEditor cellEditor = new ComboCellEditor((Combo)editField.getControl());
         TableViewerTraversalStrategy strat = new TableViewerTraversalStrategy(cellEditor, tableViewer, columnIndex);
@@ -141,7 +142,7 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
             int columnIndex,
             IIpsProject ipsProject) {
 
-        EditField editField = createEditField(toolkit, gridViewer.getGrid(), datatype, valueSet, ipsProject);
+        EditField<String> editField = createEditField(toolkit, gridViewer.getGrid(), datatype, valueSet, ipsProject);
         editField.getControl().setData(editField);
         ComboCellEditor cellEditor = new ComboCellEditor((Combo)editField.getControl());
         cellEditor.setTraversalStrategy(new GridTableViewerTraversalStrategy(cellEditor, gridViewer, columnIndex));
@@ -156,8 +157,14 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
             int columnIndex,
             IIpsProject ipsProject) {
 
-        EditField editField = createEditField(toolkit, gridViewer.getGrid(), datatype, valueSet, ipsProject);
+        EditField<String> editField = createEditField(toolkit, gridViewer.getGrid(), datatype, valueSet, ipsProject);
         editField.getControl().setData(editField);
         return new ComboCellEditor((Combo)editField.getControl());
     }
+
+    @Override
+    public int getDefaultAlignment() {
+        return SWT.LEFT;
+    }
+
 }

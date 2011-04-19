@@ -385,7 +385,7 @@ public class UIToolkit {
         if (formToolkit != null) {
             newText = formToolkit.createText(parent, null, style);
         } else {
-            newText = new Text(parent, style);
+            newText = new Text(parent, style | SWT.BORDER);
         }
         GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
         gridData.widthHint = DEFAULT_WIDTH;

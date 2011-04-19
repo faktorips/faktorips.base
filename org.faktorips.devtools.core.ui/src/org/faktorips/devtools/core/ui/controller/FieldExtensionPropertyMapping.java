@@ -16,20 +16,20 @@ package org.faktorips.devtools.core.ui.controller;
 import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyAccess;
 
-public class FieldExtensionPropertyMapping implements FieldPropertyMapping {
+public class FieldExtensionPropertyMapping<T> implements FieldPropertyMapping {
 
-    protected EditField field;
+    protected EditField<T> field;
     protected IExtensionPropertyAccess object;
     protected String propertyId;
 
-    public FieldExtensionPropertyMapping(EditField edit, IExtensionPropertyAccess object, String extensionPropertyId) {
+    public FieldExtensionPropertyMapping(EditField<T> edit, IExtensionPropertyAccess object, String extensionPropertyId) {
         this.field = edit;
         this.object = object;
         this.propertyId = extensionPropertyId;
     }
 
     @Override
-    public EditField getField() {
+    public EditField<?> getField() {
         return field;
     }
 
@@ -63,7 +63,9 @@ public class FieldExtensionPropertyMapping implements FieldPropertyMapping {
             return;
         }
         try {
-            Object propertyValue = getPropertyValue();
+            @SuppressWarnings("unchecked")
+            // the property is get by reflection - cannot cast safely
+            T propertyValue = (T)getPropertyValue();
             if (field.isTextContentParsable() && ObjectUtils.equals(propertyValue, field.getValue())) {
                 return;
             }

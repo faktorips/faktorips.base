@@ -13,19 +13,31 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+import org.faktorips.datatype.ValueDatatype;
+
 /**
- * Format for floating point number input.
+ * Format for integer number input.
  * 
  * @author Stefan Widmaier
  */
-public class DoubleFormat extends AbstractNumberFormat {
+public class IntegerNumberFormat extends AbstractNumberFormat {
 
     private DecimalFormat numberFormat;
+    private final ValueDatatype datatype;
+
+    public static IntegerNumberFormat newInstance(ValueDatatype datatype) {
+        IntegerNumberFormat longFormat = new IntegerNumberFormat(datatype);
+        longFormat.initFormat();
+        return longFormat;
+    }
+
+    protected IntegerNumberFormat(ValueDatatype datatype) {
+        this.datatype = datatype;
+    }
 
     /**
      * String that is an example of a valid input string.
@@ -34,22 +46,18 @@ public class DoubleFormat extends AbstractNumberFormat {
 
     @Override
     protected void initFormat(Locale locale) {
-        numberFormat = (DecimalFormat)DecimalFormat.getNumberInstance(locale);
-        numberFormat.setGroupingUsed(true);
-        numberFormat.setGroupingSize(3);
-        numberFormat.setParseIntegerOnly(false);
-        numberFormat.setMaximumFractionDigits(Integer.MAX_VALUE);
-        numberFormat.setRoundingMode(RoundingMode.HALF_UP);
-        exampleString = numberFormat.format(-1000.2);
+        numberFormat = (DecimalFormat)NumberFormat.getIntegerInstance(locale);
+        // setting grouping size to maximum value to avoid formatting group separators but allow
+        // input separators. A single group separator is forbidden (see verifyInternal) but
+        // separators with copy&paste should be allowed
+        numberFormat.setGroupingSize(Byte.MAX_VALUE);
+        exampleString = numberFormat.format(-100000000);
     }
 
     @Override
-    protected String formatInternal(Object value) {
-        Double d = new Double((String)value);
-        // System.out.print("Value \"" + d + "\" is being parsed...");
-        String stringToBeDisplayed = numberFormat.format(d);
-        // System.out.println("Value \"" + stringToBeDisplayed + "\" will be displayed");
-        return stringToBeDisplayed;
+    protected String formatInternal(String value) {
+        Object valueAsObject = datatype.getValue(value);
+        return numberFormat.format(valueAsObject);
     }
 
     @Override
@@ -58,7 +66,7 @@ public class DoubleFormat extends AbstractNumberFormat {
     }
 
     @Override
-    protected NumberFormat getNumberFormat() {
+    public DecimalFormat getNumberFormat() {
         return numberFormat;
     }
 

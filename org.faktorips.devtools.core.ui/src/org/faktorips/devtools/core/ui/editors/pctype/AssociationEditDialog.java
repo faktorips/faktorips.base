@@ -398,7 +398,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         uiToolkit.createFormLabel(otherPropsComposite, Messages.AssociationEditDialog_labelFetchType);
         Combo fetchTypeCombo = uiToolkit.createCombo(otherPropsComposite);
-        ComboField fetchTypeField = new EnumField<FetchType>(fetchTypeCombo, FetchType.class);
+        ComboField<FetchType> fetchTypeField = new EnumField<FetchType>(fetchTypeCombo, FetchType.class);
         bindingContext.bindContent(fetchTypeField, association.getPersistenceAssociatonInfo(),
                 IPersistentAssociationInfo.PROPERTY_FETCH_TYPE);
 

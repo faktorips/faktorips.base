@@ -64,7 +64,10 @@ public class ValueSetEditControlFactory {
                         uiController);
                 return chooser;
             }
-            return new EnumValueSetEditControl(parent, valueDatatype, enumValueSet, ipsProject);
+            EnumValueSetEditControl enumValueSetEditControl = new EnumValueSetEditControl(parent, valueDatatype,
+                    ipsProject);
+            enumValueSetEditControl.initialize(enumValueSet, null);
+            return enumValueSetEditControl;
         }
         throw new RuntimeException("Can't create edit control for value set " + valueSet + " and datatype " //$NON-NLS-1$ //$NON-NLS-2$
                 + valueDatatype);

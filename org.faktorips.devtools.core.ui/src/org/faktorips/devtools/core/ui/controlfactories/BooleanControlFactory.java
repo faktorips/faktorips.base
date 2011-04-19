@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.controlfactories;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridTreeViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -56,7 +57,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
     }
 
     @Override
-    public EditField createEditField(UIToolkit toolkit,
+    public EditField<String> createEditField(UIToolkit toolkit,
             Composite parent,
             ValueDatatype datatype,
             IValueSet valueSet,
@@ -161,5 +162,10 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
 
         IpsCellEditor cellEditor = createComboCellEditor(toolkit, dataType, valueSet, gridViewer.getGrid(), ipsProject);
         return cellEditor;
+    }
+
+    @Override
+    public int getDefaultAlignment() {
+        return SWT.LEFT;
     }
 }

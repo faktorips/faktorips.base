@@ -75,8 +75,6 @@ public class ContentPage extends IpsObjectEditorPage {
 
     private TableViewer tableViewer;
 
-    private Table table;
-
     private class TableImportExportActionInEditor extends TableImportExportAction {
 
         protected TableImportExportActionInEditor(Shell shell, ITableContents tableContents, boolean isImport) {
@@ -93,7 +91,7 @@ public class ContentPage extends IpsObjectEditorPage {
             if (super.runInternal(selection)) {
                 tableViewer.setInput(getTableContents());
                 tableViewer.refresh(true);
-                redrawTable();
+                tableViewer.getTable().redraw();
             }
         }
     }
@@ -109,7 +107,7 @@ public class ContentPage extends IpsObjectEditorPage {
         GridLayout layout = new GridLayout(1, false);
         formBody.setLayout(layout);
 
-        table = createTable(formBody);
+        Table table = createTable(formBody);
         initTableViewer(table, toolkit);
         NewRowAction newRowAction = new NewRowAction(tableViewer, this);
         DeleteRowAction deleteRowAction = new DeleteRowAction(tableViewer, this);
@@ -231,12 +229,16 @@ public class ContentPage extends IpsObjectEditorPage {
             String[] columnProperties = new String[getTableContents().getNumOfColumns()];
             for (int i = 0; i < getTableContents().getNumOfColumns(); i++) {
                 String columnName;
+                ValueDatatype valueDatatype = null;
                 if (tableStructure == null) {
                     columnName = Messages.ContentPage_Column + (i + 1);
                 } else {
                     columnName = tableStructure.getColumn(i).getName();
+                    valueDatatype = tableStructure.getColumn(i).findValueDatatype(getTableContents().getIpsProject());
                 }
-                TableColumn column = new TableColumn(table, SWT.LEFT, i);
+                ValueDatatypeControlFactory valueDatatypeControlFactory = IpsUIPlugin.getDefault()
+                        .getValueDatatypeControlFactory(valueDatatype);
+                TableColumn column = new TableColumn(table, valueDatatypeControlFactory.getDefaultAlignment(), i);
                 column.setWidth(125);
                 column.setText(columnName);
                 columnProperties[i] = columnName;
@@ -496,7 +498,7 @@ public class ContentPage extends IpsObjectEditorPage {
      * Redraws the table.
      */
     void redrawTable() {
-        table.redraw();
+        tableViewer.getTable().redraw();
     }
 
     private boolean wasUniqueKeyErrorStateChanged() {

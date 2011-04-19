@@ -16,9 +16,9 @@ package org.faktorips.devtools.core.ui.controlfactories;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridTreeViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
-import org.faktorips.devtools.core.ui.controller.fields.IntegerFormat;
+import org.faktorips.devtools.core.ui.controller.fields.IntegerNumberFormat;
 import org.faktorips.devtools.core.ui.table.FormattingTextCellEditor;
 import org.faktorips.devtools.core.ui.table.GridTableViewerTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
@@ -56,25 +56,25 @@ public class IntegerLongControlFactory extends ValueDatatypeControlFactory {
     }
 
     @Override
-    public EditField createEditField(UIToolkit toolkit,
+    public EditField<String> createEditField(UIToolkit toolkit,
             Composite parent,
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
 
-        FormattingTextField formatField = new FormattingTextField((Text)createControl(toolkit, parent, datatype,
-                valueSet, ipsProject), new IntegerFormat());
+        FormattingTextField<String> formatField = new FormattingTextField<String>(createControl(toolkit, parent,
+                datatype, valueSet, ipsProject), IntegerNumberFormat.newInstance(datatype));
         return formatField;
     }
 
     @Override
-    public Control createControl(UIToolkit toolkit,
+    public Text createControl(UIToolkit toolkit,
             Composite parent,
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
 
-        Text text = toolkit.createText(parent);
+        Text text = toolkit.createText(parent, getDefaultAlignment());
         return text;
     }
 
@@ -137,8 +137,8 @@ public class IntegerLongControlFactory extends ValueDatatypeControlFactory {
             Composite parent,
             IIpsProject ipsProject) {
 
-        Text textControl = (Text)createControl(toolkit, parent, dataType, valueSet, ipsProject);
-        IntegerFormat format = new IntegerFormat();
+        Text textControl = createControl(toolkit, parent, dataType, valueSet, ipsProject);
+        IntegerNumberFormat format = IntegerNumberFormat.newInstance(dataType);
         IpsCellEditor tableCellEditor = new FormattingTextCellEditor(textControl, format);
         return tableCellEditor;
     }
@@ -154,4 +154,10 @@ public class IntegerLongControlFactory extends ValueDatatypeControlFactory {
         IpsCellEditor cellEditor = createTextCellEditor(toolkit, dataType, valueSet, gridViewer.getGrid(), ipsProject);
         return cellEditor;
     }
+
+    @Override
+    public int getDefaultAlignment() {
+        return SWT.RIGHT;
+    }
+
 }

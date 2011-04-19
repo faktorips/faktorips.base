@@ -87,9 +87,9 @@ public class ComboCellEditor extends IpsCellEditor {
             Object data = comboControl.getData();
             if (data instanceof EnumDatatypeField) {
                 // map the value by using the stored EnumDatatypeField
-                ((EnumDatatypeField)data).setValue(value);
+                ((EnumDatatypeField)data).setValue((String)value);
             } else if (data instanceof EnumTypeDatatypeField) {
-                ((EnumTypeDatatypeField)data).setValue(value);
+                ((EnumTypeDatatypeField)data).setValue((String)value);
             } else if (data instanceof BooleanDatatype || data instanceof PrimitiveBooleanDatatype) {
                 if (value == null) {
                     // TODO pk 08-06-2009 there is missing something

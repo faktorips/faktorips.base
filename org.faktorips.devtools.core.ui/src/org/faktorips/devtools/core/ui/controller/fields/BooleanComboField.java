@@ -23,7 +23,7 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Joerg Ortmann
  */
-public class BooleanComboField extends ComboField {
+public class BooleanComboField extends StringValueComboField {
 
     private String trueRepresentation;
     private String falseRepresentation;
@@ -37,8 +37,8 @@ public class BooleanComboField extends ComboField {
     }
 
     @Override
-    public Object parseContent() {
-        String s = (String)super.parseContent();
+    public String parseContent() {
+        String s = super.parseContent();
         if (s == null) {
             return null;
         } else if (s.equals(trueRepresentation)) {

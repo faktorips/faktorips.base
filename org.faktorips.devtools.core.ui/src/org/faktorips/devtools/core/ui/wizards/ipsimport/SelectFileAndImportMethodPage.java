@@ -31,7 +31,7 @@ import org.eclipse.ui.dialogs.WizardDataTransferPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
-import org.faktorips.devtools.core.ui.controller.fields.ComboField;
+import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
@@ -65,7 +65,7 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
     private CheckboxField importExistingReplaceField;
     private CheckboxField importExistingAppendField;
     private CheckboxField importIgnoreColumnHeaderRowField;
-    private ComboField fileFormatField;
+    private StringValueComboField fileFormatField;
 
     // true if the input is validated and errors are displayed in the messes area.
     protected boolean validateInput = true;
@@ -232,7 +232,7 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
             fileFormatControl.add(format.getName());
         }
         fileFormatControl.select(0);
-        fileFormatField = new ComboField(fileFormatControl);
+        fileFormatField = new StringValueComboField(fileFormatControl);
         fileFormatField.addChangeListener(this);
 
         Composite importMethodComposite = new Composite(pageControl, SWT.NONE);

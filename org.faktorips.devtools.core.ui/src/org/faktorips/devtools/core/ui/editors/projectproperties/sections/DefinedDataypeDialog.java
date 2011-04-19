@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.devtools.core.ui.controller.fields.ComboField;
+import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 
@@ -36,7 +36,7 @@ public class DefinedDataypeDialog extends EditDialog {
     private Text javaClassText;
     private Text valueObjectText;
     private Combo valueSetTypesCombo;
-    private ComboField valueSetTypeField;
+    private StringValueComboField valueSetTypeField;
     private Datatype datatype;
     private ComboViewer enumtypeComboViewer;
     private ComboViewer supportingNameComboViewer;

@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -40,7 +41,24 @@ public abstract class TextButtonControl extends TextAndSecondControlComposite {
      */
     public TextButtonControl(Composite parent, UIToolkit toolkit, String buttonText, boolean smallMargins,
             int buttonHeightHint) {
-        super(parent, toolkit, smallMargins, buttonHeightHint);
+        this(parent, toolkit, buttonText, smallMargins, buttonHeightHint, SWT.NONE);
+    }
+
+    /**
+     * Creates a textfield and a button. The height of the button is not modified, margins are not
+     * minimized.
+     * 
+     * @param parent The parent composite.
+     * @param toolkit The UIToolkit to use for the creation of the controlls.
+     * @param buttonText The label for the button.
+     */
+    public TextButtonControl(Composite parent, UIToolkit toolkit, String buttonText) {
+        this(parent, toolkit, buttonText, false, -1);
+    }
+
+    public TextButtonControl(Composite parent, UIToolkit toolkit, String buttonText, boolean smallMargins,
+            int buttonHeightHint, int style) {
+        super(parent, toolkit, smallMargins, buttonHeightHint, style);
         getButtonControl().setText(buttonText);
     }
 
@@ -57,18 +75,6 @@ public abstract class TextButtonControl extends TextAndSecondControlComposite {
     @Override
     protected Control createSecondControl(UIToolkit toolkit) {
         return toolkit.createButton(this, ""); //$NON-NLS-1$
-    }
-
-    /**
-     * Creates a textfield and a button. The height of the button is not modified, margins are not
-     * minimized.
-     * 
-     * @param parent The parent composite.
-     * @param toolkit The UIToolkit to use for the creation of the controlls.
-     * @param buttonText The label for the button.
-     */
-    public TextButtonControl(Composite parent, UIToolkit toolkit, String buttonText) {
-        this(parent, toolkit, buttonText, false, -1);
     }
 
     protected abstract void buttonClicked();

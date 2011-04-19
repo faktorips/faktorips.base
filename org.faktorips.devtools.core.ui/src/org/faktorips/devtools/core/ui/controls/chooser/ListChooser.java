@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.viewers.ColumnPixelData;
-import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -36,7 +34,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.Messages;
@@ -81,10 +78,12 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
      * Creates a new list chooser.
      * 
      * @param parent The parent control.
-     * @param toolkit Toolkit to easily create the UI.
      */
-    public ListChooser(Composite parent, UIToolkit toolkit) {
+    public ListChooser(Composite parent) {
         super(parent, SWT.NONE);
+    }
+
+    public void initControl(UIToolkit toolkit) {
         this.toolkit = toolkit;
 
         setLayout(new GridLayout(4, false));
@@ -220,12 +219,7 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
         return resultingValuesTableViewer;
     }
 
-    private void newTableColumns(Table parent, TableLayoutComposite parentLayouter) {
-        parentLayouter.addColumnData(new ColumnPixelData(20, false)); // message image
-        parentLayouter.addColumnData(new ColumnWeightData(100, true));
-        new TableColumn(parent, SWT.NONE).setResizable(false);
-        new TableColumn(parent, SWT.NONE).setResizable(false);
-    }
+    protected abstract void newTableColumns(Table parent, TableLayoutComposite parentLayouter);
 
     /**
      * Sets the source section's label text.

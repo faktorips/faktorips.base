@@ -72,7 +72,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
      * attributes datatype
      */
     private Composite defaultEditFieldPlaceholder;
-    private EditField defaultValueField;
+    private EditField<String> defaultValueField;
 
     private ValueSetSpecificationControl valueSetEditControl;
 

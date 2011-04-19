@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.faktorips.devtools.core.enums.EnumType;
 import org.faktorips.devtools.core.enums.EnumValue;
 
-public class EnumValueField extends ComboField {
+public class EnumValueField extends ComboField<EnumValue> {
 
     /** array that contains all values used in the the combo box in the same order */
     private EnumValue[] usedEnumValues;
@@ -53,7 +53,7 @@ public class EnumValueField extends ComboField {
     }
 
     @Override
-    public Object parseContent() {
+    public EnumValue parseContent() {
         return getEnumValue();
     }
 
@@ -62,8 +62,8 @@ public class EnumValueField extends ComboField {
     }
 
     @Override
-    public void setValue(Object newValue) {
-        setEnumValue((EnumValue)newValue);
+    public void setValue(EnumValue newValue) {
+        setEnumValue(newValue);
     }
 
 }

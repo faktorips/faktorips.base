@@ -43,9 +43,18 @@ public final class SupportedLanguagesControl extends EditTableControl {
     private List<Locale> locales;
 
     public SupportedLanguagesControl(Composite parent) {
-        super(new ArrayList<Locale>(2), parent, SWT.NONE, null);
+        super(parent, SWT.NONE);
+    }
+
+    @Override
+    public void initialize(Object modelObject, String label) {
+        super.initialize(modelObject, label);
         initCellEditorsAndConfigureTableViewer();
         setDataChangeable(true);
+    }
+
+    public void initialize() {
+        initialize(new ArrayList<Locale>(2), null);
     }
 
     @Override

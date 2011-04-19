@@ -49,7 +49,7 @@ public abstract class ValueDatatypeControlFactory {
      * @param datatype The value datatype a control should be created for.
      * @param valueSet An optional valueset.
      */
-    public abstract EditField createEditField(UIToolkit toolkit,
+    public abstract EditField<String> createEditField(UIToolkit toolkit,
             Composite parent,
             ValueDatatype datatype,
             IValueSet valueSet,
@@ -135,5 +135,7 @@ public abstract class ValueDatatypeControlFactory {
             GridTreeViewer gridViewer,
             int columnIndex,
             IIpsProject ipsProject);
+
+    public abstract int getDefaultAlignment();
 
 }

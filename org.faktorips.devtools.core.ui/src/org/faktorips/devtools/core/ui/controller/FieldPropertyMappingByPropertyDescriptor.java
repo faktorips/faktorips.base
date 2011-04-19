@@ -19,22 +19,22 @@ import java.lang.reflect.Method;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.devtools.core.ui.controller.fields.AbstractEnumDatatypeBasedField;
-import org.faktorips.devtools.core.ui.controller.fields.ComboField;
+import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 
-public class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMapping {
+public class FieldPropertyMappingByPropertyDescriptor<T> implements FieldPropertyMapping {
 
-    protected EditField field;
+    protected EditField<T> field;
     protected Object object;
     protected PropertyDescriptor property;
 
-    public FieldPropertyMappingByPropertyDescriptor(EditField edit, Object object, PropertyDescriptor property) {
+    public FieldPropertyMappingByPropertyDescriptor(EditField<T> edit, Object object, PropertyDescriptor property) {
         this.field = edit;
         this.object = object;
         this.property = property;
     }
 
     @Override
-    public EditField getField() {
+    public EditField<?> getField() {
         return field;
     }
 
@@ -82,7 +82,9 @@ public class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMa
             if (field.getControl().isDisposed()) {
                 return;
             }
-            Object propertyValue = getPropertyValue();
+            @SuppressWarnings("unchecked")
+            // the property is get by reflection - cannot cast safely
+            T propertyValue = (T)getPropertyValue();
 
             // if we have a field which maintans a list - update it.
             if (field instanceof AbstractEnumDatatypeBasedField) {
@@ -90,14 +92,14 @@ public class FieldPropertyMappingByPropertyDescriptor implements FieldPropertyMa
             }
 
             if (field.isTextContentParsable() && ObjectUtils.equals(propertyValue, field.getValue())) {
-                if (field instanceof ComboField) {
+                if (field instanceof StringValueComboField) {
                     /*
                      * special case: if the field is a combo field the getValue method returns null
                      * if there is no selection and if the null value is selected, therefore we must
                      * check here if the getValue is a valid selection or nothing is selected. If
                      * there is no valid selection set the new value (e.g. the null value)
                      */
-                    if (((ComboField)field).getCombo().getSelectionIndex() != -1) {
+                    if (((StringValueComboField)field).getCombo().getSelectionIndex() != -1) {
                         // the selection in the combo is valid and equal to the property value,
                         // don't set the new value
                         return;

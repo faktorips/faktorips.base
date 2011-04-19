@@ -17,12 +17,16 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Control;
+import org.faktorips.devtools.core.ui.controller.EditField;
 
 /**
+ * A field that handles the selection of a {@link Viewer}
+ * 
+ * @see EditField for details about generic type T
  * 
  * @author Cornelius.Dirmeier
  */
-public abstract class AbstractViewerField extends DefaultEditField {
+public abstract class AbstractViewerField<T> extends DefaultEditField<T> {
 
     private final Viewer viewer;
 

@@ -48,9 +48,9 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
     private UIToolkit uiToolkit;
 
     private IRangeValueSet range;
-    private EditField lowerfield;
-    private EditField upperfield;
-    private EditField stepfield;
+    private EditField<String> lowerfield;
+    private EditField<String> upperfield;
+    private EditField<String> stepfield;
     private IpsObjectUIController uiController;
     private Checkbox containsNullCB;
     private CheckboxField containsNullField;

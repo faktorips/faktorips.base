@@ -182,7 +182,7 @@ public class DefaultsAndRangesSection extends IpsSection {
             IpsObjectUIController controller) {
 
         toolkit.createFormLabel(rootPane, Messages.PolicyAttributeEditDialog_defaultValue);
-        EditField field = createEditField(element, datatype);
+        EditField<String> field = createEditField(element, datatype);
         addFocusControl(field.getControl());
         editControls.add(field.getControl());
         controller.add(field, element, IConfigElement.PROPERTY_VALUE);
@@ -220,9 +220,9 @@ public class DefaultsAndRangesSection extends IpsSection {
     }
 
     private void createEditControlsForRange(IRangeValueSet range, IpsObjectUIController controller) {
-        EditField lowerField;
-        EditField upperField;
-        EditField stepField;
+        EditField<String> lowerField;
+        EditField<String> upperField;
+        EditField<String> stepField;
 
         ValueDatatype datatype = ((RangeValueSet)range).getValueDatatype();
         ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
@@ -290,7 +290,7 @@ public class DefaultsAndRangesSection extends IpsSection {
      * Creates the edit field for values of the config elemnt (default value oder values in the
      * value set).
      */
-    private EditField createEditField(IConfigElement configElement, ValueDatatype datatype) {
+    private EditField<String> createEditField(IConfigElement configElement, ValueDatatype datatype) {
         GregorianCalendar genFrom = configElement.getProductCmptGeneration().getValidFrom();
         GregorianCalendar genTo = configElement.getProductCmptGeneration().getValidTo();
         IValueSet sourceSet = ValueSetFilter.filterValueSet(configElement.getValueSet(), datatype, genFrom, genTo,

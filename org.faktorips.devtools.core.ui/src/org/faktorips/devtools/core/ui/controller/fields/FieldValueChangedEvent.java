@@ -24,9 +24,9 @@ import org.faktorips.util.ArgumentCheck;
 public class FieldValueChangedEvent {
 
     /** the edit control that has changed */
-    public EditField field;
+    public EditField<?> field;
 
-    public FieldValueChangedEvent(EditField field) {
+    public FieldValueChangedEvent(EditField<?> field) {
         ArgumentCheck.notNull(field);
         this.field = field;
     }

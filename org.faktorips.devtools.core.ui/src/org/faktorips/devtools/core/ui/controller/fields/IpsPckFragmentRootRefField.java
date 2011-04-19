@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 
-public class IpsPckFragmentRootRefField extends DefaultEditField {
+public class IpsPckFragmentRootRefField extends DefaultEditField<IIpsPackageFragmentRoot> {
 
     private IpsPckFragmentRootRefControl fragmentRootRefControl;
 
@@ -38,7 +38,7 @@ public class IpsPckFragmentRootRefField extends DefaultEditField {
     }
 
     @Override
-    protected Object parseContent() throws Exception {
+    protected IIpsPackageFragmentRoot parseContent() throws Exception {
         return fragmentRootRefControl.getIpsPackageFragmentRoot();
     }
 
@@ -68,10 +68,8 @@ public class IpsPckFragmentRootRefField extends DefaultEditField {
     }
 
     @Override
-    public void setValue(Object newValue) {
-        if (newValue instanceof IIpsPackageFragmentRoot) {
-            fragmentRootRefControl.setIpsPackageFragmentRoot((IIpsPackageFragmentRoot)newValue);
-        }
+    public void setValue(IIpsPackageFragmentRoot newValue) {
+        fragmentRootRefControl.setIpsPackageFragmentRoot(newValue);
     }
 
 }

@@ -15,10 +15,9 @@ package org.faktorips.devtools.core.ui.controller.fields;
 
 import java.text.Format;
 import java.text.ParsePosition;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.widgets.Text;
@@ -42,21 +41,22 @@ import org.faktorips.devtools.core.ui.table.FormattingTextCellEditor;
  * Instances of this class reconfigure themselves if the IpsPreference
  * IpsPreferences.DATATYPE_FORMATTING_LOCALE changes. Subclasses need to implement
  * {@link #initFormat(Locale)} for this.
+ * <p>
+ * The generic type T represents type that is written to the model and NOT the data type of this
+ * format. For most of our types this is String because we write every value as String to be type
+ * independent. However e.g. to correctly show formatted {@link GregorianCalendar} in the dialogs
+ * that need user input not written down to the model, we could need other types here. The type of
+ * the format is configured by subtypes.
  * 
  * @author Stefan Widmaier
  */
-public abstract class AbstractInputFormat implements VerifyListener {
+public abstract class AbstractInputFormat<T> implements VerifyListener {
 
-    public AbstractInputFormat() {
+    /**
+     * Calls the initFormat with the input locale configured in the preferences.
+     */
+    public void initFormat() {
         initFormat(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormattingLocale());
-        IpsPlugin.getDefault().getIpsPreferences().addChangeListener(new IPropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent event) {
-                if (event.getProperty().equals(IpsPreferences.DATATYPE_FORMATTING_LOCALE)) {
-                    initFormat(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormattingLocale());
-                }
-            }
-        });
     }
 
     /**
@@ -68,7 +68,7 @@ public abstract class AbstractInputFormat implements VerifyListener {
      *            matches the null-presentation value.
      * @return the value object that was parsed from the users input
      */
-    public Object parse(String stringToBeParsed, boolean supportNull) {
+    public T parse(String stringToBeParsed, boolean supportNull) {
         if (supportNull && IpsPlugin.getDefault().getIpsPreferences().getNullPresentation().equals(stringToBeParsed)) {
             return null;
         } else {
@@ -85,14 +85,14 @@ public abstract class AbstractInputFormat implements VerifyListener {
      *            the given object value is <code>null</code>.
      * @return the formatted string representing the given value
      */
-    public String format(Object objectValue, boolean supportNull) {
-        if (objectValue == null && supportNull) {
+    public String format(T objectValue, boolean supportNull) {
+        if (objectValue == null) {
             return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
         } else {
             try {
                 return formatInternal(objectValue);
             } catch (Exception e) {
-                return objectValue == null ? "" : objectValue.toString(); //$NON-NLS-1$
+                return objectValue.toString();
             }
         }
     }
@@ -105,19 +105,19 @@ public abstract class AbstractInputFormat implements VerifyListener {
      *            data type this format adheres to.
      * @return the value object that was parsed from the users input
      */
-    public Object parse(String stringToBeparsed) {
+    public T parse(String stringToBeparsed) {
         return parse(stringToBeparsed, true);
     }
 
     /**
      * 
-     * SReturns a formatted string for the given value object. Semantically equivalent to
+     * Returns a formatted string for the given value object. Semantically equivalent to
      * format(Object objectValue, true).
      * 
      * @param objectValue the value to be formatted for display
      * @return the formatted string representing the given value
      */
-    public String format(Object objectValue) {
+    public String format(T objectValue) {
         return format(objectValue, true);
     }
 
@@ -161,24 +161,28 @@ public abstract class AbstractInputFormat implements VerifyListener {
 
     /**
      * Parses a string to a value object. Returns <code>null</code> if the given String is not
-     * parsable.
+     * parsable. The String is given like displayed and should be parsed to the object that is
+     * stored in the model. e.g for an attribute of type money we have to parse the value displayed
+     * in the editor, convert to money object and return the String representation to store in the
+     * model.
      * <p>
-     * Implementors must return a value object of a class that is expected by the model.
+     * Implementors must return a value object of the class that is expected by the model.
      * 
      * @param stringToBeparsed the string that should be parsed to a value.
      * @return the parsed value or <code>null</code> if the given String is not parsable.
      */
-    protected abstract Object parseInternal(String stringToBeparsed);
+    protected abstract T parseInternal(String stringToBeparsed);
 
     /**
-     * Formats a value object to a displayable string. Implementors must cast to the expected value
-     * class.
+     * Formats a value object to a displayable string. The value is of type T, e.g. for attributes
+     * in the model type T is String. Depending on this formatter, the String amy be converted to an
+     * other datatype, e.g. Money and will be formatted to display with the current input locale.
      * 
      * @param value the value to be represented as string in this format. value can be
      *            <code>null</code>.
      * @return the formatted string representing the given value
      */
-    protected abstract String formatInternal(Object value);
+    protected abstract String formatInternal(T value);
 
     /**
      * Allows subclasses to prevent the user from entering invalid characters into an edit field.

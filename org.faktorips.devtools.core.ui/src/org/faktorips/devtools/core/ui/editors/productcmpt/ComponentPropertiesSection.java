@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -39,7 +40,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
-import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
+import org.faktorips.devtools.core.ui.controller.fields.DateControlField;
 import org.faktorips.devtools.core.ui.controller.fields.GregorianCalendarFormat;
 import org.faktorips.devtools.core.ui.controller.fields.IpsObjectField;
 import org.faktorips.devtools.core.ui.controls.DateControl;
@@ -79,8 +80,7 @@ public class ComponentPropertiesSection extends IpsSection {
     private MyModifyListener policyCmptTypeListener;
 
     private Text runtimeIdText;
-    private Text validToText;
-    private EditField validToField;
+    private EditField<GregorianCalendar> validToField;
     private final ProductCmptEditor editor;
 
     /**
@@ -160,14 +160,13 @@ public class ComponentPropertiesSection extends IpsSection {
         toolkit.createLabel(rootPane, Messages.ProductAttributesSection_labelValidTo);
         // validToText = toolkit.createText(rootPane);
         DateControl dateControl = new DateControl(rootPane, toolkit);
-        validToText = dateControl.getTextControl();
-        validToText.setText(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
-        editControls.add(validToText);
+        dateControl.setText(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
+        editControls.add(dateControl.getTextControl());
 
         IpsObjectUIController controller = new IpsObjectUIController(product);
         controller.add(field, product, IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
         controller.add(runtimeIdText, product, IProductCmpt.PROPERTY_RUNTIME_ID);
-        validToField = new FormattingTextField(validToText, new GregorianCalendarFormat());
+        validToField = new DateControlField<GregorianCalendar>(dateControl, new GregorianCalendarFormat());
         controller.add(validToField, product, IProductCmpt.PROPERTY_VALID_TO);
 
         // handle invalid values - the gregorian calendar field transforms all invalid values

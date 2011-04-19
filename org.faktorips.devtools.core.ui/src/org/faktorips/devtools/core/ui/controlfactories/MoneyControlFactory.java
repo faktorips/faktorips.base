@@ -16,8 +16,8 @@ package org.faktorips.devtools.core.ui.controlfactories;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridTreeViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -27,7 +27,6 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.MoneyField;
-import org.faktorips.devtools.core.ui.controls.TextComboControl;
 import org.faktorips.devtools.core.ui.table.EditFieldCellEditor;
 import org.faktorips.devtools.core.ui.table.GridTableViewerTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
@@ -46,22 +45,22 @@ public class MoneyControlFactory extends ValueDatatypeControlFactory {
     }
 
     @Override
-    public EditField createEditField(UIToolkit toolkit,
+    public EditField<String> createEditField(UIToolkit toolkit,
             Composite parent,
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
-        TextComboControl control = (TextComboControl)createControl(toolkit, parent, datatype, valueSet, ipsProject);
-        return new MoneyField(control);
+        Text control = createControl(toolkit, parent, datatype, valueSet, ipsProject);
+        return new MoneyField(control, ipsProject.getReadOnlyProperties().getDefaultCurrency());
     }
 
     @Override
-    public Control createControl(UIToolkit toolkit,
+    public Text createControl(UIToolkit toolkit,
             Composite parent,
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
-        TextComboControl control = new TextComboControl(parent, toolkit);
+        Text control = toolkit.createText(parent, getDefaultAlignment());
         return control;
     }
 
@@ -133,6 +132,11 @@ public class MoneyControlFactory extends ValueDatatypeControlFactory {
             IIpsProject ipsProject) {
         IpsCellEditor cellEditor = createMoneyCellEditor(toolkit, datatype, valueSet, gridViewer.getGrid(), ipsProject);
         return cellEditor;
+    }
+
+    @Override
+    public int getDefaultAlignment() {
+        return SWT.RIGHT;
     }
 
 }

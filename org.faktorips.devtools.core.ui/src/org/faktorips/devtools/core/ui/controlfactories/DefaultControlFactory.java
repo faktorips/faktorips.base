@@ -53,7 +53,7 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
     }
 
     @Override
-    public EditField createEditField(UIToolkit toolkit,
+    public EditField<String> createEditField(UIToolkit toolkit,
             Composite parent,
             ValueDatatype datatype,
             IValueSet valueSet,
@@ -145,6 +145,11 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
         Text textControl = toolkit.createText(gridViewer.getGrid(), SWT.SINGLE);
         TextCellEditor cellEditor = new TextCellEditor(textControl);
         return cellEditor;
+    }
+
+    @Override
+    public int getDefaultAlignment() {
+        return SWT.LEFT;
     }
 
 }

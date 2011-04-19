@@ -31,6 +31,6 @@ public interface IExtensionPropertyEditFieldFactory {
      * @param toolkit The ui toolkit to be used to create the control to ensure a consistent user
      *            interface.
      */
-    public EditField newEditField(IIpsObjectPartContainer ipsObjectPart, Composite extensionArea, UIToolkit toolkit);
+    public EditField<?> newEditField(IIpsObjectPartContainer ipsObjectPart, Composite extensionArea, UIToolkit toolkit);
 
 }

@@ -64,7 +64,7 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptT
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
-import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
+import org.faktorips.devtools.core.ui.controller.fields.DateControlField;
 import org.faktorips.devtools.core.ui.controller.fields.GregorianCalendarFormat;
 import org.faktorips.devtools.core.ui.controller.fields.IpsPckFragmentRefField;
 import org.faktorips.devtools.core.ui.controller.fields.IpsPckFragmentRootRefField;
@@ -341,11 +341,12 @@ public class SourcePage extends WizardPage {
         ChangeListener propertyChangeListener = new ChangeListener();
         getPresentationModel().addPropertyChangeListener(propertyChangeListener);
 
-        StructuredViewerField generationDateField = new StructuredViewerField(generationDateViewer);
+        StructuredViewerField<GenerationDate> generationDateField = StructuredViewerField.newInstance(
+                generationDateViewer, GenerationDate.class);
         binding.bindContent(generationDateField, getPresentationModel(), DeepCopyPresentationModel.OLD_VALID_FROM);
 
-        FormattingTextField newWorkingDateField = new FormattingTextField(newWorkingDateControl.getTextControl(),
-                new GregorianCalendarFormat());
+        DateControlField<GregorianCalendar> newWorkingDateField = new DateControlField<GregorianCalendar>(
+                newWorkingDateControl, new GregorianCalendarFormat());
         binding.bindContent(newWorkingDateField, getPresentationModel(), DeepCopyPresentationModel.NEW_VALID_FROM);
 
         IpsPckFragmentRootRefField packageRootField = new IpsPckFragmentRootRefField(targetPackRootControl);

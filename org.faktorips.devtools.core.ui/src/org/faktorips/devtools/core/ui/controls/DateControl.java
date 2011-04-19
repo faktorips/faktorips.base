@@ -31,7 +31,6 @@ import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.fields.AbstractDateFormat;
 import org.faktorips.devtools.core.ui.controller.fields.DateISOStringFormat;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 
@@ -45,7 +44,7 @@ import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
  */
 public class DateControl extends TextButtonControl {
 
-    private AbstractDateFormat dateFormat;
+    private DateISOStringFormat dateFormat;
 
     private Shell calendarShell;
 
@@ -54,7 +53,7 @@ public class DateControl extends TextButtonControl {
     private GregorianCalendar oldCalendar;
 
     public DateControl(Composite parent, UIToolkit toolkit) {
-        super(parent, toolkit, "", true, 25); //$NON-NLS-1$
+        super(parent, toolkit, "", true, 24, SWT.RIGHT); //$NON-NLS-1$
         setButtonImage(IpsUIPlugin.getImageHandling().getSharedImage("Calendar.png", true)); //$NON-NLS-1$
         dateFormat = new DateISOStringFormat();
     }

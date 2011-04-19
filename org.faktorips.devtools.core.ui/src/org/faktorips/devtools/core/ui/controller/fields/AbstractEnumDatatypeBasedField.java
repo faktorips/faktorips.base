@@ -37,7 +37,7 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Peter Erzberger
  */
-public abstract class AbstractEnumDatatypeBasedField extends ComboField {
+public abstract class AbstractEnumDatatypeBasedField extends StringValueComboField {
 
     private ValueDatatype datatype;
 
@@ -59,7 +59,7 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
      */
     public final void reInit() {
         boolean prevValidSelection = getCombo().getSelectionIndex() != -1;
-        String currentValue = (String)getValue();
+        String currentValue = getValue();
         reInitInternal();
         if (prevValidSelection) {
             try {
@@ -125,7 +125,7 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
      * Returns null if no value is selected.
      */
     @Override
-    public Object parseContent() {
+    public String parseContent() {
         int selectedIndex = getCombo().getSelectionIndex();
         if (selectedIndex == -1) {
             return null;
@@ -145,9 +145,9 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
      * selected.
      */
     @Override
-    public void setValue(Object newValue) {
-        if (datatype.isParsable((String)newValue)) {
-            setText(getDisplayTextForValue((String)newValue));
+    public void setValue(String newValue) {
+        if (datatype.isParsable(newValue)) {
+            setText(getDisplayTextForValue(newValue));
         }
 
         /*
@@ -157,11 +157,11 @@ public abstract class AbstractEnumDatatypeBasedField extends ComboField {
          * value.
          */
         if (!ObjectUtils.equals(getValue(), newValue)) {
-            setInvalidValue((String)newValue);
+            setInvalidValue(newValue);
             // because this is an invalid value (not in enum value set, we
             // must reinit the item in the drop down, only so we can select the invalid value
             reInitInternal();
-            setText(getDisplayTextForValue((String)newValue));
+            setText(getDisplayTextForValue(newValue));
         }
     }
 

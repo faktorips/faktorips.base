@@ -23,9 +23,9 @@ import org.faktorips.devtools.core.ui.controller.EditField;
  */
 public class EditFieldCellEditor extends IpsCellEditor {
 
-    private EditField editField;
+    private EditField<String> editField;
 
-    public EditFieldCellEditor(EditField editField) {
+    public EditFieldCellEditor(EditField<String> editField) {
         super(editField.getControl());
         this.editField = editField;
     }
@@ -35,7 +35,7 @@ public class EditFieldCellEditor extends IpsCellEditor {
      */
     @Override
     protected Object doGetValue() {
-        String returnValue = editField.getText();
+        String returnValue = editField.getValue();
         if (IpsPlugin.getDefault().getIpsPreferences().getNullPresentation().equals(returnValue)) {
             return null;
         }
@@ -56,7 +56,7 @@ public class EditFieldCellEditor extends IpsCellEditor {
      */
     @Override
     protected void doSetValue(Object value) {
-        editField.setValue(value);
+        editField.setValue(value == null ? null : value.toString());
     }
 
     protected String getText() {

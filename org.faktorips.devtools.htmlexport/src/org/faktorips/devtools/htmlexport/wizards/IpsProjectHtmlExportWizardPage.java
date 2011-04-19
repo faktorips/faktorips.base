@@ -58,7 +58,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.fields.ComboField;
+import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
@@ -218,7 +218,7 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
 
     private IIpsProject[] ipsProjects;
 
-    private ComboField destinationNameComboField;
+    private StringValueComboField destinationNameComboField;
 
     protected IpsProjectHtmlExportWizardPage(IStructuredSelection selection) {
         super(PAGE_NAME);
@@ -378,7 +378,7 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
 
         // destination name entry field
         destinationNamesCombo = new Combo(destinationSelectionGroup, SWT.SINGLE | SWT.BORDER);
-        destinationNameComboField = new ComboField(destinationNamesCombo);
+        destinationNameComboField = new StringValueComboField(destinationNamesCombo);
         destinationNameComboField.addChangeListener(this);
         destinationNameComboField.setText(getDefaultDestinationDirectory());
 

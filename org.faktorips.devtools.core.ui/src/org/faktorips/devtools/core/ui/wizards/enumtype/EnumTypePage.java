@@ -175,8 +175,8 @@ public class EnumTypePage extends IpsObjectPage {
      * <tt>isAbstractField</tt> and <tt>containingValuesField</tt>.
      */
     private void enableEnumContentControls() {
-        boolean isAbstract = (Boolean)isAbstractField.getValue();
-        boolean valuesDeferredToContent = (Boolean)valuesDeferredToContentField.getValue();
+        boolean isAbstract = isAbstractField.getValue();
+        boolean valuesDeferredToContent = valuesDeferredToContentField.getValue();
         if (isAbstract) {
             enumContentQualifiedNameField.getTextControl().setEnabled(false);
         } else {
@@ -268,8 +268,8 @@ public class EnumTypePage extends IpsObjectPage {
         IEnumType newEnumType = (IEnumType)newIpsObject;
 
         // Set properties.
-        newEnumType.setAbstract((Boolean)isAbstractField.getValue());
-        newEnumType.setContainingValues(!((Boolean)valuesDeferredToContentField.getValue()).booleanValue());
+        newEnumType.setAbstract(isAbstractField.getValue());
+        newEnumType.setContainingValues(!(valuesDeferredToContentField.getValue()).booleanValue());
         newEnumType.setSuperEnumType(supertypeField.getText());
         newEnumType.setEnumContentName(enumContentQualifiedNameField.getText());
 
@@ -323,7 +323,7 @@ public class EnumTypePage extends IpsObjectPage {
         }
 
         // Validate qualified enumeration content name.
-        EnumTypeValidations.validateEnumContentName(validationMessages, null, (Boolean)isAbstractField.getValue(),
+        EnumTypeValidations.validateEnumContentName(validationMessages, null, isAbstractField.getValue(),
                 valuesDeferredToContentField.getCheckbox().isChecked(), enumContentQualifiedNameField.getText());
 
         // Display the first error message if any.

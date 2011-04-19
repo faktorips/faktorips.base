@@ -6,7 +6,7 @@
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
- * http://www.faktorzehn.org/fips:lizenz eingesehen werden kann.
+ * http://www.faktorzehn.org/f10-org:lizenzen:community eingesehen werden kann.
  * 
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
@@ -17,19 +17,28 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * An edit field for Integer.
+ * Abstract Field that handles a {@link Text} component. The value type must not be {@link String}
  * 
- * @author Jan Ortmann
+ * @see EditField for details about generic type T
+ * 
+ * @author dirmeier
  */
-public class IntegerField extends DefaultEditField<Integer> {
+public abstract class AbstractTextField<T> extends DefaultEditField<T> {
 
-    private Text text;
+    protected Text text;
+    private boolean immediatelyNotifyListener = false;
 
-    public IntegerField(Text text) {
+    public AbstractTextField() {
         super();
+    }
+
+    public AbstractTextField(Text text) {
+        this();
         ArgumentCheck.notNull(text);
         this.text = text;
     }
@@ -39,22 +48,11 @@ public class IntegerField extends DefaultEditField<Integer> {
         return text;
     }
 
-    @Override
-    public Integer parseContent() {
-        String text = getText();
-        if (text != null && text.length() == 0) {
-            return null;
-        }
-        if (text == null) {
-            return null;
-        }
-        return Integer.valueOf(text);
-    }
-
-    @Override
-    public void setValue(Integer newValue) {
-        ArgumentCheck.isInstanceOf(newValue, Integer.class);
-        text.setText(newValue.toString());
+    /**
+     * Returns the text control this is an edit field for.
+     */
+    public Text getTextControl() {
+        return text;
     }
 
     @Override
@@ -64,12 +62,25 @@ public class IntegerField extends DefaultEditField<Integer> {
 
     @Override
     public void setText(String newText) {
-        text.setText(newText);
+        immediatelyNotifyListener = true;
+        try {
+            if (newText == null) {
+                // AbstractNumberFormats call this method with null values
+                if (supportsNull()) {
+                    newText = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+                } else {
+                    newText = ""; //$NON-NLS-1$
+                }
+            }
+            text.setText(newText);
+        } finally {
+            immediatelyNotifyListener = false;
+        }
     }
 
     @Override
-    public void insertText(String s) {
-        text.insert(s);
+    public void insertText(String insertText) {
+        text.insert(insertText);
     }
 
     @Override
@@ -82,7 +93,7 @@ public class IntegerField extends DefaultEditField<Integer> {
         text.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(ModifyEvent e) {
-                notifyChangeListeners(new FieldValueChangedEvent(IntegerField.this));
+                notifyChangeListeners(new FieldValueChangedEvent(AbstractTextField.this), immediatelyNotifyListener);
             }
         });
     }

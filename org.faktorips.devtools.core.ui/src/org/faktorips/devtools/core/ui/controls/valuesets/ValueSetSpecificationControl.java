@@ -35,7 +35,7 @@ import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.DefaultUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
-import org.faktorips.devtools.core.ui.controller.fields.ComboField;
+import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
@@ -56,7 +56,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     // Label, Combo & Field for the allowed value set types
     private Label valueSetTypeLabel;
     private Combo valueSetTypesCombo;
-    private ComboField valueSetTypeField;
+    private StringValueComboField valueSetTypeField;
     private List<ValueSetType> allowedValueSetTypes = new ArrayList<ValueSetType>();
 
     private Checkbox concreteValueSetCheckbox = null;
@@ -272,7 +272,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
 
         valueSetTypesCombo = toolkit.createCombo(parentArea);
         valueSetTypesCombo.setText(getValueSetType().getName());
-        valueSetTypeField = new ComboField(valueSetTypesCombo);
+        valueSetTypeField = new StringValueComboField(valueSetTypesCombo);
         valueSetTypeField.addChangeListener(new ValueSetTypeModifyListener());
 
         toolkit.setDataChangeable(valueSetTypesCombo, isDataChangeable());

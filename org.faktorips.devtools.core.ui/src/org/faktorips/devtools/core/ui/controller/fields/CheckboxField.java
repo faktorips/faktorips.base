@@ -18,7 +18,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.ui.controls.AbstractCheckbox;
 
-public class CheckboxField extends DefaultEditField {
+public class CheckboxField extends DefaultEditField<Boolean> {
 
     private AbstractCheckbox checkbox;
 
@@ -36,13 +36,13 @@ public class CheckboxField extends DefaultEditField {
     }
 
     @Override
-    public Object parseContent() {
+    public Boolean parseContent() {
         return new Boolean(checkbox.isChecked());
     }
 
     @Override
-    public void setValue(Object newValue) {
-        checkbox.setChecked(((Boolean)newValue).booleanValue());
+    public void setValue(Boolean newValue) {
+        checkbox.setChecked(newValue);
     }
 
     @Override

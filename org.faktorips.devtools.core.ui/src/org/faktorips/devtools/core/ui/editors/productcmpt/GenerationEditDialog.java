@@ -41,7 +41,7 @@ import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
  */
 public class GenerationEditDialog extends IpsPartEditDialog implements ModifyListener {
 
-    private EditField dateField;
+    private EditField<GregorianCalendar> dateField;
 
     private IProductCmptGeneration previous;
     private IProductCmptGeneration next;
@@ -82,7 +82,7 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
         Text textControl = dateControl.getTextControl();
         textControl.addModifyListener(this);
 
-        dateField = new FormattingTextField(textControl, new GregorianCalendarFormat());
+        dateField = new FormattingTextField<GregorianCalendar>(textControl, new GregorianCalendarFormat());
         return c;
     }
 
@@ -96,7 +96,7 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
     public void modifyText(ModifyEvent e) {
         // We need to validate here and "by hand" because this validation is not neccessary
         // to be done during normal validation of a generation.
-        GregorianCalendar value = (GregorianCalendar)dateField.getValue();
+        GregorianCalendar value = dateField.getValue();
         if (value == null) {
             DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
             String formatDescription = format.format(new GregorianCalendar().getTime());

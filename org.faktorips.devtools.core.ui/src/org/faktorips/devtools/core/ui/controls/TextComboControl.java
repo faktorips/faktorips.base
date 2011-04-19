@@ -42,7 +42,7 @@ public class TextComboControl extends TextAndSecondControlComposite {
      * @param buttonHeightHint The preferred height or -1.
      */
     public TextComboControl(Composite parent, UIToolkit toolkit, boolean smallMargins, int buttonHeightHint) {
-        super(parent, toolkit, smallMargins, buttonHeightHint);
+        super(parent, toolkit, smallMargins, buttonHeightHint, SWT.SINGLE);
     }
 
     /**

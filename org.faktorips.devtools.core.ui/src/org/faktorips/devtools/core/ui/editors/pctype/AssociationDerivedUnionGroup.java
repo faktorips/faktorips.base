@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
-import org.faktorips.devtools.core.ui.controller.fields.ComboField;
+import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.type.DerivedUnionCompletionProcessor;
 
@@ -106,7 +106,7 @@ public class AssociationDerivedUnionGroup extends Composite {
 
         bindingContext.bindContent(subsetCheckbox, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
 
-        bindingContext.bindContent(new ComboField(derivedUnionCombo), association,
+        bindingContext.bindContent(new StringValueComboField(derivedUnionCombo), association,
                 IAssociation.PROPERTY_SUBSETTED_DERIVED_UNION);
         bindingContext.bindEnabled(derivedUnionCombo, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
 

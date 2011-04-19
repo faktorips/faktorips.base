@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.model.ipsproject;
 
+import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -514,5 +515,19 @@ public interface IIpsProjectProperties {
      * @return The id of the release extension for this project
      */
     public String getReleaseExtensionId();
+
+    /**
+     * Setting the default currency for this project
+     * 
+     * @param defaultCurrency the default currency
+     */
+    void setDefaultCurrency(Currency defaultCurrency);
+
+    /**
+     * Getting the default currency configured for this project
+     * 
+     * @return the default currency
+     */
+    Currency getDefaultCurrency();
 
 }

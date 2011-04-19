@@ -17,10 +17,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.jface.viewers.ColumnPixelData;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
@@ -28,7 +33,9 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.UIController;
+import org.faktorips.devtools.core.ui.controls.TableLayoutComposite;
 import org.faktorips.devtools.core.ui.controls.chooser.ListChooser;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.util.message.MessageList;
@@ -86,11 +93,22 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
      */
     public EnumSubsetChooser(Composite parent, UIToolkit toolkit, IEnumValueSet source, IEnumValueSet target,
             ValueDatatype datatype, UIController uiController) {
-        super(parent, toolkit);
+        super(parent);
         targetValueSet = target;
         sourceValueSet = source;
         setValueDatatype(datatype);
+        initControl(toolkit);
         init(getAdditionalSourceValues(), Arrays.asList(targetValueSet.getValues()));
+    }
+
+    @Override
+    protected void newTableColumns(Table parent, TableLayoutComposite parentLayouter) {
+        parentLayouter.addColumnData(new ColumnPixelData(20, false)); // message image
+        parentLayouter.addColumnData(new ColumnWeightData(100, true));
+        new TableColumn(parent, SWT.NONE).setResizable(false);
+        ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault()
+                .getValueDatatypeControlFactory(valueDatatype);
+        new TableColumn(parent, ctrlFactory.getDefaultAlignment()).setResizable(false);
     }
 
     public boolean allowedValuesAreDefinedBySourceValueSet() {

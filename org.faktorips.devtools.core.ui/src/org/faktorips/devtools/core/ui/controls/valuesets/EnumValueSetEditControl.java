@@ -66,26 +66,23 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
      * Constructs a EnumValueSetEditControl and handles the type of the value set that is, if the
      * value set is of the wrong type, a new EnumValueEnumSet is created
      */
-    public EnumValueSetEditControl(Composite parent, ValueDatatype valueDatatype, IEnumValueSet enumValueSet,
-            IIpsProject ipsProject, String label) {
-        super(enumValueSet, parent, SWT.NONE, label);
+    public EnumValueSetEditControl(Composite parent, ValueDatatype valueDatatype, IIpsProject ipsProject) {
+        super(parent, SWT.NONE);
         this.valueDatatype = valueDatatype;
         this.ipsProject = ipsProject;
+    }
+
+    @Override
+    public void initialize(Object modelObject, String label) {
+        if (label == null) {
+            label = Messages.EnumValueSetEditControl_titleValues;
+        }
+        super.initialize(modelObject, label);
         GridLayout layout = (GridLayout)getLayout();
         layout.marginHeight = 10;
 
         initCellEditorsAndConfigureTableViewer();
         new MessageService(getTableViewer());
-    }
-
-    /**
-     * Constructs a EnumValueSetEditControl and handles the type of the value set that is, if the
-     * value set is of the wrong type, a new EnumValueEnumSet is created. Labels the control with
-     * default-text ("Values") in english.
-     */
-    public EnumValueSetEditControl(Composite parent, ValueDatatype valueDatatype, IEnumValueSet enumValueSet,
-            IIpsProject ipsProject) {
-        this(parent, valueDatatype, enumValueSet, ipsProject, Messages.EnumValueSetEditControl_titleValues);
     }
 
     @Override
@@ -147,7 +144,9 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
     @Override
     protected void createTableColumns(Table table) {
         new TableColumn(table, SWT.NONE).setResizable(false);
-        new TableColumn(table, SWT.NONE).setResizable(false);
+        ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault()
+                .getValueDatatypeControlFactory(valueDatatype);
+        new TableColumn(table, ctrlFactory.getDefaultAlignment()).setResizable(false);
     }
 
     @Override
@@ -293,18 +292,11 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
 
         String getValueName() {
             String name = valueSet.getValue(index);
-            if (name == null) {
-                name = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
-            }
             return name;
         }
 
         void setValueName(String newName) {
-            if (newName.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) {
-                valueSet.setValue(index, null);
-            } else {
-                valueSet.setValue(index, newName);
-            }
+            valueSet.setValue(index, newName);
         }
 
         @Override
