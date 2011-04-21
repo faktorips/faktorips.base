@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -72,6 +73,25 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     @Override
     public String[] getValues() {
         return values.toArray(new String[values.size()]);
+    }
+
+    @Override
+    public List<String> getValuesAsList() {
+        return new ArrayList<String>(values);
+    }
+
+    @Override
+    public void move(List<Integer> indexes, boolean up) {
+        ListElementMover<String> mover = new ListElementMover<String>(values);
+
+        int[] indexesArray = new int[indexes.size()];
+        int i = 0;
+        for (Integer index : indexes) {
+            indexesArray[i] = index;
+        }
+        int[] newIndexes = mover.move(indexesArray, up);
+        refillValuesToIndexMap();
+        objectHasChanged();
     }
 
     @Override

@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -23,6 +24,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.ui.controls.valuesets.EnumSubsetChooser;
@@ -94,12 +96,15 @@ public class EnumSubsetEditDialog extends IpsPartEditDialog {
         @Override
         public MessageList getMessagesForValue(String valueId) {
             MessageList list = new MessageList();
-            if (getSourceValueSet().containsValue(valueId)) {
-                return list;
+            try {
+                if (!getSourceValueSet().containsValue(valueId, getSourceValueSet().getIpsProject())) {
+                    String text = NLS.bind(Messages.DefaultsAndRangesEditDialog_valueNotContainedInValueSet, valueId,
+                            getSourceValueSet().toShortString());
+                    list.add(new Message("", text, Message.ERROR)); //$NON-NLS-1$
+                }
+            } catch (CoreException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
             }
-            String text = NLS.bind(Messages.DefaultsAndRangesEditDialog_valueNotContainedInValueSet, valueId,
-                    getSourceValueSet().toShortString());
-            list.add(new Message("", text, Message.ERROR)); //$NON-NLS-1$
             return list;
         }
 

@@ -28,6 +28,16 @@ import java.util.GregorianCalendar;
  */
 public class GregorianCalendarFormat extends AbstractDateFormat<GregorianCalendar> {
 
+    public static GregorianCalendarFormat newInstance() {
+        GregorianCalendarFormat format = new GregorianCalendarFormat();
+        format.initFormat();
+        return format;
+    }
+
+    private GregorianCalendarFormat() {
+        // only hide the constructor
+    }
+
     @Override
     protected GregorianCalendar mapDateToObject(Date date) {
         GregorianCalendar calendar = new GregorianCalendar();

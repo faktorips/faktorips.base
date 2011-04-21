@@ -346,7 +346,7 @@ public class SourcePage extends WizardPage {
         binding.bindContent(generationDateField, getPresentationModel(), DeepCopyPresentationModel.OLD_VALID_FROM);
 
         DateControlField<GregorianCalendar> newWorkingDateField = new DateControlField<GregorianCalendar>(
-                newWorkingDateControl, new GregorianCalendarFormat());
+                newWorkingDateControl, GregorianCalendarFormat.newInstance());
         binding.bindContent(newWorkingDateField, getPresentationModel(), DeepCopyPresentationModel.NEW_VALID_FROM);
 
         IpsPckFragmentRootRefField packageRootField = new IpsPckFragmentRootRefField(targetPackRootControl);

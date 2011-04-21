@@ -30,8 +30,8 @@ import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.ui.controller.fields.DecimalNumberFormat;
 import org.faktorips.devtools.core.ui.controller.fields.DateISOStringFormat;
+import org.faktorips.devtools.core.ui.controller.fields.DecimalNumberFormat;
 import org.faktorips.devtools.core.ui.controller.fields.IntegerNumberFormat;
 import org.faktorips.devtools.core.ui.controller.fields.MoneyFormat;
 
@@ -58,7 +58,7 @@ public class UIDatatypeFormatter {
             return DecimalNumberFormat.newInstance(datatype).format(value);
         }
         if (datatype instanceof GregorianCalendarDatatype || datatype instanceof DateDatatype) {
-            return new DateISOStringFormat().format(value);
+            return DateISOStringFormat.newInstance().format(value);
         }
         if (datatype instanceof IntegerDatatype || datatype instanceof LongDatatype
                 || datatype == ValueDatatype.PRIMITIVE_INT || datatype == ValueDatatype.PRIMITIVE_LONG) {

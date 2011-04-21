@@ -13,15 +13,18 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.values.Decimal;
 
 /**
- * Format for floating point number input.
+ * Format for floating point number input. This formatter is valid for {@link Decimal},
+ * {@link Double} and {@link BigDecimal}
  * 
  * @author Stefan Widmaier
  */
@@ -60,11 +63,15 @@ public class DecimalNumberFormat extends AbstractNumberFormat {
     @Override
     protected String formatInternal(String value) {
         Object valueAsObject = datatype.getValue(value);
-        // BigDecimal valueAsObject = new BigDecimal(value);
-        // Double valueAsObject = Double.parseDouble(value);
-        // System.out.print("Value \"" + d + "\" is being parsed...");
+        if (valueAsObject instanceof Decimal) {
+            Decimal decimalValue = (Decimal)valueAsObject;
+            if (decimalValue.isNull()) {
+                return null;
+            } else {
+                valueAsObject = decimalValue.bigDecimalValue();
+            }
+        }
         String stringToBeDisplayed = numberFormat.format(valueAsObject);
-        // System.out.println("Value \"" + stringToBeDisplayed + "\" will be displayed");
         return stringToBeDisplayed;
     }
 

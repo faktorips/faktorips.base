@@ -66,7 +66,8 @@ public class GregorianCalendarControlFactory extends ValueDatatypeControlFactory
             IIpsProject ipsProject) {
 
         DateControl dateControl = new DateControl(parent, toolkit);
-        DateControlField<String> formatField = new DateControlField<String>(dateControl, new DateISOStringFormat());
+        DateControlField<String> formatField = new DateControlField<String>(dateControl,
+                DateISOStringFormat.newInstance());
         return formatField;
     }
 
@@ -148,7 +149,7 @@ public class GregorianCalendarControlFactory extends ValueDatatypeControlFactory
             IIpsProject ipsProject) {
 
         Text textControl = (Text)createControl(toolkit, parent, dataType, valueSet, ipsProject);
-        DateISOStringFormat format = new DateISOStringFormat();
+        DateISOStringFormat format = DateISOStringFormat.newInstance();
         IpsCellEditor tableCellEditor = new FormattingTextCellEditor(textControl, format);
         return tableCellEditor;
     }

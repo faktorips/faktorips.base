@@ -82,7 +82,7 @@ public class GenerationEditDialog extends IpsPartEditDialog implements ModifyLis
         Text textControl = dateControl.getTextControl();
         textControl.addModifyListener(this);
 
-        dateField = new FormattingTextField<GregorianCalendar>(textControl, new GregorianCalendarFormat());
+        dateField = new FormattingTextField<GregorianCalendar>(textControl, GregorianCalendarFormat.newInstance());
         return c;
     }
 

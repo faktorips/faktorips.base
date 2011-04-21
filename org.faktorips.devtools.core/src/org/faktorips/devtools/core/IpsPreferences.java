@@ -277,18 +277,28 @@ public class IpsPreferences {
      * @see #getDatatypeFormattingLocale()
      */
     public DateFormat getDateFormat() {
+        return getDateFormat(getDatatypeFormattingLocale());
+    }
+
+    /**
+     * Returns date format to format dates in specified locale.
+     */
+    public DateFormat getDateFormat(Locale locale) {
         /*
          * Workaround to display the year in four digits when using UK/US locales. DateFormat.SHORT
          * displays only two digits for the year number whereas DateFormat.MEDIUM displays Months as
          * a word (e.g. "April 1st 2003"). For the german locale DateFormat.MEDIUM works just fine.
          */
-        if (getDatatypeFormattingLocale().equals(Locale.UK)) {
-            return new SimpleDateFormat("dd/MM/yyyy"); //$NON-NLS-1$
-        } else if (getDatatypeFormattingLocale().equals(Locale.US)) {
-            return new SimpleDateFormat("MM/dd/yyyy"); //$NON-NLS-1$
+        DateFormat result;
+        if (Locale.UK.equals(locale)) {
+            result = new SimpleDateFormat("dd/MM/yyyy"); //$NON-NLS-1$
+        } else if (Locale.US.equals(locale)) {
+            result = new SimpleDateFormat("MM/dd/yyyy"); //$NON-NLS-1$
         } else {
-            return DateFormat.getDateInstance(DateFormat.MEDIUM, getDatatypeFormattingLocale());
+            result = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
         }
+        result.setLenient(true);
+        return result;
     }
 
     /**

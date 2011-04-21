@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -28,6 +29,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
@@ -37,6 +39,7 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.UIController;
 import org.faktorips.devtools.core.ui.controls.TableLayoutComposite;
 import org.faktorips.devtools.core.ui.controls.chooser.ListChooser;
+import org.faktorips.devtools.core.ui.controls.chooser.ListChooserValue;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.values.ObjectUtil;
@@ -98,7 +101,7 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
         sourceValueSet = source;
         setValueDatatype(datatype);
         initControl(toolkit);
-        init(getAdditionalSourceValues(), Arrays.asList(targetValueSet.getValues()));
+        init(getAdditionalSourceValues(), targetValueSet);
     }
 
     @Override
@@ -189,7 +192,7 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
     public void setEnumValueSet(IEnumValueSet valueSet, ValueDatatype newDatatype) {
         targetValueSet = valueSet;
         setValueDatatype(valueDatatype);
-        init(getAdditionalSourceValues(), Arrays.asList(targetValueSet.getValues()));
+        init(getAdditionalSourceValues(), targetValueSet);
     }
 
     /**
@@ -199,7 +202,9 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
     private List<String> getAdditionalSourceValues() {
         List<String> values = new ArrayList<String>();
         if (allowedValuesAreDefinedBySourceValueSet()) {
-            values = Arrays.asList(targetValueSet.getValuesNotContained(sourceValueSet));
+            for (String value : (targetValueSet.getValuesNotContained(sourceValueSet))) {
+                values.add(value);
+            }
         } else {
             List<String> targetIds = Arrays.asList(targetValueSet.getValues());
             String[] allIds = getEnumDatatype().getAllValueIds(true);
@@ -224,16 +229,6 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
         }
     }
 
-    @Override
-    protected void update(List<String> prdefinedValues, List<String> resultingValues) {
-        for (String value : targetValueSet.getValues()) {
-            targetValueSet.removeValue(value);
-        }
-        for (String newValue : resultingValues) {
-            targetValueSet.addValue(newValue);
-        }
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -247,7 +242,11 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
 
     protected MessageList getMessagesForValue(String valueId) {
         MessageList result = new MessageList();
-        sourceValueSet.containsValue(valueId, result, targetValueSet, null);
+        try {
+            sourceValueSet.containsValue(valueId, result, targetValueSet, null, sourceValueSet.getIpsProject());
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+        }
         return result;
     }
 
@@ -260,13 +259,16 @@ public class EnumSubsetChooser extends ListChooser implements IValueSetEditContr
 
         @Override
         public Image getColumnImage(Object element, int columnIndex) {
-            if (columnIndex != IMG_COLUMN) {
-                return null;
-            }
-            MessageList messages = getMessagesFor((String)element);
-            if (!messages.isEmpty()) {
-                return IpsUIPlugin.getImageHandling().getImage(
-                        IpsProblemOverlayIcon.getOverlay(messages.getSeverity()), false);
+            if (element instanceof ListChooserValue) {
+                ListChooserValue value = (ListChooserValue)element;
+                if (columnIndex != IMG_COLUMN) {
+                    return null;
+                }
+                MessageList messages = getMessagesFor(value.getValue());
+                if (!messages.isEmpty()) {
+                    return IpsUIPlugin.getImageHandling().getImage(
+                            IpsProblemOverlayIcon.getOverlay(messages.getSeverity()), false);
+                }
             }
             return null;
         }

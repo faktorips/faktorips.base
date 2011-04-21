@@ -40,14 +40,13 @@ public abstract class AbstractDateFormat<T> extends AbstractInputFormat<T> {
      */
     private String exampleString;
 
-    public AbstractDateFormat() {
+    protected AbstractDateFormat() {
         super();
     }
 
     @Override
     protected void initFormat(Locale locale) {
-        dateFormat = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
-        dateFormat.setLenient(false);
+        dateFormat = IpsPlugin.getDefault().getIpsPreferences().getDateFormat(locale);
         exampleString = formatDate(new GregorianCalendar(2001, 6, 4).getTime());
     }
 
@@ -118,7 +117,8 @@ public abstract class AbstractDateFormat<T> extends AbstractInputFormat<T> {
      */
     public Date parseToDate(String dateFormatString) {
         ParsePosition pos = new ParsePosition(0);
-        Date date = (Date)getDateFormat().parseObject(dateFormatString, pos);
+        Date date = getDateFormat().parse(dateFormatString, pos);
+
         if (date != null && pos.getIndex() == dateFormatString.length()) {
             return date;
         } else {
@@ -128,11 +128,11 @@ public abstract class AbstractDateFormat<T> extends AbstractInputFormat<T> {
 
     @Override
     protected void verifyInternal(VerifyEvent e, String resultingText) {
-        if (resultingText.length() > 9) {
-            e.doit = isParsable(dateFormat, resultingText);
-        } else {
-            e.doit = containsAllowedCharactersOnly(exampleString, resultingText);
-        }
+        // if (resultingText.length() > 9) {
+        // e.doit = isParsable(dateFormat, resultingText);
+        // } else {
+        e.doit = containsAllowedCharactersOnly(exampleString, resultingText);
+        // }
     }
 
     protected DateFormat getDateFormat() {

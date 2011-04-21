@@ -90,7 +90,12 @@ public abstract class AbstractInputFormat<T> implements VerifyListener {
             return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
         } else {
             try {
-                return formatInternal(objectValue);
+                String formatedValue = formatInternal(objectValue);
+                if (formatedValue == null) {
+                    return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+                } else {
+                    return formatedValue;
+                }
             } catch (Exception e) {
                 return objectValue.toString();
             }

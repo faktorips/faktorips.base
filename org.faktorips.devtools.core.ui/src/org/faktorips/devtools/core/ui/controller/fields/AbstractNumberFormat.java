@@ -36,7 +36,7 @@ public abstract class AbstractNumberFormat extends AbstractInputFormat<String> {
         if (position.getIndex() == stringToBeParsed.length() && value != null) {
             return value.toString();
         } else {
-            return null;
+            return stringToBeParsed;
         }
     }
 

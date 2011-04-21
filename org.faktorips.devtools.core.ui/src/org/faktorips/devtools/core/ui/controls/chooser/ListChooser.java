@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
+import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.Messages;
@@ -157,21 +158,20 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
         new MessageService(resultingValuesTableViewer);
     }
 
-    public final void init(List<String> predefValues, List<String> resultingValues) {
+    public final void init(List<String> predefValues, IEnumValueSet resultingValues) {
         model.setInitialPredefinedValues(predefValues);
         model.setInitialResultingValues(resultingValues);
 
-        preDefinedValuesTableViewer.setContentProvider(createContentProvider());
+        preDefinedValuesTableViewer.setContentProvider(createContentProvider(SourceOrResult.SOURCE));
         preDefinedValuesTableViewer.setLabelProvider(createLabelProvider());
-        resultingValuesTableViewer.setContentProvider(createContentProvider());
+        resultingValuesTableViewer.setContentProvider(createContentProvider(SourceOrResult.RESULT));
         resultingValuesTableViewer.setLabelProvider(createLabelProvider());
 
-        preDefinedValuesTableViewer.setInput(model.getPreDefinedValues());
-        resultingValuesTableViewer.setInput(model.getResultingValues());
+        preDefinedValuesTableViewer.setInput(model);
+        resultingValuesTableViewer.setInput(model);
     }
 
     private void refresh() {
-        update(new ArrayList<String>(model.getPreDefinedValues()), new ArrayList<String>(model.getResultingValues()));
         preDefinedValuesTableViewer.refresh();
         resultingValuesTableViewer.refresh();
     }
@@ -201,19 +201,22 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
         if (selection.size() == 0) {
             return new ArrayList<String>();
         }
-        TypedSelection<String> typedSel = new TypedSelection<String>(String.class, selection, selection.size());
-        return new ArrayList<String>(typedSel.getElements());
+        TypedSelection<ListChooserValue> typedSel = new TypedSelection<ListChooserValue>(ListChooserValue.class,
+                selection, selection.size());
+        ArrayList<String> result = new ArrayList<String>();
+        for (ListChooserValue listChooserValue : typedSel.getElements()) {
+            result.add(listChooserValue.getValue());
+        }
+        return result;
     }
 
-    protected IContentProvider createContentProvider() {
-        return new ContentProvider();
+    protected IContentProvider createContentProvider(SourceOrResult type) {
+        return new ContentProvider(type);
     }
 
     public abstract MessageList getMessagesFor(String value);
 
     protected abstract ITableLabelProvider createLabelProvider();
-
-    protected abstract void update(List<String> prdefinedValues, List<String> resultingValues);
 
     public TableViewer getTargetViewer() {
         return resultingValuesTableViewer;
@@ -287,16 +290,48 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
         });
     }
 
+    private enum SourceOrResult {
+        SOURCE() {
+
+            @Override
+            List<String> getList(ListChooserModel model) {
+                return model.getPreDefinedValues();
+            }
+
+        },
+        RESULT {
+
+            @Override
+            List<String> getList(ListChooserModel model) {
+                return model.getResultingValues();
+            }
+        };
+
+        abstract List<String> getList(ListChooserModel model);
+    }
+
     private class ContentProvider implements IStructuredContentProvider {
+
+        private final SourceOrResult type;
+
+        public ContentProvider(SourceOrResult type) {
+            this.type = type;
+        }
 
         @Override
         public Object[] getElements(Object inputElement) {
-            /*
-             * JFAce SPI not generic
-             */
-            @SuppressWarnings("unchecked")
-            List<String> strings = (List<String>)inputElement;
-            return strings.toArray(new String[strings.size()]);
+            if (inputElement instanceof ListChooserModel) {
+                ListChooserModel model = (ListChooserModel)inputElement;
+                List<String> strings = type.getList(model);
+                ListChooserValue[] result = new ListChooserValue[strings.size()];
+                int i = 0;
+                for (String value : strings) {
+                    result[i] = new ListChooserValue(value);
+                    i++;
+                }
+                return result;
+            }
+            return new Object[0];
         }
 
         @Override
@@ -319,7 +354,12 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
 
         @Override
         protected MessageList getMessagesFor(Object element) throws CoreException {
-            return ListChooser.this.getMessagesFor((String)element);
+            if (element instanceof ListChooserValue) {
+                ListChooserValue value = (ListChooserValue)element;
+                return ListChooser.this.getMessagesFor(value.getValue());
+            } else {
+                return new MessageList();
+            }
         }
     }
 

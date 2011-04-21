@@ -167,9 +167,9 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
         });
 
         tableViewer = new TableViewer(panel);
-        tableViewer.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        tableViewer.setLabelProvider(decoratedLabelProvider);
         tableViewer.setContentProvider(contentProvider);
+        tableViewer.setLabelProvider(decoratedLabelProvider);
+        tableViewer.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         tableViewer.addDoubleClickListener(new IDoubleClickListener() {
             @Override
             public void doubleClick(DoubleClickEvent event) {

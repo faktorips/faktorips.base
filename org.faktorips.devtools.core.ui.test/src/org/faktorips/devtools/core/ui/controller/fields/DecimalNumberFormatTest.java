@@ -17,6 +17,7 @@ import java.util.Locale;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 
 public class DecimalNumberFormatTest extends AbstractIpsPluginTest {
 
@@ -25,10 +26,10 @@ public class DecimalNumberFormatTest extends AbstractIpsPluginTest {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        decimalFormat = new DecimalNumberFormat(ValueDatatype.DECIMAL);
     }
 
-    public void testParseStringBoolean() {
+    public void testParseDecimalGermanLocale() {
+        decimalFormat = new DecimalNumberFormat(ValueDatatype.DECIMAL);
         decimalFormat.initFormat(Locale.GERMANY);
         String input = "1";
         String parsed = decimalFormat.parse(input);
@@ -72,17 +73,23 @@ public class DecimalNumberFormatTest extends AbstractIpsPluginTest {
 
         input = "illegal";
         parsed = decimalFormat.parse(input);
-        assertEquals(null, parsed);
+        assertEquals("illegal", parsed);
 
         input = ",1,12";
         parsed = decimalFormat.parse(input);
-        assertEquals(null, parsed);
+        assertEquals(",1,12", parsed);
 
         input = "1,123";
         parsed = decimalFormat.parse(input);
         assertEquals("1.123", parsed);
+    }
 
+    public void testParseDecimalUsLocal() {
+        String input;
+        String parsed;
+        decimalFormat = new DecimalNumberFormat(ValueDatatype.DECIMAL);
         decimalFormat.initFormat(Locale.US);
+
         input = "1";
         parsed = decimalFormat.parse(input);
         assertEquals("1", parsed);
@@ -125,18 +132,19 @@ public class DecimalNumberFormatTest extends AbstractIpsPluginTest {
 
         input = "illegal";
         parsed = decimalFormat.parse(input);
-        assertEquals(null, parsed);
+        assertEquals("illegal", parsed);
 
         input = ".1.12";
         parsed = decimalFormat.parse(input);
-        assertEquals(null, parsed);
+        assertEquals(".1.12", parsed);
 
         input = "1.123";
         parsed = decimalFormat.parse(input);
         assertEquals("1.123", parsed);
     }
 
-    public void testFormatT() {
+    public void testFormatDecimalGermanLocale() {
+        decimalFormat = new DecimalNumberFormat(ValueDatatype.DECIMAL);
         decimalFormat.initFormat(Locale.GERMANY);
         String input = "1";
         String formated = decimalFormat.format(input);
@@ -169,7 +177,12 @@ public class DecimalNumberFormatTest extends AbstractIpsPluginTest {
         input = "123123.1";
         formated = decimalFormat.format(input);
         assertEquals("123.123,1", formated);
+    }
 
+    public void testFormatDecimalUsLocale() {
+        String input;
+        String formated;
+        decimalFormat = new DecimalNumberFormat(ValueDatatype.DECIMAL);
         decimalFormat.initFormat(Locale.US);
         input = "1";
         formated = decimalFormat.format(input);
@@ -198,5 +211,17 @@ public class DecimalNumberFormatTest extends AbstractIpsPluginTest {
         input = "illegalValue";
         formated = decimalFormat.format(input);
         assertEquals("illegalValue", formated);
+
+        input = "";
+        formated = decimalFormat.format(input);
+        assertEquals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation(), formated);
+
+        input = null;
+        formated = decimalFormat.format(input);
+        assertEquals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation(), formated);
+
+        input = "12345678901234567890";
+        formated = decimalFormat.format(input);
+        assertEquals("12,345,678,901,234,567,890", formated);
     }
 }

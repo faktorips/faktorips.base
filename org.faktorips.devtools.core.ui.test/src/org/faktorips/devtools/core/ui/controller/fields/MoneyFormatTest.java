@@ -17,6 +17,7 @@ import java.util.Currency;
 import java.util.Locale;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.IpsPlugin;
 
 public class MoneyFormatTest extends AbstractIpsPluginTest {
 
@@ -72,11 +73,11 @@ public class MoneyFormatTest extends AbstractIpsPluginTest {
 
         input = "illegal";
         parsed = moneyFormat.parse(input);
-        assertEquals(null, parsed);
+        assertEquals("illegal", parsed);
 
         input = ",1,12";
         parsed = moneyFormat.parse(input);
-        assertEquals(null, parsed);
+        assertEquals(",1,12", parsed);
 
         try {
             input = "1,123";
@@ -120,11 +121,11 @@ public class MoneyFormatTest extends AbstractIpsPluginTest {
 
         input = "illegal";
         parsed = moneyFormat.parse(input);
-        assertEquals(null, parsed);
+        assertEquals("illegal", parsed);
 
         input = ".1.12";
         parsed = moneyFormat.parse(input);
-        assertEquals(null, parsed);
+        assertEquals(".1.12", parsed);
 
         try {
             input = "1.123";
@@ -198,6 +199,14 @@ public class MoneyFormatTest extends AbstractIpsPluginTest {
         input = "illegalValue";
         formated = moneyFormat.format(input);
         assertEquals("illegalValue", formated);
+
+        input = null;
+        formated = moneyFormat.format(input);
+        assertEquals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation(), formated);
+
+        input = "";
+        formated = moneyFormat.format(input);
+        assertEquals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation(), formated);
 
     }
 

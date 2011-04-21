@@ -77,11 +77,11 @@ public class IntegerNumberFormatTest extends TestCase {
 
         input = "123,123";
         parsed = numberFormat.parse(input);
-        assertEquals(null, parsed);
+        assertEquals("123,123", parsed);
 
         input = ",1,12";
         parsed = numberFormat.parse(input);
-        assertEquals(null, parsed);
+        assertEquals(",1,12", parsed);
 
         input = "1.123";
         parsed = numberFormat.parse(input);
@@ -122,7 +122,7 @@ public class IntegerNumberFormatTest extends TestCase {
 
         input = "1000.00";
         parsed = numberFormat.parse(input);
-        assertEquals(null, parsed);
+        assertEquals("1000.00", parsed);
 
         input = "100,0";
         parsed = numberFormat.parse(input);
@@ -130,15 +130,15 @@ public class IntegerNumberFormatTest extends TestCase {
 
         input = "illegal";
         parsed = numberFormat.parse(input);
-        assertEquals(null, parsed);
+        assertEquals("illegal", parsed);
 
         input = ".1.12";
         parsed = numberFormat.parse(input);
-        assertEquals(null, parsed);
+        assertEquals(".1.12", parsed);
 
         input = "1.123";
         parsed = numberFormat.parse(input);
-        assertEquals(null, parsed);
+        assertEquals("1.123", parsed);
     }
 
     public void testFormatT() {

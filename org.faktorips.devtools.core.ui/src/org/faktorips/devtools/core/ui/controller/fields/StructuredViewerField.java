@@ -61,7 +61,7 @@ public class StructuredViewerField<T> extends AbstractViewerField<T> {
     @Override
     public void setValue(T newValue) {
         ISelection selection = null;
-        if (newValue == null && type.equals(String.class)) {
+        if (newValue == null) {
             selection = new StructuredSelection(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
         } else {
             selection = new StructuredSelection(newValue);

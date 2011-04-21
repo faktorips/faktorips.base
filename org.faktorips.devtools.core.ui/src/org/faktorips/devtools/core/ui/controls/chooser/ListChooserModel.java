@@ -17,14 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class ListChooserModel {
-    public List<String> preDefinedValues;
-    public List<String> resultingValues;
+import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 
-    public ListChooserModel() {
-        this.preDefinedValues = new ArrayList<String>();
-        this.resultingValues = new ArrayList<String>();
-    }
+public class ListChooserModel {
+
+    private List<String> preDefinedValues = new ArrayList<String>();
+
+    private IEnumValueSet resultingEnumValueSet;
 
     public void setInitialValues(List<String> initialValues) {
         preDefinedValues.addAll(initialValues);
@@ -41,28 +40,25 @@ public class ListChooserModel {
      * @param values the values to be moved
      */
     public void moveValuesFromPreDefinedToResulting(List<String> values) {
-        moveFromTo(values, preDefinedValues, resultingValues);
+        for (String value : new CopyOnWriteArrayList<String>(values)) {
+            preDefinedValues.remove(value);
+            resultingEnumValueSet.addValue(value);
+        }
     }
 
     public void moveAllValuesFromPreDefinedToResulting() {
-        moveFromTo(preDefinedValues, preDefinedValues, resultingValues);
+        moveValuesFromPreDefinedToResulting(preDefinedValues);
     }
 
     public void moveValuesFromResultingToPredefined(List<String> values) {
-        moveFromTo(values, resultingValues, preDefinedValues);
+        for (String value : new CopyOnWriteArrayList<String>(values)) {
+            resultingEnumValueSet.removeValue(value);
+            preDefinedValues.add(value);
+        }
     }
 
     public void moveAllValuesFromResultingToPreDefined() {
-        moveFromTo(resultingValues, resultingValues, preDefinedValues);
-    }
-
-    private void moveFromTo(List<String> values, List<String> from, List<String> to) {
-        for (String value : new CopyOnWriteArrayList<String>(values)) {
-            boolean valueRemoved = from.remove(value);
-            if (valueRemoved) {
-                to.add(value);
-            }
-        }
+        moveValuesFromResultingToPredefined(resultingEnumValueSet.getValuesAsList());
     }
 
     public List<String> getPreDefinedValues() {
@@ -70,25 +66,16 @@ public class ListChooserModel {
     }
 
     public List<String> getResultingValues() {
-        return resultingValues;
+        return resultingEnumValueSet.getValuesAsList();
     }
 
     public void move(List<String> selectedValues, boolean up) {
-        if (selectedValues.isEmpty()) {
-            return;
+        List<Integer> indexes = new ArrayList<Integer>();
+        for (String value : selectedValues) {
+            List<Integer> positions = resultingEnumValueSet.getPositions(value);
+            indexes.addAll(positions);
         }
-        String firstSelected = selectedValues.get(0);
-        int index = resultingValues.indexOf(firstSelected);
-        if (index >= 0) {
-            if (up && index > 0) {
-                resultingValues.remove(index);
-                resultingValues.add(index - 1, firstSelected);
-            }
-            if (!up && index < resultingValues.size() - 1) {
-                resultingValues.remove(index);
-                resultingValues.add(index + 1, firstSelected);
-            }
-        }
+        resultingEnumValueSet.move(indexes, up);
     }
 
     public void moveUp(List<String> selectedValues) {
@@ -104,9 +91,8 @@ public class ListChooserModel {
         preDefinedValues.addAll(predefValues);
     }
 
-    public void setInitialResultingValues(List<String> resValues) {
-        resultingValues.clear();
-        resultingValues.addAll(resValues);
+    public void setInitialResultingValues(IEnumValueSet resValues) {
+        resultingEnumValueSet = resValues;
     }
 
 }

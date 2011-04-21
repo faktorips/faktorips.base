@@ -109,4 +109,20 @@ public interface IEnumValueSet extends IValueSet {
      */
     public MessageList validateValue(int index, IIpsProject ipsProject) throws CoreException;
 
+    /**
+     * Getting a copy of the list of values
+     * 
+     * @return A copy of the values list
+     */
+    List<String> getValuesAsList();
+
+    /**
+     * Move the parts on the specified indexes up or down
+     * 
+     * @param indexes the indexes of the elements that should be moved
+     * @param up true to move the elements up, false for down
+     * 
+     */
+    void move(List<Integer> indexes, boolean up);
+
 }

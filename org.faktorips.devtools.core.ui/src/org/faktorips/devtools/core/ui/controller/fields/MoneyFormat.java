@@ -93,11 +93,16 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
         } else {
             amount = amountFormat.parse(stringToBeParsed);
         }
-        Money money = Money.valueOf(Decimal.valueOf(amount), actualCurrency);
-        if (money != Money.NULL) {
-            return money.toString();
-        } else {
-            return null;
+        try {
+            Decimal decimalAmount = Decimal.valueOf(amount);
+            Money money = Money.valueOf(decimalAmount, actualCurrency);
+            if (money != Money.NULL) {
+                return money.toString();
+            } else {
+                return null;
+            }
+        } catch (NumberFormatException e) {
+            return stringToBeParsed;
         }
     }
 

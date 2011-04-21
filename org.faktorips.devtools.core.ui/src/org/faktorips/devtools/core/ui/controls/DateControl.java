@@ -55,7 +55,7 @@ public class DateControl extends TextButtonControl {
     public DateControl(Composite parent, UIToolkit toolkit) {
         super(parent, toolkit, "", true, 24, SWT.RIGHT); //$NON-NLS-1$
         setButtonImage(IpsUIPlugin.getImageHandling().getSharedImage("Calendar.png", true)); //$NON-NLS-1$
-        dateFormat = new DateISOStringFormat();
+        dateFormat = DateISOStringFormat.newInstance();
     }
 
     @Override

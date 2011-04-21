@@ -166,7 +166,7 @@ public class ComponentPropertiesSection extends IpsSection {
         IpsObjectUIController controller = new IpsObjectUIController(product);
         controller.add(field, product, IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
         controller.add(runtimeIdText, product, IProductCmpt.PROPERTY_RUNTIME_ID);
-        validToField = new DateControlField<GregorianCalendar>(dateControl, new GregorianCalendarFormat());
+        validToField = new DateControlField<GregorianCalendar>(dateControl, GregorianCalendarFormat.newInstance());
         controller.add(validToField, product, IProductCmpt.PROPERTY_VALID_TO);
 
         // handle invalid values - the gregorian calendar field transforms all invalid values
