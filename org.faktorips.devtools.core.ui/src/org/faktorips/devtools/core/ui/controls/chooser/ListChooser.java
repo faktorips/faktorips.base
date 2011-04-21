@@ -73,7 +73,7 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
 
     private boolean dataChangeable;
 
-    private ListChooserModel model = new ListChooserModel();
+    private ListChooserModel model;
 
     /**
      * Creates a new list chooser.
@@ -159,8 +159,7 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
     }
 
     public final void init(List<String> predefValues, IEnumValueSet resultingValues) {
-        model.setInitialPredefinedValues(predefValues);
-        model.setInitialResultingValues(resultingValues);
+        model = new ListChooserModel(predefValues, resultingValues);
 
         preDefinedValuesTableViewer.setContentProvider(createContentProvider(SourceOrResult.SOURCE));
         preDefinedValuesTableViewer.setLabelProvider(createLabelProvider());

@@ -21,12 +21,13 @@ import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 
 public class ListChooserModel {
 
-    private List<String> preDefinedValues = new ArrayList<String>();
+    private final List<String> preDefinedValues;
 
-    private IEnumValueSet resultingEnumValueSet;
+    private final IEnumValueSet resultingEnumValueSet;
 
-    public void setInitialValues(List<String> initialValues) {
-        preDefinedValues.addAll(initialValues);
+    public ListChooserModel(List<String> preDefinedValues, IEnumValueSet resultingEnumValueSet) {
+        this.preDefinedValues = preDefinedValues;
+        this.resultingEnumValueSet = resultingEnumValueSet;
     }
 
     /**
@@ -84,15 +85,6 @@ public class ListChooserModel {
 
     public void moveDown(List<String> selectedValues) {
         move(selectedValues, false);
-    }
-
-    public void setInitialPredefinedValues(List<String> predefValues) {
-        preDefinedValues.clear();
-        preDefinedValues.addAll(predefValues);
-    }
-
-    public void setInitialResultingValues(IEnumValueSet resValues) {
-        resultingEnumValueSet = resValues;
     }
 
 }
