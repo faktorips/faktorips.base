@@ -45,7 +45,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
@@ -98,7 +97,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
     private Map<String, List<String>> testParameterTypesForGeneration;
     private Map<String, List<String>> testParameterNamesForGeneration;
 
-    public FormulaTestBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
+    public FormulaTestBuilder(DefaultBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(FormulaTestBuilder.class));
         project = builderSet.getIpsProject();
         productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();

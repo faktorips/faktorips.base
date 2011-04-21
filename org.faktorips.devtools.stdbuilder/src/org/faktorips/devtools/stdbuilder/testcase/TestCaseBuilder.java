@@ -38,7 +38,6 @@ import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -86,8 +85,13 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         }
     }
 
-    public TestCaseBuilder(IIpsArtefactBuilderSet builderSet) {
+    public TestCaseBuilder(DefaultBuilderSet builderSet) {
         super(builderSet);
+    }
+
+    @Override
+    public DefaultBuilderSet getBuilderSet() {
+        return (DefaultBuilderSet)super.getBuilderSet();
     }
 
     @Override

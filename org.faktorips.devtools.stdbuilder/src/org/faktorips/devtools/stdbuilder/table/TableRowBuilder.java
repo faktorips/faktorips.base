@@ -21,17 +21,17 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IImportContainer;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaCore;
+import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 
 public class TableRowBuilder extends JavaSourceFileBuilder {
 
-    public TableRowBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
+    public TableRowBuilder(DefaultBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(TableRowBuilder.class));
     }
 

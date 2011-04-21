@@ -19,7 +19,6 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
@@ -78,11 +77,6 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
             throws CoreException {
 
         return createFlIdentifierResolver(formula, exprCompiler);
-    }
-
-    @Override
-    public String getPackage(String kind, IIpsSrcFile ipsSrcFile) throws CoreException {
-        return null;
     }
 
     @Override

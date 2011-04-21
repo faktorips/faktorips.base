@@ -112,8 +112,9 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         super(builderSet);
     }
 
-    private StandardBuilderSet getStandardBuilderSet() {
-        return (StandardBuilderSet)getBuilderSet();
+    @Override
+    public StandardBuilderSet getBuilderSet() {
+        return (StandardBuilderSet)super.getBuilderSet();
     }
 
     public boolean isGenerateEntriesForModelTypes() {
@@ -432,8 +433,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             DateTime validFrom = DateTime.createDateOnly(generation.getValidFrom());
             IProductCmptGeneration gen = (IProductCmptGeneration)generation;
             String generationClassName;
-            if (gen.getProductCmpt().containsFormula()
-                    && getStandardBuilderSet().getFormulaCompiling().compileToSubclass()) {
+            if (gen.getProductCmpt().containsFormula() && getBuilderSet().getFormulaCompiling().compileToSubclass()) {
                 generationClassName = productCmptBuilder.getQualifiedClassName((IProductCmptGeneration)generation);
             } else {
                 generationClassName = productCmptGenImplClassBuilder.getQualifiedClassName(pcType);
@@ -541,8 +541,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     }
 
     public TocEntryObject createTocEntry(IEnumType enumType) throws CoreException {
-        if (!getStandardBuilderSet().isGenerateJaxbSupport()
-                || !ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())) {
+        if (!getBuilderSet().isGenerateJaxbSupport() || !ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())) {
             return null;
         }
         if (enumType.isContainingValues() || enumType.isAbstract()) {

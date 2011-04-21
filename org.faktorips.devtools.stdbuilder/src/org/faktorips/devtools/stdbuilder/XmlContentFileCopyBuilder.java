@@ -17,9 +17,9 @@ import java.io.InputStream;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 
 /**
  * An implementation of the IpsArtefactBuilder interface that copies the XML content files for
@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
  */
 public class XmlContentFileCopyBuilder extends AbstractXmlFileBuilder {
 
-    public XmlContentFileCopyBuilder(IpsObjectType type, IIpsArtefactBuilderSet builderSet, String kind) {
+    public XmlContentFileCopyBuilder(IpsObjectType type, DefaultBuilderSet builderSet, String kind) {
         super(type, builderSet, kind);
     }
 

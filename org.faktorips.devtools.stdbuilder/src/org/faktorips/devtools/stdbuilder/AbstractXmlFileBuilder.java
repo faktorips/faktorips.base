@@ -25,24 +25,33 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
+import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 
 // TODO This class should be moved to devtools.core
+/**
+ * This abstract xml file builder handles general purposes building xml files in a java package
+ * structure.
+ */
 public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
 
     private IpsObjectType ipsObjectType;
     private String kind;
 
-    public AbstractXmlFileBuilder(IpsObjectType type, IIpsArtefactBuilderSet builderSet, String kind) {
+    public AbstractXmlFileBuilder(IpsObjectType type, DefaultBuilderSet builderSet, String kind) {
         super(builderSet);
         ArgumentCheck.notNull(kind, this);
         ArgumentCheck.notNull(type, this);
         ipsObjectType = type;
         this.kind = kind;
+    }
+
+    @Override
+    public DefaultBuilderSet getBuilderSet() {
+        return (DefaultBuilderSet)super.getBuilderSet();
     }
 
     private ByteArrayInputStream convertContentAsStream(String content, String charSet) throws CoreException {

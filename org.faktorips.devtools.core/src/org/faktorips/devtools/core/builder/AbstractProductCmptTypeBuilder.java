@@ -25,7 +25,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -42,7 +41,7 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder {
 
-    public AbstractProductCmptTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
+    public AbstractProductCmptTypeBuilder(DefaultBuilderSet builderSet, String kindId,
             LocalizedStringsSet localizedStringsSet) {
 
         super(builderSet, kindId, localizedStringsSet);

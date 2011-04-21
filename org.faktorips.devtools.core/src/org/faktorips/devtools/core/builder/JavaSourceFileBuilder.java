@@ -63,7 +63,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
 import org.faktorips.util.ArgumentCheck;
@@ -171,14 +170,18 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      *            getLocalizedText() methods are called and the localizedStringsSet is not set an
      *            exception is thrown
      */
-    public JavaSourceFileBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
-            LocalizedStringsSet localizedStringsSet) {
+    public JavaSourceFileBuilder(DefaultBuilderSet builderSet, String kindId, LocalizedStringsSet localizedStringsSet) {
 
         super(builderSet);
         ArgumentCheck.notNull(kindId, this);
         this.kindId = kindId;
         this.localizedStringsSet = localizedStringsSet;
         initJavaOptions();
+    }
+
+    @Override
+    public DefaultBuilderSet getBuilderSet() {
+        return (DefaultBuilderSet)super.getBuilderSet();
     }
 
     // TODO duplicate code in LocalizedTextHelper

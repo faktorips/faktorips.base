@@ -42,7 +42,6 @@ import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
@@ -119,7 +118,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     // contains all test parameters with at least one extension attribute
     private List<ITestPolicyCmptTypeParameter> policyTypeParamsWithExtensionAttr;
 
-    public TestCaseTypeClassBuilder(IIpsArtefactBuilderSet builderSet, String kindId) {
+    public TestCaseTypeClassBuilder(DefaultBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(TestCaseTypeClassBuilder.class));
         setMergeEnabled(true);
     }

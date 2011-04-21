@@ -49,13 +49,6 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
         super();
     }
 
-    /**
-     * Constructor for testing purposes.
-     */
-    public AbstractBuilderSet(IIpsArtefactBuilder[] builders) {
-        this.builders = builders;
-    }
-
     @Override
     public String getId() {
         return id;

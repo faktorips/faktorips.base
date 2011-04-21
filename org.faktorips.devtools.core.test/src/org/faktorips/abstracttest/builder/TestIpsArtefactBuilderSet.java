@@ -21,11 +21,10 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.builder.AbstractBuilderSet;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
+import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
@@ -36,7 +35,7 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
 
-public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
+public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
 
     public final static String ID = "testbuilderset";
 
@@ -46,12 +45,15 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
 
     private boolean isAggregateRootBuilder;
 
+    private final IIpsArtefactBuilder[] ipsArtefactBuilders;
+
     public TestIpsArtefactBuilderSet() throws CoreException {
         this(new IIpsArtefactBuilder[0]);
     }
 
     public TestIpsArtefactBuilderSet(IIpsArtefactBuilder[] builders) throws CoreException {
-        super(builders);
+        super();
+        ipsArtefactBuilders = builders;
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put(CONFIG_PROPERTY_GENERATOR_LOCALE, Locale.GERMAN.getLanguage());
         IpsArtefactBuilderSetConfig config = new IpsArtefactBuilderSetConfig(properties);
@@ -60,7 +62,7 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
 
     @Override
     protected IIpsArtefactBuilder[] createBuilders() throws CoreException {
-        return getArtefactBuilders(); // are passed into the constructor
+        return ipsArtefactBuilders;
     }
 
     public void setAggregateRootBuilder(boolean enable) {
@@ -151,11 +153,6 @@ public class TestIpsArtefactBuilderSet extends AbstractBuilderSet {
                         .getGetterMethodName(attribute.getName(), datatype);
             }
         };
-    }
-
-    @Override
-    public String getPackage(String kind, IIpsSrcFile ipsSrcFile) throws CoreException {
-        return null;
     }
 
     @Override

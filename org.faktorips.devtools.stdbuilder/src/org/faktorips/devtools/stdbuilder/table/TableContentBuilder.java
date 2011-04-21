@@ -13,13 +13,13 @@
 
 package org.faktorips.devtools.stdbuilder.table;
 
+import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.stdbuilder.XmlContentFileCopyBuilder;
 
 public class TableContentBuilder extends XmlContentFileCopyBuilder {
 
-    public TableContentBuilder(IIpsArtefactBuilderSet builderSet, String kind) {
+    public TableContentBuilder(DefaultBuilderSet builderSet, String kind) {
         super(IpsObjectType.TABLE_CONTENTS, builderSet, kind);
     }
 

@@ -62,7 +62,7 @@ public class XmlContentFileCopyBuilderTest extends AbstractStdBuilderTest {
     }
 
     private IJavaPackageStructure getPackageStructure() {
-        return ipsProject.getIpsArtefactBuilderSet();
+        return (IJavaPackageStructure)ipsProject.getIpsArtefactBuilderSet();
     }
 
     @Test

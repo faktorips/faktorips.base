@@ -32,7 +32,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -67,7 +66,7 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
 
     private Document doc;
 
-    public ModelTypeXmlBuilder(IpsObjectType type, IIpsArtefactBuilderSet builderSet, String kind) {
+    public ModelTypeXmlBuilder(IpsObjectType type, DefaultBuilderSet builderSet, String kind) {
         super(type, builderSet, kind);
     }
 

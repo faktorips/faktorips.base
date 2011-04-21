@@ -20,7 +20,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
@@ -42,8 +41,7 @@ import org.faktorips.fl.IdentifierResolver;
  * 
  * @author Peter Erzberger
  */
-// TODO AW: Assumption that Java is used on the highest abstraction level of the builder hierarchy.
-public interface IIpsArtefactBuilderSet extends IJavaPackageStructure {
+public interface IIpsArtefactBuilderSet {
 
     /** The XML element name. */
     public final static String XML_ELEMENT = "IpsArtefactBuilderSet"; //$NON-NLS-1$

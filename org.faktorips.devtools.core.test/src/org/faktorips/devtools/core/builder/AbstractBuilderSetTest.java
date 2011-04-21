@@ -15,17 +15,12 @@ package org.faktorips.devtools.core.builder;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.List;
-
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.util.LocalizedStringsSet;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -80,7 +75,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
     class A extends StubJavaSourceFileBuilder {
 
         public A() throws CoreException {
-            super(new TestIpsArtefactBuilderSet(), "", new LocalizedStringsSet(StubJavaSourceFileBuilder.class));
+            super(new TestIpsArtefactBuilderSet());
         }
 
     }
@@ -88,7 +83,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
     class B extends StubJavaSourceFileBuilder {
 
         public B() throws CoreException {
-            super(new TestIpsArtefactBuilderSet(), "", new LocalizedStringsSet(StubJavaSourceFileBuilder.class));
+            super(new TestIpsArtefactBuilderSet());
         }
 
     }
@@ -96,7 +91,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
     class C extends StubJavaSourceFileBuilder {
 
         public C() throws CoreException {
-            super(new TestIpsArtefactBuilderSet(), "", new LocalizedStringsSet(StubJavaSourceFileBuilder.class));
+            super(new TestIpsArtefactBuilderSet());
         }
 
     }
@@ -120,24 +115,17 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
     class NotInBuilderSer extends StubJavaSourceFileBuilder {
 
         public NotInBuilderSer(IIpsArtefactBuilderSet builderSet) {
-            super(builderSet, "", new LocalizedStringsSet(StubJavaSourceFileBuilder.class));
+            super(builderSet);
         }
 
     }
 
-    private static class StubJavaSourceFileBuilder extends JavaSourceFileBuilder {
+    private static class StubJavaSourceFileBuilder extends AbstractArtefactBuilder {
 
         public boolean isBuilderFor = false;
 
-        public StubJavaSourceFileBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
-                LocalizedStringsSet localizedStringsSet) {
-
-            super(builderSet, kindId, localizedStringsSet);
-        }
-
-        @Override
-        protected String generate() throws CoreException {
-            return "";
+        public StubJavaSourceFileBuilder(IIpsArtefactBuilderSet builderSet) {
+            super(builderSet);
         }
 
         @Override
@@ -150,14 +138,21 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
-                IIpsObjectPartContainer ipsObjectPartContainer) {
+        public String getName() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
+            // TODO Auto-generated method stub
 
         }
 
         @Override
-        public boolean isBuildingPublishedSourceFile() {
-            return false;
+        public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
+            // TODO Auto-generated method stub
+
         }
 
     }

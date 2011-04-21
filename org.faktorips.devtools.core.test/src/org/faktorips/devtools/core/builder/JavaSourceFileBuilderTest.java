@@ -34,7 +34,6 @@ import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.LocalizedStringsSet;
 import org.junit.Before;
@@ -135,10 +134,10 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         private final boolean buildingPublishedSourceFile;
 
         public StubJavaSourceFileBuilder(IIpsSrcFile ipsSrcFile, boolean buildingPublishedSourceFile) {
-            this(mock(IIpsArtefactBuilderSet.class), "", null, ipsSrcFile, buildingPublishedSourceFile);
+            this(mock(DefaultBuilderSet.class), "", null, ipsSrcFile, buildingPublishedSourceFile);
         }
 
-        public StubJavaSourceFileBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
+        public StubJavaSourceFileBuilder(DefaultBuilderSet builderSet, String kindId,
                 LocalizedStringsSet localizedStringsSet, IIpsSrcFile ipsSrcFile, boolean buildingPublishedSourceFile) {
 
             super(builderSet, kindId, localizedStringsSet);

@@ -29,7 +29,6 @@ import org.faktorips.codegen.ImportDeclaration;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsLoggingFrameworkConnector;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -75,7 +74,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     private List<TypeSection> innerClassesSections;
     private boolean loggerInstanceGenerated = false;
 
-    public DefaultJavaSourceFileBuilder(IIpsArtefactBuilderSet builderSet, String kindId,
+    public DefaultJavaSourceFileBuilder(DefaultBuilderSet builderSet, String kindId,
             LocalizedStringsSet localizedStringsSet) {
         super(builderSet, kindId, localizedStringsSet);
     }

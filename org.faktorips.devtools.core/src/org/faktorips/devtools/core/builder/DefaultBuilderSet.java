@@ -43,7 +43,7 @@ import org.faktorips.fl.IdentifierResolver;
  * 
  * @author Peter Erzberger
  */
-public abstract class DefaultBuilderSet extends AbstractBuilderSet {
+public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJavaPackageStructure {
 
     /*
      * These constants are not supposed to be used within JavaSourceFileBuilder implementations.

@@ -22,7 +22,6 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -37,7 +36,7 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
 
-    public AbstractTypeBuilder(IIpsArtefactBuilderSet builderSet, String kindId, LocalizedStringsSet localizedStringsSet) {
+    public AbstractTypeBuilder(DefaultBuilderSet builderSet, String kindId, LocalizedStringsSet localizedStringsSet) {
         super(builderSet, kindId, localizedStringsSet);
     }
 

@@ -188,7 +188,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         incrementalBuild();
 
         // check if the target runtime id was updated in product cmpt c runtime xml
-        String packageOfProductC = ipsProject.getIpsArtefactBuilderSet().getPackage(
+        String packageOfProductC = ((DefaultBuilderSet)ipsProject.getIpsArtefactBuilderSet()).getPackage(
                 DefaultBuilderSet.KIND_PRODUCT_CMPT_GENERATION, productCmptC.getIpsSrcFile());
         String productCXmlFile = packageOfProductC + "." + "productC";
         productCXmlFile = productCXmlFile.replaceAll("\\.", "/");
