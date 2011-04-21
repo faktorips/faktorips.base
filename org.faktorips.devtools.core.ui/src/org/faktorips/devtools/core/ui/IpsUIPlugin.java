@@ -222,7 +222,9 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 } else {
                     ValueDatatypeControlFactory factory = ExtensionPoints.createExecutableExtension(extension,
                             configElement, CONFIG_PROPERTY_CLASS, ValueDatatypeControlFactory.class);
-                    factories.add(factory);
+                    if (factory != null) {
+                        factories.add(factory);
+                    }
                 }
             }
         }
