@@ -16,11 +16,11 @@ package org.faktorips.devtools.core.ui.controller.fields;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.ui.controls.DateControl;
 
-public class DateControlField extends FormattingTextField {
+public class DateControlField<T> extends FormattingTextField<T> {
 
     private final DateControl dateControl;
 
-    public DateControlField(DateControl dateControl, AbstractInputFormat format) {
+    public DateControlField(DateControl dateControl, AbstractInputFormat<T> format) {
         super(dateControl.getTextControl(), format);
         this.dateControl = dateControl;
     }

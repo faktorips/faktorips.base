@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.ui.controls.TextButtonControl;
  * 
  * @author Thorsten Guenther
  */
-public class PreviewTextButtonField extends DefaultEditField {
+public class PreviewTextButtonField extends DefaultEditField<Object> {
 
     private TextButtonControl control;
 

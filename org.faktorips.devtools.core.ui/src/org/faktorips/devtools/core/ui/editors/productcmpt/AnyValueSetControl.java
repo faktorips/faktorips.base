@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
@@ -100,7 +101,9 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
             }
             dialog.setDataChangeable(isDataChangeable());
             if (dialog.open() == Window.OK) {
-                super.getTextControl().setText(configElement.getValueSet().toShortString());
+                String formattedValue = IpsUIPlugin.getDefault().getDatatypeFormatter()
+                        .formatValueSet(configElement.getValueSet());
+                super.getTextControl().setText(formattedValue);
                 controller.updateUI();
             } else {
                 resetState();

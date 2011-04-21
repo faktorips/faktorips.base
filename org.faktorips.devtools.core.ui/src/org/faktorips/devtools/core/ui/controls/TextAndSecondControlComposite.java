@@ -31,7 +31,8 @@ public abstract class TextAndSecondControlComposite extends ControlComposite {
 
     protected boolean immediatelyNotifyListener = false;
 
-    public TextAndSecondControlComposite(Composite parent, UIToolkit toolkit, boolean smallMargins, int buttonHeightHint) {
+    public TextAndSecondControlComposite(Composite parent, UIToolkit toolkit, boolean smallMargins,
+            int buttonHeightHint, int style) {
 
         super(parent, SWT.NONE);
         setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
@@ -40,7 +41,7 @@ public abstract class TextAndSecondControlComposite extends ControlComposite {
         layout.marginWidth = 0;
         setLayout(layout);
         if (toolkit.getFormToolkit() == null) {
-            text = toolkit.createText(this);
+            text = toolkit.createText(this, SWT.SINGLE | style);
         } else {
             Composite c = toolkit.getFormToolkit().createComposite(this);
             GridLayout layout2 = new GridLayout(2, false);
@@ -54,7 +55,7 @@ public abstract class TextAndSecondControlComposite extends ControlComposite {
             c.setLayout(layout2);
             c.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL));
             toolkit.getFormToolkit().paintBordersFor(c);
-            text = toolkit.createText(c);
+            text = toolkit.createText(c, style);
             // toolkit.getFormToolkit().adapt(this); // has to be done after the text control is
             // created!
         }

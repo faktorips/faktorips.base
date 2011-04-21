@@ -28,15 +28,25 @@ import org.faktorips.values.DateUtil;
  * 
  * @author Stefan Widmaier
  */
-public class DateISOStringFormat extends AbstractDateFormat {
+public class DateISOStringFormat extends AbstractDateFormat<String> {
+
+    public static DateISOStringFormat newInstance() {
+        DateISOStringFormat dateISOStringFormat = new DateISOStringFormat();
+        dateISOStringFormat.initFormat();
+        return dateISOStringFormat;
+    }
+
+    protected DateISOStringFormat() {
+        // only hide the constructor
+    }
 
     @Override
-    protected Object mapDateToObject(Date date) {
+    protected String mapDateToObject(Date date) {
         return DateUtil.dateToIsoDateString(date);
     }
 
     @Override
-    protected Date mapObjectToDate(Object value) {
-        return DateUtil.parseIsoDateStringToDate((String)value);
+    protected Date mapObjectToDate(String value) {
+        return DateUtil.parseIsoDateStringToDate(value);
     }
 }

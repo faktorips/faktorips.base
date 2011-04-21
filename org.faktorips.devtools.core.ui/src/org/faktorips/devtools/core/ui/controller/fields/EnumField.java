@@ -14,15 +14,18 @@
 package org.faktorips.devtools.core.ui.controller.fields;
 
 import org.eclipse.swt.widgets.Combo;
+import org.faktorips.devtools.core.ui.controller.EditField;
 
 /**
  * An edit field for the Combo control whose items are derived from an Java Enum (introduced in Java
  * 5.0).
  * 
+ * @see EditField for details about generic type T
+ * 
  * @author Roman Grutza
  * @author Stefan Widmaier
  */
-public class EnumField<T extends Enum<T>> extends ComboField {
+public class EnumField<T extends Enum<T>> extends ComboField<T> {
 
     private T[] usedEnumValues;
     private final Class<? extends T> javaEnumClass;
@@ -68,7 +71,7 @@ public class EnumField<T extends Enum<T>> extends ComboField {
     }
 
     @Override
-    public Object parseContent() {
+    public T parseContent() {
         return getEnumValue();
     }
 
@@ -77,7 +80,7 @@ public class EnumField<T extends Enum<T>> extends ComboField {
     }
 
     @Override
-    public void setValue(Object newValue) {
+    public void setValue(T newValue) {
         if (javaEnumClass.isAssignableFrom(newValue.getClass())) {
             setEnumValue(javaEnumClass.cast(newValue));
         }

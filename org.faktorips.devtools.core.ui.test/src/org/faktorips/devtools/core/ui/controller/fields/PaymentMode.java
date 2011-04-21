@@ -101,6 +101,11 @@ public class PaymentMode extends AbstractDatatype implements EnumDatatype {
     }
 
     @Override
+    public Object getValue(String value) {
+        throw new RuntimeException("not supported");
+    }
+
+    @Override
     public boolean isNull(String value) {
         if (value == null) {
             return true;

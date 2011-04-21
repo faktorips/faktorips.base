@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.enums.EnumValue;
 import org.faktorips.devtools.core.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -52,9 +53,9 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
 
     private NewRootParameterWizard wizard;
 
-    private EditField editFieldDatatypeOrRule;
-    private EditField editFieldName;
-    private EditField editFieldParamType;
+    private EditField<String> editFieldDatatypeOrRule;
+    private EditField<String> editFieldName;
+    private EditField<EnumValue> editFieldParamType;
 
     private String prevDatatypeOrRule;
 

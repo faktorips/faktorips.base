@@ -13,19 +13,35 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.values.Decimal;
+
 /**
- * Format for floating point number input.
+ * Format for floating point number input. This formatter is valid for {@link Decimal},
+ * {@link Double} and {@link BigDecimal}
  * 
  * @author Stefan Widmaier
  */
-public class DoubleFormat extends AbstractNumberFormat {
+public class DecimalNumberFormat extends AbstractNumberFormat {
 
     private DecimalFormat numberFormat;
+    private final ValueDatatype datatype;
+
+    public static DecimalNumberFormat newInstance(ValueDatatype datatype) {
+        DecimalNumberFormat bigDecimalFormat = new DecimalNumberFormat(datatype);
+        bigDecimalFormat.initFormat();
+        return bigDecimalFormat;
+    }
+
+    protected DecimalNumberFormat(ValueDatatype datatype) {
+        this.datatype = datatype;
+    }
 
     /**
      * String that is an example of a valid input string.
@@ -34,21 +50,28 @@ public class DoubleFormat extends AbstractNumberFormat {
 
     @Override
     protected void initFormat(Locale locale) {
-        numberFormat = (DecimalFormat)DecimalFormat.getNumberInstance(locale);
+        numberFormat = (DecimalFormat)NumberFormat.getNumberInstance(locale);
         numberFormat.setGroupingUsed(true);
         numberFormat.setGroupingSize(3);
         numberFormat.setParseIntegerOnly(false);
         numberFormat.setMaximumFractionDigits(Integer.MAX_VALUE);
         numberFormat.setRoundingMode(RoundingMode.HALF_UP);
+        numberFormat.setParseBigDecimal(true);
         exampleString = numberFormat.format(-1000.2);
     }
 
     @Override
-    protected String formatInternal(Object value) {
-        Double d = new Double((String)value);
-        // System.out.print("Value \"" + d + "\" is being parsed...");
-        String stringToBeDisplayed = numberFormat.format(d);
-        // System.out.println("Value \"" + stringToBeDisplayed + "\" will be displayed");
+    protected String formatInternal(String value) {
+        Object valueAsObject = datatype.getValue(value);
+        if (valueAsObject instanceof Decimal) {
+            Decimal decimalValue = (Decimal)valueAsObject;
+            if (decimalValue.isNull()) {
+                return null;
+            } else {
+                valueAsObject = decimalValue.bigDecimalValue();
+            }
+        }
+        String stringToBeDisplayed = numberFormat.format(valueAsObject);
         return stringToBeDisplayed;
     }
 
@@ -58,7 +81,7 @@ public class DoubleFormat extends AbstractNumberFormat {
     }
 
     @Override
-    protected NumberFormat getNumberFormat() {
+    public DecimalFormat getNumberFormat() {
         return numberFormat;
     }
 

@@ -82,10 +82,10 @@ public class TestCaseDetailArea {
     private HashMap<String, Section> sectionControls = new HashMap<String, Section>();
 
     /** Container holds all edit fields for test values and test attribute values */
-    private HashMap<String, EditField> allEditFieldsCache = new HashMap<String, EditField>();
+    private HashMap<String, EditField<?>> allEditFieldsCache = new HashMap<String, EditField<?>>();
 
     /** Contains the first edit field of each test policy component in the edit area */
-    private HashMap<String, EditField> firstAttributeEditFields = new HashMap<String, EditField>();
+    private HashMap<String, EditField<?>> firstAttributeEditFields = new HashMap<String, EditField<?>>();
 
     private HashMap<String, String> failureMessageCache = new HashMap<String, String>();
     private HashMap<String, String[]> failureDetailCache = new HashMap<String, String[]>();
@@ -94,7 +94,7 @@ public class TestCaseDetailArea {
     private List<String> fixedFieldsCache = new ArrayList<String>();
 
     /** Contains the mapping between the edit field and model objects */
-    private HashMap<EditField, IIpsObjectPart> editField2ModelObject = new HashMap<EditField, IIpsObjectPart>();
+    private HashMap<EditField<?>, IIpsObjectPart> editField2ModelObject = new HashMap<EditField<?>, IIpsObjectPart>();
 
     /** Contains all ui controller */
     private List<Control> allBindedControls = new ArrayList<Control>();
@@ -189,14 +189,14 @@ public class TestCaseDetailArea {
     /**
      * Returns the attribute edit fields given by the unique key.
      */
-    public EditField getFirstAttributeEditField(String uniqueKey) {
+    public EditField<?> getFirstAttributeEditField(String uniqueKey) {
         return firstAttributeEditFields.get(uniqueKey);
     }
 
     /**
      * Returns the test value edit fields given by the unique key.
      */
-    public EditField getTestValueEditField(String uniqueKey) {
+    public EditField<?> getTestValueEditField(String uniqueKey) {
         return getEditField(uniqueKey);
     }
 
@@ -314,7 +314,7 @@ public class TestCaseDetailArea {
                     || (testCaseSection.getContentProvider().isInput() && attributeValue.isInputAttribute(ipsProject))
                     || testCaseSection.getContentProvider().isExpectedResult()
                     && attributeValue.isExpextedResultAttribute(ipsProject)) {
-                EditField editField = createAttributeEditField(testPolicyCmpt, testPolicyCmpt, attributeComposite,
+                EditField<?> editField = createAttributeEditField(testPolicyCmpt, testPolicyCmpt, attributeComposite,
                         attributeValue);
 
                 // store the first attribute of each policy cmpt for fast focus setting
@@ -329,12 +329,12 @@ public class TestCaseDetailArea {
         toolkit.createVerticalSpacer(details, 10).setBackground(details.getBackground());
     }
 
-    private EditField createAttributeEditField(final ITestPolicyCmpt testPolicyCmpt,
+    private EditField<?> createAttributeEditField(final ITestPolicyCmpt testPolicyCmpt,
             final ITestPolicyCmpt testPolicyCmptForSelection,
             Composite attributeComposite,
             final ITestAttributeValue attributeValue) throws CoreException {
 
-        EditField editField = null;
+        EditField<?> editField = null;
 
         // get the ctrlFactory to create the edit field
         ValueDatatype datatype = null;
@@ -416,7 +416,7 @@ public class TestCaseDetailArea {
     /**
      * Marks the given edit field as expected result.
      */
-    private void markAsExpected(final EditField editField) {
+    private void markAsExpected(final EditField<?> editField) {
         editField.getControl().setBackground(testCaseSection.getDisplay().getSystemColor(SWT.COLOR_YELLOW));
     }
 
@@ -564,7 +564,7 @@ public class TestCaseDetailArea {
             section.getChildren()[0].setToolTipText(localizedDescription);
         }
 
-        final EditField editField = ctrlFactory.createEditField(toolkit, composite, datatype, null, ipsProject);
+        final EditField<String> editField = ctrlFactory.createEditField(toolkit, composite, datatype, null, ipsProject);
         addSectionSelectionListeners(editField, label, testValue);
 
         addBindingFor(editField, testValue, ITestValue.PROPERTY_VALUE);
@@ -629,7 +629,7 @@ public class TestCaseDetailArea {
             label.setToolTipText(localizedDescription);
             section.getChildren()[0].setToolTipText(localizedDescription);
         }
-        final EditField editField = new EnumValueField(toolkit.createCombo(composite,
+        final EditField<?> editField = new EnumValueField(toolkit.createCombo(composite,
                 TestRuleViolationType.getEnumType()), TestRuleViolationType.getEnumType());
         addSectionSelectionListeners(editField, label, rule);
 
@@ -745,7 +745,7 @@ public class TestCaseDetailArea {
     boolean markEditFieldAsFailure(String editFieldUniqueKey, String failureMessage, String[] failureDetails2) {
         failureMessageCache.put(editFieldUniqueKey, failureMessage);
         failureDetailCache.put(editFieldUniqueKey, failureDetails2);
-        EditField editField = getEditField(editFieldUniqueKey);
+        EditField<?> editField = getEditField(editFieldUniqueKey);
         if (editField == null) {
             // edit field not found, try to get the special edit value field
             editField = getEditField(TestCaseSection.VALUESECTION + editFieldUniqueKey);
@@ -762,7 +762,7 @@ public class TestCaseDetailArea {
     }
 
     void setFocusOnEditField(String editFieldUniqueKey) {
-        EditField editField = getEditField(editFieldUniqueKey);
+        EditField<?> editField = getEditField(editFieldUniqueKey);
         if (editField == null) {
             // edit field not found, try to get the special edit value field
             editField = getEditField(TestCaseSection.VALUESECTION + editFieldUniqueKey);
@@ -779,7 +779,7 @@ public class TestCaseDetailArea {
         if (!testCaseSection.isDataChangeable()) {
             return false;
         }
-        EditField editField = getEditField(editFieldUniqueKey);
+        EditField<?> editField = getEditField(editFieldUniqueKey);
         if (editField == null) {
             // edit field not found, try to get the special edit value field
             editField = getEditField(TestCaseSection.VALUESECTION + editFieldUniqueKey);
@@ -793,7 +793,7 @@ public class TestCaseDetailArea {
         return false;
     }
 
-    private void updateValue(EditField editField, String actualValue) {
+    private void updateValue(EditField<?> editField, String actualValue) {
         IIpsObjectPart object = editField2ModelObject.get(editField);
         String actualValueToSet = nullIfNullRepresentation(actualValue);
         if (object != null) {
@@ -826,7 +826,7 @@ public class TestCaseDetailArea {
     /**
      * Adds a listener to mark the section as selected if the given edit field gets the focus
      */
-    private void addSectionSelectionListeners(EditField editField, Control label, final IIpsObjectPart object) {
+    private void addSectionSelectionListeners(EditField<?> editField, Control label, final IIpsObjectPart object) {
         if (editField != null) {
             editField.getControl().addFocusListener(new FocusAdapter() {
                 @Override
@@ -858,7 +858,7 @@ public class TestCaseDetailArea {
     /**
      * Adds the given object to the binding context
      */
-    private void addBindingFor(EditField editField, Object object, String property) {
+    private void addBindingFor(EditField<?> editField, Object object, String property) {
         bindingContext.bindContent(editField, object, property);
         allBindedControls.add(editField.getControl());
     }
@@ -866,15 +866,15 @@ public class TestCaseDetailArea {
     /**
      * Stores the edit field which is identified by the given unique key.
      */
-    private void putEditField(String key, EditField editField) {
+    private void putEditField(String key, EditField<?> editField) {
         allEditFieldsCache.put(key.toUpperCase(), editField);
     }
 
     /**
      * Returns the edit field which is identified by the given unique key.
      */
-    public EditField getEditField(String uniqueKey) {
-        EditField editField = allEditFieldsCache.get(uniqueKey);
+    public EditField<?> getEditField(String uniqueKey) {
+        EditField<?> editField = allEditFieldsCache.get(uniqueKey);
         if (editField == null) {
             // edit field not found, try to get the special edit value field
             editField = allEditFieldsCache.get((TestCaseSection.VALUESECTION + uniqueKey).toUpperCase());

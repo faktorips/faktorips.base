@@ -20,6 +20,7 @@ import static org.junit.Assert.fail;
 import java.util.Set;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.type.AssociationType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -51,6 +52,7 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
     private IProductCmptTypeAssociation association;
     private IIpsProject ipsProject;
     private IProductCmptTreeStructure structure;
+    private ProductCmpt productCmptTarget2;
 
     @Override
     @Before
@@ -84,8 +86,15 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
         tcu.setTableContentName("tableContent1");
 
         productCmptTarget = newProductCmpt(productCmptTypeTarget, "products.TestProductTarget");
+        productCmptTarget2 = newProductCmpt(productCmptTypeTarget, "products.TestProductTarget2");
+
         IProductCmptGeneration targetGen = productCmptTarget.getProductCmptGeneration(0);
         tcu = targetGen.newTableContentUsage();
+        tcu.setStructureUsage(tsu2.getRoleName());
+        tcu.setTableContentName("tableContent2");
+
+        IProductCmptGeneration target2Gen = productCmptTarget2.getProductCmptGeneration(0);
+        tcu = target2Gen.newTableContentUsage();
         tcu.setStructureUsage(tsu2.getRoleName());
         tcu.setTableContentName("tableContent2");
 
@@ -93,12 +102,7 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
         link.setTarget(productCmptTarget.getQualifiedName());
 
         link = productCmptGen.newLink(association.getName());
-        link.setTarget(productCmptTarget.getQualifiedName());
-
-        policyCmptType.getIpsSrcFile().save(true, null);
-        policyCmptTypeTarget.getIpsSrcFile().save(true, null);
-        productCmpt.getIpsSrcFile().save(true, null);
-        productCmptTarget.getIpsSrcFile().save(true, null);
+        link.setTarget(productCmptTarget2.getQualifiedName());
 
         structure = productCmpt.getStructure(ipsProject);
     }

@@ -41,9 +41,9 @@ public class NewTestParamDetailWizardPage extends WizardPage implements ValueCha
 
     private IBlockedValidationWizard wizard;
 
-    private EditField editFieldMin;
-    private EditField editFieldMax;
-    private EditField editFieldReqProd;
+    private EditField<Integer> editFieldMin;
+    private EditField<Integer> editFieldMax;
+    private EditField<Boolean> editFieldReqProd;
 
     private UIToolkit uiToolkit;
 

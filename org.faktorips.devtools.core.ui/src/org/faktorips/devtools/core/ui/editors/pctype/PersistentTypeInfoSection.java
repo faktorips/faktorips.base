@@ -34,7 +34,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
-import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
@@ -113,13 +112,14 @@ public class PersistentTypeInfoSection extends IpsSection {
         Composite detailComposite = toolkit.createLabelEditColumnComposite(client);
         toolkit.createLabel(detailComposite, Messages.PersistentTypeInfoSection_labelPersistentType);
         Combo persistentTypeCombo = toolkit.createCombo(detailComposite);
-        ComboField persistentTypeField = new EnumField<PersistentType>(persistentTypeCombo, PersistentType.class);
+        EnumField<PersistentType> persistentTypeField = new EnumField<PersistentType>(persistentTypeCombo,
+                PersistentType.class);
 
         Label inheritanceStrateyLabel = toolkit.createLabel(detailComposite,
                 Messages.PersistentTypeInfoSection_labelInheritanceStrategy);
         Combo inheritanceStrategyCombo = toolkit.createCombo(detailComposite);
-        ComboField inheritanceStrategyField = new EnumField<InheritanceStrategy>(inheritanceStrategyCombo,
-                InheritanceStrategy.class);
+        EnumField<InheritanceStrategy> inheritanceStrategyField = new EnumField<InheritanceStrategy>(
+                inheritanceStrategyCombo, InheritanceStrategy.class);
         persistentComposites.add(inheritanceStrateyLabel);
         persistentComposites.add(inheritanceStrategyCombo);
 
@@ -151,8 +151,8 @@ public class PersistentTypeInfoSection extends IpsSection {
 
         toolkit.createLabel(discriminatorDefComposite, Messages.PersistentTypeInfoSection_labelDatatype);
         Combo descriminatorDatatypeCombo = toolkit.createCombo(discriminatorDefComposite);
-        ComboField descriminatorDatatypeField = new EnumField<DiscriminatorDatatype>(descriminatorDatatypeCombo,
-                DiscriminatorDatatype.class);
+        EnumField<DiscriminatorDatatype> descriminatorDatatypeField = new EnumField<DiscriminatorDatatype>(
+                descriminatorDatatypeCombo, DiscriminatorDatatype.class);
 
         toolkit.createLabel(discriminatorDefComposite, Messages.PersistentTypeInfoSection_labelColumnValue);
         Text descriminatorColumnValueText = toolkit.createText(discriminatorDefComposite);

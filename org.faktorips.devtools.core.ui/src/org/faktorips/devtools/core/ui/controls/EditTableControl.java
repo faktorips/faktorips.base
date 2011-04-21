@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.controls;
 
 import org.eclipse.jface.contentassist.SubjectControlContentAssistant;
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -47,6 +48,9 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 /**
  * A control that contains a table on the left and buttons to add and remove rows and to move a row
  * up or down.
+ * <p>
+ * Some comments in this class were copied along with the code when "reusing" functionality from
+ * eclipse. Thus bug numbers are eclipse bugs.
  */
 public abstract class EditTableControl extends Composite implements IDataChangeableReadWriteAccess {
 
@@ -63,8 +67,11 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 
     private Label tableLabel;
 
-    public EditTableControl(Object modelObject, Composite parent, int style, String label) {
+    public EditTableControl(Composite parent, int style) {
         super(parent, style);
+    }
+
+    public void initialize(Object modelObject, String label) {
         initModelObject(modelObject);
         setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout layout = new GridLayout();
@@ -113,9 +120,8 @@ public abstract class EditTableControl extends Composite implements IDataChangea
         layouter.setLayoutData(gd);
 
         tableViewer = new TableViewer(table);
-        tableViewer.setUseHashlookup(true);
         tableViewer.setContentProvider(createContentProvider());
-        tableViewer.setLabelProvider(createLabelProvider());
+        tableViewer.setUseHashlookup(true);
 
         tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
             @Override
@@ -143,8 +149,20 @@ public abstract class EditTableControl extends Composite implements IDataChangea
             }
         });
 
+    }
+
+    /**
+     * Must be called by subclasses in their constructor to configure the {@link TableViewer} with
+     * the {@link CellEditor}s created by {@link #createCellEditors()}.
+     * <p>
+     * Therefore the overridable methods {@link #createContentProvider()},
+     * {@link #createLabelProvider()}, {@link #getColumnPropertyNames()} and
+     * {@link #createCellEditors()} are called.
+     */
+    protected void initCellEditorsAndConfigureTableViewer() {
+        tableViewer.setLabelProvider(createLabelProvider());
         tableViewer.setColumnProperties(getColumnPropertyNames());
-        UnfocusableTextCellEditor[] editors = createCellEditors();
+        CellEditor[] editors = createCellEditors();
         if (editors != null && editors.length != table.getColumnCount()) {
             throw new RuntimeException("Number of editors must be equal to the number of table columns!"); //$NON-NLS-1$
         }
@@ -161,9 +179,10 @@ public abstract class EditTableControl extends Composite implements IDataChangea
                 }
             }
         }
+        tableViewer.refresh();
     }
 
-    private void addListenersToEditor(final UnfocusableTextCellEditor editor, final int editorColumn) {
+    private void addListenersToEditor(final CellEditor editor, final int editorColumn) {
         Control control = editor.getControl();
         control.addTraverseListener(new TraverseListener() {
             @Override
@@ -240,31 +259,34 @@ public abstract class EditTableControl extends Composite implements IDataChangea
             }
         });
 
-        editor.addListener(new ICellEditorListener() {
-            /*
-             * bug 58540: change signature refactoring interaction: validate as you type
-             * [refactoring] CellEditors validate on keystroke by updating model on
-             * editorValueChanged(..)
-             */
-            @Override
-            public void applyEditorValue() {
-                // default behavior is OK
-            }
+        if (editor instanceof UnfocusableTextCellEditor) {
+            final UnfocusableTextCellEditor contentAssistEditor = (UnfocusableTextCellEditor)editor;
+            contentAssistEditor.addListener(new ICellEditorListener() {
+                /*
+                 * bug 58540: change signature refactoring interaction: validate as you type
+                 * [refactoring] CellEditors validate on keystroke by updating model on
+                 * editorValueChanged(..)
+                 */
+                @Override
+                public void applyEditorValue() {
+                    // default behavior is OK
+                }
 
-            @Override
-            public void cancelEditor() {
-                // must reset model to original value:
-                editor.fireModifyEvent(editor.getOriginalValue(), editorColumn);
-            }
+                @Override
+                public void cancelEditor() {
+                    // must reset model to original value:
+                    contentAssistEditor.fireModifyEvent(contentAssistEditor.getOriginalValue(), editorColumn);
+                }
 
-            @Override
-            public void editorValueChanged(boolean oldValidState, boolean newValidState) {
-                editor.fireModifyEvent(editor.getValue(), editorColumn);
-            }
-        });
+                @Override
+                public void editorValueChanged(boolean oldValidState, boolean newValidState) {
+                    contentAssistEditor.fireModifyEvent(contentAssistEditor.getValue(), editorColumn);
+                }
+            });
+        }
     }
 
-    protected abstract UnfocusableTextCellEditor[] createCellEditors();
+    protected abstract CellEditor[] createCellEditors();
 
     protected abstract ICellModifier createCellModifier();
 
@@ -533,7 +555,12 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 
         public void setContentAssistant(SubjectControlContentAssistant assistant, final int property) {
             fContentAssistant = assistant;
-            // workaround for bugs 53629, 58777:
+            /*
+             * The following comment was copied along with the code when "reusing" functionality
+             * from eclipse. Thus the bug numbers are eclipse bugs.
+             * 
+             * "workaround for bugs 53629, 58777:"
+             */
             text.addModifyListener(new ModifyListener() {
                 @Override
                 public void modifyText(ModifyEvent e) {
@@ -572,6 +599,10 @@ public abstract class EditTableControl extends Composite implements IDataChangea
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
         setDataChangeable(enabled);
+    }
+
+    protected UIToolkit getUiToolkit() {
+        return uiToolkit;
     }
 
 }

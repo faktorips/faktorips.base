@@ -110,7 +110,7 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
             if (other.parent != null) {
                 return false;
             }
-        } else if (parent != (other.parent)) {
+        } else if (!parent.equals(other.parent)) {
             return false;
         }
         if (structure == null) {

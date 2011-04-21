@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.controls.valuesets;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ICellModifier;
@@ -33,10 +34,12 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controls.EditTableControl;
 import org.faktorips.devtools.core.ui.controls.Messages;
 import org.faktorips.devtools.core.ui.controls.TableLayoutComposite;
@@ -56,25 +59,30 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
 
     // The value set being edited
     private IEnumValueSet valueSet;
+    private final ValueDatatype valueDatatype;
+    private final IIpsProject ipsProject;
 
     /**
      * Constructs a EnumValueSetEditControl and handles the type of the value set that is, if the
      * value set is of the wrong type, a new EnumValueEnumSet is created
      */
-    public EnumValueSetEditControl(IEnumValueSet valueSet, Composite parent, String label) {
-        super(valueSet, parent, SWT.NONE, label);
-        GridLayout layout = (GridLayout)getLayout();
-        layout.marginHeight = 10;
-        new MessageService(getTableViewer());
+    public EnumValueSetEditControl(Composite parent, ValueDatatype valueDatatype, IIpsProject ipsProject) {
+        super(parent, SWT.NONE);
+        this.valueDatatype = valueDatatype;
+        this.ipsProject = ipsProject;
     }
 
-    /**
-     * Constructs a EnumValueSetEditControl and handles the type of the value set that is, if the
-     * value set is of the wrong type, a new EnumValueEnumSet is created. Labels the control with
-     * default-text ("Values") in english.
-     */
-    public EnumValueSetEditControl(IEnumValueSet valueSet, Composite parent) {
-        this(valueSet, parent, Messages.EnumValueSetEditControl_titleValues);
+    @Override
+    public void initialize(Object modelObject, String label) {
+        if (label == null) {
+            label = Messages.EnumValueSetEditControl_titleValues;
+        }
+        super.initialize(modelObject, label);
+        GridLayout layout = (GridLayout)getLayout();
+        layout.marginHeight = 10;
+
+        initCellEditorsAndConfigureTableViewer();
+        new MessageService(getTableViewer());
     }
 
     @Override
@@ -136,7 +144,9 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
     @Override
     protected void createTableColumns(Table table) {
         new TableColumn(table, SWT.NONE).setResizable(false);
-        new TableColumn(table, SWT.NONE).setResizable(false);
+        ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault()
+                .getValueDatatypeControlFactory(valueDatatype);
+        new TableColumn(table, ctrlFactory.getDefaultAlignment()).setResizable(false);
     }
 
     @Override
@@ -151,10 +161,13 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
     }
 
     @Override
-    protected UnfocusableTextCellEditor[] createCellEditors() {
-        UnfocusableTextCellEditor[] editors = new UnfocusableTextCellEditor[2];
+    protected CellEditor[] createCellEditors() {
+        ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault()
+                .getValueDatatypeControlFactory(valueDatatype);
+        CellEditor[] editors = new CellEditor[2];
         editors[0] = null; // no editor for the message image column
-        editors[1] = new UnfocusableTextCellEditor(getTable());
+        editors[1] = ctrlFactory.createTableCellEditor(getUiToolkit(), valueDatatype, valueSet, getTableViewer(), 1,
+                ipsProject);
         return editors;
     }
 
@@ -213,7 +226,9 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
             if (columnIndex == 0) {
                 return ""; //$NON-NLS-1$
             }
-            return element.toString();
+            String value = IpsUIPlugin.getDefault().getDatatypeFormatter()
+                    .formatValue(valueDatatype, element.toString());
+            return value;
         }
     }
 
@@ -277,18 +292,11 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
 
         String getValueName() {
             String name = valueSet.getValue(index);
-            if (name == null) {
-                name = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
-            }
             return name;
         }
 
         void setValueName(String newName) {
-            if (newName.equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) {
-                valueSet.setValue(index, null);
-            } else {
-                valueSet.setValue(index, newName);
-            }
+            valueSet.setValue(index, newName);
         }
 
         @Override

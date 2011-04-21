@@ -13,18 +13,15 @@
 
 package org.faktorips.devtools.htmlexport;
 
-import static org.mockito.Mockito.mock;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.faktorips.devtools.core.DatatypeFormatter;
-import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 import org.faktorips.devtools.htmlexport.context.IPluginResourceFacade;
 
 public class FakePluginResourcesFacade implements IPluginResourceFacade {
@@ -67,9 +64,8 @@ public class FakePluginResourcesFacade implements IPluginResourceFacade {
     }
 
     @Override
-    public DatatypeFormatter getDatatypeFormatter() {
-        IpsPreferences ipsPreferences = mock(IpsPreferences.class);
-        DatatypeFormatter datatypeFormatter = new DatatypeFormatter(ipsPreferences);
+    public UIDatatypeFormatter getDatatypeFormatter() {
+        UIDatatypeFormatter datatypeFormatter = new UIDatatypeFormatter();
         return datatypeFormatter;
     }
 

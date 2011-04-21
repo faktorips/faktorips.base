@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import java.text.NumberFormat;
+import java.text.DecimalFormat;
 import java.text.ParsePosition;
 
 import org.eclipse.swt.events.VerifyEvent;
@@ -23,21 +23,31 @@ import org.eclipse.swt.events.VerifyEvent;
  * 
  * @author Stefan Widmaier
  */
-public abstract class AbstractNumberFormat extends AbstractInputFormat {
+public abstract class AbstractNumberFormat extends AbstractInputFormat<String> {
 
     @Override
-    protected Object parseInternal(String stringToBeParsed) {
+    protected String parseInternal(String stringToBeParsed) {
+        if (stringToBeParsed.isEmpty()) {
+            // this is important to show null representation when the text field is empty
+            return stringToBeParsed;
+        }
         ParsePosition position = new ParsePosition(0);
         Object value = getNumberFormat().parse(stringToBeParsed, position);
         if (position.getIndex() == stringToBeParsed.length() && value != null) {
             return value.toString();
         } else {
-            return null;
+            return stringToBeParsed;
         }
     }
 
     @Override
     protected void verifyInternal(VerifyEvent e, String resultingText) {
+        // FIPS-453 do not allow inserting group separator
+        if (e.text.equals("" + getNumberFormat().getDecimalFormatSymbols().getGroupingSeparator())) { //$NON-NLS-1$
+            e.doit = false;
+            return;
+        }
+
         if (resultingText.length() > 2) {
             /*
              * Allow valid numbers as well as numbers with a grouping separator at the end (though
@@ -49,7 +59,7 @@ public abstract class AbstractNumberFormat extends AbstractInputFormat {
         }
     }
 
-    protected abstract NumberFormat getNumberFormat();
+    public abstract DecimalFormat getNumberFormat();
 
     protected abstract String getExampleString();
 

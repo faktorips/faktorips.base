@@ -32,7 +32,6 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.DateControlField;
 import org.faktorips.devtools.core.ui.controller.fields.DateISOStringFormat;
-import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 import org.faktorips.devtools.core.ui.controls.DateControl;
 import org.faktorips.devtools.core.ui.table.FormattingTextCellEditor;
 import org.faktorips.devtools.core.ui.table.GridTableViewerTraversalStrategy;
@@ -52,20 +51,23 @@ public class GregorianCalendarControlFactory extends ValueDatatypeControlFactory
         super();
     }
 
+    @SuppressWarnings("deprecation")
+    // this is only for compatibility to this deprecation
     @Override
     public boolean isFactoryFor(ValueDatatype datatype) {
         return Datatype.GREGORIAN_CALENDAR.equals(datatype) || Datatype.GREGORIAN_CALENDAR_DATE.equals(datatype);
     }
 
     @Override
-    public EditField createEditField(UIToolkit toolkit,
+    public EditField<String> createEditField(UIToolkit toolkit,
             Composite parent,
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
 
         DateControl dateControl = new DateControl(parent, toolkit);
-        FormattingTextField formatField = new DateControlField(dateControl, new DateISOStringFormat());
+        DateControlField<String> formatField = new DateControlField<String>(dateControl,
+                DateISOStringFormat.newInstance());
         return formatField;
     }
 
@@ -75,7 +77,7 @@ public class GregorianCalendarControlFactory extends ValueDatatypeControlFactory
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
-        Text text = toolkit.createText(parent, SWT.NONE);
+        Text text = toolkit.createText(parent, getDefaultAlignment());
         return text;
     }
 
@@ -147,7 +149,7 @@ public class GregorianCalendarControlFactory extends ValueDatatypeControlFactory
             IIpsProject ipsProject) {
 
         Text textControl = (Text)createControl(toolkit, parent, dataType, valueSet, ipsProject);
-        DateISOStringFormat format = new DateISOStringFormat();
+        DateISOStringFormat format = DateISOStringFormat.newInstance();
         IpsCellEditor tableCellEditor = new FormattingTextCellEditor(textControl, format);
         return tableCellEditor;
     }
@@ -162,6 +164,11 @@ public class GregorianCalendarControlFactory extends ValueDatatypeControlFactory
 
         IpsCellEditor cellEditor = createTextCellEditor(toolkit, dataType, valueSet, gridViewer.getGrid(), ipsProject);
         return cellEditor;
+    }
+
+    @Override
+    public int getDefaultAlignment() {
+        return SWT.RIGHT;
     }
 
 }

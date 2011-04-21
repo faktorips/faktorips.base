@@ -93,4 +93,8 @@ public class Void extends AbstractDatatype implements ValueDatatype {
         return ObjectUtils.equals(valueA, valueB);
     }
 
+    public Object getValue(String value) {
+        throw new RuntimeException("Operation getValue not supported for void"); //$NON-NLS-1$
+    }
+
 }

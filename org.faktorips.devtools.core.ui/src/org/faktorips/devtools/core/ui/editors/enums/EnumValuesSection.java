@@ -79,6 +79,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
+import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
 import org.faktorips.devtools.core.ui.editors.IpsObjectPartContainerSection;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
@@ -324,7 +325,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
      */
     private void createTableColumnsForEnumType() throws CoreException {
         for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies(true)) {
-            addTableColumn(currentEnumAttribute.getName(),
+            addTableColumn(currentEnumAttribute.getName(), currentEnumAttribute.findDatatype(ipsProject),
                     EnumUtil.findEnumAttributeIsUnique(currentEnumAttribute, ipsProject));
         }
     }
@@ -337,20 +338,27 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         IEnumType referencedEnumType = enumContent.findEnumType(ipsProject);
         List<IEnumAttributeReference> enumAttributeReferences = enumContent.getEnumAttributeReferences();
         for (int i = 0; i < enumContent.getEnumAttributeReferencesCount(); i++) {
+            IEnumAttributeReference enumAttributeReference = enumAttributeReferences.get(i);
             if (enumContent.isFixToModelRequired()) {
-                addTableColumn(enumAttributeReferences.get(i).getName(), false);
+                addTableColumn(enumAttributeReference.getName(), null, false);
             } else {
                 IEnumAttribute currentEnumAttribute = referencedEnumType.getEnumAttributesIncludeSupertypeCopies(false)
                         .get(i);
-                addTableColumn(enumAttributeReferences.get(i).getName(),
+                addTableColumn(enumAttributeReference.getName(), currentEnumAttribute.findDatatype(ipsProject),
                         EnumUtil.findEnumAttributeIsUnique(currentEnumAttribute, ipsProject));
             }
         }
     }
 
-    /** Adds a new column with the given name to the end of the table. */
-    private void addTableColumn(String columnName, boolean identifierColumnn) {
-        TableColumn newColumn = new TableColumn(enumValuesTable, SWT.LEFT);
+    /**
+     * Adds a new column with the given name to the end of the table.
+     * 
+     * @param datatype the datatype to set the correct column style. If data type is null, the
+     *            default style configured by the {@link DefaultControlFactory} is used.
+     * */
+    private void addTableColumn(String columnName, ValueDatatype datatype, boolean identifierColumnn) {
+        int alignment = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype).getDefaultAlignment();
+        TableColumn newColumn = new TableColumn(enumValuesTable, alignment);
         newColumn.setText(columnName);
         newColumn.setWidth(200);
 
@@ -958,8 +966,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
                 String datatype = enumAttributeValues.get(columnIndex).findEnumAttribute(ipsProject).getDatatype();
                 ValueDatatype valueDatatype = enumAttributeValues.get(columnIndex).getIpsProject()
                         .findValueDatatype(datatype);
-                return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
-                        .formatValue(valueDatatype, columnValue);
+                return IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(valueDatatype, columnValue);
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }

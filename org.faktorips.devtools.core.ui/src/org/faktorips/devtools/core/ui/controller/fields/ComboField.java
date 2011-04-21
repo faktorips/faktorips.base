@@ -19,8 +19,16 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Control;
+import org.faktorips.devtools.core.ui.controller.EditField;
 
-public class ComboField extends DefaultEditField {
+/**
+ * Generic type for all combo edit fields.
+ * 
+ * @see EditField for details about generic type T
+ * 
+ * @author dirmeier
+ */
+public abstract class ComboField<T> extends DefaultEditField<T> {
 
     private boolean immediatelyNotifyListener = false;
 
@@ -37,16 +45,6 @@ public class ComboField extends DefaultEditField {
 
     public Combo getCombo() {
         return combo;
-    }
-
-    @Override
-    public Object parseContent() {
-        return super.prepareObjectForGet(getText());
-    }
-
-    @Override
-    public void setValue(Object newValue) {
-        setText((String)prepareObjectForSet(newValue));
     }
 
     @Override

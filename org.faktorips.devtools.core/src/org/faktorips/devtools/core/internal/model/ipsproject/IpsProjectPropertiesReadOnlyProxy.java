@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -485,6 +486,16 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     @Override
     public void removeSupportedLanguage(Locale locale) {
         throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+    }
+
+    @Override
+    public void setDefaultCurrency(Currency defaultCurrency) {
+        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+    }
+
+    @Override
+    public Currency getDefaultCurrency() {
+        return propertiesInternal.getDefaultCurrency();
     }
 
     @Override

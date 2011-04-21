@@ -62,7 +62,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArchiveEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.fields.ComboField;
+import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
@@ -250,7 +250,7 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
 
         // destination name entry field
         destinationNamesCombo = new Combo(destinationSelectionGroup, SWT.SINGLE | SWT.BORDER);
-        ComboField destinationNameComboField = new ComboField(destinationNamesCombo);
+        StringValueComboField destinationNameComboField = new StringValueComboField(destinationNamesCombo);
         destinationNameComboField.addChangeListener(this);
         destinationNamesCombo.addModifyListener(this);
         destinationNamesCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));

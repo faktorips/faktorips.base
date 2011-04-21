@@ -55,8 +55,17 @@ public class RuleFunctionsControl extends EditTableControl {
 
     private IValidationRule rule;
 
-    public RuleFunctionsControl(IValidationRule rule, Composite parent) {
-        super(rule, parent, SWT.NONE, Messages.RuleFunctionsControl_title);
+    public RuleFunctionsControl(Composite parent) {
+        super(parent, SWT.NONE);
+    }
+
+    @Override
+    public void initialize(Object modelObject, String label) {
+        if (label == null) {
+            label = Messages.RuleFunctionsControl_title;
+        }
+        super.initialize(modelObject, label);
+        initCellEditorsAndConfigureTableViewer();
         new MessageService(getTableViewer());
     }
 

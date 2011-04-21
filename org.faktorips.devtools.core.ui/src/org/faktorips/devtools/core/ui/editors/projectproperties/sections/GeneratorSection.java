@@ -38,7 +38,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsBuilderSetPropertyDef;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.fields.ComboField;
+import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.preferencepages.BuilderSetPropertyEditingSupport;
 import org.faktorips.util.ArgumentCheck;
@@ -55,7 +55,7 @@ public class GeneratorSection extends IpsSection {
     private IIpsArtefactBuilderSetConfigModel builderSetConfigModel;
     private IIpsProject ipsProject;
     private String builderSetId;
-    private ComboField builderSetComboField;
+    private StringValueComboField builderSetComboField;
     private IIpsProjectProperties iIpsProjectProperties;
 
     public GeneratorSection(IIpsProject iIpsProject, IIpsArtefactBuilderSetConfigModel builderSetConfig,
@@ -78,7 +78,7 @@ public class GeneratorSection extends IpsSection {
 
         Combo builderSetCombo = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
         builderSetCombo.setLayoutData(new GridData(GridData.FILL, GridData.FILL, false, false));
-        builderSetComboField = new ComboField(builderSetCombo);
+        builderSetComboField = new StringValueComboField(builderSetCombo);
         // builderSetComboField.addChangeListener(adapter);
 
         List<IIpsArtefactBuilderSetInfo> builderSetInfos = getBuilderSetInfos();

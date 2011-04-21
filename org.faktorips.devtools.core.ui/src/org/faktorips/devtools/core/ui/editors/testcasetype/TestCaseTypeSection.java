@@ -286,7 +286,7 @@ public class TestCaseTypeSection extends IpsSection {
         // Containers for all sections and their objects
         private HashMap<Integer, Section> sections = new HashMap<Integer, Section>();
         private HashMap<Integer, IIpsObjectPart> sectionObjects = new HashMap<Integer, IIpsObjectPart>();
-        private HashMap<Integer, EditField> sectionFirstEditField = new HashMap<Integer, EditField>();
+        private HashMap<Integer, EditField<?>> sectionFirstEditField = new HashMap<Integer, EditField<?>>();
         private HashMap<Integer, Integer> attributeIdx = new HashMap<Integer, Integer>();
         private HashMap<Integer, SectionButtons> sectionButtons = new HashMap<Integer, SectionButtons>();
         private HashMap<Integer, TableViewer> attributeTableViewers = new HashMap<Integer, TableViewer>();
@@ -322,7 +322,7 @@ public class TestCaseTypeSection extends IpsSection {
             sectionButtons.put(getKeyFor(testParam), currSectionButtons);
         }
 
-        public void putFirstEditFieldInSection(ITestParameter testParam, EditField editFieldName) {
+        public void putFirstEditFieldInSection(ITestParameter testParam, EditField<?> editFieldName) {
             sectionFirstEditField.put(getKeyFor(testParam), editFieldName);
         }
 
@@ -349,7 +349,7 @@ public class TestCaseTypeSection extends IpsSection {
             return sections.values();
         }
 
-        public EditField getSectionFirstEditField(Object selected) {
+        public EditField<?> getSectionFirstEditField(Object selected) {
             return sectionFirstEditField.get(getKeyFor((IIpsObjectPart)selected));
         }
 
@@ -1480,7 +1480,7 @@ public class TestCaseTypeSection extends IpsSection {
             IpsObjectUIController uiController) {
 
         Label label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_Name);
-        EditField editFieldName = new TextField(toolkit.createText(editFieldsComposite));
+        EditField<String> editFieldName = new TextField(toolkit.createText(editFieldsComposite));
         editFieldName.setText(testParam.getName());
         addSectionSelectionListeners(editFieldName, label, testParam);
         objectCache.putFirstEditFieldInSection(testParam, editFieldName);
@@ -1488,7 +1488,7 @@ public class TestCaseTypeSection extends IpsSection {
 
         label = toolkit.createFormLabel(editFieldsComposite,
                 Messages.TestCaseTypeSection_EditFieldLabel_TestParameterType);
-        EditField editFieldType = new EnumValueField(toolkit.createCombo(editFieldsComposite,
+        EditField<EnumValue> editFieldType = new EnumValueField(toolkit.createCombo(editFieldsComposite,
                 TestParameterType.getEnumType()), TestParameterType.getEnumType());
         addSectionSelectionListeners(editFieldType, label, testParam);
         uiController.add(editFieldType, ITestParameter.PROPERTY_TEST_PARAMETER_TYPE);
@@ -1519,7 +1519,7 @@ public class TestCaseTypeSection extends IpsSection {
     /**
      * Adds a listener to mark the section as selected if the given edit field gets the focus
      */
-    private void addSectionSelectionListeners(EditField editField, Control label, final IIpsObjectPart object) {
+    private void addSectionSelectionListeners(EditField<?> editField, Control label, final IIpsObjectPart object) {
         if (editField != null) {
             editField.getControl().addFocusListener(new FocusAdapter() {
                 @Override
@@ -1608,7 +1608,7 @@ public class TestCaseTypeSection extends IpsSection {
 
         Label label = toolkit
                 .createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_Datatype);
-        EditField editFieldDatatype = new TextField(toolkit.createText(editFieldsComposite));
+        EditField<String> editFieldDatatype = new TextField(toolkit.createText(editFieldsComposite));
         addSectionSelectionListeners(editFieldDatatype, label, parameter);
         editFieldDatatype.getControl().setEnabled(false);
         addSectionSelectionListeners(editFieldDatatype, label, parameter);
@@ -1651,21 +1651,21 @@ public class TestCaseTypeSection extends IpsSection {
         if (!(parameter != null && isAssociation(parameter))) {
             label = toolkit.createFormLabel(editFieldsComposite,
                     Messages.TestCaseTypeSection_EditFieldLabel_RequiresProduct);
-            EditField editFieldReqProd = new CheckboxField(toolkit.createCheckbox(editFieldsComposite));
+            EditField<Boolean> editFieldReqProd = new CheckboxField(toolkit.createCheckbox(editFieldsComposite));
             addSectionSelectionListeners(editFieldReqProd, label, parameter);
             uiController.add(editFieldReqProd, ITestPolicyCmptTypeParameter.PROPERTY_REQUIRES_PRODUCTCMT);
         }
 
         // min and max instances only for child parameters
         label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_MinInstances);
-        EditField editFieldMin = new CardinalityField(toolkit.createText(editFieldsComposite));
-        editFieldMin.setText("" + parameter.getMinInstances()); //$NON-NLS-1$
+        EditField<Integer> editFieldMin = new CardinalityField(toolkit.createText(editFieldsComposite));
+        editFieldMin.setValue(parameter.getMinInstances());// $
         addSectionSelectionListeners(editFieldMin, label, parameter);
         uiController.add(editFieldMin, ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES);
 
         label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_MaxInstances);
-        EditField editFieldMax = new CardinalityField(toolkit.createText(editFieldsComposite));
-        editFieldMax.setText("" + parameter.getMaxInstances()); //$NON-NLS-1$
+        EditField<Integer> editFieldMax = new CardinalityField(toolkit.createText(editFieldsComposite));
+        editFieldMax.setValue(parameter.getMaxInstances());// $
         addSectionSelectionListeners(editFieldMax, label, parameter);
         uiController.add(editFieldMax, ITestPolicyCmptTypeParameter.PROPERTY_MAX_INSTANCES);
 
@@ -1800,7 +1800,7 @@ public class TestCaseTypeSection extends IpsSection {
      * Selects the first edit field in the section contains the given object
      */
     private void selectFirstEditFieldInSection(Object selected) {
-        EditField editFieldName = objectCache.getSectionFirstEditField(selected);
+        EditField<?> editFieldName = objectCache.getSectionFirstEditField(selected);
         if (editFieldName == null) {
             return;
         }
@@ -2090,7 +2090,7 @@ public class TestCaseTypeSection extends IpsSection {
                 }
             }
             if (selectedTestParamIndexes == null) {
-                throw new RuntimeException("Unable to determine the index of the given test parameter!"); //$NON-NLS-1$
+                throw new RuntimeException("Unable to determine the index of the given test parameter!");// $
             }
             testCaseType.moveTestParameters(selectedTestParamIndexes, up);
         } else {

@@ -630,6 +630,11 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
             return false;
         }
 
+        @Override
+        public Object getValue(String value) {
+            throw new RuntimeException("not supported");
+        }
+
     }
 
     private class InvalidDatatypeHelper extends AbstractDatatypeHelper {

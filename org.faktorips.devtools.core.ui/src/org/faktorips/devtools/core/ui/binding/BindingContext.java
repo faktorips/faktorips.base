@@ -133,8 +133,8 @@ public class BindingContext {
      * @throws IllegalArgumentException If the property is not of type String.
      * @throws NullPointerException If any argument is <code>null</code>.
      */
-    public EditField bindContent(Text text, Object object, String propertyName) {
-        EditField field = null;
+    public EditField<?> bindContent(Text text, Object object, String propertyName) {
+        EditField<?> field = null;
         PropertyDescriptor property = BeanUtil.getPropertyDescriptor(object.getClass(), propertyName);
 
         if (String.class == property.getPropertyType()) {
@@ -159,9 +159,9 @@ public class BindingContext {
      * @throws IllegalArgumentException if the property is not of type String.
      * @throws NullPointerException if any argument is <code>null</code>.
      */
-    public EditField bindContent(Label label, Object object, String property) {
+    public EditField<String> bindContent(Label label, Object object, String property) {
         checkPropertyType(object, property, String.class);
-        EditField field = new LabelField(label);
+        EditField<String> field = new LabelField(label);
         bindContent(field, object, property);
         return field;
     }
@@ -174,13 +174,13 @@ public class BindingContext {
      * @throws IllegalArgumentException if the property is not of type Boolean or boolean.
      * @throws NullPointerException if any argument is <code>null</code>.
      */
-    public EditField bindContent(AbstractCheckbox checkbox, Object object, String propertyName) {
+    public EditField<Boolean> bindContent(AbstractCheckbox checkbox, Object object, String propertyName) {
         PropertyDescriptor property = BeanUtil.getPropertyDescriptor(object.getClass(), propertyName);
         if (Boolean.class != property.getPropertyType() && Boolean.TYPE != property.getPropertyType()) {
             throwWrongPropertyTypeException(property, new Class[] { Boolean.class, Boolean.TYPE });
         }
 
-        EditField field = new CheckboxField(checkbox);
+        EditField<Boolean> field = new CheckboxField(checkbox);
         bindContent(field, object, propertyName);
         return field;
     }
@@ -212,9 +212,9 @@ public class BindingContext {
      * @throws IllegalArgumentException if the property is not of type String.
      * @throws NullPointerException if any argument is <code>null</code>.
      */
-    public EditField bindContent(TextButtonControl control, Object object, String property) {
+    public EditField<String> bindContent(TextButtonControl control, Object object, String property) {
         checkPropertyType(object, property, String.class);
-        EditField field = new TextButtonField(control);
+        EditField<String> field = new TextButtonField(control);
         bindContent(field, object, property);
 
         return field;
@@ -257,8 +257,8 @@ public class BindingContext {
         return field;
     }
 
-    public void bindContent(StructuredViewer viewer, Object object, String propertyName) {
-        bindContent(new StructuredViewerField(viewer), object, propertyName);
+    public void bindContent(StructuredViewer viewer, Class<?> elementType, Object object, String propertyName) {
+        bindContent(StructuredViewerField.newInstance(viewer, elementType), object, propertyName);
     }
 
     /**
@@ -266,21 +266,21 @@ public class BindingContext {
      * 
      * @throws NullPointerException if any argument is <code>null</code>.
      */
-    public void bindContent(EditField field, Object object, String property) {
+    public void bindContent(EditField<?> field, Object object, String property) {
         add(createMapping(field, object, property));
     }
 
-    protected FieldPropertyMapping createMapping(EditField editField, Object object, String propertyName) {
+    protected <T> FieldPropertyMapping createMapping(EditField<T> editField, Object object, String propertyName) {
         if (object instanceof IExtensionPropertyAccess) {
             IExtensionPropertyDefinition extProperty = IpsPlugin.getDefault().getIpsModel()
                     .getExtensionPropertyDefinition(object.getClass(), propertyName, true);
             if (extProperty != null) {
-                return new FieldExtensionPropertyMapping(editField, (IExtensionPropertyAccess)object, propertyName);
+                return new FieldExtensionPropertyMapping<T>(editField, (IExtensionPropertyAccess)object, propertyName);
             }
         }
 
         PropertyDescriptor property = BeanUtil.getPropertyDescriptor(object.getClass(), propertyName);
-        return new FieldPropertyMappingByPropertyDescriptor(editField, object, property);
+        return new FieldPropertyMappingByPropertyDescriptor<T>(editField, object, property);
     }
 
     private void checkPropertyType(Object object, String propertyName, Class<?> expectedType) {

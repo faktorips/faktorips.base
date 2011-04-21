@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.controlfactories;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridTreeViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -56,7 +57,7 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
     }
 
     @Override
-    public EditField createEditField(UIToolkit toolkit,
+    public EditField<String> createEditField(UIToolkit toolkit,
             Composite parent,
             ValueDatatype datatype,
             IValueSet valueSet,
@@ -179,6 +180,11 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
 
         ComboCellEditor cellEditor = createComboCellEditor(toolkit, datatype, valueSet, gridViewer.getGrid());
         return cellEditor;
+    }
+
+    @Override
+    public int getDefaultAlignment() {
+        return SWT.LEFT;
     }
 
 }

@@ -26,7 +26,9 @@ public class DefaultExtensionPropertyEditFieldFactory implements IExtensionPrope
      * based on it.
      */
     @Override
-    public EditField newEditField(IIpsObjectPartContainer ipsObjectPart, Composite extensionArea, UIToolkit toolkit) {
+    public EditField<String> newEditField(IIpsObjectPartContainer ipsObjectPart,
+            Composite extensionArea,
+            UIToolkit toolkit) {
         Text text = toolkit.createText(extensionArea);
         return new TextField(text);
     }

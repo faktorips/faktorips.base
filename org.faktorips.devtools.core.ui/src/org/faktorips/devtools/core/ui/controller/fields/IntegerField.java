@@ -24,7 +24,7 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Jan Ortmann
  */
-public class IntegerField extends DefaultEditField {
+public class IntegerField extends DefaultEditField<Integer> {
 
     private Text text;
 
@@ -40,12 +40,11 @@ public class IntegerField extends DefaultEditField {
     }
 
     @Override
-    public Object parseContent() {
+    public Integer parseContent() {
         String text = getText();
         if (text != null && text.length() == 0) {
             return null;
         }
-        text = (String)super.prepareObjectForGet(text);
         if (text == null) {
             return null;
         }
@@ -53,9 +52,8 @@ public class IntegerField extends DefaultEditField {
     }
 
     @Override
-    public void setValue(Object newValue) {
+    public void setValue(Integer newValue) {
         ArgumentCheck.isInstanceOf(newValue, Integer.class);
-        newValue = super.prepareObjectForSet(newValue);
         text.setText(newValue.toString());
     }
 

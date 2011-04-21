@@ -23,7 +23,7 @@ public interface FieldPropertyMapping {
     /**
      * Returns the field this is a mapping for.
      */
-    public EditField getField();
+    public EditField<?> getField();
 
     /**
      * Returns the object this is a mapping for one of it's properties.

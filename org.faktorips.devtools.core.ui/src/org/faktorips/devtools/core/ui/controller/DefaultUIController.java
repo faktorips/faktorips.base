@@ -44,7 +44,7 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
      * @param object The object to get and set the property
      * @param propertyName The name of the property
      */
-    public void add(EditField field, Object object, String propertyName) {
+    public <T> void add(EditField<T> field, Object object, String propertyName) {
         PropertyDescriptor property = null;
         try {
             BeanInfo beanInfo = Introspector.getBeanInfo(object.getClass());
@@ -64,8 +64,8 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
                     + " does not have a property " + propertyName); //$NON-NLS-1$
         }
 
-        FieldPropertyMappingByPropertyDescriptor mapping = new FieldPropertyMappingByPropertyDescriptor(field, object,
-                property);
+        FieldPropertyMappingByPropertyDescriptor<T> mapping = new FieldPropertyMappingByPropertyDescriptor<T>(field,
+                object, property);
         addMapping(mapping);
 
     }
@@ -142,7 +142,7 @@ public class DefaultUIController implements ValueChangeListener, UIController, F
      * 
      * @param field The field to remove.
      */
-    public void remove(EditField field) {
+    public void remove(EditField<?> field) {
         ArrayList<FieldPropertyMapping> secureCopy = new ArrayList<FieldPropertyMapping>(mappings);
 
         for (FieldPropertyMapping mapping : secureCopy) {

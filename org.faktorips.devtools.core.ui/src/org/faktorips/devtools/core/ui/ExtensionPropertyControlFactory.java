@@ -168,7 +168,7 @@ public class ExtensionPropertyControlFactory {
 
     private class ExtPropControlData implements Comparable<ExtPropControlData> {
         IExtensionPropertyDefinition extProperty;
-        EditField editField;
+        EditField<?> editField;
         IIpsObjectPartContainer partContainer;
 
         public ExtPropControlData(IExtensionPropertyDefinition extProperty) {

@@ -132,7 +132,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 
     private void updateWorkingDateLabel() {
         GregorianCalendar newValidFrom = getPresentationModel().getNewValidFrom();
-        AbstractInputFormat format = new GregorianCalendarFormat();
+        AbstractInputFormat<GregorianCalendar> format = GregorianCalendarFormat.newInstance();
         workingDateLabel.setText(format.format(newValidFrom));
     }
 

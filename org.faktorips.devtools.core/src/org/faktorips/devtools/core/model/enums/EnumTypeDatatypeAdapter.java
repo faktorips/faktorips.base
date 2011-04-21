@@ -122,6 +122,24 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
         }
     }
 
+    @Override
+    public Object getValue(String value) {
+        if (enumContent == null && !(enumType.isContainingValues())) {
+            return null;
+        }
+
+        try {
+            IIpsProject ipsProject = getEnumValueContainer().getIpsProject();
+            IEnumValue enumValue = getEnumValueContainer().findEnumValue(value, ipsProject);
+            if (enumValue == null) {
+                return null;
+            }
+            return enumValue;
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * {@inheritDoc}
      * <p>

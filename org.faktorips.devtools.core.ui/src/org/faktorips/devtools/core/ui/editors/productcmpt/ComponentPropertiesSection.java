@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -39,8 +40,9 @@ import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
+import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
-import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
+import org.faktorips.devtools.core.ui.controller.fields.DateControlField;
 import org.faktorips.devtools.core.ui.controller.fields.GregorianCalendarFormat;
 import org.faktorips.devtools.core.ui.controller.fields.IpsObjectField;
 import org.faktorips.devtools.core.ui.controls.DateControl;
@@ -75,7 +77,7 @@ public class ComponentPropertiesSection extends IpsSection {
 
     private TextButtonControl runtimeIdControl;
 
-    private Text validToText;
+    private EditField<GregorianCalendar> validToField;
 
     private final ProductCmptEditor editor;
 
@@ -121,8 +123,7 @@ public class ComponentPropertiesSection extends IpsSection {
         IpsObjectUIController controller = new IpsObjectUIController(product);
         controller.add(new IpsObjectField(productCmptTypeControl), product, IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
         controller.add(runtimeIdControl.getTextControl(), product, IProductCmpt.PROPERTY_RUNTIME_ID);
-        controller.add(new FormattingTextField(validToText, new GregorianCalendarFormat()), product,
-                IProductCmpt.PROPERTY_VALID_TO);
+        controller.add(validToField, product, IProductCmpt.PROPERTY_VALID_TO);
         return controller;
     }
 
@@ -132,9 +133,9 @@ public class ComponentPropertiesSection extends IpsSection {
     private void initValidToRow(UIToolkit toolkit) {
         toolkit.createLabel(rootPane, Messages.ProductAttributesSection_labelValidTo);
         DateControl dateControl = new DateControl(rootPane, toolkit);
-        validToText = dateControl.getTextControl();
-        validToText.setText(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
-        editControls.add(validToText);
+        dateControl.setText(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
+        validToField = new DateControlField<GregorianCalendar>(dateControl, GregorianCalendarFormat.newInstance());
+        editControls.add(dateControl.getTextControl());
     }
 
     /**

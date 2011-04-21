@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 import org.faktorips.util.message.MessageList;
 
-public class TextButtonField extends DefaultEditField {
+public class TextButtonField extends StringValueEditField {
 
     TextButtonControl control;
 
@@ -47,13 +47,13 @@ public class TextButtonField extends DefaultEditField {
     }
 
     @Override
-    public Object parseContent() {
+    public String parseContent() {
         return super.prepareObjectForGet(control.getTextControl().getText());
     }
 
     @Override
-    public void setValue(Object newValue) {
-        setText((String)super.prepareObjectForSet(newValue));
+    public void setValue(String newValue) {
+        setText(super.prepareObjectForSet(newValue));
     }
 
     @Override

@@ -673,7 +673,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private String findUniqueEditFieldKey(FailureDetails failureDetails) {
         String uniqueEditFieldKey = getUniqueEditFieldKey(failureDetails.getObjectName(),
                 failureDetails.getAttributeName());
-        EditField editField = testCaseDetailArea.getEditField(uniqueEditFieldKey);
+        EditField<?> editField = testCaseDetailArea.getEditField(uniqueEditFieldKey);
         if (editField != null) {
             return uniqueEditFieldKey;
         }
@@ -1577,7 +1577,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             // selecte first attribute edit field
             if (uniquePath.length() > 0) {
                 if (withFocusChange) {
-                    EditField firstField = testCaseDetailArea.getFirstAttributeEditField(uniquePath);
+                    EditField<?> firstField = testCaseDetailArea.getFirstAttributeEditField(uniquePath);
                     if (firstField != null) {
                         firstField.getControl().setFocus();
                     }
@@ -2689,7 +2689,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 }
 
                 // create context menu to store actual value
-                EditField editField = testCaseDetailArea.getEditField(getUniqueEditFieldKey(
+                EditField<?> editField = testCaseDetailArea.getEditField(getUniqueEditFieldKey(
                         failureDetailsObj.getObjectName(), failureDetailsObj.getAttributeName()));
                 if (editField != null) {
                     ArrayList<FailureDetails> list = new ArrayList<FailureDetails>(1);
@@ -2976,7 +2976,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         });
     }
 
-    void postSetFailureBackgroundAndToolTip(final EditField editField, final String expectedResult) {
+    void postSetFailureBackgroundAndToolTip(final EditField<?> editField, final String expectedResult) {
         postAsyncRunnable(new Runnable() {
             @Override
             public void run() {
@@ -2990,7 +2990,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         });
     }
 
-    public void postSetOverriddenValueBackgroundAndToolTip(final EditField editField,
+    public void postSetOverriddenValueBackgroundAndToolTip(final EditField<?> editField,
             final String message,
             final boolean setFocus) {
 

@@ -327,8 +327,7 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
                 if (columnIndex == IDX_COLUMN_NAME) {
                     return getTextInNullPresentationIfNull(ftc.getName());
                 } else if (columnIndex == IDX_COLUMN_EXPECTED_RESULT) {
-                    return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
-                            .formatValue(vd, ftc.getExpectedResult());
+                    return IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(vd, ftc.getExpectedResult());
                 } else if (columnIndex == IDX_COLUMN_ACTUAL_RESULT) {
                     return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
                             .formatValue(vd, ftc.getActualResult());
@@ -860,9 +859,8 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         try {
             expectedResult = ftc.getExpectedResult();
             IFormula formula = ftc.getFormula();
-            expectedResult = IpsPlugin
+            expectedResult = IpsUIPlugin
                     .getDefault()
-                    .getIpsPreferences()
                     .getDatatypeFormatter()
                     .formatValue(formula.findValueDatatype(ipsProject),
                             (expectedResult == null ? null : expectedResult.toString()));

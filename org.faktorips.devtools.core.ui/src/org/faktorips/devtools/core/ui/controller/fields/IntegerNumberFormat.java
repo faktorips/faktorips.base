@@ -13,17 +13,31 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
+
+import org.faktorips.datatype.ValueDatatype;
 
 /**
  * Format for integer number input.
  * 
  * @author Stefan Widmaier
  */
-public class IntegerFormat extends AbstractNumberFormat {
+public class IntegerNumberFormat extends AbstractNumberFormat {
 
-    private NumberFormat numberFormat;
+    private DecimalFormat numberFormat;
+    private final ValueDatatype datatype;
+
+    public static IntegerNumberFormat newInstance(ValueDatatype datatype) {
+        IntegerNumberFormat longFormat = new IntegerNumberFormat(datatype);
+        longFormat.initFormat();
+        return longFormat;
+    }
+
+    protected IntegerNumberFormat(ValueDatatype datatype) {
+        this.datatype = datatype;
+    }
 
     /**
      * String that is an example of a valid input string.
@@ -32,21 +46,18 @@ public class IntegerFormat extends AbstractNumberFormat {
 
     @Override
     protected void initFormat(Locale locale) {
-        numberFormat = NumberFormat.getIntegerInstance(locale);
-        numberFormat.setParseIntegerOnly(true);
+        numberFormat = (DecimalFormat)NumberFormat.getIntegerInstance(locale);
+        // setting grouping size to maximum value to avoid formatting group separators but allow
+        // input separators. A single group separator is forbidden (see verifyInternal) but
+        // separators with copy&paste should be allowed
+        numberFormat.setGroupingSize(Byte.MAX_VALUE);
         exampleString = numberFormat.format(-100000000);
     }
 
     @Override
-    protected String formatInternal(Object value) {
-        Integer integer = new Integer((String)value);
-        // MTB#524: Thousand-separator only if the number has at least 5 digits.
-        if (integer > 9999) {
-            numberFormat.setGroupingUsed(true);
-        } else {
-            numberFormat.setGroupingUsed(false);
-        }
-        return numberFormat.format(integer);
+    protected String formatInternal(String value) {
+        Object valueAsObject = datatype.getValue(value);
+        return numberFormat.format(valueAsObject);
     }
 
     @Override
@@ -55,7 +66,7 @@ public class IntegerFormat extends AbstractNumberFormat {
     }
 
     @Override
-    protected NumberFormat getNumberFormat() {
+    public DecimalFormat getNumberFormat() {
         return numberFormat;
     }
 

@@ -57,7 +57,7 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
         // PropertyEditFieldFactory setup code
         editFieldFactory = new IExtensionPropertyEditFieldFactory() {
             @Override
-            public EditField newEditField(IIpsObjectPartContainer ipsObjectPart,
+            public EditField<?> newEditField(IIpsObjectPartContainer ipsObjectPart,
                     Composite extensionArea,
                     UIToolkit toolkit) {
                 return null;
@@ -65,7 +65,7 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
         };
         editFieldFactory2 = new IExtensionPropertyEditFieldFactory() {
             @Override
-            public EditField newEditField(IIpsObjectPartContainer ipsObjectPart,
+            public EditField<?> newEditField(IIpsObjectPartContainer ipsObjectPart,
                     Composite extensionArea,
                     UIToolkit toolkit) {
                 return null;

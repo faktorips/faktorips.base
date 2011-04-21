@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import org.faktorips.util.ArgumentCheck;
 
 /**
  * Base-class to represent and edit cardinality values (which means int-values and the asterisk
@@ -21,10 +20,10 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Thorsten Guenther
  */
-public abstract class AbstractCardinalityField extends DefaultEditField {
+public abstract class AbstractCardinalityField extends DefaultEditField<Integer> {
 
     @Override
-    public Object parseContent() {
+    public Integer parseContent() {
         String text = getText();
         if (text.equals("*")) { //$NON-NLS-1$
             return new Integer(Integer.MAX_VALUE);
@@ -34,15 +33,12 @@ public abstract class AbstractCardinalityField extends DefaultEditField {
     }
 
     @Override
-    public void setValue(Object newValue) {
-        ArgumentCheck.isInstanceOf(newValue, Integer.class);
-        if (newValue instanceof Integer) {
-            Integer value = (Integer)newValue;
-            if (value.intValue() == Integer.MAX_VALUE) {
-                setText("*"); //$NON-NLS-1$
-            } else {
-                setText(value.toString());
-            }
+    public void setValue(Integer newValue) {
+        Integer value = newValue;
+        if (value.intValue() == Integer.MAX_VALUE) {
+            setText("*"); //$NON-NLS-1$
+        } else {
+            setText(value.toString());
         }
     }
 

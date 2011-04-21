@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.IpsPlugin;
  * 
  * @author Stefan Widmaier
  */
-public abstract class AbstractDateFormat extends AbstractInputFormat {
+public abstract class AbstractDateFormat<T> extends AbstractInputFormat<T> {
 
     /**
      * {@link AbstractDateFormat} used internally by this {@link AbstractInputFormat} to validate
@@ -40,19 +40,18 @@ public abstract class AbstractDateFormat extends AbstractInputFormat {
      */
     private String exampleString;
 
-    public AbstractDateFormat() {
+    protected AbstractDateFormat() {
         super();
     }
 
     @Override
     protected void initFormat(Locale locale) {
-        dateFormat = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
-        dateFormat.setLenient(false);
+        dateFormat = IpsPlugin.getDefault().getIpsPreferences().getDateFormat(locale);
         exampleString = formatDate(new GregorianCalendar(2001, 6, 4).getTime());
     }
 
     @Override
-    protected Object parseInternal(String stringToBeparsed) {
+    protected T parseInternal(String stringToBeparsed) {
         Date date = parseToDate(stringToBeparsed);
         if (date != null) {
             return mapDateToObject(date);
@@ -70,13 +69,13 @@ public abstract class AbstractDateFormat extends AbstractInputFormat {
      * @param date the date to be converted to another object
      * @return an object representing the given date
      */
-    protected abstract Object mapDateToObject(Date date);
+    protected abstract T mapDateToObject(Date date);
 
     /**
      * Accepts a {@link GregorianCalendar} as well as an ISO date String as value.
      */
     @Override
-    protected String formatInternal(Object value) {
+    protected String formatInternal(T value) {
         if (value != null) {
             return formatDate(mapObjectToDate(value));
         } else {
@@ -90,7 +89,7 @@ public abstract class AbstractDateFormat extends AbstractInputFormat {
      * @param value a non-<code>null</code> object
      * @return the Date represented by the given value object
      */
-    protected abstract Date mapObjectToDate(Object value);
+    protected abstract Date mapObjectToDate(T value);
 
     /**
      * Converts a {@link Date} object to a string ad it is displayed in a
@@ -118,7 +117,8 @@ public abstract class AbstractDateFormat extends AbstractInputFormat {
      */
     public Date parseToDate(String dateFormatString) {
         ParsePosition pos = new ParsePosition(0);
-        Date date = (Date)getDateFormat().parseObject(dateFormatString, pos);
+        Date date = getDateFormat().parse(dateFormatString, pos);
+
         if (date != null && pos.getIndex() == dateFormatString.length()) {
             return date;
         } else {
@@ -128,11 +128,11 @@ public abstract class AbstractDateFormat extends AbstractInputFormat {
 
     @Override
     protected void verifyInternal(VerifyEvent e, String resultingText) {
-        if (resultingText.length() > 9) {
-            e.doit = isParsable(dateFormat, resultingText);
-        } else {
-            e.doit = containsAllowedCharactersOnly(exampleString, resultingText);
-        }
+        // if (resultingText.length() > 9) {
+        // e.doit = isParsable(dateFormat, resultingText);
+        // } else {
+        e.doit = containsAllowedCharactersOnly(exampleString, resultingText);
+        // }
     }
 
     protected DateFormat getDateFormat() {

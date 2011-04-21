@@ -55,6 +55,7 @@ import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IFormulaTestCase;
 import org.faktorips.devtools.core.model.productcmpt.IFormulaTestInputValue;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.UIController;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
@@ -166,7 +167,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
                 } else if (columnIndex == IDX_VALUE_COLUMN) {
                     try {
                         ValueDatatype vd = ((IFormulaTestInputValue)element).findDatatypeOfFormulaParameter(ipsProject);
-                        return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
+                        return IpsUIPlugin.getDefault().getDatatypeFormatter()
                                 .formatValue(vd, ((IFormulaTestInputValue)element).getValue());
                     } catch (CoreException e) {
                         // ignore exception, return the unformated value
@@ -677,7 +678,7 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         ValueDatatype vd;
         try {
             vd = formula.findValueDatatype(ipsProject);
-            resultToDisplay = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
+            resultToDisplay = IpsUIPlugin.getDefault().getDatatypeFormatter()
                     .formatValue(vd, (result == null ? null : result.toString()));
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);

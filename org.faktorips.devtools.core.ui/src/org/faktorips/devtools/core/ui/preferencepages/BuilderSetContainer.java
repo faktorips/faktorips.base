@@ -52,8 +52,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsBuilderSetPropertyDef;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
+import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.util.StringUtils;
 import org.faktorips.util.ArgumentCheck;
@@ -86,7 +86,7 @@ public class BuilderSetContainer {
     private BuilderSetPropertyDefSorter builderSetPropertyDefSorter;
 
     private TableViewer tableViewer;
-    private ComboField builderSetComboField;
+    private StringValueComboField builderSetComboField;
     private TableViewerColumn[] columns;
     private Composite mainComposite;
 
@@ -146,7 +146,7 @@ public class BuilderSetContainer {
 
         Combo builderSetCombo = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
         builderSetCombo.setLayoutData(new GridData(GridData.FILL, GridData.FILL, false, false));
-        builderSetComboField = new ComboField(builderSetCombo);
+        builderSetComboField = new StringValueComboField(builderSetCombo);
         builderSetComboField.addChangeListener(adapter);
 
         List<IIpsArtefactBuilderSetInfo> builderSetInfos = getBuilderSetInfos();
@@ -377,7 +377,7 @@ public class BuilderSetContainer {
      * Restores the defaults for an IPS project's currently selected builder set.
      */
     public void performDefaults() {
-        String builderSetLabel = (String)builderSetComboField.getValue();
+        String builderSetLabel = builderSetComboField.getValue();
         if (builderSetLabel != null) {
             builderSetId = getBuilderSetIdByLabel(builderSetLabel);
             ipsProjectProperties = ipsProject.getProperties();

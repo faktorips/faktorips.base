@@ -16,8 +16,9 @@ package org.faktorips.devtools.core.ui.controlfactories;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridTableViewer;
 import org.eclipse.nebula.jface.gridviewer.GridTreeViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -26,8 +27,11 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.MoneyField;
-import org.faktorips.devtools.core.ui.controls.TextComboControl;
+import org.faktorips.devtools.core.ui.table.EditFieldCellEditor;
+import org.faktorips.devtools.core.ui.table.GridTableViewerTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
+import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
+import org.faktorips.devtools.core.ui.table.TextCellEditor;
 
 public class MoneyControlFactory extends ValueDatatypeControlFactory {
 
@@ -41,25 +45,42 @@ public class MoneyControlFactory extends ValueDatatypeControlFactory {
     }
 
     @Override
-    public EditField createEditField(UIToolkit toolkit,
+    public EditField<String> createEditField(UIToolkit toolkit,
             Composite parent,
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
-        TextComboControl control = (TextComboControl)createControl(toolkit, parent, datatype, valueSet, ipsProject);
-        return new MoneyField(control);
+        Text control = createControl(toolkit, parent, datatype, valueSet, ipsProject);
+        return new MoneyField(control, ipsProject.getReadOnlyProperties().getDefaultCurrency());
     }
 
     @Override
-    public Control createControl(UIToolkit toolkit,
+    public Text createControl(UIToolkit toolkit,
             Composite parent,
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
-        TextComboControl control = new TextComboControl(parent, toolkit);
+        Text control = toolkit.createText(parent, getDefaultAlignment());
         return control;
     }
 
+    private IpsCellEditor createMoneyCellEditor(UIToolkit toolkit,
+            ValueDatatype datatype,
+            IValueSet valueSet,
+            Composite parent,
+            IIpsProject ipsProject) {
+
+        IpsCellEditor tableCellEditor = new EditFieldCellEditor(createEditField(toolkit, parent, datatype, valueSet,
+                ipsProject));
+        return tableCellEditor;
+    }
+
+    /**
+     * @deprecated use
+     *             {@link #createTableCellEditor(UIToolkit, ValueDatatype, IValueSet, TableViewer, int, IIpsProject)}
+     *             instead.
+     */
+    @Deprecated
     @Override
     public IpsCellEditor createCellEditor(UIToolkit toolkit,
             ValueDatatype datatype,
@@ -67,19 +88,27 @@ public class MoneyControlFactory extends ValueDatatypeControlFactory {
             TableViewer tableViewer,
             int columnIndex,
             IIpsProject ipsProject) {
-        // TODO Auto-generated method stub
-        return null;
+        return createTableCellEditor(toolkit, datatype, valueSet, tableViewer, columnIndex, ipsProject);
     }
 
+    /**
+     * Creates a {@link TextCellEditor} containing a {@link Text} control and configures it with a
+     * {@link TableViewerTraversalStrategy}.
+     */
     @Override
     public IpsCellEditor createTableCellEditor(UIToolkit toolkit,
-            ValueDatatype datatype,
+            ValueDatatype dataType,
             IValueSet valueSet,
             TableViewer tableViewer,
             int columnIndex,
             IIpsProject ipsProject) {
-        // TODO Auto-generated method stub
-        return null;
+
+        IpsCellEditor cellEditor = createMoneyCellEditor(toolkit, dataType, valueSet, tableViewer.getTable(),
+                ipsProject);
+        TableViewerTraversalStrategy strat = new TableViewerTraversalStrategy(cellEditor, tableViewer, columnIndex);
+        strat.setRowCreating(true);
+        cellEditor.setTraversalStrategy(strat);
+        return cellEditor;
     }
 
     @Override
@@ -89,8 +118,9 @@ public class MoneyControlFactory extends ValueDatatypeControlFactory {
             GridTableViewer gridViewer,
             int columnIndex,
             IIpsProject ipsProject) {
-        // TODO Auto-generated method stub
-        return null;
+        IpsCellEditor cellEditor = createMoneyCellEditor(toolkit, datatype, valueSet, gridViewer.getGrid(), ipsProject);
+        cellEditor.setTraversalStrategy(new GridTableViewerTraversalStrategy(cellEditor, gridViewer, columnIndex));
+        return cellEditor;
     }
 
     @Override
@@ -100,8 +130,13 @@ public class MoneyControlFactory extends ValueDatatypeControlFactory {
             GridTreeViewer gridViewer,
             int columnIndex,
             IIpsProject ipsProject) {
-        // TODO Auto-generated method stub
-        return null;
+        IpsCellEditor cellEditor = createMoneyCellEditor(toolkit, datatype, valueSet, gridViewer.getGrid(), ipsProject);
+        return cellEditor;
+    }
+
+    @Override
+    public int getDefaultAlignment() {
+        return SWT.RIGHT;
     }
 
 }

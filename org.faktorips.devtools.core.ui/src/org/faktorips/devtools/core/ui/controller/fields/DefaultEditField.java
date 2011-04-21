@@ -25,9 +25,11 @@ import org.faktorips.util.message.MessageList;
 /**
  * Abstract base class for easy implementation of new edit fields.
  * 
+ * @see EditField for details about generic type T
+ * 
  * @author Jan Ortmann
  */
-public abstract class DefaultEditField implements EditField {
+public abstract class DefaultEditField<T> implements EditField<T> {
 
     private boolean notifyChangeListeners = true;
     private List<ValueChangeListener> changeListeners;
@@ -38,7 +40,7 @@ public abstract class DefaultEditField implements EditField {
      * can't be parsed to an instance of the appropriate datatype, <code>null</code> is returned.
      */
     @Override
-    public final Object getValue() {
+    public final T getValue() {
         try {
             return parseContent();
         } catch (Exception e) {
@@ -51,8 +53,7 @@ public abstract class DefaultEditField implements EditField {
      * 
      * @throws Exception if the content can't be parsed.
      */
-    // TODO Throws Exception?
-    protected abstract Object parseContent() throws Exception;
+    protected abstract T parseContent() throws Exception;
 
     @Override
     public boolean isTextContentParsable() {
@@ -96,7 +97,7 @@ public abstract class DefaultEditField implements EditField {
     protected abstract void addListenerToControl();
 
     @Override
-    public void setValue(Object newValue, boolean triggerValueChanged) {
+    public void setValue(T newValue, boolean triggerValueChanged) {
         notifyChangeListeners = triggerValueChanged;
         try {
             setValue(newValue);
@@ -142,28 +143,6 @@ public abstract class DefaultEditField implements EditField {
             IpsUIPlugin.getDefault().getEditFieldChangeBroadcaster()
                     .broadcastDelayed(event, changeListeners.toArray(new ValueChangeListener[changeListeners.size()]));
         }
-    }
-
-    /**
-     * Returns the null-representation-string defined by the user (see IpsPreferences) if the given
-     * object is <code>null</code>, the unmodified object otherwise.
-     */
-    public Object prepareObjectForSet(Object object) {
-        if (object == null && supportNull) {
-            return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
-        }
-        return object;
-    }
-
-    /**
-     * Returns <code>null</code> if the given value is the null-representation-string, the
-     * unmodified value otherwise.
-     */
-    public Object prepareObjectForGet(Object value) {
-        if (supportNull && IpsPlugin.getDefault().getIpsPreferences().getNullPresentation().equals(value)) {
-            return null;
-        }
-        return value;
     }
 
     /**

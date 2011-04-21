@@ -13,91 +13,29 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.util.ArgumentCheck;
 
 /**
- * Edit field for text controls.
+ * Edit field for text controls, the value type is {@link String}
  */
-public class TextField extends DefaultEditField {
+public class TextField extends AbstractTextField<String> {
 
-    private Text text;
-
-    private boolean immediatelyNotifyListener = false;
-
-    public TextField(Text text) {
+    public TextField() {
         super();
-        ArgumentCheck.notNull(text);
-        this.text = text;
+    }
+
+    public TextField(Text control) {
+        super(control);
     }
 
     @Override
-    public Control getControl() {
-        return text;
-    }
-
-    /**
-     * Returns the text control this is an edit field for.
-     */
-    public Text getTextControl() {
-        return text;
+    public String parseContent() {
+        return StringValueEditField.prepareObjectForGet(text.getText(), supportsNull());
     }
 
     @Override
-    public Object parseContent() {
-        return super.prepareObjectForGet(text.getText());
-    }
-
-    @Override
-    public void setValue(Object newValue) {
-        setText((String)super.prepareObjectForSet(newValue));
-    }
-
-    @Override
-    public String getText() {
-        return text.getText();
-    }
-
-    @Override
-    public void setText(String newText) {
-        immediatelyNotifyListener = true;
-        try {
-            if (newText == null) {
-                // AbstractNumberFormats call this method with null values
-                if (supportsNull()) {
-                    newText = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
-                } else {
-                    newText = ""; //$NON-NLS-1$
-                }
-            }
-            text.setText(newText);
-        } finally {
-            immediatelyNotifyListener = false;
-        }
-    }
-
-    @Override
-    public void insertText(String insertText) {
-        text.insert(insertText);
-    }
-
-    @Override
-    public void selectAll() {
-        text.selectAll();
-    }
-
-    @Override
-    protected void addListenerToControl() {
-        text.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                notifyChangeListeners(new FieldValueChangedEvent(TextField.this), immediatelyNotifyListener);
-            }
-        });
+    public void setValue(String newValue) {
+        setText(StringValueEditField.prepareObjectForSet(newValue, supportsNull()));
     }
 
 }

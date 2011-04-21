@@ -19,13 +19,8 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Currency;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -167,6 +162,9 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     /** Factories for creating controls depending on the datatype. */
     private ValueDatatypeControlFactory[] controlFactories;
 
+    /** The default value datatype control factory */
+    private ValueDatatypeControlFactory defaultControlFactory;
+
     /** Broadcaster for broadcasting delayed change events triggered by edit fields. */
     private EditFieldChangesBroadcaster editFieldChangeBroadcaster;
 
@@ -207,6 +205,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         saveParticipant.addSaveParticipant(ipsEditorSettings);
         ResourcesPlugin.getWorkspace().addSaveParticipant(this, saveParticipant);
         controlFactories = initValueDatatypeControlFactories();
+        defaultControlFactory = new DefaultControlFactory();
         ipsElementWorkbenchAdapterAdapterFactory = new IpsElementWorkbenchAdapterAdapterFactory();
         datatypeFormatter = new UIDatatypeFormatter();
         Platform.getAdapterManager().registerAdapters(ipsElementWorkbenchAdapterAdapterFactory, IIpsElement.class);
@@ -234,11 +233,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 }
             }
         }
-        /*
-         * Make sure defaultControlFactory is the last one registered, as it functions as a
-         * fallback.
-         */
-        factories.add(new DefaultControlFactory());
         return factories.toArray(new ValueDatatypeControlFactory[factories.size()]);
     }
 
@@ -289,9 +283,9 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     /**
      * Returns a control factory that can create controls (and edit fields) for the given datatype.
-     * Returns a default factory if datatype is <code>null</code>.
+     * Returns a {@link DefaultControlFactory} if datatype is <code>null</code> or no factory was
+     * found.
      * 
-     * @throws RuntimeException if no factory is found for the given datatype.
      */
     public ValueDatatypeControlFactory getValueDatatypeControlFactory(ValueDatatype datatype) {
         ValueDatatypeControlFactory[] factories = getValueDatatypeControlFactories();
@@ -300,7 +294,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 return factorie;
             }
         }
-        throw new RuntimeException(Messages.IpsPlugin_errorNoDatatypeControlFactoryFound + datatype);
+        return defaultControlFactory;
     }
 
     /**
@@ -1220,38 +1214,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     public UIDatatypeFormatter getDatatypeFormatter() {
         return datatypeFormatter;
-    }
-
-    /**
-     * Returns a List containing all available currencies. The EUR and USD currencies are the first
-     * in the list, all others a arranged alphabetically by their respective ISO code.
-     * 
-     * @return a List containing all available currencies.
-     */
-    public List<Currency> getCurrencies() {
-        Locale[] availableLocales = Locale.getAvailableLocales();
-        Currency eur = Currency.getInstance(Locale.GERMANY);
-        Currency usd = Currency.getInstance(Locale.US);
-        HashSet<Currency> available = new HashSet<Currency>();
-        for (Locale locale : availableLocales) {
-            if (locale.getCountry().length() == 2) {
-                available.add(Currency.getInstance(locale));
-            }
-        }
-        available.remove(eur);
-        available.remove(usd);
-        List<Currency> sortedCurrencies = new ArrayList<Currency>(available);
-        // arrange alphabetically by ISO code
-        Collections.sort(sortedCurrencies, new Comparator<Currency>() {
-            @Override
-            public int compare(Currency o1, Currency o2) {
-                return o1.getCurrencyCode().compareTo(o2.getCurrencyCode());
-            }
-        });
-        // insert EUR and USD as first elements
-        sortedCurrencies.add(0, usd);
-        sortedCurrencies.add(0, eur);
-        return sortedCurrencies;
     }
 
 }
