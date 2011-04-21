@@ -229,7 +229,9 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 } else {
                     ValueDatatypeControlFactory factory = ExtensionPoints.createExecutableExtension(extension,
                             configElement, CONFIG_PROPERTY_CLASS, ValueDatatypeControlFactory.class);
-                    factories.add(factory);
+                    if (factory != null) {
+                        factories.add(factory);
+                    }
                 }
             }
         }
@@ -300,7 +302,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     /**
      * Returns all controls factories.
      */
-    // TODO control factories should be defined and loaded by an extension point.
     private ValueDatatypeControlFactory[] getValueDatatypeControlFactories() {
         return controlFactories;
     }
