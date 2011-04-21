@@ -19,11 +19,11 @@ import java.util.List;
 
 import org.eclipse.swt.widgets.Combo;
 import org.faktorips.devtools.core.DatatypeFormatter;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
  * An implementation of <code>AbstractEnumDatatypeBasedField</code> that displays the values of an
@@ -63,7 +63,7 @@ public class EnumTypeDatatypeField extends AbstractEnumDatatypeBasedField {
 
     @Override
     public String getDisplayTextForValue(String id) {
-        return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(getEnumDatatype(), id);
+        return IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(getEnumDatatype(), id);
     }
 
 }

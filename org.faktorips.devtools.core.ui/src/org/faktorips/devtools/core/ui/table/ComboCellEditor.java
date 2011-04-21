@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Control;
 import org.faktorips.datatype.PrimitiveBooleanDatatype;
 import org.faktorips.datatype.classtypes.BooleanDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.controlfactories.BooleanControlFactory;
 import org.faktorips.devtools.core.ui.controller.fields.EnumDatatypeField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
 
@@ -56,8 +57,7 @@ public class ComboCellEditor extends IpsCellEditor {
         } else if (data instanceof EnumTypeDatatypeField) {
             return ((EnumTypeDatatypeField)data).getValue();
         } else if (data instanceof BooleanDatatype || data instanceof PrimitiveBooleanDatatype) {
-            if (comboControl.getText().equals(
-                    IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().getBooleanTrueDisplay())) {
+            if (comboControl.getText().equals(BooleanControlFactory.getTrueValue())) {
                 return Boolean.TRUE.toString();
             } else if (comboControl.getText().equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) {
                 return null;
@@ -95,11 +95,9 @@ public class ComboCellEditor extends IpsCellEditor {
                     // TODO pk 08-06-2009 there is missing something
                     IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
                 } else if (Boolean.TRUE.toString().equals(value)) {
-                    comboControl.select(getIndexForValue(IpsPlugin.getDefault().getIpsPreferences()
-                            .getDatatypeFormatter().getBooleanTrueDisplay()));
+                    comboControl.select(getIndexForValue(BooleanControlFactory.getTrueValue()));
                 } else if (Boolean.FALSE.toString().equals(value)) {
-                    comboControl.select(getIndexForValue(IpsPlugin.getDefault().getIpsPreferences()
-                            .getDatatypeFormatter().getBooleanFalseDisplay()));
+                    comboControl.select(getIndexForValue(BooleanControlFactory.getFalseValue()));
                 } else {
                     comboControl.select(getIndexForValue((String)value));
                 }

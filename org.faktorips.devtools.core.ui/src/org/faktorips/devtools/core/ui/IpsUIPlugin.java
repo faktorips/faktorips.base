@@ -155,6 +155,9 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     /** Factories for creating controls depending on the datatype. */
     private ValueDatatypeControlFactory[] controlFactories;
 
+    /** The default value datatype control factory */
+    private ValueDatatypeControlFactory defaultControlFactory;
+
     /** Broadcaster for broadcasting delayed change events triggered by edit fields. */
     private EditFieldChangesBroadcaster editFieldChangeBroadcaster;
 
@@ -195,6 +198,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         saveParticipant.addSaveParticipant(ipsEditorSettings);
         ResourcesPlugin.getWorkspace().addSaveParticipant(this, saveParticipant);
         controlFactories = initValueDatatypeControlFactories();
+        defaultControlFactory = new DefaultControlFactory();
         ipsElementWorkbenchAdapterAdapterFactory = new IpsElementWorkbenchAdapterAdapterFactory();
         datatypeFormatter = new UIDatatypeFormatter();
         Platform.getAdapterManager().registerAdapters(ipsElementWorkbenchAdapterAdapterFactory, IIpsElement.class);
@@ -222,11 +226,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 }
             }
         }
-        /*
-         * Make sure defaultControlFactory is the last one registered, as it functions as a
-         * fallback.
-         */
-        factories.add(new DefaultControlFactory());
         return factories.toArray(new ValueDatatypeControlFactory[factories.size()]);
     }
 
@@ -277,9 +276,9 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     /**
      * Returns a control factory that can create controls (and edit fields) for the given datatype.
-     * Returns a default factory if datatype is <code>null</code>.
+     * Returns a {@link DefaultControlFactory} if datatype is <code>null</code> or no factory was
+     * found.
      * 
-     * @throws RuntimeException if no factory is found for the given datatype.
      */
     public ValueDatatypeControlFactory getValueDatatypeControlFactory(ValueDatatype datatype) {
         ValueDatatypeControlFactory[] factories = getValueDatatypeControlFactories();
@@ -288,7 +287,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 return factorie;
             }
         }
-        throw new RuntimeException(Messages.IpsPlugin_errorNoDatatypeControlFactoryFound + datatype);
+        return defaultControlFactory;
     }
 
     /**

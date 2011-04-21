@@ -19,7 +19,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.devtools.core.DatatypeFormatter;
 import org.faktorips.devtools.core.EnumTypeDisplay;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
@@ -28,6 +27,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 
 /**
  * 
@@ -126,7 +127,7 @@ public class EnumDatatypeFieldTest extends AbstractIpsPluginTest {
 
     public void testWithDisplayTypeNameAndId() {
         IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
-        DatatypeFormatter formatter = prefs.getDatatypeFormatter();
+        UIDatatypeFormatter formatter = IpsUIPlugin.getDefault().getDatatypeFormatter();
         prefs.setEnumTypeDisplay(EnumTypeDisplay.NAME_AND_ID);
         Combo c = new Combo(shell, SWT.READ_ONLY);
         field = new EnumDatatypeField(c, datatype);

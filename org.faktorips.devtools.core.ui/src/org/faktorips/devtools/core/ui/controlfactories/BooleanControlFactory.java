@@ -24,10 +24,9 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.PrimitiveBooleanDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.BooleanDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
@@ -44,11 +43,8 @@ import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
  */
 public class BooleanControlFactory extends ValueDatatypeControlFactory {
 
-    private IpsPreferences preferences;
-
     public BooleanControlFactory() {
         super();
-        this.preferences = IpsPlugin.getDefault().getIpsPreferences();
     }
 
     @Override
@@ -62,10 +58,8 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
-
-        return new BooleanComboField((Combo)createControl(toolkit, parent, datatype, valueSet, ipsProject), preferences
-                .getDatatypeFormatter().getBooleanTrueDisplay(), preferences.getDatatypeFormatter()
-                .getBooleanFalseDisplay());
+        return new BooleanComboField((Combo)createControl(toolkit, parent, datatype, valueSet, ipsProject),
+                getTrueValue(), getFalseValue());
 
     }
 
@@ -76,8 +70,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
             IValueSet valueSet,
             IIpsProject ipsProject) {
 
-        return toolkit.createComboForBoolean(parent, !datatype.isPrimitive(), preferences.getDatatypeFormatter()
-                .getBooleanTrueDisplay(), preferences.getDatatypeFormatter().getBooleanFalseDisplay());
+        return toolkit.createComboForBoolean(parent, !datatype.isPrimitive(), getTrueValue(), getFalseValue());
     }
 
     /**
@@ -167,5 +160,15 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
     @Override
     public int getDefaultAlignment() {
         return SWT.LEFT;
+    }
+
+    public static String getTrueValue() {
+        return IpsUIPlugin.getDefault().getDatatypeFormatter()
+                .formatValue(Datatype.PRIMITIVE_BOOLEAN, Boolean.toString(true));
+    }
+
+    public static String getFalseValue() {
+        return IpsUIPlugin.getDefault().getDatatypeFormatter()
+                .formatValue(Datatype.PRIMITIVE_BOOLEAN, Boolean.toString(false));
     }
 }

@@ -20,8 +20,8 @@ import java.util.List;
 import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.swt.widgets.Combo;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -170,7 +170,7 @@ public abstract class AbstractEnumDatatypeBasedField extends StringValueComboFie
      * {@link IpsPreferences#ENUM_TYPE_DISPLAY} specifies the format.
      */
     public String getDisplayTextForValue(String id) {
-        return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(datatype, id);
+        return IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(datatype, id);
     }
 
     /**

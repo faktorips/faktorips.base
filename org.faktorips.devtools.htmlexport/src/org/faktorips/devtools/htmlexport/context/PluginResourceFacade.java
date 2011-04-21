@@ -19,10 +19,11 @@ import java.util.Properties;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.faktorips.devtools.core.DatatypeFormatter;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 import org.faktorips.devtools.htmlexport.HtmlExportPlugin;
 
 public class PluginResourceFacade implements IPluginResourceFacade {
@@ -43,8 +44,8 @@ public class PluginResourceFacade implements IPluginResourceFacade {
     }
 
     @Override
-    public DatatypeFormatter getDatatypeFormatter() {
-        return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter();
+    public UIDatatypeFormatter getDatatypeFormatter() {
+        return IpsUIPlugin.getDefault().getDatatypeFormatter();
     }
 
     @Override
