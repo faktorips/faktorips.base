@@ -1412,9 +1412,14 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     private void generateMethodGetParentModelObjectForSubsetDerivedUnion(JavaCodeFragmentBuilder methodBuilder,
             GenAssociation genAssociation,
             List<IPolicyCmptTypeAssociation> associations) throws CoreException {
+
+        HasSuperTypeImplementationOfInverseForDerivedUnionVisitor checkVisitor = new HasSuperTypeImplementationOfInverseForDerivedUnionVisitor(
+                genAssociation);
+        checkVisitor.start((IPolicyCmptType)getPcType().findSupertype(getIpsProject()));
+        boolean callSupertype = checkVisitor.hasSuperTypeImplementationOfInverseForDerivedUnion;
         generateMethodGetParentModelObject(methodBuilder,
                 genAssociation.getQualifiedClassName(genAssociation.getTargetPolicyCmptType(), true),
-                genAssociation.getMethodNameGetParentObject(false), false, associations);
+                genAssociation.getMethodNameGetParentObject(false), callSupertype, associations);
     }
 
     /**
@@ -1740,6 +1745,33 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             implementsInterfaceMethod = currentType.isAbstract();
             if (!implementsInterfaceMethod) {
                 return false;
+            }
+            return true;
+        }
+    }
+
+    private class HasSuperTypeImplementationOfInverseForDerivedUnionVisitor extends PolicyCmptTypeHierarchyVisitor {
+
+        GenAssociation genAssociation;
+
+        public HasSuperTypeImplementationOfInverseForDerivedUnionVisitor(GenAssociation genAssociation) {
+            super();
+            this.genAssociation = genAssociation;
+        }
+
+        boolean hasSuperTypeImplementationOfInverseForDerivedUnion = false;
+
+        @Override
+        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
+            Map<GenAssociation, List<IPolicyCmptTypeAssociation>> inverseOfDerivedUnionAssociationGenerators = getAllInverseOfDerivedUnionAssociationsGenerator(currentType);
+            for (Map.Entry<GenAssociation, List<IPolicyCmptTypeAssociation>> entry : inverseOfDerivedUnionAssociationGenerators
+                    .entrySet()) {
+                GenAssociation genAssociation2 = entry.getKey();
+                if (genAssociation.getMethodNameGetParentObject(false).equals(
+                        genAssociation2.getMethodNameGetParentObject(false))) {
+                    hasSuperTypeImplementationOfInverseForDerivedUnion = true;
+                    return false;
+                }
             }
             return true;
         }

@@ -57,53 +57,76 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor {
     public void addMessagesForDuplicates(MessageList messages) {
         for (String propertyName : duplicateProperties) {
             ObjectProperty[] invalidObjProperties = properties.get(propertyName);
-            if (!ignoreDuplicatedInverseAssociationsForDerivedUnions(invalidObjProperties)) {
-                messages.add(createMessage(propertyName, invalidObjProperties));
+            try {
+                if (!ignoreDuplicatedInverseAssociationsForDerivedUnions(invalidObjProperties)) {
+                    messages.add(createMessage(propertyName, invalidObjProperties));
+                }
+            } catch (CoreException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
             }
         }
     }
 
-    // TODO set to protected and refactor the test with mockito!!!
     /**
      * The detail-to-master association that is a subset of a derived union association could have
      * the same name as the corresponding derived union association
      * 
      * @param objectProperties the ObjectProperties to check
      * @return true to ignore this property
+     * @throws CoreException in casae of a core exception while finding other associations
      */
-    public boolean ignoreDuplicatedInverseAssociationsForDerivedUnions(ObjectProperty[] objectProperties) {
+    protected boolean ignoreDuplicatedInverseAssociationsForDerivedUnions(ObjectProperty[] objectProperties)
+            throws CoreException {
         IType typeToValidate = null;
         int index = 0;
         // check that only IPolicyCmptTypeAssociations are in the array and that no other object but
         // the first one is in the same type
+        // these are fast validations in the first iteration, for less performant validations we
+        // have a second iteration
         for (ObjectProperty property : objectProperties) {
+            // only ignore if every object property is an IPolicyCmptTypeAssociation
             if (!(property.getObject() instanceof IPolicyCmptTypeAssociation)) {
+                return false;
+            }
+            IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)property.getObject();
+            // every association have to be a Detail-To-Master association
+            if (!association.getAssociationType().isCompositionDetailToMaster()) {
                 return false;
             }
             if (typeToValidate == null) {
                 // first get the type of the first association. This is the type we want to validate
-                typeToValidate = ((IPolicyCmptTypeAssociation)objectProperties[0].getObject()).getType();
+                typeToValidate = association.getType();
                 if (typeToValidate == null) {
                     return false;
                 }
             } else {
-                if (typeToValidate.equals(((IPolicyCmptTypeAssociation)property.getObject()).getType())) {
+                // if there is another property with the same name in this type, do not ignore
+                if (typeToValidate.equals(association.getType())) {
                     return false;
                 }
             }
         }
+
+        boolean foundNotInverseOfDerivedUnion = false;
+
         for (ObjectProperty property : objectProperties) {
             IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)property.getObject();
-            // every association have to be a Detail-TO-Master association
-            if (!association.getAssociationType().isCompositionDetailToMaster()) {
-                return false;
-            }
             try {
                 IPolicyCmptType target = association.findTargetPolicyCmptType(ipsProject);
                 if (target == null) {
                     return false;
                 }
+                // shared associations must have the same name
+                boolean isNotInverseOfDerivedUnion = !association.isInverseOfDerivedUnion();
+                if (isNotInverseOfDerivedUnion && foundNotInverseOfDerivedUnion) {
+                    // there could be only one association that is no inverse of a derived union in
+                    // type hierarchy! (FIPS-459)
+                    return false;
+                } else {
+                    foundNotInverseOfDerivedUnion = foundNotInverseOfDerivedUnion || isNotInverseOfDerivedUnion;
+                }
                 // the target of the association have to be covariant with the other associations
+                // and the
                 for (int i = index; i < objectProperties.length; i++) {
                     IPolicyCmptTypeAssociation nextAssociation = (IPolicyCmptTypeAssociation)objectProperties[i]
                             .getObject();
