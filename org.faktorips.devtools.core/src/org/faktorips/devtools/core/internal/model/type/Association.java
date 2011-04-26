@@ -238,7 +238,7 @@ public abstract class Association extends IpsObjectPart implements IAssociation 
 
     @Override
     public boolean isSubsetOfDerivedUnion(IAssociation derivedUnion, IIpsProject project) throws CoreException {
-        if (derivedUnion == null) {
+        if (!isSubsetOfADerivedUnion()) {
             return false;
         }
         return derivedUnion.equals(findSubsettedDerivedUnion(project));
