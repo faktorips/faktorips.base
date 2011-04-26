@@ -365,9 +365,9 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             // declare variable: Policy newCopy = new Policy();
             String varName = "newCopy";
             methodsBuilder.append(getUnqualifiedClassName()).append(' ').append(varName).append(" = ")
-            //
-                    .append('(').append(getUnqualifiedClassName()).append(')').append(varCopyMap).appendln(
-                            ".get(this);");
+                    //
+                    .append('(').append(getUnqualifiedClassName()).append(')').append(varCopyMap)
+                    .appendln(".get(this);");
             methodsBuilder.append("if (").append(varName).append(" == null)").openBracket() //
                     .append(varName).append(" = new ").append(getUnqualifiedClassName()).appendln("();");
             if (getPcType().isConfigurableByProductCmptType() && getProductCmptType() != null) {
@@ -1060,8 +1060,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             appendOverrideAnnotation(builder, false);
         }
         GenPolicyCmptType genPolicyCmptType = getGenerator();
-        builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Datatype.VOID.getJavaClassName(), genPolicyCmptType
-                .getMethodNameInitialize(), EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
+        builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Datatype.VOID.getJavaClassName(),
+                genPolicyCmptType.getMethodNameInitialize(), EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
         if (StringUtils.isNotEmpty(getPcType().getSupertype())) {
             builder.append("super." + genPolicyCmptType.getMethodNameInitialize() + "();");
         }
@@ -1181,12 +1181,14 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 first = false;
                 builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
                 appendOverrideAnnotation(builder, false);
-                builder
-                        .methodBegin(java.lang.reflect.Modifier.PROTECTED, Void.TYPE.getName(),
-                                MethodNames.INIT_PROPERTIES_FROM_XML, new String[] { "propMap", "productRepository" },
-                                new String[] {
-                                        Map.class.getName() + "<" + String.class.getName() + ","
-                                                + String.class.getName() + ">", IRuntimeRepository.class.getName() });
+                builder.methodBegin(
+                        java.lang.reflect.Modifier.PROTECTED,
+                        Void.TYPE.getName(),
+                        MethodNames.INIT_PROPERTIES_FROM_XML,
+                        new String[] { "propMap", "productRepository" },
+                        new String[] {
+                                Map.class.getName() + "<" + String.class.getName() + "," + String.class.getName() + ">",
+                                IRuntimeRepository.class.getName() });
                 builder.appendln("super." + MethodNames.INIT_PROPERTIES_FROM_XML + "(propMap, productRepository);");
             }
             generator.generateInitPropertiesFromXml(builder, new JavaCodeFragment("productRepository"));
@@ -1267,8 +1269,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 builder.append(getGenerator(association).getMethodNameNewChild());
                 builder.appendln("();");
             } else {
-                builder
-                        .appendln("throw new RuntimeException(childEl.toString() + \": Attribute className is missing.\");");
+                builder.appendln("throw new RuntimeException(childEl.toString() + \": Attribute className is missing.\");");
             }
             builder.appendln("}");
         }
@@ -1411,9 +1412,13 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     private void generateMethodGetParentModelObjectForSubsetDerivedUnion(JavaCodeFragmentBuilder methodBuilder,
             GenAssociation genAssociation,
             List<IPolicyCmptTypeAssociation> associations) throws CoreException {
-        generateMethodGetParentModelObject(methodBuilder, genAssociation.getQualifiedClassName(genAssociation
-                .getTargetPolicyCmptType(), true), genAssociation.getMethodNameGetParentObject(false), false,
-                associations);
+        HasSuperTypeImplementationOfInverseForDerivedUnionVisitor checkVisitor = new HasSuperTypeImplementationOfInverseForDerivedUnionVisitor(
+                genAssociation);
+        checkVisitor.start((IPolicyCmptType)getPcType().findSupertype(getIpsProject()));
+        boolean callSupertype = checkVisitor.hasSuperTypeImplementationOfInverseForDerivedUnion;
+        generateMethodGetParentModelObject(methodBuilder,
+                genAssociation.getQualifiedClassName(genAssociation.getTargetPolicyCmptType(), true),
+                genAssociation.getMethodNameGetParentObject(false), callSupertype, associations);
     }
 
     /**
@@ -1481,7 +1486,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
         if (callSupertype && isSupertypeDependant()) {
             methodBuilder.appendln("return super.");
-            methodBuilder.appendln(MethodNames.GET_PARENT);
+            methodBuilder.appendln(methodName);
             methodBuilder.appendln("();");
         } else {
             methodBuilder.appendln("return null;");
@@ -1688,8 +1693,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         if (genTsu == null) {
             return;
         }
-        builder.methodBegin(Modifier.PUBLIC, genTsu.getReturnTypeOfMethodGetTableUsage(), genTsu
-                .getMethodNameGetTableUsage(), EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
+        builder.methodBegin(Modifier.PUBLIC, genTsu.getReturnTypeOfMethodGetTableUsage(),
+                genTsu.getMethodNameGetTableUsage(), EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
         String productCmptGenClass = getGenProductCmptType().getQualifiedClassNameForProductCmptTypeGen(false);
         builder.appendClassName(productCmptGenClass);
         builder.append(" productCmpt = (");
@@ -1740,6 +1745,33 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             implementsInterfaceMethod = currentType.isAbstract();
             if (!implementsInterfaceMethod) {
                 return false;
+            }
+            return true;
+        }
+    }
+
+    private class HasSuperTypeImplementationOfInverseForDerivedUnionVisitor extends PolicyCmptTypeHierarchyVisitor {
+
+        GenAssociation genAssociation;
+
+        public HasSuperTypeImplementationOfInverseForDerivedUnionVisitor(GenAssociation genAssociation) {
+            super();
+            this.genAssociation = genAssociation;
+        }
+
+        boolean hasSuperTypeImplementationOfInverseForDerivedUnion = false;
+
+        @Override
+        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
+            Map<GenAssociation, List<IPolicyCmptTypeAssociation>> inverseOfDerivedUnionAssociationGenerators = getAllInverseOfDerivedUnionAssociationsGenerator(currentType);
+            for (Map.Entry<GenAssociation, List<IPolicyCmptTypeAssociation>> entry : inverseOfDerivedUnionAssociationGenerators
+                    .entrySet()) {
+                GenAssociation genAssociation2 = entry.getKey();
+                if (genAssociation.getMethodNameGetParentObject(false).equals(
+                        genAssociation2.getMethodNameGetParentObject(false))) {
+                    hasSuperTypeImplementationOfInverseForDerivedUnion = true;
+                    return false;
+                }
             }
             return true;
         }
