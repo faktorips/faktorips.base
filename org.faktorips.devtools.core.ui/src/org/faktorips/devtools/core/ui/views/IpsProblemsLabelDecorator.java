@@ -74,7 +74,6 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
     }
 
     private int findMaxProblemSeverity(Object element) throws CoreException {
-        IResource res = null;
         if (element instanceof IIpsElement) {
             IIpsElement ipsElement = ((IIpsElement)element);
             if (ipsElement instanceof IIpsProject) {
@@ -93,7 +92,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
                 // as corresponding ressource. If for some reaseon we have to switch back to
                 // getEnclosingRessource()
                 // we must readd the special handling to ips object parts.
-                res = ipsElement.getCorrespondingResource();
+                IResource res = ipsElement.getCorrespondingResource();
                 if (res == null || !res.isAccessible()) {
                     return DEFAULT_FLAG;
                 }
@@ -115,7 +114,12 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
                 return res.findMaxProblemSeverity(IpsPlugin.PROBLEM_MARKER, true, depth);
             }
         } else if (element instanceof IResource) {
-            return ((IResource)element).findMaxProblemSeverity(IpsPlugin.PROBLEM_MARKER, false, IResource.DEPTH_ONE);
+            IResource resource = (IResource)element;
+            if (resource.isAccessible()) {
+                return resource.findMaxProblemSeverity(IpsPlugin.PROBLEM_MARKER, false, IResource.DEPTH_ONE);
+            } else {
+                return DEFAULT_FLAG;
+            }
         } else {
             return DEFAULT_FLAG;
         }
@@ -128,23 +132,27 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
      * displayed by the decorator.
      */
     private int computeAdornmentFlagsProject(IIpsProject project) throws CoreException {
-        IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
-        int result = 0;
-        for (IIpsPackageFragmentRoot root : roots) {
-            int flag = findMaxProblemSeverity(root);
+        if (project.getProject().isAccessible()) {
+            IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
+            int result = 0;
+            for (IIpsPackageFragmentRoot root : roots) {
+                int flag = findMaxProblemSeverity(root);
+                if (flag == IMarker.SEVERITY_ERROR) {
+                    return flag;
+                } else {
+                    result |= flag;
+                }
+            }
+
+            // Check for errors in .ipsproject file.
+            int flag = findMaxProblemSeverity(project.getIpsProjectPropertiesFile());
             if (flag == IMarker.SEVERITY_ERROR) {
                 return flag;
-            } else {
-                result |= flag;
             }
+            return result |= flag;
+        } else {
+            return DEFAULT_FLAG;
         }
-
-        // Check for errors in .ipsproject file.
-        int flag = findMaxProblemSeverity(project.getIpsProjectPropertiesFile());
-        if (flag == IMarker.SEVERITY_ERROR) {
-            return flag;
-        }
-        return result |= flag;
     }
 
     /**
