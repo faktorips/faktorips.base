@@ -150,6 +150,9 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
         }
 
         GregorianCalendar nextValidFrom = nextGeneration.getValidFrom();
+        if (nextValidFrom == null) {
+            return parentValidTo;
+        }
         GregorianCalendar validTo = (GregorianCalendar)GregorianCalendar.getInstance(nextValidFrom.getTimeZone());
         /*
          * reduce the valid-from date of the follow-up generation by one millisecond to avoid that
