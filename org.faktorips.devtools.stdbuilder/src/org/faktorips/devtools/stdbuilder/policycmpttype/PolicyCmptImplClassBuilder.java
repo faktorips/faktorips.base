@@ -210,18 +210,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
                 // Multiple inverse associations could have the same name in type hierarchy. We have
                 // to create the getter only for the first one
-                // if (!type.getQualifiedName().equals(association.getType().getQualifiedName())) {
-                // // the type is not the same - must be a supertype
-                // if (type.getAssociation(association.getTargetRoleSingular()) != null) {
-                // // an association with the same name exists in the type and supertype.
-                // // This could happen if a detail-to-master association is the subset of a
-                // // derived union association with the same role name as the derived union.
-                // // @see MTB#357
-                // // Because of this association also exists in type, the corresponding getter
-                // // method is already generated
-                // // continue;
-                // }
-                // }
                 if (!associationNames.add(genAssociation.getAssociation().getName())) {
                     continue;
                 }
@@ -249,12 +237,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         List<IPolicyCmptTypeAssociation> result = new ArrayList<IPolicyCmptTypeAssociation>();
         List<IPolicyCmptTypeAssociation> associations = type.getPolicyCmptTypeAssociations();
         for (IPolicyCmptTypeAssociation policyCmptTypeAssociation : associations) {
-            // XXX
-            // if
-            // (policyCmptTypeAssociation.hasSuperAssociationWithSameNameNotInverseOfDerivedUnion(getIpsProject()))
-            // {
-            // continue;
-            // }
             GenAssociation anyGenerator = getGenerator(policyCmptTypeAssociation);
             // must be a to1 generator because is is a detail to master composition
             if (!(anyGenerator instanceof GenAssociationTo1)) {
