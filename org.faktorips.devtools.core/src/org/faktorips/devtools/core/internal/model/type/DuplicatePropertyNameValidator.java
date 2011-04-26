@@ -75,7 +75,7 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor {
      * @return true to ignore this property
      * @throws CoreException in casae of a core exception while finding other associations
      */
-    protected boolean ignoreDuplicatedInverseAssociationsForDerivedUnions(ObjectProperty[] objectProperties)
+    /* protected */public boolean ignoreDuplicatedInverseAssociationsForDerivedUnions(ObjectProperty[] objectProperties)
             throws CoreException {
         IType typeToValidate = null;
         int index = 0;
