@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.util.message.ObjectProperty;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,21 +28,17 @@ import org.junit.Test;
 public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
 
     private DuplicatePropertyNameValidator validatorTest;
-    private IAssociation toVA;
-    private IAssociation toA;
-    private IAssociation toB;
-    private IAssociation toVB;
-    private IAssociation toB1;
-    private IAssociation toVB1;
-    private IAssociation toC;
-    private IAssociation toVC;
-    private ObjectProperty opToA;
+    private IPolicyCmptTypeAssociation toVA;
+    private IPolicyCmptTypeAssociation toA;
+    private IPolicyCmptTypeAssociation toB;
+    private IPolicyCmptTypeAssociation toVB;
+    private IPolicyCmptTypeAssociation toC;
+    private IPolicyCmptTypeAssociation toVC;
     private ObjectProperty opToVA;
     private ObjectProperty opToVB;
-    private ObjectProperty opToVB1;
     private ObjectProperty opToVC;
-    private IAssociation toO;
-    private IAssociation toAO;
+    private IPolicyCmptTypeAssociation toO;
+    private IPolicyCmptTypeAssociation toAO;
     private ObjectProperty opToVO;
 
     @Override
@@ -63,69 +59,60 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
 
         policyCmptTypeB1.setSupertype(policyCmptTypeA.getName());
 
-        toA = policyCmptTypeV.newAssociation();
+        toA = (IPolicyCmptTypeAssociation)policyCmptTypeV.newAssociation();
         toA.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         toA.setTarget(policyCmptTypeA.getName());
         toA.setTargetRoleSingular("toA");
         toA.setTargetRolePlural("toAs");
 
-        toVA = policyCmptTypeA.newAssociation();
+        toVA = (IPolicyCmptTypeAssociation)policyCmptTypeA.newAssociation();
         toVA.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
         toVA.setTarget(policyCmptTypeV.getName());
         toVA.setTargetRoleSingular("toV");
         toVA.setTargetRolePlural("toV");
+        toVA.setInverseAssociation(toA.getName());
 
-        toB = policyCmptTypeV.newAssociation();
+        toB = (IPolicyCmptTypeAssociation)policyCmptTypeV.newAssociation();
         toB.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         toB.setTarget(policyCmptTypeA.getName());
         toB.setTargetRoleSingular("toB");
         toB.setTargetRolePlural("toBs");
 
-        toVB = policyCmptTypeB.newAssociation();
+        toVB = (IPolicyCmptTypeAssociation)policyCmptTypeB.newAssociation();
         toVB.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
         toVB.setTarget(policyCmptTypeV.getName());
         toVB.setTargetRoleSingular("toV");
         toVB.setTargetRolePlural("toV");
+        toVB.setInverseAssociation(toB.getName());
 
-        toB1 = policyCmptTypeV.newAssociation();
-        toB1.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        toB1.setTarget(policyCmptTypeA.getName());
-        toB1.setTargetRoleSingular("toB1");
-        toB1.setTargetRolePlural("toB1s");
-
-        toVB1 = policyCmptTypeB1.newAssociation();
-        toVB1.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
-        toVB1.setTarget(policyCmptTypeV.getName());
-        toVB1.setTargetRoleSingular("toV");
-        toVB1.setTargetRolePlural("toV");
-
-        toC = policyCmptTypeV.newAssociation();
+        toC = (IPolicyCmptTypeAssociation)policyCmptTypeV.newAssociation();
         toC.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         toC.setTarget(policyCmptTypeA.getName());
         toC.setTargetRoleSingular("toC");
         toC.setTargetRolePlural("toCs");
 
-        toVC = policyCmptTypeC.newAssociation();
+        toVC = (IPolicyCmptTypeAssociation)policyCmptTypeC.newAssociation();
         toVC.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
         toVC.setTarget(policyCmptTypeV.getName());
         toVC.setTargetRoleSingular("toV");
         toVC.setTargetRolePlural("toV");
+        toVC.setInverseAssociation(toC.getName());
 
-        toO = policyCmptTypeV.newAssociation();
+        toO = (IPolicyCmptTypeAssociation)policyCmptTypeV.newAssociation();
         toO.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         toO.setTarget(policyCmptTypeA.getName());
         toO.setTargetRoleSingular("toO");
         toO.setTargetRolePlural("toOs");
 
-        toAO = policyCmptTypeOther.newAssociation();
+        toAO = (IPolicyCmptTypeAssociation)policyCmptTypeOther.newAssociation();
         toAO.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
         toAO.setTarget(policyCmptTypeA.getName());
         toAO.setTargetRoleSingular("toV");
         toAO.setTargetRolePlural("toV");
+        toAO.setInverseAssociation(toO.getName());
 
         opToVA = new ObjectProperty(toVA, "toV");
         opToVB = new ObjectProperty(toVB, "toV");
-        opToVB1 = new ObjectProperty(toVB1, "toV");
         opToVC = new ObjectProperty(toVC, "toV");
         opToVO = new ObjectProperty(toAO, "toV");
 
@@ -134,16 +121,16 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
     @Test
     public void testIgnoreDuplicatedInverseAssociationsForDerivedUnions() throws CoreException {
         ObjectProperty[] objectProperties = new ObjectProperty[] { opToVB, opToVA };
-        assertTrue(validatorTest.ignoreDuplicatedInverseAssociationsForDerivedUnions(objectProperties));
-
-        objectProperties = new ObjectProperty[] { opToVB, opToVB1, opToVA };
-        assertTrue(validatorTest.ignoreDuplicatedInverseAssociationsForDerivedUnions(objectProperties));
-
-        objectProperties = new ObjectProperty[] { opToVC, opToVB, opToVB1, opToVA };
-        assertTrue(validatorTest.ignoreDuplicatedInverseAssociationsForDerivedUnions(objectProperties));
-
-        objectProperties = new ObjectProperty[] { opToVO, opToVB, opToVB1, opToVA };
+        // both are not inverse of derived union - only one is valid
         assertFalse(validatorTest.ignoreDuplicatedInverseAssociationsForDerivedUnions(objectProperties));
+        toA.setDerivedUnion(true);
+        assertTrue(validatorTest.ignoreDuplicatedInverseAssociationsForDerivedUnions(objectProperties));
+
+        objectProperties = new ObjectProperty[] { opToVC, opToVB, opToVA };
+        // both toVC and toVB are no inverse of derived unions!
+        assertFalse(validatorTest.ignoreDuplicatedInverseAssociationsForDerivedUnions(objectProperties));
+        toB.setDerivedUnion(true);
+        assertTrue(validatorTest.ignoreDuplicatedInverseAssociationsForDerivedUnions(objectProperties));
 
         objectProperties = new ObjectProperty[] { opToVO, opToVB, opToVA };
         assertFalse(validatorTest.ignoreDuplicatedInverseAssociationsForDerivedUnions(objectProperties));
