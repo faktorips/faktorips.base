@@ -19,9 +19,9 @@ package org.faktorips.util.message;
  */
 public class ObjectProperty {
 
-    private Object object;
-    private String property;
-    private int index;
+    private final Object object;
+    private final String property;
+    private final int index;
     private int hashCode;
 
     /**
