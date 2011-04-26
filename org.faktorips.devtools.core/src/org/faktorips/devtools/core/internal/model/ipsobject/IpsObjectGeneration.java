@@ -142,36 +142,28 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
 
     @Override
     public GregorianCalendar getValidTo() {
-        IIpsObjectGeneration[] generations = getTimedIpsObject().getGenerationsOrderedByValidDate();
-
         GregorianCalendar parentValidTo = getTimedIpsObject().getValidTo();
 
-        GregorianCalendar validTo = null;
-
-        for (int i = 0; i < generations.length && validTo == null; i++) {
-            if (generations[i].getGenerationNo() == getGenerationNo() + 1) {
-                GregorianCalendar date = generations[i].getValidFrom();
-                if (date != null) {
-                    // make a copy to not modify the valid-from date of the generation
-                    date = (GregorianCalendar)date.clone();
-
-                    /*
-                     * reduce the valid-from date of the follow-up generation by one millisecond to
-                     * avoid that two generations are valid at the same time. This generation is not
-                     * valid at the time the follow-up generation is valid from.
-                     */
-                    date.setTimeInMillis(date.getTimeInMillis() - 1);
-                }
-                validTo = date;
-            }
+        IIpsObjectGeneration nextGeneration = getNextByValidDate();
+        if (nextGeneration == null) {
+            return parentValidTo;
         }
+
+        GregorianCalendar nextValidFrom = nextGeneration.getValidFrom();
+        GregorianCalendar validTo = (GregorianCalendar)GregorianCalendar.getInstance(nextValidFrom.getTimeZone());
+        /*
+         * reduce the valid-from date of the follow-up generation by one millisecond to avoid that
+         * two generations are valid at the same time. This generation is not valid at the time the
+         * follow-up generation is valid from.
+         */
+        validTo.setTimeInMillis(nextValidFrom.getTimeInMillis() - 1);
 
         if (parentValidTo == null) {
             // no restriction given by parent, so we can return the default value
             return validTo;
         }
 
-        if (validTo == null || validTo.after(parentValidTo)) {
+        if (validTo.after(parentValidTo)) {
             // a restriction given by the parent exists, so we have to apply
             return parentValidTo;
         } else {
@@ -183,10 +175,11 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
     @Override
     public IIpsObjectGeneration getNextByValidDate() {
         IIpsObjectGeneration[] generations = getTimedIpsObject().getGenerationsOrderedByValidDate();
-        int genIndex = getGenerationNo();
 
-        if (generations.length > genIndex) {
-            return generations[genIndex];
+        for (int i = 0; i < generations.length - 1; i++) {
+            if (generations[i] == this) {
+                return generations[i + 1];
+            }
         }
         return null;
     }
@@ -194,10 +187,11 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
     @Override
     public IIpsObjectGeneration getPreviousByValidDate() {
         IIpsObjectGeneration[] generations = getTimedIpsObject().getGenerationsOrderedByValidDate();
-        int genIndex = getGenerationNo() - 2;
 
-        if (genIndex >= 0) {
-            return generations[genIndex];
+        for (int i = generations.length - 1; i > 0; i--) {
+            if (generations[i] == this) {
+                return generations[i - 1];
+            }
         }
         return null;
     }
