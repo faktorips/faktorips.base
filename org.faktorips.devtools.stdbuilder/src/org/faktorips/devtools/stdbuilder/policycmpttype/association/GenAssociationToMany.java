@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.util.QNameUtil;
@@ -868,7 +869,7 @@ public class GenAssociationToMany extends GenAssociation {
             methodsBuilder.append("[" + getMethodNameGetNumOfRefObjectsInternal() + "()];");
         }
 
-        if (supertype != null && !supertype.isAbstract()) {
+        if (needSuperCallForDerivedUnion()) {
             if (isUseTypesafeCollections()) {
                 // result.addAll(super.getCoverages());
                 methodsBuilder.append("result.addAll(super.");
@@ -946,9 +947,8 @@ public class GenAssociationToMany extends GenAssociation {
                 new String[] {});
         methodsBuilder.openBracket();
         methodsBuilder.append("int num = 0;");
-        IPolicyCmptType supertype = (IPolicyCmptType)((GenPolicyCmptType)getGenType()).getPolicyCmptType()
-                .findSupertype(getIpsProject());
-        if (supertype != null && !supertype.isAbstract()) {
+
+        if (needSuperCallForDerivedUnion()) {
             String methodName2 = getMethodNameGetNumOfRefObjects();
             methodsBuilder.appendln("num += super." + methodName2 + "();");
         }
@@ -966,6 +966,21 @@ public class GenAssociationToMany extends GenAssociation {
         }
         methodsBuilder.append("return num;");
         methodsBuilder.closeBracket();
+    }
+
+    /**
+     * This method check if a call of t
+     */
+    private boolean needSuperCallForDerivedUnion() throws CoreException {
+        IPolicyCmptType pcType = ((GenPolicyCmptType)getGenType()).getPolicyCmptType();
+        if (pcType.equals(association.getType())) {
+            // the derived union is defined in this generated class
+            return false;
+        }
+        IPolicyCmptType supertype = (IPolicyCmptType)pcType.findSupertype(getIpsProject());
+        FindSubsetOfDerivedUnion findSubsetOfDerivedUnionVisitor = new FindSubsetOfDerivedUnion(association, getIpsProject());
+        findSubsetOfDerivedUnionVisitor.start(supertype);
+        return findSubsetOfDerivedUnionVisitor.foundSubset;
     }
 
     @Override
@@ -1353,5 +1368,35 @@ public class GenAssociationToMany extends GenAssociation {
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static class FindSubsetOfDerivedUnion extends PolicyCmptTypeHierarchyVisitor {
+
+        private final IPolicyCmptTypeAssociation derivedUnion;
+
+        private final IIpsProject ipsProject;
+
+        private boolean foundSubset = false;
+
+        public FindSubsetOfDerivedUnion(IPolicyCmptTypeAssociation derivedUnion, IIpsProject ipsProject) {
+            this.derivedUnion = derivedUnion;
+            this.ipsProject = ipsProject;
+        }
+
+        @Override
+        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
+            List<IPolicyCmptTypeAssociation> associations = currentType.getPolicyCmptTypeAssociations();
+            for (IPolicyCmptTypeAssociation aAssociation : associations) {
+                if (aAssociation.isSubsetOfDerivedUnion(derivedUnion, ipsProject)) {
+                    foundSubset = true;
+                    return false;
+                }
+            }
+            if (currentType.equals(derivedUnion.getType())) {
+                return false;
+            }
+            return true;
+        }
+
     }
 }
