@@ -122,6 +122,7 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
     private void createSupportedLanguagesGroup(UIToolkit kit, Composite parent) {
         Group group = kit.createGroup(parent, Messages.AddIpsNatureDialog_SupportedLanguagesGroup);
         supportedLanguagesControl = new SupportedLanguagesControl(group);
+        supportedLanguagesControl.initialize();
     }
 
     private void createNamingGroup(UIToolkit kit, Composite parent) {
