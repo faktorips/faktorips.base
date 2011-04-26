@@ -402,23 +402,13 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     IPolicyCmptTypeAssociation findSharedAssociationHost(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * This method looks for an association with the same name in the super type hierarchy.
+     * This method looks for an association with the same name in the super type hierarchy. It
+     * starts with the supertype and returns the first association found with the same name.
      * 
      * @param ipsProject The project used to search from
      * @return an association with the same name and target found in the super type hierarchy
      * @throws CoreException in case of a core exception in the finder methods
      */
     IPolicyCmptTypeAssociation findSuperAssociationWithSameName(IIpsProject ipsProject) throws CoreException;
-
-    /**
-     * This method looks for an association with the same name in the super type hierarchy that is
-     * not the inverse of a derived union.
-     * 
-     * @param ipsProject The project used to search from
-     * @return true if an association with the same name that is not the inverse of a derived union
-     *         is found in the super type hierarchy
-     * @throws CoreException in case of a core exception in the finder methods
-     */
-    boolean hasSuperAssociationWithSameNameNotInverseOfDerivedUnion(IIpsProject ipsProject) throws CoreException;
 
 }

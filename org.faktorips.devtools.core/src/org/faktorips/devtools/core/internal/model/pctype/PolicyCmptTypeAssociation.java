@@ -329,15 +329,9 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     }
 
     @Override
-    public boolean hasSuperAssociationWithSameNameNotInverseOfDerivedUnion(final IIpsProject ipsProject)
-            throws CoreException {
-        IPolicyCmptTypeAssociation superAssociationWithSameName = findSuperAssociationWithSameName(ipsProject);
-        return (superAssociationWithSameName != null && !superAssociationWithSameName.isInverseOfDerivedUnion());
-    }
-
-    @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
+        // detail to master must have maxCardinality = 1
         if (maxCardinality != 1 && type == AssociationType.COMPOSITION_DETAIL_TO_MASTER) {
             String text = Messages.Association_msg_DetailToMasterAssociationMustHaveMaxCardinality1;
             list.add(new Message(MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION, text, Message.ERROR, this,

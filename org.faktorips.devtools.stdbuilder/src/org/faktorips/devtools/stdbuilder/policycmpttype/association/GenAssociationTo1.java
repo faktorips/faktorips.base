@@ -14,6 +14,7 @@
 package org.faktorips.devtools.stdbuilder.policycmpttype.association;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -117,8 +118,8 @@ public class GenAssociationTo1 extends GenAssociation {
      * removeCoverage().
      */
     public String getMethodNameRemoveObject() {
-        return getLocalizedText("METHOD_REMOVE_OBJECT_NAME", StringUtils
-                .capitalize(association.getTargetRoleSingular()));
+        return getLocalizedText("METHOD_REMOVE_OBJECT_NAME",
+                StringUtils.capitalize(association.getTargetRoleSingular()));
     }
 
     /**
@@ -126,8 +127,8 @@ public class GenAssociationTo1 extends GenAssociation {
      * removeCoverage().
      */
     public String getMethodNameRemoveObject(IAssociation association) {
-        return getLocalizedText("METHOD_REMOVE_OBJECT_NAME", StringUtils
-                .capitalize(association.getTargetRoleSingular()));
+        return getLocalizedText("METHOD_REMOVE_OBJECT_NAME",
+                StringUtils.capitalize(association.getTargetRoleSingular()));
     }
 
     /**
@@ -183,12 +184,14 @@ public class GenAssociationTo1 extends GenAssociation {
      * derived union is itself a subset of a derived union.
      */
     public List<GenAssociation> getGeneratorForInverseOfDerivedUnion() throws CoreException {
+        // generators are only created for shared associations OR associations that are the inverse
+        // of derived union
         if (!association.isSharedAssociation()
                 && (inverseAssociation == null || !inverseAssociation.isSubsetOfADerivedUnion() || !isCompositionDetailToMaster())) {
-            return null;
+            return Collections.emptyList();
         }
-        if (association.hasSuperAssociationWithSameNameNotInverseOfDerivedUnion(getIpsProject())) {
-            return null;
+        if (isSharedAssociationAlreadyGenerated()) {
+            return Collections.emptyList();
         }
         // find the derived union the inverse of this (the master to detail association) is the
         // subset for
@@ -199,7 +202,7 @@ public class GenAssociationTo1 extends GenAssociation {
             // TODO null check
             IPolicyCmptTypeAssociation sharedAssociationHost = association.findSharedAssociationHost(getIpsProject());
             if (sharedAssociationHost == null) {
-                return null;
+                return Collections.emptyList();
             }
             subsettedDerivedUnion = sharedAssociationHost.findInverseAssociation(getIpsProject());
         } else {
@@ -207,19 +210,19 @@ public class GenAssociationTo1 extends GenAssociation {
                     .findSubsettedDerivedUnion(getIpsProject());
         }
         if (subsettedDerivedUnion == null) {
-            return null;
+            return Collections.emptyList();
         }
 
         // find generator for the policy component type of the derived union
         GenPolicyCmptType generatorForDerivedUnionHost = getGeneratorFor(subsettedDerivedUnion.getPolicyCmptType());
         if (generatorForDerivedUnionHost == null) {
-            return null;
+            return Collections.emptyList();
         }
 
         // find the generator for the derived union association
         GenAssociation generatorForDerivedUnion = generatorForDerivedUnionHost.getGenerator(subsettedDerivedUnion);
         if (generatorForDerivedUnion == null) {
-            return null;
+            return Collections.emptyList();
         }
 
         List<GenAssociation> result = new ArrayList<GenAssociation>();
@@ -231,18 +234,13 @@ public class GenAssociationTo1 extends GenAssociation {
             if (generatorForInverseAssociation instanceof GenAssociationTo1) {
                 List<GenAssociation> generatorForInverseOfDerivedUnion = ((GenAssociationTo1)generatorForInverseAssociation)
                         .getGeneratorForInverseOfDerivedUnion();
-                if (generatorForInverseOfDerivedUnion != null) {
-                    result.addAll(generatorForInverseOfDerivedUnion);
-                }
+                result.addAll(generatorForInverseOfDerivedUnion);
             }
         }
 
         GenAssociation generatorForInverseAssociation = generatorForDerivedUnion.getGeneratorForInverseAssociation();
         if (generatorForInverseAssociation != null) {
             result.add(generatorForInverseAssociation);
-        }
-        if (result.size() == 0) {
-            return null;
         }
         // returns the generators of the inverse association of the derived union
         return result;
@@ -944,6 +942,18 @@ public class GenAssociationTo1 extends GenAssociation {
     private void addMethodSetObjectInternal(List<IJavaElement> javaElements, IType generatedJavaType) {
         addMethodToGeneratedJavaElements(javaElements, generatedJavaType, getMethodNameAddOrSetObjectInternal(), "Q"
                 + getUnqualifiedInterfaceClassNameForTarget() + ";");
+    }
+
+    public boolean isSharedAssociationAlreadyGenerated() throws CoreException {
+        if (!association.isSharedAssociation()) {
+            return false;
+        }
+        IPolicyCmptTypeAssociation associationWithSameName = association
+                .findSuperAssociationWithSameName(getIpsProject());
+        if (associationWithSameName != null && associationWithSameName.isSharedAssociation()) {
+            return true;
+        }
+        return false;
     }
 
 }
