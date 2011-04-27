@@ -47,22 +47,22 @@ public abstract class GenAssociation extends GenTypePart {
 
     private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenAssociation.class);
 
-    protected IPolicyCmptTypeAssociation association;
-    protected IPolicyCmptTypeAssociation inverseAssociation;
-    protected IPolicyCmptType target;
+    protected final IPolicyCmptTypeAssociation association;
+    protected final IPolicyCmptTypeAssociation inverseAssociation;
+    protected final IPolicyCmptType target;
 
     /** The qualified name of the target's published interface. */
-    protected String targetInterfaceName;
+    protected final String targetInterfaceName;
 
     /**
      * The qualified name of the target's implementation class name. <code>null</code> if used in
      * the interface builder!
      */
-    protected String targetImplClassName;
+    protected final String targetImplClassName;
 
-    protected String fieldName;
+    protected final String fieldName;
 
-    private String staticConstantAssociationName;
+    private final String staticConstantAssociationName;
 
     public GenAssociation(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAssociation association)
             throws CoreException {

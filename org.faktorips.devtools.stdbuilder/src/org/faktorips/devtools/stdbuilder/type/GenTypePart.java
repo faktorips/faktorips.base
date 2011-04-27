@@ -36,7 +36,7 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public abstract class GenTypePart extends DefaultJavaGeneratorForIpsPart {
 
-    private GenType genType;
+    private final GenType genType;
 
     public GenTypePart(GenType genType, IIpsObjectPartContainer ipsObjectPartContainer, LocalizedStringsSet stringsSet) {
         super(ipsObjectPartContainer, stringsSet);
