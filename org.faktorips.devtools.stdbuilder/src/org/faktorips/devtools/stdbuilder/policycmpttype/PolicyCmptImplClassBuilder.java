@@ -1435,8 +1435,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     private void generateMethodGetParentModelObject(JavaCodeFragmentBuilder methodBuilder,
             List<IPolicyCmptTypeAssociation> detailToMasterAssociations) throws CoreException {
-        generateMethodGetParentModelObject(methodBuilder, IModelObject.class.getName(), MethodNames.GET_PARENT, true,
-                detailToMasterAssociations);
+        generateMethodGetParentModelObject(methodBuilder, IModelObject.class.getName(), MethodNames.GET_PARENT,
+                isSupertypeDependant(), detailToMasterAssociations);
     }
 
     private void generateMethodGetParentModelObject(JavaCodeFragmentBuilder methodBuilder,
@@ -1462,12 +1462,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         // the inverse of a derived union
         methodBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
 
-        if (isOverriddenMethodGetParentModel(getPcType())) {
-            // future change: if we generate code for Java 6 only then we can always generate the
-            // overwrite annotation. Because in Java 6 it is possible to add the override annotation
-            // to methods that implement methods of an interface which is not allowed in Java 5.
-            getGenerator().appendOverrideAnnotation(methodBuilder, getIpsProject(), false);
-        }
+        getGenerator().appendOverrideAnnotation(methodBuilder, getIpsProject(), !callSupertype);
 
         methodBuilder.methodBegin(Modifier.PUBLIC, qualifiedReturnType, methodName, EMPTY_STRING_ARRAY,
                 EMPTY_STRING_ARRAY);
@@ -1481,7 +1476,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             methodBuilder.appendln(";");
             methodBuilder.appendln("}");
         }
-        if (callSupertype && isSupertypeDependant()) {
+        if (callSupertype) {
             methodBuilder.appendln("return super.");
             methodBuilder.appendln(methodName);
             methodBuilder.appendln("();");
@@ -1492,25 +1487,12 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
     }
 
     /**
-     * Returns true if one of the parent object has a getParentModelObject method. See also
-     * isTypeDependant()
-     */
-    private boolean isOverriddenMethodGetParentModel(IPolicyCmptType policyCmptType) throws CoreException {
-        if (StringUtils.isEmpty(policyCmptType.getSupertype())) {
-            return false;
-        }
-        IPolicyCmptType supertype = (IPolicyCmptType)policyCmptType.findSupertype(getIpsProject());
-        if (supertype == null) {
-            return false;
-        }
-        return isTypeDependant(supertype);
-    }
-
-    /**
      * Returns true if the supertype has dependant fields, means that the supertypes has at least
      * one detail to master association which is no inverse of a derived union association.
      */
     protected boolean isSupertypeDependant() throws CoreException {
+        // TODO CD 27.4.2011 Maybe use HasSuperTypeImplementationOfInverseForDerivedUnionVisitor
+        // although this logic may be quite different
         if (StringUtils.isEmpty(getPcType().getSupertype())) {
             return false;
         }
