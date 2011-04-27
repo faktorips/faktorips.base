@@ -66,7 +66,6 @@ public class Messages extends NLS {
     public static String ReferenceAndPreviewPage_msgFileAllreadyExists;
     public static String ReferenceAndPreviewPage_msgNameCollision;
     public static String ReferenceAndPreviewPage_errorLabelInsert;
-    public static String ReferenceAndPreviewPage_msgSelectAtLeastOneProduct;
     public static String SourcePage_msgCircleRelation;
     public static String SourcePage_msgCircleRelationShort;
     public static String SourcePage_msgPatternNotFound;
