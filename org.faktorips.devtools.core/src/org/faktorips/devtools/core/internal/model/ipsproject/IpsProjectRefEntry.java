@@ -62,7 +62,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
      * special handling of project names in nwdi environment (SAP NetWeaver Development
      * Infrastructure)
      */
-    private Boolean useNWDITrackPrefix;
+    private boolean useNWDITrackPrefix;
 
     public IpsProjectRefEntry(IpsObjectPath path) {
         super(path);
@@ -83,7 +83,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
      * convention.
      */
     public boolean isUseNWDITrackPrefix() {
-        return Boolean.TRUE.equals(useNWDITrackPrefix);
+        return useNWDITrackPrefix;
     }
 
     @Override
@@ -155,7 +155,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
     }
 
     private void initUseNWDITrackPrefix(Element element) {
-        useNWDITrackPrefix = Boolean.valueOf(element.getAttribute("useNWDITrackPrefix")); //$NON-NLS-1$
+        useNWDITrackPrefix = Boolean.parseBoolean(element.getAttribute("useNWDITrackPrefix")); //$NON-NLS-1$
     }
 
     /**
@@ -199,7 +199,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
         Element element = doc.createElement(XML_ELEMENT);
         element.setAttribute("type", TYPE_PROJECT_REFERENCE); //$NON-NLS-1$
         element.setAttribute("referencedIpsProject", referencedIpsProject == null ? "" : referencedIpsProject.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-        if (useNWDITrackPrefix != null) {
+        if (useNWDITrackPrefix) {
             // store attribute only if nwdi support is needed
             element.setAttribute("useNWDITrackPrefix", Boolean.toString(useNWDITrackPrefix)); //$NON-NLS-1$ 
         }
