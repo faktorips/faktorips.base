@@ -45,6 +45,8 @@ import org.faktorips.runtime.internal.MethodNames;
  */
 public class GenAssociationToMany extends GenAssociation {
 
+    private Boolean lazyNeedSuperCallForDerivedUnion = null;
+
     public GenAssociationToMany(GenPolicyCmptType genPolicyCmptType, IPolicyCmptTypeAssociation association)
             throws CoreException {
         super(genPolicyCmptType, association);
@@ -789,9 +791,7 @@ public class GenAssociationToMany extends GenAssociation {
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
 
-        IPolicyCmptType supertype = (IPolicyCmptType)((GenPolicyCmptType)getGenType()).getPolicyCmptType()
-                .findSupertype(getIpsProject());
-        appendOverrideAnnotation(methodsBuilder, getIpsProject(), (supertype == null || supertype.isAbstract()));
+        appendOverrideAnnotation(methodsBuilder, getIpsProject(), !needSuperCallForDerivedUnion());
         generateSignatureGetNumOfRefObjects(methodsBuilder);
         methodsBuilder.openBracket();
         String methodName = getMethodNameGetNumOfRefObjectsInternal();
@@ -846,9 +846,7 @@ public class GenAssociationToMany extends GenAssociation {
 
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
 
-        IPolicyCmptType supertype = (IPolicyCmptType)((GenPolicyCmptType)getGenType()).getPolicyCmptType()
-                .findSupertype(getIpsProject());
-        appendOverrideAnnotation(methodsBuilder, getIpsProject(), (supertype == null || supertype.isAbstract()));
+        appendOverrideAnnotation(methodsBuilder, getIpsProject(), !needSuperCallForDerivedUnion());
         generateSignatureGetAllRefObjects(methodsBuilder);
         String classname = getQualifiedClassName((IPolicyCmptType)association.findTarget(getIpsProject()), true);
 
@@ -972,15 +970,21 @@ public class GenAssociationToMany extends GenAssociation {
      * This method check if a call of t
      */
     private boolean needSuperCallForDerivedUnion() throws CoreException {
+        if (lazyNeedSuperCallForDerivedUnion != null) {
+            return lazyNeedSuperCallForDerivedUnion;
+        }
         IPolicyCmptType pcType = ((GenPolicyCmptType)getGenType()).getPolicyCmptType();
         if (pcType.equals(association.getType())) {
             // the derived union is defined in this generated class
-            return false;
+            lazyNeedSuperCallForDerivedUnion = false;
+        } else {
+            IPolicyCmptType supertype = (IPolicyCmptType)pcType.findSupertype(getIpsProject());
+            FindSubsetOfDerivedUnion findSubsetOfDerivedUnionVisitor = new FindSubsetOfDerivedUnion(association,
+                    getIpsProject());
+            findSubsetOfDerivedUnionVisitor.start(supertype);
+            lazyNeedSuperCallForDerivedUnion = findSubsetOfDerivedUnionVisitor.foundSubset;
         }
-        IPolicyCmptType supertype = (IPolicyCmptType)pcType.findSupertype(getIpsProject());
-        FindSubsetOfDerivedUnion findSubsetOfDerivedUnionVisitor = new FindSubsetOfDerivedUnion(association, getIpsProject());
-        findSubsetOfDerivedUnionVisitor.start(supertype);
-        return findSubsetOfDerivedUnionVisitor.foundSubset;
+        return lazyNeedSuperCallForDerivedUnion;
     }
 
     @Override
