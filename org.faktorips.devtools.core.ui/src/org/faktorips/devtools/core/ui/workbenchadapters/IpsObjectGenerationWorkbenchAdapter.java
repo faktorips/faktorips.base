@@ -59,6 +59,9 @@ public class IpsObjectGenerationWorkbenchAdapter extends IpsObjectPartWorkbenchA
 
     protected String getLabel(IIpsObjectGeneration ipsObjectGeneration) {
         GregorianCalendar validFrom = ipsObjectGeneration.getValidFrom();
+        if (validFrom == null) {
+            return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+        }
         DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
         return format.format(validFrom.getTime());
     }
