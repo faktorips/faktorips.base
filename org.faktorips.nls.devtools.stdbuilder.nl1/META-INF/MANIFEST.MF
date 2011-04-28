@@ -3,6 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Stdbuilder German language pack
 Bundle-SymbolicName: org.faktorips.nls.devtools.stdbuilder.nl1;singleton:=true
 Bundle-Version: 0.0.0
-Fragment-Host: org.faktorips.devtools.core
+Fragment-Host: org.faktorips.devtools.stdbuilder;bundle-version="0.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Faktor Zehn AG
