@@ -40,4 +40,22 @@
 <feature url="features/org.faktorips.uml.feature.source_3.3.0.ms2.jar" id="org.faktorips.uml.feature.source" version="3.3.0.ms2">
 <category name="Faktor-IPS 3.3"/>
 </feature>
+<feature url="features/org.faktorips.feature_3.3.0.rc1.jar" id="org.faktorips.feature" version="3.3.0.rc1">
+<category name="Faktor-IPS 3.3"/>
+</feature>
+<feature url="features/org.faktorips.feature.nls1_3.3.0.rc1.jar" id="org.faktorips.feature.nls1" version="3.3.0.rc1">
+<category name="Faktor-IPS 3.3"/>
+</feature>
+<feature url="features/org.faktorips.feature.source_3.3.0.rc1.jar" id="org.faktorips.feature.source" version="3.3.0.rc1">
+<category name="Faktor-IPS 3.3"/>
+</feature>
+<feature url="features/org.faktorips.uml.feature_3.3.0.rc1.jar" id="org.faktorips.uml.feature" version="3.3.0.rc1">
+<category name="Faktor-IPS 3.3"/>
+</feature>
+<feature url="features/org.faktorips.uml.feature.nls1_3.3.0.rc1.jar" id="org.faktorips.uml.feature.nls1" version="3.3.0.rc1">
+<category name="Faktor-IPS 3.3"/>
+</feature>
+<feature url="features/org.faktorips.uml.feature.source_3.3.0.rc1.jar" id="org.faktorips.uml.feature.source" version="3.3.0.rc1">
+<category name="Faktor-IPS 3.3"/>
+</feature>
 </site>
