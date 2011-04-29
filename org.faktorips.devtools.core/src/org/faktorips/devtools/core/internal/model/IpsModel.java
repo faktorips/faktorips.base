@@ -67,6 +67,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFileContent;
 import org.faktorips.devtools.core.internal.model.ipsproject.ChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.internal.model.ipsproject.ClassLoaderProvider;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsContainerBasedOnJdtClasspathContainer;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
@@ -861,7 +862,13 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         IpsProjectProperties data = getIpsProjectProperties((IpsProject)project);
         IIpsArtefactBuilderSet builderSet = createIpsArtefactBuilderSet(data.getBuilderSetId(), project);
         if (builderSet == null || !initBuilderSet(builderSet, project, data)) {
-            return new EmptyBuilderSet();
+            EmptyBuilderSet emptyBuilderSet = new EmptyBuilderSet();
+            try {
+                emptyBuilderSet.initialize(new IpsArtefactBuilderSetConfig(new HashMap<String, Object>()));
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+            return emptyBuilderSet;
         }
         projectToBuilderSetMap.put(project, builderSet);
         return builderSet;

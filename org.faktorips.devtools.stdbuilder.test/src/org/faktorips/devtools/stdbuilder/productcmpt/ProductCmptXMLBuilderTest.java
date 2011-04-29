@@ -13,14 +13,25 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpt;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.GregorianCalendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.builder.DefaultBuilderSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -83,6 +94,74 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         refTarget.getIpsSrcFile().save(true, null);
 
         assertFalse(productCmpt.validate(productCmpt.getIpsProject()).containsErrorMsg());
+    }
+
+    /**
+     * Test if a runtime id change will be correctly updated in the product component which
+     * referenced the product cmpt on which the runtime id was changed.
+     */
+    // FIXME AW: Core test expecting standard builder set
+    @Test
+    public void testRuntimeIdDependency() throws CoreException, IOException {
+        IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
+        IProductCmptType c = newProductCmptType(root, "C");
+        IProductCmptType d = newProductCmptType(root, "D");
+
+        org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation association = c
+                .newProductCmptTypeAssociation();
+        association.setTargetRoleSingular("relationD");
+        association.setTarget(d.getQualifiedName());
+        IProductCmpt productCmptC = newProductCmpt(c, "tests.productC");
+
+        IProductCmpt productCmptD = newProductCmpt(d, "tests.productD");
+
+        IProductCmptGeneration generation1 = productCmptC.getProductCmptGeneration(0);
+        IProductCmptLink link = generation1.newLink("linkCtoD");
+        link.setTarget(productCmptD.getQualifiedName());
+
+        incrementalBuild();
+
+        // product cmpt C depends on product D
+        // change the runtime id of product D and assert that the target runtime id in product C
+        // was updated after rebuild
+        productCmptD.setRuntimeId("newRuntimeId");
+        productCmptD.getIpsSrcFile().save(true, null);
+
+        incrementalBuild();
+
+        // check if the target runtime id was updated in product cmpt c runtime xml
+        String packageOfProductC = ((DefaultBuilderSet)ipsProject.getIpsArtefactBuilderSet()).getPackage(
+                DefaultBuilderSet.KIND_PRODUCT_CMPT_GENERATION, productCmptC.getIpsSrcFile());
+        String productCXmlFile = packageOfProductC + "." + "productC";
+        productCXmlFile = productCXmlFile.replaceAll("\\.", "/");
+        productCXmlFile += ".xml";
+        IFile file = ipsProject.getProject().getFile("bin//" + productCXmlFile);
+        InputStream is = null;
+        BufferedReader br = null;
+        try {
+            is = file.getContents();
+            if (is == null) {
+                fail("Can't find resource " + productCXmlFile);
+            }
+            StringBuffer generatedXml = new StringBuffer();
+            br = new BufferedReader(new InputStreamReader(is));
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                generatedXml.append(line);
+            }
+            String patternStr = ".*targetRuntimeId=\"([^\"]*)\".*";
+            Pattern pattern = Pattern.compile(patternStr);
+            Matcher matcher = pattern.matcher(generatedXml);
+            assertTrue(matcher.find());
+            assertEquals("newRuntimeId", matcher.group(matcher.groupCount()));
+        } finally {
+            if (is != null) {
+                is.close();
+            }
+            if (br != null) {
+                br.close();
+            }
+        }
     }
 
     @Test

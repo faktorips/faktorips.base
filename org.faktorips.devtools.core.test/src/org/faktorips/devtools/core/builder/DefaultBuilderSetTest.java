@@ -69,7 +69,7 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
 
         @Override
         public IIpsArtefactBuilder[] getArtefactBuilders() {
-            return null;
+            return new IIpsArtefactBuilder[0];
         }
 
         @Override

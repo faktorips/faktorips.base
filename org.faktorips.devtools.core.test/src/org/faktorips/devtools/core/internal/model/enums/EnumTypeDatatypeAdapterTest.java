@@ -19,10 +19,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
 
+import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -33,7 +37,6 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
@@ -49,8 +52,6 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         paymentModeAdapter = new EnumTypeDatatypeAdapter(paymentMode, null);
     }
 
-    // FIXME AW: Core test expecting standard builder set
-    @Ignore
     @Test
     public void testGetJavaClassName() throws Exception {
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
@@ -75,7 +76,17 @@ public class EnumTypeDatatypeAdapterTest extends AbstractIpsEnumPluginTest {
         values.get(1).setValue("an");
         values.get(2).setValue("AN");
         EnumTypeDatatypeAdapter adapter = new EnumTypeDatatypeAdapter(enumType, null);
-        assertEquals("org.faktorips.sample.model.EnumType", adapter.getJavaClassName());
+
+        String expected = "expectedJavaClassName";
+
+        TestIpsArtefactBuilderSet testArtefactBuilderSetSpy = (TestIpsArtefactBuilderSet)ipsProject
+                .getIpsArtefactBuilderSet();
+        DatatypeHelper datatypeHelperMock = mock(DatatypeHelper.class);
+        when(datatypeHelperMock.getJavaClassName()).thenReturn(expected);
+
+        testArtefactBuilderSetSpy.testObjectsMap.put(adapter, datatypeHelperMock);
+
+        assertEquals(expected, adapter.getJavaClassName());
     }
 
     @Test

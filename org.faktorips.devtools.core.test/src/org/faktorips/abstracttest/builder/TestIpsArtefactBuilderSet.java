@@ -47,6 +47,14 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
 
     private final IIpsArtefactBuilder[] ipsArtefactBuilders;
 
+    /**
+     * You can put any object for any key into this map. Some of the test methods in this test
+     * builder set use this map to return test results instead of null. Just put the expected method
+     * parameter into this map and the method would return the corresponding value.
+     * 
+     */
+    public Map<Object, Object> testObjectsMap = new HashMap<Object, Object>();
+
     public TestIpsArtefactBuilderSet() throws CoreException {
         this(new IIpsArtefactBuilder[0]);
     }
@@ -157,17 +165,17 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
 
     @Override
     public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws CoreException {
-        return null;
+        return (IFile)testObjectsMap.get(root);
     }
 
     @Override
     public String getTocFilePackageName(IIpsPackageFragmentRoot root) throws CoreException {
-        return null;
+        return (String)testObjectsMap.get(root);
     }
 
     @Override
     public String getRuntimeRepositoryTocResourceName(IIpsPackageFragmentRoot root) throws CoreException {
-        return null;
+        return (String)testObjectsMap.get(root);
     }
 
     @Override
@@ -177,7 +185,7 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
 
     @Override
     public DatatypeHelper getDatatypeHelperForEnumType(EnumTypeDatatypeAdapter datatypeAdapter) {
-        return null;
+        return (DatatypeHelper)testObjectsMap.get(datatypeAdapter);
     }
 
 }
