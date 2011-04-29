@@ -52,7 +52,7 @@
 	<template autoinsert="true" context="newtype_context"
 		deleted="false" description="Newly created files" enabled="true"
 		id="org.eclipse.jdt.ui.text.codetemplates.newtype" name="newtype">/*******************************************************************************
-		* Copyright (c) 2005-2010 Faktor Zehn AG und andere.
+		* Copyright (c) 2005-2011 Faktor Zehn AG und andere.
 		*
 		* Alle Rechte vorbehalten.
 		*
