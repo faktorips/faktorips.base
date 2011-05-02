@@ -23,7 +23,6 @@ import org.eclipse.core.resources.mapping.ResourceTraversal;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.PlatformObject;
-import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
@@ -202,27 +201,6 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement {
     @Override
     public boolean isContainedInArchive() {
         return getParent().isContainedInArchive();
-    }
-
-    /**
-     * Default implementation always returning <tt>null</tt>.
-     */
-    @Override
-    public ProcessorBasedRefactoring getRenameRefactoring() {
-        return null;
-    }
-
-    /**
-     * Default implementation always returning <tt>null</tt>.
-     */
-    @Override
-    public ProcessorBasedRefactoring getMoveRefactoring() {
-        return null;
-    }
-
-    @Override
-    public ProcessorBasedRefactoring getPullUpRefactoring() {
-        return null;
     }
 
 }

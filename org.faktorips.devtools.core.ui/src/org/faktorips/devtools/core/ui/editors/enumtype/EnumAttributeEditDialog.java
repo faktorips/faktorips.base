@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -37,7 +36,7 @@ import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
+import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
@@ -345,11 +344,10 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         // First, reset the initial name as otherwise the error 'names must not equal' will occur
         enumAttribute.setName(initialName);
 
-        ProcessorBasedRefactoring renameRefactoring = enumAttribute.getRenameRefactoring();
-        IIpsRenameProcessor renameProcessor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
-        renameProcessor.setNewName(newName);
-        IpsRefactoringOperation refactorOp = new IpsRefactoringOperation(renameRefactoring, getShell());
-        refactorOp.runDirectExecution();
+        IIpsRefactoring ipsRenameRefactoring = IpsPlugin.getIpsRefactoringFactory().createRenameRefactoring(
+                enumAttribute, newName, null, false);
+        IpsRefactoringOperation refactoringOperation = new IpsRefactoringOperation(ipsRenameRefactoring, getShell());
+        refactoringOperation.runDirectExecution();
     }
 
 }

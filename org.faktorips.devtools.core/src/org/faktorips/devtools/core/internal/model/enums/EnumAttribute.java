@@ -21,11 +21,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.internal.model.enums.refactor.RenameEnumAttributeProcessor;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -496,11 +494,6 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     @Override
     public boolean isEnumLiteralNameAttribute() {
         return this instanceof IEnumLiteralNameAttribute;
-    }
-
-    @Override
-    public ProcessorBasedRefactoring getRenameRefactoring() {
-        return new ProcessorBasedRefactoring(new RenameEnumAttributeProcessor(this));
     }
 
     private interface IndicationProvider {

@@ -20,10 +20,7 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.internal.model.ipsobject.refactor.MoveIpsObjectProcessor;
-import org.faktorips.devtools.core.internal.model.ipsobject.refactor.RenameIpsObjectProcessor;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
@@ -260,16 +257,6 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
             Message newMsg = new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, property);
             list.add(newMsg);
         }
-    }
-
-    @Override
-    public ProcessorBasedRefactoring getRenameRefactoring() {
-        return new ProcessorBasedRefactoring(new RenameIpsObjectProcessor(this));
-    }
-
-    @Override
-    public ProcessorBasedRefactoring getMoveRefactoring() {
-        return new ProcessorBasedRefactoring(new MoveIpsObjectProcessor(this));
     }
 
 }

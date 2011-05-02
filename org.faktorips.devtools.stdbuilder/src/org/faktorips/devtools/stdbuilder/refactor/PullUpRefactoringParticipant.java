@@ -37,11 +37,17 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.refactor.IpsPullUpArguments;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
-// There's no other way to perform the Java pull up refactoring.
+/**
+ * This class is loaded by the Faktor-IPS 'Pull Up' refactoring to participate in this process by
+ * pulling up the Java source code.
+ * 
+ * @author Alexander Weickmann
+ */
+// There's no other way to perform the Java pull up refactoring but by accessing non-published API.
 @SuppressWarnings("restriction")
-public class PullUpRefactoringParticipant extends RefactoringParticipant {
+public final class PullUpRefactoringParticipant extends RefactoringParticipant {
 
-    private PullUpParticipantHelper refactoringHelper;
+    private final PullUpParticipantHelper refactoringHelper;
 
     private IpsPullUpArguments arguments;
 
@@ -125,8 +131,7 @@ public class PullUpRefactoringParticipant extends RefactoringParticipant {
                     throw new RuntimeException("There is no supertype to pull up to."); //$NON-NLS-1$
                 }
                 IAttribute targetAttribute = targetType.newAttribute();
-                // Temporary copy.
-                copyAttributeToSupertype(attribute, targetAttribute);
+                copyAttributeToSupertype(attribute, targetAttribute); // Temporary copy
                 setTargetJavaElements(builderSet.getGeneratedJavaElements(targetAttribute));
                 targetAttribute.delete();
                 return true;

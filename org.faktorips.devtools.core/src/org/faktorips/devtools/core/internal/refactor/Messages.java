@@ -35,6 +35,16 @@ public class Messages extends NLS {
 
     public static String IpsMoveProcessor_msgTargetLocationEqualsOriginalLocation;
 
+    public static String IpsCompositeRefactoring_taskCheckInitialConditions;
+    public static String IpsCompositeRefactoring_subTaskCheckInitialConditionsForElement;
+    public static String IpsCompositeRefactoring_taskProcessElements;
+    public static String IpsCompositeRefactoring_subTaskProcessElement;
+    public static String IpsCompositeRefactoring_childRefactoringNotExecuted;
+
+    public static String IpsCompositeMoveRefactoring_name;
+    public static String IpsCompositeMoveRefactoring_msgTargetIpsPackageFragmentNotSet;
+    public static String IpsCompositeMoveRefactoring_msgTargetIpsPackageFragmentEqualsOriginalIpsPackageFragment;
+
     public static String MoveOperation_errorMessageSourceNotExists;
     public static String MoveOperation_msgErrorTheTargetIsIncludedInTheSource;
     public static String MoveOperation_titleAborted;

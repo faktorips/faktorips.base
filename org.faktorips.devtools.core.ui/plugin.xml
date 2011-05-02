@@ -1476,7 +1476,7 @@
          </class>
          <enabledWhen>
             <count
-                  value="1">
+                  value="+">
             </count>
          </enabledWhen>
       </handler>

@@ -13,16 +13,18 @@
 
 package org.faktorips.devtools.core.ui.refactor;
 
+import java.util.Set;
+
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ltk.core.refactoring.Refactoring;
-import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.wizards.move.MoveWizard;
 import org.faktorips.devtools.core.ui.wizards.refactor.IpsRefactoringWizard;
 import org.faktorips.devtools.core.ui.wizards.refactor.IpsRenameRefactoringWizard;
 
 /**
- * Provides the rename workbench contribution which opens the appropriate Faktor-IPS refactoring
+ * Provides the "Rename" workbench contribution which opens the appropriate Faktor-IPS refactoring
  * wizard.
  * 
  * @author Thorsten Guenther, Alexander Weickmann
@@ -37,13 +39,14 @@ public class IpsRenameHandler extends IpsRefactoringHandler {
     }
 
     @Override
-    protected IpsRefactoringWizard getRefactoringWizard(Refactoring refactoring, IIpsElement selectedIpsElement) {
-        return new IpsRenameRefactoringWizard(refactoring, selectedIpsElement);
+    protected IpsRefactoringWizard getRefactoringWizard(IIpsRefactoring refactoring) {
+        return new IpsRenameRefactoringWizard(refactoring);
     }
 
     @Override
-    protected ProcessorBasedRefactoring getRefactoring(IIpsElement selectedElement) {
-        return selectedElement.getRenameRefactoring();
+    protected IIpsRefactoring getRefactoring(Set<IIpsElement> selectedIpsElements) {
+        return IpsPlugin.getIpsRefactoringFactory().createRenameRefactoring(
+                selectedIpsElements.toArray(new IIpsElement[selectedIpsElements.size()])[0]);
     }
 
 }

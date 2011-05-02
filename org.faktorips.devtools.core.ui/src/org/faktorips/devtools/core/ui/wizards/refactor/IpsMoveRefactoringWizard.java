@@ -22,9 +22,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -35,7 +33,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.refactor.IIpsMoveProcessor;
+import org.faktorips.devtools.core.refactor.IIpsCompositeMoveRefactoring;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
@@ -48,20 +46,19 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
 public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
 
     /**
-     * @param refactoring The refactoring used by the wizard.
-     * @param ipsElement The <tt>IIpsElement</tt> to be renamed.
+     * @param refactoring The {@link IIpsCompositeMoveRefactoring} used by the wizard
      * 
-     * @throws NullPointerException If any parameter is <tt>null</tt>.
+     * @throws NullPointerException If any parameter is null
      */
-    public IpsMoveRefactoringWizard(Refactoring refactoring, IIpsElement ipsElement) {
-        super(refactoring, ipsElement, WIZARD_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
+    public IpsMoveRefactoringWizard(IIpsCompositeMoveRefactoring refactoring) {
+        super(refactoring, WIZARD_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
         setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/MoveWizard.png")); //$NON-NLS-1$
-        setDefaultPageTitle(NLS.bind(Messages.MoveRefactoringWizard_title, getIpsElementName()));
+        setDefaultPageTitle(Messages.MoveRefactoringWizard_title);
     }
 
     @Override
     protected void addUserInputPages() {
-        addPage(new MoveUserInputPage(getIpsElement()));
+        addPage(new MoveUserInputPage());
     }
 
     @Override
@@ -70,14 +67,14 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
     }
 
     /**
-     * The <tt>MoveUserInputPage</tt> provides a tree viewer that enables the user to choose a
-     * target destination for the <tt>IIpsElement</tt> to move.
+     * Provides a tree viewer that enables the user to choose a target destination for the
+     * {@link IIpsElement} to move.
      */
     private final static class MoveUserInputPage extends IpsRefactoringUserInputPage {
 
         /**
-         * The <tt>TreeViewer</tt> that allows the user to select the target
-         * <tt>IIpsPackageFragment</tt>.
+         * The {@link TreeViewer} that allows the user to select the target
+         * {@link IIpsPackageFragment}.
          */
         private TreeViewer treeViewer;
 
@@ -87,41 +84,47 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
          */
         private Checkbox adaptRuntimeIdField;
 
-        /**
-         * Creates the <tt>MoveUserInputPage</tt>.
-         * 
-         * @param ipsElement The <tt>IIpsElement</tt> to be moved.
-         */
-        MoveUserInputPage(IIpsElement ipsElement) {
-            super(ipsElement, "MoveUserInputPage"); //$NON-NLS-1$
+        private boolean initialSelectionOccurred;
+
+        MoveUserInputPage() {
+            super("MoveUserInputPage"); //$NON-NLS-1$
         }
 
         @Override
         protected void setPromptMessage() {
-            setMessage(NLS.bind(Messages.MoveUserInputPage_message, getIpsElementName(), getIpsElement().getName()));
+            setMessage(NLS.bind(Messages.MoveUserInputPage_message, getIpsCompositeMoveRefactoring()
+                    .getNumberOfRefactorings()));
         }
 
         @Override
-        public void createControl(Composite parent) {
+        public void createControlThis(Composite parent) {
             Composite controlComposite = getUiToolkit().createGridComposite(parent, 1, false, false);
             setControl(controlComposite);
+            setPageComplete(false);
 
-            getUiToolkit().createLabel(controlComposite,
-                    NLS.bind(Messages.MoveUserInputPage_labelChooseDestination, getIpsElement().getName()));
+            getUiToolkit().createLabel(controlComposite, Messages.MoveUserInputPage_labelChooseDestination);
             createTreeViewer(controlComposite);
+            if (getIpsCompositeMoveRefactoring().getTargetIpsPackageFragment() != null) {
+                setInitialTreeViewerSelection(getIpsCompositeMoveRefactoring().getTargetIpsPackageFragment());
+            }
 
-            if (getIpsElement() instanceof IProductCmpt) {
+            if (getIpsCompositeMoveRefactoring().isAdaptRuntimeIdRelevant()) {
                 Composite fieldsComposite = getUiToolkit().createLabelEditColumnComposite(controlComposite);
                 getUiToolkit().createLabel(fieldsComposite, ""); //$NON-NLS-1$
                 adaptRuntimeIdField = getUiToolkit().createCheckbox(fieldsComposite,
                         Messages.IpsRenameAndMoveUserInputPage_labelRefactorRuntimeId);
+                if (getIpsCompositeMoveRefactoring().isAdaptRuntimeId()) {
+                    adaptRuntimeIdField.setChecked(true);
+                    userInputChanged();
+                }
             }
 
-            setFocus();
-            setPageComplete(false);
+            setInitialFocus();
         }
 
-        /** Creates the <tt>TreeViewer</tt> to select the target <tt>IIpsPackageFragment</tt> from. */
+        /**
+         * Creates the {@link TreeViewer} to select the target {@link IIpsPackageFragment} from.
+         */
         private void createTreeViewer(Composite parent) {
             treeViewer = new TreeViewer(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
             GridData gridData = new GridData(GridData.FILL_BOTH);
@@ -131,38 +134,38 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
 
             treeViewer.setLabelProvider(new MoveLabelProvider());
             treeViewer.setContentProvider(new MoveContentProvider());
-            treeViewer.setInput(new IIpsProject[] { getIpsElement().getIpsProject() });
-
-            setInitialTreeViewerSelection();
+            treeViewer.setAutoExpandLevel(TreeViewer.ALL_LEVELS);
+            treeViewer.setInput(new IIpsProject[] { getIpsRefactoring().getIpsProject() });
 
             treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
                 @Override
                 public void selectionChanged(SelectionChangedEvent event) {
                     IStructuredSelection selection = (IStructuredSelection)event.getSelection();
                     if (selection.getFirstElement() != null) {
-                        // Only package fragments are valid selections.
+                        // Only package fragments are valid selections
                         if (selection.getFirstElement() instanceof IIpsPackageFragment) {
                             userInputChanged();
                         } else {
-                            setErrorMessage(Messages.MoveUserInputPage_msgSelectOnlyPackages);
-                            setPageComplete(false);
+                            if (initialSelectionOccurred) {
+                                setErrorMessage(Messages.MoveUserInputPage_msgSelectOnlyPackages);
+                                setPageComplete(false);
+                            }
                         }
                     }
+                    initialSelectionOccurred = true;
                 }
             });
         }
 
-        /**
-         * Sets the initial selection of the selection tree to the package that contains the
-         * <tt>IIpsElement</tt> to move.
-         */
-        private void setInitialTreeViewerSelection() {
-            treeViewer.setSelection(new StructuredSelection(getIpsMoveProcessor().getOriginalIpsPackageFragment()));
+        private void setInitialTreeViewerSelection(IIpsPackageFragment ipsPackageFragment) {
+            treeViewer.setSelection(new StructuredSelection(ipsPackageFragment));
             treeViewer.refresh();
         }
 
-        /** This operation is responsible for setting the initial focus. */
-        private void setFocus() {
+        /**
+         * This operation is responsible for setting the initial focus.
+         */
+        private void setInitialFocus() {
             treeViewer.getControl().setFocus();
         }
 
@@ -176,24 +179,25 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
 
             if (selectedElement instanceof IIpsPackageFragment) {
                 IIpsPackageFragment targetFragment = (IIpsPackageFragment)selectedElement;
-                getIpsMoveProcessor().setTargetIpsPackageFragment(targetFragment);
+                getIpsCompositeMoveRefactoring().setTargetIpsPackageFragment(targetFragment);
             } else {
                 throw new RuntimeException("Only package fragments are valid selections."); //$NON-NLS-1$
             }
 
             if (adaptRuntimeIdField != null) {
-                getIpsMoveProcessor().setAdaptRuntimeId(adaptRuntimeIdField.isChecked());
+                getIpsCompositeMoveRefactoring().setAdaptRuntimeId(adaptRuntimeIdField.isChecked());
             }
 
-            status.merge(getIpsMoveProcessor().validateUserInput(new NullProgressMonitor()));
+            status.merge(getIpsRefactoring().validateUserInput(new NullProgressMonitor()));
         }
 
-        /** Returns the <tt>IIpsMoveProcessor</tt> this refactoring is working with. */
-        private IIpsMoveProcessor getIpsMoveProcessor() {
-            return (IIpsMoveProcessor)((ProcessorBasedRefactoring)getRefactoring()).getProcessor();
+        private IIpsCompositeMoveRefactoring getIpsCompositeMoveRefactoring() {
+            return (IIpsCompositeMoveRefactoring)getIpsRefactoring();
         }
 
-        /** Label provider for the selection tree used by this page. */
+        /**
+         * Label provider for the selection tree used by this page.
+         */
         private class MoveLabelProvider extends DefaultLabelProvider {
 
             @Override
@@ -212,7 +216,9 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
             }
         }
 
-        /** Content provider for the selection tree used by this page. */
+        /**
+         * Content provider for the selection tree used by this page.
+         */
         private static class MoveContentProvider implements ITreeContentProvider {
 
             @Override
@@ -255,12 +261,12 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
 
             @Override
             public void dispose() {
-                // Nothing to do.
+                // Nothing to do
             }
 
             @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-                // Nothing to do.
+                // Nothing to do
             }
 
         }

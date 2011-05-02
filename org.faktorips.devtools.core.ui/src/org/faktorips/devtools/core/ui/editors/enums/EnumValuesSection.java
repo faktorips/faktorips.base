@@ -35,7 +35,6 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -74,7 +73,7 @@ import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
+import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -1053,7 +1052,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
                      * to explicitly start the refactoring via the context menu.
                      */
                     if (IpsPlugin.getDefault().getIpsPreferences().isRefactoringModeDirect()) {
-                        applyRenameLiteralNameRefactoring((String)value, enumAttributeValue);
+                        applyRenameLiteralNameRefactoring((String)value,
+                                (IEnumLiteralNameAttributeValue)enumAttributeValue);
                     } else {
                         enumAttributeValue.setValue((String)value);
                     }
@@ -1065,12 +1065,12 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             }
         }
 
-        private void applyRenameLiteralNameRefactoring(String newName, IEnumAttributeValue enumAttributeValue) {
-            IEnumLiteralNameAttributeValue literalNameValue = (IEnumLiteralNameAttributeValue)enumAttributeValue;
-            ProcessorBasedRefactoring renameRefactoring = literalNameValue.getRenameRefactoring();
-            IIpsRenameProcessor renameProcessor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
-            renameProcessor.setNewName(newName);
-            IpsRefactoringOperation refactorOp = new IpsRefactoringOperation(renameRefactoring, getShell());
+        private void applyRenameLiteralNameRefactoring(String newName,
+                IEnumLiteralNameAttributeValue enumLiteralNameAttributeValue) {
+
+            IIpsRefactoring ipsRenameRefactoring = IpsPlugin.getIpsRefactoringFactory().createRenameRefactoring(
+                    enumLiteralNameAttributeValue, newName, null, false);
+            IpsRefactoringOperation refactorOp = new IpsRefactoringOperation(ipsRenameRefactoring, getShell());
             refactorOp.runDirectExecution();
         }
     }

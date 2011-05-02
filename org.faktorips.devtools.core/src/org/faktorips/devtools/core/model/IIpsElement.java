@@ -16,10 +16,7 @@ package org.faktorips.devtools.core.model;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.refactor.IIpsMoveProcessor;
-import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
 
 /**
  * Common protocol for all elements provided by the IPS model.
@@ -91,35 +88,5 @@ public interface IIpsElement extends IAdaptable {
 
     /** Returns <tt>true</tt> if this element is contained in an archive, <tt>false</tt> otherwise. */
     public boolean isContainedInArchive();
-
-    // TODO AW: Directly offer rename(...) and move(...) ?
-
-    /**
-     * The returned <tt>ProcessorBasedRefactoring</tt> can be used to safely rename this
-     * <tt>IIpsElement</tt> .
-     * <p>
-     * Returns <tt>null</tt> if this <tt>IIpsElement</tt> does not support the "Rename" refactoring.
-     * <p>
-     * The <tt>RefactoringProcessor</tt> associated with the returned
-     * <tt>ProcessorBasedRefactoring</tt> can be safely cast to <tt>IIpsRenameProcessor</tt>.
-     * 
-     * @see IIpsRenameProcessor
-     */
-    public ProcessorBasedRefactoring getRenameRefactoring();
-
-    /**
-     * The returned <tt>ProcessorBasedRefactoring</tt> can be used to safely move this
-     * <tt>IIpsElement</tt>.
-     * <p>
-     * Returns <tt>null</tt> if this <tt>IIpsElement</tt> does not support the "Move" refactoring.
-     * <p>
-     * The <tt>RefactoringProcessor</tt> associated with the returned
-     * <tt>ProcessorBasedRefactoring</tt> can be safely cast to <tt>IIpsMoveProcessor</tt>.
-     * 
-     * @see IIpsMoveProcessor
-     */
-    public ProcessorBasedRefactoring getMoveRefactoring();
-
-    public ProcessorBasedRefactoring getPullUpRefactoring();
 
 }

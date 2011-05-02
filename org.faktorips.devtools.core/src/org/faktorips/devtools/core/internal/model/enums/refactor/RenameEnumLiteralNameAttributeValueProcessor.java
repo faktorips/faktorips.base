@@ -16,23 +16,19 @@ package org.faktorips.devtools.core.internal.model.enums.refactor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.faktorips.devtools.core.internal.refactor.IpsRenameProcessor;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
 import org.faktorips.util.message.MessageList;
 
 /**
- * This is the "Rename Literal Name" - refactoring.
+ * Refactoring processor for the "Rename Literal Name" - refactoring.
  * 
  * @author Alexander Weickmann
  */
 public class RenameEnumLiteralNameAttributeValueProcessor extends IpsRenameProcessor {
 
-    /**
-     * @param literalNameAttributeValue The <tt>IEnumLiteralNameAttributeValue</tt> that contains
-     *            the literal name to refactor.
-     */
     public RenameEnumLiteralNameAttributeValueProcessor(IEnumLiteralNameAttributeValue literalNameAttributeValue) {
         super(literalNameAttributeValue, literalNameAttributeValue.getValue());
     }

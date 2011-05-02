@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.builder.DependencyGraphPersistenceManager;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.testcase.IpsTestRunner;
 import org.faktorips.devtools.core.internal.model.versionmanager.IpsFeatureMigrationOperation;
+import org.faktorips.devtools.core.internal.refactor.IpsRefactoringFactory;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -48,6 +49,7 @@ import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrat
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOperationFactory;
 import org.faktorips.devtools.core.model.versionmanager.IpsFeatureVersionManagerSorter;
+import org.faktorips.devtools.core.refactor.IIpsRefactoringFactory;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.devtools.tableconversion.IValueConverter;
@@ -82,6 +84,8 @@ public class IpsPlugin extends AbstractUIPlugin {
 
     private final static MultiLanguageSupport multiLanguageSupport = new MultiLanguageSupport();
 
+    private final static IIpsRefactoringFactory ipsRefactoringFactory = new IpsRefactoringFactory();
+
     /**
      * Returns the full extension id. This is the plugin's id plus the plug-in relative extension id
      * separated by a dot.
@@ -98,6 +102,13 @@ public class IpsPlugin extends AbstractUIPlugin {
      */
     public final static MultiLanguageSupport getMultiLanguageSupport() {
         return multiLanguageSupport;
+    }
+
+    /**
+     * Provides a factory that allows to create IPS refactorings.
+     */
+    public final static IIpsRefactoringFactory getIpsRefactoringFactory() {
+        return ipsRefactoringFactory;
     }
 
     /** The shared instance. */

@@ -13,22 +13,10 @@
 
 package org.faktorips.abstracttest;
 
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.List;
 
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
-import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
-import org.eclipse.ltk.core.refactoring.Refactoring;
-import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
@@ -40,13 +28,8 @@ import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -64,10 +47,6 @@ import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.core.refactor.IIpsMoveProcessor;
-import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 
 /**
@@ -75,6 +54,7 @@ import org.junit.Before;
  * 
  * @author Alexander Weickmann
  */
+// TODO AW 02-05-2011: Refactor subclasses so this class is no longer needed
 public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
 
     protected static final String ENUM_ATTRIBUTE_NAME = "id";
@@ -359,165 +339,6 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
     private void createTableContents() throws CoreException {
         tableContents = newTableContents(ipsProject, TABLE_CONTENTS_NAME);
         tableContents.setTableStructure(tableStructure.getQualifiedName());
-    }
-
-    /**
-     * Performs the "Rename" refactoring for the given {@link IIpsObjectPartContainer} and provided
-     * new name.
-     * 
-     * @return
-     */
-    protected final RefactoringStatus performRenameRefactoring(IIpsObjectPartContainer ipsObjectPartContainer,
-            String newName) throws CoreException {
-
-        return performRenameRefactoring(ipsObjectPartContainer, newName, null, false);
-    }
-
-    protected final RefactoringStatus performRenameRefactoring(IProductCmpt productCmpt,
-            String newName,
-            boolean adaptRuntimeId) throws CoreException {
-
-        return performRenameRefactoring(productCmpt, newName, null, adaptRuntimeId);
-    }
-
-    /**
-     * Performs the "Rename" refactoring for the given {@link IIpsObjectPartContainer}, provided new
-     * name and provided new plural name.
-     * 
-     * @return
-     */
-    protected final RefactoringStatus performRenameRefactoring(IIpsObjectPartContainer ipsObjectPartContainer,
-            String newName,
-            String newPluralName) throws CoreException {
-
-        return performRenameRefactoring(ipsObjectPartContainer, newName, newPluralName, false);
-    }
-
-    private RefactoringStatus performRenameRefactoring(IIpsObjectPartContainer ipsObjectPartContainer,
-            String newName,
-            String newPluralName,
-            boolean adaptRuntimeId) throws CoreException {
-
-        printValidationResult(ipsObjectPartContainer);
-
-        saveIpsSourceFiles();
-
-        ProcessorBasedRefactoring renameRefactoring = ipsObjectPartContainer.getRenameRefactoring();
-        IIpsRenameProcessor processor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
-        processor.setNewName(newName);
-
-        if (newPluralName != null) {
-            processor.setNewPluralName(newPluralName);
-        }
-
-        processor.setAdaptRuntimeId(adaptRuntimeId);
-
-        return runRefactoring(renameRefactoring);
-    }
-
-    protected final RefactoringStatus performMoveRefactoring(IProductCmpt productCmpt,
-            IIpsPackageFragment targetIpsPackageFragment,
-            boolean adaptRuntimeId) throws CoreException {
-
-        return performMoveRefactoring((IIpsObjectPartContainer)productCmpt, targetIpsPackageFragment, adaptRuntimeId);
-    }
-
-    /**
-     * Performs the "Move" refactoring for the given {@link IIpsObjectPartContainer} and provided
-     * target {@link IIpsPackageFragment}.
-     * 
-     * @return
-     */
-    protected final RefactoringStatus performMoveRefactoring(IIpsObjectPartContainer ipsObjectPartContainer,
-            IIpsPackageFragment targetIpsPackageFragment) throws CoreException {
-
-        return performMoveRefactoring(ipsObjectPartContainer, targetIpsPackageFragment, false);
-    }
-
-    private RefactoringStatus performMoveRefactoring(IIpsObjectPartContainer ipsObjectPartContainer,
-            IIpsPackageFragment targetIpsPackageFragment,
-            boolean adaptRuntimeId) throws CoreException {
-
-        printValidationResult(ipsObjectPartContainer);
-
-        saveIpsSourceFiles();
-
-        ProcessorBasedRefactoring moveRefactoring = ipsObjectPartContainer.getMoveRefactoring();
-        IIpsMoveProcessor processor = (IIpsMoveProcessor)moveRefactoring.getProcessor();
-        processor.setTargetIpsPackageFragment(targetIpsPackageFragment);
-        processor.setAdaptRuntimeId(adaptRuntimeId);
-
-        return runRefactoring(moveRefactoring);
-    }
-
-    /**
-     * The created model must be saved before refactoring is done because source files are copied
-     * during rename or move refactorings.
-     */
-    private void saveIpsSourceFiles() throws CoreException {
-        List<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>();
-
-        ipsSrcFiles.add(superPolicyCmptType.getIpsSrcFile());
-        ipsSrcFiles.add(superProductCmptType.getIpsSrcFile());
-        ipsSrcFiles.add(policyCmptType.getIpsSrcFile());
-        ipsSrcFiles.add(productCmptType.getIpsSrcFile());
-        ipsSrcFiles.add(testCaseType.getIpsSrcFile());
-        ipsSrcFiles.add(enumType.getIpsSrcFile());
-        ipsSrcFiles.add(tableStructure.getIpsSrcFile());
-        ipsSrcFiles.add(businessFunction.getIpsSrcFile());
-
-        ipsSrcFiles.add(productCmpt.getIpsSrcFile());
-        ipsSrcFiles.add(enumContent.getIpsSrcFile());
-        ipsSrcFiles.add(testCase.getIpsSrcFile());
-        ipsSrcFiles.add(tableContents.getIpsSrcFile());
-
-        for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
-            ipsSrcFile.save(true, null);
-        }
-    }
-
-    private void printValidationResult(IIpsObjectPartContainer ipsObjectPartContainer) throws CoreException {
-        MessageList validationResult = ipsObjectPartContainer.validate(ipsProject);
-        if (validationResult.containsErrorMsg()) {
-            System.out.println(validationResult.getFirstMessage(Message.ERROR));
-        }
-    }
-
-    private RefactoringStatus runRefactoring(Refactoring refactoring) throws CoreException {
-        PerformRefactoringOperation operation = new PerformRefactoringOperation(refactoring,
-                CheckConditionsOperation.ALL_CONDITIONS);
-        ResourcesPlugin.getWorkspace().run(operation, new NullProgressMonitor());
-        RefactoringStatus validationStatus = operation.getValidationStatus();
-        System.out.println(validationStatus);
-        return validationStatus;
-    }
-
-    protected final void performFullBuild() throws CoreException {
-        clearOutputFolders(); // To avoid code merging problems
-        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
-    }
-
-    private void clearOutputFolders() throws CoreException {
-        IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
-        if (ipsObjectPath.isOutputDefinedPerSrcFolder()) {
-            for (IIpsSrcFolderEntry srcFolderEntry : ipsObjectPath.getSourceFolderEntries()) {
-                IFolder outputFolderDerived = srcFolderEntry.getOutputFolderForDerivedJavaFiles();
-                IFolder outputFolderMergable = srcFolderEntry.getOutputFolderForMergableJavaFiles();
-                clearFolder(outputFolderDerived);
-                clearFolder(outputFolderMergable);
-            }
-        } else {
-            IFolder outputFolderDerived = ipsObjectPath.getOutputFolderForDerivedSources();
-            IFolder outputFolderMergable = ipsObjectPath.getOutputFolderForMergableSources();
-            clearFolder(outputFolderDerived);
-            clearFolder(outputFolderMergable);
-        }
-    }
-
-    private void clearFolder(IFolder folder) throws CoreException {
-        for (IResource resource : folder.members()) {
-            resource.delete(true, null);
-        }
     }
 
 }

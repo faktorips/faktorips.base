@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.wizards.refactor;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.osgi.util.NLS;
@@ -25,7 +24,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
+import org.faktorips.devtools.core.refactor.IIpsRefactoring;
+import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 
@@ -38,19 +38,18 @@ public final class IpsRenameRefactoringWizard extends IpsRefactoringWizard {
 
     /**
      * @param refactoring The refactoring used by the wizard
-     * @param ipsElement The {@link IIpsElement} to be renamed
      * 
      * @throws NullPointerException If any parameter is null
      */
-    public IpsRenameRefactoringWizard(Refactoring refactoring, IIpsElement ipsElement) {
-        super(refactoring, ipsElement, WIZARD_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
+    public IpsRenameRefactoringWizard(IIpsRefactoring refactoring) {
+        super(refactoring, WIZARD_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
         setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/RenameWizard.png")); //$NON-NLS-1$
-        setDefaultPageTitle(NLS.bind(Messages.RenameRefactoringWizard_title, getIpsElementName()));
+        setDefaultPageTitle(Messages.RenameRefactoringWizard_title);
     }
 
     @Override
     protected void addUserInputPages() {
-        addPage(new RenameUserInputPage(getIpsElement()));
+        addPage(new RenameUserInputPage());
     }
 
     @Override
@@ -82,20 +81,18 @@ public final class IpsRenameRefactoringWizard extends IpsRefactoringWizard {
          */
         private Checkbox adaptRuntimeIdField;
 
-        /**
-         * @param ipsElement The {@link IIpsElement} to be renamed
-         */
-        RenameUserInputPage(IIpsElement ipsElement) {
-            super(ipsElement, "RenameUserInputPage"); //$NON-NLS-1$
+        RenameUserInputPage() {
+            super("RenameUserInputPage"); //$NON-NLS-1$
         }
 
         @Override
         protected void setPromptMessage() {
-            setMessage(NLS.bind(Messages.RenameUserInputPage_message, getIpsElementName(), getIpsElement().getName()));
+            setMessage(NLS.bind(Messages.RenameUserInputPage_message, getIpsElementName(getIpsElement()),
+                    getIpsElement().getName()));
         }
 
         @Override
-        public void createControl(Composite parent) {
+        public void createControlThis(Composite parent) {
             Composite controlComposite = getUiToolkit().createGridComposite(parent, 1, false, false);
             setControl(controlComposite);
 
@@ -153,11 +150,15 @@ public final class IpsRenameRefactoringWizard extends IpsRefactoringWizard {
                 getIpsRenameProcessor().setAdaptRuntimeId(adaptRuntimeIdField.isChecked());
             }
 
-            status.merge(getIpsRenameProcessor().validateUserInput(new NullProgressMonitor()));
+            status.merge(getIpsRefactoring().validateUserInput(new NullProgressMonitor()));
         }
 
-        private IIpsRenameProcessor getIpsRenameProcessor() {
-            return (IIpsRenameProcessor)((ProcessorBasedRefactoring)getRefactoring()).getProcessor();
+        private IpsRenameProcessor getIpsRenameProcessor() {
+            return (IpsRenameProcessor)((ProcessorBasedRefactoring)getRefactoring()).getProcessor();
+        }
+
+        private IIpsElement getIpsElement() {
+            return getIpsRenameProcessor().getIpsElement();
         }
 
     }

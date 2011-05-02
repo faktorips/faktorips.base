@@ -18,16 +18,32 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
-import org.faktorips.abstracttest.AbstractIpsRefactoringTest;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
+import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
+import org.faktorips.devtools.core.model.bf.IBusinessFunction;
+import org.faktorips.devtools.core.model.bf.IControlFlow;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
+import org.faktorips.devtools.core.model.pctype.AttributeType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.junit.Before;
 
@@ -36,56 +52,16 @@ import org.junit.Before;
  * 
  * @author Alexander Weickmann
  */
-public abstract class RefactoringParticipantTest extends AbstractIpsRefactoringTest {
-
-    protected IFolder modelFolder;
-
-    protected IFolder internalFolder;
-
-    protected IType superPolicyClass;
-
-    protected IType superPolicyInterface;
-
-    protected IType policyClass;
-
-    protected IType policyInterface;
-
-    protected IType productClass;
-
-    protected IType productInterface;
-
-    protected IType superProductGenInterface;
-
-    protected IType superProductGenClass;
-
-    protected IType productGenClass;
-
-    protected IType productGenInterface;
-
-    protected IType enumTypeJavaType;
-
-    protected IType enumTypeXmlAdapterClass;
-
-    protected IType tableStructureClass;
-
-    protected IType tableStructureRowClass;
-
-    protected IType testCaseClass;
-
-    protected IType businessFunctionClass;
+public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest {
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        configureBuilderSetToGenerateJaxbSupport();
+    }
 
-        setUpFolders();
-        setUpPolicyAndProductTypes();
-        setUpTableTypes();
-        setUpTestTypes();
-        setUpBusinessFunctionTypes();
-
-        // Configure the builder set to generate JAXB support.
+    private void configureBuilderSetToGenerateJaxbSupport() throws CoreException {
         IIpsProjectProperties ipsProjectProperties = ipsProject.getProperties();
         IIpsArtefactBuilderSetConfigModel configModel = ipsProjectProperties.getBuilderSetConfig();
         configModel.setPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT, "true", null);
@@ -93,122 +69,88 @@ public abstract class RefactoringParticipantTest extends AbstractIpsRefactoringT
         ipsProject.setProperties(ipsProjectProperties);
     }
 
-    @Override
-    protected void setTestArtefactBuilderSet(IIpsProjectProperties properties, IIpsProject project)
-            throws CoreException {
+    protected void checkJavaSourceFilesPolicyCmptType(String originalPackageName,
+            String originalName,
+            String targetPackageName,
+            String newName) throws CoreException {
 
-        properties.setBuilderSetId(StandardBuilderSet.ID);
+        assertFalse(getJavaType(originalPackageName, "I" + originalName, true, false).exists());
+        assertFalse(getJavaType(originalPackageName, originalName, false, false).exists());
+
+        assertTrue(getJavaType(targetPackageName, "I" + newName, true, false).exists());
+        assertTrue(getJavaType(targetPackageName, newName, false, false).exists());
     }
 
-    private void setUpFolders() {
-        modelFolder = ipsProject.getProject().getFolder(Path.fromOSString("src/org/faktorips/sample/model"));
-        internalFolder = modelFolder.getFolder("internal");
+    protected void checkJavaSourceFilesProductCmptType(String originalPackageName,
+            String originalName,
+            String targetPackageName,
+            String newName) throws CoreException {
+
+        assertFalse(getJavaType(originalPackageName, originalName, false, false).exists());
+        assertFalse(getJavaType(originalPackageName, "I" + originalName, true, false).exists());
+        assertFalse(getJavaType(originalPackageName, originalName + "Gen", false, false).exists());
+        assertFalse(getJavaType(originalPackageName, "I" + originalName + "Gen", true, false).exists());
+
+        assertTrue(getJavaType(targetPackageName, newName, false, false).exists());
+        assertTrue(getJavaType(targetPackageName, "I" + newName, true, false).exists());
+        assertTrue(getJavaType(targetPackageName, newName + "Gen", false, false).exists());
+        assertTrue(getJavaType(targetPackageName, "I" + newName + "Gen", true, false).exists());
     }
 
-    private void setUpPolicyAndProductTypes() throws CoreException {
-        superPolicyInterface = getJavaType(PACKAGE_NAME, "I" + SUPER_POLICY_CMPT_TYPE_NAME, true, false);
-        superPolicyClass = getJavaType(PACKAGE_NAME, SUPER_POLICY_CMPT_TYPE_NAME, false, false);
-        policyInterface = getJavaType(PACKAGE_NAME, "I" + POLICY_CMPT_TYPE_NAME, true, false);
-        policyClass = getJavaType(PACKAGE_NAME, POLICY_CMPT_TYPE_NAME, false, false);
-        productInterface = getJavaType(PACKAGE_NAME, "I" + PRODUCT_CMPT_TYPE_NAME, true, false);
-        productClass = getJavaType(PACKAGE_NAME, PRODUCT_CMPT_TYPE_NAME, false, false);
-        superProductGenInterface = getJavaType(PACKAGE_NAME, "I" + SUPER_PRODUCT_CMPT_TYPE_NAME + "Gen", true, false);
-        superProductGenClass = getJavaType(PACKAGE_NAME, SUPER_PRODUCT_CMPT_TYPE_NAME + "Gen", false, false);
-        productGenInterface = getJavaType(PACKAGE_NAME, "I" + PRODUCT_CMPT_TYPE_NAME + "Gen", true, false);
-        productGenClass = getJavaType(PACKAGE_NAME, PRODUCT_CMPT_TYPE_NAME + "Gen", false, false);
-        enumTypeJavaType = getJavaType(PACKAGE_NAME, ENUM_TYPE_NAME, true, false);
-        enumTypeXmlAdapterClass = getJavaType(PACKAGE_NAME, ENUM_TYPE_NAME + "XmlAdapter", false, true);
+    protected void checkJavaSourceFilesEnumType(String originalPackageName,
+            String originalName,
+            String targetPackageName,
+            String newName) throws CoreException {
+
+        assertFalse(getJavaType(originalPackageName, originalName, true, false).exists());
+        assertFalse(getJavaType(originalPackageName, originalName + "XmlAdapter", false, true).exists());
+
+        assertTrue(getJavaType(targetPackageName, newName, true, false).exists());
+        assertTrue(getJavaType(targetPackageName, newName + "XmlAdapter", false, true).exists());
     }
 
-    private void setUpTableTypes() throws CoreException {
-        tableStructureClass = getJavaType(PACKAGE_NAME, TABLE_STRUCTURE_NAME, false, false);
-        tableStructureRowClass = getJavaType(PACKAGE_NAME, TABLE_STRUCTURE_NAME + "Row", false, false);
+    protected void checkJavaSourceFilesTableStructure(String originalPackageName,
+            String originalName,
+            String targetPackageName,
+            String newName) throws CoreException {
+
+        assertFalse(getJavaType(originalPackageName, originalName, false, false).exists());
+        assertFalse(getJavaType(originalPackageName, originalName + "Row", false, false).exists());
+
+        assertTrue(getJavaType(targetPackageName, newName, false, false).exists());
+        assertTrue(getJavaType(targetPackageName, newName + "Row", false, false).exists());
     }
 
-    private void setUpTestTypes() throws CoreException {
-        testCaseClass = getJavaType(PACKAGE_NAME, TEST_CASE_TYPE_NAME, false, false);
+    protected void checkJavaSourceFilesTestCaseType(String originalPackageName,
+            String originalName,
+            String targetPackageName,
+            String newName) throws CoreException {
+
+        assertFalse(getJavaType(originalPackageName, originalName, false, false).exists());
+
+        assertTrue(getJavaType(targetPackageName, newName, false, false).exists());
     }
 
-    private void setUpBusinessFunctionTypes() throws CoreException {
-        businessFunctionClass = getJavaType(PACKAGE_NAME, BUSINESS_FUNCTION_NAME, true, false);
-    }
+    protected void checkJavaSourceFilesBusinessFunction(String originalPackageName,
+            String originalName,
+            String targetPackageName,
+            String newName) throws CoreException {
 
-    protected void checkJavaSourceFilesPolicyCmptType(String targetPackageName, String newName) throws CoreException {
-        assertFalse(policyInterface.exists());
-        assertFalse(policyClass.exists());
+        assertFalse(getJavaType(originalPackageName, originalName, true, false).exists());
 
-        policyInterface = getJavaType(targetPackageName, "I" + newName, true, false);
-        policyClass = getJavaType(targetPackageName, newName, false, false);
-
-        assertTrue(policyInterface.exists());
-        assertTrue(policyClass.exists());
-    }
-
-    protected void checkJavaSourceFilesProductCmptType(String targetPackageName, String newName) throws CoreException {
-        assertFalse(productClass.exists());
-        assertFalse(productInterface.exists());
-        assertFalse(productGenClass.exists());
-        assertFalse(productGenInterface.exists());
-
-        productClass = getJavaType(targetPackageName, newName, false, false);
-        productInterface = getJavaType(targetPackageName, "I" + newName, true, false);
-        productGenClass = getJavaType(targetPackageName, newName + "Gen", false, false);
-        productGenInterface = getJavaType(targetPackageName, "I" + newName + "Gen", true, false);
-
-        assertTrue(productClass.exists());
-        assertTrue(productInterface.exists());
-        assertTrue(productGenClass.exists());
-        assertTrue(productGenInterface.exists());
-    }
-
-    protected void checkJavaSourceFilesEnumType(String targetPackageName, String newName) throws CoreException {
-        assertFalse(enumTypeJavaType.exists());
-        assertFalse(enumTypeXmlAdapterClass.exists());
-
-        enumTypeJavaType = getJavaType(targetPackageName, newName, true, false);
-        enumTypeXmlAdapterClass = getJavaType(targetPackageName, newName + "XmlAdapter", false, true);
-
-        assertTrue(enumTypeJavaType.exists());
-        assertTrue(enumTypeXmlAdapterClass.exists());
-    }
-
-    protected void checkJavaSourceFilesTableStructure(String targetPackageName, String newName) throws CoreException {
-        assertFalse(tableStructureClass.exists());
-        assertFalse(tableStructureRowClass.exists());
-
-        tableStructureClass = getJavaType(targetPackageName, newName, false, false);
-        tableStructureRowClass = getJavaType(targetPackageName, newName, false, false);
-
-        assertTrue(tableStructureClass.exists());
-        assertTrue(tableStructureRowClass.exists());
-    }
-
-    protected void checkJavaSourceFilesTestCaseType(String targetPackageName, String newName) throws CoreException {
-        assertFalse(testCaseClass.exists());
-
-        testCaseClass = getJavaType(targetPackageName, newName, false, false);
-
-        assertTrue(testCaseClass.exists());
-    }
-
-    protected void checkJavaSourceFilesBusinessFunction(String targetPackageName, String newName) throws CoreException {
-        assertFalse(businessFunctionClass.exists());
-
-        businessFunctionClass = getJavaType(targetPackageName, newName, true, false);
-
-        assertTrue(businessFunctionClass.exists());
+        assertTrue(getJavaType(targetPackageName, newName, true, false).exists());
     }
 
     /**
-     * Returns the Java <tt>IType</tt> corresponding to the indicated package name, type name and
+     * Returns the Java {@link IType} corresponding to the indicated package name, type name and
      * internal flag.
      * 
-     * @param packageName The package where the <tt>IType</tt> is located.
-     * @param typeName The name of the <tt>IType</tt>.
+     * @param packageName The package where the {@link IType} is located
+     * @param typeName The name of the {@link IType}
      * @param publishedSource Flag indicating whether a published interface or an implementation
-     *            type is searched.
+     *            type is searched
      * @param derivedSource Flag indicating whether the Java source file is a derived resource or
-     *            not.
+     *            not
      */
     protected IType getJavaType(String packageName, String typeName, boolean publishedSource, boolean derivedSource)
             throws CoreException {
@@ -229,6 +171,113 @@ public abstract class RefactoringParticipantTest extends AbstractIpsRefactoringT
         IPackageFragment javaPackage = javaRoot.getPackageFragment(basePackageName + packageName);
 
         return javaPackage.getCompilationUnit(typeName + JavaSourceFileBuilder.JAVA_EXTENSION).getType(typeName);
+    }
+
+    protected IPolicyCmptTypeAttribute createPolicyCmptTypeAttribute(String name,
+            String policyCmptTypeName,
+            String productCmptTypeName) throws CoreException {
+
+        IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, policyCmptTypeName,
+                productCmptTypeName);
+        return createPolicyCmptTypeAttribute(name, policyCmptType);
+    }
+
+    protected IPolicyCmptTypeAttribute createPolicyCmptTypeAttribute(String name, IPolicyCmptType policyCmptType) {
+        IPolicyCmptTypeAttribute policyCmptTypeAttribute = policyCmptType.newPolicyCmptTypeAttribute();
+        policyCmptTypeAttribute.setName(name);
+        policyCmptTypeAttribute.setDatatype(Datatype.MONEY.getQualifiedName());
+        policyCmptTypeAttribute.setModifier(Modifier.PUBLISHED);
+        policyCmptTypeAttribute.setAttributeType(AttributeType.CHANGEABLE);
+        policyCmptTypeAttribute.setProductRelevant(true);
+        return policyCmptTypeAttribute;
+    }
+
+    protected IProductCmptTypeAttribute createProductCmptTypeAttribute(String name,
+            String productCmptTypeName,
+            String policyCmptTypeName) throws CoreException {
+
+        IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, policyCmptTypeName,
+                productCmptTypeName);
+        IProductCmptTypeAttribute productCmptTypeAttribute = policyCmptType.findProductCmptType(ipsProject)
+                .newProductCmptTypeAttribute();
+        productCmptTypeAttribute.setName(name);
+        productCmptTypeAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        productCmptTypeAttribute.setModifier(Modifier.PUBLISHED);
+        return productCmptTypeAttribute;
+    }
+
+    protected IEnumType createEnumType(String name,
+            IEnumType superEnumType,
+            String idAttributeName,
+            String nameAttributeName) throws CoreException {
+
+        IEnumType enumType = newEnumType(ipsProject, name);
+        enumType.setAbstract(false);
+        enumType.setContainingValues(true);
+        enumType.setSuperEnumType(superEnumType != null ? superEnumType.getQualifiedName() : "");
+
+        IEnumAttribute idAttribute = enumType.newEnumAttribute();
+        idAttribute.setName(idAttributeName);
+        idAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        idAttribute.setIdentifier(true);
+        idAttribute.setUnique(true);
+        idAttribute.setInherited(superEnumType != null);
+
+        IEnumAttribute nameAttribute = enumType.newEnumAttribute();
+        nameAttribute.setName(nameAttributeName);
+        nameAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        nameAttribute.setUnique(true);
+        nameAttribute.setUsedAsNameInFaktorIpsUi(true);
+        idAttribute.setInherited(superEnumType != null);
+
+        return enumType;
+    }
+
+    protected IEnumType createEnumType(String name,
+            IEnumType superEnumType,
+            String idAttributeName,
+            String nameAttributeName,
+            String literalNameDefaultValueProviderAttribute,
+            String idAttributeValue,
+            String nameAttributeValue,
+            String literalNameAttributeValue) throws CoreException {
+
+        IEnumType enumType = createEnumType(name, superEnumType, idAttributeName, nameAttributeName);
+
+        IEnumLiteralNameAttribute literalAttribute = enumType.newEnumLiteralNameAttribute();
+        literalAttribute.setDefaultValueProviderAttribute(literalNameDefaultValueProviderAttribute);
+
+        IEnumValue enumValue = enumType.newEnumValue();
+        enumValue.setEnumAttributeValue(0, idAttributeValue);
+        enumValue.setEnumAttributeValue(1, nameAttributeValue);
+        enumValue.setEnumAttributeValue(2, literalNameAttributeValue);
+
+        return enumType;
+    }
+
+    protected ITableStructure createTableStructure(String name) throws CoreException {
+        ITableStructure tableStructure = newTableStructure(ipsProject, name);
+        tableStructure.setTableStructureType(TableStructureType.SINGLE_CONTENT);
+        return tableStructure;
+    }
+
+    protected ITestCaseType createTestCaseType(String name) throws CoreException {
+        return newTestCaseType(ipsProject, name);
+    }
+
+    protected IBusinessFunction createBusinessFunction(String name) throws CoreException {
+        IBusinessFunction businessFunction = (IBusinessFunction)newIpsObject(ipsProject,
+                BusinessFunctionIpsObjectType.getInstance(), name);
+        businessFunction.newStart(new Point(0, 0));
+        businessFunction.newEnd(new Point(10, 10));
+        IControlFlow controlFlow = businessFunction.newControlFlow();
+        controlFlow.setSource(businessFunction.getStart());
+        controlFlow.setTarget(businessFunction.getEnd());
+        return businessFunction;
+    }
+
+    protected void saveIpsSrcFile(IIpsObject ipsObject) throws CoreException {
+        ipsObject.getIpsSrcFile().save(true, null);
     }
 
 }

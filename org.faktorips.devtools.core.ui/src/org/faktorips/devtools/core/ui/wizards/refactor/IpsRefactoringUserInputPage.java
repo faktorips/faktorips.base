@@ -14,17 +14,19 @@
 package org.faktorips.devtools.core.ui.wizards.refactor;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.ui.refactoring.UserInputWizardPage;
+import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.util.ArgumentCheck;
 
 /**
  * Abstract base class providing common functionality for {@link UserInputWizardPage}s used by
@@ -34,41 +36,49 @@ import org.faktorips.util.ArgumentCheck;
  */
 abstract class IpsRefactoringUserInputPage extends UserInputWizardPage {
 
-    /** {@link IIpsElement} to be refactored. */
-    private IIpsElement ipsElement;
-
     /** {@link UIToolkit} to create UI elements with. */
     private final UIToolkit uiToolkit;
 
     /**
      * @param pageName A name for this user input page
-     * @param ipsElement {@link IIpsElement} to be refactored
      * 
      * @throws NullPointerException If any parameter is null
      */
-    IpsRefactoringUserInputPage(IIpsElement ipsElement, String pageName) {
+    IpsRefactoringUserInputPage(String pageName) {
         super(pageName);
-        ArgumentCheck.notNull(ipsElement);
 
-        this.ipsElement = ipsElement;
         uiToolkit = new UIToolkit(null);
-
-        setPromptMessage();
     }
+
+    @Override
+    public final void createControl(Composite parent) {
+        setPromptMessage();
+        createControlThis(parent);
+    }
+
+    /**
+     * Subclass implementation responsible for creating the page control.
+     * 
+     * @param parent The parent {@link Composite}
+     * 
+     * @see IDialogPage#createControl(Composite)
+     */
+    protected abstract void createControlThis(Composite parent);
 
     /**
      * Subclass implementation responsible for setting the prompt message.
      * <p>
-     * This operation is called by the constructor.
+     * This operation is called by {@link #createControl(Composite)} right before
+     * {@link #createControlThis(Composite)} is called. The operation is also called by
+     * {@link #resetPageMessages()}.
      */
-    // TODO AW: Overridable methods should not be called by constructor
     protected abstract void setPromptMessage();
 
     /**
-     * Returns the name describing the {@link IIpsElement} to be refactored.
+     * Returns the name describing the given {@link IIpsElement}.
      */
     // TODO AW: This should be moved to the core model
-    protected final String getIpsElementName() {
+    protected final String getIpsElementName(IIpsElement ipsElement) {
         String ipsElementName = ""; //$NON-NLS-1$
         if (ipsElement instanceof IAttribute) {
             ipsElementName = Messages.ElementNames_Attribute;
@@ -151,17 +161,17 @@ abstract class IpsRefactoringUserInputPage extends UserInputWizardPage {
     }
 
     /**
-     * Returns the {@link IIpsElement} to be refactored.
-     */
-    protected final IIpsElement getIpsElement() {
-        return ipsElement;
-    }
-
-    /**
      * Returns the {@link UIToolkit} to create new UI elements with.
      */
     protected final UIToolkit getUiToolkit() {
         return uiToolkit;
+    }
+
+    /**
+     * Returns the {@link IIpsRefactoring} associated with this wizard page.
+     */
+    protected final IIpsRefactoring getIpsRefactoring() {
+        return (IIpsRefactoring)getRefactoring();
     }
 
 }

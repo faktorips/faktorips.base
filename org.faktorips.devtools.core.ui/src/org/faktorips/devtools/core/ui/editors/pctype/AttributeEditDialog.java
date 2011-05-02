@@ -22,7 +22,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.window.Window;
-import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -50,19 +49,19 @@ import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
+import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo.DateTimeMapping;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
-import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo.DateTimeMapping;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
-import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
+import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
@@ -466,8 +465,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 if (StringUtils.isEmpty(signature)) {
                     signature = Messages.AttributeEditDialog_emptyString;
                 }
-                String text = NLS.bind(Messages.AttributeEditDialog_questionCreateMethod, productCmptType
-                        .getQualifiedName(), signature);
+                String text = NLS.bind(Messages.AttributeEditDialog_questionCreateMethod,
+                        productCmptType.getQualifiedName(), signature);
                 if (MessageDialog.openQuestion(getShell(), Messages.AttributeEditDialog_MethodDoesNotExist, text)) {
                     createMethodAndOpenDialog();
                 }
@@ -513,8 +512,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         try {
             productCmptType = policyCmptType.findProductCmptType(ipsProject);
             if (productCmptType == null) {
-                String text = NLS.bind(Messages.AttributeEditDialog_TypeCantBeFound, policyCmptType
-                        .getProductCmptType());
+                String text = NLS.bind(Messages.AttributeEditDialog_TypeCantBeFound,
+                        policyCmptType.getProductCmptType());
                 MessageDialog.openInformation(getShell(), Messages.AttributeEditDialog_Info, text);
             }
         } catch (CoreException e) {
@@ -823,8 +822,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                             uiToolkit.setDataChangeable(group, false);
                             return;
                         }
-                        uiToolkit.setDataChangeable(persistencePage.getControl(), ((IPersistentTypeInfo)getObject())
-                                .isEnabled());
+                        uiToolkit.setDataChangeable(persistencePage.getControl(),
+                                ((IPersistentTypeInfo)getObject()).isEnabled());
                     }
                 });
 
@@ -919,11 +918,10 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         // First, reset the initial name as otherwise the error 'names must not equal' will occur
         attribute.setName(initialName);
 
-        ProcessorBasedRefactoring renameRefactoring = attribute.getRenameRefactoring();
-        IIpsRenameProcessor renameProcessor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
-        renameProcessor.setNewName(newName);
-        IpsRefactoringOperation refactorOp = new IpsRefactoringOperation(renameRefactoring, getShell());
-        refactorOp.runDirectExecution();
+        IIpsRefactoring ipsRenameRefactoring = IpsPlugin.getIpsRefactoringFactory().createRenameRefactoring(attribute,
+                newName, null, false);
+        IpsRefactoringOperation refactoringOperation = new IpsRefactoringOperation(ipsRenameRefactoring, getShell());
+        refactoringOperation.runDirectExecution();
     }
 
     class MethodSignatureCompletionProcessor extends AbstractCompletionProcessor {

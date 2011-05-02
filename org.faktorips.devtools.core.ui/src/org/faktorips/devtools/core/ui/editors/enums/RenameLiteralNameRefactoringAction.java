@@ -16,11 +16,12 @@ package org.faktorips.devtools.core.ui.editors.enums;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.refactor.IIpsProcessorBasedRefactoring;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 import org.faktorips.devtools.core.ui.wizards.refactor.IpsRenameRefactoringWizard;
 import org.faktorips.util.ArgumentCheck;
@@ -63,11 +64,11 @@ public class RenameLiteralNameRefactoringAction extends Action {
         IEnumValue enumValue = (IEnumValue)selection.getFirstElement();
         IEnumLiteralNameAttributeValue enumLiteralNameAttributeValue = enumValue.getEnumLiteralNameAttributeValue();
 
-        ProcessorBasedRefactoring refactoring = enumLiteralNameAttributeValue.getRenameRefactoring();
+        IIpsProcessorBasedRefactoring ipsRenameRefactoring = IpsPlugin.getIpsRefactoringFactory()
+                .createRenameRefactoring(enumLiteralNameAttributeValue);
         Shell shell = Display.getDefault().getActiveShell();
-        IpsRefactoringOperation refactoringOperation = new IpsRefactoringOperation(refactoring, shell);
-        refactoringOperation.runWizardInteraction(new IpsRenameRefactoringWizard(refactoring,
-                enumLiteralNameAttributeValue));
+        IpsRefactoringOperation refactoringOperation = new IpsRefactoringOperation(ipsRenameRefactoring, shell);
+        refactoringOperation.runWizardInteraction(new IpsRenameRefactoringWizard(ipsRenameRefactoring));
 
         tableViewer.refresh();
     }

@@ -24,44 +24,42 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
-import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.faktorips.abstracttest.AbstractIpsRefactoringTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
+import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
+import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
 import org.junit.Test;
 
 public class RenameEnumAttributeProcessorTest extends AbstractIpsRefactoringTest {
 
     @Test
     public void testCheckInitialConditionsValid() throws OperationCanceledException, CoreException {
-        ProcessorBasedRefactoring renameRefactoring = enumAttribute.getRenameRefactoring();
-        RefactoringStatus status = renameRefactoring.getProcessor().checkInitialConditions(new NullProgressMonitor());
+        IpsRefactoringProcessor ipsRefactoringProcessor = new RenameEnumAttributeProcessor(enumAttribute);
+        RefactoringStatus status = ipsRefactoringProcessor.checkInitialConditions(new NullProgressMonitor());
         assertFalse(status.hasError());
     }
 
     @Test
     public void testCheckFinalConditionsValid() throws OperationCanceledException, CoreException {
-        ProcessorBasedRefactoring renameRefactoring = enumAttribute.getRenameRefactoring();
-        IIpsRenameProcessor renameProcessor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
-        renameProcessor.setNewName("test");
-        RefactoringStatus status = renameRefactoring.getProcessor().checkFinalConditions(new NullProgressMonitor(),
+        IpsRenameProcessor ipsRenameProcessor = new RenameEnumAttributeProcessor(enumAttribute);
+        ipsRenameProcessor.setNewName("test");
+        RefactoringStatus status = ipsRenameProcessor.checkFinalConditions(new NullProgressMonitor(),
                 new CheckConditionsContext());
         assertFalse(status.hasError());
     }
 
     @Test
     public void testCheckFinalConditionsInvalidAttributeName() throws OperationCanceledException, CoreException {
-        // Create another enumeration attribute to test against.
+        // Create another enumeration attribute to test against
         IEnumAttribute otherEnumAttribute = enumType.newEnumAttribute();
         otherEnumAttribute.setName("otherEnumAttribute");
 
-        ProcessorBasedRefactoring renameRefactoring = enumAttribute.getRenameRefactoring();
-        IIpsRenameProcessor renameProcessor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
-        renameProcessor.setNewName("otherEnumAttribute");
-        RefactoringStatus status = renameRefactoring.getProcessor().checkFinalConditions(new NullProgressMonitor(),
+        IpsRenameProcessor ipsRenameProcessor = new RenameEnumAttributeProcessor(enumAttribute);
+        ipsRenameProcessor.setNewName("otherEnumAttribute");
+        RefactoringStatus status = ipsRenameProcessor.checkFinalConditions(new NullProgressMonitor(),
                 new CheckConditionsContext());
         assertTrue(status.hasError());
     }

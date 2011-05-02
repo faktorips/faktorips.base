@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -37,6 +38,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -61,6 +63,9 @@ import org.eclipse.jdt.core.search.SearchEngine;
 import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.core.search.TypeNameRequestor;
 import org.eclipse.jdt.launching.JavaRuntime;
+import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
+import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.abstracttest.builder.TestArtefactBuilderSetInfo;
 import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.abstracttest.test.XmlAbstractTestCase;
@@ -88,6 +93,7 @@ import org.faktorips.devtools.core.model.CreateIpsArchiveOperation;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
@@ -105,9 +111,13 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
+import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.util.BeanUtil;
 import org.faktorips.util.StringUtil;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.junit.After;
 import org.junit.Before;
 import org.w3c.dom.Document;
@@ -900,7 +910,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * the same package fragment root as the structure. If the qualifiedName includes a package
      * name, the package is created if it does not already exists.
      */
-    protected TestCase newTestCase(TestCaseType tCase, String qualifiedName) throws CoreException {
+    protected TestCase newTestCase(ITestCaseType tCase, String qualifiedName) throws CoreException {
         TestCase testCase = (TestCase)newIpsObject(tCase.getIpsPackageFragment().getRoot(), IpsObjectType.TEST_CASE,
                 qualifiedName);
         testCase.setTestCaseType(tCase.getQualifiedName());
@@ -1180,6 +1190,154 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         IFile file = parentFolder.getFile(fileName);
         if (!file.exists()) {
             file.create(new ByteArrayInputStream(content.getBytes()), true, null);
+        }
+    }
+
+    /**
+     * Performs the Faktor-IPS 'Rename' refactoring for the given {@link IIpsObjectPartContainer}
+     * and provided new name.
+     */
+    protected final RefactoringStatus performRenameRefactoring(IIpsObjectPartContainer ipsObjectPartContainer,
+            String newName) throws CoreException {
+
+        return performRenameRefactoring(ipsObjectPartContainer, newName, null, false);
+    }
+
+    /**
+     * Performs the Faktor-IPS 'Rename' refactoring for the given {@link IProductCmpt} and provided
+     * new name, thereby allowing to adapt the runtime id.
+     */
+    protected final RefactoringStatus performRenameRefactoring(IProductCmpt productCmpt,
+            String newName,
+            boolean adaptRuntimeId) throws CoreException {
+
+        return performRenameRefactoring(productCmpt, newName, null, adaptRuntimeId);
+    }
+
+    /**
+     * Performs the Faktor-IPS 'Rename' refactoring for the given {@link IIpsObjectPartContainer},
+     * provided new name and provided new plural name.
+     */
+    protected final RefactoringStatus performRenameRefactoring(IIpsObjectPartContainer ipsObjectPartContainer,
+            String newName,
+            String newPluralName) throws CoreException {
+
+        return performRenameRefactoring(ipsObjectPartContainer, newName, newPluralName, false);
+    }
+
+    private RefactoringStatus performRenameRefactoring(IIpsObjectPartContainer ipsObjectPartContainer,
+            String newName,
+            String newPluralName,
+            boolean adaptRuntimeId) throws CoreException {
+
+        printValidationResult(ipsObjectPartContainer);
+
+        IIpsRefactoring ipsRenameRefactoring = IpsPlugin.getIpsRefactoringFactory().createRenameRefactoring(
+                ipsObjectPartContainer, newName, newPluralName, adaptRuntimeId);
+
+        return performRefactoring(ipsRenameRefactoring);
+    }
+
+    /**
+     * Performs the Faktor-IPS 'Move' refactoring for the given {@link IProductCmpt} and provided
+     * target {@link IIpsPackageFragment}, thereby allowing to adapt the runtime id.
+     */
+    protected final RefactoringStatus performMoveRefactoring(IProductCmpt productCmpt,
+            IIpsPackageFragment targetIpsPackageFragment,
+            boolean adaptRuntimeId) throws CoreException {
+
+        return performMoveRefactoring((IIpsObject)productCmpt, targetIpsPackageFragment, adaptRuntimeId);
+    }
+
+    /**
+     * Performs the Faktor-IPS 'Move' refactoring for the given {@link IIpsObject} and provided
+     * target {@link IIpsPackageFragment}.
+     */
+    protected final RefactoringStatus performMoveRefactoring(IIpsObject ipsObject,
+            IIpsPackageFragment targetIpsPackageFragment) throws CoreException {
+
+        return performMoveRefactoring(ipsObject, targetIpsPackageFragment, false);
+    }
+
+    private RefactoringStatus performMoveRefactoring(IIpsObject ipsObject,
+            IIpsPackageFragment targetIpsPackageFragment,
+            boolean adaptRuntimeId) throws CoreException {
+
+        printValidationResult(ipsObject);
+
+        IIpsRefactoring ipsMoveRefactoring = IpsPlugin.getIpsRefactoringFactory().createMoveRefactoring(ipsObject,
+                targetIpsPackageFragment, adaptRuntimeId);
+
+        return performRefactoring(ipsMoveRefactoring);
+    }
+
+    /**
+     * Performs a composite Faktor-IPS 'Move' refactoring for the given {@link IIpsObject}s and
+     * provided target {@link IIpsPackageFragment}.
+     */
+    protected final RefactoringStatus performCompositeMoveRefactoring(Set<IIpsObject> ipsObjects,
+            IIpsPackageFragment targetIpsPackageFragment) throws CoreException {
+
+        for (IIpsObject ipsObject : ipsObjects) {
+            printValidationResult(ipsObject);
+            ipsObject.getIpsSrcFile().save(true, null);
+        }
+
+        IIpsRefactoring ipsCompositeMoveRefactoring = IpsPlugin.getIpsRefactoringFactory()
+                .createCompositeMoveRefactoring(ipsObjects, targetIpsPackageFragment, false);
+
+        return performRefactoring(ipsCompositeMoveRefactoring);
+    }
+
+    private RefactoringStatus performRefactoring(IIpsRefactoring ipsRefactoring) throws CoreException {
+        PerformRefactoringOperation operation = new PerformRefactoringOperation(ipsRefactoring.toLtkRefactoring(),
+                CheckConditionsOperation.ALL_CONDITIONS);
+        ResourcesPlugin.getWorkspace().run(operation, new NullProgressMonitor());
+        RefactoringStatus validationStatus = operation.getValidationStatus();
+        System.out.println(validationStatus);
+        return validationStatus;
+    }
+
+    /**
+     * Prints the validation result of the given {@link IIpsObjectPartContainer} to the console if
+     * the severity is at least at the warning level.
+     */
+    protected final void printValidationResult(IIpsObjectPartContainer ipsObjectPartContainer) throws CoreException {
+        MessageList validationResult = ipsObjectPartContainer.validate(ipsObjectPartContainer.getIpsProject());
+        if (validationResult.getSeverity() == Message.WARNING || validationResult.getSeverity() == Message.ERROR) {
+            System.out.println(validationResult.getFirstMessage(Message.ERROR));
+        }
+    }
+
+    /**
+     * Clears the output folders of the given {@link IIpsProject} (to avoid code merging problems)
+     * and performs a full build.
+     */
+    protected final void performFullBuild(IIpsProject ipsProject) throws CoreException {
+        clearOutputFolders(ipsProject); // To avoid code merging problems
+        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+    }
+
+    private void clearOutputFolders(IIpsProject ipsProject) throws CoreException {
+        IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
+        if (ipsObjectPath.isOutputDefinedPerSrcFolder()) {
+            for (IIpsSrcFolderEntry srcFolderEntry : ipsObjectPath.getSourceFolderEntries()) {
+                IFolder outputFolderDerived = srcFolderEntry.getOutputFolderForDerivedJavaFiles();
+                IFolder outputFolderMergable = srcFolderEntry.getOutputFolderForMergableJavaFiles();
+                clearFolder(outputFolderDerived);
+                clearFolder(outputFolderMergable);
+            }
+        } else {
+            IFolder outputFolderDerived = ipsObjectPath.getOutputFolderForDerivedSources();
+            IFolder outputFolderMergable = ipsObjectPath.getOutputFolderForMergableSources();
+            clearFolder(outputFolderDerived);
+            clearFolder(outputFolderMergable);
+        }
+    }
+
+    private void clearFolder(IFolder folder) throws CoreException {
+        for (IResource resource : folder.members()) {
+            resource.delete(true, null);
         }
     }
 

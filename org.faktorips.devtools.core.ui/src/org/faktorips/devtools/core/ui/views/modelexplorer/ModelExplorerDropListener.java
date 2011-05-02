@@ -14,6 +14,8 @@
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
@@ -22,7 +24,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -38,9 +39,10 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.refactor.IIpsMoveProcessor;
+import org.faktorips.devtools.core.refactor.IIpsCompositeMoveRefactoring;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
+import org.faktorips.devtools.core.ui.wizards.refactor.IpsMoveRefactoringWizard;
 
 public class ModelExplorerDropListener extends IpsElementDropListener {
 
@@ -96,25 +98,30 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
                 return;
             }
 
-            // The new refactoring support goes from here.
+            // The new refactoring support goes from here
             if (target instanceof IIpsPackageFragment) {
+                Set<IIpsObject> ipsObjects = new LinkedHashSet<IIpsObject>(sources.length);
                 boolean allIpsSrcFiles = true;
                 for (Object source : sources) {
                     if (!(source instanceof IIpsSrcFile)) {
                         allIpsSrcFiles = false;
                         break;
                     }
+                    ipsObjects.add(((IIpsSrcFile)source).getIpsObject());
                 }
-                if (allIpsSrcFiles) {
-                    for (Object source : sources) {
-                        IIpsSrcFile ipsSrcFile = (IIpsSrcFile)source;
-                        IIpsObject ipsObject = ipsSrcFile.getIpsObject();
-                        ProcessorBasedRefactoring moveRefactoring = ipsObject.getMoveRefactoring();
-                        IIpsMoveProcessor moveProcessor = (IIpsMoveProcessor)moveRefactoring.getProcessor();
-                        moveProcessor.setTargetIpsPackageFragment((IIpsPackageFragment)target);
 
-                        IpsRefactoringOperation refactorOp = new IpsRefactoringOperation(moveRefactoring, shell);
-                        refactorOp.runDirectExecution();
+                if (allIpsSrcFiles) {
+                    IIpsCompositeMoveRefactoring ipsCompositeMoveRefactoring = IpsPlugin.getIpsRefactoringFactory()
+                            .createCompositeMoveRefactoring(ipsObjects);
+                    ipsCompositeMoveRefactoring.setTargetIpsPackageFragment((IIpsPackageFragment)target);
+                    IpsRefactoringOperation refactoringOperation = new IpsRefactoringOperation(
+                            ipsCompositeMoveRefactoring, shell);
+
+                    if (!ipsCompositeMoveRefactoring.isAdaptRuntimeIdRelevant()) {
+                        refactoringOperation.runDirectExecution();
+                    } else {
+                        refactoringOperation.runWizardInteraction(new IpsMoveRefactoringWizard(
+                                ipsCompositeMoveRefactoring));
                     }
 
                     return;

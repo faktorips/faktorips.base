@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
@@ -37,13 +36,13 @@ import org.faktorips.devtools.core.internal.model.type.AssociationType;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
+import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.FetchType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.FetchType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
+import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.binding.ButtonTextBinding;
@@ -371,9 +370,10 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         GridData layoutData = (GridData)group.getLayoutData();
         layoutData.grabExcessVerticalSpace = false;
 
-        bindingContext.bindContent(uiToolkit.createCheckbox(group,
-                Messages.AssociationEditDialog_labelOverwriteDefaultCascadeTypes), association
-                .getPersistenceAssociatonInfo(), IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_OVERWRITE_DEFAULT);
+        bindingContext.bindContent(
+                uiToolkit.createCheckbox(group, Messages.AssociationEditDialog_labelOverwriteDefaultCascadeTypes),
+                association.getPersistenceAssociatonInfo(),
+                IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_OVERWRITE_DEFAULT);
 
         cascadeTypesComposite = uiToolkit.createLabelEditColumnComposite(group);
         cascadeTypesComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -457,9 +457,10 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                 uiToolkit.createLabel(groupJoinColumn,
                         Messages.AssociationEditDialog_noteForeignKeyColumnDefinedInInverseAssociation);
             } else if (persistentAssociationInfo.isForeignKeyColumnCreatedOnTargetSide(inverseAssociation)) {
-                uiToolkit.createLabel(groupJoinColumn, NLS.bind(
-                        Messages.AssociationEditDialog_noteForeignKeyIsColumnOfTheTargetEntity, StringUtil
-                                .unqualifiedName(association.getTarget())));
+                uiToolkit.createLabel(
+                        groupJoinColumn,
+                        NLS.bind(Messages.AssociationEditDialog_noteForeignKeyIsColumnOfTheTargetEntity,
+                                StringUtil.unqualifiedName(association.getTarget())));
             }
         }
         return groupJoinColumn;
@@ -592,8 +593,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                 if (matchingAss != null) {
                     String type = matchingAss.getProductCmptType().getName();
                     return NLS.bind(Messages.AssociationEditDialog_noteAssociationIsConstrainedByProductStructure,
-                            type, matchingAss.getTargetRoleSingular())
-                            + StringUtils.rightPad("\n", 120); //$NON-NLS-1$
+                            type, matchingAss.getTargetRoleSingular()) + StringUtils.rightPad("\n", 120); //$NON-NLS-1$
                 } else {
                     String note = Messages.AssociationEditDialog_noteAssociationNotConstrainedByProductStructure;
                     IProductCmptType sourceProductType = association.getPolicyCmptType()
@@ -642,12 +642,10 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         association.setTargetRoleSingular(initialName);
         association.setTargetRolePlural(initialPluralName);
 
-        ProcessorBasedRefactoring renameRefactoring = association.getRenameRefactoring();
-        IIpsRenameProcessor renameProcessor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
-        renameProcessor.setNewName(newName);
-        renameProcessor.setNewPluralName(newPluralName);
-        IpsRefactoringOperation refactorOp = new IpsRefactoringOperation(renameRefactoring, getShell());
-        refactorOp.runDirectExecution();
+        IIpsRefactoring ipsRenameRefactoring = IpsPlugin.getIpsRefactoringFactory().createRenameRefactoring(
+                association, newName, newPluralName, false);
+        IpsRefactoringOperation refactoringOperation = new IpsRefactoringOperation(ipsRenameRefactoring, getShell());
+        refactoringOperation.runDirectExecution();
     }
 
     private abstract class NotificationPropertyBinding extends ControlPropertyBinding {

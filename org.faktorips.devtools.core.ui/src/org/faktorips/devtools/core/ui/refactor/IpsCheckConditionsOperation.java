@@ -16,30 +16,31 @@ package org.faktorips.devtools.core.ui.refactor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.util.ArgumentCheck;
 
 /**
  * Operation that allows to check the initial, final, or all conditions of a Faktor-IPS refactoring.
- * Thereby the user can be requested to save all opened editors (if this is necessary). The user's
- * decision can be retrieved by the method {@link #getEditorsSaved()}. Condition checking will be
+ * <p>
+ * The user can be requested to save all opened editors (if this is necessary). The user's decision
+ * then can be retrieved by the method {@link #getEditorsSaved()}. Condition checking will be
  * aborted if the user did not confirm saving the opened editors.
  * 
  * @author Alexander Weickmann
  */
 public class IpsCheckConditionsOperation {
 
+    public static final int NONE = CheckConditionsOperation.NONE;
+
     public static final int INITIAL_CONDITIONS = CheckConditionsOperation.INITIAL_CONDITONS;
 
     public static final int FINAL_CONDITIONS = CheckConditionsOperation.FINAL_CONDITIONS;
 
     public static final int ALL_CONDITIONS = CheckConditionsOperation.ALL_CONDITIONS;
-
-    private final IProgressMonitor progressMonitor;
 
     private final CheckConditionsOperation ltkCheckOperation;
 
@@ -48,53 +49,42 @@ public class IpsCheckConditionsOperation {
     private boolean editorsSaved;
 
     /**
-     * Creates a new <tt>CheckRefactoringConditionsOperation</tt>.
-     * 
-     * @param refactoring The refactoring for which to check the conditions.
-     * @param conditionType One of <tt>INITIAL_CONDITIONS</tt>, <tt>FINAL_CONDITIONS</tt> and
-     *            <tt>ALL_CONDITIONS</tt>.
+     * @param refactoring The refactoring for which to check the conditions
+     * @param conditionType One of {@code INITIAL_CONDITIONS}, {@code FINAL_CONDITIONS} and
+     *            {@code ALL_CONDITIONS}
      * @param ensureEditorsSaved Flag indicating whether the user is requested to save all opened
-     *            editors before the refactoring may happen.
-     * @param progressMonitor A progress monitor to report progress to or <tt>null</tt>.
+     *            editors before the refactoring may happen
      * 
-     * @throws NullPointerException If <tt>refactoring</tt> is <tt>null</tt>.
+     * @throws NullPointerException If the refactoring is null
      */
-    public IpsCheckConditionsOperation(Refactoring refactoring, int conditionType, boolean ensureEditorsSaved,
-            IProgressMonitor progressMonitor) {
-
+    public IpsCheckConditionsOperation(IIpsRefactoring refactoring, int conditionType, boolean ensureEditorsSaved) {
         ArgumentCheck.notNull(refactoring);
         this.ensureEditorsSaved = ensureEditorsSaved;
-        this.progressMonitor = (progressMonitor == null) ? new NullProgressMonitor() : progressMonitor;
-        ltkCheckOperation = new CheckConditionsOperation(refactoring, conditionType);
+        ltkCheckOperation = conditionType == NONE ? null : new CheckConditionsOperation((Refactoring)refactoring,
+                conditionType);
     }
 
-    public void run() throws CoreException {
+    public void run(IProgressMonitor progressMonitor) throws CoreException {
         if (ensureEditorsSaved) {
             editorsSaved = IpsPlugin.getDefault().getWorkbench().saveAllEditors(true);
         }
-        if (editorsSaved || !(ensureEditorsSaved)) {
+        if ((ltkCheckOperation != null) && (editorsSaved || !(ensureEditorsSaved))) {
             ResourcesPlugin.getWorkspace().run(ltkCheckOperation, progressMonitor);
         }
     }
 
-    public Refactoring getRefactoring() {
-        return ltkCheckOperation.getRefactoring();
-    }
-
-    public int getConditionType() {
-        return ltkCheckOperation.getStyle();
+    /**
+     * Returns the outcome of the operation or null if an error occurred during condition checking,
+     * the operation has not been executed yet or the user did not confirm to save all opened
+     * editors.
+     */
+    public RefactoringStatus getStatus() {
+        return ltkCheckOperation == null ? new RefactoringStatus() : ltkCheckOperation.getStatus();
     }
 
     /**
-     * Returns the outcome of the operation or <tt>null</tt> if an error occurred during condition
-     * checking, the operation has not been executed yet or the user did not confirm to save all
-     * opened editors.
+     * Returns whether the user has confirmed that all opened editors have been saved.
      */
-    public RefactoringStatus getStatus() {
-        return ltkCheckOperation.getStatus();
-    }
-
-    /** Returns whether the user has confirmed that all opened editors have been saved. */
     public boolean getEditorsSaved() {
         return editorsSaved;
     }

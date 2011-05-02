@@ -31,7 +31,6 @@ import org.eclipse.ltk.core.refactoring.resource.DeleteResourceChange;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.DependencyGraph;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
@@ -50,60 +49,36 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.util.BeanUtil;
 import org.faktorips.devtools.core.util.RefactorUtil;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Bundles common functionality of the "Rename IPS Object" and "Move IPS Object" refactorings.
+ * Bundles common functionality of the {@link RenameIpsObjectProcessor} and
+ * {@link MoveIpsObjectProcessor} classes.
  * 
  * @author Alexander Weickmann
  */
 public final class MoveRenameIpsObjectHelper {
 
-    private final IpsObject toBeRefactored;
+    private final IIpsObject toBeRefactored;
 
     private IDependency[] dependencies;
 
     private Map<IDependency, IIpsProject> dependencyToProject;
 
     /**
-     * @throws NullPointerException If <tt>toBeRefactored</tt> is <tt>null</tt>.
+     * @throws NullPointerException If the provided {@link IIpsObject} is null
      */
-    public MoveRenameIpsObjectHelper(IpsObject toBeRefactored) {
+    public MoveRenameIpsObjectHelper(IIpsObject toBeRefactored) {
         ArgumentCheck.notNull(new Object[] { toBeRefactored });
         this.toBeRefactored = toBeRefactored;
-        dependencies = collectDependcies(toBeRefactored.getIpsProject());
-    }
-
-    private IDependency[] collectDependcies(IIpsProject ipsProject) {
-        dependencyToProject = new HashMap<IDependency, IIpsProject>();
-        ArrayList<IDependency> dependencies = new ArrayList<IDependency>();
-
-        try {
-            addDependencies(dependencies, ipsProject);
-            IIpsProject[] projects = ipsProject.findReferencingProjects(true);
-            for (IIpsProject project : projects) {
-                addDependencies(dependencies, project);
-            }
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
-
-        return dependencies.toArray(new IDependency[dependencies.size()]);
-    }
-
-    private void addDependencies(ArrayList<IDependency> dependencies, IIpsProject project) throws CoreException {
-        DependencyGraph graph = new DependencyGraph(project);
-        for (IDependency dependency : graph.getDependants(toBeRefactored.getQualifiedNameType())) {
-            dependencies.add(dependency);
-            dependencyToProject.put(dependency, project);
-        }
     }
 
     /**
      * Adds message codes to the set of ignored validation message codes that must be ignored by the
      * "Rename Type" and "Move Type" refactorings.
      * <p>
-     * For example: The configuring <tt>IProductCmptType</tt> / configured <tt>IPolicyCmptType</tt>
+     * For example: The configuring {@link IProductCmptType} / configured {@link IPolicyCmptType}
      * does not reference the copy of the <tt>IType</tt> that is created during the refactoring so
      * this must be ignored during refactoring validation.
      */
@@ -117,12 +92,12 @@ public final class MoveRenameIpsObjectHelper {
     }
 
     /**
-     * Returns a list containing the <tt>IIpsSrcFile</tt>s that are affected by the refactoring.
+     * Returns a list containing the {@link IIpsSrcFile}s that are affected by the refactoring.
      */
     public List<IIpsSrcFile> addIpsSrcFiles() throws CoreException {
-        List<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>(dependencies.length);
-        for (IDependency dependency : dependencies) {
-            IIpsSrcFile ipsSrcFile = dependencyToProject.get(dependency).findIpsSrcFile(dependency.getSource());
+        List<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>(getDependencies().length);
+        for (IDependency dependency : getDependencies()) {
+            IIpsSrcFile ipsSrcFile = getDependencyToProject().get(dependency).findIpsSrcFile(dependency.getSource());
             ipsSrcFiles.add(ipsSrcFile);
         }
         return ipsSrcFiles;
@@ -148,11 +123,11 @@ public final class MoveRenameIpsObjectHelper {
     }
 
     /**
-     * The source file of the <tt>IIpsObject</tt> will be copied this early. Based on that new
-     * source file and on the copied <tt>IIpsObject</tt> validation is performed. If the validation
-     * fails the copy will be deleted so everything is left in a clean state (as it was before). If
-     * only a warning or information validation message results the copy must also be deleted and
-     * recreated later if the user really starts the refactoring.
+     * The source file of the {@link IIpsObject} will be copied this early. Based on that new source
+     * file and on the copied {@link IIpsObject} validation is performed. If the validation fails
+     * the copy will be deleted so everything is left in a clean state (as it was before). If only a
+     * warning or information validation message results the copy must also be deleted and recreated
+     * later if the user really starts the refactoring.
      * <p>
      * Returns the list of validation messages that should be added to the return status by the
      * calling refactoring processor.
@@ -167,23 +142,25 @@ public final class MoveRenameIpsObjectHelper {
             IIpsSrcFile fileToBeCopied = toBeRefactored.getIpsSrcFile();
             IIpsSrcFile targetFile;
 
-            if (isOnlyCapitalizationChanged(fileToBeCopied, newName)) {
+            if (targetIpsPackageFragment.equals(fileToBeCopied.getIpsPackageFragment())
+                    && isOnlyCapitalizationChanged(fileToBeCopied, newName)) {
                 // Copy original file to temporary file with time stamp to avoid file system
+                // problems
                 IIpsSrcFile tempSrcFile = RefactorUtil.copyIpsSrcFileToTemporary(fileToBeCopied,
                         targetIpsPackageFragment, newName, pm);
 
-                // Delete original file using refactoring to be able to undo later.
+                // Delete original file using refactoring to be able to undo later
                 undoDeleteChange = performDeleteRefactoring(fileToBeCopied, pm);
 
-                // Copy temporary file to target file and delete temporary file.
+                // Copy temporary file to target file and delete temporary file
                 targetFile = RefactorUtil.copyIpsSrcFile(tempSrcFile, targetIpsPackageFragment, newName, pm);
                 deleteIpsSourceFile(tempSrcFile, pm);
 
             } else {
-                // Copy original file to target file.
+                // Copy original file to target file
                 targetFile = RefactorUtil.copyIpsSrcFile(fileToBeCopied, targetIpsPackageFragment, newName, pm);
 
-                // Delete original file using refactoring to be able to undo later.
+                // Delete original file using refactoring to be able to undo later
                 undoDeleteChange = performDeleteRefactoring(fileToBeCopied, pm);
             }
 
@@ -205,14 +182,14 @@ public final class MoveRenameIpsObjectHelper {
             return new MessageList();
 
         } finally {
-            // Roll-back original source file by undo delete refactoring.
+            // Roll-back original source file by undo delete refactoring
             undoDeleteChange.perform(pm);
         }
     }
 
     private boolean isOnlyCapitalizationChanged(IIpsSrcFile fileToBeCopied, String newName) {
-        String newSrcFileName = newName + '.' + toBeRefactored.getIpsObjectType().getFileExtension();
-        return newSrcFileName.toLowerCase().equals(fileToBeCopied.getName().toLowerCase());
+        String oldName = StringUtil.getFilenameWithoutExtension(fileToBeCopied.getName());
+        return newName.toLowerCase().equals(oldName.toLowerCase());
     }
 
     private Change performDeleteRefactoring(IIpsSrcFile fileToBeCopied, IProgressMonitor pm) throws CoreException {
@@ -242,13 +219,13 @@ public final class MoveRenameIpsObjectHelper {
     }
 
     private void updateDependencies(IIpsPackageFragment targetIpsPackageFragment, String newName) throws CoreException {
-        for (IDependency dependency : dependencies) {
+        for (IDependency dependency : getDependencies()) {
             if (!isMatching(dependency)) {
                 continue;
             }
 
-            List<IDependencyDetail> details = dependencyToProject.get(dependency).findIpsObject(dependency.getSource())
-                    .getDependencyDetails(dependency);
+            List<IDependencyDetail> details = getDependencyToProject().get(dependency)
+                    .findIpsObject(dependency.getSource()).getDependencyDetails(dependency);
             for (IDependencyDetail detail : details) {
                 IIpsObjectPartContainer part = detail.getPart();
                 if (part == null || detail.getPropertyName() == null) {
@@ -279,7 +256,8 @@ public final class MoveRenameIpsObjectHelper {
             IProgressMonitor pm) throws CoreException {
 
         IIpsSrcFile originalSrcFile = toBeRefactored.getIpsSrcFile();
-        if (isOnlyCapitalizationChanged(originalSrcFile, newName)) {
+        if (targetIpsPackageFragment.equals(originalSrcFile.getIpsPackageFragment())
+                && isOnlyCapitalizationChanged(originalSrcFile, newName)) {
             IIpsSrcFile tempSrcFile = RefactorUtil.copyIpsSrcFileToTemporary(originalSrcFile, targetIpsPackageFragment,
                     newName, pm);
             deleteIpsSourceFile(originalSrcFile, pm);
@@ -309,6 +287,45 @@ public final class MoveRenameIpsObjectHelper {
 
     private void deleteIpsSourceFile(IIpsSrcFile ipsSrcFile, IProgressMonitor pm) throws CoreException {
         ipsSrcFile.getCorrespondingResource().delete(true, pm);
+    }
+
+    private IDependency[] getDependencies() {
+        if (dependencies == null) {
+            collectDependcies();
+        }
+        return dependencies;
+    }
+
+    private Map<IDependency, IIpsProject> getDependencyToProject() {
+        if (dependencyToProject == null) {
+            collectDependcies();
+        }
+        return dependencyToProject;
+    }
+
+    private void collectDependcies() {
+        dependencyToProject = new HashMap<IDependency, IIpsProject>();
+        List<IDependency> collectedDependencies = new ArrayList<IDependency>();
+
+        try {
+            addDependencies(collectedDependencies, toBeRefactored.getIpsProject());
+            IIpsProject[] projects = toBeRefactored.getIpsProject().findReferencingProjects(true);
+            for (IIpsProject project : projects) {
+                addDependencies(collectedDependencies, project);
+            }
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+
+        dependencies = collectedDependencies.toArray(new IDependency[collectedDependencies.size()]);
+    }
+
+    private void addDependencies(List<IDependency> dependencies, IIpsProject project) throws CoreException {
+        DependencyGraph graph = new DependencyGraph(project);
+        for (IDependency dependency : graph.getDependants(toBeRefactored.getQualifiedNameType())) {
+            dependencies.add(dependency);
+            dependencyToProject.put(dependency, project);
+        }
     }
 
 }

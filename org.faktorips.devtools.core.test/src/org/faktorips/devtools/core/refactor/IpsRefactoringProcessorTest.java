@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005-2011 Faktor Zehn AG und andere.
+ * Copyright (c) 2005-2010 Faktor Zehn AG und andere.
  * 
  * Alle Rechte vorbehalten.
  * 
@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.refactor;
+package org.faktorips.devtools.core.refactor;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -29,11 +29,6 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * 
- * 
- * @author Alexander Weickmann
- */
 public class IpsRefactoringProcessorTest extends AbstractIpsRefactoringTest {
 
     private TestProcessor testProcessor;
@@ -64,7 +59,6 @@ public class IpsRefactoringProcessorTest extends AbstractIpsRefactoringTest {
         assertTrue(testProcessor.validateUserInputCalled);
     }
 
-    /** Mock processor for testing purposes. */
     private static class TestProcessor extends IpsRefactoringProcessor {
 
         private boolean validateUserInputCalled;

@@ -19,13 +19,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
-import org.faktorips.devtools.core.internal.refactor.IpsMoveProcessor;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.refactor.IpsMoveProcessor;
 import org.faktorips.util.message.MessageList;
 
 /**
- * This is the "Move IPS Object" - refactoring.
+ * Refactoring processor for the "Move IPS Object" - refactoring.
  * 
  * @author Alexander Weickmann
  */
@@ -33,14 +33,11 @@ public final class MoveIpsObjectProcessor extends IpsMoveProcessor {
 
     /**
      * A helper providing functionality shared between the "Rename IPS Object" and "Move IPS Object"
-     * refactorings.
+     * refactoring processors.
      */
     private final MoveRenameIpsObjectHelper renameMoveHelper;
 
-    /**
-     * @param toBeMoved The <tt>IIpsObject</tt> to be moved.
-     */
-    public MoveIpsObjectProcessor(IpsObject toBeMoved) {
+    public MoveIpsObjectProcessor(IIpsObject toBeMoved) {
         super(toBeMoved);
         renameMoveHelper = new MoveRenameIpsObjectHelper(toBeMoved);
         renameMoveHelper.addIgnoredValidationMessageCodes(getIgnoredValidationMessageCodes());

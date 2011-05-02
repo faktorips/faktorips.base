@@ -27,12 +27,11 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
+import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.ltk.ui.refactoring.RefactoringUI;
-import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.refactor.IIpsRefactoringProcessor;
+import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.actions.Messages;
 import org.faktorips.devtools.core.ui.wizards.refactor.IpsRefactoringDialog;
 import org.faktorips.devtools.core.ui.wizards.refactor.IpsRefactoringWizard;
@@ -56,7 +55,7 @@ import org.faktorips.util.ArgumentCheck;
  * be started. A refactoring wizard is opened only if the initial conditions are OK.
  * <p>
  * In any case it is checked if all opened editors are saved if the refactoring requires this. If
- * this is not the case a 'Save all editors' dialog is presented to the user:
+ * the check fails a 'Save all editors' dialog is presented to the user:
  * <ol>
  * <li>If the user cancels the dialog the whole refactoring is canceled.</li>
  * <li>If the user only saves some of the opened editors or chooses to not save any opened editors
@@ -65,25 +64,23 @@ import org.faktorips.util.ArgumentCheck;
  * <li>If the user saves all resources there is no problem at all.</li>
  * </ol>
  * 
- * @see IIpsRefactoringProcessor#isSourceFilesSavedRequired()
- * 
  * @author Alexander Weickmann
  */
 public class IpsRefactoringOperation {
 
     /** The refactoring instance to execute. */
-    private final ProcessorBasedRefactoring refactoring;
+    private final IIpsRefactoring refactoring;
 
     /** The UI shell wherein this refactoring is being executed. */
     private final Shell shell;
 
     /**
-     * @param refactoring The refactoring to execute.
-     * @param shell The UI shell wherein this refactoring is being executed.
+     * @param refactoring The refactoring to execute
+     * @param shell The UI shell wherein this refactoring is being executed
      * 
-     * @throws NullPointerException If any parameter is <tt>null</tt>.
+     * @throws NullPointerException If any parameter is null
      */
-    public IpsRefactoringOperation(ProcessorBasedRefactoring refactoring, Shell shell) {
+    public IpsRefactoringOperation(IIpsRefactoring refactoring, Shell shell) {
         ArgumentCheck.notNull(new Object[] { refactoring, shell });
         this.refactoring = refactoring;
         this.shell = shell;
@@ -117,51 +114,12 @@ public class IpsRefactoringOperation {
         performRefactoringWizardInteraction(refactoringWizard);
     }
 
-    private void performRefactoringWizardInteraction(IpsRefactoringWizard refactoringWizard) {
-        openRefactoringWizard(shell, refactoringWizard);
-    }
-
-    /**
-     * Opens the given refactoring wizard. While the wizard is opened the workspace root will be
-     * blocked so that work done to the workspace by the refactoring cannot be interrupted.
-     */
-    private void openRefactoringWizard(Shell shell, RefactoringWizard refactoringWizard) {
-        ArgumentCheck.notNull(refactoringWizard);
-        IJobManager jobManager = Job.getJobManager();
-        jobManager.beginRule(ResourcesPlugin.getWorkspace().getRoot(), null);
-        try {
-            Dialog dialog = new IpsRefactoringDialog(shell, refactoringWizard);
-            dialog.create();
-            dialog.open();
-        } finally {
-            jobManager.endRule(ResourcesPlugin.getWorkspace().getRoot());
-        }
-    }
-
-    private boolean checkConditionsWizardInteraction(RefactoringStatus status) {
-        IIpsRefactoringProcessor processor = (IIpsRefactoringProcessor)refactoring.getProcessor();
-        IpsCheckConditionsOperation checkConditionsOperation = new IpsCheckConditionsOperation(refactoring,
-                IpsCheckConditionsOperation.INITIAL_CONDITIONS, processor.isSourceFilesSavedRequired(), null);
-        try {
-            checkConditionsOperation.run();
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
-        if (processor.isSourceFilesSavedRequired()) {
-            if (!(checkConditionsOperation.getEditorsSaved())) {
-                return false;
-            }
-        }
-        status.merge(checkConditionsOperation.getStatus());
-        return status.isOK();
-    }
-
     private void performRefactoringDirectExecution() {
-        final PerformRefactoringOperation performOperation = new PerformRefactoringOperation(refactoring,
+        final PerformRefactoringOperation performOperation = new PerformRefactoringOperation((Refactoring)refactoring,
                 CheckConditionsOperation.ALL_CONDITIONS);
         try {
             ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
-            dialog.run(true, false, new IRunnableWithProgress() {
+            dialog.run(true, refactoring.isCancelable(), new IRunnableWithProgress() {
                 @Override
                 public void run(IProgressMonitor monitor) {
                     try {
@@ -174,27 +132,38 @@ public class IpsRefactoringOperation {
         } catch (InvocationTargetException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            // Operation canceled, ignore exception
         }
 
         final RefactoringStatus status = performOperation.getConditionStatus();
         if (status.hasError()) {
-            // Just to show the error to the user.
+            // Just to show the error to the user
             requestUserConfirmation(status);
         }
     }
 
+    private void performRefactoringWizardInteraction(IpsRefactoringWizard refactoringWizard) {
+        IJobManager jobManager = Job.getJobManager();
+        jobManager.beginRule(ResourcesPlugin.getWorkspace().getRoot(), null);
+        try {
+            Dialog dialog = new IpsRefactoringDialog(shell, refactoringWizard);
+            dialog.create();
+            dialog.open();
+        } finally {
+            jobManager.endRule(ResourcesPlugin.getWorkspace().getRoot());
+        }
+    }
+
     private boolean checkConditionsDirectExecution() {
-        IIpsRefactoringProcessor processor = (IIpsRefactoringProcessor)refactoring.getProcessor();
         final IpsCheckConditionsOperation checkConditionsOperation = new IpsCheckConditionsOperation(refactoring,
-                IpsCheckConditionsOperation.ALL_CONDITIONS, processor.isSourceFilesSavedRequired(), null);
+                IpsCheckConditionsOperation.ALL_CONDITIONS, refactoring.isSourceFilesSavedRequired());
         ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
         try {
-            dialog.run(true, false, new IRunnableWithProgress() {
+            dialog.run(true, refactoring.isCancelable(), new IRunnableWithProgress() {
                 @Override
                 public void run(IProgressMonitor monitor) {
                     try {
-                        checkConditionsOperation.run();
+                        checkConditionsOperation.run(monitor);
                     } catch (CoreException e) {
                         throw new RuntimeException(e);
                     }
@@ -205,7 +174,7 @@ public class IpsRefactoringOperation {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        if (processor.isSourceFilesSavedRequired()) {
+        if (refactoring.isSourceFilesSavedRequired()) {
             if (!(checkConditionsOperation.getEditorsSaved())) {
                 return false;
             }
@@ -215,6 +184,23 @@ public class IpsRefactoringOperation {
             return requestUserConfirmation(status);
         }
         return true;
+    }
+
+    private boolean checkConditionsWizardInteraction(RefactoringStatus status) {
+        IpsCheckConditionsOperation checkConditionsOperation = new IpsCheckConditionsOperation(refactoring,
+                IpsCheckConditionsOperation.INITIAL_CONDITIONS, refactoring.isSourceFilesSavedRequired());
+        try {
+            checkConditionsOperation.run(null);
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+        if (refactoring.isSourceFilesSavedRequired()) {
+            if (!(checkConditionsOperation.getEditorsSaved())) {
+                return false;
+            }
+        }
+        status.merge(checkConditionsOperation.getStatus());
+        return status.isOK();
     }
 
     /**

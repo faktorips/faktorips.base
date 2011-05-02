@@ -18,7 +18,6 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.faktorips.devtools.core.internal.refactor.IpsRenameProcessor;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeReference;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
@@ -26,10 +25,11 @@ import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
 import org.faktorips.util.message.MessageList;
 
 /**
- * This is the "Rename Enumeration Attribute" - refactoring.
+ * Refactoring processor for the "Rename Enumeration Attribute" - refactoring.
  * 
  * @author Alexander Weickmann
  */
@@ -38,9 +38,6 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
     /** Set containing all potentially referencing enumeration types (subclasses). */
     private Set<IIpsSrcFile> enumTypeSrcFiles;
 
-    /**
-     * @param enumAttribute The <tt>IEnumAttribute</tt> to be refactored.
-     */
     public RenameEnumAttributeProcessor(IEnumAttribute enumAttribute) {
         super(enumAttribute, enumAttribute.getName());
 

@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpttype;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
@@ -36,7 +35,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
-import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
+import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
@@ -212,8 +211,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         valueSetEditControl.setAllowedValueSetTypes(attribute.getAllowedValueSetTypes(ipsProject));
         if (currentValueSetType != null) {
             /*
-             * if the previous selction was a valid selection use this one as new selection in drop
-             * down, otherwise the default (first one) is selected
+             * If the previous selection was a valid selection use this one as new selection in drop
+             * down, otherwise the default (first one) is selected.
              */
             valueSetEditControl.setValueSetType(currentValueSetType);
         }
@@ -234,11 +233,10 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         // First, reset the initial name as otherwise the error 'names must not equal' will occur
         attribute.setName(initialName);
 
-        ProcessorBasedRefactoring renameRefactoring = attribute.getRenameRefactoring();
-        IIpsRenameProcessor renameProcessor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
-        renameProcessor.setNewName(newName);
-        IpsRefactoringOperation refactorOp = new IpsRefactoringOperation(renameRefactoring, getShell());
-        refactorOp.runDirectExecution();
+        IIpsRefactoring ipsRenameRefactoring = IpsPlugin.getIpsRefactoringFactory().createRenameRefactoring(attribute,
+                newName, null, false);
+        IpsRefactoringOperation refactoringOperation = new IpsRefactoringOperation(ipsRenameRefactoring, getShell());
+        refactoringOperation.runDirectExecution();
     }
 
 }

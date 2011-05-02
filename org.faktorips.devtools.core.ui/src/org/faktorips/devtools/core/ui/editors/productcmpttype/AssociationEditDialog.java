@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
@@ -32,7 +31,7 @@ import org.faktorips.devtools.core.internal.model.type.AssociationType;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
+import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
@@ -199,12 +198,10 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         association.setTargetRoleSingular(initialName);
         association.setTargetRolePlural(initialPluralName);
 
-        ProcessorBasedRefactoring renameRefactoring = association.getRenameRefactoring();
-        IIpsRenameProcessor renameProcessor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
-        renameProcessor.setNewName(newName);
-        renameProcessor.setNewPluralName(newPluralName);
-        IpsRefactoringOperation refactorOp = new IpsRefactoringOperation(renameRefactoring, getShell());
-        refactorOp.runDirectExecution();
+        IIpsRefactoring ipsRenameRefactoring = IpsPlugin.getIpsRefactoringFactory().createRenameRefactoring(
+                association, newName, newPluralName, false);
+        IpsRefactoringOperation refactoringOperation = new IpsRefactoringOperation(ipsRenameRefactoring, getShell());
+        refactoringOperation.runDirectExecution();
     }
 
     public class PmoAssociation extends IpsObjectPartPmo {

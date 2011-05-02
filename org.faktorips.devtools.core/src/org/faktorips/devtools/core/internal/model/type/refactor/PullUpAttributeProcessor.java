@@ -21,9 +21,9 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
-import org.faktorips.devtools.core.internal.refactor.IpsRefactoringProcessor;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.refactor.IpsPullUpArguments;
+import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
 
 public class PullUpAttributeProcessor extends IpsRefactoringProcessor {
 

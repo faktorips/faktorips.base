@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
-import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.faktorips.abstracttest.AbstractIpsRefactoringTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
@@ -41,29 +40,24 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
-import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
+import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
+import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
 import org.junit.Test;
 
-/**
- * 
- * 
- * @author Alexander Weickmann
- */
 public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
 
     @Test
     public void testCheckInitialConditionsValid() throws CoreException {
-        ProcessorBasedRefactoring renameRefactoring = policyCmptTypeAttribute.getRenameRefactoring();
-        RefactoringStatus status = renameRefactoring.getProcessor().checkInitialConditions(new NullProgressMonitor());
+        IpsRefactoringProcessor ipsRefactoringProcessor = new RenameAttributeProcessor(policyCmptTypeAttribute);
+        RefactoringStatus status = ipsRefactoringProcessor.checkInitialConditions(new NullProgressMonitor());
         assertFalse(status.hasError());
     }
 
     @Test
     public void testCheckFinalConditionsValid() throws CoreException {
-        ProcessorBasedRefactoring renameRefactoring = policyCmptTypeAttribute.getRenameRefactoring();
-        IIpsRenameProcessor renameProcessor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
-        renameProcessor.setNewName("test");
-        RefactoringStatus status = renameRefactoring.getProcessor().checkFinalConditions(new NullProgressMonitor(),
+        IpsRenameProcessor ipsRenameProcessor = new RenameAttributeProcessor(policyCmptTypeAttribute);
+        ipsRenameProcessor.setNewName("test");
+        RefactoringStatus status = ipsRenameProcessor.checkFinalConditions(new NullProgressMonitor(),
                 new CheckConditionsContext());
         assertFalse(status.hasError());
     }
@@ -74,10 +68,9 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
         IAttribute attribute = policyCmptType.newAttribute();
         attribute.setName("otherAttribute");
 
-        ProcessorBasedRefactoring renameRefactoring = policyCmptTypeAttribute.getRenameRefactoring();
-        IIpsRenameProcessor renameProcessor = (IIpsRenameProcessor)renameRefactoring.getProcessor();
-        renameProcessor.setNewName("otherAttribute");
-        RefactoringStatus status = renameRefactoring.getProcessor().checkFinalConditions(new NullProgressMonitor(),
+        IpsRenameProcessor ipsRenameProcessor = new RenameAttributeProcessor(policyCmptTypeAttribute);
+        ipsRenameProcessor.setNewName("otherAttribute");
+        RefactoringStatus status = ipsRenameProcessor.checkFinalConditions(new NullProgressMonitor(),
                 new CheckConditionsContext());
         assertTrue(status.hasFatalError());
     }

@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.ui.refactor;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -23,8 +26,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.ltk.core.refactoring.Refactoring;
-import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.RenameResourceAction;
@@ -34,6 +35,7 @@ import org.eclipse.ui.menus.CommandContributionItemParameter;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.wizards.move.MoveWizard;
 import org.faktorips.devtools.core.ui.wizards.refactor.IpsRefactoringWizard;
 
@@ -53,7 +55,7 @@ public abstract class IpsRefactoringHandler extends AbstractHandler {
         return new CommandContributionItem(parameters);
     }
 
-    protected abstract IpsRefactoringWizard getRefactoringWizard(Refactoring refactoring, IIpsElement selectedIpsElement);
+    protected abstract IpsRefactoringWizard getRefactoringWizard(IIpsRefactoring refactoring);
 
     /**
      * Must return the old move wizard that is still used if the new refactoring support cannot
@@ -62,9 +64,11 @@ public abstract class IpsRefactoringHandler extends AbstractHandler {
     protected abstract MoveWizard getMoveWizard(IStructuredSelection selection);
 
     /**
-     * Must return the refactoring instance for the given selected IPS element.
+     * Must return the refactoring instance for the selected IPS elements.
+     * <p>
+     * May return null if the refactoring is not possible.
      */
-    protected abstract ProcessorBasedRefactoring getRefactoring(IIpsElement selectedElement);
+    protected abstract IIpsRefactoring getRefactoring(Set<IIpsElement> selectedIpsElements);
 
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -75,24 +79,30 @@ public abstract class IpsRefactoringHandler extends AbstractHandler {
         }
 
         IStructuredSelection structuredSelection = (IStructuredSelection)selection;
-        Object selected = structuredSelection.getFirstElement();
-
-        // Open refactoring wizard only if the refactoring is supported for the selection.
-        if (selected instanceof IIpsElement) {
-            IIpsElement selectedElement = (IIpsElement)selected;
-            if (selectedElement instanceof IIpsSrcFile) {
+        Set<IIpsElement> selectedIpsElements = new LinkedHashSet<IIpsElement>(structuredSelection.size());
+        for (Object selectedElement : structuredSelection.toArray()) {
+            if (!(selectedElement instanceof IIpsElement)) {
+                break;
+            }
+            IIpsElement selectedIpsElement = (IIpsElement)selectedElement;
+            if (selectedIpsElement instanceof IIpsSrcFile) {
                 try {
-                    selectedElement = ((IIpsSrcFile)selectedElement).getIpsObject();
+                    selectedIpsElement = ((IIpsSrcFile)selectedIpsElement).getIpsObject();
                 } catch (CoreException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                     return null;
                 }
             }
+            selectedIpsElements.add(selectedIpsElement);
+        }
 
-            ProcessorBasedRefactoring refactoring = getRefactoring(selectedElement);
+        // Open refactoring wizard only if the refactoring is supported for the selection
+        if (selectedIpsElements.size() == structuredSelection.size()) {
+            IIpsRefactoring refactoring = getRefactoring(selectedIpsElements);
             if (refactoring != null) {
                 IpsRefactoringOperation refactoringOperation = new IpsRefactoringOperation(refactoring, shell);
-                refactoringOperation.runWizardInteraction(getRefactoringWizard(refactoring, selectedElement));
+                IpsRefactoringWizard refactoringWizard = getRefactoringWizard(refactoring);
+                refactoringOperation.runWizardInteraction(refactoringWizard);
                 return null;
             }
         }
@@ -101,6 +111,7 @@ public abstract class IpsRefactoringHandler extends AbstractHandler {
          * Old refactoring code kicking in if the new refactoring support didn't work properly (the
          * function has not returned by this point).
          */
+        Object selected = structuredSelection.getFirstElement();
         if (selected instanceof IIpsElement) {
             WizardDialog wd = new WizardDialog(shell, getMoveWizard(structuredSelection));
             wd.open();

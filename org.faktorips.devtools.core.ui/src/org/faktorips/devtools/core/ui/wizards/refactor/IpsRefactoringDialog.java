@@ -17,7 +17,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ltk.internal.ui.refactoring.RefactoringWizardDialog;
-import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -26,26 +25,26 @@ import org.eclipse.swt.widgets.Shell;
  * refactoring process when using LTK's refactoring wizard dialogs.
  * <p>
  * Unfortunately the refactoring wizard dialogs provided by LTK are located in internal packages.
- * This should not be a problem however because we only override the
- * <tt>run(boolean, boolean, IRunnableWithProgress)</tt> method declared in the
- * <tt>IRunnableContext</tt> interface. The alternative would be to copy the entire
- * <tt>RefactoringWizardDialog</tt>.
+ * The alternative would be to copy the entire {@link RefactoringWizardDialog}.
  * 
  * @author Alexander Weickmann
  */
-public class IpsRefactoringDialog extends RefactoringWizardDialog {
+public final class IpsRefactoringDialog extends RefactoringWizardDialog {
 
     /**
-     * @param shell The parent shell.
-     * @param wizard The <tt>RefactoringWizard</tt> to start with this dialog.
+     * @param shell The parent shell
+     * @param wizard The {@link IpsRefactoringWizard} to start using this dialog
      */
-    public IpsRefactoringDialog(Shell shell, RefactoringWizard wizard) {
+    public IpsRefactoringDialog(Shell shell, IpsRefactoringWizard wizard) {
         super(shell, wizard);
     }
 
-    /*
-     * Overridden to always call the super implementation with the <tt>cancelable</tt> flag set to
-     * <tt>false</tt> because Faktor-IPS refactorings may not be canceled.
+    /**
+     * This implementation never allows the runnable to be canceled.
+     * <p>
+     * At the moment we cannot allow the cancel for refactoring wizards as we are directly executing
+     * the refactoring during the 'create change' phase. If the user then presses cancel many
+     * changes of the refactoring have already been applied.
      */
     @Override
     public void run(boolean fork, boolean cancelable, IRunnableWithProgress runnable) throws InvocationTargetException,

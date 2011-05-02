@@ -20,12 +20,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
-import org.faktorips.devtools.core.internal.refactor.IpsRenameProcessor;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
 import org.faktorips.util.message.MessageList;
 
 /**
- * This is the "Rename IPS Object" - refactoring.
+ * Refactoring processor for the "Rename IPS Object" - refactoring.
  * 
  * @author Alexander Weickmann
  */
@@ -33,16 +34,13 @@ public final class RenameIpsObjectProcessor extends IpsRenameProcessor {
 
     /**
      * A helper providing functionality shared between the "Rename IPS Object" and "Move IPS Object"
-     * refactorings.
+     * refactoring processors.
      */
     private final MoveRenameIpsObjectHelper renameMoveHelper;
 
-    /**
-     * @param toBeRefactored The <tt>IIpsObject</tt> to be renamed.
-     */
-    public RenameIpsObjectProcessor(IpsObject toBeRefactored) {
-        super(toBeRefactored, toBeRefactored.getName());
-        renameMoveHelper = new MoveRenameIpsObjectHelper(toBeRefactored);
+    public RenameIpsObjectProcessor(IIpsObject toBeRenamed) {
+        super(toBeRenamed, toBeRenamed.getName());
+        renameMoveHelper = new MoveRenameIpsObjectHelper(toBeRenamed);
         renameMoveHelper.addIgnoredValidationMessageCodes(getIgnoredValidationMessageCodes());
     }
 

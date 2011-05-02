@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.model.enums;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -150,11 +149,6 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
             fail();
         } catch (UnsupportedOperationException e) {
         }
-    }
-
-    @Test
-    public void testGetRenameRefactoring() {
-        assertNull(literalNameAttribute.getRenameRefactoring());
     }
 
 }

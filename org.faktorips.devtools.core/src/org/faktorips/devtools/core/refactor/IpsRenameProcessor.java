@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005-2011 Faktor Zehn AG und andere.
+ * Copyright (c) 2005-2010 Faktor Zehn AG und andere.
  * 
  * Alle Rechte vorbehalten.
  * 
@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.refactor;
+package org.faktorips.devtools.core.refactor;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -19,19 +19,18 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.ParticipantManager;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
+import org.faktorips.devtools.core.internal.refactor.Messages;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
-import org.faktorips.devtools.core.refactor.IpsRenameArguments;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * Abstract base class for all Faktor-IPS "Rename" refactorings.
+ * Abstract base class for all Faktor-IPS "Rename" refactoring processors.
  * 
  * @author Alexander Weickmann
  */
-public abstract class IpsRenameProcessor extends IpsRefactoringProcessor implements IIpsRenameProcessor {
+public abstract class IpsRenameProcessor extends IpsRefactoringProcessor {
 
     /** Original name of the {@link IIpsElement} to be refactored. */
     private final String originalName;
@@ -111,50 +110,78 @@ public abstract class IpsRenameProcessor extends IpsRefactoringProcessor impleme
                 newPluralName, true), new String[] { IIpsProject.NATURE_ID }, sharedParticipants);
     }
 
-    @Override
+    /**
+     * Sets the new name for the {@link IIpsElement} to be refactored.
+     * 
+     * @param newName New name for the {@link IIpsElement} to be refactored.
+     * 
+     * @throws NullPointerException If the parameter is null
+     */
     public final void setNewName(String newName) {
         ArgumentCheck.notNull(newName);
         this.newName = newName;
     }
 
-    @Override
-    public void setNewPluralName(String newPluralName) {
+    /**
+     * Sets the new plural name for the {@link IIpsElement} to be refactored.
+     * 
+     * @param newPluralName New plural name for the {@link IIpsElement} to be refactored
+     * 
+     * @throws NullPointerException If the parameter is null
+     */
+    public final void setNewPluralName(String newPluralName) {
         ArgumentCheck.notNull(newPluralName);
         this.newPluralName = newPluralName;
     }
 
-    @Override
-    public void setAdaptRuntimeId(boolean adaptRuntimeId) {
+    /**
+     * Sets whether the runtime ID of {@link IProductCmpt} should be adapted.
+     * 
+     * @param adaptRuntimeId Flag indicating whether to adapt runtime IDs.
+     */
+    public final void setAdaptRuntimeId(boolean adaptRuntimeId) {
         this.adaptRuntimeId = adaptRuntimeId;
     }
 
-    @Override
+    /**
+     * Returns whether a plural name refactoring is required.
+     */
     public boolean isPluralNameRefactoringRequired() {
         return false;
     }
 
-    @Override
+    /**
+     * Returns the element's original name.
+     */
     public final String getOriginalName() {
         return originalName;
     }
 
-    @Override
-    public String getOriginalPluralName() {
+    /**
+     * Returns the element's original plural name.
+     */
+    public final String getOriginalPluralName() {
         return originalPluralName;
     }
 
-    @Override
+    /**
+     * Returns the element's new name.
+     */
     public final String getNewName() {
         return newName;
     }
 
-    @Override
-    public String getNewPluralName() {
+    /**
+     * Returns the element's new plural name.
+     */
+    public final String getNewPluralName() {
         return newPluralName;
     }
 
-    @Override
-    public boolean isAdaptRuntimeId() {
+    /**
+     * Returns whether the runtime ID of {@link IProductCmpt} should be adapted.
+     */
+    public final boolean isAdaptRuntimeId() {
         return adaptRuntimeId;
     }
 

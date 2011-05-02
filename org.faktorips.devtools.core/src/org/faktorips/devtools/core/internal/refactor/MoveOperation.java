@@ -36,7 +36,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
-import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Display;
@@ -62,7 +61,7 @@ import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
-import org.faktorips.devtools.core.refactor.IIpsMoveProcessor;
+import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.util.StringUtil;
 
@@ -400,12 +399,11 @@ public class MoveOperation implements IRunnableWithProgress {
             IIpsPackageFragmentRoot targetRoot,
             IProgressMonitor pm) throws CoreException {
 
-        ProcessorBasedRefactoring moveRefactoring = ipsObject.getMoveRefactoring();
-        IIpsMoveProcessor moveProcessor = (IIpsMoveProcessor)moveRefactoring.getProcessor();
         IIpsPackageFragment targetIpsPackageFragment = targetRoot.getIpsPackageFragment(QNameUtil
                 .getPackageName(targetName));
-        moveProcessor.setTargetIpsPackageFragment(targetIpsPackageFragment);
-        IWorkspaceRunnable operation = new PerformRefactoringOperation(moveRefactoring,
+        IIpsRefactoring ipsMoveRefactoring = IpsPlugin.getIpsRefactoringFactory().createMoveRefactoring(ipsObject,
+                targetIpsPackageFragment, false);
+        IWorkspaceRunnable operation = new PerformRefactoringOperation(ipsMoveRefactoring.toLtkRefactoring(),
                 CheckConditionsOperation.ALL_CONDITIONS);
         ResourcesPlugin.getWorkspace().run(operation, pm);
     }

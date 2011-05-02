@@ -14,9 +14,7 @@
 package org.faktorips.devtools.core.internal.model.enums;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.internal.model.enums.refactor.RenameEnumLiteralNameAttributeValueProcessor;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -62,11 +60,6 @@ public class EnumLiteralNameAttributeValue extends EnumAttributeValue implements
                 break;
             }
         }
-    }
-
-    @Override
-    public ProcessorBasedRefactoring getRenameRefactoring() {
-        return new ProcessorBasedRefactoring(new RenameEnumLiteralNameAttributeValueProcessor(this));
     }
 
     @Override

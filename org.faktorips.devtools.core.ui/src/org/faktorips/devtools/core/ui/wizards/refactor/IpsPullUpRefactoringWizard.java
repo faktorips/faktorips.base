@@ -14,20 +14,19 @@
 package org.faktorips.devtools.core.ui.wizards.refactor;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 
 public class IpsPullUpRefactoringWizard extends IpsRefactoringWizard {
 
-    public IpsPullUpRefactoringWizard(Refactoring refactoring, IIpsElement ipsElement) {
-        super(refactoring, ipsElement, WIZARD_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
+    public IpsPullUpRefactoringWizard(IIpsRefactoring refactoring) {
+        super(refactoring, WIZARD_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
     }
 
     @Override
     protected void addUserInputPages() {
-        addPage(new PullUpPage(getIpsElement()));
+        addPage(new PullUpPage());
     }
 
     @Override
@@ -37,12 +36,12 @@ public class IpsPullUpRefactoringWizard extends IpsRefactoringWizard {
 
     private static class PullUpPage extends IpsRefactoringUserInputPage {
 
-        PullUpPage(IIpsElement ipsElement) {
-            super(ipsElement, "PullUpPage"); //$NON-NLS-1$
+        PullUpPage() {
+            super("PullUpPage"); //$NON-NLS-1$
         }
 
         @Override
-        public void createControl(Composite parent) {
+        public void createControlThis(Composite parent) {
             Composite controlComposite = getUiToolkit().createGridComposite(parent, 1, false, false);
             setControl(controlComposite);
         }

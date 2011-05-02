@@ -18,11 +18,9 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
-import org.faktorips.devtools.core.internal.model.type.refactor.RenameAssociationProcessor;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
@@ -381,11 +379,6 @@ public abstract class Association extends IpsObjectPart implements IAssociation 
     @Override
     public boolean isPluralLabelSupported() {
         return true;
-    }
-
-    @Override
-    public ProcessorBasedRefactoring getRenameRefactoring() {
-        return new ProcessorBasedRefactoring(new RenameAssociationProcessor(this));
     }
 
     private class DerivedUnionCandidatesFinder extends TypeHierarchyVisitor {

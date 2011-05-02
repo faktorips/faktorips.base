@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005-2011 Faktor Zehn AG und andere.
+ * Copyright (c) 2005-2010 Faktor Zehn AG und andere.
  * 
  * Alle Rechte vorbehalten.
  * 
@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.refactor;
+package org.faktorips.devtools.core.refactor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,26 +24,23 @@ import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.NullChange;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
-import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringProcessor;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.internal.refactor.Messages;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.refactor.IIpsRefactoringProcessor;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Abstract base class for all Faktor-IPS refactorings.
- * 
- * @see ProcessorBasedRefactoring
+ * Abstract base class for all Faktor-IPS refactoring processors.
  * 
  * @author Alexander Weickmann
  */
-public abstract class IpsRefactoringProcessor extends RefactoringProcessor implements IIpsRefactoringProcessor {
+public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
 
     /** {@link IIpsElement} to be refactored. */
     private final IIpsElement ipsElement;
@@ -261,7 +258,6 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
     /**
      * Returns the {@link IIpsElement} to be refactored.
      */
-    @Override
     public final IIpsElement getIpsElement() {
         return ipsElement;
     }
@@ -288,5 +284,20 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor imple
         }
         return collectedSrcFiles;
     }
+
+    /**
+     * Responsible for validating the user input.
+     * 
+     * @param pm The {@link IProgressMonitor} to report progress to
+     * 
+     * @throws CoreException If an error occurs while validating the user input
+     */
+    public abstract RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreException;
+
+    /**
+     * Returns whether this refactoring processor requires that all IPS source files are saved
+     * before the refactoring may happen.
+     */
+    public abstract boolean isSourceFilesSavedRequired();
 
 }

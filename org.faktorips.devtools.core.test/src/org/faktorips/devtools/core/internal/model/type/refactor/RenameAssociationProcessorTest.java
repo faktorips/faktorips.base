@@ -29,13 +29,10 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
+import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * @author Alexander Weickmann
- */
 public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
 
     private final static String POLICY_ROLE_SINGULAR = "PolicyRoleSingular";
@@ -81,8 +78,7 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
 
     @Test
     public void testValidateUserInputNewNameEmpty() throws CoreException {
-        IIpsRenameProcessor ipsRenameProcessor = (IIpsRenameProcessor)policyToOtherPolicyAssociation
-                .getRenameRefactoring().getProcessor();
+        IpsRenameProcessor ipsRenameProcessor = new RenameAssociationProcessor(policyToOtherPolicyAssociation);
         ipsRenameProcessor.setNewName("");
         ipsRenameProcessor.setNewPluralName("somePluralName");
         RefactoringStatus status = ipsRenameProcessor.validateUserInput(new NullProgressMonitor());
@@ -91,8 +87,7 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
 
     @Test
     public void testValidateUserInputNeitherNameNorPluralNameChanged() throws CoreException {
-        IIpsRenameProcessor ipsRenameProcessor = (IIpsRenameProcessor)policyToOtherPolicyAssociation
-                .getRenameRefactoring().getProcessor();
+        IpsRenameProcessor ipsRenameProcessor = new RenameAssociationProcessor(policyToOtherPolicyAssociation);
         ipsRenameProcessor.setNewName(POLICY_ROLE_SINGULAR);
         ipsRenameProcessor.setNewPluralName(POLICY_ROLE_PLURAL);
         RefactoringStatus status = ipsRenameProcessor.validateUserInput(new NullProgressMonitor());
@@ -101,8 +96,7 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
 
     @Test
     public void testValidateUserInputNoPluralNameForToManyAssociation() throws CoreException {
-        IIpsRenameProcessor ipsRenameProcessor = (IIpsRenameProcessor)policyToOtherPolicyAssociation
-                .getRenameRefactoring().getProcessor();
+        IpsRenameProcessor ipsRenameProcessor = new RenameAssociationProcessor(policyToOtherPolicyAssociation);
         ipsRenameProcessor.setNewName("someNewName");
         ipsRenameProcessor.setNewPluralName("");
         RefactoringStatus status = ipsRenameProcessor.validateUserInput(new NullProgressMonitor());
@@ -111,8 +105,7 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
 
     @Test
     public void testValidateUserInputValid() throws CoreException {
-        IIpsRenameProcessor ipsRenameProcessor = (IIpsRenameProcessor)policyToOtherPolicyAssociation
-                .getRenameRefactoring().getProcessor();
+        IpsRenameProcessor ipsRenameProcessor = new RenameAssociationProcessor(policyToOtherPolicyAssociation);
         ipsRenameProcessor.setNewName("someNewName");
         ipsRenameProcessor.setNewPluralName("someNewPluralName");
         RefactoringStatus status = ipsRenameProcessor.validateUserInput(new NullProgressMonitor());
