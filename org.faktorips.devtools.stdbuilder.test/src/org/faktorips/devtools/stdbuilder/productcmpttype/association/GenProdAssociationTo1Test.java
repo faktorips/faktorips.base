@@ -21,7 +21,7 @@ import java.util.Calendar;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
-import org.faktorips.devtools.core.internal.model.type.AssociationType;
+import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.stdbuilder.ProjectConfigurationUtil;
 import org.junit.Before;
 import org.junit.Test;
