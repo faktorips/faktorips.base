@@ -106,7 +106,7 @@ public class PredefinedDataypeDialog extends EditDialog {
         // bindingContext.bindContent(datatypeControl, attribute, IAttribute.PROPERTY_DATATYPE);
 
         uiToolkit.createFormLabel(workArea, "qqq");
-        Combo modifierCombo = uiToolkit.createCombo(workArea, Modifier.class);
+        Combo modifierCombo = uiToolkit.createCombo(workArea);
         bindingContext.bindContent(modifierCombo, attribute, IAttribute.PROPERTY_MODIFIER, Modifier.class);
 
         uiToolkit.createFormLabel(workArea, "qqqq");
