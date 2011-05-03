@@ -49,7 +49,7 @@ public class ClassloaderRuntimeRepositoryManager extends AbstractRuntimeReposito
 
     @Override
     protected boolean isRepositoryUpToDate(IRuntimeRepository actualRuntimeRepository) {
-        return true;
+        return actualRuntimeRepository != null;
     }
 
 }
