@@ -186,7 +186,9 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
         if (ipsProject == null && projects.length > 0) {
             ipsProject = projects[0];
         }
-        projectSelectComboViewer.setSelection(new StructuredSelection(ipsProject));
+        if (ipsProject != null) {
+            projectSelectComboViewer.setSelection(new StructuredSelection(ipsProject));
+        }
 
         setControl(pageControl);
     }
