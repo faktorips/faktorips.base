@@ -22,7 +22,6 @@ import static org.junit.Assert.assertTrue;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.internal.model.type.AssociationType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
@@ -31,6 +30,7 @@ import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.Relat
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.PersistentType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
