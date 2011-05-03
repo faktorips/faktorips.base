@@ -71,30 +71,10 @@ public class FormattingTextField<T> extends AbstractTextField<T> {
     }
 
     private void formatText() {
-        // Point selection = text.getSelection();
         String oldText = getText();
         String newText = format.format(getValue());
-        // DecimalFormatSymbols decimalFormatSymbols =
-        // format.getNumberFormat().getDecimalFormatSymbols();
-        // char decimalSeparator = decimalFormatSymbols.getDecimalSeparator();
-        //        String minusSign = "" + decimalFormatSymbols.getMinusSign(); //$NON-NLS-1$
-        // if (oldText.equals(minusSign)) {
-        // // the text is only a minus sign, we should allow this
-        // newText = minusSign;
-        // }
-        // if (oldText.length() > 0 && oldText.toCharArray()[oldText.length() - 1] ==
-        // decimalSeparator) {
-        // // the last char is the decimal separator - allowed to enter deciaml values
-        // newText += decimalSeparator;
-        // }
-        // if (oldText.length() != newText.length()) {
-        // // the length of the text has changed - correct the selection
-        // selection.x += newText.length() - oldText.length();
-        // selection.y += newText.length() - oldText.length();
-        // }
         if (!oldText.equals(newText)) {
             text.setText(newText);
-            // text.setSelection(selection);
         }
     }
 }
