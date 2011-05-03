@@ -235,6 +235,23 @@ public class BindingContext {
         return field;
     }
 
+    /**
+     * Binds the given combo to the given ips object's property.
+     * 
+     * @return the edit field created to access the value in the text control.
+     * 
+     * @throws IllegalArgumentException if the property's type is not a subclass of
+     *             DefaultEnumValue.
+     * @throws NullPointerException if any argument is <code>null</code>.
+     * 
+     * @see DefaultEnumValue
+     */
+    public <E extends Enum<E>> EnumField<E> bindContent(Combo combo, Object object, String property, E[] values) {
+        EnumField<E> field = new EnumField<E>(combo, values);
+        bindContent(field, object, property);
+        return field;
+    }
+
     public void bindContent(StructuredViewer viewer, Class<?> elementType, Object object, String propertyName) {
         bindContent(StructuredViewerField.newInstance(viewer, elementType), object, propertyName);
     }

@@ -633,11 +633,21 @@ public class UIToolkit {
         return newCombo;
     }
 
+    /**
+     * @deprecated The values have to be set by binding context use {@link #createCombo(Composite)}
+     *             only
+     */
+    @Deprecated
     public <E extends Enum<E>> Combo createCombo(Composite parent, Class<E> enumType) {
         E[] values = enumType.getEnumConstants();
         return createCombo(parent, values);
     }
 
+    /**
+     * @deprecated The values have to be set by binding context use {@link #createCombo(Composite)}
+     *             only
+     */
+    @Deprecated
     public <E extends Enum<E>> Combo createCombo(Composite parent, E[] values) {
         Combo newCombo = createCombo(parent);
         String[] names = new String[values.length];

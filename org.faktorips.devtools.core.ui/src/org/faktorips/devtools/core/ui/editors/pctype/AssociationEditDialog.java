@@ -35,7 +35,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.pctype.PersistentAssociationInfo;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.FetchType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -157,10 +156,9 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         // type
         uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_associationTypeLabel);
-        final Combo typeCombo = uiToolkit
-                .createCombo(workArea, IPolicyCmptTypeAssociation.APPLICABLE_ASSOCIATION_TYPES);
+        final Combo typeCombo = uiToolkit.createCombo(workArea);
         bindingContext.bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE,
-                AssociationType.class);
+                IPolicyCmptTypeAssociation.APPLICABLE_ASSOCIATION_TYPES);
         typeCombo.setFocus();
 
         // role singular

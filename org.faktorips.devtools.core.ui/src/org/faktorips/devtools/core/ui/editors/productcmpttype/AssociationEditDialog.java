@@ -29,7 +29,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
@@ -113,9 +112,9 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         // aggregation kind
         uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_typeLabel);
-        Combo typeCombo = uiToolkit.createCombo(workArea, IProductCmptTypeAssociation.APPLICABLE_ASSOCIATION_TYPES);
+        Combo typeCombo = uiToolkit.createCombo(workArea);
         bindingContext.bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE,
-                AssociationType.class);
+                IProductCmptTypeAssociation.APPLICABLE_ASSOCIATION_TYPES);
 
         // role singular
         uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_roleSingularLabel);

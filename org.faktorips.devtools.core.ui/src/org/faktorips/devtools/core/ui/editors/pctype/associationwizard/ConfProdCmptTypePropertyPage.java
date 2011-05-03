@@ -26,7 +26,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -129,7 +128,7 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
 
         // aggregation kind
         toolkit.createFormLabel(workArea, Messages.ConfProdCmptTypePropertyPage_labelType);
-        typeCombo = toolkit.createCombo(workArea, IProductCmptTypeAssociation.APPLICABLE_ASSOCIATION_TYPES);
+        typeCombo = toolkit.createCombo(workArea);
 
         // role singular
         toolkit.createFormLabel(workArea, Messages.ConfProdCmptTypePropertyPage_labelTargetRoleSingular);
@@ -236,7 +235,7 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
     private void bindAllControls(IProductCmptTypeAssociation productCmptAssociation) {
         bindingContext.bindContent(targetText, association, IProductCmptTypeAssociation.PROPERTY_TARGET);
         bindingContext.bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE,
-                AssociationType.class);
+                IProductCmptTypeAssociation.APPLICABLE_ASSOCIATION_TYPES);
         bindingContext.bindContent(targetRoleSingularTextProdCmptType, productCmptAssociation,
                 IProductCmptTypeAssociation.PROPERTY_TARGET_ROLE_SINGULAR);
         bindingContext.bindContent(targetRolePluralTextProdCmptType, productCmptAssociation,

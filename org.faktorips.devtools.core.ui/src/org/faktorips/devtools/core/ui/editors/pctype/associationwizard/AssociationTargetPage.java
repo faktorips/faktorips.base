@@ -20,7 +20,6 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.model.pctype.AssociationType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -79,9 +78,9 @@ public class AssociationTargetPage extends WizardPage implements IBlockedValidat
 
         // type
         toolkit.createFormLabel(top, Messages.AssociationTargetPage_labelType);
-        Combo typeCombo = toolkit.createCombo(top, IPolicyCmptTypeAssociation.APPLICABLE_ASSOCIATION_TYPES);
+        Combo typeCombo = toolkit.createCombo(top);
         bindingContext.bindContent(typeCombo, association, IAssociation.PROPERTY_ASSOCIATION_TYPE,
-                AssociationType.class);
+                IPolicyCmptTypeAssociation.APPLICABLE_ASSOCIATION_TYPES);
         typeCombo.select(0);
         visibleProperties.add(IAssociation.PROPERTY_ASSOCIATION_TYPE);
     }
