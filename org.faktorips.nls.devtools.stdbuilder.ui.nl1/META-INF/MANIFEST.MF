@@ -6,3 +6,4 @@ Bundle-Version: 0.0.0
 Bundle-Vendor: Faktor Zehn AG
 Fragment-Host: org.faktorips.devtools.stdbuilder.ui;bundle-version="0.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ClassPath: nl1.jar
