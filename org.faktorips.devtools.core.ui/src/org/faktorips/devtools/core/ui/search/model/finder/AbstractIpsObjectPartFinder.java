@@ -20,18 +20,19 @@ import java.util.Set;
 import org.eclipse.search.ui.text.Match;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.ui.search.model.WildcardMatcher;
 
 public abstract class AbstractIpsObjectPartFinder implements IpsObjectPartFinder {
 
-    private final StringMatcher stringMatcher = new StringMatcher();
-
     @Override
     public List<Match> findMatchingIpsObjectParts(Set<IType> searchedTypes, String searchTerm) {
+        WildcardMatcher stringMatcher = new WildcardMatcher(searchTerm);
+
         List<Match> matches = new ArrayList<Match>();
         for (IType type : searchedTypes) {
             List<? extends IIpsObjectPart> ipsObjectParts = getIpsObjectParts(type);
             for (IIpsObjectPart ipsObjectPart : ipsObjectParts) {
-                if (stringMatcher.isMatching(searchTerm, ipsObjectPart.getName())) {
+                if (stringMatcher.isMatching(ipsObjectPart.getName())) {
                     matches.add(new Match(ipsObjectPart, 0, 0));
                 }
             }

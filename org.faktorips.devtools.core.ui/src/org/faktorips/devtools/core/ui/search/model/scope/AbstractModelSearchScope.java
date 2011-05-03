@@ -52,7 +52,10 @@ public abstract class AbstractModelSearchScope implements ModelSearchScope {
                 continue;
             }
 
-            resources.add(resource);
+            if (resource.isAccessible()) {
+                resources.add(resource);
+            }
+
         }
         return resources;
     }
