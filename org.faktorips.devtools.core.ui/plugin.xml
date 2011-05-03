@@ -177,7 +177,19 @@
                toolbarPath="org.faktorips.devtools"
                tooltip="%org.faktorips.devtools.actions.ToggleWorkingModeAction.tooltip">
          </action>
-      </actionSet>            
+      </actionSet>
+    <actionSet
+          id="org.faktorips.devtools.core.ui.modelSearchActionSet"
+          label="%org.faktorips.devtools.actions.OpenModelSearchPageAction.label"
+          visible="true">
+       <action
+             class="org.faktorips.devtools.core.ui.actions.OpenModelSearchPageAction"
+             id="org.faktorips.devtools.core.ui.openModelSearchAction"
+             label="%org.faktorips.devtools.actions.OpenModelSearchPageAction.label"
+             menubarPath="org.eclipse.search.menu/dialogGroup"
+             style="push">
+       </action>
+    </actionSet>            
    </extension>
    
    <extension

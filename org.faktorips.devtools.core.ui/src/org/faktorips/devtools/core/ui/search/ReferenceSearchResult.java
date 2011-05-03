@@ -84,8 +84,6 @@ public class ReferenceSearchResult extends AbstractTextSearchResult {
                 IIpsElement element = (IIpsElement)(((Object[])object)[0]);
 
                 projects.add(element.getIpsProject());
-            } else {
-                System.out.println(object.getClass() + ":" + object);
             }
         }
         return projects.toArray();
