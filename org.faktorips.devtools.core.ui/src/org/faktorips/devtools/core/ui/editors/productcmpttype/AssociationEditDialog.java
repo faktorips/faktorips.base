@@ -29,6 +29,7 @@ import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.CompletionUtil;
