@@ -29,10 +29,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -71,12 +73,18 @@ public class ModelSearchQueryTest {
         when(model.getTypeName()).thenReturn("SrcF");
 
         IIpsSrcFile srcFile1 = mock(IpsSrcFile.class);
-        when(srcFile1.getName()).thenReturn("SrcFile1");
+        when(srcFile1.getIpsObjectName()).thenReturn("SrcFile1");
         when(srcFile1.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
+        IIpsObject object1 = mock(IpsObject.class);
+        when(srcFile1.getIpsObject()).thenReturn(object1);
+
         IIpsSrcFile srcFile2 = mock(IpsSrcFile.class);
-        when(srcFile2.getName()).thenReturn("SourceFile2");
+        when(srcFile2.getIpsObjectName()).thenReturn("SourceFile2");
         when(srcFile2.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
+
+        IIpsObject object2 = mock(IpsObject.class);
+        when(srcFile2.getIpsObject()).thenReturn(object2);
 
         Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
         srcFiles.add(srcFile1);
@@ -89,7 +97,7 @@ public class ModelSearchQueryTest {
         assertEquals(IStatus.OK, status.getSeverity());
 
         assertEquals(1, searchResult.getMatchCount());
-        assertObjectMatched(srcFile1);
+        assertObjectMatched(srcFile1.getIpsObject());
     }
 
     protected void assertObjectMatched(Object object) {
@@ -126,11 +134,11 @@ public class ModelSearchQueryTest {
         when(model.isSearchAttributes()).thenReturn(true);
 
         IIpsSrcFile srcFile1 = mock(IpsSrcFile.class);
-        when(srcFile1.getName()).thenReturn("SrcFile1");
+        when(srcFile1.getIpsObjectName()).thenReturn("SrcFile1");
         when(srcFile1.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
         IIpsSrcFile srcFile2 = mock(IpsSrcFile.class);
-        when(srcFile2.getName()).thenReturn("SourceFile2");
+        when(srcFile2.getIpsObjectName()).thenReturn("SourceFile2");
         when(srcFile2.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
         Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
@@ -193,11 +201,11 @@ public class ModelSearchQueryTest {
         when(model.isSearchMethods()).thenReturn(true);
 
         IIpsSrcFile srcFile1 = mock(IpsSrcFile.class);
-        when(srcFile1.getName()).thenReturn("SrcFile1");
+        when(srcFile1.getIpsObjectName()).thenReturn("SrcFile1");
         when(srcFile1.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
         IIpsSrcFile srcFile2 = mock(IpsSrcFile.class);
-        when(srcFile2.getName()).thenReturn("SourceFile2");
+        when(srcFile2.getIpsObjectName()).thenReturn("SourceFile2");
         when(srcFile2.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
         Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
@@ -260,11 +268,11 @@ public class ModelSearchQueryTest {
         when(model.isSearchAssociations()).thenReturn(true);
 
         IIpsSrcFile srcFile1 = mock(IpsSrcFile.class);
-        when(srcFile1.getName()).thenReturn("SrcFile1");
+        when(srcFile1.getIpsObjectName()).thenReturn("SrcFile1");
         when(srcFile1.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
         IIpsSrcFile srcFile2 = mock(IpsSrcFile.class);
-        when(srcFile2.getName()).thenReturn("SourceFile2");
+        when(srcFile2.getIpsObjectName()).thenReturn("SourceFile2");
         when(srcFile2.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
         Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
@@ -327,11 +335,11 @@ public class ModelSearchQueryTest {
         when(model.isSearchTableStructureUsages()).thenReturn(true);
 
         IIpsSrcFile srcFile1 = mock(IpsSrcFile.class);
-        when(srcFile1.getName()).thenReturn("SrcFile1");
+        when(srcFile1.getIpsObjectName()).thenReturn("SrcFile1");
         when(srcFile1.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
         IIpsSrcFile srcFile2 = mock(IpsSrcFile.class);
-        when(srcFile2.getName()).thenReturn("SourceFile2");
+        when(srcFile2.getIpsObjectName()).thenReturn("SourceFile2");
         when(srcFile2.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
         Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
@@ -394,11 +402,11 @@ public class ModelSearchQueryTest {
         when(model.isSearchValidationRules()).thenReturn(true);
 
         IIpsSrcFile srcFile1 = mock(IpsSrcFile.class);
-        when(srcFile1.getName()).thenReturn("SrcFile1");
+        when(srcFile1.getIpsObjectName()).thenReturn("SrcFile1");
         when(srcFile1.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
         IIpsSrcFile srcFile2 = mock(IpsSrcFile.class);
-        when(srcFile2.getName()).thenReturn("SourceFile2");
+        when(srcFile2.getIpsObjectName()).thenReturn("SourceFile2");
         when(srcFile2.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
         Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();

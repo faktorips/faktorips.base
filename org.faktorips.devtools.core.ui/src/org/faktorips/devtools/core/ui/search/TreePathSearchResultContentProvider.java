@@ -154,7 +154,7 @@ public class TreePathSearchResultContentProvider implements ITreeContentProvider
         }
         if (element instanceof IIpsObjectPart) {
             IIpsObjectPart ipsObjectPart = (IIpsObjectPart)element;
-            return ipsObjectPart.getIpsSrcFile();
+            return ipsObjectPart.getIpsObject();
         }
         if (element instanceof IProductCmptGeneration) {
             return ((IProductCmptGeneration)element).getProductCmpt();

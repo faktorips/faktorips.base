@@ -34,7 +34,6 @@ import org.faktorips.devtools.core.ui.search.model.finder.AssociationFinder;
 import org.faktorips.devtools.core.ui.search.model.finder.AttributeFinder;
 import org.faktorips.devtools.core.ui.search.model.finder.IpsObjectPartFinder;
 import org.faktorips.devtools.core.ui.search.model.finder.MethodFinder;
-import org.faktorips.devtools.core.ui.search.model.finder.StringMatcher;
 import org.faktorips.devtools.core.ui.search.model.finder.TableStructureUsageFinder;
 import org.faktorips.devtools.core.ui.search.model.finder.ValidationRuleFinder;
 
@@ -42,7 +41,6 @@ public class ModelSearchQuery implements ISearchQuery {
 
     private final ModelSearchPresentationModel model;
     private final ModelSearchResult searchResult;
-    private final StringMatcher stringMatcher = new StringMatcher();
 
     protected ModelSearchQuery(ModelSearchPresentationModel model) {
         this.model = model;
@@ -60,7 +58,7 @@ public class ModelSearchQuery implements ISearchQuery {
 
             if (isJustTypeNameSearch()) {
                 for (IIpsSrcFile srcFile : searchedSrcFiles) {
-                    searchResult.addMatch(new Match(srcFile, 0, 0));
+                    searchResult.addMatch(new Match(srcFile.getIpsObject(), 0, 0));
                 }
             } else {
                 Set<IType> searchedTypes = getTypes(searchedSrcFiles);
@@ -135,19 +133,18 @@ public class ModelSearchQuery implements ISearchQuery {
         Set<IIpsSrcFile> searchedTypes = getSelectedTypes();
 
         if (StringUtils.isNotBlank(model.getTypeName())) {
+            WildcardMatcher typeNameMatcher = new WildcardMatcher(model.getTypeName());
+
             Set<IIpsSrcFile> hits = new HashSet<IIpsSrcFile>();
             for (IIpsSrcFile srcFile : searchedTypes) {
-                if (isMatching(model.getTypeName(), srcFile.getName())) {
+
+                if (typeNameMatcher.isMatching(srcFile.getIpsObjectName())) {
                     hits.add(srcFile);
                 }
             }
             searchedTypes = hits;
         }
         return searchedTypes;
-    }
-
-    protected boolean isMatching(String searchTerm, String text) {
-        return stringMatcher.isMatching(searchTerm, text);
     }
 
     private Set<IIpsSrcFile> getSelectedTypes() throws CoreException {

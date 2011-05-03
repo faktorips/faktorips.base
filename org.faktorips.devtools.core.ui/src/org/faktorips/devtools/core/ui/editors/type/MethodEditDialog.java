@@ -73,7 +73,7 @@ public class MethodEditDialog extends IpsPartEditDialog2 {
         Composite propertyPane = uiToolkit.createLabelEditColumnComposite(methodSignatureGroup);
 
         uiToolkit.createFormLabel(propertyPane, Messages.MethodEditDialog_labelAccesModifier);
-        modifierCombo = uiToolkit.createCombo(propertyPane, Modifier.class);
+        modifierCombo = uiToolkit.createCombo(propertyPane);
         modifierCombo.setFocus();
         bindingContext.bindContent(modifierCombo, method, IMethod.PROPERTY_MODIFIER, Modifier.class);
 

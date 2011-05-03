@@ -775,6 +775,15 @@ schutz” abgerufen und ausgedruckt werden.
       <update label="Faktor-IPS" url="http://update.faktorzehn.org/faktorips/v3/"/>
    </url>
 
+   <requires>
+      <import plugin="org.faktorips.devtools.core"/>
+      <import plugin="org.faktorips.devtools.core.ui"/>
+      <import plugin="org.faktorips.devtools.tableconversion"/>
+      <import plugin="org.faktorips.devtools.htmlexport"/>
+      <import plugin="org.faktorips.devtools.stdbuilder"/>
+      <import plugin="org.faktorips.devtools.stdbuilder.ui"/>
+   </requires>
+
    <plugin
          id="org.faktorips.nls.devtools.core.nl1"
          download-size="0"
