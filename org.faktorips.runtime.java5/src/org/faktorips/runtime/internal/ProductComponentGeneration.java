@@ -116,7 +116,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
         doInitPropertiesFromXml(propertyElements);
         doInitTableUsagesFromXml(propertyElements);
         doInitReferencesFromXml(getLinkElements(genElement));
-        doInitFormulasFromXml(genElement);
+        doInitFormulaFromXml(genElement);
         doInitValidationRuleConfigsFromXml(getValidationRuleConfigElements(genElement));
     }
 
@@ -162,7 +162,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
      * contains the compiled expression for every formula.
      * 
      */
-    protected void doInitFormulasFromXml(Element genElement) {
+    protected void doInitFormulaFromXml(Element genElement) {
         if (getRepository() != null) {
             IFormulaEvaluatorFactory factory = getRepository().getFormulaEvaluatorFactory();
             if (factory != null) {
