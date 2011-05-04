@@ -51,7 +51,7 @@ public abstract class AbstractModelObject implements IModelObject {
      * Constant for the return values of validate methods (i.e. validateSelf() or ruleXYZ()).
      * Indicates that the validation should be continued.
      */
-    protected static final boolean CONTINUE_VALIDATION = false;
+    protected static final boolean CONTINUE_VALIDATION = true;
 
     /** Uniquely identifies this model object within the object graph it belongs to. */
     @SuppressWarnings("unused")
