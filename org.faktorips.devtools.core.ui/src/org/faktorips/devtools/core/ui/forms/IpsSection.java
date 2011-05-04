@@ -51,9 +51,6 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
     /** The UI control for the section */
     private Section section;
 
-    /** Flag indicating whether the section is currently refreshing */
-    private boolean isRefreshing = false;
-
     /** The SWT style (for example SWT.TITLE_BAR) */
     private int style;
 
@@ -231,20 +228,11 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
         section.setDescription(description);
     }
 
-    public boolean isRefreshing() {
-        return isRefreshing;
-    }
-
     /**
      * Refreshes the section with the data from the model object(s).
      */
     public void refresh() {
-        isRefreshing = true;
-        try {
-            performRefresh();
-        } finally {
-            isRefreshing = false;
-        }
+        performRefresh();
     }
 
     /**
