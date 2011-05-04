@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -131,6 +132,19 @@ public class DeepCopyTreeStatusTest {
         when(productCmptsGenerations[3].getLinks()).thenReturn(new IProductCmptLink[] {});
         when(productCmptsGenerations[4].getLinks()).thenReturn(new IProductCmptLink[] {});
         when(productCmptsGenerations[5].getLinks()).thenReturn(new IProductCmptLink[] {});
+
+        IValidationRuleConfig[] ruleConfigs = new IValidationRuleConfig[2];
+        ruleConfigs[0] = mock(IValidationRuleConfig.class);
+        ruleConfigs[1] = mock(IValidationRuleConfig.class);
+        when(ruleConfigs[0].getName()).thenReturn("Rule1");
+        when(ruleConfigs[1].getName()).thenReturn("RuleTwo");
+
+        when(productCmptsGenerations[0].getValidationRuleConfigs()).thenReturn(ruleConfigs);
+        when(productCmptsGenerations[1].getValidationRuleConfigs()).thenReturn(new IValidationRuleConfig[] {});
+        when(productCmptsGenerations[2].getValidationRuleConfigs()).thenReturn(new IValidationRuleConfig[] {});
+        when(productCmptsGenerations[3].getValidationRuleConfigs()).thenReturn(new IValidationRuleConfig[] {});
+        when(productCmptsGenerations[4].getValidationRuleConfigs()).thenReturn(new IValidationRuleConfig[] {});
+        when(productCmptsGenerations[5].getValidationRuleConfigs()).thenReturn(new IValidationRuleConfig[] {});
 
         structure = new ProductCmptTreeStructure(productCmpts[0], new GregorianCalendar(), mock(IIpsProject.class));
 
