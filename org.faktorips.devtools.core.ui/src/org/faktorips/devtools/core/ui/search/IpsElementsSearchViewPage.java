@@ -15,7 +15,9 @@ package org.faktorips.devtools.core.ui.search;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -100,6 +102,16 @@ public class IpsElementsSearchViewPage extends AbstractTextSearchViewPage {
             return ((IIpsObject)selection).getIpsSrcFile();
         }
         return null;
+    }
+
+    @Override
+    protected void handleOpen(OpenEvent event) {
+        ISelection selection = event.getSelection();
+        if (selection instanceof IStructuredSelection) {
+            new OpenEditorAction(getViewer()).run((IStructuredSelection)selection);
+            return;
+        }
+        super.handleOpen(event);
     }
 
 }

@@ -1755,21 +1755,23 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     public <T> T executeModificationsWithSingleEvent(SingleEventModification<T> modifications) throws CoreException {
         boolean successful = false;
         IIpsSrcFile ipsSrcFile = modifications.getIpsSrcFile();
+        IpsSrcFileContent content = getIpsSrcFileContent(ipsSrcFile);
         try {
             stopBroadcastingChangesMadeByCurrentThread();
             successful = modifications.execute();
         } catch (CoreException e) {
             throw e;
         } finally {
+            if (successful) {
+                ipsSrcFile.markAsClean();
+            }
             resumeBroadcastingChangesMadeByCurrentThread();
-        }
-        if (successful) {
-            IpsSrcFileContent content = getIpsSrcFileContent(ipsSrcFile);
-            if (content != null) {
-                content.markAsUnmodified();
-                content.ipsObjectChanged(modifications.modificationEvent());
-            } else {
-                ipsSrcFileContentHasChanged(modifications.modificationEvent());
+            if (successful) {
+                if (content != null) {
+                    content.ipsObjectChanged(modifications.modificationEvent());
+                } else {
+                    ipsSrcFileContentHasChanged(modifications.modificationEvent());
+                }
             }
         }
         return modifications.getResult();

@@ -53,7 +53,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFileMemento;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -98,11 +97,6 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
     private IEditorSite site;
 
     /**
-     * Flag to indicate that the generation has changed (<code>true</code>)
-     */
-    private boolean generationDirty;
-
-    /**
      * The popup-Menu for the treeview if enabled.
      */
     private Menu treePopup;
@@ -133,7 +127,6 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
         ArgumentCheck.notNull(generation);
         this.generation = generation;
         this.site = site;
-        generationDirty = true;
         initControls();
         setText(Messages.PropertiesPage_relations);
     }
@@ -291,10 +284,9 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
 
     @Override
     protected void performRefresh() {
-        if (generationDirty && treeViewer != null) {
-            treeViewer.refresh();
+        if (treeViewer != null) {
+            treeViewer.refresh(true);
             treeViewer.expandAll();
-            generationDirty = false;
         }
 
         if (cardinalityPanel != null) {
@@ -500,16 +492,10 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
                     return;
                 }
 
-                IProductCmpt cmpt = (IProductCmpt)obj;
-                IIpsObjectGeneration gen = cmpt.getGenerationByEffectiveDate(generation.getValidFrom());
-                if (generation.equals(gen)) {
-                    generationDirty = true;
-                }
             } catch (CoreException e) {
                 IpsPlugin.log(e);
-                generationDirty = true;
             }
-            processRelationChanges(event);
+            // processRelationChanges(event);
         }
 
         private void processRelationChanges(ContentChangeEvent event) {

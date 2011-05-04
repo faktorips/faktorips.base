@@ -112,7 +112,6 @@ public class TreePathSearchResultContentProvider implements ITreeContentProvider
             }
             return;
         }
-        System.out.println(e);
     }
 
     private void addElements(Object[] elements) {
@@ -171,7 +170,6 @@ public class TreePathSearchResultContentProvider implements ITreeContentProvider
             return ipsSrcFile.getIpsPackageFragment();
         }
 
-        System.out.println(element.getClass());
         return null;
     }
 
