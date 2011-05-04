@@ -15,20 +15,25 @@ package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
 import java.util.GregorianCalendar;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.ViewerLabel;
-import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptVRuleReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -54,6 +59,9 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
         } else if (element instanceof IProductCmptStructureTblUsageReference) {
             return IpsUIPlugin.getImageHandling().getImage(
                     ((IProductCmptStructureTblUsageReference)element).getTableContentUsage());
+        } else if (element instanceof IProductCmptVRuleReference) {
+            return IpsUIPlugin.getImageHandling().getImage(
+                    ((IProductCmptVRuleReference)element).getValidationRuleConfig());
         } else if (element instanceof ViewerLabel) {
             return ((ViewerLabel)element).getImage();
         }
@@ -78,10 +86,36 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
             } else {
                 return StringUtil.unqualifiedName(tcu.getTableContentName());
             }
+        } else if (element instanceof IProductCmptVRuleReference) {
+            return getRuleLabel((IProductCmptVRuleReference)element);
         } else if (element instanceof ViewerLabel) {
             return ((ViewerLabel)element).getText();
         }
         return Messages.ProductStructureLabelProvider_undefined;
+    }
+
+    /**
+     * The returned label is the name to be displayed for the {@link IValidationRuleConfig}
+     * referenced the given {@link IProductCmptVRuleReference}. First tries to find the configured
+     * {@link IValidationRule} and return its label using the MultiLanguageSupport. If that fails
+     * the original name of the {@link IValidationRuleConfig} (it ipsElement name) is returned.
+     * 
+     * @param element the reference to return a text/label for
+     * @return the label for the given IProductCmptVRuleReference
+     */
+    protected String getRuleLabel(IProductCmptVRuleReference element) {
+        IValidationRuleConfig ruleConfig = element.getValidationRuleConfig();
+        try {
+            IValidationRule rule = ruleConfig.findValidationRule(ruleConfig.getIpsProject());
+            if (rule != null) {
+                return IpsUIPlugin.getLabel(rule);
+            }
+        } catch (CoreException e) {
+            IpsPlugin
+                    .log(new IpsStatus(
+                            "Could not acquire label for ValidationRuleConfig \"" + ruleConfig.getName() + "\". Using original name.", e)); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        return ruleConfig.getName();
     }
 
     public String getProductCmptLabel(IProductCmpt productCmpt) {
@@ -125,6 +159,13 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
 
             styledString.append(getGenerationLabel(productCmptReference.getProductCmpt()),
                     StyledString.QUALIFIER_STYLER);
+        } else if (element instanceof IProductCmptVRuleReference) {
+            IProductCmptVRuleReference vRuleRef = (IProductCmptVRuleReference)element;
+            if (!vRuleRef.getValidationRuleConfig().isActive()) {
+                // gray-out inactive rules
+                styledString.setStyle(0, styledString.length(), StyledString.QUALIFIER_STYLER);
+                styledString.append(Messages.ProductStructureLabelProvider_inactiveDecoration, StyledString.QUALIFIER_STYLER);
+            }
         }
         return styledString;
     }
@@ -151,7 +192,7 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
                 IProductCmptTypeAssociationReference[] associationReferences = parentCmptReference.getStructure()
                         .getChildProductCmptTypeAssociationReferences(parentCmptReference, true);
                 for (IProductCmptTypeAssociationReference aReference : associationReferences) {
-                    // if the assicuation is anotherone but have the same target... show role name
+                    // if the association is another one but have the same target... show role name
                     if (aReference != associationReference
                             && aReference.getAssociation().getTarget()
                                     .equals(associationReference.getAssociation().getTarget())) {

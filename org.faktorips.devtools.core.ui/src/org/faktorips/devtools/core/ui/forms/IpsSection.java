@@ -66,6 +66,23 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
     /** Flag indicating whether the content of this section can be changed by the user */
     private boolean changeable;
 
+    /**
+     * Flag indicating how much space this section will request from its parent. If
+     * <code>true</code> this section requests as much space as possible (default). If
+     * <code>false</code> this section will only request as much space as needed to display its
+     * contents.
+     */
+    private boolean isGrabVerticalSpace = true;
+
+    /**
+     * Configures this {@link IpsSection} to be initialized in collapsed state if no content is
+     * available ({@link #hasContentToDisplay()}). The default is <code>false</code>.
+     * <p>
+     * If this flag is set to <code>true</code>, this section must provide its title by overriding
+     * {@link #getSectionTitle()}.
+     */
+    private boolean isInitCollapsedIfNoContent = false;
+
     private ArrayList<IDataChangeableStateChangeListener> dataChangeableStateChangeListeners;
 
     /**
@@ -87,7 +104,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
 
     private String id;
 
-    private boolean collapsable;
+    private boolean collapsible;
 
     /** Binding context to bind UI elements with model data. */
     protected BindingContext bindingContext;
@@ -103,7 +120,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
     protected IpsSection(String id, Composite parent, int layoutData, UIToolkit toolkit) {
         this(parent, ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE, layoutData, toolkit);
         this.id = id;
-        collapsable = true;
+        collapsible = true;
     }
 
     /**
@@ -119,6 +136,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
         this.style = style;
         this.layoutData = layoutData;
         this.toolkit = toolkit;
+        collapsible = false;
 
         bindingContext = new BindingContext();
         changeable = true;
@@ -146,19 +164,59 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
 
         // Create the UI section widget that is being wrapped by this composite
         section = toolkit.getFormToolkit().createSection(this, style);
-        section.setLayoutData(new GridData(layoutData));
+        section.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         // Create the client composite for the section
         clientComposite = toolkit.createGridComposite(section, 1, false, false);
-        clientComposite.setLayoutData(new GridData(layoutData));
+        clientComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
         initClientComposite(clientComposite, toolkit);
         section.setClient(clientComposite);
         toolkit.getFormToolkit().paintBordersFor(clientComposite);
-
-        if (collapsable) {
+        setText(getSectionTitle());
+        if (collapsible) {
             initExpandedState();
+            if (!hasContentToDisplay() && isInitCollapsedIfNoContent()) {
+                setExpanded(false);
+            }
             addStorePreferenceExpansionListener();
+            relayoutSection(isExpanded());
         }
+    }
+
+    /**
+     * Returns the title text that is displayed in the section header. Subclasses may override or
+     * call {@link #setText(String)} directly.
+     * 
+     * @return this sections title text.
+     */
+    protected String getSectionTitle() {
+        return ""; //$NON-NLS-1$
+    }
+
+    /**
+     * Returns the no-content annotation of this section. Subclasses may override to provide a
+     * custom annotation.
+     * <p>
+     * The annotation will only be displayed if the section has no content to display and at the
+     * same time is configured to be collapsed using {@link #setInitCollapsedIfNoContent(boolean)}.
+     * 
+     * @return the annotation that is appended to the Section title.
+     */
+    protected String getNoContentTitleAnnotation() {
+        return Messages.IpsSection_DefaultTitleAnnotation_NoContentAvailable;
+    }
+
+    /**
+     * A Subclass should return <code>true</code> if it has content that needs to be displayed,
+     * <code>false</code> else. The Section will then be initialized with a "(none defined)"
+     * annotation in collapsed state.
+     * <p>
+     * The default implementation returns <code>true</code>.
+     * 
+     * @return <code>true</code>
+     */
+    protected boolean hasContentToDisplay() {
+        return true;
     }
 
     /**
@@ -188,13 +246,68 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
                 String pluginId = IpsUIPlugin.getDefault().getBundle().getSymbolicName();
                 IEclipsePreferences node = new InstanceScope().getNode(pluginId);
                 String preferenceId = id + IpsUIPlugin.PREFERENCE_ID_SUFFIX_SECTION_EXPANDED;
-                node.putBoolean(preferenceId, e.getState());
+                boolean expanded = e.getState();
+                node.putBoolean(preferenceId, expanded);
+                relayoutSection(expanded);
             }
+
         });
     }
 
+    /**
+     * Expands or collapses this section. Re-layouts the editor page. The layout-behavior of this
+     * section can be configured using {@link #setGrabVerticalSpace(boolean)}.
+     * 
+     * @param expanded whether or not this section should be expanded.
+     */
     public final void setExpanded(boolean expanded) {
         section.setExpanded(expanded);
+    }
+
+    /**
+     * @return whether this section is currently expanded (<code>true</code>) or collapsed (
+     *         <code>false</code>).
+     */
+    protected boolean isExpanded() {
+        return getSectionControl().isExpanded();
+    }
+
+    /**
+     * Re-layouts the IpsSection's root-composite to assign appropriate amount of space to a changed
+     * section. If the section was expanded let it grab as much space as possible (as do most
+     * sections), if it was collapsed make it as small as possible (grabVertical=false).
+     * <p>
+     * Only re-layouts if this section is configured to do so. See
+     * {@link #setGrabVerticalSpace(boolean)}.
+     */
+    protected void relayoutSection(boolean expanded) {
+        if (isGrabVerticalSpace()) {
+            GridData gridData = (GridData)getLayoutData();
+            gridData.grabExcessVerticalSpace = expanded;
+        }
+        updateSectionTitle();
+        getParent().layout();
+    }
+
+    /**
+     * Updates the sections title only if the section is configured to be initialized as collapsed
+     * using {@link #setInitCollapsedIfNoContent(boolean)}. If the section is collapsed and has no
+     * content to display the no-content annotation is appended to the default header (
+     * {@link #getNoContentTitleAnnotation()}).
+     */
+    protected void updateSectionTitle() {
+        /*
+         * SW 14.4.2011 (in accordance with GT): As annotation the number of elements contained in
+         * this section in brackets (e.g. "(15)" or "(0)") might be easier to "read". The number
+         * could also be displayed in expanded state.
+         */
+        if (isInitCollapsedIfNoContent()) {
+            String newTitle = getSectionTitle();
+            if (!isExpanded() && !hasContentToDisplay()) {
+                newTitle += getNoContentTitleAnnotation();
+            }
+            setText(newTitle);
+        }
     }
 
     /**
@@ -409,5 +522,46 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
         }
 
     };
+
+    /**
+     * Configures this section to grab excess vertical space if it is expanded. This method does
+     * <em>not</em> affect the initial layout of this section, which can only be defined by the the
+     * style bits passed to the constructor.
+     * <p>
+     * Call this method before {@link #initControls()} in the constructor of a subclass.
+     * 
+     * @param grab whether to grab vertical space
+     */
+    public void setGrabVerticalSpace(boolean grab) {
+        isGrabVerticalSpace = grab;
+    }
+
+    /**
+     * 
+     * @return whether this section will grab excess vertical space if it is expanded. Default is
+     *         <code>true</code>.
+     */
+    public boolean isGrabVerticalSpace() {
+        return isGrabVerticalSpace;
+    }
+
+    /**
+     * 
+     * @return whether this section will be initialized collapsed if it is empty.
+     */
+    public boolean isInitCollapsedIfNoContent() {
+        return isInitCollapsedIfNoContent;
+    }
+
+    /**
+     * Whether this section will be initialized collapsed if it is empty.
+     * <p>
+     * Override {@link #getSectionTitle()} to use this functionality.
+     * 
+     * @param initCollapsed the new flag value
+     */
+    public void setInitCollapsedIfNoContent(boolean initCollapsed) {
+        isInitCollapsedIfNoContent = initCollapsed;
+    }
 
 }

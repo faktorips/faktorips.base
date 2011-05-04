@@ -18,8 +18,13 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
@@ -41,17 +46,31 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
      * Flag to tell the content provider to show (<code>true</code>) or not to show the
      * Association-Type as Node.
      */
-    private boolean fShowAssociationNodes = true;
+    private boolean showAssociationNodes = true;
 
+    /**
+     * Flag indicating whether or not tableContents are to be returned by
+     * {@link #getChildren(Object)}.
+     */
     private boolean showTableContents = true;
 
+    /**
+     * Flag indicating whether validation rules are to be returned by {@link #getChildren(Object)}.
+     */
+    private boolean showValidationRules = true;
+
+    /**
+     * Flag indicating whether or not associated product components are to be returned by
+     * {@link #getChildren(Object)} in addition to all product components in a composite relation
+     * with the respective product component.
+     */
     private boolean showAssociatedCmpts;
 
     /**
      * Creates a new content provider.
      */
     public ProductStructureContentProvider(boolean showAssociationNodes) {
-        fShowAssociationNodes = showAssociationNodes;
+        this.showAssociationNodes = showAssociationNodes;
     }
 
     @Override
@@ -83,7 +102,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
         // ENDE: Entwicklungsstand SMART-MODE
 
         // add product cmpt associations and product cmpts
-        if (!fShowAssociationNodes && parentElement instanceof IProductCmptReference) {
+        if (!showAssociationNodes && parentElement instanceof IProductCmptReference) {
             // Arrays.asLists returns an AbstractList that could not be modified
             List<IProductCmptReference> list = new ArrayList<IProductCmptReference>(Arrays.asList(structure
                     .getChildProductCmptReferences((IProductCmptReference)parentElement)));
@@ -124,6 +143,11 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
         }
 
         // add table content usages
+        if (showValidationRules && parentElement instanceof IProductCmptReference) {
+            children.addAll(Arrays.asList(structure
+                    .getChildProductCmptVRuleReferences((IProductCmptReference)parentElement)));
+        }
+        // add table content usages
         if (showTableContents && parentElement instanceof IProductCmptReference) {
             children.addAll(Arrays.asList(structure
                     .getChildProductCmptStructureTblUsageReference((IProductCmptReference)parentElement)));
@@ -138,7 +162,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
             return null;
         }
 
-        if (!fShowAssociationNodes && element instanceof IProductCmptReference) {
+        if (!showAssociationNodes && element instanceof IProductCmptReference) {
             return structure.getParentProductCmptReference((IProductCmptReference)element);
         } else if (element instanceof IProductCmptReference) {
             return structure.getParentProductCmptTypeRelationReference((IProductCmptReference)element);
@@ -186,7 +210,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
      * @return true if association type showing is on
      */
     public boolean isAssociationTypeShowing() {
-        return fShowAssociationNodes;
+        return showAssociationNodes;
     }
 
     /**
@@ -195,7 +219,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
      * @param showAssociationType set true for showing association type
      */
     public void setShowAssociationNodes(boolean showAssociationType) {
-        fShowAssociationNodes = showAssociationType;
+        showAssociationNodes = showAssociationType;
     }
 
     /**
@@ -208,6 +232,15 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
     }
 
     /**
+     * Returns <code>true</code> if a product component's validation rules will be shown or hidden.
+     * 
+     * @return true if show table contents components are shown
+     */
+    public boolean isShowValidationRules() {
+        return showValidationRules;
+    }
+
+    /**
      * Set <code>true</code> to show related table contents.
      */
     public void setShowTableContents(boolean showTableContents) {
@@ -216,5 +249,32 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
 
     public void setShowAssociatedCmpts(boolean showAssociations) {
         showAssociatedCmpts = showAssociations;
+    }
+
+    /**
+     * Set <code>true</code> to show a product components validation rules.
+     */
+    public void setShowValidationRules(boolean showRules) {
+        showValidationRules = showRules;
+    }
+
+    /**
+     * Searches the product component structure for references to the product component defined in
+     * the given source file. Returns <code>false</code> if errors occur when reading from the given
+     * {@link IIpsSrcFile} or if it does not contain an {@link IProductCmpt}.
+     * 
+     * @param ipsSrcFile the source file containing the product component.
+     * @return <code>true</code> if the given product component is referenced by the structure,
+     *         <code>false</code> otherwise.
+     */
+    public boolean isIpsSrcFilePartOfStructure(IIpsSrcFile ipsSrcFile) {
+        if (ipsSrcFile != null && ipsSrcFile.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT) {
+            try {
+                return structure.referencesProductCmpt((IProductCmpt)ipsSrcFile.getIpsObject());
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+        }
+        return false;
     }
 }

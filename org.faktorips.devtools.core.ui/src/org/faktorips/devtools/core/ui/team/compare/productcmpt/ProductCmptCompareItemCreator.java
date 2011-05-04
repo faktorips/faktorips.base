@@ -43,6 +43,8 @@ public class ProductCmptCompareItemCreator extends AbstractCompareItemCreator {
     }
 
     /**
+     * {@inheritDoc}
+     * <p>
      * Creates a structure/tree of <code>ProductCmptCompareItem</code>s from the given
      * <code>IIpsSrcFile</code> to represent an <code>IProductCmpt</code>. The
      * <code>IIpsSrcFile</code>, the <code>IProductCmpt</code>, its
@@ -57,7 +59,6 @@ public class ProductCmptCompareItemCreator extends AbstractCompareItemCreator {
      * representing the attributes (<code>IConfigElement</code>) and relations (
      * <code>IRelation</code>) of the productcomponent (in the current generation).
      * 
-     * {@inheritDoc}
      */
     @Override
     protected IStructureComparator getStructureForIpsSrcFile(IIpsSrcFile file) {

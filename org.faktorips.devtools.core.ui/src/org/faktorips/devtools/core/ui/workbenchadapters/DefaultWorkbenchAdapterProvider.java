@@ -43,6 +43,7 @@ import org.faktorips.devtools.core.internal.model.productcmpt.FormulaTestInputVa
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptLink;
 import org.faktorips.devtools.core.internal.model.productcmpt.TableContentUsage;
+import org.faktorips.devtools.core.internal.model.productcmpt.ValidationRuleConfig;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
@@ -234,6 +235,11 @@ public class DefaultWorkbenchAdapterProvider implements IWorkbenchAdapterProvide
         // ValueSet
         imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("ValueSet.gif", true); //$NON-NLS-1$
         register(ValueSet.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
+
+        // ValidationRule
+        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("ValidationRuleDef.gif", true); //$NON-NLS-1$
+        register(ValidationRule.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
+        register(ValidationRuleConfig.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
     }
 
 }

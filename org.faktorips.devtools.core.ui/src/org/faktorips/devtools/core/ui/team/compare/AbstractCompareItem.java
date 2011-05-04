@@ -167,20 +167,17 @@ public abstract class AbstractCompareItem implements IStreamContentAccessor, ISt
      * <code>IIpsSrcFile</code> and the contained <code>IIpsObject</code>.
      */
     protected int initTreeContentString(StringBuffer sb, int offset) {
-        int currentLength = 0;
+        int startIndex = sb.length();
         sb.append(getContentString());
-        currentLength += getContentString().length();
         for (AbstractCompareItem item : children) {
             sb.append(NEWLINE);
-            currentLength += NEWLINE.length();
-            currentLength += item.initTreeContentString(sb, currentLength + offset);
+            item.initTreeContentString(sb, sb.length() - startIndex + offset);
             if (item.needsTextSeparator()) {
                 sb.append(NEWLINE).append(DASH);
-                currentLength += NEWLINE.length() + DASH.length();
             }
         }
-        setRange(offset, currentLength);
-        return currentLength;
+        setRange(offset, sb.length() - startIndex);
+        return sb.length() - startIndex;
     }
 
     /**

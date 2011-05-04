@@ -30,19 +30,20 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
-import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog;
+import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.util.message.MessageList;
 
-public class RuleEditDialog extends IpsPartEditDialog {
+public class RuleEditDialog extends IpsPartEditDialog2 {
 
     private IValidationRule rule;
 
@@ -57,9 +58,15 @@ public class RuleEditDialog extends IpsPartEditDialog {
     private Text msgText;
     private Label charCount;
 
+    private Checkbox configurableByProductBox;
+    private Checkbox defaultActivationBox;
+
+    private ProductConfigurablePresentationObject state;
+
     public RuleEditDialog(IValidationRule rule, Shell parentShell) {
         super(rule, parentShell, Messages.RuleEditDialog_title, true);
         this.rule = rule;
+        state = new ProductConfigurablePresentationObject(rule);
     }
 
     @Override
@@ -82,7 +89,7 @@ public class RuleEditDialog extends IpsPartEditDialog {
          * due to model changes. The update cycle gui -> model -> gui is currently not implemented
          * in a super class but should be considered in the future. It is necessary here because
          * changes made to the model within the RuleFunctionsControl need to be communicated to the
-         * gui so that other controls can adjust there current state.
+         * gui so that other controls can adjust their current state.
          */
         final ContentsChangeListenerForWidget listener = new ContentsChangeListenerForWidget() {
             @Override
@@ -91,12 +98,14 @@ public class RuleEditDialog extends IpsPartEditDialog {
                     return;
                 }
                 if (event.getIpsSrcFile().equals(rule.getIpsObject().getIpsSrcFile())) {
-                    RuleEditDialog.this.uiController.updateUI();
+                    bindingContext.updateUI();
                 }
             }
         };
         listener.setWidget(parent);
         rule.getIpsModel().addChangeListener(listener);
+
+        bindFields();
         return folder;
     }
 
@@ -104,13 +113,12 @@ public class RuleEditDialog extends IpsPartEditDialog {
         Composite workArea = createTabItemComposite(folder, 1, false);
         ((GridLayout)workArea.getLayout()).verticalSpacing = 20;
 
-        Composite nameComposite = uiToolkit.createLabelEditColumnComposite(workArea);
-        uiToolkit.createFormLabel(nameComposite, Messages.RuleEditDialog_labelName);
-        Text nameText = uiToolkit.createText(nameComposite);
-        nameText.setFocus();
+        // general group
+        createGeneralGroup(workArea);
 
         // message group
         Group msgGroup = uiToolkit.createGroup(workArea, Messages.RuleEditDialog_messageGroupTitle);
+        msgGroup.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
         Composite msgComposite = uiToolkit.createLabelEditColumnComposite(msgGroup);
         msgComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
         uiToolkit.createFormLabel(msgComposite, Messages.RuleEditDialog_labelCode);
@@ -133,12 +141,33 @@ public class RuleEditDialog extends IpsPartEditDialog {
         updateCharCount();
 
         // create fields
-        nameField = new TextField(nameText);
         msgCodeField = new TextField(codeText);
         msgTextField = new TextField(msgText);
         msgSeverityField = new EnumValueField(severityCombo, MessageSeverity.getEnumType());
 
         return workArea;
+    }
+
+    protected void createGeneralGroup(Composite workArea) {
+        Group generalGroup = uiToolkit.createGroup(workArea, Messages.RuleEditDialog_messageTitle);
+        generalGroup.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
+        Composite nameComposite = uiToolkit.createLabelEditColumnComposite(generalGroup);
+        uiToolkit.createFormLabel(nameComposite, Messages.RuleEditDialog_labelName);
+        Text nameText = uiToolkit.createText(nameComposite);
+
+        uiToolkit.createFormLabel(nameComposite, Messages.RuleEditDialog_ProductConfig_label);
+        Composite configurableComposite = uiToolkit.createComposite(nameComposite);
+        GridLayout layout = new GridLayout(2, false);
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        configurableComposite.setLayout(layout);
+        configurableByProductBox = uiToolkit.createCheckbox(configurableComposite,
+                Messages.RuleEditDialog_Configurable_CheckboxLabel);
+        defaultActivationBox = uiToolkit.createCheckbox(configurableComposite,
+                Messages.RuleEditDialog_ActivatedByDefault_CheckboxLabel);
+
+        nameText.setFocus();
+        nameField = new TextField(nameText);
     }
 
     private void updateCharCount() {
@@ -170,25 +199,29 @@ public class RuleEditDialog extends IpsPartEditDialog {
         return workArea;
     }
 
-    @Override
-    protected IpsObjectUIController createUIController(IIpsObjectPart part) {
-        return new UIController(part);
-    }
+    private void bindFields() {
+        bindingContext.bindContent(nameField, rule, IValidationRule.PROPERTY_NAME);
+        bindingContext.bindContent(msgCodeField, rule, IValidationRule.PROPERTY_MESSAGE_CODE);
+        bindingContext.bindContent(msgSeverityField, rule, IValidationRule.PROPERTY_MESSAGE_SEVERITY);
+        bindingContext.bindContent(msgTextField, rule, IValidationRule.PROPERTY_MESSAGE_TEXT);
+        bindingContext
+                .bindContent(appliedToAllField, rule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
+        bindingContext
+                .bindContent(specifiedInSrcField, rule, IValidationRule.PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC);
+        bindingContext.bindContent(new CheckboxField(configurableByProductBox), rule,
+                IValidationRule.PROPERTY_CONFIGUREDABLE_BY_PRODUCT_COMPONENT);
+        bindingContext.bindContent(new CheckboxField(defaultActivationBox), rule,
+                IValidationRule.PROPERTY_ACTIVATED_BY_DEFAULT);
 
-    @Override
-    protected void connectToModel() {
-        super.connectToModel();
-        uiController.add(nameField, rule, IValidationRule.PROPERTY_NAME);
-        uiController.add(msgCodeField, rule, IValidationRule.PROPERTY_MESSAGE_CODE);
-        uiController.add(msgSeverityField, rule, IValidationRule.PROPERTY_MESSAGE_SEVERITY);
-        uiController.add(msgTextField, rule, IValidationRule.PROPERTY_MESSAGE_TEXT);
-        uiController.add(appliedToAllField, rule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
-        uiController.add(specifiedInSrcField, rule, IValidationRule.PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC);
+        bindingContext.bindEnabled(configurableByProductBox, state,
+                ProductConfigurablePresentationObject.PROPERTY_CONFIGURABLE_ENABLED);
+        bindingContext.bindEnabled(defaultActivationBox, state,
+                ProductConfigurablePresentationObject.PROPERTY_DEFAULT_ACTIVATION_ENABLED);
     }
 
     @Override
     protected Point getInitialSize() {
-        return new Point(500, 420);
+        return new Point(500, 500);
     }
 
     class UIController extends IpsObjectUIController {
@@ -203,6 +236,49 @@ public class RuleEditDialog extends IpsPartEditDialog {
             MessageList list = super.validatePartContainerAndUpdateUI();
             rfControl.updateValidationStatus();
             return list;
+        }
+    }
+
+    /**
+     * Object to bind the enablement of this dialog's checkboxes to. As the enablement of checkboxes
+     * is ui specific knowledge, a separate object (an not the rule itself) is used.
+     * <p>
+     * Public for access by {@link BindingContext}.
+     * 
+     * @author Stefan Widmaier
+     */
+    public static class ProductConfigurablePresentationObject {
+        public static final String PROPERTY_CONFIGURABLE_ENABLED = "configurableEnabled"; //$NON-NLS-1$
+        public static final String PROPERTY_DEFAULT_ACTIVATION_ENABLED = "defaultActivationEnabled"; //$NON-NLS-1$
+
+        private IPolicyCmptType pcType = null;
+        private IValidationRule rule;
+
+        public ProductConfigurablePresentationObject(IValidationRule rule) {
+            this.rule = rule;
+            pcType = (IPolicyCmptType)rule.getIpsObject();
+        }
+
+        /**
+         * Returns whether the checkbox {@link RuleEditDialog#configurableByProductBox} should be
+         * enabled/editable.
+         * <p>
+         * The checkbox is enabled if the rule's PolicyComponentType is configurable by product
+         * components.
+         */
+        public boolean getConfigurableEnabled() {
+            return pcType != null && pcType.isConfigurableByProductCmptType();
+        }
+
+        /**
+         * Returns whether the checkbox {@link RuleEditDialog#defaultActivationBox} should be
+         * enabled/editable.
+         * <p>
+         * The checkbox is enabled if both the containing PolicyComponentType and the rule itself
+         * are configurable by product components.
+         */
+        public boolean getDefaultActivationEnabled() {
+            return getConfigurableEnabled() && rule.isConfigurableByProductComponent();
         }
     }
 

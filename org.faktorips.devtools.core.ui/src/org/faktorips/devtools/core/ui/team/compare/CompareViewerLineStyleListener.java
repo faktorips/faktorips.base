@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.team.compare;
 
+import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +27,7 @@ import org.eclipse.swt.custom.LineStyleListener;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Color;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareItem;
 
 /**
  * LineStyleListener for the IpsObjectCompareViewer. Colors keywords (tokens) in the text
@@ -71,6 +73,9 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
         Pattern propertiesPattern = Pattern
                 .compile(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.PropertiesPage_relations);
         linePatternList.add(propertiesPattern);
+        Pattern rulesPattern = Pattern
+                .compile(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ValidationRuleSection_DefaultTitle);
+        linePatternList.add(rulesPattern);
 
         // Patterns for TableContents Messages.TableContentsCompareItem_TableContents
         Pattern tablePattern = Pattern
@@ -124,16 +129,24 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
      */
     protected List<StyleRange> getStylesForLineStart(String lineText, int lineOffset) {
         List<StyleRange> styleList = new ArrayList<StyleRange>();
-
-        Matcher genDateMatcher = genDatePattern.matcher(lineText);
-        Matcher genSeparatorMatcher = genSeparatorPattern.matcher(lineText);
-        if (genDateMatcher.find()) {
-            if (genDateMatcher.start() == 0) {
-                styleList.add(new StyleRange(lineOffset, genDateMatcher.end(), dateHighlight, null, SWT.NORMAL));
-            }
-        } else if (genSeparatorMatcher.find()) {
-            if (genSeparatorMatcher.start() == 0) {
-                styleList.add(new StyleRange(lineOffset, lineText.length(), dateHighlight, null, SWT.NORMAL));
+        ParsePosition pos = new ParsePosition(0);
+        ProductCmptCompareItem.DATE_FORMAT.parse(lineText, pos);
+        int endIndex = pos.getIndex();
+        if (endIndex > 8) {
+            styleList.add(new StyleRange(lineOffset, endIndex, dateHighlight, null, SWT.NORMAL));
+            // }
+            // Matcher genDateMatcher = genDatePattern.matcher(lineText);
+            // if (genDateMatcher.find()) {
+            // if (genDateMatcher.start() == 0) {
+            // styleList.add(new StyleRange(lineOffset, genDateMatcher.end(), dateHighlight, null,
+            // SWT.NORMAL));
+            // }
+        } else {
+            Matcher genSeparatorMatcher = genSeparatorPattern.matcher(lineText);
+            if (genSeparatorMatcher.find()) {
+                if (genSeparatorMatcher.start() == 0) {
+                    styleList.add(new StyleRange(lineOffset, lineText.length(), dateHighlight, null, SWT.NORMAL));
+                }
             }
         }
         return styleList;

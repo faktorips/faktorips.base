@@ -59,26 +59,6 @@ public class Messages extends NLS {
 
     public static String GenerationsSection_validFromInPast;
 
-    public static String ProductCmptCompareItem_AllValues;
-
-    public static String ProductCmptCompareItem_Attribute;
-
-    public static String ProductCmptCompareItem_Formula;
-
-    public static String ProductCmptCompareItem_Relation;
-
-    public static String ProductCmptCompareItem_RelationCardinalityOther_default;
-
-    public static String ProductCmptCompareItem_RelationCardinalityOther_maximum;
-
-    public static String ProductCmptCompareItem_RelationCardinalityOther_minimum;
-
-    public static String ProductCmptCompareItem_SourceFile;
-
-    public static String ProductCmptCompareItem_unlimited;
-
-    public static String ProductCmptCompareItem_ValueSet;
-
     public static String PropertiesPage_relations;
 
     public static String PropertiesPage_noRelationsDefined;
@@ -266,5 +246,9 @@ public class Messages extends NLS {
     public static String RelationsSection_ContextMenu_Properties;
 
     public static String RelationsSection_ContextMenu_OpenInNewEditor;
+
+    public static String ValidationRuleSection_DefaultTitle;
+
+    public static String ValidationRuleSection_NoRulesDefinedLabelText;
 
 }

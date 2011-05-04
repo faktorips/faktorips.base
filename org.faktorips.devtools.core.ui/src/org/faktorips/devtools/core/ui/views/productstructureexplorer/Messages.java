@@ -37,6 +37,7 @@ public class Messages extends NLS {
     public static String ProductStructureExplorer_menuShowAssociationNodes_name;
     public static String ProductStructureExplorer_menuShowTableRoleName_name;
     public static String ProductStructureExplorer_menuShowTableRoleName_tooltip;
+    public static String ProductStructureLabelProvider_inactiveDecoration;
     public static String ProductStructureLabelProvider_undefined;
     public static String ProductStructureExplorer_labelCircleRelation;
     public static String ProductStructureExplorer_nextAdjustmentToolTip;
@@ -46,6 +47,10 @@ public class Messages extends NLS {
     public static String ProductStructureExplorer_tooltipClear;
     public static String ProductStructureExplorer_tooltipRefreshContents;
     public static String ProductStructureExplorer_menuShowAssociatedCmpts_name;
+    public static String ProductStructureExplorer_ShowRulesActionLabel;
+    public static String ProductStructureExplorer_ShowRulesActionTooltip;
     public static String ProductStructureExplorer_tooltipToggleAssociatedCmptsNodes;
+    public static String ToggleRuleAction_Label;
+    public static String ToggleRuleAction_Tooltip;
 
 }

@@ -127,10 +127,12 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
             return null;
         }
 
-        if (!showRelationType && element instanceof IProductCmptReference) {
-            return structure.getParentProductCmptReference((IProductCmptReference)element);
-        } else if (element instanceof IProductCmptReference) {
-            return structure.getParentProductCmptTypeRelationReference((IProductCmptReference)element);
+        if (element instanceof IProductCmptReference) {
+            if (!showRelationType) {
+                return structure.getParentProductCmptReference((IProductCmptReference)element);
+            } else {
+                return structure.getParentProductCmptTypeRelationReference((IProductCmptReference)element);
+            }
         } else if (element instanceof IProductCmptStructureReference) {
             return structure.getParentProductCmptReference((IProductCmptStructureReference)element);
         }

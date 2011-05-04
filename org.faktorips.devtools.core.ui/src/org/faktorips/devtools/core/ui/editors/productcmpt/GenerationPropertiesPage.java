@@ -51,6 +51,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
     private GenerationAttributesSection productAttributesSection;
 
     private FormulasSection formulasSection;
+    private ValidationRuleSection validationRuleSection;
 
     private DefaultsAndRangesSection defaultsAndRangesSection;
 
@@ -196,21 +197,24 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
         IProductCmptGeneration generation = getActiveGeneration();
 
-        Composite left = createGridComposite(toolkit, root, 1, true, GridData.FILL_BOTH);
+        Composite left = createGridComposite(toolkit, root, 1, true, GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL
+                | GridData.GRAB_VERTICAL);
         productAttributesSection = new GenerationAttributesSection(generation, left, toolkit);
         formulasSection = new FormulasSection(generation, left, toolkit);
+        validationRuleSection = new ValidationRuleSection(generation, left, toolkit);
 
-        Composite right = createGridComposite(toolkit, root, 1, true, GridData.FILL_BOTH);
+        Composite right = createGridComposite(toolkit, root, 1, true, GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL
+                | GridData.GRAB_VERTICAL);
         defaultsAndRangesSection = new DefaultsAndRangesSection(generation, right, toolkit);
         linksSection = new LinksSection(generation, right, toolkit, getEditorSite());
 
         productAttributesSection.setFocusSuccessor(formulasSection);
-        formulasSection.setFocusSuccessor(defaultsAndRangesSection);
+        formulasSection.setFocusSuccessor(validationRuleSection);
+        validationRuleSection.setFocusSuccessor(defaultsAndRangesSection);
         defaultsAndRangesSection.setFocusSuccessor(linksSection);
 
         // searches for Composites that implement the ISelectionProviderActivation interface and
-        // registers
-        // them with the selection provider dispatcher of the IpsObjectEditor
+        // registers them with the selection provider dispatcher of the IpsObjectEditor
         registerSelectionProviderActivation(root);
 
         pageRoot.layout();

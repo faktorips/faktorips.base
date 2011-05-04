@@ -86,7 +86,7 @@ public class GenerationAttributesSection extends IpsSection {
      * @param toolkit The toolkit to use for easier ui-handling
      */
     public GenerationAttributesSection(IProductCmptGeneration generation, Composite parent, UIToolkit toolkit) {
-        super(ID, parent, GridData.FILL_BOTH, toolkit);
+        super(ID, parent, GridData.FILL_BOTH | GridData.GRAB_VERTICAL, toolkit);
         this.generation = generation;
         initControls();
         setText(Messages.ProductAttributesSection_attribute);

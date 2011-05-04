@@ -129,7 +129,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
      * @param toolkit The ui-toolkit to support drawing.
      */
     public LinksSection(IProductCmptGeneration generation, Composite parent, UIToolkit toolkit, IEditorSite site) {
-        super(ID, parent, GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL, toolkit);
+        super(ID, parent, GridData.FILL_BOTH, toolkit);
         ArgumentCheck.notNull(generation);
         this.generation = generation;
         this.site = site;

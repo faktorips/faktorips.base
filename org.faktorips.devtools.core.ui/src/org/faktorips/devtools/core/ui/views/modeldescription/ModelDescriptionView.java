@@ -86,9 +86,7 @@ public class ModelDescriptionView extends PageBookView {
      */
     @Override
     protected PageRec doCreatePage(IWorkbenchPart part) {
-
         if (part instanceof IModelDescriptionSupport) {
-
             IPage page;
             try {
                 page = ((IModelDescriptionSupport)part).createModelDescriptionPage();
@@ -99,10 +97,8 @@ public class ModelDescriptionView extends PageBookView {
 
             } catch (CoreException e) {
                 IpsPlugin.log(e);
-
                 page = createExceptionPage(e);
             }
-
             initPage((IPageBookViewPage)page);
             page.createControl(getPageBook());
             return new PageRec(part, page);

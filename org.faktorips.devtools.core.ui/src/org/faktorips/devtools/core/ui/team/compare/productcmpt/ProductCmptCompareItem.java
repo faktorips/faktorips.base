@@ -33,11 +33,11 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.ui.editors.productcmpt.Messages;
 import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem;
 
 /**
@@ -59,7 +59,7 @@ import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem;
  */
 public class ProductCmptCompareItem extends AbstractCompareItem {
 
-    protected DateFormat simpleDateFormat = DateFormat.getDateInstance(SimpleDateFormat.MEDIUM);
+    public static final DateFormat DATE_FORMAT = DateFormat.getDateInstance(SimpleDateFormat.MEDIUM);
 
     /**
      * Creates a ProductCmptCompareItem with the given parent and the given content. If parent is
@@ -78,26 +78,23 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      */
     @Override
     protected int initTreeContentString(StringBuffer sb, int offset) {
-        int currentLength = 0;
+        int startIndex = sb.length();
         sb.append(getContentString());
-        currentLength += getContentString().length();
         for (AbstractCompareItem compareItem : children) {
             ProductCmptCompareItem child = (ProductCmptCompareItem)compareItem;
             sb.append(NEWLINE);
-            currentLength += NEWLINE.length();
             if (child.getIpsElement() instanceof IIpsObjectGeneration) {
-                currentLength += child.initGenerationContentString(sb, currentLength + offset);
+                child.initGenerationContentString(sb, sb.length() - startIndex + offset);
             } else {
-                currentLength += child.initTreeContentString(sb, currentLength + offset);
+                child.initTreeContentString(sb, sb.length() - startIndex + offset);
             }
             // do not include separator line in child ranges
             if (child.needsTextSeparator()) {
                 sb.append(NEWLINE).append(DASH);
-                currentLength += NEWLINE.length() + DASH.length();
             }
         }
-        setRange(offset, currentLength);
-        return currentLength;
+        setRange(offset, sb.length() - startIndex);
+        return sb.length() - startIndex;
     }
 
     /**
@@ -105,57 +102,64 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      * <code>IIpsObjectGeneration</code> as contained <code>IIpsElement</code>.
      * <p>
      * Similarly to initTreeContentString() this method also calculates the document-ranges for this
-     * CompareItem and its children. The children of a generation (relations and configelements) are
-     * not treated equal. They are ordered and displayed in two separate lists, one with header
+     * CompareItem and its children. The children of a generation (relations and config-elements)
+     * are not treated equal. They are ordered and displayed in two separate lists, one with header
      * "relations" the other with header "attributes".
      * <p>
-     * Except for the ordering of children the creation of the contentstring and calculation of
-     * textranges works similarly to the initTreeContentString() method.
+     * Except for the ordering of children the creation of the content string and calculation of
+     * text ranges works similarly to the initTreeContentString() method.
      */
     private int initGenerationContentString(StringBuffer sb, int offset) {
         IProductCmptGeneration generation = (IProductCmptGeneration)getIpsElement();
-        int currentLength = 0;
+        int startIndex = sb.length();
         sb.append(getContentString());
-        currentLength += getContentString().length();
         List<ProductCmptCompareItem> attributes = getPropertyValues(children);
         List<ProductCmptCompareItem> relations = getRelations(children);
+        List<ProductCmptCompareItem> rules = getRules(children);
         if (!attributes.isEmpty()) {
             sb.append(NEWLINE);
-            currentLength += NEWLINE.length();
             String attrHeader = getAttributeListHeader(generation);
             sb.append(attrHeader);
-            currentLength += attrHeader.length();
             for (ProductCmptCompareItem attribute : attributes) {
                 sb.append(NEWLINE);
-                currentLength += NEWLINE.length();
-                currentLength += attribute.initTreeContentString(sb, currentLength + offset);
+                attribute.initTreeContentString(sb, sb.length() - startIndex + offset);
             }
         }
         if (!relations.isEmpty()) {
             sb.append(NEWLINE);
-            currentLength += NEWLINE.length();
-        }
-        if (!relations.isEmpty()) {
             String relationsHeader = getRelationListHeader(generation);
             sb.append(relationsHeader);
-            currentLength += relationsHeader.length();
             String[] relationTypes = getRelationTypes(generation);
             for (String relationType : relationTypes) {
                 List<ProductCmptCompareItem> relationsByType = getRelations(relations, relationType);
                 if (!relationsByType.isEmpty()) {
                     String relTypeHeader = getRelationTypeHeader(generation, relationType);
                     sb.append(relTypeHeader);
-                    currentLength += relTypeHeader.length();
                 }
                 for (ProductCmptCompareItem rel : relationsByType) {
                     sb.append(NEWLINE);
-                    currentLength += NEWLINE.length();
-                    currentLength += rel.initTreeContentString(sb, currentLength + offset);
+                    rel.initTreeContentString(sb, sb.length() - startIndex + offset);
                 }
             }
         }
-        setRange(offset, currentLength);
-        return currentLength;
+        if (!rules.isEmpty()) {
+            sb.append(NEWLINE);
+            sb.append(getRuleListHeader(generation));
+            for (ProductCmptCompareItem rule : rules) {
+                sb.append(NEWLINE);
+                rule.initTreeContentString(sb, sb.length() - startIndex + offset);
+            }
+        }
+        setRange(offset, sb.length() - startIndex);
+        return sb.length() - startIndex;
+    }
+
+    private String getRuleListHeader(IProductCmptGeneration gen) {
+        StringBuffer sb = new StringBuffer();
+        String ruleHeaderName = org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ValidationRuleSection_DefaultTitle;
+        appendGenerationDateForLineStart(gen, sb);
+        sb.append(TAB).append(TAB).append(ruleHeaderName).append(COLON_BLANK);
+        return sb.toString();
     }
 
     /**
@@ -165,8 +169,8 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     private String getAttributeListHeader(IIpsObjectGeneration gen) {
         StringBuffer sb = new StringBuffer();
         String attrString = org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_attribute;
-        String validFrom = simpleDateFormat.format(gen.getValidFrom().getTime());
-        sb.append(validFrom).append(TAB).append(TAB).append(attrString).append(COLON_BLANK);
+        appendGenerationDateForLineStart(gen, sb);
+        sb.append(TAB).append(TAB).append(attrString).append(COLON_BLANK);
         return sb.toString();
     }
 
@@ -177,8 +181,8 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     private String getRelationListHeader(IIpsObjectGeneration gen) {
         StringBuffer sb = new StringBuffer();
         String relString = org.faktorips.devtools.core.ui.editors.productcmpt.Messages.PropertiesPage_relations;
-        String validFrom = simpleDateFormat.format(gen.getValidFrom().getTime());
-        sb.append(validFrom).append(TAB).append(TAB).append(relString).append(COLON_BLANK);
+        appendGenerationDateForLineStart(gen, sb);
+        sb.append(TAB).append(TAB).append(relString).append(COLON_BLANK);
         return sb.toString();
     }
 
@@ -189,9 +193,13 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     private String getRelationTypeHeader(IIpsObjectGeneration gen, String relationType) {
         StringBuffer sb = new StringBuffer();
         sb.append(NEWLINE);
-        String validFromSimple = simpleDateFormat.format(gen.getValidFrom().getTime());
-        sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(relationType);
+        appendGenerationDateForLineStart(gen, sb);
+        sb.append(TAB).append(TAB).append(TAB).append(relationType);
         return sb.toString();
+    }
+
+    protected void appendGenerationDateForLineStart(IIpsObjectGeneration gen, StringBuffer sb) {
+        sb.append(DATE_FORMAT.format(gen.getValidFrom().getTime()));
     }
 
     /**
@@ -239,6 +247,20 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     }
 
     /**
+     * Returns a list containing all <code>ProductCmptCompareItem</code>s in the given list that
+     * represent an <code>IValidationRule</code>.
+     */
+    private List<ProductCmptCompareItem> getRules(List<AbstractCompareItem> items) {
+        List<ProductCmptCompareItem> rels = new ArrayList<ProductCmptCompareItem>();
+        for (AbstractCompareItem item : items) {
+            if (item.getIpsElement() instanceof IValidationRuleConfig) {
+                rels.add((ProductCmptCompareItem)item);
+            }
+        }
+        return rels;
+    }
+
+    /**
      * Returns all RelationTypes for the given <code>IProductCmptGeneration</code> in the order of
      * occurrence. Multiple occurrences of the same ID are ignored.
      * <p>
@@ -269,8 +291,8 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         }
         if (getIpsElement() instanceof IProductCmptLink) {
             IProductCmptLink rel = (IProductCmptLink)getIpsElement();
-            String validFromSimple = simpleDateFormat.format(rel.getProductCmptGeneration().getValidFrom().getTime());
-            sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(TAB).append(rel.getTarget());
+            appendGenerationDateForLineStart(rel.getProductCmptGeneration(), sb);
+            sb.append(TAB).append(TAB).append(TAB).append(TAB).append(rel.getTarget());
             sb.append(BLANK).append(BLANK).append("["); //$NON-NLS-1$
             if (rel.isMandatory()) {
                 sb.append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.CardinalityPanel_labelMandatory);
@@ -288,34 +310,38 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
             sb.append(BLANK).append(BLANK).append("(").append(rel.getId()).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
         } else if (getIpsElement() instanceof IConfigElement) {
             IConfigElement configElement = (IConfigElement)getIpsElement();
-            String validFromSimple = simpleDateFormat.format(configElement.getProductCmptGeneration().getValidFrom()
-                    .getTime());
-            sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(configElement.getName())
-                    .append(NEWLINE);
-            sb.append(validFromSimple)
-                    .append(TAB)
+            appendGenerationDateForLineStart(configElement.getProductCmptGeneration(), sb);
+            sb.append(TAB).append(TAB).append(TAB).append(configElement.getName()).append(NEWLINE);
+            appendGenerationDateForLineStart(configElement.getProductCmptGeneration(), sb);
+            sb.append(TAB)
                     .append(TAB)
                     .append(TAB)
                     .append(TAB)
                     .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.PolicyAttributeEditDialog_defaultValue)
                     .append(BLANK);
             sb.append(configElement.getValue()).append(NEWLINE);
-            sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(TAB)
-                    .append(Messages.ProductCmptCompareItem_ValueSet).append(COLON_BLANK);
+            appendGenerationDateForLineStart(configElement.getProductCmptGeneration(), sb);
+            sb.append(TAB).append(TAB).append(TAB).append(TAB).append(Messages.ProductCmptCompareItem_ValueSet)
+                    .append(COLON_BLANK);
             sb.append(getValueSetContent(configElement));
         } else if (getIpsElement() instanceof IPropertyValue) {
             IPropertyValue value = (IPropertyValue)getIpsElement();
-            String validFromSimple = simpleDateFormat.format(value.getProductCmptGeneration().getValidFrom().getTime());
-            sb.append(validFromSimple).append(TAB).append(TAB).append(TAB).append(value.getPropertyName())
-                    .append(COLON_BLANK);
+            appendGenerationDateForLineStart(value.getProductCmptGeneration(), sb);
+            sb.append(TAB).append(TAB).append(TAB).append(value.getPropertyName()).append(COLON_BLANK);
             sb.append(value.getPropertyValue());
+        } else if (getIpsElement() instanceof IValidationRuleConfig) {
+            IValidationRuleConfig rule = (IValidationRuleConfig)getIpsElement();
+            appendGenerationDateForLineStart(rule.getProductCmptGeneration(), sb);
+            sb.append(TAB).append(TAB).append(TAB).append(rule.getName()).append(COLON_BLANK);
+            sb.append(rule.isActive() ? Messages.ProductCmptCompareItem_VRule_active
+                    : Messages.ProductCmptCompareItem_VRule_inactive);
         } else if (getIpsElement() instanceof IIpsObjectGeneration) {
             IIpsObjectGeneration gen = (IIpsObjectGeneration)getIpsElement();
-            String validFromSimple = simpleDateFormat.format(gen.getValidFrom().getTime());
-            sb.append(validFromSimple).append(TAB).append(changingNamingConventionGenerationString).append(COLON_BLANK);
+            appendGenerationDateForLineStart(gen, sb);
+            sb.append(TAB).append(changingNamingConventionGenerationString).append(COLON_BLANK);
             sb.append(QUOTE).append(gen.getName()).append(QUOTE).append(NEWLINE);
-            sb.append(validFromSimple)
-                    .append(TAB)
+            appendGenerationDateForLineStart(gen, sb);
+            sb.append(TAB)
                     .append(TAB)
                     .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.GenerationEditDialog_labelValidFrom)
                     .append(BLANK);

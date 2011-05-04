@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IPerspectiveDescriptor;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
@@ -57,19 +56,6 @@ public class ProductCmptPropertiesPage extends IpsObjectEditorPage {
         Composite top = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
         new ComponentPropertiesSection(getProductCmpt(), top, toolkit, getProductCmptEditor());
         new GenerationsSection(this, top, toolkit);
-
-        /*
-         * FIXME SW 19.01.10: Boeser Hack als Workaround fuer FS#1717- Regel-Section soll nicht
-         * angezeigt werden, wenn die Analyzer-Perspektive offen/aktiv ist. Es ist geplant den
-         * Editor in kuerze umzugestalten, daher diese provisorische "Loesung".
-         */
-        IPerspectiveDescriptor perspectiveDesc = getSite().getPage().getPerspective();
-        if (perspectiveDesc != null
-                && !perspectiveDesc.getId().equals("org.faktorips.devtools.core.ui.productAnalyzerPerspective")) { //$NON-NLS-1$
-            Composite bottom = createGridComposite(toolkit, formBody, 1, true, GridData.FILL_BOTH);
-            new RulesSection(this, bottom, toolkit);
-        }
-
     }
 
     // Made public to get refresh from editor.

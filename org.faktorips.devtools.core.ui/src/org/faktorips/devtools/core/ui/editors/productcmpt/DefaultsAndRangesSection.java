@@ -85,9 +85,18 @@ public class DefaultsAndRangesSection extends IpsSection {
      * Creates a new section to edit ranges and default-values.
      */
     public DefaultsAndRangesSection(IProductCmptGeneration generation, Composite parent, UIToolkit toolkit) {
-        super(ID, parent, GridData.FILL_HORIZONTAL, toolkit);
+        /*
+         * Use VERTICAL_ALIGN_FILL instead of FILL_VERTICAL (or FILL_BOTH) as latter will include
+         * GRAB_VERTICAL, which is undesired for this section.
+         */
+        super(ID, parent, GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL, toolkit);
         ArgumentCheck.notNull(generation);
         this.generation = generation;
+        /*
+         * do not request more space than is needed to display defaults and ranges. Let linkSection
+         * acquire all the space. Call before initControls().
+         */
+        setGrabVerticalSpace(false);
         initControls();
         setText(Messages.PolicyAttributesSection_defaultsAndRanges);
     }

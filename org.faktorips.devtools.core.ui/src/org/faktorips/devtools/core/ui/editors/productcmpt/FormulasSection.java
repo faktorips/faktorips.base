@@ -81,10 +81,10 @@ public class FormulasSection extends IpsSection {
     public FormulasSection(IProductCmptGeneration generation, Composite parent, UIToolkit toolkit) {
         super(ID, parent, GridData.FILL_BOTH, toolkit);
         ArgumentCheck.notNull(generation);
-
         this.generation = generation;
+
+        setInitCollapsedIfNoContent(true);
         initControls();
-        setText(Messages.FormulasSection_calculationFormulas);
     }
 
     @Override
@@ -105,6 +105,16 @@ public class FormulasSection extends IpsSection {
         rootPane.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
         toolkit.getFormToolkit().paintBordersFor(rootPane);
         createEditControls();
+    }
+
+    @Override
+    protected String getSectionTitle() {
+        return Messages.FormulasSection_calculationFormulas;
+    }
+
+    @Override
+    protected boolean hasContentToDisplay() {
+        return generation.getNumOfFormulas() > 0;
     }
 
     @Override

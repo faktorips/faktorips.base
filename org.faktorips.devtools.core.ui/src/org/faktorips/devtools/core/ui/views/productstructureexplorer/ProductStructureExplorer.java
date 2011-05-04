@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
@@ -56,8 +57,10 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptReference;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTypeAssociationReference;
+import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptVRuleReference;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -69,6 +72,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
@@ -117,7 +121,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
 
     private static final int OPTION_ASSOCIATION_NODE = 1 << 2;
 
-    private static final int OPTION_ASSOCIATIONED_CMPTS = 1 << 3;
+    private static final int OPTION_ASSOCIATED_CMPTS = 1 << 3;
 
     private TreeViewer treeViewer;
     private IIpsSrcFile file;
@@ -129,6 +133,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
     private boolean showAssociationNode = false;
     private boolean showTableStructureRoleName = false;
     private boolean showReferencedTable = true;
+    private boolean showRules = true;
     private boolean showAssociatedCmpts = true;
 
     private Composite viewerPanel;
@@ -208,7 +213,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         IpsPlugin.getDefault().getIpsModel().addChangeListener(this);
         IpsPlugin.getDefault().getIpsModel().addIpsSrcFilesChangedListener(this);
         // add as resource listener because refactoring-actions like move or rename
-        // does not cause a model-changed-event.
+        // would not cause a model-changed-event otherwise.
     }
 
     /**
@@ -230,6 +235,9 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         Action showRoleNameAction = createShowTableRoleNameAction();
         showRoleNameAction.setChecked(showTableStructureRoleName);
         menuManager.appendToGroup(MENU_INFO_GROUP, showRoleNameAction);
+        Action showRulesAction = createShowRulesAction();
+        showRulesAction.setChecked(showRules);
+        menuManager.appendToGroup(MENU_INFO_GROUP, showRulesAction);
 
         menuManager.add(new Separator(MENU_FILTER_GROUP));
         Action showReferencedTableAction = createShowReferencedTables();
@@ -275,6 +283,27 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
             @Override
             public String getToolTipText() {
                 return Messages.ProductStructureExplorer_menuShowTableRoleName_tooltip;
+            }
+        };
+    }
+
+    private Action createShowRulesAction() {
+        return new Action(Messages.ProductStructureExplorer_ShowRulesActionLabel, IAction.AS_CHECK_BOX) {
+            @Override
+            public ImageDescriptor getImageDescriptor() {
+                return null;
+            }
+
+            @Override
+            public void run() {
+                contentProvider.setShowValidationRules(!contentProvider.isShowValidationRules());
+                showRules = contentProvider.isShowValidationRules();
+                refresh();
+            }
+
+            @Override
+            public String getToolTipText() {
+                return Messages.ProductStructureExplorer_ShowRulesActionTooltip;
             }
         };
     }
@@ -443,57 +472,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
 
         treeViewer.addDoubleClickListener(new ProdStructExplTreeDoubleClickListener(treeViewer));
 
-        MenuManager menumanager = new MenuManager();
-        menumanager.setRemoveAllWhenShown(false);
-        menumanager.add(new Separator("open")); //$NON-NLS-1$
-        final IAction openAction = new OpenEditorAction(treeViewer);
-        menumanager.add(openAction);
-
-        menumanager.add(new Separator("edit")); //$NON-NLS-1$
-        final IAction addAction = new AddLinkAction(treeViewer);
-        menumanager.add(addAction);
-        menumanager.add(ActionFactory.DELETE.create(getSite().getWorkbenchWindow()));
-
-        menumanager.add(new Separator("copy")); //$NON-NLS-1$
-        final IpsDeepCopyAction copyNewVersionAction = new IpsDeepCopyAction(getSite().getShell(), treeViewer,
-                DeepCopyWizard.TYPE_NEW_VERSION);
-        menumanager.add(copyNewVersionAction);
-        final IpsDeepCopyAction copyProductAction = new IpsDeepCopyAction(getSite().getShell(), treeViewer,
-                DeepCopyWizard.TYPE_COPY_PRODUCT);
-        menumanager.add(copyProductAction);
-
-        menumanager.add(new Separator(ModelExplorerContextMenuBuilder.GROUP_NAVIGATE));
-
-        treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                Object selectedRef = getSelectedObjectFromSelection(treeViewer.getSelection());
-                boolean copyEnabled = false;
-                boolean addActionEnabled = false;
-                boolean enabled = isReferenceAndOpenActionSupportedForSelection(selectedRef);
-                if (selectedRef instanceof IProductCmptReference) {
-                    IProductCmptReference reference = (IProductCmptReference)selectedRef;
-                    IIpsSrcFile srcFileToChange = reference.getWrappedIpsSrcFile();
-                    addActionEnabled = IpsUIPlugin.isEditable(srcFileToChange);
-                    copyEnabled = IpsPlugin.getDefault().getIpsPreferences().isWorkingModeEdit();
-                }
-                if (selectedRef instanceof IProductCmptTypeAssociationReference) {
-                    IProductCmptTypeAssociationReference reference = (IProductCmptTypeAssociationReference)selectedRef;
-                    IIpsSrcFile srcFileToChange = reference.getParent().getWrappedIpsSrcFile();
-                    addActionEnabled = IpsUIPlugin.isEditable(srcFileToChange);
-                }
-                addAction.setEnabled(addActionEnabled);
-                copyNewVersionAction.setEnabled(copyEnabled);
-                copyProductAction.setEnabled(copyEnabled);
-                openAction.setEnabled(enabled);
-
-            }
-        });
-
-        Menu menu = menumanager.createContextMenu(treeViewer.getControl());
-        treeViewer.getControl().setMenu(menu);
-        getSite().registerContextMenu(menumanager, treeViewer);
+        initContextMenue();
 
         getSite().setSelectionProvider(treeViewer);
 
@@ -502,6 +481,75 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         initToolBar(actionBars.getToolBarManager());
         hookGlobalActions();
         showEmptyMessage();
+    }
+
+    protected void initContextMenue() {
+        MenuManager menumanager = new MenuManager();
+        menumanager.setRemoveAllWhenShown(true);
+        menumanager.addMenuListener(new IMenuListener() {
+            @Override
+            public void menuAboutToShow(IMenuManager manager) {
+                createContextMenu(manager, (IStructuredSelection)treeViewer.getSelection());
+            }
+
+        });
+
+        Menu menu = menumanager.createContextMenu(treeViewer.getControl());
+        treeViewer.getControl().setMenu(menu);
+        getSite().registerContextMenu(menumanager, treeViewer);
+    }
+
+    private void createContextMenu(IMenuManager menumanager, IStructuredSelection selection) {
+        Object selectedRef = getSelectedObjectFromSelection(selection);
+        if (selectedRef == null) {
+            return;
+        }
+
+        menumanager.add(new Separator("open")); //$NON-NLS-1$
+        final IAction openAction = new OpenEditorAction(treeViewer);
+        menumanager.add(openAction);
+
+        if (selectedRef instanceof ProductCmptReference) {
+            menumanager.add(new Separator("edit")); //$NON-NLS-1$
+            final IAction addAction = new AddLinkAction(treeViewer);
+            menumanager.add(addAction);
+            menumanager.add(ActionFactory.DELETE.create(getSite().getWorkbenchWindow()));
+
+            menumanager.add(new Separator("copy")); //$NON-NLS-1$
+            final IpsDeepCopyAction copyNewVersionAction = new IpsDeepCopyAction(getSite().getShell(), treeViewer,
+                    DeepCopyWizard.TYPE_NEW_VERSION);
+            menumanager.add(copyNewVersionAction);
+            final IpsDeepCopyAction copyProductAction = new IpsDeepCopyAction(getSite().getShell(), treeViewer,
+                    DeepCopyWizard.TYPE_COPY_PRODUCT);
+            menumanager.add(copyProductAction);
+
+            menumanager.add(new Separator(ModelExplorerContextMenuBuilder.GROUP_NAVIGATE));
+
+            boolean copyEnabled = false;
+            boolean addActionEnabled = false;
+            boolean enabled = isReferenceAndOpenActionSupportedForSelection(selectedRef);
+            if (selectedRef instanceof IProductCmptReference) {
+                IProductCmptReference reference = (IProductCmptReference)selectedRef;
+                IIpsSrcFile srcFileToChange = reference.getWrappedIpsSrcFile();
+                addActionEnabled = IpsUIPlugin.isEditable(srcFileToChange);
+                copyEnabled = IpsPlugin.getDefault().getIpsPreferences().isWorkingModeEdit();
+            }
+            if (selectedRef instanceof IProductCmptTypeAssociationReference) {
+                IProductCmptTypeAssociationReference reference = (IProductCmptTypeAssociationReference)selectedRef;
+                IIpsSrcFile srcFileToChange = reference.getParent().getWrappedIpsSrcFile();
+                addActionEnabled = IpsUIPlugin.isEditable(srcFileToChange);
+            }
+            addAction.setEnabled(addActionEnabled);
+            copyNewVersionAction.setEnabled(copyEnabled);
+            copyProductAction.setEnabled(copyEnabled);
+            openAction.setEnabled(enabled);
+        } else if (selectedRef instanceof ProductCmptVRuleReference) {
+            ProductCmptVRuleReference ruleRef = (ProductCmptVRuleReference)selectedRef;
+            menumanager.add(new Separator("edit")); //$NON-NLS-1$
+            final IAction toggleRuleAction = new ToggleRuleAction(ruleRef.getValidationRuleConfig());
+            menumanager.add(toggleRuleAction);
+            menumanager.add(ActionFactory.DELETE.create(getSite().getWorkbenchWindow()));
+        }
     }
 
     private void hookGlobalActions() {
@@ -687,8 +735,11 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
 
     @Override
     public void contentsChanged(ContentChangeEvent event) {
-        if (file == null || !event.getIpsSrcFile().equals(file)) {
-            // no contents set or event concerncs another source file - nothing to refresh.
+        if (file == null || !contentProvider.isIpsSrcFilePartOfStructure(event.getIpsSrcFile())) {
+            /*
+             * Either no contents are set or the event concerns a source file not part of the
+             * structure - nothing to refresh.
+             */
             return;
         }
         int type = event.getEventType();
@@ -696,7 +747,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
 
         // refresh only for relevant changes
         if (part instanceof ITableContentUsage || part instanceof IProductCmptLink
-                || type == ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED) {
+                || part instanceof IValidationRuleConfig || type == ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED) {
             postRefresh();
         }
     }
@@ -802,13 +853,13 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         showReferencedTable = (checkedMenuState & OPTION_REFERENCE_TABLE) == OPTION_REFERENCE_TABLE;
         showTableStructureRoleName = (checkedMenuState & OPTION_TABLE_STRUCTURE_ROLE_NAME) == OPTION_TABLE_STRUCTURE_ROLE_NAME;
         showAssociationNode = (checkedMenuState & OPTION_ASSOCIATION_NODE) == OPTION_ASSOCIATION_NODE;
-        showAssociatedCmpts = (checkedMenuState & OPTION_ASSOCIATIONED_CMPTS) == OPTION_ASSOCIATIONED_CMPTS;
+        showAssociatedCmpts = (checkedMenuState & OPTION_ASSOCIATED_CMPTS) == OPTION_ASSOCIATED_CMPTS;
     }
 
     private int evalMenuStates() {
         return ((showReferencedTable ? OPTION_REFERENCE_TABLE : 0) | //
                 (showTableStructureRoleName ? OPTION_TABLE_STRUCTURE_ROLE_NAME : 0) | //
-                (showAssociationNode ? OPTION_ASSOCIATION_NODE : 0) | (showAssociatedCmpts ? OPTION_ASSOCIATIONED_CMPTS
+                (showAssociationNode ? OPTION_ASSOCIATION_NODE : 0) | (showAssociatedCmpts ? OPTION_ASSOCIATED_CMPTS
                 : 0)); //
     }
 
