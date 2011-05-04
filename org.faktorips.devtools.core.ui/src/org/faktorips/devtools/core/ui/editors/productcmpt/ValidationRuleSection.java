@@ -132,12 +132,14 @@ public class ValidationRuleSection extends IpsSection {
     }
 
     private void setCheckedState() {
-        TableItem[] items = tableViewer.getTable().getItems();
-        for (TableItem item : items) {
-            String ruleName = item.getText();
-            IValidationRuleConfig validationRuleConfig = generation.getValidationRuleConfig(ruleName);
-            if (validationRuleConfig != null) {
-                item.setChecked(validationRuleConfig.isActive());
+        if (tableViewer != null) {
+            TableItem[] items = tableViewer.getTable().getItems();
+            for (TableItem item : items) {
+                String ruleName = item.getText();
+                IValidationRuleConfig validationRuleConfig = generation.getValidationRuleConfig(ruleName);
+                if (validationRuleConfig != null) {
+                    item.setChecked(validationRuleConfig.isActive());
+                }
             }
         }
     }
