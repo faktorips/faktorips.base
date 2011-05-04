@@ -141,7 +141,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
         // nothing to do in the base class
         //
         // Note that the method is deliberately not declared as abstract to
-        // allow in subclasses calls to doInitReferencesFromXml().
+        // allow in subclasses calls to super.doInitReferencesFromXml().
     }
 
     /**
@@ -154,7 +154,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
         // nothing to do in the base class
         //
         // Note that the method is deliberately not declared as abstract to
-        // allow in subclasses calls to doInitTableUsagesFromXml().
+        // allow in subclasses calls to super.doInitTableUsagesFromXml().
     }
 
     /**
