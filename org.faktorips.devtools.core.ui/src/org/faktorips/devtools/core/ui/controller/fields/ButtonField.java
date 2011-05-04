@@ -18,7 +18,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Control;
 
-public class ButtonField extends DefaultEditField {
+public class ButtonField extends DefaultEditField<Boolean> {
 
     private final Button button;
 
@@ -32,13 +32,13 @@ public class ButtonField extends DefaultEditField {
     }
 
     @Override
-    public Object parseContent() {
+    public Boolean parseContent() {
         return new Boolean(button.getSelection());
     }
 
     @Override
-    public void setValue(Object newValue) {
-        button.setSelection((Boolean)newValue);
+    public void setValue(Boolean newValue) {
+        button.setSelection(newValue);
     }
 
     @Override

@@ -193,13 +193,13 @@ public class BindingContext {
      * @throws IllegalArgumentException if the property is not of type Boolean or boolean.
      * @throws NullPointerException if any argument is <code>null</code>.
      */
-    public EditField bindContent(Button button, Object object, String propertyName) {
+    public EditField<Boolean> bindContent(Button button, Object object, String propertyName) {
         PropertyDescriptor property = BeanUtil.getPropertyDescriptor(object.getClass(), propertyName);
         if (Boolean.class != property.getPropertyType() && Boolean.TYPE != property.getPropertyType()) {
             throwWrongPropertyTypeException(property, new Class[] { Boolean.class, Boolean.TYPE });
         }
 
-        EditField field = new ButtonField(button);
+        EditField<Boolean> field = new ButtonField(button);
         bindContent(field, object, propertyName);
         return field;
     }
