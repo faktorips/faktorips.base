@@ -1345,16 +1345,6 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         if (getPcType().getSupertype().length() == 0) {
             getGenerator().generateChangeListenerConstants(builder);
         }
-        if (!getPcType().getValidationRules().isEmpty()) {
-            generateValidationConstants(builder);
-        }
-    }
-
-    private void generateValidationConstants(JavaCodeFragmentBuilder membersBuilder) {
-        appendLocalizedJavaDoc("FIELD_CONTINUE_VALIDATION", null, membersBuilder);
-        membersBuilder.append("public final static boolean CONTINUE_VALIDATION= true;");
-        appendLocalizedJavaDoc("FIELD_STOP_VALIDATION", null, membersBuilder);
-        membersBuilder.append("public final static boolean STOP_VALIDATION= false;");
     }
 
     /**
