@@ -817,11 +817,11 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         method.setName("aRule");
         method.setDatatype(Datatype.VOID.getName());
         msgList = policyCmptType.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IValidationRule.MSGCODE_VALIDATION_RULE_METHOD_NAME_COLLISION));
+        assertNotNull(msgList.getMessageByCode(IValidationRule.MSGCODE_VALIDATION_RULE_METHOD_NAME_CONFLICT));
 
         method.newParameter(Datatype.STRING.getQualifiedName(), "aParam");
         msgList = policyCmptType.validate(ipsProject);
-        assertNull(msgList.getMessageByCode(IValidationRule.MSGCODE_VALIDATION_RULE_METHOD_NAME_COLLISION));
+        assertNull(msgList.getMessageByCode(IValidationRule.MSGCODE_VALIDATION_RULE_METHOD_NAME_CONFLICT));
     }
 
     @Test

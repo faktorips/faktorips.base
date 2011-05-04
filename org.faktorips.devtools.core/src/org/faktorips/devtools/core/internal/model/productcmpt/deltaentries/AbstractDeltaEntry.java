@@ -30,4 +30,8 @@ public abstract class AbstractDeltaEntry implements IDeltaEntry {
         this.generation = delta.getProductCmptGeneration();
     }
 
+    protected IProductCmptGeneration getGeneration() {
+        return generation;
+    }
+
 }

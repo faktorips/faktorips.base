@@ -37,6 +37,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
@@ -49,6 +50,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueComparator;
 import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -75,6 +77,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     private List<ITableContentUsage> tableContentUsages = new ArrayList<ITableContentUsage>(0);
 
     private List<IFormula> formulas = new ArrayList<IFormula>(0);
+
+    private List<IValidationRuleConfig> validationRules = new ArrayList<IValidationRuleConfig>(0);
 
     public ProductCmptGeneration(ITimedIpsObject ipsObject, String id) {
         super(ipsObject, id);
@@ -225,8 +229,10 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         PropertyValueComparator comparator = new PropertyValueComparator(this, getIpsProject());
         Collections.sort(attributeValues, comparator);
         Collections.sort(configElements, comparator);
-        // TODO IProductCmptLink is no IPropertyValue --> cannot sort with this comparator
-        // Collections.sort(links, comparator);
+        /*
+         * TODO IProductCmptLink is no IPropertyValue as is IValidationRuleConfig. Both cannot be
+         * sorted using above comparator.
+         */
         Collections.sort(tableContentUsages, comparator);
         Collections.sort(formulas, comparator);
     }
@@ -568,6 +574,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         children.addAll(tableContentUsages);
         children.addAll(formulas);
         children.addAll(links);
+        children.addAll(validationRules);
         return children.toArray(new IIpsElement[children.size()]);
     }
 
@@ -583,6 +590,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             return newTableContentUsage();
         } else if (partType.equals(IFormula.class)) {
             return newFormula();
+        } else if (partType.equals(IValidationRuleConfig.class)) {
+            return newValidationRuleConfig();
         }
         return null;
     }
@@ -600,6 +609,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             return newTableContentUsageInternal(id, null);
         } else if (xmlTagName.equals(Formula.TAG_NAME)) {
             return newFormulaInternal(id, null);
+        } else if (xmlTagName.equals(IValidationRuleConfig.TAG_NAME)) {
+            return newValidationRuleInternal(id, null);
         }
         return null;
     }
@@ -620,6 +631,9 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             return true;
         } else if (part instanceof IFormula) {
             formulas.add((IFormula)part);
+            return true;
+        } else if (part instanceof IValidationRuleConfig) {
+            validationRules.add((IValidationRuleConfig)part);
             return true;
         }
         return false;
@@ -642,6 +656,9 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         } else if (part instanceof IFormula) {
             formulas.remove(part);
             return true;
+        } else if (part instanceof IValidationRuleConfig) {
+            validationRules.remove(part);
+            return true;
         }
 
         return false;
@@ -654,6 +671,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         links.clear();
         tableContentUsages.clear();
         formulas.clear();
+        validationRules.clear();
     }
 
     @Override
@@ -791,6 +809,59 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             return true;
         }
 
+    }
+
+    @Override
+    public int getNumOfValidationRules() {
+        return validationRules.size();
+    }
+
+    @Override
+    public IValidationRuleConfig getValidationRuleConfig(String validationRuleName) {
+        if (validationRuleName == null) {
+            return null;
+        }
+        for (IValidationRuleConfig ruleConfig : validationRules) {
+            if (ruleConfig.getName().equals(validationRuleName)) {
+                return ruleConfig;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public IValidationRuleConfig[] getValidationRuleConfigs() {
+        return validationRules.toArray(new IValidationRuleConfig[validationRules.size()]);
+    }
+
+    @Override
+    public IValidationRuleConfig newValidationRuleConfig() {
+        IValidationRuleConfig ruleConfig = newValidationRuleInternal(getNextPartId(), null);
+        objectHasChanged();
+        return ruleConfig;
+    }
+
+    /**
+     * Creates a new inactive {@link ValidationRuleConfig} for this generation.
+     * 
+     * @param id the part-ID to be assigned to the new validation rule
+     * 
+     * @return new validation rule
+     */
+    private IValidationRuleConfig newValidationRuleInternal(String id, IValidationRule ruleToBeConfigured) {
+        IValidationRuleConfig ruleConfig = new ValidationRuleConfig(this, id,
+                ruleToBeConfigured != null ? ruleToBeConfigured.getName() : ""); //$NON-NLS-1$
+        ruleConfig.setActive(ruleToBeConfigured != null ? ruleToBeConfigured.isActivatedByDefault()
+                : false);
+        validationRules.add(ruleConfig);
+        return ruleConfig;
+    }
+
+    @Override
+    public IValidationRuleConfig newValidationRuleConfig(IValidationRule ruleToBeConfigured) {
+        IValidationRuleConfig ruleConfig = newValidationRuleInternal(getNextPartId(), ruleToBeConfigured);
+        objectHasChanged();
+        return ruleConfig;
     }
 
 }

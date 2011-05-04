@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -348,5 +349,35 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
      * formula is still created, but no reference to a signature is set.
      */
     public IFormula newFormula(IProductCmptTypeMethod signature);
+
+    /**
+     * Returns the number of validation rules defined (or configured respectively) in this
+     * generation.
+     */
+    public int getNumOfValidationRules();
+
+    /**
+     * Returns the validation with the given name if defined in this generation. Returns <null> no
+     * validation rule with the given name can be found or if the given name is <code>null</code>.
+     */
+    public IValidationRuleConfig getValidationRuleConfig(String validationRuleName);
+
+    /**
+     * Returns the validation rules defined in this generation. Returns an empty array if this
+     * generation does not configure any validation rules.
+     */
+    public IValidationRuleConfig[] getValidationRuleConfigs();
+
+    /**
+     * Creates a new validation rule.
+     */
+    public IValidationRuleConfig newValidationRuleConfig();
+
+    /**
+     * Creates a new validation rule that configures the given {@link IValidationRule}. If signature
+     * is <code>null</code> the validation rule configuration is still created, but no reference to
+     * an {@link IValidationRule} is set.
+     */
+    public IValidationRuleConfig newValidationRuleConfig(IValidationRule ruleToBeConfigured);
 
 }

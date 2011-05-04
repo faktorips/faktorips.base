@@ -31,6 +31,10 @@ public class Messages extends NLS {
 
     public static String DeltaType_LinksNotFoundInTheModel;
     public static String DeltaType_missingValue;
+
+    public static String DeltaType_ConfigWithoutValidationRule;
+
+    public static String DeltaType_MissingVRuleConfig;
     public static String DeltaType_propertiesNotFoundInTheModel;
     public static String DeltaType_propertiesWithTypeMismatch;
     public static String DeltaType_ValueSetMismatches;

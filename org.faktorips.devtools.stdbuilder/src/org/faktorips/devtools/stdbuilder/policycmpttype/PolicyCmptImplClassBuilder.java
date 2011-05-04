@@ -929,7 +929,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         body.append(parameterNameContext);
         body.append("))");
         body.appendOpenBracket();
-        body.append(" return false;");
+        body.append(" return STOP_VALIDATION;");
         body.appendCloseBracket();
         List<IValidationRule> rules = getPcType().getValidationRules();
         for (IValidationRule r : rules) {
@@ -938,11 +938,12 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
                 body.append(getMethodExpressionExecRule(r, "ml", parameterNameContext));
                 body.append(')');
                 body.appendOpenBracket();
-                body.append(" return false;");
+                body.append(" return STOP_VALIDATION;");
                 body.appendCloseBracket();
             }
         }
-        body.appendln(" return true;");
+        body.appendln(" return CONTINUE_VALIDATION;");
+
         builder.javaDoc(javaDoc, ANNOTATION_GENERATED);
         appendOverrideAnnotation(builder, false);
         builder.methodBegin(java.lang.reflect.Modifier.PUBLIC, Datatype.PRIMITIVE_BOOLEAN.getJavaClassName(),
@@ -1344,6 +1345,16 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         if (getPcType().getSupertype().length() == 0) {
             getGenerator().generateChangeListenerConstants(builder);
         }
+        if (!getPcType().getValidationRules().isEmpty()) {
+            generateValidationConstants(builder);
+        }
+    }
+
+    private void generateValidationConstants(JavaCodeFragmentBuilder membersBuilder) {
+        appendLocalizedJavaDoc("FIELD_CONTINUE_VALIDATION", null, membersBuilder);
+        membersBuilder.append("public final static boolean CONTINUE_VALIDATION= true;");
+        appendLocalizedJavaDoc("FIELD_STOP_VALIDATION", null, membersBuilder);
+        membersBuilder.append("public final static boolean STOP_VALIDATION= false;");
     }
 
     /**

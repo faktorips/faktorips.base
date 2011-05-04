@@ -74,7 +74,6 @@ public class GenValidationRule extends GenTypePart {
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
             boolean generatesInterface) throws CoreException {
-        // nothing to do
     }
 
     /**
@@ -114,25 +113,29 @@ public class GenValidationRule extends GenTypePart {
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendln();
         String[] businessFunctions = rule.getBusinessFunctions();
-        if (!rule.isAppliedForAllBusinessFunctions()) {
-            if (businessFunctions.length > 0) {
-                body.append("if(");
-                for (int j = 0; j < businessFunctions.length; j++) {
-                    body.append("\"");
-                    body.append(businessFunctions[j]);
-                    body.append("\"");
-                    body.append(".equals(");
-                    body.append(parameterValidationContext);
-                    body.append(".getValue(\"businessFunction\"))");
-                    if (j < businessFunctions.length - 1) {
-                        body.appendln(" || ");
-                    }
+        if (!rule.isAppliedForAllBusinessFunctions() && businessFunctions.length > 0) {
+            body.append("if(");
+            for (int j = 0; j < businessFunctions.length; j++) {
+                body.append("\"");
+                body.append(businessFunctions[j]);
+                body.append("\"");
+                body.append(".equals(");
+                body.append(parameterValidationContext);
+                body.append(".getValue(\"businessFunction\"))");
+                if (j < businessFunctions.length - 1) {
+                    body.appendln(" || ");
                 }
-                body.append(")");
-                body.appendOpenBracket();
             }
+            body.append(")");
+            body.appendOpenBracket();
         }
         if (!rule.isCheckValueAgainstValueSetRule()) {
+            if (rule.isConfigurableByProductComponent()) {
+                body.append("if(getProductCmptGeneration().isValidationRuleActivated(\"");
+                body.append(rule.getName());
+                body.append("\"))");
+                body.appendOpenBracket();
+            }
             body.appendln("//begin-user-code");
             body.appendln(getLocalizedToDo("EXEC_RULE_IMPLEMENT", rule.getName()));
         }
@@ -191,15 +194,17 @@ public class GenValidationRule extends GenTypePart {
         }
         body.appendln();
         body.appendCloseBracket();
-        body.appendln(" return true;");
+        body.appendln(" return CONTINUE_VALIDATION;");
         if (!rule.isCheckValueAgainstValueSetRule()) {
             body.appendln("//end-user-code");
-        }
-        if (!rule.isAppliedForAllBusinessFunctions()) {
-            if (businessFunctions.length > 0) {
+            if (rule.isConfigurableByProductComponent()) {
                 body.appendCloseBracket();
-                body.appendln(" return true;");
+                body.appendln(" return CONTINUE_VALIDATION;");
             }
+        }
+        if (!rule.isAppliedForAllBusinessFunctions() && businessFunctions.length > 0) {
+            body.appendCloseBracket();
+            body.appendln(" return CONTINUE_VALIDATION;");
         }
 
         builder.method(java.lang.reflect.Modifier.PROTECTED, Datatype.PRIMITIVE_BOOLEAN.getJavaClassName(),

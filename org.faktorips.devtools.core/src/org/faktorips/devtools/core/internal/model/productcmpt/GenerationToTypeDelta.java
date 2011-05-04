@@ -19,14 +19,18 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.AbstractDeltaEntry;
+import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ConfigWithoutValidationRuleEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.LinkWithoutAssociationEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingPropertyValueEntry;
+import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingValidationRuleConfigEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.PropertyTypeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueSetMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueWithoutPropertyEntry;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
@@ -34,6 +38,7 @@ import org.faktorips.devtools.core.model.productcmpt.IGenerationToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -65,6 +70,7 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
         }
         computeLinksWithMissingAssociations();
         createEntriesForProperties();
+        createEntriesForValidationRules();
     }
 
     private void computeLinksWithMissingAssociations() throws CoreException {
@@ -83,6 +89,34 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
                     .getProdDefPropertiesMap(propertyType, ipsProject);
             checkForMissingPropertyValues(propertiesMap);
             checkForInconsistentPropertyValues(propertiesMap, propertyType);
+        }
+    }
+
+    private void createEntriesForValidationRules() throws CoreException {
+        createMissingRuleConfigEntries();
+        createConfigWithoutRuleEntries();
+    }
+
+    private void createMissingRuleConfigEntries() throws CoreException {
+        IPolicyCmptType policyCmptType = productCmptType.findPolicyCmptType(ipsProject);
+        if (policyCmptType != null) {
+            List<IValidationRule> rules = policyCmptType.findAllValidationRules(ipsProject);
+            for (IValidationRule vRule : rules) {
+                if (vRule.isConfigurableByProductComponent()
+                        && generation.getValidationRuleConfig(vRule.getName()) == null) {
+                    new MissingValidationRuleConfigEntry(this, vRule);
+                }
+            }
+        }
+    }
+
+    protected void createConfigWithoutRuleEntries() throws CoreException {
+        IValidationRuleConfig[] rules = generation.getValidationRuleConfigs();
+        for (IValidationRuleConfig ruleConfig : rules) {
+            IValidationRule rule = ruleConfig.findValidationRule(ipsProject);
+            if (rule == null || !rule.isConfigurableByProductComponent()) {
+                new ConfigWithoutValidationRuleEntry(this, ruleConfig);
+            }
         }
     }
 

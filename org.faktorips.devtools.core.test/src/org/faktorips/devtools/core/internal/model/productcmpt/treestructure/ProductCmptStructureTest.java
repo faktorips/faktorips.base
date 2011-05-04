@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005-2011 Faktor Zehn AG und andere.
+ * Copyright (c) 2005-2010 Faktor Zehn AG und andere.
  * 
  * Alle Rechte vorbehalten.
  * 
@@ -14,11 +14,15 @@
 package org.faktorips.devtools.core.internal.model.productcmpt.treestructure;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.GregorianCalendar;
 import java.util.Set;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -104,7 +108,7 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
         link = productCmptGen.newLink(association.getName());
         link.setTarget(productCmptTarget2.getQualifiedName());
 
-        structure = productCmpt.getStructure(ipsProject);
+        structure = productCmpt.getStructure(new GregorianCalendar(), ipsProject);
     }
 
     @Test
@@ -122,8 +126,8 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
     @Test
     public void testCircleDetection() throws Exception {
         // this has to work without any exception
-        productCmpt.getStructure(ipsProject);
-        productCmptTarget.getStructure(ipsProject);
+        productCmpt.getStructure(new GregorianCalendar(), ipsProject);
+        productCmptTarget.getStructure(new GregorianCalendar(), ipsProject);
 
         // create a circle
         association.setTarget(productCmptType.getQualifiedName());
@@ -133,7 +137,7 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
         link.setTarget(productCmpt.getQualifiedName());
 
         try {
-            productCmpt.getStructure(ipsProject);
+            productCmpt.getStructure(new GregorianCalendar(), ipsProject);
             fail();
         } catch (CycleInProductStructureException e) {
             // success
@@ -148,7 +152,7 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
         ITableContentUsage tcu = ptsus[0].getTableContentUsage();
         assertEquals("tableContent1", tcu.getTableContentName());
 
-        IProductCmptTreeStructure structureTarget = productCmptTarget.getStructure(ipsProject);
+        IProductCmptTreeStructure structureTarget = productCmptTarget.getStructure(new GregorianCalendar(), ipsProject);
         ptsus = structure.getChildProductCmptStructureTblUsageReference(structureTarget.getRoot());
         assertEquals(1, ptsus.length);
         tcu = ptsus[0].getTableContentUsage();
@@ -160,5 +164,21 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
         Set<IProductCmptStructureReference> array = structure.toSet(true);
         assertEquals(6, array.size());
         // -> 3 table references: two different tables, with one in two different links
+    }
+
+    @Test
+    public void testReferencesProductCmpt() throws CoreException, CycleInProductStructureException {
+        IProductCmpt unReferencedProductCmpt = newProductCmpt(productCmptType, "products.TestProductUnReferenced");
+
+        assertTrue(structure.referencesProductCmpt(productCmpt));
+        assertTrue(structure.referencesProductCmpt(productCmptTarget));
+        assertTrue(structure.referencesProductCmpt(productCmptTarget2));
+        assertFalse(structure.referencesProductCmpt(unReferencedProductCmpt));
+
+        structure = productCmptTarget.getStructure(new GregorianCalendar(), ipsProject);
+        assertFalse(structure.referencesProductCmpt(productCmpt));
+        assertTrue(structure.referencesProductCmpt(productCmptTarget));
+        assertFalse(structure.referencesProductCmpt(productCmptTarget2));
+        assertFalse(structure.referencesProductCmpt(unReferencedProductCmpt));
     }
 }

@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
@@ -41,6 +42,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -260,6 +262,8 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         generation.newFormula();
         generation.newFormula();
         generation.newAttributeValue();
+        generation.newValidationRuleConfig();
+        generation.newValidationRuleConfig();
         Element element = generation.toXml(newDocument());
 
         IProductCmptGeneration copy = new ProductCmptGeneration();
@@ -268,6 +272,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertEquals(3, copy.getNumOfLinks());
         assertEquals(2, copy.getNumOfFormulas());
         assertEquals(1, copy.getNumOfAttributeValues());
+        assertEquals(2, copy.getNumOfValidationRules());
     }
 
     @Test
@@ -286,6 +291,9 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
         IFormula[] formulas = generation.getFormulas();
         assertEquals(1, formulas.length);
+
+        IValidationRuleConfig[] rules = generation.getValidationRuleConfigs();
+        assertEquals(1, rules.length);
     }
 
     @Test
@@ -412,6 +420,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         IProductCmptLink link = generation.newLink("targetRole");
         ITableContentUsage usage = generation.newTableContentUsage();
         IFormula formula = generation.newFormula();
+        IValidationRuleConfig rule = generation.newValidationRuleConfig();
 
         IIpsElement[] children = generation.getChildren();
         List<IIpsElement> childrenList = Arrays.asList(children);
@@ -419,6 +428,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertTrue(childrenList.contains(usage));
         assertTrue(childrenList.contains(formula));
         assertTrue(childrenList.contains(link));
+        assertTrue(childrenList.contains(rule));
     }
 
     @Test
@@ -561,6 +571,67 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         targetGeneration.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2006-01-01"));
         msgList = ((ProductCmptGeneration)generation).validate(ipsProject);
         assertNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
+    }
+
+    @Test
+    public void testGetValidationRules() {
+        IValidationRuleConfig[] rules = generation.getValidationRuleConfigs();
+        assertEquals(0, rules.length);
+
+        generation.newValidationRuleConfig();
+        rules = generation.getValidationRuleConfigs();
+        assertEquals(1, rules.length);
+
+        generation.newValidationRuleConfig();
+        rules = generation.getValidationRuleConfigs();
+        assertEquals(2, rules.length);
+    }
+
+    @Test
+    public void testGetNumValidationRules() {
+        assertEquals(0, generation.getNumOfValidationRules());
+
+        generation.newValidationRuleConfig();
+        assertEquals(1, generation.getNumOfValidationRules());
+
+        generation.newValidationRuleConfig();
+        assertEquals(2, generation.getNumOfValidationRules());
+    }
+
+    @Test
+    public void testNewValidationRule() throws CoreException {
+        assertEquals(0, generation.getNumOfValidationRules());
+
+        generation.newValidationRuleConfig();
+        assertEquals(1, generation.getChildren().length);
+
+        generation.newValidationRuleConfig();
+        assertEquals(2, generation.getChildren().length);
+    }
+
+    @Test
+    public void testGetValidationRuleByName() {
+        IValidationRule rule;
+
+        rule = policyCmptType.newRule();
+        rule.setName("rule1");
+        generation.newValidationRuleConfig(rule);
+
+        rule = policyCmptType.newRule();
+        rule.setName("ruleTwo");
+        generation.newValidationRuleConfig(rule);
+
+        rule = policyCmptType.newRule();
+        rule.setName("ruleThree");
+        generation.newValidationRuleConfig(rule);
+
+        assertEquals(3, generation.getValidationRuleConfigs().length);
+
+        assertNotNull(generation.getValidationRuleConfig("rule1"));
+        assertNotNull(generation.getValidationRuleConfig("ruleTwo"));
+        assertNotNull(generation.getValidationRuleConfig("ruleThree"));
+        assertNull(generation.getValidationRuleConfig("nonExistingRule"));
+        assertNull(generation.getValidationRuleConfig(null));
     }
 
 }

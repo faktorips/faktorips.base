@@ -48,6 +48,8 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
 
     private IFormulaEvaluator formulaEvaluator;
 
+    private Map<String, Element> nameToValidationRuleConfigMap;
+
     public ProductComponentGeneration(ProductComponent productCmpt) {
         this.productCmpt = productCmpt;
     }
@@ -114,7 +116,8 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
         doInitPropertiesFromXml(propertyElements);
         doInitTableUsagesFromXml(propertyElements);
         doInitReferencesFromXml(getLinkElements(genElement));
-        doInitFormulaFromXml(genElement);
+        doInitFormulasFromXml(genElement);
+        doInitValidationRuleConfigsFromXml(getValidationRuleConfigElements(genElement));
     }
 
     /**
@@ -159,7 +162,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
      * contains the compiled expression for every formula.
      * 
      */
-    protected void doInitFormulaFromXml(Element genElement) {
+    protected void doInitFormulasFromXml(Element genElement) {
         if (getRepository() != null) {
             IFormulaEvaluatorFactory factory = getRepository().getFormulaEvaluatorFactory();
             if (factory != null) {
@@ -181,6 +184,13 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
                 formulaEvaluator = factory.createFormulaEvaluator(this, expressions);
             }
         }
+    }
+
+    /**
+     * Initializes all validation rule configurations contained by the given genElement.
+     */
+    protected void doInitValidationRuleConfigsFromXml(Map<String, Element> validationRuleConfigElements) {
+        nameToValidationRuleConfigMap = validationRuleConfigElements;
     }
 
     /**
@@ -219,8 +229,8 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
     /**
      * Returns a map containing the xml elements representing relations found in the indicated
      * generation's xml element. For each policy component type relation (pcTypeRelation) the map
-     * contains an entry with the pcTypeRelation as key. The value is an array list containing all
-     * relation elements for the pcTypeRelation.
+     * contains an entry with the pcTypeRelation as key. The value is the xml element containing the
+     * validation rule configuration.
      * 
      * @param genElement An xml element containing a product component generation's data.
      * @throws NullPointerException if genElement is <code>null</code>.
@@ -242,6 +252,29 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
                 associationElements.add(childElement);
             }
 
+        }
+        return elementMap;
+    }
+
+    /**
+     * Returns a map containing the xml elements representing the validation rule configurations
+     * found in the indicated generation's xml element. For each validation rule config the map
+     * contains an entry with the rule name as a key. The value is an array list containing all
+     * relation elements for the pcTypeRelation.
+     * 
+     * @param genElement An xml element containing a product component generation's data.
+     * @throws NullPointerException if genElement is <code>null</code>.
+     */
+    // note: not private to allow access by test case
+    final Map<String, Element> getValidationRuleConfigElements(Element genElement) {
+        Map<String, Element> elementMap = new HashMap<String, Element>();
+        NodeList nl = genElement.getChildNodes();
+        for (int i = 0; i < nl.getLength(); i++) {
+            Node node = nl.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE && "ValidationRuleConfig".equals(node.getNodeName())) {
+                Element childElement = (Element)nl.item(i);
+                elementMap.put(childElement.getAttribute("ruleName"), childElement);
+            }
         }
         return elementMap;
     }
@@ -313,4 +346,11 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
         throw new RuntimeException("Not implemented yet.");
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isValidationRuleActivated(String ruleName) {
+        Element ruleConfig = nameToValidationRuleConfigMap.get(ruleName);
+        return ruleConfig != null && Boolean.valueOf(ruleConfig.getAttribute("active"));
+    }
 }

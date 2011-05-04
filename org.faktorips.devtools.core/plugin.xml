@@ -394,5 +394,9 @@
             class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_2_0$Factory"
             targetVersion="3.2.0">
       </migrationOperation>
+      <migrationOperation
+            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_4_0$Factory"
+            targetVersion="3.4.0">
+      </migrationOperation>
    </extension>
 </plugin>

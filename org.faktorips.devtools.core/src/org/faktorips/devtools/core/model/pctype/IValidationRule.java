@@ -15,13 +15,14 @@ package org.faktorips.devtools.core.model.pctype;
 
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 
 /**
  * Represents a validation rule. Instances of this interface just say that a rule with a specified
  * name, message e.g. exist. The actual rule condition is part of the concept of this interface. It
  * has to be implemented within the generated source code.
  */
-public interface IValidationRule extends IIpsObjectPart, IDescribedElement {
+public interface IValidationRule extends IIpsObjectPart, IDescribedElement, ILabeledElement {
 
     public final static String PROPERTY_BUSINESS_FUNCTIONS = "businessFunctions"; //$NON-NLS-1$
 
@@ -38,6 +39,10 @@ public interface IValidationRule extends IIpsObjectPart, IDescribedElement {
     public final static String PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC = "validatedAttrSpecifiedInSrc"; //$NON-NLS-1$
 
     public final static String PROPERTY_CHECK_AGAINST_VALUE_SET_RULE = "checkValueAgainstValueSetRule"; //$NON-NLS-1$
+
+    public final static String PROPERTY_CONFIGUREDABLE_BY_PRODUCT_COMPONENT = "configurableByProductComponent"; //$NON-NLS-1$
+
+    public final static String PROPERTY_ACTIVATED_BY_DEFAULT = "activatedByDefault"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
@@ -74,8 +79,8 @@ public interface IValidationRule extends IIpsObjectPart, IDescribedElement {
      * Validation message code to indicate that the name of the rule is already used as method name
      * within the type.
      */
-    public final static String MSGCODE_VALIDATION_RULE_METHOD_NAME_COLLISION = MSGCODE_PREFIX
-            + "ValidationRuleMethodNameCollision"; //$NON-NLS-1$
+    public final static String MSGCODE_VALIDATION_RULE_METHOD_NAME_CONFLICT = MSGCODE_PREFIX
+            + "ValidationRuleMethodNameConflict"; //$NON-NLS-1$
 
     /**
      * Sets the rules name.
@@ -228,5 +233,31 @@ public interface IValidationRule extends IIpsObjectPart, IDescribedElement {
      * @see #isCheckValueAgainstValueSetRule()
      */
     public void setCheckValueAgainstValueSetRule(boolean isCheckValueAgainstValueSetRule);
+
+    /**
+     * returns whether this rule can be configured by a product component.
+     * 
+     * @return <code>true</code> if this rule is configurable, <code>false</code> else.
+     */
+    public boolean isConfigurableByProductComponent();
+
+    /**
+     * Sets a flag indicating whether this rule can be configured by a product component.
+     * 
+     */
+    public void setConfigurableByProductComponent(boolean configurable);
+
+    /**
+     * returns whether this rule is activated for newly created product components.
+     * 
+     * @return <code>true</code> if this rule is activated by default, <code>false</code> else.
+     */
+    public boolean isActivatedByDefault();
+
+    /**
+     * Sets a flag indicating whether this rule is activated for newly created product components.
+     * 
+     */
+    public void setActivatedByDefault(boolean activated);
 
 }

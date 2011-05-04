@@ -110,10 +110,11 @@ public abstract class AbstractModelObject implements IModelObject {
      * The default implementation does nothing. Should be overridden in subclasses.
      * 
      * @param list the message list
-     * 
      * @param context provides additional external information that might be necessary to execute
      *            the validation. E.g. the business context, the locale to provide locale specific
      *            message texts, user information
+     * @return <code>true</code> if this model object should continue validating, <code>false</code>
+     *         else.
      * @throws NullPointerException if list is <code>null</code> and a message is generated.
      */
     protected boolean validateSelf(MessageList list, IValidationContext context) {

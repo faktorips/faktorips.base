@@ -30,12 +30,14 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptVRuleReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -227,10 +229,10 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
 
     /**
      * Adds all given references to the given list and requests the children for the added ones
-     * revursively.
+     * recursively.
      * 
      * @param children The array of child-references to add to the list.
-     * @param set The list to add the chlidren to.
+     * @param set The list to add the children to.
      * @param productCmptOnly <code>true</code> to only get references to <code>IProductCmpt</code>
      *            s.
      */
@@ -361,6 +363,11 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
                 IpsPlugin.log(e);
             }
 
+            IValidationRuleConfig[] rules = activeGeneration.getValidationRuleConfigs();
+            for (IValidationRuleConfig rule : rules) {
+                ProductCmptStructureReference node = new ProductCmptVRuleReference(this, parent, cmpt, rule);
+                children.add(node);
+            }
             ITableContentUsage[] tcus = activeGeneration.getTableContentUsages();
             for (ITableContentUsage tcu : tcus) {
                 ProductCmptStructureReference node = new ProductCmptStructureTblUsageReference(this, parent, tcu);
@@ -476,6 +483,51 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
         } else {
             return ((ProductCmptStructureReference)parent).getChildren();
         }
+    }
+
+    @Override
+    public IProductCmptVRuleReference[] getChildProductCmptVRuleReferences(IProductCmptStructureReference parent) {
+        List<ProductCmptVRuleReference> vRuleReferences = new ArrayList<ProductCmptVRuleReference>();
+        IProductCmptStructureReference[] children = getChildren(parent);
+        for (IProductCmptStructureReference element : children) {
+            if (element instanceof ProductCmptVRuleReference) {
+                ProductCmptVRuleReference vRuleReference = (ProductCmptVRuleReference)element;
+                if (StringUtils.isNotEmpty(vRuleReference.getValidationRuleConfig().getName())) {
+                    vRuleReferences.add(vRuleReference);
+                }
+            }
+        }
+        return vRuleReferences.toArray(new ProductCmptVRuleReference[vRuleReferences.size()]);
+    }
+
+    @Override
+    public boolean referencesProductCmpt(IProductCmpt prodCmpt) {
+        return getProductCmptReferenceRecursive(root, prodCmpt) != null;
+    }
+
+    /**
+     * 
+     * Returns the given {@link IProductCmptReference} if it contains the searched product
+     * component. If not it searches all children of the reference the same way.
+     * 
+     * @param cmptReference the subtree/substructure that is to be searched
+     * @param searchedProdCmpt the {@link IProductCmpt} that is searched for
+     * @return the {@link IProductCmptReference} referencing the given {@link IProductCmpt}, or
+     *         <code>null</code> if none was found.
+     */
+    private IProductCmptReference getProductCmptReferenceRecursive(IProductCmptReference cmptReference,
+            IProductCmpt searchedProdCmpt) {
+        if (cmptReference.getProductCmpt().equals(searchedProdCmpt)) {
+            return cmptReference;
+        }
+        IProductCmptReference[] childProductCmptReferences = getChildProductCmptReferences(cmptReference);
+        for (IProductCmptReference childRef : childProductCmptReferences) {
+            IProductCmptReference foundRef = getProductCmptReferenceRecursive(childRef, searchedProdCmpt);
+            if (foundRef != null) {
+                return foundRef;
+            }
+        }
+        return null;
     }
 
 }

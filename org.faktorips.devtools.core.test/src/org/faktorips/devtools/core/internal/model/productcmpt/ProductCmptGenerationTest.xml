@@ -17,4 +17,5 @@
     </ConfigElement>
     <Formula id="2" formulaSignature="PremiumCalculation"/>
     <Link id="3" association="coverage" target="CollisionCoverage" minCardinality="2" maxCardinality="3"/>
+    <ValidationRuleConfig id="4" active="true"/>
 </Generation>

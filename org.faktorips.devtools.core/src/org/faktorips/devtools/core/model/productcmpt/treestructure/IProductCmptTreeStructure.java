@@ -16,6 +16,8 @@ package org.faktorips.devtools.core.model.productcmpt.treestructure;
 import java.util.GregorianCalendar;
 import java.util.Set;
 
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+
 /**
  * A product component tree structure provides a tree view for product components starting with a
  * product component used as root. Child nodes are created for the links to other components.
@@ -112,5 +114,21 @@ public interface IProductCmptTreeStructure {
      * @return The found references from the given parent to <code>IProductCmptReference</code>s.
      */
     public IProductCmptStructureTblUsageReference[] getChildProductCmptStructureTblUsageReference(IProductCmptStructureReference parent);
+
+    /**
+     * @param parent The parent-reference to start the search for child-references.
+     * @return The found references from the given parent to <code>IProductCmptReference</code>s.
+     */
+    public IProductCmptVRuleReference[] getChildProductCmptVRuleReferences(IProductCmptStructureReference parent);
+
+    /**
+     * Searches this structure/tree for {@link IProductCmptReference}s containing the given
+     * {@link IProductCmpt}.
+     * 
+     * @param prodCmpt the {@link IProductCmpt} to search for
+     * @return <code>true</code> if this structure references the given {@link IProductCmpt},
+     *         <code>false</code> otherwise.
+     */
+    public boolean referencesProductCmpt(IProductCmpt prodCmpt);
 
 }

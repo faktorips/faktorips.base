@@ -23,6 +23,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
@@ -30,6 +31,7 @@ import org.faktorips.devtools.core.model.productcmpt.IGenerationToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -217,5 +219,65 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         attr.setValueSetType(ValueSetType.UNRESTRICTED);
         delta = generation.computeDeltaToModel(ipsProject);
         assertTrue(delta.isEmpty());
+    }
+
+    @Test
+    public void testVRuleMismatch() throws CoreException {
+        initRules();
+
+        IGenerationToTypeDelta delta = generation.computeDeltaToModel(ipsProject);
+        IDeltaEntry[] entries = delta.getEntries();
+        assertEquals(2, entries.length);
+        assertEquals(DeltaType.MISSING_VALIDATION_RULE_CONFIG, entries[0].getDeltaType());
+        assertEquals(DeltaType.CONFIG_WITHOUT_VALIDATION_RULE, entries[1].getDeltaType());
+
+        IValidationRuleConfig[] validationRuleConfigs = generation.getValidationRuleConfigs();
+        assertEquals(2, validationRuleConfigs.length);
+        assertEquals("Rule1", validationRuleConfigs[0].getName());
+        assertEquals("", validationRuleConfigs[1].getName());
+
+        delta.fix();
+        validationRuleConfigs = generation.getValidationRuleConfigs();
+        assertEquals(2, validationRuleConfigs.length);
+        assertEquals("Rule1", validationRuleConfigs[0].getName());
+        assertEquals("UnconfiguredRule", validationRuleConfigs[1].getName());
+    }
+
+    @Test
+    public void testVRuleMismatchNotConfigurable() throws CoreException {
+        initRules();
+        IValidationRule unconfigurableRule = policyCmptType.newRule();
+        unconfigurableRule.setName("unconfigurableRule");
+        unconfigurableRule.setConfigurableByProductComponent(false);
+        generation.newValidationRuleConfig(unconfigurableRule);
+
+        IGenerationToTypeDelta delta = generation.computeDeltaToModel(ipsProject);
+        IDeltaEntry[] entries = delta.getEntries();
+        assertEquals(3, entries.length);
+        assertEquals(DeltaType.MISSING_VALIDATION_RULE_CONFIG, entries[0].getDeltaType());
+        assertEquals(DeltaType.CONFIG_WITHOUT_VALIDATION_RULE, entries[1].getDeltaType());
+        assertEquals(DeltaType.CONFIG_WITHOUT_VALIDATION_RULE, entries[2].getDeltaType());
+
+        IValidationRuleConfig[] validationRuleConfigs = generation.getValidationRuleConfigs();
+        assertEquals(3, validationRuleConfigs.length);
+        assertEquals("unconfigurableRule", validationRuleConfigs[2].getName());
+
+        delta.fix();
+        validationRuleConfigs = generation.getValidationRuleConfigs();
+        assertEquals(2, validationRuleConfigs.length);
+        assertEquals("Rule1", validationRuleConfigs[0].getName());
+        assertEquals("UnconfiguredRule", validationRuleConfigs[1].getName());
+    }
+
+    protected void initRules() {
+        IValidationRule rule = policyCmptType.newRule();
+        rule.setName("Rule1");
+        rule.setConfigurableByProductComponent(true);
+        generation.newValidationRuleConfig(rule);
+
+        rule = policyCmptType.newRule();
+        rule.setName("UnconfiguredRule");
+        rule.setConfigurableByProductComponent(true);
+        generation.newValidationRuleConfig();
     }
 }

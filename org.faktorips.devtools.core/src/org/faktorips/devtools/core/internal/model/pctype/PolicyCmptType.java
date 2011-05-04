@@ -56,6 +56,7 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ITypeHierarchy;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -493,7 +494,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
             for (IMethod method : currentType.getMethods()) {
                 if (method.getNumOfParameters() == 0 && method.getName().equals(rule.getName())) {
                     String text = NLS.bind(Messages.PolicyCmptType_msgRuleMethodNameConflict, rule.getName());
-                    msgList.add(new Message(IValidationRule.MSGCODE_VALIDATION_RULE_METHOD_NAME_COLLISION, text,
+                    msgList.add(new Message(IValidationRule.MSGCODE_VALIDATION_RULE_METHOD_NAME_CONFLICT, text,
                             Message.ERROR, rule, IIpsElement.PROPERTY_NAME));
                 }
             }
@@ -683,4 +684,43 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         }
         return false;
     }
+
+    @Override
+    public List<IValidationRule> findAllValidationRules(IIpsProject ipsProject) throws CoreException {
+        AllValidationRulesFinder finder = new AllValidationRulesFinder(ipsProject, true);
+        finder.start(this);
+        return finder.getValidationRules();
+    }
+
+    private static class AllValidationRulesFinder extends TypeHierarchyVisitor {
+
+        private final List<IValidationRule> rules;
+        private final boolean superTypeFirst;
+
+        public AllValidationRulesFinder(IIpsProject ipsProject, boolean superTypeFirst) {
+            super(ipsProject);
+            this.superTypeFirst = superTypeFirst;
+            rules = new ArrayList<IValidationRule>();
+        }
+
+        public List<IValidationRule> getValidationRules() {
+            return rules;
+        }
+
+        @Override
+        protected boolean visit(IType currentType) throws CoreException {
+            IPolicyCmptType type = (IPolicyCmptType)currentType;
+            List<IValidationRule> definedRules = type.getValidationRules();
+            if (superTypeFirst) {
+                // Place supertype rules before subtype rules.
+                rules.addAll(0, definedRules);
+            } else {
+                rules.addAll(definedRules);
+            }
+
+            return true;
+        }
+
+    }
+
 }
