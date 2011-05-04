@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
-import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
@@ -73,12 +72,8 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
         IProductCmpt component = (IProductCmpt)generation.getParent();
         IPolicyCmptType pcType = component.findPolicyCmptType(ipsProject);
         if (pcType != null) {
-            List<IValidationRule> rules = pcType.findAllValidationRules(ipsProject);
-            for (IValidationRule rule : rules) {
-                if (rule.getName().equals(ruleName)) {
-                    return rule;
-                }
-            }
+            IValidationRule rule = pcType.findValidationRule(ruleName, ipsProject);
+            return rule;
         }
         return null;
     }

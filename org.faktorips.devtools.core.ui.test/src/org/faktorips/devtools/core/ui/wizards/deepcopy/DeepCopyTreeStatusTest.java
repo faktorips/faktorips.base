@@ -23,6 +23,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Set;
 
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTreeStructure;
@@ -133,18 +134,18 @@ public class DeepCopyTreeStatusTest {
         when(productCmptsGenerations[4].getLinks()).thenReturn(new IProductCmptLink[] {});
         when(productCmptsGenerations[5].getLinks()).thenReturn(new IProductCmptLink[] {});
 
-        IValidationRuleConfig[] ruleConfigs = new IValidationRuleConfig[2];
-        ruleConfigs[0] = mock(IValidationRuleConfig.class);
-        ruleConfigs[1] = mock(IValidationRuleConfig.class);
-        when(ruleConfigs[0].getName()).thenReturn("Rule1");
-        when(ruleConfigs[1].getName()).thenReturn("RuleTwo");
+        List<IValidationRuleConfig> ruleConfigs = new ArrayList<IValidationRuleConfig>();
+        ruleConfigs.add(mock(IValidationRuleConfig.class));
+        ruleConfigs.add(mock(IValidationRuleConfig.class));
+        when(ruleConfigs.get(0).getName()).thenReturn("Rule1");
+        when(ruleConfigs.get(1).getName()).thenReturn("RuleTwo");
 
         when(productCmptsGenerations[0].getValidationRuleConfigs()).thenReturn(ruleConfigs);
-        when(productCmptsGenerations[1].getValidationRuleConfigs()).thenReturn(new IValidationRuleConfig[] {});
-        when(productCmptsGenerations[2].getValidationRuleConfigs()).thenReturn(new IValidationRuleConfig[] {});
-        when(productCmptsGenerations[3].getValidationRuleConfigs()).thenReturn(new IValidationRuleConfig[] {});
-        when(productCmptsGenerations[4].getValidationRuleConfigs()).thenReturn(new IValidationRuleConfig[] {});
-        when(productCmptsGenerations[5].getValidationRuleConfigs()).thenReturn(new IValidationRuleConfig[] {});
+        when(productCmptsGenerations[1].getValidationRuleConfigs()).thenReturn(new ArrayList<IValidationRuleConfig>());
+        when(productCmptsGenerations[2].getValidationRuleConfigs()).thenReturn(new ArrayList<IValidationRuleConfig>());
+        when(productCmptsGenerations[3].getValidationRuleConfigs()).thenReturn(new ArrayList<IValidationRuleConfig>());
+        when(productCmptsGenerations[4].getValidationRuleConfigs()).thenReturn(new ArrayList<IValidationRuleConfig>());
+        when(productCmptsGenerations[5].getValidationRuleConfigs()).thenReturn(new ArrayList<IValidationRuleConfig>());
 
         structure = new ProductCmptTreeStructure(productCmpts[0], new GregorianCalendar(), mock(IIpsProject.class));
 

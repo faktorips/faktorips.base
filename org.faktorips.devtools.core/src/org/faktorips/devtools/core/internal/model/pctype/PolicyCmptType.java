@@ -723,4 +723,38 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     }
 
+    @Override
+    public IValidationRule findValidationRule(String ruleName, IIpsProject ipsProject) throws CoreException {
+        ValidationRuleForNameFinder finder = new ValidationRuleForNameFinder(ruleName, ipsProject);
+        finder.start(this);
+        return finder.getValidationRule();
+    }
+
+    private static class ValidationRuleForNameFinder extends TypeHierarchyVisitor {
+
+        private IValidationRule foundRule = null;
+        private final String ruleName;
+
+        public ValidationRuleForNameFinder(String ruleName, IIpsProject ipsProject) {
+            super(ipsProject);
+            this.ruleName = ruleName;
+        }
+
+        public IValidationRule getValidationRule() {
+            return foundRule;
+        }
+
+        @Override
+        protected boolean visit(IType currentType) throws CoreException {
+            IPolicyCmptType type = (IPolicyCmptType)currentType;
+            List<IValidationRule> definedRules = type.getValidationRules();
+            for (IValidationRule rule : definedRules) {
+                if (rule.getName().equals(ruleName)) {
+                    foundRule = rule;
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
 }

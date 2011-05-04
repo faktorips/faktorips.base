@@ -300,18 +300,18 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
-        appliedForAllBusinessFunction = Boolean.valueOf(
-                element.getAttribute(PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS)).booleanValue();
+        appliedForAllBusinessFunction = Boolean.parseBoolean(element
+                .getAttribute(PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS));
         msgCode = element.getAttribute(PROPERTY_MESSAGE_CODE);
         msgText = element.getAttribute(PROPERTY_MESSAGE_TEXT);
         msgSeverity = MessageSeverity.getMessageSeverity(element.getAttribute(PROPERTY_MESSAGE_SEVERITY));
-        checkValueAgainstValueSetRule = Boolean.valueOf(element.getAttribute(PROPERTY_CHECK_AGAINST_VALUE_SET_RULE))
-                .booleanValue();
-        validatedAttrSpecifiedInSrc = Boolean.valueOf(element.getAttribute(PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC))
-                .booleanValue();
-        configurableByProductComponent = Boolean.valueOf(
-                element.getAttribute(PROPERTY_CONFIGUREDABLE_BY_PRODUCT_COMPONENT)).booleanValue();
-        activatedByDefault = Boolean.valueOf(element.getAttribute(PROPERTY_ACTIVATED_BY_DEFAULT)).booleanValue();
+        checkValueAgainstValueSetRule = Boolean.parseBoolean(element
+                .getAttribute(PROPERTY_CHECK_AGAINST_VALUE_SET_RULE));
+        validatedAttrSpecifiedInSrc = Boolean.parseBoolean(element
+                .getAttribute(PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC));
+        configurableByProductComponent = Boolean.parseBoolean(element
+                .getAttribute(PROPERTY_CONFIGUREDABLE_BY_PRODUCT_COMPONENT));
+        activatedByDefault = Boolean.parseBoolean(element.getAttribute(PROPERTY_ACTIVATED_BY_DEFAULT));
 
         NodeList nl = element.getChildNodes();
         functions.clear();
@@ -435,11 +435,6 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         boolean oldValue = isActivatedByDefault();
         activatedByDefault = activated;
         valueChanged(oldValue, activated);
-    }
-
-    @Override
-    public String getName() {
-        return name;
     }
 
 }

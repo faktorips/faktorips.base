@@ -292,8 +292,8 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         IFormula[] formulas = generation.getFormulas();
         assertEquals(1, formulas.length);
 
-        IValidationRuleConfig[] rules = generation.getValidationRuleConfigs();
-        assertEquals(1, rules.length);
+        List<IValidationRuleConfig> rules = generation.getValidationRuleConfigs();
+        assertEquals(1, rules.size());
     }
 
     @Test
@@ -575,16 +575,16 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetValidationRules() {
-        IValidationRuleConfig[] rules = generation.getValidationRuleConfigs();
-        assertEquals(0, rules.length);
+        List<IValidationRuleConfig> rules = generation.getValidationRuleConfigs();
+        assertEquals(0, rules.size());
 
         generation.newValidationRuleConfig();
         rules = generation.getValidationRuleConfigs();
-        assertEquals(1, rules.length);
+        assertEquals(1, rules.size());
 
         generation.newValidationRuleConfig();
         rules = generation.getValidationRuleConfigs();
-        assertEquals(2, rules.length);
+        assertEquals(2, rules.size());
     }
 
     @Test
@@ -625,7 +625,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         rule.setName("ruleThree");
         generation.newValidationRuleConfig(rule);
 
-        assertEquals(3, generation.getValidationRuleConfigs().length);
+        assertEquals(3, generation.getValidationRuleConfigs().size());
 
         assertNotNull(generation.getValidationRuleConfig("rule1"));
         assertNotNull(generation.getValidationRuleConfig("ruleTwo"));

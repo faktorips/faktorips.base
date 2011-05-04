@@ -830,8 +830,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     @Override
-    public IValidationRuleConfig[] getValidationRuleConfigs() {
-        return validationRules.toArray(new IValidationRuleConfig[validationRules.size()]);
+    public List<IValidationRuleConfig> getValidationRuleConfigs() {
+        return new ArrayList<IValidationRuleConfig>(validationRules);
     }
 
     @Override
@@ -851,8 +851,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     private IValidationRuleConfig newValidationRuleInternal(String id, IValidationRule ruleToBeConfigured) {
         IValidationRuleConfig ruleConfig = new ValidationRuleConfig(this, id,
                 ruleToBeConfigured != null ? ruleToBeConfigured.getName() : ""); //$NON-NLS-1$
-        ruleConfig.setActive(ruleToBeConfigured != null ? ruleToBeConfigured.isActivatedByDefault()
-                : false);
+        ruleConfig.setActive(ruleToBeConfigured != null ? ruleToBeConfigured.isActivatedByDefault() : false);
         validationRules.add(ruleConfig);
         return ruleConfig;
     }

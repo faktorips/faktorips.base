@@ -158,7 +158,7 @@ public class ValidationRuleSection extends IpsSection {
             @Override
             public Object[] getElements(Object inputElement) {
                 IProductCmptGeneration gen = (IProductCmptGeneration)inputElement;
-                return gen.getValidationRuleConfigs();
+                return gen.getValidationRuleConfigs().toArray();
             }
         };
     }

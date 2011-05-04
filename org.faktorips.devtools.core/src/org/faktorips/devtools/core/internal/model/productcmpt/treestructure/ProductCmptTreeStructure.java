@@ -363,7 +363,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
                 IpsPlugin.log(e);
             }
 
-            IValidationRuleConfig[] rules = activeGeneration.getValidationRuleConfigs();
+            List<IValidationRuleConfig> rules = activeGeneration.getValidationRuleConfigs();
             for (IValidationRuleConfig rule : rules) {
                 ProductCmptStructureReference node = new ProductCmptVRuleReference(this, parent, cmpt, rule);
                 children.add(node);

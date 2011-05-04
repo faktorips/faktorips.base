@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.model.productcmpt;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -366,7 +368,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
      * Returns the validation rules defined in this generation. Returns an empty array if this
      * generation does not configure any validation rules.
      */
-    public IValidationRuleConfig[] getValidationRuleConfigs();
+    public List<IValidationRuleConfig> getValidationRuleConfigs();
 
     /**
      * Creates a new validation rule.

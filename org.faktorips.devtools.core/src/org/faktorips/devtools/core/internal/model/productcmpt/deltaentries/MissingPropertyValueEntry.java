@@ -54,7 +54,7 @@ public class MissingPropertyValueEntry extends AbstractDeltaEntryForProperty {
 
     @Override
     public void fix() {
-        generation.newPropertyValue(property);
+        getGeneration().newPropertyValue(property);
     }
 
 }

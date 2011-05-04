@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
  */
 public abstract class AbstractDeltaEntry implements IDeltaEntry {
 
-    protected IProductCmptGeneration generation;
+    private IProductCmptGeneration generation;
 
     public AbstractDeltaEntry(GenerationToTypeDelta delta) {
         delta.addEntry(this);

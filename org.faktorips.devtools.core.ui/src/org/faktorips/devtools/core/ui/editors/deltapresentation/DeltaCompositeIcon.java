@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.editors.deltapresentation;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.swt.graphics.Image;
@@ -42,18 +41,6 @@ public class DeltaCompositeIcon extends DecorationOverlayIcon {
 
     public static ImageDescriptor createModifyImage(Image baseImage) {
         return new DeltaCompositeIcon(baseImage, OverlayIcons.MODIFIED_OVR_DESC, IDecoration.TOP_RIGHT);
-    }
-
-    public static ImageDescriptor createAddImage(ImageDescriptor descriptor, ResourceManager resourceManager) {
-        return createAddImage((Image)resourceManager.get(descriptor));
-    }
-
-    public static ImageDescriptor createDeleteImage(ImageDescriptor descriptor, ResourceManager resourceManager) {
-        return createDeleteImage((Image)resourceManager.get(descriptor));
-    }
-
-    public static ImageDescriptor createModifyImage(ImageDescriptor descriptor, ResourceManager resourceManager) {
-        return createModifyImage((Image)resourceManager.get(descriptor));
     }
 
 }

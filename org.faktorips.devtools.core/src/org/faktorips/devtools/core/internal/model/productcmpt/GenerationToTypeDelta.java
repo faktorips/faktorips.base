@@ -110,8 +110,8 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
         }
     }
 
-    protected void createConfigWithoutRuleEntries() throws CoreException {
-        IValidationRuleConfig[] rules = generation.getValidationRuleConfigs();
+    private void createConfigWithoutRuleEntries() throws CoreException {
+        List<IValidationRuleConfig> rules = generation.getValidationRuleConfigs();
         for (IValidationRuleConfig ruleConfig : rules) {
             IValidationRule rule = ruleConfig.findValidationRule(ipsProject);
             if (rule == null || !rule.isConfigurableByProductComponent()) {

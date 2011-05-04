@@ -27,7 +27,6 @@ import org.eclipse.swt.custom.LineStyleListener;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Color;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareItem;
 
 /**
  * LineStyleListener for the IpsObjectCompareViewer. Colors keywords (tokens) in the text
@@ -41,11 +40,7 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
             60);
     protected final Color generationHighlight = new Color(IpsPlugin.getDefault().getWorkbench().getDisplay(), 0, 0, 125);
     protected final Color dateHighlight = new Color(IpsPlugin.getDefault().getWorkbench().getDisplay(), 200, 200, 200);
-    /**
-     * Regex-pattern for recognizing date at linestart; only recognizes SimpleDateFormat.MEDIUM.
-     * (e.g. "01.02.2003")
-     */
-    private Pattern genDatePattern = Pattern.compile("[0-9]+\\.[0-9]+\\.[0-9]+"); //$NON-NLS-1$
+
     /**
      * Pattern for recognizing separators between generations (single line starting with "-")
      */
@@ -130,7 +125,7 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
     protected List<StyleRange> getStylesForLineStart(String lineText, int lineOffset) {
         List<StyleRange> styleList = new ArrayList<StyleRange>();
         ParsePosition pos = new ParsePosition(0);
-        ProductCmptCompareItem.DATE_FORMAT.parse(lineText, pos);
+        IpsPlugin.getDefault().getIpsPreferences().getDateFormat().parse(lineText, pos);
         int endIndex = pos.getIndex();
         if (endIndex > 8) {
             styleList.add(new StyleRange(lineOffset, endIndex, dateHighlight, null, SWT.NORMAL));

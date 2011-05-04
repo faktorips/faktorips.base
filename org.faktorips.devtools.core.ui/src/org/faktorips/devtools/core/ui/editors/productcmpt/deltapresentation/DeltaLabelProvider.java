@@ -19,13 +19,9 @@ import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ConfigWithoutValidationRuleEntry;
-import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingValidationRuleConfigEntry;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
-import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.deltapresentation.DeltaCompositeIcon;
@@ -49,59 +45,38 @@ public class DeltaLabelProvider extends LabelProvider {
             descriptor = getBaseImage(((DeltaType)element));
         } else if (element instanceof IDeltaEntryForProperty) {
             IDeltaEntryForProperty entry = (IDeltaEntryForProperty)element;
-            ImageDescriptor baseImage = getBaseImage(entry.getPropertyType());
+            Image baseImage = getBaseImage(entry.getPropertyType());
             if (entry.getDeltaType() == DeltaType.MISSING_PROPERTY_VALUE) {
-                descriptor = DeltaCompositeIcon.createAddImage(baseImage, resourceManager);
+                descriptor = DeltaCompositeIcon.createAddImage(baseImage);
             } else if (entry.getDeltaType() == DeltaType.VALUE_WITHOUT_PROPERTY) {
-                descriptor = DeltaCompositeIcon.createDeleteImage(baseImage, resourceManager);
+                descriptor = DeltaCompositeIcon.createDeleteImage(baseImage);
             } else {
-                descriptor = DeltaCompositeIcon.createModifyImage(baseImage, resourceManager);
+                descriptor = DeltaCompositeIcon.createModifyImage(baseImage);
             }
         } else if (element instanceof IDeltaEntry) {
-            IDeltaEntry entry = (IDeltaEntry)element;
-            descriptor = getBaseImage(entry);
-            if (entry.getDeltaType() == DeltaType.MISSING_VALIDATION_RULE_CONFIG) {
-                descriptor = DeltaCompositeIcon.createAddImage(descriptor, resourceManager);
-            } else if (entry.getDeltaType() == DeltaType.CONFIG_WITHOUT_VALIDATION_RULE) {
-                descriptor = DeltaCompositeIcon.createDeleteImage(descriptor, resourceManager);
-            }
+            descriptor = getBaseImage(((IDeltaEntry)element).getDeltaType());
         }
         return (Image)resourceManager.get(descriptor);
     }
 
-    private ImageDescriptor getBaseImage(ProdDefPropertyType propertyType) {
+    private Image getBaseImage(ProdDefPropertyType propertyType) {
         if (propertyType == ProdDefPropertyType.VALUE) {
-            return IpsUIPlugin.getImageHandling().createImageDescriptor("ProductAttribute.gif"); //$NON-NLS-1$
+            return getImageForName("ProductAttribute.gif"); //$NON-NLS-1$
         } else if (propertyType == ProdDefPropertyType.TABLE_CONTENT_USAGE) {
-            return IpsUIPlugin.getImageHandling().createImageDescriptor("TableContentsUsage.gif"); //$NON-NLS-1$
+            return getImageForName("TableContentsUsage.gif"); //$NON-NLS-1$
         } else if (propertyType == ProdDefPropertyType.FORMULA) {
-            return IpsUIPlugin.getImageHandling().createImageDescriptor("Formula.gif"); //$NON-NLS-1$
+            return getImageForName("Formula.gif"); //$NON-NLS-1$
         } else if (propertyType == ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET) {
-            return IpsUIPlugin.getImageHandling().createImageDescriptor("PolicyAttribute.gif"); //$NON-NLS-1$
+            return getImageForName("PolicyAttribute.gif"); //$NON-NLS-1$
         } else {
             return null;
         }
     }
 
-    /**
-     * Returns the image descriptor for an {@link IDeltaEntry} or child element in the delta-tree.
-     * Returns the image of the delta type ({@link #getBaseImage(DeltaType)}) per default.
-     */
-    private ImageDescriptor getBaseImage(IDeltaEntry deltaEntry) {
-        if (deltaEntry.getDeltaType() == DeltaType.CONFIG_WITHOUT_VALIDATION_RULE) {
-            IValidationRuleConfig config = ((ConfigWithoutValidationRuleEntry)deltaEntry).getValidationRuleConfig();
-            return IpsUIPlugin.getImageHandling().getImageDescriptor(config);
-        } else if (deltaEntry.getDeltaType() == DeltaType.MISSING_VALIDATION_RULE_CONFIG) {
-            IValidationRule rule = ((MissingValidationRuleConfigEntry)deltaEntry).getValidationRule();
-            return IpsUIPlugin.getImageHandling().getImageDescriptor(rule);
-        } else {
-            return getBaseImage(deltaEntry.getDeltaType());
-        }
+    private Image getImageForName(String fileName) {
+        return (Image)resourceManager.get(IpsUIPlugin.getImageHandling().createImageDescriptor(fileName));
     }
 
-    /**
-     * Returns the image descriptor for a {@link DeltaType} or root element in the delta-tree.
-     */
     private ImageDescriptor getBaseImage(DeltaType deltaType) {
         if (deltaType == DeltaType.MISSING_PROPERTY_VALUE) {
             return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeMissingPropertyValue.gif"); //$NON-NLS-1$
@@ -113,10 +88,6 @@ public class DeltaLabelProvider extends LabelProvider {
             return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeValueSetMismatch.gif"); //$NON-NLS-1$
         } else if (deltaType == DeltaType.LINK_WITHOUT_ASSOCIATION) {
             return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeLinkWithoutAssociation.gif"); //$NON-NLS-1$
-        } else if (deltaType == DeltaType.MISSING_VALIDATION_RULE_CONFIG) {
-            return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeValidationRuleMismatch.gif"); //$NON-NLS-1$
-        } else if (deltaType == DeltaType.CONFIG_WITHOUT_VALIDATION_RULE) {
-            return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeValidationRuleMismatch.gif"); //$NON-NLS-1$
         } else {
             return null;
         }

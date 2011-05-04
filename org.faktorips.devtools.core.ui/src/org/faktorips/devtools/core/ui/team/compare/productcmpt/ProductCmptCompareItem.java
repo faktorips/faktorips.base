@@ -13,8 +13,6 @@
 
 package org.faktorips.devtools.core.ui.team.compare.productcmpt;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -22,6 +20,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.eclipse.core.resources.IFile;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -58,8 +57,6 @@ import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem;
  * @author Stefan Widmaier, FaktorZehn AG
  */
 public class ProductCmptCompareItem extends AbstractCompareItem {
-
-    public static final DateFormat DATE_FORMAT = DateFormat.getDateInstance(SimpleDateFormat.MEDIUM);
 
     /**
      * Creates a ProductCmptCompareItem with the given parent and the given content. If parent is
@@ -199,7 +196,9 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     }
 
     protected void appendGenerationDateForLineStart(IIpsObjectGeneration gen, StringBuffer sb) {
-        sb.append(DATE_FORMAT.format(gen.getValidFrom().getTime()));
+        String validFrom = IpsPlugin.getDefault().getIpsPreferences().getDateFormat()
+                .format(gen.getValidFrom().getTime());
+        sb.append(validFrom);
     }
 
     /**

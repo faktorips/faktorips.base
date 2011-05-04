@@ -18,6 +18,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -231,16 +233,16 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         assertEquals(DeltaType.MISSING_VALIDATION_RULE_CONFIG, entries[0].getDeltaType());
         assertEquals(DeltaType.CONFIG_WITHOUT_VALIDATION_RULE, entries[1].getDeltaType());
 
-        IValidationRuleConfig[] validationRuleConfigs = generation.getValidationRuleConfigs();
-        assertEquals(2, validationRuleConfigs.length);
-        assertEquals("Rule1", validationRuleConfigs[0].getName());
-        assertEquals("", validationRuleConfigs[1].getName());
+        List<IValidationRuleConfig> validationRuleConfigs = generation.getValidationRuleConfigs();
+        assertEquals(2, validationRuleConfigs.size());
+        assertEquals("Rule1", validationRuleConfigs.get(0).getName());
+        assertEquals("", validationRuleConfigs.get(1).getName());
 
         delta.fix();
         validationRuleConfigs = generation.getValidationRuleConfigs();
-        assertEquals(2, validationRuleConfigs.length);
-        assertEquals("Rule1", validationRuleConfigs[0].getName());
-        assertEquals("UnconfiguredRule", validationRuleConfigs[1].getName());
+        assertEquals(2, validationRuleConfigs.size());
+        assertEquals("Rule1", validationRuleConfigs.get(0).getName());
+        assertEquals("UnconfiguredRule", validationRuleConfigs.get(1).getName());
     }
 
     @Test
@@ -258,15 +260,15 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         assertEquals(DeltaType.CONFIG_WITHOUT_VALIDATION_RULE, entries[1].getDeltaType());
         assertEquals(DeltaType.CONFIG_WITHOUT_VALIDATION_RULE, entries[2].getDeltaType());
 
-        IValidationRuleConfig[] validationRuleConfigs = generation.getValidationRuleConfigs();
-        assertEquals(3, validationRuleConfigs.length);
-        assertEquals("unconfigurableRule", validationRuleConfigs[2].getName());
+        List<IValidationRuleConfig> validationRuleConfigs = generation.getValidationRuleConfigs();
+        assertEquals(3, validationRuleConfigs.size());
+        assertEquals("unconfigurableRule", validationRuleConfigs.get(2).getName());
 
         delta.fix();
         validationRuleConfigs = generation.getValidationRuleConfigs();
-        assertEquals(2, validationRuleConfigs.length);
-        assertEquals("Rule1", validationRuleConfigs[0].getName());
-        assertEquals("UnconfiguredRule", validationRuleConfigs[1].getName());
+        assertEquals(2, validationRuleConfigs.size());
+        assertEquals("Rule1", validationRuleConfigs.get(0).getName());
+        assertEquals("UnconfiguredRule", validationRuleConfigs.get(1).getName());
     }
 
     protected void initRules() {
