@@ -20,13 +20,14 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.AbstractProductCmptTypeBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
 import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProductCmptTypeAttribute;
+import org.faktorips.devtools.stdbuilder.type.GenType;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -103,9 +104,9 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
         return (StandardBuilderSet)getBuilderSet();
     }
 
-    protected final GenProductCmptType getGenProductCmptType(IProductCmptType productCmptType) {
+    protected final GenType getGenType(IType type) {
         try {
-            return getStandardBuilderSet().getGenerator(productCmptType);
+            return getStandardBuilderSet().getGenerator(type);
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }

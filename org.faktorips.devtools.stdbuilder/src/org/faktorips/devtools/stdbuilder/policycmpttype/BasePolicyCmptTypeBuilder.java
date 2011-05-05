@@ -30,10 +30,9 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.ITypePart;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
@@ -77,7 +76,7 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
 
     /**
      * This validation is necessary because otherwise a java class file is created with a wrong java
-     * class name this causes jmerge to throw an exception
+     * class name this causes JMerge to throw an exception
      */
     protected boolean hasValidProductCmptTypeName() throws CoreException {
         IProductCmptType type = getProductCmptType();
@@ -146,12 +145,10 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         return ((StandardBuilderSet)getBuilderSet()).isUseTypesafeCollections();
     }
 
-    /** Returns the GenProductCmptType for this builder. */
     public GenProductCmptType getGenProductCmptType() throws CoreException {
         return ((StandardBuilderSet)getBuilderSet()).getGenerator(getProductCmptType());
     }
 
-    /** Returns the GenProductCmptType for this builder. */
     public GenPolicyCmptType getGenPolicyCmptType() throws CoreException {
         return ((StandardBuilderSet)getBuilderSet()).getGenerator(getPcType());
     }
@@ -172,12 +169,8 @@ public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
         IType type = null;
         if (ipsObjectPartContainer instanceof IType) {
             type = (IType)ipsObjectPartContainer;
-        } else if (ipsObjectPartContainer instanceof IAttribute) {
-            type = ((IAttribute)ipsObjectPartContainer).getType();
-        } else if (ipsObjectPartContainer instanceof IAssociation) {
-            type = ((IAssociation)ipsObjectPartContainer).getType();
-        } else if (ipsObjectPartContainer instanceof IMethod) {
-            type = ((IMethod)ipsObjectPartContainer).getType();
+        } else if (ipsObjectPartContainer instanceof ITypePart) {
+            type = ((ITypePart)ipsObjectPartContainer).getType();
         } else if (ipsObjectPartContainer instanceof IValidationRule) {
             type = (IType)ipsObjectPartContainer.getParent();
         } else {
