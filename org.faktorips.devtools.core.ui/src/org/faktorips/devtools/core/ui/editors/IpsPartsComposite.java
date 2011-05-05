@@ -158,7 +158,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             getViewer().getControl().setMenu(contextMenu);
             site.registerContextMenu(contextMenuManager, getSelectionProvider());
 
-            contextMenuManager.addMenuListener(MenuCleaner.createAdditionsCleaner());
+            MenuCleaner.addAdditionsCleaner(contextMenuManager);
             // Hide the context menu if nothing is selected
             contextMenuManager.addMenuListener(new IMenuListener() {
                 @Override

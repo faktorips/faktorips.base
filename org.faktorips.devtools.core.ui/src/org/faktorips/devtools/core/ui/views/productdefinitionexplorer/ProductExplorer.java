@@ -120,7 +120,7 @@ public class ProductExplorer extends ModelExplorer {
         Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
         treeViewer.getControl().setMenu(contextMenu);
         getSite().registerContextMenu(manager, treeViewer);
-        manager.addMenuListener(MenuCleaner.createAdditionsCleaner());
+        MenuCleaner.addAdditionsCleaner(manager);
     }
 
     protected class ProductMenuBuilder extends ModelExplorerContextMenuBuilder {

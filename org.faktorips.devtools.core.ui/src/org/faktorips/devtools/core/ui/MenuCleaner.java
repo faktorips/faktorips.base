@@ -21,6 +21,7 @@ import org.eclipse.jdt.ui.IContextMenuConstants;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.Separator;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -40,10 +41,6 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class MenuCleaner implements IMenuListener {
 
-    private static final String MENU_ID_GENERATE = "generateMenuId"; //$NON-NLS-1$
-
-    private static final String MENU_ID_SOURCE = "sourceMenuId"; //$NON-NLS-1$
-
     /** All items matching at least one of the prefixes contained in this set will be filtered out. */
     private final Set<String> filteredPrefixes = new HashSet<String>();
 
@@ -57,14 +54,26 @@ public class MenuCleaner implements IMenuListener {
     private boolean whiteListMode;
 
     /**
-     * Creates a menu cleaner that filters out the "additions" menu group as well as the "Source"
-     * and / or "Generate" menu.
+     * Creates a menu cleaner that filters out the "additions" menu group. This method does create
+     * the additions group if it does not already exists to get the cleaner working correctly. This
+     * method does also register the menu cleaner as menu listener. You have to call this method
+     * after you have registered the menu manaer in eclipse.
+     * 
+     * @return the created menu cleaner
      */
-    public static MenuCleaner createAdditionsCleaner() {
+    public static MenuCleaner addAdditionsCleaner(IMenuManager menuManager) {
+        boolean foundAdditions = false;
+        for (IContributionItem item : menuManager.getItems()) {
+            if (IContextMenuConstants.GROUP_ADDITIONS.equals(item.getId())) {
+                foundAdditions = true;
+            }
+        }
+        if (!foundAdditions) {
+            menuManager.add(new Separator(IContextMenuConstants.GROUP_ADDITIONS));
+        }
         MenuCleaner additionsCleaner = new MenuCleaner();
         additionsCleaner.addFilteredMenuGroup(IContextMenuConstants.GROUP_ADDITIONS);
-        additionsCleaner.addFilteredPrefix(MENU_ID_GENERATE);
-        additionsCleaner.addFilteredPrefix(MENU_ID_SOURCE);
+        menuManager.addMenuListener(additionsCleaner);
         return additionsCleaner;
     }
 
@@ -73,11 +82,16 @@ public class MenuCleaner implements IMenuListener {
      * long as none are added via {@link #addFilteredPrefix(String)} or
      * {@link #addFilteredMenuGroup(String)}.
      */
-    public MenuCleaner() {
+    MenuCleaner() {
         // Nothing to do
     }
 
     /**
+     * Creates a new menu cleaner that filters the set of {@link #filteredPrefixes} and the set of
+     * {@link #filteredMenuGroups}. The cleaner could only filter out those groups that does exists
+     * in the menu. That means if you want to filter out all additions that are contributed by
+     * eclipse you have to add a separator for additions first. .
+     * 
      * @param filteredPrefixes Set of prefixes that should be filtered out (will be copied
      *            defensively)
      * @param filteredMenuGroups Set of menu group IDs that should be filtered out (will be copied
@@ -86,6 +100,7 @@ public class MenuCleaner implements IMenuListener {
      * @throws NullPointerException If any parameter is null
      */
     public MenuCleaner(Set<String> filteredPrefixes, Set<String> filteredMenuGroups) {
+        this();
         this.filteredPrefixes.addAll(filteredPrefixes);
         this.filteredMenuGroups.addAll(filteredMenuGroups);
     }

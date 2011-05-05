@@ -247,7 +247,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
         Menu contextMenu = manager.createContextMenu(tableViewer.getControl());
         tableViewer.getControl().setMenu(contextMenu);
         getSite().registerContextMenu(manager, tableViewer);
-        manager.addMenuListener(MenuCleaner.createAdditionsCleaner());
+        MenuCleaner.addAdditionsCleaner(manager);
     }
 
     /**

@@ -83,7 +83,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     @Override
     public IContributionItem[] getContributionItems() {
         IIpsElement selectedItem = getSelectedIpsElement();
-        if (selectedItem == null) {
+        if (selectedItem == null || selectedItem.isContainedInArchive()) {
             return getContributionItemsForNoSourceCodeFound();
         }
         if (selectedItem instanceof IIpsSrcFile) {
@@ -270,7 +270,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         }
 
         TypedSelection<IAdaptable> typedSelection = getSelectionFromEditor(part);
-        if (!typedSelection.isValid()) {
+        if (typedSelection == null || !typedSelection.isValid()) {
             return null;
         }
 
