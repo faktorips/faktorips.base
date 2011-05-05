@@ -13,9 +13,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.move;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -91,12 +88,7 @@ public class MovePage extends WizardPage implements ModifyListener {
         targetInput = new TreeViewer(tree);
         targetInput.setLabelProvider(new MoveLabelProvider());
         targetInput.setContentProvider(new MoveContentProvider());
-        try {
-            targetInput.setInput(IpsPlugin.getDefault().getIpsModel().getIpsProjects());
-        } catch (CoreException e) {
-            // error creating the input, rethrow as runtime exception
-            throw new RuntimeException(e);
-        }
+        targetInput.setInput(new IIpsProject[] { sources[0].getIpsProject() });
 
         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         gridData.minimumHeight = 300;
@@ -214,7 +206,7 @@ public class MovePage extends WizardPage implements ModifyListener {
                 if (((IIpsPackageFragment)element).isDefaultPackage()) {
                     text = super.getText(element);
                 } else {
-                    text = ((IIpsPackageFragment)element).getLastSegmentName();
+                    text = ((IIpsPackageFragment)element).getName();
                 }
             } else {
                 text = super.getText(element);
@@ -239,16 +231,8 @@ public class MovePage extends WizardPage implements ModifyListener {
                 if (parentElement instanceof IIpsProject) {
                     return ((IIpsProject)parentElement).getSourceIpsPackageFragmentRoots();
                 } else if (parentElement instanceof IIpsPackageFragmentRoot) {
-                    ArrayList<IIpsPackageFragment> result = new ArrayList<IIpsPackageFragment>();
-                    IIpsPackageFragment def = ((IIpsPackageFragmentRoot)parentElement).getDefaultIpsPackageFragment();
-                    result.add(def);
-                    result.addAll(Arrays.asList(def.getChildIpsPackageFragments()));
-                    return result.toArray();
-                } else if (parentElement instanceof IIpsPackageFragment) {
-                    if (((IIpsPackageFragment)parentElement).isDefaultPackage()) {
-                        return new Object[0];
-                    }
-                    return ((IIpsPackageFragment)parentElement).getChildIpsPackageFragments();
+                    IIpsPackageFragmentRoot root = (IIpsPackageFragmentRoot)parentElement;
+                    return root.getIpsPackageFragments();
                 }
             } catch (CoreException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
