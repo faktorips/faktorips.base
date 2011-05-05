@@ -495,7 +495,7 @@ public class LinksSection extends IpsSection implements ISelectionProviderActiva
             } catch (CoreException e) {
                 IpsPlugin.log(e);
             }
-            // processRelationChanges(event);
+            processRelationChanges(event);
         }
 
         private void processRelationChanges(ContentChangeEvent event) {
