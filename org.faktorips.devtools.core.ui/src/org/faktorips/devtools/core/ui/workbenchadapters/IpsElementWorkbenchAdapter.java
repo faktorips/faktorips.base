@@ -63,6 +63,12 @@ public abstract class IpsElementWorkbenchAdapter implements IWorkbenchAdapter, I
         }
     }
 
+    /**
+     * Returns the given {@link IIpsElement}'s native name.
+     * 
+     * @param ipsElement the {@link IIpsElement} to return a label for
+     * @return the ips element's name
+     */
     protected String getLabel(IIpsElement ipsElement) {
         return ipsElement.getName();
     }

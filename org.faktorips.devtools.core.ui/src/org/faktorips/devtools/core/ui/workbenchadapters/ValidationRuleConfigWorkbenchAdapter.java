@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -24,6 +25,20 @@ public class ValidationRuleConfigWorkbenchAdapter extends IpsElementWorkbenchAda
 
     public ValidationRuleConfigWorkbenchAdapter(ImageDescriptor imageDescriptor) {
         this.imageDescriptor = imageDescriptor;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * If the given {@link IIpsElement} is an {@link IValidationRuleConfig}, this method returns the
+     * validation rule configuration's caption.
+     */
+    @Override
+    protected String getLabel(IIpsElement ipsElement) {
+        if (ipsElement instanceof IValidationRuleConfig) {
+            IpsPlugin.getMultiLanguageSupport().getDefaultCaption((IValidationRuleConfig)ipsElement);
+        }
+        return super.getLabel(ipsElement);
     }
 
     @Override
