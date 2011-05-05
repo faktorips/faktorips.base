@@ -23,7 +23,7 @@ import org.faktorips.util.StringUtil;
  * 
  * @author Jan Ortmann
  */
-public class JavaClass2DatatypeAdaptor<T> extends AbstractDatatype {
+public class JavaClass2DatatypeAdaptor extends AbstractDatatype {
 
     private String qualifiedName;
     private String javaClassName;
@@ -39,11 +39,11 @@ public class JavaClass2DatatypeAdaptor<T> extends AbstractDatatype {
         this.javaClassName = javaClassName;
     }
 
-    public JavaClass2DatatypeAdaptor(String name, Class<T> clazz) {
+    public JavaClass2DatatypeAdaptor(String name, Class<?> clazz) {
         this(name, clazz.getName());
     }
 
-    public JavaClass2DatatypeAdaptor(Class<T> clazz) {
+    public JavaClass2DatatypeAdaptor(Class<?> clazz) {
         this(clazz.getName());
     }
 
