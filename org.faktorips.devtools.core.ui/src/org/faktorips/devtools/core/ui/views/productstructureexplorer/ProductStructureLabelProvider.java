@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
 import java.util.GregorianCalendar;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StyledString;
@@ -23,7 +22,6 @@ import org.eclipse.jface.viewers.ViewerLabel;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -60,8 +58,8 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
             return IpsUIPlugin.getImageHandling().getImage(
                     ((IProductCmptStructureTblUsageReference)element).getTableContentUsage());
         } else if (element instanceof IProductCmptVRuleReference) {
-            return IpsUIPlugin.getImageHandling().getImage(
-                    ((IProductCmptVRuleReference)element).getValidationRuleConfig());
+            IValidationRuleConfig config = ((IProductCmptVRuleReference)element).getValidationRuleConfig();
+            return IpsUIPlugin.getImageHandling().getImage(config);
         } else if (element instanceof ViewerLabel) {
             return ((ViewerLabel)element).getImage();
         }
@@ -103,19 +101,9 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
      * @param element the reference to return a text/label for
      * @return the label for the given IProductCmptVRuleReference
      */
-    protected String getRuleLabel(IProductCmptVRuleReference element) {
+    private String getRuleLabel(IProductCmptVRuleReference element) {
         IValidationRuleConfig ruleConfig = element.getValidationRuleConfig();
-        try {
-            IValidationRule rule = ruleConfig.findValidationRule(ruleConfig.getIpsProject());
-            if (rule != null) {
-                return IpsUIPlugin.getLabel(rule);
-            }
-        } catch (CoreException e) {
-            IpsPlugin
-                    .log(new IpsStatus(
-                            "Could not acquire label for ValidationRuleConfig \"" + ruleConfig.getName() + "\". Using original name.", e)); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        return ruleConfig.getName();
+        return IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(ruleConfig);
     }
 
     public String getProductCmptLabel(IProductCmpt productCmpt) {
@@ -164,7 +152,8 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
             if (!vRuleRef.getValidationRuleConfig().isActive()) {
                 // gray-out inactive rules
                 styledString.setStyle(0, styledString.length(), StyledString.QUALIFIER_STYLER);
-                styledString.append(Messages.ProductStructureLabelProvider_inactiveDecoration, StyledString.QUALIFIER_STYLER);
+                styledString.append(Messages.ProductStructureLabelProvider_inactiveDecoration,
+                        StyledString.QUALIFIER_STYLER);
             }
         }
         return styledString;

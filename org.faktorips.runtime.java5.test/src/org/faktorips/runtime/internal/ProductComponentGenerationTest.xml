@@ -36,5 +36,8 @@
 		]]>
 		</compiledExpression>
 	</Formula>
+	<ValidationRuleConfig ruleName="Regel1" active="true"/>
+	<ValidationRuleConfig ruleName="RegelZwei" active="false"/>
+	<ValidationRuleConfig ruleName="RegelDrei" active="xxx"/>
 </Generation>
 

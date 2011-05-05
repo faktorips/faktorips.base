@@ -142,7 +142,6 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
             children.addAll(list);
         }
 
-        // add table content usages
         if (showValidationRules && parentElement instanceof IProductCmptReference) {
             children.addAll(Arrays.asList(structure
                     .getChildProductCmptVRuleReferences((IProductCmptReference)parentElement)));

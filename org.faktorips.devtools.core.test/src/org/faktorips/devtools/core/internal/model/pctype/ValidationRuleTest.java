@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -39,17 +40,19 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     private PolicyCmptType pcType;
     private IIpsSrcFile ipsSrcFile;
     private IValidationRule rule;
+    private IIpsProject project;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        IIpsProject project = newIpsProject("TestProject");
+        project = newIpsProject("TestProject");
         pcType = newPolicyCmptType(project, "Policy");
         ipsSrcFile = pcType.getIpsSrcFile();
         rule = pcType.newRule();
         ipsSrcFile.save(true, null);
         assertFalse(ipsSrcFile.isDirty());
+
     }
 
     @Test
@@ -279,5 +282,26 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         a.setAttributeType(AttributeType.CHANGEABLE);
         assertNull(rule.validate(ipsSrcFile.getIpsProject()).getMessageByCode(
                 IValidationRule.MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED));
+    }
+
+    @Test
+    public void testConfigurableByProductCompt() throws CoreException {
+        ProductCmptType prodType = newProductCmptType(project, "ProdType");
+        pcType.setProductCmptType(prodType.getQualifiedName());
+
+        pcType.setConfigurableByProductCmptType(true);
+        rule.setConfigurableByProductComponent(true);
+        assertTrue("Rule is supposed to be configurable", rule.isConfigurableByProductComponent());
+
+        rule.setConfigurableByProductComponent(false);
+        assertFalse("Rule isn't supposed to be configurable", rule.isConfigurableByProductComponent());
+
+        rule.setConfigurableByProductComponent(false);
+        pcType.setConfigurableByProductCmptType(false);
+        assertFalse("Rule isn't supposed to be configurable", rule.isConfigurableByProductComponent());
+
+        rule.setConfigurableByProductComponent(true);
+        pcType.setConfigurableByProductCmptType(false);
+        assertFalse("Rule isn't supposed to be configurable", rule.isConfigurableByProductComponent());
     }
 }

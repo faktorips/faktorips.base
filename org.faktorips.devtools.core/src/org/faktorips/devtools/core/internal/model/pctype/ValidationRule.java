@@ -415,6 +415,10 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
 
     @Override
     public boolean isConfigurableByProductComponent() {
+        IPolicyCmptType type = (IPolicyCmptType)getIpsObject();
+        if (type == null || !type.isConfigurableByProductCmptType()) {
+            return false;
+        }
         return configurableByProductComponent;
     }
 

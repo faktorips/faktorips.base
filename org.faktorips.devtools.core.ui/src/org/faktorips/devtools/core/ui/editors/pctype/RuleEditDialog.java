@@ -34,7 +34,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
-import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
@@ -61,12 +60,9 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
     private Checkbox configurableByProductBox;
     private Checkbox defaultActivationBox;
 
-    private ProductConfigurablePresentationObject state;
-
     public RuleEditDialog(IValidationRule rule, Shell parentShell) {
         super(rule, parentShell, Messages.RuleEditDialog_title, true);
         this.rule = rule;
-        state = new ProductConfigurablePresentationObject(rule);
     }
 
     @Override
@@ -213,10 +209,10 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
         bindingContext.bindContent(new CheckboxField(defaultActivationBox), rule,
                 IValidationRule.PROPERTY_ACTIVATED_BY_DEFAULT);
 
-        bindingContext.bindEnabled(configurableByProductBox, state,
-                ProductConfigurablePresentationObject.PROPERTY_CONFIGURABLE_ENABLED);
-        bindingContext.bindEnabled(defaultActivationBox, state,
-                ProductConfigurablePresentationObject.PROPERTY_DEFAULT_ACTIVATION_ENABLED);
+        bindingContext.bindEnabled(configurableByProductBox, rule.getIpsObject(),
+                IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE);
+        bindingContext.bindEnabled(defaultActivationBox, rule,
+                IValidationRule.PROPERTY_CONFIGUREDABLE_BY_PRODUCT_COMPONENT);
     }
 
     @Override
@@ -236,49 +232,6 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
             MessageList list = super.validatePartContainerAndUpdateUI();
             rfControl.updateValidationStatus();
             return list;
-        }
-    }
-
-    /**
-     * Object to bind the enablement of this dialog's checkboxes to. As the enablement of checkboxes
-     * is ui specific knowledge, a separate object (an not the rule itself) is used.
-     * <p>
-     * Public for access by {@link BindingContext}.
-     * 
-     * @author Stefan Widmaier
-     */
-    public static class ProductConfigurablePresentationObject {
-        public static final String PROPERTY_CONFIGURABLE_ENABLED = "configurableEnabled"; //$NON-NLS-1$
-        public static final String PROPERTY_DEFAULT_ACTIVATION_ENABLED = "defaultActivationEnabled"; //$NON-NLS-1$
-
-        private IPolicyCmptType pcType = null;
-        private IValidationRule rule;
-
-        public ProductConfigurablePresentationObject(IValidationRule rule) {
-            this.rule = rule;
-            pcType = (IPolicyCmptType)rule.getIpsObject();
-        }
-
-        /**
-         * Returns whether the checkbox {@link RuleEditDialog#configurableByProductBox} should be
-         * enabled/editable.
-         * <p>
-         * The checkbox is enabled if the rule's PolicyComponentType is configurable by product
-         * components.
-         */
-        public boolean getConfigurableEnabled() {
-            return pcType != null && pcType.isConfigurableByProductCmptType();
-        }
-
-        /**
-         * Returns whether the checkbox {@link RuleEditDialog#defaultActivationBox} should be
-         * enabled/editable.
-         * <p>
-         * The checkbox is enabled if both the containing PolicyComponentType and the rule itself
-         * are configurable by product components.
-         */
-        public boolean getDefaultActivationEnabled() {
-            return getConfigurableEnabled() && rule.isConfigurableByProductComponent();
         }
     }
 

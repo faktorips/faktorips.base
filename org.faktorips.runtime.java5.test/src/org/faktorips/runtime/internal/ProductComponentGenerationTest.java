@@ -15,6 +15,7 @@ package org.faktorips.runtime.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.HashMap;
 import java.util.List;
@@ -113,4 +114,40 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
         assertEquals(new IntegerRange(0, Integer.MAX_VALUE), cardinality);
     }
 
+    @Test
+    public void testGetValidationRuleConfigElements() {
+        Element genElement = getTestDocument().getDocumentElement();
+        Map<String, ValidationRuleConfiguration> configsMap = gen.getValidationRuleConfigElements(genElement);
+
+        assertEquals(3, configsMap.size());
+        ValidationRuleConfiguration config = configsMap.get("Regel1");
+        assertNotNull(config);
+        assertEquals("Regel1", config.getRuleName());
+        assertEquals(true, config.isActive());
+
+        config = configsMap.get("RegelZwei");
+        assertNotNull(config);
+        assertEquals("RegelZwei", config.getRuleName());
+        assertEquals(false, config.isActive());
+
+        config = configsMap.get("RegelDrei");
+        assertNotNull(config);
+        assertEquals("RegelDrei", config.getRuleName());
+        assertEquals(false, config.isActive());
+
+        config = configsMap.get("nonExistentRule");
+        assertNull(config);
+    }
+
+    @Test
+    public void testInitVRuleConfigs() {
+        Element genElement = getTestDocument().getDocumentElement();
+        gen.initFromXml(genElement);
+
+        assertEquals(true, gen.isValidationRuleActivated("Regel1"));
+        assertEquals(false, gen.isValidationRuleActivated("RegelZwei"));
+        assertEquals(false, gen.isValidationRuleActivated("RegelDrei"));
+
+        assertEquals(false, gen.isValidationRuleActivated("nonExistentRule"));
+    }
 }

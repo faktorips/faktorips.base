@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.model.pctype;
 
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
@@ -237,7 +238,8 @@ public interface IValidationRule extends IIpsObjectPart, IDescribedElement, ILab
     /**
      * returns whether this rule can be configured by a product component.
      * 
-     * @return <code>true</code> if this rule is configurable, <code>false</code> else.
+     * @return <code>true</code> if this rule and its containing {@link PolicyCmptType} are both
+     *         configurable, <code>false</code> else.
      */
     public boolean isConfigurableByProductComponent();
 

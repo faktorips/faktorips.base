@@ -48,7 +48,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
 
     private IFormulaEvaluator formulaEvaluator;
 
-    private Map<String, Element> nameToValidationRuleConfigMap;
+    private Map<String, ValidationRuleConfiguration> nameToValidationRuleConfigMap;
 
     public ProductComponentGeneration(ProductComponent productCmpt) {
         this.productCmpt = productCmpt;
@@ -189,8 +189,8 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
     /**
      * Initializes all validation rule configurations contained by the given genElement.
      */
-    protected void doInitValidationRuleConfigsFromXml(Map<String, Element> validationRuleConfigElements) {
-        nameToValidationRuleConfigMap = validationRuleConfigElements;
+    protected void doInitValidationRuleConfigsFromXml(Map<String, ValidationRuleConfiguration> map) {
+        nameToValidationRuleConfigMap = map;
     }
 
     /**
@@ -229,8 +229,8 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
     /**
      * Returns a map containing the xml elements representing relations found in the indicated
      * generation's xml element. For each policy component type relation (pcTypeRelation) the map
-     * contains an entry with the pcTypeRelation as key. The value is the xml element containing the
-     * validation rule configuration.
+     * contains an entry with the pcTypeRelation as key. The value is an array list containing all
+     * relation elements for the pcTypeRelation.
      * 
      * @param genElement An xml element containing a product component generation's data.
      * @throws NullPointerException if genElement is <code>null</code>.
@@ -257,26 +257,26 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
     }
 
     /**
-     * Returns a map containing the xml elements representing the validation rule configurations
-     * found in the indicated generation's xml element. For each validation rule config the map
-     * contains an entry with the rule name as a key. The value is an array list containing all
-     * relation elements for the pcTypeRelation.
+     * Returns a map containing the validation rule configurations found in the indicated
+     * generation's XML element. For each validation rule configuration the map contains an entry
+     * with the rule name as a key and an {@link ValidationRuleConfiguration} instance as value.
      * 
-     * @param genElement An xml element containing a product component generation's data.
+     * @param genElement An XML element containing a product component generation's data.
      * @throws NullPointerException if genElement is <code>null</code>.
      */
     // note: not private to allow access by test case
-    final Map<String, Element> getValidationRuleConfigElements(Element genElement) {
-        Map<String, Element> elementMap = new HashMap<String, Element>();
+    final Map<String, ValidationRuleConfiguration> getValidationRuleConfigElements(Element genElement) {
+        Map<String, ValidationRuleConfiguration> configMap = new HashMap<String, ValidationRuleConfiguration>();
         NodeList nl = genElement.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             Node node = nl.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE && "ValidationRuleConfig".equals(node.getNodeName())) {
                 Element childElement = (Element)nl.item(i);
-                elementMap.put(childElement.getAttribute("ruleName"), childElement);
+                ValidationRuleConfiguration config = new ValidationRuleConfiguration(childElement);
+                configMap.put(config.getRuleName(), config);
             }
         }
-        return elementMap;
+        return configMap;
     }
 
     protected Element getRangeElement(Element configElement) {
@@ -350,7 +350,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
      * {@inheritDoc}
      */
     public boolean isValidationRuleActivated(String ruleName) {
-        Element ruleConfig = nameToValidationRuleConfigMap.get(ruleName);
-        return ruleConfig != null && Boolean.valueOf(ruleConfig.getAttribute("active"));
+        ValidationRuleConfiguration ruleConfig = nameToValidationRuleConfigMap.get(ruleName);
+        return ruleConfig != null && ruleConfig.isActive();
     }
 }
