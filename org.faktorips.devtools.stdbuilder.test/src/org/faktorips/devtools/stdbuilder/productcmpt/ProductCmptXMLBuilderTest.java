@@ -100,7 +100,6 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
      * Test if a runtime id change will be correctly updated in the product component which
      * referenced the product cmpt on which the runtime id was changed.
      */
-    // FIXME AW: Core test expecting standard builder set
     @Test
     public void testRuntimeIdDependency() throws CoreException, IOException {
         IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
