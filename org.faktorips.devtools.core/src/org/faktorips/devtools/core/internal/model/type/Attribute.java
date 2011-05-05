@@ -20,15 +20,11 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -39,15 +35,15 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public abstract class Attribute extends IpsObjectPart implements IAttribute {
+public abstract class Attribute extends TypePart implements IAttribute {
 
     final static String TAG_NAME = "Attribute"; //$NON-NLS-1$
 
     private String datatype = ""; //$NON-NLS-1$
-    private Modifier modifier = Modifier.PUBLISHED;
+
     private String defaultValue = null;
 
-    public Attribute(IIpsObject parent, String id) {
+    public Attribute(IType parent, String id) {
         super(parent, id);
         name = ""; //$NON-NLS-1$
     }
@@ -58,28 +54,10 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
     }
 
     @Override
-    public IType getType() {
-        return (IType)getParent();
-    }
-
-    @Override
     public void setName(String newName) {
         String oldName = name;
         name = newName;
         valueChanged(oldName, newName);
-    }
-
-    @Override
-    public Modifier getModifier() {
-        return modifier;
-    }
-
-    @Override
-    public void setModifier(Modifier newModifer) {
-        ArgumentCheck.notNull(newModifer);
-        Modifier oldModifier = modifier;
-        modifier = newModifer;
-        valueChanged(oldModifier, newModifer);
     }
 
     @Override
@@ -119,10 +97,6 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
-        modifier = Modifier.getModifier(element.getAttribute(PROPERTY_MODIFIER));
-        if (modifier == null) {
-            modifier = Modifier.PUBLISHED;
-        }
         datatype = element.getAttribute(PROPERTY_DATATYPE);
         defaultValue = ValueToXmlHelper.getValueFromElement(element, "DefaultValue"); //$NON-NLS-1$    
     }
@@ -132,7 +106,6 @@ public abstract class Attribute extends IpsObjectPart implements IAttribute {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_NAME, name);
         element.setAttribute(PROPERTY_DATATYPE, datatype);
-        element.setAttribute(PROPERTY_MODIFIER, modifier.getId());
         ValueToXmlHelper.addValueToElement(defaultValue, element, "DefaultValue"); //$NON-NLS-1$
     }
 

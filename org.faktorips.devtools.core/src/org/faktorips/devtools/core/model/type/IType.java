@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 /**
  * Common interface for types, policy component type and product component type. Common for all
  * types is, that a type could have a supertype, could be abstract and could have attributes,
- * associations and methods.
+ * associations and methods ({@link ITypePart}s).
  * 
  * @author Jan Ortmann
  */

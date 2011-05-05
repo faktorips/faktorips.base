@@ -16,20 +16,16 @@ package org.faktorips.devtools.core.model.type;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
-import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 
 /**
  * A type's attribute.
  */
-public interface IAttribute extends IIpsObjectPart, IDescribedElement, ILabeledElement {
+public interface IAttribute extends ITypePart, IDescribedElement, ILabeledElement {
 
     public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
-
-    public final static String PROPERTY_MODIFIER = "modifier"; //$NON-NLS-1$
 
     public final static String PROPERTY_DEFAULT_VALUE = "defaultValue"; //$NON-NLS-1$
 
@@ -75,11 +71,6 @@ public interface IAttribute extends IIpsObjectPart, IDescribedElement, ILabeledE
     public final static String MSGCODE_DEFAULT_NOT_IN_VALUESET = MSGCODE_PREFIX + "DefaultNotInValueSet"; //$NON-NLS-1$
 
     /**
-     * Returns the type this attribute belongs to. This method never returns <code>null</code>.
-     */
-    public IType getType();
-
-    /**
      * Sets the attribute's name.
      */
     public void setName(String newName);
@@ -107,16 +98,6 @@ public interface IAttribute extends IIpsObjectPart, IDescribedElement, ILabeledE
      * @see #getDatatype()
      */
     public ValueDatatype findDatatype(IIpsProject project) throws CoreException;
-
-    /**
-     * Returns the attribute's modifier.
-     */
-    public Modifier getModifier();
-
-    /**
-     * Sets the attribute's modifier.
-     */
-    public void setModifier(Modifier newModifier);
 
     /**
      * Returns the attribute's default value.

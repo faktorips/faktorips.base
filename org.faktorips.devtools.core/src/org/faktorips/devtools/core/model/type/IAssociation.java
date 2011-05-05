@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.model.type;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -28,7 +27,7 @@ import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
  * 
  * @author Jan Ortmann
  */
-public interface IAssociation extends IIpsObjectPart, IDescribedElement, ILabeledElement {
+public interface IAssociation extends ITypePart, IDescribedElement, ILabeledElement {
 
     public static final int CARDINALITY_ONE = 1;
     public static final int CARDINALITY_MANY = Integer.MAX_VALUE;
@@ -136,11 +135,6 @@ public interface IAssociation extends IIpsObjectPart, IDescribedElement, ILabele
             + "TargetTypeNotASubtype"; //$NON-NLS-1$
 
     public final static AssociationType DEFAULT_RELATION_TYPE = AssociationType.ASSOCIATION;
-
-    /**
-     * Returns the type this association belongs to. Never returns <code>null</code>.
-     */
-    public IType getType();
 
     /**
      * Returns the association's type.

@@ -22,7 +22,6 @@ import org.faktorips.devtools.core.internal.model.type.Attribute;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -45,7 +44,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
 
     private IValueSet valueSet;
 
-    public ProductCmptTypeAttribute(IIpsObject parent, String id) {
+    public ProductCmptTypeAttribute(IProductCmptType parent, String id) {
         super(parent, id);
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
     }

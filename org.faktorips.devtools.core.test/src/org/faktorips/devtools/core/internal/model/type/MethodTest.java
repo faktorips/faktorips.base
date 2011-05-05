@@ -178,11 +178,6 @@ public class MethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSetModifier() {
-        testPropertyAccessReadWrite(Method.class, IMethod.PROPERTY_MODIFIER, method, Modifier.PUBLIC);
-    }
-
-    @Test
     public void testIsSameSignature() {
         method.setName("calc");
         method.setDatatype("void");

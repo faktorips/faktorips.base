@@ -20,7 +20,6 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.type.Association;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -42,7 +41,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
 
     final static String TAG_NAME = "Association"; //$NON-NLS-1$
 
-    public ProductCmptTypeAssociation(IIpsObject parent, String id) {
+    public ProductCmptTypeAssociation(IProductCmptType parent, String id) {
         super(parent, id);
         type = AssociationType.AGGREGATION;
     }

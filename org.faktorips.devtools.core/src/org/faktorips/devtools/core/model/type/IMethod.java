@@ -16,16 +16,15 @@ package org.faktorips.devtools.core.model.type;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
-import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  * A type's method.
  */
-public interface IMethod extends IParameterContainer, IDescribedElement {
+public interface IMethod extends ITypePart, IParameterContainer, IDescribedElement {
 
     public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
-    public final static String PROPERTY_MODIFIER = "modifier"; //$NON-NLS-1$
+
     public final static String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
 
     public final static String PROPERTY_PARAMETERS = "parameters"; //$NON-NLS-1$
@@ -42,11 +41,6 @@ public interface IMethod extends IParameterContainer, IDescribedElement {
 
     public final static String MSGCODE_MULTIPLE_USE_OF_SAME_PARAMETER_NAME = MSGCODE_PREFIX
             + "multipleUseOfSameParameterName"; //$NON-NLS-1$
-
-    /**
-     * Returns the type this method belongs to.
-     */
-    public IType getType();
 
     /**
      * Sets the method's name.
@@ -74,16 +68,6 @@ public interface IMethod extends IParameterContainer, IDescribedElement {
      * @throws NullPointerException If <tt>ipsProject</tt> is <code>null</code>.
      */
     public Datatype findDatatype(IIpsProject ipsProject) throws CoreException;
-
-    /**
-     * Returns the modifier.
-     */
-    public Modifier getModifier();
-
-    /**
-     * Sets the modifier.
-     */
-    public void setModifier(Modifier newModifier);
 
     /**
      * Returns <code>true</code> if this is an abstract method, <code>false</code> otherwise.

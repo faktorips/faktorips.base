@@ -27,12 +27,10 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
-import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
@@ -49,12 +47,12 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class Method extends BaseIpsObjectPart implements IMethod {
+public class Method extends TypePart implements IMethod {
 
     public final static String XML_ELEMENT_NAME = "Method"; //$NON-NLS-1$
 
     private String datatype = "void"; //$NON-NLS-1$
-    private Modifier modifier = Modifier.PUBLISHED;
+
     private boolean abstractFlag = false;
 
     private IpsObjectPartCollection<IParameter> parameters = new IpsObjectPartCollection<IParameter>(this,
@@ -106,20 +104,8 @@ public class Method extends BaseIpsObjectPart implements IMethod {
     }
 
     @Override
-    public Modifier getModifier() {
-        return modifier;
-    }
-
-    @Override
     public int getJavaModifier() {
-        return modifier.getJavaModifier() | (abstractFlag ? java.lang.reflect.Modifier.ABSTRACT : 0);
-    }
-
-    @Override
-    public void setModifier(Modifier newModifier) {
-        Modifier oldModifier = modifier;
-        modifier = newModifier;
-        valueChanged(oldModifier, newModifier);
+        return getModifier().getJavaModifier() | (abstractFlag ? java.lang.reflect.Modifier.ABSTRACT : 0);
     }
 
     @Override
@@ -234,7 +220,6 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_NAME);
         datatype = element.getAttribute(PROPERTY_DATATYPE);
-        modifier = Modifier.getModifier(element.getAttribute(PROPERTY_MODIFIER));
         abstractFlag = Boolean.valueOf(element.getAttribute(PROPERTY_ABSTRACT)).booleanValue();
     }
 
@@ -243,7 +228,6 @@ public class Method extends BaseIpsObjectPart implements IMethod {
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_NAME, name);
         newElement.setAttribute(PROPERTY_DATATYPE, datatype);
-        newElement.setAttribute(PROPERTY_MODIFIER, modifier.getId());
         newElement.setAttribute(PROPERTY_ABSTRACT, "" + abstractFlag); //$NON-NLS-1$
     }
 

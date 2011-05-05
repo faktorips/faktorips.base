@@ -133,11 +133,6 @@ public class AttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSetModifier() {
-        testPropertyAccessReadWrite(Attribute.class, IAttribute.PROPERTY_MODIFIER, attribute, Modifier.PUBLIC);
-    }
-
-    @Test
     public void testSetValueDatatype() {
         testPropertyAccessReadWrite(Attribute.class, IAttribute.PROPERTY_DATATYPE, attribute, "newDatatype");
     }

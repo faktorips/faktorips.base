@@ -20,8 +20,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.AggregationKind;
 import org.faktorips.devtools.core.model.type.AssociationType;
@@ -40,7 +38,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public abstract class Association extends IpsObjectPart implements IAssociation {
+public abstract class Association extends TypePart implements IAssociation {
 
     final static String TAG_NAME = "Association"; //$NON-NLS-1$
 
@@ -53,13 +51,8 @@ public abstract class Association extends IpsObjectPart implements IAssociation 
     protected String subsettedDerivedUnion = ""; //$NON-NLS-1$
     protected boolean derivedUnion = false;
 
-    public Association(IIpsObject parent, String id) {
+    protected Association(IType parent, String id) {
         super(parent, id);
-    }
-
-    @Override
-    public IType getType() {
-        return (IType)getParent();
     }
 
     @Override
