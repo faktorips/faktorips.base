@@ -484,7 +484,8 @@
     	<property name="pluginbuilder.features" value="org.faktorips.feature,org.faktorips.feature.nls1,org.faktorips.feature.source"/>
     	<property name="pluginbuilder.features.uml" value="org.faktorips.uml.feature,org.faktorips.uml.feature.nls1,org.faktorips.uml.feature.source"/>
     	<property name="pluginbuilder.features.ormext" value="org.faktorips.ormext.feature,org.faktorips.ormext.feature.nls1,org.faktorips.ormext.feature.source"/>
-
+    	<!-- devtarget additional jars --> 
+		<property name="devtarget.jar.path" value="${basedir}/org.faktorips.devtarget/eclipse/dropins/deploy/eclipse"/>
 		
 		<condition property="isMinVersion3" value="true" >
 			<not>
@@ -578,6 +579,9 @@
 		<!--
 		<antcall inheritall="true" target="-buildAndPublish.release.runtimeAddons"/>
 		-->
+		
+		<!-- add devtarget deploy jars to updatesite -->
+		<antcall inheritall="true" target="-add.devtarget.jar.to.updatesite.zip"/>
 
 		<antcall inheritall="true" target="-publish.release.all"/>
 		<antcall inheritall="true" target="-publish.product"/>
@@ -990,6 +994,9 @@ ${faktoripsProductLinuxZipPath}
         <copy todir="${updatesite.path}/features" overwrite="true" verbose="true">
             <fileset dir="${buildDirectory}/updateSite/features" includes="*.jar"/>
         </copy>
+        <copy todir="${updatesite.path}/plugins" overwrite="true" verbose="true">
+            <fileset dir="${devtarget.jar.path}/plugins" includes="*.jar"/>
+        </copy>    	
     </target>
     <target name="-copy.eclipse.workspace.log">
         <property name="logfile" value="${basedir}/pluginbuilder_tmp/org.faktorips.pluginbuilder/${workspaceName}/.metadata/.log"/>
@@ -1038,6 +1045,10 @@ ${faktoripsProductLinuxZipPath}
           </fail>
     </target>
               	
+    <target name="-add.devtarget.jar.to.updatesite.zip">
+    	<zip destfile="${buildDirectory}/results/updateSite-${build.version}.zip" basedir="${devtarget.jar.path}" update="true" />
+    </target>
+	
     <target name="-merge.updatesite.xml" unless="isSkipPublish">
         <xslt in="${projectsRootDir}/org.faktorips.updatesite/${siteXmlFileName}" out="${projectsRootDir}/org.faktorips.updatesite/site_merge.xml" 
         	style="${projectsRootDir}/org.faktorips.build/cruisecontrol_config/xsl/mergeupdatesite.xsl" force="true">
