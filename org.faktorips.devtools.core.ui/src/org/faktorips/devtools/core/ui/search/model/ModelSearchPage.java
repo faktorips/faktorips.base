@@ -26,7 +26,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -84,10 +83,8 @@ public class ModelSearchPage extends DialogPage implements ISearchPage {
         composite.setLayout(new GridLayout(1, true));
         composite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL));
 
-        Composite searchStringGrid = toolkit.createLabelEditColumnComposite(composite);
-
-        new Label(searchStringGrid, SWT.NONE).setText(Messages.ModelSearchPage_labelSearchTerm);
-        txtSearchTerm = toolkit.createText(searchStringGrid);
+        toolkit.createLabel(composite, Messages.ModelSearchPage_labelSearchTerm);
+        txtSearchTerm = toolkit.createText(composite);
 
         Group searchForGroup = toolkit
                 .createGridGroup(composite, Messages.ModelSearchPage_groupLabelSearchFor, 2, true);
@@ -108,12 +105,11 @@ public class ModelSearchPage extends DialogPage implements ISearchPage {
         ckbSearchValidationRules = toolkit.createCheckbox(searchForGroup, Messages.ModelSearchPage_labelRules);
         ckbSearchValidationRules.setChecked(true);
 
-        setControl(searchStringGrid);
+        toolkit.createVerticalSpacer(composite, 10);
+        toolkit.createLabel(composite, Messages.ModelSearchPage_labelTypeName);
+        txtTypeName = toolkit.createText(composite);
 
-        Composite typePatternGrid = toolkit.createLabelEditColumnComposite(composite);
-
-        new Label(typePatternGrid, SWT.NONE).setText(Messages.ModelSearchPage_labelTypeName);
-        txtTypeName = toolkit.createText(typePatternGrid);
+        setControl(composite);
 
     }
 
@@ -186,8 +182,6 @@ public class ModelSearchPage extends DialogPage implements ISearchPage {
         IDialogSettings settings = getDialogSettings();
 
         IDialogSettings[] sections = settings.getSections();
-
-        System.out.println("read sections: " + sections.length);
 
         previousSearchData = new ArrayList<ModelSearchPage.ModelSearchData>();
         for (IDialogSettings iDialogSettings : sections) {

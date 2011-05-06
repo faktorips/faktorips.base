@@ -17,7 +17,6 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.search.model.messages"; //$NON-NLS-1$
-    public static String ModelSearchPage_8;
     public static String ModelSearchPage_groupLabelSearchFor;
     public static String ModelSearchPage_labelAssociations;
     public static String ModelSearchPage_labelAttributes;

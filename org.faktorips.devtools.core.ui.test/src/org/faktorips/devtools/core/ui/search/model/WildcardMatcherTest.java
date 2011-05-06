@@ -60,4 +60,12 @@ public class WildcardMatcherTest {
         // Error in Regexp
         assertFalse(new WildcardMatcher("a*{c").isMatching("abc"));
     }
+
+    @Test
+    public void testCaseInsensitive() {
+
+        assertTrue(new WildcardMatcher("Abc").isMatching("abc"));
+
+        assertTrue(new WildcardMatcher("A*C").isMatching("abc"));
+    }
 }

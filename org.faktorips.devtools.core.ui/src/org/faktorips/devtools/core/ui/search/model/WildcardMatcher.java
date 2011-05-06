@@ -16,6 +16,8 @@ package org.faktorips.devtools.core.ui.search.model;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Matcher mit oder ohne Wildcards
  * 
@@ -31,7 +33,7 @@ public class WildcardMatcher {
     private static final String REGEXP_ZERO_OR_MANY = ".*"; //$NON-NLS-1$
     private static final String REGEXP_ONCE = "."; //$NON-NLS-1$
 
-    private String pattern;
+    private Pattern pattern;
     private boolean isRegExp;
     private boolean isValidPattern;
 
@@ -44,29 +46,27 @@ public class WildcardMatcher {
             regexpSearchTerm = searchTerm.replace(WILDCARD_ZERO_OR_MANY, REGEXP_ZERO_OR_MANY).replace(WILDCARD_ONCE,
                     REGEXP_ONCE);
         } else {
-            regexpSearchTerm = searchTerm;
+            regexpSearchTerm = searchTerm + REGEXP_ZERO_OR_MANY;
         }
 
         try {
-            Pattern.compile(regexpSearchTerm);
-            pattern = regexpSearchTerm;
+            pattern = Pattern.compile(regexpSearchTerm, Pattern.CASE_INSENSITIVE);
             isValidPattern = true;
         } catch (PatternSyntaxException e) {
-
             isValidPattern = false;
         }
 
     }
 
     public boolean isMatching(String text) {
+        if (StringUtils.isEmpty(text)) {
+            return false;
+        }
+
         if (!isValidPattern) {
             return false;
         }
 
-        if (isRegExp) {
-            return text.matches(pattern);
-        } else {
-            return text.startsWith(pattern);
-        }
+        return pattern.matcher(text).matches();
     }
 }

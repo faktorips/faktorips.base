@@ -184,6 +184,7 @@
           visible="true">
        <action
              class="org.faktorips.devtools.core.ui.actions.OpenModelSearchPageAction"
+             icon="icons/ModelSearch.gif"
              id="org.faktorips.devtools.core.ui.openModelSearchAction"
              label="%org.faktorips.devtools.actions.OpenModelSearchPageAction.label"
              menubarPath="org.eclipse.search.menu/dialogGroup"
@@ -1858,12 +1859,14 @@
 	<!-- Extension Points Model Search -->
 
 	<extension point="org.eclipse.search.searchPages">
-	   <page id="org.faktorips.devtools.core.ui.search.model.ModelSearchPage"
-			label="%org.faktorips.devtools.core.ui.search.model.ModelSearchPage.label"
-			sizeHint="460,160"
-			showScopeSection="true"
-			canSearchEnclosingProjects="true"
-			class="org.faktorips.devtools.core.ui.search.model.ModelSearchPage">
+	   <page
+          canSearchEnclosingProjects="true"
+          class="org.faktorips.devtools.core.ui.search.model.ModelSearchPage"
+          icon="icons/ModelSearch.gif"
+          id="org.faktorips.devtools.core.ui.search.model.ModelSearchPage"
+          label="%org.faktorips.devtools.core.ui.search.model.ModelSearchPage.label"
+          showScopeSection="true"
+          sizeHint="460,160">
 		</page>
 	</extension>
 	
