@@ -613,6 +613,9 @@ tagProjects()
   # c) tag customer product project
   tagProject $FETCH_TAG $CUSTOMER_PRODUCT_PROJECT $BRANCH
 
+  # c) tag devtarget project
+  tagProject $FETCH_TAG $DEVTARGET_PLUGIN_NAME $BRANCH
+
   # d) tag all projects specified in the pluginbuilder map file (all necessary plugin and feature projects)
   # use custom-build/ci/all.map, because this map file contains all features and plugins
   echo "tag plugins and features defined in: "$PLUGINBUILDER_PROJECT_DIR/custom-build/ci/all.map
@@ -746,8 +749,9 @@ checkAndCreateReleaseProperty()
   fi
 }
 
-checkoutPluginbuilderParts()
+checkoutPluginbuilderPartsAndDevtarget()
 {
+  # checkout pluginbuilder parts
   local _FETCH_TAG=$FETCH_TAG
   if [ "$NOCVS" = "true" ] ; then
     return
@@ -766,6 +770,9 @@ checkoutPluginbuilderParts()
   checkoutModule $RELEASE_PROPERTY_DIR $_FETCH_TAG $PLUGINBUILDER_PROJECT_NAME/releases $BRANCH
   checkoutModule $PLUGINBUILDER_PROJECT_DIR/maps $_FETCH_TAG $PLUGINBUILDER_PROJECT_NAME/maps $BRANCH
   checkoutModule $PLUGINBUILDER_PROJECT_DIR/lizenz $_FETCH_TAG $PLUGINBUILDER_PROJECT_NAME/lizenz $BRANCH
+
+  # checkout devtarget
+  checkoutModule $WORKINGDIR $_FETCH_TAG $DEVTARGET_PLUGIN_NAME $BRANCH
 }
 
 printBoolean ()
@@ -822,7 +829,7 @@ if [ ! -d $WORKINGDIR ] ; then
 fi
 cd $WORKING_DIR
 
-checkoutPluginbuilderParts
+checkoutPluginbuilderPartsAndDevtarget
 
 # assert license script in pluginbuilder project
 if [ ! -f $PROJECTSROOTDIR/$CREATE_LIZENZ_SCRIPT ] ; then
