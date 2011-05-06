@@ -19,6 +19,8 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.type.IType;
 
+// TODO CD 06.05.2011 This visitor does not extends from TypeHierarchyVisitor - needs to be
+// refactored
 /**
  * A visitor that makes it easy to implement a function based on all types in a supertype hierarchy.
  * The class provides navigation of the supertype hierarchy and stops if a cycle is detected in the
