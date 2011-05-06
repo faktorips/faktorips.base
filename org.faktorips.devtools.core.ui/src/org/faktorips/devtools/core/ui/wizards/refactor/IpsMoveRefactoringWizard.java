@@ -205,7 +205,7 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
                 String text = ""; //$NON-NLS-1$
                 if (element instanceof IIpsPackageFragment) {
                     if (((IIpsPackageFragment)element).isDefaultPackage()) {
-                        text = "(default package)"; //$NON-NLS-1$
+                        text = super.getText(element);
                     } else {
                         text = ((IIpsPackageFragment)element).getName();
                     }
