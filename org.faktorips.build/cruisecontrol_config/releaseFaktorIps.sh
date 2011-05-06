@@ -772,7 +772,7 @@ checkoutPluginbuilderPartsAndDevtarget()
   checkoutModule $PLUGINBUILDER_PROJECT_DIR/lizenz $_FETCH_TAG $PLUGINBUILDER_PROJECT_NAME/lizenz $BRANCH
 
   # checkout devtarget
-  checkoutModule $WORKINGDIR $_FETCH_TAG $DEVTARGET_PLUGIN_NAME $BRANCH
+  checkoutModule $WORKINGDIR/$DEVTARGET_PLUGIN_NAME $_FETCH_TAG $DEVTARGET_PLUGIN_NAME $BRANCH
 }
 
 printBoolean ()
