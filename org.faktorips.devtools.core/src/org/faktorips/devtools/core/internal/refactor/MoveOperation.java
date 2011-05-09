@@ -274,7 +274,7 @@ public class MoveOperation implements IRunnableWithProgress {
     }
 
     public static boolean canMove(Object[] sources, Object target) {
-        return canMoveToTarget(target) && canMoveSources(sources) && canMovePackages(sources, target);
+        return canMoveToTarget(sources, target) && canMoveSources(sources) && canMovePackages(sources, target);
     }
 
     /**
@@ -299,9 +299,20 @@ public class MoveOperation implements IRunnableWithProgress {
      * <li><code>ArchiveIpsPackageFragment</code>
      * <li><code>ArchiveIpsPackageFragmentRoot</code>
      * </ul>
-     * false is returned. For all other types returns true.
+     * false is returned. For all other types true is returned if all sources originate from the
+     * target IPS project.
      */
-    private static boolean canMoveToTarget(Object target) {
+    private static boolean canMoveToTarget(Object[] sources, Object target) {
+        if (target instanceof IIpsElement) {
+            IIpsProject targetIpsProject = ((IIpsElement)target).getIpsProject();
+            for (Object source : sources) {
+                if (source instanceof IIpsElement) {
+                    if (!((IIpsElement)source).getIpsProject().equals(targetIpsProject)) {
+                        return false;
+                    }
+                }
+            }
+        }
         return !(target instanceof IIpsObject) & !(target instanceof IIpsObjectPart) & !(target instanceof IFile)
                 & !(target instanceof IIpsSrcFile) & !(target instanceof ArchiveIpsPackageFragment)
                 & !(target instanceof ArchiveIpsPackageFragmentRoot);
@@ -321,7 +332,8 @@ public class MoveOperation implements IRunnableWithProgress {
         for (Object source : sources) {
             if (source.equals(target)) {
                 return false;
-            } else if (source instanceof IIpsPackageFragment || source instanceof IIpsPackageFragmentRoot) {
+            }
+            if (source instanceof IIpsPackageFragment || source instanceof IIpsPackageFragmentRoot) {
                 if (source instanceof IIpsPackageFragment) {
                     IIpsPackageFragment packageFragment = (IIpsPackageFragment)source;
                     if (packageFragment.isDefaultPackage()) {
