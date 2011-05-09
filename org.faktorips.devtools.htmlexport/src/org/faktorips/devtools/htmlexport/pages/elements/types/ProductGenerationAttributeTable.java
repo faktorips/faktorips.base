@@ -149,7 +149,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
             IConfigElement configElement = productCmptGeneration.getConfigElement(policyCmptTypeAttribute.getName());
 
-            if (configElement == null) {
+            if (configElement == null || configElement.getValueSet() == null) {
                 cells[i + 1] = new TextPageElement("-"); //$NON-NLS-1$
                 continue;
             }
@@ -275,6 +275,11 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             IProductCmptGeneration productCmptGeneration = productCmpt.getProductCmptGeneration(i);
 
             ITableContentUsage usage = productCmptGeneration.getTableContentUsage(tableStructureUsage.getRoleName());
+
+            if (usage == null) {
+                cells[i + 1] = new TextPageElement("-"); //$NON-NLS-1$
+                continue;
+            }
 
             ITableContents tableContent = null;
             try {
