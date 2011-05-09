@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.custommonkey.xmlunit.XMLTestCase;
 import org.custommonkey.xmlunit.exceptions.XpathException;
+import org.faktorips.devtools.htmlexport.TestUtil;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
@@ -27,7 +28,7 @@ import org.xml.sax.SAXException;
 
 public abstract class AbstractTestHtmlLayouter extends XMLTestCase {
 
-    protected HtmlLayouter layouter = new HtmlLayouter(".resources"); //$NON-NLS-1$
+    protected HtmlLayouter layouter = new HtmlLayouter(new TestUtil().createMockDocumentationContext(), ".resources"); //$NON-NLS-1$
 
     public AbstractTestHtmlLayouter() {
         super();

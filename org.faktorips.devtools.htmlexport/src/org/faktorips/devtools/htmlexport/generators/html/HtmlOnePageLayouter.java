@@ -15,6 +15,7 @@ package org.faktorips.devtools.htmlexport.generators.html;
 
 import java.io.File;
 
+import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 
@@ -28,8 +29,8 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
  */
 public class HtmlOnePageLayouter extends HtmlLayouter {
 
-    public HtmlOnePageLayouter(String resourcePath) {
-        super(resourcePath);
+    public HtmlOnePageLayouter(DocumentationContext context, String resourcePath) {
+        super(context, resourcePath);
     }
 
     @Override

@@ -86,7 +86,7 @@ public class IpsProjectHtmlExportWizard extends Wizard implements IExportWizard 
         context.setDescriptionLocale(ipsProjectHtmlExportWizardPage.getSupportedLanguage());
 
         context.setIpsProject(ipsProjectHtmlExportWizardPage.getSelectedIpsProject());
-        context.setLayouter(new HtmlLayouter(".resource")); //$NON-NLS-1$
+        context.setLayouter(new HtmlLayouter(context, ".resource")); //$NON-NLS-1$
 
         context.addDocumentorScript(new StandardDocumentorScript());
         context.setDocumentedIpsObjectTypes(ipsProjectHtmlExportWizardPage.getSelectedIpsObjectTypes());

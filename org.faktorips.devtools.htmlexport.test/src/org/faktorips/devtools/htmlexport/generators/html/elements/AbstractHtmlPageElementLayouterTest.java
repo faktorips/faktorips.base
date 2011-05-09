@@ -20,7 +20,8 @@ import org.junit.Before;
 
 public abstract class AbstractHtmlPageElementLayouterTest extends AbstractHtmlExportXmlUnitLayouterTest {
 
-    protected HtmlLayouter layouter = new HtmlLayouter("", new TestUtil().createMockIoHandler());
+    protected HtmlLayouter layouter = new HtmlLayouter(new TestUtil().createMockDocumentationContext(), "",
+            new TestUtil().createMockIoHandler());
 
     public AbstractHtmlPageElementLayouterTest() {
         super();

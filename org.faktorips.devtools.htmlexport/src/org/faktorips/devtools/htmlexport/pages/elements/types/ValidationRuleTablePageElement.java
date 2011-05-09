@@ -52,6 +52,8 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
         ruleData.add(rule.getMessageCode());
         ruleData.add(rule.getMessageSeverity().getName());
         ruleData.add(rule.getMessageText());
+
+        ruleData.add(StringUtils.join(rule.getBusinessFunctions(), '\n'));
         ruleData.add(StringUtils.join(rule.getValidatedAttributes(), '\n'));
         ruleData.add(getContext().getDescription(rule));
 
@@ -67,6 +69,8 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
         headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineMessageCode));
         headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineMessageSeverity));
         headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineMessageText));
+        headline.add(getContext().getMessage(
+                HtmlExportMessages.ValidationRuleTablePageElement_headlineBusinessFunctions));
         headline.add(getContext().getMessage(
                 HtmlExportMessages.ValidationRuleTablePageElement_headlineValidatedAttributes));
         headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineDescription));

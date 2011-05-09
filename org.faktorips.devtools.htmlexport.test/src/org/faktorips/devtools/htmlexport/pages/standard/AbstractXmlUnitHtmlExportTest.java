@@ -16,6 +16,7 @@ package org.faktorips.devtools.htmlexport.pages.standard;
 import java.io.UnsupportedEncodingException;
 
 import org.faktorips.devtools.htmlexport.AbstractHtmlExportXmlUnitLayouterTest;
+import org.faktorips.devtools.htmlexport.TestUtil;
 import org.faktorips.devtools.htmlexport.context.AbstractHtmlExportPluginTest;
 import org.faktorips.devtools.htmlexport.generators.IGenerator;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
@@ -35,7 +36,7 @@ public abstract class AbstractXmlUnitHtmlExportTest extends AbstractHtmlExportPl
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        layouter = new HtmlLayouter("");
+        layouter = new HtmlLayouter(new TestUtil().createMockDocumentationContext(), "");
     }
 
     protected void assertXPathExists(PageElement pageElement, String xPath) throws Exception {
