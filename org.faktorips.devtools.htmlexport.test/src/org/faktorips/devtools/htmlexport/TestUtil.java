@@ -19,6 +19,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 
+import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.helper.IoHandler;
 
 public class TestUtil {
@@ -34,4 +35,7 @@ public class TestUtil {
         return ioHandler;
     }
 
+    public DocumentationContext createMockDocumentationContext() {
+        return mock(DocumentationContext.class);
+    }
 }

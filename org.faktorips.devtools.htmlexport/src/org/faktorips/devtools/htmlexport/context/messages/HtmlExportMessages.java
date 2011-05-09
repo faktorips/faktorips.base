@@ -60,6 +60,7 @@ public interface HtmlExportMessages {
     public static final String ValidationRuleTablePageElement_headlineMessageCode = "ValidationRuleTablePageElement_headlineMessageCode";
     public static final String ValidationRuleTablePageElement_headlineMessageSeverity = "ValidationRuleTablePageElement_headlineMessageSeverity";
     public static final String ValidationRuleTablePageElement_headlineMessageText = "ValidationRuleTablePageElement_headlineMessageText";
+    public static final String ValidationRuleTablePageElement_headlineBusinessFunctions = "ValidationRuleTablePageElement_headlineBusinessFunctions";
     public static final String ValidationRuleTablePageElement_headlineName = "ValidationRuleTablePageElement_headlineName";
     public static final String ValidationRuleTablePageElement_headlineValidatedAttributes = "ValidationRuleTablePageElement_headlineValidatedAttributes";
     public static final String AbstractIpsObjectContentPageElement_extensionProperties = "AbstractIpsObjectContentPageElement_extensionProperties";

@@ -149,7 +149,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
             IConfigElement configElement = productCmptGeneration.getConfigElement(policyCmptTypeAttribute.getName());
 
-            if (configElement == null) {
+            if (configElement == null || configElement.getValueSet() == null) {
                 cells[i + 1] = new TextPageElement("-"); //$NON-NLS-1$
                 continue;
             }
@@ -275,6 +275,11 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             IProductCmptGeneration productCmptGeneration = productCmpt.getProductCmptGeneration(i);
 
             ITableContentUsage usage = productCmptGeneration.getTableContentUsage(tableStructureUsage.getRoleName());
+
+            if (usage == null) {
+                cells[i + 1] = new TextPageElement("-"); //$NON-NLS-1$
+                continue;
+            }
 
             ITableContents tableContent = null;
             try {
@@ -422,11 +427,11 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         String value;
         try {
             value = getContext().getDatatypeFormatter().formatValue(
-                    productCmpt.getIpsProject().findValueDatatype(attribute.getDatatype()), attributeValue.getValue());
+                    productCmpt.getIpsProject().findValueDatatype(attribute.getDatatype()),
+                    attributeValue == null ? null : attributeValue.getValue());
         } catch (CoreException e) {
-            context.addStatus(new IpsStatus(IStatus.ERROR,
-                    "Error formating AttributeValue " + attributeValue.getName(), e)); //$NON-NLS-1$
-            value = attributeValue.getValue() == null ? getContext().getMessage(
+            context.addStatus(new IpsStatus(IStatus.ERROR, "Error formating AttributeValue " + attribute.getName(), e)); //$NON-NLS-1$
+            value = attributeValue == null || attributeValue.getValue() == null ? getContext().getMessage(
                     "ProductGenerationAttributeTable_undefined") : attributeValue.getValue(); //$NON-NLS-1$
         }
         return value;

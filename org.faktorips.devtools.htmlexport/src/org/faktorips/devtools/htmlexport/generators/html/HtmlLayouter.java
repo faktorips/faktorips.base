@@ -15,6 +15,9 @@ package org.faktorips.devtools.htmlexport.generators.html;
 
 import java.io.IOException;
 
+import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.AbstractLayouter;
 import org.faktorips.devtools.htmlexport.generators.LayoutResource;
 import org.faktorips.devtools.htmlexport.generators.html.elements.HtmlCompositePageElementLayouter;
@@ -43,6 +46,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElem
  */
 public class HtmlLayouter extends AbstractLayouter {
 
+    private final DocumentationContext context;
     /**
      * Name of the css-File
      */
@@ -60,13 +64,14 @@ public class HtmlLayouter extends AbstractLayouter {
     private String pathToRoot;
     private final IoHandler ioHandler;
 
-    public HtmlLayouter(String resourcePath) {
-        this(resourcePath, new FileHandler());
+    public HtmlLayouter(DocumentationContext context, String resourcePath) {
+        this(context, resourcePath, new FileHandler());
     }
 
-    public HtmlLayouter(String resourcePath, IoHandler ioHandler) {
+    public HtmlLayouter(DocumentationContext context, String resourcePath, IoHandler ioHandler) {
         this.ioHandler = ioHandler;
         this.resourcePath = resourcePath;
+        this.context = context;
         initBaseResources();
     }
 
@@ -140,8 +145,7 @@ public class HtmlLayouter extends AbstractLayouter {
             addLayoutResource(cssResource);
 
         } catch (IOException e) {
-
-            System.out.println("Resources aren't loaded correctly: " + e.getMessage()); //$NON-NLS-1$
+            context.addStatus(new IpsStatus(IStatus.WARNING, "Resources aren't loaded correctly", e)); //$NON-NLS-1$
         }
     }
 
