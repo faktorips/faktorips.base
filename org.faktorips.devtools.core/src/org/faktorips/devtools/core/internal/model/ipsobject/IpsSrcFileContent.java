@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import java.beans.PropertyDescriptor;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -40,6 +39,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsSrcFileSaxHelper;
 import org.faktorips.devtools.core.util.BeanUtil;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.IoUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -232,12 +232,7 @@ public class IpsSrcFileContent {
                                 + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
             }
         } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException ignored) {
-                }
-            }
+            IoUtil.close(is);
         }
     }
 
