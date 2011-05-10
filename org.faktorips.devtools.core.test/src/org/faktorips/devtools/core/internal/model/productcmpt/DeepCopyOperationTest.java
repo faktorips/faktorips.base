@@ -26,6 +26,9 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.IpsModel;
+import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTreeStructure;
+import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -104,12 +107,24 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
             }
 
             assertFalse(src.isDirty());
+
         }
+
+        // testExtPropertyCopy(structure, handles);
+    }
+
+    protected void testExtPropertyCopy(IProductCmptTreeStructure structure,
+            Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles) throws CoreException {
+        IProductCmptStructureReference srcProdCmptRef = ((ProductCmptTreeStructure)structure)
+                .getProductCmptReferenceRecursive(structure.getRoot(), standardVehicle.getQualifiedName());
+        ProductCmpt copiedProductCmpt = (ProductCmpt)handles.get(srcProdCmptRef).getIpsObject();
+        String extPropValue = (String)copiedProductCmpt.getExtPropertyValue("StringExtPropForProdCmpts");
+        assertEquals("standardVehicleExtPropValue", extPropValue);
     }
 
     /**
      * For this test, the comfort-product of the default test content is copied only in part. After
-     * that, the new files are expected to be existant and not dirty. Some relations from the new
+     * that, the new files are expected to be existent and not dirty. Some relations from the new
      * objects link now the the not copied old objects.
      */
     @Test
@@ -321,6 +336,22 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
 
         link = generation.newLink("TplCoverageType");
         link.setTarget("products.StandardTplCoverage");
+
+        // set up extension properties
+        // IExtensionPropertyDefinition extProp = mock(IExtensionPropertyDefinition.class);
+        StringExtensionPropertyDefinition extProp = new StringExtensionPropertyDefinition();
+        extProp.setPropertyId("StringExtPropForProdCmpts");
+        extProp.setExtendedType(ProductCmpt.class);
+        extProp.setDefaultValue("defaultValue");
+        ((IpsModel)ipsProject.getIpsModel()).addIpsObjectExtensionProperty(extProp);
+
+        StringExtensionPropertyDefinition extPropPart = new StringExtensionPropertyDefinition();
+        extPropPart.setPropertyId("StringExtPropForAttributeValues");
+        extPropPart.setExtendedType(AttributeValue.class);
+        extPropPart.setDefaultValue("defaultValuePart");
+        ((IpsModel)ipsProject.getIpsModel()).addIpsObjectExtensionProperty(extPropPart);
+
+        standardVehicle.setExtPropertyValue("StringExtPropForProdCmpts", "standardVehicleExtPropValue");
     }
 
     private void createProductCmptTypeAssociation(IProductCmptType source,

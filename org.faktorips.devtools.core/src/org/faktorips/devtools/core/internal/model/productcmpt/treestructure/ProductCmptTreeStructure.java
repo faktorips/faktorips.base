@@ -516,7 +516,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
      * @return the {@link IProductCmptReference} referencing the indicated {@link IProductCmpt}, or
      *         <code>null</code> if none was found.
      */
-    private IProductCmptReference getProductCmptReferenceRecursive(IProductCmptReference cmptReference,
+    public IProductCmptReference getProductCmptReferenceRecursive(IProductCmptReference cmptReference,
             String prodCmptQualifiedName) {
         if (cmptReference.getProductCmpt().getQualifiedName().equals(prodCmptQualifiedName)) {
             return cmptReference;
