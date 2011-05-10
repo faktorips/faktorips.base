@@ -21,9 +21,15 @@ public class DateControlField<T> extends FormattingTextField<T> {
     private final DateControl dateControl;
 
     public DateControlField(DateControl dateControl, AbstractInputFormat<T> format) {
-        super(dateControl.getTextControl(), format);
+        this(dateControl, format, true);
+    }
+    
+    public DateControlField(DateControl dateControl, AbstractInputFormat<T> format, boolean formatOnFocusLost) {
+        super(dateControl.getTextControl(), format, formatOnFocusLost);
         this.dateControl = dateControl;
     }
+    
+    
 
     @Override
     public Control getControl() {

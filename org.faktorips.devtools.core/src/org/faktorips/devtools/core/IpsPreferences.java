@@ -297,7 +297,7 @@ public class IpsPreferences {
         } else {
             result = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
         }
-        result.setLenient(true);
+        result.setLenient(false);
         return result;
     }
 

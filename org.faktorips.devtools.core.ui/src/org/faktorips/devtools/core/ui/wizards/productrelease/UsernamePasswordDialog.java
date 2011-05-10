@@ -82,6 +82,15 @@ public class UsernamePasswordDialog extends Dialog {
         GridData data = new GridData(GridData.FILL_HORIZONTAL);
         usernameField.setLayoutData(data);
 
+        uiToolkit.createLabel(comp, Messages.UsernamePasswordDialog_password);
+
+        passwordField = uiToolkit.createText(comp, SWT.SINGLE | SWT.PASSWORD | SWT.BORDER);
+        data = new GridData(GridData.FILL_HORIZONTAL);
+        passwordField.setLayoutData(data);
+
+        uiToolkit.createVerticalSpacer(comp, 0);
+        savePassworField = uiToolkit.createCheckbox(comp, Messages.UsernamePasswordDialog_savePassword);
+
         try {
             loadSettings();
         } catch (StorageException e) {
@@ -92,16 +101,7 @@ public class UsernamePasswordDialog extends Dialog {
         }
 
         usernameField.setText(passwordAuthentication.getUserName());
-
-        uiToolkit.createLabel(comp, Messages.UsernamePasswordDialog_password);
-
-        passwordField = uiToolkit.createText(comp, SWT.SINGLE | SWT.PASSWORD | SWT.BORDER);
-        data = new GridData(GridData.FILL_HORIZONTAL);
-        passwordField.setLayoutData(data);
         passwordField.setText(new String(passwordAuthentication.getPassword()));
-
-        uiToolkit.createVerticalSpacer(comp, 0);
-        savePassworField = uiToolkit.createCheckbox(comp, Messages.UsernamePasswordDialog_savePassword);
 
         return comp;
     }

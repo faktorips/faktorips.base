@@ -14,17 +14,25 @@
 package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
 import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
+import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateContentProvider;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.LinkStatus.CopyOrLink;
 
 public class DeepCopyPresentationModel extends PresentationModelObject {
@@ -38,6 +46,10 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
     public static final String PACKAGE_FRAGMENT_ROOT = "ipsPckFragmentRoot"; //$NON-NLS-1$
     public static final String TARGET_PACKAGE_ROOT = "targetPackageRoot"; //$NON-NLS-1$
     public static final String COPY_TABLE = "copyTable"; //$NON-NLS-1$
+
+    private final IProductCmptGeneration productCmptGeneration;
+
+    private final List<GenerationDate> generationDates;
 
     private GenerationDate oldValidFrom;
     private GregorianCalendar newValidFrom;
@@ -54,12 +66,33 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
 
     private DeepCopyTreeStatus treeStatus;
 
-    public DeepCopyPresentationModel(IProductCmptTreeStructure structure) {
+    public DeepCopyPresentationModel(IProductCmptGeneration productCmptGeneration) {
         treeStatus = new DeepCopyTreeStatus();
-        initialize(structure);
+        this.productCmptGeneration = productCmptGeneration;
+        List<GenerationDate> generationDatesInternal;
+        try {
+            generationDatesInternal = new GenerationDateContentProvider().collectGenerationDates(
+                    productCmptGeneration.getProductCmpt(), null);
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            generationDatesInternal = new ArrayList<GenerationDate>();
+        }
+        generationDates = generationDatesInternal;
+        setOldValidFromDate(productCmptGeneration.getValidFrom());
     }
 
-    protected void initialize(IProductCmptTreeStructure structure) {
+    private void setOldValidFromDate(GregorianCalendar validAt) {
+        for (GenerationDate generationDate : generationDates) {
+            if (!validAt.before(generationDate.getValidFrom())) {
+                // elements are sorted, newest generation first, so we only have to check
+                // the validFrom date
+                setOldValidFrom(generationDate);
+                break;
+            }
+        }
+    }
+
+    private void initialize(IProductCmptTreeStructure structure) {
         this.structure = structure;
         treeStatus.initialize(structure);
     }
@@ -71,6 +104,18 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
     public void setOldValidFrom(GenerationDate newValue) {
         GenerationDate oldValue = this.oldValidFrom;
         this.oldValidFrom = newValue;
+
+        try {
+            IProductCmpt productCmpt = productCmptGeneration.getProductCmpt();
+            IProductCmptTreeStructure structure = productCmpt.getStructure(getOldValidFrom().getValidFrom(),
+                    productCmpt.getIpsProject());
+            initialize(structure);
+        } catch (CycleInProductStructureException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+            setOldValidFrom(oldValue);
+            return;
+        }
+
         notifyListeners(new PropertyChangeEvent(this, OLD_VALID_FROM, oldValue, newValue));
     }
 
@@ -223,5 +268,9 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
      */
     public Set<IProductCmptStructureReference> getLinkedElements() {
         return treeStatus.getAllEnabledElements(CopyOrLink.LINK, structure, true);
+    }
+
+    public List<GenerationDate> getGenerationDates() {
+        return generationDates;
     }
 }
