@@ -129,10 +129,7 @@ public class ValidationRuleConfigSection extends IpsSection {
 
     private void setTableEnabled(boolean dataChangeable) {
         if (tableViewer != null) {
-            TableItem[] items = tableViewer.getTable().getItems();
-            for (TableItem tableItem : items) {
-                tableItem.setGrayed(dataChangeable);
-            }
+            tableViewer.getTable().setEnabled(dataChangeable);
         }
     }
 
