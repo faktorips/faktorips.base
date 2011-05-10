@@ -53,7 +53,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
-        pcType = newPolicyCmptType(ipsProject, "Policy");
+        pcType = newPolicyCmptType(ipsProject, "PolicyType");
         association = pcType.newPolicyCmptTypeAssociation();
         association.setTargetRoleSingular("Coverage");
         targetType = newPolicyCmptType(ipsProject, "Coverage");
