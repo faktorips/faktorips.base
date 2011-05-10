@@ -29,17 +29,34 @@ public class FormattingTextField<T> extends AbstractTextField<T> {
 
     private final AbstractInputFormat<T> format;
 
+    private final boolean formatOnFocusLost;
+
     /**
      * Creates a {@link FormattingTextField} with the given {@link Text}-Control and the given
-     * format. Both arguments must not be <code>null</code>.
+     * format. Both arguments must not be <code>null</code>. The input would be formatted on focus
+     * lost.
      * 
      * @param text the {@link Text} control to be used by this {@link FormattingTextField}
      * @param format the {@link AbstractInputFormat} to be used by this {@link FormattingTextField}
      */
     public FormattingTextField(final Text text, final AbstractInputFormat<T> format) {
+        this(text, format, true);
+    }
+
+    /**
+     * Creates a {@link FormattingTextField} with the given {@link Text}-Control and the given
+     * format. Both arguments must not be <code>null</code>. You can specify wheater this control
+     * should format the input after focus lost or not.
+     * 
+     * @param text the {@link Text} control to be used by this {@link FormattingTextField}
+     * @param format the {@link AbstractInputFormat} to be used by this {@link FormattingTextField}
+     * @param formatOnFocusLost True to format the input on focus lost
+     */
+    public FormattingTextField(final Text text, final AbstractInputFormat<T> format, boolean formatOnFocusLost) {
         super(text);
         ArgumentCheck.notNull(text);
         this.format = format;
+        this.formatOnFocusLost = formatOnFocusLost;
         text.addVerifyListener(format);
         text.addFocusListener(new FocusListener() {
 
@@ -70,31 +87,13 @@ public class FormattingTextField<T> extends AbstractTextField<T> {
         return format;
     }
 
-    private void formatText() {
-        // Point selection = text.getSelection();
-        String oldText = getText();
-        String newText = format.format(getValue());
-        // DecimalFormatSymbols decimalFormatSymbols =
-        // format.getNumberFormat().getDecimalFormatSymbols();
-        // char decimalSeparator = decimalFormatSymbols.getDecimalSeparator();
-        //        String minusSign = "" + decimalFormatSymbols.getMinusSign(); //$NON-NLS-1$
-        // if (oldText.equals(minusSign)) {
-        // // the text is only a minus sign, we should allow this
-        // newText = minusSign;
-        // }
-        // if (oldText.length() > 0 && oldText.toCharArray()[oldText.length() - 1] ==
-        // decimalSeparator) {
-        // // the last char is the decimal separator - allowed to enter deciaml values
-        // newText += decimalSeparator;
-        // }
-        // if (oldText.length() != newText.length()) {
-        // // the length of the text has changed - correct the selection
-        // selection.x += newText.length() - oldText.length();
-        // selection.y += newText.length() - oldText.length();
-        // }
-        if (!oldText.equals(newText)) {
-            text.setText(newText);
-            // text.setSelection(selection);
+    protected void formatText() {
+        if (formatOnFocusLost) {
+            String oldText = getText();
+            String newText = format.format(getValue());
+            if (!oldText.equals(newText)) {
+                text.setText(newText);
+            }
         }
     }
 }
