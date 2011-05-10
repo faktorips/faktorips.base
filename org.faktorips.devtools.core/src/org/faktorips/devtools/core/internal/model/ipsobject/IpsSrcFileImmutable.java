@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFileMemento;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+import org.faktorips.util.IoUtil;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
 
@@ -106,6 +107,8 @@ public class IpsSrcFileImmutable extends IpsSrcFile {
             }
         } catch (IOException e) {
             IpsPlugin.log(e);
+        } finally {
+            IoUtil.close(bufferedReader);
         }
         xmlContent = builder.toString();
 
