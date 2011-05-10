@@ -74,6 +74,10 @@ public class DateControl extends TextButtonControl {
         dateWidget.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseUp(MouseEvent e) {
+                if (e.count != 1) {
+                    // do nothing on double click to avoid closing to early
+                    return;
+                }
                 GregorianCalendar newCalendar = new GregorianCalendar(dateWidget.getYear(), dateWidget.getMonth(),
                         dateWidget.getDay());
                 if ((oldCalendar.get(Calendar.MONTH) != newCalendar.get(Calendar.MONTH) || oldCalendar

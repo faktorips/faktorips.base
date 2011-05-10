@@ -35,7 +35,6 @@ import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeViewerListener;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewerColumn;
@@ -58,7 +57,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
@@ -75,7 +73,6 @@ import org.faktorips.devtools.core.ui.controls.DateControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
-import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateContentProvider;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateViewer;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.LinkStatus.CopyOrLink;
 import org.faktorips.util.StringUtil;
@@ -278,12 +275,11 @@ public class SourcePage extends WizardPage {
         generationDateViewer = new GenerationDateViewer(inputRoot);
         IStructuredContentProvider generationContentProvider = new IStructuredContentProvider() {
 
-            private GenerationDateContentProvider internalContentProvider = new GenerationDateContentProvider();
             private Object[] collectElements;
 
             @Override
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-                collectElements = internalContentProvider.collectElements(newInput, new NullProgressMonitor());
+                collectElements = getPresentationModel().getGenerationDates().toArray();
             }
 
             @Override
@@ -299,19 +295,6 @@ public class SourcePage extends WizardPage {
         generationDateViewer.setContentProvider(generationContentProvider);
         generationDateViewer.setInput(getPresentationModel().getStructure().getRoot().getProductCmpt());
         generationDateViewer.updateButtons();
-
-        GregorianCalendar validAt = getStructure().getValidAt();
-        Object[] elements = generationContentProvider.getElements(null);
-        for (Object obj : elements) {
-            GenerationDate generationDate = (GenerationDate)obj;
-            if (!validAt.before(generationDate.getValidFrom())) {
-                // elements are sorted, newest generation first, so we only have to check
-                // the validFrom date
-                generationDateViewer.setSelection(new StructuredSelection(generationDate));
-                break;
-            }
-        }
-
     }
 
     protected void initBindingsAndRefresh() {
@@ -321,7 +304,7 @@ public class SourcePage extends WizardPage {
         getShell().getDisplay().asyncExec(new Runnable() {
             @Override
             public void run() {
-                newWorkingDateControl.getTextControl().setFocus();
+                newWorkingDateControl.setFocus();
                 // run async to ensure that the buttons state (enabled/disabled)
                 // can be updated
                 refreshPageAfterValueChange();
@@ -346,7 +329,7 @@ public class SourcePage extends WizardPage {
         binding.bindContent(generationDateField, getPresentationModel(), DeepCopyPresentationModel.OLD_VALID_FROM);
 
         DateControlField<GregorianCalendar> newWorkingDateField = new DateControlField<GregorianCalendar>(
-                newWorkingDateControl, GregorianCalendarFormat.newInstance());
+                newWorkingDateControl, GregorianCalendarFormat.newInstance(), false);
         binding.bindContent(newWorkingDateField, getPresentationModel(), DeepCopyPresentationModel.NEW_VALID_FROM);
 
         IpsPckFragmentRootRefField packageRootField = new IpsPckFragmentRootRefField(targetPackRootControl);
@@ -619,10 +602,12 @@ public class SourcePage extends WizardPage {
     void refreshVersionId() {
         if (getNamingStrategy() != null && getNamingStrategy().supportsVersionId()) {
             GregorianCalendar validFrom = getPresentationModel().getNewValidFrom();
-            String newVersionId = getNamingStrategy().getNextVersionId(getStructure().getRoot().getProductCmpt(),
-                    validFrom);
-            if (!newVersionId.equals(getPresentationModel().getVersionId())) {
-                getPresentationModel().setVersionId(newVersionId);
+            if (validFrom != null) {
+                String newVersionId = getNamingStrategy().getNextVersionId(getStructure().getRoot().getProductCmpt(),
+                        validFrom);
+                if (!newVersionId.equals(getPresentationModel().getVersionId())) {
+                    getPresentationModel().setVersionId(newVersionId);
+                }
             }
         }
     }
@@ -792,18 +777,9 @@ public class SourcePage extends WizardPage {
                 updateCheckedAndGrayedStatus(getStructure());
             }
             if (evt.getPropertyName().equals(DeepCopyPresentationModel.OLD_VALID_FROM)) {
-                IProductCmpt productCmpt = getStructure().getRoot().getProductCmpt();
-                try {
-                    IProductCmptTreeStructure structure = productCmpt.getStructure(getPresentationModel()
-                            .getOldValidFrom().getValidFrom(), productCmpt.getIpsProject());
-                    getPresentationModel().initialize(structure);
-                    tree.setInput(structure);
-                    tree.expandAll();
-                    updateCheckedAndGrayedStatus(getStructure());
-                } catch (CycleInProductStructureException e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
-                    getPresentationModel().setOldValidFrom((GenerationDate)evt.getOldValue());
-                }
+                tree.setInput(getStructure());
+                tree.expandAll();
+                updateCheckedAndGrayedStatus(getStructure());
             }
 
             refreshPageAfterValueChange();

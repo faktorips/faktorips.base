@@ -35,7 +35,11 @@ public class MoneyField extends FormattingTextField<String> {
     private CurrencySymbolPainter currencySymbolPainter;
 
     public MoneyField(Text textControl, Currency defaultCurrency) {
-        super(textControl, MoneyFormat.newInstance(defaultCurrency));
+        this(textControl, defaultCurrency, true);
+    }
+
+    public MoneyField(Text textControl, Currency defaultCurrency, boolean formatOnFocusLost) {
+        super(textControl, MoneyFormat.newInstance(defaultCurrency), formatOnFocusLost);
         currencySymbolPainter = new CurrencySymbolPainter(getFormat());
         textControl.addPaintListener(currencySymbolPainter);
     }

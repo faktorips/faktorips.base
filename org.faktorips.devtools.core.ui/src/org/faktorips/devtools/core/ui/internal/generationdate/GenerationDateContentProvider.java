@@ -24,6 +24,7 @@ import java.util.TreeSet;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -50,24 +51,33 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
         if (inputElement instanceof IProductCmpt) {
             IProductCmpt productCmpt = (IProductCmpt)inputElement;
             try {
-                TreeSet<GregorianCalendar> validFromDates = collectValidFromDates(productCmpt,
-                        new HashSet<IProductCmptGeneration>(), productCmpt.getIpsProject(), monitor);
-                List<GenerationDate> result = new ArrayList<GenerationDate>();
-                GregorianCalendar lastDate = null;
-                GenerationDate lastAdjDate = null;
-                for (GregorianCalendar nextDate : validFromDates) {
-                    lastAdjDate = new GenerationDate(nextDate, lastDate);
-                    lastDate = (GregorianCalendar)nextDate.clone();
-                    // valitTo Dates are always one millisecond before next valid from
-                    lastDate.add(Calendar.MILLISECOND, -1);
-                    result.add(lastAdjDate);
-                }
+                List<GenerationDate> result = collectGenerationDates(productCmpt, monitor);
                 return result.toArray();
             } catch (CoreException e) {
                 IpsPlugin.log(e);
             }
         }
         return new Object[0];
+    }
+
+    public List<GenerationDate> collectGenerationDates(IProductCmpt productCmpt, IProgressMonitor monitor)
+            throws CoreException {
+        if (monitor == null) {
+            monitor = new NullProgressMonitor();
+        }
+        TreeSet<GregorianCalendar> validFromDates = collectValidFromDates(productCmpt,
+                new HashSet<IProductCmptGeneration>(), productCmpt.getIpsProject(), monitor);
+        List<GenerationDate> result = new ArrayList<GenerationDate>();
+        GregorianCalendar lastDate = null;
+        GenerationDate lastAdjDate = null;
+        for (GregorianCalendar nextDate : validFromDates) {
+            lastAdjDate = new GenerationDate(nextDate, lastDate);
+            lastDate = (GregorianCalendar)nextDate.clone();
+            // valitTo Dates are always one millisecond before next valid from
+            lastDate.add(Calendar.MILLISECOND, -1);
+            result.add(lastAdjDate);
+        }
+        return result;
     }
 
     @Override

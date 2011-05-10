@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.Set;
 
@@ -88,9 +87,8 @@ public class DeepCopyWizard extends ResizableWizard {
         }
         this.type = type;
 
-        GregorianCalendar structureDate = productGeneration.getValidFrom();
-        presentationModel = new DeepCopyPresentationModel(productGeneration.getProductCmpt().getStructure(
-                structureDate, productGeneration.getIpsProject()));
+        presentationModel = new DeepCopyPresentationModel(productGeneration);
+
         deepCopyPreview = new DeepCopyPreview(presentationModel);
 
         if (type == TYPE_COPY_PRODUCT) {

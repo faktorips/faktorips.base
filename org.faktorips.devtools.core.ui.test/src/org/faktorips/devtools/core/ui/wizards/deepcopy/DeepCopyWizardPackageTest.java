@@ -86,8 +86,9 @@ public class DeepCopyWizardPackageTest extends AbstractIpsPluginTest {
         String oldName = "tableContentsWithoutKindId";
         usage.setTableContentName(oldName);
 
-        DeepCopyPreview deepCopyPreview = new DeepCopyPreview(new DeepCopyPresentationModel(inside.getStructure(inside
-                .getProductCmptGeneration(0).getValidFrom(), project)));
+        DeepCopyPresentationModel deepCopyPresentationModel = new DeepCopyPresentationModel(gen);
+
+        DeepCopyPreview deepCopyPreview = new DeepCopyPreview(deepCopyPresentationModel);
         String newName = deepCopyPreview.getNewName(null, usage.getIpsObject());
         assertFalse(newName.equals(oldName));
     }
