@@ -18,10 +18,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -267,12 +265,8 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
      *         <code>false</code> otherwise.
      */
     public boolean isIpsSrcFilePartOfStructure(IIpsSrcFile ipsSrcFile) {
-        if (ipsSrcFile != null && ipsSrcFile.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT) {
-            try {
-                return structure.referencesProductCmpt((IProductCmpt)ipsSrcFile.getIpsObject());
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
+        if (ipsSrcFile != null && structure != null && ipsSrcFile.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT) {
+            return structure.referencesProductCmptQualifiedName(ipsSrcFile.getQualifiedNameType().getName());
         }
         return false;
     }

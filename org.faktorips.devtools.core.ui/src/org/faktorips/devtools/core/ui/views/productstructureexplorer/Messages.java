@@ -50,7 +50,8 @@ public class Messages extends NLS {
     public static String ProductStructureExplorer_ShowRulesActionLabel;
     public static String ProductStructureExplorer_ShowRulesActionTooltip;
     public static String ProductStructureExplorer_tooltipToggleAssociatedCmptsNodes;
-    public static String ToggleRuleAction_Label;
+    public static String ToggleRuleAction_Label_activate;
+    public static String ToggleRuleAction_Label_deactivate;
     public static String ToggleRuleAction_Tooltip;
 
 }

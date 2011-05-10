@@ -14,41 +14,49 @@
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
-public class ValidationRuleConfigWorkbenchAdapter extends IpsElementWorkbenchAdapter {
+public class ValidationRuleWorkbenchAdapter extends IpsElementWorkbenchAdapter {
 
     private final ImageDescriptor imageDescriptor;
 
-    public ValidationRuleConfigWorkbenchAdapter() {
+    public ValidationRuleWorkbenchAdapter() {
         imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("ValidationRuleDef.gif", true); //$NON-NLS-1$
     }
 
     /**
      * {@inheritDoc}
      * 
-     * If the given {@link IIpsElement} is an {@link IValidationRuleConfig}, this method returns the
-     * validation rule configuration's caption.
+     * If the given {@link IIpsElement} is an {@link IValidationRule}, this method returns the
+     * validation rule's label.
      */
     @Override
     protected String getLabel(IIpsElement ipsElement) {
-        if (ipsElement instanceof IValidationRuleConfig) {
-            IpsPlugin.getMultiLanguageSupport().getLocalizedCaption((IValidationRuleConfig)ipsElement);
+        if (ipsElement instanceof IValidationRule) {
+            IpsPlugin.getMultiLanguageSupport().getLocalizedLabel((IValidationRule)ipsElement);
         }
         return super.getLabel(ipsElement);
     }
 
+    /**
+     * If the given {@link IIpsElement} is an {@link IValidationRule}, this method returns the
+     * validation rule's icon, else <code>null</code>. In case of a configurable validation rule an
+     * overlayIcon (product configurable overlay) is created.
+     */
     @Override
     protected ImageDescriptor getImageDescriptor(IIpsElement ipsElement) {
-        if (ipsElement instanceof IValidationRuleConfig) {
-            IValidationRuleConfig config = (IValidationRuleConfig)ipsElement;
-            if (config.isActive()) {
-                return getDefaultImageDescriptor();
+        if (ipsElement instanceof IValidationRule) {
+            IValidationRule rule = (IValidationRule)ipsElement;
+            if (rule.isConfigurableByProductComponent()) {
+                return IpsUIPlugin.getImageHandling().getSharedOverlayImage("ValidationRuleDef.gif", //$NON-NLS-1$
+                        "ProductRelevantOverlay.gif", //$NON-NLS-1$
+                        IDecoration.TOP_RIGHT);
             } else {
-                return IpsUIPlugin.getImageHandling().createDisabledImageDescriptor(getDefaultImageDescriptor());
+                return getDefaultImageDescriptor();
             }
         }
         return null;

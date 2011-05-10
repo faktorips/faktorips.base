@@ -237,9 +237,8 @@ public class DefaultWorkbenchAdapterProvider implements IWorkbenchAdapterProvide
         register(ValueSet.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
 
         // ValidationRule
-        imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("ValidationRuleDef.gif", true); //$NON-NLS-1$
-        register(ValidationRule.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
-        register(ValidationRuleConfig.class, new ValidationRuleConfigWorkbenchAdapter(imageDescriptor));
+        register(ValidationRule.class, new ValidationRuleWorkbenchAdapter());
+        register(ValidationRuleConfig.class, new ValidationRuleConfigWorkbenchAdapter());
     }
 
 }

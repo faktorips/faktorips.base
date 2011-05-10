@@ -114,7 +114,7 @@ public class FormulasSection extends IpsSection {
 
     @Override
     protected boolean hasContentToDisplay() {
-        return generation.getNumOfFormulas() > 0;
+        return (generation.getNumOfFormulas() + generation.getNumOfTableContentUsages()) > 0;
     }
 
     @Override

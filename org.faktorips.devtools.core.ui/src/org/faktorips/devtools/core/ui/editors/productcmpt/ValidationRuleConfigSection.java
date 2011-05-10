@@ -13,10 +13,11 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import java.util.List;
+
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
@@ -34,11 +35,14 @@ import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
+import org.faktorips.devtools.core.ui.DefaultLabelProvider;
+import org.faktorips.devtools.core.ui.IDataChangeableReadAccess;
+import org.faktorips.devtools.core.ui.IDataChangeableStateChangeListener;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
 
-public class ValidationRuleSection extends IpsSection {
+public class ValidationRuleConfigSection extends IpsSection {
 
     private static final String ID = "org.faktorips.devtools.core.ui.editors.productcmpt.ValidationRuleSection"; //$NON-NLS-1$
 
@@ -50,7 +54,7 @@ public class ValidationRuleSection extends IpsSection {
 
     private TableViewer tableViewer;
 
-    public ValidationRuleSection(final IProductCmptGeneration generation, Composite parent, UIToolkit toolkit) {
+    public ValidationRuleConfigSection(final IProductCmptGeneration generation, Composite parent, UIToolkit toolkit) {
         super(ID, parent, GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL, toolkit);
         ArgumentCheck.notNull(generation);
         this.generation = generation;
@@ -109,11 +113,27 @@ public class ValidationRuleSection extends IpsSection {
             tableViewer.setContentProvider(createContentProvider());
             tableViewer.setLabelProvider(createLabelProvider());
             tableViewer.setInput(generation);
+            setTableEnabled(isDataChangeable());
             setCheckedState();
             addCheckClickListener();
+            addDataChangeableStateChangeListener(new IDataChangeableStateChangeListener() {
+                @Override
+                public void dataChangeableStateHasChanged(IDataChangeableReadAccess object) {
+                    setTableEnabled(object.isDataChangeable());
+                }
+            });
             return table;
         }
 
+    }
+
+    private void setTableEnabled(boolean dataChangeable) {
+        if (tableViewer != null) {
+            TableItem[] items = tableViewer.getTable().getItems();
+            for (TableItem tableItem : items) {
+                tableItem.setGrayed(dataChangeable);
+            }
+        }
     }
 
     private void addCheckClickListener() {
@@ -132,13 +152,12 @@ public class ValidationRuleSection extends IpsSection {
     }
 
     private void setCheckedState() {
-        if (tableViewer != null) {
+        if (tableViewer != null && !tableViewer.getTable().isDisposed()) {
             TableItem[] items = tableViewer.getTable().getItems();
-            for (TableItem item : items) {
-                String ruleName = item.getText();
-                IValidationRuleConfig validationRuleConfig = generation.getValidationRuleConfig(ruleName);
-                if (validationRuleConfig != null) {
-                    item.setChecked(validationRuleConfig.isActive());
+            List<IValidationRuleConfig> configList = generation.getValidationRuleConfigs();
+            if (items.length == configList.size()) {
+                for (int index = 0; index < items.length; index++) {
+                    items[index].setChecked(configList.get(index).isActive());
                 }
             }
         }
@@ -166,13 +185,7 @@ public class ValidationRuleSection extends IpsSection {
     }
 
     private IBaseLabelProvider createLabelProvider() {
-        return new LabelProvider() {
-            @Override
-            public String getText(Object element) {
-                IValidationRuleConfig ruleConfig = (IValidationRuleConfig)element;
-                return ruleConfig.getName();
-            }
-        };
+        return new DefaultLabelProvider();
     }
 
     @Override

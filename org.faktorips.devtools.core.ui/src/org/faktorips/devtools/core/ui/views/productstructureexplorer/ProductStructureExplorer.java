@@ -235,11 +235,11 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         Action showRoleNameAction = createShowTableRoleNameAction();
         showRoleNameAction.setChecked(showTableStructureRoleName);
         menuManager.appendToGroup(MENU_INFO_GROUP, showRoleNameAction);
-        Action showRulesAction = createShowRulesAction();
-        showRulesAction.setChecked(showRules);
-        menuManager.appendToGroup(MENU_INFO_GROUP, showRulesAction);
 
         menuManager.add(new Separator(MENU_FILTER_GROUP));
+        Action showRulesAction = createShowRulesAction();
+        showRulesAction.setChecked(showRules);
+        menuManager.appendToGroup(MENU_FILTER_GROUP, showRulesAction);
         Action showReferencedTableAction = createShowReferencedTables();
         showReferencedTableAction.setChecked(showReferencedTable);
         menuManager.appendToGroup(MENU_FILTER_GROUP, showReferencedTableAction);
@@ -735,10 +735,10 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
 
     @Override
     public void contentsChanged(ContentChangeEvent event) {
-        if (file == null || !contentProvider.isIpsSrcFilePartOfStructure(event.getIpsSrcFile())) {
+        if (file == null || !event.getIpsSrcFile().equals(file)) {
             /*
-             * Either no contents are set or the event concerns a source file not part of the
-             * structure - nothing to refresh.
+             * Either no contents are set or the event concerns different source file - nothing to
+             * refresh.
              */
             return;
         }
@@ -749,6 +749,29 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         if (part instanceof ITableContentUsage || part instanceof IProductCmptLink
                 || part instanceof IValidationRuleConfig || type == ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED) {
             postRefresh();
+        }
+    }
+
+    @Override
+    public void ipsSrcFilesChanged(IpsSrcFilesChangedEvent event) {
+        Set<IIpsSrcFile> ipsSrcFiles = event.getChangedIpsSrcFiles();
+        if (file != null) {
+            for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+                if (file.getName().equals(ipsSrcFile.getName()) && !ipsSrcFile.exists()) {
+                    treeViewer.setInput(null);
+                    return;
+                }
+            }
+        }
+        /*
+         * Refresh only if a IPS source file in the product component structure was changed to avoid
+         * unnecessary rebuilding of the structure.
+         */
+        for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+            if (!contentProvider.isIpsSrcFilePartOfStructure(ipsSrcFile)) {
+                postRefresh();
+                return;
+            }
         }
     }
 
@@ -889,20 +912,6 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
      */
     public boolean isShowAssociatedCmpts() {
         return showAssociatedCmpts;
-    }
-
-    @Override
-    public void ipsSrcFilesChanged(IpsSrcFilesChangedEvent event) {
-        Set<IIpsSrcFile> ipsSrcFiles = event.getChangedIpsSrcFiles();
-        if (file != null) {
-            for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
-                if (file.getName().equals(ipsSrcFile.getName()) && !ipsSrcFile.exists()) {
-                    treeViewer.setInput(null);
-                    return;
-                }
-            }
-        }
-        postRefresh();
     }
 
     private enum MessageTableSwitch {

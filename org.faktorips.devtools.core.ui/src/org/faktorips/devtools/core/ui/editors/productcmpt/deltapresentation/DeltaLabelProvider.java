@@ -88,6 +88,10 @@ public class DeltaLabelProvider extends LabelProvider {
             return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeValueSetMismatch.gif"); //$NON-NLS-1$
         } else if (deltaType == DeltaType.LINK_WITHOUT_ASSOCIATION) {
             return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeLinkWithoutAssociation.gif"); //$NON-NLS-1$
+        } else if (deltaType == DeltaType.MISSING_VALIDATION_RULE_CONFIG) {
+            return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeValidationRuleMismatch.gif"); //$NON-NLS-1$
+        } else if (deltaType == DeltaType.CONFIG_WITHOUT_VALIDATION_RULE) {
+            return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeValidationRuleMismatch.gif"); //$NON-NLS-1$
         } else {
             return null;
         }

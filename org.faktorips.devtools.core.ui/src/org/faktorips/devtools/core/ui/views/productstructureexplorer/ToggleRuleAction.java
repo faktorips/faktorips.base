@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
@@ -31,9 +30,14 @@ public class ToggleRuleAction extends Action {
     private IValidationRuleConfig vRuleConfig;
 
     public ToggleRuleAction(IValidationRuleConfig config) {
-        super(Messages.ToggleRuleAction_Label, IAction.AS_CHECK_BOX);
+        super();
+        if (config.isActive()) {
+            setText(Messages.ToggleRuleAction_Label_deactivate);
+        } else {
+            setText(Messages.ToggleRuleAction_Label_activate);
+        }
         setToolTipText(Messages.ToggleRuleAction_Tooltip);
-        setChecked(config.isActive());
+
         vRuleConfig = config;
     }
 

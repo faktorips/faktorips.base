@@ -123,12 +123,12 @@ public interface IProductCmptTreeStructure {
 
     /**
      * Searches this structure/tree for {@link IProductCmptReference}s containing the given
-     * {@link IProductCmpt}.
+     * qualified name of a {@link IProductCmpt}.
      * 
-     * @param prodCmpt the {@link IProductCmpt} to search for
-     * @return <code>true</code> if this structure references the given {@link IProductCmpt},
+     * @param string the {@link IProductCmpt}'s qualified name to search for
+     * @return <code>true</code> if this structure references the given qualified name,
      *         <code>false</code> otherwise.
      */
-    public boolean referencesProductCmpt(IProductCmpt prodCmpt);
+    public boolean referencesProductCmptQualifiedName(String string);
 
 }

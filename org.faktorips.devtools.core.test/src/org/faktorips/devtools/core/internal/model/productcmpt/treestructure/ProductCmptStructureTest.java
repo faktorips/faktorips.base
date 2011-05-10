@@ -170,15 +170,15 @@ public class ProductCmptStructureTest extends AbstractIpsPluginTest {
     public void testReferencesProductCmpt() throws CoreException, CycleInProductStructureException {
         IProductCmpt unReferencedProductCmpt = newProductCmpt(productCmptType, "products.TestProductUnReferenced");
 
-        assertTrue(structure.referencesProductCmpt(productCmpt));
-        assertTrue(structure.referencesProductCmpt(productCmptTarget));
-        assertTrue(structure.referencesProductCmpt(productCmptTarget2));
-        assertFalse(structure.referencesProductCmpt(unReferencedProductCmpt));
+        assertTrue(structure.referencesProductCmptQualifiedName(productCmpt.getQualifiedName()));
+        assertTrue(structure.referencesProductCmptQualifiedName(productCmptTarget.getQualifiedName()));
+        assertTrue(structure.referencesProductCmptQualifiedName(productCmptTarget2.getQualifiedName()));
+        assertFalse(structure.referencesProductCmptQualifiedName(unReferencedProductCmpt.getQualifiedName()));
 
         structure = productCmptTarget.getStructure(new GregorianCalendar(), ipsProject);
-        assertFalse(structure.referencesProductCmpt(productCmpt));
-        assertTrue(structure.referencesProductCmpt(productCmptTarget));
-        assertFalse(structure.referencesProductCmpt(productCmptTarget2));
-        assertFalse(structure.referencesProductCmpt(unReferencedProductCmpt));
+        assertFalse(structure.referencesProductCmptQualifiedName(productCmpt.getQualifiedName()));
+        assertTrue(structure.referencesProductCmptQualifiedName(productCmptTarget.getQualifiedName()));
+        assertFalse(structure.referencesProductCmptQualifiedName(productCmptTarget2.getQualifiedName()));
+        assertFalse(structure.referencesProductCmptQualifiedName(unReferencedProductCmpt.getQualifiedName()));
     }
 }

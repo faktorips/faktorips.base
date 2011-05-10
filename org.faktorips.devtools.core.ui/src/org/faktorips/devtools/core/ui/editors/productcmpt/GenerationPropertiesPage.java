@@ -51,7 +51,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
     private GenerationAttributesSection productAttributesSection;
 
     private FormulasSection formulasSection;
-    private ValidationRuleSection validationRuleSection;
+    private ValidationRuleConfigSection validationRuleSection;
 
     private DefaultsAndRangesSection defaultsAndRangesSection;
 
@@ -201,7 +201,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
                 | GridData.GRAB_VERTICAL);
         productAttributesSection = new GenerationAttributesSection(generation, left, toolkit);
         formulasSection = new FormulasSection(generation, left, toolkit);
-        validationRuleSection = new ValidationRuleSection(generation, left, toolkit);
+        validationRuleSection = new ValidationRuleConfigSection(generation, left, toolkit);
 
         Composite right = createGridComposite(toolkit, root, 1, true, GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL
                 | GridData.GRAB_VERTICAL);
