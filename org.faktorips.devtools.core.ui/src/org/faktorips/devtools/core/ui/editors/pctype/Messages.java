@@ -339,9 +339,8 @@ public class Messages extends NLS {
     public static String RuleEditDialog_labelSpecifiedInSrc;
     public static String RuleEditDialog_labelText;
     public static String RuleEditDialog_messageGroupTitle;
-    public static String RuleEditDialog_messageTitle;
+    public static String RuleEditDialog_generalTitle;
 
-    public static String RuleEditDialog_ProductConfig_label;
     public static String RuleEditDialog_title;
     public static String RuleFunctionsControl_title;
     public static String RuleFunctionsControl_titleColum1;

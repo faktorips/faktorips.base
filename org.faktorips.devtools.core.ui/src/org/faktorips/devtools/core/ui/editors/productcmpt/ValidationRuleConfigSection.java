@@ -113,9 +113,9 @@ public class ValidationRuleConfigSection extends IpsSection {
             tableViewer.setContentProvider(createContentProvider());
             tableViewer.setLabelProvider(createLabelProvider());
             tableViewer.setInput(generation);
-            setTableEnabled(isDataChangeable());
             setCheckedState();
             addCheckClickListener();
+            setTableEnabled(isDataChangeable());
             addDataChangeableStateChangeListener(new IDataChangeableStateChangeListener() {
                 @Override
                 public void dataChangeableStateHasChanged(IDataChangeableReadAccess object) {

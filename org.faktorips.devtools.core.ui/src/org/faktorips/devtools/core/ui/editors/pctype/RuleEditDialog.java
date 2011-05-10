@@ -70,8 +70,8 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
         TabFolder folder = (TabFolder)parent;
 
         TabItem msgPage = new TabItem(folder, SWT.NONE);
-        msgPage.setText(Messages.RuleEditDialog_messageTitle);
-        msgPage.setControl(createMessagePage(folder));
+        msgPage.setText(Messages.RuleEditDialog_generalTitle);
+        msgPage.setControl(createGeneralPage(folder));
 
         TabItem functionsPage = new TabItem(folder, SWT.NONE);
         functionsPage.setText(Messages.RuleEditDialog_functionTitle);
@@ -105,12 +105,15 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
         return folder;
     }
 
-    private Control createMessagePage(TabFolder folder) {
+    private Control createGeneralPage(TabFolder folder) {
         Composite workArea = createTabItemComposite(folder, 1, false);
         ((GridLayout)workArea.getLayout()).verticalSpacing = 20;
 
         // general group
         createGeneralGroup(workArea);
+
+        // cconfig group
+        createConfigGroup(workArea);
 
         // message group
         Group msgGroup = uiToolkit.createGroup(workArea, Messages.RuleEditDialog_messageGroupTitle);
@@ -144,23 +147,24 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
         return workArea;
     }
 
+    private void createConfigGroup(Composite workArea) {
+        Group configGroup = uiToolkit.createGroup(workArea, Messages.AttributeEditDialog_ConfigurationGroup);
+        configGroup.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
+        Composite nameComposite = uiToolkit.createGridComposite(configGroup, 1, false, false);
+
+        configurableByProductBox = uiToolkit.createCheckbox(nameComposite,
+                Messages.RuleEditDialog_Configurable_CheckboxLabel);
+        defaultActivationBox = uiToolkit.createCheckbox(nameComposite,
+                Messages.RuleEditDialog_ActivatedByDefault_CheckboxLabel);
+
+    }
+
     protected void createGeneralGroup(Composite workArea) {
-        Group generalGroup = uiToolkit.createGroup(workArea, Messages.RuleEditDialog_messageTitle);
+        Group generalGroup = uiToolkit.createGroup(workArea, Messages.RuleEditDialog_generalTitle);
         generalGroup.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
         Composite nameComposite = uiToolkit.createLabelEditColumnComposite(generalGroup);
         uiToolkit.createFormLabel(nameComposite, Messages.RuleEditDialog_labelName);
         Text nameText = uiToolkit.createText(nameComposite);
-
-        uiToolkit.createFormLabel(nameComposite, Messages.RuleEditDialog_ProductConfig_label);
-        Composite configurableComposite = uiToolkit.createComposite(nameComposite);
-        GridLayout layout = new GridLayout(2, false);
-        layout.marginHeight = 0;
-        layout.marginWidth = 0;
-        configurableComposite.setLayout(layout);
-        configurableByProductBox = uiToolkit.createCheckbox(configurableComposite,
-                Messages.RuleEditDialog_Configurable_CheckboxLabel);
-        defaultActivationBox = uiToolkit.createCheckbox(configurableComposite,
-                Messages.RuleEditDialog_ActivatedByDefault_CheckboxLabel);
 
         nameText.setFocus();
         nameField = new TextField(nameText);
@@ -217,7 +221,7 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
 
     @Override
     protected Point getInitialSize() {
-        return new Point(500, 500);
+        return new Point(525, 575);
     }
 
     class UIController extends IpsObjectUIController {

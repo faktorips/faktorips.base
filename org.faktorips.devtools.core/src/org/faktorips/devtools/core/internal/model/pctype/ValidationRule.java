@@ -61,7 +61,7 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
     private boolean validatedAttrSpecifiedInSrc = false;
 
     private boolean configurableByProductComponent = false;
-    private boolean activatedByDefault = false;
+    private boolean activatedByDefault = true;
 
     /**
      * Flag which is <code>true</code> if this rule is a default rule for validating the value of an
