@@ -37,7 +37,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IFormulaTestCase;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -48,6 +47,7 @@ import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
@@ -420,14 +420,14 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
         return StringUtils.capitalize(formulaSignature);
     }
 
-    class EnumDatatypesCollector extends PolicyCmptTypeHierarchyVisitor {
+    class EnumDatatypesCollector extends TypeHierarchyVisitor<IPolicyCmptType> {
 
         private IIpsProject project;
 
         private Map<String, EnumDatatype> enumtypes;
 
         public EnumDatatypesCollector(IIpsProject project, Map<String, EnumDatatype> enumtypes) {
-            super();
+            super(project);
             this.project = project;
             this.enumtypes = enumtypes;
         }

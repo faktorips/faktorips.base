@@ -34,7 +34,7 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
 
-public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor {
+public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> {
 
     /*
      * Map with property names as keys. For a unqiue property name, the map contains the object

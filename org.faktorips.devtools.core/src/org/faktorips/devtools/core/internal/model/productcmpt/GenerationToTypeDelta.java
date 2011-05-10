@@ -44,7 +44,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
-import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -212,7 +212,7 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
         }
     }
 
-    class HierarchyVisitor extends ProductCmptTypeHierarchyVisitor {
+    class HierarchyVisitor extends TypeHierarchyVisitor<IProductCmptType> {
 
         List<ITableStructureUsage> tableStructureUsages = new ArrayList<ITableStructureUsage>();
         List<IProductCmptTypeAttribute> attributes = new ArrayList<IProductCmptTypeAttribute>();

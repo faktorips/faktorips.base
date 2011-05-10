@@ -375,7 +375,7 @@ public abstract class Association extends TypePart implements IAssociation {
         return true;
     }
 
-    private class DerivedUnionCandidatesFinder extends TypeHierarchyVisitor {
+    private class DerivedUnionCandidatesFinder extends TypeHierarchyVisitor<IType> {
 
         private List<IAssociation> candidates = new ArrayList<IAssociation>();
         private IType targetType;

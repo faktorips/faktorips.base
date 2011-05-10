@@ -28,15 +28,15 @@ import org.faktorips.devtools.core.ui.editors.SelectSupertypeHierarchyPartsDialo
 import org.faktorips.devtools.core.ui.editors.SupertypeHierarchyPartsContentProvider;
 
 /**
- * A dialog that enables the user to select <tt>IMethod</tt>s to overwrite.
+ * A dialog that enables the user to select {@link IMethod}s to overwrite.
  * 
  * @author Alexander Weickmann
  */
 public class OverrideMethodDialog extends SelectSupertypeHierarchyPartsDialog {
 
     /**
-     * @param type The type to get the candidates for overwriting from.
-     * @param parent The shell to show this dialog in.
+     * @param type The type to get the candidates for overwriting from
+     * @param parent The shell to show this dialog in
      */
     public OverrideMethodDialog(IType type, Shell parent) {
         super(parent, new CandidatesContentProvider(type));
@@ -61,7 +61,9 @@ public class OverrideMethodDialog extends SelectSupertypeHierarchyPartsDialog {
         }
     }
 
-    /** Returns the <tt>IMethod</tt>s the user has selected to override. */
+    /**
+     * Returns the {@link IMethod}s the user has selected to override.
+     */
     public List<IMethod> getSelectedMethods() {
         List<IMethod> methods = new ArrayList<IMethod>();
         Object[] checked = getResult();
@@ -101,7 +103,7 @@ public class OverrideMethodDialog extends SelectSupertypeHierarchyPartsDialog {
             return collector.supertypes;
         }
 
-        private static class SupertypesCollector extends TypeHierarchyVisitor {
+        private static class SupertypesCollector extends TypeHierarchyVisitor<IType> {
 
             private List<IType> supertypes = new ArrayList<IType>();
 

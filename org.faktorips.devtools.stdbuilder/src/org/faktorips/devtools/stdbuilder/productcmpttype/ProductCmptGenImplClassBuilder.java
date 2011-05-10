@@ -40,11 +40,11 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ITypePart;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
@@ -742,7 +742,7 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         generator.generateCodeForDerivedUnionAssociationImplementation(implAssociations, methodsBuilder);
     }
 
-    class GetClassModifierFunction extends ProductCmptTypeHierarchyVisitor {
+    class GetClassModifierFunction extends TypeHierarchyVisitor<IProductCmptType> {
 
         private int modifier;
 

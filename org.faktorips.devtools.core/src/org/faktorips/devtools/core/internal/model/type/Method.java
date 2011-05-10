@@ -348,7 +348,7 @@ public class Method extends TypePart implements IMethod {
         }
     }
 
-    class OverridingMethodFinder extends TypeHierarchyVisitor {
+    class OverridingMethodFinder extends TypeHierarchyVisitor<IType> {
 
         private IMethod overridingMethod;
 

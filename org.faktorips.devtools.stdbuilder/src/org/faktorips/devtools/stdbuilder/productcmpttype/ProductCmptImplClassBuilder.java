@@ -33,9 +33,9 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
@@ -222,7 +222,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
         // annotation.
         CheckIfInterfaceImplementationForCreateBasePolicyCmptMethod checkVisitor = new CheckIfInterfaceImplementationForCreateBasePolicyCmptMethod(
                 getIpsProject());
-        checkVisitor.start(getProductCmptType().findSupertype(getIpsProject()));
+        checkVisitor.start((IProductCmptType)getProductCmptType().findSupertype(getIpsProject()));
         appendOverrideAnnotation(methodsBuilder, checkVisitor.isInterfaceImplementation());
         methodsBuilder.signature(Modifier.PUBLIC, IConfigurableModelObject.class.getName(),
                 MethodNames.CREATE_POLICY_COMPONENT, new String[0], new String[0]);
@@ -404,7 +404,8 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
         return policyType == null;
     }
 
-    private class CheckIfInterfaceImplementationForCreateBasePolicyCmptMethod extends ProductCmptTypeHierarchyVisitor {
+    private class CheckIfInterfaceImplementationForCreateBasePolicyCmptMethod extends
+            TypeHierarchyVisitor<IProductCmptType> {
 
         private boolean isInterfaceImplementation = true;
 

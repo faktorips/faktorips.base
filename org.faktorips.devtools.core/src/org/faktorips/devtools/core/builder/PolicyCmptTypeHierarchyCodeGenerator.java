@@ -14,7 +14,9 @@
 package org.faktorips.devtools.core.builder;
 
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 
 /**
  * A visitor makes it easy to implement a code generation function for all types in a supertype
@@ -22,14 +24,15 @@ import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
  * 
  * @author Jan Ortmann
  */
-public abstract class PolicyCmptTypeHierarchyCodeGenerator extends PolicyCmptTypeHierarchyVisitor {
+public abstract class PolicyCmptTypeHierarchyCodeGenerator extends TypeHierarchyVisitor<IPolicyCmptType> {
 
     protected JavaCodeFragmentBuilder fieldsBuilder;
     protected JavaCodeFragmentBuilder methodsBuilder;
 
-    public PolicyCmptTypeHierarchyCodeGenerator(JavaCodeFragmentBuilder fieldsBuilder,
+    public PolicyCmptTypeHierarchyCodeGenerator(IIpsProject ipsProject, JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder) {
 
+        super(ipsProject);
         this.fieldsBuilder = fieldsBuilder;
         this.methodsBuilder = methodsBuilder;
     }

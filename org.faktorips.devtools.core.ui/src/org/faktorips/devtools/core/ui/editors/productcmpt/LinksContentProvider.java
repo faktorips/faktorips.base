@@ -27,8 +27,8 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 
 /**
  * Provides the content for a generation-based association-tree. The association names are requested
@@ -122,7 +122,7 @@ public class LinksContentProvider implements ITreeContentProvider {
         return children.length > 0;
     }
 
-    class NoneDerivedAssociationsCollector extends ProductCmptTypeHierarchyVisitor {
+    class NoneDerivedAssociationsCollector extends TypeHierarchyVisitor<IProductCmptType> {
 
         private List<String> associations = new ArrayList<String>();
 
@@ -147,4 +147,5 @@ public class LinksContentProvider implements ITreeContentProvider {
         }
 
     }
+
 }

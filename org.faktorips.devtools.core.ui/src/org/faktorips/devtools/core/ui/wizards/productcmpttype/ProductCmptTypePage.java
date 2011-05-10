@@ -226,8 +226,8 @@ public class ProductCmptTypePage extends TypePage {
             }
         }
 
-        if (pageOfAssociatedType == null && !StringUtils.isEmpty((String)pcTypeField.getValue())) {
-            IPolicyCmptType configuableType = getIpsProject().findPolicyCmptType((String)pcTypeField.getValue());
+        if (pageOfAssociatedType == null && !StringUtils.isEmpty(pcTypeField.getValue())) {
+            IPolicyCmptType configuableType = getIpsProject().findPolicyCmptType(pcTypeField.getValue());
             if (configuableType == null) {
                 setErrorMessage(Messages.ProductCmptTypePage_msgPcTypeDoesNotExist);
             } else if (!StringUtils.isEmpty(configuableType.getProductCmptType())) {
@@ -268,7 +268,7 @@ public class ProductCmptTypePage extends TypePage {
             return;
         }
         final Boolean[] holder = new Boolean[] { Boolean.FALSE };
-        new TypeHierarchyVisitor(getIpsProject()) {
+        new TypeHierarchyVisitor<IType>(getIpsProject()) {
             @Override
             protected boolean visit(IType currentType) throws CoreException {
                 if (currentType.equals(productCmptTypeOfPolicyCmptSupertype)) {
@@ -296,7 +296,7 @@ public class ProductCmptTypePage extends TypePage {
                 return;
             }
         } else {
-            String configuredpcType = (String)pcTypeField.getValue();
+            String configuredpcType = pcTypeField.getValue();
             if (!StringUtils.isEmpty(configuredpcType)) {
                 IPolicyCmptType policyCmptType = getIpsProject().findPolicyCmptType(configuredpcType);
                 if (policyCmptType != null) {
@@ -313,7 +313,7 @@ public class ProductCmptTypePage extends TypePage {
         productCmptType.setConfigurationForPolicyCmptType(false);
     }
 
-    private static class FindNextConfiguredSuperType extends TypeHierarchyVisitor {
+    private static class FindNextConfiguredSuperType extends TypeHierarchyVisitor<IProductCmptType> {
 
         private IProductCmptType nextConfiguringSupertype;
         private String qualifiedNameOfConfiguredType;
@@ -323,11 +323,10 @@ public class ProductCmptTypePage extends TypePage {
         }
 
         @Override
-        protected boolean visit(IType currentType) throws CoreException {
-            IProductCmptType superType = (IProductCmptType)currentType;
-            if (!StringUtils.isEmpty(superType.getPolicyCmptType())) {
-                nextConfiguringSupertype = superType;
-                qualifiedNameOfConfiguredType = superType.getPolicyCmptType();
+        protected boolean visit(IProductCmptType currentType) throws CoreException {
+            if (!StringUtils.isEmpty(currentType.getPolicyCmptType())) {
+                nextConfiguringSupertype = currentType;
+                qualifiedNameOfConfiguredType = currentType.getPolicyCmptType();
                 return false;
             }
             return true;

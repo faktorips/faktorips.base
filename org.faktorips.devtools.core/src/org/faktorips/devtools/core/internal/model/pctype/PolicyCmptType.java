@@ -48,7 +48,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -214,7 +213,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     @Override
     public boolean isAggregateRoot() throws CoreException {
-        IsAggregrateRootVisitor visitor = new IsAggregrateRootVisitor();
+        IsAggregrateRootVisitor visitor = new IsAggregrateRootVisitor(getIpsProject());
         visitor.start(this);
         return visitor.isRoot();
     }
@@ -336,7 +335,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     public void validateDuplicateRulesNames(MessageList msgList) throws CoreException {
         for (IValidationRule rule : getValidationRules()) {
-            CheckValidationRuleVisitor visitor = new CheckValidationRuleVisitor(rule, msgList);
+            CheckValidationRuleVisitor visitor = new CheckValidationRuleVisitor(getIpsProject(), rule, msgList);
             visitor.start(this);
         }
     }
@@ -444,63 +443,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
                 getQualifiedName(), IpsObjectType.PRODUCT_CMPT_TYPE)));
         dependsOn(dependencies, details);
         return dependencies.toArray(new IDependency[dependencies.size()]);
-    }
-
-    private static class IsAggregrateRootVisitor extends PolicyCmptTypeHierarchyVisitor {
-
-        private boolean root = true;
-
-        @Override
-        protected boolean visit(IPolicyCmptType currentType) {
-            List<IPolicyCmptTypeAssociation> relations = currentType.getPolicyCmptTypeAssociations();
-            for (IPolicyCmptTypeAssociation each : relations) {
-                if (each.getAssociationType().isCompositionDetailToMaster()) {
-                    root = false;
-                    return false; // stop the visit, we have the result
-                }
-            }
-            return true;
-        }
-
-        public boolean isRoot() {
-            return root;
-        }
-
-    }
-
-    private static class CheckValidationRuleVisitor extends PolicyCmptTypeHierarchyVisitor {
-
-        private IValidationRule rule;
-        private MessageList msgList;
-
-        public CheckValidationRuleVisitor(IValidationRule rule, MessageList msgList) {
-            super();
-            this.rule = rule;
-            this.msgList = msgList;
-        }
-
-        @Override
-        protected boolean visit(IPolicyCmptType currentType) {
-            for (IValidationRule validationRule : currentType.getValidationRules()) {
-                if (validationRule == rule) {
-                    continue;
-                }
-                if (validationRule.getName().equals(rule.getName())) {
-                    String text = Messages.PolicyCmptType_msgDuplicateRuleName;
-                    msgList.add(new Message(IValidationRule.MSGCODE_DUPLICATE_RULE_NAME, text, Message.ERROR, rule,
-                            IIpsElement.PROPERTY_NAME));
-                }
-            }
-            for (IMethod method : currentType.getMethods()) {
-                if (method.getNumOfParameters() == 0 && method.getName().equals(rule.getName())) {
-                    String text = NLS.bind(Messages.PolicyCmptType_msgRuleMethodNameConflict, rule.getName());
-                    msgList.add(new Message(IValidationRule.MSGCODE_VALIDATION_RULE_METHOD_NAME_CONFLICT, text,
-                            Message.ERROR, rule, IIpsElement.PROPERTY_NAME));
-                }
-            }
-            return true;
-        }
-
     }
 
     @Override
@@ -692,7 +634,75 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         return finder.getValidationRules();
     }
 
-    private static class AllValidationRulesFinder extends TypeHierarchyVisitor {
+    @Override
+    public IValidationRule findValidationRule(String ruleName, IIpsProject ipsProject) throws CoreException {
+        ValidationRuleForNameFinder finder = new ValidationRuleForNameFinder(ruleName, ipsProject);
+        finder.start(this);
+        return finder.getValidationRule();
+    }
+
+    private static class IsAggregrateRootVisitor extends TypeHierarchyVisitor<IPolicyCmptType> {
+
+        private boolean root = true;
+
+        public IsAggregrateRootVisitor(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        @Override
+        protected boolean visit(IPolicyCmptType currentType) {
+            List<IPolicyCmptTypeAssociation> relations = currentType.getPolicyCmptTypeAssociations();
+            for (IPolicyCmptTypeAssociation each : relations) {
+                if (each.getAssociationType().isCompositionDetailToMaster()) {
+                    root = false;
+                    return false; // stop the visit, we have the result
+                }
+            }
+            return true;
+        }
+
+        public boolean isRoot() {
+            return root;
+        }
+
+    }
+
+    private static class CheckValidationRuleVisitor extends TypeHierarchyVisitor<IPolicyCmptType> {
+
+        private IValidationRule rule;
+        private MessageList msgList;
+
+        public CheckValidationRuleVisitor(IIpsProject ipsProject, IValidationRule rule, MessageList msgList) {
+            super(ipsProject);
+            this.rule = rule;
+            this.msgList = msgList;
+        }
+
+        @Override
+        protected boolean visit(IPolicyCmptType currentType) {
+            for (IValidationRule validationRule : currentType.getValidationRules()) {
+                if (validationRule == rule) {
+                    continue;
+                }
+                if (validationRule.getName().equals(rule.getName())) {
+                    String text = Messages.PolicyCmptType_msgDuplicateRuleName;
+                    msgList.add(new Message(IValidationRule.MSGCODE_DUPLICATE_RULE_NAME, text, Message.ERROR, rule,
+                            IIpsElement.PROPERTY_NAME));
+                }
+            }
+            for (IMethod method : currentType.getMethods()) {
+                if (method.getNumOfParameters() == 0 && method.getName().equals(rule.getName())) {
+                    String text = NLS.bind(Messages.PolicyCmptType_msgRuleMethodNameConflict, rule.getName());
+                    msgList.add(new Message(IValidationRule.MSGCODE_VALIDATION_RULE_METHOD_NAME_CONFLICT, text,
+                            Message.ERROR, rule, IIpsElement.PROPERTY_NAME));
+                }
+            }
+            return true;
+        }
+
+    }
+
+    private static class AllValidationRulesFinder extends TypeHierarchyVisitor<IPolicyCmptType> {
 
         private final List<IValidationRule> rules;
         private final boolean superTypeFirst;
@@ -708,29 +718,20 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         }
 
         @Override
-        protected boolean visit(IType currentType) throws CoreException {
-            IPolicyCmptType type = (IPolicyCmptType)currentType;
-            List<IValidationRule> definedRules = type.getValidationRules();
+        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
+            List<IValidationRule> definedRules = currentType.getValidationRules();
             if (superTypeFirst) {
                 // Place supertype rules before subtype rules.
                 rules.addAll(0, definedRules);
             } else {
                 rules.addAll(definedRules);
             }
-
             return true;
         }
 
     }
 
-    @Override
-    public IValidationRule findValidationRule(String ruleName, IIpsProject ipsProject) throws CoreException {
-        ValidationRuleForNameFinder finder = new ValidationRuleForNameFinder(ruleName, ipsProject);
-        finder.start(this);
-        return finder.getValidationRule();
-    }
-
-    private static class ValidationRuleForNameFinder extends TypeHierarchyVisitor {
+    private static class ValidationRuleForNameFinder extends TypeHierarchyVisitor<IPolicyCmptType> {
 
         private IValidationRule foundRule = null;
         private final String ruleName;
@@ -745,9 +746,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         }
 
         @Override
-        protected boolean visit(IType currentType) throws CoreException {
-            IPolicyCmptType type = (IPolicyCmptType)currentType;
-            List<IValidationRule> definedRules = type.getValidationRules();
+        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
+            List<IValidationRule> definedRules = currentType.getValidationRules();
             for (IValidationRule rule : definedRules) {
                 if (rule.getName().equals(ruleName)) {
                     foundRule = rule;
@@ -756,5 +756,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
             }
             return true;
         }
+
     }
+
 }

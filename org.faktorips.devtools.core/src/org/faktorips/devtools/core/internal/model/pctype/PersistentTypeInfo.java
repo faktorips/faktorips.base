@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.util.PersistenceUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -231,10 +231,10 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             return;
         }
         try {
-            RooEntityFinder rootEntityFinder = new RooEntityFinder();
+            RooEntityFinder rootEntityFinder = new RooEntityFinder(ipsProject);
             rootEntityFinder.start(getPolicyCmptType());
 
-            validateInheritanceStrategy(msgList, rootEntityFinder.rooEntity);
+            validateInheritanceStrategy(msgList, rootEntityFinder.rooEntity, ipsProject);
             validateTableName(msgList, rootEntityFinder.rooEntity);
             validateDisriminator(msgList, rootEntityFinder.rooEntity);
             validateUniqueColumnNameInHierarchy(msgList);
@@ -243,9 +243,11 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
     }
 
-    private void validateInheritanceStrategy(final MessageList msgList, IPolicyCmptType rooEntity) throws CoreException {
-        IPolicyCmptType pcType = getPolicyCmptType();
+    private void validateInheritanceStrategy(final MessageList msgList,
+            IPolicyCmptType rooEntity,
+            IIpsProject ipsProject) throws CoreException {
 
+        IPolicyCmptType pcType = getPolicyCmptType();
         if (!pcType.hasSupertype()) {
             return;
         }
@@ -258,7 +260,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
                     IPersistentTypeInfo.PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE));
         }
 
-        new InheritanceStrategyMismatchVisitor(this, msgList).start(pcType);
+        new InheritanceStrategyMismatchVisitor(ipsProject, this, msgList).start(pcType);
     }
 
     private void validateTableName(MessageList msgList, IPolicyCmptType rootEntity) {
@@ -336,7 +338,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
     @Override
     public IPolicyCmptType findRootEntity() throws CoreException {
-        RooEntityFinder rooEntityFinder = new RooEntityFinder();
+        RooEntityFinder rooEntityFinder = new RooEntityFinder(getIpsProject());
         rooEntityFinder.start(getPolicyCmptType());
         return rooEntityFinder.rooEntity;
     }
@@ -442,7 +444,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
         IPolicyCmptType pcType = getPolicyCmptType();
         if (!pcType.isAbstract()) {
-            DiscriminatorValidator dValidator = new DiscriminatorValidator(this);
+            DiscriminatorValidator dValidator = new DiscriminatorValidator(getIpsProject(), this);
             dValidator.start(pcType);
             if (dValidator.conflictingTypeInfo != null) {
                 msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, dValidator.errorMessage,
@@ -493,43 +495,11 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         if (StringUtils.isNotEmpty(attrPersistentType)) {
             persistentType = PersistentType.valueOf(attrPersistentType);
         } else {
-            if (Boolean.valueOf(element.getAttribute("enabled"))) {
+            if (Boolean.valueOf(element.getAttribute("enabled"))) { //$NON-NLS-1$
                 persistentType = PersistentType.ENTITY;
             } else {
                 persistentType = PersistentType.NONE;
             }
-        }
-    }
-
-    /**
-     * Adds error messages to MessageList if the type hierarchy is inconsistent relating to the
-     * inheritance strategy.
-     */
-    private final class InheritanceStrategyMismatchVisitor extends PolicyCmptTypeHierarchyVisitor {
-
-        private final MessageList msgList;
-
-        private final PersistentTypeInfo persistentTypeInfo;
-
-        private InheritanceStrategyMismatchVisitor(PersistentTypeInfo persistentTypeInfo, MessageList msgList) {
-            this.persistentTypeInfo = persistentTypeInfo;
-            this.msgList = msgList;
-        }
-
-        @Override
-        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
-            InheritanceStrategy supertypeStrategy = currentType.getPersistenceTypeInfo().getInheritanceStrategy();
-            if (supertypeStrategy == inheritanceStrategy
-                    || (currentType.getPersistenceTypeInfo().getPersistentType() != PersistentType.ENTITY)) {
-                return true;
-            }
-
-            String text = NLS.bind(Messages.PersistentTypeInfo_msgInvalidInheritanceStratedyCombination, new Object[] {
-                    currentType.getUnqualifiedName(), supertypeStrategy,
-                    persistentTypeInfo.getIpsObject().getUnqualifiedName(), inheritanceStrategy });
-            msgList.add(new Message(MSGCODE_PERSISTENCE_INHERITANCE_STRATEGY_INVALID, text, Message.ERROR,
-                    persistentTypeInfo, IPersistentTypeInfo.PROPERTY_INHERITANCE_STRATEGY));
-            return false;
         }
     }
 
@@ -538,75 +508,8 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         return (IPolicyCmptType)getIpsObject();
     }
 
-    private final static class DiscriminatorValidator extends PolicyCmptTypeHierarchyVisitor {
-
-        private final InheritanceStrategy inheritanceStrategy;
-        private final List<String> discriminatorValues = new ArrayList<String>();
-
-        // If these fields are not null errors exist in the naming of the tables
-        private IPersistentTypeInfo conflictingTypeInfo;
-        private String errorMessage;
-        public String errorProperty;
-
-        public DiscriminatorValidator(IPersistentTypeInfo typeInfo) {
-            inheritanceStrategy = typeInfo.getInheritanceStrategy();
-        }
-
-        @Override
-        protected boolean visit(IPolicyCmptType currentType) {
-            IPersistentTypeInfo currentTypeInfo = currentType.getPersistenceTypeInfo();
-            if (currentType.isAbstract()) {
-                return true;
-            }
-            if (!(inheritanceStrategy == InheritanceStrategy.SINGLE_TABLE || inheritanceStrategy == InheritanceStrategy.JOINED_SUBCLASS)) {
-                // wrong inheritance strategy abort
-                return false;
-            }
-
-            // Invariants:
-            // - discriminator values must be unique
-            if (discriminatorValues.contains(currentTypeInfo.getDiscriminatorValue())) {
-                conflictingTypeInfo = currentTypeInfo;
-                errorMessage = NLS.bind(Messages.PersistentTypeInfo_msgDiscriminatorAlreadyDefined,
-                        currentTypeInfo.getDiscriminatorValue(), currentType.getUnqualifiedName());
-                errorProperty = IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE;
-                return false;
-            } else {
-                discriminatorValues.add(currentTypeInfo.getDiscriminatorValue());
-            }
-
-            return true;
-        }
-    }
-
-    /**
-     * The root entity is the entity which can define the discriminator. A root entity has no
-     * supertype and must be an JPA entity.
-     */
-    private class RooEntityFinder extends PolicyCmptTypeHierarchyVisitor {
-
-        private IPolicyCmptType rooEntity = null;
-
-        @Override
-        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
-            IPersistentTypeInfo persistenceTypeInfo = currentType.getPersistenceTypeInfo();
-
-            if (StringUtils.isEmpty(currentType.getSupertype())) {
-                if (persistenceTypeInfo.getPersistentType() == PersistentType.ENTITY) {
-                    rooEntity = currentType;
-                }
-                return false;
-            } else {
-                if (persistenceTypeInfo.getPersistentType() == PersistentType.ENTITY) {
-                    rooEntity = currentType;
-                }
-            }
-            return true;
-        }
-    }
-
     private void validateUniqueColumnNameInHierarchy(MessageList msgList) throws CoreException {
-        ColumnNameCollector columnNameCollector = new ColumnNameCollector();
+        ColumnNameCollector columnNameCollector = new ColumnNameCollector(getIpsProject());
         columnNameCollector.start(getPolicyCmptType());
 
         Map<String, Object> persistentObjectesBySameColumnName = columnNameCollector
@@ -656,7 +559,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     }
 
     private boolean isRootEntity() throws CoreException {
-        RooEntityFinder rootEntityFinder = new RooEntityFinder();
+        RooEntityFinder rootEntityFinder = new RooEntityFinder(getIpsProject());
         rootEntityFinder.start(getPolicyCmptType());
         return isRootEntity(rootEntityFinder.rooEntity);
     }
@@ -665,8 +568,120 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         return getPolicyCmptType() == rootEntity;
     }
 
-    private static class ColumnNameCollector extends PolicyCmptTypeHierarchyVisitor {
+    /**
+     * Adds error messages to MessageList if the type hierarchy is inconsistent relating to the
+     * inheritance strategy.
+     */
+    private final class InheritanceStrategyMismatchVisitor extends TypeHierarchyVisitor<IPolicyCmptType> {
+
+        private final MessageList msgList;
+
+        private final PersistentTypeInfo persistentTypeInfo;
+
+        private InheritanceStrategyMismatchVisitor(IIpsProject ipsProject, PersistentTypeInfo persistentTypeInfo,
+                MessageList msgList) {
+
+            super(ipsProject);
+            this.persistentTypeInfo = persistentTypeInfo;
+            this.msgList = msgList;
+        }
+
+        @Override
+        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
+            InheritanceStrategy supertypeStrategy = currentType.getPersistenceTypeInfo().getInheritanceStrategy();
+            if (supertypeStrategy == inheritanceStrategy
+                    || (currentType.getPersistenceTypeInfo().getPersistentType() != PersistentType.ENTITY)) {
+                return true;
+            }
+
+            String text = NLS.bind(Messages.PersistentTypeInfo_msgInvalidInheritanceStratedyCombination, new Object[] {
+                    currentType.getUnqualifiedName(), supertypeStrategy,
+                    persistentTypeInfo.getIpsObject().getUnqualifiedName(), inheritanceStrategy });
+            msgList.add(new Message(MSGCODE_PERSISTENCE_INHERITANCE_STRATEGY_INVALID, text, Message.ERROR,
+                    persistentTypeInfo, IPersistentTypeInfo.PROPERTY_INHERITANCE_STRATEGY));
+            return false;
+        }
+    }
+
+    /**
+     * The root entity is the entity which can define the discriminator. A root entity has no
+     * supertype and must be an JPA entity.
+     */
+    private class RooEntityFinder extends TypeHierarchyVisitor<IPolicyCmptType> {
+
+        private IPolicyCmptType rooEntity = null;
+
+        public RooEntityFinder(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        @Override
+        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
+            IPersistentTypeInfo persistenceTypeInfo = currentType.getPersistenceTypeInfo();
+
+            if (StringUtils.isEmpty(currentType.getSupertype())) {
+                if (persistenceTypeInfo.getPersistentType() == PersistentType.ENTITY) {
+                    rooEntity = currentType;
+                }
+                return false;
+            } else {
+                if (persistenceTypeInfo.getPersistentType() == PersistentType.ENTITY) {
+                    rooEntity = currentType;
+                }
+            }
+            return true;
+        }
+    }
+
+    private final static class DiscriminatorValidator extends TypeHierarchyVisitor<IPolicyCmptType> {
+
+        private final InheritanceStrategy inheritanceStrategy;
+        private final List<String> discriminatorValues = new ArrayList<String>();
+
+        // If these fields are not null errors exist in the naming of the tables
+        private IPersistentTypeInfo conflictingTypeInfo;
+        private String errorMessage;
+        public String errorProperty;
+
+        public DiscriminatorValidator(IIpsProject ipsProject, IPersistentTypeInfo typeInfo) {
+            super(ipsProject);
+            inheritanceStrategy = typeInfo.getInheritanceStrategy();
+        }
+
+        @Override
+        protected boolean visit(IPolicyCmptType currentType) {
+            IPersistentTypeInfo currentTypeInfo = currentType.getPersistenceTypeInfo();
+            if (currentType.isAbstract()) {
+                return true;
+            }
+            if (!(inheritanceStrategy == InheritanceStrategy.SINGLE_TABLE || inheritanceStrategy == InheritanceStrategy.JOINED_SUBCLASS)) {
+                // wrong inheritance strategy abort
+                return false;
+            }
+
+            // Invariants:
+            // - discriminator values must be unique
+            if (discriminatorValues.contains(currentTypeInfo.getDiscriminatorValue())) {
+                conflictingTypeInfo = currentTypeInfo;
+                errorMessage = NLS.bind(Messages.PersistentTypeInfo_msgDiscriminatorAlreadyDefined,
+                        currentTypeInfo.getDiscriminatorValue(), currentType.getUnqualifiedName());
+                errorProperty = IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE;
+                return false;
+            } else {
+                discriminatorValues.add(currentTypeInfo.getDiscriminatorValue());
+            }
+
+            return true;
+        }
+    }
+
+    private static class ColumnNameCollector extends TypeHierarchyVisitor<IPolicyCmptType> {
+
         private Map<String, Object> persistentObjectesBySameColumnName = new HashMap<String, Object>();
+
+        public ColumnNameCollector(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
 
         public Map<String, Object> getPersistentObjectesBySameColumnName() {
             return persistentObjectesBySameColumnName;

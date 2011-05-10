@@ -15,7 +15,8 @@ package org.faktorips.devtools.core.builder;
 
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 
 /**
  * A visitor makes it easy to implement a code generation function for all types in a supertype
@@ -23,7 +24,7 @@ import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarch
  * 
  * @author Jan Ortmann
  */
-public abstract class ProductCmptTypeHierarchyCodeGenerator extends ProductCmptTypeHierarchyVisitor {
+public abstract class ProductCmptTypeHierarchyCodeGenerator extends TypeHierarchyVisitor<IProductCmptType> {
 
     protected JavaCodeFragmentBuilder fieldsBuilder;
     protected JavaCodeFragmentBuilder methodsBuilder;

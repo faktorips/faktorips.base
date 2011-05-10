@@ -97,7 +97,7 @@ public class TypeHierarchyVisitorTest extends AbstractIpsPluginTest {
         assertFalse(visitor.cycleDetected());
     }
 
-    public class MyVisitor extends TypeHierarchyVisitor {
+    public class MyVisitor extends TypeHierarchyVisitor<IType> {
 
         private IType stopVisitingAfterThisType = null;
 
@@ -114,4 +114,5 @@ public class TypeHierarchyVisitorTest extends AbstractIpsPluginTest {
         }
 
     }
+
 }

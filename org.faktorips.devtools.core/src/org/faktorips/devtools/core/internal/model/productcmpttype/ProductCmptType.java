@@ -52,11 +52,11 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
-import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeValidations;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.devtools.core.util.TreeSetHelper;
 import org.faktorips.util.message.Message;
@@ -590,7 +590,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         valueChanged(oldPath, instancesIconPath);
     }
 
-    private static class TableStructureUsageFinder extends ProductCmptTypeHierarchyVisitor {
+    private static class TableStructureUsageFinder extends TypeHierarchyVisitor<IProductCmptType> {
 
         private String tsuName;
         private ITableStructureUsage tsu = null;
@@ -608,7 +608,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     }
 
-    private static class ProdDefPropertyCollector extends ProductCmptTypeHierarchyVisitor {
+    private static class ProdDefPropertyCollector extends TypeHierarchyVisitor<IProductCmptType> {
 
         // if set, indicates the type of properties that are collected
         // if null, all properties are collected
@@ -766,7 +766,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
     }
 
-    private static class NotDerivedAssociationCollector extends ProductCmptTypeHierarchyVisitor {
+    private static class NotDerivedAssociationCollector extends TypeHierarchyVisitor<IProductCmptType> {
 
         public NotDerivedAssociationCollector(IIpsProject ipsProject) {
             super(ipsProject);

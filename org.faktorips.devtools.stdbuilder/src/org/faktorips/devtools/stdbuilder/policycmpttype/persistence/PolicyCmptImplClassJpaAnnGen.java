@@ -18,12 +18,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.internal.model.pctype.PersistentTypeInfo;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.DiscriminatorDatatype;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceStrategy;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.PersistentType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
@@ -66,9 +67,6 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
         return AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public JavaCodeFragment createAnnotation(IIpsElement ipsElement) {
         JavaCodeFragment fragment = new JavaCodeFragment();
@@ -130,27 +128,14 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
     }
 
     private String getTableNameFromSupertype(IPersistentTypeInfo persistenceTypeInfo) {
-        SearchTableNameInSuperTypes searchTableNameInSuperTypes = new SearchTableNameInSuperTypes();
+        SearchTableNameInSuperTypes searchTableNameInSuperTypes = new SearchTableNameInSuperTypes(
+                persistenceTypeInfo.getIpsProject());
         try {
             searchTableNameInSuperTypes.start(persistenceTypeInfo.getPolicyCmptType());
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
         return searchTableNameInSuperTypes.tableName;
-    }
-
-    private class SearchTableNameInSuperTypes extends PolicyCmptTypeHierarchyVisitor {
-        private String tableName = null;
-
-        @Override
-        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
-            String tableName = currentType.getPersistenceTypeInfo().getTableName();
-            if (StringUtils.isNotEmpty(tableName)) {
-                this.tableName = tableName;
-                return false;
-            }
-            return true;
-        }
     }
 
     private void addAnnotationsForDescriminator(JavaCodeFragment fragment, IPersistentTypeInfo persistenceTypeInfo) {
@@ -181,4 +166,25 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractAnnotationGenerator {
         }
         return ((IPolicyCmptType)ipsElement).isPersistentEnabled();
     }
+
+    private class SearchTableNameInSuperTypes extends TypeHierarchyVisitor<IPolicyCmptType> {
+
+        private String tableName = null;
+
+        public SearchTableNameInSuperTypes(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        @Override
+        protected boolean visit(IPolicyCmptType currentType) throws CoreException {
+            String tableName = currentType.getPersistenceTypeInfo().getTableName();
+            if (StringUtils.isNotEmpty(tableName)) {
+                this.tableName = tableName;
+                return false;
+            }
+            return true;
+        }
+
+    }
+
 }

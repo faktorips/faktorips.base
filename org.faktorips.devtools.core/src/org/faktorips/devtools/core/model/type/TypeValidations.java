@@ -106,7 +106,7 @@ public class TypeValidations {
         return null;
     }
 
-    private static class SupertypesValidator extends TypeHierarchyVisitor {
+    private static class SupertypesValidator extends TypeHierarchyVisitor<IType> {
 
         private boolean result;
 

@@ -25,6 +25,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -204,7 +205,7 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
             }
         }
         CodeGeneratorForContainerAssociationImplementation generator = new CodeGeneratorForContainerAssociationImplementation(
-                derivedUnions, fieldsBuilder, methodsBuilder);
+                getIpsProject(), derivedUnions, fieldsBuilder, methodsBuilder);
         generator.start(getPcType());
     }
 
@@ -273,10 +274,11 @@ public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
 
         private HashMap<IAssociation, List<IAssociation>> derivedUnionMap;
 
-        public CodeGeneratorForContainerAssociationImplementation(
+        public CodeGeneratorForContainerAssociationImplementation(IIpsProject ipsProject,
                 HashMap<IAssociation, List<IAssociation>> derivedUnionMap, JavaCodeFragmentBuilder fieldsBuilder,
                 JavaCodeFragmentBuilder methodsBuilder) {
-            super(fieldsBuilder, methodsBuilder);
+
+            super(ipsProject, fieldsBuilder, methodsBuilder);
             this.derivedUnionMap = derivedUnionMap;
         }
 

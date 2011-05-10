@@ -59,8 +59,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
-import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -744,7 +744,59 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return null;
     }
 
-    class AssociationsValidator extends ProductCmptTypeHierarchyVisitor {
+    @Override
+    public int getNumOfValidationRules() {
+        return validationRules.size();
+    }
+
+    @Override
+    public IValidationRuleConfig getValidationRuleConfig(String validationRuleName) {
+        if (validationRuleName == null) {
+            return null;
+        }
+        for (IValidationRuleConfig ruleConfig : validationRules) {
+            if (ruleConfig.getName().equals(validationRuleName)) {
+                return ruleConfig;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public List<IValidationRuleConfig> getValidationRuleConfigs() {
+        return new ArrayList<IValidationRuleConfig>(validationRules);
+    }
+
+    @Override
+    public IValidationRuleConfig newValidationRuleConfig() {
+        IValidationRuleConfig ruleConfig = newValidationRuleInternal(getNextPartId(), null);
+        objectHasChanged();
+        return ruleConfig;
+    }
+
+    /**
+     * Creates a new inactive {@link ValidationRuleConfig} for this generation.
+     * 
+     * @param id the part-ID to be assigned to the new validation rule
+     * 
+     * @return new validation rule
+     */
+    private IValidationRuleConfig newValidationRuleInternal(String id, IValidationRule ruleToBeConfigured) {
+        IValidationRuleConfig ruleConfig = new ValidationRuleConfig(this, id,
+                ruleToBeConfigured != null ? ruleToBeConfigured.getName() : ""); //$NON-NLS-1$
+        ruleConfig.setActive(ruleToBeConfigured != null ? ruleToBeConfigured.isActivatedByDefault() : false);
+        validationRules.add(ruleConfig);
+        return ruleConfig;
+    }
+
+    @Override
+    public IValidationRuleConfig newValidationRuleConfig(IValidationRule ruleToBeConfigured) {
+        IValidationRuleConfig ruleConfig = newValidationRuleInternal(getNextPartId(), ruleToBeConfigured);
+        objectHasChanged();
+        return ruleConfig;
+    }
+
+    class AssociationsValidator extends TypeHierarchyVisitor<IProductCmptType> {
 
         private final MessageList list;
 
@@ -809,58 +861,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             return true;
         }
 
-    }
-
-    @Override
-    public int getNumOfValidationRules() {
-        return validationRules.size();
-    }
-
-    @Override
-    public IValidationRuleConfig getValidationRuleConfig(String validationRuleName) {
-        if (validationRuleName == null) {
-            return null;
-        }
-        for (IValidationRuleConfig ruleConfig : validationRules) {
-            if (ruleConfig.getName().equals(validationRuleName)) {
-                return ruleConfig;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public List<IValidationRuleConfig> getValidationRuleConfigs() {
-        return new ArrayList<IValidationRuleConfig>(validationRules);
-    }
-
-    @Override
-    public IValidationRuleConfig newValidationRuleConfig() {
-        IValidationRuleConfig ruleConfig = newValidationRuleInternal(getNextPartId(), null);
-        objectHasChanged();
-        return ruleConfig;
-    }
-
-    /**
-     * Creates a new inactive {@link ValidationRuleConfig} for this generation.
-     * 
-     * @param id the part-ID to be assigned to the new validation rule
-     * 
-     * @return new validation rule
-     */
-    private IValidationRuleConfig newValidationRuleInternal(String id, IValidationRule ruleToBeConfigured) {
-        IValidationRuleConfig ruleConfig = new ValidationRuleConfig(this, id,
-                ruleToBeConfigured != null ? ruleToBeConfigured.getName() : ""); //$NON-NLS-1$
-        ruleConfig.setActive(ruleToBeConfigured != null ? ruleToBeConfigured.isActivatedByDefault() : false);
-        validationRules.add(ruleConfig);
-        return ruleConfig;
-    }
-
-    @Override
-    public IValidationRuleConfig newValidationRuleConfig(IValidationRule ruleToBeConfigured) {
-        IValidationRuleConfig ruleConfig = newValidationRuleInternal(getNextPartId(), ruleToBeConfigured);
-        objectHasChanged();
-        return ruleConfig;
     }
 
 }

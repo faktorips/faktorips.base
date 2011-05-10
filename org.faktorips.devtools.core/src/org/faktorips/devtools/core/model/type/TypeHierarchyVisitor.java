@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * 
  * @author Jan Ortmann
  */
-public abstract class TypeHierarchyVisitor extends HierarchyVisitor<IType> {
+public abstract class TypeHierarchyVisitor<T extends IType> extends HierarchyVisitor<T> {
 
     /**
      * @param ipsProject The project which IPS object path is used to search.
@@ -45,8 +45,8 @@ public abstract class TypeHierarchyVisitor extends HierarchyVisitor<IType> {
     }
 
     @Override
-    protected IType findSupertype(IType currentType, IIpsProject ipsProject) throws CoreException {
-        return currentType.findSupertype(ipsProject);
+    protected T findSupertype(T currentType, IIpsProject ipsProject) throws CoreException {
+        return (T)currentType.findSupertype(ipsProject);
     }
 
 }

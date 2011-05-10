@@ -38,12 +38,12 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.association.GenAssociation;
@@ -271,7 +271,8 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
      */
     protected void generateMethodNewCopy(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        CheckForOverrideAnnotationForNewCopyMethod checkVisitor = new CheckForOverrideAnnotationForNewCopyMethod();
+        CheckForOverrideAnnotationForNewCopyMethod checkVisitor = new CheckForOverrideAnnotationForNewCopyMethod(
+                getIpsProject());
         checkVisitor.start((IPolicyCmptType)getPcType().findSupertype(getIpsProject()));
         appendOverrideAnnotation(methodsBuilder, checkVisitor.implementsInterfaceMethod);
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, IModelObject.class.getName(), MethodNames.NEW_COPY,
@@ -1411,7 +1412,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
             List<IPolicyCmptTypeAssociation> associations) throws CoreException {
 
         HasSuperTypeImplementationOfInverseForDerivedUnionVisitor checkVisitor = new HasSuperTypeImplementationOfInverseForDerivedUnionVisitor(
-                genAssociation);
+                getIpsProject(), genAssociation);
         checkVisitor.start((IPolicyCmptType)getPcType().findSupertype(getIpsProject()));
         boolean callSupertype = checkVisitor.hasSuperTypeImplementationOfInverseForDerivedUnion;
         generateMethodGetParentModelObject(methodBuilder,
@@ -1716,9 +1717,13 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         return false;
     }
 
-    private class CheckForOverrideAnnotationForNewCopyMethod extends PolicyCmptTypeHierarchyVisitor {
+    private class CheckForOverrideAnnotationForNewCopyMethod extends TypeHierarchyVisitor<IPolicyCmptType> {
 
         boolean implementsInterfaceMethod = true;
+
+        public CheckForOverrideAnnotationForNewCopyMethod(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
 
         @Override
         protected boolean visit(IPolicyCmptType currentType) throws CoreException {
@@ -1730,12 +1735,15 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         }
     }
 
-    private class HasSuperTypeImplementationOfInverseForDerivedUnionVisitor extends PolicyCmptTypeHierarchyVisitor {
+    private class HasSuperTypeImplementationOfInverseForDerivedUnionVisitor extends
+            TypeHierarchyVisitor<IPolicyCmptType> {
 
         GenAssociation genAssociation;
 
-        public HasSuperTypeImplementationOfInverseForDerivedUnionVisitor(GenAssociation genAssociation) {
-            super();
+        public HasSuperTypeImplementationOfInverseForDerivedUnionVisitor(IIpsProject ipsProject,
+                GenAssociation genAssociation) {
+
+            super(ipsProject);
             this.genAssociation = genAssociation;
         }
 

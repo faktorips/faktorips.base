@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 
 /**
  * A type hierarchy finder that looks for {@link IProductCmptTypeMethod}s which are formula methods
@@ -27,7 +28,7 @@ import org.faktorips.devtools.core.model.type.IMethod;
  * 
  * @author Peter Erzberger
  */
-public class FormulaSignatureFinder extends ProductCmptTypeHierarchyVisitor {
+public class FormulaSignatureFinder extends TypeHierarchyVisitor<IProductCmptType> {
 
     private String formulaName;
     private List<IMethod> methods;

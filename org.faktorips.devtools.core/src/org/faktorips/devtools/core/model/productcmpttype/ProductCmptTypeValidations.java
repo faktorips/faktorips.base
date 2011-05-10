@@ -83,7 +83,7 @@ public class ProductCmptTypeValidations {
             final Boolean[] holder = new Boolean[] { Boolean.FALSE };
             final IProductCmptType productCmptTypeOfPolicyCmptSupertypeFinal = productCmptTypeOfPolicyCmptSupertype;
             if (productCmptTypeOfPolicyCmptSupertype != null) {
-                new TypeHierarchyVisitor(ipsProject) {
+                new TypeHierarchyVisitor<IType>(ipsProject) {
                     @Override
                     protected boolean visit(IType currentType) throws CoreException {
                         if (currentType.equals(productCmptTypeOfPolicyCmptSupertypeFinal)) {

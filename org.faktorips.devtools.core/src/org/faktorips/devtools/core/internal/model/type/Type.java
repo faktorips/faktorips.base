@@ -554,7 +554,29 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
     }
 
-    private class MethodOverrideCandidatesFinder extends TypeHierarchyVisitor {
+    protected void checkDerivedUnionIsImplemented(IAssociation association,
+            List<IAssociation> candidateSubsets,
+            MessageList msgList) throws CoreException {
+        if (association.isDerivedUnion()) {
+            if (!isSubsetted(association, candidateSubsets)) {
+                String text = NLS.bind(Messages.Type_msg_MustImplementDerivedUnion, association.getName(), association
+                        .getType().getQualifiedName());
+                msgList.add(new Message(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION, text, Message.ERROR, Type.this,
+                        IType.PROPERTY_ABSTRACT));
+            }
+        }
+    }
+
+    private boolean isSubsetted(IAssociation derivedUnion, List<IAssociation> candidateSubsets) throws CoreException {
+        for (IAssociation candidate : candidateSubsets) {
+            if (derivedUnion == candidate.findSubsettedDerivedUnion(getIpsProject())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private class MethodOverrideCandidatesFinder extends TypeHierarchyVisitor<IType> {
 
         private List<IMethod> candidates = new ArrayList<IMethod>();
 
@@ -597,7 +619,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     }
 
-    private static class AssociationFinder extends TypeHierarchyVisitor {
+    private static class AssociationFinder extends TypeHierarchyVisitor<IType> {
 
         private String associationName;
 
@@ -616,7 +638,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     }
 
-    private static class AssociationFinderPlural extends TypeHierarchyVisitor {
+    private static class AssociationFinderPlural extends TypeHierarchyVisitor<IType> {
 
         private String associationName;
 
@@ -640,7 +662,7 @@ public abstract class Type extends BaseIpsObject implements IType {
      * 
      * @author Joerg Ortmann
      */
-    private static class AssociationTargetAndTypeFinder extends TypeHierarchyVisitor {
+    private static class AssociationTargetAndTypeFinder extends TypeHierarchyVisitor<IType> {
 
         private String associationTarget;
 
@@ -671,7 +693,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     }
 
-    private static class AttributeFinder extends TypeHierarchyVisitor {
+    private static class AttributeFinder extends TypeHierarchyVisitor<IType> {
 
         private String attributeName;
 
@@ -690,7 +712,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     }
 
-    private static class MethodFinderByNameAndParamtypes extends TypeHierarchyVisitor {
+    private static class MethodFinderByNameAndParamtypes extends TypeHierarchyVisitor<IType> {
 
         private String methodName;
 
@@ -712,7 +734,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     }
 
-    private static class MethodFinderBySignature extends TypeHierarchyVisitor {
+    private static class MethodFinderBySignature extends TypeHierarchyVisitor<IType> {
 
         private String signature;
 
@@ -731,7 +753,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     }
 
-    private static class AllMethodsFinder extends TypeHierarchyVisitor {
+    private static class AllMethodsFinder extends TypeHierarchyVisitor<IType> {
 
         private List<IMethod> methods;
 
@@ -761,7 +783,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     }
 
-    private static class AllAttributeFinder extends TypeHierarchyVisitor {
+    private static class AllAttributeFinder extends TypeHierarchyVisitor<IType> {
 
         private List<IAttribute> attributes;
 
@@ -791,7 +813,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     }
 
-    private static class AllAssociationFinder extends TypeHierarchyVisitor {
+    private static class AllAssociationFinder extends TypeHierarchyVisitor<IType> {
 
         private final List<IAssociation> associations;
         private final boolean superTypeFirst;
@@ -817,29 +839,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     }
 
-    protected void checkDerivedUnionIsImplemented(IAssociation association,
-            List<IAssociation> candidateSubsets,
-            MessageList msgList) throws CoreException {
-        if (association.isDerivedUnion()) {
-            if (!isSubsetted(association, candidateSubsets)) {
-                String text = NLS.bind(Messages.Type_msg_MustImplementDerivedUnion, association.getName(), association
-                        .getType().getQualifiedName());
-                msgList.add(new Message(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION, text, Message.ERROR, Type.this,
-                        IType.PROPERTY_ABSTRACT));
-            }
-        }
-    }
-
-    private boolean isSubsetted(IAssociation derivedUnion, List<IAssociation> candidateSubsets) throws CoreException {
-        for (IAssociation candidate : candidateSubsets) {
-            if (derivedUnion == candidate.findSubsettedDerivedUnion(getIpsProject())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private class DerivedUnionsSpecifiedValidator extends TypeHierarchyVisitor {
+    private class DerivedUnionsSpecifiedValidator extends TypeHierarchyVisitor<IType> {
 
         private MessageList msgList;
 
@@ -864,7 +864,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     }
 
-    private static class IsSubtypeOfVisitor extends TypeHierarchyVisitor {
+    private static class IsSubtypeOfVisitor extends TypeHierarchyVisitor<IType> {
 
         private IType supertypeCandidate;
 

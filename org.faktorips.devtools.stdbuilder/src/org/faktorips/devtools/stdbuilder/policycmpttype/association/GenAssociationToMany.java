@@ -29,10 +29,10 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.pctype.PolicyCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.changelistener.ChangeEventType;
@@ -979,8 +979,8 @@ public class GenAssociationToMany extends GenAssociation {
             lazyNeedSuperCallForDerivedUnion = false;
         } else {
             IPolicyCmptType supertype = (IPolicyCmptType)pcType.findSupertype(getIpsProject());
-            FindSubsetOfDerivedUnion findSubsetOfDerivedUnionVisitor = new FindSubsetOfDerivedUnion(association,
-                    getIpsProject());
+            FindSubsetOfDerivedUnion findSubsetOfDerivedUnionVisitor = new FindSubsetOfDerivedUnion(getIpsProject(),
+                    association);
             findSubsetOfDerivedUnionVisitor.start(supertype);
             lazyNeedSuperCallForDerivedUnion = findSubsetOfDerivedUnionVisitor.foundSubset;
         }
@@ -1374,7 +1374,7 @@ public class GenAssociationToMany extends GenAssociation {
         }
     }
 
-    private static class FindSubsetOfDerivedUnion extends PolicyCmptTypeHierarchyVisitor {
+    private static class FindSubsetOfDerivedUnion extends TypeHierarchyVisitor<IPolicyCmptType> {
 
         private final IPolicyCmptTypeAssociation derivedUnion;
 
@@ -1382,7 +1382,8 @@ public class GenAssociationToMany extends GenAssociation {
 
         private boolean foundSubset = false;
 
-        public FindSubsetOfDerivedUnion(IPolicyCmptTypeAssociation derivedUnion, IIpsProject ipsProject) {
+        public FindSubsetOfDerivedUnion(IIpsProject ipsProject, IPolicyCmptTypeAssociation derivedUnion) {
+            super(ipsProject);
             this.derivedUnion = derivedUnion;
             this.ipsProject = ipsProject;
         }
@@ -1403,4 +1404,5 @@ public class GenAssociationToMany extends GenAssociation {
         }
 
     }
+
 }

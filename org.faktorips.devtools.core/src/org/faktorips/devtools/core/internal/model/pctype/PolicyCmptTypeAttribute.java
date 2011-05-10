@@ -313,11 +313,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         element.setAttribute(PROPERTY_COMPUTATION_METHOD_SIGNATURE, "" + computationMethodSignature); //$NON-NLS-1$
     }
 
-    private IIpsObjectPart newPersistentAttributeInfoInternal(PolicyCmptTypeAttribute policyCmptTypeAttribute, String id) {
-        persistenceAttributeInfo = new PersistentAttributeInfo(this, id);
-        return persistenceAttributeInfo;
-    }
-
     @Override
     protected boolean addPartThis(IIpsObjectPart part) {
         if (part instanceof IValueSet) {
@@ -338,10 +333,14 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
             return valueSet;
 
         } else if (xmlTag.getTagName().equals(IPersistentAttributeInfo.XML_TAG)) {
-            return newPersistentAttributeInfoInternal(this, id);
+            return newPersistentAttributeInfoInternal(id);
         }
-
         return null;
+    }
+
+    private IIpsObjectPart newPersistentAttributeInfoInternal(String id) {
+        persistenceAttributeInfo = new PersistentAttributeInfo(this, id);
+        return persistenceAttributeInfo;
     }
 
     // TODO Joerg Merge Persistence Branch: warum ueber Reflection und nicht

@@ -21,8 +21,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
-import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -95,7 +95,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
             return null;
         }
         FormulaNameFinder finder = new FormulaNameFinder(ipsProject);
-        finder.start(getProductCmptType().findSupertype(ipsProject));
+        finder.start((IProductCmptType)getProductCmptType().findSupertype(ipsProject));
         return finder.method;
     }
 
@@ -183,7 +183,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
      * this formula. It stops looking when the first formula method is found that meets this
      * condition or if the super type hierarchy ends.
      */
-    private class FormulaNameFinder extends ProductCmptTypeHierarchyVisitor {
+    private class FormulaNameFinder extends TypeHierarchyVisitor<IProductCmptType> {
 
         private IProductCmptTypeMethod method;
 
@@ -203,6 +203,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
             method = currentType.getFormulaSignature(formulaName);
             return method == null;
         }
+
     }
 
 }
