@@ -56,7 +56,12 @@ public class UsernamePasswordDialog extends Dialog {
     public UsernamePasswordDialog(Shell parentShell, ITargetSystem targetSystem) {
         super(parentShell);
         this.targetSystem = targetSystem;
-        parentShell.setText(Messages.UsernamePasswordDialog_title);
+    }
+
+    @Override
+    protected void configureShell(Shell newShell) {
+        super.configureShell(newShell);
+        newShell.setText(Messages.UsernamePasswordDialog_title);
     }
 
     @Override
