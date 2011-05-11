@@ -36,6 +36,7 @@ public class Messages extends NLS {
     public static String ReleaserBuilderWizardSelectionPage_title;
     public static String ReleaserBuilderWizardSelectionPage_warning_sameVersion;
     public static String ProductReleaserBuilderWizard_exception_unsavedChanges;
+    public static String UsernamePasswordDialog_title;
     public static String UsernamePasswordDialog_password;
     public static String UsernamePasswordDialog_prompt;
     public static String UsernamePasswordDialog_savePassword;
