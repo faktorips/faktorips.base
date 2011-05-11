@@ -59,6 +59,12 @@ public class UsernamePasswordDialog extends Dialog {
     }
 
     @Override
+    protected void configureShell(Shell newShell) {
+        super.configureShell(newShell);
+        newShell.setText(Messages.UsernamePasswordDialog_title);
+    }
+
+    @Override
     protected Control createDialogArea(Composite parent) {
         Composite comp = (Composite)super.createDialogArea(parent);
 
