@@ -56,6 +56,7 @@ public class UsernamePasswordDialog extends Dialog {
     public UsernamePasswordDialog(Shell parentShell, ITargetSystem targetSystem) {
         super(parentShell);
         this.targetSystem = targetSystem;
+        parentShell.setText(Messages.UsernamePasswordDialog_title);
     }
 
     @Override
