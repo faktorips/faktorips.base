@@ -33,10 +33,11 @@ public class ToggleRuleAction extends Action {
         super();
         if (config.isActive()) {
             setText(Messages.ToggleRuleAction_Label_deactivate);
+            setToolTipText(Messages.ToggleRuleAction_TooltipActivate);
         } else {
             setText(Messages.ToggleRuleAction_Label_activate);
+            setToolTipText(Messages.ToggleRuleAction_TooltipDeactivate);
         }
-        setToolTipText(Messages.ToggleRuleAction_Tooltip);
 
         vRuleConfig = config;
     }
