@@ -272,6 +272,75 @@ public class MenuCleanerTest {
         verify(fooItem2, never()).setVisible(false);
     }
 
+    @Test
+    public void testMenuAboutToShowWithMatchingGroup() {
+        cleaner.setMatchingGroup("group2");
+        cleaner.addFilteredPrefix("item3");
+
+        IMenuManager menuManager = new MenuManager();
+        // @formatter:off
+        IContributionItem notFilteredItem1 = addContributionItem(menuManager, "item1");
+        addGroupMarker(menuManager, "group1");
+            IContributionItem notFilteredItem2 = addContributionItem(menuManager, "item2");
+        addGroupMarker(menuManager, "group2");
+            IContributionItem filteredItem = addContributionItem(menuManager, "item3");
+            IContributionItem notFilteredItem3 = addContributionItem(menuManager, "item4");
+        // @formatter:on
+
+        cleaner.menuAboutToShow(menuManager);
+
+        verify(notFilteredItem1, never()).setVisible(false);
+        verify(notFilteredItem2, never()).setVisible(false);
+        verify(notFilteredItem3, never()).setVisible(false);
+        verify(filteredItem).setVisible(false);
+    }
+
+    @Test
+    public void testMenuAboutToShowWithMatchingGroupWhiteListMode() {
+        cleaner.setWhiteListMode(true);
+        cleaner.setMatchingGroup("group2");
+        cleaner.addFilteredPrefix("item3");
+
+        IMenuManager menuManager = new MenuManager();
+        // @formatter:off
+        IContributionItem notFilteredItem1 = addContributionItem(menuManager, "item1");
+        IContributionItem notFilteredItem2 = addGroupMarker(menuManager, "group1");
+            IContributionItem notFilteredItem3 = addContributionItem(menuManager, "item2");
+        IContributionItem notFilteredItem4 = addGroupMarker(menuManager, "group2");
+            IContributionItem notFilteredItem5 = addContributionItem(menuManager, "item3");
+            IContributionItem filteredItem = addContributionItem(menuManager, "item4");
+        // @formatter:on
+
+        cleaner.menuAboutToShow(menuManager);
+
+        verify(notFilteredItem1, never()).setVisible(false);
+        verify(notFilteredItem2, never()).setVisible(false);
+        verify(notFilteredItem3, never()).setVisible(false);
+        verify(notFilteredItem4, never()).setVisible(false);
+        verify(notFilteredItem5, never()).setVisible(false);
+        verify(filteredItem).setVisible(false);
+    }
+
+    @Test
+    public void testClearFilteredPrefixes() {
+        cleaner.addFilteredPrefix("foo");
+        cleaner.addFilteredPrefix("bar");
+
+        cleaner.clearFilteredPrefixes();
+
+        assertEquals(0, cleaner.getFilteredPrefixes().size());
+    }
+
+    @Test
+    public void testClearFilteredMenuGroups() {
+        cleaner.addFilteredMenuGroup("foo");
+        cleaner.addFilteredMenuGroup("bar");
+
+        cleaner.clearFilteredMenuGroups();
+
+        assertEquals(0, cleaner.getFilteredMenuGroups().size());
+    }
+
     private IContributionItem addContributionItem(IMenuManager menuManager, String id) {
         IContributionItem mockContributionItem = mock(IContributionItem.class);
         when(mockContributionItem.getId()).thenReturn(id);
