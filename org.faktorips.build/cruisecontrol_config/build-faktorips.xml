@@ -652,6 +652,17 @@ ${faktoripsProductLinuxZipPath}
     <target name="-buildAndPublish.release.runtimeAddons" unless="is.product.build" if="isMinVersion3">
     	<!-- checkout and build runtime addons. these project are not handled as plugins and so not checked out via pluginbuilder -->
     	<property name="buildDir" value="${buildDirectory}/plugins"/>
+    	
+    	<loadproperties srcfile="${release.properties}">
+          <filterchain>
+            <linecontains>
+              <contains value="fetchTag"/>
+            </linecontains>
+          </filterchain>
+    	</loadproperties>
+    	
+    	<property name="cvsTag" value="${fetchTag}"/>
+
     	<antcall inheritall="true" target="runtime.groovy" />
     	<antcall inheritall="true" target="runtime.productdataservice.common" />
     	<antcall inheritall="true" target="runtime.productdataservice"/>
