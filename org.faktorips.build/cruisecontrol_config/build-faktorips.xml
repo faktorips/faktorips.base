@@ -85,7 +85,7 @@
         <property name="cvsRuntimemodule" value="org.faktorips.runtime.groovy"/>
         <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="${cvsRuntimemodule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsRuntimemodule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
         <!--Call the clean-target-->
         <ant dir="${buildDir}/${cvsRuntimemodule}/build/" antfile="build.xml" target="clean"/>
         <!--Call the target that does everything-->
@@ -96,7 +96,7 @@
         <property name="cvsRuntimemodule" value="org.faktorips.runtime.productdataprovider.ejbclient"/>
         <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="${cvsRuntimemodule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsRuntimemodule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
         <!--Call the clean-target-->
         <ant dir="${buildDir}/${cvsRuntimemodule}/build/" antfile="build.xml" target="clean"/>
         <!--Call the target that does everything-->
@@ -107,7 +107,7 @@
         <property name="cvsRuntimemodule" value="org.faktorips.runtime.productdataservice"/>
         <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="${cvsRuntimemodule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsRuntimemodule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
         <!--Call the clean-target-->
         <ant dir="${buildDir}/${cvsRuntimemodule}/build/" antfile="build.xml" target="clean"/>
         <!--Call the target that does everything-->
@@ -118,7 +118,7 @@
         <property name="cvsRuntimemodule" value="org.faktorips.runtime.productdataservice.common"/>
         <property name="buildDir" value="checkout/"/>
         <!--checkout/update project-->
-        <cvs command="co" package="${cvsRuntimemodule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true"/>
+        <cvs command="co" package="${cvsRuntimemodule}" dest="${buildDir}" cvsroot="${cvsroot}" quiet="true" tag="${cvsTag}"/>
         <!--Call the clean-target-->
         <ant dir="${buildDir}/${cvsRuntimemodule}/build/" antfile="build.xml" target="clean"/>
         <!--Call the target that does everything-->
