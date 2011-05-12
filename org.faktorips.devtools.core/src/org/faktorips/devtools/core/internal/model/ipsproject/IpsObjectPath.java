@@ -235,25 +235,23 @@ public class IpsObjectPath implements IIpsObjectPath {
 
     @Override
     public IIpsArchiveEntry newArchiveEntry(IPath archivePath) throws CoreException {
-        IFile fileForLocation = ResourcesPlugin.getWorkspace().getRoot().getFile(archivePath);
-        if (fileForLocation == null) {
-            return null;
+        IPath correctArchivePath = archivePath;
+
+        if (archivePath.segmentCount() >= 2 && archivePath.segment(0).equals(getIpsProject().getName())) {
+            // Path should be project relative
+            IFile archiveFile = ResourcesPlugin.getWorkspace().getRoot().getFile(archivePath);
+            correctArchivePath = archiveFile.getProjectRelativePath();
         }
 
         for (IIpsArchiveEntry archiveEntry : getArchiveEntries()) {
-            if (archiveEntry.getArchiveLocation().equals(fileForLocation.getLocation())) {
+            if (archiveEntry.getArchiveLocation().equals(correctArchivePath)) {
                 // entry already exists.
                 return archiveEntry;
             }
         }
 
-        IPath relativeArchivePath = fileForLocation.getFullPath();
-        if (fileForLocation.getProject().equals(getIpsProject().getProject())) {
-            relativeArchivePath = fileForLocation.getProjectRelativePath();
-        }
-
         IIpsArchiveEntry newEntry = new IpsArchiveEntry(this);
-        newEntry.setArchivePath(ipsProject, relativeArchivePath);
+        newEntry.setArchivePath(ipsProject, correctArchivePath);
         IIpsObjectPathEntry[] newEntries = new IIpsObjectPathEntry[entries.length + 1];
         System.arraycopy(entries, 0, newEntries, 0, entries.length);
         newEntries[newEntries.length - 1] = newEntry;
