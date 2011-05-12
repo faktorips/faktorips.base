@@ -15,20 +15,19 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.List;
 
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
+import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
+import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
@@ -52,7 +51,7 @@ public class ValidationRuleConfigSection extends IpsSection {
     /** Label which is displayed if no validation rules are defined. */
     private Label noRulesLabel;
 
-    private TableViewer tableViewer;
+    private CheckboxTableViewer tableViewer;
 
     public ValidationRuleConfigSection(final IProductCmptGeneration generation, Composite parent, UIToolkit toolkit) {
         super(ID, parent, GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL, toolkit);
@@ -109,7 +108,7 @@ public class ValidationRuleConfigSection extends IpsSection {
             return composite;
         } else {
             Table table = new Table(parent, SWT.CHECK | SWT.V_SCROLL | SWT.H_SCROLL);
-            tableViewer = new TableViewer(table);
+            tableViewer = new CheckboxTableViewer(table);
             tableViewer.setContentProvider(createContentProvider());
             tableViewer.setLabelProvider(createLabelProvider());
             tableViewer.setInput(generation);
@@ -134,12 +133,12 @@ public class ValidationRuleConfigSection extends IpsSection {
     }
 
     private void addCheckClickListener() {
-        tableViewer.getTable().addSelectionListener(new SelectionAdapter() {
+        tableViewer.addCheckStateListener(new ICheckStateListener() {
+
             @Override
-            public void widgetSelected(SelectionEvent e) {
-                if (e.detail == SWT.CHECK) {
-                    TableItem item = (TableItem)e.item;
-                    IValidationRuleConfig config = generation.getValidationRuleConfig(item.getText());
+            public void checkStateChanged(CheckStateChangedEvent event) {
+                if (event.getElement() instanceof IValidationRuleConfig) {
+                    IValidationRuleConfig config = (IValidationRuleConfig)event.getElement();
                     if (config != null) {
                         config.setActive(!config.isActive());
                     }
@@ -150,12 +149,9 @@ public class ValidationRuleConfigSection extends IpsSection {
 
     private void setCheckedState() {
         if (tableViewer != null && !tableViewer.getTable().isDisposed()) {
-            TableItem[] items = tableViewer.getTable().getItems();
             List<IValidationRuleConfig> configList = generation.getValidationRuleConfigs();
-            if (items.length == configList.size()) {
-                for (int index = 0; index < items.length; index++) {
-                    items[index].setChecked(configList.get(index).isActive());
-                }
+            for (IValidationRuleConfig ruleConfig : configList) {
+                tableViewer.setChecked(ruleConfig, ruleConfig.isActive());
             }
         }
     }

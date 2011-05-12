@@ -365,7 +365,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
 
             List<IValidationRuleConfig> rules = activeGeneration.getValidationRuleConfigs();
             for (IValidationRuleConfig rule : rules) {
-                ProductCmptStructureReference node = new ProductCmptVRuleReference(this, parent, cmpt, rule);
+                ProductCmptStructureReference node = new ProductCmptVRuleReference(this, parent, rule);
                 children.add(node);
             }
             ITableContentUsage[] tcus = activeGeneration.getTableContentUsages();

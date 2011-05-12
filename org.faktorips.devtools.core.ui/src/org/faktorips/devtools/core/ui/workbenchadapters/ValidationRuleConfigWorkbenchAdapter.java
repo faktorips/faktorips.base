@@ -36,7 +36,7 @@ public class ValidationRuleConfigWorkbenchAdapter extends IpsElementWorkbenchAda
     @Override
     protected String getLabel(IIpsElement ipsElement) {
         if (ipsElement instanceof IValidationRuleConfig) {
-            IpsPlugin.getMultiLanguageSupport().getLocalizedCaption((IValidationRuleConfig)ipsElement);
+            return IpsPlugin.getMultiLanguageSupport().getLocalizedCaption((IValidationRuleConfig)ipsElement);
         }
         return super.getLabel(ipsElement);
     }

@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.productcmpt.treestructure;
 
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
@@ -28,13 +27,11 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptV
  */
 public class ProductCmptVRuleReference extends ProductCmptStructureReference implements IProductCmptVRuleReference {
 
-    private final IProductCmpt cmpt;
     private IValidationRuleConfig vRuleConfig;
 
     public ProductCmptVRuleReference(IProductCmptTreeStructure structure, ProductCmptStructureReference parent,
-            IProductCmpt cmpt, IValidationRuleConfig ruleConfig) throws CycleInProductStructureException {
+            IValidationRuleConfig ruleConfig) throws CycleInProductStructureException {
         super(structure, parent);
-        this.cmpt = cmpt;
         vRuleConfig = ruleConfig;
     }
 
@@ -45,7 +42,11 @@ public class ProductCmptVRuleReference extends ProductCmptStructureReference imp
 
     @Override
     public IIpsObject getWrappedIpsObject() {
-        return cmpt;
+        if (getValidationRuleConfig() == null) {
+            return null;
+        }
+
+        return getValidationRuleConfig().getIpsObject();
     }
 
     @Override

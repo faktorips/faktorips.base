@@ -57,10 +57,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptReference;
-import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptStructureTblUsageReference;
-import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTypeAssociationReference;
-import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptVRuleReference;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -75,8 +71,10 @@ import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptVRuleReference;
 import org.faktorips.devtools.core.ui.IpsFileTransferViewerDropAdapter;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.LinkDropListener;
@@ -150,6 +148,8 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
 
     private CollapseAllAction collapseAllAction;
 
+    private IWorkbenchAction deleteAction;
+
     /**
      * Class to handle double clicks. Doubleclicks of ProductCmptTypeAssociationReference will be
      * ignored.
@@ -161,7 +161,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
 
         @Override
         public void doubleClick(DoubleClickEvent event) {
-            if (getSelectedObjectFromSelection(event.getSelection()) instanceof ProductCmptTypeAssociationReference) {
+            if (getSelectedObjectFromSelection(event.getSelection()) instanceof IProductCmptTypeAssociationReference) {
                 return;
             }
             super.doubleClick(event);
@@ -472,6 +472,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
 
         treeViewer.addDoubleClickListener(new ProdStructExplTreeDoubleClickListener(treeViewer));
 
+        hookGlobalActions();
         initContextMenue();
 
         getSite().setSelectionProvider(treeViewer);
@@ -479,7 +480,6 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         IActionBars actionBars = getViewSite().getActionBars();
         initMenu(actionBars.getMenuManager());
         initToolBar(actionBars.getToolBarManager());
-        hookGlobalActions();
         showEmptyMessage();
     }
 
@@ -500,21 +500,51 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
     }
 
     private void createContextMenu(IMenuManager menumanager, IStructuredSelection selection) {
-        Object selectedRef = getSelectedObjectFromSelection(selection);
-        if (selectedRef == null) {
+        IProductCmptStructureReference selectedRef;
+        if (getSelectedObjectFromSelection(selection) instanceof IProductCmptStructureReference) {
+            selectedRef = (IProductCmptStructureReference)getSelectedObjectFromSelection(selection);
+        } else {
             return;
         }
 
-        menumanager.add(new Separator("open")); //$NON-NLS-1$
-        final IAction openAction = new OpenEditorAction(treeViewer);
-        menumanager.add(openAction);
+        boolean openEnabled = isOpenActionSupportedForSelection(selectedRef);
 
-        if (selectedRef instanceof ProductCmptReference) {
-            menumanager.add(new Separator("edit")); //$NON-NLS-1$
+        if (openEnabled) {
+            menumanager.add(new Separator("open")); //$NON-NLS-1$
+            final IAction openAction = new OpenEditorAction(treeViewer);
+            menumanager.add(openAction);
+        }
+
+        menumanager.add(new Separator("edit")); //$NON-NLS-1$
+
+        IIpsSrcFile srcFileToChange = null;
+        if (selectedRef instanceof IProductCmptReference) {
+            srcFileToChange = selectedRef.getWrappedIpsSrcFile();
+        } else if (selectedRef instanceof IProductCmptTypeAssociationReference) {
+            srcFileToChange = selectedRef.getParent().getWrappedIpsSrcFile();
+        } else if (selectedRef instanceof IProductCmptVRuleReference) {
+            srcFileToChange = selectedRef.getParent().getWrappedIpsSrcFile();
+        }
+        boolean editable = IpsUIPlugin.isEditable(srcFileToChange);
+
+        if (selectedRef instanceof IProductCmptReference || selectedRef instanceof IProductCmptTypeAssociationReference) {
             final IAction addAction = new AddLinkAction(treeViewer);
             menumanager.add(addAction);
-            menumanager.add(ActionFactory.DELETE.create(getSite().getWorkbenchWindow()));
+            addAction.setEnabled(editable);
+        }
 
+        if (selectedRef instanceof IProductCmptReference) {
+            menumanager.add(deleteAction);
+        }
+
+        if (selectedRef instanceof IProductCmptVRuleReference) {
+            IProductCmptVRuleReference ruleRef = (IProductCmptVRuleReference)selectedRef;
+            final IAction toggleRuleAction = new ToggleRuleAction(ruleRef.getValidationRuleConfig());
+            toggleRuleAction.setEnabled(editable);
+            menumanager.add(toggleRuleAction);
+        }
+
+        if (selectedRef instanceof IProductCmptReference) {
             menumanager.add(new Separator("copy")); //$NON-NLS-1$
             final IpsDeepCopyAction copyNewVersionAction = new IpsDeepCopyAction(getSite().getShell(), treeViewer,
                     DeepCopyWizard.TYPE_NEW_VERSION);
@@ -522,46 +552,28 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
             final IpsDeepCopyAction copyProductAction = new IpsDeepCopyAction(getSite().getShell(), treeViewer,
                     DeepCopyWizard.TYPE_COPY_PRODUCT);
             menumanager.add(copyProductAction);
-
-            menumanager.add(new Separator(ModelExplorerContextMenuBuilder.GROUP_NAVIGATE));
-
-            boolean copyEnabled = false;
-            boolean addActionEnabled = false;
-            boolean enabled = isReferenceAndOpenActionSupportedForSelection(selectedRef);
-            if (selectedRef instanceof IProductCmptReference) {
-                IProductCmptReference reference = (IProductCmptReference)selectedRef;
-                IIpsSrcFile srcFileToChange = reference.getWrappedIpsSrcFile();
-                addActionEnabled = IpsUIPlugin.isEditable(srcFileToChange);
-                copyEnabled = IpsPlugin.getDefault().getIpsPreferences().isWorkingModeEdit();
-            }
-            if (selectedRef instanceof IProductCmptTypeAssociationReference) {
-                IProductCmptTypeAssociationReference reference = (IProductCmptTypeAssociationReference)selectedRef;
-                IIpsSrcFile srcFileToChange = reference.getParent().getWrappedIpsSrcFile();
-                addActionEnabled = IpsUIPlugin.isEditable(srcFileToChange);
-            }
-            addAction.setEnabled(addActionEnabled);
+            boolean copyEnabled = IpsPlugin.getDefault().getIpsPreferences().isWorkingModeEdit();
             copyNewVersionAction.setEnabled(copyEnabled);
             copyProductAction.setEnabled(copyEnabled);
-            openAction.setEnabled(enabled);
-        } else if (selectedRef instanceof ProductCmptVRuleReference) {
-            ProductCmptVRuleReference ruleRef = (ProductCmptVRuleReference)selectedRef;
-            menumanager.add(new Separator("edit")); //$NON-NLS-1$
-            final IAction toggleRuleAction = new ToggleRuleAction(ruleRef.getValidationRuleConfig());
-            menumanager.add(toggleRuleAction);
-            menumanager.add(ActionFactory.DELETE.create(getSite().getWorkbenchWindow()));
+        }
+
+        if (!(selectedRef instanceof IProductCmptVRuleReference || selectedRef instanceof IProductCmptTypeAssociationReference)) {
+            menumanager.add(new Separator(ModelExplorerContextMenuBuilder.GROUP_NAVIGATE));
         }
     }
 
     private void hookGlobalActions() {
+        deleteAction = ActionFactory.DELETE.create(getViewSite().getWorkbenchWindow());
+
         IActionBars bars = getViewSite().getActionBars();
         bars.setGlobalActionHandler(ActionFactory.DELETE.getId(), new ReferenceDeleteAction(treeViewer));
     }
 
-    private boolean isReferenceAndOpenActionSupportedForSelection(Object selectedRef) {
+    private boolean isOpenActionSupportedForSelection(Object selectedRef) {
         if (selectedRef == null) {
             return false;
         }
-        return (selectedRef instanceof IProductCmptReference || selectedRef instanceof ProductCmptStructureTblUsageReference);
+        return !(selectedRef instanceof IProductCmptTypeAssociationReference);
     }
 
     private Object getSelectedObjectFromSelection(ISelection selection) {
@@ -768,7 +780,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
          * unnecessary rebuilding of the structure.
          */
         for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
-            if (!contentProvider.isIpsSrcFilePartOfStructure(ipsSrcFile)) {
+            if (contentProvider.isIpsSrcFilePartOfStructure(ipsSrcFile)) {
                 postRefresh();
                 return;
             }
