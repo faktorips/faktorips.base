@@ -66,7 +66,7 @@ public class IpsArchive implements IIpsArchive {
 
     private final static int IPSOBJECT_FOLDER_NAME_LENGTH = IIpsArchive.IPSOBJECTS_FOLDER.length();
 
-    private IPath archivePath;
+    private final IPath archivePath;
     private long modificationStamp;
     private ArchiveIpsPackageFragmentRoot root;
 
