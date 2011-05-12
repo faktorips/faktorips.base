@@ -92,7 +92,7 @@ public abstract class AbstractConfigurableModelObject extends AbstractModelObjec
      * Sets the new product component generation. This method can be overridden in subclasses, e.g.
      * to implement a notification mechanism.
      */
-    protected void setProductCmptGeneration(IProductComponentGeneration newGeneration) {
+    public void setProductCmptGeneration(IProductComponentGeneration newGeneration) {
         if (newGeneration != null) {
             setProductComponent(newGeneration.getProductComponent());
         } else {
