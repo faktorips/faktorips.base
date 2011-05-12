@@ -67,12 +67,6 @@ public class GenPolicyCmptType extends GenType {
 
     private final List<GenPolicyCmptTypeAttribute> genPolicyCmptTypeAttributes = new ArrayList<GenPolicyCmptTypeAttribute>();
 
-    private final List<GenAssociation> genAssociations = new ArrayList<GenAssociation>();
-
-    private final List<GenValidationRule> genValidationRules = new ArrayList<GenValidationRule>();
-
-    private final List<GenPolicyCmptTypeMethod> genPolicyCmptTypeMethods = new ArrayList<GenPolicyCmptTypeMethod>();
-
     private final IChangeListenerSupportBuilder changeListenerSupportBuilder;
 
     public GenPolicyCmptType(IPolicyCmptType policyCmptType, StandardBuilderSet builderSet) throws CoreException {
@@ -96,7 +90,6 @@ public class GenPolicyCmptType extends GenType {
         for (IMethod method : methods) {
             if (method.isValid(getPolicyCmptType().getIpsProject())) {
                 GenPolicyCmptTypeMethod generator = new GenPolicyCmptTypeMethod(this, method);
-                genPolicyCmptTypeMethods.add(generator);
                 getGeneratorsByPart().put(method, generator);
             }
         }
@@ -107,7 +100,6 @@ public class GenPolicyCmptType extends GenType {
         for (IValidationRule validationRule : validationRules) {
             if (validationRule.isValid(getPolicyCmptType().getIpsProject())) {
                 GenValidationRule generator = new GenValidationRule(this, validationRule);
-                genValidationRules.add(generator);
                 getGeneratorsByPart().put(validationRule, generator);
             }
         }
@@ -130,7 +122,6 @@ public class GenPolicyCmptType extends GenType {
         for (IPolicyCmptTypeAssociation as : ass) {
             if (as.isValid(getPolicyCmptType().getIpsProject())) {
                 GenAssociation generator = createGenerator(as);
-                genAssociations.add(generator);
                 getGeneratorsByPart().put(as, generator);
             }
         }
@@ -161,7 +152,6 @@ public class GenPolicyCmptType extends GenType {
         GenPolicyCmptTypeMethod generator = (GenPolicyCmptTypeMethod)getGeneratorsByPart().get(method);
         if (generator == null && method.isValid(getPolicyCmptType().getIpsProject())) {
             generator = new GenPolicyCmptTypeMethod(this, method);
-            genPolicyCmptTypeMethods.add(generator);
             getGeneratorsByPart().put(method, generator);
         }
         return generator;
@@ -185,7 +175,6 @@ public class GenPolicyCmptType extends GenType {
         GenAssociation generator = (GenAssociation)getGeneratorsByPart().get(a);
         if (null == generator && a.isValid(getPolicyCmptType().getIpsProject())) {
             generator = createGenerator(a);
-            genAssociations.add(generator);
             getGeneratorsByPart().put(a, generator);
         }
         return generator;

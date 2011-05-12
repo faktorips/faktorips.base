@@ -117,7 +117,8 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
     @Test
     public void testGetValidationRuleConfigElements() {
         Element genElement = getTestDocument().getDocumentElement();
-        Map<String, ValidationRuleConfiguration> configsMap = gen.getValidationRuleConfigElements(genElement);
+        gen.doInitValidationRuleConfigsFromXml(genElement);
+        Map<String, ValidationRuleConfiguration> configsMap = gen.getNameToValidationRuleConfigMap();
 
         assertEquals(3, configsMap.size());
         ValidationRuleConfiguration config = configsMap.get("Regel1");

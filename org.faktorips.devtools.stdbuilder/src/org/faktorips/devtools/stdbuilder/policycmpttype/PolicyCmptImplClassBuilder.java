@@ -1128,11 +1128,12 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
         builder.closeBracket();
     }
 
-    private String getMethodNameExecRule(IValidationRule r) {
-        return StringUtils.uncapitalize(r.getName());
+    private String getMethodNameExecRule(IValidationRule r) throws CoreException {
+        return getGenerator().getGenerator(r).getMethodNameExecRule();
     }
 
-    private String getMethodExpressionExecRule(IValidationRule r, String messageList, String businessFunction) {
+    private String getMethodExpressionExecRule(IValidationRule r, String messageList, String businessFunction)
+            throws CoreException {
         StringBuffer buf = new StringBuffer();
         buf.append(getMethodNameExecRule(r));
         buf.append('(');

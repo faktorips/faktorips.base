@@ -56,6 +56,11 @@ public class GenValidationRule extends GenTypePart {
         super(genPolicyCmptType, part, LOCALIZED_STRINGS);
     }
 
+    @Override
+    public GenPolicyCmptType getGenType() {
+        return (GenPolicyCmptType)super.getGenType();
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -64,6 +69,9 @@ public class GenValidationRule extends GenTypePart {
             throws CoreException {
         if (generatesInterface) {
             generateFieldForMsgCode(builder);
+            if (getValidationRule().isConfigurableByProductComponent()) {
+                generateFieldForRuleName(builder);
+            }
         }
     }
 
@@ -74,6 +82,7 @@ public class GenValidationRule extends GenTypePart {
     protected void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
             boolean generatesInterface) throws CoreException {
+        // nothing to do
     }
 
     /**
@@ -131,25 +140,25 @@ public class GenValidationRule extends GenTypePart {
         }
         if (!rule.isCheckValueAgainstValueSetRule()) {
             if (rule.isConfigurableByProductComponent()) {
-                body.append("if(getProductCmptGeneration().isValidationRuleActivated(\"");
-                body.append(rule.getName());
-                body.append("\"))");
-                body.appendOpenBracket();
+                body.append("if(getProductCmptGeneration().isValidationRuleActivated(") //
+                        .append(getFieldNameForRuleName()) //
+                        .append("))") //
+                        .appendOpenBracket();
             }
             body.appendln("//begin-user-code");
             body.appendln(getLocalizedToDo("EXEC_RULE_IMPLEMENT", rule.getName()));
         }
 
-        body.append("if(");
         String[] javaDocAnnotation = JavaSourceFileBuilder.ANNOTATION_RESTRAINED_MODIFIABLE;
+
+        body.append("if(");
         if (rule.isCheckValueAgainstValueSetRule()) {
             javaDocAnnotation = JavaSourceFileBuilder.ANNOTATION_GENERATED;
             IPolicyCmptTypeAttribute attr = ((IPolicyCmptType)rule.getIpsObject()).getPolicyCmptTypeAttribute(rule
                     .getValidatedAttributeAt(0));
             body.append('!');
 
-            GenPolicyCmptTypeAttribute genPolicyCmptTypeAttribute = ((GenPolicyCmptType)getGenType())
-                    .getGenerator(attr);
+            GenPolicyCmptTypeAttribute genPolicyCmptTypeAttribute = (getGenType()).getGenerator(attr);
             if (!attr.getValueSet().isUnrestricted()) {
                 body.append(genPolicyCmptTypeAttribute.getMethodNameGetSetOfAllowedValues());
             }
@@ -247,8 +256,7 @@ public class GenValidationRule extends GenTypePart {
         methodParamTypes.add(IValidationContext.class.getName());
         methodParamNames.addAll(Arrays.asList(msgFrag.getParameterNames()));
         methodParamTypes.addAll(Arrays.asList(msgFrag.getParameterClasses()));
-        if (!rule.isValidatedAttrSpecifiedInSrc()) {
-        } else {
+        if (rule.isValidatedAttrSpecifiedInSrc()) {
             methodParamNames.add(localVarObjectProperties);
             methodParamTypes.add(ObjectProperty.class.getName() + "[]");
         }
@@ -297,7 +305,7 @@ public class GenValidationRule extends GenTypePart {
             IIpsProject ipsProject) throws CoreException {
 
         JavaCodeFragment code = new JavaCodeFragment();
-        if (!getGenType().getIpsPart().isValid()) {
+        if (!getGenType().getIpsPart().isValid(getIpsProject())) {
             return code;
         }
 
@@ -311,8 +319,7 @@ public class GenValidationRule extends GenTypePart {
             for (int j = 0; j < validatedAttributes.length; j++) {
                 IPolicyCmptTypeAttribute attr = ((IPolicyCmptType)getIpsPart().getIpsObject())
                         .findPolicyCmptTypeAttribute(validatedAttributes[j], ipsProject);
-                String propertyConstName = ((GenPolicyCmptType)getGenType()).getGenerator(attr)
-                        .getStaticConstantPropertyName();
+                String propertyConstName = (getGenType()).getGenerator(attr).getStaticConstantPropertyName();
                 code.append(" new ");
                 code.appendClassName(ObjectProperty.class);
                 code.append("(this, ");
@@ -389,6 +396,22 @@ public class GenValidationRule extends GenTypePart {
 
     public String getFieldNameForMsgCode() {
         return getLocalizedText("FIELD_MSG_CODE_NAME", StringUtils.upperCase(getValidationRule().getName()));
+    }
+
+    private void generateFieldForRuleName(JavaCodeFragmentBuilder membersBuilder) {
+        String fieldRuleName = "FIELD_RULE_NAME";
+        appendLocalizedJavaDoc(fieldRuleName, getValidationRule().getName(), membersBuilder);
+        membersBuilder.append("public final static ");
+        membersBuilder.appendClassName(String.class);
+        membersBuilder.append(' ');
+        membersBuilder.append(getFieldNameForRuleName());
+        membersBuilder.append(" = \"");
+        membersBuilder.append(getValidationRule().getName());
+        membersBuilder.appendln("\";");
+    }
+
+    public String getFieldNameForRuleName() {
+        return getLocalizedText("FIELD_RULE_NAME", StringUtils.upperCase(getValidationRule().getName()));
     }
 
     public String getMethodNameCreateMessageForRule() {

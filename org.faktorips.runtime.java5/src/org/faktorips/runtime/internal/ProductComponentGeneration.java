@@ -117,7 +117,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
         doInitTableUsagesFromXml(propertyElements);
         doInitReferencesFromXml(getLinkElements(genElement));
         doInitFormulaFromXml(genElement);
-        doInitValidationRuleConfigsFromXml(getValidationRuleConfigElements(genElement));
+        doInitValidationRuleConfigsFromXml(genElement);
     }
 
     /**
@@ -187,10 +187,31 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
     }
 
     /**
-     * Initializes all validation rule configurations contained by the given genElement.
+     * Creates a map containing the validation rule configurations found in the indicated
+     * generation's XML element. For each validation rule configuration the map contains an entry
+     * with the rule name as a key and an {@link ValidationRuleConfiguration} instance as value.
+     * 
+     * @param genElement An XML element containing a product component generation's data.
+     * @throws NullPointerException if genElement is <code>null</code>.
      */
-    protected void doInitValidationRuleConfigsFromXml(Map<String, ValidationRuleConfiguration> map) {
-        nameToValidationRuleConfigMap = map;
+    // note: not private to allow access by test case
+    protected void doInitValidationRuleConfigsFromXml(Element genElement) {
+        Map<String, ValidationRuleConfiguration> configMap = new HashMap<String, ValidationRuleConfiguration>();
+        NodeList nl = genElement.getChildNodes();
+        for (int i = 0; i < nl.getLength(); i++) {
+            Node node = nl.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE && "ValidationRuleConfig".equals(node.getNodeName())) {
+                Element childElement = (Element)nl.item(i);
+                ValidationRuleConfiguration config = new ValidationRuleConfiguration(childElement);
+                configMap.put(config.getRuleName(), config);
+            }
+        }
+        nameToValidationRuleConfigMap = configMap;
+    }
+
+    // note: not private to allow access by test case
+    /* private */Map<String, ValidationRuleConfiguration> getNameToValidationRuleConfigMap() {
+        return nameToValidationRuleConfigMap;
     }
 
     /**
@@ -254,29 +275,6 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
 
         }
         return elementMap;
-    }
-
-    /**
-     * Returns a map containing the validation rule configurations found in the indicated
-     * generation's XML element. For each validation rule configuration the map contains an entry
-     * with the rule name as a key and an {@link ValidationRuleConfiguration} instance as value.
-     * 
-     * @param genElement An XML element containing a product component generation's data.
-     * @throws NullPointerException if genElement is <code>null</code>.
-     */
-    // note: not private to allow access by test case
-    final Map<String, ValidationRuleConfiguration> getValidationRuleConfigElements(Element genElement) {
-        Map<String, ValidationRuleConfiguration> configMap = new HashMap<String, ValidationRuleConfiguration>();
-        NodeList nl = genElement.getChildNodes();
-        for (int i = 0; i < nl.getLength(); i++) {
-            Node node = nl.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE && "ValidationRuleConfig".equals(node.getNodeName())) {
-                Element childElement = (Element)nl.item(i);
-                ValidationRuleConfiguration config = new ValidationRuleConfiguration(childElement);
-                configMap.put(config.getRuleName(), config);
-            }
-        }
-        return configMap;
     }
 
     protected Element getRangeElement(Element configElement) {
