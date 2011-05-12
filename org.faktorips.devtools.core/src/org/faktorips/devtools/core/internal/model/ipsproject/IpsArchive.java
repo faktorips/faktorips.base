@@ -420,15 +420,15 @@ public class IpsArchive implements IIpsArchive {
     }
 
     /**
-     * Returns an IResource only if the resource can be located by the
-     * {@link IWorkspaceRoot#getFileForLocation(IPath)} method.
+     * Returns an IResource only if the resource can be located in the workspace. If the path is
+     * relative it have to be located in the roots project project. The file does not have exists
+     * but have to be relative (to the project) or the first segment must match an existing project.
+     * 
+     * @return The found {@link IResource} if the path is workspace or project relative. Returns
+     *         null if the path is not valid.
      */
     public IResource getCorrespondingResource() {
         if (archivePath.isAbsolute()) {
-            if (archivePath.getDevice() != null || archivePath.isUNC()) {
-                // on Windows we can determin files outside the workspace with the device (like C:)
-                return null;
-            }
             IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
             if (archivePath.segmentCount() == 0) {
                 return null;

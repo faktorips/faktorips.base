@@ -237,16 +237,10 @@ public class IpsObjectPath implements IIpsObjectPath {
     public IIpsArchiveEntry newArchiveEntry(IPath archivePath) throws CoreException {
         IPath correctArchivePath = archivePath;
 
-        // If the path is an UNC path the archive is an external resource
-        if (!archivePath.isUNC()) {
-            IFile fileForLocation = ResourcesPlugin.getWorkspace().getRoot().getFile(archivePath);
-            if (fileForLocation == null) {
-                return null;
-            }
-
-            if (fileForLocation.getProject().equals(getIpsProject().getProject())) {
-                correctArchivePath = fileForLocation.getProjectRelativePath();
-            }
+        if (archivePath.segmentCount() >= 2 && archivePath.segment(0).equals(getIpsProject().getName())) {
+            // Path should be project relative
+            IFile archiveFile = ResourcesPlugin.getWorkspace().getRoot().getFile(archivePath);
+            correctArchivePath = archiveFile.getProjectRelativePath();
         }
 
         for (IIpsArchiveEntry archiveEntry : getArchiveEntries()) {
