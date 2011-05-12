@@ -531,7 +531,6 @@
 		
     	<!--checkout pluginbuilder, build project -->
     	<antcall inheritall="true" target="-checkout.pluginbuilder"/>
-    	<antcall inheritall="true" target="-checkout.build"/>
     	
 		<!-- overwrite all.map e.g. if using branch or different cvsroot -->
 		<copy file="${projectsRootDir}/org.faktorips.pluginbuilder/maps/${all.map}" tofile="${projectsRootDir}/org.faktorips.pluginbuilder/maps/all.map" overwrite="true"/>
