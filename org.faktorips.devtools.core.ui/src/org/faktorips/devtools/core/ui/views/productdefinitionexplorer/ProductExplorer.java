@@ -16,9 +16,10 @@ package org.faktorips.devtools.core.ui.views.productdefinitionexplorer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -27,19 +28,17 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.ui.MenuCleaner;
-import org.faktorips.devtools.core.ui.actions.WrapperAction;
 import org.faktorips.devtools.core.ui.refactor.IpsMoveHandler;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringHandler;
 import org.faktorips.devtools.core.ui.refactor.IpsRenameHandler;
@@ -49,7 +48,7 @@ import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerConfigura
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
 
 /**
- * A <code>ModelExplorer</code> that displays productdefinition projects along with all contained
+ * A <code>ModelExplorer</code> that displays product definition projects along with all contained
  * <code>ProductCmpt</code>s, <code>TableContents</code>, <code>TestCases</code> and
  * <code>TestCaseTypes</code>.
  * 
@@ -95,8 +94,8 @@ public class ProductExplorer extends ModelExplorer {
     }
 
     /**
-     * User a separate contentprovider for ProductDefinitionExplorer. This contentprovider does not
-     * display a default package, only its contents as children of the packageFragmentRoot.
+     * User a separate content provider for ProductDefinitionExplorer. This content provider does
+     * not display a default package, only its contents as children of the packageFragmentRoot.
      * {@inheritDoc}
      */
     @Override
@@ -110,186 +109,6 @@ public class ProductExplorer extends ModelExplorer {
         filter = new ProductExplorerFilter();
         tree.addFilter(filter);
         filter.setExcludeNoIpsProductDefinitionProjects(excludeNoIpsProductDefinitionProjects);
-    }
-
-    @Override
-    protected void createContextMenu() {
-        MenuManager manager = new MenuManager();
-        manager.setRemoveAllWhenShown(true);
-        manager.addMenuListener(new ProductMenuBuilder(this, config, getViewSite(), getSite(), treeViewer));
-        Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
-        treeViewer.getControl().setMenu(contextMenu);
-        getSite().registerContextMenu(manager, treeViewer);
-        MenuCleaner.addAdditionsCleaner(manager);
-    }
-
-    protected class ProductMenuBuilder extends ModelExplorerContextMenuBuilder {
-
-        private WrapperAction team_sync = new WrapperAction(treeViewer, Messages.ProductExplorer_actionSync_label,
-                Messages.ProductExplorer_actionSync_tooltip,
-                "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.sync"); //$NON-NLS-1$ //$NON-NLS-2$
-        private WrapperAction team_commit = new WrapperAction(treeViewer, Messages.ProductExplorer_actionCommit_label,
-                Messages.ProductExplorer_actionCommit_tooltip,
-                "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.commit"); //$NON-NLS-1$ //$NON-NLS-2$
-        private WrapperAction team_update = new WrapperAction(treeViewer, Messages.ProductExplorer_actionUpdate_label,
-                Messages.ProductExplorer_actionUpdate_tooltip,
-                "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.update"); //$NON-NLS-1$ //$NON-NLS-2$
-
-        private WrapperAction team_tag = new WrapperAction(treeViewer, Messages.ProductExplorer_actionTag_label,
-                Messages.ProductExplorer_actionTag_tooltip, "TagAction.gif" //$NON-NLS-1$
-                , "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.tag"); //$NON-NLS-1$ //$NON-NLS-2$
-        private WrapperAction team_branch = new WrapperAction(treeViewer, Messages.ProductExplorer_actionBranch_label,
-                Messages.ProductExplorer_actionBranch_tooltip, "BranchAction.gif" //$NON-NLS-1$
-                , "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.branch"); //$NON-NLS-1$ //$NON-NLS-2$
-        private WrapperAction team_switchBranch = new WrapperAction(treeViewer,
-                Messages.ProductExplorer_actionSwitchBranch_label, Messages.ProductExplorer_actionSwitchBranch_tooltip,
-                "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.updateSwitch"); //$NON-NLS-1$ //$NON-NLS-2$
-        private WrapperAction team_showResourceHistory = new WrapperAction(treeViewer,
-                Messages.ProductExplorer_actionShowResourceHistory_label,
-                Messages.ProductExplorer_actionShowResourceHistory_tooltip, "HistoryAction.gif" //$NON-NLS-1$
-                , "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.showHistory"); //$NON-NLS-1$ //$NON-NLS-2$
-
-        private WrapperAction team_restoreFromRepository = new WrapperAction(treeViewer,
-                Messages.ProductExplorer_actionRestoreFromRepositoryAction_label,
-                Messages.ProductExplorer_actionRestoreFromRepositoryAction_tooltip,
-                "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.ccvs.ui.restoreFromRepository"); //$NON-NLS-1$ //$NON-NLS-2$
-
-        private WrapperAction compareWith_latest = new WrapperAction(treeViewer,
-                Messages.ProductExplorer_actionCompareWithLatest_label,
-                Messages.ProductExplorer_actionCompareWithLatest_tooltip,
-                "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.compareWithRemote"); //$NON-NLS-1$ //$NON-NLS-2$
-        private WrapperAction compareWith_branch = new WrapperAction(treeViewer,
-                Messages.ProductExplorer_actionCompareWithBranch_label,
-                Messages.ProductExplorer_actionCompareWithBranch_tooltip,
-                "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.compareWithTag"); //$NON-NLS-1$ //$NON-NLS-2$
-        private WrapperAction compareWith_eachOther = new WrapperAction(treeViewer,
-                Messages.ProductExplorer_actionCompareWithEachOther_label,
-                Messages.ProductExplorer_actionCompareWithEachOther_tooltip, null, "compareWithEachOther"); //$NON-NLS-1$
-        private WrapperAction compareWith_revision = new WrapperAction(treeViewer,
-                Messages.ProductExplorer_actionCompareWithRevision_label,
-                Messages.ProductExplorer_actionCompareWithRevision_tooltip,
-                "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.compareWithRevision"); //$NON-NLS-1$ //$NON-NLS-2$
-        private WrapperAction compareWith_localHistory = new WrapperAction(treeViewer,
-                Messages.ProductExplorer_actionCompareWithLocalHistory_label,
-                Messages.ProductExplorer_actionCompareWithLocalHistory_tooltip, null, "compareWithHistory"); //$NON-NLS-1$
-
-        private WrapperAction replaceWith_latest = new WrapperAction(treeViewer,
-                Messages.ProductExplorer_actionReplaceWithLatest_label,
-                Messages.ProductExplorer_actionReplaceWithLatest_tooltip,
-                "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.replace"); //$NON-NLS-1$ //$NON-NLS-2$
-        private WrapperAction replaceWith_branch = new WrapperAction(treeViewer,
-                Messages.ProductExplorer_actionReplaceWithBranch_label,
-                Messages.ProductExplorer_actionReplaceWithBranch_tooltip,
-                "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.replaceWithTag"); //$NON-NLS-1$ //$NON-NLS-2$
-        private WrapperAction replaceWith_revision = new WrapperAction(treeViewer,
-                Messages.ProductExplorer_actionReplaceWithRevision_label,
-                Messages.ProductExplorer_actionReplaceWithRevision_tooltip,
-                "org.eclipse.team.cvs.ui.CVSActionSet", "org.eclipse.team.cvs.ui.replaceWithRevision"); //$NON-NLS-1$ //$NON-NLS-2$
-        private WrapperAction replaceWith_previousFromLocalHistory = new WrapperAction(treeViewer,
-                Messages.ProductExplorer_actionReplaceWithPreviousFromLocalHistory_label,
-                Messages.ProductExplorer_actionReplaceWithPreviousFromLocalHistory_tooltip,
-                "org.eclipse.team.cvs.ui.CVSActionSet", "replaceWithPreviousFromHistory"); //$NON-NLS-1$ //$NON-NLS-2$
-        private WrapperAction replaceWith_localHistory = new WrapperAction(treeViewer,
-                Messages.ProductExplorer_actionReplaceWithLocalHistory_label,
-                Messages.ProductExplorer_actionReplaceWithLocalHistory_tooltip,
-                "org.eclipse.team.cvs.ui.CVSActionSet", "replaceFromHistory"); //$NON-NLS-1$ //$NON-NLS-2$
-
-        public ProductMenuBuilder(ModelExplorer modelExplorer, ModelExplorerConfiguration modelExplorerConfig,
-                IViewSite viewSite, IWorkbenchPartSite workbenchPartSite, TreeViewer treeViewer) {
-            super(modelExplorer, modelExplorerConfig, viewSite, workbenchPartSite, treeViewer);
-        }
-
-        @Override
-        public void menuAboutToShow(IMenuManager manager) {
-            super.menuAboutToShow(manager);
-        }
-
-        private boolean isResourceShared(Object selectedObj) {
-            if (selectedObj instanceof IIpsElement) {
-                IIpsElement ipsElement = (IIpsElement)selectedObj;
-                return RepositoryProvider.isShared(ipsElement.getIpsProject().getProject());
-            }
-
-            if (selectedObj instanceof IResource) {
-                IResource resource = (IResource)selectedObj;
-                return RepositoryProvider.isShared(resource.getProject());
-            }
-
-            return false;
-        }
-
-        @Override
-        protected void createReorgActions(IMenuManager manager, Object selected) {
-            super.createReorgActions(manager, selected);
-            // TODO AW: IIpsProject and IIpsPackageFragmentRoot should be supported as well
-            if (selected instanceof IIpsObject || selected instanceof IIpsPackageFragment) {
-                manager.add(IpsRefactoringHandler.getContributionItem(IpsRenameHandler.CONTRIBUTION_ID));
-                manager.add(IpsRefactoringHandler.getContributionItem(IpsMoveHandler.CONTRIBUTION_ID));
-            }
-        }
-
-        @Override
-        protected void createAdditionalActions(IMenuManager manager, IStructuredSelection structuredSelection) {
-            manager.add(new Separator("custom-additions")); //$NON-NLS-1$
-            Object selected = structuredSelection.getFirstElement();
-            boolean isResourceShared = isResourceShared(selected);
-            boolean advancedTeamFunctionsEnabled = IpsPlugin.getDefault().getIpsPreferences()
-                    .areAvancedTeamFunctionsForProductDefExplorerEnabled();
-
-            MenuManager teamMenu = new MenuManager(Messages.ProductExplorer_subMenuTeam);
-            if (isResourceShared) {
-                if (advancedTeamFunctionsEnabled || config.representsProject(selected)) {
-                    teamMenu.add(team_sync);
-                    teamMenu.add(team_commit);
-                    teamMenu.add(team_update);
-                    teamMenu.add(new Separator());
-                    teamMenu.add(team_tag);
-                    teamMenu.add(team_branch);
-                    teamMenu.add(team_switchBranch);
-                }
-                if (config.representsFile(selected)) {
-                    teamMenu.add(team_showResourceHistory);
-                }
-                teamMenu.add(new Separator());
-                teamMenu.add(team_restoreFromRepository);
-            }
-            manager.add(teamMenu);
-
-            MenuManager compareMenu = new MenuManager(Messages.ProductExplorer_subMenuCompareWith);
-            if (isResourceShared) {
-                compareMenu.add(compareWith_latest);
-                compareMenu.add(compareWith_branch);
-            }
-            // Activate compare with each other only if exactly two elements are selected.
-            compareWith_eachOther.setEnabled(structuredSelection.size() == 2);
-            compareMenu.add(compareWith_eachOther);
-            if (config.representsFile(selected)) {
-                if (isResourceShared) {
-                    compareMenu.add(compareWith_revision);
-                }
-                compareMenu.add(compareWith_localHistory);
-            }
-            manager.add(compareMenu);
-
-            MenuManager replaceMenu = new MenuManager(Messages.ProductExplorer_subMenuReplaceWith);
-            if (isResourceShared) {
-                replaceMenu.add(replaceWith_latest);
-                replaceMenu.add(replaceWith_branch);
-            }
-            if (config.representsFile(selected)) {
-                if (isResourceShared) {
-                    replaceMenu.add(replaceWith_revision);
-                }
-                replaceMenu.add(replaceWith_previousFromLocalHistory);
-                replaceMenu.add(replaceWith_localHistory);
-            }
-            manager.add(replaceMenu);
-        }
-
-        @Override
-        protected void createRefactorMenu(IMenuManager manager, Object selected) {
-            // Refactoring actions are provided directly in #createReorgActions
-        }
     }
 
     @Override
@@ -346,4 +165,143 @@ public class ProductExplorer extends ModelExplorer {
         };
 
     }
+
+    @Override
+    protected void createContextMenu() {
+        final ProductMenuBuilder menuBuilder = new ProductMenuBuilder(this, config, getViewSite(), getSite(),
+                treeViewer);
+
+        MenuManager manager = new MenuManager();
+        manager.setRemoveAllWhenShown(true);
+        manager.addMenuListener(menuBuilder);
+
+        Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
+        treeViewer.getControl().setMenu(contextMenu);
+
+        getSite().registerContextMenu(manager, treeViewer);
+        menuBuilder.registerAdditionsCleaner(manager);
+        /*
+         * We need to register the team cleaner via another menu listener because the team menu
+         * manager is re-added on each menuAboutToShow.
+         */
+        manager.addMenuListener(new IMenuListener() {
+            @Override
+            public void menuAboutToShow(IMenuManager manager) {
+                menuBuilder.registerTeamCleaner(manager);
+            }
+        });
+    }
+
+    protected class ProductMenuBuilder extends ModelExplorerContextMenuBuilder {
+
+        // @formatter:off
+        private static final String TEAM_MENU                       = "team.main"; //$NON-NLS-1$
+        private static final String COMPARE_WITH_MENU               = "compareWithMenu"; //$NON-NLS-1$
+        private static final String REPLACE_WITH_MENU               = "replaceWithMenu"; //$NON-NLS-1$
+        
+        private static final String CVS_SYNC                        = "org.eclipse.team.cvs.ui.sync"; //$NON-NLS-1$
+        private static final String CVS_COMMIT                      = "org.eclipse.team.ccvs.ui.commit"; //$NON-NLS-1$
+        private static final String CVS_UPDATE                      = "org.eclipse.team.ccvs.ui.update"; //$NON-NLS-1$
+        private static final String CVS_GROUP_1                     = "group1"; //$NON-NLS-1$
+        private static final String CVS_GROUP_2                     = "group2"; //$NON-NLS-1$
+        private static final String CVS_GROUP_3                     = "group3"; //$NON-NLS-1$
+        private static final String CVS_TAG                         = "org.eclipse.team.cvs.ui.tag"; //$NON-NLS-1$
+        private static final String CVS_BRANCH                      = "org.eclipse.team.cvs.ui.branch"; //$NON-NLS-1$
+        private static final String CVS_SWITCH_BRANCH               = "org.eclipse.team.cvs.ui.updateSwitch"; //$NON-NLS-1$
+        private static final String CVS_SHOW_RESOURCE_HISTORY       = "org.eclipse.team.cvs.ui.showHistory"; //$NON-NLS-1$
+        private static final String CVS_RESTORE_FROM_REPOSITORY     = "org.eclipse.team.ccvs.ui.restoreFromRepository"; //$NON-NLS-1$
+        // @formatter:on
+
+        private final MenuCleaner additionsCleaner;
+
+        private final MenuCleaner teamCleaner;
+
+        public ProductMenuBuilder(ModelExplorer modelExplorer, ModelExplorerConfiguration modelExplorerConfig,
+                IViewSite viewSite, IWorkbenchPartSite workbenchPartSite, TreeViewer treeViewer) {
+
+            super(modelExplorer, modelExplorerConfig, viewSite, workbenchPartSite, treeViewer);
+            additionsCleaner = new MenuCleaner();
+            teamCleaner = new MenuCleaner();
+        }
+
+        private void registerAdditionsCleaner(IMenuManager manager) {
+            manager.addMenuListener(additionsCleaner);
+        }
+
+        private void registerTeamCleaner(IMenuManager manager) {
+            IMenuManager teamManager = getSubMenuManager(manager, TEAM_MENU);
+            teamManager.addMenuListener(teamCleaner);
+            // Team cleaner isn't added until the menu is shown so we need to call it on ourselves
+            teamCleaner.menuAboutToShow(teamManager);
+        }
+
+        private IMenuManager getSubMenuManager(IMenuManager menuManager, String subMenuManagerId) {
+            for (IContributionItem item : menuManager.getItems()) {
+                if (subMenuManagerId.equals(item.getId()) && item instanceof IMenuManager) {
+                    return (IMenuManager)item;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void createReorgActions(IMenuManager manager, Object selected) {
+            super.createReorgActions(manager, selected);
+            // TODO AW: IIpsProject and IIpsPackageFragmentRoot should be supported as well
+            if (selected instanceof IIpsObject || selected instanceof IIpsPackageFragment) {
+                manager.add(IpsRefactoringHandler.getContributionItem(IpsRenameHandler.CONTRIBUTION_ID));
+                manager.add(IpsRefactoringHandler.getContributionItem(IpsMoveHandler.CONTRIBUTION_ID));
+            }
+        }
+
+        @Override
+        protected void createAdditionalActions(IMenuManager manager, IStructuredSelection structuredSelection) {
+            manager.add(new Separator("additions")); //$NON-NLS-1$
+            configureAdditionsCleaner();
+            configureTeamCleaner(structuredSelection);
+        }
+
+        @Override
+        protected void createRefactorMenu(IMenuManager manager, Object selected) {
+            /*
+             * Overwritten to do nothing as refactoring actions are provided directly in
+             * #createReorgActions
+             */
+        }
+
+        private void configureAdditionsCleaner() {
+            additionsCleaner.setWhiteListMode(true);
+            additionsCleaner.setMatchingGroup(IWorkbenchActionConstants.MB_ADDITIONS);
+
+            additionsCleaner.addFilteredPrefix(TEAM_MENU);
+            additionsCleaner.addFilteredPrefix(COMPARE_WITH_MENU);
+            additionsCleaner.addFilteredPrefix(REPLACE_WITH_MENU);
+        }
+
+        private void configureTeamCleaner(IStructuredSelection structuredSelection) {
+            teamCleaner.setWhiteListMode(true);
+            teamCleaner.clearFilteredPrefixes();
+
+            boolean advancedTeamFunctionsEnabled = IpsPlugin.getDefault().getIpsPreferences()
+                    .areAvancedTeamFunctionsForProductDefExplorerEnabled();
+            if (advancedTeamFunctionsEnabled || config.representsProject(structuredSelection.getFirstElement())) {
+                teamCleaner.addFilteredPrefix(CVS_GROUP_1);
+                teamCleaner.addFilteredPrefix(CVS_SYNC);
+                teamCleaner.addFilteredPrefix(CVS_COMMIT);
+                teamCleaner.addFilteredPrefix(CVS_UPDATE);
+
+                teamCleaner.addFilteredPrefix(CVS_GROUP_2);
+                teamCleaner.addFilteredPrefix(CVS_TAG);
+                teamCleaner.addFilteredPrefix(CVS_BRANCH);
+                teamCleaner.addFilteredPrefix(CVS_SWITCH_BRANCH);
+            }
+
+            teamCleaner.addFilteredPrefix(CVS_SHOW_RESOURCE_HISTORY);
+
+            teamCleaner.addFilteredPrefix(CVS_GROUP_3);
+            teamCleaner.addFilteredPrefix(CVS_RESTORE_FROM_REPOSITORY);
+        }
+
+    }
+
 }

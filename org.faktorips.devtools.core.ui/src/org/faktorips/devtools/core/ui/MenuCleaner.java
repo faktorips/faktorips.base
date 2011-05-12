@@ -17,11 +17,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.jdt.ui.IContextMenuConstants;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.Separator;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -33,13 +32,17 @@ import org.faktorips.util.ArgumentCheck;
  * <li>Filter out all items belonging to certain menu groups (e.g. "additions")
  * </ol>
  * <p>
+ * It's also possible to set a matching group. If a matching group is set, filtering rules are only
+ * applied within this matching group. This for example enables clients to filter out only specific
+ * entries from the "additions" menu group.
+ * <p>
  * <strong>Important:</strong> The listener has to be added to the menu manager AFTER the menu
  * manager has been registered with the platform.
  * 
  * @author stoll
  * @author Alexander Weickmann
  */
-public class MenuCleaner implements IMenuListener {
+public final class MenuCleaner implements IMenuListener {
 
     /** All items matching at least one of the prefixes contained in this set will be filtered out. */
     private final Set<String> filteredPrefixes = new HashSet<String>();
@@ -54,26 +57,26 @@ public class MenuCleaner implements IMenuListener {
     private boolean whiteListMode;
 
     /**
-     * Creates a menu cleaner that filters out the "additions" menu group. This method does create
-     * the additions group if it does not already exists to get the cleaner working correctly. This
-     * method does also register the menu cleaner as menu listener. You have to call this method
-     * after you have registered the menu manaer in eclipse.
+     * ID of the menu group to which filter is applied or null if filtering shall be applied to the
+     * menu as a whole.
+     */
+    private String matchingGroup;
+
+    /**
+     * Creates a menu cleaner that filters out the "additions" menu group.
+     * <p>
+     * <strong>Important:</strong> This only works correctly if the "additions" menu group really
+     * exists in the given {@link IMenuManager}. Clients have to ensure that it does.
+     * <p>
+     * This method must be called AFTER the menu manager was registered with the platform.
      * 
-     * @return the created menu cleaner
+     * @param menuManager The {@link IMenuManager} from which to remove the "additions" menu group
      */
     public static MenuCleaner addAdditionsCleaner(IMenuManager menuManager) {
-        boolean foundAdditions = false;
-        for (IContributionItem item : menuManager.getItems()) {
-            if (IContextMenuConstants.GROUP_ADDITIONS.equals(item.getId())) {
-                foundAdditions = true;
-            }
-        }
-        if (!foundAdditions) {
-            menuManager.add(new Separator(IContextMenuConstants.GROUP_ADDITIONS));
-        }
         MenuCleaner additionsCleaner = new MenuCleaner();
-        additionsCleaner.addFilteredMenuGroup(IContextMenuConstants.GROUP_ADDITIONS);
+        additionsCleaner.addFilteredMenuGroup(IWorkbenchActionConstants.MB_ADDITIONS);
         menuManager.addMenuListener(additionsCleaner);
+
         return additionsCleaner;
     }
 
@@ -82,7 +85,7 @@ public class MenuCleaner implements IMenuListener {
      * long as none are added via {@link #addFilteredPrefix(String)} or
      * {@link #addFilteredMenuGroup(String)}.
      */
-    MenuCleaner() {
+    public MenuCleaner() {
         // Nothing to do
     }
 
@@ -173,30 +176,75 @@ public class MenuCleaner implements IMenuListener {
         return !whiteListMode;
     }
 
+    /**
+     * Configures this menu cleaner to only filter within the provided matching group.
+     * 
+     * @param matchingGroup The group within to apply filtering or null to apply filtering to the
+     *            menu as a whole
+     */
+    public void setMatchingGroup(String matchingGroup) {
+        this.matchingGroup = matchingGroup;
+    }
+
+    /**
+     * Returns the group to which filtering is applied or null if filtering is applied to the whole
+     * menu.
+     */
+    public String getMatchingGroup() {
+        return matchingGroup;
+    }
+
+    /**
+     * Clears the set of filtered menu groups.
+     */
+    public void clearFilteredMenuGroups() {
+        filteredMenuGroups.clear();
+    }
+
+    /**
+     * Clears the set of filtered prefixes.
+     */
+    public void clearFilteredPrefixes() {
+        filteredPrefixes.clear();
+    }
+
     @Override
     public void menuAboutToShow(IMenuManager manager) {
         filterItems(manager);
     }
 
     private void filterItems(IMenuManager menuManager) {
+        boolean inMatchingGroup = matchingGroup == null;
         boolean inFilteredGroup = false;
         for (IContributionItem item : menuManager.getItems()) {
             if (item.getId() == null) {
                 continue;
             }
             if (item.isGroupMarker()) {
+                inMatchingGroup = isMatchingGroupId(item.getId());
                 inFilteredGroup = isFilteredMenuGroupId(item.getId());
             }
-            if (isBlackListMode()) {
-                if (inFilteredGroup || isFilteredPrefixId(item.getId())) {
-                    filterItem(item);
-                }
-            } else {
-                if (!inFilteredGroup && !isFilteredPrefixId(item.getId())) {
-                    filterItem(item);
-                }
+            if (!inMatchingGroup && matchingGroup != null) {
+                continue;
+            }
+            filterItem(item, inFilteredGroup);
+        }
+    }
+
+    private void filterItem(IContributionItem item, boolean inFilteredGroup) {
+        if (isBlackListMode()) {
+            if (inFilteredGroup || isFilteredPrefixId(item.getId())) {
+                item.setVisible(false);
+            }
+        } else {
+            if (!isMatchingGroupId(item.getId()) && !inFilteredGroup && !isFilteredPrefixId(item.getId())) {
+                item.setVisible(false);
             }
         }
+    }
+
+    private boolean isMatchingGroupId(String id) {
+        return id.equals(matchingGroup);
     }
 
     private boolean isFilteredMenuGroupId(String id) {
@@ -210,10 +258,6 @@ public class MenuCleaner implements IMenuListener {
             }
         }
         return false;
-    }
-
-    private void filterItem(IContributionItem item) {
-        item.setVisible(false);
     }
 
 }
