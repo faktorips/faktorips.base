@@ -51,7 +51,6 @@ import org.faktorips.util.message.MessageList;
 
 public class NewPcTypeAssociationWizard extends Wizard implements ContentsChangeListener {
 
-    private static final ArrayList<IAssociation> EMPTY_ASSOCIATION_ARRAY_LIST = new ArrayList<IAssociation>(0);
     final static int NEW_INVERSE_ASSOCIATION = 0;
     final static int USE_EXISTING_INVERSE_ASSOCIATION = 1;
     final static int NONE_INVERSE_ASSOCIATION = 2;
@@ -181,6 +180,9 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
 
     @Override
     public void contentsChanged(ContentChangeEvent event) {
+        if (getContainer() == null) {
+            return;
+        }
         IWizardPage currentPage = getContainer().getCurrentPage();
         IProductCmptType productCmptType = findProductCmptType();
         if (!(event.isAffected(association) || event.isAffected(inverseAssociation) || productCmptType == null ? true
