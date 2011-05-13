@@ -20,6 +20,7 @@ import java.util.Set;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.faktorips.util.ArgumentCheck;
 
@@ -66,13 +67,32 @@ public final class MenuCleaner implements IMenuListener {
      * Creates a menu cleaner that filters out the "additions" menu group.
      * <p>
      * <strong>Important:</strong> This only works correctly if the "additions" menu group really
-     * exists in the given {@link IMenuManager}. Clients have to ensure that it does.
+     * exists in the given {@link IMenuManager}. If
+     * <ul>
+     * <li>{@link IMenuManager#getRemoveAllWhenShown()} returns false and the menu group does not
+     * exist, it will be automatically added by this operation
+     * <li>{@link IMenuManager#getRemoveAllWhenShown()} returns true, clients have to care that the
+     * "additions" menu group is always present
+     * </ul>
      * <p>
      * This method must be called AFTER the menu manager was registered with the platform.
      * 
      * @param menuManager The {@link IMenuManager} from which to remove the "additions" menu group
      */
     public static MenuCleaner addAdditionsCleaner(IMenuManager menuManager) {
+        if (!menuManager.getRemoveAllWhenShown()) {
+            boolean foundAdditionsGroup = false;
+            for (IContributionItem item : menuManager.getItems()) {
+                if (IWorkbenchActionConstants.MB_ADDITIONS.equals(item.getId())) {
+                    foundAdditionsGroup = true;
+                    break;
+                }
+            }
+            if (!foundAdditionsGroup) {
+                menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+            }
+        }
+
         MenuCleaner additionsCleaner = new MenuCleaner();
         additionsCleaner.addFilteredMenuGroup(IWorkbenchActionConstants.MB_ADDITIONS);
         menuManager.addMenuListener(additionsCleaner);

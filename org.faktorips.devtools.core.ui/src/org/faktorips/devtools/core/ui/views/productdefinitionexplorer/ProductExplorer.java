@@ -195,21 +195,43 @@ public class ProductExplorer extends ModelExplorer {
     protected class ProductMenuBuilder extends ModelExplorerContextMenuBuilder {
 
         // @formatter:off
-        private static final String TEAM_MENU                       = "team.main"; //$NON-NLS-1$
-        private static final String COMPARE_WITH_MENU               = "compareWithMenu"; //$NON-NLS-1$
-        private static final String REPLACE_WITH_MENU               = "replaceWithMenu"; //$NON-NLS-1$
+        private static final String TEAM_MENU                           = "team.main"; //$NON-NLS-1$
+        private static final String COMPARE_WITH_MENU                   = "compareWithMenu"; //$NON-NLS-1$
+        private static final String REPLACE_WITH_MENU                   = "replaceWithMenu"; //$NON-NLS-1$
         
-        private static final String CVS_SYNC                        = "org.eclipse.team.cvs.ui.sync"; //$NON-NLS-1$
-        private static final String CVS_COMMIT                      = "org.eclipse.team.ccvs.ui.commit"; //$NON-NLS-1$
-        private static final String CVS_UPDATE                      = "org.eclipse.team.ccvs.ui.update"; //$NON-NLS-1$
-        private static final String CVS_GROUP_1                     = "group1"; //$NON-NLS-1$
-        private static final String CVS_GROUP_2                     = "group2"; //$NON-NLS-1$
-        private static final String CVS_GROUP_3                     = "group3"; //$NON-NLS-1$
-        private static final String CVS_TAG                         = "org.eclipse.team.cvs.ui.tag"; //$NON-NLS-1$
-        private static final String CVS_BRANCH                      = "org.eclipse.team.cvs.ui.branch"; //$NON-NLS-1$
-        private static final String CVS_SWITCH_BRANCH               = "org.eclipse.team.cvs.ui.updateSwitch"; //$NON-NLS-1$
-        private static final String CVS_SHOW_RESOURCE_HISTORY       = "org.eclipse.team.cvs.ui.showHistory"; //$NON-NLS-1$
-        private static final String CVS_RESTORE_FROM_REPOSITORY     = "org.eclipse.team.ccvs.ui.restoreFromRepository"; //$NON-NLS-1$
+        private static final String TEAM_GROUP_1                        = "group1"; //$NON-NLS-1$
+        private static final String TEAM_GROUP_2                        = "group2"; //$NON-NLS-1$
+        private static final String TEAM_GROUP_3                        = "group3"; //$NON-NLS-1$
+        private static final String TEAM_GROUP_4                        = "group4"; //$NON-NLS-1$
+        private static final String TEAM_GROUP_6                        = "group6"; //$NON-NLS-1$
+        
+        private static final String CVS_SYNC                            = "org.eclipse.team.cvs.ui.sync"; //$NON-NLS-1$
+        private static final String CVS_COMMIT                          = "org.eclipse.team.ccvs.ui.commit"; //$NON-NLS-1$
+        private static final String CVS_UPDATE                          = "org.eclipse.team.ccvs.ui.update"; //$NON-NLS-1$
+        private static final String CVS_TAG                             = "org.eclipse.team.cvs.ui.tag"; //$NON-NLS-1$
+        private static final String CVS_BRANCH                          = "org.eclipse.team.cvs.ui.branch"; //$NON-NLS-1$
+        private static final String CVS_SWITCH_BRANCH                   = "org.eclipse.team.cvs.ui.updateSwitch"; //$NON-NLS-1$
+        private static final String CVS_SHOW_RESOURCE_HISTORY           = "org.eclipse.team.cvs.ui.showHistory"; //$NON-NLS-1$
+        private static final String CVS_RESTORE_FROM_REPOSITORY         = "org.eclipse.team.ccvs.ui.restoreFromRepository"; //$NON-NLS-1$
+        
+        private static final String SUBVERSIVE_SYNC                     = "org.eclipse.team.svn.ui.action.local.SynchronizeAction"; //$NON-NLS-1$
+        private static final String SUBVERSIVE_COMMIT                   = "org.eclipse.team.svn.ui.action.local.CommitAction"; //$NON-NLS-1$
+        private static final String SUBVERSIVE_UPDATE                   = "org.eclipse.team.svn.ui.action.local.UpdateAction"; //$NON-NLS-1$
+        private static final String SUBVERSIVE_UPDATE_TO_REVISION       = "org.eclipse.team.svn.ui.action.local.UpdateToRevisionAction"; //$NON-NLS-1$
+        private static final String SUBVERSIVE_REVERT                   = "org.eclipse.team.svn.ui.action.local.RevertAction"; //$NON-NLS-1$
+        private static final String SUBVERSIVE_TAG                      = "org.eclipse.team.svn.ui.action.local.TagAction"; //$NON-NLS-1$
+        private static final String SUBVERSIVE_BRANCH                   = "org.eclipse.team.svn.ui.action.local.BranchAction"; //$NON-NLS-1$
+        private static final String SUBVERSIVE_SWITCH_BRANCH            = "org.eclipse.team.svn.ui.action.local.SwitchAction"; //$NON-NLS-1$
+        private static final String SUBVERSIVE_SHOW_RESOURCE_HISTORY    = "org.eclipse.team.svn.ui.action.local.ShowHistoryAction"; //$NON-NLS-1$
+        
+        private static final String SUBCLIPSE_SYNC                      = "org.tigris.subversion.subclipse.synchronize"; //$NON-NLS-1$
+        private static final String SUBCLIPSE_COMMIT                    = "org.tigris.subversion.subclipse.ui.commit"; //$NON-NLS-1$
+        private static final String SUBCLIPSE_UPDATE                    = "org.tigris.subversion.subclipse.ui.update"; //$NON-NLS-1$
+        private static final String SUBCLIPSE_UPDATE_TO_REVISION        = "org.tigris.subversion.subclipse.ui.updateDialog"; //$NON-NLS-1$
+        private static final String SUBCLIPSE_REVERT                    = "org.tigris.subversion.subclipse.ui.revert"; //$NON-NLS-1$
+        private static final String SUBCLIPSE_BRANCH_TAG                = "org.tigris.subversion.subclipse.ui.branchtag"; //$NON-NLS-1$
+        private static final String SUBCLIPSE_SWITCH_BRANCH             = "org.tigris.subversion.subclipse.ui.switch"; //$NON-NLS-1$
+        private static final String SUBCLIPSE_SHOW_RESOURCE_HISTORY     = "org.tigris.subversion.subclipse.ui.ShowResourceInHistoryAction"; //$NON-NLS-1$
         // @formatter:on
 
         private final MenuCleaner additionsCleaner;
@@ -230,9 +252,15 @@ public class ProductExplorer extends ModelExplorer {
 
         private void registerTeamCleaner(IMenuManager manager) {
             IMenuManager teamManager = getSubMenuManager(manager, TEAM_MENU);
-            teamManager.addMenuListener(teamCleaner);
-            // Team cleaner isn't added until the menu is shown so we need to call it on ourselves
-            teamCleaner.menuAboutToShow(teamManager);
+            // If the team manager cannot be found there's no point in filtering in the first place
+            if (teamManager != null) {
+                teamManager.addMenuListener(teamCleaner);
+                /*
+                 * Team cleaner isn't added until the menu is shown so we need to call the cleaner
+                 * on ourselves
+                 */
+                teamCleaner.menuAboutToShow(teamManager);
+            }
         }
 
         private IMenuManager getSubMenuManager(IMenuManager menuManager, String subMenuManagerId) {
@@ -285,21 +313,73 @@ public class ProductExplorer extends ModelExplorer {
             boolean advancedTeamFunctionsEnabled = IpsPlugin.getDefault().getIpsPreferences()
                     .areAvancedTeamFunctionsForProductDefExplorerEnabled();
             if (advancedTeamFunctionsEnabled || config.representsProject(structuredSelection.getFirstElement())) {
-                teamCleaner.addFilteredPrefix(CVS_GROUP_1);
-                teamCleaner.addFilteredPrefix(CVS_SYNC);
-                teamCleaner.addFilteredPrefix(CVS_COMMIT);
-                teamCleaner.addFilteredPrefix(CVS_UPDATE);
-
-                teamCleaner.addFilteredPrefix(CVS_GROUP_2);
-                teamCleaner.addFilteredPrefix(CVS_TAG);
-                teamCleaner.addFilteredPrefix(CVS_BRANCH);
-                teamCleaner.addFilteredPrefix(CVS_SWITCH_BRANCH);
+                configureAdvancedCvsTeamActions();
+                configureAdvancedSubversiveTeamActions();
+                configureAdvancedSubclipseTeamActions();
             }
+            configureDefaultCvsTeamActions();
+            configureDefaultSubversiveTeamActions();
+            configureDefaultSubclipseTeamActions();
+        }
 
+        private void configureAdvancedCvsTeamActions() {
+            teamCleaner.addFilteredPrefix(TEAM_GROUP_1);
+            teamCleaner.addFilteredPrefix(CVS_SYNC);
+            teamCleaner.addFilteredPrefix(CVS_COMMIT);
+            teamCleaner.addFilteredPrefix(CVS_UPDATE);
+
+            teamCleaner.addFilteredPrefix(TEAM_GROUP_2);
+            teamCleaner.addFilteredPrefix(CVS_TAG);
+            teamCleaner.addFilteredPrefix(CVS_BRANCH);
+            teamCleaner.addFilteredPrefix(CVS_SWITCH_BRANCH);
+        }
+
+        private void configureAdvancedSubversiveTeamActions() {
+            teamCleaner.addFilteredPrefix(TEAM_GROUP_1);
+            teamCleaner.addFilteredPrefix(SUBVERSIVE_SYNC);
+            teamCleaner.addFilteredPrefix(SUBVERSIVE_COMMIT);
+            teamCleaner.addFilteredPrefix(SUBVERSIVE_UPDATE);
+            teamCleaner.addFilteredPrefix(SUBVERSIVE_UPDATE_TO_REVISION);
+
+            teamCleaner.addFilteredPrefix(TEAM_GROUP_3);
+            teamCleaner.addFilteredPrefix(SUBVERSIVE_TAG);
+            teamCleaner.addFilteredPrefix(SUBVERSIVE_BRANCH);
+            teamCleaner.addFilteredPrefix(SUBVERSIVE_SWITCH_BRANCH);
+        }
+
+        private void configureAdvancedSubclipseTeamActions() {
+            teamCleaner.addFilteredPrefix(TEAM_GROUP_1);
+            teamCleaner.addFilteredPrefix(SUBCLIPSE_SYNC);
+            teamCleaner.addFilteredPrefix(SUBCLIPSE_COMMIT);
+            teamCleaner.addFilteredPrefix(SUBCLIPSE_UPDATE);
+            teamCleaner.addFilteredPrefix(SUBCLIPSE_UPDATE_TO_REVISION);
+
+            teamCleaner.addFilteredPrefix(TEAM_GROUP_2);
+            teamCleaner.addFilteredPrefix(SUBCLIPSE_BRANCH_TAG);
+            teamCleaner.addFilteredPrefix(SUBCLIPSE_SWITCH_BRANCH);
+        }
+
+        private void configureDefaultCvsTeamActions() {
             teamCleaner.addFilteredPrefix(CVS_SHOW_RESOURCE_HISTORY);
 
-            teamCleaner.addFilteredPrefix(CVS_GROUP_3);
+            teamCleaner.addFilteredPrefix(TEAM_GROUP_3);
             teamCleaner.addFilteredPrefix(CVS_RESTORE_FROM_REPOSITORY);
+        }
+
+        private void configureDefaultSubversiveTeamActions() {
+            teamCleaner.addFilteredPrefix(TEAM_GROUP_2);
+            teamCleaner.addFilteredPrefix(SUBVERSIVE_REVERT);
+
+            teamCleaner.addFilteredPrefix(TEAM_GROUP_4);
+            teamCleaner.addFilteredPrefix(SUBVERSIVE_SHOW_RESOURCE_HISTORY);
+        }
+
+        private void configureDefaultSubclipseTeamActions() {
+            teamCleaner.addFilteredPrefix(TEAM_GROUP_4);
+            teamCleaner.addFilteredPrefix(SUBCLIPSE_SHOW_RESOURCE_HISTORY);
+
+            teamCleaner.addFilteredPrefix(TEAM_GROUP_6);
+            teamCleaner.addFilteredPrefix(SUBCLIPSE_REVERT);
         }
 
     }

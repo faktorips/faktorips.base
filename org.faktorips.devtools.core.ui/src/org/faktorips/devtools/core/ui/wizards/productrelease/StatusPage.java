@@ -17,15 +17,23 @@ import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.apache.commons.lang.SystemUtils;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.ISharedImages;
@@ -41,9 +49,30 @@ public class StatusPage extends WizardPage implements Observer {
 
     private TableViewer viewer;
 
+    private static class CopyAction extends Action {
+        private MessageContentProvider contentProvider;
+        private Clipboard clipboard;
+
+        public CopyAction(Clipboard clipboard, MessageContentProvider contentProvider) {
+            super(Messages.StatusPage_copyToClipboardActionText);
+            this.clipboard = clipboard;
+            this.contentProvider = contentProvider;
+        }
+
+        @Override
+        public void run() {
+            Object[] elements = contentProvider.getElements(null);
+            StringBuffer sb = new StringBuffer();
+            for (Object msg : elements) {
+                sb.append(msg).append(SystemUtils.LINE_SEPARATOR);
+            }
+            clipboard.setContents(new String[] { sb.toString() }, new Transfer[] { TextTransfer.getInstance() });
+        }
+    }
+
     protected StatusPage() {
         super(Messages.ReleaserBuilderWizardSelectionPage_title, Messages.ReleaserBuilderWizardSelectionPage_title,
-                IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/DeploymentWizard.png")); //$NON-NLS-1$
+                IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/DeploymentWizard.png"));
     }
 
     @Override
@@ -60,7 +89,18 @@ public class StatusPage extends WizardPage implements Observer {
         viewer.getControl().setLayoutData(data2);
         viewer.setInput(new MessageList());
 
+        initPopupMenu(viewer);
+
         setControl(pageControl);
+    }
+
+    private void initPopupMenu(TableViewer tableViewer) {
+        MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
+        menuMgr.setRemoveAllWhenShown(false);
+        Control control = tableViewer.getControl();
+        menuMgr.add(new CopyAction(new Clipboard(control.getDisplay()), messageContentProvider));
+        Menu menu = menuMgr.createContextMenu(control);
+        control.setMenu(menu);
     }
 
     public void setEnable(boolean state) {
