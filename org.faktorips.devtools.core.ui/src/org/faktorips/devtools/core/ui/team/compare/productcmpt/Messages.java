@@ -54,4 +54,8 @@ public class Messages extends NLS {
 
     public static String ProductCmptCompareItem_VRule_inactive;
 
+    public static String ProductCmptCompareItem_RuleLabel;
+
+    public static String ProductCmptCompareItem_TableContentsLabel;
+
 }
