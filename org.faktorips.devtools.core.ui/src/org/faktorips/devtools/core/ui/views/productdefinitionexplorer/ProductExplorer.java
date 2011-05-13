@@ -230,9 +230,15 @@ public class ProductExplorer extends ModelExplorer {
 
         private void registerTeamCleaner(IMenuManager manager) {
             IMenuManager teamManager = getSubMenuManager(manager, TEAM_MENU);
-            teamManager.addMenuListener(teamCleaner);
-            // Team cleaner isn't added until the menu is shown so we need to call it on ourselves
-            teamCleaner.menuAboutToShow(teamManager);
+            // If the team manager cannot be found there's no point in filtering in the first place
+            if (teamManager != null) {
+                teamManager.addMenuListener(teamCleaner);
+                /*
+                 * Team cleaner isn't added until the menu is shown so we need to call the cleaner
+                 * on ourselves
+                 */
+                teamCleaner.menuAboutToShow(teamManager);
+            }
         }
 
         private IMenuManager getSubMenuManager(IMenuManager menuManager, String subMenuManagerId) {
