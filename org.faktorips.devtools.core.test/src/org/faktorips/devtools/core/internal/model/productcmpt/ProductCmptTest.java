@@ -44,7 +44,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Element;
 
@@ -104,8 +103,6 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertNotNull(list.getMessageByCode(IProductCmpt.MSGCODE_ABSTRACT_PRODUCT_CMPT_TYPE));
     }
 
-    @Ignore
-    // FIXME TODO XXX StackOverflow im AOK-Plugin
     @Test
     public void testValidate_InconsitencyInTypeHierarch() throws Exception {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
