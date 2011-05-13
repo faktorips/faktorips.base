@@ -28,11 +28,6 @@ public interface IJavaNamingConvention {
     public String getPublishedInterfaceName(String name);
 
     /**
-     * Returns whether the given unqualified concept name actually is a published interface name.
-     */
-    public boolean isPublishedInterfaceName(String name);
-
-    /**
      * Returns the unqualified name of the implementation class for the given concept name.
      */
     public String getImplementationClassName(String name);
@@ -40,8 +35,6 @@ public interface IJavaNamingConvention {
     /**
      * Returns the unqualified name of the implementation class that is associated to the given
      * published interface name.
-     * 
-     * @throws IllegalArgumentException If the provided name is not a published interface name
      */
     public String getImplementationClassNameForPublishedInterfaceName(String publishedInterfaceName);
 

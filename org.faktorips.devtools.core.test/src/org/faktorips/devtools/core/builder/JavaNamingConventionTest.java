@@ -14,8 +14,6 @@
 package org.faktorips.devtools.core.builder;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Modifier;
 
@@ -39,14 +37,6 @@ public class JavaNamingConventionTest {
     }
 
     @Test
-    public void testIsPublishedInterfaceName() {
-        assertTrue(javaNamingConvention.isPublishedInterfaceName("IConceptName"));
-        assertFalse(javaNamingConvention.isPublishedInterfaceName("ConceptName"));
-        assertFalse(javaNamingConvention.isPublishedInterfaceName("Insurance"));
-        assertFalse(javaNamingConvention.isPublishedInterfaceName("I"));
-    }
-
-    @Test
     public void testGetImplementationClassName() {
         assertEquals("ConceptName", javaNamingConvention.getImplementationClassName("ConceptName"));
     }
@@ -55,11 +45,6 @@ public class JavaNamingConventionTest {
     public void testGetImplementationClassNameForPublishedInterfaceName() {
         assertEquals("ConceptName",
                 javaNamingConvention.getImplementationClassNameForPublishedInterfaceName("IConceptName"));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testGetImplementationClassNameForPublishedInterfaceNameNoPublishedInterfaceNameGiven() {
-        javaNamingConvention.getImplementationClassNameForPublishedInterfaceName("ConceptName");
     }
 
     @Test
