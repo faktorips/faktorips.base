@@ -138,33 +138,11 @@ public class AbstractModelElement implements IModelElement {
         }
     }
 
-    private void initLabelFromXml(XMLStreamReader parser) {
-        Locale locale = null;
-        String value = null;
-        String pluralValue = null;
-        for (int i = 0; i < parser.getAttributeCount(); i++) {
-            if (parser.getAttributeLocalName(i).equals(IModelElement.LABELS_PROPERTY_LOCALE)) {
-                String localeCode = parser.getAttributeValue(i);
-                locale = StringUtils.isEmpty(localeCode) ? null : new Locale(localeCode);
-            } else if (parser.getAttributeLocalName(i).equals(IModelElement.LABELS_PROPERTY_VALUE)) {
-                value = parser.getAttributeValue(i);
-            } else if (parser.getAttributeLocalName(i).equals(IModelElement.LABELS_PROPERTY_PLURAL_VALUE)) {
-                pluralValue = parser.getAttributeValue(i);
-            }
-        }
+    protected void initLabelFromXml(XMLStreamReader parser) {
+        String localeCode = parser.getAttributeValue(null, IModelElement.LABELS_PROPERTY_LOCALE);
+        Locale locale = StringUtils.isEmpty(localeCode) ? null : new Locale(localeCode);
+        String value = parser.getAttributeValue(null, IModelElement.LABELS_PROPERTY_VALUE);
         labelsByLocale.put(locale, value);
-        initPluralLabel(locale, pluralValue);
-    }
-
-    /**
-     * The default implementation does nothing. This method should be overridden by model elements
-     * that need the plural value.
-     * 
-     * @param locale The locale of the label
-     * @param pluralValue The plural value of the label
-     */
-    protected void initPluralLabel(Locale locale, String pluralValue) {
-        // Empty default implementation
     }
 
     public Set<String> getExtensionPropertyIds() {
