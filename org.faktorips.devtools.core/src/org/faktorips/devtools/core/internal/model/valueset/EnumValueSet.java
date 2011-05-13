@@ -369,7 +369,8 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         } else if (!datatype.isParsable(value) || isSpecialNull(value, datatype)) {
             String msg = NLS
                     .bind(Messages.EnumValueSet_msgValueNotParsable, getNotNullValue(value), datatype.getName());
-            list.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, msg, Message.ERROR, this, PROPERTY_VALUES));
+            list.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, msg, Message.ERROR, getParent(),
+                    IConfigElement.PROPERTY_VALUE_SET));
         }
     }
 
