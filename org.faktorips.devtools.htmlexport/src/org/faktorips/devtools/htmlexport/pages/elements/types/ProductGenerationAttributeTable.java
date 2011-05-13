@@ -307,8 +307,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     private void addFormulaRow(IProductCmptTypeMethod formulaSignature) {
         PageElement[] cells = new PageElement[productCmpt.getNumOfGenerations() + 1];
 
-        String labelValue = formulaSignature.getLabelValue(context.getDescriptionLocale());
-        labelValue = labelValue != null ? labelValue : formulaSignature.getName();
+        String labelValue = context.getLabel(formulaSignature);
 
         cells[0] = new TextPageElement(labelValue);
 
