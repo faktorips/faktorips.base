@@ -450,7 +450,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
                 IProductCmpt product = (IProductCmpt)getIpsElement();
                 sb.append(
                         org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductCmptEditor_productComponent)
-                        .append(QUOTE).append(IpsPlugin.getMultiLanguageSupport().getDefaultCaption(product))
+                        .append(QUOTE).append(IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(product))
                         .append(QUOTE);
             } else if (getIpsElement() instanceof IIpsSrcFile) {
                 IIpsSrcFile srcFile = (IIpsSrcFile)getIpsElement();
