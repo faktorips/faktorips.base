@@ -23,6 +23,7 @@ import org.eclipse.core.resources.IFile;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
@@ -424,27 +425,27 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
             if (getIpsElement() instanceof IProductCmptLink) {
                 IProductCmptLink rel = (IProductCmptLink)getIpsElement();
                 sb.append(Messages.ProductCmptCompareItem_Relation).append(COLON_BLANK).append(QUOTE)
-                        .append(IpsPlugin.getMultiLanguageSupport().getDefaultCaption(rel)).append(QUOTE);
+                        .append(getCaption(rel)).append(QUOTE);
             } else if (getIpsElement() instanceof IAttributeValue) {
                 IAttributeValue attrValue = (IAttributeValue)getIpsElement();
                 sb.append(Messages.ProductCmptCompareItem_Attribute).append(COLON_BLANK).append(QUOTE)
-                        .append(IpsPlugin.getMultiLanguageSupport().getDefaultCaption(attrValue)).append(QUOTE);
+                        .append(getCaption(attrValue)).append(QUOTE);
             } else if (getIpsElement() instanceof IFormula) {
                 IFormula formula = (IFormula)getIpsElement();
                 sb.append(Messages.ProductCmptCompareItem_Formula).append(COLON_BLANK).append(QUOTE)
-                        .append(IpsPlugin.getMultiLanguageSupport().getDefaultCaption(formula)).append(QUOTE);
+                        .append(getCaption(formula)).append(QUOTE);
             } else if (getIpsElement() instanceof ITableContentUsage) {
                 ITableContentUsage tableUsage = (ITableContentUsage)getIpsElement();
                 sb.append(Messages.ProductCmptCompareItem_TableContentsLabel).append(COLON_BLANK).append(QUOTE)
-                        .append(IpsPlugin.getMultiLanguageSupport().getDefaultCaption(tableUsage)).append(QUOTE);
+                        .append(getCaption(tableUsage)).append(QUOTE);
             } else if (getIpsElement() instanceof IValidationRuleConfig) {
                 IValidationRuleConfig vRuleConfig = (IValidationRuleConfig)getIpsElement();
                 sb.append(Messages.ProductCmptCompareItem_RuleLabel).append(COLON_BLANK).append(QUOTE)
-                        .append(IpsPlugin.getMultiLanguageSupport().getDefaultCaption(vRuleConfig)).append(QUOTE);
+                        .append(getCaption(vRuleConfig)).append(QUOTE);
             } else if (getIpsElement() instanceof IIpsObjectGeneration) {
                 IIpsObjectGeneration gen = (IIpsObjectGeneration)getIpsElement();
                 sb.append(changingNamingConventionGenerationString).append(COLON_BLANK).append(QUOTE)
-                        .append(gen.getName()).append(QUOTE);
+                        .append(getCaption(gen)).append(QUOTE);
             } else if (getIpsElement() instanceof IProductCmpt) {
                 IProductCmpt product = (IProductCmpt)getIpsElement();
                 sb.append(
@@ -463,6 +464,10 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
             }
         }
         return sb.toString();
+    }
+
+    private String getCaption(IIpsObjectPart part) {
+        return IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(part);
     }
 
     /**
