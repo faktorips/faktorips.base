@@ -18,7 +18,6 @@ import java.lang.reflect.Modifier;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
-import org.faktorips.util.ArgumentCheck;
 
 /**
  * @author Jan Ortmann
@@ -31,30 +30,12 @@ public class JavaNamingConvention implements IJavaNamingConvention {
     }
 
     @Override
-    public boolean isPublishedInterfaceName(String name) {
-        char[] characters = name.toCharArray();
-        char firstChar = characters[0];
-        /*
-         * First character must be an I while the second character must exist and must not be lower
-         * case.
-         */
-        if (firstChar != 'I') {
-            return false;
-        }
-        if (characters.length < 2) {
-            return false;
-        }
-        return !(Character.isLowerCase(characters[1]));
-    }
-
-    @Override
     public String getImplementationClassName(String name) {
         return name;
     }
 
     @Override
     public String getImplementationClassNameForPublishedInterfaceName(String publishedInterfaceName) {
-        ArgumentCheck.isTrue(isPublishedInterfaceName(publishedInterfaceName));
         return getImplementationClassName(publishedInterfaceName.substring(1));
     }
 

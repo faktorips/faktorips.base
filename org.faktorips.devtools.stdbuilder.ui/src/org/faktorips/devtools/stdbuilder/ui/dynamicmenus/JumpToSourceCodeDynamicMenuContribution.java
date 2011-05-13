@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -190,12 +191,20 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     private List<IType> sortTypes(Set<IType> javaTypes) {
         List<IType> sortedTypes = new ArrayList<IType>(javaTypes.size());
         for (IType type : javaTypes) {
-            if (isInterfaceType(type)) {
-                sortedTypes.add(type);
-                IType implementation = getImplementationForInterface(javaTypes, type);
-                if (implementation != null) {
-                    sortedTypes.add(implementation);
+            try {
+                if (type.isInterface()) {
+                    sortedTypes.add(type);
+                    IType implementation = getImplementationForInterface(javaTypes, type);
+                    if (implementation != null) {
+                        sortedTypes.add(implementation);
+                    }
                 }
+            } catch (JavaModelException e) {
+                /*
+                 * Continue with the remaining types, the type for which the exception was thrown
+                 * will be added to the end of the menu. In addition we log the error.
+                 */
+                IpsPlugin.log(e);
             }
         }
         // Add types that could not be sorted by interface
@@ -207,17 +216,6 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
             }
         }
         return sortedTypes;
-    }
-
-    /**
-     * Checks whether the given Java type is an interface type.
-     * <p>
-     * In contrast to {@link IType#exists()} this method uses the {@link JavaNamingConvention} and
-     * the type's name for the check. This way the type does not need to be accessed which should
-     * slightly increase performance and avoid certain exceptions.
-     */
-    private boolean isInterfaceType(IType javaType) {
-        return getJavaNamingConvention().isPublishedInterfaceName(javaType.getElementName());
     }
 
     private IType getImplementationForInterface(Set<IType> types, IType interfaceType) {
