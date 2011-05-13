@@ -27,6 +27,7 @@ import java.util.Set;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,6 +38,15 @@ public class MenuCleanerTest {
     @Before
     public void setUp() {
         cleaner = new MenuCleaner();
+    }
+
+    @Test
+    public void testAddAdditionsCleanerNoAdditionsGroup() {
+        IMenuManager menuManager = new MenuManager();
+
+        MenuCleaner.addAdditionsCleaner(menuManager);
+
+        assertEquals(IWorkbenchActionConstants.MB_ADDITIONS, menuManager.getItems()[0].getId());
     }
 
     @Test
