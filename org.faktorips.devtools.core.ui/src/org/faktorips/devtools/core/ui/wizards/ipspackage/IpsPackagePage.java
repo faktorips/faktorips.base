@@ -224,16 +224,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
      * as given by getPdPackageFragment().
      */
     public String getIpsPackageName() {
-        String parentPackageName = getParentPackageFragment().getName();
-        String packageName = packageNameField.getText();
-        if (parentPackageName.length() == packageName.length()) {
-            return ""; //$NON-NLS-1$
-        }
-        if (parentPackageName.length() > 0) {
-            return packageName.substring(parentPackageName.length() + 1);
-        } else {
-            return packageName;
-        }
+        return packageNameField.getText();
     }
 
     public String getIpsPackagePath() {
@@ -246,23 +237,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
      * fragment is returned.
      */
     public IIpsPackageFragment getParentPackageFragment() {
-        IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot();
-        if (root == null) {
-            return null;
-        }
-        String packageName = packageNameField.getText();
-        IIpsPackageFragment pack = root.getIpsPackageFragment(packageName);
-        if (pack != null && pack.exists()) {
-            return pack;
-        }
-        while (packageName.lastIndexOf('.') > 0) {
-            packageName = packageName.substring(0, packageName.lastIndexOf('.'));
-            pack = root.getIpsPackageFragment(packageName);
-            if (pack != null && pack.exists()) {
-                return pack;
-            }
-        }
-        return root.getDefaultIpsPackageFragment();
+        return getSelectedIIpsPackageFragment();
     }
 
     public String getSourceFolder() {
@@ -524,7 +499,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
                     String path = iIpsPackageFragment.toString();
                     int index = path.lastIndexOf("/"); //$NON-NLS-1$
                     String packagePath = path.substring(index + 1);
-                    packagePathTextfield.setValue(packagePath, false);
+                    packagePathTextfield.setValue(packagePath, true);
 
                 }
             }
