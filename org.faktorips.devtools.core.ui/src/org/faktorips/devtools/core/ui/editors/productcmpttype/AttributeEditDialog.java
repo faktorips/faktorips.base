@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpttype;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
@@ -42,6 +43,7 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl;
@@ -131,6 +133,14 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_modifierLabel);
         Combo modifierCombo = uiToolkit.createCombo(workArea);
         bindingContext.bindContent(modifierCombo, attribute, IAttribute.PROPERTY_MODIFIER, Modifier.class);
+
+        uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_changeOverTimeLabel);
+        Checkbox changeOverTimeCheckbox = uiToolkit.createCheckbox(
+                workArea,
+                NLS.bind(Messages.AttributeEditDialog_changeOverTimeCheckbox, IpsPlugin.getDefault().getIpsPreferences()
+                        .getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
+        bindingContext.bindContent(changeOverTimeCheckbox, attribute,
+                IProductCmptTypeAttribute.PROPERTY_CHANGING_OVER_TIME);
 
         uiToolkit.createFormLabel(workArea, Messages.AttributeEditDialog_defaultvalueLabel);
         defaultEditFieldPlaceholder = uiToolkit.createComposite(workArea);
