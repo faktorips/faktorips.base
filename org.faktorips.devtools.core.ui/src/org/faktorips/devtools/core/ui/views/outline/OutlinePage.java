@@ -52,7 +52,6 @@ public class OutlinePage extends ContentOutlinePage implements IIpsSrcFilesChang
         if (event.getChangedIpsSrcFiles().contains(ipsSrcFile)) {
             getTreeViewer().refresh();
         }
-
     }
 
     private class OutlineContentProvider extends WorkbenchContentProvider {
