@@ -243,7 +243,7 @@ public class MessageCueController {
             String dataIdentifier = ANNOTATION_HANDLER + toString();
             Control c = fControl.getParent();
             while (c != null) {
-                MessageCuePainter cueHandler = (MessageCuePainter)c.getData(ANNOTATION_HANDLER + toString());
+                MessageCuePainter cueHandler = (MessageCuePainter)c.getData(dataIdentifier);
                 if (cueHandler != null) {
                     c.setData(dataIdentifier, null);
                     c.removePaintListener(cueHandler);
