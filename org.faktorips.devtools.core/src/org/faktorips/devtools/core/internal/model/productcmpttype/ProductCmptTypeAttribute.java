@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.util.ArgumentCheck;
@@ -44,6 +44,8 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
 
     private IValueSet valueSet;
 
+    private boolean changingOverTime = true;
+
     public ProductCmptTypeAttribute(IProductCmptType parent, String id) {
         super(parent, id);
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
@@ -52,6 +54,18 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
+    }
+
+    @Override
+    protected void initPropertiesFromXml(Element element, String id) {
+        super.initPropertiesFromXml(element, id);
+        changingOverTime = Boolean.parseBoolean(element.getAttribute(PROPERTY_CHANGING_OVER_TIME));
+    }
+
+    @Override
+    protected void propertiesToXml(Element element) {
+        super.propertiesToXml(element);
+        element.setAttribute(PROPERTY_CHANGING_OVER_TIME, String.valueOf(changingOverTime));
     }
 
     @Override
@@ -70,18 +84,13 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     }
 
     @Override
-    public ProdDefPropertyType getProdDefPropertyType() {
-        return ProdDefPropertyType.VALUE;
+    public ProductCmptPropertyType getProdDefPropertyType() {
+        return ProductCmptPropertyType.VALUE;
     }
 
     @Override
     public boolean isDerived() {
         return false;
-    }
-
-    @Override
-    public String getPropertyDatatype() {
-        return getDatatype();
     }
 
     public ValueDatatype getValueDatatype() {
@@ -129,6 +138,16 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         IValueSet oldset = valueSet;
         valueSet = source.copy(this, getNextPartId());
         valueChanged(oldset, valueSet);
+    }
+
+    @Override
+    public void setChangingOverTime(boolean changesOverTime) {
+        this.changingOverTime = changesOverTime;
+    }
+
+    @Override
+    public boolean isChangingOverTime() {
+        return changingOverTime;
     }
 
     @Override

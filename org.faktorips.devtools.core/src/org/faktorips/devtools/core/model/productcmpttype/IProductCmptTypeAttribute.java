@@ -17,7 +17,9 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
@@ -29,7 +31,9 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
  * 
  * @author Jan Ortmann
  */
-public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, IProdDefProperty {
+public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, IProductCmptProperty {
+
+    public final static String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
 
     /**
      * Returns the product component type the attribute belongs to.
@@ -54,4 +58,21 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      */
     public void setValueSetCopy(IValueSet source);
 
+    /**
+     * Configures this attribute to change or be constant over time. If <code>true</code> every
+     * {@link IProductCmptGeneration} may specify a different value for this attribute. If
+     * <code>false</code> the value is the same for all generations.
+     * 
+     * @param changesOverTime whether or not this attribute should change over time
+     */
+    public void setChangingOverTime(boolean changesOverTime);
+
+    /**
+     * Returns whether or not this attribute should changes over time.
+     * 
+     * @return <code>true</code> if every {@link IProductCmptGeneration} may specify a different
+     *         value for this attribute, <code>false</code> if the value is the same for all
+     *         generations.
+     */
+    public boolean isChangingOverTime();
 }
