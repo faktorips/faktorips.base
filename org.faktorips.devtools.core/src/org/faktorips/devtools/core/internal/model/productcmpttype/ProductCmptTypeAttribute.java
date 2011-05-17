@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -59,7 +60,14 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        changingOverTime = Boolean.parseBoolean(element.getAttribute(PROPERTY_CHANGING_OVER_TIME));
+        // TODO CD 17.5.2011 only used to be compatible for not migrated project - could be removed
+        // when migration exists
+        String changingOverTimeAttribute = element.getAttribute(PROPERTY_CHANGING_OVER_TIME);
+        if (StringUtils.isEmpty(changingOverTimeAttribute)) {
+            changingOverTime = true;
+        } else {
+            changingOverTime = Boolean.parseBoolean(changingOverTimeAttribute);
+        }
     }
 
     @Override
@@ -142,7 +150,9 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
 
     @Override
     public void setChangingOverTime(boolean changesOverTime) {
+        boolean oldValue = this.changingOverTime;
         this.changingOverTime = changesOverTime;
+        valueChanged(oldValue, changesOverTime);
     }
 
     @Override
