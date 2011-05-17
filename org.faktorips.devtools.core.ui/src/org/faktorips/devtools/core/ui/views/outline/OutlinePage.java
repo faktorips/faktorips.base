@@ -49,7 +49,8 @@ public class OutlinePage extends ContentOutlinePage implements IIpsSrcFilesChang
 
     @Override
     public void ipsSrcFilesChanged(IpsSrcFilesChangedEvent event) {
-        if (event.getChangedIpsSrcFiles().contains(ipsSrcFile)) {
+        if (getTreeViewer() != null && !getTreeViewer().getTree().isDisposed()
+                && event.getChangedIpsSrcFiles().contains(ipsSrcFile)) {
             getTreeViewer().refresh();
         }
     }
