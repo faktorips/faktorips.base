@@ -22,15 +22,19 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsSrcFilesChangeListener;
+import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
-public class OutlinePage extends ContentOutlinePage {
+public class OutlinePage extends ContentOutlinePage implements IIpsSrcFilesChangeListener {
 
     private final IIpsSrcFile ipsSrcFile;
 
     public OutlinePage(IIpsSrcFile ipsSrcFile) {
         this.ipsSrcFile = ipsSrcFile;
+        IpsPlugin.getDefault().getIpsModel().addIpsSrcFilesChangedListener(this);
     }
 
     @Override
@@ -41,6 +45,14 @@ public class OutlinePage extends ContentOutlinePage {
         treeView.setLabelProvider(new WorkbenchLabelProvider());
         treeView.setInput(ipsSrcFile);
         treeView.expandAll();
+    }
+
+    @Override
+    public void ipsSrcFilesChanged(IpsSrcFilesChangedEvent event) {
+        if (event.getChangedIpsSrcFiles().contains(ipsSrcFile)) {
+            getTreeViewer().refresh();
+        }
+
     }
 
     private class OutlineContentProvider extends WorkbenchContentProvider {
