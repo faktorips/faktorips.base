@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.htmlexport.context.AbstractHtmlExportPluginTest;
 import org.junit.Test;
@@ -71,7 +72,8 @@ public class LanguageSupportTest extends AbstractHtmlExportPluginTest {
         IAttribute attribute = type.newAttribute();
         attribute.setName(name);
 
-        IAttributeValue value = new AttributeValue(productCmpt.newGeneration(), "xxx", attribute.getName(), "yxz");
+        IAttributeValue value = new AttributeValue((IProductCmptGeneration)productCmpt.newGeneration(), "xxx",
+                attribute.getName(), "yxz");
         assertEquals(name, context.getCaption(value));
 
         context.setDescriptionLocale(Locale.GERMAN);

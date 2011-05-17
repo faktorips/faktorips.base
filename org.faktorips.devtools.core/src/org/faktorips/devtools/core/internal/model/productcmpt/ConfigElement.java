@@ -35,9 +35,10 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
-import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -53,18 +54,17 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
     final static String TAG_NAME = "ConfigElement"; //$NON-NLS-1$
 
-    private String pcTypeAttribute = ""; //$NON-NLS-1$
+    private String pcTypeAttribute;
 
     private IValueSet valueSet;
 
     private String value = ""; //$NON-NLS-1$
 
-    public ConfigElement(ProductCmptGeneration parent, String id) {
-        super(parent, id);
-        valueSet = new UnrestrictedValueSet(this, getNextPartId());
+    public ConfigElement(IPropertyValueContainer parent, String id) {
+        this(parent, id, ""); //$NON-NLS-1$
     }
 
-    public ConfigElement(ProductCmptGeneration parent, String id, String pcTypeAttribute) {
+    public ConfigElement(IPropertyValueContainer parent, String id, String pcTypeAttribute) {
         super(parent, id);
         this.pcTypeAttribute = pcTypeAttribute;
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
@@ -86,13 +86,13 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
 
     @Override
-    public IProdDefProperty findProperty(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptProperty findProperty(IIpsProject ipsProject) throws CoreException {
         return findPcTypeAttribute(ipsProject);
     }
 
     @Override
-    public ProdDefPropertyType getPropertyType() {
-        return ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET;
+    public ProductCmptPropertyType getPropertyType() {
+        return ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET;
     }
 
     @Override

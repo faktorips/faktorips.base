@@ -37,7 +37,7 @@ import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -123,7 +123,7 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         assertEquals("a1", ((IDeltaEntryForProperty)entries[0]).getPropertyName());
         assertEquals("a2", ((IDeltaEntryForProperty)entries[1]).getPropertyName());
         assertEquals(DeltaType.MISSING_PROPERTY_VALUE, entries[1].getDeltaType());
-        assertEquals(ProdDefPropertyType.VALUE, ((IDeltaEntryForProperty)entries[1]).getPropertyType());
+        assertEquals(ProductCmptPropertyType.VALUE, ((IDeltaEntryForProperty)entries[1]).getPropertyType());
 
         delta.fix();
         delta = generation.computeDeltaToModel(ipsProject);
@@ -145,7 +145,7 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         assertEquals(DeltaType.MISSING_PROPERTY_VALUE, entries[0].getDeltaType());
         assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, entries[1].getDeltaType());
         assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, entries[2].getDeltaType());
-        assertEquals(ProdDefPropertyType.VALUE, ((IDeltaEntryForProperty)entries[0]).getPropertyType());
+        assertEquals(ProductCmptPropertyType.VALUE, ((IDeltaEntryForProperty)entries[0]).getPropertyType());
 
         delta.fix();
         delta = generation.computeDeltaToModel(ipsProject);
@@ -170,7 +170,7 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         IDeltaEntryForProperty entry = (IDeltaEntryForProperty)delta.getEntries()[0];
         assertEquals("premium", entry.getPropertyName());
         assertEquals(DeltaType.PROPERTY_TYPE_MISMATCH, entry.getDeltaType());
-        assertEquals(ProdDefPropertyType.VALUE, entry.getPropertyType());
+        assertEquals(ProductCmptPropertyType.VALUE, entry.getPropertyType());
 
         delta.fix();
         assertNull(generation.getAttributeValue("premium"));
@@ -205,7 +205,7 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         assertEquals(1, delta.getEntries().length);
         IDeltaEntryForProperty entry = (IDeltaEntryForProperty)delta.getEntries()[0];
         assertEquals(DeltaType.VALUE_SET_MISMATCH, entry.getDeltaType());
-        assertEquals(ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET, entry.getPropertyType());
+        assertEquals(ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET, entry.getPropertyType());
         delta.fix();
         IValueSet valueSet = generation.getConfigElement("a1").getValueSet();
         assertTrue(valueSet.isEnum());
@@ -230,8 +230,8 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         IGenerationToTypeDelta delta = generation.computeDeltaToModel(ipsProject);
         IDeltaEntry[] entries = delta.getEntries();
         assertEquals(2, entries.length);
-        assertEquals(DeltaType.MISSING_VALIDATION_RULE_CONFIG, entries[0].getDeltaType());
-        assertEquals(DeltaType.CONFIG_WITHOUT_VALIDATION_RULE, entries[1].getDeltaType());
+        assertEquals(DeltaType.MISSING_PROPERTY_VALUE, entries[0].getDeltaType());
+        assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, entries[1].getDeltaType());
 
         List<IValidationRuleConfig> validationRuleConfigs = generation.getValidationRuleConfigs();
         assertEquals(2, validationRuleConfigs.size());
@@ -256,9 +256,9 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         IGenerationToTypeDelta delta = generation.computeDeltaToModel(ipsProject);
         IDeltaEntry[] entries = delta.getEntries();
         assertEquals(3, entries.length);
-        assertEquals(DeltaType.MISSING_VALIDATION_RULE_CONFIG, entries[0].getDeltaType());
-        assertEquals(DeltaType.CONFIG_WITHOUT_VALIDATION_RULE, entries[1].getDeltaType());
-        assertEquals(DeltaType.CONFIG_WITHOUT_VALIDATION_RULE, entries[2].getDeltaType());
+        assertEquals(DeltaType.MISSING_PROPERTY_VALUE, entries[0].getDeltaType());
+        assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, entries[1].getDeltaType());
+        assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, entries[2].getDeltaType());
 
         List<IValidationRuleConfig> validationRuleConfigs = generation.getValidationRuleConfigs();
         assertEquals(3, validationRuleConfigs.size());

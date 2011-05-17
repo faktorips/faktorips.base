@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -291,13 +291,8 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     }
 
     @Override
-    public ProdDefPropertyType getProdDefPropertyType() {
-        return ProdDefPropertyType.TABLE_CONTENT_USAGE;
-    }
-
-    @Override
-    public String getPropertyDatatype() {
-        return ""; //$NON-NLS-1$
+    public ProductCmptPropertyType getProdDefPropertyType() {
+        return ProductCmptPropertyType.TABLE_CONTENT_USAGE;
     }
 
     public class TableStructureReference extends AtomicIpsObjectPart {

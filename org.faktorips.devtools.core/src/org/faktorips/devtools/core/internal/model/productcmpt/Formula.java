@@ -32,7 +32,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -40,13 +39,14 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IFormulaTestCase;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
-import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.ExprCompiler;
@@ -72,12 +72,12 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
     private IpsObjectPartCollection<IFormulaTestCase> testcases = new IpsObjectPartCollection<IFormulaTestCase>(this,
             FormulaTestCase.class, IFormulaTestCase.class, FormulaTestCase.TAG_NAME);
 
-    public Formula(IIpsObjectPart parent, String id) {
+    public Formula(IPropertyValueContainer parent, String id) {
         super(parent, id);
         addTagToIgnore(TAG_NAME_FOR_EXPRESSION);
     }
 
-    public Formula(IIpsObjectPart parent, String id, String formulaSignature) {
+    public Formula(IPropertyValueContainer parent, String id, String formulaSignature) {
         super(parent, id);
         this.formulaSignature = formulaSignature;
         addTagToIgnore(TAG_NAME_FOR_EXPRESSION);
@@ -99,13 +99,13 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
     }
 
     @Override
-    public IProdDefProperty findProperty(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptProperty findProperty(IIpsProject ipsProject) throws CoreException {
         return findFormulaSignature(ipsProject);
     }
 
     @Override
-    public ProdDefPropertyType getPropertyType() {
-        return ProdDefPropertyType.FORMULA;
+    public ProductCmptPropertyType getPropertyType() {
+        return ProductCmptPropertyType.FORMULA;
     }
 
     @Override

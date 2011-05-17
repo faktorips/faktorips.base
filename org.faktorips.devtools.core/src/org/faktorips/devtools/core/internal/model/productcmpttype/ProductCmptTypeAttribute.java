@@ -44,7 +44,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
 
     private IValueSet valueSet;
 
-    private boolean changingOverTime = true;
+    private boolean changingOverTime = false;
 
     public ProductCmptTypeAttribute(IProductCmptType parent, String id) {
         super(parent, id);

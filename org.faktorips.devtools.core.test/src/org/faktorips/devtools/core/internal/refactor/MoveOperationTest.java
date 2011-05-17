@@ -43,6 +43,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -104,7 +105,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         productBGen.newLink(COVERAGE_TYPE_NAME).setTarget(coverage.getQualifiedName());
         productB.getIpsSrcFile().save(true, null);
 
-        IProductCmptGeneration[] refs = ipsProject.findReferencingProductCmptGenerations(coverage
+        IPropertyValueContainer[] refs = ipsProject.findReferencingProductCmptGenerations(coverage
                 .getQualifiedNameType());
         assertEquals(2, refs.length);
 
@@ -125,7 +126,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertFalse(targetFile.exists());
         assertTrue(coverage.getIpsSrcFile().exists());
 
-        IProductCmptGeneration[] sourceRefs = ipsProject.findReferencingProductCmptGenerations(coverage
+        IPropertyValueContainer[] sourceRefs = ipsProject.findReferencingProductCmptGenerations(coverage
                 .getQualifiedNameType());
 
         String targetQName = coverage.getIpsPackageFragment().getName() + '.' + targetName;
@@ -135,7 +136,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertTrue(targetFile.exists());
         assertFalse(coverage.getIpsSrcFile().exists());
         IProductCmpt targetObject = (IProductCmpt)targetFile.getIpsObject();
-        IProductCmptGeneration[] targetRefs = targetObject.getIpsProject().findReferencingProductCmptGenerations(
+        IPropertyValueContainer[] targetRefs = targetObject.getIpsProject().findReferencingProductCmptGenerations(
                 targetObject.getQualifiedNameType());
 
         assertEquals(sourceRefs.length, targetRefs.length);
@@ -153,7 +154,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertFalse(target.exists());
         assertTrue(coverage.getIpsSrcFile().exists());
 
-        IProductCmptGeneration[] sourceRefs = coverage.getIpsProject().findReferencingProductCmptGenerations(
+        IPropertyValueContainer[] sourceRefs = coverage.getIpsProject().findReferencingProductCmptGenerations(
                 coverage.getQualifiedNameType());
 
         MoveOperation move = new MoveOperation(new IIpsElement[] { sourcePackage }, new String[] { "renamed" });
@@ -167,7 +168,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertTrue(targetFile.exists());
 
         IProductCmpt targetObject = (IProductCmpt)targetFile.getIpsObject();
-        IProductCmptGeneration[] targetRefs = targetObject.getIpsProject().findReferencingProductCmptGenerations(
+        IPropertyValueContainer[] targetRefs = targetObject.getIpsProject().findReferencingProductCmptGenerations(
                 targetObject.getQualifiedNameType());
 
         assertEquals(sourceRefs.length, targetRefs.length);
@@ -192,7 +193,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertFalse(target.exists());
         assertTrue(coverage.getIpsSrcFile().exists());
 
-        IProductCmptGeneration[] sourceRefs = ipsProject.findReferencingProductCmptGenerations(coverage
+        IPropertyValueContainer[] sourceRefs = ipsProject.findReferencingProductCmptGenerations(coverage
                 .getQualifiedNameType());
 
         MoveOperation move = new MoveOperation(coverage, targetName);
@@ -206,7 +207,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertTrue(target.exists());
         assertFalse(coverage.getIpsSrcFile().exists());
         IProductCmpt targetObject = (IProductCmpt)target.getIpsObject();
-        IProductCmptGeneration[] targetRefs = targetObject.getIpsProject().findReferencingProductCmptGenerations(
+        IPropertyValueContainer[] targetRefs = targetObject.getIpsProject().findReferencingProductCmptGenerations(
                 targetObject.getQualifiedNameType());
 
         assertEquals(sourceRefs.length, targetRefs.length);
@@ -315,7 +316,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertTrue(testCase.getIpsSrcFile().exists());
         assertTrue(tableContents.getIpsSrcFile().exists());
 
-        IProductCmptGeneration[] sourceRefs = coverage.getIpsProject().findReferencingProductCmptGenerations(
+        IPropertyValueContainer[] sourceRefs = coverage.getIpsProject().findReferencingProductCmptGenerations(
                 coverage.getQualifiedNameType());
 
         MoveOperation move = new MoveOperation(new IIpsElement[] { sourcePackage }, target);
@@ -334,7 +335,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertTrue(coverageFile.exists());
 
         IProductCmpt targetObject = (IProductCmpt)coverageFile.getIpsObject();
-        IProductCmptGeneration[] targetRefs = targetObject.getIpsProject().findReferencingProductCmptGenerations(
+        IPropertyValueContainer[] targetRefs = targetObject.getIpsProject().findReferencingProductCmptGenerations(
                 targetObject.getQualifiedNameType());
 
         assertEquals(sourceRefs.length, targetRefs.length);
@@ -355,7 +356,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertFalse(target.exists());
         assertTrue(coverage.getIpsSrcFile().exists());
 
-        IProductCmptGeneration[] sourceRefs = ipsProject.findReferencingProductCmptGenerations(coverage
+        IPropertyValueContainer[] sourceRefs = ipsProject.findReferencingProductCmptGenerations(coverage
                 .getQualifiedNameType());
 
         MoveOperation move = new MoveOperation(new IIpsElement[] { sourcePackage }, target);
@@ -371,7 +372,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertTrue(coverageFile.exists());
 
         IProductCmpt targetObject = (IProductCmpt)coverageFile.getIpsObject();
-        IProductCmptGeneration[] targetRefs = targetObject.getIpsProject().findReferencingProductCmptGenerations(
+        IPropertyValueContainer[] targetRefs = targetObject.getIpsProject().findReferencingProductCmptGenerations(
                 targetObject.getQualifiedNameType());
 
         assertEquals(sourceRefs.length, targetRefs.length);

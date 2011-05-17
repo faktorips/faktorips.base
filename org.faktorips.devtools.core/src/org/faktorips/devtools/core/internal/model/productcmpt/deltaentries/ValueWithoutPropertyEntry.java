@@ -18,7 +18,7 @@ import org.faktorips.devtools.core.internal.model.productcmpt.GenerationToTypeDe
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 
 /**
  * 
@@ -34,7 +34,7 @@ public class ValueWithoutPropertyEntry extends AbstractDeltaEntryForProperty {
     }
 
     @Override
-    public ProdDefPropertyType getPropertyType() {
+    public ProductCmptPropertyType getPropertyType() {
         return value.getPropertyType();
     }
 

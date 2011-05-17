@@ -20,16 +20,14 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 
-public interface IProductCmptGeneration extends IIpsObjectGeneration {
+public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyValueContainer {
 
     /**
      * Prefix for all message codes of this class.
@@ -106,16 +104,6 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns the delta between this product component and it's product component type.
-     * 
-     * @param ipsProject The ips project which search path is used to search the type.
-     * 
-     * @throws CoreException if an exception occurs while searching for the type.
-     * @throws NullPointerException if ipsProject is <code>null</code>.
-     */
-    public IGenerationToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException;
-
-    /**
      * Sorts the generation's properties according to the order defined in the model. If the product
      * component type isn't found, the generation remains unchanged.
      * 
@@ -125,41 +113,6 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration {
      * @throws NullPointerException if ipsProject is <code>null</code>.
      */
     public void sortPropertiesAccordingToModel(IIpsProject ipsProject) throws CoreException;
-
-    /**
-     * Returns the property value for the given property or <code>null</code> if no value is defined
-     * for this generation. In this case {@link #computeDeltaToModel(IIpsProject)} returns a delta
-     * containing an entry for the missing property value.
-     * <p>
-     * Returns <code>null</code> if property is <code>null</code>.
-     * <p>
-     * Note that this method searches only the property values that have the same property type as
-     * the indicated property. If you want to search only by name, use
-     * {@link #getPropertyValue(String)}.
-     */
-    public IPropertyValue getPropertyValue(IProdDefProperty property);
-
-    /**
-     * Returns the property values for the given property name or <code>null</code> if no value is
-     * defined for this generation. In this case {@link #computeDeltaToModel(IIpsProject)} returns a
-     * delta containing an entry for the missing property value.
-     * <p>
-     * Returns <code>null</code> if propertyName is <code>null</code>.
-     */
-    public IPropertyValue getPropertyValue(String propertyName);
-
-    /**
-     * Returns all property values for the given type. Returns an empty array if type is
-     * <code>null</code>.
-     */
-    public IPropertyValue[] getPropertyValues(ProdDefPropertyType type);
-
-    /**
-     * Creates a new property value for the given property.
-     * 
-     * @throws NullPointerException if property is <code>null</code>.
-     */
-    public IPropertyValue newPropertyValue(IProdDefProperty property);
 
     /**
      * Returns the number of attribute values defined in the generation.

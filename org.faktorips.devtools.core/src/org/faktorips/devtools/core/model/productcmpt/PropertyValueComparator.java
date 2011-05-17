@@ -21,12 +21,12 @@ import java.util.Map;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 
 /**
  * Comparator that compares two {@link IPropertyValue}s by there type and by the position the
- * corresponding {@link IProdDefProperty} has in the model.
+ * corresponding {@link IProductCmptProperty} has in the model.
  * <p>
  * Example:
  * <p>
@@ -67,9 +67,9 @@ public class PropertyValueComparator implements Comparator<IPropertyValue> {
         try {
             if (type != null) {
                 propIndexMap = new HashMap<String, Integer>();
-                List<IProdDefProperty> props = type.findProdDefProperties(ipsProject);
+                List<IProductCmptProperty> props = type.findProdDefProperties(ipsProject);
                 int i = 0;
-                for (IProdDefProperty property : props) {
+                for (IProductCmptProperty property : props) {
                     propIndexMap.put(property.getPropertyName(), i);
                     i++;
                 }

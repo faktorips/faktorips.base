@@ -23,7 +23,10 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -37,7 +40,7 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
 
     private String ruleName;
 
-    public ValidationRuleConfig(ProductCmptGeneration parent, String id, String ruleName) {
+    public ValidationRuleConfig(IPropertyValueContainer parent, String id, String ruleName) {
         super(parent, id);
         this.ruleName = ruleName;
     }
@@ -114,5 +117,25 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
     @Override
     public IProductCmptGeneration getProductCmptGeneration() {
         return (IProductCmptGeneration)getParent();
+    }
+
+    @Override
+    public String getPropertyName() {
+        return getName();
+    }
+
+    @Override
+    public IProductCmptProperty findProperty(IIpsProject ipsProject) throws CoreException {
+        return findValidationRule(ipsProject);
+    }
+
+    @Override
+    public ProductCmptPropertyType getPropertyType() {
+        return ProductCmptPropertyType.VALIDATION_RULE_CONFIG;
+    }
+
+    @Override
+    public String getPropertyValue() {
+        return Boolean.toString(isActive());
     }
 }

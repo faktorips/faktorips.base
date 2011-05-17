@@ -44,18 +44,19 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.FormulaSignatureFinder;
-import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeValidations;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.devtools.core.util.TreeSetHelper;
@@ -165,7 +166,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public List<IProdDefProperty> findProdDefProperties(IIpsProject ipsProject) throws CoreException {
+    public List<IProductCmptProperty> findProdDefProperties(IIpsProject ipsProject) throws CoreException {
         ProdDefPropertyCollector collector = new ProdDefPropertyCollector(null, ipsProject);
         collector.start(this);
         return collector.getProperties();
@@ -180,7 +181,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * @param propertyType The type of properties that should be included in the map.
      *            <code>null</code> indicates that all properties should be included in the map.
      */
-    public LinkedHashMap<String, IProdDefProperty> getProdDefPropertiesMap(ProdDefPropertyType propertyType,
+    public LinkedHashMap<String, IProductCmptProperty> getProdDefPropertiesMap(ProductCmptPropertyType propertyType,
             IIpsProject ipsProject) throws CoreException {
 
         ProdDefPropertyCollector collector = new ProdDefPropertyCollector(propertyType, ipsProject);
@@ -189,10 +190,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public IProdDefProperty findProdDefProperty(String propName, IIpsProject ipsProject) throws CoreException {
-        ProdDefPropertyType[] types = ProdDefPropertyType.values();
-        for (ProdDefPropertyType type : types) {
-            IProdDefProperty prop = findProdDefProperty(type, propName, ipsProject);
+    public IProductCmptProperty findProductCmptProperty(String propName, IIpsProject ipsProject) throws CoreException {
+        ProductCmptPropertyType[] types = ProductCmptPropertyType.values();
+        for (ProductCmptPropertyType type : types) {
+            IProductCmptProperty prop = findProductCmptProperty(type, propName, ipsProject);
             if (prop != null) {
                 return prop;
             }
@@ -201,29 +202,36 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public IProdDefProperty findProdDefProperty(ProdDefPropertyType type, String propName, IIpsProject ipsProject)
-            throws CoreException {
-        if (ProdDefPropertyType.VALUE == type) {
+    public IProductCmptProperty findProductCmptProperty(ProductCmptPropertyType type,
+            String propName,
+            IIpsProject ipsProject) throws CoreException {
+        if (ProductCmptPropertyType.VALUE == type) {
             return findProductCmptTypeAttribute(propName, ipsProject);
         }
-        if (ProdDefPropertyType.FORMULA == type) {
+        if (ProductCmptPropertyType.FORMULA == type) {
             return findFormulaSignature(propName, ipsProject);
         }
-        if (ProdDefPropertyType.TABLE_CONTENT_USAGE == type) {
+        if (ProductCmptPropertyType.TABLE_CONTENT_USAGE == type) {
             return findTableStructureUsage(propName, ipsProject);
-        }
-        if (ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET != type) {
-            throw new RuntimeException("Unknown type " + type); //$NON-NLS-1$
         }
         IPolicyCmptType policyCmptType = findPolicyCmptType(ipsProject);
         if (policyCmptType == null) {
             return null;
         }
-        IPolicyCmptTypeAttribute attr = policyCmptType.findPolicyCmptTypeAttribute(propName, ipsProject);
-        if (attr != null && attr.isProductRelevant()) {
-            return attr;
+        if (ProductCmptPropertyType.VALIDATION_RULE_CONFIG == type) {
+            IValidationRule rule = policyCmptType.findValidationRule(propName, ipsProject);
+            if (rule != null && rule.isConfigurableByProductComponent()) {
+                return rule;
+            }
+        }
+        if (ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET == type) {
+            IPolicyCmptTypeAttribute attr = policyCmptType.findPolicyCmptTypeAttribute(propName, ipsProject);
+            if (attr != null && attr.isProductRelevant()) {
+                return attr;
+            }
         }
         return null;
+
     }
 
     @Override
@@ -612,7 +620,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         // if set, indicates the type of properties that are collected
         // if null, all properties are collected
-        private ProdDefPropertyType propertyType;
+        private ProductCmptPropertyType propertyType;
 
         private List<IProductCmptTypeAttribute> myAttributes = new ArrayList<IProductCmptTypeAttribute>();
         private List<ITableStructureUsage> myTableStructureUsages = new ArrayList<ITableStructureUsage>();
@@ -621,7 +629,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         private Set<IPolicyCmptType> visitedPolicyCmptTypes = new HashSet<IPolicyCmptType>();
 
-        public ProdDefPropertyCollector(ProdDefPropertyType propertyType, IIpsProject ipsProject) {
+        public ProdDefPropertyCollector(ProductCmptPropertyType propertyType, IIpsProject ipsProject) {
             super(ipsProject);
             this.propertyType = propertyType;
         }
@@ -629,13 +637,13 @@ public class ProductCmptType extends Type implements IProductCmptType {
         @Override
         protected boolean visit(IProductCmptType currentType) throws CoreException {
             ProductCmptType currType = (ProductCmptType)currentType;
-            if (propertyType == null || ProdDefPropertyType.VALUE.equals(propertyType)) {
+            if (propertyType == null || ProductCmptPropertyType.VALUE.equals(propertyType)) {
                 addInReverseOrder(currType.attributes, myAttributes);
             }
-            if (propertyType == null || ProdDefPropertyType.TABLE_CONTENT_USAGE.equals(propertyType)) {
+            if (propertyType == null || ProductCmptPropertyType.TABLE_CONTENT_USAGE.equals(propertyType)) {
                 addInReverseOrder(currType.tableStructureUsages, myTableStructureUsages);
             }
-            if (propertyType == null || ProdDefPropertyType.FORMULA.equals(propertyType)) {
+            if (propertyType == null || ProductCmptPropertyType.FORMULA.equals(propertyType)) {
                 for (int i = currType.methods.size() - 1; i >= 0; i--) {
                     IProductCmptTypeMethod method = currType.methods.getPart(i);
                     if (method.isFormulaSignatureDefinition()) {
@@ -643,7 +651,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
                     }
                 }
             }
-            if (propertyType == null || ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET.equals(propertyType)) {
+            if (propertyType == null || ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET.equals(propertyType)) {
                 IPolicyCmptType policyCmptType = currentType.findPolicyCmptType(ipsProject);
                 if (policyCmptType == null || visitedPolicyCmptTypes.contains(policyCmptType)) {
                     return true;
@@ -667,8 +675,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
             }
         }
 
-        public List<IProdDefProperty> getProperties() {
-            List<IProdDefProperty> props = new ArrayList<IProdDefProperty>();
+        public List<IProductCmptProperty> getProperties() {
+            List<IProductCmptProperty> props = new ArrayList<IProductCmptProperty>();
             for (int i = myAttributes.size() - 1; i >= 0; i--) {
                 props.add(myAttributes.get(i));
             }
@@ -684,8 +692,9 @@ public class ProductCmptType extends Type implements IProductCmptType {
             return props;
         }
 
-        public LinkedHashMap<String, IProdDefProperty> getPropertyMap() {
-            LinkedHashMap<String, IProdDefProperty> propertyMap = new LinkedHashMap<String, IProdDefProperty>(size());
+        public LinkedHashMap<String, IProductCmptProperty> getPropertyMap() {
+            LinkedHashMap<String, IProductCmptProperty> propertyMap = new LinkedHashMap<String, IProductCmptProperty>(
+                    size());
             add(propertyMap, myAttributes);
             add(propertyMap, myTableStructureUsages);
             add(propertyMap, myFormulaSignatures);
@@ -693,8 +702,9 @@ public class ProductCmptType extends Type implements IProductCmptType {
             return propertyMap;
         }
 
-        private void add(Map<String, IProdDefProperty> propertyMap, List<? extends IProdDefProperty> propertyList) {
-            for (IProdDefProperty property : propertyList) {
+        private void add(Map<String, IProductCmptProperty> propertyMap,
+                List<? extends IProductCmptProperty> propertyList) {
+            for (IProductCmptProperty property : propertyList) {
                 propertyMap.put(property.getPropertyName(), property);
             }
         }

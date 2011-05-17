@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,8 +40,8 @@ public class ProductCmptCompareItemCreatorTest extends AbstractIpsPluginTest {
 
     private IStructureCreator structureCreator = new ProductCmptCompareItemCreator();
     private IProductCmptGeneration generation1;
-    private IProductCmptGeneration generation2;
-    private IProductCmptGeneration generation3;
+    private IPropertyValueContainer generation2;
+    private IPropertyValueContainer generation3;
     private IIpsSrcFile srcFile;
     private IFile correspondingFile;
 
@@ -65,10 +66,10 @@ public class ProductCmptCompareItemCreatorTest extends AbstractIpsPluginTest {
         generation1 = (IProductCmptGeneration)product.newGeneration(calendar);
         calendar = new GregorianCalendar();
         calendar.add(Calendar.MONTH, 1);
-        generation2 = (IProductCmptGeneration)product.newGeneration(calendar);
+        generation2 = (IPropertyValueContainer)product.newGeneration(calendar);
         calendar = new GregorianCalendar();
         calendar.add(Calendar.MONTH, 2);
-        generation3 = (IProductCmptGeneration)product.newGeneration(calendar);
+        generation3 = (IPropertyValueContainer)product.newGeneration(calendar);
 
         configElement1 = generation1.newConfigElement();
         configElement1.setPolicyCmptTypeAttribute("configElement1"); // set name to ensure sorting

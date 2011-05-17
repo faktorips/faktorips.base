@@ -21,15 +21,15 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
@@ -46,14 +46,18 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
 
     final static String TAG_NAME = "AttributeValue"; //$NON-NLS-1$
 
-    private String attribute = ""; //$NON-NLS-1$
-    private String value = ""; //$NON-NLS-1$
+    private String attribute;
+    private String value;
 
-    public AttributeValue(IIpsObjectPart parent, String id) {
-        super(parent, id);
+    public AttributeValue(IPropertyValueContainer parent, String id) {
+        this(parent, id, "", ""); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    public AttributeValue(IIpsObjectPart parent, String id, String attribute, String value) {
+    public AttributeValue(IPropertyValueContainer parent, String id, String attributeName) {
+        this(parent, id, attributeName, ""); //$NON-NLS-1$
+    }
+
+    public AttributeValue(IPropertyValueContainer parent, String id, String attribute, String value) {
         super(parent, id);
         ArgumentCheck.notNull(attribute);
         this.attribute = attribute;
@@ -101,13 +105,13 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     }
 
     @Override
-    public IProdDefProperty findProperty(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptProperty findProperty(IIpsProject ipsProject) throws CoreException {
         return findAttribute(ipsProject);
     }
 
     @Override
-    public ProdDefPropertyType getPropertyType() {
-        return ProdDefPropertyType.VALUE;
+    public ProductCmptPropertyType getPropertyType() {
+        return ProductCmptPropertyType.VALUE;
     }
 
     @Override

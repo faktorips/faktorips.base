@@ -17,13 +17,14 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 
 /**
  * Represents a validation rule. Instances of this interface just say that a rule with a specified
  * name, message e.g. exist. The actual rule condition is part of the concept of this interface. It
  * has to be implemented within the generated source code.
  */
-public interface IValidationRule extends IIpsObjectPart, IDescribedElement, ILabeledElement {
+public interface IValidationRule extends IIpsObjectPart, IProductCmptProperty, IDescribedElement, ILabeledElement {
 
     public final static String PROPERTY_BUSINESS_FUNCTIONS = "businessFunctions"; //$NON-NLS-1$
 

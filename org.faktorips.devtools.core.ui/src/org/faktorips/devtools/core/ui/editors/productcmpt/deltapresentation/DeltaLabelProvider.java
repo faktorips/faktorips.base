@@ -22,7 +22,7 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
-import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.deltapresentation.DeltaCompositeIcon;
 
@@ -59,15 +59,17 @@ public class DeltaLabelProvider extends LabelProvider {
         return (Image)resourceManager.get(descriptor);
     }
 
-    private Image getBaseImage(ProdDefPropertyType propertyType) {
-        if (propertyType == ProdDefPropertyType.VALUE) {
+    private Image getBaseImage(ProductCmptPropertyType propertyType) {
+        if (propertyType == ProductCmptPropertyType.VALUE) {
             return getImageForName("ProductAttribute.gif"); //$NON-NLS-1$
-        } else if (propertyType == ProdDefPropertyType.TABLE_CONTENT_USAGE) {
+        } else if (propertyType == ProductCmptPropertyType.TABLE_CONTENT_USAGE) {
             return getImageForName("TableContentsUsage.gif"); //$NON-NLS-1$
-        } else if (propertyType == ProdDefPropertyType.FORMULA) {
+        } else if (propertyType == ProductCmptPropertyType.FORMULA) {
             return getImageForName("Formula.gif"); //$NON-NLS-1$
-        } else if (propertyType == ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET) {
+        } else if (propertyType == ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET) {
             return getImageForName("PolicyAttribute.gif"); //$NON-NLS-1$
+        } else if (propertyType == ProductCmptPropertyType.VALIDATION_RULE_CONFIG) {
+            return getImageForName("ValidationRuleDef.gif"); //$NON-NLS-1$
         } else {
             return null;
         }
@@ -78,6 +80,7 @@ public class DeltaLabelProvider extends LabelProvider {
     }
 
     private ImageDescriptor getBaseImage(DeltaType deltaType) {
+        // TODO SW 17.5.11 use part adapters for base images
         if (deltaType == DeltaType.MISSING_PROPERTY_VALUE) {
             return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeMissingPropertyValue.gif"); //$NON-NLS-1$
         } else if (deltaType == DeltaType.VALUE_WITHOUT_PROPERTY) {
@@ -88,10 +91,6 @@ public class DeltaLabelProvider extends LabelProvider {
             return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeValueSetMismatch.gif"); //$NON-NLS-1$
         } else if (deltaType == DeltaType.LINK_WITHOUT_ASSOCIATION) {
             return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeLinkWithoutAssociation.gif"); //$NON-NLS-1$
-        } else if (deltaType == DeltaType.MISSING_VALIDATION_RULE_CONFIG) {
-            return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeValidationRuleMismatch.gif"); //$NON-NLS-1$
-        } else if (deltaType == DeltaType.CONFIG_WITHOUT_VALIDATION_RULE) {
-            return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeValidationRuleMismatch.gif"); //$NON-NLS-1$
         } else {
             return null;
         }

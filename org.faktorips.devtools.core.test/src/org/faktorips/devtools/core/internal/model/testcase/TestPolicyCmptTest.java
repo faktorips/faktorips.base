@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
@@ -690,7 +691,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
     public void testFindProductCmpsCurrentGeneration_notProdRelevant() throws CoreException {
         // test find method if no product is specified, e.g. test object is not product relevant
         // in this case the find method should return null
-        IProductCmptGeneration generation = null;
+        IPropertyValueContainer generation = null;
         testPolicyCmptObjectInput.setProductCmpt(null);
         generation = ((TestPolicyCmpt)testPolicyCmptObjectInput).findProductCmpsCurrentGeneration(project);
         assertNull(generation);

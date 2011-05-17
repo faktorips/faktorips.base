@@ -16,8 +16,8 @@ package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpt.GenerationToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
-import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
-import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 
 /**
  * 
@@ -25,15 +25,15 @@ import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
  */
 public class MissingPropertyValueEntry extends AbstractDeltaEntryForProperty {
 
-    private IProdDefProperty property;
+    private IProductCmptProperty property;
 
-    public MissingPropertyValueEntry(GenerationToTypeDelta delta, IProdDefProperty property) {
+    public MissingPropertyValueEntry(GenerationToTypeDelta delta, IProductCmptProperty property) {
         super(delta);
         this.property = property;
     }
 
     @Override
-    public ProdDefPropertyType getPropertyType() {
+    public ProductCmptPropertyType getPropertyType() {
         return property.getProdDefPropertyType();
     }
 

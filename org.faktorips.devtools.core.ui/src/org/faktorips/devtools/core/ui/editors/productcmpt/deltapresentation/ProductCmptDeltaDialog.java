@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpt.IGenerationToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.ui.editors.deltapresentation.AbstractDeltaDialog;
 
 /**
@@ -158,7 +159,7 @@ public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
         updateDeltaView(deltas[generationsList.getSelectionIndex()]);
     }
 
-    public IProductCmptGeneration[] getGenerations() {
+    public IPropertyValueContainer[] getGenerations() {
         return generations;
     }
 

@@ -15,8 +15,8 @@ package org.faktorips.devtools.core.model.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
-import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 
 /**
  * Base interface for properties stored in product component generations like formulas, table
@@ -34,7 +34,7 @@ public interface IPropertyValue {
     /**
      * Returns the name of the product definition property, this is a value of.
      * 
-     * @see IProdDefProperty
+     * @see IProductCmptProperty
      */
     public String getPropertyName();
 
@@ -46,23 +46,16 @@ public interface IPropertyValue {
      * 
      * @throws CoreException if an error occurs
      */
-    public IProdDefProperty findProperty(IIpsProject ipsProject) throws CoreException;
+    public IProductCmptProperty findProperty(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the type of the product definition property.
      * <p>
-     * If type is {@link ProdDefPropertyType#VALUE} the property can be casted to
-     * {@link IAttributeValue}.
-     * <p>
-     * If type is {@link ProdDefPropertyType#FORMULA} the property can be casted to {@link IFormula}.
-     * <p>
-     * If type is {@link ProdDefPropertyType#TABLE_CONTENT_USAGE} the property can be casted to
-     * {@link ITableContentUsage}.
-     * <p>
-     * If type is {@link ProdDefPropertyType#DEFAULT_VALUE_AND_VALUESET} the property can be casted
-     * to {@link IConfigElement}.
+     * See {@link ProductCmptPropertyType} for safe casts to a specific model element.
+     * 
+     * @see ProductCmptPropertyType
      */
-    public ProdDefPropertyType getPropertyType();
+    public ProductCmptPropertyType getPropertyType();
 
     /**
      * Returns the value.

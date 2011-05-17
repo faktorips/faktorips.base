@@ -19,18 +19,14 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.AbstractDeltaEntry;
-import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ConfigWithoutValidationRuleEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.LinkWithoutAssociationEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingPropertyValueEntry;
-import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingValidationRuleConfigEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.PropertyTypeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueSetMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueWithoutPropertyEntry;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
@@ -38,12 +34,12 @@ import org.faktorips.devtools.core.model.productcmpt.IGenerationToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
-import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.util.ArgumentCheck;
 
@@ -70,7 +66,6 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
         }
         computeLinksWithMissingAssociations();
         createEntriesForProperties();
-        createEntriesForValidationRules();
     }
 
     private void computeLinksWithMissingAssociations() throws CoreException {
@@ -83,45 +78,45 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
     }
 
     private void createEntriesForProperties() throws CoreException {
-        for (int i = 0; i < ProdDefPropertyType.values().length; i++) {
-            ProdDefPropertyType propertyType = ProdDefPropertyType.values()[i];
-            LinkedHashMap<String, IProdDefProperty> propertiesMap = ((ProductCmptType)productCmptType)
+        for (int i = 0; i < ProductCmptPropertyType.values().length; i++) {
+            ProductCmptPropertyType propertyType = ProductCmptPropertyType.values()[i];
+            LinkedHashMap<String, IProductCmptProperty> propertiesMap = ((ProductCmptType)productCmptType)
                     .getProdDefPropertiesMap(propertyType, ipsProject);
             checkForMissingPropertyValues(propertiesMap);
             checkForInconsistentPropertyValues(propertiesMap, propertyType);
         }
     }
 
-    private void createEntriesForValidationRules() throws CoreException {
-        createMissingRuleConfigEntries();
-        createConfigWithoutRuleEntries();
-    }
+    // private void createEntriesForValidationRules() throws CoreException {
+    // createMissingRuleConfigEntries();
+    // createConfigWithoutRuleEntries();
+    // }
+    //
+    // private void createMissingRuleConfigEntries() throws CoreException {
+    // IPolicyCmptType policyCmptType = productCmptType.findPolicyCmptType(ipsProject);
+    // if (policyCmptType != null) {
+    // List<IValidationRule> rules = policyCmptType.findAllValidationRules(ipsProject);
+    // for (IValidationRule vRule : rules) {
+    // if (vRule.isConfigurableByProductComponent()
+    // && generation.getValidationRuleConfig(vRule.getName()) == null) {
+    // new MissingValidationRuleConfigEntry(this, vRule);
+    // }
+    // }
+    // }
+    // }
+    //
+    // private void createConfigWithoutRuleEntries() throws CoreException {
+    // List<IValidationRuleConfig> rules = generation.getValidationRuleConfigs();
+    // for (IValidationRuleConfig ruleConfig : rules) {
+    // IValidationRule rule = ruleConfig.findValidationRule(ipsProject);
+    // if (rule == null || !rule.isConfigurableByProductComponent()) {
+    // new ConfigWithoutValidationRuleEntry(this, ruleConfig);
+    // }
+    // }
+    // }
 
-    private void createMissingRuleConfigEntries() throws CoreException {
-        IPolicyCmptType policyCmptType = productCmptType.findPolicyCmptType(ipsProject);
-        if (policyCmptType != null) {
-            List<IValidationRule> rules = policyCmptType.findAllValidationRules(ipsProject);
-            for (IValidationRule vRule : rules) {
-                if (vRule.isConfigurableByProductComponent()
-                        && generation.getValidationRuleConfig(vRule.getName()) == null) {
-                    new MissingValidationRuleConfigEntry(this, vRule);
-                }
-            }
-        }
-    }
-
-    private void createConfigWithoutRuleEntries() throws CoreException {
-        List<IValidationRuleConfig> rules = generation.getValidationRuleConfigs();
-        for (IValidationRuleConfig ruleConfig : rules) {
-            IValidationRule rule = ruleConfig.findValidationRule(ipsProject);
-            if (rule == null || !rule.isConfigurableByProductComponent()) {
-                new ConfigWithoutValidationRuleEntry(this, ruleConfig);
-            }
-        }
-    }
-
-    private void checkForMissingPropertyValues(LinkedHashMap<String, IProdDefProperty> propertiesMap) {
-        for (IProdDefProperty property : propertiesMap.values()) {
+    private void checkForMissingPropertyValues(LinkedHashMap<String, IProductCmptProperty> propertiesMap) {
+        for (IProductCmptProperty property : propertiesMap.values()) {
             if (generation.getPropertyValue(property) == null) {
                 // no value found for the property with the given type, but we might have a type
                 // mismatch
@@ -134,15 +129,16 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
         }
     }
 
-    private void checkForInconsistentPropertyValues(LinkedHashMap<String, IProdDefProperty> propertiesMap,
-            ProdDefPropertyType propertyType) throws CoreException {
-        IPropertyValue[] values = generation.getPropertyValues(propertyType);
+    private void checkForInconsistentPropertyValues(LinkedHashMap<String, IProductCmptProperty> propertiesMap,
+            ProductCmptPropertyType propertyType) throws CoreException {
+        List<IPropertyValue> values = generation.getPropertyValues(propertyType);
         for (IPropertyValue value : values) {
-            IProdDefProperty property = propertiesMap.get(value.getPropertyName());
+            IProductCmptProperty property = propertiesMap.get(value.getPropertyName());
             if (property == null) {
                 // the map contains only properties for the current property type
                 // so we have to search if the property exists with a different type.
-                IProdDefProperty property2 = productCmptType.findProdDefProperty(value.getPropertyName(), ipsProject);
+                IProductCmptProperty property2 = productCmptType.findProductCmptProperty(value.getPropertyName(),
+                        ipsProject);
                 if (property2 != null) {
                     // property2 must have a different type, otherwise it would have been in the
                     // property map!
@@ -151,7 +147,7 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
                     new ValueWithoutPropertyEntry(this, value);
                 }
             } else {
-                if (ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET.equals(propertyType)) {
+                if (ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET.equals(propertyType)) {
                     checkForValueSetMismatch((IPolicyCmptTypeAttribute)property, (IConfigElement)value);
                 }
             }
@@ -175,7 +171,7 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
     }
 
     @Override
-    public IProductCmptGeneration getProductCmptGeneration() {
+    public IPropertyValueContainer getProductCmptGeneration() {
         return generation;
     }
 

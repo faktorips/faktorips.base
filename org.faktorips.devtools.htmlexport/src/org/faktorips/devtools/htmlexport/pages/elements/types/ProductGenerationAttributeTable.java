@@ -36,10 +36,10 @@ import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
@@ -121,7 +121,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
                 continue;
             }
             IPolicyCmptTypeAttribute policyCmptTypeAttribute = (IPolicyCmptTypeAttribute)attribute;
-            if (policyCmptTypeAttribute.getProdDefPropertyType() == ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET
+            if (policyCmptTypeAttribute.getProdDefPropertyType() == ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET
                     && policyCmptTypeAttribute.isProductRelevant()) {
                 policyCmptTypeAttributes.add(policyCmptTypeAttribute);
             }

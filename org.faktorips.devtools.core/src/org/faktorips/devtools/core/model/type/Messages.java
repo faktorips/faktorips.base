@@ -11,13 +11,13 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.model.productcmpttype;
+package org.faktorips.devtools.core.model.type;
 
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
 
-    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.model.productcmpttype.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.model.type.messages"; //$NON-NLS-1$
 
     static {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
@@ -27,9 +27,10 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
-    public static String ProdDefPropertyType_defaultValueAndValueSet;
-    public static String ProdDefPropertyType_fomula;
-    public static String ProdDefPropertyType_productAttribute;
-    public static String ProdDefPropertyType_tableUsage;
+    public static String ProductCmptPropertyType_defaultValueAndValueSet;
+    public static String ProductCmptPropertyType_fomula;
+    public static String ProductCmptPropertyType_productAttribute;
+    public static String ProductCmptPropertyType_tableUsage;
+    public static String ProductCmptPropertyType_ValidationRule;
 
 }

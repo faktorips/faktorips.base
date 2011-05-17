@@ -27,7 +27,7 @@ public interface IProductCmptGenerationPolicyCmptTypeDelta {
     /**
      * Returns the product component generation this delta was computed for.
      */
-    public IProductCmptGeneration getProductCmptGeneration();
+    public IPropertyValueContainer getProductCmptGeneration();
 
     /**
      * Returns the policy component type this delta was computed for.

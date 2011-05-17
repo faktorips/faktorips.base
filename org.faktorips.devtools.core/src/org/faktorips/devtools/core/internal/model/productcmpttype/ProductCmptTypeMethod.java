@@ -20,8 +20,8 @@ import org.faktorips.devtools.core.internal.model.type.Method;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
-import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -133,13 +133,8 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
     }
 
     @Override
-    public ProdDefPropertyType getProdDefPropertyType() {
-        return ProdDefPropertyType.FORMULA;
-    }
-
-    @Override
-    public String getPropertyDatatype() {
-        return getDatatype();
+    public ProductCmptPropertyType getProdDefPropertyType() {
+        return ProductCmptPropertyType.FORMULA;
     }
 
     @Override

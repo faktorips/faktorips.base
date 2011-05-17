@@ -23,7 +23,9 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 
 /**
  * A type of the product definition side of the model.
@@ -333,20 +335,20 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Returns the types product definition properties including properties defined in one of the
      * type's supertypes.
      */
-    public List<IProdDefProperty> findProdDefProperties(IIpsProject ipsProject) throws CoreException;
+    public List<IProductCmptProperty> findProdDefProperties(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the product definition property with the given name and type. If no such property is
      * found in the type itself, the supertype hierarchy is searched.
      */
-    public IProdDefProperty findProdDefProperty(ProdDefPropertyType type, String propName, IIpsProject ipsProject)
+    public IProductCmptProperty findProductCmptProperty(ProductCmptPropertyType type, String propName, IIpsProject ipsProject)
             throws CoreException;
 
     /**
      * Returns the product definition property with the given name. If no such property is found in
      * the type itself, the supertype hierarchy is searched.
      */
-    public IProdDefProperty findProdDefProperty(String propName, IIpsProject ipsProject) throws CoreException;
+    public IProductCmptProperty findProductCmptProperty(String propName, IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns <code>true</code> if the user has configured a custom icon for enabled instances of

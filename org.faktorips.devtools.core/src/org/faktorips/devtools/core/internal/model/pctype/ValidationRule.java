@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -439,6 +440,16 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         boolean oldValue = isActivatedByDefault();
         activatedByDefault = activated;
         valueChanged(oldValue, activated);
+    }
+
+    @Override
+    public ProductCmptPropertyType getProdDefPropertyType() {
+        return ProductCmptPropertyType.VALIDATION_RULE_CONFIG;
+    }
+
+    @Override
+    public String getPropertyName() {
+        return getName();
     }
 
 }

@@ -48,8 +48,8 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.type.AssociationType;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.util.message.MessageList;
@@ -214,27 +214,27 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         IConfigElement ce3 = generation.newConfigElement();
         IConfigElement ce4 = generation.newConfigElement();
 
-        IPropertyValue[] values = generation.getPropertyValues(ProdDefPropertyType.VALUE);
-        assertEquals(1, values.length);
-        assertEquals(value1, values[0]);
+        List<IPropertyValue> values = generation.getPropertyValues(ProductCmptPropertyType.VALUE);
+        assertEquals(1, values.size());
+        assertEquals(value1, values.get(0));
 
-        values = generation.getPropertyValues(ProdDefPropertyType.FORMULA);
-        assertEquals(2, values.length);
-        assertEquals(formula1, values[0]);
-        assertEquals(formula2, values[1]);
+        values = generation.getPropertyValues(ProductCmptPropertyType.FORMULA);
+        assertEquals(2, values.size());
+        assertEquals(formula1, values.get(0));
+        assertEquals(formula2, values.get(1));
 
-        values = generation.getPropertyValues(ProdDefPropertyType.TABLE_CONTENT_USAGE);
-        assertEquals(3, values.length);
-        assertEquals(tcu1, values[0]);
-        assertEquals(tcu2, values[1]);
-        assertEquals(tcu3, values[2]);
+        values = generation.getPropertyValues(ProductCmptPropertyType.TABLE_CONTENT_USAGE);
+        assertEquals(3, values.size());
+        assertEquals(tcu1, values.get(0));
+        assertEquals(tcu2, values.get(1));
+        assertEquals(tcu3, values.get(2));
 
-        values = generation.getPropertyValues(ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET);
-        assertEquals(4, values.length);
-        assertEquals(ce1, values[0]);
-        assertEquals(ce2, values[1]);
-        assertEquals(ce3, values[2]);
-        assertEquals(ce4, values[3]);
+        values = generation.getPropertyValues(ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET);
+        assertEquals(4, values.size());
+        assertEquals(ce1, values.get(0));
+        assertEquals(ce2, values.get(1));
+        assertEquals(ce3, values.get(2));
+        assertEquals(ce4, values.get(3));
     }
 
     @Test

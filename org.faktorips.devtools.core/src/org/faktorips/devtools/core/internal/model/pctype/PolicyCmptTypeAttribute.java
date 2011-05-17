@@ -38,10 +38,10 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
-import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.util.message.Message;
@@ -438,13 +438,8 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     }
 
     @Override
-    public ProdDefPropertyType getProdDefPropertyType() {
-        return ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET;
-    }
-
-    @Override
-    public String getPropertyDatatype() {
-        return getDatatype();
+    public ProductCmptPropertyType getProdDefPropertyType() {
+        return ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET;
     }
 
     @Override

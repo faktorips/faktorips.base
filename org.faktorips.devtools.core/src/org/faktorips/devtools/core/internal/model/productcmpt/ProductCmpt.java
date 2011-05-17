@@ -43,10 +43,14 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptKind;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.ProductCmptValidations;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -57,17 +61,20 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
+public class ProductCmpt extends TimedIpsObject implements IProductCmpt, IPropertyValueContainer {
 
+    private final AttributeValueContainer attributeValueContainer;
     private String productCmptType = ""; //$NON-NLS-1$
     private String runtimeId = ""; //$NON-NLS-1$
 
     public ProductCmpt(IIpsSrcFile file) {
         super(file);
+        attributeValueContainer = new AttributeValueContainer(this);
     }
 
     public ProductCmpt() {
         super();
+        attributeValueContainer = new AttributeValueContainer(this);
     }
 
     @Override
@@ -310,6 +317,31 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     public String getMetaClass() {
         return getProductCmptType();
+    }
+
+    @Override
+    public IPropertyValue getPropertyValue(IProductCmptProperty property) {
+        return attributeValueContainer.getPropertyValue(property);
+    }
+
+    @Override
+    public IPropertyValue getPropertyValue(String propertyName) {
+        return attributeValueContainer.getPropertyValue(propertyName);
+    }
+
+    @Override
+    public List<IPropertyValue> getPropertyValues(ProductCmptPropertyType type) {
+        return attributeValueContainer.getPropertyValues(type);
+    }
+
+    @Override
+    public IPropertyValue newPropertyValue(IProductCmptProperty property) {
+        return attributeValueContainer.newPropertyValue(property, getNextPartId());
+    }
+
+    @Override
+    public IGenerationToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException {
+        return null;
     }
 
 }

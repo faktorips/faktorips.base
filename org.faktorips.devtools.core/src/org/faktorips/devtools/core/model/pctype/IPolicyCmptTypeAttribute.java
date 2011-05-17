@@ -18,9 +18,9 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
 /**
  * A policy component type's attribute.
  */
-public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IProdDefProperty {
+public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IProductCmptProperty {
 
     // property names
     public final static String PROPERTY_COMPUTATION_METHOD_SIGNATURE = "computationMethodSignature"; //$NON-NLS-1$

@@ -56,6 +56,7 @@ public class Migration_3_4_0 extends DefaultMigration {
                 srcFile.markAsDirty();
             }
         }
+        // TODO ProdCmptType for constant Attributes
     }
 
     private boolean migrateType(IPolicyCmptType type) {

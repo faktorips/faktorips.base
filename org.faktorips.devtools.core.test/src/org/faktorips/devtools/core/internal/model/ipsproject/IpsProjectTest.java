@@ -79,6 +79,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -1393,7 +1394,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IProductCmptGeneration genNoref = (IProductCmptGeneration)noref.newGeneration();
         IProductCmptGeneration genTobereferenced = (IProductCmptGeneration)tobereferenced.newGeneration();
 
-        IProductCmptGeneration[] result = ipsProject.findReferencingProductCmptGenerations(tobereferenced
+        IPropertyValueContainer[] result = ipsProject.findReferencingProductCmptGenerations(tobereferenced
                 .getQualifiedNameType());
         assertEquals(0, result.length);
 

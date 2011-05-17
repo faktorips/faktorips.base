@@ -19,7 +19,7 @@ import org.faktorips.devtools.core.internal.model.productcmpt.GenerationToTypeDe
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
-import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 
 /**
  * 
@@ -37,8 +37,8 @@ public class ValueSetMismatchEntry extends AbstractDeltaEntryForProperty {
     }
 
     @Override
-    public ProdDefPropertyType getPropertyType() {
-        return ProdDefPropertyType.DEFAULT_VALUE_AND_VALUESET;
+    public ProductCmptPropertyType getPropertyType() {
+        return ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET;
     }
 
     @Override

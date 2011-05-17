@@ -37,6 +37,7 @@ import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -125,8 +126,8 @@ public class GenerationsSection extends SimpleIpsPartsSection {
         page.getProductCmptEditor().setActiveGeneration(generation, true);
     }
 
-    private IProductCmptGeneration getActiveGeneration() {
-        return (IProductCmptGeneration)page.getProductCmptEditor().getActiveGeneration();
+    private IPropertyValueContainer getActiveGeneration() {
+        return (IPropertyValueContainer)page.getProductCmptEditor().getActiveGeneration();
     }
 
     /**
@@ -268,7 +269,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
                 if (!(element instanceof IProductCmptGeneration)) {
                     return super.getImage(element);
                 }
-                IProductCmptGeneration generation = (IProductCmptGeneration)element;
+                IPropertyValueContainer generation = (IPropertyValueContainer)element;
                 Image image = super.getImage(element);
                 if (getActiveGeneration() == generation) {
                     return image;

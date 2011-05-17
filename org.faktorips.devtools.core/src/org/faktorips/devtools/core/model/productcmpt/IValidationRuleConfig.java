@@ -18,7 +18,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 
-public interface IValidationRuleConfig extends IIpsObjectPart {
+public interface IValidationRuleConfig extends IIpsObjectPart, IPropertyValue {
 
     String TAG_NAME = "ValidationRuleConfig"; //$NON-NLS-1$
 
@@ -44,10 +44,5 @@ public interface IValidationRuleConfig extends IIpsObjectPart {
      * @throws CoreException if an error occurs while searching.
      */
     public IValidationRule findValidationRule(IIpsProject ipsProject) throws CoreException;
-
-    /**
-     * @return this rule's product component generation
-     */
-    public IProductCmptGeneration getProductCmptGeneration();
 
 }

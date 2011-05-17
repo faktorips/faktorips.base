@@ -22,12 +22,13 @@ import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
-import org.faktorips.devtools.core.model.productcmpttype.IProdDefProperty;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.productcmpttype.ProdDefPropertyType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -51,11 +52,11 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
      */
     private String structureUsage = ""; //$NON-NLS-1$
 
-    public TableContentUsage(IProductCmptGeneration generation, String id) {
+    public TableContentUsage(IPropertyValueContainer generation, String id) {
         super(generation, id);
     }
 
-    public TableContentUsage(IProductCmptGeneration generation, String id, String structureUsage) {
+    public TableContentUsage(IPropertyValueContainer generation, String id, String structureUsage) {
         super(generation, id);
         this.structureUsage = structureUsage;
     }
@@ -70,13 +71,13 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
     }
 
     @Override
-    public IProdDefProperty findProperty(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptProperty findProperty(IIpsProject ipsProject) throws CoreException {
         return findTableStructureUsage(ipsProject);
     }
 
     @Override
-    public ProdDefPropertyType getPropertyType() {
-        return ProdDefPropertyType.TABLE_CONTENT_USAGE;
+    public ProductCmptPropertyType getPropertyType() {
+        return ProductCmptPropertyType.TABLE_CONTENT_USAGE;
     }
 
     @Override
