@@ -49,9 +49,9 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  * 
  * @author Thorsten Guenther
  */
-public class GenerationAttributesSection extends IpsSection {
+public class AttributeValuesSection extends IpsSection {
 
-    private static final String ID = "org.faktorips.devtools.core.ui.editors.productcmpt.GenerationAttributesSection"; //$NON-NLS-1$
+    private static final String ID = "org.faktorips.devtools.core.ui.editors.productcmpt.AttributeValuesSection"; //$NON-NLS-1$
 
     /**
      * Generation which holds the informations to display
@@ -85,7 +85,7 @@ public class GenerationAttributesSection extends IpsSection {
      * @param parent The parent to link the ui-items to.
      * @param toolkit The toolkit to use for easier ui-handling
      */
-    public GenerationAttributesSection(IProductCmptGeneration generation, Composite parent, UIToolkit toolkit) {
+    public AttributeValuesSection(IProductCmptGeneration generation, Composite parent, UIToolkit toolkit) {
         super(ID, parent, GridData.FILL_BOTH | GridData.GRAB_VERTICAL, toolkit);
         this.generation = generation;
         initControls();

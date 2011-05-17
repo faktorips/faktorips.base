@@ -48,7 +48,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
      */
     public final static String PAGE_ID = "Properties"; //$NON-NLS-1$
 
-    private GenerationAttributesSection productAttributesSection;
+    private AttributeValuesSection productAttributesSection;
 
     private FormulasSection formulasSection;
     private ValidationRuleConfigSection validationRuleSection;
@@ -199,7 +199,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
         Composite left = createGridComposite(toolkit, root, 1, true, GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL
                 | GridData.GRAB_VERTICAL);
-        productAttributesSection = new GenerationAttributesSection(generation, left, toolkit);
+        productAttributesSection = new AttributeValuesSection(generation, left, toolkit);
         formulasSection = new FormulasSection(generation, left, toolkit);
         validationRuleSection = new ValidationRuleConfigSection(generation, left, toolkit);
 
