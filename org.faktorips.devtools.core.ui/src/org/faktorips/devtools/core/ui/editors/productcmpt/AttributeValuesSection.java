@@ -20,6 +20,10 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -37,6 +41,7 @@ import org.faktorips.devtools.core.model.productcmpt.PropertyValueComparator;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
@@ -212,10 +217,34 @@ public class AttributeValuesSection extends IpsSection {
             ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
             EditField<String> field = ctrlFactory.createEditField(toolkit, rootPane, datatype, valueset,
                     generation.getIpsProject());
-            Control ctrl = field.getControl();
+            final Control ctrl = field.getControl();
             controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);
             addFocusControl(ctrl);
             editControls.add(ctrl);
+
+            // Paint ChangeOverTime Icon next to the text field
+            if (toDisplay.getParent() instanceof IProductCmptGeneration) {
+                ctrl.getParent().addPaintListener(new PaintListener() {
+
+                    @Override
+                    public void paintControl(PaintEvent e) {
+                        if (ctrl.isDisposed()) {
+                            return;
+                        }
+                        Image image = IpsUIPlugin.getImageHandling().getImage(OverlayIcons.CHANGEOVERTIME_OVR_DESC);
+                        if (image == null) {
+                            return;
+                        }
+                        int x = -9; // image size is 8
+                        int y = 0;
+
+                        Point global = ctrl.toDisplay(x, y);
+                        Point local = ((Control)e.widget).toControl(global);
+                        e.gc.drawImage(image, local.x, local.y);
+
+                    }
+                });
+            }
 
         } catch (CoreException e) {
             Text text = toolkit.createText(rootPane);
@@ -224,5 +253,4 @@ public class AttributeValuesSection extends IpsSection {
             controller.add(text, toDisplay, IConfigElement.PROPERTY_VALUE);
         }
     }
-
 }
