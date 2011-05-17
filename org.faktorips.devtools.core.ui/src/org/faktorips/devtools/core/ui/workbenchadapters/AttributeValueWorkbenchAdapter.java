@@ -54,8 +54,21 @@ public class AttributeValueWorkbenchAdapter extends IpsObjectPartWorkbenchAdapte
         }
 
         IAttributeValue attributeValue = (IAttributeValue)ipsObjectPart;
-        String caption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(attributeValue);
-        return caption + '=' + attributeValue.getValue();
-    }
 
+        String caption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(attributeValue);
+
+        String value = attributeValue.getValue();
+        try {
+            // try to get formatted value
+            IProductCmptTypeAttribute attribute = attributeValue.findAttribute(attributeValue.getIpsProject());
+            if (attribute != null) {
+                value = IpsUIPlugin.getDefault().getDatatypeFormatter()
+                        .formatValue(attribute.findDatatype(attributeValue.getIpsProject()), attributeValue.getValue());
+            }
+        } catch (CoreException e) {
+            // ignore exceptions because we log a bunch of these if there is any
+            // the value is also displayed unformatted
+        }
+        return caption + ": " + value; //$NON-NLS-1$
+    }
 }
