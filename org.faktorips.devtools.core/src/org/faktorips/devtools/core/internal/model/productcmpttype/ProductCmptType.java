@@ -37,7 +37,6 @@ import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -166,8 +165,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public List<IProductCmptProperty> findProdDefProperties(IIpsProject ipsProject) throws CoreException {
-        ProdDefPropertyCollector collector = new ProdDefPropertyCollector(null, ipsProject);
+    public List<IProductCmptProperty> findProductCmptProperties(IIpsProject ipsProject) throws CoreException {
+        ProductCmptPropertyCollector collector = new ProductCmptPropertyCollector(null, ipsProject);
         collector.start(this);
         return collector.getProperties();
     }
@@ -181,10 +180,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * @param propertyType The type of properties that should be included in the map.
      *            <code>null</code> indicates that all properties should be included in the map.
      */
-    public LinkedHashMap<String, IProductCmptProperty> getProdDefPropertiesMap(ProductCmptPropertyType propertyType,
+    public LinkedHashMap<String, IProductCmptProperty> getProductCpmtPropertyMap(ProductCmptPropertyType propertyType,
             IIpsProject ipsProject) throws CoreException {
 
-        ProdDefPropertyCollector collector = new ProdDefPropertyCollector(propertyType, ipsProject);
+        ProductCmptPropertyCollector collector = new ProductCmptPropertyCollector(propertyType, ipsProject);
         collector.start(this);
         return collector.getPropertyMap();
     }
@@ -616,7 +615,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     }
 
-    private static class ProdDefPropertyCollector extends TypeHierarchyVisitor<IProductCmptType> {
+    private static class ProductCmptPropertyCollector extends TypeHierarchyVisitor<IProductCmptType> {
 
         // if set, indicates the type of properties that are collected
         // if null, all properties are collected
@@ -626,10 +625,11 @@ public class ProductCmptType extends Type implements IProductCmptType {
         private List<ITableStructureUsage> myTableStructureUsages = new ArrayList<ITableStructureUsage>();
         private List<IProductCmptTypeMethod> myFormulaSignatures = new ArrayList<IProductCmptTypeMethod>();
         private List<IPolicyCmptTypeAttribute> myPolicyCmptTypeAttributes = new ArrayList<IPolicyCmptTypeAttribute>();
+        private List<IValidationRule> myValidationRules = new ArrayList<IValidationRule>();
 
         private Set<IPolicyCmptType> visitedPolicyCmptTypes = new HashSet<IPolicyCmptType>();
 
-        public ProdDefPropertyCollector(ProductCmptPropertyType propertyType, IIpsProject ipsProject) {
+        public ProductCmptPropertyCollector(ProductCmptPropertyType propertyType, IIpsProject ipsProject) {
             super(ipsProject);
             this.propertyType = propertyType;
         }
@@ -638,57 +638,56 @@ public class ProductCmptType extends Type implements IProductCmptType {
         protected boolean visit(IProductCmptType currentType) throws CoreException {
             ProductCmptType currType = (ProductCmptType)currentType;
             if (propertyType == null || ProductCmptPropertyType.VALUE.equals(propertyType)) {
-                addInReverseOrder(currType.attributes, myAttributes);
+                myAttributes.addAll(0, currType.attributes.asList());
             }
             if (propertyType == null || ProductCmptPropertyType.TABLE_CONTENT_USAGE.equals(propertyType)) {
-                addInReverseOrder(currType.tableStructureUsages, myTableStructureUsages);
+                myTableStructureUsages.addAll(0, currType.tableStructureUsages.asList());
             }
             if (propertyType == null || ProductCmptPropertyType.FORMULA.equals(propertyType)) {
-                for (int i = currType.methods.size() - 1; i >= 0; i--) {
-                    IProductCmptTypeMethod method = currType.methods.getPart(i);
+                List<IProductCmptTypeMethod> methodsToAdd = new ArrayList<IProductCmptTypeMethod>();
+                for (IProductCmptTypeMethod method : currType.methods) {
                     if (method.isFormulaSignatureDefinition()) {
-                        myFormulaSignatures.add(method);
+                        methodsToAdd.add(method);
                     }
                 }
+                myFormulaSignatures.addAll(0, methodsToAdd);
+            }
+            IPolicyCmptType policyCmptType = currentType.findPolicyCmptType(ipsProject);
+            if (policyCmptType == null || visitedPolicyCmptTypes.contains(policyCmptType)) {
+                return true;
             }
             if (propertyType == null || ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET.equals(propertyType)) {
-                IPolicyCmptType policyCmptType = currentType.findPolicyCmptType(ipsProject);
-                if (policyCmptType == null || visitedPolicyCmptTypes.contains(policyCmptType)) {
-                    return true;
-                }
                 visitedPolicyCmptTypes.add(policyCmptType);
-                List<IPolicyCmptTypeAttribute> polAttr = policyCmptType.getPolicyCmptTypeAttributes();
-                for (int i = polAttr.size() - 1; i >= 0; i--) {
-                    if (polAttr.get(i).isProductRelevant() && polAttr.get(i).isChangeable()) {
-                        myPolicyCmptTypeAttributes.add(polAttr.get(i));
+                List<IPolicyCmptTypeAttribute> attrsToAdd = new ArrayList<IPolicyCmptTypeAttribute>();
+                List<IPolicyCmptTypeAttribute> polAttrs = policyCmptType.getPolicyCmptTypeAttributes();
+                for (IPolicyCmptTypeAttribute attr : polAttrs) {
+                    if (attr.isProductRelevant() && attr.isChangeable()) {
+                        attrsToAdd.add(attr);
                     }
                 }
+                myPolicyCmptTypeAttributes.addAll(0, attrsToAdd);
+            }
+            if (propertyType == null || ProductCmptPropertyType.VALIDATION_RULE_CONFIG.equals(propertyType)) {
+                visitedPolicyCmptTypes.add(policyCmptType);
+                List<IValidationRule> rulesToAdd = new ArrayList<IValidationRule>();
+                List<IValidationRule> rules = policyCmptType.getValidationRules();
+                for (IValidationRule rule : rules) {
+                    if (rule.isConfigurableByProductComponent()) {
+                        rulesToAdd.add(rule);
+                    }
+                }
+                myValidationRules.addAll(0, rulesToAdd);
             }
             return true;
         }
 
-        private <T extends IIpsObjectPart> void addInReverseOrder(IpsObjectPartCollection<T> source,
-                Collection<T> target) {
-            int size = source.size();
-            for (int i = size - 1; i >= 0; i--) {
-                target.add(source.getPart(i));
-            }
-        }
-
         public List<IProductCmptProperty> getProperties() {
             List<IProductCmptProperty> props = new ArrayList<IProductCmptProperty>();
-            for (int i = myAttributes.size() - 1; i >= 0; i--) {
-                props.add(myAttributes.get(i));
-            }
-            for (int i = myTableStructureUsages.size() - 1; i >= 0; i--) {
-                props.add(myTableStructureUsages.get(i));
-            }
-            for (int i = myFormulaSignatures.size() - 1; i >= 0; i--) {
-                props.add(myFormulaSignatures.get(i));
-            }
-            for (int i = myPolicyCmptTypeAttributes.size() - 1; i >= 0; i--) {
-                props.add(myPolicyCmptTypeAttributes.get(i));
-            }
+            props.addAll(myAttributes);
+            props.addAll(myTableStructureUsages);
+            props.addAll(myFormulaSignatures);
+            props.addAll(myPolicyCmptTypeAttributes);
+            props.addAll(myValidationRules);
             return props;
         }
 
@@ -699,6 +698,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
             add(propertyMap, myTableStructureUsages);
             add(propertyMap, myFormulaSignatures);
             add(propertyMap, myPolicyCmptTypeAttributes);
+            add(propertyMap, myValidationRules);
             return propertyMap;
         }
 
@@ -711,7 +711,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         private int size() {
             return myAttributes.size() + myTableStructureUsages.size() + myFormulaSignatures.size()
-                    + myPolicyCmptTypeAttributes.size();
+                    + myPolicyCmptTypeAttributes.size() + myValidationRules.size();
         }
     }
 

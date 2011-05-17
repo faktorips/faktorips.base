@@ -81,39 +81,11 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
         for (int i = 0; i < ProductCmptPropertyType.values().length; i++) {
             ProductCmptPropertyType propertyType = ProductCmptPropertyType.values()[i];
             LinkedHashMap<String, IProductCmptProperty> propertiesMap = ((ProductCmptType)productCmptType)
-                    .getProdDefPropertiesMap(propertyType, ipsProject);
+                    .getProductCpmtPropertyMap(propertyType, ipsProject);
             checkForMissingPropertyValues(propertiesMap);
             checkForInconsistentPropertyValues(propertiesMap, propertyType);
         }
     }
-
-    // private void createEntriesForValidationRules() throws CoreException {
-    // createMissingRuleConfigEntries();
-    // createConfigWithoutRuleEntries();
-    // }
-    //
-    // private void createMissingRuleConfigEntries() throws CoreException {
-    // IPolicyCmptType policyCmptType = productCmptType.findPolicyCmptType(ipsProject);
-    // if (policyCmptType != null) {
-    // List<IValidationRule> rules = policyCmptType.findAllValidationRules(ipsProject);
-    // for (IValidationRule vRule : rules) {
-    // if (vRule.isConfigurableByProductComponent()
-    // && generation.getValidationRuleConfig(vRule.getName()) == null) {
-    // new MissingValidationRuleConfigEntry(this, vRule);
-    // }
-    // }
-    // }
-    // }
-    //
-    // private void createConfigWithoutRuleEntries() throws CoreException {
-    // List<IValidationRuleConfig> rules = generation.getValidationRuleConfigs();
-    // for (IValidationRuleConfig ruleConfig : rules) {
-    // IValidationRule rule = ruleConfig.findValidationRule(ipsProject);
-    // if (rule == null || !rule.isConfigurableByProductComponent()) {
-    // new ConfigWithoutValidationRuleEntry(this, ruleConfig);
-    // }
-    // }
-    // }
 
     private void checkForMissingPropertyValues(LinkedHashMap<String, IProductCmptProperty> propertiesMap) {
         for (IProductCmptProperty property : propertiesMap.values()) {

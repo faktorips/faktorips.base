@@ -335,7 +335,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Returns the types product definition properties including properties defined in one of the
      * type's supertypes.
      */
-    public List<IProductCmptProperty> findProdDefProperties(IIpsProject ipsProject) throws CoreException;
+    public List<IProductCmptProperty> findProductCmptProperties(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the product definition property with the given name and type. If no such property is

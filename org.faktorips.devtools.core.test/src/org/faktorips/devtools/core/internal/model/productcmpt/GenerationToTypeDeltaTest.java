@@ -115,33 +115,33 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
     @Test
     public void testAttributes() throws CoreException {
         IProductCmptTypeAttribute attribute1 = productCmptType.newProductCmptTypeAttribute("a1");
-        IProductCmptTypeAttribute attribute2 = superProductCmptType.newProductCmptTypeAttribute("a2");
+        IProductCmptTypeAttribute attribute2 = superProductCmptType.newProductCmptTypeAttribute("a_super");
 
         IGenerationToTypeDelta delta = generation.computeDeltaToModel(ipsProject);
         IDeltaEntry[] entries = delta.getEntries();
         assertEquals(2, entries.length);
-        assertEquals("a1", ((IDeltaEntryForProperty)entries[0]).getPropertyName());
-        assertEquals("a2", ((IDeltaEntryForProperty)entries[1]).getPropertyName());
-        assertEquals(DeltaType.MISSING_PROPERTY_VALUE, entries[1].getDeltaType());
-        assertEquals(ProductCmptPropertyType.VALUE, ((IDeltaEntryForProperty)entries[1]).getPropertyType());
+        assertEquals(DeltaType.MISSING_PROPERTY_VALUE, entries[0].getDeltaType());
+        assertEquals(ProductCmptPropertyType.VALUE, ((IDeltaEntryForProperty)entries[0]).getPropertyType());
+        assertEquals("a_super", ((IDeltaEntryForProperty)entries[0]).getPropertyName());
+        assertEquals("a1", ((IDeltaEntryForProperty)entries[1]).getPropertyName());
 
         delta.fix();
         delta = generation.computeDeltaToModel(ipsProject);
         entries = delta.getEntries();
         assertEquals(0, entries.length);
         assertNotNull(generation.getAttributeValue("a1"));
-        assertNotNull(generation.getAttributeValue("a2"));
+        assertNotNull(generation.getAttributeValue("a_super"));
 
         attribute1.delete();
         attribute2.delete();
-        productCmptType.newProductCmptTypeAttribute("a3");
+        productCmptType.newProductCmptTypeAttribute("a2");
 
         delta = generation.computeDeltaToModel(ipsProject);
         entries = delta.getEntries();
         assertEquals(3, entries.length);
-        assertEquals("a3", ((IDeltaEntryForProperty)entries[0]).getPropertyName());
-        assertEquals("a1", ((IDeltaEntryForProperty)entries[1]).getPropertyName());
-        assertEquals("a2", ((IDeltaEntryForProperty)entries[2]).getPropertyName());
+        assertEquals("a2", ((IDeltaEntryForProperty)entries[0]).getPropertyName());
+        assertEquals("a_super", ((IDeltaEntryForProperty)entries[1]).getPropertyName());
+        assertEquals("a1", ((IDeltaEntryForProperty)entries[2]).getPropertyName());
         assertEquals(DeltaType.MISSING_PROPERTY_VALUE, entries[0].getDeltaType());
         assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, entries[1].getDeltaType());
         assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, entries[2].getDeltaType());
@@ -152,8 +152,8 @@ public class GenerationToTypeDeltaTest extends AbstractIpsPluginTest {
         entries = delta.getEntries();
         assertEquals(0, entries.length);
         assertNull(generation.getAttributeValue("a1"));
-        assertNull(generation.getAttributeValue("a2"));
-        assertNotNull(generation.getAttributeValue("a3"));
+        assertNull(generation.getAttributeValue("a_super"));
+        assertNotNull(generation.getAttributeValue("a2"));
     }
 
     @Test

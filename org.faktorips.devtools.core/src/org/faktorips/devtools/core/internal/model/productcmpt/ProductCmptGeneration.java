@@ -155,6 +155,9 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         if (type.equals(ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET)) {
             return getConfigElement(property.getPropertyName());
         }
+        if (type.equals(ProductCmptPropertyType.VALIDATION_RULE_CONFIG)) {
+            return getValidationRuleConfig(property.getPropertyName());
+        }
         throw new RuntimeException("Unknown property type " + type); //$NON-NLS-1$
     }
 
@@ -221,7 +224,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             return newConfigElement((IPolicyCmptTypeAttribute)property);
         }
         if (ProductCmptPropertyType.VALIDATION_RULE_CONFIG.equals(type)) {
-            return newConfigElement((IPolicyCmptTypeAttribute)property);
+            return newValidationRuleConfig((IValidationRule)property);
         }
         throw new RuntimeException("Unknown type " + type); //$NON-NLS-1$
     }

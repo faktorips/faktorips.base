@@ -67,7 +67,7 @@ public class PropertyValueComparator implements Comparator<IPropertyValue> {
         try {
             if (type != null) {
                 propIndexMap = new HashMap<String, Integer>();
-                List<IProductCmptProperty> props = type.findProdDefProperties(ipsProject);
+                List<IProductCmptProperty> props = type.findProductCmptProperties(ipsProject);
                 int i = 0;
                 for (IProductCmptProperty property : props) {
                     propIndexMap.put(property.getPropertyName(), i);
