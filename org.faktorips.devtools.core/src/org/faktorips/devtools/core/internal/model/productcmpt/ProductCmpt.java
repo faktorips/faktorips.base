@@ -44,7 +44,6 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptKind;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.ProductCmptValidations;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
@@ -61,7 +60,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class ProductCmpt extends TimedIpsObject implements IProductCmpt, IPropertyValueContainer {
+public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     private final AttributeValueContainer attributeValueContainer;
     private String productCmptType = ""; //$NON-NLS-1$

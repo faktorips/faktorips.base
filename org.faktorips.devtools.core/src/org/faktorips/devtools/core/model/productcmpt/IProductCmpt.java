@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 /**
  * A part (or component) of a product.
  */
-public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject {
+public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IPropertyValueContainer {
 
     /**
      * The name of the product component type property
