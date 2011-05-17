@@ -23,11 +23,9 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.controls.Checkbox;
 
 /**
  * A wizard to guide the user trough a Faktor-IPS rename refactoring.
@@ -75,11 +73,12 @@ public final class IpsRenameRefactoringWizard extends IpsRefactoringWizard {
          */
         private Text newPluralNameTextField;
 
-        /**
-         * Check box that enables the user to decide whether the runtime ID of an
-         * {@link IProductCmpt} should be adapted.
-         */
-        private Checkbox adaptRuntimeIdField;
+        // TODO FIPS-46
+        // /**
+        // * Check box that enables the user to decide whether the runtime ID of an
+        // * {@link IProductCmpt} should be adapted.
+        // */
+        // private Checkbox adaptRuntimeIdField;
 
         RenameUserInputPage() {
             super("RenameUserInputPage"); //$NON-NLS-1$
@@ -120,11 +119,12 @@ public final class IpsRenameRefactoringWizard extends IpsRefactoringWizard {
                 });
             }
 
-            if (getIpsElement() instanceof IProductCmpt) {
-                getUiToolkit().createLabel(fieldsComposite, ""); //$NON-NLS-1$
-                adaptRuntimeIdField = getUiToolkit().createCheckbox(fieldsComposite,
-                        Messages.IpsRenameAndMoveUserInputPage_labelRefactorRuntimeId);
-            }
+            // TODO FIPS-46
+            // if (getIpsElement() instanceof IProductCmpt) {
+            //                getUiToolkit().createLabel(fieldsComposite, ""); //$NON-NLS-1$
+            // adaptRuntimeIdField = getUiToolkit().createCheckbox(fieldsComposite,
+            // Messages.IpsRenameAndMoveUserInputPage_labelRefactorRuntimeId);
+            // }
 
             setFocus();
             setPageComplete(false);
@@ -146,9 +146,10 @@ public final class IpsRenameRefactoringWizard extends IpsRefactoringWizard {
                 getIpsRenameProcessor().setNewPluralName(newPluralNameTextField.getText());
             }
 
-            if (adaptRuntimeIdField != null) {
-                getIpsRenameProcessor().setAdaptRuntimeId(adaptRuntimeIdField.isChecked());
-            }
+            // TODO FIPS-46
+            // if (adaptRuntimeIdField != null) {
+            // getIpsRenameProcessor().setAdaptRuntimeId(adaptRuntimeIdField.isChecked());
+            // }
 
             status.merge(getIpsRefactoring().validateUserInput(new NullProgressMonitor()));
         }
