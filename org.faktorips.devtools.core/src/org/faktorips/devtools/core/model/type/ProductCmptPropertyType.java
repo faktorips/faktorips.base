@@ -61,10 +61,6 @@ public enum ProductCmptPropertyType {
             return IAttributeValue.class;
         }
 
-        @Override
-        protected int getOrderNumber() {
-            return 0;
-        }
     },
 
     /**
@@ -86,10 +82,6 @@ public enum ProductCmptPropertyType {
             return ITableContentUsage.class;
         }
 
-        @Override
-        protected int getOrderNumber() {
-            return 1;
-        }
     },
 
     /**
@@ -111,10 +103,6 @@ public enum ProductCmptPropertyType {
             return IFormula.class;
         }
 
-        @Override
-        protected int getOrderNumber() {
-            return 2;
-        }
     },
 
     /**
@@ -136,10 +124,6 @@ public enum ProductCmptPropertyType {
             return IConfigElement.class;
         }
 
-        @Override
-        protected int getOrderNumber() {
-            return 3;
-        }
     },
 
     /**
@@ -162,10 +146,6 @@ public enum ProductCmptPropertyType {
             return IValidationRuleConfig.class;
         }
 
-        @Override
-        protected int getOrderNumber() {
-            return 4;
-        }
     };
 
     private final String name;
@@ -190,12 +170,4 @@ public enum ProductCmptPropertyType {
 
     public abstract Class<? extends IPropertyValue> getValueClass();
 
-    /**
-     * @return the number with which {@link ProductCmptPropertyTypeUngeniric}s are ordered
-     */
-    protected abstract int getOrderNumber();
-
-    public int compareTo(ProductCmptPropertyTypeUngeniric propertyType) {
-        return propertyType.getOrderNumber() - getOrderNumber();
-    }
 }
