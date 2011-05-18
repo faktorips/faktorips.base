@@ -452,4 +452,9 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         return getName();
     }
 
+    @Override
+    public boolean isChangingOverTime() {
+        return true;
+    }
+
 }

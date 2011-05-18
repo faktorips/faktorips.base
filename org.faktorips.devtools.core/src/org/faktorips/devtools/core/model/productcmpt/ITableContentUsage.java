@@ -57,6 +57,11 @@ public interface ITableContentUsage extends IPropertyValue {
     public final static String MSGCODE_NO_TYPE = MSGCODE_PREFIX + "NoProductCmptType"; //$NON-NLS-1$
 
     /**
+     * Returns the generation this formula belongs to.
+     */
+    public IProductCmptGeneration getProductCmptGeneration();
+
+    /**
      * Set the role name of the table structure usage implemented by this content usage.
      * 
      * @param structureUsageRolename The role name of the table structure usage referred to by this

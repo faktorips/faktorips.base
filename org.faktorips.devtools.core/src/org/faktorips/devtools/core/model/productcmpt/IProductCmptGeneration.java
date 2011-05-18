@@ -101,6 +101,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
      * @throws CoreException if an exception occurs while searching for the type.
      * @throws NullPointerException if ipsProject is <code>null</code>.
      */
+    @Override
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
 
     /**

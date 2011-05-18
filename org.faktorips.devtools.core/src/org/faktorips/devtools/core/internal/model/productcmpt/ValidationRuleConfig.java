@@ -120,11 +120,6 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
     }
 
     @Override
-    public IProductCmptGeneration getProductCmptGeneration() {
-        return (IProductCmptGeneration)getParent();
-    }
-
-    @Override
     public String getPropertyName() {
         return getName();
     }

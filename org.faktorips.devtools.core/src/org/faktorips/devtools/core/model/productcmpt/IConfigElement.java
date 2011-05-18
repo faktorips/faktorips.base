@@ -102,7 +102,6 @@ public interface IConfigElement extends IPropertyValue, IValueSetOwner, IDescrib
     /**
      * Returns the product component generation this configuration element belongs to.
      */
-    @Override
     public IProductCmptGeneration getProductCmptGeneration();
 
     /**

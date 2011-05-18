@@ -44,12 +44,6 @@ public interface IAttributeValue extends IPropertyValue {
     public final static String MSGCODE_VALUE_NOT_IN_SET = MSGCODE_PREFIX + "ValueNotInSet"; //$NON-NLS-1$
 
     /**
-     * Returns the product component generation this value belongs to.
-     */
-    @Override
-    public IProductCmptGeneration getProductCmptGeneration();
-
-    /**
      * Returns the attribute's value.
      */
     public String getValue();

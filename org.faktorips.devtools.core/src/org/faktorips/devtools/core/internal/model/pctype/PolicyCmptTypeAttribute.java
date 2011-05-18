@@ -447,4 +447,9 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         return (IPersistentAttributeInfo)persistenceAttributeInfo;
     }
 
+    @Override
+    public boolean isChangingOverTime() {
+        return true;
+    }
+
 }

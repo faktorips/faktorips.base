@@ -67,12 +67,4 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      */
     public void setChangingOverTime(boolean changesOverTime);
 
-    /**
-     * Returns whether or not this attribute should changes over time.
-     * 
-     * @return <code>true</code> if every {@link IProductCmptGeneration} may specify a different
-     *         value for this attribute, <code>false</code> if the value is the same for all
-     *         generations.
-     */
-    public boolean isChangingOverTime();
 }

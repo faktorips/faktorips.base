@@ -28,11 +28,6 @@ import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 public interface IPropertyValue extends IIpsObjectPart {
 
     /**
-     * Returns the product component generation this value belongs to.
-     */
-    public IProductCmptGeneration getProductCmptGeneration();
-
-    /**
      * Returns the name of the product definition property, this is a value of.
      * 
      * @see IProductCmptProperty
@@ -63,6 +58,11 @@ public interface IPropertyValue extends IIpsObjectPart {
      */
     public String getPropertyValue();
 
+    /**
+     * Returns the {@link IPropertyValueContainer} this property value belongs to.
+     * 
+     * @return The container this value belongs to
+     */
     public IPropertyValueContainer getPropertyValueContainer();
 
 }

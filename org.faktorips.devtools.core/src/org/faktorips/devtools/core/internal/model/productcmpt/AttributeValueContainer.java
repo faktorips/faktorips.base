@@ -105,27 +105,6 @@ public class AttributeValueContainer {
         classToInstancesMap.remove(value.getPropertyType().getValueClass(), value);
     }
 
-    /**
-     * 
-     * @param type the type of property
-     * @param attributeName the name of the attribute
-     * @return the corresponding property value or <code>null</code> if it is either non existent or
-     *         if it is not of the indicated type.
-     */
-    private IPropertyValue getPropertyValue(ProductCmptPropertyType type, String attributeName) {
-        if (attributeName == null) {
-            return null;
-        }
-        IPropertyValue value = getPropertyValue(attributeName);
-
-        Class<? extends IPropertyValue> clazz = type.getValueClass();
-        if (clazz.isInstance(value)) {
-            return clazz.cast(value);
-        } else {
-            return null;
-        }
-    }
-
     private List<IPropertyValue> getAllPropertyValues() {
         List<IPropertyValue> allValues = new ArrayList<IPropertyValue>();
         allValues.addAll(classToInstancesMap.values());
@@ -141,6 +120,26 @@ public class AttributeValueContainer {
 
     public IAttributeValue getAttributeValue(String attribute) {
         return (IAttributeValue)getPropertyValue(ProductCmptPropertyType.VALUE, attribute);
+    }
+
+    /**
+     * 
+     * @param type the type of property
+     * @param attributeName the name of the attribute
+     * @return the corresponding property value or <code>null</code> if it is either non existent or
+     *         if it is not of the indicated type.
+     */
+    private IPropertyValue getPropertyValue(ProductCmptPropertyType type, String attributeName) {
+        if (attributeName == null) {
+            return null;
+        }
+        for (IPropertyValue iPropertyValue : classToInstancesMap.get(type
+                .getValueClass())) {
+            if (attributeName.equals(iPropertyValue.getName())) {
+                return iPropertyValue;
+            }
+        }
+        return null;
     }
 
     public IAttributeValue newAttributeValue(String partId) {

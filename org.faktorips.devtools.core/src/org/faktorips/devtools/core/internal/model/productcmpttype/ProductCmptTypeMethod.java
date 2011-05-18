@@ -201,4 +201,9 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
 
     }
 
+    @Override
+    public boolean isChangingOverTime() {
+        return true;
+    }
+
 }

@@ -109,6 +109,7 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProperty
      * 
      * @throws CoreException if an exception occurs while searching for the type.
      */
+    @Override
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
 
     /**

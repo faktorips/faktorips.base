@@ -327,12 +327,14 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
             sb.append(getValueSetContent(configElement));
         } else if (getIpsElement() instanceof IPropertyValue) {
             IPropertyValue value = (IPropertyValue)getIpsElement();
-            appendGenerationDateForLineStart(value.getProductCmptGeneration(), sb);
+            // TODO XXX FIPS-472
+            // appendGenerationDateForLineStart(value.getProductCmptGeneration(), sb);
             sb.append(TAB).append(TAB).append(TAB).append(value.getPropertyName()).append(COLON_BLANK);
             sb.append(value.getPropertyValue());
         } else if (getIpsElement() instanceof IValidationRuleConfig) {
             IValidationRuleConfig rule = (IValidationRuleConfig)getIpsElement();
-            appendGenerationDateForLineStart(rule.getProductCmptGeneration(), sb);
+            // TODO XXX FIPS-472
+            // appendGenerationDateForLineStart(rule.getProductCmptGeneration(), sb);
             sb.append(TAB).append(TAB).append(TAB).append(rule.getName()).append(COLON_BLANK);
             sb.append(rule.isActive() ? Messages.ProductCmptCompareItem_VRule_active
                     : Messages.ProductCmptCompareItem_VRule_inactive);

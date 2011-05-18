@@ -347,4 +347,9 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
 
     }
 
+    @Override
+    public boolean isChangingOverTime() {
+        return true;
+    }
+
 }

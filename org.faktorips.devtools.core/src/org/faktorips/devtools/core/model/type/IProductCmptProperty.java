@@ -17,6 +17,7 @@ import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTyp
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 
@@ -49,4 +50,14 @@ public interface IProductCmptProperty extends IDescribedElement, ILabeledElement
      * {@link IProductCmpt}.
      */
     public String getPropertyName();
+
+    /**
+     * Returns whether or not this property could changes over time.
+     * 
+     * @return <code>true</code> if every {@link IProductCmptGeneration} may specify a different
+     *         value for this property, <code>false</code> if the value is the same for all
+     *         generations.
+     */
+    public boolean isChangingOverTime();
+
 }

@@ -23,7 +23,6 @@ import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -67,11 +66,6 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     @Override
     public final IPropertyValueContainer getPropertyValueContainer() {
         return (IPropertyValueContainer)getParent();
-    }
-
-    @Override
-    public IProductCmptGeneration getProductCmptGeneration() {
-        return (IProductCmptGeneration)getParent();
     }
 
     @Override
@@ -126,7 +120,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
 
     @Override
     public IProductCmptTypeAttribute findAttribute(IIpsProject ipsProject) throws CoreException {
-        IProductCmptType type = getProductCmptGeneration().findProductCmptType(ipsProject);
+        IProductCmptType type = getPropertyValueContainer().findProductCmptType(ipsProject);
         if (type == null) {
             return null;
         }
@@ -152,8 +146,8 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         super.validateThis(list, ipsProject);
         IProductCmptTypeAttribute attr = findAttribute(ipsProject);
         if (attr == null) {
-            String typeLabel = getProductCmptGeneration().getProductCmpt().getProductCmptType();
-            IProductCmptType productCmptType = getProductCmptGeneration().findProductCmptType(ipsProject);
+            String typeLabel = getPropertyValueContainer().getProductCmptType();
+            IProductCmptType productCmptType = getPropertyValueContainer().findProductCmptType(ipsProject);
             if (productCmptType != null) {
                 typeLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(productCmptType);
             }

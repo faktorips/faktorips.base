@@ -62,7 +62,6 @@ public interface IFormula extends IPropertyValue, IDescribedElement {
     /**
      * Returns the generation this formula belongs to.
      */
-    @Override
     public IProductCmptGeneration getProductCmptGeneration();
 
     /**

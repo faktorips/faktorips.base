@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 
@@ -69,8 +70,18 @@ public interface IPropertyValueContainer extends IIpsObjectPartContainer {
     public IGenerationToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns the qualified name of the product component type this product component is based on.
+     * Returns the qualified name of the product component type this property value container is
+     * based on.
      */
     public abstract String getProductCmptType();
+
+    /**
+     * Finding the {@link IProductCmptType} this this property value container is based on.
+     * 
+     * @param ipsProject The {@link IIpsProject} used as base project to search
+     * @return the product component type or null if no one was found
+     * @throws CoreException in case of getting a core exception while searching the model
+     */
+    public abstract IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
 
 }
