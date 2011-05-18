@@ -127,13 +127,6 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
     public IAttributeValue[] getAttributeValues();
 
     /**
-     * Returns the attribute value for the given attribute name. Returns <code>null</code> if the
-     * generation has no value for the given attribute. Returns <code>null</code> if attribute is
-     * <code>null</code>.
-     */
-    public IAttributeValue getAttributeValue(String attribute);
-
-    /**
      * Creates a new attribute value.
      */
     public IAttributeValue newAttributeValue();

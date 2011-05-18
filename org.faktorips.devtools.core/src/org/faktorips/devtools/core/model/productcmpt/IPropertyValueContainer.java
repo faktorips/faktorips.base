@@ -60,6 +60,13 @@ public interface IPropertyValueContainer extends IIpsObjectPartContainer {
     public abstract IPropertyValue newPropertyValue(IProductCmptProperty property);
 
     /**
+     * Returns the attribute value for the given attribute name. Returns <code>null</code> if the
+     * generation has no value for the given attribute. Returns <code>null</code> if attribute is
+     * <code>null</code>.
+     */
+    public IAttributeValue getAttributeValue(String attribute);
+
+    /**
      * Returns the delta between this product component and it's product component type.
      * 
      * @param ipsProject The ips project which search path is used to search the type.
@@ -73,7 +80,7 @@ public interface IPropertyValueContainer extends IIpsObjectPartContainer {
      * Returns the qualified name of the product component type this property value container is
      * based on.
      */
-    public abstract String getProductCmptType();
+    public String getProductCmptType();
 
     /**
      * Finding the {@link IProductCmptType} this this property value container is based on.
@@ -82,6 +89,6 @@ public interface IPropertyValueContainer extends IIpsObjectPartContainer {
      * @return the product component type or null if no one was found
      * @throws CoreException in case of getting a core exception while searching the model
      */
-    public abstract IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
 
 }

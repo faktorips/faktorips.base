@@ -36,14 +36,15 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptKind;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.ProductCmptValidations;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
@@ -269,7 +270,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
         for (IIpsObjectGeneration generation : generations) {
             if (generation instanceof IProductCmptGeneration) {
-                IPropertyValueContainerToTypeDelta delta = ((IProductCmptGeneration)generation).computeDeltaToModel(ipsProject);
+                IPropertyValueContainerToTypeDelta delta = ((IProductCmptGeneration)generation)
+                        .computeDeltaToModel(ipsProject);
                 if (!delta.isEmpty()) {
                     return true;
                 }
@@ -339,6 +341,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             return attributeValueContainer.newPropertyValue(property, getNextPartId());
         }
         return null;
+    }
+
+    @Override
+    public IAttributeValue getAttributeValue(String attribute) {
+        return attributeValueContainer.getAttributeValue(attribute);
     }
 
     @Override
