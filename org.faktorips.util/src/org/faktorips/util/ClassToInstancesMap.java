@@ -81,7 +81,7 @@ public class ClassToInstancesMap<T> {
      * @param key The class you want to get the number of instances for
      * @return the number of values stored for the specified class.
      */
-    public <K> int size(Class<K> key) {
+    public <K extends T> int size(Class<K> key) {
         return getInstanceList(key).size();
     }
 
@@ -118,7 +118,7 @@ public class ClassToInstancesMap<T> {
      * @param object the object you want to remove
      * @return true if the object was found in the list.
      */
-    public <K> boolean remove(Class<K> key, K object) {
+    public <K extends T> boolean remove(Class<K> key, K object) {
         List<K> instanceList = getInstanceList(key);
         return instanceList.remove(object);
     }
@@ -130,7 +130,7 @@ public class ClassToInstancesMap<T> {
      * @param key The class of the objects you want to remove
      * @return the list of removed objects
      */
-    public synchronized <K> List<K> removeAll(Class<K> key) {
+    public synchronized <K extends T> List<K> removeAll(Class<K> key) {
         List<K> list = getInstanceList(key);
         List<K> result = new ArrayList<K>(list);
         list.clear();
@@ -163,19 +163,20 @@ public class ClassToInstancesMap<T> {
      * concurrency problems. The double checking ideom works because we use a
      * {@link ConcurrentHashMap}.
      */
-    @SuppressWarnings("unchecked")
-    private <K> List<K> getInstanceList(Class<K> key) {
+    private <K extends T> List<K> getInstanceList(Class<K> key) {
         List<? extends T> list = internalMap.get(key);
         if (list == null) {
             synchronized (internalMap) {
                 list = internalMap.get(key);
                 if (list == null) {
                     list = new ArrayList<T>();
-                    internalMap.put((Class<? extends T>)key, list);
+                    internalMap.put(key, list);
                 }
             }
         }
-        return (List<K>)list;
+        @SuppressWarnings("unchecked")
+        List<K> castedList = (List<K>)list;
+        return castedList;
     }
 
 }
