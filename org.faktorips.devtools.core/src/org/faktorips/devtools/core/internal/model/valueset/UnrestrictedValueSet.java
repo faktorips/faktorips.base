@@ -151,21 +151,4 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         return type == null || !type.isPrimitive();
     }
 
-    /**
-     * Because this is an <strong>All</strong>Values valueset, this method throws an
-     * UnsupportedOperationException if the underlying datatype is non-primitive and this method is
-     * called with <code>false</code> for containsNull, too.
-     */
-    @Override
-    public void setContainsNull(boolean containsNull) {
-        if (getValueDatatype().isPrimitive() && containsNull) {
-            throw new UnsupportedOperationException(
-                    "Datatype is primitive, therefore this all-values valueset must not contain null"); //$NON-NLS-1$
-        }
-        if (!getValueDatatype().isPrimitive() && !containsNull) {
-            throw new UnsupportedOperationException(
-                    "Datatype is nonPrimitive, therefore this all-values valueset must contain null"); //$NON-NLS-1$
-        }
-    }
-
 }

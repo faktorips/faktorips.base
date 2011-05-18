@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.model.valueset;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -142,40 +141,6 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
 
         attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
         assertFalse(allValues.getContainsNull());
-    }
-
-    @Test
-    public void testSetContainsNull() throws Exception {
-        UnrestrictedValueSet allValues = (UnrestrictedValueSet)ce.getValueSet();
-
-        allValues.setContainsNull(true);
-
-        try {
-            allValues.setContainsNull(false);
-            fail();
-        } catch (UnsupportedOperationException e) {
-            // nothing to do
-        }
-
-        Datatype[] vds = ipsProject.findDatatypes(true, false);
-        ArrayList<Datatype> list = new ArrayList<Datatype>();
-        list.addAll(Arrays.asList(vds));
-        list.add(new PrimitiveIntegerDatatype());
-        IIpsProjectProperties properties = ipsProject.getProperties();
-        properties.setPredefinedDatatypesUsed(list.toArray(new ValueDatatype[list.size()]));
-        ipsProject.setProperties(properties);
-
-        attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
-
-        allValues.setContainsNull(false);
-
-        try {
-            allValues.setContainsNull(true);
-            fail();
-        } catch (UnsupportedOperationException e) {
-            // nothing to do
-        }
-
     }
 
 }

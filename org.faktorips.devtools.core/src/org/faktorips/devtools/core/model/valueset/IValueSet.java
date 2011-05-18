@@ -205,17 +205,6 @@ public interface IValueSet extends IIpsObjectPart {
     public boolean getContainsNull();
 
     /**
-     * Adds or removes the null-value from this value set.
-     * 
-     * @param containsNull <code>true</code> to add the null-value to this value set or
-     *            <code>false</code> to remove it.
-     * 
-     * @throws UnsupportedOperationException if the underlying data type does not support null
-     *             values.
-     */
-    public void setContainsNull(boolean containsNull);
-
-    /**
      * Marks this value set as abstract. An abstract value set does not define concrete values,
      * instead it is a substitute / constraint for the type of an allowed value set. An unrestricted
      * value set if also not abstract, as it defines all values of the underlying data type as

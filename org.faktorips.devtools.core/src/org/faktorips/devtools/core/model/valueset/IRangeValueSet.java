@@ -133,4 +133,12 @@ public interface IRangeValueSet extends IValueSet {
      */
     public String getStep();
 
+    /**
+     * Adds or removes the null-value from the range.
+     * 
+     * @param containsNull <code>true</code> to add the null-value to this range or
+     *            <code>false</code> to remove it.
+     */
+    public void setContainsNull(boolean containsNull);
+
 }

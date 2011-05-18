@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.valueset;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -59,12 +58,10 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     private ArrayList<String> values = new ArrayList<String>();
 
     /**
-     * A map with the values as keys and the index positions of the occurences of a value as
-     * "map value". If a value occurs once, the "map value" the index is stored as single Integer.
-     * If a value occurs more than once, the "map value" is a list containing the indexes of the
-     * occurrences.
+     * A map with the values as keys and the index positions of the occurrences of a value as
+     * "map value". The "map value" is a list containing the indexes of the occurrences.
      */
-    private Map<String, Object> valuesToIndexMap = new HashMap<String, Object>();
+    private Map<String, List<Integer>> valuesToIndexMap = new HashMap<String, List<Integer>>();
 
     public EnumValueSet(IIpsObjectPart parent, String partId) {
         super(ValueSetType.ENUM, parent, partId);
@@ -83,13 +80,12 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     @Override
     public void move(List<Integer> indexes, boolean up) {
         ListElementMover<String> mover = new ListElementMover<String>(values);
-
         int[] indexesArray = new int[indexes.size()];
         int i = 0;
         for (Integer index : indexes) {
             indexesArray[i] = index;
         }
-        int[] newIndexes = mover.move(indexesArray, up);
+        mover.move(indexesArray, up);
         refillValuesToIndexMap();
         objectHasChanged();
     }
@@ -97,11 +93,9 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     @Override
     public List<Integer> getPositions(String value) {
         List<Integer> positions = new ArrayList<Integer>();
-        Object o = valuesToIndexMap.get(value);
-        if (o instanceof Integer) {
-            positions.add((Integer)o);
-        } else if (o instanceof List) {
-            positions.addAll((Collection<? extends Integer>)o);
+        List<Integer> indexes = valuesToIndexMap.get(value);
+        if (indexes != null) {
+            positions.addAll(indexes);
             Collections.sort(positions);
         }
         return positions;
@@ -228,19 +222,11 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     }
 
     private void setValueWithoutTriggeringChangeEvent(String newValue, Integer newIndex) {
-        Object o = valuesToIndexMap.get(newValue);
-        if (o == null) {
-            valuesToIndexMap.put(newValue, newIndex);
-            return;
-        }
-        if (o instanceof Integer) {
-            List<Integer> indexList = new ArrayList<Integer>(2);
-            indexList.add((Integer)o);
-            indexList.add(newIndex);
+        List<Integer> indexList = valuesToIndexMap.get(newValue);
+        if (indexList == null) {
+            indexList = new ArrayList<Integer>(1);
             valuesToIndexMap.put(newValue, indexList);
-            return;
         }
-        List<Integer> indexList = (List<Integer>)o;
         indexList.add(newIndex);
     }
 
@@ -259,20 +245,11 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
     /**
      * Removes the value without triggering a change event. If the value occurs multiple times in
-     * the set, all occurences are removed.
+     * the set, all occurrences are removed.
      */
     private void removeWithoutTriggeringChangeEvents(String value) {
-        Object o = valuesToIndexMap.remove(value);
-        if (o == null) {
-            return;
-        }
-        if (o instanceof Integer) {
-            Integer index = (Integer)o;
-            values.remove(index.intValue()); // Without intValue(), we call remove(Object o)!!!
-            if (index == values.size()) {
-                return;
-            }
-            refillValuesToIndexMap();
+        List<Integer> indexes = valuesToIndexMap.remove(value);
+        if (indexes == null) {
             return;
         }
         for (Iterator<String> it = values.iterator(); it.hasNext();) {
@@ -300,16 +277,8 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     public void setValue(int index, String value) {
         String oldValue = values.get(index);
         values.set(index, value);
-        Object o = valuesToIndexMap.get(oldValue);
-        if (o instanceof Integer) {
-            valuesToIndexMap.remove(oldValue);
-        } else if (o instanceof List) {
-            List<Integer> indexes = (List<Integer>)o;
-            indexes.remove((Object)index);
-            if (indexes.size() == 1) {
-                valuesToIndexMap.put(oldValue, indexes.get(0));
-            }
-        }
+        List<Integer> indexes = valuesToIndexMap.get(oldValue);
+        indexes.remove((Object)index);
         setValueWithoutTriggeringChangeEvent(value, index);
         valueChanged(oldValue, value);
     }
@@ -376,8 +345,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
     private void checkForDuplicate(MessageList list, int index) {
         String value = values.get(index);
-        Object o = valuesToIndexMap.get(value);
-        if (o instanceof List) {
+        if (valuesToIndexMap.get(value).size() > 1) {
             ObjectProperty op = new ObjectProperty(this, PROPERTY_VALUES, index);
             list.add(createMsgForDuplicateValues(value, op));
         }
@@ -385,15 +353,15 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
     private void checkForDuplicates(MessageList list) {
         for (String value : valuesToIndexMap.keySet()) {
-            Object o = valuesToIndexMap.get(value);
-            if (o instanceof List) {
-                List<Integer> indexes = (List<Integer>)o;
-                List<ObjectProperty> ops = new ArrayList<ObjectProperty>(indexes.size());
-                for (Integer index : indexes) {
-                    ops.add(new ObjectProperty(this, PROPERTY_VALUES, index));
-                }
-                list.add(createMsgForDuplicateValues(value, ops));
+            List<Integer> indexes = valuesToIndexMap.get(value);
+            if (indexes.size() <= 1) {
+                continue;
             }
+            List<ObjectProperty> ops = new ArrayList<ObjectProperty>(indexes.size());
+            for (Integer index : indexes) {
+                ops.add(new ObjectProperty(this, PROPERTY_VALUES, index));
+            }
+            list.add(createMsgForDuplicateValues(value, ops));
         }
     }
 
@@ -506,21 +474,6 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     @Override
     public boolean getContainsNull() {
         return values.contains(null);
-    }
-
-    @Override
-    public void setContainsNull(boolean containsNull) {
-        boolean old = getContainsNull();
-
-        if (old != containsNull) {
-            if (containsNull) {
-                values.add(null);
-            } else {
-                values.remove(null);
-            }
-        }
-
-        valueChanged(old, containsNull);
     }
 
 }
