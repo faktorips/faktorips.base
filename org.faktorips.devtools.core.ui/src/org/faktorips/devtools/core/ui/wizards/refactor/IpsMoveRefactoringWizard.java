@@ -34,9 +34,11 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.refactor.IIpsMoveProcessor;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 
 /**
  * A wizard to guide the user trough a Faktor-IPS move refactoring.
@@ -79,12 +81,11 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
          */
         private TreeViewer treeViewer;
 
-        // TODO FIPS-46
-        // /**
-        // * Check box that enables the user to decide whether the runtime ID of an
-        // * {@link IProductCmpt} should be adapted.
-        // */
-        // private Checkbox adaptRuntimeIdField;
+        /**
+         * Check box that enables the user to decide whether the runtime ID of an
+         * {@link IProductCmpt} should be adapted.
+         */
+        private Checkbox adaptRuntimeIdField;
 
         /**
          * Creates the <tt>MoveUserInputPage</tt>.
@@ -109,14 +110,12 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
                     NLS.bind(Messages.MoveUserInputPage_labelChooseDestination, getIpsElement().getName()));
             createTreeViewer(controlComposite);
 
-            // TODO FIPS-46
-            // if (getIpsElement() instanceof IProductCmpt) {
-            // Composite fieldsComposite =
-            // getUiToolkit().createLabelEditColumnComposite(controlComposite);
-            //                getUiToolkit().createLabel(fieldsComposite, ""); //$NON-NLS-1$
-            // adaptRuntimeIdField = getUiToolkit().createCheckbox(fieldsComposite,
-            // Messages.IpsRenameAndMoveUserInputPage_labelRefactorRuntimeId);
-            // }
+            if (getIpsElement() instanceof IProductCmpt) {
+                Composite fieldsComposite = getUiToolkit().createLabelEditColumnComposite(controlComposite);
+                getUiToolkit().createLabel(fieldsComposite, ""); //$NON-NLS-1$
+                adaptRuntimeIdField = getUiToolkit().createCheckbox(fieldsComposite,
+                        Messages.IpsRenameAndMoveUserInputPage_labelRefactorRuntimeId);
+            }
 
             setFocus();
             setPageComplete(false);
@@ -182,10 +181,9 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
                 throw new RuntimeException("Only package fragments are valid selections."); //$NON-NLS-1$
             }
 
-            // TODO FIPS-46
-            // if (adaptRuntimeIdField != null) {
-            // getIpsMoveProcessor().setAdaptRuntimeId(adaptRuntimeIdField.isChecked());
-            // }
+            if (adaptRuntimeIdField != null) {
+                getIpsMoveProcessor().setAdaptRuntimeId(adaptRuntimeIdField.isChecked());
+            }
 
             status.merge(getIpsMoveProcessor().validateUserInput(new NullProgressMonitor()));
         }
