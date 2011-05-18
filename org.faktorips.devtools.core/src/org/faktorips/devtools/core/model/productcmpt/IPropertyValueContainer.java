@@ -67,7 +67,7 @@ public interface IPropertyValueContainer extends IIpsObjectPartContainer {
      * @throws CoreException if an exception occurs while searching for the type.
      * @throws NullPointerException if ipsProject is <code>null</code>.
      */
-    public IGenerationToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException;
+    public IPropertyValueContainerToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Returns the qualified name of the product component type this property value container is

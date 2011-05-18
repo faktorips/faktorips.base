@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.AbstractDeltaEntry;
-import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.LinkWithoutAssociationEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingPropertyValueEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.PropertyTypeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueSetMismatchEntry;
@@ -30,9 +29,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
-import org.faktorips.devtools.core.model.productcmpt.IGenerationToTypeDelta;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -48,39 +45,30 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Jan Ortmann
  */
-public class GenerationToTypeDelta implements IGenerationToTypeDelta {
+public class PropertyValueContainerToTypeDelta implements IPropertyValueContainerToTypeDelta {
 
-    private IIpsProject ipsProject;
-    private IProductCmptGeneration generation;
-    private IProductCmptType productCmptType;
-    private List<IDeltaEntry> entries = new ArrayList<IDeltaEntry>();
+    private final IIpsProject ipsProject;
+    private final IPropertyValueContainer propertyValueContainer;
+    private final IProductCmptType productCmptType;
+    private final List<IDeltaEntry> entries = new ArrayList<IDeltaEntry>();
 
-    public GenerationToTypeDelta(IProductCmptGeneration generation, IIpsProject ipsProject) throws CoreException {
-        ArgumentCheck.notNull(generation);
+    public PropertyValueContainerToTypeDelta(IPropertyValueContainer propertyValueContainer, IIpsProject ipsProject)
+            throws CoreException {
+        ArgumentCheck.notNull(propertyValueContainer);
         ArgumentCheck.notNull(ipsProject);
-        this.generation = generation;
+        this.propertyValueContainer = propertyValueContainer;
         this.ipsProject = ipsProject;
-        productCmptType = generation.findProductCmptType(ipsProject);
+        productCmptType = propertyValueContainer.findProductCmptType(ipsProject);
         if (productCmptType == null) {
             return;
         }
-        computeLinksWithMissingAssociations();
         createEntriesForProperties();
-    }
-
-    private void computeLinksWithMissingAssociations() throws CoreException {
-        IProductCmptLink[] links = generation.getLinks();
-        for (IProductCmptLink link : links) {
-            if (productCmptType.findAssociation(link.getAssociation(), ipsProject) == null) {
-                new LinkWithoutAssociationEntry(this, link);
-            }
-        }
     }
 
     private void createEntriesForProperties() throws CoreException {
         for (ProductCmptPropertyType propertyType : ProductCmptPropertyType.values()) {
             LinkedHashMap<String, IProductCmptProperty> propertiesMap = ((ProductCmptType)productCmptType)
-                    .getProductCpmtPropertyMap(propertyType, ipsProject);
+                    .getProductCpmtPropertyMap(propertyType, getIpsProject());
             checkForMissingPropertyValues(propertiesMap);
             checkForInconsistentPropertyValues(propertiesMap, propertyType);
         }
@@ -88,10 +76,10 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
 
     private void checkForMissingPropertyValues(LinkedHashMap<String, IProductCmptProperty> propertiesMap) {
         for (IProductCmptProperty property : propertiesMap.values()) {
-            if (generation.getPropertyValue(property) == null) {
+            if (propertyValueContainer.getPropertyValue(property) == null) {
                 // no value found for the property with the given type, but we might have a type
                 // mismatch
-                if (generation.getPropertyValue(property.getPropertyName()) == null) {
+                if (propertyValueContainer.getPropertyValue(property.getPropertyName()) == null) {
                     new MissingPropertyValueEntry(this, property);
                 }
                 // we create the entry for the type mismatch in checkForInconsistentPropertyValues()
@@ -102,14 +90,14 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
 
     private void checkForInconsistentPropertyValues(LinkedHashMap<String, IProductCmptProperty> propertiesMap,
             ProductCmptPropertyType propertyType) throws CoreException {
-        List<IPropertyValue> values = generation.getPropertyValues(propertyType);
+        List<IPropertyValue> values = propertyValueContainer.getPropertyValues(propertyType);
         for (IPropertyValue value : values) {
             IProductCmptProperty property = propertiesMap.get(value.getPropertyName());
             if (property == null) {
                 // the map contains only properties for the current property type
                 // so we have to search if the property exists with a different type.
                 IProductCmptProperty property2 = productCmptType.findProductCmptProperty(value.getPropertyName(),
-                        ipsProject);
+                        getIpsProject());
                 if (property2 != null) {
                     // property2 must have a different type, otherwise it would have been in the
                     // property map!
@@ -142,8 +130,8 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
     }
 
     @Override
-    public IPropertyValueContainer getProductCmptGeneration() {
-        return generation;
+    public IPropertyValueContainer getPropertyValueContainer() {
+        return propertyValueContainer;
     }
 
     @Override
@@ -177,6 +165,13 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
         for (IDeltaEntry entry : entries) {
             entry.fix();
         }
+    }
+
+    /**
+     * @return Returns the ipsProject.
+     */
+    public IIpsProject getIpsProject() {
+        return ipsProject;
     }
 
     class HierarchyVisitor extends TypeHierarchyVisitor<IProductCmptType> {

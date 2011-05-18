@@ -15,7 +15,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.productcmpt.GenerationToTypeDelta;
+import org.faktorips.devtools.core.internal.model.productcmpt.PropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
@@ -30,7 +30,7 @@ public class PropertyTypeMismatchEntry extends AbstractDeltaEntryForProperty {
     private IProductCmptProperty property;
     private IPropertyValue value;
 
-    public PropertyTypeMismatchEntry(GenerationToTypeDelta delta, IProductCmptProperty property, IPropertyValue value) {
+    public PropertyTypeMismatchEntry(PropertyValueContainerToTypeDelta delta, IProductCmptProperty property, IPropertyValue value) {
         super(delta);
         this.property = property;
         this.value = value;

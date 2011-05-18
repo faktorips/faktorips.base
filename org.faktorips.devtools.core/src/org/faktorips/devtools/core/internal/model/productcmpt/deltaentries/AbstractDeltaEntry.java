@@ -13,7 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
-import org.faktorips.devtools.core.internal.model.productcmpt.GenerationToTypeDelta;
+import org.faktorips.devtools.core.internal.model.productcmpt.PropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 
@@ -25,9 +25,9 @@ public abstract class AbstractDeltaEntry implements IDeltaEntry {
 
     private IPropertyValueContainer propertyValueContainer;
 
-    public AbstractDeltaEntry(GenerationToTypeDelta delta) {
+    public AbstractDeltaEntry(PropertyValueContainerToTypeDelta delta) {
         delta.addEntry(this);
-        this.propertyValueContainer = delta.getProductCmptGeneration();
+        this.propertyValueContainer = delta.getPropertyValueContainer();
     }
 
     protected IPropertyValueContainer getGeneration() {

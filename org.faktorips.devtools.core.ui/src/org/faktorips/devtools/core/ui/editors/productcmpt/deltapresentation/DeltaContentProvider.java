@@ -20,7 +20,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
-import org.faktorips.devtools.core.model.productcmpt.IGenerationToTypeDelta;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
 
 /**
  * 
@@ -28,11 +28,11 @@ import org.faktorips.devtools.core.model.productcmpt.IGenerationToTypeDelta;
  */
 public class DeltaContentProvider implements ITreeContentProvider {
 
-    private IGenerationToTypeDelta delta;
+    private IPropertyValueContainerToTypeDelta delta;
 
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-        delta = (IGenerationToTypeDelta)newInput;
+        delta = (IPropertyValueContainerToTypeDelta)newInput;
     }
 
     @Override

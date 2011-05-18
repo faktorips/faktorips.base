@@ -44,7 +44,7 @@ import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
-import org.faktorips.devtools.core.model.productcmpt.IGenerationToTypeDelta;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
@@ -230,8 +230,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     @Override
-    public IGenerationToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException {
-        return new GenerationToTypeDelta(this, ipsProject);
+    public IPropertyValueContainerToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException {
+        return new ProductCmptGenerationToTypeDelta(this, ipsProject);
     }
 
     @Override
@@ -672,7 +672,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             return;
         }
 
-        IGenerationToTypeDelta delta = computeDeltaToModel(ipsProject);
+        IPropertyValueContainerToTypeDelta delta = computeDeltaToModel(ipsProject);
         IDeltaEntry[] entries = delta.getEntries();
         for (IDeltaEntry entrie : entries) {
             if (entrie.getDeltaType() == DeltaType.MISSING_PROPERTY_VALUE) {

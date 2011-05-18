@@ -22,12 +22,12 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
  * 
  * @author Jan Ortmann
  */
-public interface IGenerationToTypeDelta {
+public interface IPropertyValueContainerToTypeDelta {
 
     /**
      * Returns the product component generation this delta was computed for.
      */
-    public IPropertyValueContainer getProductCmptGeneration();
+    public IPropertyValueContainer getPropertyValueContainer();
 
     /**
      * Returns the product component type this delta was computed for.

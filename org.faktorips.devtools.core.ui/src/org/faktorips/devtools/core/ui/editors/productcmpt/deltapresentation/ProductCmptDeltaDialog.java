@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.productcmpt.IGenerationToTypeDelta;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.editors.deltapresentation.AbstractDeltaDialog;
 
@@ -38,7 +38,7 @@ import org.faktorips.devtools.core.ui.editors.deltapresentation.AbstractDeltaDia
 public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
 
     private IProductCmptGeneration[] generations;
-    private IGenerationToTypeDelta[] deltas;
+    private IPropertyValueContainerToTypeDelta[] deltas;
     private List generationsList;
 
     /**
@@ -49,7 +49,7 @@ public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
      * @param generations All generations with differences.
      * @param deltas All deltas for the generations.
      */
-    public ProductCmptDeltaDialog(IProductCmptGeneration[] generations, IGenerationToTypeDelta[] deltas,
+    public ProductCmptDeltaDialog(IProductCmptGeneration[] generations, IPropertyValueContainerToTypeDelta[] deltas,
             Shell parentShell) {
 
         super(parentShell);
@@ -162,7 +162,7 @@ public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
         return generations;
     }
 
-    public IGenerationToTypeDelta[] getDeltas() {
+    public IPropertyValueContainerToTypeDelta[] getDeltas() {
         return deltas;
     }
 }

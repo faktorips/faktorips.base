@@ -14,7 +14,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.productcmpt.GenerationToTypeDelta;
+import org.faktorips.devtools.core.internal.model.productcmpt.PropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
@@ -28,7 +28,7 @@ public class ValueWithoutPropertyEntry extends AbstractDeltaEntryForProperty {
 
     private IPropertyValue value;
 
-    public ValueWithoutPropertyEntry(GenerationToTypeDelta delta, IPropertyValue value) {
+    public ValueWithoutPropertyEntry(PropertyValueContainerToTypeDelta delta, IPropertyValue value) {
         super(delta);
         this.value = value;
     }

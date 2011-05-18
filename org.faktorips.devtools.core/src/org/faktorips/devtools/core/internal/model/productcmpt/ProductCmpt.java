@@ -37,7 +37,7 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
-import org.faktorips.devtools.core.model.productcmpt.IGenerationToTypeDelta;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptKind;
@@ -269,7 +269,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
         for (IIpsObjectGeneration generation : generations) {
             if (generation instanceof IProductCmptGeneration) {
-                IGenerationToTypeDelta delta = ((IProductCmptGeneration)generation).computeDeltaToModel(ipsProject);
+                IPropertyValueContainerToTypeDelta delta = ((IProductCmptGeneration)generation).computeDeltaToModel(ipsProject);
                 if (!delta.isEmpty()) {
                     return true;
                 }
@@ -283,7 +283,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         int max = getNumOfGenerations();
         for (int i = 0; i < max; i++) {
             IProductCmptGeneration generation = getProductCmptGeneration(i);
-            IGenerationToTypeDelta delta = (generation).computeDeltaToModel(ipsProject);
+            IPropertyValueContainerToTypeDelta delta = (generation).computeDeltaToModel(ipsProject);
             delta.fix();
         }
     }
@@ -342,7 +342,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    public IGenerationToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException {
+    public IPropertyValueContainerToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException {
         return null;
     }
 
