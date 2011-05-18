@@ -25,6 +25,8 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -35,6 +37,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.refactor.IIpsCompositeMoveRefactoring;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 
 /**
  * A wizard to guide the user trough a Faktor-IPS move refactoring.
@@ -76,12 +79,11 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
          */
         private TreeViewer treeViewer;
 
-        // TODO FIPS-46
-        // /**
-        // * Check box that enables the user to decide whether the runtime ID of an
-        // * {@link IProductCmpt} should be adapted.
-        // */
-        // private Checkbox adaptRuntimeIdField;
+        /**
+         * Check box that enables the user to decide whether the runtime ID of an
+         * {@link IProductCmpt} should be adapted.
+         */
+        private Checkbox adaptRuntimeIdField;
 
         private boolean initialSelectionOccurred;
 
@@ -107,18 +109,27 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
                 setInitialTreeViewerSelection(getIpsCompositeMoveRefactoring().getTargetIpsPackageFragment());
             }
 
-            // TODO FIPS-46
-            // if (getIpsCompositeMoveRefactoring().isAdaptRuntimeIdRelevant()) {
-            // Composite fieldsComposite =
-            // getUiToolkit().createLabelEditColumnComposite(controlComposite);
-            //                getUiToolkit().createLabel(fieldsComposite, ""); //$NON-NLS-1$
-            // adaptRuntimeIdField = getUiToolkit().createCheckbox(fieldsComposite,
-            // Messages.IpsRenameAndMoveUserInputPage_labelRefactorRuntimeId);
-            // if (getIpsCompositeMoveRefactoring().isAdaptRuntimeId()) {
-            // adaptRuntimeIdField.setChecked(true);
-            // userInputChanged();
-            // }
-            // }
+            if (getIpsCompositeMoveRefactoring().isAdaptRuntimeIdRelevant()) {
+                Composite fieldsComposite = getUiToolkit().createLabelEditColumnComposite(controlComposite);
+                getUiToolkit().createLabel(fieldsComposite, ""); //$NON-NLS-1$
+                adaptRuntimeIdField = getUiToolkit().createCheckbox(fieldsComposite,
+                        Messages.IpsRenameAndMoveUserInputPage_labelRefactorRuntimeId);
+                adaptRuntimeIdField.getButton().addSelectionListener(new SelectionListener() {
+                    @Override
+                    public void widgetSelected(SelectionEvent e) {
+                        userInputChanged();
+                    }
+                    
+                    @Override
+                    public void widgetDefaultSelected(SelectionEvent e) {
+                        // Nothing to do
+                    }
+                });
+                if (getIpsCompositeMoveRefactoring().isAdaptRuntimeId()) {
+                    adaptRuntimeIdField.setChecked(true);
+                    userInputChanged();
+                }
+            }
 
             setInitialFocus();
         }
@@ -185,10 +196,9 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
                 throw new RuntimeException("Only package fragments are valid selections."); //$NON-NLS-1$
             }
 
-            // TODO FIPS-46
-            // if (adaptRuntimeIdField != null) {
-            // getIpsCompositeMoveRefactoring().setAdaptRuntimeId(adaptRuntimeIdField.isChecked());
-            // }
+            if (adaptRuntimeIdField != null) {
+                getIpsCompositeMoveRefactoring().setAdaptRuntimeId(adaptRuntimeIdField.isChecked());
+            }
 
             status.merge(getIpsRefactoring().validateUserInput(new NullProgressMonitor()));
         }
