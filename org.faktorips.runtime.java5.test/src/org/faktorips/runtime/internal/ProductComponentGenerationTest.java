@@ -43,60 +43,9 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
     }
 
     @Test
-    public void testGetPropertyElements() {
-        Element genEl = getTestDocument().getDocumentElement();
-        Map<String, Element> map = gen.getPropertyElements(genEl);
-        assertEquals(4, map.size());
-
-        Element attr1El = map.get("attribute1");
-        assertEquals("ConfigElement", attr1El.getNodeName());
-        assertEquals("attribute1", attr1El.getAttribute("attribute"));
-        assertEquals("2", attr1El.getAttribute("value"));
-
-        Element attr2El = map.get("attribute2");
-        assertEquals("ConfigElement", attr2El.getNodeName());
-        assertEquals("attribute2", attr2El.getAttribute("attribute"));
-        assertEquals("m", attr2El.getAttribute("value"));
-
-        Element attr3El = map.get("attribute3");
-        assertEquals("AttributeValue", attr3El.getNodeName());
-        assertEquals("attribute3", attr3El.getAttribute("attribute"));
-        assertEquals("42", attr3El.getAttribute("value"));
-
-        Element tsuEl = map.get("rateTable");
-        assertNotNull(tsuEl);
-    }
-
-    @Test
-    public void testGetLinkElements() {
-        Element genEl = getTestDocument().getDocumentElement();
-        Map<String, List<Element>> map = gen.getLinkElements(genEl);
-        assertEquals(4, map.size());
-
-        List<Element> list1 = map.get("relation1");
-        assertEquals(2, list1.size());
-        Element rel1aEl = list1.get(0);
-        assertNotNull(rel1aEl);
-        assertEquals("Link", rel1aEl.getNodeName());
-        assertEquals("target1a", rel1aEl.getAttribute("target"));
-
-        Element rel1bEl = list1.get(1);
-        assertNotNull(rel1bEl);
-        assertEquals("Link", rel1bEl.getNodeName());
-        assertEquals("target1b", rel1bEl.getAttribute("target"));
-
-        List<Element> list2 = map.get("relation2");
-        assertEquals(1, list2.size());
-        Element rel2El = list2.get(0);
-        assertNotNull(rel2El);
-        assertEquals("Link", rel2El.getNodeName());
-        assertEquals("target2", rel2El.getAttribute("target"));
-    }
-
-    @Test
     public void testAddToCardinalityMap() {
         Element genEl = getTestDocument().getDocumentElement();
-        Map<String, List<Element>> map = gen.getLinkElements(genEl);
+        Map<String, List<Element>> map = ProductComponentXmlUtil.getLinkElements(genEl);
         List<Element> list = map.get("relation3");
         assertEquals(1, list.size());
         Element relEl = list.get(0);

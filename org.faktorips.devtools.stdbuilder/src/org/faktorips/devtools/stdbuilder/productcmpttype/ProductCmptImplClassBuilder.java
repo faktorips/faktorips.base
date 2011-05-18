@@ -37,9 +37,6 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
-import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
-import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.type.GenType;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IRuntimeRepository;
@@ -139,6 +136,7 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
             JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
 
         generateGetGenerationMethod(methodsBuilder);
+        generateMethodDoInitPropertiesFromXml(methodsBuilder);
         IPolicyCmptType policyCmptType = getPcType();
         if (policyCmptType != null && !policyCmptType.isAbstract()) {
             generateFactoryMethodsForPolicyCmptType(policyCmptType, methodsBuilder, new HashSet<IPolicyCmptType>());
@@ -217,9 +215,6 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
      */
     private void generateMethodCreatePolicyCmptBase(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        // TODO pk 17-07-2009: this is still not correct. Their are situations which I could not yet
-        // figure out when an override of an implementation appears which doesn't have an override
-        // annotation.
         CheckIfInterfaceImplementationForCreateBasePolicyCmptMethod checkVisitor = new CheckIfInterfaceImplementationForCreateBasePolicyCmptMethod(
                 getIpsProject());
         checkVisitor.start((IProductCmptType)getProductCmptType().findSupertype(getIpsProject()));
@@ -265,17 +260,9 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    protected void generateCodeForProductCmptTypeAttribute(org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute attribute,
-            DatatypeHelper datatypeHelper,
-            JavaCodeFragmentBuilder fieldsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder,
-            JavaCodeFragmentBuilder constantBuilder) throws CoreException {
-
-        // nothing to do
+    protected boolean needGenerateCodeForAttribute(IProductCmptTypeAttribute attribute) {
+        return !attribute.isChangingOverTime();
     }
 
     /**
@@ -327,33 +314,6 @@ public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
     protected void generateCodeForMethodDefinedInModel(IMethod method, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         // nothing to do
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected GenProductCmptTypeAttribute createGenerator(IProductCmptTypeAttribute a,
-            LocalizedStringsSet localizedStringsSet) throws CoreException {
-        // return null, as this builder does not need code for product component type attributes
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected GenPolicyCmptTypeAttribute createGenerator(IPolicyCmptTypeAttribute a,
-            LocalizedStringsSet localizedStringsSet) throws CoreException {
-        // return null, as this builder does not need code for policy component type attributes
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected GenProdAssociation createGenerator(IProductCmptTypeAssociation a, LocalizedStringsSet stringsSet)
-            throws CoreException {
-        // return null, as this builder does not need code for product component type associations
-        return null;
     }
 
     /**

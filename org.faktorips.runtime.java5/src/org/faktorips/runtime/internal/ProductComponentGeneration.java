@@ -112,10 +112,10 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
             throw new IllegalRepositoryModificationException();
         }
         validFrom = DateTime.parseIso(genElement.getAttribute("validFrom"));
-        Map<String, Element> propertyElements = getPropertyElements(genElement);
+        Map<String, Element> propertyElements = ProductComponentXmlUtil.getPropertyElements(genElement);
         doInitPropertiesFromXml(propertyElements);
         doInitTableUsagesFromXml(propertyElements);
-        doInitReferencesFromXml(getLinkElements(genElement));
+        doInitReferencesFromXml(ProductComponentXmlUtil.getLinkElements(genElement));
         doInitFormulaFromXml(genElement);
         doInitValidationRuleConfigsFromXml(genElement);
     }
@@ -194,7 +194,6 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
      * @param genElement An XML element containing a product component generation's data.
      * @throws NullPointerException if genElement is <code>null</code>.
      */
-    // note: not private to allow access by test case
     protected void doInitValidationRuleConfigsFromXml(Element genElement) {
         Map<String, ValidationRuleConfiguration> configMap = new HashMap<String, ValidationRuleConfiguration>();
         NodeList nl = genElement.getChildNodes();
@@ -209,72 +208,12 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
         nameToValidationRuleConfigMap = configMap;
     }
 
-    // note: not private to allow access by test case
+    /**
+     * Returning the map from the names of validation rules to the validation rule configuration.
+     * Not intended to use by client, only for test cases.
+     */
     /* private */Map<String, ValidationRuleConfiguration> getNameToValidationRuleConfigMap() {
         return nameToValidationRuleConfigMap;
-    }
-
-    /**
-     * Returns a map containing the xml elements representing config elements found in the indicated
-     * generation's xml element. For each config element the map contains an entry with the
-     * pcTypeAttribute's name as key and the xml element containing the config element data as
-     * value.
-     * 
-     * @param genElement An xml element containing a product component generation's data.
-     * @throws NullPointerException if genElement is <code>null</code>.
-     */
-    // note: not private to allow access by test case
-    final Map<String, Element> getPropertyElements(Element genElement) {
-        Map<String, Element> elementMap = new HashMap<String, Element>();
-        NodeList nl = genElement.getChildNodes();
-        for (int i = 0; i < nl.getLength(); i++) {
-            Node node = nl.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE) {
-                if ("ConfigElement".equals(node.getNodeName())) {
-                    Element childElement = (Element)nl.item(i);
-                    elementMap.put(childElement.getAttribute("attribute"), childElement);
-                } else if ("AttributeValue".equals(node.getNodeName())) {
-                    Element childElement = (Element)nl.item(i);
-                    elementMap.put(childElement.getAttribute("attribute"), childElement);
-                } else if ("TableContentUsage".equals(node.getNodeName())) {
-                    Element childElement = (Element)nl.item(i);
-                    String structureUsage = childElement.getAttribute("structureUsage");
-                    elementMap.put(structureUsage, childElement);
-                }
-
-            }
-        }
-        return elementMap;
-    }
-
-    /**
-     * Returns a map containing the xml elements representing relations found in the indicated
-     * generation's xml element. For each policy component type relation (pcTypeRelation) the map
-     * contains an entry with the pcTypeRelation as key. The value is an array list containing all
-     * relation elements for the pcTypeRelation.
-     * 
-     * @param genElement An xml element containing a product component generation's data.
-     * @throws NullPointerException if genElement is <code>null</code>.
-     */
-    // note: not private to allow access by test case
-    final Map<String, List<Element>> getLinkElements(Element genElement) {
-        Map<String, List<Element>> elementMap = new HashMap<String, List<Element>>();
-        NodeList nl = genElement.getChildNodes();
-        for (int i = 0; i < nl.getLength(); i++) {
-            Node node = nl.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE && "Link".equals(node.getNodeName())) {
-                Element childElement = (Element)nl.item(i);
-                String association = childElement.getAttribute("association");
-                List<Element> associationElements = elementMap.get(association);
-                if (associationElements == null) {
-                    associationElements = new ArrayList<Element>(1);
-                    elementMap.put(association, associationElements);
-                }
-                associationElements.add(childElement);
-            }
-
-        }
-        return elementMap;
     }
 
     protected Element getRangeElement(Element configElement) {

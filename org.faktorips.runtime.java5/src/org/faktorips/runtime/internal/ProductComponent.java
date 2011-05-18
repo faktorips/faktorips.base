@@ -14,6 +14,7 @@
 package org.faktorips.runtime.internal;
 
 import java.util.Calendar;
+import java.util.Map;
 
 import org.faktorips.runtime.IClRepositoryObject;
 import org.faktorips.runtime.IProductComponent;
@@ -112,7 +113,21 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      */
     public final void initFromXml(Element cmptElement) {
         validTo = DateTime.parseIso(cmptElement.getAttribute("validTo"));
+        Map<String, Element> propertyElements = ProductComponentXmlUtil.getPropertyElements(cmptElement);
+        doInitPropertiesFromXml(propertyElements);
         initExtensionPropertiesFromXml(cmptElement);
+    }
+
+    /**
+     * Initializes the properties with the data in the map.
+     * 
+     * @param map the map of property elements
+     */
+    protected void doInitPropertiesFromXml(Map<String, Element> map) {
+        // nothing to do in the base class
+        //
+        // Note that the method is deliberately not declared as abstract to
+        // allow in subclasses calls to super.doInitPropertiesFromXml().
     }
 
     @Override

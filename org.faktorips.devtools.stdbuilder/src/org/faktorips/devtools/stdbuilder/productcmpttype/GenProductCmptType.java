@@ -16,7 +16,6 @@ package org.faktorips.devtools.stdbuilder.productcmpttype;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -129,7 +128,7 @@ public class GenProductCmptType extends GenType {
      * public IMotorProductGen getMotorProductGen()
      * </pre>
      */
-    public void generateSignatureGetProductCmptGeneration(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    public void generateSignatureGetProductCmptGeneration(JavaCodeFragmentBuilder methodsBuilder) {
         String methodName = getMethodNameGetProductCmptGeneration();
         methodsBuilder.signature(java.lang.reflect.Modifier.PUBLIC, getQualifiedClassNameForProductCmptTypeGen(true),
                 methodName, new String[0], new String[0]);
@@ -197,10 +196,8 @@ public class GenProductCmptType extends GenType {
         GenProductCmptTypeAttribute generator = (GenProductCmptTypeAttribute)getGeneratorsByPart().get(a);
         if (generator == null && a.isValid(a.getIpsProject())) {
             // generators for supertype attributes will be created on demand since it is expected
-            // that
-            // only a few exit. It will not be checked if the provided attribute is actually a
-            // supertype
-            // attribute because of performance reasons.
+            // that only a few exist. It will not be checked if the provided attribute is actually a
+            // supertype attribute because of performance reasons.
             generator = new GenProductCmptTypeAttribute(this, a);
             genProductCmptTypeAttributes.add(generator);
             getGeneratorsByPart().put(a, generator);
@@ -242,8 +239,8 @@ public class GenProductCmptType extends GenType {
         return (GenTableStructureUsage)getGeneratorsByPart().get(tsu);
     }
 
-    public Iterator<GenProductCmptTypeAttribute> getGenProdAttributes() {
-        return genProductCmptTypeAttributes.iterator();
+    public List<GenProductCmptTypeAttribute> getGenProdAttributes() {
+        return genProductCmptTypeAttributes;
     }
 
     public JavaCodeFragment generateFragmentCheckIfRepositoryIsModifiable() {

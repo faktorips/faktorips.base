@@ -32,9 +32,6 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
-import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
-import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
-import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProductCmptTypeAttribute;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -149,13 +146,8 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
     }
 
     @Override
-    protected void generateCodeForProductCmptTypeAttribute(org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute attribute,
-            DatatypeHelper datatypeHelper,
-            JavaCodeFragmentBuilder fieldsBuilder,
-            JavaCodeFragmentBuilder methodsBuilder,
-            JavaCodeFragmentBuilder constantBuilder) throws CoreException {
-
-        // nothing to do
+    protected boolean needGenerateCodeForAttribute(IProductCmptTypeAttribute attribute) {
+        return !attribute.isChangingOverTime();
     }
 
     @Override
@@ -193,27 +185,6 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
     protected void generateCodeForMethodDefinedInModel(IMethod method, JavaCodeFragmentBuilder methodsBuilder)
             throws CoreException {
         // nothing to do
-    }
-
-    @SuppressWarnings("unused")
-    protected GenProductCmptTypeAttribute createGenerator(IProductCmptTypeAttribute a,
-            LocalizedStringsSet localizedStringsSet) throws CoreException {
-        // return null, as this builder does not need code for product component type attributes
-        return null;
-    }
-
-    @SuppressWarnings("unused")
-    protected GenPolicyCmptTypeAttribute createGenerator(IPolicyCmptTypeAttribute a,
-            LocalizedStringsSet localizedStringsSet) throws CoreException {
-        // return null, as this builder does not need code for policy component type attributes
-        return null;
-    }
-
-    @SuppressWarnings("unused")
-    protected GenProdAssociation createGenerator(IProductCmptTypeAssociation a, LocalizedStringsSet stringsSet)
-            throws CoreException {
-        // return null, as this builder does not need code for product component type associations
-        return null;
     }
 
     @Override

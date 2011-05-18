@@ -46,10 +46,13 @@ import org.w3c.dom.Element;
  */
 public class GenProductCmptTypeAttribute extends GenAttribute {
 
-    public GenProductCmptTypeAttribute(GenProductCmptType genProductCmptType, IProductCmptTypeAttribute a)
-            throws CoreException {
-
+    public GenProductCmptTypeAttribute(GenProductCmptType genProductCmptType, IProductCmptTypeAttribute a) {
         super(genProductCmptType, a, new LocalizedStringsSet(GenProductCmptTypeAttribute.class));
+    }
+
+    @Override
+    public IProductCmptTypeAttribute getAttribute() {
+        return (IProductCmptTypeAttribute)super.getAttribute();
     }
 
     /**
@@ -59,7 +62,7 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
      * public Money getPremium()
      * </pre>
      */
-    protected void generateGetterSignature(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    protected void generateGetterSignature(JavaCodeFragmentBuilder methodsBuilder) {
         int modifier = java.lang.reflect.Modifier.PUBLIC;
         String methodName = getMethodNameGetPropertyValue(getAttribute().getName(), getDatatype());
         methodsBuilder.signature(modifier, getJavaClassName(), methodName, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY);
@@ -104,8 +107,7 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
      *     return interestRate;
      * </pre>
      */
-    private void generateMethodGetValue(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    private void generateMethodGetValue(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder methodsBuilder) {
 
         methodsBuilder.javaDoc(getJavaDocCommentForOverriddenMethod(), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         generateSignatureGetValue(datatypeHelper, methodsBuilder);
@@ -124,8 +126,7 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
      * public Integer getTaxRate();
      * </pre>
      */
-    void generateMethodGetValueInterface(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder)
-            throws CoreException {
+    void generateMethodGetValueInterface(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) {
 
         String description = StringUtils.isEmpty(getDescriptionInGeneratorLanguage(getAttribute())) ? ""
                 : SystemUtils.LINE_SEPARATOR + "<p>" + SystemUtils.LINE_SEPARATOR
@@ -149,8 +150,7 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
      * }
      * </pre>
      */
-    private void generateMethodSetValue(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    private void generateMethodSetValue(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder methodsBuilder) {
 
         appendLocalizedJavaDoc("METHOD_SET_VALUE", getAttribute().getName(), methodsBuilder);
         String methodName = getSetterMethodName();
@@ -171,7 +171,7 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
      * public Integer getTaxRate()
      * </pre>
      */
-    void generateSignatureGetValue(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) throws CoreException {
+    void generateSignatureGetValue(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) {
         String methodName = getGetterMethodName();
         builder.signature(Modifier.PUBLIC, datatypeHelper.getJavaClassName(), methodName, EMPTY_STRING_ARRAY,
                 EMPTY_STRING_ARRAY);
@@ -185,8 +185,7 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
      * private Integer taxRate;
      * </pre>
      */
-    private void generateFieldValue(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder)
-            throws CoreException {
+    private void generateFieldValue(DatatypeHelper datatypeHelper, JavaCodeFragmentBuilder builder) {
         appendLocalizedJavaDoc("FIELD_VALUE", StringUtils.capitalize(getAttribute().getName()), builder);
         JavaCodeFragment defaultValueExpression = datatypeHelper.newInstance(getAttribute().getDefaultValue());
         builder.varDeclaration(Modifier.PRIVATE, datatypeHelper.getJavaClassName(), getMemberVarName(),
@@ -247,8 +246,7 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
      * }
      * </pre>
      */
-    public void generateCodeForPolicyCmptType(boolean generatesInterface, JavaCodeFragmentBuilder methodBuilder)
-            throws CoreException {
+    public void generateCodeForPolicyCmptType(boolean generatesInterface, JavaCodeFragmentBuilder methodBuilder) {
 
         if (!generatesInterface) {
             String description = StringUtils.isEmpty(getDescriptionInGeneratorLanguage(getAttribute())) ? ""
@@ -261,7 +259,11 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
             generateGetterSignature(methodBuilder);
             methodBuilder.openBracket();
             methodBuilder.append("return ");
-            methodBuilder.append(((GenProductCmptType)getGenType()).getMethodNameGetProductCmptGeneration());
+            if (getAttribute().isChangingOverTime()) {
+                methodBuilder.append(((GenProductCmptType)getGenType()).getMethodNameGetProductCmptGeneration());
+            } else {
+                methodBuilder.append(((GenProductCmptType)getGenType()).getMethodNameGetProductCmpt());
+            }
             methodBuilder.append("().");
             methodBuilder.append(getGetterMethodName());
             methodBuilder.append("();");

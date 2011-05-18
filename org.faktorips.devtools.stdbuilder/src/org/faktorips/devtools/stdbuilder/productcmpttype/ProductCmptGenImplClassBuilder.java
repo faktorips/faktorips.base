@@ -16,7 +16,6 @@ package org.faktorips.devtools.stdbuilder.productcmpttype;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +37,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -53,7 +53,6 @@ import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenPolicyCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
-import org.faktorips.devtools.stdbuilder.productcmpttype.attribute.GenProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.productcmpttype.method.GenProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.productcmpttype.tableusage.GenTableStructureUsage;
 import org.faktorips.runtime.IProductComponent;
@@ -190,6 +189,11 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         }
     }
 
+    @Override
+    protected boolean needGenerateCodeForAttribute(IProductCmptTypeAttribute attribute) {
+        return attribute.isChangingOverTime();
+    }
+
     /**
      * Code sample.
      * 
@@ -211,90 +215,32 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
         methodsBuilder.closeBracket();
     }
 
-    /**
-     * Code sample
-     * 
-     * <pre>
-     *  [javadoc]
-     *  protected void doInitPropertiesFromXml(Map configMap) {
-     *      super.doInitPropertiesFromXml(configMap);
-     *      Element configElement = null;
-     *      String value = null;
-     *      configElement = (Element)configMap.get(&quot;testTypeDecimal&quot;);
-     *      if (configElement != null) {
-     *          value = ValueToXmlHelper.getValueFromElement(configElement, &quot;Value&quot;);
-     *          testTypeDecimal = Decimal.valueOf(value);
-     *      }
-     *  }
-     * </pre>
-     * 
-     * Java 5 code sample
-     * 
-     * <pre>
-     *  [javadoc]
-     *  protected void doInitPropertiesFromXml(Map&lt;String, Element&gt; configMap) {
-     *      super.doInitPropertiesFromXml(configMap);
-     *      Element configElement = null;
-     *      String value = null;
-     *      configElement = configMap.get(&quot;testTypeDecimal&quot;);
-     *      if (configElement != null) {
-     *          value = ValueToXmlHelper.getValueFromElement(configElement, &quot;Value&quot;);
-     *          testTypeDecimal = Decimal.valueOf(value);
-     *      }
-     *  }
-     * </pre>
-     */
-    private void generateMethodDoInitPropertiesFromXml(JavaCodeFragmentBuilder builder) throws CoreException {
-        builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-        appendOverrideAnnotation(builder, false);
-        builder.methodBegin(Modifier.PROTECTED, "void", "doInitPropertiesFromXml", new String[] { "configMap" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                new String[] { isUseTypesafeCollections() ? Map.class.getName() + "<" + String.class.getName() + ", " //$NON-NLS-1$//$NON-NLS-2$
-                        + Element.class.getName() + ">" : Map.class.getName() }); //$NON-NLS-1$
-
-        builder.appendln("super.doInitPropertiesFromXml(configMap);"); //$NON-NLS-1$
-
-        boolean attributeFound = false;
-        GenProductCmptType typeGenerator = getStandardBuilderSet().getGenerator(getProductCmptType());
-        for (Iterator<GenProductCmptTypeAttribute> it = typeGenerator.getGenProdAttributes(); it.hasNext();) {
-            GenProductCmptTypeAttribute generator = it.next();
-            if (attributeFound == false) {
-                generateDefineLocalVariablesForXmlExtraction(builder);
-                attributeFound = true;
-            }
-            generator.generateDoInitPropertiesFromXml(builder);
-        }
+    @Override
+    protected void generateAdditionalDoInitPropertiesFromXml(JavaCodeFragmentBuilder builder, boolean attributeFound)
+            throws CoreException {
         IPolicyCmptType policyCmptType = getPcType();
         List<IPolicyCmptTypeAttribute> attributes = policyCmptType == null ? new ArrayList<IPolicyCmptTypeAttribute>()
                 : policyCmptType.getPolicyCmptTypeAttributes();
         for (IPolicyCmptTypeAttribute attribute : attributes) {
-            IPolicyCmptTypeAttribute a = attribute;
-            if (a.validate(getIpsProject()).containsErrorMsg()) {
+            if (attribute.validate(getIpsProject()).containsErrorMsg()) {
                 continue;
             }
-            if (!a.isProductRelevant() || !a.isChangeable()) {
+            if (!attribute.isProductRelevant() || !attribute.isChangeable()) {
                 continue;
             }
             if (attributeFound == false) {
                 generateDefineLocalVariablesForXmlExtraction(builder);
                 attributeFound = true;
             }
-            GenPolicyCmptType genPolicyCmptType = getStandardBuilderSet().getGenerator(a.getPolicyCmptType());
-            GenPolicyCmptTypeAttribute generator = genPolicyCmptType.getGenerator(a);
-            ValueDatatype datatype = a.findDatatype(getIpsProject());
+            GenPolicyCmptType genPolicyCmptType = getStandardBuilderSet().getGenerator(attribute.getPolicyCmptType());
+            GenPolicyCmptTypeAttribute generator = genPolicyCmptType.getGenerator(attribute);
+            ValueDatatype datatype = attribute.findDatatype(getIpsProject());
             DatatypeHelper helper = getProductCmptType().getIpsProject().getDatatypeHelper(datatype);
-            generateGetElementFromConfigMapAndIfStatement(a.getName(), builder);
+            generateGetElementFromConfigMapAndIfStatement(attribute.getName(), builder);
             generateExtractValueFromXml(generator.getFieldNameDefaultValue(), helper, builder);
             generateExtractValueSetFromXml(generator, helper, builder);
             builder.closeBracket(); // close if statement generated three lines above
         }
-        builder.methodEnd();
-    }
-
-    private void generateDefineLocalVariablesForXmlExtraction(JavaCodeFragmentBuilder builder) {
-        builder.appendClassName(Element.class);
-        builder.appendln(" configElement = null;"); //$NON-NLS-1$
-        builder.appendClassName(String.class);
-        builder.appendln(" value = null;"); //$NON-NLS-1$
     }
 
     private void generateGetElementFromConfigMapAndIfStatement(String attributeName, JavaCodeFragmentBuilder builder) {
