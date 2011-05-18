@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -36,9 +37,12 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueComparator;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
@@ -61,7 +65,7 @@ public class AttributeValuesSection extends IpsSection {
     /**
      * Generation which holds the informations to display
      */
-    private IProductCmptGeneration generation;
+    private final IProductCmptGeneration generation;
 
     /**
      * Toolkit to handle common ui-operations
@@ -125,9 +129,9 @@ public class AttributeValuesSection extends IpsSection {
 
     protected void updateGenerationText() {
         DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
-        String validRange = format.format(generation.getValidFrom().getTime());
+        String validRange = format.format(getGeneration().getValidFrom().getTime());
 
-        GregorianCalendar date = generation.getValidTo();
+        GregorianCalendar date = getGeneration().getValidTo();
         String validToString;
         if (date == null) {
             validToString = Messages.ProductAttributesSection_valueGenerationValidToUnlimited;
@@ -152,13 +156,14 @@ public class AttributeValuesSection extends IpsSection {
         uiMasterController = new CompositeUIController();
 
         // create a label and edit control for each attribute value
-        IAttributeValue[] elements = generation.getAttributeValues();
-        Arrays.sort(
-                elements,
-                new PropertyValueComparator(generation.getProductCmpt().getProductCmptType(), generation
-                        .getIpsProject()));
-        for (IAttributeValue element : elements) {
-            addAndRegister(element);
+        List<IPropertyValue> attributeValues = getProductCmpt().getPropertyValues(ProductCmptPropertyType.VALUE);
+        IAttributeValue[] elements = getGeneration().getAttributeValues();
+        attributeValues.addAll(Arrays.asList(elements));
+
+        Collections.sort(attributeValues, new PropertyValueComparator(getGeneration().getProductCmpt()
+                .getProductCmptType(), getGeneration().getIpsProject()));
+        for (IPropertyValue attributeValue : attributeValues) {
+            addAndRegister((IAttributeValue)attributeValue);
         }
 
         rootPane.layout(true);
@@ -216,7 +221,7 @@ public class AttributeValuesSection extends IpsSection {
             }
             ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
             EditField<String> field = ctrlFactory.createEditField(toolkit, rootPane, datatype, valueset,
-                    generation.getIpsProject());
+                    getGeneration().getIpsProject());
             final Control ctrl = field.getControl();
             controller.add(field, toDisplay, IConfigElement.PROPERTY_VALUE);
             addFocusControl(ctrl);
@@ -252,5 +257,16 @@ public class AttributeValuesSection extends IpsSection {
             editControls.add(text);
             controller.add(text, toDisplay, IConfigElement.PROPERTY_VALUE);
         }
+    }
+
+    /**
+     * @return Returns the generation.
+     */
+    public IProductCmptGeneration getGeneration() {
+        return generation;
+    }
+
+    public IProductCmpt getProductCmpt() {
+        return getGeneration().getProductCmpt();
     }
 }
