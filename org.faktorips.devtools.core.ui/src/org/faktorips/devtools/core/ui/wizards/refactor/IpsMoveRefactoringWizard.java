@@ -27,6 +27,8 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -115,6 +117,17 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
                 getUiToolkit().createLabel(fieldsComposite, ""); //$NON-NLS-1$
                 adaptRuntimeIdField = getUiToolkit().createCheckbox(fieldsComposite,
                         Messages.IpsRenameAndMoveUserInputPage_labelRefactorRuntimeId);
+                adaptRuntimeIdField.getButton().addSelectionListener(new SelectionListener() {
+                    @Override
+                    public void widgetSelected(SelectionEvent e) {
+                        userInputChanged();
+                    }
+
+                    @Override
+                    public void widgetDefaultSelected(SelectionEvent e) {
+                        // Nothing to do
+                    }
+                });
             }
 
             setFocus();
