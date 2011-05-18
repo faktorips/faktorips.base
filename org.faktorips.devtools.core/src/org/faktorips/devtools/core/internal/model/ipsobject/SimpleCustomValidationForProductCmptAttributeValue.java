@@ -78,8 +78,7 @@ public abstract class SimpleCustomValidationForProductCmptAttributeValue extends
             return null;
         }
         if (productCmptTypeName != null
-                && !productCmptTypeName.equals(attribute.getProductCmptGeneration().getProductCmpt()
-                        .getProductCmptType())) {
+                && !productCmptTypeName.equals(attribute.getPropertyValueContainer().getProductCmptType())) {
             return null;
         }
         try {

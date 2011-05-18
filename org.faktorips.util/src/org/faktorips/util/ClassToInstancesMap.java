@@ -66,6 +66,28 @@ public class ClassToInstancesMap<T> {
     }
 
     /**
+     * This method puts the value into the list specified by the key class. Use this method only if
+     * you do not know the concrete class at compile time, use {@link #put(Class, Object)} instead.
+     * If you do not have the information about key and value you could use this put method. The
+     * type check is done at runtime, this method would throw a {@link RuntimeException} in case of
+     * type mismatch.
+     * 
+     * @param key The class that identifies the list of values
+     * @param value the value you want to add to this map
+     * @return the list of values of type key after adding the value
+     */
+    public List<T> putWithRuntimeCheck(Class<? extends T> key, T value) {
+        if (key.isAssignableFrom(value.getClass())) {
+            @SuppressWarnings("unchecked")
+            List<T> list = (List<T>)getInstanceList(key);
+            list.add(value);
+            return list;
+        } else {
+            throw new RuntimeException("The value " + value + " is not of type " + key);
+        }
+    }
+
+    /**
      * The whole size of the map that means how many instances are stored in this map. If you want
      * to know how many objects are stored of one type use {@link #size(Class)}.
      * 
@@ -118,8 +140,8 @@ public class ClassToInstancesMap<T> {
      * @param object the object you want to remove
      * @return true if the object was found in the list.
      */
-    public <K extends T> boolean remove(Class<K> key, K object) {
-        List<K> instanceList = getInstanceList(key);
+    public boolean remove(Class<? extends T> key, T object) {
+        List<? extends T> instanceList = getInstanceList(key);
         return instanceList.remove(object);
     }
 

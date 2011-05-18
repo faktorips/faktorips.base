@@ -34,7 +34,7 @@ public class MissingPropertyValueEntry extends AbstractDeltaEntryForProperty {
 
     @Override
     public ProductCmptPropertyType getPropertyType() {
-        return property.getProdDefPropertyType();
+        return property.getProductCmptPropertyType();
     }
 
     @Override

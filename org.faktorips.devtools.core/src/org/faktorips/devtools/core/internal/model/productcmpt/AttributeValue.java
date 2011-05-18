@@ -65,6 +65,11 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     }
 
     @Override
+    public final IPropertyValueContainer getPropertyValueContainer() {
+        return (IPropertyValueContainer)getParent();
+    }
+
+    @Override
     public IProductCmptGeneration getProductCmptGeneration() {
         return (IProductCmptGeneration)getParent();
     }

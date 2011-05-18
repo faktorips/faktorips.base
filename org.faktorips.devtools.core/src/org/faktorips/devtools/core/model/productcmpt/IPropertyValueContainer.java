@@ -68,4 +68,9 @@ public interface IPropertyValueContainer extends IIpsObjectPartContainer {
      */
     public IGenerationToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException;
 
+    /**
+     * Returns the qualified name of the product component type this product component is based on.
+     */
+    public abstract String getProductCmptType();
+
 }

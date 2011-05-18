@@ -133,7 +133,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
     }
 
     @Override
-    public ProductCmptPropertyType getProdDefPropertyType() {
+    public ProductCmptPropertyType getProductCmptPropertyType() {
         return ProductCmptPropertyType.FORMULA;
     }
 

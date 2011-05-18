@@ -92,7 +92,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     }
 
     @Override
-    public ProductCmptPropertyType getProdDefPropertyType() {
+    public ProductCmptPropertyType getProductCmptPropertyType() {
         return ProductCmptPropertyType.VALUE;
     }
 

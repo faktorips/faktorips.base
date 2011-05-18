@@ -78,8 +78,7 @@ public class GenerationToTypeDelta implements IGenerationToTypeDelta {
     }
 
     private void createEntriesForProperties() throws CoreException {
-        for (int i = 0; i < ProductCmptPropertyType.values().length; i++) {
-            ProductCmptPropertyType propertyType = ProductCmptPropertyType.values()[i];
+        for (ProductCmptPropertyType propertyType : ProductCmptPropertyType.values()) {
             LinkedHashMap<String, IProductCmptProperty> propertiesMap = ((ProductCmptType)productCmptType)
                     .getProductCpmtPropertyMap(propertyType, ipsProject);
             checkForMissingPropertyValues(propertiesMap);

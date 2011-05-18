@@ -84,6 +84,11 @@ public class Formula extends BaseIpsObjectPart implements IFormula {
     }
 
     @Override
+    public final IPropertyValueContainer getPropertyValueContainer() {
+        return (IPropertyValueContainer)getParent();
+    }
+
+    @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }

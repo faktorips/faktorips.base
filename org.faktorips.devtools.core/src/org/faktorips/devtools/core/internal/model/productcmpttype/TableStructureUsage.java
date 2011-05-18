@@ -291,7 +291,7 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
     }
 
     @Override
-    public ProductCmptPropertyType getProdDefPropertyType() {
+    public ProductCmptPropertyType getProductCmptPropertyType() {
         return ProductCmptPropertyType.TABLE_CONTENT_USAGE;
     }
 

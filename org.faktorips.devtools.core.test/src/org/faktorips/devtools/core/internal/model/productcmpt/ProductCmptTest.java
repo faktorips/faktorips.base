@@ -26,6 +26,11 @@ import java.util.Locale;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.internal.model.pctype.ValidationRule;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeMethod;
+import org.faktorips.devtools.core.internal.model.productcmpttype.TableStructureUsage;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -41,7 +46,9 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptKind;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -440,6 +447,29 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
         IIpsSrcFile typeSrcFile = productCmpt.findMetaClassSrcFile(ipsProject);
         assertEquals(type.getIpsSrcFile(), typeSrcFile);
+    }
+
+    @Test
+    public void testNewPropertyValue() throws CoreException {
+        IProductCmptType type = newProductCmptType(ipsProject, "ProdType");
+        IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "PolType");
+        IProductCmptTypeAttribute attr = new ProductCmptTypeAttribute(type, "TypeAttr1");
+        IProductCmptTypeAttribute attr2 = new ProductCmptTypeAttribute(type, "TypeAttr2");
+
+        assertEquals(0, productCmpt.getPropertyValues(ProductCmptPropertyType.VALUE).size());
+        productCmpt.newPropertyValue(attr);
+        assertEquals(1, productCmpt.getPropertyValues(ProductCmptPropertyType.VALUE).size());
+        productCmpt.newPropertyValue(attr2);
+        assertEquals(2, productCmpt.getPropertyValues(ProductCmptPropertyType.VALUE).size());
+
+        productCmpt.newPropertyValue(new ValidationRule());
+        assertEquals(2, productCmpt.getPropertyValues(ProductCmptPropertyType.VALUE).size());
+        productCmpt.newPropertyValue(new PolicyCmptTypeAttribute(policyCmptType, "pcTypeAttribute"));
+        assertEquals(2, productCmpt.getPropertyValues(ProductCmptPropertyType.VALUE).size());
+        productCmpt.newPropertyValue(new TableStructureUsage());
+        assertEquals(2, productCmpt.getPropertyValues(ProductCmptPropertyType.VALUE).size());
+        productCmpt.newPropertyValue(new ProductCmptTypeMethod(type, "Method"));
+        assertEquals(2, productCmpt.getPropertyValues(ProductCmptPropertyType.VALUE).size());
     }
 
 }

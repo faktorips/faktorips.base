@@ -190,8 +190,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public IProductCmptProperty findProductCmptProperty(String propName, IIpsProject ipsProject) throws CoreException {
-        ProductCmptPropertyType[] types = ProductCmptPropertyType.values();
-        for (ProductCmptPropertyType type : types) {
+        for (ProductCmptPropertyType type : ProductCmptPropertyType.values()) {
             IProductCmptProperty prop = findProductCmptProperty(type, propName, ipsProject);
             if (prop != null) {
                 return prop;

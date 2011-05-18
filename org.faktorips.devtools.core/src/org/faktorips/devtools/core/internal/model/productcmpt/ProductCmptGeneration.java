@@ -142,7 +142,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         if (property == null) {
             return null;
         }
-        ProductCmptPropertyType type = property.getProdDefPropertyType();
+        ProductCmptPropertyType type = property.getProductCmptPropertyType();
         if (type.equals(ProductCmptPropertyType.VALUE)) {
             return attributeValueContainer.getPropertyValue(property);
         }
@@ -210,7 +210,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public IPropertyValue newPropertyValue(IProductCmptProperty property) {
-        ProductCmptPropertyType type = property.getProdDefPropertyType();
+        ProductCmptPropertyType type = property.getProductCmptPropertyType();
         if (ProductCmptPropertyType.VALUE.equals(type)) {
             return attributeValueContainer.newPropertyValue(property, getNextPartId());
         }
@@ -848,6 +848,11 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             return true;
         }
 
+    }
+
+    @Override
+    public String getProductCmptType() {
+        return getProductCmpt().getProductCmptType();
     }
 
 }

@@ -23,17 +23,17 @@ import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
+import org.faktorips.util.ClassToInstancesMap;
 import org.w3c.dom.Element;
 
 public class AttributeValueContainer {
-
-    private List<IAttributeValue> attributeValues;
+    private ClassToInstancesMap<IPropertyValue> classToInstancesMap;
 
     private final IPropertyValueContainer container;
 
     public AttributeValueContainer(IPropertyValueContainer container) {
         this.container = container;
-        this.attributeValues = new ArrayList<IAttributeValue>(0);
+        classToInstancesMap = new ClassToInstancesMap<IPropertyValue>();
     }
 
     /**
@@ -75,54 +75,72 @@ public class AttributeValueContainer {
      * @return a list of property values of the indicated type, or an empty list if none exist.
      */
     public List<IPropertyValue> getPropertyValues(ProductCmptPropertyType type) {
-        if (type == ProductCmptPropertyType.VALUE) {
-            return new ArrayList<IPropertyValue>(attributeValues);
-        }
-        return new ArrayList<IPropertyValue>();
+        return new ArrayList<IPropertyValue>(classToInstancesMap.get(type.getValueClass()));
     }
 
     /**
      * @param property the {@link IProductCmptProperty} the {@link IPropertyValue} is created for
      * @return the newly created {@link IPropertyValue} or <code>null</code> if at least one of the
-     *         arguments is null.
+     *         arguments is <code>null</code>.
      */
     public IPropertyValue newPropertyValue(IProductCmptProperty property, String partId) {
         if (property == null || container == null) {
             return null;
         }
-        IPropertyValue value = property.getProdDefPropertyType().createPropertyValue(container, partId,
-                property.getPropertyName());
-        registerPropertyValue(value);
-        return value;
+        if (property.getProductCmptPropertyType() == ProductCmptPropertyType.VALUE) {
+            IPropertyValue value = property.getProductCmptPropertyType().createPropertyValue(container, partId,
+                    property.getPropertyName());
+            registerPropertyValue(value);
+            return value;
+        } else {
+            return null;
+        }
     }
 
     private void registerPropertyValue(IPropertyValue value) {
-        attributeValues.add((IAttributeValue)value);
+        classToInstancesMap.putWithRuntimeCheck(value.getPropertyType().getValueClass(), value);
+    }
+
+    private void removePropertyValue(IPropertyValue value) {
+        classToInstancesMap.remove(value.getPropertyType().getValueClass(), value);
+    }
+
+    /**
+     * 
+     * @param type the type of property
+     * @param attributeName the name of the attribute
+     * @return the corresponding property value or <code>null</code> if it is either non existent or
+     *         if it is not of the indicated type.
+     */
+    private IPropertyValue getPropertyValue(ProductCmptPropertyType type, String attributeName) {
+        if (attributeName == null) {
+            return null;
+        }
+        IPropertyValue value = getPropertyValue(attributeName);
+
+        Class<? extends IPropertyValue> clazz = type.getValueClass();
+        if (clazz.isInstance(value)) {
+            return clazz.cast(value);
+        } else {
+            return null;
+        }
     }
 
     private List<IPropertyValue> getAllPropertyValues() {
         List<IPropertyValue> allValues = new ArrayList<IPropertyValue>();
-        allValues.addAll(attributeValues);
+        allValues.addAll(classToInstancesMap.values());
         return allValues;
     }
 
     /**
-     * @return a defensive copy of this container's list of attribute values
+     * @return this container's list of attribute values (not a a defensive copy)
      */
     public List<IAttributeValue> getAttributeValues() {
-        return new ArrayList<IAttributeValue>(attributeValues);
+        return classToInstancesMap.get(IAttributeValue.class);
     }
 
     public IAttributeValue getAttributeValue(String attribute) {
-        if (attribute == null) {
-            return null;
-        }
-        IPropertyValue value = getPropertyValue(attribute);
-        if (value != null && value.getPropertyType() == ProductCmptPropertyType.VALUE) {
-            return (IAttributeValue)value;
-        } else {
-            return null;
-        }
+        return (IAttributeValue)getPropertyValue(ProductCmptPropertyType.VALUE, attribute);
     }
 
     public IAttributeValue newAttributeValue(String partId) {
@@ -143,33 +161,33 @@ public class AttributeValueContainer {
     }
 
     /**
-     * Creates a new attribute value without updating the src file.
+     * Creates a new attribute value without updating the source file.
      */
     public AttributeValue newAttributeValueInternal(String id) {
         AttributeValue av = new AttributeValue(container, id);
-        attributeValues.add(av);
+        registerPropertyValue(av);
         return av;
     }
 
     /**
-     * Creates a new attribute value without updating the src file.
+     * Creates a new attribute value without updating the source file.
      */
     private AttributeValue newAttributeValueInternal(String id, IProductCmptTypeAttribute attr, String value) {
         AttributeValue av = new AttributeValue(container, id, attr == null ? "" : attr.getName(), value); //$NON-NLS-1$
-        attributeValues.add(av);
+        registerPropertyValue(av);
         return av;
     }
 
     public void addAttributeValue(IAttributeValue part) {
-        attributeValues.add(part);
+        registerPropertyValue(part);
     }
 
     public void removeAttributeValue(IAttributeValue part) {
-        attributeValues.remove(part);
+        removePropertyValue(part);
     }
 
     public void clear() {
-        attributeValues.clear();
+        classToInstancesMap.clear();
     }
 
     public IIpsObjectPart newPartThis(Element xmlTag, String id) {

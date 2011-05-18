@@ -71,6 +71,11 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
 
     @Override
+    public final IPropertyValueContainer getPropertyValueContainer() {
+        return (IPropertyValueContainer)getParent();
+    }
+
+    @Override
     public IProductCmpt getProductCmpt() {
         return (IProductCmpt)getParent().getParent();
     }

@@ -14,11 +14,10 @@
 package org.faktorips.devtools.core.model.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 
-public interface IValidationRuleConfig extends IIpsObjectPart, IPropertyValue {
+public interface IValidationRuleConfig extends IPropertyValue {
 
     String TAG_NAME = "ValidationRuleConfig"; //$NON-NLS-1$
 

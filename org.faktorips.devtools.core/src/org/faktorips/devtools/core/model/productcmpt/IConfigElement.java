@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -32,7 +31,7 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
  * components based on that policy component have a matching product attribute that stores the
  * concrete interest rate value.
  */
-public interface IConfigElement extends IIpsObjectPart, IPropertyValue, IValueSetOwner, IDescribedElement {
+public interface IConfigElement extends IPropertyValue, IValueSetOwner, IDescribedElement {
 
     public final static String PROPERTY_TYPE = "type"; //$NON-NLS-1$
     public final static String PROPERTY_POLICY_CMPT_TYPE_ATTRIBUTE = "policyCmptTypeAttribute"; //$NON-NLS-1$

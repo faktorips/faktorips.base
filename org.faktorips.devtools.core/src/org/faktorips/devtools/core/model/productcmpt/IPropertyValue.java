@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.model.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
@@ -24,7 +25,7 @@ import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
  * 
  * @author Jan Ortmann
  */
-public interface IPropertyValue {
+public interface IPropertyValue extends IIpsObjectPart {
 
     /**
      * Returns the product component generation this value belongs to.
@@ -62,9 +63,6 @@ public interface IPropertyValue {
      */
     public String getPropertyValue();
 
-    /**
-     * Removes the part from the parent.
-     */
-    public void delete();
+    public IPropertyValueContainer getPropertyValueContainer();
 
 }

@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.model.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 
@@ -22,7 +21,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
  * 
  * @author Jan Ortmann
  */
-public interface IAttributeValue extends IIpsObjectPart, IPropertyValue {
+public interface IAttributeValue extends IPropertyValue {
 
     public final static String PROPERTY_ATTRIBUTE = "attribute"; //$NON-NLS-1$
     public final static String PROPERTY_VALUE = "value"; //$NON-NLS-1$

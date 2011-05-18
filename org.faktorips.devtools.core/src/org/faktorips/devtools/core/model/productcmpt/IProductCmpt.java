@@ -92,11 +92,6 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProperty
     public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns the qualified name of the product component type this product component is based on.
-     */
-    public String getProductCmptType();
-
-    /**
      * Sets the qualified name of the product component type this product component is based on.
      * 
      * @throws NullPointerException if newType is <code>null</code>.

@@ -34,7 +34,7 @@ import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 /**
  * Enumeration that specifies the different (sub)types of product component properties.
  * 
- * @see IProductCmptProperty#getProdDefPropertyType()
+ * @see IProductCmptProperty#getProductCmptPropertyType()
  * 
  * @author Jan Ortmann
  * @author Stefan Widmaier
@@ -55,6 +55,16 @@ public enum ProductCmptPropertyType {
         public IPropertyValue createPropertyValue(IPropertyValueContainer parent, String id, String propertyName) {
             return new AttributeValue(parent, id, propertyName);
         }
+
+        @Override
+        public Class<? extends IPropertyValue> getValueClass() {
+            return IAttributeValue.class;
+        }
+
+        @Override
+        protected int getOrderNumber() {
+            return 0;
+        }
     },
 
     /**
@@ -69,6 +79,16 @@ public enum ProductCmptPropertyType {
         @Override
         public IPropertyValue createPropertyValue(IPropertyValueContainer parent, String id, String propertyName) {
             return new TableContentUsage(parent, id, propertyName);
+        }
+
+        @Override
+        public Class<? extends IPropertyValue> getValueClass() {
+            return ITableContentUsage.class;
+        }
+
+        @Override
+        protected int getOrderNumber() {
+            return 1;
         }
     },
 
@@ -85,6 +105,16 @@ public enum ProductCmptPropertyType {
         public IPropertyValue createPropertyValue(IPropertyValueContainer parent, String id, String propertyName) {
             return new Formula(parent, id, propertyName);
         }
+
+        @Override
+        public Class<? extends IPropertyValue> getValueClass() {
+            return IFormula.class;
+        }
+
+        @Override
+        protected int getOrderNumber() {
+            return 2;
+        }
     },
 
     /**
@@ -99,6 +129,16 @@ public enum ProductCmptPropertyType {
         @Override
         public IPropertyValue createPropertyValue(IPropertyValueContainer parent, String id, String propertyName) {
             return new ConfigElement(parent, id, propertyName);
+        }
+
+        @Override
+        public Class<? extends IPropertyValue> getValueClass() {
+            return IConfigElement.class;
+        }
+
+        @Override
+        protected int getOrderNumber() {
+            return 3;
         }
     },
 
@@ -115,6 +155,16 @@ public enum ProductCmptPropertyType {
         @Override
         public IPropertyValue createPropertyValue(IPropertyValueContainer parent, String id, String propertyName) {
             return new ValidationRuleConfig(parent, id, propertyName);
+        }
+
+        @Override
+        public Class<? extends IPropertyValue> getValueClass() {
+            return IValidationRuleConfig.class;
+        }
+
+        @Override
+        protected int getOrderNumber() {
+            return 4;
         }
     };
 
@@ -138,4 +188,14 @@ public enum ProductCmptPropertyType {
      */
     public abstract IPropertyValue createPropertyValue(IPropertyValueContainer parent, String id, String propertyName);
 
+    public abstract Class<? extends IPropertyValue> getValueClass();
+
+    /**
+     * @return the number with which {@link ProductCmptPropertyTypeUngeniric}s are ordered
+     */
+    protected abstract int getOrderNumber();
+
+    public int compareTo(ProductCmptPropertyTypeUngeniric propertyType) {
+        return propertyType.getOrderNumber() - getOrderNumber();
+    }
 }

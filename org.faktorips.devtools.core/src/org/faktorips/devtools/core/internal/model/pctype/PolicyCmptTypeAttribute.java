@@ -70,7 +70,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
      * @param pcType The type the attribute belongs to.
      * @param id The attribute's unique id within the type.
      */
-    public PolicyCmptTypeAttribute(PolicyCmptType pcType, String id) {
+    public PolicyCmptTypeAttribute(IPolicyCmptType pcType, String id) {
         super(pcType, id);
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
         if (pcType.getIpsProject().isPersistenceSupportEnabled()) {
@@ -438,7 +438,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     }
 
     @Override
-    public ProductCmptPropertyType getProdDefPropertyType() {
+    public ProductCmptPropertyType getProductCmptPropertyType() {
         return ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET;
     }
 

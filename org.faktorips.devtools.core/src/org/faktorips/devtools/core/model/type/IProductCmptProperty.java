@@ -42,7 +42,7 @@ public interface IProductCmptProperty extends IDescribedElement, ILabeledElement
      * 
      * @see ProductCmptPropertyType
      */
-    public ProductCmptPropertyType getProdDefPropertyType();
+    public ProductCmptPropertyType getProductCmptPropertyType();
 
     /**
      * Returns the name of the property. That name is unique in the corresponding

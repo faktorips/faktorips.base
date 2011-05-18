@@ -61,6 +61,11 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
         this.structureUsage = structureUsage;
     }
 
+    @Override
+    public final IPropertyValueContainer getPropertyValueContainer() {
+        return (IPropertyValueContainer)getParent();
+    }
+
     public TableContentUsage() {
         super();
     }

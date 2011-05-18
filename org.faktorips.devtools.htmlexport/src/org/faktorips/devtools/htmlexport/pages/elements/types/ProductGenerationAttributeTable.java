@@ -121,7 +121,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
                 continue;
             }
             IPolicyCmptTypeAttribute policyCmptTypeAttribute = (IPolicyCmptTypeAttribute)attribute;
-            if (policyCmptTypeAttribute.getProdDefPropertyType() == ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET
+            if (policyCmptTypeAttribute.getProductCmptPropertyType() == ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET
                     && policyCmptTypeAttribute.isProductRelevant()) {
                 policyCmptTypeAttributes.add(policyCmptTypeAttribute);
             }

@@ -46,6 +46,11 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
     }
 
     @Override
+    public final IPropertyValueContainer getPropertyValueContainer() {
+        return (IPropertyValueContainer)getParent();
+    }
+
+    @Override
     public boolean isActive() {
         return isActive;
     }
