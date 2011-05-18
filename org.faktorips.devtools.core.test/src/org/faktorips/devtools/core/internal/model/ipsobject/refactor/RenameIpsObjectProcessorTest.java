@@ -190,7 +190,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
         checkIpsSourceFile(productCmpt.getName(), NEW_NAME, productCmpt.getIpsPackageFragment(),
                 productCmpt.getIpsPackageFragment(), IpsObjectType.PRODUCT_CMPT);
         productCmptReferences.check(NEW_NAME);
-        assertEquals(productCmpt.getName(), productCmpt.getRuntimeId());
+        assertEquals(productCmpt.getName(), ipsProject.findProductCmpt(NEW_NAME).getRuntimeId());
     }
 
     @Test
@@ -205,7 +205,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
         checkIpsSourceFile(productCmpt.getName(), NEW_NAME, productCmpt.getIpsPackageFragment(),
                 productCmpt.getIpsPackageFragment(), IpsObjectType.PRODUCT_CMPT);
         productCmptReferences.check(NEW_NAME);
-        assertEquals(NEW_NAME, productCmpt.getRuntimeId());
+        assertEquals(NEW_NAME, ipsProject.findProductCmpt(NEW_NAME).getRuntimeId());
     }
 
     @Test

@@ -203,8 +203,9 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
 
         checkIpsSourceFile(productCmpt.getName(), productCmpt.getName(), originalIpsPackageFragment,
                 targetIpsPackageFragment, IpsObjectType.PRODUCT_CMPT);
-        productCmptReferences.check(TARGET_PACKAGE_NAME + '.' + productCmpt.getName());
-        assertEquals(productCmpt.getName(), productCmpt.getRuntimeId());
+        String newProductCmptQualifiedName = TARGET_PACKAGE_NAME + '.' + productCmpt.getName();
+        productCmptReferences.check(newProductCmptQualifiedName);
+        assertEquals(productCmpt.getName(), ipsProject.findProductCmpt(newProductCmptQualifiedName).getRuntimeId());
     }
 
     @Test
@@ -218,8 +219,10 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
 
         checkIpsSourceFile(productCmpt.getName(), productCmpt.getName(), originalIpsPackageFragment,
                 targetIpsPackageFragment, IpsObjectType.PRODUCT_CMPT);
-        productCmptReferences.check(TARGET_PACKAGE_NAME + '.' + productCmpt.getName());
-        assertEquals(TARGET_PACKAGE_NAME + '.' + productCmpt.getName(), productCmpt.getRuntimeId());
+        String newProductCmptQualifiedName = TARGET_PACKAGE_NAME + '.' + productCmpt.getName();
+        productCmptReferences.check(newProductCmptQualifiedName);
+        assertEquals(newProductCmptQualifiedName, ipsProject.findProductCmpt(newProductCmptQualifiedName)
+                .getRuntimeId());
     }
 
     @Test
