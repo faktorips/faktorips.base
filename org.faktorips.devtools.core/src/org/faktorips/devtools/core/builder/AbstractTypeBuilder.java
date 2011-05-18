@@ -214,7 +214,7 @@ public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
         List<IProductCmptTypeAttribute> attributes = productCmptType.getProductCmptTypeAttributes();
         for (IProductCmptTypeAttribute attribute : attributes) {
             IProductCmptTypeAttribute a = attribute;
-            if (!a.isValid()) {
+            if (!a.isValid(a.getIpsProject())) {
                 continue;
             }
             try {
