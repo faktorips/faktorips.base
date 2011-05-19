@@ -209,23 +209,6 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
     }
 
     @Test
-    public void testMoveProductCmptAdaptRuntimeId() throws CoreException {
-        IProductCmptType productCmptType = newProductCmptType(ipsProject, ORIGINAL_PACKAGE_NAME + '.' + "Product");
-        IProductCmpt productCmpt = newProductCmpt(productCmptType, ORIGINAL_PACKAGE_NAME + '.' + "ProductCmpt");
-        ProductCmptReferences productCmptReferences = new ProductCmptReferences(productCmpt, productCmptType);
-
-        productCmptReferences.saveIpsSrcFiles();
-        performMoveRefactoring(productCmpt, targetIpsPackageFragment, true);
-
-        checkIpsSourceFile(productCmpt.getName(), productCmpt.getName(), originalIpsPackageFragment,
-                targetIpsPackageFragment, IpsObjectType.PRODUCT_CMPT);
-        String newProductCmptQualifiedName = TARGET_PACKAGE_NAME + '.' + productCmpt.getName();
-        productCmptReferences.check(newProductCmptQualifiedName);
-        assertEquals(newProductCmptQualifiedName, ipsProject.findProductCmpt(newProductCmptQualifiedName)
-                .getRuntimeId());
-    }
-
-    @Test
     public void testMoveTestCase() throws CoreException {
         ITestCaseType testCaseType = newTestCaseType(ipsProject, ORIGINAL_PACKAGE_NAME + '.' + "TestCaseType");
         ITestCase testCase = newTestCase(testCaseType, ORIGINAL_PACKAGE_NAME + '.' + "TestCase");
