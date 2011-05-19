@@ -31,6 +31,7 @@ import org.eclipse.jdt.core.IType;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
@@ -160,6 +161,18 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
 
     protected final IJavaNamingConvention getJavaNamingConvention() {
         return ipsProject.getJavaNamingConvention();
+    }
+
+    protected final IChangesOverTimeNamingConvention getChangesInTimeNamingConventionForGeneratedCode() {
+        return ipsProject.getChangesInTimeNamingConventionForGeneratedCode();
+    }
+
+    protected final String getPublishedInterfaceName(String originalName) {
+        return getJavaNamingConvention().getPublishedInterfaceName(originalName);
+    }
+
+    protected final String getGenerationConceptNameAbbreviation() {
+        return getChangesInTimeNamingConventionForGeneratedCode().getGenerationConceptNameAbbreviation();
     }
 
 }

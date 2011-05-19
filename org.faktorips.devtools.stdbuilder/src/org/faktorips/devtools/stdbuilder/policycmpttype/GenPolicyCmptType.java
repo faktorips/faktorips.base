@@ -307,7 +307,7 @@ public class GenPolicyCmptType extends GenType {
                 IType javaTypeProductCmpt = findGeneratedJavaTypeForProductCmptType(forInterface);
                 if (javaTypeProductCmpt != null) {
                     org.eclipse.jdt.core.IMethod createPolicyCmptMethod = javaTypeProductCmpt.getMethod(
-                            getMethodNameCreatePolicyCmpt(), new String[] {});
+                            getMethodNameCreatePolicyCmpt(), new String[0]);
                     javaElements.add(createPolicyCmptMethod);
                 }
             } catch (CoreException e) {

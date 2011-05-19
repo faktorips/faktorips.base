@@ -33,14 +33,9 @@ import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
-import org.faktorips.devtools.core.model.pctype.AttributeType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
@@ -74,10 +69,10 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
             String targetPackageName,
             String newName) throws CoreException {
 
-        assertFalse(getJavaType(originalPackageName, "I" + originalName, true, false).exists());
+        assertFalse(getJavaType(originalPackageName, getPublishedInterfaceName(originalName), true, false).exists());
         assertFalse(getJavaType(originalPackageName, originalName, false, false).exists());
 
-        assertTrue(getJavaType(targetPackageName, "I" + newName, true, false).exists());
+        assertTrue(getJavaType(targetPackageName, getPublishedInterfaceName(newName), true, false).exists());
         assertTrue(getJavaType(targetPackageName, newName, false, false).exists());
     }
 
@@ -87,14 +82,18 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
             String newName) throws CoreException {
 
         assertFalse(getJavaType(originalPackageName, originalName, false, false).exists());
-        assertFalse(getJavaType(originalPackageName, "I" + originalName, true, false).exists());
-        assertFalse(getJavaType(originalPackageName, originalName + "Gen", false, false).exists());
-        assertFalse(getJavaType(originalPackageName, "I" + originalName + "Gen", true, false).exists());
+        assertFalse(getJavaType(originalPackageName, getPublishedInterfaceName(originalName), true, false).exists());
+        assertFalse(getJavaType(originalPackageName, originalName + getGenerationConceptNameAbbreviation(), false,
+                false).exists());
+        assertFalse(getJavaType(originalPackageName,
+                getPublishedInterfaceName(originalName + getGenerationConceptNameAbbreviation()), true, false).exists());
 
         assertTrue(getJavaType(targetPackageName, newName, false, false).exists());
-        assertTrue(getJavaType(targetPackageName, "I" + newName, true, false).exists());
-        assertTrue(getJavaType(targetPackageName, newName + "Gen", false, false).exists());
-        assertTrue(getJavaType(targetPackageName, "I" + newName + "Gen", true, false).exists());
+        assertTrue(getJavaType(targetPackageName, getPublishedInterfaceName(newName), true, false).exists());
+        assertTrue(getJavaType(targetPackageName, newName + getGenerationConceptNameAbbreviation(), false, false)
+                .exists());
+        assertTrue(getJavaType(targetPackageName,
+                getPublishedInterfaceName(newName + getGenerationConceptNameAbbreviation()), true, false).exists());
     }
 
     protected void checkJavaSourceFilesEnumType(String originalPackageName,
@@ -171,40 +170,6 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
         IPackageFragment javaPackage = javaRoot.getPackageFragment(basePackageName + packageName);
 
         return javaPackage.getCompilationUnit(typeName + JavaSourceFileBuilder.JAVA_EXTENSION).getType(typeName);
-    }
-
-    protected IPolicyCmptTypeAttribute createPolicyCmptTypeAttribute(String name,
-            String policyCmptTypeName,
-            String productCmptTypeName) throws CoreException {
-
-        IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, policyCmptTypeName,
-                productCmptTypeName);
-        return createPolicyCmptTypeAttribute(name, policyCmptType);
-    }
-
-    protected IPolicyCmptTypeAttribute createPolicyCmptTypeAttribute(String name, IPolicyCmptType policyCmptType) {
-        IPolicyCmptTypeAttribute policyCmptTypeAttribute = policyCmptType.newPolicyCmptTypeAttribute();
-        policyCmptTypeAttribute.setName(name);
-        policyCmptTypeAttribute.setDatatype(Datatype.MONEY.getQualifiedName());
-        policyCmptTypeAttribute.setModifier(Modifier.PUBLISHED);
-        policyCmptTypeAttribute.setAttributeType(AttributeType.CHANGEABLE);
-        policyCmptTypeAttribute.setProductRelevant(true);
-        return policyCmptTypeAttribute;
-    }
-
-    protected IProductCmptTypeAttribute createProductCmptTypeAttribute(String name,
-            String productCmptTypeName,
-            String policyCmptTypeName) throws CoreException {
-
-        IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, policyCmptTypeName,
-                productCmptTypeName);
-        IProductCmptTypeAttribute productCmptTypeAttribute = policyCmptType.findProductCmptType(ipsProject)
-                .newProductCmptTypeAttribute();
-        productCmptTypeAttribute.setName(name);
-        productCmptTypeAttribute.setDatatype(Datatype.STRING.getQualifiedName());
-        productCmptTypeAttribute.setModifier(Modifier.PUBLISHED);
-        productCmptTypeAttribute.setChangingOverTime(true);
-        return productCmptTypeAttribute;
     }
 
     protected IEnumType createEnumType(String name,
