@@ -21,10 +21,9 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -229,26 +228,34 @@ public class AttributeValuesSection extends IpsSection {
 
             // Paint ChangeOverTime Icon next to the text field
             if (toDisplay.getParent() instanceof IProductCmptGeneration) {
-                ctrl.getParent().addPaintListener(new PaintListener() {
-
-                    @Override
-                    public void paintControl(PaintEvent e) {
-                        if (ctrl.isDisposed()) {
-                            return;
-                        }
-                        Image image = IpsUIPlugin.getImageHandling().getImage(OverlayIcons.CHANGEOVERTIME_OVR_DESC);
-                        if (image == null) {
-                            return;
-                        }
-                        int x = -9; // image size is 8
-                        int y = 0;
-
-                        Point global = ctrl.toDisplay(x, y);
-                        Point local = ((Control)e.widget).toControl(global);
-                        e.gc.drawImage(image, local.x, local.y);
-
-                    }
-                });
+                // ctrl.getParent().addPaintListener(new PaintListener() {
+                //
+                // @Override
+                // public void paintControl(PaintEvent e) {
+                // if (ctrl.isDisposed()) {
+                // return;
+                // }
+                // Image image =
+                // IpsUIPlugin.getImageHandling().getImage(OverlayIcons.CHANGEOVERTIME_OVR_DESC);
+                // if (image == null) {
+                // return;
+                // }
+                // int x = -9; // image size is 8
+                // int y = 0;
+                //
+                // Point global = ctrl.toDisplay(x, y);
+                // Point local = ((Control)e.widget).toControl(global);
+                // e.gc.drawImage(image, local.x, local.y);
+                //
+                // }
+                // });
+                ControlDecoration controlDecoration = new ControlDecoration(ctrl, SWT.LEFT | SWT.TOP);
+                controlDecoration.setDescriptionText(NLS.bind(Messages.AttributeValuesSection_attributeChangingOverTimeDescription, IpsPlugin
+                        .getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
+                        .getGenerationConceptNamePlural()));
+                controlDecoration.setImage(IpsUIPlugin.getImageHandling()
+                        .getImage(OverlayIcons.CHANGEOVERTIME_OVR_DESC));
+                controlDecoration.setMarginWidth(1);
             }
 
         } catch (CoreException e) {

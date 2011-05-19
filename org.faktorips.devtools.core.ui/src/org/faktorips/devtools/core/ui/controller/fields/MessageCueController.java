@@ -44,6 +44,8 @@ import org.faktorips.util.message.MessageList;
  * <p>
  * An instance of the class is created per shell.
  */
+// TODO CD 19.05.2011 This code seems to be copied from eclipse. The ControlDecoration seems to do
+// nearly the same, is very easy to use and available since eclipse 3.3.
 public class MessageCueController {
 
     /**
