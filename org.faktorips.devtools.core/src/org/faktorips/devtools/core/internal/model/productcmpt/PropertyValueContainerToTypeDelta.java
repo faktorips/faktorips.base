@@ -75,7 +75,7 @@ public class PropertyValueContainerToTypeDelta implements IPropertyValueContaine
 
     private void checkForMissingPropertyValues(LinkedHashMap<String, IProductCmptProperty> propertiesMap) {
         for (IProductCmptProperty property : propertiesMap.values()) {
-            if (propertyValueContainer.getPropertyValue(property) == null) {
+            if (isRelevantProperty(property) && propertyValueContainer.getPropertyValue(property) == null) {
                 // no value found for the property with the given type, but we might have a type
                 // mismatch
                 if (propertyValueContainer.getPropertyValue(property.getPropertyName()) == null) {
@@ -87,6 +87,10 @@ public class PropertyValueContainerToTypeDelta implements IPropertyValueContaine
                 // if we created it here, too, we would create two entries for the same aspect
             }
         }
+    }
+
+    protected boolean isRelevantProperty(IProductCmptProperty property) {
+        return property.isChangingOverTime() == propertyValueContainer.isChangingOverTimeContainer();
     }
 
     private void checkForInconsistentPropertyValues(LinkedHashMap<String, IProductCmptProperty> propertiesMap,
@@ -110,6 +114,11 @@ public class PropertyValueContainerToTypeDelta implements IPropertyValueContaine
                     addEntry(valueWithoutPropertyEntry);
                 }
             } else {
+                if (!isRelevantProperty(property)) {
+                    // the relevance changed (changingOverTime selected or unselected)
+                    ValueWithoutPropertyEntry deltaEntry = new ValueWithoutPropertyEntry(value);
+                    addEntry(deltaEntry);
+                }
                 if (ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET.equals(propertyType)) {
                     checkForValueSetMismatch((IPolicyCmptTypeAttribute)property, (IConfigElement)value);
                 }

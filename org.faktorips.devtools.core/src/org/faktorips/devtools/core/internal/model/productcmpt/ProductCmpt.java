@@ -267,6 +267,9 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreException {
+        if (!computeDeltaToModel(ipsProject).isEmpty()) {
+            return true;
+        }
         IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
         for (IIpsObjectGeneration generation : generations) {
             if (generation instanceof IProductCmptGeneration) {
@@ -283,9 +286,10 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreException {
         int max = getNumOfGenerations();
+        computeDeltaToModel(ipsProject).fix();
         for (int i = 0; i < max; i++) {
             IProductCmptGeneration generation = getProductCmptGeneration(i);
-            IPropertyValueContainerToTypeDelta delta = (generation).computeDeltaToModel(ipsProject);
+            IPropertyValueContainerToTypeDelta delta = generation.computeDeltaToModel(ipsProject);
             delta.fix();
         }
     }
@@ -349,8 +353,13 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
+    public boolean isChangingOverTimeContainer() {
+        return false;
+    }
+
+    @Override
     public IPropertyValueContainerToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException {
-        return null;
+        return new PropertyValueContainerToTypeDelta(this, ipsProject);
     }
 
 }
