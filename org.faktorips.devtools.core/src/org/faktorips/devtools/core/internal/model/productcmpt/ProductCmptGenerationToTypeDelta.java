@@ -36,7 +36,8 @@ public class ProductCmptGenerationToTypeDelta extends PropertyValueContainerToTy
         IProductCmptLink[] links = getPropertyValueContainer().getLinks();
         for (IProductCmptLink link : links) {
             if (getProductCmptType().findAssociation(link.getAssociation(), getIpsProject()) == null) {
-                new LinkWithoutAssociationEntry(this, link);
+                LinkWithoutAssociationEntry linkWithoutAssociationEntry = new LinkWithoutAssociationEntry(link);
+                addEntry(linkWithoutAssociationEntry);
             }
         }
     }

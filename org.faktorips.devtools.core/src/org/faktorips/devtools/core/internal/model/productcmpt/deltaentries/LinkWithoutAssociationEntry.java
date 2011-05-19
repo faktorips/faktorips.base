@@ -14,20 +14,19 @@
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.productcmpt.PropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
+import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class LinkWithoutAssociationEntry extends AbstractDeltaEntry {
+public class LinkWithoutAssociationEntry implements IDeltaEntry {
 
-    private IProductCmptLink link;
+    private final IProductCmptLink link;
 
-    public LinkWithoutAssociationEntry(PropertyValueContainerToTypeDelta delta, IProductCmptLink link) {
-        super(delta);
+    public LinkWithoutAssociationEntry(IProductCmptLink link) {
         this.link = link;
     }
 

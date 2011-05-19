@@ -13,18 +13,13 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
-import org.faktorips.devtools.core.internal.model.productcmpt.PropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public abstract class AbstractDeltaEntryForProperty extends AbstractDeltaEntry implements IDeltaEntryForProperty {
-
-    public AbstractDeltaEntryForProperty(PropertyValueContainerToTypeDelta delta) {
-        super(delta);
-    }
+public abstract class AbstractDeltaEntryForProperty implements IDeltaEntryForProperty {
 
     @Override
     public String toString() {

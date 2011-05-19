@@ -14,8 +14,6 @@
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.productcmpt.PropertyValueContainerToTypeDelta;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
@@ -26,10 +24,9 @@ import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
  */
 public class ValueWithoutPropertyEntry extends AbstractDeltaEntryForProperty {
 
-    private IPropertyValue value;
+    private final IPropertyValue value;
 
-    public ValueWithoutPropertyEntry(PropertyValueContainerToTypeDelta delta, IPropertyValue value) {
-        super(delta);
+    public ValueWithoutPropertyEntry(IPropertyValue value) {
         this.value = value;
     }
 
@@ -45,7 +42,7 @@ public class ValueWithoutPropertyEntry extends AbstractDeltaEntryForProperty {
 
     @Override
     public String getDescription() {
-        return IpsPlugin.getMultiLanguageSupport().getLocalizedCaption((IIpsObjectPartContainer)value);
+        return IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(value);
     }
 
     @Override

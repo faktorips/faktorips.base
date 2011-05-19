@@ -18,7 +18,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.AbstractDeltaEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingPropertyValueEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.PropertyTypeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueSetMismatchEntry;
@@ -29,9 +28,9 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
@@ -80,7 +79,9 @@ public class PropertyValueContainerToTypeDelta implements IPropertyValueContaine
                 // no value found for the property with the given type, but we might have a type
                 // mismatch
                 if (propertyValueContainer.getPropertyValue(property.getPropertyName()) == null) {
-                    new MissingPropertyValueEntry(this, property);
+                    MissingPropertyValueEntry missingPropertyValueEntry = new MissingPropertyValueEntry(
+                            propertyValueContainer, property);
+                    addEntry(missingPropertyValueEntry);
                 }
                 // we create the entry for the type mismatch in checkForInconsistentPropertyValues()
                 // if we created it here, too, we would create two entries for the same aspect
@@ -101,9 +102,12 @@ public class PropertyValueContainerToTypeDelta implements IPropertyValueContaine
                 if (property2 != null) {
                     // property2 must have a different type, otherwise it would have been in the
                     // property map!
-                    new PropertyTypeMismatchEntry(this, property2, value);
+                    PropertyTypeMismatchEntry propertyTypeMismatchEntry = new PropertyTypeMismatchEntry(
+                            propertyValueContainer, property2, value);
+                    addEntry(propertyTypeMismatchEntry);
                 } else {
-                    new ValueWithoutPropertyEntry(this, value);
+                    ValueWithoutPropertyEntry valueWithoutPropertyEntry = new ValueWithoutPropertyEntry(value);
+                    addEntry(valueWithoutPropertyEntry);
                 }
             } else {
                 if (ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET.equals(propertyType)) {
@@ -118,14 +122,17 @@ public class PropertyValueContainerToTypeDelta implements IPropertyValueContaine
             return;
         }
         if (!element.getValueSet().isSameTypeOfValueSet(attribute.getValueSet())) {
-            new ValueSetMismatchEntry(this, attribute, element);
+            ValueSetMismatchEntry valueSetMismatchEntry = new ValueSetMismatchEntry(attribute, element);
+            addEntry(valueSetMismatchEntry);
         }
     }
 
     /**
-     * This method should only be called by {@link AbstractDeltaEntry} !!!
+     * Adding the {@link IDeltaEntry} to the list of delta entries.
+     * 
+     * @param newEntry The {@link IDeltaEntry} you want to add to this delta container
      */
-    public void addEntry(IDeltaEntry newEntry) {
+    protected void addEntry(IDeltaEntry newEntry) {
         entries.add(newEntry);
     }
 
