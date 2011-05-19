@@ -26,7 +26,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
@@ -146,8 +145,8 @@ public class ProductCmptInterfaceBuilder extends BaseProductCmptTypeBuilder {
     }
 
     @Override
-    protected boolean needGenerateCodeForAttribute(IProductCmptTypeAttribute attribute) {
-        return !attribute.isChangingOverTime();
+    protected boolean isChangingOverTimeContainer() {
+        return false;
     }
 
     @Override

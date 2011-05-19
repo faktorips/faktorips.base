@@ -23,6 +23,7 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.AbstractProductCmptTypeBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IType;
@@ -93,7 +94,7 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
             JavaCodeFragmentBuilder fieldsBuilder,
             JavaCodeFragmentBuilder methodsBuilder,
             JavaCodeFragmentBuilder constantBuilder) throws CoreException {
-        if (needGenerateCodeForAttribute(attribute)) {
+        if (attribute.isChangingOverTime() == isChangingOverTimeContainer()) {
             GenProductCmptTypeAttribute generator = getStandardBuilderSet().getGenerator(getProductCmptType())
                     .getGenerator(attribute);
             if (generator != null) {
@@ -102,7 +103,14 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
         }
     }
 
-    protected abstract boolean needGenerateCodeForAttribute(IProductCmptTypeAttribute attribute);
+    /**
+     * Returns true if this builder is responsible for a {@link IPropertyValueContainer} that
+     * changes over time. Concrete: For PropertyComponentGenerations this should return true, for
+     * ProductComponents returns false;
+     * 
+     * @return true if the generated container does change over time.
+     */
+    protected abstract boolean isChangingOverTimeContainer();
 
     protected boolean isUseTypesafeCollections() {
         return getStandardBuilderSet().isUseTypesafeCollections();
@@ -165,7 +173,7 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
         boolean attributeFound = false;
         GenProductCmptType typeGenerator = getStandardBuilderSet().getGenerator(getProductCmptType());
         for (GenProductCmptTypeAttribute attributeGenerator : typeGenerator.getGenProdAttributes()) {
-            if (needGenerateCodeForAttribute(attributeGenerator.getAttribute())) {
+            if (attributeGenerator.getAttribute().isChangingOverTime() == isChangingOverTimeContainer()) {
                 if (attributeFound == false) {
                     generateDefineLocalVariablesForXmlExtraction(builder);
                     attributeFound = true;
