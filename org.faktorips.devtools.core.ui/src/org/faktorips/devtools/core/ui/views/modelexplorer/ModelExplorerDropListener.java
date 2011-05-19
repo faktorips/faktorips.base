@@ -42,7 +42,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.refactor.IIpsCompositeMoveRefactoring;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
-import org.faktorips.devtools.core.ui.wizards.refactor.IpsMoveRefactoringWizard;
 
 public class ModelExplorerDropListener extends IpsElementDropListener {
 
@@ -116,14 +115,7 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
                     ipsCompositeMoveRefactoring.setTargetIpsPackageFragment((IIpsPackageFragment)target);
                     IpsRefactoringOperation refactoringOperation = new IpsRefactoringOperation(
                             ipsCompositeMoveRefactoring, shell);
-
-                    if (!ipsCompositeMoveRefactoring.isAdaptRuntimeIdRelevant()) {
-                        refactoringOperation.runDirectExecution();
-                    } else {
-                        refactoringOperation.runWizardInteraction(new IpsMoveRefactoringWizard(
-                                ipsCompositeMoveRefactoring));
-                    }
-
+                    refactoringOperation.runDirectExecution();
                     return;
                 }
             }

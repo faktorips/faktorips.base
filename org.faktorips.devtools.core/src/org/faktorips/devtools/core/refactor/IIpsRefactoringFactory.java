@@ -62,12 +62,9 @@ public interface IIpsRefactoringFactory {
      * @param ipsObject The {@link IIpsObject} to move
      * @param targetIpsPackageFragment The target {@link IIpsPackageFragment} to move the
      *            {@link IIpsObject} to
-     * @param adaptRuntimeId Flag indicating whether the runtime id should be adapted if the
-     *            {@link IIpsObject} to move is an {@link IProductCmpt}
      */
     public IIpsProcessorBasedRefactoring createMoveRefactoring(IIpsObject ipsObject,
-            IIpsPackageFragment targetIpsPackageFragment,
-            boolean adaptRuntimeId);
+            IIpsPackageFragment targetIpsPackageFragment);
 
     /**
      * Creates a Faktor-IPS "Move" refactoring that is capable of moving the given
@@ -84,12 +81,9 @@ public interface IIpsRefactoringFactory {
      * @param ipsObjects The {@link IIpsObject}s to move
      * @param targetIpsPackageFragment The target {@link IIpsPackageFragment} to move the
      *            {@link IIpsElement}s to
-     * @param adaptRuntimeId Flag indicating whether the runtime id should be adapted if the
-     *            {@link IIpsElement} to move is an {@link IProductCmpt}
      */
     public IIpsCompositeMoveRefactoring createCompositeMoveRefactoring(Set<IIpsObject> ipsObjects,
-            IIpsPackageFragment targetIpsPackageFragment,
-            boolean adaptRuntimeId);
+            IIpsPackageFragment targetIpsPackageFragment);
 
     /**
      * Creates a composite Faktor-IPS refactoring that is capable of batch-moving all given

@@ -14,8 +14,6 @@
 package org.faktorips.devtools.core.internal.refactor;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -26,7 +24,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.refactor.IIpsProcessorBasedRefactoring;
 import org.faktorips.devtools.core.refactor.IpsMoveProcessor;
 import org.junit.Before;
@@ -58,7 +55,6 @@ public class IpsCompositeMoveRefactoringTest {
         ipsCompositeMoveRefactoring = new IpsCompositeMoveRefactoring(new LinkedHashSet<IIpsObject>(Arrays.asList(
                 ipsObject1, ipsObject2)));
         ipsCompositeMoveRefactoring.setTargetIpsPackageFragment(targetIpsPackageFragment);
-        ipsCompositeMoveRefactoring.setAdaptRuntimeId(true);
     }
 
     @Test
@@ -89,7 +85,6 @@ public class IpsCompositeMoveRefactoringTest {
         IpsMoveProcessor ipsMoveProcessor = (IpsMoveProcessor)ipsMoveRefactoring.getIpsRefactoringProcessor();
 
         assertEquals(targetIpsPackageFragment, ipsMoveProcessor.getTargetIpsPackageFragment());
-        assertTrue(ipsMoveProcessor.isAdaptRuntimeId());
     }
 
     @Test
@@ -103,23 +98,6 @@ public class IpsCompositeMoveRefactoringTest {
     @Test(expected = NullPointerException.class)
     public void testSetTargetIpsPackageFragmentNullFragment() {
         ipsCompositeMoveRefactoring.setTargetIpsPackageFragment(null);
-    }
-
-    @Test
-    public void testGetSetAdaptRuntimeId() {
-        ipsCompositeMoveRefactoring.setAdaptRuntimeId(false);
-        assertFalse(ipsCompositeMoveRefactoring.isAdaptRuntimeId());
-        ipsCompositeMoveRefactoring.setAdaptRuntimeId(true);
-        assertTrue(ipsCompositeMoveRefactoring.isAdaptRuntimeId());
-    }
-
-    @Test
-    public void testIsAdaptRuntimeIdRelevant() {
-        assertFalse(ipsCompositeMoveRefactoring.isAdaptRuntimeIdRelevant());
-
-        ipsCompositeMoveRefactoring = new IpsCompositeMoveRefactoring(new LinkedHashSet<IIpsObject>(Arrays.asList(
-                ipsObject1, mock(IProductCmpt.class))));
-        assertTrue(ipsCompositeMoveRefactoring.isAdaptRuntimeIdRelevant());
     }
 
 }

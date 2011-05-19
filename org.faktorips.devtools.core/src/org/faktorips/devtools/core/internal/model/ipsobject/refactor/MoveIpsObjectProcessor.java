@@ -68,8 +68,7 @@ public final class MoveIpsObjectProcessor extends IpsMoveProcessor {
 
     @Override
     protected void refactorIpsModel(IProgressMonitor pm) throws CoreException {
-        renameMoveHelper.refactorIpsModel(getTargetIpsPackageFragment(), getIpsElement().getName(), isAdaptRuntimeId(),
-                pm);
+        renameMoveHelper.refactorIpsModel(getTargetIpsPackageFragment(), getIpsElement().getName(), false, pm);
     }
 
     @Override

@@ -77,13 +77,11 @@ public final class IpsRefactoringFactory implements IIpsRefactoringFactory {
 
     @Override
     public IIpsProcessorBasedRefactoring createMoveRefactoring(IIpsObject ipsObject,
-            IIpsPackageFragment targetIpsPackageFragment,
-            boolean adaptRuntimeId) {
+            IIpsPackageFragment targetIpsPackageFragment) {
 
         IIpsProcessorBasedRefactoring ipsMoveRefactoring = createMoveRefactoring(ipsObject);
         IpsMoveProcessor ipsMoveProcessor = (IpsMoveProcessor)ipsMoveRefactoring.getIpsRefactoringProcessor();
         ipsMoveProcessor.setTargetIpsPackageFragment(targetIpsPackageFragment);
-        ipsMoveProcessor.setAdaptRuntimeId(adaptRuntimeId);
         return ipsMoveRefactoring;
     }
 
@@ -95,12 +93,10 @@ public final class IpsRefactoringFactory implements IIpsRefactoringFactory {
 
     @Override
     public IIpsCompositeMoveRefactoring createCompositeMoveRefactoring(Set<IIpsObject> ipsObjects,
-            IIpsPackageFragment targetIpsPackageFragment,
-            boolean adaptRuntimeId) {
+            IIpsPackageFragment targetIpsPackageFragment) {
 
         IIpsCompositeMoveRefactoring ipsCompositeMoveRefactoring = createCompositeMoveRefactoring(ipsObjects);
         ipsCompositeMoveRefactoring.setTargetIpsPackageFragment(targetIpsPackageFragment);
-        ipsCompositeMoveRefactoring.setAdaptRuntimeId(adaptRuntimeId);
         return ipsCompositeMoveRefactoring;
     }
 

@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -199,13 +198,12 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
         ProductCmptReferences productCmptReferences = new ProductCmptReferences(productCmpt, productCmptType);
 
         productCmptReferences.saveIpsSrcFiles();
-        performMoveRefactoring(productCmpt, targetIpsPackageFragment, false);
+        performMoveRefactoring(productCmpt, targetIpsPackageFragment);
 
         checkIpsSourceFile(productCmpt.getName(), productCmpt.getName(), originalIpsPackageFragment,
                 targetIpsPackageFragment, IpsObjectType.PRODUCT_CMPT);
         String newProductCmptQualifiedName = TARGET_PACKAGE_NAME + '.' + productCmpt.getName();
         productCmptReferences.check(newProductCmptQualifiedName);
-        assertEquals(productCmpt.getName(), ipsProject.findProductCmpt(newProductCmptQualifiedName).getRuntimeId());
     }
 
     @Test

@@ -414,7 +414,7 @@ public class MoveOperation implements IRunnableWithProgress {
         IIpsPackageFragment targetIpsPackageFragment = targetRoot.getIpsPackageFragment(QNameUtil
                 .getPackageName(targetName));
         IIpsRefactoring ipsMoveRefactoring = IpsPlugin.getIpsRefactoringFactory().createMoveRefactoring(ipsObject,
-                targetIpsPackageFragment, false);
+                targetIpsPackageFragment);
         IWorkspaceRunnable operation = new PerformRefactoringOperation(ipsMoveRefactoring.toLtkRefactoring(),
                 CheckConditionsOperation.ALL_CONDITIONS);
         ResourcesPlugin.getWorkspace().run(operation, pm);

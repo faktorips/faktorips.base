@@ -22,7 +22,6 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.refactor.IIpsCompositeMoveRefactoring;
 import org.faktorips.devtools.core.refactor.IIpsProcessorBasedRefactoring;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
@@ -36,8 +35,6 @@ public final class IpsCompositeMoveRefactoring extends IpsCompositeRefactoring<I
         IIpsCompositeMoveRefactoring {
 
     private IIpsPackageFragment targetIpsPackageFragment;
-
-    private boolean adaptRuntimeId;
 
     public IpsCompositeMoveRefactoring(Set<IIpsObject> ipsObjects) {
         super(ipsObjects);
@@ -75,7 +72,6 @@ public final class IpsCompositeMoveRefactoring extends IpsCompositeRefactoring<I
         if (targetIpsPackageFragment != null) {
             ipsMoveProcessor.setTargetIpsPackageFragment(targetIpsPackageFragment);
         }
-        ipsMoveProcessor.setAdaptRuntimeId(adaptRuntimeId);
         return ipsMoveRefactoring;
     }
 
@@ -91,28 +87,8 @@ public final class IpsCompositeMoveRefactoring extends IpsCompositeRefactoring<I
     }
 
     @Override
-    public void setAdaptRuntimeId(boolean adaptRuntimeId) {
-        this.adaptRuntimeId = adaptRuntimeId;
-    }
-
-    @Override
     public IIpsPackageFragment getTargetIpsPackageFragment() {
         return targetIpsPackageFragment;
-    }
-
-    @Override
-    public boolean isAdaptRuntimeId() {
-        return adaptRuntimeId;
-    }
-
-    @Override
-    public boolean isAdaptRuntimeIdRelevant() {
-        for (IIpsObject ipsObject : getElements()) {
-            if (ipsObject instanceof IProductCmpt) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

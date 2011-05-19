@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.refactor;
 
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 
 /**
  * Allows to batch "Move" refactor multiple {@link IIpsElement}s.
@@ -34,26 +33,8 @@ public interface IIpsCompositeMoveRefactoring extends IIpsCompositeRefactoring {
     public void setTargetIpsPackageFragment(IIpsPackageFragment targetIpsPackageFragment);
 
     /**
-     * Sets whether the runtime ID of {@link IProductCmpt} should be adapted.
-     * 
-     * @param adaptRuntimeId Flag indicating whether to adapt runtime IDs
-     */
-    public void setAdaptRuntimeId(boolean adaptRuntimeId);
-
-    /**
      * Returns the target {@link IIpsPackageFragment}.
      */
     public IIpsPackageFragment getTargetIpsPackageFragment();
-
-    /**
-     * Returns whether the runtime ID of {@link IProductCmpt} should be adapted.
-     */
-    public boolean isAdaptRuntimeId();
-
-    /**
-     * Returns whether the option 'adapt runtime id' is relevant which is the case if at least one
-     * {@link IProductCmpt} shall be refactored.
-     */
-    public boolean isAdaptRuntimeIdRelevant();
 
 }

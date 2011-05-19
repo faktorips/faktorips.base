@@ -111,9 +111,9 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
-import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.util.BeanUtil;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
@@ -1239,34 +1239,16 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     /**
-     * Performs the Faktor-IPS 'Move' refactoring for the given {@link IProductCmpt} and provided
-     * target {@link IIpsPackageFragment}, thereby allowing to adapt the runtime id.
-     */
-    protected final RefactoringStatus performMoveRefactoring(IProductCmpt productCmpt,
-            IIpsPackageFragment targetIpsPackageFragment,
-            boolean adaptRuntimeId) throws CoreException {
-
-        return performMoveRefactoring((IIpsObject)productCmpt, targetIpsPackageFragment, adaptRuntimeId);
-    }
-
-    /**
      * Performs the Faktor-IPS 'Move' refactoring for the given {@link IIpsObject} and provided
      * target {@link IIpsPackageFragment}.
      */
     protected final RefactoringStatus performMoveRefactoring(IIpsObject ipsObject,
             IIpsPackageFragment targetIpsPackageFragment) throws CoreException {
 
-        return performMoveRefactoring(ipsObject, targetIpsPackageFragment, false);
-    }
-
-    private RefactoringStatus performMoveRefactoring(IIpsObject ipsObject,
-            IIpsPackageFragment targetIpsPackageFragment,
-            boolean adaptRuntimeId) throws CoreException {
-
         printValidationResult(ipsObject);
 
         IIpsRefactoring ipsMoveRefactoring = IpsPlugin.getIpsRefactoringFactory().createMoveRefactoring(ipsObject,
-                targetIpsPackageFragment, adaptRuntimeId);
+                targetIpsPackageFragment);
 
         return performRefactoring(ipsMoveRefactoring);
     }
@@ -1284,7 +1266,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         }
 
         IIpsRefactoring ipsCompositeMoveRefactoring = IpsPlugin.getIpsRefactoringFactory()
-                .createCompositeMoveRefactoring(ipsObjects, targetIpsPackageFragment, false);
+                .createCompositeMoveRefactoring(ipsObjects, targetIpsPackageFragment);
 
         return performRefactoring(ipsCompositeMoveRefactoring);
     }

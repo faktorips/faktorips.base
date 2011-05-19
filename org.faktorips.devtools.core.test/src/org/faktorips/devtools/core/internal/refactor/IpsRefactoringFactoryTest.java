@@ -119,11 +119,10 @@ public class IpsRefactoringFactoryTest {
     public void testCreateFullyConfiguredMoveRefactoring() {
         IIpsPackageFragment targetIpsPackageFragment = mock(IIpsPackageFragment.class);
         IIpsProcessorBasedRefactoring ipsMoveRefactoring = ipsRefactoringFactory.createMoveRefactoring(
-                mock(IIpsObject.class), targetIpsPackageFragment, true);
+                mock(IIpsObject.class), targetIpsPackageFragment);
 
         IpsMoveProcessor ipsMoveProcessor = (IpsMoveProcessor)ipsMoveRefactoring.getIpsRefactoringProcessor();
         assertEquals(targetIpsPackageFragment, ipsMoveProcessor.getTargetIpsPackageFragment());
-        assertTrue(ipsMoveProcessor.isAdaptRuntimeId());
     }
 
     @Test
@@ -133,10 +132,9 @@ public class IpsRefactoringFactoryTest {
         IIpsPackageFragment targetIpsPackageFragment = mock(IIpsPackageFragment.class);
 
         IIpsCompositeMoveRefactoring ipsCompositeMoveRefactoring = ipsRefactoringFactory
-                .createCompositeMoveRefactoring(ipsObjects, targetIpsPackageFragment, true);
+                .createCompositeMoveRefactoring(ipsObjects, targetIpsPackageFragment);
 
         assertEquals(2, ipsCompositeMoveRefactoring.getNumberOfRefactorings());
         assertEquals(targetIpsPackageFragment, ipsCompositeMoveRefactoring.getTargetIpsPackageFragment());
-        assertTrue(ipsCompositeMoveRefactoring.isAdaptRuntimeId());
     }
 }
