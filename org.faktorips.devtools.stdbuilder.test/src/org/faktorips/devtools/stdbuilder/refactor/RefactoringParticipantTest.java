@@ -203,6 +203,7 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
         productCmptTypeAttribute.setName(name);
         productCmptTypeAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productCmptTypeAttribute.setModifier(Modifier.PUBLISHED);
+        productCmptTypeAttribute.setChangingOverTime(true);
         return productCmptTypeAttribute;
     }
 
