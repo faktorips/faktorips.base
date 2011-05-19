@@ -278,7 +278,8 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         String oldValue = values.get(index);
         values.set(index, value);
         List<Integer> indexes = valuesToIndexMap.get(oldValue);
-        indexes.remove(index);
+        // need to cast the index to Object to use the remove(Object) method instead of remove(int)
+        indexes.remove((Object)index);
         setValueWithoutTriggeringChangeEvent(value, index);
         valueChanged(oldValue, value);
     }
