@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFileMemento;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -136,6 +137,12 @@ public class IpsSrcFile extends AbstractIpsSrcFile {
         IIpsPackageFragmentRoot root = getIpsPackageFragment().getRoot();
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
         return entry.getBasePackageNameForDerivedJavaClasses();
+    }
+
+    @Override
+    public void delete() throws CoreException {
+        getCorrespondingResource().delete(true, null);
+        ((IpsModel)getIpsModel()).removeIpsSrcFileContent(this);
     }
 
 }

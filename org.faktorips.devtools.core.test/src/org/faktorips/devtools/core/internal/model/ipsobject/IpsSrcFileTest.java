@@ -29,6 +29,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IModificationStatusChangeListener;
@@ -222,6 +223,20 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
         parsableFile.setMemento(memento);
         assertEquals(0, policyCmptType.getNumOfAttributes());
         assertFalse(parsableFile.isDirty());
+    }
+
+    @Test
+    public void testDelete() throws CoreException {
+        parsableFile.delete();
+        assertFalse(parsableFile.exists());
+        assertFalse(((IpsModel)parsableFile.getIpsModel()).isCached(parsableFile));
+    }
+
+    @Test
+    public void testDeleteSrcFileNotExisting() throws CoreException {
+        parsableFile.delete();
+        parsableFile.delete();
+        // Test successful if no exception occurs
     }
 
     @Override

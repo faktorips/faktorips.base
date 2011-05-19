@@ -153,4 +153,13 @@ public class ArchiveIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
         return true;
     }
 
+    @Override
+    public void delete() throws CoreException {
+        /*
+         * TODO AW 19-05-2011: What shall the delete() method of ArchiveIpsPackageFragmentRoot look
+         * like? (FIPS-534)
+         */
+
+    }
+
 }

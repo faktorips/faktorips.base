@@ -70,7 +70,6 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetRelativePath() {
-
         String[] expectedSegments = pack.getName().split("\\.");
         String[] segments = pack.getRelativePath().segments();
         for (int i = 0; i < segments.length; i++) {
@@ -625,4 +624,17 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
 
         assertTrue(rootPackage.getDefaultIpsPackageFragment().hasChildIpsPackageFragments());
     }
+
+    @Test
+    public void testDelete() throws CoreException {
+        IIpsPackageFragment childPackage = pack.createSubPackage("foo", true, null);
+        IIpsSrcFile childSrcFile = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "FooBar", true, null);
+
+        pack.delete();
+
+        assertFalse(pack.exists());
+        assertFalse(childPackage.exists());
+        assertFalse(childSrcFile.exists());
+    }
+
 }

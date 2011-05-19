@@ -692,4 +692,9 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertTrue(result.contains(test2));
     }
 
+    @Test(expected = UnsupportedOperationException.class)
+    public void testDelete() throws CoreException {
+        IpsPlugin.getDefault().getIpsModel().delete();
+    }
+
 }

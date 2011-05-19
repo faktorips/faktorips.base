@@ -259,4 +259,9 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         }
     }
 
+    @Override
+    public void delete() throws CoreException {
+        getIpsSrcFile().delete();
+    }
+
 }

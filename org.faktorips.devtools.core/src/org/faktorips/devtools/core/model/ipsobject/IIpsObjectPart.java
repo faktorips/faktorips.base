@@ -32,8 +32,9 @@ public interface IIpsObjectPart extends IIpsObjectPartContainer {
     public String getId();
 
     /**
-     * Deletes the part.
+     * Deletes the part by removing it from it's container and firing a part-removed event.
      */
+    @Override
     public void delete();
 
     /**

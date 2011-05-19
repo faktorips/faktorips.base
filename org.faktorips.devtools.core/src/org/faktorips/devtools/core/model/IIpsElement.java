@@ -89,4 +89,16 @@ public interface IIpsElement extends IAdaptable {
     /** Returns <tt>true</tt> if this element is contained in an archive, <tt>false</tt> otherwise. */
     public boolean isContainedInArchive();
 
+    /**
+     * Deletes this element.
+     * <p>
+     * The specific action is dependent on the implementation. Delete might for example mean to
+     * remove the element from it's parent or to delete the enclosing resource. Implementations
+     * should document these details.
+     * 
+     * @throws CoreException If an error occurs during deletion
+     * @throws UnsupportedOperationException If the element cannot be deleted
+     */
+    public void delete() throws CoreException;
+
 }

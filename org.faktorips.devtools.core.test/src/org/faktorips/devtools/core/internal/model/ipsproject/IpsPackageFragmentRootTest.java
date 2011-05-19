@@ -282,4 +282,15 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertEquals(children[6].getName(), "hausrat");
         assertEquals(children[7].getName(), "haftpflicht");
     }
+
+    @Test
+    public void testDelete() throws CoreException {
+        IIpsPackageFragment childPackage = ipsRoot.createPackageFragment("foo", true, null);
+
+        ipsRoot.delete();
+
+        assertFalse(childPackage.exists());
+        assertFalse(ipsRoot.exists());
+    }
+
 }

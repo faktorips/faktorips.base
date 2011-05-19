@@ -259,4 +259,17 @@ public interface IIpsPackageFragment extends IIpsElement {
      */
     public IFile getSortOrderFile();
 
+    /**
+     * Deletes this package fragment by deleting
+     * <ul>
+     * <li>all child package fragments
+     * <li>all contained {@link IIpsSrcFile}s
+     * <li>the corresponding resource
+     * </ul>
+     * 
+     * @throws UnsupportedOperationException If the package fragment is stored in an archive
+     */
+    @Override
+    public void delete() throws CoreException;
+
 }

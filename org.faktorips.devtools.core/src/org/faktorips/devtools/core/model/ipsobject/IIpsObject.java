@@ -111,4 +111,10 @@ public interface IIpsObject extends IIpsObjectPartContainer, IDescribedElement {
      */
     public List<IDependencyDetail> getDependencyDetails(IDependency dependency) throws CoreException;
 
+    /**
+     * Deletes the {@link IIpsSrcFile} this object is stored in.
+     */
+    @Override
+    public void delete() throws CoreException;
+
 }

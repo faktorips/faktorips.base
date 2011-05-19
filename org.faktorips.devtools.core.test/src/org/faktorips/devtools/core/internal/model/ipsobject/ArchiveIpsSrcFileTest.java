@@ -114,4 +114,9 @@ public class ArchiveIpsSrcFileTest extends AbstractIpsPluginTest {
         assertEquals(root.getCorrespondingResource(), srcFile.getEnclosingResource());
     }
 
+    @Test(expected = UnsupportedOperationException.class)
+    public void testDelete() throws CoreException {
+        srcFile.delete();
+    }
+
 }

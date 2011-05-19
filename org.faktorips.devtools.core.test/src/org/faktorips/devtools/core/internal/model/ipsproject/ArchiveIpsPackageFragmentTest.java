@@ -239,4 +239,10 @@ public class ArchiveIpsPackageFragmentTest extends AbstractIpsPluginTest {
         assertTrue(pack.hasChildIpsPackageFragments());
         assertTrue(root.getDefaultIpsPackageFragment().hasChildIpsPackageFragments());
     }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testDelete() throws CoreException {
+        pack.delete();
+    }
+
 }

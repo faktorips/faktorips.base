@@ -137,4 +137,11 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
      */
     public IIpsArchive getIpsArchive() throws CoreException;
 
+    /**
+     * Deletes this package fragment root by deleting all child package fragments and the
+     * corresponding resource.
+     */
+    @Override
+    public void delete() throws CoreException;
+
 }

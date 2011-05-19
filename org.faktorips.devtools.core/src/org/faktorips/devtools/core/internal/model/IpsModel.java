@@ -1305,7 +1305,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * Returns the content for the given IpsSrcFile.
+     * Removes the content for the given IpsSrcFile.
      */
     synchronized public void removeIpsSrcFileContent(IIpsSrcFile file) {
         if (file != null) {
@@ -1713,6 +1713,37 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return null;
     }
 
+    @Override
+    public <T> T executeModificationsWithSingleEvent(SingleEventModification<T> modifications) throws CoreException {
+        boolean successful = false;
+        IIpsSrcFile ipsSrcFile = modifications.getIpsSrcFile();
+        IpsSrcFileContent content = getIpsSrcFileContent(ipsSrcFile);
+        try {
+            stopBroadcastingChangesMadeByCurrentThread();
+            successful = modifications.execute();
+        } catch (CoreException e) {
+            throw e;
+        } finally {
+            if (successful) {
+                ipsSrcFile.markAsClean();
+            }
+            resumeBroadcastingChangesMadeByCurrentThread();
+            if (successful) {
+                if (content != null) {
+                    content.ipsObjectChanged(modifications.modificationEvent());
+                } else {
+                    ipsSrcFileContentHasChanged(modifications.modificationEvent());
+                }
+            }
+        }
+        return modifications.getResult();
+    }
+
+    @Override
+    public void delete() throws CoreException {
+        throw new UnsupportedOperationException("The IPS Model cannot be deleted."); //$NON-NLS-1$
+    }
+
     private class IpsSrcFileChangeVisitor implements IResourceDeltaVisitor {
 
         private Map<IIpsSrcFile, IResourceDelta> changedIpsSrcFiles = new HashMap<IIpsSrcFile, IResourceDelta>(5);
@@ -1749,32 +1780,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 return false;
             }
         }
-    }
-
-    @Override
-    public <T> T executeModificationsWithSingleEvent(SingleEventModification<T> modifications) throws CoreException {
-        boolean successful = false;
-        IIpsSrcFile ipsSrcFile = modifications.getIpsSrcFile();
-        IpsSrcFileContent content = getIpsSrcFileContent(ipsSrcFile);
-        try {
-            stopBroadcastingChangesMadeByCurrentThread();
-            successful = modifications.execute();
-        } catch (CoreException e) {
-            throw e;
-        } finally {
-            if (successful) {
-                ipsSrcFile.markAsClean();
-            }
-            resumeBroadcastingChangesMadeByCurrentThread();
-            if (successful) {
-                if (content != null) {
-                    content.ipsObjectChanged(modifications.modificationEvent());
-                } else {
-                    ipsSrcFileContentHasChanged(modifications.modificationEvent());
-                }
-            }
-        }
-        return modifications.getResult();
     }
 
 }

@@ -19,6 +19,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 
 /**
@@ -168,5 +169,15 @@ public interface IIpsSrcFile extends IIpsElement {
      * child packages.
      */
     public String getBasePackageNameForDerivedArtefacts() throws CoreException;
+
+    /**
+     * Deletes this source file by deleting the corresponding resource.
+     * <p>
+     * Advises the {@link IIpsModel} to remove the source file from the cache.
+     * 
+     * @throws UnsupportedOperationException If the source file is stored in an archive
+     */
+    @Override
+    public void delete() throws CoreException;
 
 }

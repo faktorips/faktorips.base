@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -91,4 +92,11 @@ public class IpsObjectTest extends AbstractIpsPluginTest {
         Element xml = ipsObject.toXml(newDocument());
         assertEquals(XmlUtil.XML_ATTRIBUTE_SPACE_VALUE, xml.getAttribute(XmlUtil.XML_ATTRIBUTE_SPACE));
     }
+
+    @Test
+    public void testDelete() throws CoreException {
+        ipsObject.delete();
+        assertFalse(ipsObject.exists());
+    }
+
 }

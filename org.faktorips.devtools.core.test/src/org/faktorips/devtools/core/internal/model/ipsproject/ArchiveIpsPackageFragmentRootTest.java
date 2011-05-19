@@ -175,6 +175,6 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         result = new ArrayList<IIpsSrcFile>();
         root.findIpsSourceFiles(IpsObjectType.PRODUCT_CMPT, null, result);
         assertEquals(1, result.size());
-
     }
+
 }

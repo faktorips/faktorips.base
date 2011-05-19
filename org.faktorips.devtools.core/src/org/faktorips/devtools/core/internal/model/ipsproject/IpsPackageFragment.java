@@ -554,4 +554,15 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
         return false;
     }
 
+    @Override
+    public void delete() throws CoreException {
+        for (IIpsPackageFragment childPackage : getChildIpsPackageFragments()) {
+            childPackage.delete();
+        }
+        for (IIpsSrcFile childSrcFile : getIpsSrcFiles()) {
+            childSrcFile.delete();
+        }
+        getCorrespondingResource().delete(true, null);
+    }
+
 }

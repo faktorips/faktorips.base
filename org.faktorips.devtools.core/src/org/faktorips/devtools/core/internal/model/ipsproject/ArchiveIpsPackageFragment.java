@@ -246,4 +246,9 @@ public class ArchiveIpsPackageFragment extends AbstractIpsPackageFragment {
         return packNames.length > 0;
     }
 
+    @Override
+    public void delete() throws CoreException {
+        throw new UnsupportedOperationException("Archived IPS Packages cannot be deleted."); //$NON-NLS-1$
+    }
+
 }

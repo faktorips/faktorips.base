@@ -1885,6 +1885,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
+    public void delete() throws CoreException {
+        // TODO AW 19-05-2011: What shall the delete() method of IpsProject look like? (FIPS-534)
+
+    }
+
+    @Override
     public IVersionFormat getVersionFormat() throws CoreException {
         final IConfigurationElement releaseExtension = ProductReleaseProcessor.getReleaseExtensionElement(this);
         if (releaseExtension == null) {
@@ -1903,6 +1909,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
             public String getVersionFormat() {
                 return releaseExtension.getAttribute("readableVersionFormat"); //$NON-NLS-1$
             }
+
         };
     }
+
 }

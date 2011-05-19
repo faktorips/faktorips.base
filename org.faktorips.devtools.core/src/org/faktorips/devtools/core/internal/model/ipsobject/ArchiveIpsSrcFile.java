@@ -107,4 +107,9 @@ public class ArchiveIpsSrcFile extends AbstractIpsSrcFile {
         return archive.getBasePackageNameForDerivedArtefacts(getQualifiedNameType());
     }
 
+    @Override
+    public void delete() throws CoreException {
+        throw new UnsupportedOperationException("Archived IPS Source Files cannot be deleted."); //$NON-NLS-1$
+    }
+
 }

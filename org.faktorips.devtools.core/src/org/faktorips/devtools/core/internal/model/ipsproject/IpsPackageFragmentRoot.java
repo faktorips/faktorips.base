@@ -247,4 +247,14 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
         return false;
     }
 
+    @Override
+    public void delete() throws CoreException {
+        /*
+         * Just deleting the default package fragment as all other fragments have the default
+         * package as parent and will be deleted automatically.
+         */
+        getDefaultIpsPackageFragment().delete();
+        getCorrespondingResource().delete(true, null);
+    }
+
 }
