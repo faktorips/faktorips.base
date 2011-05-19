@@ -24,8 +24,10 @@ import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.refactor.IIpsRenameProcessor;
 import org.junit.Test;
 
@@ -173,9 +175,9 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     public void testRenameProductCmptAdaptRuntimeId() throws CoreException {
         performRenameRefactoring(productCmpt, NEW_OBJECT_NAME, true);
 
-        checkIpsSourceFiles(PRODUCT_NAME, NEW_OBJECT_NAME, productCmpt.getIpsPackageFragment(),
-                productCmpt.getIpsPackageFragment(), IpsObjectType.PRODUCT_CMPT);
-        assertEquals(NEW_OBJECT_NAME, productCmpt.getRuntimeId());
+        IIpsObject newIpsObject = checkIpsSourceFiles(PRODUCT_NAME, NEW_OBJECT_NAME,
+                productCmpt.getIpsPackageFragment(), productCmpt.getIpsPackageFragment(), IpsObjectType.PRODUCT_CMPT);
+        assertEquals(NEW_OBJECT_NAME, ((IProductCmpt)newIpsObject).getRuntimeId());
 
         checkProductCmptReferences(NEW_OBJECT_NAME);
     }

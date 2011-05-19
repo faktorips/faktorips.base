@@ -445,7 +445,6 @@ public abstract class AbstractIpsRefactoringTest extends AbstractIpsPluginTest {
         ProcessorBasedRefactoring moveRefactoring = ipsObjectPartContainer.getMoveRefactoring();
         IIpsMoveProcessor processor = (IIpsMoveProcessor)moveRefactoring.getProcessor();
         processor.setTargetIpsPackageFragment(targetIpsPackageFragment);
-        processor.setAdaptRuntimeId(adaptRuntimeId);
 
         return runRefactoring(moveRefactoring);
     }

@@ -93,7 +93,7 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractIpsRefacto
         otherProductToProductLink.setTarget(productCmpt.getQualifiedName());
     }
 
-    protected void checkIpsSourceFiles(String oldName,
+    protected IIpsObject checkIpsSourceFiles(String oldName,
             String newName,
             IIpsPackageFragment originalIpsPackageFragment,
             IIpsPackageFragment targetIpsPackageFragment,
@@ -109,6 +109,7 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractIpsRefacto
         IIpsObject newIpsObject = newIpsSrcFile.getIpsObject();
         assertEquals(newName, newIpsObject.getName());
         assertEquals(targetIpsPackageFragment, newIpsObject.getIpsPackageFragment());
+        return newIpsObject;
     }
 
     protected void checkPolicyCmptTypeReferences(String newQualifiedName) {

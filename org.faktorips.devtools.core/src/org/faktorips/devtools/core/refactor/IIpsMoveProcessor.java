@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.refactor;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 
 /**
  * An <tt>IIpsMoveProcessor</tt> implements a specific Faktor-IPS "Move" refactoring.
@@ -32,22 +31,10 @@ public interface IIpsMoveProcessor extends IIpsRefactoringProcessor {
      */
     public void setTargetIpsPackageFragment(IIpsPackageFragment targetIpsPackageFragment);
 
-    /**
-     * Sets whether the runtime ID of {@link IProductCmpt} should be adapted.
-     * 
-     * @param adaptRuntimeId Flag indicating whether to adapt runtime IDs.
-     */
-    public void setAdaptRuntimeId(boolean adaptRuntimeId);
-
     /** Returns the target <tt>IIpsPackageFragment</tt>. */
     public IIpsPackageFragment getTargetIpsPackageFragment();
 
     /** Returns the element's original <tt>IIpsPackageFragment</tt>. */
     public IIpsPackageFragment getOriginalIpsPackageFragment();
-
-    /**
-     * Returns whether the runtime ID of {@link IProductCmpt} should be adapted.
-     */
-    public boolean isAdaptRuntimeId();
 
 }

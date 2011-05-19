@@ -24,7 +24,6 @@ import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.refactor.IIpsMoveProcessor;
 import org.faktorips.util.ArgumentCheck;
 
@@ -40,9 +39,6 @@ public abstract class IpsMoveProcessor extends IpsRefactoringProcessor implement
 
     /** The {@link IIpsObject}'s original {@link IIpsPackageFragment}. */
     private IIpsPackageFragment originalIpsPackageFragment;
-
-    /** Flag indicating whether the runtime ID of an {@link IProductCmpt} should be adapted. */
-    private boolean adaptRuntimeId;
 
     /**
      * @param ipsObject The {@link IIpsObject} to be moved
@@ -100,11 +96,6 @@ public abstract class IpsMoveProcessor extends IpsRefactoringProcessor implement
     }
 
     @Override
-    public void setAdaptRuntimeId(boolean adaptRuntimeId) {
-        this.adaptRuntimeId = adaptRuntimeId;
-    }
-
-    @Override
     public final IIpsPackageFragment getTargetIpsPackageFragment() {
         return targetIpsPackageFragment;
     }
@@ -112,11 +103,6 @@ public abstract class IpsMoveProcessor extends IpsRefactoringProcessor implement
     @Override
     public final IIpsPackageFragment getOriginalIpsPackageFragment() {
         return originalIpsPackageFragment;
-    }
-
-    @Override
-    public boolean isAdaptRuntimeId() {
-        return adaptRuntimeId;
     }
 
 }

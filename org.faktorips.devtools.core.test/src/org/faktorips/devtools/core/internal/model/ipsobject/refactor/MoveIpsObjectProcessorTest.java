@@ -161,17 +161,6 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
     }
 
     @Test
-    public void testMoveProductCmptAdaptRuntimeId() throws CoreException {
-        performMoveRefactoring(productCmpt, targetIpsPackageFragment, true);
-
-        checkIpsSourceFiles(PRODUCT_NAME, PRODUCT_NAME, originalIpsPackageFragment, targetIpsPackageFragment,
-                IpsObjectType.PRODUCT_CMPT);
-        assertEquals(TARGET_PACKAGE_NAME + "." + PRODUCT_NAME, productCmpt.getRuntimeId());
-
-        checkProductCmptReferences(TARGET_PACKAGE_NAME + "." + PRODUCT_NAME);
-    }
-
-    @Test
     public void testMoveTestCase() throws CoreException {
         performMoveRefactoring(testCase, targetIpsPackageFragment);
 
