@@ -210,9 +210,7 @@ public final class MoveRenameIpsObjectHelper {
             IProductCmpt productCmpt = (IProductCmpt)toBeRefactored;
             IIpsProject ipsProject = productCmpt.getIpsProject();
             IProductCmptNamingStrategy productCmptNamingStrategy = ipsProject.getProductCmptNamingStrategy();
-            String qualifiedNewName = targetIpsPackageFragment.getName().length() == 0 ? newName
-                    : targetIpsPackageFragment.getName() + '.' + newName;
-            String newRuntimeId = productCmptNamingStrategy.getUniqueRuntimeId(ipsProject, qualifiedNewName);
+            String newRuntimeId = productCmptNamingStrategy.getUniqueRuntimeId(ipsProject, newName);
             ((IProductCmpt)targetSrcFile.getIpsObject()).setRuntimeId(newRuntimeId);
             targetSrcFile.save(true, pm);
         }
