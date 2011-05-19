@@ -154,7 +154,7 @@ public final class MoveRenameIpsObjectHelper {
 
                 // Copy temporary file to target file and delete temporary file
                 targetFile = RefactorUtil.copyIpsSrcFile(tempSrcFile, targetIpsPackageFragment, newName, pm);
-                deleteIpsSourceFile(tempSrcFile, pm);
+                tempSrcFile.delete();
 
             } else {
                 // Copy original file to target file
@@ -173,7 +173,7 @@ public final class MoveRenameIpsObjectHelper {
              * checking may fail which would abort the refactoring completely and we don't want to
              * have the copy around in this case).
              */
-            deleteIpsSourceFile(targetFile, pm);
+            targetFile.delete();
 
             return validationMessageList;
 
@@ -259,12 +259,12 @@ public final class MoveRenameIpsObjectHelper {
                 && isOnlyCapitalizationChanged(originalSrcFile, newName)) {
             IIpsSrcFile tempSrcFile = RefactorUtil.copyIpsSrcFileToTemporary(originalSrcFile, targetIpsPackageFragment,
                     newName, pm);
-            deleteIpsSourceFile(originalSrcFile, pm);
+            originalSrcFile.delete();
             targetSrcFile = RefactorUtil.copyIpsSrcFile(tempSrcFile, targetIpsPackageFragment, newName, pm);
-            deleteIpsSourceFile(tempSrcFile, pm);
+            tempSrcFile.delete();
         } else {
-        	targetSrcFile = RefactorUtil.copyIpsSrcFile(originalSrcFile, targetIpsPackageFragment, newName, pm);
-            deleteIpsSourceFile(originalSrcFile, pm);
+            targetSrcFile = RefactorUtil.copyIpsSrcFile(originalSrcFile, targetIpsPackageFragment, newName, pm);
+            originalSrcFile.delete();
         }
         return targetSrcFile;
     }
@@ -283,10 +283,6 @@ public final class MoveRenameIpsObjectHelper {
         } else {
             throw new CoreException(new IpsStatus("The type of the dependency-target (" + target + ") is unknown.")); //$NON-NLS-1$ //$NON-NLS-2$
         }
-    }
-
-    private void deleteIpsSourceFile(IIpsSrcFile ipsSrcFile, IProgressMonitor pm) throws CoreException {
-        ipsSrcFile.getCorrespondingResource().delete(true, pm);
     }
 
     private IDependency[] getDependencies() {
