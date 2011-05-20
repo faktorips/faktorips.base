@@ -13,32 +13,24 @@
 
 package org.faktorips.devtools.core.ui.wizards.productcmpttype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard;
 
+/**
+ * Wizard to create a new product component type.
+ * 
+ * @see IProductCmptType
+ * 
+ * @author ortmann
+ */
 public class NewProductCmptTypeWizard extends NewIpsObjectWizard {
-
-    private ProductCmptTypePage typePage;
 
     @Override
     protected IpsObjectPage createFirstPage(IStructuredSelection selection) throws JavaModelException {
-        typePage = new ProductCmptTypePage(selection, null);
-        return typePage;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    // FIXME AW: This method formally did override some method of the super class!!
-    protected void finishIpsObject(IIpsObject ipsObject) throws CoreException {
-        IProductCmptType type = (IProductCmptType)ipsObject;
-        String supertypeName = typePage.getSuperType();
-        type.setSupertype(supertypeName);
+        return new ProductCmptTypePage(selection, null);
     }
 
 }
