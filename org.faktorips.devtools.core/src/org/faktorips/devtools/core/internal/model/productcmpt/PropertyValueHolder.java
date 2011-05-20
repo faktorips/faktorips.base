@@ -188,6 +188,7 @@ public class PropertyValueHolder {
      */
     public void addPropertyValue(IPropertyValue value) {
         classToInstancesMap.putWithRuntimeCheck(value.getPropertyType().getValueClass(), value);
+        objectHasChanged();
     }
 
     /**
@@ -198,7 +199,11 @@ public class PropertyValueHolder {
      *         otherwise.
      */
     public boolean removePropertyValue(IPropertyValue value) {
-        return classToInstancesMap.remove(value.getPropertyType().getValueClass(), value);
+        boolean removed = classToInstancesMap.remove(value.getPropertyType().getValueClass(), value);
+        if (removed) {
+            objectHasChanged();
+        }
+        return removed;
     }
 
     /**
@@ -286,6 +291,10 @@ public class PropertyValueHolder {
             return removePropertyValue((IPropertyValue)part);
         }
         return false;
+    }
+
+    private void objectHasChanged() {
+        container.objectHasChanged();
     }
 
 }

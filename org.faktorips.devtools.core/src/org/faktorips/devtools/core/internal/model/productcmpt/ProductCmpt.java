@@ -371,4 +371,9 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         return new PropertyValueContainerToTypeDelta(this, ipsProject);
     }
 
+    /** Notifies the model that this <tt>IpsObject</tt> has changed. */
+    @Override
+    public void objectHasChanged() {
+        super.objectHasChanged();
+    }
 }

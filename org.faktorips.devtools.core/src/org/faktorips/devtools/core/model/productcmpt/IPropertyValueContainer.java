@@ -93,4 +93,6 @@ public interface IPropertyValueContainer extends IIpsObjectPartContainer {
      */
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
 
+    public void objectHasChanged();
+
 }

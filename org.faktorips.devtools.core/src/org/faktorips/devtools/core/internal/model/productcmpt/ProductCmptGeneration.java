@@ -666,4 +666,9 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return getProductCmpt().getProductCmptType();
     }
 
+    /** Notifies the model that this <tt>IpsObject</tt> has changed. */
+    @Override
+    public void objectHasChanged() {
+        super.objectHasChanged();
+    }
 }
