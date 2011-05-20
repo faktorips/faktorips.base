@@ -43,7 +43,7 @@ import org.w3c.dom.Element;
  */
 public class AttributeValue extends AtomicIpsObjectPart implements IAttributeValue {
 
-    final static String TAG_NAME = "AttributeValue"; //$NON-NLS-1$
+    public final static String TAG_NAME = "AttributeValue"; //$NON-NLS-1$
 
     private String attribute;
     private String value;

@@ -19,8 +19,6 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 
 public interface IValidationRuleConfig extends IPropertyValue {
 
-    String TAG_NAME = "ValidationRuleConfig"; //$NON-NLS-1$
-
     /**
      * Returns whether the configured {@link IValidationRule} is active.
      * 

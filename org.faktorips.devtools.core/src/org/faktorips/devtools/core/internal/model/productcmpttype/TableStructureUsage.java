@@ -352,4 +352,9 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         return true;
     }
 
+    @Override
+    public String getPropertyDatatype() {
+        return ""; //$NON-NLS-1$
+    }
+
 }

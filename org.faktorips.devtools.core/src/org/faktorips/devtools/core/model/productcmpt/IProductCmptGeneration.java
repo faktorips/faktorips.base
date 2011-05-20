@@ -105,17 +105,6 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Sorts the generation's properties according to the order defined in the model. If the product
-     * component type isn't found, the generation remains unchanged.
-     * 
-     * @param ipsProject The ips project which search path is used to search the type.
-     * 
-     * @throws CoreException if an exception occurs while searching for the type.
-     * @throws NullPointerException if ipsProject is <code>null</code>.
-     */
-    public void sortPropertiesAccordingToModel(IIpsProject ipsProject) throws CoreException;
-
-    /**
      * Returns the number of attribute values defined in the generation.
      */
     public int getNumOfAttributeValues();
@@ -125,6 +114,13 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
      * generation hasn't got an attribute value.
      */
     public IAttributeValue[] getAttributeValues();
+
+    /**
+     * Returns the attribute value for the given attribute name. Returns <code>null</code> if this
+     * container has no value for the given attribute. Returns <code>null</code> if attribute is
+     * <code>null</code>.
+     */
+    public IAttributeValue getAttributeValue(String attribute);
 
     /**
      * Creates a new attribute value.
@@ -140,7 +136,10 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
 
     /**
      * Creates a new attribute value for the given product component attribute and sets the value.
+     * 
+     * @deprecated as of 3.4. Use {@link #newAttributeValue(IProductCmptTypeAttribute)} instead.
      */
+    @Deprecated
     public IAttributeValue newAttributeValue(IProductCmptTypeAttribute attribute, String value);
 
     /**
@@ -316,11 +315,6 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
      * generation does not configure any validation rules.
      */
     public List<IValidationRuleConfig> getValidationRuleConfigs();
-
-    /**
-     * Creates a new validation rule.
-     */
-    public IValidationRuleConfig newValidationRuleConfig();
 
     /**
      * Creates a new validation rule that configures the given {@link IValidationRule}. If signature

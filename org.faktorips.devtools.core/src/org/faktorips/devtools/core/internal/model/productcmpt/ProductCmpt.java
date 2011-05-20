@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -63,18 +64,18 @@ import org.w3c.dom.Element;
  */
 public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
-    private final AttributeValueContainer attributeValueContainer;
+    private final PropertyValueHolder valueHolder;
     private String productCmptType = ""; //$NON-NLS-1$
     private String runtimeId = ""; //$NON-NLS-1$
 
     public ProductCmpt(IIpsSrcFile file) {
         super(file);
-        attributeValueContainer = new AttributeValueContainer(this);
+        valueHolder = new PropertyValueHolder(this);
     }
 
     public ProductCmpt() {
         super();
-        attributeValueContainer = new AttributeValueContainer(this);
+        valueHolder = new PropertyValueHolder(this);
     }
 
     @Override
@@ -131,15 +132,6 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
         return ipsProject.findProductCmptType(productCmptType);
-    }
-
-    @Override
-    public void sortPropertiesAccordingToModel(IIpsProject ipsProject) throws CoreException {
-        int max = getNumOfGenerations();
-        for (int i = 0; i < max; i++) {
-            IProductCmptGeneration gen = getProductCmptGeneration(i);
-            gen.sortPropertiesAccordingToModel(ipsProject);
-        }
     }
 
     @Override
@@ -326,30 +318,47 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public IPropertyValue getPropertyValue(IProductCmptProperty property) {
-        return attributeValueContainer.getPropertyValue(property);
+        return valueHolder.getPropertyValue(property);
     }
 
     @Override
     public IPropertyValue getPropertyValue(String propertyName) {
-        return attributeValueContainer.getPropertyValue(propertyName);
+        return valueHolder.getPropertyValue(propertyName);
     }
 
     @Override
     public List<IPropertyValue> getPropertyValues(ProductCmptPropertyType type) {
-        return attributeValueContainer.getPropertyValues(type);
+        return valueHolder.getPropertyValues(type);
     }
 
     @Override
-    public IPropertyValue newPropertyValue(IProductCmptProperty property) {
-        if (property.getProductCmptPropertyType() == ProductCmptPropertyType.VALUE) {
-            return attributeValueContainer.newPropertyValue(property, getNextPartId());
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
+        String xmlTagName = xmlTag.getNodeName();
+        if (xmlTagName.equals(IIpsObjectGeneration.TAG_NAME)) {
+            return newGenerationInternal(id);
+        }
+        if (xmlTagName.equals(AttributeValue.TAG_NAME)) {
+            return valueHolder.newPartThis(AttributeValue.TAG_NAME, id);
         }
         return null;
     }
 
     @Override
+    public IPropertyValue newPropertyValue(IProductCmptProperty property) {
+        if (property.getProductCmptPropertyType() == ProductCmptPropertyType.VALUE) {
+            return valueHolder.newPropertyValue(property, getNextPartId());
+        }
+        return null;
+    }
+
+    @Override
+    public List<IAttributeValue> getAttributeValues() {
+        return valueHolder.getPropertyValues(ProductCmptPropertyType.VALUE, IAttributeValue.class);
+    }
+
+    @Override
     public IAttributeValue getAttributeValue(String attribute) {
-        return attributeValueContainer.getAttributeValue(attribute);
+        return (IAttributeValue)valueHolder.getPropertyValue(ProductCmptPropertyType.VALUE, attribute);
     }
 
     @Override

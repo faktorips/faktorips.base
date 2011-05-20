@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +50,6 @@ import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
-import org.faktorips.devtools.core.model.productcmpt.PropertyValueComparator;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -68,25 +66,17 @@ import org.w3c.dom.Element;
 
 public class ProductCmptGeneration extends IpsObjectGeneration implements IProductCmptGeneration {
 
-    private final AttributeValueContainer attributeValueContainer;
-
-    private List<IConfigElement> configElements = new ArrayList<IConfigElement>(0);
+    private final PropertyValueHolder valueHolder;
 
     private List<IProductCmptLink> links = new ArrayList<IProductCmptLink>(0);
 
-    private List<ITableContentUsage> tableContentUsages = new ArrayList<ITableContentUsage>(0);
-
-    private List<IFormula> formulas = new ArrayList<IFormula>(0);
-
-    private List<IValidationRuleConfig> validationRules = new ArrayList<IValidationRuleConfig>(0);
-
     public ProductCmptGeneration(ITimedIpsObject ipsObject, String id) {
         super(ipsObject, id);
-        attributeValueContainer = new AttributeValueContainer(this);
+        valueHolder = new PropertyValueHolder(this);
     }
 
     public ProductCmptGeneration() {
-        attributeValueContainer = new AttributeValueContainer(this);
+        valueHolder = new PropertyValueHolder(this);
     }
 
     @Override
@@ -139,94 +129,22 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public IPropertyValue getPropertyValue(IProductCmptProperty property) {
-        if (property == null) {
-            return null;
-        }
-        ProductCmptPropertyType type = property.getProductCmptPropertyType();
-        if (type.equals(ProductCmptPropertyType.VALUE)) {
-            return attributeValueContainer.getPropertyValue(property);
-        }
-        if (type.equals(ProductCmptPropertyType.TABLE_CONTENT_USAGE)) {
-            return getTableContentUsage(property.getPropertyName());
-        }
-        if (type.equals(ProductCmptPropertyType.FORMULA)) {
-            return getFormula(property.getPropertyName());
-        }
-        if (type.equals(ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET)) {
-            return getConfigElement(property.getPropertyName());
-        }
-        if (type.equals(ProductCmptPropertyType.VALIDATION_RULE_CONFIG)) {
-            return getValidationRuleConfig(property.getPropertyName());
-        }
-        throw new RuntimeException("Unknown property type " + type); //$NON-NLS-1$
+        return valueHolder.getPropertyValue(property);
     }
 
     @Override
     public IPropertyValue getPropertyValue(String propertyName) {
-        if (propertyName == null) {
-            return null;
-        }
-        IPropertyValue value = attributeValueContainer.getPropertyValue(propertyName);
-        if (value != null) {
-            return value;
-        }
-        value = getTableContentUsage(propertyName);
-        if (value != null) {
-            return value;
-        }
-        value = getFormula(propertyName);
-        if (value != null) {
-            return value;
-        }
-        value = getValidationRuleConfig(propertyName);
-        if (value != null) {
-            return value;
-        }
-        return getConfigElement(propertyName);
+        return valueHolder.getPropertyValue(propertyName);
     }
 
     @Override
     public List<IPropertyValue> getPropertyValues(ProductCmptPropertyType type) {
-        if (type == null) {
-            return new ArrayList<IPropertyValue>();
-        }
-        if (ProductCmptPropertyType.VALUE.equals(type)) {
-            return attributeValueContainer.getPropertyValues(type);
-        }
-        if (ProductCmptPropertyType.TABLE_CONTENT_USAGE.equals(type)) {
-            return new ArrayList<IPropertyValue>(tableContentUsages);
-        }
-        if (ProductCmptPropertyType.FORMULA.equals(type)) {
-            return new ArrayList<IPropertyValue>(formulas);
-        }
-        if (ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET.equals(type)) {
-            return new ArrayList<IPropertyValue>(configElements);
-        }
-        if (ProductCmptPropertyType.VALIDATION_RULE_CONFIG.equals(type)) {
-            return new ArrayList<IPropertyValue>(validationRules);
-        }
-        throw new RuntimeException("Unknown type " + type); //$NON-NLS-1$
+        return valueHolder.getPropertyValues(type);
     }
 
     @Override
     public IPropertyValue newPropertyValue(IProductCmptProperty property) {
-        ProductCmptPropertyType type = property.getProductCmptPropertyType();
-        if (ProductCmptPropertyType.VALUE.equals(type)) {
-            return attributeValueContainer.newPropertyValue(property, getNextPartId());
-        }
-        if (ProductCmptPropertyType.TABLE_CONTENT_USAGE.equals(type)) {
-            return newTableContentUsage((ITableStructureUsage)property);
-        }
-        if (ProductCmptPropertyType.FORMULA.equals(type)) {
-            return newFormula((IProductCmptTypeMethod)property);
-        }
-        if (ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET.equals(type)) {
-            return newConfigElement((IPolicyCmptTypeAttribute)property);
-        }
-        if (ProductCmptPropertyType.VALIDATION_RULE_CONFIG.equals(type)) {
-            return newValidationRuleConfig((IValidationRule)property);
-        }
-        throw new RuntimeException("Unknown type " + type); //$NON-NLS-1$
+        return valueHolder.newPropertyValue(property, getNextPartId());
     }
 
     @Override
@@ -235,84 +153,72 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     @Override
-    public void sortPropertiesAccordingToModel(IIpsProject ipsProject) throws CoreException {
-        IProductCmptType type = findProductCmptType(ipsProject);
-        if (type == null) {
-            return;
-        }
-        PropertyValueComparator comparator = new PropertyValueComparator(this, getIpsProject());
-        List<IAttributeValue> attributeValues = attributeValueContainer.getAttributeValues();
-        Collections.sort(attributeValues, comparator);
-        Collections.sort(configElements, comparator);
-        /*
-         * TODO IProductCmptLink is no IPropertyValue as is IValidationRuleConfig. Both cannot be
-         * sorted using above comparator.
-         */
-        Collections.sort(tableContentUsages, comparator);
-        Collections.sort(formulas, comparator);
-    }
-
-    @Override
     public IAttributeValue[] getAttributeValues() {
-        List<IAttributeValue> attributeValues = attributeValueContainer.getAttributeValues();
+        List<IAttributeValue> attributeValues = valueHolder.getPropertyValues(ProductCmptPropertyType.VALUE,
+                IAttributeValue.class);
         return attributeValues.toArray(new IAttributeValue[attributeValues.size()]);
     }
 
     @Override
     public IAttributeValue getAttributeValue(String attribute) {
-        return attributeValueContainer.getAttributeValue(attribute);
+        return (IAttributeValue)valueHolder.getPropertyValue(ProductCmptPropertyType.VALUE, attribute);
     }
 
     @Override
     public int getNumOfAttributeValues() {
-        return attributeValueContainer.getAttributeValues().size();
+        return getAttributeValues().length;
     }
 
     @Override
     public IAttributeValue newAttributeValue() {
-        return attributeValueContainer.newAttributeValue(getNextPartId());
+        IAttributeValue value = (IAttributeValue)ProductCmptPropertyType.VALUE.createPropertyValue(this, null,
+                getNextPartId());
+        valueHolder.addPropertyValue(value);
+        return value;
     }
 
     @Override
     public IAttributeValue newAttributeValue(IProductCmptTypeAttribute attribute) {
-        IAttributeValue newValue = attributeValueContainer.newAttributeValue(getNextPartId(), attribute);
-        return newValue;
+        return (IAttributeValue)valueHolder.newPropertyValue(attribute, getNextPartId());
     }
 
     @Override
+    @Deprecated
     public IAttributeValue newAttributeValue(IProductCmptTypeAttribute attribute, String value) {
-        IAttributeValue newValue = attributeValueContainer.newAttributeValue(getNextPartId(), attribute, value);
-        return newValue;
+        IAttributeValue attrValue = newAttributeValue(attribute);
+        attrValue.setValue(value);
+        return attrValue;
     }
 
     @Override
     public IConfigElement[] getConfigElements() {
+        List<IConfigElement> configElements = valueHolder.getPropertyValues(
+                ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET, IConfigElement.class);
         return configElements.toArray(new IConfigElement[configElements.size()]);
     }
 
     @Override
     public IConfigElement getConfigElement(String attributeName) {
-        for (IConfigElement each : configElements) {
-            if (each.getPolicyCmptTypeAttribute().equals(attributeName)) {
-                return each;
-            }
-        }
-        return null;
+        return (IConfigElement)valueHolder.getPropertyValue(ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET,
+                attributeName);
     }
 
     @Override
     public int getNumOfConfigElements() {
-        return configElements.size();
+        return getConfigElements().length;
     }
 
     @Override
     public IConfigElement newConfigElement() {
-        return newConfigElement(null);
+        IConfigElement value = (IConfigElement)ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET.createPropertyValue(
+                this, null, getNextPartId());
+        valueHolder.addPropertyValue(value);
+        return value;
     }
 
     @Override
     public IConfigElement newConfigElement(IPolicyCmptTypeAttribute attribute) {
-        IConfigElement newElement = newConfigElementInternal(getNextPartId(), attribute);
+        IConfigElement newElement = newConfigElementInternal(attribute, getNextPartId());
         /*
          * this is necessary because though broadcasting has been stopped the modified status will
          * still be changed. To enable the triggering of the modification event in the
@@ -325,10 +231,10 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     /**
-     * Creates a new attribute without updating the src file.
+     * Creates a new config element without updating the src file.
      */
-    private ConfigElement newConfigElementInternal(String id, IPolicyCmptTypeAttribute attribute) {
-        ConfigElement e = new ConfigElement(this, id);
+    private ConfigElement newConfigElementInternal(IPolicyCmptTypeAttribute attribute, String id) {
+        ConfigElement e = (ConfigElement)valueHolder.newPropertyValue(attribute, id);
         if (attribute != null) {
             try {
                 ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
@@ -339,7 +245,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
                 ((IpsModel)getIpsModel()).resumeBroadcastingChangesMadeByCurrentThread();
             }
         }
-        configElements.add(e);
         return e;
     }
 
@@ -476,14 +381,15 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public ITableContentUsage newTableContentUsage() {
-        return newTableContentUsage(null);
+        ITableContentUsage value = (ITableContentUsage)ProductCmptPropertyType.TABLE_CONTENT_USAGE.createPropertyValue(
+                this, null, getNextPartId());
+        valueHolder.addPropertyValue(value);
+        return value;
     }
 
     @Override
     public ITableContentUsage newTableContentUsage(ITableStructureUsage structureUsage) {
-        ITableContentUsage newUsage = newTableContentUsageInternal(getNextPartId(), structureUsage);
-        objectHasChanged();
-        return newUsage;
+        return (ITableContentUsage)valueHolder.newPropertyValue(structureUsage, getNextPartId());
     }
 
     @Override
@@ -493,172 +399,97 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public ITableContentUsage[] getTableContentUsages() {
-        return tableContentUsages.toArray(new ITableContentUsage[tableContentUsages.size()]);
-    }
-
-    private ITableContentUsage newTableContentUsageInternal(String id, ITableStructureUsage structureUsage) {
-        ITableContentUsage retValue = new TableContentUsage(this, id,
-                structureUsage == null ? "" : structureUsage.getRoleName()); //$NON-NLS-1$
-        tableContentUsages.add(retValue);
-        return retValue;
+        List<ITableContentUsage> usages = valueHolder.getPropertyValues(ProductCmptPropertyType.TABLE_CONTENT_USAGE,
+                ITableContentUsage.class);
+        return usages.toArray(new ITableContentUsage[usages.size()]);
     }
 
     /**
      * Returns true if the generation contains a formula config element, otherwise false.
      */
     public boolean containsFormula() {
-        return formulas.size() > 0;
+        return getNumOfFormulas() > 0;
     }
 
     @Override
     public int getNumOfFormulas() {
-        return formulas.size();
+        return getFormulas().length;
     }
 
     @Override
     public IFormula[] getFormulas() {
-        return formulas.toArray(new IFormula[formulas.size()]);
+        List<IFormula> formulae = valueHolder.getPropertyValues(ProductCmptPropertyType.FORMULA, IFormula.class);
+        return formulae.toArray(new IFormula[formulae.size()]);
     }
 
     @Override
     public IFormula getFormula(String formulaName) {
-        if (formulaName == null) {
-            return null;
-        }
-        for (IFormula formula : formulas) {
-            if (formulaName.equals(formula.getName())) {
-                return formula;
-            }
-        }
-        return null;
+        return (IFormula)valueHolder.getPropertyValue(ProductCmptPropertyType.FORMULA, formulaName);
     }
 
     @Override
     public IFormula newFormula() {
-        return newFormula(null);
+        IFormula value = (IFormula)ProductCmptPropertyType.FORMULA.createPropertyValue(this, null, getNextPartId());
+        valueHolder.addPropertyValue(value);
+        return value;
     }
 
     @Override
     public IFormula newFormula(IProductCmptTypeMethod signature) {
-        IFormula newFormula = newFormulaInternal(getNextPartId(), signature);
-        objectHasChanged();
-        return newFormula;
-    }
-
-    private IFormula newFormulaInternal(String id, IProductCmptTypeMethod signature) {
-        IFormula newFormula = new Formula(this, id, signature == null ? "" : signature.getFormulaName()); //$NON-NLS-1$
-        formulas.add(newFormula);
-        return newFormula;
+        return (IFormula)valueHolder.newPropertyValue(signature, getNextPartId());
     }
 
     @Override
     protected IIpsElement[] getChildrenThis() {
-        int size = getNumOfAttributeValues() + configElements.size() + tableContentUsages.size() + formulas.size()
-                + links.size();
+        int size = getNumOfAttributeValues() + getNumOfConfigElements() + getNumOfTableContentUsages()
+                + getNumOfFormulas() + getNumOfValidationRules() + getNumOfLinks();
         List<IIpsElement> children = new ArrayList<IIpsElement>(size);
-        children.addAll(attributeValueContainer.getAttributeValues());
-        children.addAll(configElements);
-        children.addAll(tableContentUsages);
-        children.addAll(formulas);
+        children.addAll(valueHolder.getAllPropertyValues());
         children.addAll(links);
-        children.addAll(validationRules);
         return children.toArray(new IIpsElement[children.size()]);
     }
 
     @Override
     public IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
-        if (partType.equals(IAttributeValue.class)) {
-            return attributeValueContainer.newPartThis(partType, getNextPartId());
-        } else if (partType.equals(IConfigElement.class)) {
-            return newConfigElement();
-        } else if (partType.equals(IPolicyCmptTypeAssociation.class)) {
+        if (partType.equals(IPolicyCmptTypeAssociation.class)) {
             return newLink();
-        } else if (partType.equals(ITableContentUsage.class)) {
-            return newTableContentUsage();
-        } else if (partType.equals(IFormula.class)) {
-            return newFormula();
-        } else if (partType.equals(IValidationRuleConfig.class)) {
-            return newValidationRuleConfig();
+        } else {
+            return valueHolder.newPartThis(partType, getNextPartId());
         }
-        return null;
     }
 
     @Override
     protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
-        if (xmlTagName.equals(AttributeValue.TAG_NAME)) {
-            return attributeValueContainer.newPartThis(xmlTag, id);
-        } else if (xmlTagName.equals(ConfigElement.TAG_NAME)) {
-            return newConfigElementInternal(id, null);
-        } else if (xmlTagName.equals(IProductCmptLink.TAG_NAME)) {
+        if (xmlTagName.equals(IProductCmptLink.TAG_NAME)) {
             return newLinkInternal(id);
-        } else if (xmlTagName.equals(ITableContentUsage.TAG_NAME)) {
-            return newTableContentUsageInternal(id, null);
-        } else if (xmlTagName.equals(Formula.TAG_NAME)) {
-            return newFormulaInternal(id, null);
-        } else if (xmlTagName.equals(IValidationRuleConfig.TAG_NAME)) {
-            return newValidationRuleInternal(id, null);
+        } else {
+            return valueHolder.newPartThis(xmlTagName, getNextPartId());
         }
-        return null;
     }
 
     @Override
     protected boolean addPartThis(IIpsObjectPart part) {
-        if (part instanceof IAttributeValue) {
-            attributeValueContainer.addPartThis(part);
-            return true;
-        } else if (part instanceof IConfigElement) {
-            configElements.add((IConfigElement)part);
-            return true;
-        } else if (part instanceof IProductCmptLink) {
-            links.add((IProductCmptLink)part);
-            return true;
-        } else if (part instanceof ITableContentUsage) {
-            tableContentUsages.add((ITableContentUsage)part);
-            return true;
-        } else if (part instanceof IFormula) {
-            formulas.add((IFormula)part);
-            return true;
-        } else if (part instanceof IValidationRuleConfig) {
-            validationRules.add((IValidationRuleConfig)part);
-            return true;
+        if (part instanceof IProductCmptLink) {
+            return links.add((IProductCmptLink)part);
+        } else {
+            return valueHolder.addPartThis(part);
         }
-        return false;
     }
 
     @Override
     protected boolean removePartThis(IIpsObjectPart part) {
-        if (part instanceof IAttributeValue) {
-            attributeValueContainer.removePartThis(part);
-            return true;
-        } else if (part instanceof IConfigElement) {
-            configElements.remove(part);
-            return true;
-        } else if (part instanceof IProductCmptLink) {
-            links.remove(part);
-            return true;
-        } else if (part instanceof ITableContentUsage) {
-            tableContentUsages.remove(part);
-            return true;
-        } else if (part instanceof IFormula) {
-            formulas.remove(part);
-            return true;
-        } else if (part instanceof IValidationRuleConfig) {
-            validationRules.remove(part);
-            return true;
+        if (part instanceof IProductCmptLink) {
+            return links.remove(part);
+        } else {
+            return valueHolder.removePartThis(part);
         }
-
-        return false;
     }
 
     @Override
     protected void reinitPartCollectionsThis() {
-        attributeValueContainer.clear();
-        configElements.clear();
+        valueHolder.clear();
         links.clear();
-        tableContentUsages.clear();
-        formulas.clear();
-        validationRules.clear();
     }
 
     @Override
@@ -725,45 +556,24 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public ITableContentUsage getTableContentUsage(String rolename) {
-        if (rolename == null) {
-            return null;
-        }
-        for (ITableContentUsage element : tableContentUsages) {
-            if (rolename.equals(element.getStructureUsage())) {
-                return element;
-            }
-        }
-        return null;
+        return (ITableContentUsage)valueHolder.getPropertyValue(ProductCmptPropertyType.TABLE_CONTENT_USAGE, rolename);
     }
 
     @Override
     public int getNumOfValidationRules() {
-        return validationRules.size();
+        return getValidationRuleConfigs().size();
     }
 
     @Override
     public IValidationRuleConfig getValidationRuleConfig(String validationRuleName) {
-        if (validationRuleName == null) {
-            return null;
-        }
-        for (IValidationRuleConfig ruleConfig : validationRules) {
-            if (ruleConfig.getName().equals(validationRuleName)) {
-                return ruleConfig;
-            }
-        }
-        return null;
+        return (IValidationRuleConfig)valueHolder.getPropertyValue(ProductCmptPropertyType.VALIDATION_RULE_CONFIG,
+                validationRuleName);
     }
 
     @Override
     public List<IValidationRuleConfig> getValidationRuleConfigs() {
-        return new ArrayList<IValidationRuleConfig>(validationRules);
-    }
-
-    @Override
-    public IValidationRuleConfig newValidationRuleConfig() {
-        IValidationRuleConfig ruleConfig = newValidationRuleInternal(getNextPartId(), null);
-        objectHasChanged();
-        return ruleConfig;
+        return valueHolder.getPropertyValues(ProductCmptPropertyType.VALIDATION_RULE_CONFIG,
+                IValidationRuleConfig.class);
     }
 
     /**
@@ -773,17 +583,13 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      * 
      * @return new validation rule
      */
-    private IValidationRuleConfig newValidationRuleInternal(String id, IValidationRule ruleToBeConfigured) {
-        IValidationRuleConfig ruleConfig = new ValidationRuleConfig(this, id,
-                ruleToBeConfigured != null ? ruleToBeConfigured.getName() : ""); //$NON-NLS-1$
-        ruleConfig.setActive(ruleToBeConfigured != null ? ruleToBeConfigured.isActivatedByDefault() : false);
-        validationRules.add(ruleConfig);
-        return ruleConfig;
+    private IValidationRuleConfig newValidationRuleInternal(IValidationRule ruleToBeConfigured, String id) {
+        return (IValidationRuleConfig)valueHolder.newPropertyValue(ruleToBeConfigured, getNextPartId());
     }
 
     @Override
     public IValidationRuleConfig newValidationRuleConfig(IValidationRule ruleToBeConfigured) {
-        IValidationRuleConfig ruleConfig = newValidationRuleInternal(getNextPartId(), ruleToBeConfigured);
+        IValidationRuleConfig ruleConfig = newValidationRuleInternal(ruleToBeConfigured, getNextPartId());
         objectHasChanged();
         return ruleConfig;
     }

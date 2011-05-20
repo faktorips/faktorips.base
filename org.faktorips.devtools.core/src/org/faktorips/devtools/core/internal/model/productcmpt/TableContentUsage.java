@@ -42,6 +42,7 @@ import org.w3c.dom.Element;
  */
 public class TableContentUsage extends AtomicIpsObjectPart implements ITableContentUsage {
 
+    public static final String TAG_NAME = "TableContentUsage"; //$NON-NLS-1$
     /**
      * The full qualified name of the table content this usage defines.
      */

@@ -18,6 +18,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -31,6 +33,7 @@ import org.faktorips.devtools.core.internal.model.pctype.ValidationRule;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeMethod;
 import org.faktorips.devtools.core.internal.model.productcmpttype.TableStructureUsage;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -61,6 +64,10 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     private IIpsPackageFragment pack;
     private IIpsSrcFile srcFile;
     private IIpsProject ipsProject;
+    private IPolicyCmptType policyCmptType;
+    private IProductCmptTypeAttribute attr;
+    private IProductCmptTypeAttribute attr2;
+    private IProductCmptType type;
 
     @Override
     @Before
@@ -71,6 +78,14 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         pack = root.createPackageFragment("products.folder", true, null);
         srcFile = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "TestProduct", true, null);
         productCmpt = (ProductCmpt)srcFile.getIpsObject();
+
+        type = newProductCmptType(ipsProject, "ProdType");
+        policyCmptType = newPolicyCmptType(ipsProject, "PolType");
+        attr = new ProductCmptTypeAttribute(type, "IDAttr1");
+        attr.setName("TypeAttr1");
+        attr2 = new ProductCmptTypeAttribute(type, "IDAttr2");
+        attr2.setName("TypeAttr2");
+
     }
 
     @Test
@@ -450,12 +465,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testNewPropertyValue() throws CoreException {
-        IProductCmptType type = newProductCmptType(ipsProject, "ProdType");
-        IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "PolType");
-        IProductCmptTypeAttribute attr = new ProductCmptTypeAttribute(type, "TypeAttr1");
-        IProductCmptTypeAttribute attr2 = new ProductCmptTypeAttribute(type, "TypeAttr2");
-
+    public void testNewPropertyValue() {
         assertEquals(0, productCmpt.getPropertyValues(ProductCmptPropertyType.VALUE).size());
         productCmpt.newPropertyValue(attr);
         assertEquals(1, productCmpt.getPropertyValues(ProductCmptPropertyType.VALUE).size());
@@ -470,6 +480,29 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertEquals(2, productCmpt.getPropertyValues(ProductCmptPropertyType.VALUE).size());
         productCmpt.newPropertyValue(new ProductCmptTypeMethod(type, "Method"));
         assertEquals(2, productCmpt.getPropertyValues(ProductCmptPropertyType.VALUE).size());
+    }
+
+    @Test
+    public void testGetAttributeValue() {
+        productCmpt.newPropertyValue(attr);
+        assertNotNull(productCmpt.getAttributeValue("TypeAttr1"));
+        assertNull(productCmpt.getAttributeValue("NonExistentAttr"));
+    }
+
+    @Test
+    public void testNewPartThis() {
+        Element element = mock(Element.class);
+        when(element.getNodeName()).thenReturn(IProductCmptGeneration.TAG_NAME);
+        IIpsObjectPart part = productCmpt.newPartThis(element, "genID");
+        assertNotNull(part);
+
+        when(element.getNodeName()).thenReturn(AttributeValue.TAG_NAME);
+        part = productCmpt.newPartThis(element, "attrID");
+        assertNotNull(part);
+
+        when(element.getNodeName()).thenReturn(ValidationRule.TAG_NAME);
+        part = productCmpt.newPartThis(element, "vRuleID");
+        assertNull(part);
     }
 
 }

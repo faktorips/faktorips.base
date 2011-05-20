@@ -52,7 +52,7 @@ import org.w3c.dom.Element;
 
 public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
-    final static String TAG_NAME = "ConfigElement"; //$NON-NLS-1$
+    public final static String TAG_NAME = "ConfigElement"; //$NON-NLS-1$
 
     private String pcTypeAttribute;
 

@@ -33,6 +33,8 @@ import org.w3c.dom.Element;
 
 public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValidationRuleConfig {
 
+    public static final String TAG_NAME = "ValidationRuleConfig"; //$NON-NLS-1$
+
     public static final String TAG_NAME_ACTIVE = "active"; //$NON-NLS-1$
     public static final String TAG_NAME_RULE_NAME = "ruleName"; //$NON-NLS-1$
 

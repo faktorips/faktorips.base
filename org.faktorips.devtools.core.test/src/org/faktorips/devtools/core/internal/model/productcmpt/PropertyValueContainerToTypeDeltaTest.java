@@ -233,14 +233,12 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
 
         IPropertyValueContainerToTypeDelta delta = generation.computeDeltaToModel(ipsProject);
         IDeltaEntry[] entries = delta.getEntries();
-        assertEquals(2, entries.length);
+        assertEquals(1, entries.length);
         assertEquals(DeltaType.MISSING_PROPERTY_VALUE, entries[0].getDeltaType());
-        assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, entries[1].getDeltaType());
 
         List<IValidationRuleConfig> validationRuleConfigs = generation.getValidationRuleConfigs();
-        assertEquals(2, validationRuleConfigs.size());
+        assertEquals(1, validationRuleConfigs.size());
         assertEquals("Rule1", validationRuleConfigs.get(0).getName());
-        assertEquals("", validationRuleConfigs.get(1).getName());
 
         delta.fix();
         validationRuleConfigs = generation.getValidationRuleConfigs();
@@ -259,14 +257,14 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
 
         IPropertyValueContainerToTypeDelta delta = generation.computeDeltaToModel(ipsProject);
         IDeltaEntry[] entries = delta.getEntries();
-        assertEquals(3, entries.length);
+        assertEquals(2, entries.length);
         assertEquals(DeltaType.MISSING_PROPERTY_VALUE, entries[0].getDeltaType());
         assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, entries[1].getDeltaType());
-        assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, entries[2].getDeltaType());
 
         List<IValidationRuleConfig> validationRuleConfigs = generation.getValidationRuleConfigs();
-        assertEquals(3, validationRuleConfigs.size());
-        assertEquals("unconfigurableRule", validationRuleConfigs.get(2).getName());
+        assertEquals(2, validationRuleConfigs.size());
+        assertEquals("Rule1", validationRuleConfigs.get(0).getName());
+        assertEquals("unconfigurableRule", validationRuleConfigs.get(1).getName());
 
         delta.fix();
         validationRuleConfigs = generation.getValidationRuleConfigs();
@@ -284,6 +282,6 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         rule = policyCmptType.newRule();
         rule.setName("UnconfiguredRule");
         rule.setConfigurableByProductComponent(true);
-        generation.newValidationRuleConfig();
     }
+
 }

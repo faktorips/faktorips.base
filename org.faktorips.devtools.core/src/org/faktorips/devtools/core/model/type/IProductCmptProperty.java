@@ -60,4 +60,9 @@ public interface IProductCmptProperty extends IDescribedElement, ILabeledElement
      */
     public boolean isChangingOverTime();
 
+    /**
+     * @return this property's data type
+     */
+    public String getPropertyDatatype();
+
 }

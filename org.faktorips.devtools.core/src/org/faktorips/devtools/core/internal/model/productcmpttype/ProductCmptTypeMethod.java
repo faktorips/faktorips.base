@@ -206,4 +206,9 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         return true;
     }
 
+    @Override
+    public String getPropertyDatatype() {
+        return getDatatype();
+    }
+
 }

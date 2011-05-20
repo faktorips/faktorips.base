@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.model.productcmpt;
 
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTreeStructure;
@@ -113,17 +114,6 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProperty
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Sorts properties in all generations according to the order defined in the model. If the
-     * product component type isn't found, the component remains unchanged.
-     * 
-     * @param ipsProject The IPS project which search path is used to search the type.
-     * 
-     * @throws CoreException if an exception occurs while searching for the type.
-     * @throws NullPointerException if ipsProject is <code>null</code>.
-     */
-    public void sortPropertiesAccordingToModel(IIpsProject ipsProject) throws CoreException;
-
-    /**
      * Returns <code>true</code> if any of the generations contain at least one formula. Returns
      * <code>false</code> otherwise.
      */
@@ -196,5 +186,17 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProperty
      */
     @Deprecated
     boolean isUsedAsTargetProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmptCandidate);
+
+    /**
+     * @return all {@link IAttributeValue}s in this component.
+     */
+    public List<IAttributeValue> getAttributeValues();
+
+    /**
+     * Returns the attribute value for the given attribute name. Returns <code>null</code> if this
+     * container has no value for the given attribute. Returns <code>null</code> if attribute is
+     * <code>null</code>.
+     */
+    public IAttributeValue getAttributeValue(String attribute);
 
 }

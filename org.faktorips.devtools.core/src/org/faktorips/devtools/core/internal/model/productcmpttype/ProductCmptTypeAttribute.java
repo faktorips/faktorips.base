@@ -88,7 +88,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
 
     @Override
     public String getPropertyName() {
-        return name;
+        return getName();
     }
 
     @Override
@@ -158,6 +158,11 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     @Override
     public boolean isChangingOverTime() {
         return changingOverTime;
+    }
+
+    @Override
+    public String getPropertyDatatype() {
+        return getDatatype();
     }
 
     @Override

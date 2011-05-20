@@ -153,6 +153,11 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     }
 
     @Override
+    public String getPropertyDatatype() {
+        return getDatatype();
+    }
+
+    @Override
     public boolean isDerived() {
         return getAttributeType().isDerived();
     }

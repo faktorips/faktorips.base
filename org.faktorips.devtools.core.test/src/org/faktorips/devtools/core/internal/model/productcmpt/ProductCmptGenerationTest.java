@@ -18,6 +18,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.GregorianCalendar;
@@ -153,7 +155,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         IFormula formula = generation.newFormula(signature);
         assertEquals("Calc", formula.getFormulaSignature());
 
-        formula = generation.newFormula(null);
+        formula = generation.newFormula();
         assertEquals("", formula.getFormulaSignature());
     }
 
@@ -164,7 +166,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         ITableContentUsage contentUsage = generation.newTableContentUsage(structureUsage);
         assertEquals("RateTable", contentUsage.getStructureUsage());
 
-        contentUsage = generation.newTableContentUsage(null);
+        contentUsage = generation.newTableContentUsage();
         assertEquals("", contentUsage.getStructureUsage());
     }
 
@@ -177,7 +179,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertEquals("123", value.getValue());
         assertEquals("premium", value.getAttribute());
 
-        value = generation.newAttributeValue(null);
+        value = generation.newAttributeValue();
         assertEquals("", value.getValue());
         assertEquals("", value.getAttribute());
     }
@@ -262,8 +264,8 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         generation.newFormula();
         generation.newFormula();
         generation.newAttributeValue();
-        generation.newValidationRuleConfig();
-        generation.newValidationRuleConfig();
+        newValidationRuleConfig();
+        newValidationRuleConfig();
         Element element = generation.toXml(newDocument());
 
         IProductCmptGeneration copy = new ProductCmptGeneration();
@@ -420,7 +422,12 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         IProductCmptLink link = generation.newLink("targetRole");
         ITableContentUsage usage = generation.newTableContentUsage();
         IFormula formula = generation.newFormula();
-        IValidationRuleConfig rule = generation.newValidationRuleConfig();
+
+        IValidationRule rule = mock(IValidationRule.class);
+        when(rule.getPropertyName()).thenReturn("newRule");
+        when(rule.isActivatedByDefault()).thenReturn(false);
+        when(rule.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.VALIDATION_RULE_CONFIG);
+        IValidationRuleConfig ruleConfig = generation.newValidationRuleConfig(rule);
 
         IIpsElement[] children = generation.getChildren();
         List<IIpsElement> childrenList = Arrays.asList(children);
@@ -428,7 +435,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertTrue(childrenList.contains(usage));
         assertTrue(childrenList.contains(formula));
         assertTrue(childrenList.contains(link));
-        assertTrue(childrenList.contains(rule));
+        assertTrue(childrenList.contains(ruleConfig));
     }
 
     @Test
@@ -578,23 +585,31 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         List<IValidationRuleConfig> rules = generation.getValidationRuleConfigs();
         assertEquals(0, rules.size());
 
-        generation.newValidationRuleConfig();
+        newValidationRuleConfig();
         rules = generation.getValidationRuleConfigs();
         assertEquals(1, rules.size());
 
-        generation.newValidationRuleConfig();
+        newValidationRuleConfig();
         rules = generation.getValidationRuleConfigs();
         assertEquals(2, rules.size());
+    }
+
+    private IValidationRuleConfig newValidationRuleConfig() {
+        IValidationRule rule = mock(IValidationRule.class);
+        when(rule.getPropertyName()).thenReturn("newRule");
+        when(rule.isActivatedByDefault()).thenReturn(false);
+        when(rule.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.VALIDATION_RULE_CONFIG);
+        return generation.newValidationRuleConfig(rule);
     }
 
     @Test
     public void testGetNumValidationRules() {
         assertEquals(0, generation.getNumOfValidationRules());
 
-        generation.newValidationRuleConfig();
+        newValidationRuleConfig();
         assertEquals(1, generation.getNumOfValidationRules());
 
-        generation.newValidationRuleConfig();
+        newValidationRuleConfig();
         assertEquals(2, generation.getNumOfValidationRules());
     }
 
@@ -602,10 +617,10 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     public void testNewValidationRule() throws CoreException {
         assertEquals(0, generation.getNumOfValidationRules());
 
-        generation.newValidationRuleConfig();
+        newValidationRuleConfig();
         assertEquals(1, generation.getChildren().length);
 
-        generation.newValidationRuleConfig();
+        newValidationRuleConfig();
         assertEquals(2, generation.getChildren().length);
     }
 

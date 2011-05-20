@@ -60,13 +60,6 @@ public interface IPropertyValueContainer extends IIpsObjectPartContainer {
     public abstract IPropertyValue newPropertyValue(IProductCmptProperty property);
 
     /**
-     * Returns the attribute value for the given attribute name. Returns <code>null</code> if the
-     * generation has no value for the given attribute. Returns <code>null</code> if attribute is
-     * <code>null</code>.
-     */
-    public IAttributeValue getAttributeValue(String attribute);
-
-    /**
      * Check whether this container contains values that change over time or only contains not
      * changing values. If method returns true for all {@link IPropertyValue} in this container, the
      * corresponding {@link IProductCmptProperty#isChangingOverTime()} have to return true.

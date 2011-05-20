@@ -22,6 +22,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -44,7 +45,7 @@ import org.w3c.dom.NodeList;
 
 public class ValidationRule extends AtomicIpsObjectPart implements IValidationRule {
 
-    final static String TAG_NAME = "ValidationRuleDef"; //$NON-NLS-1$
+    public final static String TAG_NAME = "ValidationRuleDef"; //$NON-NLS-1$
 
     private String msgText = ""; //$NON-NLS-1$
 
@@ -455,6 +456,11 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
     @Override
     public boolean isChangingOverTime() {
         return true;
+    }
+
+    @Override
+    public String getPropertyDatatype() {
+        return ValueDatatype.BOOLEAN.getName();
     }
 
 }

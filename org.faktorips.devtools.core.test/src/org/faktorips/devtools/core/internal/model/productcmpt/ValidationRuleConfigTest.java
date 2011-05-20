@@ -15,6 +15,8 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -25,6 +27,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -88,9 +91,14 @@ public class ValidationRuleConfigTest extends AbstractIpsPluginTest {
 
     @Test
     public void testFindInexistentVRule() throws CoreException {
-        IValidationRuleConfig config = generation.newValidationRuleConfig();
-        IValidationRule rule = config.findValidationRule(ipsProject);
-        Assert.assertNull(rule);
+        IValidationRule rule = mock(IValidationRule.class);
+        when(rule.getPropertyName()).thenReturn("newRule");
+        when(rule.isActivatedByDefault()).thenReturn(false);
+        when(rule.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.VALIDATION_RULE_CONFIG);
+
+        IValidationRuleConfig config = generation.newValidationRuleConfig(rule);
+        IValidationRule foundRule = config.findValidationRule(ipsProject);
+        Assert.assertNull(foundRule);
     }
 
     @Test
