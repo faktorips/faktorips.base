@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -232,11 +233,16 @@ public class DocumentationContext {
         return multiLanguageSupport;
     }
 
-    public String getLabel(ILabeledElement labeledElement) {
-        return getLabel(labeledElement, true);
+    public String getLabel(IIpsElement element) {
+        return getLabel(element, true);
     }
 
-    public String getLabel(ILabeledElement labeledElement, boolean singular) {
+    public String getLabel(IIpsElement element, boolean singular) {
+        if (!(element instanceof ILabeledElement)) {
+            return element.getName();
+        }
+
+        ILabeledElement labeledElement = (ILabeledElement)element;
         if (singular) {
             return getMultiLanguageSupport().getLocalizedLabel(labeledElement);
         }
