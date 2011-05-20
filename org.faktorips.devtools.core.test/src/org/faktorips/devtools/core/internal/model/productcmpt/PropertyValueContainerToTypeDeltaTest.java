@@ -29,10 +29,10 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -115,7 +115,9 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
     @Test
     public void testAttributes() throws CoreException {
         IProductCmptTypeAttribute attribute1 = productCmptType.newProductCmptTypeAttribute("a1");
+        attribute1.setChangingOverTime(true);
         IProductCmptTypeAttribute attribute2 = superProductCmptType.newProductCmptTypeAttribute("a_super");
+        attribute2.setChangingOverTime(true);
 
         IPropertyValueContainerToTypeDelta delta = generation.computeDeltaToModel(ipsProject);
         IDeltaEntry[] entries = delta.getEntries();
@@ -134,7 +136,8 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
 
         attribute1.delete();
         attribute2.delete();
-        productCmptType.newProductCmptTypeAttribute("a2");
+        IProductCmptTypeAttribute attribute3 = productCmptType.newProductCmptTypeAttribute("a2");
+        attribute3.setChangingOverTime(true);
 
         delta = generation.computeDeltaToModel(ipsProject);
         entries = delta.getEntries();
@@ -159,6 +162,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
     @Test
     public void testTypeMismatch() throws CoreException {
         IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute("premium");
+        attribute.setChangingOverTime(true);
         IPropertyValueContainerToTypeDelta delta = generation.computeDeltaToModel(ipsProject);
         delta.fix();
         assertNotNull(generation.getAttributeValue("premium"));
