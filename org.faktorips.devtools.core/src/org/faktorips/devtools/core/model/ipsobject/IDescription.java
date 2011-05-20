@@ -28,6 +28,8 @@ public interface IDescription extends IIpsObjectPart {
 
     public static final String PROPERTY_LOCALE = "locale"; //$NON-NLS-1$
 
+    public static final String PROPERTY_TEXT = "text"; //$NON-NLS-1$
+
     /** Prefix for all message codes of this class. */
     public final static String MSGCODE_PREFIX = "DESCRIPTION-"; //$NON-NLS-1$
 
