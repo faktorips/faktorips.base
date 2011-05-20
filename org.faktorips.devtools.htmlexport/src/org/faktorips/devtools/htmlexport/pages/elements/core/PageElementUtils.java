@@ -25,7 +25,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementInDocumentedSourceFileFilter;
@@ -134,13 +133,10 @@ public class PageElementUtils {
     }
 
     private String getIpsObjectPartContainerText(DocumentationContext context, IIpsObjectPartContainer to) {
-        if (to instanceof ILabeledElement) {
-            return to.getName() + " (" + context.getLabel((ILabeledElement)to) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-        }
         if (to instanceof IMethod) {
             return ((IMethod)to).getSignatureString();
         }
-        return to.getName();
+        return to.getName() + " (" + context.getLabel(to) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public PageElement createIpsElementRepresentation(IIpsElement ipsElement,

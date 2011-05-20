@@ -31,10 +31,4 @@ public class IpsObjectTypePathUtil implements PathUtil {
     public String getPathFromRoot(LinkedFileType linkedFileType) {
         return ipsObjectType.getFileExtension() + "_index"; //$NON-NLS-1$
     }
-
-    @Override
-    public String getLinkText(boolean withImage) {
-        return ipsObjectType.getDisplayName();
-    }
-
 }

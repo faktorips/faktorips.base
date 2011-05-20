@@ -13,8 +13,6 @@
 
 package org.faktorips.devtools.htmlexport.helper.path;
 
-import org.faktorips.devtools.core.internal.model.IpsElement;
-import org.faktorips.devtools.core.model.IIpsElement;
 
 public interface PathUtil {
 
@@ -31,13 +29,4 @@ public interface PathUtil {
      * 
      */
     public abstract String getPathFromRoot(LinkedFileType linkedFileType);
-
-    /**
-     * name of an {@link IIpsElement} in a link
-     * 
-     * @param withImage true: link includes a small image which represents the type of the linked
-     *            Object {@link IpsElement}
-     */
-    public abstract String getLinkText(boolean withImage);
-
 }

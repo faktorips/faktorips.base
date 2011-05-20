@@ -61,11 +61,12 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
 
     private void addValidationRuleTable() {
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-        wrapper.addPageElements(new TextPageElement(
-                getContext().getMessage(HtmlExportMessages.PolicyCmptTypeContentPageElement_rules), TextType.HEADING_2)); 
+        wrapper.addPageElements(new TextPageElement(getContext().getMessage(
+                HtmlExportMessages.PolicyCmptTypeContentPageElement_rules), TextType.HEADING_2));
 
         wrapper.addPageElements(getTableOrAlternativeText(new ValidationRuleTablePageElement(getDocumentedIpsObject(),
-                getContext()), getContext().getMessage(HtmlExportMessages.PolicyCmptTypeContentPageElement_noValidationrules))); 
+                getContext()),
+                getContext().getMessage(HtmlExportMessages.PolicyCmptTypeContentPageElement_noValidationrules)));
 
         addPageElements(wrapper);
     }
@@ -92,13 +93,14 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
                 List<String> headline = super.getHeadlineWithIpsObjectPart();
 
                 addHeadlineAndColumnLayout(headline,
-                        getContext().getMessage(HtmlExportMessages.PolicyCmptTypeContentPageElement_productRelevant), 
+                        getContext().getMessage(HtmlExportMessages.PolicyCmptTypeContentPageElement_productRelevant),
                         Style.CENTER);
 
-                headline.add(getContext().getMessage(HtmlExportMessages.PolicyCmptTypeContentPageElement_attributeType)); 
+                headline.add(getContext().getMessage(HtmlExportMessages.PolicyCmptTypeContentPageElement_attributeType));
 
                 addHeadlineAndColumnLayout(headline,
-                        getContext().getMessage(HtmlExportMessages.PolicyCmptTypeContentPageElement_overwrite), Style.CENTER); 
+                        getContext().getMessage(HtmlExportMessages.PolicyCmptTypeContentPageElement_overwrite),
+                        Style.CENTER);
 
                 return headline;
             }
@@ -129,7 +131,8 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
         }
         addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
                 new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": "), //$NON-NLS-1$
-                new PageElementUtils().createLinkPageElement(getContext(), to, "content", to.getName(), true) })); //$NON-NLS-1$
+                new PageElementUtils().createLinkPageElement(getContext(), to,
+                        "content", getContext().getLabel(to), true) })); //$NON-NLS-1$
 
     }
 }

@@ -56,7 +56,7 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
     protected List<? extends PageElement> createRowWithIpsObjectPart(IAssociation association) {
         List<String> values = new ArrayList<String>();
 
-        values.add(association.getName());
+        values.add(context.getLabel(association));
         values.add(getContext().getLabel(association));
 
         // will be replaced with the link

@@ -220,7 +220,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
         addPageElements(new WrapperPageElement(
                 WrapperType.BLOCK,
                 new PageElement[] {
-                        new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": "), new PageElementUtils().createLinkPageElement(getContext(), to, "content", to.getName(), true) })); //$NON-NLS-1$ //$NON-NLS-2$
+                        new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": "), new PageElementUtils().createLinkPageElement(getContext(), to, "content", getContext().getLabel(to), true) })); //$NON-NLS-1$ //$NON-NLS-2$
 
     }
 

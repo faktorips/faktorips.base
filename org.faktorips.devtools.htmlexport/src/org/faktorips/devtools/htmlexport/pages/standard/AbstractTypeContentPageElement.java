@@ -171,11 +171,11 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 
         for (int i = 1; i < superTypes.size(); i++) {
             if (superTypes.get(i) == getDocumentedIpsObject()) {
-                element.addPageElements(new TextPageElement(getDocumentedIpsObject().getName()));
+                element.addPageElements(new TextPageElement(getContext().getLabel(getDocumentedIpsObject())));
                 break;
             }
             TreeNodePageElement subElement = new TreeNodePageElement(new PageElementUtils().createLinkPageElement(
-                    getContext(), superTypes.get(i), "content", superTypes.get(i).getName(), true)); //$NON-NLS-1$
+                    getContext(), superTypes.get(i), "content", getContext().getLabel(superTypes.get(i)), true)); //$NON-NLS-1$
             element.addPageElements(subElement);
             element = subElement;
         }
@@ -218,7 +218,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
                 new PageElement[] {
                         new TextPageElement(getContext().getMessage(
                                 HtmlExportMessages.AbstractTypeContentPageElement_extends)
-                                + " "), new PageElementUtils().createLinkPageElement(getContext(), to, "content", to.getName(), true) })); //$NON-NLS-1$//$NON-NLS-2$ 
+                                + " "), new PageElementUtils().createLinkPageElement(getContext(), to, "content", getContext().getLabel(to), true) })); //$NON-NLS-1$//$NON-NLS-2$ 
     }
 
     /**

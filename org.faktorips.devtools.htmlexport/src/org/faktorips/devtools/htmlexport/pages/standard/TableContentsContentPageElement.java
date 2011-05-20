@@ -92,7 +92,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
 
             List<String> headline = new ArrayList<String>();
             for (IColumn column : columns) {
-                headline.add(column.getName());
+                headline.add(getContext().getLabel(column));
             }
             return headline;
         }
@@ -124,7 +124,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
         addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
                 new TextPageElement(IpsObjectType.TABLE_STRUCTURE.getDisplayName() + ": "), //$NON-NLS-1$
                 new PageElementUtils().createLinkPageElement(getContext(), tableStructure,
-                        "content", tableStructure.getName(), true) })); //$NON-NLS-1$
+                        "content", getContext().getLabel(tableStructure), true) })); //$NON-NLS-1$
     }
 
     @Override
@@ -156,7 +156,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
 
             wrapper.addPageElements(new TextPageElement(getContext().getMessage(
                     "TableContentsContentPageElement_generation") //$NON-NLS-1$
-                    + " " + tableContentsGeneration.getName(), //$NON-NLS-1$
+                    + " " + getContext().getLabel(tableContentsGeneration), //$NON-NLS-1$
                     TextType.HEADING_3));
             ContentTablePageElement contentTablePageElement = null;
             try {

@@ -142,7 +142,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     private void addPolicyCmptTypeAttibutesRow(IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
         PageElement[] cells = new PageElement[productCmpt.getNumOfGenerations() + 1];
 
-        cells[0] = new TextPageElement(policyCmptTypeAttribute.getName());
+        cells[0] = new TextPageElement(context.getLabel(policyCmptTypeAttribute));
 
         for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
             IProductCmptGeneration productCmptGeneration = productCmpt.getProductCmptGeneration(i);
@@ -295,7 +295,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             }
             PageElement linkPageElement = new PageElementUtils().createLinkPageElement(context, tableContent,
                     "content", //$NON-NLS-1$
-                    tableContent.getName(), true);
+                    context.getLabel(tableContent), true);
 
             cells[i + 1] = linkPageElement;
 

@@ -49,7 +49,7 @@ public class MethodsTablePageElement extends AbstractIpsObjectPartsContainerTabl
     protected List<String> getMethodData(IMethod method) {
         List<String> methodData = new ArrayList<String>();
 
-        methodData.add(method.getName());
+        methodData.add(getContext().getLabel(method));
         methodData.add(method.isAbstract() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
         methodData.add(method.getModifier().toString());
         methodData.add(method.getDatatype());

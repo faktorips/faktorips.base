@@ -63,7 +63,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
 
             PageElement link = getLinkToReferencedTableStructure(foreignKey);
 
-            cells.add(new TextPageElement(foreignKey.getName()));
+            cells.add(new TextPageElement(getContext().getLabel(foreignKey)));
             cells.add(new TextPageElement(StringUtils.join(foreignKey.getKeyItemNames(), ", "))); //$NON-NLS-1$
             cells.add(link);
             cells.add(new TextPageElement(foreignKey.getReferencedUniqueKey()));
@@ -120,7 +120,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         protected List<String> getColumnRangeData(IColumnRange columnRange) {
             List<String> columnData = new ArrayList<String>();
 
-            columnData.add(columnRange.getName());
+            columnData.add(getContext().getLabel(columnRange));
             columnData.add(columnRange.getParameterName());
             columnData.add(columnRange.getColumnRangeType().getName());
             columnData.add(columnRange.getFromColumn());
@@ -171,7 +171,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         protected List<String> getColumnData(IColumn column) {
             List<String> columnData = new ArrayList<String>();
 
-            columnData.add(column.getName());
+            columnData.add(getContext().getLabel(column));
             columnData.add(column.getDatatype());
             columnData.add(getContext().getDescription(column));
 
@@ -210,7 +210,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         protected List<String> getUniqueKeyData(IUniqueKey uniqueKey) {
             List<String> columnData = new ArrayList<String>();
 
-            columnData.add(uniqueKey.getName());
+            columnData.add(getContext().getLabel(uniqueKey));
             columnData.add(getContext().getDescription(uniqueKey));
 
             return columnData;

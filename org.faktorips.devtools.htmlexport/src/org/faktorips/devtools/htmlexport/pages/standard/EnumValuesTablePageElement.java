@@ -100,7 +100,7 @@ class EnumValuesTablePageElement extends AbstractIpsObjectPartsContainerTablePag
         List<String> headline = new ArrayList<String>();
 
         for (IEnumAttribute enumAttribute : enumAttributes) {
-            headline.add(enumAttribute.getName());
+            headline.add(getContext().getLabel(enumAttribute));
         }
 
         return headline;

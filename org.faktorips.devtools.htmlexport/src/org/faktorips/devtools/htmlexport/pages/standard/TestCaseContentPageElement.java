@@ -109,7 +109,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
                     new IpsStatus(IStatus.ERROR, "Error creating PageElement for " + testObject.getName(), e)); //$NON-NLS-1$
         }
 
-        return TextPageElement.createParagraph(testObject.getName() + " " + testObject.getClass()); //$NON-NLS-1$
+        return TextPageElement.createParagraph(getContext().getLabel(testObject) + " " + testObject.getClass()); //$NON-NLS-1$
     }
 
     private PageElement createTestPolicyCmptPageElement(ITestPolicyCmpt testObject) throws CoreException {
@@ -144,8 +144,8 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
             ITestAttribute attribute = testAttributeValue.findTestAttribute(getContext().getIpsProject());
             ValueDatatype datatype = attribute.findDatatype(getContext().getIpsProject());
 
-            keyValueTable.addKeyValueRow(testAttributeValue.getName(),
-                    getContext().getDatatypeFormatter().formatValue(datatype, value));
+            keyValueTable.addKeyValueRow(getContext().getLabel(testAttributeValue), getContext().getDatatypeFormatter()
+                    .formatValue(datatype, value));
         }
         return keyValueTable;
     }
@@ -172,7 +172,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
 
         KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement(getContext());
         keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseContentPageElement_name),
-                testObject.getName());
+                getContext().getLabel(testObject));
 
         ITestValueParameter testValueParameter = testObject.findTestValueParameter(getContext().getIpsProject());
         ValueDatatype datatype = testValueParameter.findValueDatatype(getContext().getIpsProject());

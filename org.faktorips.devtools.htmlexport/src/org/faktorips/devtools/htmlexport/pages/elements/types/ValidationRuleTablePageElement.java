@@ -48,7 +48,7 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
     protected List<? extends PageElement> createRowWithIpsObjectPart(IValidationRule rule) {
         List<String> ruleData = new ArrayList<String>();
 
-        ruleData.add(rule.getName());
+        ruleData.add(getContext().getLabel(rule));
         ruleData.add(rule.getMessageCode());
         ruleData.add(rule.getMessageSeverity().getName());
         ruleData.add(rule.getMessageText());

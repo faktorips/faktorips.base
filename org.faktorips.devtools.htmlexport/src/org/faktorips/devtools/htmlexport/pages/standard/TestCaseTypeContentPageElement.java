@@ -77,7 +77,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
         protected PageElement[] getAttributeData(ITestAttribute attribute) {
             List<PageElement> attributeData = new ArrayList<PageElement>();
 
-            attributeData.add(new TextPageElement(attribute.getName()));
+            attributeData.add(new TextPageElement(getContext().getLabel(attribute)));
             attributeData.add(new TextPageElement(attribute.getTestAttributeType().getName()));
             attributeData.add(new TextPageElement(attribute.getAttribute()));
 
@@ -122,12 +122,12 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
         protected List<String> getHeadlineWithIpsObjectPart() {
             List<String> headline = new ArrayList<String>();
 
-            headline.add(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_name)); 
-            headline.add(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_testAttributeType)); 
-            headline.add(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_attribute)); 
+            headline.add(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_name));
+            headline.add(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_testAttributeType));
+            headline.add(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_attribute));
             headline.add(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName());
-            headline.add(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_datatype)); 
-            headline.add(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_description)); 
+            headline.add(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_datatype));
+            headline.add(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_description));
 
             return headline;
         }
@@ -152,8 +152,8 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
      * adds a treeview with the Parameters of the {@link ITestCaseType}
      */
     private void addTestCaseTypeParameters() {
-        addPageElements(new TextPageElement(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_parameters), 
-                TextType.HEADING_2));
+        addPageElements(new TextPageElement(getContext().getMessage(
+                HtmlExportMessages.TestCaseTypeContentPageElement_parameters), TextType.HEADING_2));
         TreeNodePageElement root = createRootNode();
 
         ITestParameter[] testParameters = getDocumentedIpsObject().getTestParameters();
@@ -202,8 +202,9 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
             return createTestPolicyCmptTypePageElement((TestPolicyCmptTypeParameter)testParameter);
         }
 
-        return TextPageElement.createParagraph(testParameter.getName() + " " + testParameter.getClass()).addStyles( //$NON-NLS-1$
-                Style.BIG).addStyles(Style.BOLD);
+        return TextPageElement
+                .createParagraph(getContext().getLabel(testParameter) + " " + testParameter.getClass()).addStyles( //$NON-NLS-1$
+                        Style.BIG).addStyles(Style.BOLD);
     }
 
     private PageElement createTestPolicyCmptTypePageElement(ITestPolicyCmptTypeParameter testParameter)
@@ -211,7 +212,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
         IPolicyCmptType policyCmptType = testParameter.findPolicyCmptType(testParameter.getIpsProject());
 
         PageElement linkPageElement = new PageElementUtils().createLinkPageElement(getContext(), policyCmptType,
-                "content", policyCmptType.getName(), true); //$NON-NLS-1$
+                "content", getContext().getLabel(policyCmptType), true); //$NON-NLS-1$
         TreeNodePageElement testParameterPageElement = new TreeNodePageElement(
                 new WrapperPageElement(WrapperType.BLOCK).addPageElements(linkPageElement).addPageElements(
                         new TextPageElement((" - " + testParameter.getTestParameterType().getName())))); //$NON-NLS-1$
@@ -231,8 +232,9 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
     private PageElement createTestAttributeTable(ITestPolicyCmptTypeParameter testParameter) {
 
         ICompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK).addPageElements(TextPageElement
-                .createParagraph(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_testAttributes)).addStyles( 
-                        Style.BOLD));
+                .createParagraph(
+                        getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_testAttributes))
+                .addStyles(Style.BOLD));
 
         TestAttributesTablePageElement testAttributesTablePageElement = new TestAttributesTablePageElement(
                 testParameter);
@@ -246,48 +248,61 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
 
     private KeyValueTablePageElement createKeyValueTableForTestPolicyCmptTypeParameter(ITestPolicyCmptTypeParameter testParameter) {
         KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement(getContext());
-        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_name), 
-                testParameter.getName());
-        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_testParameterType), 
+        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_name),
+                getContext().getLabel(testParameter));
+        keyValueTable.addKeyValueRow(
+                getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_testParameterType),
                 testParameter.getTestParameterType().getName());
-        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_requiresProductCmpt), 
+        keyValueTable.addKeyValueRow(
+                getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_requiresProductCmpt),
                 testParameter.isRequiresProductCmpt() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
-        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_minInstances), 
+        keyValueTable.addKeyValueRow(
+                getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_minInstances),
                 Integer.toString(testParameter.getMinInstances()));
-        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_maxInstances), 
+        keyValueTable.addKeyValueRow(
+                getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_maxInstances),
                 Integer.toString(testParameter.getMaxInstances()));
         return keyValueTable;
     }
 
     private PageElement createTestRuleParameterPageElement(TestRuleParameter testParameter) {
-        String name = testParameter.getName() + " - " + testParameter.getTestParameterType().getName(); //$NON-NLS-1$
+        String name = createNodeName(testParameter);
         TreeNodePageElement testParameterPageElement = createRootNode(name);
 
         KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement(getContext());
-        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_name), 
-                testParameter.getName());
-        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_testParameterType), 
+        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_name),
+                getContext().getLabel(testParameter));
+        keyValueTable.addKeyValueRow(
+                getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_testParameterType),
                 testParameter.getTestParameterType().getName());
-        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_description), 
-                getContext().getDescription(testParameter));
+        keyValueTable.addKeyValueRow(
+                getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_description), getContext()
+                        .getDescription(testParameter));
 
         testParameterPageElement.addPageElements(keyValueTable);
         return testParameterPageElement;
     }
 
+    public String createNodeName(ITestParameter testParameter) {
+        return getContext().getLabel(testParameter) + " - " + testParameter.getTestParameterType().getName(); //$NON-NLS-1$
+    }
+
     private PageElement createTestValueParameterPageElement(TestValueParameter testParameter) {
-        String name = testParameter.getName() + " - " + testParameter.getTestParameterType().getName(); //$NON-NLS-1$
+        String name = createNodeName(testParameter);
         TreeNodePageElement testParameterPageElement = createRootNode(name);
 
         KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement(getContext());
-        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_name), 
-                testParameter.getName());
-        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_valueDatatype), 
+        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_name),
+                getContext().getLabel(testParameter));
+        keyValueTable.addKeyValueRow(
+                getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_valueDatatype),
                 testParameter.getValueDatatype());
-        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_testParameterType), 
+        keyValueTable.addKeyValueRow(
+                getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_testParameterType),
                 testParameter.getTestParameterType().getName());
-        keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_description), 
-                getContext().getDescription(testParameter));
+        keyValueTable.addKeyValueRow(
+                getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_description), getContext()
+                        .getDescription(testParameter));
 
         testParameter.getTestParameterType();
 

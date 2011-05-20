@@ -61,7 +61,7 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
     protected AbstractIpsObjectContentPageElement(T documentedIpsObject, DocumentationContext context) {
         this.documentedIpsObject = documentedIpsObject;
         this.context = context;
-        setTitle(documentedIpsObject.getName());
+        setTitle(context.getLabel(documentedIpsObject));
     }
 
     @Override
@@ -76,11 +76,11 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
                 .getIpsPackageFragment(),
                 "classes", IpsUIPlugin.getLabel(getDocumentedIpsObject().getIpsPackageFragment()), true)); //$NON-NLS-1$
         addPageElements(new TextPageElement(getIpsObjectTypeDisplayName() + " " //$NON-NLS-1$
-                + getDocumentedIpsObject().getName(), TextType.HEADING_1));
+                + context.getLabel(getDocumentedIpsObject()), TextType.HEADING_1));
 
         addTypeHierarchy();
 
-        addPageElements(new TextPageElement(getDocumentedIpsObject().getName(), TextType.HEADING_2));
+        addPageElements(new TextPageElement(context.getLabel(getDocumentedIpsObject()), TextType.HEADING_2));
 
         addStructureData();
 

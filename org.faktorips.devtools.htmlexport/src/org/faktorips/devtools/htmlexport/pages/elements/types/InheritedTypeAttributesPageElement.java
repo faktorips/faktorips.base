@@ -45,7 +45,7 @@ public class InheritedTypeAttributesPageElement extends AbstractInheritedIpsObje
         List<? extends IAttribute> ipsObjectParts = getIpsObjectParts(getParentIpsElement());
         for (IAttribute attribute : ipsObjectParts) {
             if (attribute.isOverwrite()) {
-                overwritingAttributes.add(attribute.getName());
+                overwritingAttributes.add(getContext().getLabel(attribute));
             }
         }
     }
@@ -58,11 +58,11 @@ public class InheritedTypeAttributesPageElement extends AbstractInheritedIpsObje
 
     @Override
     protected boolean showObjectPart(IAttribute objectPart) {
-        if (overwritingAttributes.contains(objectPart.getName())) {
+        if (overwritingAttributes.contains(getContext().getLabel(objectPart))) {
             return false;
         }
         if (objectPart.isOverwrite()) {
-            overwritingAttributes.add(objectPart.getName());
+            overwritingAttributes.add(getContext().getLabel(objectPart));
         }
         return true;
     }

@@ -68,7 +68,7 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
         addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
                 new TextPageElement(IpsObjectType.PRODUCT_CMPT_TYPE.getDisplayName() + ": "), //$NON-NLS-1$
                 new PageElementUtils().createLinkPageElement(getContext(), productCmptType,
-                        "content", productCmptType.getName(), true) })); //$NON-NLS-1$
+                        "content", getContext().getLabel(productCmptType), true) })); //$NON-NLS-1$
     }
 
     @Override
@@ -94,11 +94,11 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
             return;
         }
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-        wrapper.addPageElements(new TextPageElement(
-                getContext().getMessage(HtmlExportMessages.ProductCmptContentPageElement_values), TextType.HEADING_2)); 
+        wrapper.addPageElements(new TextPageElement(getContext().getMessage(
+                HtmlExportMessages.ProductCmptContentPageElement_values), TextType.HEADING_2));
 
         wrapper.addPageElements(getTableOrAlternativeText(productGenerationAttributeTable,
-                getContext().getMessage(HtmlExportMessages.ProductCmptContentPageElement_noGenerationsOrAttributes))); 
+                getContext().getMessage(HtmlExportMessages.ProductCmptContentPageElement_noGenerationsOrAttributes)));
         addPageElements(wrapper);
     }
 
@@ -126,7 +126,8 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
             validFroms.add(getContext().getSimpleDateFormat().format(validFrom.getTime()));
         }
 
-        wrapper.addPageElements(new ListPageElement(Arrays.asList(new PageElementUtils().createTextPageElements(validFroms))));
+        wrapper.addPageElements(new ListPageElement(Arrays.asList(new PageElementUtils()
+                .createTextPageElements(validFroms))));
         addPageElements(wrapper);
     }
 }

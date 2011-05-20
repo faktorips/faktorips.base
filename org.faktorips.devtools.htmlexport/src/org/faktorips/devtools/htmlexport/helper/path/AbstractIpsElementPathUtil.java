@@ -65,11 +65,6 @@ public abstract class AbstractIpsElementPathUtil<T extends IIpsElement> implemen
     }
 
     @Override
-    public String getLinkText(boolean withImage) {
-        return ipsElement.getName();
-    }
-
-    @Override
     public T getIpsElement() {
         return ipsElement;
     }

@@ -62,7 +62,7 @@ public class AttributesTablePageElement extends AbstractIpsObjectPartsContainerT
     protected List<String> getAttributeData(IAttribute attribute) {
         List<String> attributeData = new ArrayList<String>();
 
-        attributeData.add(attribute.getName());
+        attributeData.add(getContext().getLabel(attribute));
         attributeData.add(getContext().getLabel(attribute));
         attributeData.add(attribute.getDatatype());
         attributeData.add(attribute.getModifier().toString());
