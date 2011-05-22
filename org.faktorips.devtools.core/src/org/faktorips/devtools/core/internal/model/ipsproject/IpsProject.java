@@ -1886,8 +1886,10 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     @Override
     public void delete() throws CoreException {
-        // TODO AW 19-05-2011: What shall the delete() method of IpsProject look like? (FIPS-534)
-
+        for (IIpsPackageFragmentRoot root : getIpsPackageFragmentRoots()) {
+            root.delete();
+        }
+        getCorrespondingResource().delete(true, null);
     }
 
     @Override

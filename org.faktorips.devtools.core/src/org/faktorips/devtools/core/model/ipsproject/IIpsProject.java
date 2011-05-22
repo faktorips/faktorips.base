@@ -897,4 +897,10 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      */
     public IVersionFormat getVersionFormat() throws CoreException;
 
+    /**
+     * Deletes all contained {@link IIpsPackageFragmentRoot}s and the corresponding project folder.
+     */
+    @Override
+    public void delete() throws CoreException;
+
 }

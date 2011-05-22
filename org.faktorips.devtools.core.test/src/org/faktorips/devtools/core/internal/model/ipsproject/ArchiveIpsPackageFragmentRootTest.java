@@ -177,4 +177,9 @@ public class ArchiveIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertEquals(1, result.size());
     }
 
+    @Test(expected = UnsupportedOperationException.class)
+    public void testDelete() throws CoreException {
+        root.delete();
+    }
+
 }
