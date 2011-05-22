@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
@@ -72,6 +73,7 @@ public class ModelExplorerConfiguration {
         allowedIpsElementTypes.add(IMethod.class);
         allowedIpsElementTypes.add(IColumn.class);
         allowedIpsElementTypes.add(ITableStructureUsage.class);
+        allowedIpsElementTypes.add(IValidationRule.class);
 
         allowedResourceTypes.add(IFolder.class);
         allowedResourceTypes.add(IFile.class);
