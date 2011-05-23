@@ -20,7 +20,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
-import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 
 public interface IPropertyValueContainer extends IIpsObjectPartContainer {
 
@@ -48,9 +47,9 @@ public interface IPropertyValueContainer extends IIpsObjectPartContainer {
 
     /**
      * Returns all property values for the given type. Returns an empty array if type is
-     * <code>null</code>.
+     * <code>null</code> or no property values were found for the given type.
      */
-    public abstract List<IPropertyValue> getPropertyValues(ProductCmptPropertyType type);
+    public abstract <T extends IPropertyValue> List<T> getPropertyValues(Class<T> type);
 
     /**
      * Creates a new property value for the given property.

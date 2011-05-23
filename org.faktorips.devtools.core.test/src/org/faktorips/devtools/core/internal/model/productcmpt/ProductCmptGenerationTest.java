@@ -216,22 +216,23 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         IConfigElement ce3 = generation.newConfigElement();
         IConfigElement ce4 = generation.newConfigElement();
 
-        List<IPropertyValue> values = generation.getPropertyValues(ProductCmptPropertyType.VALUE);
+        List<? extends IPropertyValue> values = generation.getPropertyValues(ProductCmptPropertyType.VALUE
+                .getValueClass());
         assertEquals(1, values.size());
         assertEquals(value1, values.get(0));
 
-        values = generation.getPropertyValues(ProductCmptPropertyType.FORMULA);
+        values = generation.getPropertyValues(ProductCmptPropertyType.FORMULA.getValueClass());
         assertEquals(2, values.size());
         assertEquals(formula1, values.get(0));
         assertEquals(formula2, values.get(1));
 
-        values = generation.getPropertyValues(ProductCmptPropertyType.TABLE_CONTENT_USAGE);
+        values = generation.getPropertyValues(ProductCmptPropertyType.TABLE_CONTENT_USAGE.getValueClass());
         assertEquals(3, values.size());
         assertEquals(tcu1, values.get(0));
         assertEquals(tcu2, values.get(1));
         assertEquals(tcu3, values.get(2));
 
-        values = generation.getPropertyValues(ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET);
+        values = generation.getPropertyValues(ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET.getValueClass());
         assertEquals(4, values.size());
         assertEquals(ce1, values.get(0));
         assertEquals(ce2, values.get(1));

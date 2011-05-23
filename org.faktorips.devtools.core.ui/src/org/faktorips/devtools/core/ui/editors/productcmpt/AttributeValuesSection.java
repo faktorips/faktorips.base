@@ -41,7 +41,6 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueComparator;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
@@ -155,7 +154,7 @@ public class AttributeValuesSection extends IpsSection {
         uiMasterController = new CompositeUIController();
 
         // create a label and edit control for each attribute value
-        List<IPropertyValue> attributeValues = getProductCmpt().getPropertyValues(ProductCmptPropertyType.VALUE);
+        List<IAttributeValue> attributeValues = getProductCmpt().getPropertyValues(IAttributeValue.class);
         IAttributeValue[] elements = getGeneration().getAttributeValues();
         attributeValues.addAll(Arrays.asList(elements));
 

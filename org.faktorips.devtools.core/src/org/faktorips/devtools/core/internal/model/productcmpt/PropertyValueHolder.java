@@ -57,27 +57,28 @@ public class PropertyValueHolder {
         if (property == null) {
             return null;
         }
-        return getPropertyValue(property.getProductCmptPropertyType(), property.getPropertyName());
+        return getPropertyValue(property.getProductCmptPropertyType().getValueClass(), property.getPropertyName());
     }
 
     /**
-     * Returns the {@link IPropertyValue} corresponding to the given property name and
-     * {@link ProductCmptPropertyType}.
+     * Returns the property value corresponding to the given property name and of the given type.
      * <p>
      * The property value is searched by the property name. If there are multiple property values
-     * with the same name, the first one is returned. Property values returned by this method may be
-     * safely casted to the {@link ProductCmptPropertyType}'s value class.
+     * with the same name, the first one is returned.
      * 
      * @param type the type of {@link IPropertyValue} that is requested
      * @param propertyName the name of the requested property value
      * @return the {@link IPropertyValue} for the indicated type and name. Returns <code>null</code>
-     *         if the given type is <code>null</code> or if no property could be found.
+     *         if no property could be found.
      */
-    public IPropertyValue getPropertyValue(ProductCmptPropertyType type, String propertyName) {
-        if (type == null) {
-            return null;
+    public <T extends IPropertyValue> T getPropertyValue(Class<T> type, String propertyName) {
+        List<T> list = classToInstancesMap.get(type);
+        for (T propertyValue : list) {
+            if (propertyValue.getName().equals(propertyName)) {
+                return propertyValue;
+            }
         }
-        return getPropertyValueFromList(classToInstancesMap.get(type.getValueClass()), propertyName);
+        return null;
     }
 
     /**
@@ -115,16 +116,6 @@ public class PropertyValueHolder {
             }
         }
         return null;
-    }
-
-    /**
-     * Returns all {@link IPropertyValue}s of the given type this value container contains.
-     * 
-     * @param type the property type of the requested property value
-     * @return a list of property values of the indicated type, or an empty list if none exist.
-     */
-    public List<IPropertyValue> getPropertyValues(ProductCmptPropertyType type) {
-        return new ArrayList<IPropertyValue>(classToInstancesMap.get(type.getValueClass()));
     }
 
     /**

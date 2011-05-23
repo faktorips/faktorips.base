@@ -63,7 +63,7 @@ public class PropertyValueHolderTest extends AbstractIpsPluginTest {
     }
 
     protected void assertAttributesSize(int size) {
-        assertEquals(size, valueContainer.getPropertyValues(ProductCmptPropertyType.VALUE).size());
+        assertEquals(size, valueContainer.getPropertyValues(ProductCmptPropertyType.VALUE.getValueClass()).size());
     }
 
     protected void assertSize(int size) {
@@ -103,16 +103,20 @@ public class PropertyValueHolderTest extends AbstractIpsPluginTest {
         part4.setAttribute("AV4");
         valueContainer.addPropertyValue(part4);
         assertEquals(4, valueContainer.getAllPropertyValues().size());
-        assertEquals(4, valueContainer.getPropertyValues(ProductCmptPropertyType.VALUE).size());
-        assertEquals(0, valueContainer.getPropertyValues(ProductCmptPropertyType.VALIDATION_RULE_CONFIG).size());
-        assertEquals(0, valueContainer.getPropertyValues(ProductCmptPropertyType.TABLE_CONTENT_USAGE).size());
+        assertEquals(4, valueContainer.getPropertyValues(ProductCmptPropertyType.VALUE.getValueClass()).size());
+        assertEquals(0, valueContainer
+                .getPropertyValues(ProductCmptPropertyType.VALIDATION_RULE_CONFIG.getValueClass()).size());
+        assertEquals(0, valueContainer.getPropertyValues(ProductCmptPropertyType.TABLE_CONTENT_USAGE.getValueClass())
+                .size());
 
         ValidationRuleConfig config = new ValidationRuleConfig(parent, "ID4", "Rule");
         valueContainer.addPropertyValue(config);
         assertEquals(5, valueContainer.getAllPropertyValues().size());
-        assertEquals(4, valueContainer.getPropertyValues(ProductCmptPropertyType.VALUE).size());
-        assertEquals(1, valueContainer.getPropertyValues(ProductCmptPropertyType.VALIDATION_RULE_CONFIG).size());
-        assertEquals(0, valueContainer.getPropertyValues(ProductCmptPropertyType.TABLE_CONTENT_USAGE).size());
+        assertEquals(4, valueContainer.getPropertyValues(ProductCmptPropertyType.VALUE.getValueClass()).size());
+        assertEquals(1, valueContainer
+                .getPropertyValues(ProductCmptPropertyType.VALIDATION_RULE_CONFIG.getValueClass()).size());
+        assertEquals(0, valueContainer.getPropertyValues(ProductCmptPropertyType.TABLE_CONTENT_USAGE.getValueClass())
+                .size());
     }
 
     @Test

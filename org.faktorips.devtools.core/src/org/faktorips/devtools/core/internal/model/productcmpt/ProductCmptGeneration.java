@@ -138,7 +138,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     @Override
-    public List<IPropertyValue> getPropertyValues(ProductCmptPropertyType type) {
+    public <T extends IPropertyValue> List<T> getPropertyValues(Class<T> type) {
         return valueHolder.getPropertyValues(type);
     }
 
@@ -162,7 +162,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public IAttributeValue getAttributeValue(String attribute) {
-        return (IAttributeValue)valueHolder.getPropertyValue(ProductCmptPropertyType.VALUE, attribute);
+        return valueHolder.getPropertyValue(IAttributeValue.class, attribute);
     }
 
     @Override
@@ -203,8 +203,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public IConfigElement getConfigElement(String attributeName) {
-        return (IConfigElement)valueHolder.getPropertyValue(ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET,
-                attributeName);
+        return valueHolder.getPropertyValue(IConfigElement.class, attributeName);
     }
 
     @Override
@@ -425,7 +424,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public IFormula getFormula(String formulaName) {
-        return (IFormula)valueHolder.getPropertyValue(ProductCmptPropertyType.FORMULA, formulaName);
+        return valueHolder.getPropertyValue(IFormula.class, formulaName);
     }
 
     @Override
@@ -573,7 +572,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public ITableContentUsage getTableContentUsage(String rolename) {
-        return (ITableContentUsage)valueHolder.getPropertyValue(ProductCmptPropertyType.TABLE_CONTENT_USAGE, rolename);
+        return valueHolder.getPropertyValue(ITableContentUsage.class, rolename);
     }
 
     @Override
@@ -583,8 +582,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public IValidationRuleConfig getValidationRuleConfig(String validationRuleName) {
-        return (IValidationRuleConfig)valueHolder.getPropertyValue(ProductCmptPropertyType.VALIDATION_RULE_CONFIG,
-                validationRuleName);
+        return valueHolder.getPropertyValue(IValidationRuleConfig.class, validationRuleName);
     }
 
     @Override

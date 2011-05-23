@@ -95,7 +95,7 @@ public class PropertyValueContainerToTypeDelta implements IPropertyValueContaine
 
     private void checkForInconsistentPropertyValues(LinkedHashMap<String, IProductCmptProperty> propertiesMap,
             ProductCmptPropertyType propertyType) throws CoreException {
-        List<IPropertyValue> values = propertyValueContainer.getPropertyValues(propertyType);
+        List<? extends IPropertyValue> values = propertyValueContainer.getPropertyValues(propertyType.getValueClass());
         for (IPropertyValue value : values) {
             IProductCmptProperty property = propertiesMap.get(value.getPropertyName());
             if (property == null) {

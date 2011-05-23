@@ -329,7 +329,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    public List<IPropertyValue> getPropertyValues(ProductCmptPropertyType type) {
+    public <T extends IPropertyValue> List<T> getPropertyValues(Class<T> type) {
         return valueHolder.getPropertyValues(type);
     }
 
@@ -362,7 +362,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public IAttributeValue getAttributeValue(String attribute) {
-        return (IAttributeValue)valueHolder.getPropertyValue(ProductCmptPropertyType.VALUE, attribute);
+        return valueHolder.getPropertyValue(IAttributeValue.class, attribute);
     }
 
     @Override
