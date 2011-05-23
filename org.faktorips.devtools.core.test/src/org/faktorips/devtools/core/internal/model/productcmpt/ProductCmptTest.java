@@ -42,12 +42,14 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptKind;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IType;
@@ -221,6 +223,27 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         IProductCmptGeneration genCopy = (IProductCmptGeneration)copy.getGenerationsOrderedByValidDate()[0];
         assertEquals(1, genCopy.getConfigElements().length);
         assertEquals("0.15", genCopy.getConfigElements()[0].getValue());
+    }
+
+    @Test
+    public void testInitFromXml_AttributeValues() {
+        productCmpt.initFromXml(getTestDocument().getDocumentElement());
+        IAttributeValue attributeValue = productCmpt.getAttributeValue("bezeichnung");
+        assertNotNull(attributeValue);
+        assertEquals("testtesttest", attributeValue.getValue());
+    }
+
+    @Test
+    public void testToXml_AttributeValues() {
+        attr2.setChangingOverTime(false);
+        IPropertyValue propertyValue = productCmpt.newPropertyValue(attr2);
+        Element xml = productCmpt.toXml(newDocument());
+
+        ProductCmpt copy = new ProductCmpt();
+        copy.initFromXml(xml);
+        IAttributeValue copyAttributeValue = copy.getAttributeValue(attr2.getName());
+        assertNotNull(copyAttributeValue);
+        assertEquals(propertyValue.getName(), copyAttributeValue.getName());
     }
 
     @Test
@@ -493,15 +516,15 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     public void testNewPartThis() {
         Element element = mock(Element.class);
         when(element.getNodeName()).thenReturn(IProductCmptGeneration.TAG_NAME);
-        IIpsObjectPart part = productCmpt.newPartThis(element, "genID");
+        IIpsObjectPart part = productCmpt.newPartInternal(element, "genID");
         assertNotNull(part);
 
         when(element.getNodeName()).thenReturn(AttributeValue.TAG_NAME);
-        part = productCmpt.newPartThis(element, "attrID");
+        part = productCmpt.newPartInternal(element, "attrID");
         assertNotNull(part);
 
         when(element.getNodeName()).thenReturn(ValidationRule.TAG_NAME);
-        part = productCmpt.newPartThis(element, "vRuleID");
+        part = productCmpt.newPartInternal(element, "vRuleID");
         assertNull(part);
     }
 

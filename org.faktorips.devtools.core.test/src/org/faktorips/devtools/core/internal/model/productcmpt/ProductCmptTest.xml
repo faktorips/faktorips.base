@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--
- Test data for ProductCmptImplTest.java
--->
+<!-- Test data for ProductCmptTest.java -->
 <ProductCmpt productCmptType="MotorProduct" runtimeId="MotorProductId">
 	<Generation validFrom="2004-01-01">
-		<ConfigElement type="productAttribute" pcTypeAttribute="rate" value="1.5">
-		    <Value><![CDATA[1.5]]></Value>
+		<ConfigElement type="productAttribute" pcTypeAttribute="rate"
+			value="1.5">
+			<Value><![CDATA[1.5]]></Value>
 		</ConfigElement>
-	</Generation>	
-	<Generation validFrom="2005-01-01"/>
+	</Generation>
+	<Generation validFrom="2005-01-01" />
+	<AttributeValue id="abc123" attribute="bezeichnung">
+		<Value>testtesttest</Value>
+	</AttributeValue>
 </ProductCmpt>

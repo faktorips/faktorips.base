@@ -16,8 +16,6 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.Assert;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
@@ -33,19 +31,14 @@ import org.faktorips.util.ClassToInstancesMap;
  * @since 3.4
  */
 public class PropertyValueHolder {
-    private ClassToInstancesMap<IPropertyValue> classToInstancesMap;
 
-    private final IPropertyValueContainer container;
+    private final ClassToInstancesMap<IPropertyValue> classToInstancesMap;
 
     /**
      * Creates a new {@link PropertyValueHolder}.
      * 
-     * @param container the container this map holds {@link IPropertyValue}s for. Must not be
-     *            <code>null</code>.
      */
-    public PropertyValueHolder(IPropertyValueContainer container) {
-        Assert.isNotNull(container);
-        this.container = container;
+    public PropertyValueHolder() {
         classToInstancesMap = new ClassToInstancesMap<IPropertyValue>();
     }
 
@@ -64,8 +57,7 @@ public class PropertyValueHolder {
         if (property == null) {
             return null;
         }
-        return getPropertyValueFromList(getPropertyValues(property.getProductCmptPropertyType()),
-                property.getPropertyName());
+        return getPropertyValue(property.getProductCmptPropertyType(), property.getPropertyName());
     }
 
     /**
@@ -85,7 +77,7 @@ public class PropertyValueHolder {
         if (type == null) {
             return null;
         }
-        return getPropertyValueFromList(getPropertyValues(type), propertyName);
+        return getPropertyValueFromList(classToInstancesMap.get(type.getValueClass()), propertyName);
     }
 
     /**
@@ -113,7 +105,7 @@ public class PropertyValueHolder {
      * @param propertyName the name of the property
      * @return the first element with the given name in the list.
      */
-    private IPropertyValue getPropertyValueFromList(List<IPropertyValue> valueList, String propertyName) {
+    private static IPropertyValue getPropertyValueFromList(List<? extends IPropertyValue> valueList, String propertyName) {
         if (propertyName == null || valueList == null) {
             return null;
         }
@@ -138,10 +130,10 @@ public class PropertyValueHolder {
     /**
      * Returns all {@link IPropertyValue}s of the given type this value container contains.
      * 
-     * @param type the property type of the requested property value
+     * @param clazz the class type of the properties you want to get
      * @return a list of property values of the indicated type, or an empty list if none exist.
      */
-    public <T extends IPropertyValue> List<T> getPropertyValues(ProductCmptPropertyType type, Class<T> clazz) {
+    public <T extends IPropertyValue> List<T> getPropertyValues(Class<T> clazz) {
         return new ArrayList<T>(classToInstancesMap.get(clazz));
     }
 
@@ -151,7 +143,9 @@ public class PropertyValueHolder {
      * @return the newly created {@link IPropertyValue} or <code>null</code> if the given property
      *         is <code>null</code>.
      */
-    public IPropertyValue newPropertyValue(IProductCmptProperty property, String partId) {
+    public IPropertyValue newPropertyValue(IPropertyValueContainer container,
+            IProductCmptProperty property,
+            String partId) {
         if (property == null) {
             return null;
         }
@@ -162,19 +156,35 @@ public class PropertyValueHolder {
     }
 
     /**
+     * Creates a new part for the given XML tag adds it to this holder and returns it.
+     * 
+     * @param xmlTagName the XML tag a {@link IPropertyValue} should be created for
+     * @param partId the new part's id
+     * @return the newly created part or <code>null</code> if the given XML tag corresponds to no
+     *         {@link IPropertyValue} or {@link ProductCmptPropertyType} respectively.
+     */
+    public IPropertyValue newPropertyValue(IPropertyValueContainer container, String xmlTagName, String partId) {
+        ProductCmptPropertyType propertyType = ProductCmptPropertyType.getTypeForXmlTag(xmlTagName);
+        if (propertyType != null) {
+            IPropertyValue newPropertyValue = newPropertyValue(container, propertyType, partId);
+            return newPropertyValue;
+        }
+        return null;
+    }
+
+    /**
      * Caution: This Method creates an {@link IPropertyValue} without initializing it properly and
      * thereby setting the property name to "". Use
-     * {@link #newPropertyValue(IProductCmptProperty, String)} in all cases an
-     * {@link IProductCmptProperty} is available.
+     * {@link #newPropertyValue(IPropertyValueContainer, IProductCmptProperty, String)} in all cases
+     * an {@link IProductCmptProperty} is available.
      * 
      * @param type the {@link ProductCmptPropertyType} of the created {@link IPropertyValue}
      * @param partId the new part's id
      * @return the newly created {@link IPropertyValue}
      */
-    private IPropertyValue newPropertyValue(ProductCmptPropertyType type, String partId) {
-        if (container == null) {
-            return null;
-        }
+    public IPropertyValue newPropertyValue(IPropertyValueContainer container,
+            ProductCmptPropertyType type,
+            String partId) {
         IPropertyValue value = type.createPropertyValue(container, null, partId);
         addPropertyValue(value);
         return value;
@@ -186,9 +196,9 @@ public class PropertyValueHolder {
      * 
      * @param value the value to be added
      */
-    public void addPropertyValue(IPropertyValue value) {
+    public boolean addPropertyValue(IPropertyValue value) {
         classToInstancesMap.putWithRuntimeCheck(value.getPropertyType().getValueClass(), value);
-        objectHasChanged();
+        return true;
     }
 
     /**
@@ -200,9 +210,6 @@ public class PropertyValueHolder {
      */
     public boolean removePropertyValue(IPropertyValue value) {
         boolean removed = classToInstancesMap.remove(value.getPropertyType().getValueClass(), value);
-        if (removed) {
-            objectHasChanged();
-        }
         return removed;
     }
 
@@ -215,9 +222,7 @@ public class PropertyValueHolder {
      * @return all property values this container manages.
      */
     public List<IPropertyValue> getAllPropertyValues() {
-        List<IPropertyValue> allValues = new ArrayList<IPropertyValue>();
-        allValues.addAll(classToInstancesMap.values());
-        return allValues;
+        return classToInstancesMap.values();
     }
 
     /**
@@ -227,74 +232,31 @@ public class PropertyValueHolder {
         classToInstancesMap.clear();
     }
 
-    /**
-     * Creates a new part for the given XML tag adds it to this holder and returns it.
-     * 
-     * @param xmlTagName the XML tag a {@link IPropertyValue} should be created for
-     * @param partId the new part's id
-     * @return the newly created part or <code>null</code> if the given XML tag corresponds to no
-     *         {@link IPropertyValue} or {@link ProductCmptPropertyType} respectively.
-     */
-    public IIpsObjectPart newPartThis(String xmlTagName, String partId) {
-        ProductCmptPropertyType propertyType = ProductCmptPropertyType.getTypeForXmlTag(xmlTagName);
-        if (propertyType != null) {
-            return newPropertyValue(propertyType, partId);
-        }
-        return null;
-    }
-
-    /**
-     * Creates a new {@link IIpsObjectPart} of the given class. The parts id is set to partId its
-     * property name is set to "". This method can only create instances of subclasses/implementors
-     * of {@link IPropertyValue}. If the given partClass is not an {@link IPropertyValue},
-     * <code>null</code> is returned.
-     * 
-     * @param partClass the class a part is created for
-     * @param partId the new part's id
-     * @return a new part of the given class
-     */
-    public IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partClass, String partId) {
-        ProductCmptPropertyType propertyType = ProductCmptPropertyType.getTypeForValueClass(partClass);
-        if (propertyType != null) {
-            return newPropertyValue(propertyType, partId);
-        }
-        return null;
-    }
-
-    /**
-     * Adds the given part to this holder. If both the following are valid:
-     * <ul>
-     * <li>the part is an {@link IPropertyValue}</li>
-     * <li>this holder's {@link IPropertyValueContainer} is the part's parent</li>
-     * </ul>
-     * 
-     * @param part the part to add
-     * @return <code>true</code> if the part was added to this holder, <code>false</code> otherwise.
-     */
-    public boolean addPartThis(IIpsObjectPart part) {
-        if (part instanceof IPropertyValue && container.equals(part.getParent())) {
-            addPropertyValue((IPropertyValue)part);
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Removes the given part from this holder.
-     * 
-     * @param part the part to remove
-     * @return <code>true</code> if the part was removed from this holder, <code>false</code>
-     *         otherwise.
-     */
-    public boolean removePartThis(IIpsObjectPart part) {
-        if (part instanceof IPropertyValue) {
-            return removePropertyValue((IPropertyValue)part);
-        }
-        return false;
-    }
-
-    private void objectHasChanged() {
-        container.objectHasChanged();
-    }
+    // /**
+    // * Adds the given part to this holder. If both the following are valid:
+    // * <ul>
+    // * <li>the part is an {@link IPropertyValue}</li>
+    // * <li>this holder's {@link IPropertyValueContainer} is the part's parent</li>
+    // * </ul>
+    // *
+    // * @param part the part to add
+    // * @return <code>true</code> if the part was added to this holder, <code>false</code>
+    // otherwise.
+    // */
+    // public boolean addPart(IPropertyValue part) {
+    // addPropertyValue(part);
+    // return true;
+    // }
+    //
+    // /**
+    // * Removes the given part from this holder.
+    // *
+    // * @param part the part to remove
+    // * @return <code>true</code> if the part was removed from this holder, <code>false</code>
+    // * otherwise.
+    // */
+    // public boolean removePart(IPropertyValue part) {
+    // return removePropertyValue(part);
+    // }
 
 }

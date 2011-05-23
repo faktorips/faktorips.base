@@ -49,7 +49,7 @@ public class PropertyValueHolderTest extends AbstractIpsPluginTest {
         IIpsObject ipsObject = mock(IIpsObject.class);
         parent = mock(ProductCmpt.class);
         when(parent.getIpsObject()).thenReturn(ipsObject);
-        valueContainer = new PropertyValueHolder(parent);
+        valueContainer = new PropertyValueHolder();
 
         AttributeValue part1 = new AttributeValue(parent, "ID1");
         part1.setAttribute("AV1");
@@ -74,25 +74,25 @@ public class PropertyValueHolderTest extends AbstractIpsPluginTest {
     public void testAddPart() {
         assertAttributesSize(3);
 
-        valueContainer.addPartThis(new AttributeValue(parent, "ID4"));
+        valueContainer.addPropertyValue(new AttributeValue(parent, "ID4"));
         assertAttributesSize(4);
 
-        valueContainer.addPartThis(new AttributeValue(parent, "ID4"));
+        valueContainer.addPropertyValue(new AttributeValue(parent, "ID4"));
         assertAttributesSize(5);
     }
 
     @Test
     public void testRemovePart() {
-        valueContainer.addPartThis(new AttributeValue(parent, "ID1"));
+        valueContainer.addPropertyValue(new AttributeValue(parent, "ID1"));
         assertAttributesSize(4);
 
-        valueContainer.removePartThis(new AttributeValue(parent, "ID1"));
+        valueContainer.removePropertyValue(new AttributeValue(parent, "ID1"));
         assertAttributesSize(3);
 
-        valueContainer.removePartThis(new AttributeValue(parent, "ID1"));
+        valueContainer.removePropertyValue(new AttributeValue(parent, "ID1"));
         assertAttributesSize(2);
 
-        valueContainer.removePartThis(new AttributeValue(parent, "ID1"));
+        valueContainer.removePropertyValue(new AttributeValue(parent, "ID1"));
         assertAttributesSize(2);
     }
 
@@ -139,7 +139,7 @@ public class PropertyValueHolderTest extends AbstractIpsPluginTest {
         when(attribute.getPropertyName()).thenReturn("AV5");
         when(attribute.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.VALUE);
 
-        IAttributeValue value = (IAttributeValue)valueContainer.newPropertyValue(attribute, "ID5");
+        IAttributeValue value = (IAttributeValue)valueContainer.newPropertyValue(parent, attribute, "ID5");
         assertNotNull(value);
         value.setAttribute("AV5");
         assertAttributesSize(4);
@@ -155,7 +155,7 @@ public class PropertyValueHolderTest extends AbstractIpsPluginTest {
         when(property.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.FORMULA);
 
         assertSize(3);
-        IFormula formula = (IFormula)valueContainer.newPropertyValue(property, "MethodID1");
+        IFormula formula = (IFormula)valueContainer.newPropertyValue(parent, property, "MethodID1");
         assertNotNull(formula);
         formula.setFormulaSignature("Method1");
         assertSize(4);
@@ -166,25 +166,23 @@ public class PropertyValueHolderTest extends AbstractIpsPluginTest {
 
     @Test
     public void testNewPartThis() {
-        IFormula formula = (IFormula)valueContainer.newPartThis(IFormula.class, "MethodID1");
+        IFormula formula = (IFormula)valueContainer.newPropertyValue(parent, ProductCmptPropertyType.FORMULA,
+                "MethodID1");
         assertNotNull(formula);
         assertSize(4);
-
-        IProductCmptLink link = (IProductCmptLink)valueContainer.newPartThis(IProductCmptLink.class, "LinkID1");
-        // Link must be null as valueContainer cannot create parts that are not IPropertyValues
-        assertNull(link);
     }
 
     @Test
     public void testNewPartThisXML() {
-        IFormula formula = (IFormula)valueContainer.newPartThis(Formula.TAG_NAME, "MethodID1");
+        IFormula formula = (IFormula)valueContainer.newPropertyValue(parent, Formula.TAG_NAME, "MethodID1");
         assertNotNull(formula);
 
-        IProductCmptLink link = (IProductCmptLink)valueContainer.newPartThis(ProductCmptLink.TAG_NAME, "LinkID1");
+        IProductCmptLink link = (IProductCmptLink)valueContainer.newPropertyValue(parent, ProductCmptLink.TAG_NAME,
+                "LinkID1");
         // Link must be null as valueContainer cannot create parts that are not IPropertyValues
         assertNull(link);
 
-        IIpsObjectPart part = valueContainer.newPartThis("TestIllegalXMLTag", "valueID1");
+        IIpsObjectPart part = valueContainer.newPropertyValue(parent, "TestIllegalXMLTag", "valueID1");
         assertNull(part);
     }
 
@@ -192,21 +190,15 @@ public class PropertyValueHolderTest extends AbstractIpsPluginTest {
     public void testAddPartThis() {
         AttributeValue attr = new AttributeValue(parent, "ID1");
         attr.setAttribute("AV1");
-        assertTrue(valueContainer.addPartThis(attr));
-
-        IProductCmptLink link = new ProductCmptLink();
-        assertFalse(valueContainer.addPartThis(link));
+        assertTrue(valueContainer.addPropertyValue(attr));
     }
 
     @Test
     public void testRemovePartThis() {
         AttributeValue attr = new AttributeValue(parent, "ID1");
         attr.setAttribute("AV1");
-        assertTrue(valueContainer.removePartThis(attr));
-        assertFalse(valueContainer.removePartThis(attr));
-
-        IProductCmptLink link = new ProductCmptLink();
-        assertFalse(valueContainer.addPartThis(link));
+        assertTrue(valueContainer.removePropertyValue(attr));
+        assertFalse(valueContainer.removePropertyValue(attr));
     }
 
 }
