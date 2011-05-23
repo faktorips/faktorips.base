@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -174,8 +175,12 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
 
     @Override
     protected final IIpsElement[] getChildrenThis() {
-        return getGenerationsOrderedByValidDate();
+        List<IIpsElement> result = new ArrayList<IIpsElement>(Arrays.asList(getGenerationsOrderedByValidDate()));
+        result.addAll(getChildrenInternal());
+        return result.toArray(new IIpsElement[result.size()]);
     }
+
+    protected abstract Collection<? extends IIpsElement> getChildrenInternal();
 
     @Override
     protected final boolean addPartThis(IIpsObjectPart part) {
@@ -183,8 +188,10 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
             generations.add((IIpsObjectGeneration)part);
             return true;
         }
-        return false;
+        return addPartInternal(part);
     }
+
+    protected abstract boolean addPartInternal(IIpsObjectPart part);
 
     @Override
     protected final boolean removePartThis(IIpsObjectPart part) {
@@ -192,27 +199,43 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
             generations.remove(part);
             return true;
         }
-        return false;
+        return removePartInternal(part);
     }
 
+    protected abstract boolean removePartInternal(IIpsObjectPart part);
+
     @Override
-    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
+    protected final IIpsObjectPart newPartThis(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
         if (xmlTagName.equals(IIpsObjectGeneration.TAG_NAME)) {
             return newGenerationInternal(id);
         }
-        return null;
+        return newPartInternal(xmlTag, id);
     }
+
+    protected abstract IIpsObjectPart newPartInternal(Element xmlTag, String id);
 
     @Override
     protected final IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
-        return null;
+        IIpsObjectPart part;
+        if (IIpsObjectGeneration.class.isAssignableFrom(partType)) {
+            part = newGenerationInternal(getNextPartId());
+        } else {
+            part = newPartInternal(partType);
+        }
+        objectHasChanged();
+        return part;
     }
+
+    protected abstract IIpsObjectPart newPartInternal(Class<? extends IIpsObjectPart> partType);
 
     @Override
     protected final void reinitPartCollectionsThis() {
         generations.clear();
+        reinitPartCollectionsInternal();
     }
+
+    protected abstract void reinitPartCollectionsInternal();
 
     /**
      * Creates a new generation instance. Subclass have to override to and return an instance of the

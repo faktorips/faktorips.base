@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +30,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -70,12 +72,12 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     public ProductCmpt(IIpsSrcFile file) {
         super(file);
-        valueHolder = new PropertyValueHolder(this);
+        valueHolder = new PropertyValueHolder();
     }
 
     public ProductCmpt() {
         super();
-        valueHolder = new PropertyValueHolder(this);
+        valueHolder = new PropertyValueHolder();
     }
 
     @Override
@@ -332,13 +334,14 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
+    protected IIpsObjectPart newPartInternal(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
         if (xmlTagName.equals(IIpsObjectGeneration.TAG_NAME)) {
             return newGenerationInternal(id);
         }
         if (xmlTagName.equals(AttributeValue.TAG_NAME)) {
-            return valueHolder.newPartThis(AttributeValue.TAG_NAME, id);
+            IIpsObjectPart newPartThis = valueHolder.newPropertyValue(this, AttributeValue.TAG_NAME, id);
+            return newPartThis;
         }
         return null;
     }
@@ -346,14 +349,15 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     public IPropertyValue newPropertyValue(IProductCmptProperty property) {
         if (property.getProductCmptPropertyType() == ProductCmptPropertyType.VALUE) {
-            return valueHolder.newPropertyValue(property, getNextPartId());
+            IPropertyValue newPropertyValue = valueHolder.newPropertyValue(this, property, getNextPartId());
+            return newPropertyValue;
         }
         return null;
     }
 
     @Override
     public List<IAttributeValue> getAttributeValues() {
-        return valueHolder.getPropertyValues(ProductCmptPropertyType.VALUE, IAttributeValue.class);
+        return valueHolder.getPropertyValues(IAttributeValue.class);
     }
 
     @Override
@@ -371,9 +375,41 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         return new PropertyValueContainerToTypeDelta(this, ipsProject);
     }
 
-    /** Notifies the model that this <tt>IpsObject</tt> has changed. */
     @Override
-    public void objectHasChanged() {
-        super.objectHasChanged();
+    protected Collection<? extends IIpsElement> getChildrenInternal() {
+        return valueHolder.getAllPropertyValues();
     }
+
+    @Override
+    protected boolean addPartInternal(IIpsObjectPart part) {
+        if (part instanceof IPropertyValue) {
+            IPropertyValue propertyValue = (IPropertyValue)part;
+            return valueHolder.addPropertyValue(propertyValue);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    protected boolean removePartInternal(IIpsObjectPart part) {
+        if (part instanceof IPropertyValue) {
+            IPropertyValue propertyValue = (IPropertyValue)part;
+            return valueHolder.removePropertyValue(propertyValue);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    protected IIpsObjectPart newPartInternal(Class<? extends IIpsObjectPart> partType) {
+        ProductCmptPropertyType typeForValueClass = ProductCmptPropertyType.getTypeForValueClass(partType);
+        IPropertyValue newPart = valueHolder.newPropertyValue(this, typeForValueClass, getNextPartId());
+        return newPart;
+    }
+
+    @Override
+    protected void reinitPartCollectionsInternal() {
+        valueHolder.clear();
+    }
+
 }
