@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.devtools.core.ui.controller.fields.TextField;
 
 /**
  * A composite that allows to edit the {@link IDescription}s attached to an
@@ -103,7 +104,9 @@ public final class DescriptionEditComposite extends Composite {
     }
 
     private Text createTextArea() {
-        return uiToolkit.createMultilineText(this);
+        Text text = uiToolkit.createMultilineText(this);
+        textEditField = new TextField(text);
+        return text;
     }
 
     public void refresh() {
@@ -197,7 +200,7 @@ public final class DescriptionEditComposite extends Composite {
         IDescription descriptionBeforeUpdate = currentDescription;
         updateCurrentDescription();
         if (currentDescription != null) {
-            textEditField = bindingContext.bindContent(textArea, currentDescription, IDescription.PROPERTY_TEXT);
+            bindingContext.bindContent(textEditField, currentDescription, IDescription.PROPERTY_TEXT);
         }
         if (descriptionBeforeUpdate == null || currentDescription == null
                 || !(currentDescription.equals(descriptionBeforeUpdate))) {
