@@ -14,7 +14,6 @@
 package org.faktorips.util;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -171,7 +170,7 @@ public class ClassToInstancesMap<T> {
      * 
      * @return All values stored in this map in one collection.
      */
-    public Collection<T> values() {
+    public List<T> values() {
         ArrayList<T> result = new ArrayList<T>();
         for (List<? extends T> list : internalMap.values()) {
             result.addAll(list);
