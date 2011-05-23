@@ -197,7 +197,6 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProperty
      * container has no value for the given attribute. Returns <code>null</code> if attribute is
      * <code>null</code>.
      */
-    @Override
     public IAttributeValue getAttributeValue(String attribute);
 
 }

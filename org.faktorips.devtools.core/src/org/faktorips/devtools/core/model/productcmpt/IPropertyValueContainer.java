@@ -93,11 +93,4 @@ public interface IPropertyValueContainer extends IIpsObjectPartContainer {
      */
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
 
-    public void objectHasChanged();
-
-    /**
-     * TODO SW 21.05.2011 Needed for AOK systems OMC faktor ips. We need to discuss this
-     */
-    public IAttributeValue getAttributeValue(String attrName);
-
 }

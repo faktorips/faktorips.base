@@ -232,31 +232,4 @@ public class PropertyValueHolder {
         classToInstancesMap.clear();
     }
 
-    // /**
-    // * Adds the given part to this holder. If both the following are valid:
-    // * <ul>
-    // * <li>the part is an {@link IPropertyValue}</li>
-    // * <li>this holder's {@link IPropertyValueContainer} is the part's parent</li>
-    // * </ul>
-    // *
-    // * @param part the part to add
-    // * @return <code>true</code> if the part was added to this holder, <code>false</code>
-    // otherwise.
-    // */
-    // public boolean addPart(IPropertyValue part) {
-    // addPropertyValue(part);
-    // return true;
-    // }
-    //
-    // /**
-    // * Removes the given part from this holder.
-    // *
-    // * @param part the part to remove
-    // * @return <code>true</code> if the part was removed from this holder, <code>false</code>
-    // * otherwise.
-    // */
-    // public boolean removePart(IPropertyValue part) {
-    // return removePropertyValue(part);
-    // }
-
 }

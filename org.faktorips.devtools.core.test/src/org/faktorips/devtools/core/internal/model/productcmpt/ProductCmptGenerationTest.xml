@@ -4,7 +4,9 @@
  Test data for ProductCmptGenerationImplTest.java
 -->
 <Generation validFrom="2005-01-01">
-    <AttributeValue id="10" attribute="rate" value="0.5"/>
+    <AttributeValue id="10" attribute="rate">
+        <Value>42</Value>
+    </AttributeValue>
     <ConfigElement id="1" attribute="sumInsured">
         <Value isNull="false">value</Value>
         <ValueSet id="1"><Description />
