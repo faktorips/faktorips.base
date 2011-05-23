@@ -600,7 +600,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * Subclass implementation that must create and return the right part based on the XML element.
      * <p>
      * <strong>Note:</strong> It is <strong>NOT</strong> necessary to fully initialize the part,
-     * this is done later by the caller calling initFromXml().
+     * this is done later by the caller calling initFromXml(). Also it is NOT <strong>NOT</strong>
+     * necessary to notify any change listener about the newly added part!
      * <p>
      * Should return <tt>null</tt> if the XML tag is unknown.
      * 
