@@ -563,7 +563,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
         return name.replaceAll(" ", "_").replaceAll("\\(", "_").replaceAll("\\)", "_");
     }
 
-    private IIpsSrcFile getVirtualIpsSrcFile(IProductCmpt productCmpt) throws CoreException {
+    private IIpsSrcFile getVirtualIpsSrcFile(IProductCmpt productCmpt) {
         String name = productCmpt.getIpsProject().getProductCmptNamingStrategy()
                 .getJavaClassIdentifier(productCmpt.getName());
         return productCmpt.getIpsPackageFragment().getIpsSrcFile(

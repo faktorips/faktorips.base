@@ -13,7 +13,6 @@
 
 package org.faktorips.valueset;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -26,7 +25,7 @@ import java.util.Set;
  * 
  * @author Daniel Hohenberger
  */
-public class OrderedValueSet<E> implements Serializable, ValueSet<E> {
+public class OrderedValueSet<E> implements ValueSet<E> {
 
     private static final long serialVersionUID = 1735375680693336950L;
 

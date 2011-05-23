@@ -109,7 +109,7 @@ public class PcTypePage extends TypePage {
         if (e.field == configurableField) {
             IDialogSettings settings = getSettings();
             settings.put(IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE,
-                    ((Boolean)configurableField.getValue()).booleanValue());
+                    (configurableField.getValue()).booleanValue());
         }
     }
 
@@ -118,7 +118,7 @@ public class PcTypePage extends TypePage {
      */
     @Override
     protected void supertypeChanged(TextButtonField supertypeField) throws CoreException {
-        String qualifiedName = (String)supertypeField.getValue();
+        String qualifiedName = supertypeField.getValue();
         IPolicyCmptType superPcType = getIpsProject().findPolicyCmptType(qualifiedName);
         if (superPcType != null) {
             if (superPcType.isConfigurableByProductCmptType()) {

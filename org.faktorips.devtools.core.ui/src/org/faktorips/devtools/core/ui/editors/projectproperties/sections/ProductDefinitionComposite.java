@@ -215,9 +215,9 @@ public class ProductDefinitionComposite extends IpsSection {
     private void handleDefaultOutputFolderChanged(boolean mergable) {
         String folderName;
         if (mergable) {
-            folderName = (String)mergableSrcFolderField.getValue();
+            folderName = mergableSrcFolderField.getValue();
         } else {
-            folderName = (String)derivedSrcFolderField.getValue();
+            folderName = derivedSrcFolderField.getValue();
         }
         if (folderName == null || "".equals(folderName)) { //$NON-NLS-1$
             return;

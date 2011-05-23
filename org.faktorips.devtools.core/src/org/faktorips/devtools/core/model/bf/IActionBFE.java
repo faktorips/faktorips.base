@@ -30,7 +30,7 @@ import org.eclipse.core.runtime.CoreException;
  * 
  * @author Peter Erzberger
  */
-public interface IActionBFE extends IBFElement, IMethodCallBFE {
+public interface IActionBFE extends IMethodCallBFE {
 
     public final static String XML_TAG = "Action"; //$NON-NLS-1$
 

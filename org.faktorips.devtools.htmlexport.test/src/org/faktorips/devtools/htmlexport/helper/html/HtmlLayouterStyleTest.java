@@ -13,8 +13,6 @@
 
 package org.faktorips.devtools.htmlexport.helper.html;
 
-import java.io.UnsupportedEncodingException;
-
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
@@ -23,7 +21,7 @@ import org.junit.Test;
 public class HtmlLayouterStyleTest extends AbstractTestHtmlLayouter {
 
     @Test
-    public void testStyleBold() throws UnsupportedEncodingException {
+    public void testStyleBold() {
         String text = "text beispiel"; //$NON-NLS-1$
         TextPageElement pageElement = new TextPageElement(text);
         pageElement.addStyles(Style.BOLD);
@@ -32,7 +30,7 @@ public class HtmlLayouterStyleTest extends AbstractTestHtmlLayouter {
     }
 
     @Test
-    public void testStyleItalic() throws UnsupportedEncodingException {
+    public void testStyleItalic() {
         String text = "text beispiel"; //$NON-NLS-1$
         TextPageElement pageElement = new TextPageElement(text);
         pageElement.addStyles(Style.ITALIC);
@@ -41,7 +39,7 @@ public class HtmlLayouterStyleTest extends AbstractTestHtmlLayouter {
     }
 
     @Test
-    public void testStyleBoldAndItalic() throws UnsupportedEncodingException {
+    public void testStyleBoldAndItalic() {
         String text = "text beispiel"; //$NON-NLS-1$
         TextPageElement pageElement = new TextPageElement(text);
         pageElement.addStyles(Style.ITALIC);
@@ -51,7 +49,7 @@ public class HtmlLayouterStyleTest extends AbstractTestHtmlLayouter {
     }
 
     @Test
-    public void testStyleCenter() throws UnsupportedEncodingException {
+    public void testStyleCenter() {
         String text = "text beispiel"; //$NON-NLS-1$
         TextPageElement pageElement = new TextPageElement(text, TextType.BLOCK);
         pageElement.addStyles(Style.CENTER);

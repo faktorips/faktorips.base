@@ -46,7 +46,7 @@ public class GenTableStructureUsage extends GenTypePart {
 
     private ITableStructureUsage tableStructureUsage;
 
-    public GenTableStructureUsage(GenProductCmptType genProductCmptType, ITableStructureUsage tsu) throws CoreException {
+    public GenTableStructureUsage(GenProductCmptType genProductCmptType, ITableStructureUsage tsu) {
         super(genProductCmptType, tsu, LOCALIZED_STRINGS);
         tableStructureUsage = tsu;
     }
@@ -152,7 +152,7 @@ public class GenTableStructureUsage extends GenTypePart {
      * }
      * </pre>
      */
-    private void generateMethodSetTableName(JavaCodeFragmentBuilder methodsBuilder) throws CoreException {
+    private void generateMethodSetTableName(JavaCodeFragmentBuilder methodsBuilder) {
         appendLocalizedJavaDoc("METHOD_SET_TABLE_NAME", StringUtils.capitalize(getMemberVarName()), methodsBuilder);
         String methodName = getMethodNameSetUsedTableName();
         String[] paramNames = new String[] { "tableName" };

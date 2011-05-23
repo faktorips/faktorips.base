@@ -242,7 +242,6 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             List<String> keyClassParameterNames = new ArrayList<String>();
             boolean isColumn = false;
             for (String keyItem : keyItems) {
-
                 allParameterTypes.add(getJavaClassName(keyItem));
 
                 if (getTableStructure().hasColumn(keyItem)) {
@@ -254,9 +253,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 }
 
                 IColumnRange range = getTableStructure().getRange(keyItem);
-
                 parameters.add(range.getParameterName());
-                if (!isColumn && range != null && range.getColumnRangeType().isTwoColumn()) {
+                if (!isColumn && range.getColumnRangeType().isTwoColumn()) {
                     fKeyClassNames[i] = TwoColumnKey.class.getName();
                 }
                 fRanges.put(range.getParameterName(), range);
@@ -359,7 +357,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         code.appendln("}");
     }
 
-    private void createAllRowsMethod(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
+    private void createAllRowsMethod(JavaCodeFragmentBuilder codeBuilder) {
         JavaCodeFragment methodBody = new JavaCodeFragment();
         if (isUseTypesafeCollections()) {
             methodBody.append("return ");
@@ -578,7 +576,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         codeBuilder.methodEnd();
     }
 
-    private JavaCodeFragment createInitKeyMapsMethodBody(IUniqueKey[] keys) throws CoreException {
+    private JavaCodeFragment createInitKeyMapsMethodBody(IUniqueKey[] keys) {
         JavaCodeFragment methodBody = new JavaCodeFragment();
         for (int i = 0; i < keys.length; i++) {
             String keyClassName = fKeyClassNames[i];
@@ -819,9 +817,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         }
     }
 
-    private void createHashKeyClass(String hashKeyClassName, String[] keyNames, String[] keyItemTypes)
-            throws CoreException {
-
+    private void createHashKeyClass(String hashKeyClassName, String[] keyNames, String[] keyItemTypes) {
         TypeSection innerClassBody = createInnerClassSection();
         innerClassBody.getJavaDocForTypeBuilder().javaDoc(getLocalizedText(getIpsObject(), KEY_CLASS_JAVADOC),
                 ANNOTATION_GENERATED);
@@ -850,11 +846,10 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 constructorBody, getLocalizedText(getIpsObject(), KEY_CLASS_CONSTRUCTOR_JAVADOC), ANNOTATION_GENERATED);
         createKeyClassCalHashCodeMethod(keyNames, innerClassBody.getMethodBuilder());
         createKeyClassEqualsMethod(hashKeyClassName, keyNames, innerClassBody.getMethodBuilder());
-        createKeyClassHashCodeMethod(keyNames, innerClassBody.getMethodBuilder());
+        createKeyClassHashCodeMethod(innerClassBody.getMethodBuilder());
     }
 
-    private void createKeyClassCalHashCodeMethod(String[] keyNames, JavaCodeFragmentBuilder codeBuilder)
-            throws CoreException {
+    private void createKeyClassCalHashCodeMethod(String[] keyNames, JavaCodeFragmentBuilder codeBuilder) {
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.appendln("int result = 17;");
         for (String keyName : keyNames) {
@@ -872,7 +867,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
     private void createKeyClassEqualsMethod(String keyClass,
             String[] combinedKeyNames,
-            JavaCodeFragmentBuilder codeBuilder) throws CoreException {
+            JavaCodeFragmentBuilder codeBuilder) {
 
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.append("if (o instanceof ");
@@ -905,9 +900,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         codeBuilder.methodEnd();
     }
 
-    private void createKeyClassHashCodeMethod(String[] combineKeyNames, JavaCodeFragmentBuilder codeBuilder)
-            throws CoreException {
-
+    private void createKeyClassHashCodeMethod(JavaCodeFragmentBuilder codeBuilder) {
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.append("return hashCode;");
 
@@ -1010,7 +1003,6 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                         rangeParameterNames.length);
                 generateReturnFindMethodReturnStmt(
                         methodBody,
-                        returnTypeName,
                         returnVariableName,
                         keyClassName,
                         methodName,
@@ -1019,7 +1011,6 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             } else {
                 generateReturnFindMethodReturnStmt(
                         methodBody,
-                        returnTypeName,
                         returnVariableName,
                         keyClassName,
                         methodName,
@@ -1029,7 +1020,6 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         } else {
             generateReturnFindMethodReturnStmt(
                     methodBody,
-                    returnTypeName,
                     returnVariableName,
                     keyClassName,
                     methodName,
@@ -1043,12 +1033,12 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private void generateReturnFindMethodReturnStmt(JavaCodeFragment methodBody,
-            String returnTypeName,
             String returnVariableName,
             String keyClassName,
             String methodName,
             JavaCodeFragment getValueFrag,
             boolean useNullValueRow) throws CoreException {
+
         methodBody.append(getValueFrag);
         methodBody.appendln(';');
         generateMethodExitingLoggingStmt(methodBody, keyClassName, methodName, returnVariableName);

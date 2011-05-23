@@ -497,9 +497,9 @@ public class SrcFolderComposite extends Composite {
     private void handleDefaultOutputFolderChanged(boolean mergable) {
         String folderName;
         if (mergable) {
-            folderName = (String)mergableSrcFolderField.getValue();
+            folderName = mergableSrcFolderField.getValue();
         } else {
-            folderName = (String)derivedSrcFolderField.getValue();
+            folderName = derivedSrcFolderField.getValue();
         }
         if (folderName == null || "".equals(folderName)) { //$NON-NLS-1$
             return;
@@ -589,7 +589,7 @@ public class SrcFolderComposite extends Composite {
 
                 handleBasePackageNameChanged(false);
             } else if (e.field == multipleOutputCheckBoxField) {
-                boolean multipleEnabled = ((Boolean)multipleOutputCheckBoxField.getValue()).booleanValue();
+                boolean multipleEnabled = (multipleOutputCheckBoxField.getValue()).booleanValue();
                 handleOutputDefinedPerSrcFolderChanged(multipleEnabled);
             }
         }

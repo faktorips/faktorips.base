@@ -605,12 +605,10 @@ public class SourcePage extends WizardPage {
             if (validFrom == null) {
                 return;
             }
-            if (validFrom != null) {
-                String newVersionId = getNamingStrategy().getNextVersionId(getStructure().getRoot().getProductCmpt(),
-                        validFrom);
-                if (!newVersionId.equals(getPresentationModel().getVersionId())) {
-                    getPresentationModel().setVersionId(newVersionId);
-                }
+            String newVersionId = getNamingStrategy().getNextVersionId(getStructure().getRoot().getProductCmpt(),
+                    validFrom);
+            if (!newVersionId.equals(getPresentationModel().getVersionId())) {
+                getPresentationModel().setVersionId(newVersionId);
             }
         }
     }

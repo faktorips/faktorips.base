@@ -163,7 +163,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
      * generation's valid from date. This is done to use the superclass' mechanism to derive the (to
      * be generated) Java sourcefile for a given ips src file.
      */
-    IIpsSrcFile getVirtualIpsSrcFile(IProductCmptGeneration generation) throws CoreException {
+    IIpsSrcFile getVirtualIpsSrcFile(IProductCmptGeneration generation) {
         GregorianCalendar validFrom = generation.getValidFrom();
         int month = validFrom.get(Calendar.MONTH) + 1;
         int date = validFrom.get(Calendar.DATE);
@@ -178,7 +178,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     /**
      * Returns the prefix that is common to the Java source file for all generations.
      */
-    private String getJavaSrcFilePrefix(IIpsSrcFile file) throws CoreException {
+    private String getJavaSrcFilePrefix(IIpsSrcFile file) {
         return file.getIpsProject().getProductCmptNamingStrategy()
                 .getJavaClassIdentifier(getUnchangedJavaSrcFilePrefix(file));
     }

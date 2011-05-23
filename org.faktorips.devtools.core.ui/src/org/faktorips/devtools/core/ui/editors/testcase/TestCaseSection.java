@@ -1344,7 +1344,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 if (association.getParentTestPolicyCmpt() == null) {
                     actionEnableState.addEnable = isNoTestPolicyCmptExistsFor(association);
                     actionEnableState.removeEnable = false;
-                } else if (association != null) {
+                } else {
                     modelAssociation = association.findAssociation(association.getParentTestPolicyCmpt()
                             .getIpsProject());
                 }

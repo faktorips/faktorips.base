@@ -57,7 +57,7 @@ public abstract class AbstractTestHtmlLayouter extends XMLTestCase {
         }
     }
 
-    protected String layout(PageElement pageElement) throws UnsupportedEncodingException {
+    protected String layout(PageElement pageElement) {
         pageElement.acceptLayouter(layouter);
         byte[] generate = layouter.generate();
 

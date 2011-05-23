@@ -218,11 +218,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
      * Handle Button <code>restore</code>.
      */
     protected void restorePressed() {
-        try {
-            sortOrderPM.restore();
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
+        sortOrderPM.restore();
         treeViewer.refresh();
     }
 

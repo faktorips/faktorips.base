@@ -95,9 +95,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
         return validateIpsObjectNameInternal(type, name, false);
     }
 
-    private MessageList validateIpsObjectNameInternal(IpsObjectType type, String name, boolean qualifiedCheck)
-            throws CoreException {
-
+    private MessageList validateIpsObjectNameInternal(IpsObjectType type, String name, boolean qualifiedCheck) {
         MessageList result = new MessageList();
 
         // common check for all ips object types

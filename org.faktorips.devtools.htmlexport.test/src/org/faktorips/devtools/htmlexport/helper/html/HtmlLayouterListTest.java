@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.htmlexport.helper.html;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
 import org.apache.commons.lang.StringUtils;
@@ -50,7 +49,7 @@ public class HtmlLayouterListTest extends AbstractTestHtmlLayouter {
     }
 
     @Test
-    public void testLeereListe() throws UnsupportedEncodingException {
+    public void testLeereListe() {
         ListPageElement liste = new ListPageElement();
 
         String xml = layout(liste);

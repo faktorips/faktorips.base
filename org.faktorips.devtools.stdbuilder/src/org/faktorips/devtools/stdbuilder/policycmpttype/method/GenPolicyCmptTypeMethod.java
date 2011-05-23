@@ -38,7 +38,7 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class GenPolicyCmptTypeMethod extends GenMethod {
 
-    public GenPolicyCmptTypeMethod(GenPolicyCmptType genPolicyCmptType, IMethod method) throws CoreException {
+    public GenPolicyCmptTypeMethod(GenPolicyCmptType genPolicyCmptType, IMethod method) {
         super(genPolicyCmptType, method, new LocalizedStringsSet(GenPolicyCmptTypeMethod.class));
     }
 

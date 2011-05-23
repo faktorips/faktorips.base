@@ -27,9 +27,11 @@ import java.util.Set;
 import org.junit.Test;
 
 public class OrderedValueSetTest {
+
+    // Warning doesn't matter as only constructor is tested
+    @SuppressWarnings("unused")
     @Test
     public void testConstructor() {
-
         try {
             new OrderedValueSet<Integer>(false, null, new Integer(1), new Integer(2), new Integer(3), new Integer(1));
             fail();

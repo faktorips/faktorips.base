@@ -13,7 +13,6 @@
 
 package org.faktorips.valueset;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,7 +29,7 @@ import org.faktorips.values.NullObjectSupport;
  * @author Jan Ortmann, Peter Erzberger
  * @author Daniel Hohenberger conversion to Java5
  */
-public abstract class DefaultRange<T extends Comparable<? super T>> implements Range<T>, Serializable {
+public abstract class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
 
     private static final long serialVersionUID = -2886828952622682290L;
 

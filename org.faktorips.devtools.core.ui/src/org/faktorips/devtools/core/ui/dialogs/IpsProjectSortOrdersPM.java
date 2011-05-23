@@ -193,7 +193,7 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
     /**
      * Modelaction for restorePressed. Sort the IIpsPackageFragments by default sort order.
      */
-    public void restore() throws CoreException {
+    public void restore() {
         restoreDefault = true;
         // force building the treeViewer with new sort order.
         fragmentHierarchy.clear();

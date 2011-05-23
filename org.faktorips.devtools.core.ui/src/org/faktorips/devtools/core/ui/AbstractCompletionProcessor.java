@@ -22,7 +22,6 @@ import org.eclipse.jface.contentassist.ISubjectControlContentAssistProcessor;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
-import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.swt.widgets.Text;
@@ -33,8 +32,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 /**
  * Abstract base class for ips completion processors.
  */
-public abstract class AbstractCompletionProcessor implements IContentAssistProcessor,
-        ISubjectControlContentAssistProcessor {
+public abstract class AbstractCompletionProcessor implements ISubjectControlContentAssistProcessor {
 
     protected IIpsProject ipsProject;
     private String errorMessage;

@@ -125,7 +125,7 @@ public abstract class TypePage extends IpsObjectPage {
      *         or not ( <code>false</code>).
      */
     public boolean getAbstract() {
-        return ((Boolean)abstractField.getValue()).booleanValue();
+        return (abstractField.getValue()).booleanValue();
     }
 
     /**
@@ -144,7 +144,7 @@ public abstract class TypePage extends IpsObjectPage {
      * @return A <code>String</code> representing the current value of the super type field.
      */
     public String getSuperType() {
-        return (String)supertypeField.getValue();
+        return supertypeField.getValue();
     }
 
     /**

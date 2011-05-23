@@ -13,8 +13,6 @@
 
 package org.faktorips.devtools.htmlexport.helper.html;
 
-import java.io.UnsupportedEncodingException;
-
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TreeNodePageElement;
 import org.junit.Test;
@@ -22,7 +20,7 @@ import org.junit.Test;
 public class HtmlLayouterTreeNodePageElementTest extends AbstractTestHtmlLayouter {
 
     @Test
-    public void testTreeEinfach() throws UnsupportedEncodingException {
+    public void testTreeEinfach() {
         String rootName = "root"; //$NON-NLS-1$
         String childBaseName = "child"; //$NON-NLS-1$
         int countChildren = 5;
