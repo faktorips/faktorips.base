@@ -39,7 +39,8 @@ public class ClassToInstancesMap<T> {
     private final Map<Class<? extends T>, List<? extends T>> internalMap = new ConcurrentHashMap<Class<? extends T>, List<? extends T>>();
 
     /**
-     * Getting the list of instances stored of the type given by the key
+     * Getting the list of instances stored of the type given by the key. If there is no element for
+     * this key this method would return an empty list. Never return null.
      * 
      * @param key The class of the instances you want to get
      * @return A list of instances of the given class
