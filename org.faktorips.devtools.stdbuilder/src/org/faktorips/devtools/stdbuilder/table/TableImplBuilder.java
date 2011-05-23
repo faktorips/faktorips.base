@@ -55,9 +55,7 @@ import org.faktorips.util.StringUtil;
 
 /**
  * Important: This builder expects from the <code>IJavaPackageStructure</code> the qualified class
- * name for a table row class. It uses the kindId="tablerow" to get this name. The output of this
- * builder depends on the output of the
- * <code>org.faktorips.std.builder.table.TableRowGenerator</code>.
+ * name for a table row class. It uses the kindId="tablerow" to get this name.
  * 
  * @author Peter Erzberger
  */
