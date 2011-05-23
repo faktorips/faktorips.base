@@ -1514,6 +1514,12 @@
                      <instanceof
                            value="org.faktorips.devtools.core.model.type.IType">
                      </instanceof>
+                     <adapt
+                           type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+                        <instanceof
+                              value="org.faktorips.devtools.core.model.type.IType">
+                        </instanceof>
+                     </adapt>
                   </or>
                </iterate>
             </with>
