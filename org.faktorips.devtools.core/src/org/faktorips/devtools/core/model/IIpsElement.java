@@ -90,7 +90,8 @@ public interface IIpsElement extends IAdaptable {
     public boolean isContainedInArchive();
 
     /**
-     * Deletes this element.
+     * Deletes this element. After calling this method neither this element nor any child is cached
+     * by the {@link IIpsModel}.
      * <p>
      * The specific action is dependent on the implementation. Delete might for example mean to
      * remove the element from it's parent or to delete the enclosing resource. Implementations
