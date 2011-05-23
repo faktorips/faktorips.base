@@ -29,7 +29,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeValidations;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -39,6 +38,7 @@ import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.policycmpttype.PcTypePage;
 import org.faktorips.devtools.core.ui.wizards.type.TypePage;
+import org.faktorips.util.message.Message;
 
 /**
  * An IpsObjectPage for the IpsObjectType ProductCmptType.
@@ -189,14 +189,15 @@ public class ProductCmptTypePage extends TypePage {
         super.validatePageExtension();
         if (pageOfAssociatedType != null) {
             if (!StringUtils.isEmpty(pageOfAssociatedType.getSuperType())) {
-                IPolicyCmptType superPcType = getIpsProject().findPolicyCmptType(pageOfAssociatedType.getSuperType());
-                if (superPcType != null) {
-                    IProductCmptType policyCmptProductCmptSuperType = superPcType.findProductCmptType(getIpsProject());
-                    IProductCmptType superType = null;
-                    if (!StringUtils.isEmpty(getSuperType())) {
-                        superType = getIpsProject().findProductCmptType(getSuperType());
-                    }
-                    validateSupertype(superType, policyCmptProductCmptSuperType);
+                IProductCmptType superProductCmptType = null;
+                if (!StringUtils.isEmpty(getSuperType())) {
+                    superProductCmptType = getIpsProject().findProductCmptType(getSuperType());
+                }
+                Message message = ProductCmptTypeValidations.validateSupertype(null, superProductCmptType,
+                        pageOfAssociatedType.getQualifiedIpsObjectName(), pageOfAssociatedType.getSuperType(),
+                        getIpsProject());
+                if (message != null) {
+                    setErrorMessage(message);
                 }
             }
             setErrorMessage(ProductCmptTypeValidations.validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(
@@ -252,34 +253,6 @@ public class ProductCmptTypePage extends TypePage {
                         configuableType.isAbstract(), getAbstract(), null));
 
             }
-        }
-    }
-
-    private void validateSupertype(final IProductCmptType superType,
-            final IProductCmptType productCmptTypeOfPolicyCmptSupertype) throws CoreException {
-
-        if (productCmptTypeOfPolicyCmptSupertype == null) {
-            return;
-        }
-        String msg = NLS.bind(Messages.ProductCmptTypePage_msgSupertypeMustBeInHierarchy,
-                productCmptTypeOfPolicyCmptSupertype.getQualifiedName());
-        if (superType == null) {
-            setErrorMessage(msg);
-            return;
-        }
-        final Boolean[] holder = new Boolean[] { Boolean.FALSE };
-        new TypeHierarchyVisitor<IType>(getIpsProject()) {
-            @Override
-            protected boolean visit(IType currentType) throws CoreException {
-                if (currentType.equals(productCmptTypeOfPolicyCmptSupertype)) {
-                    holder[0] = Boolean.TRUE;
-                    return false;
-                }
-                return true;
-            }
-        }.start(superType);
-        if (Boolean.FALSE.equals(holder[0])) {
-            setErrorMessage(msg);
         }
     }
 

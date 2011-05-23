@@ -1,3 +1,4 @@
+supertype
 valueset
 subtype
 cancelable

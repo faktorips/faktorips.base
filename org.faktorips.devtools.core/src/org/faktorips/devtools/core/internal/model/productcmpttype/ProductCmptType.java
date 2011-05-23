@@ -530,21 +530,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
                     PROPERTY_POLICY_CMPT_TYPE));
             return;
         }
-        if (supertype == null) {
-            if (policyCmptTypeObj.hasSupertype()) {
-                String text = NLS.bind(Messages.ProductCmptType_MustInheritFromASupertype, getUnqualifiedName());
-                list.add(new Message(MSGCODE_MUST_HAVE_SUPERTYPE, text, Message.ERROR, this, new String[] {
-                        PROPERTY_SUPERTYPE, PROPERTY_POLICY_CMPT_TYPE }));
-            }
-            return;
-        }
-        IPolicyCmptType policyCmptTypeOfSupertype = supertype.findPolicyCmptType(ipsProject);
-        if (policyCmptTypeObj != policyCmptTypeOfSupertype
-                && policyCmptTypeObj.findSupertype(ipsProject) != policyCmptTypeOfSupertype) {
-            String text = Messages.ProductCmptType_InconsistentTypeHierarchies;
-            list.add(new Message(MSGCODE_HIERARCHY_MISMATCH, text, Message.ERROR, this, new String[] {
-                    PROPERTY_SUPERTYPE, PROPERTY_POLICY_CMPT_TYPE }));
-            return;
+        Message msg = ProductCmptTypeValidations.validateSupertype(this, supertype,
+                policyCmptTypeObj.getQualifiedName(), policyCmptTypeObj.getSupertype(), ipsProject);
+        if (msg != null) {
+            list.add(msg);
         }
     }
 
