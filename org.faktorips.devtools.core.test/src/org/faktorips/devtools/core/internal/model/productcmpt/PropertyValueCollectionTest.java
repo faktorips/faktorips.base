@@ -37,10 +37,10 @@ import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.junit.Before;
 import org.junit.Test;
 
-public class PropertyValueHolderTest extends AbstractIpsPluginTest {
+public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
 
     private IPropertyValueContainer parent;
-    private PropertyValueHolder valueContainer;
+    private PropertyValueCollection valueContainer;
 
     @Override
     @Before
@@ -49,7 +49,7 @@ public class PropertyValueHolderTest extends AbstractIpsPluginTest {
         IIpsObject ipsObject = mock(IIpsObject.class);
         parent = mock(ProductCmpt.class);
         when(parent.getIpsObject()).thenReturn(ipsObject);
-        valueContainer = new PropertyValueHolder();
+        valueContainer = new PropertyValueCollection();
 
         AttributeValue part1 = new AttributeValue(parent, "ID1");
         part1.setAttribute("AV1");

@@ -30,15 +30,15 @@ import org.faktorips.util.ClassToInstancesMap;
  * @author Stefan Widmaier
  * @since 3.4
  */
-public class PropertyValueHolder {
+public class PropertyValueCollection {
 
     private final ClassToInstancesMap<IPropertyValue> classToInstancesMap;
 
     /**
-     * Creates a new {@link PropertyValueHolder}.
+     * Creates a new {@link PropertyValueCollection}.
      * 
      */
-    public PropertyValueHolder() {
+    public PropertyValueCollection() {
         classToInstancesMap = new ClassToInstancesMap<IPropertyValue>();
     }
 
@@ -82,7 +82,7 @@ public class PropertyValueHolder {
     }
 
     /**
-     * Searches all {@link IPropertyValue}s registered with this {@link PropertyValueHolder} for one
+     * Searches all {@link IPropertyValue}s registered with this {@link PropertyValueCollection} for one
      * with the indicated name.
      * <p>
      * Note that a safe cast can not be guaranteed as {@link IPropertyValue}s of a different

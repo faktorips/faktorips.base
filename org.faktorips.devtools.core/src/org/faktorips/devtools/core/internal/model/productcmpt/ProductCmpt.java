@@ -66,18 +66,16 @@ import org.w3c.dom.Element;
  */
 public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
-    private final PropertyValueHolder valueHolder;
+    private final PropertyValueCollection propertyValueCollection = new PropertyValueCollection();
     private String productCmptType = ""; //$NON-NLS-1$
     private String runtimeId = ""; //$NON-NLS-1$
 
     public ProductCmpt(IIpsSrcFile file) {
         super(file);
-        valueHolder = new PropertyValueHolder();
     }
 
     public ProductCmpt() {
         super();
-        valueHolder = new PropertyValueHolder();
     }
 
     @Override
@@ -320,17 +318,26 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public IPropertyValue getPropertyValue(IProductCmptProperty property) {
-        return valueHolder.getPropertyValue(property);
+        return propertyValueCollection.getPropertyValue(property);
     }
 
     @Override
     public IPropertyValue getPropertyValue(String propertyName) {
-        return valueHolder.getPropertyValue(propertyName);
+        return propertyValueCollection.getPropertyValue(propertyName);
     }
 
     @Override
     public <T extends IPropertyValue> List<T> getPropertyValues(Class<T> type) {
-        return valueHolder.getPropertyValues(type);
+        return propertyValueCollection.getPropertyValues(type);
+    }
+
+    @Override
+    public IPropertyValue newPropertyValue(IProductCmptProperty property) {
+        if (property.getProductCmptPropertyType() == ProductCmptPropertyType.VALUE) {
+            IPropertyValue newPropertyValue = propertyValueCollection.newPropertyValue(this, property, getNextPartId());
+            return newPropertyValue;
+        }
+        return null;
     }
 
     @Override
@@ -340,29 +347,27 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             return newGenerationInternal(id);
         }
         if (xmlTagName.equals(AttributeValue.TAG_NAME)) {
-            IIpsObjectPart newPartThis = valueHolder.newPropertyValue(this, AttributeValue.TAG_NAME, id);
+            IIpsObjectPart newPartThis = propertyValueCollection.newPropertyValue(this, AttributeValue.TAG_NAME, id);
             return newPartThis;
         }
         return null;
     }
 
     @Override
-    public IPropertyValue newPropertyValue(IProductCmptProperty property) {
-        if (property.getProductCmptPropertyType() == ProductCmptPropertyType.VALUE) {
-            IPropertyValue newPropertyValue = valueHolder.newPropertyValue(this, property, getNextPartId());
-            return newPropertyValue;
-        }
-        return null;
+    protected IIpsObjectPart newPartInternal(Class<? extends IIpsObjectPart> partType) {
+        ProductCmptPropertyType typeForValueClass = ProductCmptPropertyType.getTypeForValueClass(partType);
+        IPropertyValue newPart = propertyValueCollection.newPropertyValue(this, typeForValueClass, getNextPartId());
+        return newPart;
     }
 
     @Override
     public List<IAttributeValue> getAttributeValues() {
-        return valueHolder.getPropertyValues(IAttributeValue.class);
+        return propertyValueCollection.getPropertyValues(IAttributeValue.class);
     }
 
     @Override
     public IAttributeValue getAttributeValue(String attribute) {
-        return valueHolder.getPropertyValue(IAttributeValue.class, attribute);
+        return propertyValueCollection.getPropertyValue(IAttributeValue.class, attribute);
     }
 
     @Override
@@ -377,14 +382,14 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     protected Collection<? extends IIpsElement> getChildrenInternal() {
-        return valueHolder.getAllPropertyValues();
+        return propertyValueCollection.getAllPropertyValues();
     }
 
     @Override
     protected boolean addPartInternal(IIpsObjectPart part) {
         if (part instanceof IPropertyValue) {
             IPropertyValue propertyValue = (IPropertyValue)part;
-            return valueHolder.addPropertyValue(propertyValue);
+            return propertyValueCollection.addPropertyValue(propertyValue);
         } else {
             return false;
         }
@@ -394,22 +399,15 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     protected boolean removePartInternal(IIpsObjectPart part) {
         if (part instanceof IPropertyValue) {
             IPropertyValue propertyValue = (IPropertyValue)part;
-            return valueHolder.removePropertyValue(propertyValue);
+            return propertyValueCollection.removePropertyValue(propertyValue);
         } else {
             return false;
         }
     }
 
     @Override
-    protected IIpsObjectPart newPartInternal(Class<? extends IIpsObjectPart> partType) {
-        ProductCmptPropertyType typeForValueClass = ProductCmptPropertyType.getTypeForValueClass(partType);
-        IPropertyValue newPart = valueHolder.newPropertyValue(this, typeForValueClass, getNextPartId());
-        return newPart;
-    }
-
-    @Override
     protected void reinitPartCollectionsInternal() {
-        valueHolder.clear();
+        propertyValueCollection.clear();
     }
 
 }

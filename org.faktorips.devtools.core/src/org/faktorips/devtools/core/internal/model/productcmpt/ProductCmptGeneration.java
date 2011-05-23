@@ -66,17 +66,16 @@ import org.w3c.dom.Element;
 
 public class ProductCmptGeneration extends IpsObjectGeneration implements IProductCmptGeneration {
 
-    private final PropertyValueHolder valueHolder;
+    private final PropertyValueCollection propertyValueCollection = new PropertyValueCollection();
 
     private List<IProductCmptLink> links = new ArrayList<IProductCmptLink>(0);
 
     public ProductCmptGeneration(ITimedIpsObject ipsObject, String id) {
         super(ipsObject, id);
-        valueHolder = new PropertyValueHolder();
     }
 
     public ProductCmptGeneration() {
-        valueHolder = new PropertyValueHolder();
+        super();
     }
 
     @Override
@@ -129,22 +128,22 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public IPropertyValue getPropertyValue(IProductCmptProperty property) {
-        return valueHolder.getPropertyValue(property);
+        return propertyValueCollection.getPropertyValue(property);
     }
 
     @Override
     public IPropertyValue getPropertyValue(String propertyName) {
-        return valueHolder.getPropertyValue(propertyName);
+        return propertyValueCollection.getPropertyValue(propertyName);
     }
 
     @Override
     public <T extends IPropertyValue> List<T> getPropertyValues(Class<T> type) {
-        return valueHolder.getPropertyValues(type);
+        return propertyValueCollection.getPropertyValues(type);
     }
 
     @Override
     public IPropertyValue newPropertyValue(IProductCmptProperty property) {
-        IPropertyValue newPropertyValue = valueHolder.newPropertyValue(this, property, getNextPartId());
+        IPropertyValue newPropertyValue = propertyValueCollection.newPropertyValue(this, property, getNextPartId());
         objectHasChanged();
         return newPropertyValue;
     }
@@ -156,13 +155,13 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public IAttributeValue[] getAttributeValues() {
-        List<IAttributeValue> attributeValues = valueHolder.getPropertyValues(IAttributeValue.class);
+        List<IAttributeValue> attributeValues = propertyValueCollection.getPropertyValues(IAttributeValue.class);
         return attributeValues.toArray(new IAttributeValue[attributeValues.size()]);
     }
 
     @Override
     public IAttributeValue getAttributeValue(String attribute) {
-        return valueHolder.getPropertyValue(IAttributeValue.class, attribute);
+        return propertyValueCollection.getPropertyValue(IAttributeValue.class, attribute);
     }
 
     @Override
@@ -174,14 +173,14 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     public IAttributeValue newAttributeValue() {
         IAttributeValue value = (IAttributeValue)ProductCmptPropertyType.VALUE.createPropertyValue(this, null,
                 getNextPartId());
-        valueHolder.addPropertyValue(value);
+        propertyValueCollection.addPropertyValue(value);
         objectHasChanged();
         return value;
     }
 
     @Override
     public IAttributeValue newAttributeValue(IProductCmptTypeAttribute attribute) {
-        IAttributeValue newPropertyValue = (IAttributeValue)valueHolder.newPropertyValue(this, attribute,
+        IAttributeValue newPropertyValue = (IAttributeValue)propertyValueCollection.newPropertyValue(this, attribute,
                 getNextPartId());
         objectHasChanged();
         return newPropertyValue;
@@ -197,13 +196,13 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public IConfigElement[] getConfigElements() {
-        List<IConfigElement> configElements = valueHolder.getPropertyValues(IConfigElement.class);
+        List<IConfigElement> configElements = propertyValueCollection.getPropertyValues(IConfigElement.class);
         return configElements.toArray(new IConfigElement[configElements.size()]);
     }
 
     @Override
     public IConfigElement getConfigElement(String attributeName) {
-        return valueHolder.getPropertyValue(IConfigElement.class, attributeName);
+        return propertyValueCollection.getPropertyValue(IConfigElement.class, attributeName);
     }
 
     @Override
@@ -215,7 +214,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     public IConfigElement newConfigElement() {
         IConfigElement value = (IConfigElement)ProductCmptPropertyType.DEFAULT_VALUE_AND_VALUESET.createPropertyValue(
                 this, null, getNextPartId());
-        valueHolder.addPropertyValue(value);
+        propertyValueCollection.addPropertyValue(value);
         objectHasChanged();
         return value;
     }
@@ -238,7 +237,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      * Creates a new config element without updating the src file.
      */
     private ConfigElement newConfigElementInternal(IPolicyCmptTypeAttribute attribute, String id) {
-        ConfigElement e = (ConfigElement)valueHolder.newPropertyValue(this, attribute, id);
+        ConfigElement e = (ConfigElement)propertyValueCollection.newPropertyValue(this, attribute, id);
         if (attribute != null) {
             try {
                 ((IpsModel)getIpsModel()).stopBroadcastingChangesMadeByCurrentThread();
@@ -383,14 +382,14 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     public ITableContentUsage newTableContentUsage() {
         ITableContentUsage value = (ITableContentUsage)ProductCmptPropertyType.TABLE_CONTENT_USAGE.createPropertyValue(
                 this, null, getNextPartId());
-        valueHolder.addPropertyValue(value);
+        propertyValueCollection.addPropertyValue(value);
         objectHasChanged();
         return value;
     }
 
     @Override
     public ITableContentUsage newTableContentUsage(ITableStructureUsage structureUsage) {
-        return (ITableContentUsage)valueHolder.newPropertyValue(this, structureUsage, getNextPartId());
+        return (ITableContentUsage)propertyValueCollection.newPropertyValue(this, structureUsage, getNextPartId());
     }
 
     @Override
@@ -400,7 +399,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public ITableContentUsage[] getTableContentUsages() {
-        List<ITableContentUsage> usages = valueHolder.getPropertyValues(ITableContentUsage.class);
+        List<ITableContentUsage> usages = propertyValueCollection.getPropertyValues(ITableContentUsage.class);
         return usages.toArray(new ITableContentUsage[usages.size()]);
     }
 
@@ -418,26 +417,27 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public IFormula[] getFormulas() {
-        List<IFormula> formulae = valueHolder.getPropertyValues(IFormula.class);
+        List<IFormula> formulae = propertyValueCollection.getPropertyValues(IFormula.class);
         return formulae.toArray(new IFormula[formulae.size()]);
     }
 
     @Override
     public IFormula getFormula(String formulaName) {
-        return valueHolder.getPropertyValue(IFormula.class, formulaName);
+        return propertyValueCollection.getPropertyValue(IFormula.class, formulaName);
     }
 
     @Override
     public IFormula newFormula() {
         IFormula value = (IFormula)ProductCmptPropertyType.FORMULA.createPropertyValue(this, null, getNextPartId());
-        valueHolder.addPropertyValue(value);
+        propertyValueCollection.addPropertyValue(value);
         objectHasChanged();
         return value;
     }
 
     @Override
     public IFormula newFormula(IProductCmptTypeMethod signature) {
-        IFormula newPropertyValue = (IFormula)valueHolder.newPropertyValue(this, signature, getNextPartId());
+        IFormula newPropertyValue = (IFormula)propertyValueCollection
+                .newPropertyValue(this, signature, getNextPartId());
         objectHasChanged();
         return newPropertyValue;
     }
@@ -447,7 +447,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         int size = getNumOfAttributeValues() + getNumOfConfigElements() + getNumOfTableContentUsages()
                 + getNumOfFormulas() + getNumOfValidationRules() + getNumOfLinks();
         List<IIpsElement> children = new ArrayList<IIpsElement>(size);
-        children.addAll(valueHolder.getAllPropertyValues());
+        children.addAll(propertyValueCollection.getAllPropertyValues());
         children.addAll(links);
         return children.toArray(new IIpsElement[children.size()]);
     }
@@ -459,7 +459,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             newPart = newLinkInternal(getNextPartId());
         } else {
             ProductCmptPropertyType typeForValueClass = ProductCmptPropertyType.getTypeForValueClass(partType);
-            newPart = valueHolder.newPropertyValue(this, typeForValueClass, getNextPartId());
+            newPart = propertyValueCollection.newPropertyValue(this, typeForValueClass, getNextPartId());
         }
         objectHasChanged();
         return newPart;
@@ -472,7 +472,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             ProductCmptLink newLinkInternal = newLinkInternal(id);
             return newLinkInternal;
         } else {
-            IIpsObjectPart newPartThis = valueHolder.newPropertyValue(this, xmlTagName, getNextPartId());
+            IIpsObjectPart newPartThis = propertyValueCollection.newPropertyValue(this, xmlTagName, getNextPartId());
             return newPartThis;
         }
     }
@@ -483,7 +483,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         if (part instanceof IProductCmptLink) {
             result = links.add((IProductCmptLink)part);
         } else if (part instanceof IPropertyValue) {
-            result = valueHolder.addPropertyValue((IPropertyValue)part);
+            result = propertyValueCollection.addPropertyValue((IPropertyValue)part);
         }
         if (result) {
             objectHasChanged();
@@ -496,7 +496,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         if (part instanceof IProductCmptLink) {
             return links.remove(part);
         } else if (part instanceof IPropertyValue) {
-            return valueHolder.removePropertyValue((IPropertyValue)part);
+            return propertyValueCollection.removePropertyValue((IPropertyValue)part);
         } else {
             return false;
         }
@@ -504,7 +504,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     protected void reinitPartCollectionsThis() {
-        valueHolder.clear();
+        propertyValueCollection.clear();
         links.clear();
     }
 
@@ -572,7 +572,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public ITableContentUsage getTableContentUsage(String rolename) {
-        return valueHolder.getPropertyValue(ITableContentUsage.class, rolename);
+        return propertyValueCollection.getPropertyValue(ITableContentUsage.class, rolename);
     }
 
     @Override
@@ -582,12 +582,12 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public IValidationRuleConfig getValidationRuleConfig(String validationRuleName) {
-        return valueHolder.getPropertyValue(IValidationRuleConfig.class, validationRuleName);
+        return propertyValueCollection.getPropertyValue(IValidationRuleConfig.class, validationRuleName);
     }
 
     @Override
     public List<IValidationRuleConfig> getValidationRuleConfigs() {
-        return valueHolder.getPropertyValues(IValidationRuleConfig.class);
+        return propertyValueCollection.getPropertyValues(IValidationRuleConfig.class);
     }
 
     /**
@@ -598,7 +598,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      * @return new validation rule
      */
     private IValidationRuleConfig newValidationRuleInternal(IValidationRule ruleToBeConfigured, String id) {
-        return (IValidationRuleConfig)valueHolder.newPropertyValue(this, ruleToBeConfigured, getNextPartId());
+        return (IValidationRuleConfig)propertyValueCollection.newPropertyValue(this, ruleToBeConfigured,
+                getNextPartId());
     }
 
     @Override
