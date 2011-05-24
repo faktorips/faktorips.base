@@ -28,7 +28,7 @@ public class IpsRemoveImportsOperation {
 
     private final static String EMPTY = ""; //$NON-NLS-1$
 
-    private static Pattern stringConstantsPattern = Pattern.compile("\".*\""); //$NON-NLS-1$
+    private static Pattern stringConstantsPattern = Pattern.compile("\".*?\""); //$NON-NLS-1$
 
     private static Pattern oneLineCommentsPattern = Pattern.compile("//.*"); //$NON-NLS-1$
 
@@ -38,20 +38,22 @@ public class IpsRemoveImportsOperation {
     // (?<![\p{Alpha}0-9_$\.])\p{Alpha}[\p{Alpha}0-9_$]*
     // The first part is \p{Alpha} to find all words beginning with a letter
     // The second part is any matches of letters, numbers and the characters _ and $
-    private static String wordPatternString = "(\\p{Alpha}[\\p{Alpha}0-9_$]*)"; //$NON-NLS-1$
+    private static String wordPatternString = "(\\p{Alpha}[\\p{L}0-9_$]*)"; //$NON-NLS-1$
 
     // The first part is a negative look ahead to avoid words beginning with . (e.g. method names)
-    private static Pattern relevantWordPattern = Pattern.compile("(?<![\\p{Alpha}0-9_$\\.])" + wordPatternString); //$NON-NLS-1$
+    private static Pattern relevantWordPattern = Pattern.compile("(?<![\\p{L}0-9_$\\.])" + wordPatternString); //$NON-NLS-1$
 
-    private static Pattern importPattern = Pattern.compile(" *import.*\\." + wordPatternString + " *; *[\\r\\n]?"); //$NON-NLS-1$ //$NON-NLS-2$
+    private static Pattern importPattern = Pattern
+            .compile(" *import[\\.\\s\\p{L}0-9_$]*\\.[\\s]*" + wordPatternString + "[\\s]*; *[\\r\\n]?"); //$NON-NLS-1$ //$NON-NLS-2$
 
     public String removeUnusedImports(String input) {
         // first remove all string constants - does not matter whether they are in a comment or not
+        // Otherwise we would have a problem if anyone types a comment pattern in a string constant
+        // Using this way we could not handle some /*"*/ within one line
         String withoutStringConstants = removeStringConstants(input);
         String withoutComments = removeComments(withoutStringConstants);
         String withoutImports = removeImports(withoutComments);
         Set<String> words = getRelevantWords(withoutImports);
-
         String inputWithRemovedImports = removeImports(input, words);
 
         return inputWithRemovedImports;

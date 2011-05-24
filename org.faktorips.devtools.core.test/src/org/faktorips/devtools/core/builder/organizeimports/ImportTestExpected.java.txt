@@ -38,12 +38,14 @@ import org.faktorips.valueset.IntegerRange;
 import org.faktorips.valueset.ValueSet;
 import org.w3c.dom.Element;
 
+import needed.import.ImportöÄ123;
+
 /**
  * 
  * @generated
  */
 @XmlRootElement(name = "BaseType")
-public class BaseType extends AbstractConfigurableModelObject implements IBaseType {
+public class BaseType extends AbstractConfigurableModelObject implements IBaseType, ImportöÄ123 {
     /**
      * Helper object for Changelistener.
      * 
