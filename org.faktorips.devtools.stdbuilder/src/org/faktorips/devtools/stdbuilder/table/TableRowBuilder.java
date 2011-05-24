@@ -116,10 +116,9 @@ public class TableRowBuilder extends DefaultJavaSourceFileBuilder {
         DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(datatype);
         if (datatypeHelper != null) {
             attributesBuilder.javaDoc("", ANNOTATION_GENERATED);
-            int modifiers = Modifier.PRIVATE | Modifier.FINAL;
             String datatypeName = datatypeHelper.getJavaClassName();
             String attributeName = getJavaNamingConvention().getMemberVarName(column.getName());
-            attributesBuilder.varDeclaration(modifiers, datatypeName, attributeName);
+            attributesBuilder.varDeclaration(Modifier.PRIVATE, datatypeName, attributeName);
             attributesBuilder.appendln();
         }
     }
