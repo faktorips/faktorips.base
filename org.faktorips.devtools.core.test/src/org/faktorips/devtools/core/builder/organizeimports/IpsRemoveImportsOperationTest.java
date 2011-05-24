@@ -48,7 +48,44 @@ public class IpsRemoveImportsOperationTest {
         String removeUnusedImports = ipsRemoveImportsOperation.removeUnusedImports(source);
 
         assertEquals(expected, removeUnusedImports);
+    }
 
+    /**
+     * Testing the problem occurred with FIPS-541
+     */
+    @Test
+    public void testRemoveMinimalStringConstants() throws Exception {
+        String input = "import asd.asdf.Table;\n" //
+                + "import package.nblöab.UniqueConstraint;\n"
+                + "\n" //
+                + "@Table(name = \"BON_BONUSPRODUKT\", uniqueConstraints = { @UniqueConstraint(columnNames = { \"RUNTIME_ID\", \"GUELTIG_VON\" }) })\n" //
+                + "weotereasdf sadfo asdof asdölkf n";
+
+        IpsRemoveImportsOperation ipsRemoveImportsOperation = new IpsRemoveImportsOperation();
+        String removeUnusedImports = ipsRemoveImportsOperation.removeUnusedImports(input);
+
+        assertEquals(input, removeUnusedImports);
+    }
+
+    /**
+     * Testing the problem occurred with FIPS-541
+     */
+    @Test
+    public void testUglyFormattedImportStatement() throws Exception {
+        String input = "import asd.asdf.Table;\n" //
+                + "import package.nblöab.\n" + //
+                "UniqueConstraint;\n" + //
+                "import pack.bla.Test\n" + //
+                "; import asdad.Test2;\n" + //
+                "           import blablabl\n" + //
+                "           .Test;\n" + //
+                " import unnötig.bläblablü1; import lasdü.DasBrauchIch; import muadsa.asfa.asf;\n" + //
+                "DasBrauchIch";
+
+        IpsRemoveImportsOperation ipsRemoveImportsOperation = new IpsRemoveImportsOperation();
+        String removeUnusedImports = ipsRemoveImportsOperation.removeUnusedImports(input);
+
+        assertEquals("import lasdü.DasBrauchIch; DasBrauchIch", removeUnusedImports);
     }
 
 }
