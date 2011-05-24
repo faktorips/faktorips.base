@@ -30,6 +30,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.internal.model.pctype.ValidationRule;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeMethod;
 import org.faktorips.devtools.core.internal.model.productcmpttype.TableStructureUsage;
@@ -42,14 +43,18 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
+import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptKind;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IType;
@@ -432,6 +437,101 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         testType.getPolicyCmptTypeAttribute("A2").delete();
         assertEquals(false, product.containsDifferenceToModel(ipsProject));
         assertEquals(true, product2.containsDifferenceToModel(ipsProject));
+    }
+
+    @Test
+    public void testContainsDifferencesToModel_productCmptTypeAttribute() throws Exception {
+        ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
+        IProductCmptTypeAttribute newAttribute = newProductCmptType.newProductCmptTypeAttribute("testAttr");
+
+        ProductCmpt newProductCmpt = newProductCmpt(newProductCmptType, "Cmpt1");
+        assertTrue(newProductCmpt.containsDifferenceToModel(ipsProject));
+
+        IPropertyValue wrongAttributeValue = newProductCmpt.getProductCmptGeneration(0).newPropertyValue(newAttribute);
+        assertTrue(newProductCmpt.containsDifferenceToModel(ipsProject));
+
+        IPropertyValue correctAttributeValue = newProductCmpt.newPropertyValue(newAttribute);
+        assertTrue(newProductCmpt.containsDifferenceToModel(ipsProject));
+
+        wrongAttributeValue.delete();
+        assertFalse(newProductCmpt.containsDifferenceToModel(ipsProject));
+
+        newAttribute.setChangingOverTime(true);
+        assertTrue(newProductCmpt.containsDifferenceToModel(ipsProject));
+
+        newAttribute.setChangingOverTime(false);
+        assertFalse(newProductCmpt.containsDifferenceToModel(ipsProject));
+
+        newAttribute.delete();
+        assertTrue(newProductCmpt.containsDifferenceToModel(ipsProject));
+
+        correctAttributeValue.delete();
+        assertFalse(newProductCmpt.containsDifferenceToModel(ipsProject));
+    }
+
+    @Test
+    public void testFixDifferencesToModel_productCmptTypeAttribute() throws Exception {
+        ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
+        IProductCmptTypeAttribute newAttribute = newProductCmptType.newProductCmptTypeAttribute("testAttr");
+
+        ProductCmpt newProductCmpt = newProductCmpt(newProductCmptType, "Cmpt1");
+
+        assertTrue(newProductCmpt.containsDifferenceToModel(ipsProject));
+        IAttributeValue attributeValue = newProductCmpt.getAttributeValue(newAttribute.getName());
+        assertNull(attributeValue);
+
+        newProductCmpt.fixAllDifferencesToModel(ipsProject);
+        assertFalse(newProductCmpt.containsDifferenceToModel(ipsProject));
+        attributeValue = newProductCmpt.getAttributeValue(newAttribute.getName());
+        assertNotNull(attributeValue);
+
+        newAttribute.setChangingOverTime(true);
+        newProductCmpt.fixAllDifferencesToModel(ipsProject);
+        assertTrue(attributeValue.isDeleted());
+        attributeValue = newProductCmpt.getAttributeValue(newAttribute.getName());
+        assertNull(attributeValue);
+
+        newAttribute.setChangingOverTime(false);
+        newProductCmpt.fixAllDifferencesToModel(ipsProject);
+        attributeValue = newProductCmpt.getAttributeValue(newAttribute.getName());
+        assertNotNull(attributeValue);
+
+        newAttribute.delete();
+        newProductCmpt.fixAllDifferencesToModel(ipsProject);
+        assertTrue(attributeValue.isDeleted());
+        attributeValue = newProductCmpt.getAttributeValue(newAttribute.getName());
+        assertNull(attributeValue);
+    }
+
+    @Test
+    public void testComputeDeltaToModel_AttributeValues() throws Exception {
+        ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
+        IProductCmptTypeAttribute newAttribute = newProductCmptType.newProductCmptTypeAttribute("testAttr");
+
+        ProductCmpt newProductCmpt = newProductCmpt(newProductCmptType, "Cmpt1");
+
+        IPropertyValueContainerToTypeDelta computeDeltaToModel = newProductCmpt.computeDeltaToModel(ipsProject);
+
+        assertEquals(newProductCmpt, computeDeltaToModel.getPropertyValueContainer());
+        IDeltaEntry[] entries = computeDeltaToModel.getEntries();
+        assertEquals(1, entries.length);
+        assertEquals(DeltaType.MISSING_PROPERTY_VALUE, entries[0].getDeltaType());
+        assertEquals(newAttribute.getName(), ((IDeltaEntryForProperty)entries[0]).getPropertyName());
+
+        newAttribute.setChangingOverTime(true);
+        computeDeltaToModel = newProductCmpt.computeDeltaToModel(ipsProject);
+        entries = computeDeltaToModel.getEntries();
+        assertEquals(0, entries.length);
+
+        newAttribute.setChangingOverTime(false);
+        newProductCmpt.fixAllDifferencesToModel(ipsProject);
+
+        newAttribute.setChangingOverTime(true);
+        computeDeltaToModel = newProductCmpt.computeDeltaToModel(ipsProject);
+        entries = computeDeltaToModel.getEntries();
+        assertEquals(1, entries.length);
+        assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, entries[0].getDeltaType());
+        assertEquals(newAttribute.getName(), ((IDeltaEntryForProperty)entries[0]).getPropertyName());
     }
 
     /**
