@@ -616,15 +616,15 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     public void testNewPartThis() {
         Element element = mock(Element.class);
         when(element.getNodeName()).thenReturn(IProductCmptGeneration.TAG_NAME);
-        IIpsObjectPart part = productCmpt.newPartInternal(element, "genID");
+        IIpsObjectPart part = productCmpt.newPartThis(element, "genID");
         assertNotNull(part);
 
         when(element.getNodeName()).thenReturn(AttributeValue.TAG_NAME);
-        part = productCmpt.newPartInternal(element, "attrID");
+        part = productCmpt.newPartThis(element, "attrID");
         assertNotNull(part);
 
         when(element.getNodeName()).thenReturn(ValidationRule.TAG_NAME);
-        part = productCmpt.newPartInternal(element, "vRuleID");
+        part = productCmpt.newPartThis(element, "vRuleID");
         assertNull(part);
     }
 

@@ -14,8 +14,6 @@
 package org.faktorips.devtools.core.internal.model.tablecontents;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
@@ -33,10 +31,8 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -247,36 +243,6 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     @Override
     public String getMetaClass() {
         return getTableStructure();
-    }
-
-    @Override
-    protected Collection<? extends IIpsElement> getChildrenInternal() {
-        return new ArrayList<IIpsElement>();
-    }
-
-    @Override
-    protected boolean addPartInternal(IIpsObjectPart part) {
-        return false;
-    }
-
-    @Override
-    protected boolean removePartInternal(IIpsObjectPart part) {
-        return false;
-    }
-
-    @Override
-    protected IIpsObjectPart newPartInternal(Element xmlTag, String id) {
-        return null;
-    }
-
-    @Override
-    protected IIpsObjectPart newPartInternal(Class<? extends IIpsObjectPart> partType) {
-        return null;
-    }
-
-    @Override
-    protected void reinitPartCollectionsInternal() {
-        // do nothing
     }
 
 }

@@ -13,7 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
@@ -341,7 +342,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    protected IIpsObjectPart newPartInternal(Element xmlTag, String id) {
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
+        IIpsObjectPart part = super.newPartThis(xmlTag, id);
+        if (part != null) {
+            return part;
+        }
         String xmlTagName = xmlTag.getNodeName();
         if (xmlTagName.equals(IIpsObjectGeneration.TAG_NAME)) {
             return newGenerationInternal(id);
@@ -354,7 +359,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    protected IIpsObjectPart newPartInternal(Class<? extends IIpsObjectPart> partType) {
+    protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
+        IIpsObjectPart part = super.newPartThis(partType);
+        if (part != null) {
+            return part;
+        }
         ProductCmptPropertyType typeForValueClass = ProductCmptPropertyType.getTypeForValueClass(partType);
         IPropertyValue newPart = propertyValueCollection.newPropertyValue(this, typeForValueClass, getNextPartId());
         return newPart;
@@ -381,12 +390,18 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    protected Collection<? extends IIpsElement> getChildrenInternal() {
-        return propertyValueCollection.getAllPropertyValues();
+    protected IIpsElement[] getChildrenThis() {
+        IIpsElement[] childrenThis = super.getChildrenThis();
+        List<IIpsElement> children = new ArrayList<IIpsElement>(propertyValueCollection.getAllPropertyValues());
+        children.addAll(Arrays.asList(childrenThis));
+        return children.toArray(new IIpsElement[children.size()]);
     }
 
     @Override
-    protected boolean addPartInternal(IIpsObjectPart part) {
+    protected boolean addPartThis(IIpsObjectPart part) {
+        if (super.addPartThis(part)) {
+            return true;
+        }
         if (part instanceof IPropertyValue) {
             IPropertyValue propertyValue = (IPropertyValue)part;
             return propertyValueCollection.addPropertyValue(propertyValue);
@@ -396,7 +411,10 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    protected boolean removePartInternal(IIpsObjectPart part) {
+    protected boolean removePartThis(IIpsObjectPart part) {
+        if (super.removePartThis(part)) {
+            return true;
+        }
         if (part instanceof IPropertyValue) {
             IPropertyValue propertyValue = (IPropertyValue)part;
             return propertyValueCollection.removePropertyValue(propertyValue);
@@ -406,7 +424,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    protected void reinitPartCollectionsInternal() {
+    protected void reinitPartCollectionsThis() {
+        super.reinitPartCollectionsThis();
         propertyValueCollection.clear();
     }
 
