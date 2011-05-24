@@ -74,7 +74,7 @@ public class PropertyValueCollection {
     public <T extends IPropertyValue> T getPropertyValue(Class<T> type, String propertyName) {
         List<T> list = classToInstancesMap.get(type);
         for (T propertyValue : list) {
-            if (propertyValue.getName().equals(propertyName)) {
+            if (propertyValue.getPropertyName().equals(propertyName)) {
                 return propertyValue;
             }
         }
@@ -82,8 +82,8 @@ public class PropertyValueCollection {
     }
 
     /**
-     * Searches all {@link IPropertyValue}s registered with this {@link PropertyValueCollection} for one
-     * with the indicated name.
+     * Searches all {@link IPropertyValue}s registered with this {@link PropertyValueCollection} for
+     * one with the indicated name.
      * <p>
      * Note that a safe cast can not be guaranteed as {@link IPropertyValue}s of a different
      * class/type may have the same property name.
