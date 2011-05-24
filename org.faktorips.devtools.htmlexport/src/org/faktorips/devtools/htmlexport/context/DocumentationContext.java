@@ -238,15 +238,15 @@ public class DocumentationContext {
     }
 
     public String getLabel(IIpsElement element, boolean singular) {
-        if (element instanceof ILabeledElement) {
-            ILabeledElement labeledElement = (ILabeledElement)element;
-            if (singular) {
-                return getMultiLanguageSupport().getLocalizedLabel(labeledElement);
-            }
-            return getMultiLanguageSupport().getLocalizedPluralLabel(labeledElement);
+        if (!(element instanceof ILabeledElement)) {
+            return element.getName();
         }
 
-        return element.getName();
+        ILabeledElement labeledElement = (ILabeledElement)element;
+        if (singular) {
+            return getMultiLanguageSupport().getLocalizedLabel(labeledElement);
+        }
+        return getMultiLanguageSupport().getLocalizedPluralLabel(labeledElement);
     }
 
     public String getCaption(IIpsObjectPartContainer ipsObjectPartContainer) {

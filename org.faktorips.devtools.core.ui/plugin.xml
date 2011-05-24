@@ -212,6 +212,11 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
+            categoryId="org.eclipse.search.ui.category.search"
+            id="org.faktorips.devtools.core.ui.search.model"
+            name="%org.faktorips.devtools.actions.OpenModelSearchPageAction.label">
+      </command>
+      <command
             categoryId="org.faktorips.devtools.core.ui.category.navigate"
             description="%org.faktorips.devtools.core.openIpsObject.tooltip"
             id="org.faktorips.devtools.core.openIpsObject"
@@ -1517,7 +1522,7 @@
                      <adapt
                            type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
                         <instanceof
-                              value="org.faktorips.devtools.core.model.type.IType">
+                              value="org.faktorips.devtools.core.model.IIpsMetaClass">
                         </instanceof>
                      </adapt>
                   </or>
@@ -1684,6 +1689,25 @@
    
       <extension
          point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.search.menu?after=dialogGroup">
+            <!-- 
+            	menu:org.eclipse.search.menu?before=fileSearchContextMenuActionsGroup
+            	menu:org.eclipse.search.menu?after=dialogGroup
+            	menu:org.eclipse.ui.main.menu
+             -->
+         <command
+               commandId="org.faktorips.devtools.core.ui.search.model"
+               icon="icons/ModelSearch.gif"
+               id="org.faktorips.devtools.core.ui.search.ModelSearchID"
+               label="%org.faktorips.devtools.actions.OpenModelSearchPageAction.label"
+               style="push">
+               <visibleWhen
+                  checkEnabled="true">
+               </visibleWhen>
+               
+         </command>
+      </menuContribution>
       <menuContribution
             locationURI="popup:org.faktorips.devtools.core.ui.views.modelexplorer.refactoring">
          <command

@@ -31,6 +31,9 @@ import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.devtools.core.ui.controller.fields.TextField;
 
 /**
  * A composite that allows to edit the {@link IDescription}s attached to an
@@ -51,15 +54,17 @@ public final class DescriptionEditComposite extends Composite {
 
     private final Text textArea;
 
+    private final BindingContext bindingContext;
+
     /** A map that associates language names to their language codes. */
-    private final Map<String, String> languageCodes;
+    private Map<String, String> languageCodes;
+
+    private EditField<?> textEditField;
 
     /** The description that is currently being edited. */
     private IDescription currentDescription;
 
     private boolean viewOnly;
-
-    private boolean inTextChange;
 
     public DescriptionEditComposite(Composite parent, IDescribedElement describedElement, UIToolkit uiToolkit) {
         super(parent, SWT.NONE);
@@ -67,6 +72,7 @@ public final class DescriptionEditComposite extends Composite {
         this.uiToolkit = uiToolkit;
         this.describedElement = describedElement;
         languageCodes = new LinkedHashMap<String, String>();
+        bindingContext = new BindingContext();
 
         createLayout();
 
@@ -98,44 +104,34 @@ public final class DescriptionEditComposite extends Composite {
     }
 
     private Text createTextArea() {
-        final Text text = uiToolkit.createMultilineText(this);
-        text.addModifyListener(new ModifyListener() {
-
-            @Override
-            public void modifyText(ModifyEvent e) {
-                if (currentDescription != null) {
-                    // Set flag to avoid focus problems when modifying the description text
-                    inTextChange = true;
-                    currentDescription.setText(text.getText());
-                    inTextChange = false;
-                }
-            }
-
-        });
+        Text text = uiToolkit.createMultilineText(this);
+        textEditField = new TextField(text);
         return text;
     }
 
     public void refresh() {
-        // Check flag to avoid focus problems when modifying the description text
-        if (!(inTextChange)) {
-            refreshLanguageCodes();
+        if (isLanguageComboRefreshRequired()) {
             refreshLanguageCombo();
         }
     }
 
     /**
-     * Refreshes the map of language codes associating them to the respective language names. This
-     * has to be done because it might happen that the editor is opened while the supported
-     * languages change.
+     * Checks whether the language combo needs to be refreshed. This has to be done because it might
+     * happen that the editor is opened while the supported languages change.
      */
-    private void refreshLanguageCodes() {
-        languageCodes.clear();
+    private boolean isLanguageComboRefreshRequired() {
+        Map<String, String> newLanguageCodes = new LinkedHashMap<String, String>();
         for (IDescription description : describedElement.getDescriptions()) {
             Locale locale = description.getLocale();
             if (locale != null) {
-                languageCodes.put(locale.getDisplayLanguage(), locale.getLanguage());
+                newLanguageCodes.put(locale.getDisplayLanguage(), locale.getLanguage());
             }
         }
+        if (!languageCodes.equals(newLanguageCodes)) {
+            languageCodes = newLanguageCodes;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -199,8 +195,13 @@ public final class DescriptionEditComposite extends Composite {
      * Ensures that the description text area shows the currently selected description.
      */
     private void updateDescription() {
+        bindingContext.removeBindings(textArea);
+
         IDescription descriptionBeforeUpdate = currentDescription;
         updateCurrentDescription();
+        if (currentDescription != null) {
+            bindingContext.bindContent(textEditField, currentDescription, IDescription.PROPERTY_TEXT);
+        }
         if (descriptionBeforeUpdate == null || currentDescription == null
                 || !(currentDescription.equals(descriptionBeforeUpdate))) {
             updateTextArea();
@@ -225,9 +226,6 @@ public final class DescriptionEditComposite extends Composite {
         currentDescription = describedElement.getDescription(currentLocale);
     }
 
-    /**
-     * Updates the text area by setting the text to the text of the current description.
-     */
     private void updateTextArea() {
         if (currentDescription == null) {
             textArea.setEnabled(false);
@@ -236,7 +234,7 @@ public final class DescriptionEditComposite extends Composite {
         if (!(viewOnly)) {
             textArea.setEnabled(true);
         }
-        textArea.setText(currentDescription.getText());
+        textEditField.setText(currentDescription.getText());
     }
 
     void setViewOnly(boolean viewOnly) {
