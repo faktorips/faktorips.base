@@ -178,21 +178,6 @@
                tooltip="%org.faktorips.devtools.actions.ToggleWorkingModeAction.tooltip">
          </action>
       </actionSet>
-      <!--
-    <actionSet
-          id="org.faktorips.devtools.core.ui.modelSearchActionSet"
-          label="%org.faktorips.devtools.actions.OpenModelSearchPageAction.label"
-          visible="true">
-       <action
-             class="org.faktorips.devtools.core.ui.actions.OpenModelSearchPageAction"
-             icon="icons/ModelSearch.gif"
-             id="org.faktorips.devtools.core.ui.openModelSearchAction"
-             label="%org.faktorips.devtools.actions.OpenModelSearchPageAction.label"
-             menubarPath="org.eclipse.search.menu/dialogGroup"
-             style="push">
-       </action>
-    </actionSet>
-    -->            
    </extension>
    
    <extension
@@ -1522,7 +1507,7 @@
                      <adapt
                            type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
                         <instanceof
-                              value="org.faktorips.devtools.core.model.IIpsMetaClass">
+                              value="org.faktorips.devtools.core.model.type.IType">
                         </instanceof>
                      </adapt>
                   </or>
@@ -1673,6 +1658,12 @@
                </iterate>
             </with>
          </enabledWhen>
+      </handler>
+      <handler
+            class="org.faktorips.devtools.core.ui.commands.OpenModelSearchPageHandler"
+            commandId="org.faktorips.devtools.core.ui.search.model">
+            <class class="org.faktorips.devtools.core.ui.commands.OpenModelSearchPageHandler">
+            </class>
       </handler>
    </extension>
 
