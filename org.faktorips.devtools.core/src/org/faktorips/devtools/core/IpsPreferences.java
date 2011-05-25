@@ -152,9 +152,9 @@ public class IpsPreferences {
      */
     public final static String DATATYPE_FORMATTING_LOCALE = IpsPlugin.PLUGIN_ID + ".datatypeFormattingLocale"; //$NON-NLS-1$
 
-    private DatatypeFormatter datatypeFormatter;
+    private final DatatypeFormatter datatypeFormatter;
 
-    private IPreferenceStore prefStore;
+    private final IPreferenceStore prefStore;
 
     public IpsPreferences(IPreferenceStore prefStore) {
         ArgumentCheck.notNull(prefStore);
@@ -223,7 +223,7 @@ public class IpsPreferences {
      * Returns the working date preference.
      */
     public final GregorianCalendar getWorkingDate() {
-        String date = IpsPlugin.getDefault().getIpsPreferences().prefStore.getString(WORKING_DATE);
+        String date = prefStore.getString(WORKING_DATE);
         try {
             return XmlUtil.parseGregorianCalendar(date);
         } catch (XmlParseException e) {
@@ -331,7 +331,7 @@ public class IpsPreferences {
     }
 
     public void setEnableGenerating(boolean generate) {
-        IpsPlugin.getDefault().getIpsPreferences().prefStore.setValue(ENABLE_GENERATING, generate);
+        prefStore.setValue(ENABLE_GENERATING, generate);
     }
 
     /**
