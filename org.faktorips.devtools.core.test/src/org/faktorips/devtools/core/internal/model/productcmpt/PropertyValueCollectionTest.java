@@ -143,7 +143,7 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
         when(attribute.getPropertyName()).thenReturn("AV5");
         when(attribute.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.VALUE);
 
-        IAttributeValue value = (IAttributeValue)valueContainer.newPropertyValue(parent, attribute, "ID5");
+        IAttributeValue value = valueContainer.newPropertyValue(parent, attribute, "ID5", IAttributeValue.class);
         assertNotNull(value);
         value.setAttribute("AV5");
         assertAttributesSize(4);
@@ -159,7 +159,7 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
         when(property.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.FORMULA);
 
         assertSize(3);
-        IFormula formula = (IFormula)valueContainer.newPropertyValue(parent, property, "MethodID1");
+        IFormula formula = valueContainer.newPropertyValue(parent, property, "MethodID1", IFormula.class);
         assertNotNull(formula);
         formula.setFormulaSignature("Method1");
         assertSize(4);

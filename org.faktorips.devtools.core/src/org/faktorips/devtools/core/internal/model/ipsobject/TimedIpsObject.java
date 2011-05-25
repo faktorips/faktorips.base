@@ -210,7 +210,6 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         IIpsObjectPart part;
         if (IIpsObjectGeneration.class.isAssignableFrom(partType)) {
             part = newGenerationInternal(getNextPartId());
-            objectHasChanged();
             return part;
         } else {
             return null;

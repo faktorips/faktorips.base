@@ -54,7 +54,7 @@ public enum ProductCmptPropertyType {
     VALUE(Messages.ProductCmptPropertyType_productAttribute) {
 
         @Override
-        public IPropertyValue createPropertyValue(IPropertyValueContainer container,
+        public IAttributeValue createPropertyValue(IPropertyValueContainer container,
                 IProductCmptProperty property,
                 String partId) {
             IAttributeValue attrValue = new AttributeValue(container, partId,
@@ -86,7 +86,7 @@ public enum ProductCmptPropertyType {
     TABLE_CONTENT_USAGE(Messages.ProductCmptPropertyType_tableUsage) {
 
         @Override
-        public IPropertyValue createPropertyValue(IPropertyValueContainer container,
+        public ITableContentUsage createPropertyValue(IPropertyValueContainer container,
                 IProductCmptProperty property,
                 String partId) {
             ITableContentUsage tableUsage = new TableContentUsage(container, partId,
@@ -116,7 +116,7 @@ public enum ProductCmptPropertyType {
     FORMULA(Messages.ProductCmptPropertyType_fomula) {
 
         @Override
-        public IPropertyValue createPropertyValue(IPropertyValueContainer container,
+        public IFormula createPropertyValue(IPropertyValueContainer container,
                 IProductCmptProperty property,
                 String partId) {
             IFormula formula = new Formula(container, partId, property == null ? "" : property.getPropertyName()); //$NON-NLS-1$
@@ -145,7 +145,7 @@ public enum ProductCmptPropertyType {
     DEFAULT_VALUE_AND_VALUESET(Messages.ProductCmptPropertyType_defaultValueAndValueSet) {
 
         @Override
-        public IPropertyValue createPropertyValue(IPropertyValueContainer container,
+        public IConfigElement createPropertyValue(IPropertyValueContainer container,
                 IProductCmptProperty property,
                 String partId) {
             IConfigElement configElement = new ConfigElement(container, partId,
@@ -182,7 +182,7 @@ public enum ProductCmptPropertyType {
     VALIDATION_RULE_CONFIG(Messages.ProductCmptPropertyType_ValidationRule) {
 
         @Override
-        public IPropertyValue createPropertyValue(IPropertyValueContainer container,
+        public IValidationRuleConfig createPropertyValue(IPropertyValueContainer container,
                 IProductCmptProperty property,
                 String partId) {
             IValidationRuleConfig ruleConfig = new ValidationRuleConfig(container, partId,

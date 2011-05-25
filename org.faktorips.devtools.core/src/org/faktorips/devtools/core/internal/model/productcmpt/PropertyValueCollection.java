@@ -131,17 +131,21 @@ public class PropertyValueCollection {
     /**
      * @param property the {@link IProductCmptProperty} the {@link IPropertyValue} is created for
      * @param partId the new part's id
+     * @param clazz the class parameter is used to get a type safe return value. Could be null to
+     *            get a {@link IPropertyValue}
      * @return the newly created {@link IPropertyValue} or <code>null</code> if the given property
      *         is <code>null</code>.
      */
-    public IPropertyValue newPropertyValue(IPropertyValueContainer container,
+    public <T extends IPropertyValue> T newPropertyValue(IPropertyValueContainer container,
             IProductCmptProperty property,
-            String partId) {
+            String partId,
+            Class<T> clazz) {
         if (property == null) {
             return null;
         }
-        IPropertyValue propertyValue = property.getProductCmptPropertyType().createPropertyValue(container, property,
-                partId);
+        @SuppressWarnings("unchecked")
+        // The enum could not be specialized with generics but the implementation is type safe
+        T propertyValue = (T)property.getProductCmptPropertyType().createPropertyValue(container, property, partId);
         addPropertyValue(propertyValue);
         return propertyValue;
     }
@@ -157,17 +161,38 @@ public class PropertyValueCollection {
     public IPropertyValue newPropertyValue(IPropertyValueContainer container, String xmlTagName, String partId) {
         ProductCmptPropertyType propertyType = ProductCmptPropertyType.getTypeForXmlTag(xmlTagName);
         if (propertyType != null) {
-            IPropertyValue newPropertyValue = newPropertyValue(container, propertyType, partId);
+            IPropertyValue newPropertyValue = newPropertyValue(container, propertyType.getValueClass(), partId);
             return newPropertyValue;
         }
         return null;
     }
 
     /**
+     * Creating a property value for the given class type.
+     * 
+     * @see #newPropertyValue(IPropertyValueContainer, ProductCmptPropertyType, String)
+     * 
+     * @param <T> The type of the property value you want to create
+     * @param container the container to add the property value into
+     * @param type the type of the property value you want to create
+     * @param partId the part id for the new property value
+     * 
+     * @return the created property value
+     */
+    public <T extends IPropertyValue> T newPropertyValue(IPropertyValueContainer container, Class<T> type, String partId) {
+        @SuppressWarnings("unchecked")
+        // The enum could not be specialized with generics but the implementation is type safe
+        T propertyValue = (T)ProductCmptPropertyType.getTypeForValueClass(type).createPropertyValue(container, null,
+                partId);
+        addPropertyValue(propertyValue);
+        return propertyValue;
+    }
+
+    /**
      * Caution: This Method creates an {@link IPropertyValue} without initializing it properly and
      * thereby setting the property name to "". Use
-     * {@link #newPropertyValue(IPropertyValueContainer, IProductCmptProperty, String)} in all cases
-     * an {@link IProductCmptProperty} is available.
+     * {@link #newPropertyValue(IPropertyValueContainer, IProductCmptProperty, String, Class)} in
+     * all cases an {@link IProductCmptProperty} is available.
      * 
      * @param type the {@link ProductCmptPropertyType} of the created {@link IPropertyValue}
      * @param partId the new part's id

@@ -55,6 +55,11 @@ public class TableStructureUsage extends IpsObjectPart implements ITableStructur
         super(pcType, id);
     }
 
+    @Override
+    public IProductCmptType getType() {
+        return (IProductCmptType)getParent();
+    }
+
     /**
      * Constructor for testing purposes.
      */

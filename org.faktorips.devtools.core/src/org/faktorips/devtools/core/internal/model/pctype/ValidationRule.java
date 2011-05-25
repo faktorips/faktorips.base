@@ -83,6 +83,11 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         super(pcType, id);
     }
 
+    @Override
+    public IPolicyCmptType getType() {
+        return (IPolicyCmptType)getParent();
+    }
+
     /**
      * Constructor for testing purposes.
      */

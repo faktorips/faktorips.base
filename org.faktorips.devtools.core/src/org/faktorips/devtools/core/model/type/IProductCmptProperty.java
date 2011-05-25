@@ -65,4 +65,11 @@ public interface IProductCmptProperty extends IDescribedElement, ILabeledElement
      */
     public String getPropertyDatatype();
 
+    /**
+     * Returning the product component type this property belongs to.
+     * 
+     * @return the property component type which is the parent of this object.
+     */
+    public IType getType();
+
 }

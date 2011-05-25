@@ -524,7 +524,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * <p>
      * This method is called during the process of initialization from XML when the part has been
      * part of the parent before the XML initialization and is still found in the XML file (the
-     * part's id is found in the XML file).
+     * part's id is found in the XML file). To avoid a StackOverflow it is important NOT to call the
+     * {@link #objectHasChanged()} method after adding a part!
      * 
      * @param part The {@link IIpsObjectPart} to add to this container.
      */
@@ -545,6 +546,10 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * {@link #addPart(IIpsObjectPart)}.
      * <p>
      * The given part must be added to the correct collection.
+     * <p>
+     * This method is called by {@link #addPart(IIpsObjectPart)} which is called during xml
+     * initialization. It is important NOT to call the {@link #objectHasChanged()} method after
+     * adding a part!
      * 
      * @param part The {@link IIpsObjectPart} to add to this container.
      */
