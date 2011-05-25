@@ -17,10 +17,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -29,8 +27,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.model.type.ITypePart;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.productcmpttype.association.GenProdAssociation;
 import org.faktorips.devtools.stdbuilder.productcmpttype.method.GenProductCmptTypeMethod;
@@ -204,25 +200,6 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
         if (generator != null) {
             generator.generate(generatesInterface(), getIpsProject(), getMainTypeSection());
         }
-    }
-
-    @Override
-    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
-            IIpsObjectPartContainer ipsObjectPartContainer) {
-
-        IType type = null;
-        if (ipsObjectPartContainer instanceof IType) {
-            type = (IType)ipsObjectPartContainer;
-        } else if (ipsObjectPartContainer instanceof ITypePart) {
-            type = ((ITypePart)ipsObjectPartContainer).getType();
-        } else if (ipsObjectPartContainer instanceof ITableStructureUsage) {
-            type = ((ITableStructureUsage)ipsObjectPartContainer).getProductCmptType();
-        } else {
-            return;
-        }
-
-        org.eclipse.jdt.core.IType javaType = getGeneratedJavaTypes(type).get(0);
-        getGenType(type).getGeneratedJavaElementsForPublishedInterface(javaElements, javaType, ipsObjectPartContainer);
     }
 
     @Override

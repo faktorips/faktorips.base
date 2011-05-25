@@ -14,19 +14,25 @@
 package org.faktorips.devtools.stdbuilder.productcmpttype;
 
 import java.lang.reflect.Modifier;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.builder.AbstractProductCmptTypeBuilder;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.ITypePart;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.attribute.GenChangeableAttribute;
@@ -203,6 +209,37 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
     protected void generateAdditionalDoInitPropertiesFromXml(JavaCodeFragmentBuilder builder,
             boolean localVariablesAlreadyGenerated) throws CoreException {
         // default do nothing
+    }
+
+    @Override
+    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
+            IIpsObjectPartContainer ipsObjectPartContainer) {
+
+        IType type = null;
+        if (ipsObjectPartContainer instanceof IType) {
+            type = (IType)ipsObjectPartContainer;
+        } else if (ipsObjectPartContainer instanceof IProductCmptProperty) {
+            IProductCmptProperty productCmptProperty = (IProductCmptProperty)ipsObjectPartContainer;
+            if (productCmptProperty.isChangingOverTime() == isChangingOverTimeContainer()) {
+                type = productCmptProperty.getType();
+            } else {
+                return;
+            }
+        } else if (ipsObjectPartContainer instanceof ITypePart) {
+            type = ((ITypePart)ipsObjectPartContainer).getType();
+        } else if (ipsObjectPartContainer instanceof ITableStructureUsage) {
+            type = ((ITableStructureUsage)ipsObjectPartContainer).getProductCmptType();
+        } else {
+            return;
+        }
+
+        org.eclipse.jdt.core.IType javaType = getGeneratedJavaTypes(type).get(0);
+        if (generatesInterface()) {
+            getGenType(type).getGeneratedJavaElementsForPublishedInterface(javaElements, javaType,
+                    ipsObjectPartContainer);
+        } else {
+            getGenType(type).getGeneratedJavaElementsForImplementation(javaElements, javaType, ipsObjectPartContainer);
+        }
     }
 
 }

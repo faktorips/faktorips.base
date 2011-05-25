@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -29,7 +28,6 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -41,8 +39,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.model.type.ITypePart;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
@@ -820,25 +816,6 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
                 + IProductComponent.class.getName() + ">>"; //$NON-NLS-1$
         methodsBuilder.signature(getJavaNamingConvention().getModifierForPublicInterfaceMethod(), returnType,
                 "getLinks", new String[0], new String[0]); //$NON-NLS-1$
-    }
-
-    @Override
-    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
-            IIpsObjectPartContainer ipsObjectPartContainer) {
-
-        IType type = null;
-        if (ipsObjectPartContainer instanceof IType) {
-            type = (IType)ipsObjectPartContainer;
-        } else if (ipsObjectPartContainer instanceof ITypePart) {
-            type = ((ITypePart)ipsObjectPartContainer).getType();
-        } else if (ipsObjectPartContainer instanceof ITableStructureUsage) {
-            type = ((ITableStructureUsage)ipsObjectPartContainer).getProductCmptType();
-        } else {
-            return;
-        }
-
-        org.eclipse.jdt.core.IType javaType = getGeneratedJavaTypes(type).get(0);
-        getGenType(type).getGeneratedJavaElementsForImplementation(javaElements, javaType, ipsObjectPartContainer);
     }
 
     @Override
