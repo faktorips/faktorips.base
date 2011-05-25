@@ -88,4 +88,38 @@ public class IpsRemoveImportsOperationTest {
         assertEquals("import lasdü.DasBrauchIch; DasBrauchIch", removeUnusedImports);
     }
 
+    /**
+     * Testing the problem occurred with FIPS-541
+     */
+    @Test
+    public void testWithEscapedQuotationMarks() throws Exception {
+        String input = "import blablabla.blas.DasBrauchIch;\n" + //
+                "\n" + //
+                "\"bla\\\"\"DasBrauchIch\"\"";
+
+        IpsRemoveImportsOperation ipsRemoveImportsOperation = new IpsRemoveImportsOperation();
+        String removeUnusedImports = ipsRemoveImportsOperation.removeUnusedImports(input);
+
+        assertEquals(input, removeUnusedImports);
+    }
+
+    @Test
+    public void testJavaDocImportReference() throws Exception {
+        String input = "import blablabla.blas.DasBrauchIch;\n" + //
+                "import blablabla.blas.DasNicht;\n" + //
+                "\n" + //
+                "/**DasBrauchIch*/\n" + //
+                "/* *DasNicht*/";
+
+        String expected = "import blablabla.blas.DasBrauchIch;\n" + //
+                "\n" + //
+                "/**DasBrauchIch*/\n" + //
+                "/* *DasNicht*/";
+
+        IpsRemoveImportsOperation ipsRemoveImportsOperation = new IpsRemoveImportsOperation();
+        String removeUnusedImports = ipsRemoveImportsOperation.removeUnusedImports(input);
+
+        assertEquals(expected, removeUnusedImports);
+    }
+
 }
