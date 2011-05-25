@@ -28,11 +28,10 @@ public class IpsRemoveImportsOperation {
 
     private final static String EMPTY = ""; //$NON-NLS-1$
 
-    private static Pattern stringConstantsPattern = Pattern.compile("\".*?\""); //$NON-NLS-1$
-
     private static Pattern oneLineCommentsPattern = Pattern.compile("//.*"); //$NON-NLS-1$
 
-    private static Pattern multiLineCommentsPattern = Pattern.compile("/\\*[\\s\\S]*?\\*/"); //$NON-NLS-1$
+    // multiple line comment pattern ignoring java doc comments
+    private static Pattern multiLineCommentsPattern = Pattern.compile("/\\*[^\\*][\\s\\S]*?\\*/"); //$NON-NLS-1$
 
     // http://java.sun.com/docs/books/jls/third_edition/html/lexical.html#3.10.7
     // (?<![\p{Alpha}0-9_$\.])\p{Alpha}[\p{Alpha}0-9_$]*
@@ -47,11 +46,7 @@ public class IpsRemoveImportsOperation {
             .compile(" *import[\\.\\s\\p{L}0-9_$]*\\.[\\s]*" + wordPatternString + "[\\s]*; *[\\r\\n]?"); //$NON-NLS-1$ //$NON-NLS-2$
 
     public String removeUnusedImports(String input) {
-        // first remove all string constants - does not matter whether they are in a comment or not
-        // Otherwise we would have a problem if anyone types a comment pattern in a string constant
-        // Using this way we could not handle some /*"*/ within one line
-        String withoutStringConstants = removeStringConstants(input);
-        String withoutComments = removeComments(withoutStringConstants);
+        String withoutComments = removeComments(input);
         String withoutImports = removeImports(withoutComments);
         Set<String> words = getRelevantWords(withoutImports);
         String inputWithRemovedImports = removeImports(input, words);
@@ -82,10 +77,6 @@ public class IpsRemoveImportsOperation {
             words.add(matcher.group());
         }
         return words;
-    }
-
-    private String removeStringConstants(String input) {
-        return stringConstantsPattern.matcher(input).replaceAll(EMPTY);
     }
 
     private String removeComments(String input) {
