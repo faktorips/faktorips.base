@@ -288,6 +288,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
+    public IPropertyValueContainerToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException {
+        return new PropertyValueContainerToTypeDelta(this, ipsProject);
+    }
+
+    @Override
     public boolean isReferencingProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmptCandidate) {
         int numOfGenerations = getNumOfGenerations();
         for (int i = 0; i < numOfGenerations; i++) {
@@ -382,11 +387,6 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     public boolean isChangingOverTimeContainer() {
         return false;
-    }
-
-    @Override
-    public IPropertyValueContainerToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException {
-        return new PropertyValueContainerToTypeDelta(this, ipsProject);
     }
 
     @Override
