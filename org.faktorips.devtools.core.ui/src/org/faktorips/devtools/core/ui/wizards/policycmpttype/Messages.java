@@ -27,8 +27,11 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
-    public static String PcTypePage_configuredByProductCmptType;
-    public static String PcTypePage_infoConfigurateByProductCmptType;
-    public static String PcTypePage_title;
+    public static String NewPcTypePage_configuredByProductCmptType;
+    public static String NewPcTypePage_infoConfigurateByProductCmptType;
+    public static String NewPcTypePage_title;
+
+    public static String NewProductCmptTypePage_title;
+    public static String NewProductCmptTypePage_msgPolicyCmptSuperTypeNeedsToBeX;
 
 }

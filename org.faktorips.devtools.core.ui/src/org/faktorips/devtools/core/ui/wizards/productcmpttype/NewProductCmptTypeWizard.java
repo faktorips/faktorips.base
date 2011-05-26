@@ -30,7 +30,7 @@ public class NewProductCmptTypeWizard extends NewIpsObjectWizard {
 
     @Override
     protected IpsObjectPage createFirstPage(IStructuredSelection selection) throws JavaModelException {
-        return new ProductCmptTypePage(selection, null);
+        return new NewProductCmptTypePage(selection);
     }
 
 }

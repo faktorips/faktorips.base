@@ -1,3 +1,4 @@
+checkbox
 supertype
 valueset
 subtype

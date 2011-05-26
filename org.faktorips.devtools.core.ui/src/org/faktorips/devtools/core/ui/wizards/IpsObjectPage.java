@@ -342,9 +342,9 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
     /**
      * Validates the page and generates error messages that are displayed in the message area of the
      * wizard container. If subclasses what to add further validations they can override the
-     * validatePageExtension() Method. The validationPageExtension() Method is called by this method
+     * validatePageExtension() Method. The validationPageExtension() method is called by this method
      * before the page get updated. This method is protected because subclasses might need to call
-     * within event szenarios implemented within the subclass.
+     * it within event scenarios implemented within the subclass.
      */
     public final void validatePage() throws CoreException {
         setMessage("", IMessageProvider.NONE); //$NON-NLS-1$

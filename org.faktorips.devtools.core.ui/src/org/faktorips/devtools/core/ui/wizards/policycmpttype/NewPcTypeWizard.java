@@ -19,22 +19,22 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard;
-import org.faktorips.devtools.core.ui.wizards.productcmpttype.ProductCmptTypePage;
 
 public class NewPcTypeWizard extends NewIpsObjectWizard {
 
-    private PcTypePage pctypePage;
+    private NewPcTypePage pctypePage;
 
     @Override
     protected IpsObjectPage createFirstPage(IStructuredSelection selection) throws JavaModelException {
-        pctypePage = new PcTypePage(selection);
+        pctypePage = new NewPcTypePage(selection);
         return pctypePage;
     }
 
     @Override
     protected IWizardPage[] createAdditionalPages(IStructuredSelection selection) throws CoreException {
-        ProductCmptTypePage page = new ProductCmptTypePage(selection, pctypePage);
-        pctypePage.setProductCmptTypePage(page);
+        NewProductCmptTypePage page = new NewProductCmptTypePage(selection, pctypePage);
+        pctypePage.setPageOfAssociatedType(page);
         return new IWizardPage[] { page };
     }
+
 }

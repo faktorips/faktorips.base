@@ -32,24 +32,24 @@ import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 
 /**
- * An abstract superclass that implements common behaviour of the policy and product component type
+ * An abstract superclass that implements common behavior of the policy and product component type
  * pages.
  */
-public abstract class TypePage extends IpsObjectPage {
+public abstract class NewTypePage extends IpsObjectPage {
 
     /** The checkbox field to set the abstract property. */
     protected CheckboxField abstractField;
 
     /** The wizard type page of the associated (product or policy) type. */
-    protected TypePage pageOfAssociatedType;
+    private NewTypePage pageOfAssociatedType;
 
     /** The text field to choose the supertype */
     private TextButtonField supertypeField;
 
-    /** Flag inidcating whether this type page has already been entered */
+    /** Flag indicating whether this type page has already been entered */
     private boolean alreadyBeenEntered;
 
-    public TypePage(IpsObjectType ipsObjectType, IStructuredSelection selection, String pageName) {
+    public NewTypePage(IpsObjectType ipsObjectType, IStructuredSelection selection, String pageName) {
         super(ipsObjectType, selection, pageName);
         alreadyBeenEntered = false;
         setTitle(pageName);
@@ -59,7 +59,7 @@ public abstract class TypePage extends IpsObjectPage {
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
         super.fillNameComposite(nameComposite, toolkit);
 
-        toolkit.createFormLabel(nameComposite, Messages.TypePage_superclass);
+        toolkit.createFormLabel(nameComposite, Messages.NewTypePage_superclass);
         IpsObjectRefControl superTypeControl = createSupertypeControl(nameComposite, toolkit);
         supertypeField = new TextButtonField(superTypeControl);
         /*
@@ -173,22 +173,32 @@ public abstract class TypePage extends IpsObjectPage {
      */
     @Override
     protected void validatePageExtension() throws CoreException {
+        if (!isCurrentPage()) {
+            return;
+        }
+
         // Check for name conflicts of the product and policy component type name
         if (pageOfAssociatedType != null && getIpsObjectName() != null
                 && pageOfAssociatedType.getIpsObjectName() != null && !StringUtils.isEmpty(getIpsObjectName())
                 && !StringUtils.isEmpty(pageOfAssociatedType.getIpsObjectName())
                 && getIpsObjectName().equals(pageOfAssociatedType.getIpsObjectName())) {
-            setErrorMessage(Messages.TypePage_msgNameConflicts);
+            setErrorMessage(Messages.NewTypePage_msgNameConflicts);
+            return;
         }
 
         // Check if selected super type exists
         if (!StringUtils.isEmpty(getSuperType())) {
             IIpsSrcFile ipsSrcFile = getIpsProject().findIpsSrcFile(getIpsObjectType(), getSuperType());
             if (ipsSrcFile == null) {
-                setErrorMessage(Messages.TypePage_msgSupertypeDoesNotExist);
+                setErrorMessage(Messages.NewTypePage_msgSupertypeDoesNotExist);
+                return;
             }
         }
+
+        validatePageExtensionThis();
     }
+
+    protected abstract void validatePageExtensionThis() throws CoreException;
 
     @Override
     public void pageEntered() throws CoreException {
@@ -205,6 +215,14 @@ public abstract class TypePage extends IpsObjectPage {
      */
     public boolean isAlreadyBeenEntered() {
         return alreadyBeenEntered;
+    }
+
+    public void setPageOfAssociatedType(NewTypePage pageOfAssociatedType) {
+        this.pageOfAssociatedType = pageOfAssociatedType;
+    }
+
+    public NewTypePage getPageOfAssociatedType() {
+        return pageOfAssociatedType;
     }
 
 }
