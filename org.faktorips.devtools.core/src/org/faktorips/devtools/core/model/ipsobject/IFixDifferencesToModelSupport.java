@@ -39,7 +39,11 @@ public interface IFixDifferencesToModelSupport {
     public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Fixes all differences between this element and its corresponding model element.
+     * Fixes all differences between this element and its corresponding model element. In most cases
+     * this method would calls the method {@link #computeDeltaToModel(IIpsProject)} and calls the
+     * {@link IFixDifferencesComposite#fixAllDifferencesToModel()}. However some
+     * {@link IFixDifferencesComposite} need to be configured properly to automatically fix all
+     * differences .
      * 
      * @param ipsProject The IPS project which IPS object path is used to search for IPS objects
      *            needed during the fix.
