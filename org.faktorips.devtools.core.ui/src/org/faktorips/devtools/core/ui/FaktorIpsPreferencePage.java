@@ -36,19 +36,46 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
 
     @Override
     protected void createFieldEditors() {
-        StringFieldEditor workingDateField = new StringFieldEditor(IpsPreferences.WORKING_DATE,
+        createWorkingDateField();
+        createNullRepresentationField();
+        createProductCmptPostfixField();
+        createChangesOverTimeField();
+        createEnumTypeDisplayField();
+        createIpsTestRunnerMaxHeapSizeField();
+
+        createEditRecentGenerationsField();
+        createEditRuntimeIdField();
+        createEnableGeneratingField();
+        createCanNavigateToModelField();
+        createAdvancedTeamFunctionInProductDefExplorerField();
+        createEditRangeEditFieldsInOneRowField();
+
+        createWorkingModeField();
+        createSectionsInTypeEditorsField();
+        createRefactoringModeField();
+
+        createDatatypeFormattingField();
+    }
+
+    private void createWorkingDateField() {
+        StringFieldEditor field = new StringFieldEditor(IpsPreferences.WORKING_DATE,
                 Messages.FaktorIpsPreferencePage_labelWorkingDate, getFieldEditorParent());
-        addField(workingDateField);
+        addField(field);
+    }
 
-        StringFieldEditor nullRepresentation = new StringFieldEditor(IpsPreferences.NULL_REPRESENTATION_STRING,
+    private void createNullRepresentationField() {
+        StringFieldEditor field = new StringFieldEditor(IpsPreferences.NULL_REPRESENTATION_STRING,
                 Messages.FaktorIpsPreferencePage_labelNullValue, getFieldEditorParent());
-        addField(nullRepresentation);
+        addField(field);
+    }
 
-        StringFieldEditor productCmptPostfixField = new StringFieldEditor(
-                IpsPreferences.DEFAULT_PRODUCT_CMPT_TYPE_POSTFIX,
+    private void createProductCmptPostfixField() {
+        StringFieldEditor field = new StringFieldEditor(IpsPreferences.DEFAULT_PRODUCT_CMPT_TYPE_POSTFIX,
                 Messages.FaktorIpsPreferencePage_labelProductTypePostfix, getFieldEditorParent());
-        addField(productCmptPostfixField);
+        addField(field);
+    }
 
+    private void createChangesOverTimeField() {
         IChangesOverTimeNamingConvention[] conventions = IpsPlugin.getDefault().getIpsModel()
                 .getChangesOverTimeNamingConvention();
         String[][] nameValues = new String[conventions.length][2];
@@ -56,54 +83,71 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
             nameValues[i][0] = conventions[i].getName();
             nameValues[i][1] = conventions[i].getId();
         }
-        ComboFieldEditor changeOverTimeField = new ComboFieldEditor(IpsPreferences.CHANGES_OVER_TIME_NAMING_CONCEPT,
+        ComboFieldEditor field = new ComboFieldEditor(IpsPreferences.CHANGES_OVER_TIME_NAMING_CONCEPT,
                 Messages.FaktorIpsPreferencePage_labelNamingScheme, nameValues, getFieldEditorParent());
-        addField(changeOverTimeField);
+        addField(field);
+    }
 
+    private void createEnumTypeDisplayField() {
         EnumValue[] values = EnumTypeDisplay.getEnumType().getValues();
         String[][] enumTypeDisplayNameValues = new String[values.length][2];
         for (int i = 0; i < enumTypeDisplayNameValues.length; i++) {
             enumTypeDisplayNameValues[i][0] = values[i].getName();
             enumTypeDisplayNameValues[i][1] = values[i].getId();
         }
-        ComboFieldEditor enumTypeDisplay = new ComboFieldEditor(IpsPreferences.ENUM_TYPE_DISPLAY,
+        ComboFieldEditor field = new ComboFieldEditor(IpsPreferences.ENUM_TYPE_DISPLAY,
                 Messages.FaktorIpsPreferencePage_labelEnumTypeDisplay, enumTypeDisplayNameValues,
                 getFieldEditorParent());
-        addField(enumTypeDisplay);
+        addField(field);
+    }
 
-        StringFieldEditor ipsTestRunnerMaxHeapSize = new StringFieldEditor(IpsPreferences.IPSTESTRUNNER_MAX_HEAP_SIZE,
+    private void createIpsTestRunnerMaxHeapSizeField() {
+        StringFieldEditor field = new StringFieldEditor(IpsPreferences.IPSTESTRUNNER_MAX_HEAP_SIZE,
                 Messages.FaktorIpsPreferencePage_labelMaxHeapSizeIpsTestRunner, getFieldEditorParent());
-        addField(ipsTestRunnerMaxHeapSize);
+        addField(field);
+    }
 
+    private void createEditRecentGenerationsField() {
         String label = NLS.bind(Messages.FaktorIpsPreferencePage_labelEditRecentGenerations, IpsPlugin.getDefault()
                 .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural());
-        BooleanFieldEditor editRecentGernations = new BooleanFieldEditor(IpsPreferences.EDIT_RECENT_GENERATION, label,
+        BooleanFieldEditor field = new BooleanFieldEditor(IpsPreferences.EDIT_RECENT_GENERATION, label,
                 getFieldEditorParent());
-        addField(editRecentGernations);
+        addField(field);
+    }
 
-        BooleanFieldEditor editRuntimeId = new BooleanFieldEditor(IpsPreferences.MODIFY_RUNTIME_ID,
+    private void createEditRuntimeIdField() {
+        BooleanFieldEditor field = new BooleanFieldEditor(IpsPreferences.MODIFY_RUNTIME_ID,
                 Messages.FaktorIpsPreferencePage_modifyRuntimeId, getFieldEditorParent());
-        addField(editRuntimeId);
+        addField(field);
+    }
 
-        BooleanFieldEditor enableGeneratingField = new BooleanFieldEditor(IpsPreferences.ENABLE_GENERATING,
+    private void createEnableGeneratingField() {
+        BooleanFieldEditor field = new BooleanFieldEditor(IpsPreferences.ENABLE_GENERATING,
                 Messages.FaktorIpsPreferencePage_FaktorIpsPreferencePage_enableGenerating, getFieldEditorParent());
-        addField(enableGeneratingField);
+        addField(field);
+    }
 
-        BooleanFieldEditor canNavigateToModel = new BooleanFieldEditor(IpsPreferences.NAVIGATE_TO_MODEL_OR_SOURCE_CODE,
+    private void createCanNavigateToModelField() {
+        BooleanFieldEditor field = new BooleanFieldEditor(IpsPreferences.NAVIGATE_TO_MODEL_OR_SOURCE_CODE,
                 Messages.FaktorIpsPreferencePage_labelCanNavigateToModelOrSourceCode, getFieldEditorParent());
-        addField(canNavigateToModel);
+        addField(field);
+    }
 
-        BooleanFieldEditor advancedTeamFunctionInProductDefExplorer = new BooleanFieldEditor(
+    private void createAdvancedTeamFunctionInProductDefExplorerField() {
+        BooleanFieldEditor field = new BooleanFieldEditor(
                 IpsPreferences.ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER,
                 Messages.FaktorIpsPreferencePage_advancedTeamFunctionsInProductDefExplorer, getFieldEditorParent());
-        addField(advancedTeamFunctionInProductDefExplorer);
+        addField(field);
+    }
 
-        BooleanFieldEditor editRangeEditFieldsInOneRow = new BooleanFieldEditor(
-                IpsPreferences.RANGE_EDIT_FIELDS_IN_ONE_ROW,
+    private void createEditRangeEditFieldsInOneRowField() {
+        BooleanFieldEditor field = new BooleanFieldEditor(IpsPreferences.RANGE_EDIT_FIELDS_IN_ONE_ROW,
                 Messages.FaktorIpsPreferencePage_labeRangeEditFieldsInOneRow, getFieldEditorParent());
-        addField(editRangeEditFieldsInOneRow);
+        addField(field);
+    }
 
-        RadioGroupFieldEditor workingMode = new RadioGroupFieldEditor(
+    private void createWorkingModeField() {
+        RadioGroupFieldEditor field = new RadioGroupFieldEditor(
                 IpsPreferences.WORKING_MODE,
                 Messages.FaktorIpsPreferencePage_titleWorkingMode,
                 2,
@@ -111,18 +155,21 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
                         { Messages.FaktorIpsPreferencePage_labelWorkingModeBrowse, IpsPreferences.WORKING_MODE_BROWSE },
                         { Messages.FaktorIpsPreferencePage_labelWorkingModeEdit, IpsPreferences.WORKING_MODE_EDIT } },
                 getFieldEditorParent(), true);
-        addField(workingMode);
+        addField(field);
+    }
 
-        RadioGroupFieldEditor sectionsInTypeEditors = new RadioGroupFieldEditor(
-                IpsPreferences.SECTIONS_IN_TYPE_EDITORS, Messages.FaktorIpsPreferencePage_title_numberOfSections, 2,
-                new String[][] {
+    private void createSectionsInTypeEditorsField() {
+        RadioGroupFieldEditor field = new RadioGroupFieldEditor(IpsPreferences.SECTIONS_IN_TYPE_EDITORS,
+                Messages.FaktorIpsPreferencePage_title_numberOfSections, 2, new String[][] {
                         { Messages.FaktorIpsPreferencePage_label_twoSections,
                                 IpsPreferences.TWO_SECTIONS_IN_TYPE_EDITOR_PAGE },
                         { Messages.FaktorIpsPreferencePage_label_fourSections,
                                 IpsPreferences.FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE } }, getFieldEditorParent(), true);
-        addField(sectionsInTypeEditors);
+        addField(field);
+    }
 
-        RadioGroupFieldEditor refactoringMode = new RadioGroupFieldEditor(
+    private void createRefactoringModeField() {
+        RadioGroupFieldEditor field = new RadioGroupFieldEditor(
                 IpsPreferences.REFACTORING_MODE,
                 Messages.FaktorIpsPreferencePage_title_refactoringMode,
                 2,
@@ -130,24 +177,25 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
                         { Messages.FaktorIpsPreferencePage_label_direct, IpsPreferences.REFACTORING_MODE_DIRECT },
                         { Messages.FaktorIpsPreferencePage_label_explicit, IpsPreferences.REFACTORING_MODE_EXPLICIT } },
                 getFieldEditorParent(), true);
-        addField(refactoringMode);
-
-        createDatatypeFormattingCombo();
+        field.getRadioBoxControl(getFieldEditorParent()).getChildren()[0]
+                .setToolTipText(Messages.FaktorIpsPreferencePage_tooltip_direct);
+        field.getRadioBoxControl(getFieldEditorParent()).getChildren()[1]
+                .setToolTipText(Messages.FaktorIpsPreferencePage_tooltip_explicit);
+        addField(field);
     }
 
-    protected void createDatatypeFormattingCombo() {
+    protected void createDatatypeFormattingField() {
         Locale[] availableLocales = new Locale[] { Locale.GERMANY, Locale.US, Locale.UK };
         String[][] localeDisplayNameValues = new String[availableLocales.length][2];
         for (int i = 0; i < availableLocales.length; i++) {
             localeDisplayNameValues[i][0] = availableLocales[i].getDisplayName();
             localeDisplayNameValues[i][1] = availableLocales[i].toString();
         }
-        ComboFieldEditor datatypeFormattingLocaleCombo = new ComboFieldEditor(
-                IpsPreferences.DATATYPE_FORMATTING_LOCALE, Messages.FaktorIpsPreferencePage_LabelFormattingOfValues,
-                localeDisplayNameValues, getFieldEditorParent());
-        datatypeFormattingLocaleCombo.getComboBoxControl(getFieldEditorParent()).setEnabled(false);
-
-        addField(datatypeFormattingLocaleCombo);
+        ComboFieldEditor field = new ComboFieldEditor(IpsPreferences.DATATYPE_FORMATTING_LOCALE,
+                Messages.FaktorIpsPreferencePage_LabelFormattingOfValues, localeDisplayNameValues,
+                getFieldEditorParent());
+        field.getComboBoxControl(getFieldEditorParent()).setEnabled(false);
+        addField(field);
     }
 
     @Override
