@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.model.productcmpt;
 
+import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
 /**
@@ -22,7 +23,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
  * 
  * @author Jan Ortmann
  */
-public interface IPropertyValueContainerToTypeDelta {
+public interface IPropertyValueContainerToTypeDelta extends IFixDifferencesComposite {
 
     /**
      * Returns the product component generation this delta was computed for.
@@ -35,12 +36,6 @@ public interface IPropertyValueContainerToTypeDelta {
     public IProductCmptType getProductCmptType();
 
     /**
-     * Returns <code>true</code> if the delta is empty. In this case the product component conforms
-     * to the product component type it is based on.
-     */
-    public boolean isEmpty();
-
-    /**
      * Returns the delta entries that describe the delta details. Each entry reports a difference
      * between the generation and the product component type.
      */
@@ -50,13 +45,5 @@ public interface IPropertyValueContainerToTypeDelta {
      * Returns all entries for the given type.
      */
     public IDeltaEntry[] getEntries(DeltaType type);
-
-    /**
-     * Fixes the generation so that it conforms to the type afterwards.
-     * <p>
-     * For example if the type contains a new attribute but the product component generation. has
-     * not matching attribute value, this method creates the attribute value.
-     */
-    public void fix();
 
 }

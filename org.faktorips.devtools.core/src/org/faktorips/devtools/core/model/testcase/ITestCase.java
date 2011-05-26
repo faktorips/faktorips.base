@@ -45,12 +45,8 @@ public interface ITestCase extends IIpsMetaObject {
      */
     public String getTestCaseType();
 
-    /**
-     * Returns the delta between this test case and it's test case type.
-     * 
-     * @throws CoreException if an error occurs
-     */
-    public ITestCaseTestCaseTypeDelta computeDeltaToTestCaseType() throws CoreException;
+    @Override
+    public ITestCaseTestCaseTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException;
 
     /**
      * Fixes all differences that are described in the delta.

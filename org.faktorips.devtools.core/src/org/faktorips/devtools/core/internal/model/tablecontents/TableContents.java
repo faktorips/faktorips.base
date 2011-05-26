@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
+import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -229,6 +230,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
      */
     @Override
     public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreException {
+        // TODO TableContent does not yet support the fix differences framework
         return false;
     }
 
@@ -237,7 +239,13 @@ public class TableContents extends TimedIpsObject implements ITableContents {
      */
     @Override
     public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreException {
-        // Nothing to do at the moment
+        // TODO TableContent does not yet support the fix differences framework
+    }
+
+    @Override
+    public IFixDifferencesComposite computeDeltaToModel(IIpsProject ipsProject) throws CoreException {
+        // TODO TableContent does not yet support the fix differences framework
+        return null;
     }
 
     @Override

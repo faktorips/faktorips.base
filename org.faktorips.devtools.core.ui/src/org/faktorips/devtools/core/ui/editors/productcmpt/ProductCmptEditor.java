@@ -27,8 +27,8 @@ import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -389,10 +389,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         for (int i = 0; i < generations.length; i++) {
             generations[i] = (IProductCmptGeneration)gen[i];
         }
-        IPropertyValueContainerToTypeDelta[] deltas = new IPropertyValueContainerToTypeDelta[generations.length];
-        for (int i = 0; i < generations.length; i++) {
-            deltas[i] = (generations[i]).computeDeltaToModel(getIpsProject());
-        }
+
+        IFixDifferencesComposite deltas = getProductCmpt().computeDeltaToModel(getIpsProject());
 
         return new ProductCmptDeltaDialog(generations, deltas, getSite().getShell());
     }

@@ -58,7 +58,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
 
     @Test
     public void testIsEmpty() throws CoreException {
-        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
+        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToModel(ipsProject);
         assertTrue(delta.isEmpty());
         assertDeltaContainer(delta, 0, 0, 0, 0, 0, 0, 0);
 
@@ -75,7 +75,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         assertFalse(delta.isEmpty());
         assertDeltaContainer(delta, 0, 0, 0, 0, 1, 0, 0);
 
-        fixAndAssert(testCase.computeDeltaToTestCaseType());
+        fixAndAssert(testCase.computeDeltaToModel(ipsProject));
     }
 
     @Test
@@ -83,11 +83,11 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         ITestValue value = testCase.newTestValue();
         value.setTestValueParameter("TestValueParam1");
 
-        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
+        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToModel(ipsProject);
         assertDeltaContainer(delta, 1, 0, 0, 0, 0, 0, 0);
         assertEquals(value, delta.getTestValuesWithMissingTestValueParam()[0]);
 
-        fixAndAssert(testCase.computeDeltaToTestCaseType());
+        fixAndAssert(testCase.computeDeltaToModel(ipsProject));
     }
 
     @Test
@@ -95,11 +95,11 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         ITestRule rule = testCase.newTestRule();
         rule.setTestRuleParameter("TestRuleParam1");
 
-        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
+        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToModel(ipsProject);
         assertDeltaContainer(delta, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);
         assertEquals(rule, delta.getTestRulesWithMissingTestValueParam()[0]);
 
-        fixAndAssert(testCase.computeDeltaToTestCaseType());
+        fixAndAssert(testCase.computeDeltaToModel(ipsProject));
 
         // no delta
         TestRuleParameter param = testCaseType.newExpectedResultRuleParameter();
@@ -108,7 +108,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         rule = testCase.newTestRule();
         rule.setTestRuleParameter("TestRuleParam1");
 
-        delta = testCase.computeDeltaToTestCaseType();
+        delta = testCase.computeDeltaToModel(ipsProject);
         assertDeltaContainer(delta, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
 
@@ -117,11 +117,11 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         ITestPolicyCmpt cmpt = testCase.newTestPolicyCmpt();
         cmpt.setTestPolicyCmptTypeParameter("TestPolicyCmptTypeParam1");
 
-        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
+        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToModel(ipsProject);
         assertDeltaContainer(delta, 0, 1, 0, 0, 0, 0, 0);
         assertEquals(cmpt, delta.getTestPolicyCmptsWithMissingTypeParam()[0]);
 
-        fixAndAssert(testCase.computeDeltaToTestCaseType());
+        fixAndAssert(testCase.computeDeltaToModel(ipsProject));
     }
 
     @Test
@@ -132,11 +132,11 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         ITestPolicyCmptLink link = cmpt.newTestPolicyCmptLink();
         link.setTestPolicyCmptTypeParameter("TestPolicyCmptTypeParam2");
 
-        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
+        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToModel(ipsProject);
         assertDeltaContainer(delta, 0, 0, 1, 0, 0, 0, 0);
         assertEquals(link, delta.getTestPolicyCmptLinkWithMissingTypeParam()[0]);
 
-        fixAndAssert(testCase.computeDeltaToTestCaseType());
+        fixAndAssert(testCase.computeDeltaToModel(ipsProject));
     }
 
     @Test
@@ -160,11 +160,11 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         type.newPolicyCmptTypeAttribute().setName("Attribute1");
         type.newPolicyCmptTypeAttribute().setName("Attribute2");
 
-        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
+        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToModel(ipsProject);
         assertDeltaContainer(delta, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1);
         assertEquals(attrValue, delta.getTestAttributeValuesWithMissingTestAttribute()[0]);
 
-        fixAndAssert(testCase.computeDeltaToTestCaseType());
+        fixAndAssert(testCase.computeDeltaToModel(ipsProject));
     }
 
     @Test
@@ -179,12 +179,12 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         ITestValue value = testCase.newTestValue();
         value.setTestValueParameter("TestValueParam2");
 
-        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
+        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToModel(ipsProject);
         assertDeltaContainer(delta, 0, 0, 0, 0, 1, 0, 0);
         assertEquals(testValueParam1, delta.getTestValueParametersWithMissingTestValue()[0]);
         assertTrue(delta.isDifferentTestParameterOrder());
 
-        fixAndAssert(testCase.computeDeltaToTestCaseType());
+        fixAndAssert(testCase.computeDeltaToModel(ipsProject));
     }
 
     @Test
@@ -205,10 +205,10 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
 
         testCase.newTestPolicyCmpt().setTestPolicyCmptTypeParameter("TestPolicyCmptTypeParam2");
 
-        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
+        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToModel(ipsProject);
         assertDeltaContainer(delta, 0, 0, 0, 0, 0, 0, 0);
 
-        fixAndAssert(testCase.computeDeltaToTestCaseType());
+        fixAndAssert(testCase.computeDeltaToModel(ipsProject));
     }
 
     @Test
@@ -231,11 +231,11 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         ITestAttributeValue attrValue = cmpt.newTestAttributeValue();
         attrValue.setTestAttribute("Attribute1");
 
-        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
+        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToModel(ipsProject);
         assertDeltaContainer(delta, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1);
         assertEquals(testAttr, delta.getTestAttributesWithMissingTestAttributeValue()[0]);
 
-        fixAndAssert(testCase.computeDeltaToTestCaseType());
+        fixAndAssert(testCase.computeDeltaToModel(ipsProject));
     }
 
     /**
@@ -243,10 +243,10 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
      */
     @Test
     public void testComplex() throws CoreException {
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 0);
+        assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 0, 0, 0, 0, 0, 0);
         ITestPolicyCmptTypeParameter param1 = addNewPolicyCmptTypeParameter("TestParam1");
         param1.setTestParameterType(TestParameterType.COMBINED);
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 0);
+        assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 0, 0, 0, 0, 0, 0);
         ITestPolicyCmptTypeParameter param2 = addNewPolicyCmptTypeParameter("TestParam2");
         ITestAttribute testAttribute = param2.newInputTestAttribute();
         testAttribute.setName("InputAttribute1");
@@ -255,7 +255,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         IPolicyCmptType policyCmptType = param2.findPolicyCmptType(ipsProject);
         policyCmptType.newPolicyCmptTypeAttribute().setName("InputAttribute1");
 
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 0);
+        assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 0, 0, 0, 0, 0, 0);
         // Child of param1
         IPolicyCmptType childPolicyCmptType = newPolicyCmptType(ipsProject, "childPolicyCmptType");
         childPolicyCmptType.newPolicyCmptTypeAttribute().setName("InputAttribute1");
@@ -287,27 +287,27 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         policyCmptType2.newPolicyCmptTypeAttribute().setName("ExpResultAttribute1");
 
         // missing childs are not checked in the delta
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 0);
+        assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 0, 0, 0, 0, 0, 0);
 
         // Param1
         ITestPolicyCmpt testPolicyCmpt1 = testCase.newTestPolicyCmpt();
         testPolicyCmpt1.setTestPolicyCmptTypeParameter("TestParamX");
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 1, 0, 0, 0, 0, 0);
+        assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 1, 0, 0, 0, 0, 0);
         testPolicyCmpt1.setTestPolicyCmptTypeParameter("TestParam1");
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 0);
+        assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 0, 0, 0, 0, 0, 0);
         // Param2
         ITestPolicyCmpt testPolicyCmpt2 = testCase.newTestPolicyCmpt();
         testPolicyCmpt2.setTestPolicyCmptTypeParameter("TestParam2");
         // one missing test attribute value and one test policy wrong sort order
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 1, 0, 0, 1);
+        assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 0, 0, 0, 0, 0, 1, 0, 0, 1);
         testPolicyCmpt2.newTestAttributeValue().setTestAttribute("InputAttribute1");
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 0);
+        assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 0, 0, 0, 0, 0, 0);
         testPolicyCmpt2.newTestAttributeValue().setTestAttribute("InputAttribute2");
         testPolicyCmpt2.newTestAttributeValue().setTestAttribute("InputAttribute3");
 
         // two missing test attributes and
         // one wrong order of test attr (because test attr on same test policy cmpt)
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 2, 0, 0, 0, 0, 0, 1);
+        assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 0, 0, 2, 0, 0, 0, 0, 0, 1);
         ITestPolicyCmptLink rel2 = testPolicyCmpt2.newTestPolicyCmptLink();
         rel2.setTestPolicyCmptTypeParameter("AssociationX");
         ITestPolicyCmpt child2 = rel2.newTargetTestPolicyCmptChild();
@@ -316,7 +316,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         // one missing test policy cmpt link and
         // two missing test attributes and
         // one wrong order of test attr (because test attr on same test policy cmpt)
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 1, 2, 0, 0, 0, 0, 0, 1);
+        assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 0, 1, 2, 0, 0, 0, 0, 0, 1);
         // Child of param1
         ITestPolicyCmptLink rel1 = testPolicyCmpt1.newTestPolicyCmptLink();
         rel1.setTestPolicyCmptTypeParameter("Association1");
@@ -330,22 +330,22 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         // two wrong order of test attr (one see below and one from the newly
         // created TestParamChild1, three missing test attr values but all from
         // the same test policy cmpt)
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 1, 2, 0, 0, 3, 0, 0, 2);
+        assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 0, 1, 2, 0, 0, 3, 0, 0, 2);
         child1.newTestAttributeValue().setTestAttribute("InputAttribute1");
         child1.newTestAttributeValue().setTestAttribute("InputAttribute2");
         // see below but two test attibute values are created
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 1, 2, 0, 0, 1, 0, 0, 2);
+        assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 0, 1, 2, 0, 0, 1, 0, 0, 2);
         child1.newTestAttributeValue().setTestAttribute("ExpResultAttribute1");
         // see below but no more missing test attibute values, therefore only on left sort order of
         // test attributes
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 1, 2, 0, 0, 0, 0, 0, 1);
+        assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 0, 1, 2, 0, 0, 0, 0, 0, 1);
         child1.newTestAttributeValue().setTestAttribute("ExpResultAttributeX");
         // one missing test policy cmpt link and
         // three missing test attributes (one more for ExpResultAttributeX)
         // two wrong order of test attr (one see below and one from the newly
         // created ExpResultAttributeX)
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 1, 3, 0, 0, 0, 0, 0, 2);
-        fixAndAssert(testCase.computeDeltaToTestCaseType());
+        assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 0, 1, 3, 0, 0, 0, 0, 0, 2);
+        fixAndAssert(testCase.computeDeltaToModel(ipsProject));
     }
 
     @Test
@@ -356,9 +356,9 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         testCase.newTestPolicyCmpt().setTestPolicyCmptTypeParameter("a1");
         testCase.newTestPolicyCmpt().setTestPolicyCmptTypeParameter("a3");
         testCase.newTestPolicyCmpt().setTestPolicyCmptTypeParameter("a2");
-        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
+        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToModel(ipsProject);
         assertTrue(delta.isDifferentTestParameterOrder());
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 0);
+        assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 0, 0, 0, 0, 0, 0);
         fixAndAssert(delta);
     }
 
@@ -378,9 +378,9 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         testCase.newTestValue().setTestValueParameter("a3");
         testCase.newTestValue().setTestValueParameter("a2");
 
-        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
+        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToModel(ipsProject);
         assertTrue(delta.isDifferentTestParameterOrder());
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 0);
+        assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 0, 0, 0, 0, 0, 0);
         fixAndAssert(delta);
     }
 
@@ -392,9 +392,9 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         testCase.newTestRule().setTestRuleParameter("a1");
         testCase.newTestRule().setTestRuleParameter("a3");
         testCase.newTestRule().setTestRuleParameter("a2");
-        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
+        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToModel(ipsProject);
         assertTrue(delta.isDifferentTestParameterOrder());
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 0);
+        assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 0, 0, 0, 0, 0, 0);
         fixAndAssert(delta);
     }
 
@@ -406,9 +406,9 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         testCase.newTestRule().setTestRuleParameter("a1");
         testCase.newTestRule().setTestRuleParameter("a2");
         testCase.newTestRule().setTestRuleParameter("a3");
-        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
+        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToModel(ipsProject);
         assertFalse(delta.isDifferentTestParameterOrder());
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 0);
+        assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 0, 0, 0, 0, 0, 0);
         fixAndAssert(delta);
     }
 
@@ -432,9 +432,9 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         testRule3.setValidationRule("rule3");
         testCase.newTestPolicyCmpt().setTestPolicyCmptTypeParameter("PolicyCmpt1");
 
-        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
+        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToModel(ipsProject);
         assertFalse(delta.isDifferentTestParameterOrder());
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         fixAndAssert(delta);
     }
 
@@ -456,23 +456,23 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         rule0.setTestRuleParameter("a0");
         testCase.newTestPolicyCmpt().setTestPolicyCmptTypeParameter("a3");
         testCase.newTestValue().setTestValueParameter("a2");
-        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
+        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToModel(ipsProject);
         assertTrue(delta.isDifferentTestParameterOrder());
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 0);
+        assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 0, 0, 0, 0, 0, 0);
         fixAndAssert(delta);
 
         rule0.delete();
         // rules are optional
-        delta = testCase.computeDeltaToTestCaseType();
+        delta = testCase.computeDeltaToModel(ipsProject);
         assertFalse(delta.isDifferentTestParameterOrder());
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
         // readd rule 0 to the end
         testCase.newTestRule().setTestRuleParameter("a0");
-        delta = testCase.computeDeltaToTestCaseType();
+        delta = testCase.computeDeltaToModel(ipsProject);
         assertTrue(delta.isDifferentTestParameterOrder());
         // no specific object is wrong
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         fixAndAssert(delta);
     }
 
@@ -518,9 +518,9 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         rel3.setTestPolicyCmptTypeParameter("Child3");
         rel3.newTargetTestPolicyCmptChild().setTestPolicyCmptTypeParameter("Child3");
 
-        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
+        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToModel(ipsProject);
         assertFalse(delta.isDifferentTestParameterOrder());
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 0);
+        assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 0, 0, 0, 0, 0, 0);
         fixAndAssert(delta);
     }
 
@@ -566,9 +566,9 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         rel3.setTestPolicyCmptTypeParameter("Child2");
         rel3.newTargetTestPolicyCmptChild().setTestPolicyCmptTypeParameter("Child2");
 
-        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
+        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToModel(ipsProject);
         assertTrue(delta.isDifferentTestParameterOrder());
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 0, 1, 0, 0);
+        assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 0, 0, 0, 0, 0, 0, 1, 0, 0);
         fixAndAssert(delta);
     }
 
@@ -656,9 +656,9 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         rel.setTestPolicyCmptTypeParameter("Child1Child1");
         rel.newTargetTestPolicyCmptChild().setTestPolicyCmptTypeParameter("Child1Child1");
 
-        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
+        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToModel(ipsProject);
         assertTrue(delta.isDifferentTestParameterOrder());
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 0, 1, 0, 0);
+        assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 0, 0, 0, 0, 0, 0, 1, 0, 0);
         fixAndAssert(delta);
     }
 
@@ -699,11 +699,11 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         cmptChild2.setTestPolicyCmptTypeParameter(paramChild.getName());
         ((ITestPolicyCmptLink)cmptChild2.getParent()).setTestPolicyCmptTypeParameter(paramChild.getName());
 
-        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
+        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToModel(ipsProject);
         assertFalse(delta.isEmpty());
         // a test attribute will only added once if more instances of the same test parameter are in
         // the test case
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 2, 0, 0, 2);
+        assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 0, 0, 0, 0, 0, 2, 0, 0, 2);
         fixAndAssert(delta);
     }
 
@@ -758,7 +758,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
      */
     private void fixAndAssert(ITestCaseTestCaseTypeDelta delta) throws CoreException {
         testCase.fixDifferences(delta);
-        ITestCaseTestCaseTypeDelta newDelta = testCase.computeDeltaToTestCaseType();
+        ITestCaseTestCaseTypeDelta newDelta = testCase.computeDeltaToModel(ipsProject);
         assertFalse(newDelta.isDifferentTestParameterOrder());
         assertTrue(newDelta.isEmpty());
         assertDeltaContainer(newDelta, 0, 0, 0, 0, 0, 0, 0);
@@ -795,9 +795,9 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         testPolicyCmpt.newTestAttributeValue().setTestAttribute("a3");
         testPolicyCmpt.newTestAttributeValue().setTestAttribute("a2");
 
-        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToTestCaseType();
+        ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToModel(ipsProject);
         assertTrue(delta.isDifferentTestParameterOrder());
-        assertDeltaContainer(testCase.computeDeltaToTestCaseType(), 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+        assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
         fixAndAssert(delta);
     }
 

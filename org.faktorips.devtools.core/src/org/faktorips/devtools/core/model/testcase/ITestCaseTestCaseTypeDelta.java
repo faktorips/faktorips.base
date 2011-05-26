@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.model.testcase;
 
+import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
 import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
@@ -22,7 +23,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
  * A test case / test case type delta describes the difference between what a test case based on
  * specific test case type should contain and what it actually contains.
  */
-public interface ITestCaseTestCaseTypeDelta {
+public interface ITestCaseTestCaseTypeDelta extends IFixDifferencesComposite {
 
     /**
      * Returns the test case type this delta was computed for.
@@ -38,6 +39,7 @@ public interface ITestCaseTestCaseTypeDelta {
      * Returns true if the delta is empty. The test case conforms to the test case type it is based
      * on.
      */
+    @Override
     public boolean isEmpty();
 
     /**

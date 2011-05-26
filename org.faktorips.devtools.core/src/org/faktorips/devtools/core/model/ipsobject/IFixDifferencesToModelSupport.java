@@ -56,4 +56,14 @@ public interface IFixDifferencesToModelSupport {
      */
     public IIpsSrcFile getIpsSrcFile();
 
+    /**
+     * Returns the delta between this element and it's model type.
+     * 
+     * @param ipsProject The project which search path is used to search the type.
+     * 
+     * @throws CoreException if an exception occurs while searching for the type.
+     * @throws NullPointerException if ipsProject is <code>null</code>.
+     */
+    public IFixDifferencesComposite computeDeltaToModel(IIpsProject ipsProject) throws CoreException;
+
 }

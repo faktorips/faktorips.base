@@ -632,7 +632,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertFalse(testCase.validate(project).containsErrorMsg());
 
         // use delta fix to add all missing test attributes
-        testCase.fixDifferences(testCase.computeDeltaToTestCaseType());
+        testCase.fixDifferences(testCase.computeDeltaToModel(testCase.getIpsProject()));
         String path = testPolicyCmptObjectInput.getTestParameterName() + TestCaseHierarchyPath.SEPARATOR
                 + tpChild.getAssociation() + TestCaseHierarchyPath.SEPARATOR + tpChild.getName();
         tcChild = testCase.findTestPolicyCmpt(path);

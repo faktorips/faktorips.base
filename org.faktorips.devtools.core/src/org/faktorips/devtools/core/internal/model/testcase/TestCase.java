@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
+import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -262,13 +263,36 @@ public class TestCase extends IpsObject implements ITestCase {
     }
 
     @Override
-    public ITestCaseTestCaseTypeDelta computeDeltaToTestCaseType() throws CoreException {
-        ITestCaseType testCaseTypeFound = findTestCaseType(getIpsProject());
+    public ITestCaseTestCaseTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException {
+        ITestCaseType testCaseTypeFound = findTestCaseType(ipsProject);
         if (testCaseTypeFound != null) {
             return new TestCaseTestCaseTypeDelta(this, testCaseTypeFound);
         }
         // type not found, therefore no delta could be computed
         return null;
+    }
+
+    @Override
+    public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreException {
+        ITestCaseTestCaseTypeDelta delta = computeDeltaToModel(ipsProject);
+        if (delta != null && !delta.isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * The test case uses an old implementation of fix differences. In this implementation the test
+     * case handles the fix differences itself. To be compatible with the new implementation, this
+     * method delegates to the {@link IFixDifferencesComposite#fixAllDifferencesToModel()} method
+     * which delegates to the method {@link #fixDifferences(ITestCaseTestCaseTypeDelta)} of the old
+     * implementation.
+     * 
+     * {@inheritDoc}
+     */
+    @Override
+    public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreException {
+        computeDeltaToModel(ipsProject).fixAllDifferencesToModel();
     }
 
     @Override
@@ -991,20 +1015,6 @@ public class TestCase extends IpsObject implements ITestCase {
             messageList.add(msg);
             return;
         }
-    }
-
-    @Override
-    public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreException {
-        ITestCaseTestCaseTypeDelta delta = computeDeltaToTestCaseType();
-        if (delta != null && !delta.isEmpty()) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreException {
-        fixDifferences(computeDeltaToTestCaseType());
     }
 
     @Override

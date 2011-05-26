@@ -24,12 +24,16 @@ public class ProductCmptGenerationToTypeDelta extends PropertyValueContainerToTy
     public ProductCmptGenerationToTypeDelta(IProductCmptGeneration generation, IIpsProject ipsProject)
             throws CoreException {
         super(generation, ipsProject);
-        computeLinksWithMissingAssociations();
     }
 
     @Override
     public IProductCmptGeneration getPropertyValueContainer() {
         return (IProductCmptGeneration)super.getPropertyValueContainer();
+    }
+
+    @Override
+    protected void createAdditionalEntriesAndChildren() throws CoreException {
+        computeLinksWithMissingAssociations();
     }
 
     private void computeLinksWithMissingAssociations() throws CoreException {

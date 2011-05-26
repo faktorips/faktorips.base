@@ -1567,7 +1567,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
         if (selected instanceof ITestValue || selected instanceof ITestRule) {
             if (withFocusChange) {
-                EditField firstField = testCaseDetailArea.getTestValueEditField(uniquePath);
+                EditField<?> firstField = testCaseDetailArea.getTestValueEditField(uniquePath);
                 if (firstField != null) {
                     isDoubleClicked = true;
                     firstField.getControl().setFocus();

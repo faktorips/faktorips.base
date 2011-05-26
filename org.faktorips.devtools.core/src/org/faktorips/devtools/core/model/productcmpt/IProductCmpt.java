@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.IIpsMetaObject;
+import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -198,5 +199,14 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProperty
      * <code>null</code>.
      */
     public IAttributeValue getAttributeValue(String attribute);
+
+    /**
+     * Overrides the original {@link IFixDifferencesToModelSupport#computeDeltaToModel(IIpsProject)}
+     * method for using covariant return type {@link IPropertyValueContainerToTypeDelta}
+     * 
+     * {@inheritDoc}
+     */
+    @Override
+    public IPropertyValueContainerToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException;
 
 }

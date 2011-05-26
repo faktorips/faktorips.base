@@ -98,7 +98,7 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
 
     @Override
     protected Dialog createDialogToFixDifferencesToModel() throws CoreException {
-        return new TestCaseDeltaDialog(getTestCase().computeDeltaToTestCaseType(), getSite().getShell());
+        return new TestCaseDeltaDialog(getTestCase().computeDeltaToModel(getIpsProject()), getSite().getShell());
     }
 
     @Override

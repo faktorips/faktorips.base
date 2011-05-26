@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
+import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.editors.deltapresentation.AbstractDeltaDialog;
 
@@ -38,7 +38,7 @@ import org.faktorips.devtools.core.ui.editors.deltapresentation.AbstractDeltaDia
 public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
 
     private IProductCmptGeneration[] generations;
-    private IPropertyValueContainerToTypeDelta[] deltas;
+    private IFixDifferencesComposite deltas;
     private List generationsList;
 
     /**
@@ -49,8 +49,7 @@ public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
      * @param generations All generations with differences.
      * @param deltas All deltas for the generations.
      */
-    public ProductCmptDeltaDialog(IProductCmptGeneration[] generations, IPropertyValueContainerToTypeDelta[] deltas,
-            Shell parentShell) {
+    public ProductCmptDeltaDialog(IProductCmptGeneration[] generations, IFixDifferencesComposite deltas, Shell parentShell) {
 
         super(parentShell);
         super.setShellStyle(getShellStyle() | SWT.RESIZE);
@@ -155,14 +154,14 @@ public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
     }
 
     private void updateDeltaView() {
-        updateDeltaView(deltas[generationsList.getSelectionIndex()]);
+        updateDeltaView(deltas);
     }
 
     public IProductCmptGeneration[] getGenerations() {
         return generations;
     }
 
-    public IPropertyValueContainerToTypeDelta[] getDeltas() {
+    public IFixDifferencesComposite getDeltas() {
         return deltas;
     }
 }

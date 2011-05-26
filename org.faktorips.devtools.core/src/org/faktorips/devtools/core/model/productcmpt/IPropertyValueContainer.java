@@ -68,16 +68,6 @@ public interface IPropertyValueContainer extends IIpsObjectPartContainer {
     public boolean isChangingOverTimeContainer();
 
     /**
-     * Returns the delta between this product component and it's product component type.
-     * 
-     * @param ipsProject The ips project which search path is used to search the type.
-     * 
-     * @throws CoreException if an exception occurs while searching for the type.
-     * @throws NullPointerException if ipsProject is <code>null</code>.
-     */
-    public IPropertyValueContainerToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException;
-
-    /**
      * Returns the qualified name of the product component type this property value container is
      * based on.
      */

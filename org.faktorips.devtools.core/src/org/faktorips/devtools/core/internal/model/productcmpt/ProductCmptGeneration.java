@@ -149,7 +149,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return newPropertyValue;
     }
 
-    @Override
     public IPropertyValueContainerToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException {
         return new ProductCmptGenerationToTypeDelta(this, ipsProject);
     }

@@ -20,6 +20,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.ipsobject.AbstractFixDifferencesComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
@@ -44,7 +46,7 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Joerg Ortmann
  */
-public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
+public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite implements ITestCaseTestCaseTypeDelta {
 
     private ITestCase testCase;
     private ITestCaseType testCaseType;
@@ -606,7 +608,7 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
     }
 
     @Override
-    public boolean isEmpty() {
+    public boolean isEmptyThis() {
         return errorInTestCaseType || testValuesWithMissingTestValueParam.length == 0
                 && testPolicyCmptsWithMissingTypeParam.length == 0
                 && testPolicyCmptLinksWithMissingTypeParam.length == 0
@@ -688,5 +690,19 @@ public class TestCaseTestCaseTypeDelta implements ITestCaseTestCaseTypeDelta {
     @Override
     public ITestAttribute[] getTestAttributesWithMissingTestAttributeValue() {
         return testAttributesWithMissingTestAttributeValue;
+    }
+
+    /**
+     * This fix method simply delegates to the
+     * {@link ITestCase#fixDifferences(ITestCaseTestCaseTypeDelta)} method because in the old fix
+     * differences of {@link ITestCase} the test case does handle the fix itself! {@inheritDoc}
+     */
+    @Override
+    protected void fix() {
+        try {
+            testCase.fixDifferences(this);
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
     }
 }

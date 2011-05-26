@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeReference;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -306,6 +307,12 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     @Override
     public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreException {
         // TODO AW: What shall we do here?
+    }
+
+    @Override
+    public IFixDifferencesComposite computeDeltaToModel(IIpsProject ipsProject) throws CoreException {
+        // TODO AW: What shall we do here?
+        return null;
     }
 
     @Override

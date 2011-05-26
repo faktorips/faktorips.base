@@ -18,6 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.ipsobject.AbstractFixDifferencesComposite;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingPropertyValueEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.PropertyTypeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueSetMismatchEntry;
@@ -44,7 +45,8 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Jan Ortmann
  */
-public class PropertyValueContainerToTypeDelta implements IPropertyValueContainerToTypeDelta {
+public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDifferencesComposite implements
+        IPropertyValueContainerToTypeDelta {
 
     private final IIpsProject ipsProject;
     private final IPropertyValueContainer propertyValueContainer;
@@ -62,7 +64,16 @@ public class PropertyValueContainerToTypeDelta implements IPropertyValueContaine
             return;
         }
         createEntriesForProperties();
+        createAdditionalEntriesAndChildren();
     }
+
+    /**
+     * Adding additional entries or children to this delta element. This method is called at the end
+     * of the constructor.
+     * 
+     * @throws CoreException May throw any core exception
+     */
+    protected abstract void createAdditionalEntriesAndChildren() throws CoreException;
 
     private void createEntriesForProperties() throws CoreException {
         for (ProductCmptPropertyType propertyType : ProductCmptPropertyType.values()) {
@@ -156,7 +167,7 @@ public class PropertyValueContainerToTypeDelta implements IPropertyValueContaine
     }
 
     @Override
-    public boolean isEmpty() {
+    protected boolean isEmptyThis() {
         return entries.size() == 0;
     }
 
@@ -177,7 +188,7 @@ public class PropertyValueContainerToTypeDelta implements IPropertyValueContaine
     }
 
     @Override
-    public void fix() {
+    protected void fix() {
         for (IDeltaEntry entry : entries) {
             entry.fix();
         }

@@ -260,36 +260,17 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreException {
-        if (!computeDeltaToModel(ipsProject).isEmpty()) {
-            return true;
-        }
-        IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
-        for (IIpsObjectGeneration generation : generations) {
-            if (generation instanceof IProductCmptGeneration) {
-                IPropertyValueContainerToTypeDelta delta = ((IProductCmptGeneration)generation)
-                        .computeDeltaToModel(ipsProject);
-                if (!delta.isEmpty()) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return !computeDeltaToModel(ipsProject).isEmpty();
     }
 
     @Override
     public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreException {
-        int max = getNumOfGenerations();
-        computeDeltaToModel(ipsProject).fix();
-        for (int i = 0; i < max; i++) {
-            IProductCmptGeneration generation = getProductCmptGeneration(i);
-            IPropertyValueContainerToTypeDelta delta = generation.computeDeltaToModel(ipsProject);
-            delta.fix();
-        }
+        computeDeltaToModel(ipsProject).fixAllDifferencesToModel();
     }
 
     @Override
     public IPropertyValueContainerToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException {
-        return new PropertyValueContainerToTypeDelta(this, ipsProject);
+        return new ProductCmptToTypeDelta(this, ipsProject);
     }
 
     @Override
