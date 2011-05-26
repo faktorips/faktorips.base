@@ -190,6 +190,7 @@ public class TableRowBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private void generateCodeForToStringMethod(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+        methodBuilder.javaDoc("", ANNOTATION_GENERATED);
         appendOverrideAnnotation(methodBuilder, false);
         methodBuilder.methodBegin(Modifier.PUBLIC, String.class, "toString", new String[0], new Class[0]);
         methodBuilder.append("return \"\"");
