@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.editors.enumtype;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -258,8 +257,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         private void inheritClicked() throws CoreException {
             InheritEnumAttributesDialog dialog = new InheritEnumAttributesDialog(getEnumType(), getShell());
             if (dialog.open() == Window.OK) {
-                IEnumAttribute[] attributesToOverwrite = dialog.getSelectedAttributes();
-                getEnumType().inheritEnumAttributes(Arrays.asList(attributesToOverwrite));
+                getEnumType().inheritEnumAttributes(dialog.getSelectedParts());
                 refresh();
             }
         }

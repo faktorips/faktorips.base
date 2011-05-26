@@ -155,8 +155,7 @@ public class PolicyCmptTypeAttributesSection extends AttributesSection {
         private void overrideClicked() {
             OverrideAttributeDialog dialog = new OverrideAttributeDialog(getPolicyCmptType(), getShell());
             if (dialog.open() == Window.OK) {
-                List<IPolicyCmptTypeAttribute> attributesToOverwrite = dialog.getSelectedAttributes();
-                getPolicyCmptType().overrideAttributes(attributesToOverwrite);
+                getPolicyCmptType().overrideAttributes(dialog.getSelectedParts());
                 refresh();
             }
         }

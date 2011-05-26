@@ -416,6 +416,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
                 override.setName(attribute.getName());
                 override.setDefaultValue(attribute.getDefaultValue());
                 override.setValueSetCopy(attribute.getValueSet());
+                override.setAttributeType(attribute.getAttributeType());
                 for (IDescription description : attribute.getDescriptions()) {
                     IDescription overrideDescription = override.newDescription();
                     overrideDescription.setLocale(description.getLocale());

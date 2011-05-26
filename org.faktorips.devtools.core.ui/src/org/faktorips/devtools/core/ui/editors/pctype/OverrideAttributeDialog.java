@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -30,7 +29,7 @@ import org.faktorips.devtools.core.ui.editors.SupertypeHierarchyPartsContentProv
  * 
  * @author Alexander Weickmann
  */
-public class OverrideAttributeDialog extends SelectSupertypeHierarchyPartsDialog {
+public class OverrideAttributeDialog extends SelectSupertypeHierarchyPartsDialog<IPolicyCmptTypeAttribute> {
 
     /**
      * @param policyCmptType The <tt>IPolicyCmptType</tt> to get the candidates to possibly
@@ -42,19 +41,6 @@ public class OverrideAttributeDialog extends SelectSupertypeHierarchyPartsDialog
         setTitle(Messages.OverrideAttributeDialog_title);
         setEmptyListMessage(Messages.OverrideAttributeDialog_labelNoAttributes);
         setSelectLabelText(Messages.OverrideAttributeDialog_labelSelectAttribute);
-    }
-
-    /** Returns the <tt>IPolicyCmptTypeAttribute</tt>s the user has selected to override. */
-    public List<IPolicyCmptTypeAttribute> getSelectedAttributes() {
-        List<IPolicyCmptTypeAttribute> attributes = new ArrayList<IPolicyCmptTypeAttribute>();
-        Object[] checked = getResult();
-        for (Object element : checked) {
-            if (element instanceof IPolicyCmptTypeAttribute) {
-                IPolicyCmptTypeAttribute attr = (IPolicyCmptTypeAttribute)element;
-                attributes.add(attr);
-            }
-        }
-        return attributes;
     }
 
     /** Provides the <tt>IPolicyCmptTypeAttribute</tt>s available for selection. */

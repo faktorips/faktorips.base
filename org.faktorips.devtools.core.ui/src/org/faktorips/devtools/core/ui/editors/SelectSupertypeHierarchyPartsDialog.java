@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.swt.SWT;
@@ -25,6 +28,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 
 /**
@@ -35,8 +39,10 @@ import org.faktorips.devtools.core.ui.DefaultLabelProvider;
  * with the user's selection (e. g. the dialog may be used to let the user select a set of methods
  * from super classes of a <tt>IPolicyCmptType</tt> which are then overridden by the currently
  * edited <tt>IPolicyCmptType</tt>).
+ * 
+ * @param <T> The type of the {@link IIpsObjectPart}s that shall be selected by the user
  */
-public abstract class SelectSupertypeHierarchyPartsDialog extends CheckedTreeSelectionDialog {
+public abstract class SelectSupertypeHierarchyPartsDialog<T extends IIpsObjectPart> extends CheckedTreeSelectionDialog {
 
     /** The width of the UI tree widget showing the available <tt>IIpsObjectPartContainer</tt>s. */
     private int width;
@@ -178,6 +184,20 @@ public abstract class SelectSupertypeHierarchyPartsDialog extends CheckedTreeSel
         buttonComposite.setLayout(layout);
 
         return buttonComposite;
+    }
+
+    /**
+     * Returns the parts the user has selected.
+     */
+    public List<T> getSelectedParts() {
+        List<T> parts = new ArrayList<T>();
+        Object[] checked = getResult();
+        for (Object element : checked) {
+            if (element instanceof IIpsObjectPart) {
+                parts.add((T)element);
+            }
+        }
+        return parts;
     }
 
 }

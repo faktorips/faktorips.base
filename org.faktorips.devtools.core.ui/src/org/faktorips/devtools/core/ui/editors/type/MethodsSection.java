@@ -111,7 +111,7 @@ public class MethodsSection extends SimpleIpsPartsSection {
         private void overrideClicked() {
             OverrideMethodDialog dialog = new OverrideMethodDialog(getType(), getShell());
             if (dialog.open() == Window.OK) {
-                getType().overrideMethods(dialog.getSelectedMethods());
+                getType().overrideMethods(dialog.getSelectedParts());
             }
         }
 

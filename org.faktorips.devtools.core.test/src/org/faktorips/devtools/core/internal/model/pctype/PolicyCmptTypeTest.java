@@ -66,6 +66,7 @@ import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ITypeHierarchy;
+import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -958,7 +959,37 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         associations = injection.findAssociationsForTargetAndAssociationType(policyCmptType.getQualifiedName(),
                 AssociationType.COMPOSITION_DETAIL_TO_MASTER, ipsProject, true);
         assertEquals(1, associations.size());
+    }
 
+    @Test
+    public void testOverrideAttributes() throws CoreException {
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
+        attribute.setName("override");
+        attribute.setDatatype(Datatype.STRING.getQualifiedName());
+        attribute.setProductRelevant(true);
+        attribute.setDefaultValue("defaultValue");
+        attribute.setValueSetType(ValueSetType.ENUM);
+        attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
+        for (IDescription description : attribute.getDescriptions()) {
+            description.setText("Overridden Description");
+        }
+
+        IPolicyCmptType overridingType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "OverridingType");
+        overridingType.overrideAttributes(Arrays.asList(attribute));
+
+        IPolicyCmptTypeAttribute overriddenAttribute = overridingType.getPolicyCmptTypeAttribute(attribute.getName());
+        assertEquals(attribute.getDatatype(), overriddenAttribute.getDatatype());
+        assertEquals(attribute.isProductRelevant(), overriddenAttribute.isProductRelevant());
+        assertEquals(attribute.getDefaultValue(), overriddenAttribute.getDefaultValue());
+        assertEquals(attribute.getValueSet().getValueSetType(), overriddenAttribute.getValueSet().getValueSetType());
+        assertEquals(attribute.getAttributeType(), overriddenAttribute.getAttributeType());
+        // TODO AW 26-05-2011: See FIPS-406
+        // for (int i = 0; i < overriddenAttribute.getDescriptions().size(); i++) {
+        // assertEquals(attribute.getDescriptions().get(i).getText(),
+        // overriddenAttribute.getDescriptions().get(i)
+        // .getText());
+        // }
+        assertTrue(overriddenAttribute.isOverwrite());
     }
 
     private class AggregateRootBuilderSet extends EmptyBuilderSet {

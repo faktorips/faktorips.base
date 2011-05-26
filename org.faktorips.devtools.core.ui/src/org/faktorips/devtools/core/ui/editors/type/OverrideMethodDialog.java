@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.ui.editors.SupertypeHierarchyPartsContentProv
  * 
  * @author Alexander Weickmann
  */
-public class OverrideMethodDialog extends SelectSupertypeHierarchyPartsDialog {
+public class OverrideMethodDialog extends SelectSupertypeHierarchyPartsDialog<IMethod> {
 
     /**
      * @param type The type to get the candidates for overwriting from
@@ -59,20 +59,6 @@ public class OverrideMethodDialog extends SelectSupertypeHierarchyPartsDialog {
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * Returns the {@link IMethod}s the user has selected to override.
-     */
-    public List<IMethod> getSelectedMethods() {
-        List<IMethod> methods = new ArrayList<IMethod>();
-        Object[] checked = getResult();
-        for (Object element : checked) {
-            if (element instanceof IMethod) {
-                methods.add((IMethod)element);
-            }
-        }
-        return methods;
     }
 
     private static class CandidatesContentProvider extends SupertypeHierarchyPartsContentProvider {

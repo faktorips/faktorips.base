@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.ui.editors.enumtype;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -29,7 +28,7 @@ import org.faktorips.devtools.core.ui.editors.SupertypeHierarchyPartsContentProv
  * 
  * @author Alexander Weickmann
  */
-public class InheritEnumAttributesDialog extends SelectSupertypeHierarchyPartsDialog {
+public class InheritEnumAttributesDialog extends SelectSupertypeHierarchyPartsDialog<IEnumAttribute> {
 
     /**
      * @param enumType The <tt>IEnumType</tt> to get the candidates to possibly inherit from.
@@ -40,19 +39,6 @@ public class InheritEnumAttributesDialog extends SelectSupertypeHierarchyPartsDi
         setTitle(Messages.InheritAttributesDialog_title);
         setEmptyListMessage(Messages.InheritAttributesDialog_labelNoAttributes);
         setSelectLabelText(Messages.InheritAttributesDialog_labelSelectAttribute);
-    }
-
-    /** Returns the <tt>IEnumAttribute</tt>s the user has selected to inherit. */
-    public IEnumAttribute[] getSelectedAttributes() {
-        List<IEnumAttribute> attributes = new ArrayList<IEnumAttribute>();
-        Object[] checked = getResult();
-        for (Object element : checked) {
-            if (element instanceof IEnumAttribute) {
-                IEnumAttribute attribute = (IEnumAttribute)element;
-                attributes.add(attribute);
-            }
-        }
-        return attributes.toArray(new IEnumAttribute[attributes.size()]);
     }
 
     /** Provides the <tt>IEnumAttribute</tt>s available for selection. */
