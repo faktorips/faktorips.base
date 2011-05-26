@@ -21,8 +21,11 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsValidation;
+import org.faktorips.devtools.core.IpsValidationTask;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.TypeValidations;
@@ -33,6 +36,7 @@ import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.type.NewTypePage;
+import org.faktorips.util.message.Message;
 
 public class NewPcTypePage extends NewTypePage {
 
@@ -133,24 +137,6 @@ public class NewPcTypePage extends NewTypePage {
     }
 
     @Override
-    protected void validatePageExtensionThis() throws CoreException {
-        // Super-type may not be set after all
-        if (!StringUtils.isEmpty(getSuperType())) {
-            /*
-             * Show info message: configured by product components, because instances of the
-             * superclass are configured by product components
-             */
-            IPolicyCmptType superPcType = getIpsProject().findPolicyCmptType(getSuperType());
-            if (superPcType != null) {
-                if (superPcType.isConfigurableByProductCmptType()) {
-                    setMessage(Messages.NewPcTypePage_infoConfigurateByProductCmptType, INFORMATION);
-                    return;
-                }
-            }
-        }
-    }
-
-    @Override
     protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
             throws CoreException {
 
@@ -161,6 +147,34 @@ public class NewPcTypePage extends NewTypePage {
             type.setConfigurableByProductCmptType(true);
             type.setProductCmptType(getPageOfAssociatedType().getQualifiedIpsObjectName());
         }
+    }
+
+    @Override
+    protected void validatePageExtensionThis(IpsValidation validation) throws CoreException {
+        validation.addTask(new ValidateInstancesWillBeConfiguredByProductCmptType());
+    }
+
+    private class ValidateInstancesWillBeConfiguredByProductCmptType extends IpsValidationTask {
+
+        @Override
+        public Message execute(IIpsProject ipsProject) throws CoreException {
+            // Super-type may not be set after all
+            if (StringUtils.isEmpty(getSuperType())) {
+                return null;
+            }
+
+            /*
+             * Info message: configured by product components, because instances of the superclass
+             * are configured by product components
+             */
+            IPolicyCmptType superPcType = ipsProject.findPolicyCmptType(getSuperType());
+            if (superPcType != null && superPcType.isConfigurableByProductCmptType()) {
+                return new Message("", Messages.NewPcTypePage_infoConfigurateByProductCmptType, Message.INFO); //$NON-NLS-1$
+            }
+
+            return null;
+        }
+
     }
 
 }

@@ -21,6 +21,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.core.IpsValidation;
+import org.faktorips.devtools.core.IpsValidationTask;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -132,52 +134,6 @@ public class NewProductCmptTypePage extends NewTypePage {
                 IpsObjectType.POLICY_CMPT_TYPE, getQualifiedIpsObjectName(), getIpsProject(), null));
     }
 
-    /**
-     * Validates if the supertype of the product component type is within the super type hierarchy
-     * of the product component type of the supertype of the policy component type.
-     */
-    @Override
-    protected void validatePageExtensionThis() throws CoreException {
-        if (StringUtils.isEmpty(pcTypeField.getValue())) {
-            return;
-        }
-
-        IPolicyCmptType configuableType = getIpsProject().findPolicyCmptType(pcTypeField.getValue());
-        if (configuableType == null) {
-            setErrorMessage(Messages.NewProductCmptTypePage_msgPcTypeDoesNotExist);
-            return;
-        }
-        if (!StringUtils.isEmpty(configuableType.getProductCmptType())
-                && !configuableType.getProductCmptType().equals(getQualifiedIpsObjectName())) {
-            setErrorMessage(Messages.NewProductCmptTypePage_msgPcTypeAlreadyConfigured);
-            return;
-        }
-
-        FindNextConfiguredSuperType finder = new FindNextConfiguredSuperType(getIpsProject());
-        IProductCmptType superType = getIpsProject().findProductCmptType(getSuperType());
-        finder.start(superType);
-        if (finder.nextConfiguringSupertype != null) {
-            IPolicyCmptType superTypePolicyCmptType = getIpsProject().findPolicyCmptType(
-                    finder.qualifiedNameOfConfiguredType);
-            if (superTypePolicyCmptType != null) {
-                IPolicyCmptType superPcType = (IPolicyCmptType)configuableType.findSupertype(getIpsProject());
-                if (superPcType == null || !superPcType.equals(superTypePolicyCmptType)) {
-                    setErrorMessage(NLS.bind(Messages.NewProductCmptTypePage_msgPolicyCmptSuperTypeNeedsToBeX,
-                            superTypePolicyCmptType.getQualifiedName()));
-                    return;
-                }
-            }
-        }
-
-        Message validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstractMsg = ProductCmptTypeValidations
-                .validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(configuableType.isAbstract(), getAbstract(),
-                        null);
-        if (validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstractMsg != null) {
-            setErrorMessage(validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstractMsg);
-            return;
-        }
-    }
-
     @Override
     protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
             throws CoreException {
@@ -199,6 +155,101 @@ public class NewProductCmptTypePage extends NewTypePage {
             return;
         }
         productCmptType.setConfigurationForPolicyCmptType(false);
+    }
+
+    /**
+     * Validates if the supertype of the product component type is within the super type hierarchy
+     * of the product component type of the supertype of the policy component type.
+     */
+    @Override
+    protected void validatePageExtensionThis(IpsValidation validation) throws CoreException {
+        validation.addTask(new ValidatePcTypeDoesNotExist());
+        validation.addTask(new ValidatePcTypeAlreadyConfigured());
+        validation.addTask(new ValidatePolicyCmptSuperTypeNeedsToBeX());
+        validation.addTask(new ValidateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract());
+    }
+
+    private class ValidatePcTypeDoesNotExist extends IpsValidationTask {
+
+        @Override
+        public Message execute(IIpsProject ipsProject) throws CoreException {
+            if (StringUtils.isEmpty(pcTypeField.getValue())) {
+                return null;
+            }
+
+            IPolicyCmptType configuableType = ipsProject.findPolicyCmptType(pcTypeField.getValue());
+            if (configuableType == null) {
+                return new Message("", Messages.NewProductCmptTypePage_msgPcTypeDoesNotExist, Message.ERROR); //$NON-NLS-1$
+            }
+
+            return null;
+        }
+
+    }
+
+    private class ValidatePcTypeAlreadyConfigured extends IpsValidationTask {
+
+        @Override
+        public Message execute(IIpsProject ipsProject) throws CoreException {
+            if (StringUtils.isEmpty(pcTypeField.getValue())) {
+                return null;
+            }
+
+            IPolicyCmptType configuableType = ipsProject.findPolicyCmptType(pcTypeField.getValue());
+            if (!StringUtils.isEmpty(configuableType.getProductCmptType())
+                    && !configuableType.getProductCmptType().equals(getQualifiedIpsObjectName())) {
+                return new Message("", Messages.NewProductCmptTypePage_msgPcTypeAlreadyConfigured, Message.ERROR); //$NON-NLS-1$
+            }
+
+            return null;
+        }
+
+    }
+
+    private class ValidatePolicyCmptSuperTypeNeedsToBeX extends IpsValidationTask {
+
+        @Override
+        public Message execute(IIpsProject ipsProject) throws CoreException {
+            if (StringUtils.isEmpty(pcTypeField.getValue())) {
+                return null;
+            }
+
+            IPolicyCmptType configuableType = ipsProject.findPolicyCmptType(pcTypeField.getValue());
+
+            FindNextConfiguredSuperType finder = new FindNextConfiguredSuperType(ipsProject);
+            IProductCmptType superType = ipsProject.findProductCmptType(getSuperType());
+            finder.start(superType);
+            if (finder.nextConfiguringSupertype != null) {
+                IPolicyCmptType superTypePolicyCmptType = ipsProject
+                        .findPolicyCmptType(finder.qualifiedNameOfConfiguredType);
+                if (superTypePolicyCmptType != null) {
+                    IPolicyCmptType superPcType = (IPolicyCmptType)configuableType.findSupertype(ipsProject);
+                    if (superPcType == null || !superPcType.equals(superTypePolicyCmptType)) {
+                        String text = NLS.bind(Messages.NewProductCmptTypePage_msgPolicyCmptSuperTypeNeedsToBeX,
+                                superTypePolicyCmptType.getQualifiedName());
+                        return new Message("", text, Message.ERROR); //$NON-NLS-1$
+                    }
+                }
+            }
+
+            return null;
+        }
+
+    }
+
+    private class ValidateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract extends IpsValidationTask {
+
+        @Override
+        public Message execute(IIpsProject ipsProject) throws CoreException {
+            if (StringUtils.isEmpty(pcTypeField.getValue())) {
+                return null;
+            }
+
+            IPolicyCmptType configuableType = ipsProject.findPolicyCmptType(pcTypeField.getValue());
+            return ProductCmptTypeValidations.validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(
+                    configuableType.isAbstract(), getAbstract(), null);
+        }
+
     }
 
     private static class FindNextConfiguredSuperType extends TypeHierarchyVisitor<IProductCmptType> {

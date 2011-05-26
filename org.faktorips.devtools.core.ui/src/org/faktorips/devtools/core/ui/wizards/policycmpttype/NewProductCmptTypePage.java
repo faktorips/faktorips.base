@@ -21,8 +21,11 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsValidation;
+import org.faktorips.devtools.core.IpsValidationTask;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeValidations;
@@ -131,57 +134,6 @@ public class NewProductCmptTypePage extends NewTypePage {
                 IpsObjectType.POLICY_CMPT_TYPE, getQualifiedIpsObjectName(), getIpsProject(), null));
     }
 
-    /**
-     * Validates if the supertype of the product component type is within the super type hierarchy
-     * of the product component type of the supertype of the policy component type.
-     */
-    @Override
-    protected void validatePageExtensionThis() throws CoreException {
-        if (!StringUtils.isEmpty(getPageOfAssociatedType().getSuperType())) {
-            IProductCmptType superProductCmptType = null;
-            if (!StringUtils.isEmpty(getSuperType())) {
-                superProductCmptType = getIpsProject().findProductCmptType(getSuperType());
-            }
-            Message message = ProductCmptTypeValidations.validateSupertype(null, superProductCmptType,
-                    getPageOfAssociatedType().getQualifiedIpsObjectName(), getPageOfAssociatedType().getSuperType(),
-                    getIpsProject());
-            if (message != null) {
-                setErrorMessage(message);
-                return;
-            }
-        }
-
-        Message validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstractMsg = ProductCmptTypeValidations
-                .validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(getPageOfAssociatedType().getAbstract(),
-                        getAbstract(), null);
-        if (validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstractMsg != null) {
-            setErrorMessage(validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstractMsg);
-            return;
-        }
-
-        if (!StringUtils.isEmpty(getSuperType())) {
-            IProductCmptType superType = getIpsProject().findProductCmptType(getSuperType());
-            if (superType != null && superType.isConfigurationForPolicyCmptType()) {
-                String msg = NLS.bind(Messages.NewProductCmptTypePage_msgPolicyCmptSuperTypeNeedsToBeX,
-                        superType.getPolicyCmptType());
-                if (StringUtils.isEmpty(getPageOfAssociatedType().getSuperType())) {
-                    setErrorMessage(msg);
-                    return;
-                }
-                IPolicyCmptType policyCmptType = getIpsProject().findPolicyCmptType(
-                        getPageOfAssociatedType().getSuperType());
-                if (policyCmptType == null) {
-                    setErrorMessage(msg);
-                    return;
-                }
-                if (!superType.getPolicyCmptType().equals(policyCmptType.getQualifiedName())) {
-                    setErrorMessage(msg);
-                    return;
-                }
-            }
-        }
-    }
-
     @Override
     protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
             throws CoreException {
@@ -195,6 +147,76 @@ public class NewProductCmptTypePage extends NewTypePage {
             return;
         }
         productCmptType.setConfigurationForPolicyCmptType(false);
+    }
+
+    /**
+     * Validates if the supertype of the product component type is within the super type hierarchy
+     * of the product component type of the supertype of the policy component type.
+     */
+    @Override
+    protected void validatePageExtensionThis(IpsValidation validation) throws CoreException {
+        validation.addTask(new ValidateSupertype());
+        validation.addTask(new ValidateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract());
+        validation.addTask(new ValidatePolicyCmptSuperTypeNeedsToBeX());
+    }
+
+    private class ValidateSupertype extends IpsValidationTask {
+
+        @Override
+        public Message execute(IIpsProject ipsProject) throws CoreException {
+            if (StringUtils.isEmpty(getPageOfAssociatedType().getSuperType())) {
+                return null;
+            }
+
+            IProductCmptType superProductCmptType = null;
+            if (!StringUtils.isEmpty(getSuperType())) {
+                superProductCmptType = getIpsProject().findProductCmptType(getSuperType());
+            }
+            return ProductCmptTypeValidations.validateSupertype(null, superProductCmptType, getPageOfAssociatedType()
+                    .getQualifiedIpsObjectName(), getPageOfAssociatedType().getSuperType(), getIpsProject());
+        }
+
+    }
+
+    private class ValidateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract extends IpsValidationTask {
+
+        @Override
+        public Message execute(IIpsProject ipsProject) throws CoreException {
+            return ProductCmptTypeValidations.validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(
+                    getPageOfAssociatedType().getAbstract(), getAbstract(), null);
+        }
+
+    }
+
+    private class ValidatePolicyCmptSuperTypeNeedsToBeX extends IpsValidationTask {
+
+        @Override
+        public Message execute(IIpsProject ipsProject) throws CoreException {
+            if (StringUtils.isEmpty(getSuperType())) {
+                return null;
+            }
+
+            IProductCmptType superType = getIpsProject().findProductCmptType(getSuperType());
+            if (superType != null && superType.isConfigurationForPolicyCmptType()) {
+                String text = NLS.bind(Messages.NewProductCmptTypePage_msgPolicyCmptSuperTypeNeedsToBeX,
+                        superType.getPolicyCmptType());
+                Message msg = new Message("", text, Message.ERROR); //$NON-NLS-1$
+                if (StringUtils.isEmpty(getPageOfAssociatedType().getSuperType())) {
+                    return msg;
+                }
+                IPolicyCmptType policyCmptType = getIpsProject().findPolicyCmptType(
+                        getPageOfAssociatedType().getSuperType());
+                if (policyCmptType == null) {
+                    return msg;
+                }
+                if (!superType.getPolicyCmptType().equals(policyCmptType.getQualifiedName())) {
+                    return msg;
+                }
+            }
+
+            return null;
+        }
+
     }
 
 }

@@ -19,10 +19,13 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.core.IpsValidation;
+import org.faktorips.devtools.core.IpsValidationTask;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
@@ -30,6 +33,8 @@ import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 
 /**
  * An abstract superclass that implements common behavior of the policy and product component type
@@ -167,39 +172,6 @@ public abstract class NewTypePage extends IpsObjectPage {
         type.setAbstract(getAbstract());
     }
 
-    /**
-     * Checks if the name of the policy component type and product component type of the associated
-     * product component type page are not equal.
-     */
-    @Override
-    protected void validatePageExtension() throws CoreException {
-        if (!isCurrentPage()) {
-            return;
-        }
-
-        // Check for name conflicts of the product and policy component type name
-        if (pageOfAssociatedType != null && getIpsObjectName() != null
-                && pageOfAssociatedType.getIpsObjectName() != null && !StringUtils.isEmpty(getIpsObjectName())
-                && !StringUtils.isEmpty(pageOfAssociatedType.getIpsObjectName())
-                && getIpsObjectName().equals(pageOfAssociatedType.getIpsObjectName())) {
-            setErrorMessage(Messages.NewTypePage_msgNameConflicts);
-            return;
-        }
-
-        // Check if selected super type exists
-        if (!StringUtils.isEmpty(getSuperType())) {
-            IIpsSrcFile ipsSrcFile = getIpsProject().findIpsSrcFile(getIpsObjectType(), getSuperType());
-            if (ipsSrcFile == null) {
-                setErrorMessage(Messages.NewTypePage_msgSupertypeDoesNotExist);
-                return;
-            }
-        }
-
-        validatePageExtensionThis();
-    }
-
-    protected abstract void validatePageExtensionThis() throws CoreException;
-
     @Override
     public void pageEntered() throws CoreException {
         super.pageEntered();
@@ -223,6 +195,66 @@ public abstract class NewTypePage extends IpsObjectPage {
 
     public NewTypePage getPageOfAssociatedType() {
         return pageOfAssociatedType;
+    }
+
+    /**
+     * Checks if the name of the policy component type and product component type of the associated
+     * product component type page are not equal.
+     */
+    @Override
+    protected void validatePageExtension() throws CoreException {
+        if (!isCurrentPage()) {
+            return;
+        }
+
+        IpsValidation validation = new IpsValidation();
+        validation.addTask(new ValidateNameConflicts());
+        validation.addTask(new ValidateSupertypeExists());
+
+        validatePageExtensionThis(validation);
+
+        MessageList result = validation.validate(getIpsProject());
+        if (!result.isEmpty()) {
+            setMessage(result.getMessageWithHighestSeverity());
+        }
+    }
+
+    protected abstract void validatePageExtensionThis(IpsValidation validation) throws CoreException;
+
+    /**
+     * Check for name conflicts of the product and policy component type name.
+     */
+    private class ValidateNameConflicts extends IpsValidationTask {
+
+        @Override
+        public Message execute(IIpsProject ipsProject) throws CoreException {
+            if (pageOfAssociatedType != null && getIpsObjectName() != null
+                    && pageOfAssociatedType.getIpsObjectName() != null && !StringUtils.isEmpty(getIpsObjectName())
+                    && !StringUtils.isEmpty(pageOfAssociatedType.getIpsObjectName())
+                    && getIpsObjectName().equals(pageOfAssociatedType.getIpsObjectName())) {
+                return new Message("", Messages.NewTypePage_msgNameConflicts, Message.ERROR); //$NON-NLS-1$
+            }
+            return null;
+        }
+
+    }
+
+    /**
+     * Check if selected super type exists.
+     */
+    private class ValidateSupertypeExists extends IpsValidationTask {
+
+        @Override
+        public Message execute(IIpsProject ipsProject) throws CoreException {
+            if (!StringUtils.isEmpty(getSuperType())) {
+                IIpsSrcFile ipsSrcFile = ipsProject.findIpsSrcFile(getIpsObjectType(), getSuperType());
+                if (ipsSrcFile == null) {
+                    return new Message("", Messages.NewTypePage_msgSupertypeDoesNotExist, Message.ERROR); //$NON-NLS-1$
+                }
+            }
+            return null;
+        }
+
     }
 
 }

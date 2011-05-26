@@ -168,6 +168,22 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
         }
     }
 
+    public void setMessage(Message msg) {
+        if (msg != null) {
+            switch (msg.getSeverity()) {
+                case Message.ERROR:
+                    setErrorMessage(msg.getText());
+                    break;
+                case Message.WARNING:
+                    setMessage(msg.getText(), WARNING);
+                    break;
+                case Message.INFO:
+                    setMessage(msg.getText(), INFORMATION);
+                    break;
+            }
+        }
+    }
+
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
         Text nameText = addNameLabelField(toolkit, nameComposite);
         nameText.setFocus();
