@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -141,6 +142,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.getFirstGeneration();
         assertNotNull(generation.getAttributeValue("a1"));
         assertNotNull(generation.getAttributeValue("a_super"));
+        assertTrue(productCmpt.getPropertyValues(IAttributeValue.class).isEmpty());
 
         attribute1.delete();
         attribute2.delete();
@@ -169,6 +171,70 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         assertNull(generation.getAttributeValue("a1"));
         assertNull(generation.getAttributeValue("a_super"));
         assertNotNull(generation.getAttributeValue(attribute3.getName()));
+        assertTrue(productCmpt.getPropertyValues(IAttributeValue.class).isEmpty());
+    }
+
+    @Test
+    public void testAttributesNotChangingOverTime() throws CoreException {
+        IProductCmptTypeAttribute attribute1 = productCmptType.newProductCmptTypeAttribute("a1");
+        IProductCmptTypeAttribute attribute2 = superProductCmptType.newProductCmptTypeAttribute("a_super");
+
+        IPropertyValueContainerToTypeDelta delta = productCmpt.computeDeltaToModel(ipsProject);
+        IPropertyValueContainerToTypeDelta genDelta = (IPropertyValueContainerToTypeDelta)delta.getChildren().get(0);
+        IDeltaEntry[] entries = genDelta.getEntries();
+        assertEquals(0, entries.length);
+        entries = delta.getEntries();
+        assertEquals(2, entries.length);
+        assertEquals(DeltaType.MISSING_PROPERTY_VALUE, entries[0].getDeltaType());
+        assertEquals(ProductCmptPropertyType.VALUE, ((IDeltaEntryForProperty)entries[0]).getPropertyType());
+        assertEquals("a_super", ((IDeltaEntryForProperty)entries[0]).getPropertyName());
+        assertEquals("a1", ((IDeltaEntryForProperty)entries[1]).getPropertyName());
+
+        delta.fixAllDifferencesToModel();
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        genDelta = (IPropertyValueContainerToTypeDelta)delta.getChildren().get(0);
+
+        entries = genDelta.getEntries();
+        assertEquals(0, entries.length);
+        entries = delta.getEntries();
+        assertEquals(0, entries.length);
+        assertNotNull(productCmpt.getAttributeValue("a1"));
+        assertNotNull(productCmpt.getAttributeValue("a_super"));
+        assertTrue(((IProductCmptGeneration)productCmpt.getFirstGeneration()).getPropertyValues(IAttributeValue.class)
+                .isEmpty());
+
+        attribute1.delete();
+        attribute2.delete();
+        IProductCmptTypeAttribute attribute3 = productCmptType.newProductCmptTypeAttribute("a2");
+
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        genDelta = (IPropertyValueContainerToTypeDelta)delta.getChildren().get(0);
+
+        entries = genDelta.getEntries();
+        assertEquals(0, entries.length);
+        entries = delta.getEntries();
+        assertEquals(3, entries.length);
+        assertEquals(attribute3.getName(), ((IDeltaEntryForProperty)entries[0]).getPropertyName());
+        assertEquals("a_super", ((IDeltaEntryForProperty)entries[1]).getPropertyName());
+        assertEquals("a1", ((IDeltaEntryForProperty)entries[2]).getPropertyName());
+        assertEquals(DeltaType.MISSING_PROPERTY_VALUE, entries[0].getDeltaType());
+        assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, entries[1].getDeltaType());
+        assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, entries[2].getDeltaType());
+        assertEquals(ProductCmptPropertyType.VALUE, ((IDeltaEntryForProperty)entries[0]).getPropertyType());
+
+        delta.fixAllDifferencesToModel();
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        genDelta = (IPropertyValueContainerToTypeDelta)delta.getChildren().get(0);
+
+        entries = genDelta.getEntries();
+        assertEquals(0, entries.length);
+        entries = delta.getEntries();
+        assertEquals(0, entries.length);
+        assertTrue(((IProductCmptGeneration)productCmpt.getFirstGeneration()).getPropertyValues(IAttributeValue.class)
+                .isEmpty());
+        assertNull(productCmpt.getAttributeValue("a1"));
+        assertNull(productCmpt.getAttributeValue("a_super"));
+        assertNotNull(productCmpt.getAttributeValue(attribute3.getName()));
     }
 
     @Test
