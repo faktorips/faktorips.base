@@ -190,4 +190,10 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
         assertEquals("Test", qnt.getUnqualifiedName());
         assertEquals("", qnt.getPackageName());
     }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testDelete() throws CoreException {
+        srcFileImmutable.delete();
+    }
+
 }

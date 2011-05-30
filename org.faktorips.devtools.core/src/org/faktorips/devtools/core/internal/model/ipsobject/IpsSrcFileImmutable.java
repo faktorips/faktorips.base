@@ -89,11 +89,19 @@ public class IpsSrcFileImmutable extends IpsSrcFile {
     }
 
     /**
-     * Does nothing - no save on remote files.
+     * Does nothing
      */
     @Override
     public void save(boolean force, IProgressMonitor monitor) throws CoreException {
-        // No save on remote files
+        // No save
+    }
+
+    /**
+     * This implementation throws an {@link UnsupportedOperationException}.
+     */
+    @Override
+    public void delete() throws CoreException {
+        throw new UnsupportedOperationException("Immutable IPS source files cannot be deleted."); //$NON-NLS-1$
     }
 
     private void setContents(InputStream in) {
