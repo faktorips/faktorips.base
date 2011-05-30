@@ -220,8 +220,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         customModelExtensions = new CustomModelExtensions(this);
         initIpsObjectTypes();
-        resourceDeltaVisitor = new ResourceDeltaVisitor(); // has to be done after the ips object
-        // types are initialized!
+        // has to be done after the ips object types are initialized!
+        resourceDeltaVisitor = new ResourceDeltaVisitor();
     }
 
     @Override
@@ -297,7 +297,11 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     public void startListeningToResourceChanges() {
-        getWorkspace().addResourceChangeListener(this);
+        getWorkspace().addResourceChangeListener(this, //
+                IResourceChangeEvent.PRE_CLOSE | //
+                        IResourceChangeEvent.PRE_DELETE | //
+                        IResourceChangeEvent.POST_CHANGE | //
+                        IResourceChangeEvent.PRE_REFRESH);
     }
 
     public void stopListeningToResourceChanges() {
@@ -1074,6 +1078,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     @Override
     public void resourceChanged(IResourceChangeEvent event) {
+        if (event.getType() == IResourceChangeEvent.PRE_REFRESH) {
+            clearIpsObjectCache();
+            return;
+        }
         IResourceDelta delta = event.getDelta();
         if (delta != null) {
             try {
@@ -1302,6 +1310,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     public ValidationResultCache getValidationResultCache() {
         return validationResultCache;
+    }
+
+    synchronized private void clearIpsObjectCache() {
+        ipsObjectsMap.clear();
     }
 
     /**
