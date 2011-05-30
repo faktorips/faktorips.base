@@ -256,6 +256,10 @@
             id="org.faktorips.devtools.core.ui.commands.searchReferencesAction"
             name="%SearchReferencesAction_name">
       </command>
+      <command
+            id="org.faktorips.devtools.core.refactor.pullUp"
+            name="Blub">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -1484,6 +1488,28 @@
                   value="+">
             </count>
          </enabledWhen>
+      </handler>
+      <handler
+            class="org.faktorips.devtools.core.ui.refactor.IpsPullUpHandler"
+            commandId="org.faktorips.devtools.core.refactor.pullUp">
+         <activeWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false"
+                     operator="and">
+                  <instanceof
+                        value="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
+                  </instanceof>
+               </iterate>
+            </with></activeWhen>
+         <class
+               class="org.faktorips.devtools.core.ui.refactor.IpsPullUpHandler">
+         </class>
+         <enabledWhen>
+            <count
+                  value="1">
+            </count></enabledWhen>
       </handler>
       <handler
             class="org.faktorips.devtools.core.ui.commands.ShowHierarchyHandler"

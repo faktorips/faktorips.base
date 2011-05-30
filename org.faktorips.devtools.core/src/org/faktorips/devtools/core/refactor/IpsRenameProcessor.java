@@ -113,7 +113,7 @@ public abstract class IpsRenameProcessor extends IpsRefactoringProcessor {
     /**
      * Sets the new name for the {@link IIpsElement} to be refactored.
      * 
-     * @param newName New name for the {@link IIpsElement} to be refactored.
+     * @param newName New name for the {@link IIpsElement} to be refactored
      * 
      * @throws NullPointerException If the parameter is null
      */
@@ -137,7 +137,7 @@ public abstract class IpsRenameProcessor extends IpsRefactoringProcessor {
     /**
      * Sets whether the runtime ID of {@link IProductCmpt} should be adapted.
      * 
-     * @param adaptRuntimeId Flag indicating whether to adapt runtime IDs.
+     * @param adaptRuntimeId Flag indicating whether to adapt runtime IDs
      */
     public final void setAdaptRuntimeId(boolean adaptRuntimeId) {
         this.adaptRuntimeId = adaptRuntimeId;

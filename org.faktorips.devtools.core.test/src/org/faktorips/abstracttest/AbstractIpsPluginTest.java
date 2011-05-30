@@ -92,6 +92,7 @@ import org.faktorips.devtools.core.model.CreateIpsArchiveOperation;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -1236,6 +1237,21 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
                 ipsObjectPartContainer, newName, newPluralName, adaptRuntimeId);
 
         return performRefactoring(ipsRenameRefactoring);
+    }
+
+    /**
+     * Performs the Faktor-IPS 'Pull Up' refactoring for the given {@link IIpsObjectPart} and target
+     * {@link IIpsObjectPartContainer}.
+     */
+    protected final RefactoringStatus performPullUpRefactoring(IIpsObjectPart ipsObjectPart,
+            IIpsObjectPartContainer targetIpsObjectPartContainer) throws CoreException {
+
+        printValidationResult(ipsObjectPart);
+
+        IIpsRefactoring ipsPullUpRefactoring = IpsPlugin.getIpsRefactoringFactory().createPullUpRefactoring(
+                ipsObjectPart, targetIpsObjectPartContainer);
+
+        return performRefactoring(ipsPullUpRefactoring);
     }
 
     /**

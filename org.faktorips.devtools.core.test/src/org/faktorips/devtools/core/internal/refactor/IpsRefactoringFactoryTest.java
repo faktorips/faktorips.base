@@ -26,18 +26,22 @@ import org.faktorips.devtools.core.internal.model.enums.refactor.RenameEnumAttri
 import org.faktorips.devtools.core.internal.model.enums.refactor.RenameEnumLiteralNameAttributeValueProcessor;
 import org.faktorips.devtools.core.internal.model.ipsobject.refactor.MoveIpsObjectProcessor;
 import org.faktorips.devtools.core.internal.model.ipsobject.refactor.RenameIpsObjectProcessor;
+import org.faktorips.devtools.core.internal.model.type.refactor.PullUpAttributeProcessor;
 import org.faktorips.devtools.core.internal.model.type.refactor.RenameAssociationProcessor;
 import org.faktorips.devtools.core.internal.model.type.refactor.RenameAttributeProcessor;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.refactor.IIpsCompositeMoveRefactoring;
 import org.faktorips.devtools.core.refactor.IIpsProcessorBasedRefactoring;
 import org.faktorips.devtools.core.refactor.IpsMoveProcessor;
+import org.faktorips.devtools.core.refactor.IpsPullUpProcessor;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
 import org.junit.Before;
 import org.junit.Test;
@@ -137,4 +141,27 @@ public class IpsRefactoringFactoryTest {
         assertEquals(2, ipsCompositeMoveRefactoring.getNumberOfRefactorings());
         assertEquals(targetIpsPackageFragment, ipsCompositeMoveRefactoring.getTargetIpsPackageFragment());
     }
+
+    @Test
+    public void testCreatePullUpRefactoringAttribute() {
+        IIpsProcessorBasedRefactoring ipsPullUpRefactoring = ipsRefactoringFactory
+                .createPullUpRefactoring(mock(IAttribute.class));
+        assertTrue(ipsPullUpRefactoring.getIpsRefactoringProcessor() instanceof PullUpAttributeProcessor);
+    }
+
+    @Test
+    public void testCreatePullUpRefactoringNotSupportedIpsObjectPart() {
+        assertNull(ipsRefactoringFactory.createPullUpRefactoring(mock(IIpsObjectPart.class)));
+    }
+
+    @Test
+    public void testCreateFullyConfiguredPullUpRefactoring() {
+        IType targetType = mock(IType.class);
+        IIpsProcessorBasedRefactoring ipsPullUpRefactoring = ipsRefactoringFactory.createPullUpRefactoring(
+                mock(IAttribute.class), targetType);
+
+        IpsPullUpProcessor ipsPullUpProcessor = (IpsPullUpProcessor)ipsPullUpRefactoring.getIpsRefactoringProcessor();
+        assertEquals(targetType, ipsPullUpProcessor.getTargetIpsObjectPartContainer());
+    }
+
 }

@@ -19,12 +19,15 @@ import org.faktorips.devtools.core.internal.model.enums.refactor.RenameEnumAttri
 import org.faktorips.devtools.core.internal.model.enums.refactor.RenameEnumLiteralNameAttributeValueProcessor;
 import org.faktorips.devtools.core.internal.model.ipsobject.refactor.MoveIpsObjectProcessor;
 import org.faktorips.devtools.core.internal.model.ipsobject.refactor.RenameIpsObjectProcessor;
+import org.faktorips.devtools.core.internal.model.type.refactor.PullUpAttributeProcessor;
 import org.faktorips.devtools.core.internal.model.type.refactor.RenameAssociationProcessor;
 import org.faktorips.devtools.core.internal.model.type.refactor.RenameAttributeProcessor;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -32,6 +35,7 @@ import org.faktorips.devtools.core.refactor.IIpsCompositeMoveRefactoring;
 import org.faktorips.devtools.core.refactor.IIpsProcessorBasedRefactoring;
 import org.faktorips.devtools.core.refactor.IIpsRefactoringFactory;
 import org.faktorips.devtools.core.refactor.IpsMoveProcessor;
+import org.faktorips.devtools.core.refactor.IpsPullUpProcessor;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
 
 /**
@@ -103,6 +107,27 @@ public final class IpsRefactoringFactory implements IIpsRefactoringFactory {
     @Override
     public IIpsCompositeMoveRefactoring createCompositeMoveRefactoring(Set<IIpsObject> ipsObjects) {
         return new IpsCompositeMoveRefactoring(ipsObjects);
+    }
+
+    @Override
+    public IIpsProcessorBasedRefactoring createPullUpRefactoring(IIpsObjectPart ipsObjectPart) {
+        IpsPullUpProcessor ipsPullUpProcessor = null;
+        if (ipsObjectPart instanceof IAttribute) {
+            ipsPullUpProcessor = new PullUpAttributeProcessor((IAttribute)ipsObjectPart);
+        } else {
+            return null;
+        }
+        return new IpsProcessorBasedRefactoring(ipsPullUpProcessor);
+    }
+
+    @Override
+    public IIpsProcessorBasedRefactoring createPullUpRefactoring(IIpsObjectPart ipsObjectPart,
+            IIpsObjectPartContainer targetIpsObjectPartContainer) {
+
+        IIpsProcessorBasedRefactoring ipsPullUpRefactoring = createPullUpRefactoring(ipsObjectPart);
+        IpsPullUpProcessor ipsPullUpProcessor = (IpsPullUpProcessor)ipsPullUpRefactoring.getIpsRefactoringProcessor();
+        ipsPullUpProcessor.setTargetIpsObjectPartContainer(targetIpsObjectPartContainer);
+        return ipsPullUpRefactoring;
     }
 
 }

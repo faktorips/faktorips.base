@@ -17,6 +17,8 @@ import java.util.Set;
 
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 
@@ -92,5 +94,29 @@ public interface IIpsRefactoringFactory {
      * @param ipsObjects The {@link IIpsObject}s to move
      */
     public IIpsCompositeMoveRefactoring createCompositeMoveRefactoring(Set<IIpsObject> ipsObjects);
+
+    /**
+     * Creates a Faktor-IPS "Pull Up" refactoring capable of pulling up the given
+     * {@link IIpsObjectPart}.
+     * <p>
+     * Returns null if the "Pull Up" refactoring is not supported for the given
+     * {@link IIpsObjectPart}.
+     * 
+     * @param ipsObjectPart The {@link IIpsObjectPart} to pull up
+     */
+    public IIpsProcessorBasedRefactoring createPullUpRefactoring(IIpsObjectPart ipsObjectPart);
+
+    /**
+     * Creates a fully configured Faktor-IPS "Pull Up" refactoring capable of pulling up the given
+     * {@link IIpsObjectPart} to the given target {@link IIpsObjectPartContainer}.
+     * <p>
+     * Returns null if the "Pull Up" refactoring is not supported for the given
+     * {@link IIpsObjectPart}.
+     * 
+     * @param ipsObjectPart The {@link IIpsObjectPart} to pull up
+     * @param targetIpsObjectPartContainer The target {@link IIpsObjectPartContainer} to pull up to
+     */
+    public IIpsProcessorBasedRefactoring createPullUpRefactoring(IIpsObjectPart ipsObjectPart,
+            IIpsObjectPartContainer targetIpsObjectPartContainer);
 
 }

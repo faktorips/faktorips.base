@@ -144,6 +144,8 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         if (refactoringSupported) {
             MenuManager refactorSubmenu = new MenuManager(Messages.IpsPartsComposite_submenuRefactor);
             refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsRenameHandler.CONTRIBUTION_ID));
+            // TODO AW 30-05-2011: Pull Up Refactoring not yet fully functional
+            // refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsPullUpHandler.CONTRIBUTION_ID));
             contextMenuManager.add(refactorSubmenu);
         }
 

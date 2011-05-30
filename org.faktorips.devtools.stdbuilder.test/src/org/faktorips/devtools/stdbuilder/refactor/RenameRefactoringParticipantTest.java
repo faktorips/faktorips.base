@@ -17,6 +17,9 @@ import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.booleanParam;
 import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.intParam;
 import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.stringParam;
 import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.unresolvedParam;
+import static org.faktorips.devtools.stdbuilder.refactor.RefactoringTestUtil.getGenerationConceptNameAbbreviation;
+import static org.faktorips.devtools.stdbuilder.refactor.RefactoringTestUtil.getJavaType;
+import static org.faktorips.devtools.stdbuilder.refactor.RefactoringTestUtil.getPublishedInterfaceName;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -27,6 +30,7 @@ import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -36,7 +40,6 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.ProjectConfigurationUtil;
-import org.faktorips.runtime.IValidationContext;
 import org.faktorips.util.StringUtil;
 import org.junit.Test;
 
@@ -181,7 +184,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
 
         performRenameRefactoring(superEnumType.getEnumAttribute("id"), "test");
 
-        IType subJavaType = getJavaType("", "SubEnumType", true, false);
+        IType subJavaType = getJavaType("", "SubEnumType", true, false, ipsProject);
         assertFalse(subJavaType.getMethod("getValueById", new String[] { stringParam() }).exists());
         assertFalse(subJavaType.getMethod("isValueById", new String[] { stringParam() }).exists());
         assertTrue(subJavaType.getMethod("getValueByTest", new String[] { stringParam() }).exists());
@@ -242,7 +245,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
 
         performRenameRefactoring(enumLiteralNameAttributeValue, "bar");
 
-        IType javaEnum = getJavaType("", "EnumType", true, false);
+        IType javaEnum = getJavaType("", "EnumType", true, false, ipsProject);
         assertFalse(javaEnum.getField("FOO").exists());
         assertTrue(javaEnum.getField("bar").exists());
     }
@@ -306,8 +309,9 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
 
         performRenameRefactoring(policyCmptType, "policyCmptType");
 
-        assertTrue(getJavaType("", getPublishedInterfaceName("PolicyCmptType"), true, false).exists());
-        assertTrue(getJavaType("", "PolicyCmptType", false, false).exists());
+        assertTrue(getJavaType("", getPublishedInterfaceName("PolicyCmptType", ipsProject), true, false, ipsProject)
+                .exists());
+        assertTrue(getJavaType("", "PolicyCmptType", false, false, ipsProject).exists());
     }
 
     private IPolicyCmptTypeAttribute createPolicyCmptTypeAttribute(String name,
@@ -345,122 +349,11 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
         return productCmptTypeAttribute;
     }
 
-    private class PolicyCmptTypeAttributeExpectations {
-
-        private final IPolicyCmptTypeAttribute policyCmptTypeAttribute;
-
-        private final IType policyInterface;
+    private static class ProductCmptTypeAttributeExpectations {
 
         private final IType policyClass;
 
-        private final IType productGenInterface;
-
-        private final IType productGenClass;
-
-        private PolicyCmptTypeAttributeExpectations(IPolicyCmptTypeAttribute policyCmptTypeAttribute,
-                IPolicyCmptType policyCmptType, IProductCmptType productCmptType) throws CoreException {
-
-            this.policyCmptTypeAttribute = policyCmptTypeAttribute;
-
-            policyInterface = getJavaType("", getPublishedInterfaceName(policyCmptType.getName()), true, false);
-            policyClass = getJavaType("", policyCmptType.getName(), false, false);
-            productGenInterface = getJavaType("", getPublishedInterfaceName(productCmptType.getName()
-                    + getGenerationConceptNameAbbreviation()), true, false);
-            productGenClass = getJavaType("", productCmptType.getName() + getGenerationConceptNameAbbreviation(),
-                    false, false);
-        }
-
-        private void check(String oldName, String newName, String datatypeSignature) {
-            ValueSetType valueSetType = policyCmptTypeAttribute.getValueSet().getValueSetType();
-
-            if (ValueSetType.UNRESTRICTED.equals(valueSetType)) {
-                checkValueSetUnrestricted(oldName, newName, datatypeSignature);
-
-            } else if (ValueSetType.ENUM.equals(valueSetType)) {
-                checkValueSetEnum(oldName, newName);
-
-            } else if (ValueSetType.RANGE.equals(valueSetType)) {
-                checkValueSetRange(oldName, newName);
-            }
-        }
-
-        private void checkValueSetUnrestricted(String oldName, String newName, String datatypeSignature) {
-            String oldNameCamelCase = StringUtil.toCamelCase(oldName, true);
-            String newNameCamelCase = StringUtil.toCamelCase(newName, true);
-
-            assertFalse(policyInterface.getField("PROPERTY_" + oldName.toUpperCase()).exists());
-            assertFalse(policyInterface.getMethod("get" + oldNameCamelCase, new String[0]).exists());
-            assertFalse(policyInterface.getMethod("set" + oldNameCamelCase, new String[] { datatypeSignature })
-                    .exists());
-            assertFalse(productGenInterface.getMethod("getDefaultValue" + oldNameCamelCase, new String[0]).exists());
-            assertFalse(productGenInterface.getMethod("getSetOfAllowedValuesFor" + oldNameCamelCase,
-                    new String[] { unresolvedParam(IValidationContext.class) }).exists());
-
-            assertFalse(policyClass.getField(oldName).exists());
-            assertFalse(policyClass.getMethod("get" + oldNameCamelCase, new String[0]).exists());
-            assertFalse(policyClass.getMethod("set" + oldNameCamelCase, new String[] { datatypeSignature }).exists());
-            assertFalse(productGenClass.getField("defaultValue" + oldNameCamelCase).exists());
-            assertFalse(productGenClass.getField("setOfAllowedValues" + oldNameCamelCase).exists());
-            assertFalse(productGenClass.getMethod("getDefaultValue" + oldNameCamelCase, new String[0]).exists());
-            assertFalse(productGenClass.getMethod("getSetOfAllowedValuesFor" + oldNameCamelCase,
-                    new String[] { unresolvedParam(IValidationContext.class) }).exists());
-
-            assertTrue(policyInterface.getField("PROPERTY_" + newName.toUpperCase()).exists());
-            assertTrue(policyInterface.getMethod("get" + newNameCamelCase, new String[0]).exists());
-            assertTrue(policyInterface.getMethod("set" + newNameCamelCase, new String[] { datatypeSignature }).exists());
-            assertTrue(productGenInterface.getMethod("getDefaultValue" + newNameCamelCase, new String[0]).exists());
-            assertTrue(productGenInterface.getMethod("getSetOfAllowedValuesFor" + newNameCamelCase,
-                    new String[] { unresolvedParam(IValidationContext.class) }).exists());
-
-            assertTrue(policyClass.getField(newName).exists());
-            assertTrue(policyClass.getMethod("get" + newNameCamelCase, new String[0]).exists());
-            assertTrue(policyClass.getMethod("set" + newNameCamelCase, new String[] { datatypeSignature }).exists());
-            assertTrue(productGenClass.getField("defaultValue" + newNameCamelCase).exists());
-            assertTrue(productGenClass.getField("setOfAllowedValues" + newNameCamelCase).exists());
-            assertTrue(productGenClass.getMethod("getDefaultValue" + newNameCamelCase, new String[0]).exists());
-            assertTrue(productGenClass.getMethod("getSetOfAllowedValuesFor" + newNameCamelCase,
-                    new String[] { unresolvedParam(IValidationContext.class) }).exists());
-        }
-
-        private void checkValueSetEnum(String oldName, String newName) {
-            String oldNameCamelCase = StringUtil.toCamelCase(oldName, true);
-            String newNameCamelCase = StringUtil.toCamelCase(newName, true);
-
-            assertFalse(productGenInterface.getMethod("getAllowedValuesFor" + oldNameCamelCase,
-                    new String[] { unresolvedParam(IValidationContext.class) }).exists());
-            assertFalse(productGenClass.getField("allowedValuesFor" + oldNameCamelCase).exists());
-            assertFalse(productGenClass.getMethod("getAllowedValuesFor" + oldNameCamelCase,
-                    new String[] { unresolvedParam(IValidationContext.class) }).exists());
-
-            assertTrue(productGenInterface.getMethod("getAllowedValuesFor" + newNameCamelCase,
-                    new String[] { unresolvedParam(IValidationContext.class) }).exists());
-            assertTrue(productGenClass.getField("allowedValuesFor" + newNameCamelCase).exists());
-            assertTrue(productGenClass.getMethod("getAllowedValuesFor" + newNameCamelCase,
-                    new String[] { unresolvedParam(IValidationContext.class) }).exists());
-        }
-
-        private void checkValueSetRange(String oldName, String newName) {
-            String oldNameCamelCase = StringUtil.toCamelCase(oldName, true);
-            String newNameCamelCase = StringUtil.toCamelCase(newName, true);
-
-            assertFalse(productGenInterface.getMethod("getRangeFor" + oldNameCamelCase,
-                    new String[] { unresolvedParam(IValidationContext.class) }).exists());
-            assertFalse(productGenClass.getField("rangeFor" + oldNameCamelCase).exists());
-            assertFalse(productGenClass.getMethod("getRangeFor" + oldNameCamelCase,
-                    new String[] { unresolvedParam(IValidationContext.class) }).exists());
-
-            assertTrue(productGenInterface.getMethod("getRangeFor" + newNameCamelCase,
-                    new String[] { unresolvedParam(IValidationContext.class) }).exists());
-            assertTrue(productGenClass.getField("rangeFor" + newNameCamelCase).exists());
-            assertTrue(productGenClass.getMethod("getRangeFor" + newNameCamelCase,
-                    new String[] { unresolvedParam(IValidationContext.class) }).exists());
-        }
-
-    }
-
-    private class ProductCmptTypeAttributeExpectations {
-
-        private final IType policyClass;
+        private final IIpsProject ipsProject;
 
         private final IType productGenInterface;
 
@@ -469,11 +362,14 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
         private ProductCmptTypeAttributeExpectations(IProductCmptType productCmptType, IPolicyCmptType policyCmptType)
                 throws CoreException {
 
-            productGenInterface = getJavaType("", getPublishedInterfaceName(productCmptType.getName()
-                    + getGenerationConceptNameAbbreviation()), true, false);
-            productGenClass = getJavaType("", productCmptType.getName() + getGenerationConceptNameAbbreviation(),
-                    false, false);
-            policyClass = getJavaType("", policyCmptType.getName(), false, false);
+            ipsProject = productCmptType.getIpsProject();
+            productGenInterface = getJavaType(
+                    "",
+                    getPublishedInterfaceName(productCmptType.getName()
+                            + getGenerationConceptNameAbbreviation(ipsProject), ipsProject), true, false, ipsProject);
+            productGenClass = getJavaType("", productCmptType.getName()
+                    + getGenerationConceptNameAbbreviation(ipsProject), false, false, ipsProject);
+            policyClass = getJavaType("", policyCmptType.getName(), false, false, ipsProject);
         }
 
         private void check(String oldName, String newName) {
@@ -495,12 +391,15 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
 
     }
 
-    private class AbstractEnumAttributeExpectations {
+    private static class AbstractEnumAttributeExpectations {
+
+        private final IIpsProject ipsProject;
 
         private final IType javaEnum;
 
         private AbstractEnumAttributeExpectations(IEnumType enumType) throws CoreException {
-            javaEnum = getJavaType("", enumType.getName(), true, false);
+            ipsProject = enumType.getIpsProject();
+            javaEnum = getJavaType("", enumType.getName(), true, false, ipsProject);
         }
 
         private void check(String oldName, String newName, boolean useJava5Enums) {
@@ -533,15 +432,19 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
 
     }
 
-    private class PolicyCmptTypeExpectations {
+    private static class PolicyCmptTypeExpectations {
+
+        private final IIpsProject ipsProject;
 
         private final IType productInterface;
 
         private final IType productClass;
 
         private PolicyCmptTypeExpectations(IProductCmptType productCmptType) throws CoreException {
-            productInterface = getJavaType("", getPublishedInterfaceName(productCmptType.getName()), true, false);
-            productClass = getJavaType("", productCmptType.getName(), false, false);
+            ipsProject = productCmptType.getIpsProject();
+            productInterface = getJavaType("", getPublishedInterfaceName(productCmptType.getName(), ipsProject), true,
+                    false, ipsProject);
+            productClass = getJavaType("", productCmptType.getName(), false, false, ipsProject);
         }
 
         private void check(String oldName, String newName) {
@@ -554,26 +457,31 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
 
     }
 
-    private class ProductCmptTypeExpectations {
+    private static class ProductCmptTypeExpectations {
+
+        private final IIpsProject ipsProject;
 
         private final IType policyClass;
 
         private ProductCmptTypeExpectations(IPolicyCmptType policyCmptType) throws CoreException {
-            policyClass = getJavaType("", policyCmptType.getName(), false, false);
+            ipsProject = policyCmptType.getIpsProject();
+            policyClass = getJavaType("", policyCmptType.getName(), false, false, ipsProject);
         }
 
         private void check(String oldName, String newName) {
             assertFalse(policyClass.getMethod("get" + oldName, new String[0]).exists());
-            assertFalse(policyClass.getMethod("get" + oldName + getGenerationConceptNameAbbreviation(), new String[0])
-                    .exists());
+            assertFalse(policyClass.getMethod("get" + oldName + getGenerationConceptNameAbbreviation(ipsProject),
+                    new String[0]).exists());
             assertFalse(policyClass.getMethod("set" + oldName,
-                    new String[] { unresolvedParam(getPublishedInterfaceName(oldName)), booleanParam() }).exists());
+                    new String[] { unresolvedParam(getPublishedInterfaceName(oldName, ipsProject)), booleanParam() })
+                    .exists());
 
             assertTrue(policyClass.getMethod("get" + newName, new String[0]).exists());
-            assertTrue(policyClass.getMethod("get" + newName + getGenerationConceptNameAbbreviation(), new String[0])
-                    .exists());
+            assertTrue(policyClass.getMethod("get" + newName + getGenerationConceptNameAbbreviation(ipsProject),
+                    new String[0]).exists());
             assertTrue(policyClass.getMethod("set" + newName,
-                    new String[] { unresolvedParam(getPublishedInterfaceName(newName)), booleanParam() }).exists());
+                    new String[] { unresolvedParam(getPublishedInterfaceName(newName, ipsProject)), booleanParam() })
+                    .exists());
         }
 
     }

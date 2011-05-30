@@ -105,7 +105,7 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
             processor.resetEnvironment();
             processor.setMembersToMove(new IMember[] { originalJavaMember });
             processor.setDestinationType(targetJavaMember.getDeclaringType());
-            processor.setReplace(true);
+            // processor.setReplace(true);
             if (originalJavaMember.getElementType() == IJavaElement.METHOD) {
                 processor.setDeletedMethods(new IMethod[] { (IMethod)originalJavaMember });
             }
