@@ -27,7 +27,6 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -76,7 +75,6 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -104,50 +102,6 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         super.setUp();
         ipsProject = this.newIpsProject();
         root = ipsProject.getIpsPackageFragmentRoots()[0];
-    }
-
-    // FIXME AW: Core test expecting standard builder set
-    @Ignore
-    @Test
-    public void testCleanBuildNonDerivedFiles() throws CoreException {
-        IProductCmptType type = newProductCmptType(ipsProject, "Product");
-        IProductCmpt productCmpt = newProductCmpt(type, "Product");
-
-        IFolder folder = productCmpt.getIpsPackageFragment().getRoot().getArtefactDestination(true);
-        // the artefact destination is expected to be there right from the beginning
-        assertTrue(folder.exists());
-
-        // after an incremental build the base package and the generated xml file for the product
-        // cmpt
-        // is expected to be there
-        productCmpt.getIpsProject().getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
-        IFolder baseDir = folder.getFolder(new Path("/org/faktorips/sample/model"));
-        assertTrue(baseDir.exists());
-        // TODO little dirty here. Better to ask the builder for its package
-        IFile productFile = folder.getFile(new Path("/org/faktorips/sample/model/internal/Product.xml"));
-        assertTrue(productFile.exists());
-
-        // a clean build is expected to remove the base directory and the product xml file.
-        productCmpt.getIpsProject().getProject().build(IncrementalProjectBuilder.CLEAN_BUILD, null);
-        assertFalse(productFile.exists());
-        assertFalse(baseDir.exists());
-
-        // a full build creates the base directory and the product component xml file again.
-        productCmpt.getIpsProject().getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
-        assertTrue(baseDir.exists());
-        assertTrue(productFile.exists());
-
-        // Putting an arbitrary file into a sub folder of the derived destination folder.
-        IFile file = baseDir.getFile("keep.txt");
-        file.create(new ByteArrayInputStream("".getBytes()), true, null);
-        file.setDerived(false);
-        assertTrue(file.exists());
-
-        // after the clean build the non derived file in the destinations sub folder is expected to
-        // stay
-        productCmpt.getIpsProject().getProject().build(IncrementalProjectBuilder.CLEAN_BUILD, null);
-        assertTrue(file.exists());
-        assertTrue(baseDir.exists());
     }
 
     class AssertThatFullBuildIsTriggeredBuilder extends AbstractArtefactBuilder {
