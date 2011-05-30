@@ -15,6 +15,8 @@ package org.faktorips.devtools.core.model.ipsobject;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.IAdaptable;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsMetaClass;
 import org.faktorips.devtools.core.model.IIpsMetaObject;
 
@@ -27,7 +29,7 @@ import org.faktorips.devtools.core.model.IIpsMetaObject;
  * 
  * @author dirmeier
  */
-public interface IFixDifferencesComposite {
+public interface IFixDifferencesComposite extends IAdaptable {
 
     /**
      * Returns true if this element as well as every child element is empty. That means there is no
@@ -55,5 +57,13 @@ public interface IFixDifferencesComposite {
      * @return a list of {@link IFixDifferencesComposite}s that are children of this element
      */
     public List<IFixDifferencesComposite> getChildren();
+
+    /**
+     * Getting the {@link IIpsElement} that corresponds to this {@link IFixDifferencesComposite}.
+     * This object is used as base element for displaying labels or images for this element.
+     * 
+     * @return The {@link IIpsElement} that corresponds to this {@link IFixDifferencesComposite}
+     */
+    public IIpsElement getCorrespondingIpsElement();
 
 }

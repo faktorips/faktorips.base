@@ -27,6 +27,8 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
+    public static String MissingPropertyValueEntry_valueTransferedInformation;
+
     public static String PropertyTypeMismatchEntry_desc;
 
     public static String ValueSetMismatchEntry_desc;

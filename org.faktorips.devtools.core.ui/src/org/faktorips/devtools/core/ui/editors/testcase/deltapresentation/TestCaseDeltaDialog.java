@@ -32,6 +32,8 @@ import org.faktorips.devtools.core.ui.editors.deltapresentation.AbstractDeltaDia
  */
 public class TestCaseDeltaDialog extends AbstractDeltaDialog {
 
+    private TreeViewer tree;
+
     /** The displayed delta in the dialog */
     private ITestCaseTestCaseTypeDelta delta;
 
@@ -80,6 +82,11 @@ public class TestCaseDeltaDialog extends AbstractDeltaDialog {
 
     private void updateDeltaView() {
         updateDeltaView(delta);
+    }
+
+    @Override
+    protected TreeViewer getTreeViewer() {
+        return tree;
     }
 
 }

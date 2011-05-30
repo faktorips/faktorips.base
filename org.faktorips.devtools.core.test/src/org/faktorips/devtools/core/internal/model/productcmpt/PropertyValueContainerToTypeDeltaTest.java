@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -22,6 +23,8 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingPropertyValueEntry;
+import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueWithoutPropertyEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -235,6 +238,44 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         assertNull(productCmpt.getAttributeValue("a1"));
         assertNull(productCmpt.getAttributeValue("a_super"));
         assertNotNull(productCmpt.getAttributeValue(attribute3.getName()));
+    }
+
+    @Test
+    public void testMissingPropertyWithPredecessor() throws Exception {
+        IProductCmptTypeAttribute attr1 = productCmptType.newProductCmptTypeAttribute("attr1");
+        attr1.setChangingOverTime(false);
+        IPropertyValueContainerToTypeDelta deltaToModel = productCmpt.computeDeltaToModel(ipsProject);
+        deltaToModel.fixAllDifferencesToModel();
+
+        attr1.setChangingOverTime(true);
+        deltaToModel = productCmpt.computeDeltaToModel(ipsProject);
+        assertFalse(deltaToModel.isEmpty());
+        assertEquals(1, deltaToModel.getEntries().length);
+        ValueWithoutPropertyEntry valueWithoutPropertyEntry = (ValueWithoutPropertyEntry)deltaToModel.getEntries()[0];
+        assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, valueWithoutPropertyEntry.getDeltaType());
+        IPropertyValueContainerToTypeDelta generationFix = (IPropertyValueContainerToTypeDelta)deltaToModel
+                .getChildren().get(0);
+        IDeltaEntry[] generationEntries = generationFix.getEntries();
+        assertEquals(1, generationEntries.length);
+        MissingPropertyValueEntry missingPropertyValueEntry = (MissingPropertyValueEntry)generationEntries[0];
+        assertEquals(DeltaType.MISSING_PROPERTY_VALUE, missingPropertyValueEntry.getDeltaType());
+        assertEquals(valueWithoutPropertyEntry, missingPropertyValueEntry.getPredecessor());
+
+        productCmpt.fixAllDifferencesToModel(ipsProject);
+
+        attr1.setChangingOverTime(false);
+        deltaToModel = productCmpt.computeDeltaToModel(ipsProject);
+        assertFalse(deltaToModel.isEmpty());
+        assertEquals(1, deltaToModel.getEntries().length);
+        generationFix = (IPropertyValueContainerToTypeDelta)deltaToModel.getChildren().get(0);
+        generationEntries = generationFix.getEntries();
+        valueWithoutPropertyEntry = (ValueWithoutPropertyEntry)generationEntries[0];
+        assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, valueWithoutPropertyEntry.getDeltaType());
+        assertEquals(1, generationEntries.length);
+        missingPropertyValueEntry = (MissingPropertyValueEntry)deltaToModel.getEntries()[0];
+        assertEquals(DeltaType.MISSING_PROPERTY_VALUE, missingPropertyValueEntry.getDeltaType());
+        assertEquals(valueWithoutPropertyEntry, missingPropertyValueEntry.getPredecessor());
+
     }
 
     @Test

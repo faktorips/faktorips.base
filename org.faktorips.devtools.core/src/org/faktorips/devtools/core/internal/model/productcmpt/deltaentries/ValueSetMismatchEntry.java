@@ -30,6 +30,7 @@ public class ValueSetMismatchEntry extends AbstractDeltaEntryForProperty {
     private final IConfigElement element;
 
     public ValueSetMismatchEntry(IPolicyCmptTypeAttribute attribute, IConfigElement element) {
+        super(element);
         this.attribute = attribute;
         this.element = element;
     }

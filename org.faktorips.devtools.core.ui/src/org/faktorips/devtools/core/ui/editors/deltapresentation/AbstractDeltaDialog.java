@@ -25,8 +25,6 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  */
 public abstract class AbstractDeltaDialog extends TitleAreaDialog {
 
-    protected TreeViewer tree;
-
     protected UIToolkit toolkit;
 
     public AbstractDeltaDialog(Shell parentShell) {
@@ -43,11 +41,13 @@ public abstract class AbstractDeltaDialog extends TitleAreaDialog {
     }
 
     protected void updateDeltaView(Object delta) {
-        tree.setInput(delta);
-        tree.refresh();
-        tree.expandAll();
-        tree.getControl().redraw();
+        getTreeViewer().setInput(delta);
+        getTreeViewer().refresh();
+        getTreeViewer().expandAll();
+        getTreeViewer().getControl().redraw();
         getParentShell().layout();
     }
+
+    protected abstract TreeViewer getTreeViewer();
 
 }

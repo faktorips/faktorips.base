@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 
 /**
  * 
@@ -21,9 +22,28 @@ import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
  */
 public abstract class AbstractDeltaEntryForProperty implements IDeltaEntryForProperty {
 
+    private final IPropertyValue propertyValue;
+
+    /**
+     * The {@link IPropertyValue} this entry is responsible for. May be null if the value does not
+     * exists yet.
+     * 
+     * @param propertyValue The {@link IPropertyValue} this entry is responsible for.
+     */
+    public AbstractDeltaEntryForProperty(IPropertyValue propertyValue) {
+        this.propertyValue = propertyValue;
+    }
+
     @Override
     public String toString() {
         return getDeltaType() + ": " + getPropertyName() + "(" + getPropertyType().getName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
+
+    /**
+     * @return Returns the propertyValue.
+     */
+    public IPropertyValue getPropertyValue() {
+        return propertyValue;
     }
 
 }

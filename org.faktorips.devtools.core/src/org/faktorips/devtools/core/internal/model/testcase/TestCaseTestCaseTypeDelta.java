@@ -22,6 +22,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.AbstractFixDifferencesComposite;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.testcase.ITestAttributeValue;
@@ -108,6 +109,11 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
 
         testPolicyCmptWithDifferentSortOrderTestAttr = testPolicyCmptWithWrongSortOrderAttribute
                 .toArray(new ITestPolicyCmpt[0]);
+    }
+
+    @Override
+    public IIpsElement getCorrespondingIpsElement() {
+        return getTestCase();
     }
 
     @Override

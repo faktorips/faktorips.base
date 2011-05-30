@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.eclipse.core.runtime.PlatformObject;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
 
 /**
@@ -25,7 +26,7 @@ import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
  * 
  * @author dirmeier
  */
-public abstract class AbstractFixDifferencesComposite implements IFixDifferencesComposite {
+public abstract class AbstractFixDifferencesComposite extends PlatformObject implements IFixDifferencesComposite {
 
     private final List<IFixDifferencesComposite> children = new ArrayList<IFixDifferencesComposite>();
 
@@ -81,8 +82,8 @@ public abstract class AbstractFixDifferencesComposite implements IFixDifferences
     }
 
     /**
-     * Removing a {@link IFixDifferencesComposite} to the list of children. Should be final because it
-     * may be called in constructor of subclasses.
+     * Removing a {@link IFixDifferencesComposite} to the list of children. Should be final because
+     * it may be called in constructor of subclasses.
      * 
      * @param child The child to be removed
      * @return true if the list remove returns true

@@ -14,21 +14,23 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.model.WorkbenchContentProvider;
+import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.editors.deltapresentation.AbstractDeltaDialog;
+import org.faktorips.devtools.core.ui.util.TypedSelection;
 
 /**
  * Dialog to display differences between a product component and its type.
@@ -37,24 +39,22 @@ import org.faktorips.devtools.core.ui.editors.deltapresentation.AbstractDeltaDia
  */
 public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
 
-    private IProductCmptGeneration[] generations;
-    private IFixDifferencesComposite deltas;
-    private List generationsList;
+    private IFixDifferencesComposite deltaComposite;
+    private TreeViewer productCmptGenTree;
+    private TreeViewer tree;
 
     /**
      * Create a new dialog, showing all the differences given. The first delta found in the given
-     * deltas has to be for the first generation and so on.
+     * deltaComposite has to be for the first generation and so on.
      * 
+     * @param deltaComposite All deltaComposite for the generations.
      * @param parentShell The SWT parent-shell
-     * @param generations All generations with differences.
-     * @param deltas All deltas for the generations.
      */
-    public ProductCmptDeltaDialog(IProductCmptGeneration[] generations, IFixDifferencesComposite deltas, Shell parentShell) {
+    public ProductCmptDeltaDialog(IFixDifferencesComposite deltaComposite, Shell parentShell) {
 
         super(parentShell);
         super.setShellStyle(getShellStyle() | SWT.RESIZE);
-        this.generations = generations;
-        this.deltas = deltas;
+        this.deltaComposite = deltaComposite;
     }
 
     @Override
@@ -82,16 +82,19 @@ public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
 
         // line 2 (list)
         toolkit.createVerticalSpacer(listParent, 1);
-        generationsList = new List(listParent, SWT.SINGLE | SWT.BORDER);
+        productCmptGenTree = new TreeViewer(listParent, SWT.SINGLE | SWT.BORDER);
         toolkit.createVerticalSpacer(listParent, 1);
-
-        for (IProductCmptGeneration generation : generations) {
-            generationsList.add(generation.getName());
-        }
+        productCmptGenTree.setLabelProvider(new WorkbenchLabelProvider());
+        productCmptGenTree.setContentProvider(new WorkbenchContentProvider() {
+            @Override
+            public Object[] getElements(Object element) {
+                return new Object[] { deltaComposite };
+            }
+        });
 
         gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-        gridData.minimumHeight = 30;
-        generationsList.setLayoutData(gridData);
+        gridData.minimumHeight = 70;
+        productCmptGenTree.getTree().setLayoutData(gridData);
 
         // line 3 (label for tree)
         toolkit.createVerticalSpacer(listParent, 1);
@@ -104,7 +107,7 @@ public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
         toolkit.createVerticalSpacer(listParent, 1);
         tree = new TreeViewer(listParent);
         gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-        gridData.minimumHeight = 50;
+        gridData.minimumHeight = 100;
         tree.getTree().setLayoutData(gridData);
         toolkit.createVerticalSpacer(listParent, 1);
 
@@ -126,20 +129,21 @@ public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
         tree.setContentProvider(new DeltaContentProvider());
         tree.setLabelProvider(new DeltaLabelProvider());
 
-        generationsList.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                widgetSelected(e);
-            }
+        productCmptGenTree.addSelectionChangedListener(new ISelectionChangedListener() {
 
             @Override
-            public void widgetSelected(SelectionEvent e) {
+            public void selectionChanged(SelectionChangedEvent event) {
                 updateDeltaView();
             }
         });
 
         // initialize view
-        generationsList.setSelection(0);
+        // need to set any element different form the deltaComposite itself because the content
+        // provider does return the deltaComposite as root element. The root element could not be
+        // the same as the input element @see IStructuredContentProvider#getElemement(Object)
+        productCmptGenTree.setInput(deltaComposite.getCorrespondingIpsElement());
+        productCmptGenTree.expandAll();
+        productCmptGenTree.setSelection(new StructuredSelection(deltaComposite));
         updateDeltaView();
 
         return root;
@@ -154,14 +158,17 @@ public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
     }
 
     private void updateDeltaView() {
-        updateDeltaView(deltas);
+        TypedSelection<IFixDifferencesComposite> selection = new TypedSelection<IFixDifferencesComposite>(
+                IFixDifferencesComposite.class, productCmptGenTree.getSelection());
+        updateDeltaView(selection.getFirstElement());
     }
 
-    public IProductCmptGeneration[] getGenerations() {
-        return generations;
+    public IFixDifferencesComposite getDeltaComposite() {
+        return deltaComposite;
     }
 
-    public IFixDifferencesComposite getDeltas() {
-        return deltas;
+    @Override
+    protected TreeViewer getTreeViewer() {
+        return tree;
     }
 }

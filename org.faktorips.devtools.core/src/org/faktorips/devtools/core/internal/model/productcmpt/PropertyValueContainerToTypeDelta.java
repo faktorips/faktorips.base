@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.Prope
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueSetMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueWithoutPropertyEntry;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
@@ -65,6 +66,11 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
         }
         createEntriesForProperties();
         createAdditionalEntriesAndChildren();
+    }
+
+    @Override
+    public IIpsElement getCorrespondingIpsElement() {
+        return propertyValueContainer;
     }
 
     /**

@@ -27,6 +27,7 @@ public class ValueWithoutPropertyEntry extends AbstractDeltaEntryForProperty {
     private final IPropertyValue value;
 
     public ValueWithoutPropertyEntry(IPropertyValue value) {
+        super(value);
         this.value = value;
     }
 

@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.workbenchadapters;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -27,15 +26,6 @@ public class AttributeValueWorkbenchAdapter extends IpsObjectPartWorkbenchAdapte
     @Override
     protected ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
         if (ipsObjectPart instanceof IAttributeValue) {
-            IAttributeValue attributeValue = (IAttributeValue)ipsObjectPart;
-            try {
-                IProductCmptTypeAttribute attribute = attributeValue.findAttribute(attributeValue.getIpsProject());
-                if (attribute != null) {
-                    return IpsUIPlugin.getImageHandling().getImageDescriptor(attribute);
-                }
-            } catch (CoreException e) {
-                e.printStackTrace();
-            }
             return getDefaultImageDescriptor();
         } else {
             return null;
@@ -44,7 +34,7 @@ public class AttributeValueWorkbenchAdapter extends IpsObjectPartWorkbenchAdapte
 
     @Override
     public ImageDescriptor getDefaultImageDescriptor() {
-        return IpsUIPlugin.getImageHandling().getDefaultImageDescriptor(ProductCmptTypeAttribute.class);
+        return IpsUIPlugin.getImageHandling().createImageDescriptor("ProductAttribute.gif"); //$NON-NLS-1$
     }
 
     @Override

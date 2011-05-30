@@ -392,7 +392,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 
         IFixDifferencesComposite deltas = getProductCmpt().computeDeltaToModel(getIpsProject());
 
-        return new ProductCmptDeltaDialog(generations, deltas, getSite().getShell());
+        return new ProductCmptDeltaDialog(deltas, getSite().getShell());
     }
 
     @Override
