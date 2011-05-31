@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
-public class SingleTypeSelectIpsObjectContext implements ISelectIpsObjectContext {
+public class SingleTypeSelectIpsObjectContext extends CachingOpenIpsObjectContext {
 
     private final IpsObjectType ipsObjectType;
     private final ViewerFilter filter;
@@ -43,7 +43,7 @@ public class SingleTypeSelectIpsObjectContext implements ISelectIpsObjectContext
     }
 
     @Override
-    public List<IIpsSrcFile> getIpsSrcFiles(IProgressMonitor progressMonitor) throws CoreException {
+    public List<IIpsSrcFile> loadIpsSrcFiles(IProgressMonitor progressMonitor) throws CoreException {
         progressMonitor.beginTask("Selecting files...", 4); //$NON-NLS-1$
         progressMonitor.worked(1);
         IIpsSrcFile[] srcFiles = project.findIpsSrcFiles(ipsObjectType);

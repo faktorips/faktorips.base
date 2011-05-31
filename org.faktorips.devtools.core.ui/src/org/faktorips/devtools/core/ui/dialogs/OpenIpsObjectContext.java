@@ -24,7 +24,13 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
-public class OpenIpsObjectContext implements ISelectIpsObjectContext {
+/**
+ * This is the default context for the {@link OpenIpsObjectSelectionDialog}. Per default it selects
+ * all IPS objects, you can specify a filter to select product definition types only.
+ * 
+ * @author dirmeier
+ */
+public class OpenIpsObjectContext extends CachingOpenIpsObjectContext {
 
     private final boolean onlyProductDefinitionTypes;
 
@@ -37,7 +43,7 @@ public class OpenIpsObjectContext implements ISelectIpsObjectContext {
     }
 
     @Override
-    public List<IIpsSrcFile> getIpsSrcFiles(IProgressMonitor progressMonitor) throws CoreException {
+    public List<IIpsSrcFile> loadIpsSrcFiles(IProgressMonitor progressMonitor) throws CoreException {
         List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         IIpsProject[] projects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
         progressMonitor.beginTask(
