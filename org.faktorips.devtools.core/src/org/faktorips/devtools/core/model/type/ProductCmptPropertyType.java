@@ -220,7 +220,9 @@ public enum ProductCmptPropertyType {
     }
 
     /**
-     * Creates a property value for this type of product component property.
+     * Creates a property value for this type of product component property. If you have the
+     * concrete class of the {@link IPropertyValue} you want to create use the typesafe method
+     * {@link #createPropertyValue(IPropertyValueContainer, IProductCmptProperty, String, Class)}
      * 
      * @param container the {@link IPropertyValueContainer} the new part is created for
      * @param property the {@link IProductCmptProperty} a new value is created for
@@ -280,5 +282,34 @@ public enum ProductCmptPropertyType {
             }
         }
         return null;
+    }
+
+    /**
+     * Crating a concrete {@link IPropertyValue} of the given type. This method does NOT add the
+     * created property value to the given container but only using this information for setting the
+     * parent! The parameter productCmptProperty may be null. If the parameter is null, you have to
+     * specify the concrete type to be created by setting the correct type parameter. If
+     * productCmptProperty is not null the concrete type is getting from this parameter and the
+     * caller have to ensure that the given type is the same as the type getting from the
+     * productCmptPropertys type.
+     * 
+     * @param container The container that is used as parent object, the created element is NOT
+     *            added to it.
+     * @param productCmptProperty the {@link IProductCmptProperty} that may be set in the new value
+     *            if it is not null
+     * @param partId the partId of the generated {@link IPropertyValue}
+     * @param type The class that specifies the type of the created element
+     * @return the created element of the given type setup with the given parameter
+     */
+    public static <T extends IPropertyValue> T createPropertyValue(IPropertyValueContainer container,
+            IProductCmptProperty productCmptProperty,
+            String partId,
+            Class<T> type) {
+
+        @SuppressWarnings("unchecked")
+        // The enum could not be specialized with generics but the implementation is type safe
+        T propertyValue = (T)ProductCmptPropertyType.getTypeForValueClass(type).createPropertyValue(container,
+                productCmptProperty, partId);
+        return propertyValue;
     }
 }

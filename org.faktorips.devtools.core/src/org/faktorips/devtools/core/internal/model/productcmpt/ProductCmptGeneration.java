@@ -57,7 +57,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
-import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -143,8 +142,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public IPropertyValue newPropertyValue(IProductCmptProperty property) {
-        IPropertyValue newPropertyValue = propertyValueCollection.newPropertyValue(this, property, getNextPartId(),
-                IPropertyValue.class);
+        IPropertyValue newPropertyValue = propertyValueCollection.newPropertyValue(this, property, getNextPartId());
         objectHasChanged();
         return newPropertyValue;
     }
@@ -171,7 +169,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public IAttributeValue newAttributeValue() {
-        IAttributeValue value = propertyValueCollection.newPropertyValue(this, IAttributeValue.class, getNextPartId());
+        IAttributeValue value = propertyValueCollection.newPropertyValue(this, getNextPartId(), IAttributeValue.class);
         objectHasChanged();
         return value;
     }
@@ -210,7 +208,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public IConfigElement newConfigElement() {
-        IConfigElement value = propertyValueCollection.newPropertyValue(this, IConfigElement.class, getNextPartId());
+        IConfigElement value = propertyValueCollection.newPropertyValue(this, getNextPartId(), IConfigElement.class);
         objectHasChanged();
         return value;
     }
@@ -376,8 +374,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public ITableContentUsage newTableContentUsage() {
-        ITableContentUsage value = propertyValueCollection.newPropertyValue(this, ITableContentUsage.class,
-                getNextPartId());
+        ITableContentUsage value = propertyValueCollection.newPropertyValue(this, getNextPartId(),
+                ITableContentUsage.class);
         objectHasChanged();
         return value;
     }
@@ -426,7 +424,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     public IFormula newFormula() {
-        IFormula value = propertyValueCollection.newPropertyValue(this, IFormula.class, getNextPartId());
+        IFormula value = propertyValueCollection.newPropertyValue(this, getNextPartId(), IFormula.class);
         objectHasChanged();
         return value;
     }
@@ -450,15 +448,13 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     @Override
-    public IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
+    protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
         IIpsObjectPart newPart = null;
-        if (partType.equals(IPolicyCmptTypeAssociation.class)) {
+        if (IPolicyCmptTypeAssociation.class.isAssignableFrom(partType)) {
             newPart = newLinkInternal(getNextPartId());
-        } else {
-            ProductCmptPropertyType typeForValueClass = ProductCmptPropertyType.getTypeForValueClass(partType);
-            if (typeForValueClass != null) {
-                newPart = propertyValueCollection.newPropertyValue(this, typeForValueClass, getNextPartId());
-            }
+        } else if (IPropertyValue.class.isAssignableFrom(partType)) {
+            Class<? extends IPropertyValue> propertyValueType = partType.asSubclass(IPropertyValue.class);
+            newPart = propertyValueCollection.newPropertyValue(this, getNextPartId(), propertyValueType);
         }
         return newPart;
     }

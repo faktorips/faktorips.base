@@ -169,14 +169,6 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testNewPartThis() {
-        IFormula formula = (IFormula)valueContainer.newPropertyValue(parent, ProductCmptPropertyType.FORMULA,
-                "MethodID1");
-        assertNotNull(formula);
-        assertSize(4);
-    }
-
-    @Test
     public void testNewPartThisXML() {
         IFormula formula = (IFormula)valueContainer.newPropertyValue(parent, Formula.TAG_NAME, "MethodID1");
         assertNotNull(formula);

@@ -321,8 +321,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     public IPropertyValue newPropertyValue(IProductCmptProperty property) {
         if (property.getProductCmptPropertyType() == ProductCmptPropertyType.VALUE) {
-            IPropertyValue newPropertyValue = propertyValueCollection.newPropertyValue(this, property, getNextPartId(),
-                    IPropertyValue.class);
+            IPropertyValue newPropertyValue = propertyValueCollection.newPropertyValue(this, property, getNextPartId());
             objectHasChanged();
             return newPropertyValue;
         }
@@ -352,9 +351,12 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         if (part != null) {
             return part;
         }
-        ProductCmptPropertyType typeForValueClass = ProductCmptPropertyType.getTypeForValueClass(partType);
-        IPropertyValue newPart = propertyValueCollection.newPropertyValue(this, typeForValueClass, getNextPartId());
-        return newPart;
+        if (IPropertyValue.class.isAssignableFrom(partType)) {
+            Class<? extends IPropertyValue> propertyValueType = partType.asSubclass(IPropertyValue.class);
+            IPropertyValue newPart = propertyValueCollection.newPropertyValue(this, getNextPartId(), propertyValueType);
+            return newPart;
+        }
+        return null;
     }
 
     @Override
