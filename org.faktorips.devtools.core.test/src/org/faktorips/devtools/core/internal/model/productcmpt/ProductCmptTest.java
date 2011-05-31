@@ -443,6 +443,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     public void testContainsDifferencesToModel_productCmptTypeAttribute() throws Exception {
         ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         IProductCmptTypeAttribute newAttribute = newProductCmptType.newProductCmptTypeAttribute("testAttr");
+        newAttribute.setChangingOverTime(false);
 
         ProductCmpt newProductCmpt = newProductCmpt(newProductCmptType, "Cmpt1");
         assertTrue(newProductCmpt.containsDifferenceToModel(ipsProject));
@@ -473,6 +474,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     public void testFixDifferencesToModel_productCmptTypeAttribute() throws Exception {
         ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         IProductCmptTypeAttribute newAttribute = newProductCmptType.newProductCmptTypeAttribute("testAttr");
+        newAttribute.setChangingOverTime(false);
 
         ProductCmpt newProductCmpt = newProductCmpt(newProductCmptType, "Cmpt1");
 
@@ -507,6 +509,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     public void testComputeDeltaToModel_AttributeValues() throws Exception {
         ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         IProductCmptTypeAttribute newAttribute = newProductCmptType.newProductCmptTypeAttribute("testAttr");
+        newAttribute.setChangingOverTime(false);
 
         ProductCmpt newProductCmpt = newProductCmpt(newProductCmptType, "Cmpt1");
 

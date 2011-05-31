@@ -45,7 +45,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
 
     private IValueSet valueSet;
 
-    private boolean changingOverTime = false;
+    private boolean changingOverTime = true;
 
     public ProductCmptTypeAttribute(IProductCmptType parent, String id) {
         super(parent, id);
@@ -60,10 +60,9 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        // TODO CD 17.5.2011 only used to be compatible for not migrated project - could be removed
-        // when migration exists
         String changingOverTimeAttribute = element.getAttribute(PROPERTY_CHANGING_OVER_TIME);
         if (StringUtils.isEmpty(changingOverTimeAttribute)) {
+            // compatibility to not migrated files
             changingOverTime = true;
         } else {
             changingOverTime = Boolean.parseBoolean(changingOverTimeAttribute);

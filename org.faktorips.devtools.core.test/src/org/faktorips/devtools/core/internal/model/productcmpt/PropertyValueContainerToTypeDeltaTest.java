@@ -181,6 +181,8 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
     public void testAttributesNotChangingOverTime() throws CoreException {
         IProductCmptTypeAttribute attribute1 = productCmptType.newProductCmptTypeAttribute("a1");
         IProductCmptTypeAttribute attribute2 = superProductCmptType.newProductCmptTypeAttribute("a_super");
+        attribute1.setChangingOverTime(false);
+        attribute2.setChangingOverTime(false);
 
         IPropertyValueContainerToTypeDelta delta = productCmpt.computeDeltaToModel(ipsProject);
         IPropertyValueContainerToTypeDelta genDelta = (IPropertyValueContainerToTypeDelta)delta.getChildren().get(0);
@@ -209,6 +211,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         attribute1.delete();
         attribute2.delete();
         IProductCmptTypeAttribute attribute3 = productCmptType.newProductCmptTypeAttribute("a2");
+        attribute3.setChangingOverTime(false);
 
         delta = productCmpt.computeDeltaToModel(ipsProject);
         genDelta = (IPropertyValueContainerToTypeDelta)delta.getChildren().get(0);
