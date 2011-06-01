@@ -52,7 +52,7 @@ public abstract class IpsPullUpProcessor extends IpsRefactoringProcessor {
         IConfigurationElement[] elements = registry
                 .getConfigurationElementsFor("org.faktorips.devtools.core.pullUpParticipants"); //$NON-NLS-1$
         participants[0] = (RefactoringParticipant)elements[0].createExecutableExtension("class"); //$NON-NLS-1$
-        participants[0].initialize(this, getIpsElement(), new IpsPullUpArguments(true));
+        participants[0].initialize(this, getIpsElement(), new IpsPullUpArguments());
         return participants;
     }
 

@@ -15,17 +15,16 @@ package org.faktorips.devtools.core.refactor;
 
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 
-// TODO AW: Pull Up refactoring still under construction.
+/**
+ * Arguments for Faktor-IPS "Pull Up" refactorings.
+ * 
+ * @author Alexander Weickmann
+ */
 public final class IpsPullUpArguments extends RefactoringArguments {
 
-    private final boolean updateReferences;
-
-    public IpsPullUpArguments(boolean updateReferences) {
-        this.updateReferences = updateReferences;
-    }
-
-    public boolean getUpdateReferences() {
-        return updateReferences;
-    }
+    /*
+     * Nothing needed here at this moment, acts as base class for possible sub classes and is
+     * reserved for later use.
+     */
 
 }

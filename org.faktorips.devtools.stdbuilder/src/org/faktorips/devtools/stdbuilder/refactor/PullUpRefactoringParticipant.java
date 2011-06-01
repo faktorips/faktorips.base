@@ -53,6 +53,8 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
 
     private final PullUpParticipantHelper refactoringHelper;
 
+    // Not needed for now, reserved for later use
+    @SuppressWarnings("unused")
     private IpsPullUpArguments arguments;
 
     public PullUpRefactoringParticipant() {
