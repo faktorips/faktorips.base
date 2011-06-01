@@ -178,47 +178,6 @@ public class ProjectUtil {
         return ipsProject;
     }
 
-    // TODO need to find another way without dependency to eclipse.jdt.ui
-    // /**
-    // * Creates and returns a new Java project based on the given data.
-    // *
-    // * @param project The platform project to be used as base for the java project.
-    // * @param srcFolder The first source folder.
-    // * @param derivedFolder The second source folder.
-    // *
-    // * @throws CoreException if the project nature can not be set.
-    // * @throws JavaModelException if the class path could not be set.
-    // */
-    // public static IJavaProject createJavaProject(IProject project, IFolder srcFolder, IFolder
-    // derivedFolder)
-    // throws CoreException {
-    //
-    // Util.addNature(project, JavaCore.NATURE_ID);
-    //
-    // IClasspathEntry srcEntry = JavaCore.newSourceEntry(srcFolder.getFullPath());
-    // IClasspathEntry derivedEntry = JavaCore.newSourceEntry(derivedFolder.getFullPath());
-    //
-    // IClasspathEntry[] entries = PreferenceConstants.getDefaultJRELibrary();
-    // IClasspathEntry[] newEntries = new IClasspathEntry[entries.length + 2];
-    // System.arraycopy(entries, 0, newEntries, 0, entries.length);
-    // newEntries[newEntries.length - 1] = srcEntry;
-    // newEntries[newEntries.length - 2] = derivedEntry;
-    //
-    // IJavaProject javaProject = JavaCore.create(project);
-    // IFolder destFolder = project.getFolder(PreferenceConstants.getPreferenceStore().getString(
-    // PreferenceConstants.SRCBIN_BINNAME));
-    //
-    // if (!destFolder.exists()) {
-    // destFolder.create(IResource.FORCE | IResource.DERIVED, true, new NullProgressMonitor());
-    // }
-    // destFolder.setDerived(true);
-    //
-    // project.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
-    //
-    // javaProject.setRawClasspath(newEntries, new NullProgressMonitor());
-    // return javaProject;
-    // }
-
     /**
      * Creates and returns a new project.
      * 
@@ -433,19 +392,6 @@ public class ProjectUtil {
                 Path srcZipPath = null;
                 if (StringUtils.isNotEmpty(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_JAVA5_SRC[i])) {
                     srcZipPath = new Path(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_JAVA5_SRC[i]);
-                }
-                entries[oldEntries.length + i] = JavaCore.newVariableEntry(jarPath, srcZipPath, null);
-            }
-            javaProject.setRawClasspath(entries, null);
-        } else {
-            int numOfJars = FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_BIN.length;
-            IClasspathEntry[] entries = new IClasspathEntry[oldEntries.length + numOfJars];
-            System.arraycopy(oldEntries, 0, entries, 0, oldEntries.length);
-            for (int i = 0; i < numOfJars; i++) {
-                Path jarPath = new Path(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_BIN[i]);
-                Path srcZipPath = null;
-                if (StringUtils.isNotEmpty(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_SRC[i])) {
-                    srcZipPath = new Path(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_SRC[i]);
                 }
                 entries[oldEntries.length + i] = JavaCore.newVariableEntry(jarPath, srcZipPath, null);
             }

@@ -33,21 +33,14 @@ import org.osgi.framework.Bundle;
  */
 public class FaktorIpsClasspathVariableInitializer extends ClasspathVariableInitializer {
 
-    public final static String VARNAME_VALUETYPES_BIN = "FAKTORIPS_VALUETYPES"; //$NON-NLS-1$
-    public final static String VARNAME_VALUETYPES_SRC = "FAKTORIPS_VALUETYPES_SRC"; //$NON-NLS-1$
-    public final static String VARNAME_RUNTIME_BIN = "FAKTORIPS_RUNTIME"; //$NON-NLS-1$
-    public final static String VARNAME_RUNTIME_SRC = "FAKTORIPS_RUNTIME_SRC"; //$NON-NLS-1$
-
     public final static String VARNAME_VALUETYPES_JAVA5_BIN = "FAKTORIPS_VALUETYPES_JAVA5"; //$NON-NLS-1$
     public final static String VARNAME_VALUETYPES_JAVA5_SRC = "FAKTORIPS_VALUETYPES_JAVA5_SRC"; //$NON-NLS-1$
     public final static String VARNAME_RUNTIME_JAVA5_BIN = "FAKTORIPS_RUNTIME_JAVA5"; //$NON-NLS-1$
     public final static String VARNAME_RUNTIME_JAVA5_SRC = "FAKTORIPS_RUNTIME_JAVA5_SRC"; //$NON-NLS-1$
 
-    public final static String[] IPS_VARIABLES_BIN = new String[] { VARNAME_VALUETYPES_BIN, VARNAME_RUNTIME_BIN };
     public final static String[] IPS_VARIABLES_JAVA5_BIN = new String[] { VARNAME_VALUETYPES_JAVA5_BIN,
             VARNAME_RUNTIME_JAVA5_BIN };
 
-    public final static String[] IPS_VARIABLES_SRC = new String[] { VARNAME_VALUETYPES_SRC, VARNAME_RUNTIME_SRC };
     public final static String[] IPS_VARIABLES_JAVA5_SRC = new String[] { VARNAME_VALUETYPES_JAVA5_SRC,
             VARNAME_RUNTIME_JAVA5_SRC };
 
@@ -55,10 +48,9 @@ public class FaktorIpsClasspathVariableInitializer extends ClasspathVariableInit
 
     public FaktorIpsClasspathVariableInitializer() {
         add(new Mapping(VARNAME_VALUETYPES_JAVA5_BIN, "org.faktorips.valuetypes.java5", "/")); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new Mapping(VARNAME_VALUETYPES_JAVA5_SRC,
-                "org.faktorips.valuetypes.java5", "/faktorips-valuetypes-java5src.zip")); //$NON-NLS-1$ //$NON-NLS-2$
+        add(new Mapping(VARNAME_VALUETYPES_JAVA5_SRC, "org.faktorips.valuetypes.java5", "/")); //$NON-NLS-1$ //$NON-NLS-2$
         add(new Mapping(VARNAME_RUNTIME_JAVA5_BIN, "org.faktorips.runtime.java5", "/")); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new Mapping(VARNAME_RUNTIME_JAVA5_SRC, "org.faktorips.runtime.java5", "/faktorips-runtime-java5src.zip")); //$NON-NLS-1$ //$NON-NLS-2$
+        add(new Mapping(VARNAME_RUNTIME_JAVA5_SRC, "org.faktorips.runtime.java5", "/")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     protected void add(Mapping m) {
