@@ -54,11 +54,10 @@ public class FaktorIpsClasspathVariableInitializer extends ClasspathVariableInit
     private final HashMap<String, Mapping> varMapping = new HashMap<String, Mapping>();
 
     public FaktorIpsClasspathVariableInitializer() {
-        add(new Mapping(VARNAME_VALUETYPES_JAVA5_BIN,
-                "org.faktorips.valuetypes.java5", "/faktorips-valuetypes-java5.jar")); //$NON-NLS-1$ //$NON-NLS-2$
+        add(new Mapping(VARNAME_VALUETYPES_JAVA5_BIN, "org.faktorips.valuetypes.java5", "/")); //$NON-NLS-1$ //$NON-NLS-2$
         add(new Mapping(VARNAME_VALUETYPES_JAVA5_SRC,
                 "org.faktorips.valuetypes.java5", "/faktorips-valuetypes-java5src.zip")); //$NON-NLS-1$ //$NON-NLS-2$
-        add(new Mapping(VARNAME_RUNTIME_JAVA5_BIN, "org.faktorips.runtime.java5", "/faktorips-runtime-java5.jar")); //$NON-NLS-1$ //$NON-NLS-2$
+        add(new Mapping(VARNAME_RUNTIME_JAVA5_BIN, "org.faktorips.runtime.java5", "/")); //$NON-NLS-1$ //$NON-NLS-2$
         add(new Mapping(VARNAME_RUNTIME_JAVA5_SRC, "org.faktorips.runtime.java5", "/faktorips-runtime-java5src.zip")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
