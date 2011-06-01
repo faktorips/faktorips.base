@@ -15,7 +15,8 @@ Export-Package: org.faktorips.runtime,
  org.faktorips.runtime.productdataprovider,
  org.faktorips.runtime.test
 Bundle-ClassPath: faktorips-runtime-java5.jar
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
+ J2SE-1.5
 Import-Package: javax.xml.bind,
  javax.xml.bind.annotation,
  javax.xml.bind.annotation.adapters,

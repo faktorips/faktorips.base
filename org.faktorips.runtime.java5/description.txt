@@ -6,3 +6,7 @@ A small special subset of these
 classes is also deployed as a runtime-client JAR  with necessary classes for client applications.
 The classes are described in the build script build/build.xml
 
+To stay compatible with older platforms and the host we have to compile the runtime with java 5.
+With java 6 we do not need imported packages like javax.xml.bind or javax.xml.stream because they
+are part of jdk 1.6. So we use the environment setting JavaSE-1.6 in the OSGi manifest to get the
+needed package imports from jdk but we compile with JDK 5, using external libraries, to be compatible.
