@@ -396,19 +396,6 @@ public class ProjectUtil {
                 entries[oldEntries.length + i] = JavaCore.newVariableEntry(jarPath, srcZipPath, null);
             }
             javaProject.setRawClasspath(entries, null);
-        } else {
-            int numOfJars = FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_BIN.length;
-            IClasspathEntry[] entries = new IClasspathEntry[oldEntries.length + numOfJars];
-            System.arraycopy(oldEntries, 0, entries, 0, oldEntries.length);
-            for (int i = 0; i < numOfJars; i++) {
-                Path jarPath = new Path(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_BIN[i]);
-                Path srcZipPath = null;
-                if (StringUtils.isNotEmpty(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_SRC[i])) {
-                    srcZipPath = new Path(FaktorIpsClasspathVariableInitializer.IPS_VARIABLES_SRC[i]);
-                }
-                entries[oldEntries.length + i] = JavaCore.newVariableEntry(jarPath, srcZipPath, null);
-            }
-            javaProject.setRawClasspath(entries, null);
         }
     }
 
