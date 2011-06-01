@@ -1079,7 +1079,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     @Override
     public void resourceChanged(IResourceChangeEvent event) {
         if (event.getType() == IResourceChangeEvent.PRE_REFRESH) {
-            clearIpsObjectCache();
+            clearIpsObjectCache(event.getResource());
             return;
         }
         IResourceDelta delta = event.getDelta();
@@ -1092,6 +1092,24 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             } catch (Exception e) {
                 IpsPlugin.log(new IpsStatus("Error updating model objects in resurce changed event.", //$NON-NLS-1$
                         e));
+            }
+        }
+    }
+
+    /**
+     * Clearing the cache of a single project or the entire cache if the project is null;
+     * 
+     * @param iResource The project that cache should be cleared.
+     */
+    synchronized private void clearIpsObjectCache(IResource iResource) {
+        if (iResource == null) {
+            ipsObjectsMap.clear();
+        } else {
+            HashSet<IIpsSrcFile> copyKeys = new HashSet<IIpsSrcFile>(ipsObjectsMap.keySet());
+            for (IIpsSrcFile srcFile : copyKeys) {
+                if (srcFile.getIpsProject().getProject().equals(iResource)) {
+                    ipsObjectsMap.remove(srcFile);
+                }
             }
         }
     }
@@ -1310,10 +1328,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     public ValidationResultCache getValidationResultCache() {
         return validationResultCache;
-    }
-
-    synchronized private void clearIpsObjectCache() {
-        ipsObjectsMap.clear();
     }
 
     /**
