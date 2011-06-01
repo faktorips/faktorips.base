@@ -812,7 +812,6 @@ schutz” abgerufen und ausgedruckt werden.
       <import plugin="org.eclipse.text"/>
       <import plugin="org.eclipse.jdt.ui" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.junit" version="3.8.2" match="greaterOrEqual"/>
-      <import plugin="javax.xml.stream"/>
       <import plugin="org.eclipse.ui.forms"/>
       <import plugin="org.eclipse.ui.workbench.texteditor" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.views" version="3.3.0" match="greaterOrEqual"/>
@@ -822,8 +821,7 @@ schutz” abgerufen und ausgedruckt werden.
       <import plugin="org.eclipse.core.expressions" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.security" version="1.0.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.nebula.widgets.grid"/>
-      <import plugin="javax.xml"/>
-      <import plugin="javax.activation"/>
+      <import plugin="org.eclipse.osgi"/>
    </requires>
 
    <plugin
@@ -912,13 +910,6 @@ schutz” abgerufen und ausgedruckt werden.
 
    <plugin
          id="org.apache.commons.lang"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="javax.xml.bind"
          download-size="0"
          install-size="0"
          version="0.0.0"
