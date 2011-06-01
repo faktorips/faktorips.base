@@ -8,7 +8,8 @@ Export-Package: org.faktorips.values,
  org.faktorips.values.xml,
  org.faktorips.valueset
 Bundle-ClassPath: faktorips-valuetypes-java5.jar
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
+ J2SE-1.5
 Eclipse-ExtensibleAPI: true
 Import-Package: javax.xml.bind,
  javax.xml.bind.annotation,
