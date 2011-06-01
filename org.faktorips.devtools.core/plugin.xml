@@ -395,4 +395,11 @@
             targetVersion="3.2.0">
       </migrationOperation>
    </extension>
+   <extension
+         point="org.eclipse.jdt.core.classpathContainerInitializer">
+      <classpathContainerInitializer
+            class="org.faktorips.devtools.core.IpsClasspathContainerInitializer"
+            id="org.faktorips.devtools.core.ipsClasspathContainer234">
+      </classpathContainerInitializer>
+   </extension>
 </plugin>
