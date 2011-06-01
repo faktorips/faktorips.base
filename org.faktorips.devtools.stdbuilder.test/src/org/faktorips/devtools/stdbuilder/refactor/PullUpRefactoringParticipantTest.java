@@ -14,6 +14,7 @@
 package org.faktorips.devtools.stdbuilder.refactor;
 
 import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.intParam;
+import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.stringParam;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
@@ -22,6 +23,7 @@ import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.junit.Test;
 
 public class PullUpRefactoringParticipantTest extends RefactoringParticipantTest {
@@ -65,6 +67,46 @@ public class PullUpRefactoringParticipantTest extends RefactoringParticipantTest
         expectations.check(sourcePolicyCmptType, sourceProductCmptType, intParam());
     }
 
+    @Test
+    public void testPullUpProductCmptTypeAttribute() throws CoreException {
+        // Create target product component type configuring a policy component type
+        IProductCmptType targetProductCmptType = newProductCmptType(ipsProject, "TargetProduct");
+        IPolicyCmptType targetPolicyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "TargetPolicy");
+        targetProductCmptType.setConfigurationForPolicyCmptType(true);
+        targetProductCmptType.setPolicyCmptType(targetPolicyCmptType.getQualifiedName());
+        targetPolicyCmptType.setConfigurableByProductCmptType(true);
+        targetPolicyCmptType.setProductCmptType(targetProductCmptType.getQualifiedName());
+
+        // Create source product component type, also configuring a policy component type
+        IProductCmptType sourceProductCmptType = newProductCmptType(ipsProject, "SourceProduct");
+        IPolicyCmptType sourcePolicyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "SourcePolicy");
+        sourceProductCmptType.setSupertype(targetProductCmptType.getQualifiedName());
+        sourcePolicyCmptType.setSupertype(targetPolicyCmptType.getQualifiedName());
+        sourceProductCmptType.setConfigurationForPolicyCmptType(true);
+        sourceProductCmptType.setPolicyCmptType(sourcePolicyCmptType.getQualifiedName());
+        sourcePolicyCmptType.setConfigurableByProductCmptType(true);
+        sourcePolicyCmptType.setProductCmptType(sourceProductCmptType.getQualifiedName());
+
+        // Create the product component type attribute to pull up
+        IProductCmptTypeAttribute productCmptTypeAttribute = createProductCmptTypeAttribute("foo",
+                sourceProductCmptType);
+
+        // Save source files and build Java source code
+        saveIpsSrcFile(targetProductCmptType);
+        saveIpsSrcFile(targetPolicyCmptType);
+        saveIpsSrcFile(sourceProductCmptType);
+        saveIpsSrcFile(sourcePolicyCmptType);
+        performFullBuild(ipsProject);
+
+        // Perform the refactoring
+        performPullUpRefactoring(productCmptTypeAttribute, targetPolicyCmptType);
+
+        // Check whether the Java source code was modified correctly
+        ProductCmptTypeAttributeExpectations expectations = new ProductCmptTypeAttributeExpectations(
+                productCmptTypeAttribute, targetProductCmptType, targetPolicyCmptType);
+        expectations.check(sourceProductCmptType, sourcePolicyCmptType, stringParam());
+    }
+
     private IPolicyCmptTypeAttribute createPolicyCmptTypeAttribute(String name, IPolicyCmptType policyCmptType) {
         IPolicyCmptTypeAttribute policyCmptTypeAttribute = policyCmptType.newPolicyCmptTypeAttribute();
         policyCmptTypeAttribute.setName(name);
@@ -74,6 +116,15 @@ public class PullUpRefactoringParticipantTest extends RefactoringParticipantTest
         policyCmptTypeAttribute.setProductRelevant(true);
         policyCmptTypeAttribute.setDefaultValue("0");
         return policyCmptTypeAttribute;
+    }
+
+    private IProductCmptTypeAttribute createProductCmptTypeAttribute(String name, IProductCmptType productCmptType) {
+        IProductCmptTypeAttribute productCmptTypeAttribute = productCmptType.newProductCmptTypeAttribute();
+        productCmptTypeAttribute.setName(name);
+        productCmptTypeAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        productCmptTypeAttribute.setModifier(Modifier.PUBLISHED);
+        productCmptTypeAttribute.setChangingOverTime(true);
+        return productCmptTypeAttribute;
     }
 
 }

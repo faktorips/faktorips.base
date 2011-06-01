@@ -68,6 +68,7 @@ final class PolicyCmptTypeAttributeExpectations {
 
     void check(IPolicyCmptType oldPolicyCmptType, IProductCmptType oldProductCmptType, String datatypeSignature)
             throws CoreException {
+
         check(policyCmptTypeAttribute.getName(), policyCmptTypeAttribute.getName(), oldPolicyCmptType,
                 oldProductCmptType, datatypeSignature);
     }

@@ -127,9 +127,9 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
 
         performRenameRefactoring(productCmptTypeAttribute, "test");
 
-        ProductCmptTypeAttributeExpectations expectations = new ProductCmptTypeAttributeExpectations(productCmptType,
-                policyCmptType);
-        expectations.check("productAttribute", "test");
+        ProductCmptTypeAttributeExpectations expectations = new ProductCmptTypeAttributeExpectations(
+                productCmptTypeAttribute, productCmptType, policyCmptType);
+        expectations.check("productAttribute", "test", stringParam());
     }
 
     @Test
@@ -347,48 +347,6 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
         productCmptTypeAttribute.setModifier(Modifier.PUBLISHED);
         productCmptTypeAttribute.setChangingOverTime(true);
         return productCmptTypeAttribute;
-    }
-
-    private static class ProductCmptTypeAttributeExpectations {
-
-        private final IType policyClass;
-
-        private final IIpsProject ipsProject;
-
-        private final IType productGenInterface;
-
-        private final IType productGenClass;
-
-        private ProductCmptTypeAttributeExpectations(IProductCmptType productCmptType, IPolicyCmptType policyCmptType)
-                throws CoreException {
-
-            ipsProject = productCmptType.getIpsProject();
-            productGenInterface = getJavaType(
-                    "",
-                    getPublishedInterfaceName(productCmptType.getName()
-                            + getGenerationConceptNameAbbreviation(ipsProject), ipsProject), true, false, ipsProject);
-            productGenClass = getJavaType("", productCmptType.getName()
-                    + getGenerationConceptNameAbbreviation(ipsProject), false, false, ipsProject);
-            policyClass = getJavaType("", policyCmptType.getName(), false, false, ipsProject);
-        }
-
-        private void check(String oldName, String newName) {
-            String oldNameCamelCase = StringUtil.toCamelCase(oldName, true);
-            String newNameCamelCase = StringUtil.toCamelCase(newName, true);
-
-            assertFalse(productGenInterface.getMethod("get" + oldNameCamelCase, new String[0]).exists());
-            assertFalse(productGenClass.getField(oldName).exists());
-            assertFalse(productGenClass.getMethod("get" + oldNameCamelCase, new String[0]).exists());
-            assertFalse(productGenClass.getMethod("set" + oldNameCamelCase, new String[] { stringParam() }).exists());
-            assertFalse(policyClass.getMethod("get" + oldNameCamelCase, new String[0]).exists());
-
-            assertTrue(productGenInterface.getMethod("get" + newNameCamelCase, new String[0]).exists());
-            assertTrue(productGenClass.getField(newName).exists());
-            assertTrue(productGenClass.getMethod("get" + newNameCamelCase, new String[0]).exists());
-            assertTrue(productGenClass.getMethod("set" + newNameCamelCase, new String[] { stringParam() }).exists());
-            assertTrue(policyClass.getMethod("get" + newNameCamelCase, new String[0]).exists());
-        }
-
     }
 
     private static class AbstractEnumAttributeExpectations {
