@@ -20,6 +20,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
@@ -83,7 +84,8 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
         @Override
         protected Refactoring createJdtRefactoring(IJavaElement generatedJavaElement,
                 IJavaElement targetJavaElement,
-                RefactoringStatus status) {
+                RefactoringStatus status,
+                IProgressMonitor progressMonitor) {
 
             return null;
         }

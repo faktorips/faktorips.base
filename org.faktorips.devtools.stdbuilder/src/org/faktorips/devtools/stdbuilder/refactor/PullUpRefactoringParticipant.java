@@ -13,12 +13,17 @@
 
 package org.faktorips.devtools.stdbuilder.refactor;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.corext.refactoring.structure.PullUpRefactoringProcessor;
 import org.eclipse.jdt.internal.ui.preferences.JavaPreferencesSettings;
 import org.eclipse.ltk.core.refactoring.Change;
@@ -28,14 +33,13 @@ import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
-import org.faktorips.devtools.core.model.ipsobject.IDescription;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.refactor.IpsPullUpArguments;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.w3c.dom.Element;
 
 /**
  * This class is loaded by the Faktor-IPS 'Pull Up' refactoring to participate in this process by
@@ -87,7 +91,8 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
         @Override
         protected Refactoring createJdtRefactoring(IJavaElement originalJavaElement,
                 IJavaElement targetJavaElement,
-                RefactoringStatus status) throws CoreException {
+                RefactoringStatus status,
+                IProgressMonitor progressMonitor) throws CoreException {
 
             if (!(originalJavaElement instanceof IMember && targetJavaElement instanceof IMember)) {
                 throw new RuntimeException(
@@ -103,13 +108,35 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
             PullUpRefactoringProcessor processor = new PullUpRefactoringProcessor(new IMember[] { originalJavaMember },
                     JavaPreferencesSettings.getCodeGenerationSettings(originalJavaElement.getJavaProject()));
             processor.resetEnvironment();
-            processor.setMembersToMove(new IMember[] { originalJavaMember });
             processor.setDestinationType(targetJavaMember.getDeclaringType());
-            // processor.setReplace(true);
-            if (originalJavaMember.getElementType() == IJavaElement.METHOD) {
-                processor.setDeletedMethods(new IMethod[] { (IMethod)originalJavaMember });
-            }
+            processor.setMembersToMove(new IMember[] { originalJavaMember });
+
+            IMember[] membersToMove = determineAdditionalRequiredMembers(progressMonitor, originalJavaMember, processor);
+            processor.setMembersToMove(membersToMove);
+            List<IMethod> deletedMethods = determineDeletedMethods(membersToMove);
+            processor.setDeletedMethods(deletedMethods.toArray(new IMethod[deletedMethods.size()]));
+
             return new ProcessorBasedRefactoring(processor);
+        }
+
+        private List<IMethod> determineDeletedMethods(IMember[] membersToMove) {
+            List<IMethod> deletedMethods = new ArrayList<IMethod>(membersToMove.length);
+            for (IMember member : membersToMove) {
+                if (member instanceof IMethod) {
+                    deletedMethods.add((IMethod)member);
+                }
+            }
+            return deletedMethods;
+        }
+
+        private IMember[] determineAdditionalRequiredMembers(IProgressMonitor progressMonitor,
+                IMember originalJavaMember,
+                PullUpRefactoringProcessor processor) throws JavaModelException {
+
+            IMember[] additionalRequiredMembers = processor.getAdditionalRequiredMembersToPullUp(progressMonitor);
+            IMember[] membersToMove = Arrays.copyOf(additionalRequiredMembers, additionalRequiredMembers.length + 1);
+            membersToMove[additionalRequiredMembers.length] = originalJavaMember;
+            return membersToMove;
         }
 
         @Override
@@ -140,31 +167,9 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
             }
         }
 
-        // TODO AW: Will cause errors if properties of attributes are changed.
         private void copyAttributeToSupertype(IAttribute attribute, IAttribute targetAttribute) {
-            targetAttribute.setName(attribute.getName());
-            targetAttribute.setDatatype(attribute.getDatatype());
-            targetAttribute.setDefaultValue(attribute.getDefaultValue());
-            for (IDescription description : attribute.getDescriptions()) {
-                IDescription newDescription = targetAttribute.newDescription();
-                newDescription.setLocale(description.getLocale());
-                newDescription.setText(description.getText());
-            }
-            targetAttribute.setModifier(attribute.getModifier());
-            if (attribute instanceof IPolicyCmptTypeAttribute) {
-                IPolicyCmptTypeAttribute originalPolicyAttribute = (IPolicyCmptTypeAttribute)attribute;
-                IPolicyCmptTypeAttribute targetPolicyAttribute = (IPolicyCmptTypeAttribute)targetAttribute;
-                targetPolicyAttribute.setAttributeType(originalPolicyAttribute.getAttributeType());
-                targetPolicyAttribute.setComputationMethodSignature(originalPolicyAttribute
-                        .getComputationMethodSignature());
-                targetPolicyAttribute.setOverwrite(originalPolicyAttribute.isOverwrite());
-                targetPolicyAttribute.setProductRelevant(originalPolicyAttribute.isProductRelevant());
-                targetPolicyAttribute.setValueSetType(originalPolicyAttribute.getValueSet().getValueSetType());
-            } else if (attribute instanceof IProductCmptTypeAttribute) {
-                IProductCmptTypeAttribute originalProductAttribute = (IProductCmptTypeAttribute)attribute;
-                IProductCmptTypeAttribute targetProductAttribute = (IProductCmptTypeAttribute)targetAttribute;
-                targetProductAttribute.setValueSetType(originalProductAttribute.getValueSet().getValueSetType());
-            }
+            Element oldAttributeXml = attribute.toXml(IpsPlugin.getDefault().getDocumentBuilder().newDocument());
+            targetAttribute.initFromXml(oldAttributeXml);
         }
 
         /**

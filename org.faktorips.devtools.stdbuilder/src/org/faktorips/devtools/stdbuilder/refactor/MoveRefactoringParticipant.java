@@ -76,7 +76,8 @@ public final class MoveRefactoringParticipant extends MoveParticipant {
         @Override
         protected Refactoring createJdtRefactoring(IJavaElement originalJavaElement,
                 IJavaElement targetJavaElement,
-                RefactoringStatus status) throws CoreException {
+                RefactoringStatus status,
+                IProgressMonitor progressMonitor) throws CoreException {
 
             if (!(originalJavaElement instanceof IType && targetJavaElement instanceof IType)) {
                 return null;

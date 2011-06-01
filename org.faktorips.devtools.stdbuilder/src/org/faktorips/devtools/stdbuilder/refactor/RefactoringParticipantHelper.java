@@ -88,7 +88,11 @@ public abstract class RefactoringParticipantHelper {
         for (int i = 0; i < getNumberOfJavaElementsToRefactor(); i++) {
             IJavaElement javaElement = originalJavaElements.get(i);
 
-            // The refactoring may be executed without present Java code
+            /*
+             * The refactoring may be executed without present Java code or the Java element might
+             * already have been refactored as a side-effect of the refactoring of a previous
+             * element.
+             */
             if (!(javaElement.exists())) {
                 continue;
             }
@@ -107,7 +111,7 @@ public abstract class RefactoringParticipantHelper {
             }
 
             try {
-                Refactoring jdtRefactoring = createJdtRefactoring(javaElement, targetJavaElements.get(i), status);
+                Refactoring jdtRefactoring = createJdtRefactoring(javaElement, targetJavaElements.get(i), status, pm);
                 if (jdtRefactoring != null) {
                     if (prepareRefactoring(javaElement, targetJavaElements.get(i))) {
                         RefactoringStatus conditionsStatus = jdtRefactoring.checkAllConditions(pm);
@@ -182,7 +186,7 @@ public abstract class RefactoringParticipantHelper {
              */
             IJavaElement targetJavaElement = sortedTargetJavaElements.get(i);
             Refactoring jdtRefactoring = createJdtRefactoring(originalJavaElement, targetJavaElement,
-                    new RefactoringStatus());
+                    new RefactoringStatus(), pm);
             if (jdtRefactoring != null) {
                 if (prepareRefactoring(originalJavaElement, targetJavaElement)) {
                     performRefactoring(jdtRefactoring, pm);
@@ -410,12 +414,15 @@ public abstract class RefactoringParticipantHelper {
      * @param targetJavaElement The target Java element as it shall be after the refactoring was
      *            performed
      * @param status A {@link RefactoringStatus} to report problems to
+     * @param progressMonitor The {@link IProgressMonitor} to report progress to should that be
+     *            necessary
      * 
      * @throws CoreException If an error occurs during creation of the refactoring instance
      */
     protected abstract Refactoring createJdtRefactoring(IJavaElement originalJavaElement,
             IJavaElement targetJavaElement,
-            RefactoringStatus status) throws CoreException;
+            RefactoringStatus status,
+            IProgressMonitor progressMonitor) throws CoreException;
 
     private int getNumberOfJavaElementsToRefactor() {
         return originalJavaElements.size();

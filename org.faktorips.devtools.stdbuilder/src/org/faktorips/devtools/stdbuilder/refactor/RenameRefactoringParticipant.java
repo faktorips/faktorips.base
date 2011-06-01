@@ -87,7 +87,8 @@ public final class RenameRefactoringParticipant extends RenameParticipant {
         @Override
         protected Refactoring createJdtRefactoring(IJavaElement originalJavaElement,
                 IJavaElement targetJavaElement,
-                RefactoringStatus status) throws CoreException {
+                RefactoringStatus status,
+                IProgressMonitor progressMonitor) throws CoreException {
 
             String oldName = originalJavaElement.getElementName();
             String newName = targetJavaElement.getElementName();
