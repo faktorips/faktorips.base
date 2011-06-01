@@ -46,7 +46,10 @@ public abstract class TypeHierarchyVisitor<T extends IType> extends HierarchyVis
 
     @Override
     protected T findSupertype(T currentType, IIpsProject ipsProject) throws CoreException {
-        return (T)currentType.findSupertype(ipsProject);
+        @SuppressWarnings("unchecked")
+        // supertype must be the same type
+        T supertype = (T)currentType.findSupertype(ipsProject);
+        return supertype;
     }
 
 }
