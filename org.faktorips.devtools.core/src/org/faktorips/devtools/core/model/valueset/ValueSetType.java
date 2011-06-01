@@ -137,7 +137,7 @@ public class ValueSetType extends DefaultEnumValue {
             return null;
         }
         String tagName = element.getNodeName();
-        if (tagName.equals(EnumValueSet.XML_TAG)) {
+        if (tagName.equals(EnumValueSet.XML_TAG_ENUM)) {
             return new EnumValueSet(parent, id);
         } else if (tagName.equals(RangeValueSet.XML_TAG)) {
             return new RangeValueSet(parent, id);

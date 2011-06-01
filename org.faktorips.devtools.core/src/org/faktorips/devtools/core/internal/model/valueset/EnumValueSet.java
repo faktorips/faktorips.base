@@ -50,7 +50,9 @@ import org.w3c.dom.NodeList;
  */
 public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
-    public static final String XML_TAG = "Enum"; //$NON-NLS-1$
+    private static final String XML_DATA = "Data"; //$NON-NLS-1$
+
+    public static final String XML_TAG_ENUM = "Enum"; //$NON-NLS-1$
 
     private static final String XML_VALUE = "Value"; //$NON-NLS-1$
 
@@ -430,7 +432,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         NodeList children = el.getElementsByTagName(XML_VALUE);
         for (int i = 0; i < children.getLength(); i++) {
             Element valueEl = (Element)children.item(i);
-            String value = ValueToXmlHelper.getValueFromElement(valueEl, "Data"); //$NON-NLS-1$
+            String value = ValueToXmlHelper.getValueFromElement(valueEl, XML_DATA);
             addValueWithoutTriggeringChangeEvent(value);
         }
     }
@@ -439,11 +441,11 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         Document doc = element.getOwnerDocument();
-        Element tagElement = doc.createElement(XML_TAG);
+        Element tagElement = doc.createElement(XML_TAG_ENUM);
         for (String value : values) {
             Element valueElement = doc.createElement(XML_VALUE);
             tagElement.appendChild(valueElement);
-            ValueToXmlHelper.addValueToElement(value, valueElement, "Data");
+            ValueToXmlHelper.addValueToElement(value, valueElement, XML_DATA);
         }
         element.appendChild(tagElement);
     }
