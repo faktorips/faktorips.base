@@ -109,7 +109,11 @@ public abstract class RefactoringParticipantHelper {
             try {
                 Refactoring jdtRefactoring = createJdtRefactoring(javaElement, targetJavaElements.get(i), status);
                 if (jdtRefactoring != null) {
-                    status.merge(jdtRefactoring.checkAllConditions(pm));
+                    if (prepareRefactoring(javaElement, targetJavaElements.get(i))) {
+                        RefactoringStatus conditionsStatus = jdtRefactoring.checkAllConditions(pm);
+                        status.merge(conditionsStatus);
+                    }
+                    finalizeRefactoring(javaElement, targetJavaElements.get(i));
                 }
             } catch (CoreException e) {
                 RefactoringStatus errorStatus = new RefactoringStatus();
@@ -180,11 +184,51 @@ public abstract class RefactoringParticipantHelper {
             Refactoring jdtRefactoring = createJdtRefactoring(originalJavaElement, targetJavaElement,
                     new RefactoringStatus());
             if (jdtRefactoring != null) {
-                performRefactoring(jdtRefactoring, pm);
+                if (prepareRefactoring(originalJavaElement, targetJavaElement)) {
+                    performRefactoring(jdtRefactoring, pm);
+                }
+                finalizeRefactoring(originalJavaElement, targetJavaElement);
             }
         }
 
         return new NullChange();
+    }
+
+    /**
+     * This operation is called right before a JDT refactoring is executed and may be implemented by
+     * subclasses in order to do preparations.
+     * <p>
+     * Must return true if the refactoring may be executed, false otherwise. Note that
+     * {@link #finalizeRefactoring(IJavaElement, IJavaElement)} will be called in any way.
+     * <p>
+     * The default implementation just does nothing and always returns true.
+     * 
+     * @param originalJavaElement The {@link IJavaElement} as it is before the refactoring
+     * @param targetJavaElement The {@link IJavaElement} as it will be after the refactoring
+     * 
+     * @throws CoreException If any error occurs
+     */
+    protected boolean prepareRefactoring(IJavaElement originalJavaElement, IJavaElement targetJavaElement)
+            throws CoreException {
+
+        return true;
+    }
+
+    /**
+     * This operation is called right after a JDT refactoring was executed and may be implemented by
+     * subclasses in order to do clean up.
+     * <p>
+     * The default implementation just does nothing.
+     * 
+     * @param originalJavaElement The {@link IJavaElement} as it was before the refactoring
+     * @param targetJavaElement The {@link IJavaElement} as it is after the refactoring
+     * 
+     * @throws CoreException If any error occurs
+     */
+    protected void finalizeRefactoring(IJavaElement originalJavaElement, IJavaElement targetJavaElement)
+            throws CoreException {
+
+        // Empty default implementation
     }
 
     /**

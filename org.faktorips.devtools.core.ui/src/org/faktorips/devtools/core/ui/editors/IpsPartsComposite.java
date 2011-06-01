@@ -52,6 +52,7 @@ import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.refactor.IpsPullUpHandler;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringHandler;
 import org.faktorips.devtools.core.ui.refactor.IpsRenameHandler;
 import org.faktorips.util.memento.Memento;
@@ -144,8 +145,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         if (refactoringSupported) {
             MenuManager refactorSubmenu = new MenuManager(Messages.IpsPartsComposite_submenuRefactor);
             refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsRenameHandler.CONTRIBUTION_ID));
-            // TODO AW 30-05-2011: Pull Up Refactoring not yet fully functional
-            // refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsPullUpHandler.CONTRIBUTION_ID));
+            refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsPullUpHandler.CONTRIBUTION_ID));
             contextMenuManager.add(refactorSubmenu);
         }
 

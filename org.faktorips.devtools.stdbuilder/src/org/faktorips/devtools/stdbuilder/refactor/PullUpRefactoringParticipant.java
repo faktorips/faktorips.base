@@ -167,6 +167,41 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
             }
         }
 
+        /**
+         * Forbids the pull up refactoring for members that originate from an interface, as the JDT
+         * does not support pulling up members from interfaces to other interfaces.
+         */
+        @Override
+        protected boolean prepareRefactoring(IJavaElement originalJavaElement, IJavaElement targetJavaElement)
+                throws CoreException {
+
+            IMember originalJavaMember = (IMember)originalJavaElement;
+            org.eclipse.jdt.core.IType originalType = (org.eclipse.jdt.core.IType)originalJavaMember.getParent();
+            return !originalType.isInterface();
+        }
+
+        /**
+         * Handles the members that originate from interfaces and therefore were excluded from the
+         * refactoring by {@link #prepareRefactoring(IJavaElement, IJavaElement)}.
+         * <p>
+         * The members will be copied to the target type and deleted from the original type.
+         */
+        @Override
+        protected void finalizeRefactoring(IJavaElement originalJavaElement, IJavaElement targetJavaElement)
+                throws CoreException {
+
+            IMember originalJavaMember = (IMember)originalJavaElement;
+            org.eclipse.jdt.core.IType originalType = (org.eclipse.jdt.core.IType)originalJavaMember.getParent();
+            if (!originalType.isInterface()) {
+                return;
+            }
+
+            IMember targetJavaMember = (IMember)targetJavaElement;
+            org.eclipse.jdt.core.IType targetType = (org.eclipse.jdt.core.IType)targetJavaMember.getParent();
+            originalJavaMember.copy(targetType, null, null, true, null);
+            originalJavaMember.delete(true, null);
+        }
+
     }
 
 }
