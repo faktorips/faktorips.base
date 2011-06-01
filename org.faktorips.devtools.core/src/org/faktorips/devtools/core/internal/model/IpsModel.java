@@ -220,8 +220,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         customModelExtensions = new CustomModelExtensions(this);
         initIpsObjectTypes();
-        resourceDeltaVisitor = new ResourceDeltaVisitor(); // has to be done after the ips object
-        // types are initialized!
+        // has to be done after the ips object types are initialized!
+        resourceDeltaVisitor = new ResourceDeltaVisitor();
     }
 
     @Override
@@ -297,7 +297,11 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     public void startListeningToResourceChanges() {
-        getWorkspace().addResourceChangeListener(this);
+        getWorkspace().addResourceChangeListener(this, //
+                IResourceChangeEvent.PRE_CLOSE | //
+                        IResourceChangeEvent.PRE_DELETE | //
+                        IResourceChangeEvent.POST_CHANGE | //
+                        IResourceChangeEvent.PRE_REFRESH);
     }
 
     public void stopListeningToResourceChanges() {
@@ -1074,6 +1078,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     @Override
     public void resourceChanged(IResourceChangeEvent event) {
+        if (event.getType() == IResourceChangeEvent.PRE_REFRESH) {
+            clearIpsObjectCache(event.getResource());
+            return;
+        }
         IResourceDelta delta = event.getDelta();
         if (delta != null) {
             try {
@@ -1084,6 +1092,24 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             } catch (Exception e) {
                 IpsPlugin.log(new IpsStatus("Error updating model objects in resurce changed event.", //$NON-NLS-1$
                         e));
+            }
+        }
+    }
+
+    /**
+     * Clearing the cache of a single project or the entire cache if the project is null;
+     * 
+     * @param iResource The project that cache should be cleared.
+     */
+    synchronized private void clearIpsObjectCache(IResource iResource) {
+        if (iResource == null) {
+            ipsObjectsMap.clear();
+        } else {
+            HashSet<IIpsSrcFile> copyKeys = new HashSet<IIpsSrcFile>(ipsObjectsMap.keySet());
+            for (IIpsSrcFile srcFile : copyKeys) {
+                if (srcFile.getIpsProject().getProject().equals(iResource)) {
+                    ipsObjectsMap.remove(srcFile);
+                }
             }
         }
     }
