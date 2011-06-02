@@ -399,7 +399,7 @@
          point="org.eclipse.jdt.core.classpathContainerInitializer">
       <classpathContainerInitializer
             class="org.faktorips.devtools.core.IpsClasspathContainerInitializer"
-            id="org.faktorips.devtools.core.ipsClasspathContainer234">
+            id="org.faktorips.devtools.core.ipsClasspathContainer">
       </classpathContainerInitializer>
    </extension>
 </plugin>

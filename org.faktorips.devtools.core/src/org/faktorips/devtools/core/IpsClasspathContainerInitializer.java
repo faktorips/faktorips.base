@@ -51,12 +51,12 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
             return null;
         }
 
-        URL installLocation = bundle.getResource("/"); //$NON-NLS-1$
+        URL installLocation = bundle.getResource(""); //$NON-NLS-1$
 
         if (installLocation == null) {
             return null;
         }
-        // Install location is something like bundleentry://140/faktorips-util.jar
+        // Install location is something like bundleentry://140/
         URL local = null;
         try {
             local = FileLocator.toFileURL(installLocation);
@@ -74,13 +74,13 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
             return null;
         }
 
-        URL installLocation = bundle.getEntry("/src.zip"); //$NON-NLS-1$
+        URL installLocation = bundle.getEntry(""); //$NON-NLS-1$
         if (installLocation == null) {
-            installLocation = bundle.getEntry("/src"); //$NON-NLS-1$
-            if (installLocation == null) {
-                return null;
+            //            installLocation = bundle.getEntry("/src"); //$NON-NLS-1$
+            // if (installLocation == null) {
+            return null;
 
-            }
+            // }
         }
         // Install location is something like bundleentry://140/faktorips-util.jar
         URL local = null;
