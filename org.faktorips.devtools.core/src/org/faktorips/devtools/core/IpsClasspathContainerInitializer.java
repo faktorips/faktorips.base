@@ -18,10 +18,8 @@ import java.net.URL;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.ClasspathContainerInitializer;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -41,6 +39,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
 
     @Override
     public void initialize(IPath containerPath, IJavaProject project) throws CoreException {
+        System.out.println("Initialize container: " + containerPath + " for project " + project);
         IClasspathContainer[] respectiveContainers = new IClasspathContainer[] { new IpsClasspathContainer(
                 containerPath) };
         JavaCore.setClasspathContainer(containerPath, new IJavaProject[] { project }, respectiveContainers, null);
@@ -49,7 +48,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
 
     private IPath getBundlePath(String pluginId, boolean sources) {
         Bundle bundle = Platform.getBundle(pluginId);
-        IpsPlugin.log(new Status(IStatus.INFO, IpsPlugin.PLUGIN_ID, "Bundle is: " + bundle));
+        System.out.println("Bundle is: " + bundle);
         if (bundle == null) {
             IpsPlugin.log(new IpsStatus("Error initializing classpath container. Bundle " + pluginId + " not found.")); //$NON-NLS-1$ //$NON-NLS-2$
             return null;
@@ -61,7 +60,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
         } else {
             installLocation = bundle.getResource(""); //$NON-NLS-1$
         }
-        IpsPlugin.log(new Status(IStatus.INFO, IpsPlugin.PLUGIN_ID, "installLocation is: " + installLocation));
+        System.out.println("installLocation is: " + installLocation);
 
         if (installLocation == null) {
             IpsPlugin.log(new IpsStatus(
@@ -70,7 +69,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
         }
         // Install location is something like bundleentry://140/
         URL local = null;
-        IpsPlugin.log(new Status(IStatus.INFO, IpsPlugin.PLUGIN_ID, "local is: " + local));
+        System.out.println("local is: " + local);
         try {
             local = FileLocator.toFileURL(installLocation);
             return new Path(local.getPath());
@@ -90,8 +89,10 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
             this.containerPath = containerPath;
             IClasspathEntry runtime = JavaCore.newLibraryEntry(getBundlePath(RUNTIME_BUNDLE, false),
                     getBundlePath(RUNTIME_BUNDLE, true), null);
+            System.out.println("runtime-entry: " + runtime);
             IClasspathEntry valuetypes = JavaCore.newLibraryEntry(getBundlePath(VALUETYPES_BUNDLE, false),
                     getBundlePath(VALUETYPES_BUNDLE, true), null);
+            System.out.println("valuetypes-entry: " + valuetypes);
             entries = new IClasspathEntry[] { runtime, valuetypes };
         }
 
