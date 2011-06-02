@@ -34,6 +34,7 @@ public class Messages extends NLS {
     public static String EnumTypeDisplay_name;
     public static String EnumTypeDisplay_nameAndId;
 
+    public static String IpsClasspathContainerInitializer_containerDescription;
     public static String IpsPlugin_infoDefaultTextEditorWasOpened;
     public static String IpsPlugin_titleErrorDialog;
     public static String IpsPlugin_msgUnexpectedError;

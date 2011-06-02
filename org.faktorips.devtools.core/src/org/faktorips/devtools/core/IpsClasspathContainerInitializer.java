@@ -18,8 +18,10 @@ import java.net.URL;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.ClasspathContainerInitializer;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -34,7 +36,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
     public static final String VALUETYPES_BUNDLE = "org.faktorips.valuetypes.java5"; //$NON-NLS-1$
 
     public IpsClasspathContainerInitializer() {
-        // TODO Auto-generated constructor stub
+        // empty constructor
     }
 
     @Override
@@ -45,19 +47,30 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
 
     }
 
-    private IPath getBundlePath(String pluginId) {
-        Bundle bundle = getBundle(pluginId);
+    private IPath getBundlePath(String pluginId, boolean sources) {
+        Bundle bundle = Platform.getBundle(pluginId);
+        IpsPlugin.log(new Status(IStatus.INFO, IpsPlugin.PLUGIN_ID, "Bundle is: " + bundle));
         if (bundle == null) {
+            IpsPlugin.log(new IpsStatus("Error initializing classpath container. Bundle " + pluginId + " not found.")); //$NON-NLS-1$ //$NON-NLS-2$
             return null;
         }
 
-        URL installLocation = bundle.getResource(""); //$NON-NLS-1$
+        URL installLocation;
+        if (sources) {
+            installLocation = bundle.getEntry(""); //$NON-NLS-1$
+        } else {
+            installLocation = bundle.getResource(""); //$NON-NLS-1$
+        }
+        IpsPlugin.log(new Status(IStatus.INFO, IpsPlugin.PLUGIN_ID, "installLocation is: " + installLocation));
 
         if (installLocation == null) {
+            IpsPlugin.log(new IpsStatus(
+                    "Error initializing classpath container. InstallLocation for " + pluginId + " not found.")); //$NON-NLS-1$ //$NON-NLS-2$
             return null;
         }
         // Install location is something like bundleentry://140/
         URL local = null;
+        IpsPlugin.log(new Status(IStatus.INFO, IpsPlugin.PLUGIN_ID, "local is: " + local));
         try {
             local = FileLocator.toFileURL(installLocation);
             return new Path(local.getPath());
@@ -66,41 +79,6 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
                     "Error initializing classpath variable. Bundle install locaction: " + installLocation, e)); //$NON-NLS-1$
             return null;
         }
-    }
-
-    private IPath getSourcPath(String pluginId) {
-        Bundle bundle = getBundle(pluginId);
-        if (bundle == null) {
-            return null;
-        }
-
-        URL installLocation = bundle.getEntry(""); //$NON-NLS-1$
-        if (installLocation == null) {
-            //            installLocation = bundle.getEntry("/src"); //$NON-NLS-1$
-            // if (installLocation == null) {
-            return null;
-
-            // }
-        }
-        // Install location is something like bundleentry://140/faktorips-util.jar
-        URL local = null;
-        try {
-            local = FileLocator.toFileURL(installLocation);
-            return new Path(local.getPath());
-        } catch (Exception e) {
-            IpsPlugin.log(new IpsStatus(
-                    "Error initializing classpath variable. Bundle install locaction: " + installLocation, e)); //$NON-NLS-1$
-            return null;
-        }
-    }
-
-    protected Bundle getBundle(String pluginId) {
-        Bundle bundle = Platform.getBundle(pluginId);
-        if (bundle == null) {
-            IpsPlugin.log(new IpsStatus("Error initializing classpath container. Bundle " + pluginId + "not found.")); //$NON-NLS-1$ //$NON-NLS-2$
-            return null;
-        }
-        return bundle;
     }
 
     class IpsClasspathContainer implements IClasspathContainer {
@@ -110,10 +88,10 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
 
         public IpsClasspathContainer(IPath containerPath) {
             this.containerPath = containerPath;
-            IClasspathEntry runtime = JavaCore.newLibraryEntry(getBundlePath(RUNTIME_BUNDLE),
-                    getSourcPath(RUNTIME_BUNDLE), null);
-            IClasspathEntry valuetypes = JavaCore.newLibraryEntry(getBundlePath(VALUETYPES_BUNDLE),
-                    getSourcPath(VALUETYPES_BUNDLE), null);
+            IClasspathEntry runtime = JavaCore.newLibraryEntry(getBundlePath(RUNTIME_BUNDLE, false),
+                    getBundlePath(RUNTIME_BUNDLE, true), null);
+            IClasspathEntry valuetypes = JavaCore.newLibraryEntry(getBundlePath(VALUETYPES_BUNDLE, false),
+                    getBundlePath(VALUETYPES_BUNDLE, true), null);
             entries = new IClasspathEntry[] { runtime, valuetypes };
         }
 
@@ -124,7 +102,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
 
         @Override
         public String getDescription() {
-            return "Faktor-IPS Library";
+            return Messages.IpsClasspathContainerInitializer_containerDescription;
         }
 
         @Override
