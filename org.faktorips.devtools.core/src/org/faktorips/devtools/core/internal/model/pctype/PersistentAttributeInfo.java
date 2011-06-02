@@ -252,6 +252,12 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
                     IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME));
         }
 
+        if (!StringUtils.isBlank(tableColumnName) && getPolicyComponentTypeAttribute().isDerived()) {
+            msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COLNAME_MUST_BE_EMPTY,
+                    Messages.PersistentAttributeInfo_msgColumnNameMustBeEmpty, Message.ERROR, this,
+                    IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME));
+        }
+
         validateUsingPersistentOptions(msgList, ipsProject);
 
         /*
