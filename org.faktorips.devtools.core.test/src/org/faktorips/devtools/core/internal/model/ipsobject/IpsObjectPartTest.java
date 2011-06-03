@@ -85,6 +85,7 @@ public class IpsObjectPartTest extends AbstractIpsPluginTest {
         TestIpsObjectPart target = new TestIpsObjectPart();
 
         // Can't use Mockito as the mocked class will be recognized as a different class
+        part.copy(target);
 
         assertEquals(target.copyXml, part.xml);
         assertEquals(target.copyId, target.getId());

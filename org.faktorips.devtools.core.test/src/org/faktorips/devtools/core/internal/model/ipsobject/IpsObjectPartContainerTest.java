@@ -817,8 +817,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(properties);
     }
 
-    // Public so it can be accessed by Mockito
-    public static class TestIpsObjectPartContainer extends IpsObjectPartContainer implements IDescribedElement,
+    private static class TestIpsObjectPartContainer extends IpsObjectPartContainer implements IDescribedElement,
             ILabeledElement {
 
         private String name;
