@@ -58,8 +58,14 @@ public class ExtensionPoints {
      */
     public final static String PRODUCT_COMPONENT_NAMING_STRATEGY = "productComponentNamingStrategy"; //$NON-NLS-1$
 
-    private IExtensionRegistry registry;
-    private String nameSpace;
+    /**
+     * IpsPlugin relative id of the extension point for "Pull Up" refactoring participants.
+     */
+    public final static String PULL_UP_PARTICIPANTS = "pullUpParticipants"; //$NON-NLS-1$
+
+    private final IExtensionRegistry registry;
+
+    private final String nameSpace;
 
     public ExtensionPoints(IExtensionRegistry registry, String nameSpace) {
         super();

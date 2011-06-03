@@ -13,13 +13,14 @@
 
 package org.faktorips.devtools.core.refactor;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
+import org.faktorips.devtools.core.ExtensionPoints;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.util.ArgumentCheck;
@@ -46,14 +47,14 @@ public abstract class IpsPullUpProcessor extends IpsRefactoringProcessor {
     public final RefactoringParticipant[] loadParticipants(RefactoringStatus status,
             SharableParticipants sharedParticipants) throws CoreException {
 
-        RefactoringParticipant[] participants = new RefactoringParticipant[1];
-        IExtensionRegistry registry = Platform.getExtensionRegistry();
-        // TODO AW: Move the following identifier strings to some interface.
-        IConfigurationElement[] elements = registry
-                .getConfigurationElementsFor("org.faktorips.devtools.core.pullUpParticipants"); //$NON-NLS-1$
-        participants[0] = (RefactoringParticipant)elements[0].createExecutableExtension("class"); //$NON-NLS-1$
-        participants[0].initialize(this, getIpsElement(), new IpsPullUpArguments());
-        return participants;
+        // TODO 03-06-2011 AW: Move constants to some central, published place
+        List<RefactoringParticipant> participants = new ExtensionPoints(IpsPlugin.PLUGIN_ID)
+                .createExecutableExtensions(ExtensionPoints.PULL_UP_PARTICIPANTS,
+                        "pullUpParticipant", "class", RefactoringParticipant.class); //$NON-NLS-1$ //$NON-NLS-2$
+        for (RefactoringParticipant participant : participants) {
+            participant.initialize(this, getIpsElement(), new IpsPullUpArguments());
+        }
+        return participants.toArray(new RefactoringParticipant[participants.size()]);
     }
 
     /**
