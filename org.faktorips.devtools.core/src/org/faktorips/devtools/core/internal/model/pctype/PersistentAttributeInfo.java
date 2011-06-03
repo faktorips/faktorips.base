@@ -241,7 +241,8 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
 
     @Override
     protected void validateThis(MessageList msgList, IIpsProject ipsProject) throws CoreException {
-        if (!StringUtils.isBlank(tableColumnName) && getPolicyComponentTypeAttribute().isDerived()) {
+        if (!StringUtils.isBlank(tableColumnName)
+                && AttributeType.DERIVED_ON_THE_FLY.equals(getPolicyComponentTypeAttribute().getAttributeType())) {
             msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COLNAME_MUST_BE_EMPTY,
                     Messages.PersistentAttributeInfo_msgColumnNameMustBeEmpty, Message.ERROR, this,
                     IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME));

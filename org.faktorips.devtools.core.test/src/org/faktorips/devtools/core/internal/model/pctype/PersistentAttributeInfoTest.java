@@ -212,14 +212,14 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         assertNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_COLNAME_MUST_BE_EMPTY));
 
         pAttInfo.setTableColumnName("a");
-        ml = pAttInfo.validate(ipsProject);
         pcAttribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
-        assertNotNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_COLNAME_MUST_BE_EMPTY));
+        ml = pAttInfo.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_COLNAME_MUST_BE_EMPTY));
 
         pAttInfo.setTableColumnName("a");
-        ml = pAttInfo.validate(ipsProject);
         pcAttribute.setAttributeType(AttributeType.CHANGEABLE);
-        assertNotNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_COLNAME_MUST_BE_EMPTY));
+        ml = pAttInfo.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_COLNAME_MUST_BE_EMPTY));
     }
 
     @Test
