@@ -1103,4 +1103,10 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         return ""; //$NON-NLS-1$
     }
 
+    @Override
+    public void copy(IIpsObjectPartContainer target) {
+        Element xmlElement = toXml(IpsPlugin.getDefault().getDocumentBuilder().newDocument());
+        target.initFromXml(xmlElement);
+    }
+
 }

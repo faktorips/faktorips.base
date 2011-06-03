@@ -19,6 +19,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,6 +31,7 @@ import java.util.Set;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
@@ -95,7 +99,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         ipsProject = newIpsProject();
 
-        container = new TestIpsObjectPartContainer();
+        container = new TestIpsObjectPartContainer(newPolicyCmptTypeWithoutProductCmptType(ipsProject, "Parent"));
         model = (IpsModel)container.getIpsModel();
 
         usDescription = container.getDescription(Locale.US);
@@ -787,6 +791,17 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertEquals("", container.getLastResortPluralCaption());
     }
 
+    @Test
+    public void testCopy() throws CoreException {
+        TestIpsObjectPartContainer target = new TestIpsObjectPartContainer(newPolicyCmptTypeWithoutProductCmptType(
+                ipsProject, "TargetParent"));
+        IIpsObjectPartContainer spyTarget = spy(target);
+
+        container.copy(spyTarget);
+
+        verify(spyTarget).initFromXml(container.xml);
+    }
+
     private void changeSupportedLanguagesOrder() throws CoreException {
         IIpsProjectProperties properties = ipsProject.getProperties();
         Set<ISupportedLanguage> supportedLanguages = properties.getSupportedLanguages();
@@ -799,23 +814,22 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(properties);
     }
 
-    class TestIpsObjectPartContainer extends AtomicIpsObjectPart implements IDescribedElement, ILabeledElement {
+    public static class TestIpsObjectPartContainer extends IpsObjectPartContainer implements IDescribedElement,
+            ILabeledElement {
 
         private String name;
 
         private int numOfUpdateSrcFileCalls;
 
-        public TestIpsObjectPartContainer() throws CoreException {
-            super(newPolicyCmptType(ipsProject, "Parent"), "someId");
+        private Element xml;
+
+        public TestIpsObjectPartContainer(IIpsElement parent) {
+            super(parent, "someId");
         }
 
         @Override
         protected void objectHasChanged() {
             ++numOfUpdateSrcFileCalls;
-        }
-
-        protected int numOfUpdateSrcFileCalls() {
-            return numOfUpdateSrcFileCalls;
         }
 
         @Override
@@ -830,7 +844,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         @Override
         protected Element createElement(Document doc) {
-            return doc.createElement("TestPart");
+            xml = doc.createElement("TestPart");
+            return xml;
         }
 
         /*
@@ -877,9 +892,84 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
             return true;
         }
 
+        @Override
+        public IResource getCorrespondingResource() {
+            return null;
+        }
+
+        @Override
+        public void delete() throws CoreException {
+
+        }
+
+        @Override
+        public IIpsObject getIpsObject() {
+            return mock(IIpsObject.class);
+        }
+
+        @Override
+        public boolean isValid() throws CoreException {
+            return false;
+        }
+
+        @Override
+        public boolean isValid(IIpsProject ipsProject) throws CoreException {
+            return false;
+        }
+
+        @Override
+        public int getValidationResultSeverity() throws CoreException {
+            return 0;
+        }
+
+        @Override
+        public int getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
+            return 0;
+        }
+
+        @Override
+        protected IIpsElement[] getChildrenThis() {
+            return new IIpsElement[0];
+        }
+
+        @Override
+        protected void propertiesToXml(Element element) {
+
+        }
+
+        @Override
+        protected void initPropertiesFromXml(Element element, String id) {
+
+        }
+
+        @Override
+        protected void reinitPartCollectionsThis() {
+
+        }
+
+        @Override
+        protected boolean addPartThis(IIpsObjectPart part) {
+            return false;
+        }
+
+        @Override
+        protected boolean removePartThis(IIpsObjectPart part) {
+            return false;
+        }
+
+        @Override
+        protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
+            return null;
+        }
+
+        @Override
+        protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
+            return null;
+        }
+
     }
 
-    class TestExtProperty extends StringExtensionPropertyDefinition {
+    private static class TestExtProperty extends StringExtensionPropertyDefinition {
 
         int beforeSetCounter = 0;
 

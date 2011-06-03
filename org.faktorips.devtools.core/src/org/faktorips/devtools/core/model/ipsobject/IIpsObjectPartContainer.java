@@ -101,4 +101,11 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
      */
     public String getLastResortPluralCaption();
 
+    /**
+     * Copies the properties of this container to the target container.
+     * 
+     * @param target The target container where the properties of this container shall be copied to
+     */
+    public void copy(IIpsObjectPartContainer target);
+
 }

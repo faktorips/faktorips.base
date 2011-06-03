@@ -33,13 +33,11 @@ import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.refactor.IpsPullUpArguments;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.w3c.dom.Element;
 
 /**
  * This class is loaded by the Faktor-IPS 'Pull Up' refactoring to participate in this process by
@@ -160,18 +158,13 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
                     throw new RuntimeException("There is no supertype to pull up to."); //$NON-NLS-1$
                 }
                 IAttribute targetAttribute = targetType.newAttribute();
-                copyAttributeToSupertype(attribute, targetAttribute); // Temporary copy
+                attribute.copy(targetAttribute); // Temporary copy
                 setTargetJavaElements(builderSet.getGeneratedJavaElements(targetAttribute));
-                targetAttribute.delete();
+                targetAttribute.delete(); // Delete temporary copy
                 return true;
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }
-        }
-
-        private void copyAttributeToSupertype(IAttribute attribute, IAttribute targetAttribute) {
-            Element oldAttributeXml = attribute.toXml(IpsPlugin.getDefault().getDocumentBuilder().newDocument());
-            targetAttribute.initFromXml(oldAttributeXml);
         }
 
         /**
