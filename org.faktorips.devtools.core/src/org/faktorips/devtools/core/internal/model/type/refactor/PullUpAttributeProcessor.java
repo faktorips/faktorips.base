@@ -16,7 +16,9 @@ package org.faktorips.devtools.core.internal.model.type.refactor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.refactor.IpsPullUpProcessor;
 
 /**
@@ -34,12 +36,21 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor {
 
     @Override
     protected void addIpsSrcFiles() throws CoreException {
-        // TODO AW: Implement method for pull up attribute.
+        addIpsSrcFile(getIpsSrcFile());
+        IType supertype = getAttribute().getType().findSupertype(getIpsProject());
+        addIpsSrcFile(supertype.getIpsSrcFile());
     }
 
     @Override
     protected void refactorIpsModel(IProgressMonitor pm) throws CoreException {
-        // TODO AW: Implement method for pull up attribute.
+        pullUpAttribute();
+    }
+
+    private void pullUpAttribute() throws CoreException {
+        IType superType = getAttribute().getType().findSupertype(getIpsProject());
+        IAttribute newAttribute = superType.newAttribute();
+        getAttribute().copy(newAttribute);
+        getAttribute().delete();
     }
 
     @Override
@@ -60,6 +71,14 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor {
     @Override
     public String getProcessorName() {
         return Messages.PullUpAttributeProcessor_processorName;
+    }
+
+    private IIpsSrcFile getIpsSrcFile() {
+        return getAttribute().getIpsSrcFile();
+    }
+
+    private IAttribute getAttribute() {
+        return (IAttribute)getIpsElement();
     }
 
 }

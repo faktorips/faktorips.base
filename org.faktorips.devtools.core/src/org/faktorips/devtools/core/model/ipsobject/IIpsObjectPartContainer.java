@@ -105,6 +105,9 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
      * Copies the properties of this container to the target container.
      * 
      * @param target The target container where the properties of this container shall be copied to
+     * 
+     * @throws IllegalArgumentException If the class of the target container is not the same as the
+     *             class of this container
      */
     public void copy(IIpsObjectPartContainer target);
 

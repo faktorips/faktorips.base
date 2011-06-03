@@ -95,10 +95,6 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
         getAttribute().setName(getOriginalName());
     }
 
-    private IIpsSrcFile getIpsSrcFile() {
-        return getAttribute().getIpsSrcFile();
-    }
-
     @Override
     protected void refactorIpsModel(IProgressMonitor pm) throws CoreException {
         if (getAttribute() instanceof IProductCmptTypeAttribute) {
@@ -284,14 +280,6 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
         getAttribute().setName(getNewName());
     }
 
-    private IAttribute getAttribute() {
-        return (IAttribute)getIpsElement();
-    }
-
-    private IType getType() {
-        return getAttribute().getType();
-    }
-
     @Override
     public String getIdentifier() {
         return "org.faktorips.devtools.core.internal.model.type.refactor.RenameAttributeProcessor"; //$NON-NLS-1$
@@ -305,6 +293,18 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     @Override
     public boolean isSourceFilesSavedRequired() {
         return false;
+    }
+
+    private IAttribute getAttribute() {
+        return (IAttribute)getIpsElement();
+    }
+
+    private IType getType() {
+        return getAttribute().getType();
+    }
+
+    private IIpsSrcFile getIpsSrcFile() {
+        return getAttribute().getIpsSrcFile();
     }
 
 }

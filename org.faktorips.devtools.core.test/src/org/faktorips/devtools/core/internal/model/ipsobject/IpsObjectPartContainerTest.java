@@ -802,6 +802,11 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         verify(spyTarget).initFromXml(container.xml);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testCopyIllegalTargetClass() {
+        container.copy(mock(IIpsObjectPartContainer.class));
+    }
+
     private void changeSupportedLanguagesOrder() throws CoreException {
         IIpsProjectProperties properties = ipsProject.getProperties();
         Set<ISupportedLanguage> supportedLanguages = properties.getSupportedLanguages();
@@ -814,6 +819,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(properties);
     }
 
+    // Public so it can be accessed by Mockito
     public static class TestIpsObjectPartContainer extends IpsObjectPartContainer implements IDescribedElement,
             ILabeledElement {
 

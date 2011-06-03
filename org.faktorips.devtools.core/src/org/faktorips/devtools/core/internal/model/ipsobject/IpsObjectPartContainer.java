@@ -1105,6 +1105,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     @Override
     public void copy(IIpsObjectPartContainer target) {
+        ArgumentCheck.isTrue(getClass().equals(target.getClass()));
+
         Element xmlElement = toXml(IpsPlugin.getDefault().getDocumentBuilder().newDocument());
         target.initFromXml(xmlElement);
     }

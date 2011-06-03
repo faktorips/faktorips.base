@@ -17,6 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.mapping.ResourceMapping;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -135,6 +136,12 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     }
 
     @Override
+    public void copy(IIpsObjectPartContainer target) {
+        Element xmlElement = toXml(IpsPlugin.getDefault().getDocumentBuilder().newDocument());
+        ((IpsObjectPartContainer)target).initFromXml(xmlElement, ((IIpsObjectPart)target).getId());
+    }
+
+    @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + ((id == null) ? 0 : id.hashCode());
@@ -184,4 +191,5 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
         }
         return super.getAdapter(adapterType);
     }
+
 }

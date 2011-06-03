@@ -42,4 +42,12 @@ public interface IIpsObjectPart extends IIpsObjectPartContainer {
      */
     public boolean isDeleted();
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Ensures that the ID of the target is maintained.
+     */
+    @Override
+    public void copy(IIpsObjectPartContainer target);
+
 }
