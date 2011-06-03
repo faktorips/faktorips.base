@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.w3c.dom.Element;
 
@@ -137,6 +138,8 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
 
     @Override
     public void copy(IIpsObjectPartContainer target) {
+        ArgumentCheck.isTrue(getClass().equals(target.getClass()));
+
         Element xmlElement = toXml(IpsPlugin.getDefault().getDocumentBuilder().newDocument());
         ((IpsObjectPartContainer)target).initFromXml(xmlElement, ((IIpsObjectPart)target).getId());
     }

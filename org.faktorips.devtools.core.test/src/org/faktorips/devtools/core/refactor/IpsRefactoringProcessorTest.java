@@ -15,6 +15,9 @@ package org.faktorips.devtools.core.refactor;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -55,13 +58,15 @@ public class IpsRefactoringProcessorTest extends AbstractIpsRefactoringTest {
 
     @Test
     public void testCheckFinalConditions() throws OperationCanceledException, CoreException {
-        testProcessor.checkFinalConditions(new NullProgressMonitor(), new CheckConditionsContext());
-        assertTrue(testProcessor.validateUserInputCalled);
+        TestProcessor testProcessorSpy = spy(testProcessor);
+
+        testProcessorSpy.checkFinalConditions(new NullProgressMonitor(), new CheckConditionsContext());
+
+        verify(testProcessorSpy).validateUserInput(any(IProgressMonitor.class));
     }
 
-    private static class TestProcessor extends IpsRefactoringProcessor {
-
-        private boolean validateUserInputCalled;
+    // Public so it can be accessed by Mockito
+    public static class TestProcessor extends IpsRefactoringProcessor {
 
         protected TestProcessor(IIpsElement ipsElement) {
             super(ipsElement);
@@ -90,12 +95,12 @@ public class IpsRefactoringProcessorTest extends AbstractIpsRefactoringTest {
         @Override
         public RefactoringParticipant[] loadParticipants(RefactoringStatus status,
                 SharableParticipants sharedParticipants) throws CoreException {
+
             return null;
         }
 
         @Override
         public RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreException {
-            validateUserInputCalled = true;
             return null;
         }
 

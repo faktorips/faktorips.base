@@ -292,7 +292,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
 
     @Override
     public boolean isSourceFilesSavedRequired() {
-        return false;
+        return true;
     }
 
     private IAttribute getAttribute() {

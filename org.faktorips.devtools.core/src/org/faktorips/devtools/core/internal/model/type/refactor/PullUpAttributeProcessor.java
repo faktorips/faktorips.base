@@ -54,13 +54,13 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor {
     }
 
     @Override
-    public RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreException {
-        return new RefactoringStatus();
+    public void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+        // Nothing to do
     }
 
     @Override
     public boolean isSourceFilesSavedRequired() {
-        return false;
+        return true;
     }
 
     @Override

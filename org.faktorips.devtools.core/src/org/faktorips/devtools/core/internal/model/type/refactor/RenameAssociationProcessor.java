@@ -244,7 +244,7 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
 
     @Override
     public boolean isSourceFilesSavedRequired() {
-        return false;
+        return true;
     }
 
     @Override

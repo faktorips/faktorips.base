@@ -35,5 +35,6 @@ public class Messages extends NLS {
     public static String RenameAssociationProcessor_msgNewPluralNameMustNotBeEmptyForToManyAssociations;
 
     public static String PullUpAttributeProcessor_processorName;
+    public static String PullUpAttributeProcessor_msgTargetIpsObjectPartContainerMustBeSupertype;
 
 }

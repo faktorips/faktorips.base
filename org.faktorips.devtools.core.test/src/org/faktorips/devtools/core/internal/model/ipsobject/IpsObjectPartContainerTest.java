@@ -20,8 +20,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
 import java.util.List;
@@ -795,11 +793,11 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     public void testCopy() throws CoreException {
         TestIpsObjectPartContainer target = new TestIpsObjectPartContainer(newPolicyCmptTypeWithoutProductCmptType(
                 ipsProject, "TargetParent"));
-        IIpsObjectPartContainer spyTarget = spy(target);
 
-        container.copy(spyTarget);
+        // Can't use Mockito as the mocked class will be recognized as a different class
+        container.copy(target);
 
-        verify(spyTarget).initFromXml(container.xml);
+        assertEquals(target.copyXml, container.xml);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -828,6 +826,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         private int numOfUpdateSrcFileCalls;
 
         private Element xml;
+
+        private Element copyXml;
 
         public TestIpsObjectPartContainer(IIpsElement parent) {
             super(parent, "someId");
@@ -945,7 +945,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         @Override
         protected void initPropertiesFromXml(Element element, String id) {
-
+            copyXml = element;
         }
 
         @Override

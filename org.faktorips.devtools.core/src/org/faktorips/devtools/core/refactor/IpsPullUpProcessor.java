@@ -16,11 +16,14 @@ package org.faktorips.devtools.core.refactor;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.refactor.Messages;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.util.ArgumentCheck;
@@ -47,7 +50,7 @@ public abstract class IpsPullUpProcessor extends IpsRefactoringProcessor {
     public final RefactoringParticipant[] loadParticipants(RefactoringStatus status,
             SharableParticipants sharedParticipants) throws CoreException {
 
-        // TODO 03-06-2011 AW: Move constants to some central, published place
+        // TODO AW 03-06-2011: Move constants to some central, published place
         List<RefactoringParticipant> participants = new ExtensionPoints(IpsPlugin.PLUGIN_ID)
                 .createExecutableExtensions(ExtensionPoints.PULL_UP_PARTICIPANTS,
                         "pullUpParticipant", "class", RefactoringParticipant.class); //$NON-NLS-1$ //$NON-NLS-2$
@@ -56,6 +59,49 @@ public abstract class IpsPullUpProcessor extends IpsRefactoringProcessor {
         }
         return participants.toArray(new RefactoringParticipant[participants.size()]);
     }
+
+    /**
+     * This implementation validates the target {@link IIpsObjectPartContainer} and returns a
+     * {@link RefactoringStatus} as result of the validation.
+     * <p>
+     * It checks that the target container:
+     * <ul>
+     * <li>is specified
+     * <li>does not equal the current container
+     * </ul>
+     */
+    @Override
+    public RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreException {
+        RefactoringStatus status = new RefactoringStatus();
+
+        if (targetIpsObjectPartContainer == null) {
+            // TODO AW 03-06-2011: See todo in IpsRefactoringUserInputPage
+            status.addFatalError(NLS.bind(Messages.IpsPullUpProcessor_msgTargetIpsObjectPartContainerNotSpecified,
+                    "TODO")); //$NON-NLS-1$
+            return status;
+        }
+
+        if (targetIpsObjectPartContainer.equals(getIpsObjectPart().getIpsObject())) {
+            // TODO AW 03-06-2011: See todo in IpsRefactoringUserInputPage
+            status.addFatalError(NLS.bind(
+                    Messages.IpsPullUpProcessor_msgTargetIpsObjectPartContainerEqualsCurrentContainer, "TODO")); //$NON-NLS-1$
+            return status;
+        }
+
+        validateUserInputThis(status, pm);
+        return status;
+    }
+
+    /**
+     * This operation is called by {@link #validateUserInput(IProgressMonitor)}. Subclasses must
+     * implement special user input validations here.
+     * 
+     * @param status {@link RefactoringStatus} to report messages to
+     * @param pm {@link IProgressMonitor} to report progress to
+     * 
+     * @throws CoreException May be thrown at any time
+     */
+    protected abstract void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException;
 
     /**
      * Sets the target {@link IIpsObjectPartContainer} the {@link IIpsObjectPart} to be refactored
@@ -76,6 +122,13 @@ public abstract class IpsPullUpProcessor extends IpsRefactoringProcessor {
      */
     public final IIpsObjectPartContainer getTargetIpsObjectPartContainer() {
         return targetIpsObjectPartContainer;
+    }
+
+    /**
+     * Returns the {@link IIpsObjectPart} to be refactored.
+     */
+    protected final IIpsObjectPart getIpsObjectPart() {
+        return (IIpsObjectPart)getIpsElement();
     }
 
 }

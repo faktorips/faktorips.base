@@ -133,7 +133,7 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
 
     @Override
     public boolean isSourceFilesSavedRequired() {
-        return false;
+        return true;
     }
 
     private IEnumType getEnumType() {

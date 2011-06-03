@@ -57,7 +57,7 @@ public class RenameEnumLiteralNameAttributeValueProcessor extends IpsRenameProce
 
     @Override
     public boolean isSourceFilesSavedRequired() {
-        return false;
+        return true;
     }
 
     @Override

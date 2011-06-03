@@ -16,14 +16,14 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.mock;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -83,17 +83,26 @@ public class IpsObjectPartTest extends AbstractIpsPluginTest {
     public void testCopy() {
         TestIpsObjectPart part = new TestIpsObjectPart();
         TestIpsObjectPart target = new TestIpsObjectPart();
-        TestIpsObjectPart spyTarget = spy(target);
 
-        part.copy(spyTarget);
+        // Can't use Mockito as the mocked class will be recognized as a different class
 
-        verify(spyTarget).initFromXml(part.xml, target.getId());
+        assertEquals(target.copyXml, part.xml);
+        assertEquals(target.copyId, target.getId());
     }
 
-    // Public so it can be accessed by Mockito
-    public static class TestIpsObjectPart extends IpsObjectPart {
+    @Test(expected = IllegalArgumentException.class)
+    public void testCopyIllegalTargetClass() {
+        TestIpsObjectPart part = new TestIpsObjectPart();
+        part.copy(mock(IIpsObjectPartContainer.class));
+    }
+
+    private static class TestIpsObjectPart extends IpsObjectPart {
 
         private Element xml;
+
+        private Element copyXml;
+
+        private String copyId;
 
         public TestIpsObjectPart() {
             super(null, "foo");
@@ -133,6 +142,13 @@ public class IpsObjectPartTest extends AbstractIpsPluginTest {
         @Override
         protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
             return null;
+        }
+
+        @Override
+        protected void initFromXml(Element element, String id) {
+            super.initFromXml(element, id);
+            copyXml = element;
+            copyId = id;
         }
 
     }
