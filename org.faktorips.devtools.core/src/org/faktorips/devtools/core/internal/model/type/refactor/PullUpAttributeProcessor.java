@@ -16,11 +16,11 @@ package org.faktorips.devtools.core.internal.model.type.refactor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.refactor.IpsPullUpProcessor;
-import org.faktorips.util.message.MessageList;
 
 /**
  * Refactoring processor for the "Pull Up Attribute" - refactoring.
@@ -69,13 +69,11 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor<IType> {
             return;
         }
 
-        IAttribute tempNewAttribute = pullUpAttribute();
-
-        MessageList validationMessageList = getAttribute().validate(getIpsProject());
-        validationMessageList.add(getType().validate(getIpsProject()));
-        addValidationMessagesToStatus(validationMessageList, status);
-
-        tempNewAttribute.delete();
+        if (getTarget().getAttribute(getAttribute().getName()) != null) {
+            status.addFatalError(NLS.bind(Messages.PullUpAttributeProcessor_msgAttributeAlreadyExistingInTargetType,
+                    getAttribute().getName()));
+            return;
+        }
     }
 
     @Override

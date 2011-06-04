@@ -56,17 +56,7 @@ public class PullUpAttributeProcessorTest extends AbstractIpsRefactoringTest {
     }
 
     @Test
-    public void testValidateUserInputThisValid() throws CoreException {
-        pullUpAttributeProcessor.setTarget(superPolicyCmptType);
-
-        RefactoringStatus status = new RefactoringStatus();
-        pullUpAttributeProcessor.validateUserInputThis(status, progressMonitor);
-
-        assertTrue(status.isOK());
-    }
-
-    @Test
-    public void testValidateUserInputThisTargetAttributeNotValid() throws CoreException {
+    public void testValidateUserInputThisAttributeAlreadyExistingInTargetType() throws CoreException {
         IPolicyCmptTypeAttribute alreadyExistingAttribute = superPolicyCmptType.newPolicyCmptTypeAttribute();
         policyCmptTypeAttribute.copy(alreadyExistingAttribute);
 
@@ -76,6 +66,16 @@ public class PullUpAttributeProcessorTest extends AbstractIpsRefactoringTest {
         pullUpAttributeProcessor.validateUserInputThis(status, progressMonitor);
 
         assertEquals(RefactoringStatus.FATAL, status.getSeverity());
+    }
+
+    @Test
+    public void testValidateUserInputThisValid() throws CoreException {
+        pullUpAttributeProcessor.setTarget(superPolicyCmptType);
+
+        RefactoringStatus status = new RefactoringStatus();
+        pullUpAttributeProcessor.validateUserInputThis(status, progressMonitor);
+
+        assertTrue(status.isOK());
     }
 
     @Test
