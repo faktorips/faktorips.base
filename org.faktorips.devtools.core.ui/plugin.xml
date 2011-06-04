@@ -196,31 +196,20 @@
 
    <extension
          point="org.eclipse.ui.commands">
-      <command
-            categoryId="org.eclipse.search.ui.category.search"
-            id="org.faktorips.devtools.core.ui.search.model"
-            name="%org.faktorips.devtools.actions.OpenModelSearchPageAction.label">
-      </command>
+      <category
+            id="org.faktorips.devtools.core.ui.category.navigate"
+            name="%org.faktorips.devtools.core.ui.category.navigate"/>
       <command
             categoryId="org.faktorips.devtools.core.ui.category.navigate"
             description="%org.faktorips.devtools.core.openIpsObject.tooltip"
             id="org.faktorips.devtools.core.openIpsObject"
             name="%org.faktorips.devtools.core.openIpsObject.label">
       </command>
-      <category
-            id="org.faktorips.devtools.core.ui.category.navigate"
-            name="%org.faktorips.devtools.core.ui.category.navigate"/>
       <command
             name="%org.faktorips.devtools.core.launchIpsTest.run"
             description="%org.faktorips.devtools.core.launchIpsTest.run.description"
             categoryId="org.eclipse.debug.ui.category.run"
             id="org.faktorips.devtools.core.launchIpsTest.run">
-      </command>
-      <command
-            name="%org.faktorips.devtools.core.launchIpsTest.debug"
-            description="%org.faktorips.devtools.core.launchIpsTest.debug.description"
-            categoryId="org.eclipse.debug.ui.category.run"
-            id="org.faktorips.devtools.core.launchIpsTest.debug">
       </command>
       <command
             categoryId="org.faktorips.devtools.core.ui.category.navigate"
@@ -257,9 +246,27 @@
             name="%SearchReferencesAction_name">
       </command>
       <command
+            categoryId="org.faktorips.devtools.core.ui.category.refactoring"
+            defaultHandler="org.faktorips.devtools.core.ui.refactor.IpsPullUpHandler"
+            description="%PullUpRefactoring_description"
             id="org.faktorips.devtools.core.refactor.pullUp"
-            name="Blub">
+            name="%PullUpRefactoring_name">
       </command>
+      <command
+            categoryId="org.eclipse.search.ui.category.search"
+            id="org.faktorips.devtools.core.ui.search.model"
+            name="%org.faktorips.devtools.actions.OpenModelSearchPageAction.label">
+      </command>
+      <command
+            name="%org.faktorips.devtools.core.launchIpsTest.debug"
+            description="%org.faktorips.devtools.core.launchIpsTest.debug.description"
+            categoryId="org.eclipse.debug.ui.category.run"
+            id="org.faktorips.devtools.core.launchIpsTest.debug">
+      </command>
+      <category
+            id="org.faktorips.devtools.core.ui.category.refactoring"
+            name="%RefactoringCommandCategory_name">
+      </category>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
