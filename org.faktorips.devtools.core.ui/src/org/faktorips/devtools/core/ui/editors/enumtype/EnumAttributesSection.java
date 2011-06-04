@@ -117,7 +117,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         private Button inheritButton;
 
         public EnumAttributesComposite(Composite parent) {
-            super(getEnumType(), parent, getSite(), true, true, true, true, true, true, true, getToolkit());
+            super(getEnumType(), parent, getSite(), true, true, true, true, true, true, false, true, getToolkit());
             addSelectionChangedListener(this);
         }
 

@@ -77,8 +77,9 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
      */
     private final boolean showEditButton;
 
-    /** Flag that controls whether the refactor context menu will be provided. */
-    private final boolean refactoringSupported;
+    private final boolean renameRefactoringSupported;
+
+    private final boolean pullUpRefactoringSupported;
 
     /** Flag that controls whether the jump to source code context menu will be provided. */
     private final boolean jumpToSourceCodeSupported;
@@ -115,12 +116,13 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     private boolean canMove;
 
     protected IpsPartsComposite(IIpsObject pdObject, Composite parent, IWorkbenchPartSite site, UIToolkit toolkit) {
-        this(pdObject, parent, site, true, true, true, true, true, false, false, toolkit);
+        this(pdObject, parent, site, true, true, true, true, true, false, false, false, toolkit);
     }
 
     protected IpsPartsComposite(IIpsObject ipsObject, Composite parent, IWorkbenchPartSite site, boolean canCreate,
-            boolean canEdit, boolean canDelete, boolean canMove, boolean showEditButton, boolean refactoringSupported,
-            boolean jumpToSourceCodeSupported, UIToolkit uiToolkit) {
+            boolean canEdit, boolean canDelete, boolean canMove, boolean showEditButton,
+            boolean renameRefactoringSupported, boolean pullUpRefactoringSupported, boolean jumpToSourceCodeSupported,
+            UIToolkit uiToolkit) {
 
         super(parent);
 
@@ -131,7 +133,8 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         this.canDelete = canDelete;
         this.canMove = canMove;
         this.showEditButton = showEditButton;
-        this.refactoringSupported = refactoringSupported;
+        this.renameRefactoringSupported = renameRefactoringSupported;
+        this.pullUpRefactoringSupported = pullUpRefactoringSupported;
         this.jumpToSourceCodeSupported = jumpToSourceCodeSupported;
         this.uiToolkit = uiToolkit;
 
@@ -142,10 +145,14 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     void createContextMenu() {
         MenuManager contextMenuManager = new MenuManager();
 
-        if (refactoringSupported) {
+        if (renameRefactoringSupported || pullUpRefactoringSupported) {
             MenuManager refactorSubmenu = new MenuManager(Messages.IpsPartsComposite_submenuRefactor);
-            refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsRenameHandler.CONTRIBUTION_ID));
-            refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsPullUpHandler.CONTRIBUTION_ID));
+            if (renameRefactoringSupported) {
+                refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsRenameHandler.CONTRIBUTION_ID));
+            }
+            if (pullUpRefactoringSupported) {
+                refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsPullUpHandler.CONTRIBUTION_ID));
+            }
             contextMenuManager.add(refactorSubmenu);
         }
 

@@ -45,7 +45,7 @@ public abstract class AttributesSection extends SimpleIpsPartsSection {
     protected abstract class AttributesComposite extends IpsPartsComposite {
 
         protected AttributesComposite(IType type, Composite parent, UIToolkit toolkit) {
-            super(type, parent, getSite(), true, true, true, true, true, true, true, toolkit);
+            super(type, parent, getSite(), true, true, true, true, true, true, true, true, toolkit);
         }
 
         @Override

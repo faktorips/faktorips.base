@@ -157,7 +157,7 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
         private OpenTableStructuresInEditorAction openAction;
 
         public TblsStructureUsageComposite(IProductCmptType productCmptType, Composite parent, UIToolkit toolkit) {
-            super(productCmptType, parent, getSite(), true, true, true, true, true, false, true, toolkit);
+            super(productCmptType, parent, getSite(), true, true, true, true, true, false, false, true, toolkit);
         }
 
         @Override

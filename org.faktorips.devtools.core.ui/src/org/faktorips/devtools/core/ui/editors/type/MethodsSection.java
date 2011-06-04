@@ -73,7 +73,7 @@ public class MethodsSection extends SimpleIpsPartsSection {
         private Button overrideButton;
 
         private MethodsComposite(IType type, Composite parent, UIToolkit toolkit) {
-            super(type, parent, getSite(), true, true, true, true, true, false, true, toolkit);
+            super(type, parent, getSite(), true, true, true, true, true, false, false, true, toolkit);
         }
 
         @Override

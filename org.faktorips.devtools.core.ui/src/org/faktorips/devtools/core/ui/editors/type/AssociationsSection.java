@@ -59,7 +59,8 @@ public abstract class AssociationsSection extends SimpleIpsPartsSection {
         protected AssociationsComposite(IType type, Composite parent, boolean canCreate, boolean canEdit,
                 boolean canDelete, boolean canMove, boolean showEditButton, UIToolkit toolkit) {
 
-            super(type, parent, getSite(), canCreate, canEdit, canDelete, canMove, showEditButton, true, true, toolkit);
+            super(type, parent, getSite(), canCreate, canEdit, canDelete, canMove, showEditButton, true, false, true,
+                    toolkit);
             openTargetAction = createOpenTargetAction();
         }
 

@@ -56,7 +56,7 @@ public class RulesSection extends SimpleIpsPartsSection {
     private class RulesComposite extends IpsPartsComposite {
 
         RulesComposite(IIpsObject pdObject, Composite parent, UIToolkit toolkit) {
-            super(pdObject, parent, getSite(), true, true, true, true, true, false, true, toolkit);
+            super(pdObject, parent, getSite(), true, true, true, true, true, false, false, true, toolkit);
         }
 
         @Override
