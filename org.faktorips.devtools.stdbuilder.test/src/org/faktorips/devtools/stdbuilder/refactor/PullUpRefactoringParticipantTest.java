@@ -99,7 +99,7 @@ public class PullUpRefactoringParticipantTest extends RefactoringParticipantTest
         performFullBuild(ipsProject);
 
         // Perform the refactoring
-        performPullUpRefactoring(productCmptTypeAttribute, targetPolicyCmptType);
+        performPullUpRefactoring(productCmptTypeAttribute, targetProductCmptType);
 
         // Check whether the Java source code was modified correctly
         ProductCmptTypeAttributeExpectations expectations = new ProductCmptTypeAttributeExpectations(
