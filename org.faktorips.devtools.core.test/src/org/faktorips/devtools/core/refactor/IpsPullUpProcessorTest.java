@@ -26,15 +26,16 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 public class IpsPullUpProcessorTest {
 
-    @Mock
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private IIpsObjectPart ipsObjectPart;
 
-    @Mock
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private IIpsObject ipsObject;
 
     @Mock

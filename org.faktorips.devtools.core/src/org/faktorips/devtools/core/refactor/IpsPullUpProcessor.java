@@ -74,13 +74,13 @@ public abstract class IpsPullUpProcessor<T extends IIpsObjectPartContainer> exte
 
         if (target == null) {
             status.addFatalError(NLS.bind(Messages.IpsPullUpProcessor_msgTargetNotSpecified,
-                    getLocalizedTargetCaption()));
+                    getLocalizedContainerCaption()));
             return status;
         }
 
         if (target.equals(getIpsObjectPart().getIpsObject())) {
             status.addFatalError(NLS.bind(Messages.IpsPullUpProcessor_msgTargetEqualsCurrentContainer,
-                    getLocalizedTargetCaption()));
+                    getLocalizedContainerCaption()));
             return status;
         }
 
@@ -88,8 +88,8 @@ public abstract class IpsPullUpProcessor<T extends IIpsObjectPartContainer> exte
         return status;
     }
 
-    private String getLocalizedTargetCaption() {
-        return IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(getTarget());
+    private String getLocalizedContainerCaption() {
+        return IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(getIpsObjectPart().getIpsObject());
     }
 
     /**
