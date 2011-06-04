@@ -646,7 +646,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     @Override
     public String getCaption(Locale locale) throws CoreException {
-        return ResourceBundle.getBundle(Messages.BUNDLE_NAME, locale).getString(Messages.PolicyCmptType_caption);
+        return ResourceBundle.getBundle(Messages.BUNDLE_NAME, locale).getString("PolicyCmptType_caption"); //$NON-NLS-1$
     }
 
     private static class IsAggregrateRootVisitor extends TypeHierarchyVisitor<IPolicyCmptType> {

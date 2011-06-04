@@ -589,7 +589,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public String getCaption(Locale locale) throws CoreException {
-        return ResourceBundle.getBundle(Messages.BUNDLE_NAME, locale).getString(Messages.ProductCmptType_caption);
+        return ResourceBundle.getBundle(Messages.BUNDLE_NAME, locale).getString("ProductCmptType_caption"); //$NON-NLS-1$
     }
 
     private static class TableStructureUsageFinder extends TypeHierarchyVisitor<IProductCmptType> {
