@@ -13,14 +13,70 @@
 
 package org.faktorips.devtools.core.internal.model.type.refactor;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.abstracttest.AbstractIpsRefactoringTest;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.type.IType;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 public class PullUpAttributeProcessorTest extends AbstractIpsRefactoringTest {
+
+    @Mock
+    private IProgressMonitor progressMonitor;
+
+    private PullUpAttributeProcessor pullUpAttributeProcessor;
+
+    @Override
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+        MockitoAnnotations.initMocks(this);
+        pullUpAttributeProcessor = new PullUpAttributeProcessor(policyCmptTypeAttribute);
+    }
+
+    @Test
+    public void testValidateUserInputThisTargetTypeNotASupertype() throws CoreException {
+        pullUpAttributeProcessor.setTarget(mock(IType.class));
+
+        RefactoringStatus status = new RefactoringStatus();
+        pullUpAttributeProcessor.validateUserInputThis(status, progressMonitor);
+
+        assertEquals(RefactoringStatus.FATAL, status.getSeverity());
+    }
+
+    @Test
+    public void testValidateUserInputThisValid() throws CoreException {
+        pullUpAttributeProcessor.setTarget(superPolicyCmptType);
+
+        RefactoringStatus status = new RefactoringStatus();
+        pullUpAttributeProcessor.validateUserInputThis(status, progressMonitor);
+
+        assertTrue(status.isOK());
+    }
+
+    @Test
+    public void testValidateUserInputThisTargetAttributeNotValid() throws CoreException {
+        IPolicyCmptTypeAttribute alreadyExistingAttribute = superPolicyCmptType.newPolicyCmptTypeAttribute();
+        policyCmptTypeAttribute.copy(alreadyExistingAttribute);
+
+        pullUpAttributeProcessor.setTarget(superPolicyCmptType);
+
+        RefactoringStatus status = new RefactoringStatus();
+        pullUpAttributeProcessor.validateUserInputThis(status, progressMonitor);
+
+        assertEquals(RefactoringStatus.FATAL, status.getSeverity());
+    }
 
     @Test
     public void testPullUpPolicyCmptTypeAttribute() throws CoreException {

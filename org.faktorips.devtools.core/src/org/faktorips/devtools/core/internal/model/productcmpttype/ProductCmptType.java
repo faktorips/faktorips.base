@@ -21,7 +21,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -583,6 +585,11 @@ public class ProductCmptType extends Type implements IProductCmptType {
         String oldPath = instancesIconPath;
         instancesIconPath = path;
         valueChanged(oldPath, instancesIconPath);
+    }
+
+    @Override
+    public String getCaption(Locale locale) throws CoreException {
+        return ResourceBundle.getBundle(Messages.BUNDLE_NAME, locale).getString(Messages.ProductCmptType_caption);
     }
 
     private static class TableStructureUsageFinder extends TypeHierarchyVisitor<IProductCmptType> {

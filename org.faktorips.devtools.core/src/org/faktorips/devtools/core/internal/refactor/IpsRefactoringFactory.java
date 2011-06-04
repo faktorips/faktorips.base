@@ -126,7 +126,7 @@ public final class IpsRefactoringFactory implements IIpsRefactoringFactory {
 
         IIpsProcessorBasedRefactoring ipsPullUpRefactoring = createPullUpRefactoring(ipsObjectPart);
         IpsPullUpProcessor ipsPullUpProcessor = (IpsPullUpProcessor)ipsPullUpRefactoring.getIpsRefactoringProcessor();
-        ipsPullUpProcessor.setTargetIpsObjectPartContainer(targetIpsObjectPartContainer);
+        ipsPullUpProcessor.setTarget(targetIpsObjectPartContainer);
         return ipsPullUpRefactoring;
     }
 

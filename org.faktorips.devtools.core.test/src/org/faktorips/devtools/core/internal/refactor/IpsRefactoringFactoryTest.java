@@ -161,7 +161,7 @@ public class IpsRefactoringFactoryTest {
                 mock(IAttribute.class), targetType);
 
         IpsPullUpProcessor ipsPullUpProcessor = (IpsPullUpProcessor)ipsPullUpRefactoring.getIpsRefactoringProcessor();
-        assertEquals(targetType, ipsPullUpProcessor.getTargetIpsObjectPartContainer());
+        assertEquals(targetType, ipsPullUpProcessor.getTarget());
     }
 
 }

@@ -20,6 +20,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.refactor.IpsPullUpProcessor;
+import org.faktorips.util.message.MessageList;
 
 /**
  * Refactoring processor for the "Pull Up Attribute" - refactoring.
@@ -28,7 +29,7 @@ import org.faktorips.devtools.core.refactor.IpsPullUpProcessor;
  * 
  * @author Alexander Weickmann
  */
-public class PullUpAttributeProcessor extends IpsPullUpProcessor {
+public class PullUpAttributeProcessor extends IpsPullUpProcessor<IType> {
 
     public PullUpAttributeProcessor(IAttribute attribute) {
         super(attribute);
@@ -37,25 +38,44 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor {
     @Override
     protected void addIpsSrcFiles() throws CoreException {
         addIpsSrcFile(getIpsSrcFile());
-        IType supertype = getAttribute().getType().findSupertype(getIpsProject());
+        IType supertype = getType().findSupertype(getIpsProject());
         addIpsSrcFile(supertype.getIpsSrcFile());
     }
 
     @Override
     protected void refactorIpsModel(IProgressMonitor pm) throws CoreException {
         pullUpAttribute();
+        deleteOriginalAttribute();
     }
 
-    private void pullUpAttribute() throws CoreException {
-        IType superType = getAttribute().getType().findSupertype(getIpsProject());
+    /**
+     * Pulls the attribute up to the target type and returns the new attribute.
+     */
+    private IAttribute pullUpAttribute() throws CoreException {
+        IType superType = getType().findSupertype(getIpsProject());
         IAttribute newAttribute = superType.newAttribute();
         getAttribute().copy(newAttribute);
+        return newAttribute;
+    }
+
+    private void deleteOriginalAttribute() {
         getAttribute().delete();
     }
 
     @Override
     public void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
-        // Nothing to do
+        if (!getType().isSubtypeOf(getTarget(), getIpsProject())) {
+            status.addFatalError(Messages.PullUpAttributeProcessor_msgTargetTypeMustBeSupertype);
+            return;
+        }
+
+        IAttribute tempNewAttribute = pullUpAttribute();
+
+        MessageList validationMessageList = getAttribute().validate(getIpsProject());
+        validationMessageList.add(getType().validate(getIpsProject()));
+        addValidationMessagesToStatus(validationMessageList, status);
+
+        tempNewAttribute.delete();
     }
 
     @Override
@@ -79,6 +99,10 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor {
 
     private IAttribute getAttribute() {
         return (IAttribute)getIpsElement();
+    }
+
+    private IType getType() {
+        return getAttribute().getType();
     }
 
 }

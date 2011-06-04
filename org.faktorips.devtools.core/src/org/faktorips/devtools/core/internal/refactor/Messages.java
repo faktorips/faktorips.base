@@ -33,8 +33,8 @@ public class Messages extends NLS {
     public static String IpsRenameProcessor_msgNewNameEmpty;
     public static String IpsRenameProcessor_msgNewNameEqualsOriginalName;
 
-    public static String IpsPullUpProcessor_msgTargetIpsObjectPartContainerNotSpecified;
-    public static String IpsPullUpProcessor_msgTargetIpsObjectPartContainerEqualsCurrentContainer;
+    public static String IpsPullUpProcessor_msgTargetNotSpecified;
+    public static String IpsPullUpProcessor_msgTargetEqualsCurrentContainer;
 
     public static String IpsMoveProcessor_msgTargetLocationEqualsOriginalLocation;
 

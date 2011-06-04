@@ -17,7 +17,7 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
 
-    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.pctype.messages"; //$NON-NLS-1$
+    public static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.pctype.messages"; //$NON-NLS-1$
 
     static {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
@@ -41,11 +41,13 @@ public class Messages extends NLS {
     public static String PersistentAssociationInfo_msgTransientMismatch;
     public static String PersistentAssociationInfo_sourceColumnName;
     public static String PersistentAssociationInfo_tagetColumnName;
+
     public static String PersistentAttributeInfo_msgColumnNameLengthExceedsMaximumLength;
     public static String PersistentAttributeInfo_msgColumnPrecisionExceedsTheLimit;
     public static String PersistentAttributeInfo_msgColumnScaleExceedsTheLimit;
     public static String PersistentAttributeInfo_msgColumnSizeExceedsTheLimit;
     public static String PersistentAttributeInfo_msgEmptyColumnName;
+
     public static String PersistentTypeInfo_msgDiscriminatorAlreadyDefined;
     public static String PersistentTypeInfo_msgDiscriminatorColumnNameIsInvalid;
     public static String PersistentTypeInfo_msgDiscriminatorDefinitionNotAllowedBecauseMappedSuperclass;
@@ -66,6 +68,7 @@ public class Messages extends NLS {
     public static String PersistentTypeInfo_msgTableNameMustBeEmptyNotRootEntityAndInhStrategyIs;
     public static String PersistentTypeInfo_msgTableNameOfRootEntityMustBeUsed;
     public static String PersistentTypeInfo_msgUseTableDefInSupertypIsNotAllowed;
+
     public static String PolicyCmptType_msg_IfTheSupertypeIsNotConfigurableTheTypeCanBeConfigurable;
     public static String PolicyCmptType_msg_ProductCmptTypeNameMissing;
     public static String PolicyCmptType_msgSubtypeConfigurableWhenSupertypeConfigurable;
@@ -74,15 +77,15 @@ public class Messages extends NLS {
     public static String PolicyCmptType_msgDuplicateRuleName;
     public static String PolicyCmptType_msgInverseDerivedUnionNotSepcified;
     public static String PolicyCmptType_msgRuleMethodNameConflict;
+    public static String PolicyCmptType_caption;
 
     public static String PolicyCmptTypeAssociation_Association_msg_InverseAssociationMustNotBeEmpty;
     public static String PolicyCmptTypeAssociation_Association_msg_InverseAssociationMustNotBeEmptyIfDerivedUnionHasInverse;
     public static String PolicyCmptTypeAssociation_Association_msg_InverseOfMasterToDetailMustBeADetailToMaster;
-
     public static String PolicyCmptTypeAssociation_InverseOfDetailToMasterMustBeAMasterToDetail;
-
     public static String PolicyCmptTypeAssociation_sharedAssociation_invalidAssociationHost;
     public static String PolicyCmptTypeAssociation_sharedAssociation_noAssociationHost;
+
     public static String PolicyCmptTypeAttribute_msg_ComputationMethodSignatureDoesNotExists;
     public static String PolicyCmptTypeAttribute_msg_ComputationMethodSignatureHasADifferentDatatype;
     public static String PolicyCmptTypeAttribute_msg_ComputationMethodSignatureIsMissing;

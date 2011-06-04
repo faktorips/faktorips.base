@@ -17,7 +17,7 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
 
-    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.productcmpttype.messages"; //$NON-NLS-1$
+    public static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.productcmpttype.messages"; //$NON-NLS-1$
 
     static {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
@@ -39,6 +39,8 @@ public class Messages extends NLS {
     public static String ProductCmptType_PolicyCmptTypeDoesNotExist;
     public static String ProductCmptType_policyCmptTypeDoesNotSpecifyThisType;
     public static String ProductCmptType_TypeMustConfigureAPolicyCmptTypeIfSupertypeDoes;
+    public static String ProductCmptType_caption;
+
     public static String ProductCmptTypeMethod_FormulaNameIsMissing;
     public static String ProductCmptTypeMethod_FormulaSignatureDatatypeMustBeAValueDatatype;
     public static String ProductCmptTypeMethod_FormulaSignatureMustntBeAbstract;

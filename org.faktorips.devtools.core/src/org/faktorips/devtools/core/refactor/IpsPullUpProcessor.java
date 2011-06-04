@@ -31,13 +31,15 @@ import org.faktorips.util.ArgumentCheck;
 /**
  * Abstract base class for all Faktor-IPS "Pull Up" refactoring processors.
  * 
+ * @param <T> The type of the container to which parts are pulled up to
+ * 
  * @since 3.4
  * 
  * @author Alexander Weickmann
  */
-public abstract class IpsPullUpProcessor extends IpsRefactoringProcessor {
+public abstract class IpsPullUpProcessor<T extends IIpsObjectPartContainer> extends IpsRefactoringProcessor {
 
-    private IIpsObjectPartContainer targetIpsObjectPartContainer;
+    private T target;
 
     /**
      * @param ipsObjectPart {@link IIpsObjectPart} to be refactored
@@ -61,35 +63,33 @@ public abstract class IpsPullUpProcessor extends IpsRefactoringProcessor {
     }
 
     /**
-     * This implementation validates the target {@link IIpsObjectPartContainer} and returns a
-     * {@link RefactoringStatus} as result of the validation.
+     * This implementation validates the target container and returns a {@link RefactoringStatus} as
+     * result of the validation.
      * <p>
-     * It checks that the target container:
-     * <ul>
-     * <li>is specified
-     * <li>does not equal the current container
-     * </ul>
+     * It checks that the target container is specified and does not equal the current container.
      */
     @Override
     public RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreException {
         RefactoringStatus status = new RefactoringStatus();
 
-        if (targetIpsObjectPartContainer == null) {
-            // TODO AW 03-06-2011: See todo in IpsRefactoringUserInputPage
-            status.addFatalError(NLS.bind(Messages.IpsPullUpProcessor_msgTargetIpsObjectPartContainerNotSpecified,
-                    "TODO")); //$NON-NLS-1$
+        if (target == null) {
+            status.addFatalError(NLS.bind(Messages.IpsPullUpProcessor_msgTargetNotSpecified,
+                    getLocalizedTargetCaption()));
             return status;
         }
 
-        if (targetIpsObjectPartContainer.equals(getIpsObjectPart().getIpsObject())) {
-            // TODO AW 03-06-2011: See todo in IpsRefactoringUserInputPage
-            status.addFatalError(NLS.bind(
-                    Messages.IpsPullUpProcessor_msgTargetIpsObjectPartContainerEqualsCurrentContainer, "TODO")); //$NON-NLS-1$
+        if (target.equals(getIpsObjectPart().getIpsObject())) {
+            status.addFatalError(NLS.bind(Messages.IpsPullUpProcessor_msgTargetEqualsCurrentContainer,
+                    getLocalizedTargetCaption()));
             return status;
         }
 
         validateUserInputThis(status, pm);
         return status;
+    }
+
+    private String getLocalizedTargetCaption() {
+        return IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(getTarget());
     }
 
     /**
@@ -104,24 +104,23 @@ public abstract class IpsPullUpProcessor extends IpsRefactoringProcessor {
     protected abstract void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException;
 
     /**
-     * Sets the target {@link IIpsObjectPartContainer} the {@link IIpsObjectPart} to be refactored
-     * shall be moved up to.
+     * Sets the target container the {@link IIpsObjectPart} to be refactored shall be moved up to.
      * 
-     * @param targetIpsObjectPartContainer The target {@link IIpsObjectPartContainer} to pull up to
+     * @param targetIpsObjectPartContainer The target container to pull up to
      * 
      * @throws NullPointerException If the parameter is null
      */
-    public final void setTargetIpsObjectPartContainer(IIpsObjectPartContainer targetIpsObjectPartContainer) {
+    public final void setTarget(T targetIpsObjectPartContainer) {
         ArgumentCheck.notNull(targetIpsObjectPartContainer);
-        this.targetIpsObjectPartContainer = targetIpsObjectPartContainer;
+        this.target = targetIpsObjectPartContainer;
     }
 
     /**
-     * Returns the target {@link IIpsObjectPartContainer} to which the {@link IIpsObjectPart} to be
-     * refactored will be pulled up to.
+     * Returns the target container to which the {@link IIpsObjectPart} to be refactored will be
+     * pulled up to.
      */
-    public final IIpsObjectPartContainer getTargetIpsObjectPartContainer() {
-        return targetIpsObjectPartContainer;
+    public final T getTarget() {
+        return target;
     }
 
     /**

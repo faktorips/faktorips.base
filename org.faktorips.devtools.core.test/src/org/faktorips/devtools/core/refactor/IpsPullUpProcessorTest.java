@@ -14,6 +14,8 @@
 package org.faktorips.devtools.core.refactor;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.core.runtime.CoreException;
@@ -21,6 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -49,23 +52,30 @@ public class IpsPullUpProcessorTest {
     }
 
     @Test
-    public void testValidateUserInputTargetIpsObjectPartContainerNotSpecified() throws CoreException {
+    public void testValidateUserInputTargetNotSpecified() throws CoreException {
         RefactoringStatus status = pullUpProcessor.validateUserInput(progressMonitor);
         assertEquals(RefactoringStatus.FATAL, status.getSeverity());
     }
 
     @Test
-    public void testValidateUserInputTargetIpsObjectPartContainerEqualsCurrentIpsObjectPartContainer()
-            throws CoreException {
-
-        pullUpProcessor.setTargetIpsObjectPartContainer(ipsObject);
+    public void testValidateUserInputTargetEqualsCurrentContainer() throws CoreException {
+        pullUpProcessor.setTarget(ipsObject);
 
         RefactoringStatus status = pullUpProcessor.validateUserInput(progressMonitor);
 
         assertEquals(RefactoringStatus.FATAL, status.getSeverity());
     }
 
-    private static class TestIpsPullUpProcessor extends IpsPullUpProcessor {
+    @Test
+    public void testValidateUserInputValid() throws CoreException {
+        pullUpProcessor.setTarget(mock(IIpsObjectPartContainer.class));
+
+        RefactoringStatus status = pullUpProcessor.validateUserInput(progressMonitor);
+
+        assertTrue(status.isOK());
+    }
+
+    private static class TestIpsPullUpProcessor extends IpsPullUpProcessor<IIpsObjectPartContainer> {
 
         protected TestIpsPullUpProcessor(IIpsObjectPart ipsObjectPart) {
             super(ipsObjectPart);

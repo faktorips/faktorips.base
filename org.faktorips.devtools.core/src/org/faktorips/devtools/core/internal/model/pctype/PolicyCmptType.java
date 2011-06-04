@@ -18,7 +18,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -640,6 +642,11 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         ValidationRuleForNameFinder finder = new ValidationRuleForNameFinder(ruleName, ipsProject);
         finder.start(this);
         return finder.getValidationRule();
+    }
+
+    @Override
+    public String getCaption(Locale locale) throws CoreException {
+        return ResourceBundle.getBundle(Messages.BUNDLE_NAME, locale).getString(Messages.PolicyCmptType_caption);
     }
 
     private static class IsAggregrateRootVisitor extends TypeHierarchyVisitor<IPolicyCmptType> {
