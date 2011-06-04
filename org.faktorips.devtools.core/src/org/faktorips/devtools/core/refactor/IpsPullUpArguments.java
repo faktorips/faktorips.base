@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.refactor;
 
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 
 /**
  * Arguments for Faktor-IPS "Pull Up" refactorings.
@@ -22,9 +23,14 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
  */
 public final class IpsPullUpArguments extends RefactoringArguments {
 
-    /*
-     * Nothing needed here at this moment, acts as base class for possible sub classes and is
-     * reserved for later use.
-     */
+    private final IIpsObjectPartContainer target;
+
+    public IpsPullUpArguments(IIpsObjectPartContainer target) {
+        this.target = target;
+    }
+
+    public IIpsObjectPartContainer getTarget() {
+        return target;
+    }
 
 }

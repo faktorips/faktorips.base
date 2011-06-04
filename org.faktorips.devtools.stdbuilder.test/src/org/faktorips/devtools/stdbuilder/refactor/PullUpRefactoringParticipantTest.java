@@ -24,12 +24,27 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.junit.Test;
 
 public class PullUpRefactoringParticipantTest extends RefactoringParticipantTest {
 
     @Test
-    public void testPullUpPolicyCmptTypeAttribute() throws CoreException {
+    public void testPullUpPolicyCmptTypeAttributeValueSetUnrestricted() throws CoreException {
+        performTestPullUpPolicyCmptTypeAttribute(ValueSetType.UNRESTRICTED);
+    }
+
+    @Test
+    public void testPullUpPolicyCmptTypeAttributeValueSetEnum() throws CoreException {
+        performTestPullUpPolicyCmptTypeAttribute(ValueSetType.ENUM);
+    }
+
+    @Test
+    public void testPullUpPolicyCmptTypeAttributeValueSetRange() throws CoreException {
+        performTestPullUpPolicyCmptTypeAttribute(ValueSetType.RANGE);
+    }
+
+    private void performTestPullUpPolicyCmptTypeAttribute(ValueSetType valueSetType) throws CoreException {
         // Create target policy component type configured by a product component type
         IPolicyCmptType targetPolicyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "TargetPolicy");
         IProductCmptType targetProductCmptType = newProductCmptType(ipsProject, "TargetProduct");
@@ -50,6 +65,7 @@ public class PullUpRefactoringParticipantTest extends RefactoringParticipantTest
 
         // Create the policy component type attribute to pull up
         IPolicyCmptTypeAttribute policyCmptTypeAttribute = createPolicyCmptTypeAttribute("foo", sourcePolicyCmptType);
+        policyCmptTypeAttribute.setValueSetType(valueSetType);
 
         // Save source files and build Java source code
         saveIpsSrcFile(targetPolicyCmptType);

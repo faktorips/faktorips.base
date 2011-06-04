@@ -52,12 +52,12 @@ public abstract class IpsPullUpProcessor<T extends IIpsObjectPartContainer> exte
     public final RefactoringParticipant[] loadParticipants(RefactoringStatus status,
             SharableParticipants sharedParticipants) throws CoreException {
 
-        // TODO AW 03-06-2011: Move constants to some central, published place
+        // TODO AW 03-06-2011: Move extension point properties to some central, published place
         List<RefactoringParticipant> participants = new ExtensionPoints(IpsPlugin.PLUGIN_ID)
                 .createExecutableExtensions(ExtensionPoints.PULL_UP_PARTICIPANTS,
                         "pullUpParticipant", "class", RefactoringParticipant.class); //$NON-NLS-1$ //$NON-NLS-2$
         for (RefactoringParticipant participant : participants) {
-            participant.initialize(this, getIpsElement(), new IpsPullUpArguments());
+            participant.initialize(this, getIpsElement(), new IpsPullUpArguments(target));
         }
         return participants.toArray(new RefactoringParticipant[participants.size()]);
     }
