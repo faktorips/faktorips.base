@@ -277,8 +277,10 @@ public class ProductExplorer extends ModelExplorer {
             super.createReorgActions(manager, selected);
             // TODO AW: IIpsProject and IIpsPackageFragmentRoot should be supported as well
             if (selected instanceof IIpsObject || selected instanceof IIpsPackageFragment) {
-                manager.add(IpsRefactoringHandler.getContributionItem(IpsRenameHandler.CONTRIBUTION_ID));
-                manager.add(IpsRefactoringHandler.getContributionItem(IpsMoveHandler.CONTRIBUTION_ID));
+                manager.add(IpsRefactoringHandler.getContributionItem(IpsRenameHandler.CONTRIBUTION_ID,
+                        Messages.ProductExplorer_labelRenameRefactoring));
+                manager.add(IpsRefactoringHandler.getContributionItem(IpsMoveHandler.CONTRIBUTION_ID,
+                        Messages.ProductExplorer_labelPullUpRefactoring));
             }
         }
 

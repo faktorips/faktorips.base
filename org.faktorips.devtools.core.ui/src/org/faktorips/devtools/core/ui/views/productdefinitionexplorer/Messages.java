@@ -72,4 +72,7 @@ public class Messages extends NLS {
     public static String ProductExplorer_actionReplaceWithLocalHistory_label;
     public static String ProductExplorer_actionReplaceWithLocalHistory_tooltip;
 
+    public static String ProductExplorer_labelRenameRefactoring;
+    public static String ProductExplorer_labelPullUpRefactoring;
+
 }

@@ -1737,12 +1737,35 @@
          <command
                commandId="org.eclipse.ui.edit.rename"
                id="Rename"
+               label="%ModelExplorerRefactoringMenu_labelRename"
                style="push">
          </command>
          <command
                commandId="org.eclipse.ui.edit.move"
                id="Move"
+               label="%ModelExplorerRefactoringMenu_labelMove"
                style="push">
+         </command>
+         <separator
+               name="org.faktorips.devtools.core.ui.views.modelexplorer.refactoring.separator1"
+               visible="true">
+         </separator>
+         <command
+               commandId="org.faktorips.devtools.core.refactor.pullUp"
+               id="PullUp"
+               label="%ModelExplorerRefactoringMenu_labelPullUp"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <iterate>
+                     <adapt
+                           type="org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile">
+                     </adapt>
+                  </iterate>
+               </with>
+            </visibleWhen>
          </command>
       </menuContribution>
       <menuContribution

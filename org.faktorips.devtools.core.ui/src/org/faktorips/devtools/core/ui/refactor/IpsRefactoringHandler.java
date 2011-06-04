@@ -49,9 +49,24 @@ import org.faktorips.devtools.core.ui.wizards.refactor.IpsRefactoringWizard;
  */
 public abstract class IpsRefactoringHandler extends AbstractHandler {
 
-    public static ContributionItem getContributionItem(String commandId) {
-        CommandContributionItemParameter parameters = new CommandContributionItemParameter(PlatformUI.getWorkbench(),
-                null, commandId, CommandContributionItem.STYLE_PUSH);
+    public static ContributionItem getContributionItem(String commandId, String label) {
+        // @formatter:off
+        CommandContributionItemParameter parameters = new CommandContributionItemParameter(
+                PlatformUI.getWorkbench(),              // serviceLocator
+                null,                                   // id
+                commandId,                              // commandId
+                null,                                   // parameters
+                null,                                   // icon
+                null,                                   // disabledIcon
+                null,                                   // hoverIcon
+                label,                                  // label
+                null,                                   // mnemoic
+                null,                                   // tooltip
+                CommandContributionItem.STYLE_PUSH,     // style
+                null,                                   // helpContextId
+                false                                   // visibleEnabled
+        );
+        // @formatter:on
         return new CommandContributionItem(parameters);
     }
 

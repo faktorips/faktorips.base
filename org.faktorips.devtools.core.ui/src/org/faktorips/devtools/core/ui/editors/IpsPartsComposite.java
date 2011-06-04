@@ -145,16 +145,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     void createContextMenu() {
         MenuManager contextMenuManager = new MenuManager();
 
-        if (renameRefactoringSupported || pullUpRefactoringSupported) {
-            MenuManager refactorSubmenu = new MenuManager(Messages.IpsPartsComposite_submenuRefactor);
-            if (renameRefactoringSupported) {
-                refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsRenameHandler.CONTRIBUTION_ID));
-            }
-            if (pullUpRefactoringSupported) {
-                refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsPullUpHandler.CONTRIBUTION_ID));
-            }
-            contextMenuManager.add(refactorSubmenu);
-        }
+        createRefactoringSubContextMenu(contextMenuManager);
 
         if (jumpToSourceCodeSupported) {
             contextMenuManager.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
@@ -178,6 +169,24 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 }
             });
         }
+    }
+
+    private void createRefactoringSubContextMenu(MenuManager contextMenuManager) {
+        if (!renameRefactoringSupported && !pullUpRefactoringSupported) {
+            return;
+        }
+
+        MenuManager refactorSubmenu = new MenuManager(Messages.IpsPartsComposite_submenuRefactor);
+        if (renameRefactoringSupported) {
+            refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsRenameHandler.CONTRIBUTION_ID,
+                    Messages.IpsPartsComposite_labelRenameRefactoring));
+        }
+        if (pullUpRefactoringSupported) {
+            refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsPullUpHandler.CONTRIBUTION_ID,
+                    Messages.IpsPartsComposite_labelPullUpRefactoring));
+        }
+
+        contextMenuManager.add(refactorSubmenu);
     }
 
     /**
