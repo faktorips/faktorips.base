@@ -252,8 +252,8 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
         if (!isRootEntity(rooEntity) && InheritanceStrategy.SINGLE_TABLE.equals(inheritanceStrategy)
                 && !useTableDefinedInSupertype) {
-            String text = NLS.bind(Messages.PersistentTypeInfo_msgTableNameOfRootEntityMustBeUsed,
-                    inheritanceStrategy.toString());
+            String text = NLS.bind(Messages.PersistentTypeInfo_msgTableNameOfRootEntityMustBeUsed, inheritanceStrategy
+                    .toString());
             msgList.add(new Message(MSGCODE_MUST_USE_TABLE_FROM_ROOT_ENTITY, text, Message.ERROR, this,
                     IPersistentTypeInfo.PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE));
         }
@@ -382,8 +382,8 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
                 && getPolicyCmptType().getAttributes().size() > 0) {
             // TODO JPA Joerg wenn das mit getPolicyCmptType().getAttributes().length > 0 stimmt
             // zus. noch transiente attribute ausschliessen
-            String text = NLS.bind(Messages.PersistentTypeInfo_msgDiscriminatorMustBeDefinedInTheRootEntity,
-                    rootEntity.getUnqualifiedName());
+            String text = NLS.bind(Messages.PersistentTypeInfo_msgDiscriminatorMustBeDefinedInTheRootEntity, rootEntity
+                    .getUnqualifiedName());
             msgList.add(new Message(MSGCODE_DEFINITION_OF_DISCRIMINATOR_MISSING, text, Message.ERROR, this,
                     IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));
             return;
@@ -432,8 +432,8 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
 
         if (!discrValueMustBeEmpty
-                && !rootEntity.getPersistenceTypeInfo().getDiscriminatorDatatype()
-                        .isParsableToDiscriminatorDatatype(discriminatorValue)) {
+                && !rootEntity.getPersistenceTypeInfo().getDiscriminatorDatatype().isParsableToDiscriminatorDatatype(
+                        discriminatorValue)) {
             String text = Messages.PersistentTypeInfo_msgDiscriminatorValueNotConform;
             msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
                     IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE));
@@ -567,8 +567,8 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             // - discriminator values must be unique
             if (discriminatorValues.contains(currentTypeInfo.getDiscriminatorValue())) {
                 conflictingTypeInfo = currentTypeInfo;
-                errorMessage = NLS.bind(Messages.PersistentTypeInfo_msgDiscriminatorAlreadyDefined,
-                        currentTypeInfo.getDiscriminatorValue(), currentType.getUnqualifiedName());
+                errorMessage = NLS.bind(Messages.PersistentTypeInfo_msgDiscriminatorAlreadyDefined, currentTypeInfo
+                        .getDiscriminatorValue(), currentType.getUnqualifiedName());
                 errorProperty = IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE;
                 return false;
             } else {
@@ -632,8 +632,8 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             for (ObjectProperty objectProperty : objectsUseSameColumnName) {
                 if (getPolicyCmptTypeFromObjectProperty(objectProperty).getPersistenceTypeInfo() == this) {
                     // append the other object property to the message text
-                    String objAsString = StringUtils.strip(
-                            objectsAsString.replace(objectPropertyAsString(objectProperty), ""), ", "); //$NON-NLS-1$ //$NON-NLS-2$
+                    String objAsString = StringUtils.strip(objectsAsString.replace(
+                            objectPropertyAsString(objectProperty), ""), ", "); //$NON-NLS-1$ //$NON-NLS-2$
                     String message = objAsString.length() == 0 ? "" : Messages.PersistentTypeInfo_msgFoundDuplicateColumnNameIn; //$NON-NLS-1$
                     addMessageDuplicateColumnName(msgList, objectProperty, columnName + NLS.bind(message, objAsString));
                 }
@@ -727,6 +727,12 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             List<IPolicyCmptTypeAssociation> policyCmptTypeAssociations = currentType.getPolicyCmptTypeAssociations();
             for (IPolicyCmptTypeAssociation policyCmptTypeAssociation : policyCmptTypeAssociations) {
                 IPersistentAssociationInfo pAssInfo = policyCmptTypeAssociation.getPersistenceAssociatonInfo();
+                if (StringUtils.isBlank(policyCmptTypeAssociation.getInverseAssociation())
+                        && ((PersistentAssociationInfo)pAssInfo).isForeignKeyColumnCreatedOnTargetSide(null)) {
+                    // the foreign key column is a column on the target side, therefore it is not
+                    // necessary to check the unique name on the persistence type
+                    continue;
+                }
                 addIfNotEmpty(pAssInfo.getJoinColumnName(), new ObjectProperty(pAssInfo,
                         IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME));
                 addIfNotEmpty(pAssInfo.getSourceColumnName(), new ObjectProperty(pAssInfo,
