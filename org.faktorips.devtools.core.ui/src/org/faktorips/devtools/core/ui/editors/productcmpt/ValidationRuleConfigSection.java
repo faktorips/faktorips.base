@@ -107,7 +107,7 @@ public class ValidationRuleConfigSection extends IpsSection {
             noRulesLabel.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, true, true));
             return composite;
         } else {
-            Table table = new Table(parent, SWT.CHECK | SWT.V_SCROLL | SWT.H_SCROLL);
+            Table table = getToolkit().createTable(parent, SWT.CHECK | SWT.V_SCROLL | SWT.H_SCROLL);
             tableViewer = new CheckboxTableViewer(table);
             tableViewer.setContentProvider(createContentProvider());
             tableViewer.setLabelProvider(createLabelProvider());
