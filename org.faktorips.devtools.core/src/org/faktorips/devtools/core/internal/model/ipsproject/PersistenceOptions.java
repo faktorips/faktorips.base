@@ -33,7 +33,7 @@ public class PersistenceOptions implements IPersistenceOptions {
 
     private int maxColumnNameLength = 255;
     private int maxTableNameLength = 255;
-    private boolean allowLazyFetchForSingleValuedAssociations = false;
+    private boolean allowLazyFetchForSingleValuedAssociations = true;
 
     private int maxTableColumnScale = 255;
     private int maxTableColumnPrecision = 255;

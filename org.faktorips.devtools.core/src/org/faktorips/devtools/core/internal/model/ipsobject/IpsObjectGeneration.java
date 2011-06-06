@@ -132,15 +132,6 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
     }
 
     @Override
-    public void initFromGeneration(IIpsObjectGeneration source, GregorianCalendar validFrom) {
-        String id = getId();
-        Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
-        this.initFromXml(source.toXml(doc), id);
-        this.validFrom = validFrom;
-        // note: do not call event triggering methods here (e.g. partWasEdited, objectHasChanged)
-    }
-
-    @Override
     public GregorianCalendar getValidTo() {
         GregorianCalendar parentValidTo = getTimedIpsObject().getValidTo();
 

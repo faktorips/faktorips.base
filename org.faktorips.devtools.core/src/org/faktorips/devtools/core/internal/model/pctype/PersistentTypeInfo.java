@@ -742,6 +742,12 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             List<IPolicyCmptTypeAssociation> policyCmptTypeAssociations = currentType.getPolicyCmptTypeAssociations();
             for (IPolicyCmptTypeAssociation policyCmptTypeAssociation : policyCmptTypeAssociations) {
                 IPersistentAssociationInfo pAssInfo = policyCmptTypeAssociation.getPersistenceAssociatonInfo();
+                if (StringUtils.isBlank(policyCmptTypeAssociation.getInverseAssociation())
+                        && ((PersistentAssociationInfo)pAssInfo).isForeignKeyColumnCreatedOnTargetSide(null)) {
+                    // the foreign key column is a column on the target side, therefore it is not
+                    // necessary to check the unique name on the persistence type
+                    continue;
+                }
                 addIfNotEmpty(pAssInfo.getJoinColumnName(), new ObjectProperty(pAssInfo,
                         IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME));
                 addIfNotEmpty(pAssInfo.getSourceColumnName(), new ObjectProperty(pAssInfo,

@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObject {
@@ -153,10 +154,11 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         IpsObjectGeneration generation = newGenerationInternal(newId);
 
         if (source != null) {
-            generation.initFromGeneration(source, validFrom);
-        } else {
-            generation.setValidFromInternal(validFrom);
+            String id = generation.getId();
+            Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
+            generation.initFromXml(source.toXml(doc), id);
         }
+        generation.setValidFromInternal(validFrom);
         partWasAdded(generation);
         return generation;
     }

@@ -197,9 +197,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
                     // exception occurred thus create empty file below
                     createEmptyFile = true;
                 }
-            }
-
-            if (createEmptyFile) {
+            } else {
                 // if table contents should be created empty or
                 // or if the file could not be created from template then create an empty file
                 file = targetPackage.createIpsFile(templateObject.getIpsObjectType(), newName, false, monitor);

@@ -110,16 +110,44 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
 
         }
 
-        // testExtPropertyCopy(structure, handles);
     }
 
-    protected void testExtPropertyCopy(IProductCmptTreeStructure structure,
-            Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles) throws CoreException {
+    @Test
+    public void testExtPropertyCopy() throws Exception {
+        createTestContent();
+        IProductCmpt productCmpt = ipsProject.findProductCmpt("products.ComfortMotorProduct");
+        IProductCmptTreeStructure structure = productCmpt.getStructure(
+                (GregorianCalendar)GregorianCalendar.getInstance(), ipsProject);
+        Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
+        Set<IProductCmptStructureReference> toCopy = structure.toSet(true);
+
+        for (IProductCmptStructureReference element : toCopy) {
+            IIpsObject ipsObject = element.getWrappedIpsObject();
+            handles.put(
+                    element,
+                    ipsObject.getIpsPackageFragment().getIpsSrcFile(
+                            "DeepCopyOf" + ipsObject.getName() + "." + ipsObject.getIpsObjectType().getFileExtension()));
+        }
+
+        String expPropValue = (String)standardVehicle.getExtPropertyValue("StringExtPropForProdCmpts");
+        assertEquals("standardVehicleExtPropValue", expPropValue);
+
+        DeepCopyOperation dco = new DeepCopyOperation(structure.getRoot(), toCopy,
+                new HashSet<IProductCmptStructureReference>(), handles, new GregorianCalendar(),
+                new GregorianCalendar());
+        dco.setIpsPackageFragmentRoot(productCmpt.getIpsPackageFragment().getRoot());
+        dco.run(null);
+
         IProductCmptStructureReference srcProdCmptRef = ((ProductCmptTreeStructure)structure)
                 .getProductCmptReferenceRecursive(structure.getRoot(), standardVehicle.getQualifiedName());
         ProductCmpt copiedProductCmpt = (ProductCmpt)handles.get(srcProdCmptRef).getIpsObject();
-        String extPropValue = (String)copiedProductCmpt.getExtPropertyValue("StringExtPropForProdCmpts");
-        assertEquals("standardVehicleExtPropValue", extPropValue);
+        String actPropValue = (String)copiedProductCmpt.getExtPropertyValue("StringExtPropForProdCmpts");
+
+        expPropValue = (String)standardVehicle.getExtPropertyValue("StringExtPropForProdCmpts");
+        assertEquals("standardVehicleExtPropValue", expPropValue);
+
+        assertEquals(expPropValue, actPropValue);
+
     }
 
     /**
@@ -267,6 +295,21 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     private IProductCmpt standardTplCoverage;
 
     private void createModel() throws CoreException {
+
+        // set up extension properties
+        // IExtensionPropertyDefinition extProp = mock(IExtensionPropertyDefinition.class);
+        StringExtensionPropertyDefinition extProp = new StringExtensionPropertyDefinition();
+        extProp.setPropertyId("StringExtPropForProdCmpts");
+        extProp.setExtendedType(ProductCmpt.class);
+        extProp.setDefaultValue("defaultValue");
+        ((IpsModel)ipsProject.getIpsModel()).addIpsObjectExtensionProperty(extProp);
+
+        StringExtensionPropertyDefinition extPropPart = new StringExtensionPropertyDefinition();
+        extPropPart.setPropertyId("StringExtPropForAttributeValues");
+        extPropPart.setExtendedType(AttributeValue.class);
+        extPropPart.setDefaultValue("defaultValuePart");
+        ((IpsModel)ipsProject.getIpsModel()).addIpsObjectExtensionProperty(extPropPart);
+
         contract = newPolicyAndProductCmptType(ipsProject, "independant.Contract", "independant.Product");
         motorContract = newPolicyAndProductCmptType(ipsProject, "motor.MotorContract", "motor.MotorProduct");
 
@@ -336,20 +379,6 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
 
         link = generation.newLink("TplCoverageType");
         link.setTarget("products.StandardTplCoverage");
-
-        // set up extension properties
-        // IExtensionPropertyDefinition extProp = mock(IExtensionPropertyDefinition.class);
-        StringExtensionPropertyDefinition extProp = new StringExtensionPropertyDefinition();
-        extProp.setPropertyId("StringExtPropForProdCmpts");
-        extProp.setExtendedType(ProductCmpt.class);
-        extProp.setDefaultValue("defaultValue");
-        ((IpsModel)ipsProject.getIpsModel()).addIpsObjectExtensionProperty(extProp);
-
-        StringExtensionPropertyDefinition extPropPart = new StringExtensionPropertyDefinition();
-        extPropPart.setPropertyId("StringExtPropForAttributeValues");
-        extPropPart.setExtendedType(AttributeValue.class);
-        extPropPart.setDefaultValue("defaultValuePart");
-        ((IpsModel)ipsProject.getIpsModel()).addIpsObjectExtensionProperty(extPropPart);
 
         standardVehicle.setExtPropertyValue("StringExtPropForProdCmpts", "standardVehicleExtPropValue");
     }

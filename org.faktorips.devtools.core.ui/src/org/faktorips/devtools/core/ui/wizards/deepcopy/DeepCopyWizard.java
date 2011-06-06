@@ -201,7 +201,7 @@ public class DeepCopyWizard extends ResizableWizard {
      * was performed successfully
      */
     public IProductCmpt getCopyResultRoot() {
-        if (copyResultRoot.exists()) {
+        if (copyResultRoot != null && copyResultRoot.exists()) {
             try {
                 return (IProductCmpt)copyResultRoot.getIpsObject();
             } catch (CoreException e) {

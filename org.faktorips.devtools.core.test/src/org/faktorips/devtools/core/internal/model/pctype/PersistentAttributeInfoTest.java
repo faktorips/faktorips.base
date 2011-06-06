@@ -24,10 +24,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IPersistenceOptions;
+import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo.DateTimeMapping;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.PersistentType;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -194,6 +195,31 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         pAttInfo.setTableColumnName("");
         ml = pAttInfo.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_EMPTY_COLNAME));
+    }
+
+    @Test
+    public void testColumnNameMustBeEmpty() throws CoreException {
+        IPersistentAttributeInfo pAttInfo = pcAttribute.getPersistenceAttributeInfo();
+        pAttInfo.setTransient(false);
+
+        pAttInfo.setTableColumnName("a");
+        pcAttribute.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
+        MessageList ml = pAttInfo.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_COLNAME_MUST_BE_EMPTY));
+
+        pAttInfo.setTableColumnName("");
+        ml = pAttInfo.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_COLNAME_MUST_BE_EMPTY));
+
+        pAttInfo.setTableColumnName("a");
+        pcAttribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
+        ml = pAttInfo.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_COLNAME_MUST_BE_EMPTY));
+
+        pAttInfo.setTableColumnName("a");
+        pcAttribute.setAttributeType(AttributeType.CHANGEABLE);
+        ml = pAttInfo.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_COLNAME_MUST_BE_EMPTY));
     }
 
     @Test
