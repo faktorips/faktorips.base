@@ -523,24 +523,28 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
 
         pAssInfo.setJoinColumnName("a");
         ml = pTypeInfo.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+        // join Column created on target entity
+        assertNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
 
         pAssInfo.setJoinColumnName("");
         pAssInfo.setJoinTableName("JoinTable");
         pAssInfo.setSourceColumnName("source");
         pAssInfo.setTargetColumnName("target");
         ml = pTypeInfo.validate(ipsProject);
+        // join Column created on toMany table
         assertNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
 
         pAssInfo.setSourceColumnName("a");
         pAssInfo.setTargetColumnName("target");
         ml = pTypeInfo.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+        // join Column created on toMany table
+        assertNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
 
         pAssInfo.setSourceColumnName("souce");
         pAssInfo.setTargetColumnName("a");
         ml = pTypeInfo.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+        // join Column created on toMany table
+        assertNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
 
         pAssInfo.setTargetColumnName("target");
 
