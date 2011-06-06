@@ -21,7 +21,6 @@ import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
-import org.w3c.dom.Element;
 
 /**
  * 
@@ -92,8 +91,7 @@ public class MissingPropertyValueEntry extends AbstractDeltaEntryForProperty {
         if (hasPredecessorValue()) {
             // if there was a predecessor value we copy the whole value
             IPropertyValue predecessorValue = predecessor.getPropertyValue();
-            Element xml = predecessorValue.toXml(IpsPlugin.getDefault().getDocumentBuilder().newDocument());
-            newPropertyValue.initFromXml(xml);
+            predecessorValue.copy(newPropertyValue);
         }
     }
 
