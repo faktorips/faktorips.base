@@ -16,6 +16,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -490,19 +491,31 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         newAttribute.setChangingOverTime(true);
         newProductCmpt.fixAllDifferencesToModel(ipsProject);
         assertTrue(attributeValue.isDeleted());
-        attributeValue = newProductCmpt.getAttributeValue(newAttribute.getName());
-        assertNull(attributeValue);
+        IAttributeValue attributeValue1 = newProductCmpt.getAttributeValue(newAttribute.getName());
+        assertNull(attributeValue1);
+
+        IAttributeValue attributeValue2 = ((IProductCmptGeneration)newProductCmpt.getFirstGeneration())
+                .getAttributeValue(newAttribute.getName());
+        assertNotNull(attributeValue2);
+
+        assertNotSame(attributeValue.getId().intern(), attributeValue2.getId().intern());
 
         newAttribute.setChangingOverTime(false);
         newProductCmpt.fixAllDifferencesToModel(ipsProject);
-        attributeValue = newProductCmpt.getAttributeValue(newAttribute.getName());
-        assertNotNull(attributeValue);
+        IAttributeValue attributeValue3 = newProductCmpt.getAttributeValue(newAttribute.getName());
+        assertNotNull(attributeValue3);
+
+        assertNotSame(attributeValue.getId().intern(), attributeValue2.getId().intern());
+        assertNotSame(attributeValue.getId().intern(), attributeValue3.getId().intern());
 
         newAttribute.delete();
         newProductCmpt.fixAllDifferencesToModel(ipsProject);
-        assertTrue(attributeValue.isDeleted());
-        attributeValue = newProductCmpt.getAttributeValue(newAttribute.getName());
-        assertNull(attributeValue);
+        assertTrue(attributeValue3.isDeleted());
+        IAttributeValue attributeValue4 = newProductCmpt.getAttributeValue(newAttribute.getName());
+        assertNull(attributeValue4);
+
+        assertNotSame(attributeValue.getId().intern(), attributeValue2.getId().intern());
+        assertNotSame(attributeValue.getId().intern(), attributeValue3.getId().intern());
     }
 
     @Test
