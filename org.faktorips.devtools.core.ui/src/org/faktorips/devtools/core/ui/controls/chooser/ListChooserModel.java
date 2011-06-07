@@ -13,13 +13,17 @@
 
 package org.faktorips.devtools.core.ui.controls.chooser;
 
+import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 
-public class ListChooserModel {
+public class ListChooserModel extends PresentationModelObject {
+
+    private static final String RESULTING_VALUES = "resultingValues"; //$NON-NLS-1$
 
     private final List<String> preDefinedValues;
 
@@ -41,10 +45,12 @@ public class ListChooserModel {
      * @param values the values to be moved
      */
     public void moveValuesFromPreDefinedToResulting(List<String> values) {
+        List<String> oldValues = getResultingValues();
         for (String value : new CopyOnWriteArrayList<String>(values)) {
             preDefinedValues.remove(value);
             resultingEnumValueSet.addValue(value);
         }
+        notifyListeners(new PropertyChangeEvent(this, RESULTING_VALUES, oldValues, getResultingValues()));
     }
 
     public void moveAllValuesFromPreDefinedToResulting() {
@@ -52,10 +58,12 @@ public class ListChooserModel {
     }
 
     public void moveValuesFromResultingToPredefined(List<String> values) {
+        List<String> oldValues = getResultingValues();
         for (String value : new CopyOnWriteArrayList<String>(values)) {
             resultingEnumValueSet.removeValue(value);
             preDefinedValues.add(value);
         }
+        notifyListeners(new PropertyChangeEvent(this, RESULTING_VALUES, oldValues, getResultingValues()));
     }
 
     public void moveAllValuesFromResultingToPreDefined() {
@@ -71,12 +79,14 @@ public class ListChooserModel {
     }
 
     public void move(List<String> selectedValues, boolean up) {
+        List<String> oldValues = getResultingValues();
         List<Integer> indexes = new ArrayList<Integer>();
         for (String value : selectedValues) {
             List<Integer> positions = resultingEnumValueSet.getPositions(value);
             indexes.addAll(positions);
         }
         resultingEnumValueSet.move(indexes, up);
+        notifyListeners(new PropertyChangeEvent(this, RESULTING_VALUES, oldValues, getResultingValues()));
     }
 
     public void moveUp(List<String> selectedValues) {

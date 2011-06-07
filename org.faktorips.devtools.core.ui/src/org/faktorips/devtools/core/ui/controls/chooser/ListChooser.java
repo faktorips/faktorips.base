@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.controls.chooser;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -168,31 +170,33 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
 
         preDefinedValuesTableViewer.setInput(model);
         resultingValuesTableViewer.setInput(model);
-    }
 
-    private void refresh() {
-        preDefinedValuesTableViewer.refresh();
-        resultingValuesTableViewer.refresh();
+        model.addPropertyChangeListener(new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                preDefinedValuesTableViewer.refresh();
+                resultingValuesTableViewer.refresh();
+                IStructuredSelection selection = (IStructuredSelection)resultingValuesTableViewer.getSelection();
+                resultingValuesTableViewer.reveal(selection.getFirstElement());
+            }
+        });
     }
 
     private void moveValuesFromPreDefinedToResulting() {
         model.moveValuesFromPreDefinedToResulting(getSelectedValues(preDefinedValuesTableViewer));
-        refresh();
     }
 
     private void moveValuesFromResultingToPredefined() {
         model.moveValuesFromResultingToPredefined(getSelectedValues(resultingValuesTableViewer));
-        refresh();
     }
 
     private void moveAllValuesFromPreDefinedToResulting() {
         model.moveAllValuesFromPreDefinedToResulting();
-        refresh();
     }
 
     private void moveAllValuesFromResultingToPreDefined() {
         model.moveAllValuesFromResultingToPreDefined();
-        refresh();
     }
 
     private List<String> getSelectedValues(TableViewer tableViewer) {
@@ -276,15 +280,17 @@ public abstract class ListChooser extends Composite implements IDataChangeableRe
         up.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                model.moveUp(getSelectedValues(resultingValuesTableViewer));
-                refresh();
+                List<String> selectedValues = getSelectedValues(resultingValuesTableViewer);
+                model.moveUp(selectedValues);
+                // resultingValuesTableViewer.setSelection(new StructuredSelection(selectedValues));
             }
         });
         down.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                model.moveDown(getSelectedValues(resultingValuesTableViewer));
-                refresh();
+                List<String> selectedValues = getSelectedValues(resultingValuesTableViewer);
+                model.moveDown(selectedValues);
+                // resultingValuesTableViewer.setSelection(new StructuredSelection(selectedValues));
             }
         });
     }
