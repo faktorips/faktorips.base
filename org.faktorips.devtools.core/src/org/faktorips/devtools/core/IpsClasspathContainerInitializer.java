@@ -40,7 +40,6 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
 
     @Override
     public void initialize(IPath containerPath, IJavaProject project) throws CoreException {
-        System.out.println("Initialize container: " + containerPath + " for project " + project);
         IClasspathContainer[] respectiveContainers = new IClasspathContainer[] { new IpsClasspathContainer(
                 containerPath) };
         JavaCore.setClasspathContainer(containerPath, new IJavaProject[] { project }, respectiveContainers, null);
@@ -49,7 +48,6 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
 
     private IPath getBundlePath(String pluginId, boolean sources) {
         Bundle bundle = Platform.getBundle(pluginId);
-        System.out.println("Bundle is: " + bundle);
         if (bundle == null) {
             IpsPlugin.log(new IpsStatus("Error initializing classpath container. Bundle " + pluginId + " not found.")); //$NON-NLS-1$ //$NON-NLS-2$
             return null;
@@ -62,9 +60,8 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
                 installLocation = bundle.getEntry("src"); //$NON-NLS-1$ 
             }
         } else {
-            installLocation = bundle.getResource(""); //$NON-NLS-1$
+            installLocation = bundle.getResource("/"); //$NON-NLS-1$
         }
-        System.out.println("installLocation is: " + installLocation);
 
         if (installLocation == null) {
             IpsPlugin.log(new IpsStatus(
@@ -74,7 +71,6 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
         // Install location is something like bundleentry://140/
         try {
             URL local = FileLocator.toFileURL(installLocation);
-            System.out.println("local is: " + local);
             String fullPath = new File(local.getPath()).getAbsolutePath();
             return Path.fromOSString(fullPath);
         } catch (Exception e) {
@@ -93,10 +89,8 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
             this.containerPath = containerPath;
             IClasspathEntry runtime = JavaCore.newLibraryEntry(getBundlePath(RUNTIME_BUNDLE, false),
                     getBundlePath(RUNTIME_BUNDLE, true), null);
-            System.out.println("runtime-entry: " + runtime);
             IClasspathEntry valuetypes = JavaCore.newLibraryEntry(getBundlePath(VALUETYPES_BUNDLE, false),
                     getBundlePath(VALUETYPES_BUNDLE, true), null);
-            System.out.println("valuetypes-entry: " + valuetypes);
             entries = new IClasspathEntry[] { runtime, valuetypes };
         }
 
