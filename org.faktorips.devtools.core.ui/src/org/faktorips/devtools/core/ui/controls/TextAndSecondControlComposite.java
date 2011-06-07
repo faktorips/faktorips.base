@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.controls;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -116,6 +117,18 @@ public abstract class TextAndSecondControlComposite extends ControlComposite {
         if (eventType != SWT.Paint && eventType != SWT.Dispose) {
             listenToControl(text, eventType);
         }
+    }
+
+    /**
+     * When we setting the background of a text composite control we only want the text field to get
+     * the color. We using the background color e.g. in test cases to highlight the expected
+     * results.
+     * 
+     * {@inheritDoc}
+     */
+    @Override
+    public void setBackground(Color color) {
+        text.setBackground(color);
     }
 
 }
