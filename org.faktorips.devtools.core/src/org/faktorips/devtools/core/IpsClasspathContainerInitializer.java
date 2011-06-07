@@ -75,15 +75,8 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
         try {
             URL local = FileLocator.toFileURL(installLocation);
             System.out.println("local is: " + local);
-            File file = new File(local.getPath());
-            String fullPath = file.getAbsolutePath();
-            if (file.exists()) {
-                return new Path(fullPath);
-            } else {
-                IpsPlugin.log(new IpsStatus(
-                        "Error initializing classpath variable. Bundle install locaction: " + installLocation)); //$NON-NLS-1$
-                return null;
-            }
+            String fullPath = new File(local.getPath()).getAbsolutePath();
+            return Path.fromOSString(fullPath);
         } catch (Exception e) {
             IpsPlugin.log(new IpsStatus(
                     "Error initializing classpath variable. Bundle install locaction: " + installLocation, e)); //$NON-NLS-1$
