@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core;
 
+import java.io.File;
 import java.net.URL;
 
 import org.eclipse.core.runtime.CoreException;
@@ -56,7 +57,10 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
 
         URL installLocation;
         if (sources) {
-            installLocation = bundle.getEntry(""); //$NON-NLS-1$
+            installLocation = bundle.getEntry("src.zip"); //$NON-NLS-1$
+            if (installLocation == null) {
+                installLocation = bundle.getEntry("src"); //$NON-NLS-1$ 
+            }
         } else {
             installLocation = bundle.getResource(""); //$NON-NLS-1$
         }
@@ -68,11 +72,18 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
             return null;
         }
         // Install location is something like bundleentry://140/
-        URL local = null;
-        System.out.println("local is: " + local);
         try {
-            local = FileLocator.toFileURL(installLocation);
-            return new Path(local.getPath());
+            URL local = FileLocator.toFileURL(installLocation);
+            System.out.println("local is: " + local);
+            File file = new File(local.getPath());
+            String fullPath = file.getAbsolutePath();
+            if (file.exists()) {
+                return new Path(fullPath);
+            } else {
+                IpsPlugin.log(new IpsStatus(
+                        "Error initializing classpath variable. Bundle install locaction: " + installLocation)); //$NON-NLS-1$
+                return null;
+            }
         } catch (Exception e) {
             IpsPlugin.log(new IpsStatus(
                     "Error initializing classpath variable. Bundle install locaction: " + installLocation, e)); //$NON-NLS-1$
