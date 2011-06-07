@@ -16,6 +16,8 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -40,10 +42,12 @@ import org.faktorips.devtools.core.ui.editors.type.DerivedUnionCompletionProcess
 public class AssociationDerivedUnionGroup extends Composite {
 
     private Checkbox containerCheckbox;
+
     private Checkbox subsetCheckbox;
 
-    private PmoAssociation pmoAssociation;
     private Combo derivedUnionCombo;
+
+    private PmoAssociation pmoAssociation;
 
     public AssociationDerivedUnionGroup(UIToolkit uiToolkit, BindingContext bindingContext, Composite parent,
             IAssociation association) {
@@ -154,12 +158,19 @@ public class AssociationDerivedUnionGroup extends Composite {
         private IAssociation association;
 
         private boolean subset;
+
         private boolean ignoreAutomaticSubsetEnabling = false;
 
         public PmoAssociation(IAssociation association) {
             super(association);
             this.association = association;
             subset = association.isSubsetOfADerivedUnion();
+            AssociationDerivedUnionGroup.this.addDisposeListener(new DisposeListener() {
+                @Override
+                public void widgetDisposed(DisposeEvent e) {
+                    dispose();
+                }
+            });
         }
 
         /**
@@ -169,6 +180,8 @@ public class AssociationDerivedUnionGroup extends Composite {
             ignoreAutomaticSubsetEnabling = true;
         }
 
+        // Called via reflection
+        @SuppressWarnings("unused")
         public boolean isSubset() {
             return subset;
         }
@@ -234,5 +247,7 @@ public class AssociationDerivedUnionGroup extends Composite {
                 subset = false;
             }
         }
+
     }
+
 }

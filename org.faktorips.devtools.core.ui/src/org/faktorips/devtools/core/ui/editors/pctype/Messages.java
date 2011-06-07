@@ -55,17 +55,9 @@ public class Messages extends NLS {
 
     public static String AssociationQualificationGroup_noteQualifiedMultiplictyPerQualifiedInstance;
 
-    public static String AssociationEditDialog_associationDefinesSubset;
-
-    public static String AssociationEditDialog_associationIsADerivedUnion;
-
     public static String AssociationEditDialog_associationIsQualified;
 
     public static String AssociationEditDialog_associationTypeLabel;
-
-    public static String AssociationEditDialog_derivedUnionGroup;
-
-    public static String AssociationEditDialog_derivedUnionLabel;
 
     public static String AssociationEditDialog_generalGroup;
 
