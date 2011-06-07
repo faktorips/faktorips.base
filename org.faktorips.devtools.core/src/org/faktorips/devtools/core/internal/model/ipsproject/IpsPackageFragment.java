@@ -41,7 +41,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
@@ -347,23 +346,37 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
         Document doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
         Element element;
 
-        if (template instanceof IProductCmpt) {
-            return createProductCmptFromTemplateGeneration(name, (IProductCmpt)template, oldDate, newDate, force, null);
-        } else {
-            IIpsSrcFile ipsSrcFile;
-            element = template.toXml(doc);
-            try {
-                String encoding = getIpsProject().getXmlFileCharset();
-                String contents = XmlUtil.nodeToString(element, encoding);
-                ipsSrcFile = createIpsFile(filename, contents, force, monitor);
-            } catch (TransformerException e) {
-                throw new RuntimeException(e);
-            }
-            if (template instanceof ITableContents) {
-                initTableContentsFromTemplate((TableContents)ipsSrcFile.getIpsObject(), (TableContents)template);
-            }
-            return ipsSrcFile;
+        IIpsSrcFile ipsSrcFile;
+        element = template.toXml(doc);
+        try {
+            String encoding = getIpsProject().getXmlFileCharset();
+            String contents = XmlUtil.nodeToString(element, encoding);
+            ipsSrcFile = createIpsFile(filename, contents, force, monitor);
+        } catch (TransformerException e) {
+            throw new RuntimeException(e);
         }
+        if (template instanceof ITableContents) {
+            initTableContentsFromTemplate((TableContents)ipsSrcFile.getIpsObject(), (TableContents)template);
+        }
+        if (template instanceof ITimedIpsObject) {
+            ITimedIpsObject copyProductCmpt = ((ITimedIpsObject)ipsSrcFile.getIpsObject());
+            IIpsObjectGeneration generationEffectiveOn = copyProductCmpt.findGenerationEffectiveOn(oldDate);
+            if (generationEffectiveOn == null) {
+                generationEffectiveOn = copyProductCmpt.getFirstGeneration();
+            }
+            for (IIpsObjectGeneration generation : copyProductCmpt.getGenerations()) {
+                if (!generation.equals(generationEffectiveOn)) {
+                    generation.delete();
+                }
+            }
+            if (generationEffectiveOn == null) {
+                generationEffectiveOn = copyProductCmpt.newGeneration(newDate);
+            } else {
+                generationEffectiveOn.setValidFrom(newDate);
+            }
+        }
+
+        return ipsSrcFile;
     }
 
     private void initTableContentsFromTemplate(TableContents newTableContents, TableContents template) {
@@ -373,58 +386,6 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
             IDescription newDescription = newTableContents.getDescription(description.getLocale());
             newDescription.setText(description.getText());
         }
-    }
-
-    private IIpsSrcFile createProductCmptFromTemplateGeneration(String name,
-            IProductCmpt template,
-            GregorianCalendar oldDate,
-            GregorianCalendar newDate,
-            boolean force,
-            IProgressMonitor monitor) throws CoreException {
-
-        IIpsObjectGeneration source = template.findGenerationEffectiveOn(oldDate);
-        if (source == null) {
-            source = getFirstGeneration(template, oldDate);
-            if (source == null) {
-                throw new CoreException(
-                        new IpsStatus(
-                                "No generation found for the given date " + oldDate.getTime().toString() + " in " + template.getQualifiedName())); //$NON-NLS-1$ //$NON-NLS-2$
-            }
-        }
-        IIpsSrcFile file = createIpsFile(template.getIpsObjectType(), name, force, monitor);
-        IpsModel model = (IpsModel)getIpsModel();
-        try {
-            model.stopBroadcastingChangesMadeByCurrentThread();
-            ProductCmpt newProductCmpt = (ProductCmpt)file.getIpsObject();
-            newProductCmpt.setProductCmptType(template.getProductCmptType());
-            newProductCmpt.setValidTo(template.getValidTo());
-            for (IDescription description : template.getDescriptions()) {
-                IDescription newDescription = newProductCmpt.getDescription(description.getLocale());
-                newDescription.setText(description.getText());
-            }
-            newProductCmpt.newGeneration(source, newDate);
-            file.save(true, null);
-        } finally {
-            model.resumeBroadcastingChangesMadeByCurrentThread();
-        }
-        return file;
-    }
-
-    /**
-     * Returns the first generation of the given timed ips object, if this generation is valid from
-     * before the given date or <code>null</code> otherwise.
-     * 
-     * @param timed The timed ips object to get the first generation from.
-     * @param date The date the first generation of the timed ips objects valid date has to be
-     *            before.
-     * @return The first generation or <code>null</code>.
-     */
-    private IIpsObjectGeneration getFirstGeneration(ITimedIpsObject timed, GregorianCalendar date) {
-        IIpsObjectGeneration first = timed.getFirstGeneration();
-        if ((first != null) && (!first.getValidFrom().before(date))) {
-            first = null;
-        }
-        return first;
     }
 
     @Override

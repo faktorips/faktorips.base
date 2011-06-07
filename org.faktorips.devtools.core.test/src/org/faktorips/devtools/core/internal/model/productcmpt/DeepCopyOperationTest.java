@@ -26,6 +26,8 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.IpsModel;
+import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -104,12 +106,51 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
             }
 
             assertFalse(src.isDirty());
+
         }
+
+    }
+
+    @Test
+    public void testExtPropertyCopy() throws Exception {
+        createTestContent();
+        IProductCmpt productCmpt = ipsProject.findProductCmpt("products.ComfortMotorProduct");
+        IProductCmptTreeStructure structure = productCmpt.getStructure(
+                (GregorianCalendar)GregorianCalendar.getInstance(), ipsProject);
+        Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
+        Set<IProductCmptStructureReference> toCopy = structure.toSet(true);
+
+        for (IProductCmptStructureReference element : toCopy) {
+            IIpsObject ipsObject = element.getWrappedIpsObject();
+            handles.put(
+                    element,
+                    ipsObject.getIpsPackageFragment().getIpsSrcFile(
+                            "DeepCopyOf" + ipsObject.getName() + "." + ipsObject.getIpsObjectType().getFileExtension()));
+        }
+
+        String expPropValue = (String)standardVehicle.getExtPropertyValue("StringExtPropForProdCmpts");
+        assertEquals("standardVehicleExtPropValue", expPropValue);
+
+        DeepCopyOperation dco = new DeepCopyOperation(structure.getRoot(), toCopy,
+                new HashSet<IProductCmptStructureReference>(), handles, new GregorianCalendar(),
+                new GregorianCalendar());
+        dco.setIpsPackageFragmentRoot(productCmpt.getIpsPackageFragment().getRoot());
+        dco.run(null);
+
+        IProductCmptStructureReference srcProdCmptRef = structure.getChildProductCmptReferences(structure.getRoot())[0];
+        ProductCmpt copiedProductCmpt = (ProductCmpt)handles.get(srcProdCmptRef).getIpsObject();
+        String actPropValue = (String)copiedProductCmpt.getExtPropertyValue("StringExtPropForProdCmpts");
+
+        expPropValue = (String)standardVehicle.getExtPropertyValue("StringExtPropForProdCmpts");
+        assertEquals("standardVehicleExtPropValue", expPropValue);
+
+        assertEquals(expPropValue, actPropValue);
+
     }
 
     /**
      * For this test, the comfort-product of the default test content is copied only in part. After
-     * that, the new files are expected to be existant and not dirty. Some relations from the new
+     * that, the new files are expected to be existent and not dirty. Some relations from the new
      * objects link now the the not copied old objects.
      */
     @Test
@@ -252,6 +293,21 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     private IProductCmpt standardTplCoverage;
 
     private void createModel() throws CoreException {
+
+        // set up extension properties
+        // IExtensionPropertyDefinition extProp = mock(IExtensionPropertyDefinition.class);
+        StringExtensionPropertyDefinition extProp = new StringExtensionPropertyDefinition();
+        extProp.setPropertyId("StringExtPropForProdCmpts");
+        extProp.setExtendedType(ProductCmpt.class);
+        extProp.setDefaultValue("defaultValue");
+        ((IpsModel)ipsProject.getIpsModel()).addIpsObjectExtensionProperty(extProp);
+
+        StringExtensionPropertyDefinition extPropPart = new StringExtensionPropertyDefinition();
+        extPropPart.setPropertyId("StringExtPropForAttributeValues");
+        extPropPart.setExtendedType(AttributeValue.class);
+        extPropPart.setDefaultValue("defaultValuePart");
+        ((IpsModel)ipsProject.getIpsModel()).addIpsObjectExtensionProperty(extPropPart);
+
         contract = newPolicyAndProductCmptType(ipsProject, "independant.Contract", "independant.Product");
         motorContract = newPolicyAndProductCmptType(ipsProject, "motor.MotorContract", "motor.MotorProduct");
 
@@ -321,6 +377,8 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
 
         link = generation.newLink("TplCoverageType");
         link.setTarget("products.StandardTplCoverage");
+
+        standardVehicle.setExtPropertyValue("StringExtPropForProdCmpts", "standardVehicleExtPropValue");
     }
 
     private void createProductCmptTypeAssociation(IProductCmptType source,
