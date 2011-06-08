@@ -13,6 +13,9 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
@@ -131,6 +134,9 @@ public class AssociationDerivedUnionGroup extends Composite {
     public void setDerivedUnions(String[] derivedUnions) {
         if (!derivedUnionCombo.isDisposed()) {
             derivedUnionCombo.setItems(derivedUnions);
+            if (derivedUnions.length > 0) {
+                derivedUnionCombo.select(0);
+            }
         }
     }
 
@@ -153,13 +159,15 @@ public class AssociationDerivedUnionGroup extends Composite {
 
         public final static String PROPERTY_SUBSET = "subset"; //$NON-NLS-1$
 
-        public String previousTarget = ""; //$NON-NLS-1$
+        public String previousTarget;
 
         private IAssociation association;
 
         private boolean subset;
 
         private boolean ignoreAutomaticSubsetEnabling = false;
+
+        private boolean derivedUnionsInitialized;
 
         public PmoAssociation(IAssociation association) {
             super(association);
@@ -171,6 +179,7 @@ public class AssociationDerivedUnionGroup extends Composite {
                     dispose();
                 }
             });
+            initDerivedUnionCandidates(association);
         }
 
         /**
@@ -180,8 +189,6 @@ public class AssociationDerivedUnionGroup extends Composite {
             ignoreAutomaticSubsetEnabling = true;
         }
 
-        // Called via reflection
-        @SuppressWarnings("unused")
         public boolean isSubset() {
             return subset;
         }
@@ -205,35 +212,43 @@ public class AssociationDerivedUnionGroup extends Composite {
         }
 
         private void initDerivedUnionCandidates(IAssociation policyCmptTypeAssociation) {
+            Set<String> derivedUnions = new LinkedHashSet<String>(1);
+            if (association.isSubsetOfADerivedUnion()) {
+                derivedUnions.add(association.getSubsettedDerivedUnion());
+            }
+
             // set derived union candidates
             String currentTarget = policyCmptTypeAssociation.getTarget();
             if (StringUtils.isEmpty(currentTarget)) {
-                setDerivedUnions(new String[0]);
+                setDerivedUnions(derivedUnions.toArray(new String[derivedUnions.size()]));
+                derivedUnionsInitialized = true;
                 return;
             }
 
             if (!currentTarget.equals(previousTarget)) {
                 previousTarget = currentTarget;
+
                 try {
                     // init drop down with available candidates
                     IAssociation[] associations = policyCmptTypeAssociation.findDerivedUnionCandidates(association
                             .getIpsProject());
-                    String[] derivedUnionCandidates = new String[associations.length];
                     for (int i = 0; i < associations.length; i++) {
-                        derivedUnionCandidates[i] = associations[i].getName();
+                        derivedUnions.add(associations[i].getName());
                     }
-                    setDerivedUnions(derivedUnionCandidates);
+                    setDerivedUnions(derivedUnions.toArray(new String[derivedUnions.size()]));
 
                     if (ignoreAutomaticSubsetEnabling) {
+                        derivedUnionsInitialized = true;
                         return;
                     }
 
                     // if at least one derived union candidate is available
                     // then set the first derived union as default
-                    if (associations.length > 0) {
+                    if (associations.length > 0 && !association.isSubsetOfADerivedUnion() && derivedUnionsInitialized) {
                         subset = true;
                         association.setSubsettedDerivedUnion(associations[0].getName());
                     }
+                    derivedUnionsInitialized = true;
                 } catch (CoreException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
