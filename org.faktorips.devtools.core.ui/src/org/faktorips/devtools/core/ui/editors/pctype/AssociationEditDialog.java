@@ -55,7 +55,6 @@ import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.PcTypeRefControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
-import org.faktorips.devtools.core.ui.editors.type.DerivedUnionCompletionProcessor;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.util.StringUtil;
@@ -74,7 +73,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
     private IIpsProject ipsProject;
     private IPolicyCmptTypeAssociation association;
-    private PmoAssociation pmoAssociation;
+    private PmoPolicyCmptTypeAssociation pmoAssociation;
 
     private ExtensionPropertyControlFactory extFactory;
     private IPolicyCmptTypeAssociation inverseAssociation;
@@ -87,7 +86,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         initialName = association.getName();
         initialPluralName = association.getTargetRolePlural();
         ipsProject = association.getIpsProject();
-        pmoAssociation = new PmoAssociation(association);
+        pmoAssociation = new PmoPolicyCmptTypeAssociation(association);
         extFactory = new ExtensionPropertyControlFactory(association.getClass());
         searchInverseAssociation();
 
@@ -134,7 +133,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         createQualificationGroup(uiToolkit.createGroup(c, Messages.AssociationEditDialog_qualificationGroup));
 
         uiToolkit.createVerticalSpacer(c, 12);
-        createDerivedUnionGroup(uiToolkit.createGroup(c, Messages.AssociationEditDialog_derivedUnionGroup));
+        new AssociationDerivedUnionGroup(uiToolkit, bindingContext, c, association);
 
         return c;
     }
@@ -231,36 +230,11 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         Composite info = uiToolkit.createGridComposite(c, 1, true, false);
         Label note = uiToolkit.createLabel(info, pmoAssociation.getConstrainedNote());
-        bindingContext.bindContent(note, pmoAssociation, PmoAssociation.PROPERTY_CONSTRAINED_NOTE);
+        bindingContext.bindContent(note, pmoAssociation, PmoPolicyCmptTypeAssociation.PROPERTY_CONSTRAINED_NOTE);
 
         // bottom extensions
         extFactory.createControls(workArea, uiToolkit, association, IExtensionPropertyDefinition.POSITION_BOTTOM);
         extFactory.bind(bindingContext);
-    }
-
-    private void createDerivedUnionGroup(Composite c) {
-        // derived union checkbox
-        Checkbox containerCheckbox = uiToolkit.createCheckbox(c,
-                Messages.AssociationEditDialog_associationIsADerivedUnion);
-        bindingContext.bindContent(containerCheckbox, association, IAssociation.PROPERTY_DERIVED_UNION);
-        bindingContext.bindEnabled(containerCheckbox, association,
-                IPolicyCmptTypeAssociation.PROPERTY_SUBSETTING_DERIVED_UNION_APPLICABLE);
-
-        // is subset checkbox
-        Checkbox subsetCheckbox = uiToolkit.createCheckbox(c, Messages.AssociationEditDialog_associationDefinesSubset);
-        bindingContext.bindContent(subsetCheckbox, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
-        bindingContext.bindEnabled(subsetCheckbox, association,
-                IPolicyCmptTypeAssociation.PROPERTY_SUBSETTING_DERIVED_UNION_APPLICABLE);
-
-        Composite workArea = uiToolkit.createLabelEditColumnComposite(c);
-        workArea.setLayoutData(new GridData(GridData.FILL_BOTH));
-        uiToolkit.createFormLabel(workArea, Messages.AssociationEditDialog_derivedUnionLabel);
-        Text derivedUnion = uiToolkit.createText(workArea);
-        bindingContext.bindContent(derivedUnion, association, IAssociation.PROPERTY_SUBSETTED_DERIVED_UNION);
-        bindingContext.bindEnabled(derivedUnion, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
-        DerivedUnionCompletionProcessor completionProcessor = new DerivedUnionCompletionProcessor(association);
-        completionProcessor.setComputeProposalForEmptyPrefix(true);
-        CompletionUtil.createHandlerForText(derivedUnion, completionProcessor);
     }
 
     private void createQualificationGroup(Composite c) {
@@ -269,11 +243,12 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         Checkbox qualifiedCheckbox = uiToolkit.createCheckbox(workArea);
         bindingContext.bindContent(qualifiedCheckbox, association, IAssociation.PROPERTY_QUALIFIED);
-        bindingContext.bindEnabled(qualifiedCheckbox, pmoAssociation, PmoAssociation.PROPERTY_QUALIFICATION_POSSIBLE);
+        bindingContext.bindEnabled(qualifiedCheckbox, pmoAssociation,
+                PmoPolicyCmptTypeAssociation.PROPERTY_QUALIFICATION_POSSIBLE);
         Label note = uiToolkit.createFormLabel(workArea, StringUtils.rightPad("", 120)); //$NON-NLS-1$
-        bindingContext.bindContent(note, pmoAssociation, PmoAssociation.PROPERTY_QUALIFICATION_NOTE);
+        bindingContext.bindContent(note, pmoAssociation, PmoPolicyCmptTypeAssociation.PROPERTY_QUALIFICATION_NOTE);
         bindingContext.add(new ButtonTextBinding(qualifiedCheckbox, pmoAssociation,
-                PmoAssociation.PROPERTY_QUALIFICATION_LABEL));
+                PmoPolicyCmptTypeAssociation.PROPERTY_QUALIFICATION_LABEL));
     }
 
     private void createPersistenceTabItemIfNecessary(TabFolder tabFolder) {
@@ -514,31 +489,38 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         return joinTableComposte;
     }
 
-    public class PmoAssociation extends IpsObjectPartPmo {
+    @Override
+    protected void okPressed() {
+        if (IpsPlugin.getDefault().getIpsPreferences().isRefactoringModeDirect()) {
+            String newName = association.getName();
+            String newPluralName = association.getTargetRolePlural();
+            if (!(newName.equals(initialName) && newPluralName.equals(initialPluralName))) {
+                applyRenameRefactoring(newName, newPluralName);
+            }
+        }
+        super.okPressed();
+    }
 
-        public final static String PROPERTY_SUBSET = "subset"; //$NON-NLS-1$
+    private void applyRenameRefactoring(String newName, String newPluralName) {
+        // First, reset the initial names as otherwise errors 'names must not equal' will occur
+        association.setTargetRoleSingular(initialName);
+        association.setTargetRolePlural(initialPluralName);
+
+        IIpsRefactoring ipsRenameRefactoring = IpsPlugin.getIpsRefactoringFactory().createRenameRefactoring(
+                association, newName, newPluralName, false);
+        IpsRefactoringOperation refactoringOperation = new IpsRefactoringOperation(ipsRenameRefactoring, getShell());
+        refactoringOperation.runDirectExecution();
+    }
+
+    public class PmoPolicyCmptTypeAssociation extends IpsObjectPartPmo {
+
         public final static String PROPERTY_QUALIFICATION_LABEL = "qualificationLabel"; //$NON-NLS-1$
         public final static String PROPERTY_QUALIFICATION_NOTE = "qualificationNote"; //$NON-NLS-1$
         public final static String PROPERTY_QUALIFICATION_POSSIBLE = "qualificationPossible"; //$NON-NLS-1$
         public final static String PROPERTY_CONSTRAINED_NOTE = "constrainedNote"; //$NON-NLS-1$
 
-        private boolean subset;
-
-        public PmoAssociation(IPolicyCmptTypeAssociation association) {
+        public PmoPolicyCmptTypeAssociation(IPolicyCmptTypeAssociation association) {
             super(association);
-            subset = association.isSubsetOfADerivedUnion();
-        }
-
-        public boolean isSubset() {
-            return subset;
-        }
-
-        public void setSubset(boolean newValue) {
-            subset = newValue;
-            if (!subset) {
-                association.setSubsettedDerivedUnion(""); //$NON-NLS-1$
-            }
-            notifyListeners();
         }
 
         public String getQualificationLabel() {
@@ -615,36 +597,6 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         }
 
-        @Override
-        protected void partHasChanged() {
-            if (association.isCompositionDetailToMaster()) {
-                subset = false;
-            }
-        }
-
-    }
-
-    @Override
-    protected void okPressed() {
-        if (IpsPlugin.getDefault().getIpsPreferences().isRefactoringModeDirect()) {
-            String newName = association.getName();
-            String newPluralName = association.getTargetRolePlural();
-            if (!(newName.equals(initialName) && newPluralName.equals(initialPluralName))) {
-                applyRenameRefactoring(newName, newPluralName);
-            }
-        }
-        super.okPressed();
-    }
-
-    private void applyRenameRefactoring(String newName, String newPluralName) {
-        // First, reset the initial names as otherwise errors 'names must not equal' will occur
-        association.setTargetRoleSingular(initialName);
-        association.setTargetRolePlural(initialPluralName);
-
-        IIpsRefactoring ipsRenameRefactoring = IpsPlugin.getIpsRefactoringFactory().createRenameRefactoring(
-                association, newName, newPluralName, false);
-        IpsRefactoringOperation refactoringOperation = new IpsRefactoringOperation(ipsRenameRefactoring, getShell());
-        refactoringOperation.runDirectExecution();
     }
 
     private abstract class NotificationPropertyBinding extends ControlPropertyBinding {
@@ -668,6 +620,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         }
 
         protected abstract void propertyChanged();
+
     }
 
 }

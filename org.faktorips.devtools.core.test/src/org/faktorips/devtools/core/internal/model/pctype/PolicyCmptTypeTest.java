@@ -982,13 +982,10 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest implements Conten
         assertEquals(attribute.isProductRelevant(), overriddenAttribute.isProductRelevant());
         assertEquals(attribute.getDefaultValue(), overriddenAttribute.getDefaultValue());
         assertEquals(attribute.getValueSet().getValueSetType(), overriddenAttribute.getValueSet().getValueSetType());
-        assertEquals(attribute.getAttributeType(), overriddenAttribute.getAttributeType());
-        // TODO AW 26-05-2011: See FIPS-406
-        // for (int i = 0; i < overriddenAttribute.getDescriptions().size(); i++) {
-        // assertEquals(attribute.getDescriptions().get(i).getText(),
-        // overriddenAttribute.getDescriptions().get(i)
-        // .getText());
-        // }
+        for (int i = 0; i < overriddenAttribute.getDescriptions().size(); i++) {
+            assertEquals(attribute.getDescriptions().get(i).getText(), overriddenAttribute.getDescriptions().get(i)
+                    .getText());
+        }
         assertTrue(overriddenAttribute.isOverwrite());
     }
 

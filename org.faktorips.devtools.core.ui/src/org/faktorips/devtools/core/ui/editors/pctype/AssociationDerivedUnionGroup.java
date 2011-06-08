@@ -13,9 +13,14 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -40,10 +45,12 @@ import org.faktorips.devtools.core.ui.editors.type.DerivedUnionCompletionProcess
 public class AssociationDerivedUnionGroup extends Composite {
 
     private Checkbox containerCheckbox;
+
     private Checkbox subsetCheckbox;
 
-    private PmoAssociation pmoAssociation;
     private Combo derivedUnionCombo;
+
+    private PmoAssociation pmoAssociation;
 
     public AssociationDerivedUnionGroup(UIToolkit uiToolkit, BindingContext bindingContext, Composite parent,
             IAssociation association) {
@@ -127,6 +134,9 @@ public class AssociationDerivedUnionGroup extends Composite {
     public void setDerivedUnions(String[] derivedUnions) {
         if (!derivedUnionCombo.isDisposed()) {
             derivedUnionCombo.setItems(derivedUnions);
+            if (derivedUnions.length > 0) {
+                derivedUnionCombo.select(0);
+            }
         }
     }
 
@@ -149,17 +159,27 @@ public class AssociationDerivedUnionGroup extends Composite {
 
         public final static String PROPERTY_SUBSET = "subset"; //$NON-NLS-1$
 
-        public String previousTarget = ""; //$NON-NLS-1$
+        public String previousTarget;
 
         private IAssociation association;
 
         private boolean subset;
+
         private boolean ignoreAutomaticSubsetEnabling = false;
+
+        private boolean derivedUnionsInitialized;
 
         public PmoAssociation(IAssociation association) {
             super(association);
             this.association = association;
             subset = association.isSubsetOfADerivedUnion();
+            AssociationDerivedUnionGroup.this.addDisposeListener(new DisposeListener() {
+                @Override
+                public void widgetDisposed(DisposeEvent e) {
+                    dispose();
+                }
+            });
+            initDerivedUnionCandidates(association);
         }
 
         /**
@@ -192,35 +212,43 @@ public class AssociationDerivedUnionGroup extends Composite {
         }
 
         private void initDerivedUnionCandidates(IAssociation policyCmptTypeAssociation) {
+            Set<String> derivedUnions = new LinkedHashSet<String>(1);
+            if (association.isSubsetOfADerivedUnion()) {
+                derivedUnions.add(association.getSubsettedDerivedUnion());
+            }
+
             // set derived union candidates
             String currentTarget = policyCmptTypeAssociation.getTarget();
             if (StringUtils.isEmpty(currentTarget)) {
-                setDerivedUnions(new String[0]);
+                setDerivedUnions(derivedUnions.toArray(new String[derivedUnions.size()]));
+                derivedUnionsInitialized = true;
                 return;
             }
 
             if (!currentTarget.equals(previousTarget)) {
                 previousTarget = currentTarget;
+
                 try {
                     // init drop down with available candidates
                     IAssociation[] associations = policyCmptTypeAssociation.findDerivedUnionCandidates(association
                             .getIpsProject());
-                    String[] derivedUnionCandidates = new String[associations.length];
                     for (int i = 0; i < associations.length; i++) {
-                        derivedUnionCandidates[i] = associations[i].getName();
+                        derivedUnions.add(associations[i].getName());
                     }
-                    setDerivedUnions(derivedUnionCandidates);
+                    setDerivedUnions(derivedUnions.toArray(new String[derivedUnions.size()]));
 
                     if (ignoreAutomaticSubsetEnabling) {
+                        derivedUnionsInitialized = true;
                         return;
                     }
 
                     // if at least one derived union candidate is available
                     // then set the first derived union as default
-                    if (associations.length > 0) {
+                    if (associations.length > 0 && !association.isSubsetOfADerivedUnion() && derivedUnionsInitialized) {
                         subset = true;
                         association.setSubsettedDerivedUnion(associations[0].getName());
                     }
+                    derivedUnionsInitialized = true;
                 } catch (CoreException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
@@ -234,5 +262,7 @@ public class AssociationDerivedUnionGroup extends Composite {
                 subset = false;
             }
         }
+
     }
+
 }

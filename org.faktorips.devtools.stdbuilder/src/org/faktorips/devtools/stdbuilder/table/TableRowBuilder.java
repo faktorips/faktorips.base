@@ -41,8 +41,6 @@ public class TableRowBuilder extends DefaultJavaSourceFileBuilder {
 
     private final String KEY_CONSTRUCTOR_JAVADOC = "TABLE_ROW_BUILDER_CONSTRUCTOR_JAVADOC";
 
-    private final String KEY_GET_FIELD_JAVADOC = "TABLE_ROW_BUILDER_GET_FIELD_JAVADOC";
-
     public TableRowBuilder(DefaultBuilderSet builderSet, String kindId) {
         super(builderSet, kindId, new LocalizedStringsSet(TableRowBuilder.class));
         setMergeEnabled(true);
@@ -177,7 +175,8 @@ public class TableRowBuilder extends DefaultJavaSourceFileBuilder {
             Datatype datatype = column.findValueDatatype(getIpsProject());
             DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(datatype);
             if (datatypeHelper != null) {
-                methodBuilder.javaDoc(getLocalizedText(getIpsSrcFile(), KEY_GET_FIELD_JAVADOC), ANNOTATION_GENERATED);
+                methodBuilder.javaDoc(column.getDescriptionText(getLanguageUsedInGeneratedSourceCode()),
+                        ANNOTATION_GENERATED);
                 String methodName = getJavaNamingConvention().getGetterMethodName(column.getName(), datatype);
                 methodBuilder.methodBegin(Modifier.PUBLIC, datatypeHelper.getJavaClassName(), methodName,
                         new String[0], new String[0]);
