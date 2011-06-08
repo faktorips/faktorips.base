@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -214,6 +215,13 @@ public class ModelExplorerSorter extends ViewerSorter {
             return 1;
         }
         if (o1 instanceof IPolicyCmptTypeAttribute && o2 instanceof IPolicyCmptTypeAssociation) {
+            return -1;
+        }
+        if (o1 instanceof IValidationRule && o2 instanceof IValidationRule) {
+            return 0;
+        } else if (o1 instanceof IValidationRule) {
+            return 1;
+        } else if (o2 instanceof IValidationRule) {
             return -1;
         }
 
