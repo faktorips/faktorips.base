@@ -91,7 +91,7 @@ public class MissingPropertyValueEntry extends AbstractDeltaEntryForProperty {
         if (hasPredecessorValue()) {
             // if there was a predecessor value we copy the whole value
             IPropertyValue predecessorValue = predecessor.getPropertyValue();
-            predecessorValue.copy(newPropertyValue);
+            newPropertyValue.copyFrom(predecessorValue);
         }
     }
 

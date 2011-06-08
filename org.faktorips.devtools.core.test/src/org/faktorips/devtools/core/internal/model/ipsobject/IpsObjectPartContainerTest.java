@@ -790,19 +790,19 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCopy() throws CoreException {
-        TestIpsObjectPartContainer target = new TestIpsObjectPartContainer(newPolicyCmptTypeWithoutProductCmptType(
-                ipsProject, "TargetParent"));
+    public void testCopyFrom() throws CoreException {
+        TestIpsObjectPartContainer source = new TestIpsObjectPartContainer(newPolicyCmptTypeWithoutProductCmptType(
+                ipsProject, "SourceParent"));
 
         // Can't use Mockito as the mocked class will be recognized as a different class
-        container.copy(target);
+        container.copyFrom(source);
 
-        assertEquals(target.copyXml, container.xml);
+        assertEquals(container.xml, source.copyXml);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testCopyIllegalTargetClass() {
-        container.copy(mock(IIpsObjectPartContainer.class));
+    public void testCopyFromIllegalSourceClass() {
+        container.copyFrom(mock(IIpsObjectPartContainer.class));
     }
 
     private void changeSupportedLanguagesOrder() throws CoreException {

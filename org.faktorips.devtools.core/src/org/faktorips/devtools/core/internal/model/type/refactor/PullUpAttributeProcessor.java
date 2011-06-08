@@ -54,7 +54,7 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor<IType> {
     private IAttribute pullUpAttribute() throws CoreException {
         IType superType = getType().findSupertype(getIpsProject());
         IAttribute newAttribute = superType.newAttribute();
-        getAttribute().copy(newAttribute);
+        newAttribute.copyFrom(getAttribute());
         return newAttribute;
     }
 

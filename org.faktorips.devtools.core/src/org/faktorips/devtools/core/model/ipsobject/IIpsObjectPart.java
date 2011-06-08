@@ -45,9 +45,9 @@ public interface IIpsObjectPart extends IIpsObjectPartContainer {
     /**
      * {@inheritDoc}
      * <p>
-     * Ensures that the ID of the target is maintained.
+     * Ensures that the ID of this part is maintained.
      */
     @Override
-    public void copy(IIpsObjectPartContainer target);
+    public void copyFrom(IIpsObjectPartContainer source);
 
 }

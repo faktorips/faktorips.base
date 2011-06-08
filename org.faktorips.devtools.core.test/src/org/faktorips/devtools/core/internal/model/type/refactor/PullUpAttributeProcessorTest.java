@@ -58,7 +58,7 @@ public class PullUpAttributeProcessorTest extends AbstractIpsRefactoringTest {
     @Test
     public void testValidateUserInputThisAttributeAlreadyExistingInTargetType() throws CoreException {
         IPolicyCmptTypeAttribute alreadyExistingAttribute = superPolicyCmptType.newPolicyCmptTypeAttribute();
-        policyCmptTypeAttribute.copy(alreadyExistingAttribute);
+        alreadyExistingAttribute.copyFrom(policyCmptTypeAttribute);
 
         pullUpAttributeProcessor.setTarget(superPolicyCmptType);
 

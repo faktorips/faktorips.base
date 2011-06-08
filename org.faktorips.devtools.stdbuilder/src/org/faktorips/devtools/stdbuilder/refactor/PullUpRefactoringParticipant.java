@@ -158,7 +158,7 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
                     throw new RuntimeException("There is no supertype to pull up to."); //$NON-NLS-1$
                 }
                 IAttribute targetAttribute = targetType.newAttribute();
-                attribute.copy(targetAttribute); // Temporary copy
+                targetAttribute.copyFrom(attribute); // Temporary copy
                 setTargetJavaElements(builderSet.getGeneratedJavaElements(targetAttribute));
                 targetAttribute.delete(); // Delete temporary copy
                 return true;

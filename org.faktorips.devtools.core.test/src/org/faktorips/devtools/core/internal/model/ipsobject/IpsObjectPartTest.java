@@ -80,21 +80,22 @@ public class IpsObjectPartTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCopy() {
+    public void testCopyFrom() {
         TestIpsObjectPart part = new TestIpsObjectPart();
-        TestIpsObjectPart target = new TestIpsObjectPart();
+        TestIpsObjectPart source = new TestIpsObjectPart();
 
+        String idBeforeCopy = part.getId();
         // Can't use Mockito as the mocked class will be recognized as a different class
-        part.copy(target);
+        part.copyFrom(source);
 
-        assertEquals(target.copyXml, part.xml);
-        assertEquals(target.copyId, target.getId());
+        assertEquals(part.xml, source.copyXml);
+        assertEquals(idBeforeCopy, source.getId());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testCopyIllegalTargetClass() {
+    public void testCopyFromIllegalTargetClass() {
         TestIpsObjectPart part = new TestIpsObjectPart();
-        part.copy(mock(IIpsObjectPartContainer.class));
+        part.copyFrom(mock(IIpsObjectPartContainer.class));
     }
 
     private static class TestIpsObjectPart extends IpsObjectPart {
@@ -102,8 +103,6 @@ public class IpsObjectPartTest extends AbstractIpsPluginTest {
         private Element xml;
 
         private Element copyXml;
-
-        private String copyId;
 
         public TestIpsObjectPart() {
             super(null, "foo");
@@ -149,7 +148,6 @@ public class IpsObjectPartTest extends AbstractIpsPluginTest {
         protected void initFromXml(Element element, String id) {
             super.initFromXml(element, id);
             copyXml = element;
-            copyId = id;
         }
 
     }

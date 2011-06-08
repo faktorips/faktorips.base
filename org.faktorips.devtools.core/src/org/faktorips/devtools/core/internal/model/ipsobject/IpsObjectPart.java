@@ -137,11 +137,11 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     }
 
     @Override
-    public void copy(IIpsObjectPartContainer target) {
-        ArgumentCheck.isTrue(getClass().equals(target.getClass()));
+    public void copyFrom(IIpsObjectPartContainer source) {
+        ArgumentCheck.isTrue(getClass().equals(source.getClass()));
 
-        Element xmlElement = toXml(IpsPlugin.getDefault().getDocumentBuilder().newDocument());
-        ((IpsObjectPartContainer)target).initFromXml(xmlElement, ((IIpsObjectPart)target).getId());
+        Element xmlElement = source.toXml(IpsPlugin.getDefault().getDocumentBuilder().newDocument());
+        initFromXml(xmlElement, getId());
     }
 
     @Override
