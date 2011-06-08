@@ -155,11 +155,13 @@ public class NewProductCmptTypePage extends NewTypePage {
      */
     @Override
     protected void validatePageExtensionThis(IpsValidation validation) throws CoreException {
+        // TODO AW 08-06-2011: Experimental usage of validation concept, see FIPS-571
         validation.addTask(new ValidateSupertype());
         validation.addTask(new ValidateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract());
         validation.addTask(new ValidatePolicyCmptSuperTypeNeedsToBeX());
     }
 
+    // TODO AW 08-06-2011: Experimental usage of validation concept, see FIPS-571
     private class ValidateSupertype extends IpsValidationTask {
 
         @Override
@@ -178,6 +180,7 @@ public class NewProductCmptTypePage extends NewTypePage {
 
     }
 
+    // TODO AW 08-06-2011: Experimental usage of validation concept, see FIPS-571
     private class ValidateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract extends IpsValidationTask {
 
         @Override
@@ -188,6 +191,7 @@ public class NewProductCmptTypePage extends NewTypePage {
 
     }
 
+    // TODO AW 08-06-2011: Experimental usage of validation concept, see FIPS-571
     private class ValidatePolicyCmptSuperTypeNeedsToBeX extends IpsValidationTask {
 
         @Override

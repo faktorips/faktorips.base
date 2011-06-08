@@ -151,9 +151,11 @@ public class NewPcTypePage extends NewTypePage {
 
     @Override
     protected void validatePageExtensionThis(IpsValidation validation) throws CoreException {
+        // TODO AW 08-06-2011: Experimental usage of validation concept, see FIPS-571
         validation.addTask(new ValidateInstancesWillBeConfiguredByProductCmptType());
     }
 
+    // TODO AW 08-06-2011: Experimental usage of validation concept, see FIPS-571
     private class ValidateInstancesWillBeConfiguredByProductCmptType extends IpsValidationTask {
 
         @Override

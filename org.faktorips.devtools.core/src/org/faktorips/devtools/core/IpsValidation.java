@@ -29,6 +29,10 @@ import org.faktorips.util.message.MessageList;
  * part of the validation. This class will ensure that the validation stops after the execution of a
  * task that returns a message with severity {@link Message#ERROR} while at the same time returning
  * false for {@link IpsValidationTask#isContinueOnError()}.
+ * <p>
+ * <strong>Important:</strong> This class is experimental and it has not yet been agreed about
+ * whether this shall be the way to implement validations in Faktor-IPS. Therefore this class should
+ * not be used at the moment, see FIPS-483.
  * 
  * @since 3.4
  * 

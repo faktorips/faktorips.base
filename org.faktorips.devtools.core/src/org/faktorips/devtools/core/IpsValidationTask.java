@@ -21,6 +21,10 @@ import org.faktorips.util.message.Message;
  * Abstract class to be implemented by individual validation tasks.
  * <p>
  * This class is intended to be used together with {@link IpsValidation}.
+ * <p>
+ * <strong>Important:</strong> This class is experimental and it has not yet been agreed about
+ * whether this shall be the way to implement validations in Faktor-IPS. Therefore this class should
+ * not be used at the moment, see FIPS-483.
  * 
  * @since 3.4
  * 
