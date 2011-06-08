@@ -502,33 +502,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
 
     @Override
     public boolean referencesProductCmptQualifiedName(String prodCmptQualifiedName) {
-        return getProductCmptReferenceRecursive(root, prodCmptQualifiedName) != null;
-    }
-
-    /**
-     * 
-     * Returns the given {@link IProductCmptReference} if it contains the searched product
-     * component's qualified name. If not it searches all children of the name the same way and
-     * returns the result.
-     * 
-     * @param cmptReference the subtree/substructure that is to be searched
-     * @param prodCmptQualifiedName the qualified name of the searched {@link IProductCmpt}
-     * @return the {@link IProductCmptReference} referencing the indicated {@link IProductCmpt}, or
-     *         <code>null</code> if none was found.
-     */
-    public IProductCmptReference getProductCmptReferenceRecursive(IProductCmptReference cmptReference,
-            String prodCmptQualifiedName) {
-        if (cmptReference.getProductCmpt().getQualifiedName().equals(prodCmptQualifiedName)) {
-            return cmptReference;
-        }
-        IProductCmptReference[] childProductCmptReferences = getChildProductCmptReferences(cmptReference);
-        for (IProductCmptReference childRef : childProductCmptReferences) {
-            IProductCmptReference foundRef = getProductCmptReferenceRecursive(childRef, prodCmptQualifiedName);
-            if (foundRef != null) {
-                return foundRef;
-            }
-        }
-        return null;
+        return root.findProductCmptReference(prodCmptQualifiedName) != null;
     }
 
 }

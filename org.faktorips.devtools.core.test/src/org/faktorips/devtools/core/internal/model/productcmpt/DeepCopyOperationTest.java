@@ -27,7 +27,6 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -138,8 +137,8 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         dco.setIpsPackageFragmentRoot(productCmpt.getIpsPackageFragment().getRoot());
         dco.run(null);
 
-        IProductCmptStructureReference srcProdCmptRef = ((ProductCmptTreeStructure)structure)
-                .getProductCmptReferenceRecursive(structure.getRoot(), standardVehicle.getQualifiedName());
+        IProductCmptStructureReference srcProdCmptRef = structure.getRoot().findProductCmptReference(
+                standardVehicle.getQualifiedName());
         ProductCmpt copiedProductCmpt = (ProductCmpt)handles.get(srcProdCmptRef).getIpsObject();
         String actPropValue = (String)copiedProductCmpt.getExtPropertyValue("StringExtPropForProdCmpts");
 

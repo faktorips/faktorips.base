@@ -33,4 +33,15 @@ public interface IProductCmptReference extends IProductCmptStructureReference {
      */
     public IProductCmptLink getLink();
 
+    /**
+     * 
+     * Returns this {@link IProductCmptReference} if it references the searched product component's
+     * qualified name. If not it searches all children in the same way and returns the result.
+     * 
+     * @param prodCmptQualifiedName the qualified name of the searched {@link IProductCmpt}
+     * @return the {@link IProductCmptReference} referencing the indicated {@link IProductCmpt}, or
+     *         <code>null</code> if none was found.
+     */
+    public IProductCmptReference findProductCmptReference(String prodCmptQualifiedName);
+
 }

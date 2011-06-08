@@ -170,10 +170,6 @@ public class GenAssociationTo1 extends GenAssociation {
         if (inverseAssociation == null) {
             return false;
         }
-        // TODO FIPS-85: the inverse of a shared association is always the derived union of the
-        // shared
-        // association host. However we do not want to generate the methods like it is the inverse
-        // of a derived union
         return inverseAssociation.isDerivedUnion();
     }
 

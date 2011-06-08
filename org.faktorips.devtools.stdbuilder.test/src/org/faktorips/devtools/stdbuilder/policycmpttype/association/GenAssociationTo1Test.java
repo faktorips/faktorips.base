@@ -25,7 +25,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.AssociationType;
-import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.junit.Before;
 import org.junit.Test;
@@ -191,13 +190,13 @@ public class GenAssociationTo1Test extends GenAssociationTest {
         association.setInverseAssociation("");
         IPolicyCmptType superType = newPolicyCmptType(ipsProject, "superType");
         policyCmptType.setSupertype(superType.getQualifiedName());
-        IAssociation sharedHost = superType.newAssociation();
+        IPolicyCmptTypeAssociation sharedHost = (IPolicyCmptTypeAssociation)superType.newAssociation();
+        sharedHost.setInverseAssociation("derivedUnion");
+        association.setSharedAssociation(true);
 
-    }
+        genAssociationTo1 = new GenAssociationTo1(genPolicyCmptType, association);
+        assertFalse(genAssociationTo1.isInverseOfDerivedUnionAssociation());
 
-    @Test
-    public void testGetGeneratorForInverseOfDerivedUnion() throws Exception {
-        // TODO FIPS-85
     }
 
     private void setOptionalConstraintSharedAssociation(boolean enabled) throws CoreException {

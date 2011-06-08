@@ -62,4 +62,27 @@ public class ProductCmptReference extends ProductCmptStructureReference implemen
         return link;
     }
 
+    /**
+     * 
+     * Returns this {@link IProductCmptReference} if it references the searched product component's
+     * qualified name. If not it searches all children in the same way and returns the result.
+     * 
+     * @param prodCmptQualifiedName the qualified name of the searched {@link IProductCmpt}
+     * @return the {@link IProductCmptReference} referencing the indicated {@link IProductCmpt}, or
+     *         <code>null</code> if none was found.
+     */
+    @Override
+    public IProductCmptReference findProductCmptReference(String prodCmptQualifiedName) {
+        if (getProductCmpt().getQualifiedName().equals(prodCmptQualifiedName)) {
+            return this;
+        }
+        IProductCmptReference[] childProductCmptReferences = getStructure().getChildProductCmptReferences(this);
+        for (IProductCmptReference childRef : childProductCmptReferences) {
+            IProductCmptReference foundRef = childRef.findProductCmptReference(prodCmptQualifiedName);
+            if (foundRef != null) {
+                return foundRef;
+            }
+        }
+        return null;
+    }
 }
