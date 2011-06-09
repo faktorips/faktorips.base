@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
@@ -29,7 +30,7 @@ import org.faktorips.devtools.core.refactor.IpsPullUpProcessor;
  * 
  * @author Alexander Weickmann
  */
-public class PullUpAttributeProcessor extends IpsPullUpProcessor<IType> {
+public class PullUpAttributeProcessor extends IpsPullUpProcessor {
 
     public PullUpAttributeProcessor(IAttribute attribute) {
         super(attribute);
@@ -64,16 +65,21 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor<IType> {
 
     @Override
     public void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
-        if (!getType().isSubtypeOf(getTarget(), getIpsProject())) {
+        if (!getType().isSubtypeOf(getTargetType(), getIpsProject())) {
             status.addFatalError(Messages.PullUpAttributeProcessor_msgTargetTypeMustBeSupertype);
             return;
         }
 
-        if (getTarget().getAttribute(getAttribute().getName()) != null) {
+        if (getTargetType().getAttribute(getAttribute().getName()) != null) {
             status.addFatalError(NLS.bind(Messages.PullUpAttributeProcessor_msgAttributeAlreadyExistingInTargetType,
                     getAttribute().getName()));
             return;
         }
+    }
+
+    @Override
+    protected boolean isTargetTypeAllowed(IIpsObjectPartContainer target) {
+        return target instanceof IType;
     }
 
     @Override
@@ -101,6 +107,10 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor<IType> {
 
     private IType getType() {
         return getAttribute().getType();
+    }
+
+    private IType getTargetType() {
+        return (IType)getTarget();
     }
 
 }

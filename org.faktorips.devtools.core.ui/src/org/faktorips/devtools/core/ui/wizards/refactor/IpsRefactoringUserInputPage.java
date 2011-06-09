@@ -25,7 +25,9 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.refactor.IIpsProcessorBasedRefactoring;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
+import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
 /**
@@ -172,6 +174,17 @@ abstract class IpsRefactoringUserInputPage extends UserInputWizardPage {
      */
     protected final IIpsRefactoring getIpsRefactoring() {
         return (IIpsRefactoring)getRefactoring();
+    }
+
+    /**
+     * Returns the {@link IpsRefactoringProcessor} associated if the refactoring is a
+     * processor-based refactoring or null otherwise.
+     */
+    protected final IpsRefactoringProcessor getIpsRefactoringProcessor() {
+        if (getIpsRefactoring() instanceof IIpsProcessorBasedRefactoring) {
+            return ((IIpsProcessorBasedRefactoring)getIpsRefactoring()).getIpsRefactoringProcessor();
+        }
+        return null;
     }
 
 }

@@ -13,12 +13,15 @@
 
 package org.faktorips.devtools.core.refactor;
 
+import java.util.Set;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
@@ -27,6 +30,11 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * @author Alexander Weickmann
  */
 public interface IIpsRefactoring {
+
+    /**
+     * Returns a copy of the set of IPS elements refactored by this IPS refactoring.
+     */
+    public Set<IIpsElement> getIpsElements();
 
     /**
      * Validates any user input.

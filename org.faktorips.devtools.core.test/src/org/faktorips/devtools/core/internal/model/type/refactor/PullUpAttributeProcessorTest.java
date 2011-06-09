@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.internal.model.type.refactor;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -23,6 +24,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.abstracttest.AbstractIpsRefactoringTest;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.junit.Before;
@@ -76,6 +78,12 @@ public class PullUpAttributeProcessorTest extends AbstractIpsRefactoringTest {
         pullUpAttributeProcessor.validateUserInputThis(status, progressMonitor);
 
         assertTrue(status.isOK());
+    }
+
+    @Test
+    public void testIsTargetTypeAllowed() {
+        assertTrue(pullUpAttributeProcessor.isTargetTypeAllowed(mock(IType.class)));
+        assertFalse(pullUpAttributeProcessor.isTargetTypeAllowed(mock(IIpsObjectPartContainer.class)));
     }
 
     @Test

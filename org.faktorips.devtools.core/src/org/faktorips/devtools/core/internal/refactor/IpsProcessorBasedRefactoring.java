@@ -13,10 +13,14 @@
 
 package org.faktorips.devtools.core.internal.refactor;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.refactor.IIpsProcessorBasedRefactoring;
 import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
@@ -59,6 +63,13 @@ public final class IpsProcessorBasedRefactoring extends ProcessorBasedRefactorin
     @Override
     public IIpsProject getIpsProject() {
         return getIpsRefactoringProcessor().getIpsElement().getIpsProject();
+    }
+
+    @Override
+    public Set<IIpsElement> getIpsElements() {
+        HashSet<IIpsElement> elements = new HashSet<IIpsElement>(1);
+        elements.add(getIpsRefactoringProcessor().getIpsElement());
+        return elements;
     }
 
 }

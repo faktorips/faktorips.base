@@ -48,7 +48,7 @@ public abstract class IpsRenameProcessor extends IpsRefactoringProcessor {
     private boolean adaptRuntimeId;
 
     /**
-     * @param ipsElement {@link IIpsElement} to be refactored
+     * @param ipsElement The {@link IIpsElement} to be refactored
      * @param originalName Original name of the {@link IIpsElement} to be refactored
      * @param originalPluralName Original plural name of the {@link IIpsElement} to be refactored
      */
@@ -59,7 +59,7 @@ public abstract class IpsRenameProcessor extends IpsRefactoringProcessor {
     }
 
     /**
-     * @param ipsElement {@link IIpsElement} to be refactored
+     * @param ipsElement The {@link IIpsElement} to be refactored
      * @param originalName Original name of the {@link IIpsElement} to be refactored
      */
     protected IpsRenameProcessor(IIpsElement ipsElement, String originalName) {

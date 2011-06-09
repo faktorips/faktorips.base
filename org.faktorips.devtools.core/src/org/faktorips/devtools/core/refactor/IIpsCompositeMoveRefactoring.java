@@ -13,11 +13,11 @@
 
 package org.faktorips.devtools.core.refactor;
 
-import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 
 /**
- * Allows to batch "Move" refactor multiple {@link IIpsElement}s.
+ * Allows to batch "Move" refactor multiple {@link IIpsObject}s.
  * 
  * @author Alexander Weickmann
  */

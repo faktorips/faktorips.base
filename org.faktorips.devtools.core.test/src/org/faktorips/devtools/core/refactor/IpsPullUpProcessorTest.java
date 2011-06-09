@@ -15,7 +15,9 @@ package org.faktorips.devtools.core.refactor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.core.runtime.CoreException;
@@ -76,7 +78,15 @@ public class IpsPullUpProcessorTest {
         assertTrue(status.isOK());
     }
 
-    private static class TestIpsPullUpProcessor extends IpsPullUpProcessor<IIpsObjectPartContainer> {
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetTargetNotAllowedTargetType() {
+        TestIpsPullUpProcessor spyProcessor = spy(pullUpProcessor);
+        when(spyProcessor.isTargetTypeAllowed(any(IIpsObjectPartContainer.class))).thenReturn(false);
+        spyProcessor.setTarget(ipsObject);
+    }
+
+    // Public so Mockito can spy the class
+    public static class TestIpsPullUpProcessor extends IpsPullUpProcessor {
 
         protected TestIpsPullUpProcessor(IIpsObjectPart ipsObjectPart) {
             super(ipsObjectPart);
@@ -95,6 +105,11 @@ public class IpsPullUpProcessorTest {
         @Override
         protected void addIpsSrcFiles() throws CoreException {
 
+        }
+
+        @Override
+        protected boolean isTargetTypeAllowed(IIpsObjectPartContainer target) {
+            return true;
         }
 
         @Override

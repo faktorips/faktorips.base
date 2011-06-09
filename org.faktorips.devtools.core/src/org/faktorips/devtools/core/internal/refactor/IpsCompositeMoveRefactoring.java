@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.internal.refactor;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -20,6 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.refactor.IIpsCompositeMoveRefactoring;
@@ -31,13 +33,12 @@ import org.faktorips.util.ArgumentCheck;
 /**
  * @author Alexander Weickmann
  */
-public final class IpsCompositeMoveRefactoring extends IpsCompositeRefactoring<IIpsObject> implements
-        IIpsCompositeMoveRefactoring {
+public final class IpsCompositeMoveRefactoring extends IpsCompositeRefactoring implements IIpsCompositeMoveRefactoring {
 
     private IIpsPackageFragment targetIpsPackageFragment;
 
     public IpsCompositeMoveRefactoring(Set<IIpsObject> ipsObjects) {
-        super(ipsObjects);
+        super(new LinkedHashSet<IIpsElement>(ipsObjects));
     }
 
     @Override
@@ -51,7 +52,8 @@ public final class IpsCompositeMoveRefactoring extends IpsCompositeRefactoring<I
             return refactoringStatus;
         }
 
-        for (IIpsObject ipsObject : getElements()) {
+        for (IIpsElement ipsElement : getIpsElements()) {
+            IIpsObject ipsObject = (IIpsObject)ipsElement;
             if (ipsObject.getIpsPackageFragment().equals(targetIpsPackageFragment)) {
                 refactoringStatus
                         .addWarning(NLS
@@ -65,9 +67,9 @@ public final class IpsCompositeMoveRefactoring extends IpsCompositeRefactoring<I
     }
 
     @Override
-    protected IIpsRefactoring createRefactoring(IIpsObject ipsObject) {
+    protected IIpsRefactoring createRefactoring(IIpsElement ipsElement) {
         IIpsProcessorBasedRefactoring ipsMoveRefactoring = IpsPlugin.getIpsRefactoringFactory().createMoveRefactoring(
-                ipsObject);
+                (IIpsObject)ipsElement);
         IpsMoveProcessor ipsMoveProcessor = (IpsMoveProcessor)ipsMoveRefactoring.getIpsRefactoringProcessor();
         if (targetIpsPackageFragment != null) {
             ipsMoveProcessor.setTargetIpsPackageFragment(targetIpsPackageFragment);

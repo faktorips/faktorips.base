@@ -31,15 +31,13 @@ import org.faktorips.util.ArgumentCheck;
 /**
  * Abstract base class for all Faktor-IPS "Pull Up" refactoring processors.
  * 
- * @param <T> The type of the container to which parts are pulled up to
- * 
  * @since 3.4
  * 
  * @author Alexander Weickmann
  */
-public abstract class IpsPullUpProcessor<T extends IIpsObjectPartContainer> extends IpsRefactoringProcessor {
+public abstract class IpsPullUpProcessor extends IpsRefactoringProcessor {
 
-    private T target;
+    private IIpsObjectPartContainer target;
 
     /**
      * @param ipsObjectPart {@link IIpsObjectPart} to be refactored
@@ -106,20 +104,30 @@ public abstract class IpsPullUpProcessor<T extends IIpsObjectPartContainer> exte
     /**
      * Sets the target container the {@link IIpsObjectPart} to be refactored shall be moved up to.
      * 
-     * @param targetIpsObjectPartContainer The target container to pull up to
+     * @param target The target container to pull up to
      * 
+     * @throws IllegalArgumentException If the type of the target container is not allowed by this
+     *             pull up processor
      * @throws NullPointerException If the parameter is null
      */
-    public final void setTarget(T targetIpsObjectPartContainer) {
-        ArgumentCheck.notNull(targetIpsObjectPartContainer);
-        this.target = targetIpsObjectPartContainer;
+    public final void setTarget(IIpsObjectPartContainer target) {
+        ArgumentCheck.notNull(target);
+        ArgumentCheck.isTrue(isTargetTypeAllowed(target));
+        this.target = target;
     }
+
+    /**
+     * Subclasses must return whether the type of the given target is allowed.
+     * 
+     * @param target The target container where the part to be refactored will be pulled up to
+     */
+    protected abstract boolean isTargetTypeAllowed(IIpsObjectPartContainer target);
 
     /**
      * Returns the target container to which the {@link IIpsObjectPart} to be refactored will be
      * pulled up to.
      */
-    public final T getTarget() {
+    public final IIpsObjectPartContainer getTarget() {
         return target;
     }
 

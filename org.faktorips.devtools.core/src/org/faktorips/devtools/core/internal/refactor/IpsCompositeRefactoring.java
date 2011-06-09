@@ -42,12 +42,11 @@ import org.faktorips.util.ArgumentCheck;
 /**
  * @author Alexander Weickmann
  */
-public abstract class IpsCompositeRefactoring<T extends IIpsElement> extends Refactoring implements
-        IIpsCompositeRefactoring {
+public abstract class IpsCompositeRefactoring extends Refactoring implements IIpsCompositeRefactoring {
 
-    private final Set<T> elements;
+    private final Set<IIpsElement> elements;
 
-    private final Set<T> skippedElements;
+    private final Set<IIpsElement> skippedElements;
 
     /**
      * @param elements The elements to refactor in the composite refactoring (set will be copied
@@ -56,18 +55,18 @@ public abstract class IpsCompositeRefactoring<T extends IIpsElement> extends Ref
      * @throws IllegalArgumentException If the size of the given set is <= 0 or if different types
      *             of elements shall be refactored (e.g. attributes and methods)
      */
-    protected IpsCompositeRefactoring(Set<T> elements) {
+    protected IpsCompositeRefactoring(Set<IIpsElement> elements) {
         checkElements(elements);
-        this.elements = new HashSet<T>(elements.size());
+        this.elements = new HashSet<IIpsElement>(elements.size());
         this.elements.addAll(elements);
-        this.skippedElements = new HashSet<T>(elements.size());
+        this.skippedElements = new HashSet<IIpsElement>(elements.size());
     }
 
     // TODO AW 22-04-2011: Only IPS elements from the same IPS project allowed?
-    private void checkElements(Set<T> elements) {
+    private void checkElements(Set<IIpsElement> elements) {
         ArgumentCheck.isTrue(elements.size() > 0);
         Set<Class<?>> classes = new HashSet<Class<?>>(2);
-        for (T element : elements) {
+        for (IIpsElement element : elements) {
             if (element instanceof IIpsObject) {
                 classes.add(IIpsObject.class);
             } else {
@@ -85,7 +84,7 @@ public abstract class IpsCompositeRefactoring<T extends IIpsElement> extends Ref
 
     @Override
     public final boolean isSourceFilesSavedRequired() {
-        for (T element : elements) {
+        for (IIpsElement element : elements) {
             if (skippedElements.contains(element)) {
                 continue;
             }
@@ -106,7 +105,7 @@ public abstract class IpsCompositeRefactoring<T extends IIpsElement> extends Ref
 
         RefactoringStatus status = new RefactoringStatus();
         int i = 0;
-        for (T element : elements) {
+        for (IIpsElement element : elements) {
             i++;
             pm.subTask(NLS.bind(Messages.IpsCompositeRefactoring_subTaskCheckInitialConditionsForElement, i,
                     getNumberOfRefactorings()));
@@ -123,7 +122,7 @@ public abstract class IpsCompositeRefactoring<T extends IIpsElement> extends Ref
         return status;
     }
 
-    private void checkInitialConditions(T element, RefactoringStatus status) throws CoreException {
+    private void checkInitialConditions(IIpsElement element, RefactoringStatus status) throws CoreException {
         IIpsRefactoring refactoring = createRefactoring(element);
         CheckConditionsOperation checkConditionsOperation = new CheckConditionsOperation(
                 refactoring.toLtkRefactoring(), CheckConditionsOperation.INITIAL_CONDITONS);
@@ -144,7 +143,7 @@ public abstract class IpsCompositeRefactoring<T extends IIpsElement> extends Ref
         pm.setTaskName(Messages.IpsCompositeRefactoring_taskProcessElements);
 
         int i = 0;
-        for (T element : elements) {
+        for (IIpsElement element : elements) {
             if (pm.isCanceled()) {
                 break;
             }
@@ -164,7 +163,7 @@ public abstract class IpsCompositeRefactoring<T extends IIpsElement> extends Ref
         return new NullChange();
     }
 
-    private void createChange(T element) throws CoreException {
+    private void createChange(IIpsElement element) throws CoreException {
         IIpsRefactoring refactoring = createRefactoring(element);
         /*
          * In fact we would not need to check the final conditions again at this point but the LTK
@@ -232,7 +231,7 @@ public abstract class IpsCompositeRefactoring<T extends IIpsElement> extends Ref
      * 
      * @param element The element to create the refactoring for
      */
-    protected abstract IIpsRefactoring createRefactoring(T element);
+    protected abstract IIpsRefactoring createRefactoring(IIpsElement element);
 
     /**
      * Allows subclasses to configure the composite refactoring to exclude the indicated element
@@ -242,7 +241,7 @@ public abstract class IpsCompositeRefactoring<T extends IIpsElement> extends Ref
      * 
      * @param element The element that should not be refactored
      */
-    protected final boolean skipElement(T element) {
+    protected final boolean skipElement(IIpsElement element) {
         return skippedElements.add(element);
     }
 
@@ -269,10 +268,8 @@ public abstract class IpsCompositeRefactoring<T extends IIpsElement> extends Ref
         return ((IIpsElement)elements.toArray()[0]).getIpsProject();
     }
 
-    /**
-     * Returns the elements that are refactored in this composite refactoring.
-     */
-    protected final Set<T> getElements() {
+    @Override
+    public final Set<IIpsElement> getIpsElements() {
         return elements;
     }
 

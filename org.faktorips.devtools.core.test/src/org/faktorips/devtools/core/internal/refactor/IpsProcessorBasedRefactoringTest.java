@@ -19,6 +19,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Set;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
@@ -73,6 +75,18 @@ public class IpsProcessorBasedRefactoringTest {
         when(ipsElement.getIpsProject()).thenReturn(ipsProject);
 
         assertEquals(ipsProject, ipsProcessorBasedRefactoring.getIpsProject());
+    }
+
+    @Test
+    public void testGetIpsElements() {
+        assertTrue(ipsProcessorBasedRefactoring.getIpsElements().contains(ipsElement));
+        assertEquals(1, ipsProcessorBasedRefactoring.getIpsElements().size());
+    }
+
+    @Test
+    public void testGetIpsElementsOnlyReturnsCopy() {
+        Set<IIpsElement> elements = ipsProcessorBasedRefactoring.getIpsElements();
+        assertFalse(elements == ipsProcessorBasedRefactoring.getIpsElements());
     }
 
     private static class TestRefactoringProcessor extends IpsRefactoringProcessor {

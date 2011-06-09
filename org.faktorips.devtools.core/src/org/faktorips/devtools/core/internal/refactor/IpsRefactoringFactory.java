@@ -111,7 +111,7 @@ public final class IpsRefactoringFactory implements IIpsRefactoringFactory {
 
     @Override
     public IIpsProcessorBasedRefactoring createPullUpRefactoring(IIpsObjectPart ipsObjectPart) {
-        IpsPullUpProcessor<?> ipsPullUpProcessor = null;
+        IpsPullUpProcessor ipsPullUpProcessor = null;
         if (ipsObjectPart instanceof IAttribute) {
             ipsPullUpProcessor = new PullUpAttributeProcessor((IAttribute)ipsObjectPart);
         } else {

@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.wizards.refactor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -32,21 +31,16 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 
 /**
- * A wizard to guide the user trough a Faktor-IPS rename refactoring.
+ * A wizard to guide the user trough a Faktor-IPS "Rename" refactoring.
  * 
  * @author Alexander Weickmann
  */
 public final class IpsRenameRefactoringWizard extends IpsRefactoringWizard {
 
-    /**
-     * @param refactoring The refactoring used by the wizard
-     * 
-     * @throws NullPointerException If any parameter is null
-     */
     public IpsRenameRefactoringWizard(IIpsRefactoring refactoring) {
         super(refactoring, WIZARD_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
         setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/RenameWizard.png")); //$NON-NLS-1$
-        setDefaultPageTitle(Messages.RenameRefactoringWizard_title);
+        setDefaultPageTitle(Messages.IpsRenameRefactoringWizard_title);
     }
 
     @Override
@@ -125,7 +119,7 @@ public final class IpsRenameRefactoringWizard extends IpsRefactoringWizard {
             if (getIpsElement() instanceof IProductCmpt) {
                 getUiToolkit().createLabel(fieldsComposite, ""); //$NON-NLS-1$
                 adaptRuntimeIdField = getUiToolkit().createCheckbox(fieldsComposite,
-                        Messages.IpsRenameAndMoveUserInputPage_labelRefactorRuntimeId);
+                        Messages.RenameUserInputPage_labelRefactorRuntimeId);
                 adaptRuntimeIdField.getButton().addSelectionListener(new SelectionListener() {
                     @Override
                     public void widgetSelected(SelectionEvent e) {
@@ -167,11 +161,11 @@ public final class IpsRenameRefactoringWizard extends IpsRefactoringWizard {
         }
 
         private IpsRenameProcessor getIpsRenameProcessor() {
-            return (IpsRenameProcessor)((ProcessorBasedRefactoring)getRefactoring()).getProcessor();
+            return (IpsRenameProcessor)getIpsRefactoringProcessor();
         }
 
         private IIpsElement getIpsElement() {
-            return getIpsRenameProcessor().getIpsElement();
+            return getIpsRefactoringProcessor().getIpsElement();
         }
 
     }

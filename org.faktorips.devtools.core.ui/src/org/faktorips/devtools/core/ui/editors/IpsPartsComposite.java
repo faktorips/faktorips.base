@@ -180,6 +180,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         if (renameRefactoringSupported) {
             refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsRenameHandler.CONTRIBUTION_ID,
                     Messages.IpsPartsComposite_labelRenameRefactoring));
+            refactorSubmenu.add(new Separator());
         }
         if (pullUpRefactoringSupported) {
             refactorSubmenu.add(IpsRefactoringHandler.getContributionItem(IpsPullUpHandler.CONTRIBUTION_ID,

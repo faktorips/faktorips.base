@@ -33,17 +33,20 @@ public class Messages extends NLS {
     public static String ElementNames_Type;
     public static String ElementNames_EnumLiteralNameAttributeValue;
 
-    public static String RenameRefactoringWizard_title;
-    public static String MoveRefactoringWizard_title;
+    public static String IpsRenameRefactoringWizard_title;
+    public static String IpsMoveRefactoringWizard_title;
+    public static String IpsPullUpRefactoringWizard_title;
 
+    public static String RenameUserInputPage_message;
     public static String RenameUserInputPage_labelNewName;
     public static String RenameUserInputPage_labelNewPluralName;
-    public static String RenameUserInputPage_message;
+    public static String RenameUserInputPage_labelRefactorRuntimeId;
 
     public static String MoveUserInputPage_message;
     public static String MoveUserInputPage_labelChooseDestination;
     public static String MoveUserInputPage_msgSelectOnlyPackages;
 
-    public static String IpsRenameAndMoveUserInputPage_labelRefactorRuntimeId;
+    public static String PullUpUserInputPage_message;
+    public static String PullUpUserInputPage_labelChooseDestination;
 
 }

@@ -37,21 +37,16 @@ import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
- * A wizard to guide the user trough a Faktor-IPS move refactoring.
+ * A wizard to guide the user trough a Faktor-IPS "Move" refactoring.
  * 
  * @author Alexander Weickmann
  */
 public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
 
-    /**
-     * @param refactoring The {@link IIpsCompositeMoveRefactoring} used by the wizard
-     * 
-     * @throws NullPointerException If any parameter is null
-     */
     public IpsMoveRefactoringWizard(IIpsCompositeMoveRefactoring refactoring) {
         super(refactoring, WIZARD_BASED_USER_INTERFACE | NO_PREVIEW_PAGE);
         setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/MoveWizard.png")); //$NON-NLS-1$
-        setDefaultPageTitle(Messages.MoveRefactoringWizard_title);
+        setDefaultPageTitle(Messages.IpsMoveRefactoringWizard_title);
     }
 
     @Override

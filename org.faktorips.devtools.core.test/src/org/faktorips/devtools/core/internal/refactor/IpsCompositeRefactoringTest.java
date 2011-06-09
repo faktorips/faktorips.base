@@ -73,7 +73,7 @@ public class IpsCompositeRefactoringTest {
     @Mock
     private IProgressMonitor progressMonitor;
 
-    private IpsCompositeRefactoring<IIpsElement> ipsCompositeRefactoring;
+    private IpsCompositeRefactoring ipsCompositeRefactoring;
 
     @Before
     public void setUp() {
@@ -167,9 +167,15 @@ public class IpsCompositeRefactoringTest {
     }
 
     @Test
-    public void testGetElements() {
+    public void testGetIpsElements() {
         assertEquals(new LinkedHashSet<IIpsElement>(Arrays.asList(ipsElement1, ipsElement2)),
-                ipsCompositeRefactoring.getElements());
+                ipsCompositeRefactoring.getIpsElements());
+    }
+
+    @Test
+    public void testGetIpsElementsOnlyReturnsCopy() {
+        Set<IIpsElement> elements = ipsCompositeRefactoring.getIpsElements();
+        assertFalse(elements == ipsCompositeRefactoring.getIpsElements());
     }
 
     @Test
@@ -182,7 +188,7 @@ public class IpsCompositeRefactoringTest {
     public void testIgnoreIsSourceFilesSavedRequiredForSkippedElement() {
         ipsCompositeRefactoring.skipElement(ipsElement2);
 
-        IpsCompositeRefactoring<IIpsElement> spyIpsCompositeRefactoring = spy(ipsCompositeRefactoring);
+        IpsCompositeRefactoring spyIpsCompositeRefactoring = spy(ipsCompositeRefactoring);
         spyIpsCompositeRefactoring.isSourceFilesSavedRequired();
 
         verify(spyIpsCompositeRefactoring).createRefactoring(ipsElement1);
@@ -193,7 +199,7 @@ public class IpsCompositeRefactoringTest {
     public void testIgnoreCheckInitialConditionsForSkippedElement() throws OperationCanceledException, CoreException {
         ipsCompositeRefactoring.skipElement(ipsElement2);
 
-        IpsCompositeRefactoring<IIpsElement> spyIpsCompositeRefactoring = spy(ipsCompositeRefactoring);
+        IpsCompositeRefactoring spyIpsCompositeRefactoring = spy(ipsCompositeRefactoring);
         spyIpsCompositeRefactoring.checkInitialConditions(progressMonitor);
 
         verify(spyIpsCompositeRefactoring).createRefactoring(ipsElement1);
@@ -207,7 +213,7 @@ public class IpsCompositeRefactoringTest {
 
         ipsCompositeRefactoring.clearSkippedElements();
 
-        IpsCompositeRefactoring<IIpsElement> spyIpsCompositeRefactoring = spy(ipsCompositeRefactoring);
+        IpsCompositeRefactoring spyIpsCompositeRefactoring = spy(ipsCompositeRefactoring);
         spyIpsCompositeRefactoring.isSourceFilesSavedRequired();
         spyIpsCompositeRefactoring.checkInitialConditions(progressMonitor);
 
@@ -216,7 +222,7 @@ public class IpsCompositeRefactoringTest {
     }
 
     // Public so Mockito is able to spy
-    public class TestIpsCompositeRefactoring extends IpsCompositeRefactoring<IIpsElement> {
+    public class TestIpsCompositeRefactoring extends IpsCompositeRefactoring {
 
         protected TestIpsCompositeRefactoring(Set<IIpsElement> ipsElements) {
             super(ipsElements);

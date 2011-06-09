@@ -71,7 +71,7 @@ public class RenameEnumLiteralNameAttributeValueProcessor extends IpsRenameProce
     }
 
     private IEnumAttributeValue getEnumLiteralNameAttributeValue() {
-        return (IEnumLiteralNameAttributeValue)getIpsElement();
+        return (IEnumAttributeValue)getIpsElement();
     }
 
     private IIpsSrcFile getIpsSrcFile() {

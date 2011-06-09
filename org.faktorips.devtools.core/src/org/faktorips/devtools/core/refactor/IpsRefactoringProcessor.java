@@ -42,7 +42,7 @@ import org.faktorips.util.message.MessageList;
  */
 public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
 
-    /** {@link IIpsElement} to be refactored. */
+    /** The {@link IIpsElement} to be refactored. */
     private final IIpsElement ipsElement;
 
     /** Set containing all {@link IIpsSrcFile}s that are affected by the refactoring. */
