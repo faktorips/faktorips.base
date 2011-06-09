@@ -27,7 +27,7 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
-    public static String AttributeValuesSection_attributeChangingOverTimeDescription;
+    public static String AttributeValuesSection_attributeNotChangingOverTimeDescription;
 
     public static String DefaultsAndRangesEditDialog_additionalValuesDefinedInModel;
 

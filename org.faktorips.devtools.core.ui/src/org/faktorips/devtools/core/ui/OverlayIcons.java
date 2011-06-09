@@ -42,7 +42,7 @@ public interface OverlayIcons {
 
     public final static String MODIFIED_OVR = "ModifyOverlay.gif"; //$NON-NLS-1$
 
-    public final static String CHANGEOVERTIME_OVR = "ovr16/changeovertime_ovr.gif"; //$NON-NLS-1$
+    public final static String NOT_CHANGEOVERTIME_OVR = "ovr16/not_changingovertime_ovr.gif"; //$NON-NLS-1$
 
     public final static ImageDescriptor ERROR_OVR_DESC = IpsUIPlugin.getImageHandling()
             .createImageDescriptor(ERROR_OVR);
@@ -78,7 +78,7 @@ public interface OverlayIcons {
     public final static ImageDescriptor MODIFIED_OVR_DESC = IpsUIPlugin.getImageHandling().createImageDescriptor(
             MODIFIED_OVR);
 
-    public final static ImageDescriptor CHANGEOVERTIME_OVR_DESC = IpsUIPlugin.getImageHandling().createImageDescriptor(
-            CHANGEOVERTIME_OVR);
+    public final static ImageDescriptor NOT_CHANGEOVERTIME_OVR_DESC = IpsUIPlugin.getImageHandling()
+            .createImageDescriptor(NOT_CHANGEOVERTIME_OVR);
 
 }

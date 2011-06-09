@@ -226,14 +226,15 @@ public class AttributeValuesSection extends IpsSection {
             editControls.add(ctrl);
 
             // Paint ChangeOverTime Icon next to the text field
-            if (toDisplay.getParent() instanceof IProductCmptGeneration) {
+            // do not ask the attribute isChangingOverTime state because it may have changed
+            if (toDisplay.getParent() instanceof IProductCmpt) {
                 ControlDecoration controlDecoration = new ControlDecoration(ctrl, SWT.LEFT | SWT.TOP);
                 controlDecoration.setDescriptionText(NLS.bind(
-                        Messages.AttributeValuesSection_attributeChangingOverTimeDescription, IpsPlugin.getDefault()
+                        Messages.AttributeValuesSection_attributeNotChangingOverTimeDescription, IpsPlugin.getDefault()
                                 .getIpsPreferences().getChangesOverTimeNamingConvention()
                                 .getGenerationConceptNamePlural()));
-                controlDecoration.setImage(IpsUIPlugin.getImageHandling()
-                        .getImage(OverlayIcons.CHANGEOVERTIME_OVR_DESC));
+                controlDecoration.setImage(IpsUIPlugin.getImageHandling().getImage(
+                        OverlayIcons.NOT_CHANGEOVERTIME_OVR_DESC));
                 controlDecoration.setMarginWidth(1);
             }
 
