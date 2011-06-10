@@ -37,14 +37,13 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor {
     }
 
     @Override
-    protected void addIpsSrcFiles() throws CoreException {
+    protected void addIpsSrcFiles() {
         addIpsSrcFile(getIpsSrcFile());
-        IType supertype = getType().findSupertype(getIpsProject());
-        addIpsSrcFile(supertype.getIpsSrcFile());
+        addIpsSrcFile(getTargetType().getIpsSrcFile());
     }
 
     @Override
-    protected void refactorIpsModel(IProgressMonitor pm) throws CoreException {
+    protected void refactorIpsModel(IProgressMonitor pm) {
         pullUpAttribute();
         deleteOriginalAttribute();
     }
@@ -52,9 +51,8 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor {
     /**
      * Pulls the attribute up to the target type and returns the new attribute.
      */
-    private IAttribute pullUpAttribute() throws CoreException {
-        IType superType = getType().findSupertype(getIpsProject());
-        IAttribute newAttribute = superType.newAttribute();
+    private IAttribute pullUpAttribute() {
+        IAttribute newAttribute = getTargetType().newAttribute();
         newAttribute.copyFrom(getAttribute());
         return newAttribute;
     }

@@ -18,6 +18,10 @@ import static org.junit.Assert.assertNull;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsRefactoringTest;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IType;
 import org.junit.Test;
 
 public class PullUpAttributeProcessorIntegrationTest extends AbstractIpsRefactoringTest {
@@ -26,22 +30,60 @@ public class PullUpAttributeProcessorIntegrationTest extends AbstractIpsRefactor
     public void testPullUpPolicyCmptTypeAttribute() throws CoreException {
         performPullUpRefactoring(policyCmptTypeAttribute, superPolicyCmptType);
 
-        // Check that attribute no longer exists in original type
-        assertNull(policyCmptType.getAttribute(policyCmptTypeAttribute.getName()));
+        checkExpectationsForPullUpAttribute(policyCmptTypeAttribute, policyCmptType, superPolicyCmptType);
+    }
 
-        // Check that attribute exists in target type
-        assertNotNull(superPolicyCmptType.getAttribute(policyCmptTypeAttribute.getName()));
+    @Test
+    public void testPullUpPolicyCmptTypeAttributeFurtherUpInHierarchy() throws CoreException {
+        IPolicyCmptType superSuperPolicyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject,
+                "SuperSuperPolicy");
+        IProductCmptType superSuperProductCmptType = newProductCmptType(ipsProject, "SuperSuperProduct");
+        superSuperPolicyCmptType.setConfigurableByProductCmptType(true);
+        superSuperPolicyCmptType.setProductCmptType(superSuperProductCmptType.getQualifiedName());
+        superSuperProductCmptType.setConfigurationForPolicyCmptType(true);
+        superSuperProductCmptType.setPolicyCmptType(superSuperPolicyCmptType.getQualifiedName());
+        superSuperPolicyCmptType.setAbstract(true);
+        superSuperProductCmptType.setAbstract(true);
+        superPolicyCmptType.setSupertype(superSuperPolicyCmptType.getQualifiedName());
+        superProductCmptType.setSupertype(superSuperProductCmptType.getQualifiedName());
+
+        performPullUpRefactoring(policyCmptTypeAttribute, superSuperPolicyCmptType);
+
+        checkExpectationsForPullUpAttribute(policyCmptTypeAttribute, policyCmptType, superSuperPolicyCmptType);
     }
 
     @Test
     public void testPullUpProductCmptTypeAttribute() throws CoreException {
         performPullUpRefactoring(productCmptTypeAttribute, superProductCmptType);
 
+        checkExpectationsForPullUpAttribute(productCmptTypeAttribute, productCmptType, superProductCmptType);
+    }
+
+    @Test
+    public void testPullUpProductCmptTypeAttributeFurtherUpInHierarchy() throws CoreException {
+        IPolicyCmptType superSuperPolicyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject,
+                "SuperSuperPolicy");
+        IProductCmptType superSuperProductCmptType = newProductCmptType(ipsProject, "SuperSuperProduct");
+        superSuperPolicyCmptType.setConfigurableByProductCmptType(true);
+        superSuperPolicyCmptType.setProductCmptType(superSuperProductCmptType.getQualifiedName());
+        superSuperProductCmptType.setConfigurationForPolicyCmptType(true);
+        superSuperProductCmptType.setPolicyCmptType(superSuperPolicyCmptType.getQualifiedName());
+        superSuperPolicyCmptType.setAbstract(true);
+        superSuperProductCmptType.setAbstract(true);
+        superPolicyCmptType.setSupertype(superSuperPolicyCmptType.getQualifiedName());
+        superProductCmptType.setSupertype(superSuperProductCmptType.getQualifiedName());
+
+        performPullUpRefactoring(productCmptTypeAttribute, superSuperProductCmptType);
+
+        checkExpectationsForPullUpAttribute(productCmptTypeAttribute, productCmptType, superSuperProductCmptType);
+    }
+
+    private void checkExpectationsForPullUpAttribute(IAttribute attribute, IType originalType, IType targetType) {
         // Check that attribute no longer exists in original type
-        assertNull(productCmptType.getAttribute(productCmptTypeAttribute.getName()));
+        assertNull(originalType.getAttribute(attribute.getName()));
 
         // Check that attribute exists in target type
-        assertNotNull(superProductCmptType.getAttribute(productCmptTypeAttribute.getName()));
+        assertNotNull(targetType.getAttribute(attribute.getName()));
     }
 
 }
