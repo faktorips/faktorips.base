@@ -67,9 +67,6 @@ public class ReferenceSearchResult extends AbstractTextSearchResult {
         this.page = page;
     }
 
-    public void setActiveMatchedFilterFor(boolean testCaseMatchFilter, boolean productCmptMatchFilter) {
-    }
-
     @Override
     public Object[] getElements() {
         Set<IIpsProject> projects = new HashSet<IIpsProject>();

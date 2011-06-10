@@ -27,7 +27,6 @@ public interface ModelSearchScope {
 
     /**
      * @return Set of srcFile, which are related in this Scope
-     * @throws CoreException
      */
     public Set<IIpsSrcFile> getSelectedIpsSrcFiles() throws CoreException;
 

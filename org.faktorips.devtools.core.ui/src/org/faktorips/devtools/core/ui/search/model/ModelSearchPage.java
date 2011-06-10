@@ -14,6 +14,8 @@
 package org.faktorips.devtools.core.ui.search.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.DialogPage;
@@ -22,13 +24,18 @@ import org.eclipse.search.ui.ISearchPage;
 import org.eclipse.search.ui.ISearchPageContainer;
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.search.model.scope.ModelSearchProjectsScope;
 import org.faktorips.devtools.core.ui.search.model.scope.ModelSearchScope;
@@ -38,32 +45,16 @@ import org.faktorips.devtools.core.ui.search.model.scope.ModelSearchWorkspaceSco
 
 public class ModelSearchPage extends DialogPage implements ISearchPage {
 
-    private class ModelSearchData {
-        private String typeName;
+    private final BindingContext bindingContext = new BindingContext();
+    private final ModelSearchPresentationModel model = new ModelSearchPresentationModel();
 
-        public void setTypeName(String typeName) {
-            this.typeName = typeName;
-        }
-
-        public String getTypeName() {
-            return typeName;
-        }
-
-        public void store(IDialogSettings settings) {
-            settings.put("typeName", getTypeName());
-        }
-
-        public void read(IDialogSettings settings) {
-            setTypeName(settings.get("typeName"));
-            System.out.println(getTypeName());
-        }
-    }
-
-    private static final String MODEL_SEARCH_PAGE_NAME = "ModelSearchPage";
+    private static final String MODEL_SEARCH_PAGE_NAME = "ModelSearchPage"; //$NON-NLS-1$
+    private static final String MODEL_SEARCH_DATA = "ModelSearchData"; //$NON-NLS-1$
 
     private ISearchPageContainer container;
     private Text txtTypeName;
-    private Text txtSearchTerm;
+    private StringValueComboField txtSearchString;
+    private Combo cboSearchString;
 
     private Checkbox ckbSearchAttributes;
     private Checkbox ckbSearchMethods;
@@ -71,7 +62,7 @@ public class ModelSearchPage extends DialogPage implements ISearchPage {
     private Checkbox ckbSearchTableStructureUsages;
     private Checkbox ckbSearchValidationRules;
 
-    private List<ModelSearchData> previousSearchData;
+    private List<IDialogSettings> previousSearchData;
     private IDialogSettings dialogSettings;
 
     @Override
@@ -84,26 +75,47 @@ public class ModelSearchPage extends DialogPage implements ISearchPage {
         composite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL));
 
         toolkit.createLabel(composite, Messages.ModelSearchPage_labelSearchTerm);
-        txtSearchTerm = toolkit.createText(composite);
+
+        cboSearchString = new Combo(composite, SWT.SINGLE | SWT.BORDER);
+
+        cboSearchString.addSelectionListener(new SelectionListener() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                int selectionIndex = cboSearchString.getSelectionIndex();
+                if (selectionIndex == -1) {
+                    return;
+                }
+
+                model.read(previousSearchData.get(selectionIndex));
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // nothing to do
+            }
+        });
+
+        cboSearchString.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        txtSearchString = new StringValueComboField(cboSearchString);
+
+        for (IDialogSettings settings : previousSearchData) {
+            cboSearchString.add(settings.get(ModelSearchPresentationModel.SEARCH_TERM));
+        }
 
         Group searchForGroup = toolkit
                 .createGridGroup(composite, Messages.ModelSearchPage_groupLabelSearchFor, 2, true);
 
         ckbSearchAttributes = toolkit.createCheckbox(searchForGroup, Messages.ModelSearchPage_labelAttributes);
-        ckbSearchAttributes.setChecked(true);
 
         ckbSearchMethods = toolkit.createCheckbox(searchForGroup, Messages.ModelSearchPage_labelMethodsAndFormulas);
-        ckbSearchMethods.setChecked(true);
 
         ckbSearchAssociations = toolkit.createCheckbox(searchForGroup, Messages.ModelSearchPage_labelAssociations);
-        ckbSearchAssociations.setChecked(true);
 
         ckbSearchTableStructureUsages = toolkit.createCheckbox(searchForGroup,
                 Messages.ModelSearchPage_labelTableStructureUsage);
-        ckbSearchTableStructureUsages.setChecked(true);
 
         ckbSearchValidationRules = toolkit.createCheckbox(searchForGroup, Messages.ModelSearchPage_labelRules);
-        ckbSearchValidationRules.setChecked(true);
 
         toolkit.createVerticalSpacer(composite, 10);
         toolkit.createLabel(composite, Messages.ModelSearchPage_labelTypeName);
@@ -111,6 +123,17 @@ public class ModelSearchPage extends DialogPage implements ISearchPage {
 
         setControl(composite);
 
+        bindingContext.bindContent(txtSearchString, model, ModelSearchPresentationModel.SEARCH_TERM);
+        bindingContext.bindContent(txtTypeName, model, ModelSearchPresentationModel.TYPE_NAME);
+        bindingContext.bindContent(ckbSearchAttributes, model, ModelSearchPresentationModel.SEARCH_ATTRIBUTES);
+        bindingContext.bindContent(ckbSearchMethods, model, ModelSearchPresentationModel.SEARCH_METHODS);
+        bindingContext.bindContent(ckbSearchAssociations, model, ModelSearchPresentationModel.SEARCH_ASSOCIATIONS);
+        bindingContext.bindContent(ckbSearchTableStructureUsages, model,
+                ModelSearchPresentationModel.SEARCH_TABLE_STRUCTURE_USAGES);
+        bindingContext.bindContent(ckbSearchValidationRules, model,
+                ModelSearchPresentationModel.SEARCH_VALIDATION_RULES);
+
+        bindingContext.updateUI();
     }
 
     public String getTypeName() {
@@ -123,19 +146,6 @@ public class ModelSearchPage extends DialogPage implements ISearchPage {
 
     @Override
     public boolean performAction() {
-        ModelSearchData modelSearchData = new ModelSearchData();
-        modelSearchData.setTypeName(getTypeName());
-
-        ModelSearchPresentationModel model = new ModelSearchPresentationModel();
-        model.setTypeName(getTypeName());
-        model.setSearchTerm(txtSearchTerm.getText());
-
-        model.setSearchAttributes(ckbSearchAttributes.isChecked());
-        model.setSearchMethods(ckbSearchMethods.isChecked());
-        model.setSearchAssociations(ckbSearchAssociations.isChecked());
-        model.setSearchTableStructureUsages(ckbSearchTableStructureUsages.isChecked());
-        model.setSearchValidationRules(ckbSearchValidationRules.isChecked());
-
         model.setSearchScope(createSearchScope());
 
         ModelSearchQuery query = new ModelSearchQuery(model);
@@ -183,24 +193,31 @@ public class ModelSearchPage extends DialogPage implements ISearchPage {
 
         IDialogSettings[] sections = settings.getSections();
 
-        previousSearchData = new ArrayList<ModelSearchPage.ModelSearchData>();
-        for (IDialogSettings iDialogSettings : sections) {
-            ModelSearchData modelSearchData = new ModelSearchData();
-            modelSearchData.read(iDialogSettings);
-
-            previousSearchData.add(modelSearchData);
+        previousSearchData = new ArrayList<IDialogSettings>();
+        for (IDialogSettings dialogSettings : sections) {
+            if (dialogSettings.getName().startsWith(MODEL_SEARCH_DATA)) {
+                previousSearchData.add(dialogSettings);
+            }
         }
+
+        Comparator<IDialogSettings> comparator = new Comparator<IDialogSettings>() {
+
+            @Override
+            public int compare(IDialogSettings arg0, IDialogSettings arg1) {
+                return arg1.getName().compareTo(arg0.getName());
+            }
+
+        };
+        Collections.sort(previousSearchData, comparator);
     }
 
     private void writeConfiguration() {
         IDialogSettings settings = getDialogSettings();
 
-        ModelSearchData modelSearchData = new ModelSearchData();
-        modelSearchData.setTypeName(getTypeName());
+        // TODO evtl. sortierkriterium optimieren
+        IDialogSettings newSection = settings.addNewSection(MODEL_SEARCH_DATA + System.currentTimeMillis());
 
-        IDialogSettings addNewSection = settings.addNewSection("" + System.currentTimeMillis()); //$NON-NLS-1$
-
-        modelSearchData.store(addNewSection);
+        model.store(newSection);
 
     }
 

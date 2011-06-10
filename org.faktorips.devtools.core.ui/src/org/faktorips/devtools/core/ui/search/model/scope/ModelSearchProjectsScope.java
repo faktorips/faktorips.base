@@ -56,7 +56,7 @@ public class ModelSearchProjectsScope extends AbstractModelSearchScope {
 
     @Override
     protected String getScopeTypeLabel(boolean singular) {
-        return singular ? "project" : "projects";
+        return singular ? Messages.ModelSearchProjectsScope_scopeTypeLabelSingular : Messages.ModelSearchProjectsScope_scopeTypeLabelPlural;
     }
 
 }

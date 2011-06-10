@@ -44,13 +44,9 @@ public class TreePathSearchResultContentProvider implements ITreeContentProvider
 
     private class IpsElementSearchTreeNode {
 
-        private final IIpsElement parent;
-        private final IIpsElement node;
         private final Set<IIpsElement> children;
 
-        protected IpsElementSearchTreeNode(IIpsElement node, IIpsElement parent) {
-            this.node = node;
-            this.parent = parent;
+        protected IpsElementSearchTreeNode() {
             this.children = new HashSet<IIpsElement>();
         }
 
@@ -58,32 +54,12 @@ public class TreePathSearchResultContentProvider implements ITreeContentProvider
             children.add(child);
         }
 
-        protected IIpsElement getParent() {
-            return parent;
-        }
-
-        protected void removeChild(IIpsElement child) {
-            children.remove(child);
-        }
-
         protected Set<IIpsElement> getChildren() {
             return Collections.unmodifiableSet(children);
         }
 
-        protected boolean isChild(IIpsElement child) {
-            return children.contains(child);
-        }
-
-        protected IIpsElement getNodeElement() {
-            return node;
-        }
-
         protected boolean hasChildren() {
             return !children.isEmpty();
-        }
-
-        private TreePathSearchResultContentProvider getOuterType() {
-            return TreePathSearchResultContentProvider.this;
         }
 
     }
@@ -138,7 +114,7 @@ public class TreePathSearchResultContentProvider implements ITreeContentProvider
 
         IpsElementSearchTreeNode ipsElementSearchTreeNode = ipsElementTree.get(element);
         if (ipsElementSearchTreeNode == null) {
-            ipsElementSearchTreeNode = new IpsElementSearchTreeNode(element, parent);
+            ipsElementSearchTreeNode = new IpsElementSearchTreeNode();
             ipsElementTree.put(element, ipsElementSearchTreeNode);
         }
 
@@ -293,7 +269,7 @@ public class TreePathSearchResultContentProvider implements ITreeContentProvider
         }
 
         if (!ipsElementTree.containsKey(element)) {
-            ipsElementTree.put(element, new IpsElementSearchTreeNode(element, parent));
+            ipsElementTree.put(element, new IpsElementSearchTreeNode());
         }
 
         if (parent != null) {

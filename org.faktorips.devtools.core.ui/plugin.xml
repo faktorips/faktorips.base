@@ -1953,7 +1953,7 @@
 		<viewPage
 			id="org.faktorips.devtools.core.ui.search.model.ModelSearchResultPage"
 			searchResultClass="org.faktorips.devtools.core.ui.search.model.ModelSearchResult"
-			class="org.faktorips.devtools.core.ui.search.model.ModelSearchResultPage">
+			class="org.faktorips.devtools.core.ui.search.IpsElementsSearchViewPage">
 		</viewPage>
 	</extension>
  <extension

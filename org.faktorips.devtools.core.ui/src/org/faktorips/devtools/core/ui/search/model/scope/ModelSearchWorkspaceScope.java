@@ -32,6 +32,6 @@ public class ModelSearchWorkspaceScope extends AbstractModelSearchScope {
 
     @Override
     protected String getScopeTypeLabel(boolean singular) {
-        return "workspace";
+        return Messages.ModelSearchWorkspaceScope_scopeTypeLabel;
     }
 }

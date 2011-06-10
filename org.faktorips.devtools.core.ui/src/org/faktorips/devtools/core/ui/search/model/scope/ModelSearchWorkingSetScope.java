@@ -40,7 +40,7 @@ public class ModelSearchWorkingSetScope extends AbstractModelSearchScope {
 
     @Override
     protected String getScopeTypeLabel(boolean singular) {
-        return singular ? "working set" : "working sets";
+        return singular ? Messages.ModelSearchWorkingSetScope_scopeTypeLabelSingular : Messages.ModelSearchWorkingSetScope_scopeTypeLabelPlural;
     }
 
     @Override

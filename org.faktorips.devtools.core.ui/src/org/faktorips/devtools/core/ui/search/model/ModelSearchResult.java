@@ -65,7 +65,7 @@ public class ModelSearchResult extends AbstractTextSearchResult {
 
     @Override
     public String getTooltip() {
-        return "TOOLTIP";
+        return query.getResultLabel(getMatchCount());
     }
 
     @Override

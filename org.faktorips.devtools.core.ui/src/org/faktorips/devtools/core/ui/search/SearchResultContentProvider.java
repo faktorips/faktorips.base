@@ -44,7 +44,6 @@ public class SearchResultContentProvider implements ITreeContentProvider {
         }
 
         searchResult.setPage(page);
-        searchResult.setActiveMatchedFilterFor(page.isFilterTestCase(), page.isFilterProductCmpt());
     }
 
     @Override

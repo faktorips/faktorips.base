@@ -15,18 +15,24 @@ package org.faktorips.devtools.core.ui.search.model;
 
 import java.beans.PropertyChangeEvent;
 
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.search.model.scope.ModelSearchScope;
 
 public class ModelSearchPresentationModel extends PresentationModelObject {
 
-    public static final String CLASS_NAME = "className"; //$NON-NLS-1$
-    public static final String SEARCH_STRING = "searchString"; //$NON-NLS-1$
+    public static final String TYPE_NAME = "typeName"; //$NON-NLS-1$
+    public static final String SEARCH_TERM = "searchTerm"; //$NON-NLS-1$
+    public static final String SEARCH_ATTRIBUTES = "searchAttributes"; //$NON-NLS-1$
+    public static final String SEARCH_METHODS = "searchMethods"; //$NON-NLS-1$
+    public static final String SEARCH_ASSOCIATIONS = "searchAssociations"; //$NON-NLS-1$
+    public static final String SEARCH_TABLE_STRUCTURE_USAGES = "searchTableStructureUsages"; //$NON-NLS-1$
+    public static final String SEARCH_VALIDATION_RULES = "searchValidationRules"; //$NON-NLS-1$
 
     private ModelSearchScope searchScope;
 
-    private String searchTerm;
-    private String typeName;
+    private String searchTerm = ""; //$NON-NLS-1$
+    private String typeName = ""; //$NON-NLS-1$
 
     private boolean searchAttributes = true;
     private boolean searchMethods = true;
@@ -41,7 +47,7 @@ public class ModelSearchPresentationModel extends PresentationModelObject {
     public void setTypeName(String newValue) {
         String oldValue = typeName;
         typeName = newValue;
-        notifyListeners(new PropertyChangeEvent(this, CLASS_NAME, oldValue, newValue));
+        notifyListeners(new PropertyChangeEvent(this, TYPE_NAME, oldValue, newValue));
     }
 
     public String getSearchTerm() {
@@ -51,48 +57,57 @@ public class ModelSearchPresentationModel extends PresentationModelObject {
     public void setSearchTerm(String newValue) {
         String oldValue = searchTerm;
         this.searchTerm = newValue;
-        notifyListeners(new PropertyChangeEvent(this, SEARCH_STRING, oldValue, newValue));
+        notifyListeners(new PropertyChangeEvent(this, SEARCH_TERM, oldValue, newValue));
     }
 
-    protected boolean isSearchAttributes() {
+    public boolean isSearchAttributes() {
         return searchAttributes;
     }
 
-    // TODO notify bei allen settern einbauen!!!
-    protected void setSearchAttributes(boolean searchAttributes) {
-        this.searchAttributes = searchAttributes;
+    public void setSearchAttributes(boolean newValue) {
+        boolean oldValue = searchAttributes;
+        this.searchAttributes = newValue;
+        notifyListeners(new PropertyChangeEvent(this, SEARCH_ATTRIBUTES, oldValue, newValue));
     }
 
-    protected boolean isSearchMethods() {
+    public boolean isSearchMethods() {
         return searchMethods;
     }
 
-    protected void setSearchMethods(boolean searchMethods) {
-        this.searchMethods = searchMethods;
+    public void setSearchMethods(boolean newValue) {
+        boolean oldValue = searchMethods;
+        this.searchMethods = newValue;
+        notifyListeners(new PropertyChangeEvent(this, SEARCH_METHODS, oldValue, newValue));
     }
 
-    protected boolean isSearchAssociations() {
+    public boolean isSearchAssociations() {
         return searchAssociations;
     }
 
-    protected void setSearchAssociations(boolean searchAssociation) {
-        this.searchAssociations = searchAssociation;
+    public void setSearchAssociations(boolean newValue) {
+        boolean oldValue = searchAssociations;
+        this.searchAssociations = newValue;
+        notifyListeners(new PropertyChangeEvent(this, SEARCH_ASSOCIATIONS, oldValue, newValue));
     }
 
-    protected boolean isSearchTableStructureUsages() {
+    public boolean isSearchTableStructureUsages() {
         return searchTableStructureUsages;
     }
 
-    protected void setSearchTableStructureUsages(boolean searchTableStructureUsages) {
-        this.searchTableStructureUsages = searchTableStructureUsages;
+    public void setSearchTableStructureUsages(boolean newValue) {
+        boolean oldValue = searchTableStructureUsages;
+        this.searchTableStructureUsages = newValue;
+        notifyListeners(new PropertyChangeEvent(this, SEARCH_TABLE_STRUCTURE_USAGES, oldValue, newValue));
     }
 
-    protected boolean isSearchValidationRules() {
+    public boolean isSearchValidationRules() {
         return searchValidationRules;
     }
 
-    protected void setSearchValidationRules(boolean searchValidationRules) {
-        this.searchValidationRules = searchValidationRules;
+    public void setSearchValidationRules(boolean newValue) {
+        boolean oldValue = searchValidationRules;
+        this.searchValidationRules = newValue;
+        notifyListeners(new PropertyChangeEvent(this, SEARCH_VALIDATION_RULES, oldValue, newValue));
     }
 
     public void setSearchScope(ModelSearchScope searchScope) {
@@ -101,5 +116,27 @@ public class ModelSearchPresentationModel extends PresentationModelObject {
 
     public ModelSearchScope getSearchScope() {
         return searchScope;
+    }
+
+    public void store(IDialogSettings settings) {
+        settings.put(SEARCH_TERM, getSearchTerm());
+        settings.put(TYPE_NAME, getTypeName());
+
+        settings.put(SEARCH_ATTRIBUTES, isSearchAttributes());
+        settings.put(SEARCH_METHODS, isSearchMethods());
+        settings.put(SEARCH_ASSOCIATIONS, isSearchAssociations());
+        settings.put(SEARCH_TABLE_STRUCTURE_USAGES, isSearchTableStructureUsages());
+        settings.put(SEARCH_VALIDATION_RULES, isSearchValidationRules());
+    }
+
+    public void read(IDialogSettings settings) {
+        setSearchTerm(settings.get(SEARCH_TERM));
+        setTypeName(settings.get(TYPE_NAME));
+
+        setSearchAttributes(settings.getBoolean(SEARCH_ATTRIBUTES));
+        setSearchMethods(settings.getBoolean(SEARCH_METHODS));
+        setSearchAssociations(settings.getBoolean(SEARCH_ASSOCIATIONS));
+        setSearchTableStructureUsages(settings.getBoolean(SEARCH_TABLE_STRUCTURE_USAGES));
+        setSearchValidationRules(settings.getBoolean(SEARCH_VALIDATION_RULES));
     }
 }
