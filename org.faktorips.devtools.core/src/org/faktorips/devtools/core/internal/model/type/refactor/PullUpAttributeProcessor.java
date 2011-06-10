@@ -63,6 +63,30 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor {
         getAttribute().delete();
     }
 
+    /**
+     * Checks that the type of the attribute to be refactored has a supertype and if it has that the
+     * supertype can be found.
+     */
+    @Override
+    protected void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+        if (!getType().hasSupertype()) {
+            status.addFatalError(NLS.bind(Messages.PullUpAttributeProcessor_msgTypeHasNoSupertype, getType().getName()));
+            return;
+        }
+        if (getType().findSupertype(getIpsProject()) == null) {
+            status.addFatalError(NLS.bind(Messages.PullUpAttributeProcessor_msgSupertypeCouldNotBeFound, getType()
+                    .getSupertype()));
+            return;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This implementation checks that the target type is a supertype of the attribute's type and
+     * that no attribute with the same name as the attribute to be refactored already exists in the
+     * target type.
+     */
     @Override
     public void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
         if (!getType().isSubtypeOf(getTargetType(), getIpsProject())) {

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -128,6 +129,8 @@ public class IpsPullUpRefactoringWizard extends IpsRefactoringWizard {
             }
 
             getIpsPullUpProcessor().setTarget((IIpsObjectPartContainer)selectedElement);
+
+            status.merge(getIpsRefactoring().validateUserInput(new NullProgressMonitor()));
         }
 
         private IIpsElement getIpsElement() {

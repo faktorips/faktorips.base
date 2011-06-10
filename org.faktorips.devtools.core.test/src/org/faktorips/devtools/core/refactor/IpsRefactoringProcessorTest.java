@@ -13,56 +13,157 @@
 
 package org.faktorips.devtools.core.refactor;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
-import org.faktorips.abstracttest.AbstractIpsRefactoringTest;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-public class IpsRefactoringProcessorTest extends AbstractIpsRefactoringTest {
+public class IpsRefactoringProcessorTest {
 
-    private TestProcessor testProcessor;
+    @Mock
+    private IIpsElement ipsElement;
 
-    @Override
+    @Mock
+    private IProgressMonitor progressMonitor;
+
+    @Mock
+    private CheckConditionsContext checkConditionsContext;
+
+    private TestProcessor testProcessorSpy;
+
     @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        testProcessor = new TestProcessor(policyCmptType);
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        when(ipsElement.exists()).thenReturn(true);
+
+        TestProcessor testProcessor = new TestProcessor(ipsElement);
+        testProcessorSpy = spy(testProcessor);
     }
 
     @Test
-    public void testCheckInitialConditionsValid() throws OperationCanceledException, CoreException {
-        RefactoringStatus status = testProcessor.checkInitialConditions(new NullProgressMonitor());
+    public void shouldReturnOkStatusOnCheckInitialConditionsIfAllConditionsAreFulfilled()
+            throws OperationCanceledException, CoreException {
+
+        RefactoringStatus status = testProcessorSpy.checkInitialConditions(progressMonitor);
+
         assertFalse(status.hasError());
     }
 
     @Test
-    public void testCheckInitialConditionsInvalid() throws OperationCanceledException, CoreException {
-        policyCmptType.getIpsSrcFile().getCorrespondingResource().delete(true, null);
-        RefactoringStatus status = testProcessor.checkInitialConditions(new NullProgressMonitor());
-        assertTrue(status.hasError());
+    public void shouldReturnFatalErrorStatusOnCheckInitialConditionsIfTheIpsElementToBeRefactoredDoesNotExist()
+            throws OperationCanceledException, CoreException {
+
+        when(ipsElement.exists()).thenReturn(false);
+
+        RefactoringStatus status = testProcessorSpy.checkInitialConditions(progressMonitor);
+
+        assertTrue(status.hasFatalError());
     }
 
     @Test
-    public void testCheckFinalConditions() throws OperationCanceledException, CoreException {
-        TestProcessor testProcessorSpy = spy(testProcessor);
+    public void shouldCallSubclassImplementationOfCheckInitialConditionsIfChecksWereSuccessfulThusFar()
+            throws OperationCanceledException, CoreException {
 
-        testProcessorSpy.checkFinalConditions(new NullProgressMonitor(), new CheckConditionsContext());
+        testProcessorSpy.checkInitialConditions(progressMonitor);
 
-        verify(testProcessorSpy).validateUserInput(any(IProgressMonitor.class));
+        verify(testProcessorSpy).checkInitialConditionsThis(any(RefactoringStatus.class), eq(progressMonitor));
+    }
+
+    @Test
+    public void shouldNotCallSubclassImplementationOfCheckInitialConditionsIfChecksWereNotSuccessfulThusFar()
+            throws OperationCanceledException, CoreException {
+
+        when(ipsElement.exists()).thenReturn(false);
+
+        testProcessorSpy.checkInitialConditions(progressMonitor);
+
+        verify(testProcessorSpy, never()).checkInitialConditionsThis(any(RefactoringStatus.class), eq(progressMonitor));
+    }
+
+    @Test
+    public void shouldReturnOkStatusOnCheckFinalConditionsIfAllConditionsAreFulfilled()
+            throws OperationCanceledException, CoreException {
+
+        RefactoringStatus status = testProcessorSpy.checkFinalConditions(progressMonitor, checkConditionsContext);
+
+        assertFalse(status.hasError());
+    }
+
+    @Test
+    public void shouldReturnFatalErrorStatusOnCheckFinalConditionsIfAnAffectedIpsSrcFileIsOutOfSync()
+            throws OperationCanceledException, CoreException {
+
+        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class, RETURNS_DEEP_STUBS);
+        when(ipsSrcFile.getCorrespondingResource().isSynchronized(anyInt())).thenReturn(false);
+        testProcessorSpy.addIpsSrcFile(ipsSrcFile);
+
+        RefactoringStatus status = testProcessorSpy.checkFinalConditions(progressMonitor, checkConditionsContext);
+
+        assertTrue(status.hasFatalError());
+    }
+
+    @Test
+    public void shouldValidateUserInputOnCheckFinalConditions() throws OperationCanceledException, CoreException {
+        when(testProcessorSpy.validateUserInput(progressMonitor)).thenReturn(
+                RefactoringStatus.createFatalErrorStatus("foo"));
+
+        RefactoringStatus checkFinalConditionsStatus = testProcessorSpy.checkFinalConditions(progressMonitor,
+                checkConditionsContext);
+
+        assertEquals(1, checkFinalConditionsStatus.getEntries().length);
+        assertEquals("foo", checkFinalConditionsStatus.getEntryAt(0).getMessage());
+    }
+
+    @Test
+    public void shouldCallSubclassImplementationOfCheckFinalConditionsIfChecksWereSuccessfulThusFar()
+            throws CoreException {
+
+        when(testProcessorSpy.validateUserInput(progressMonitor)).thenReturn(new RefactoringStatus());
+
+        testProcessorSpy.checkFinalConditions(progressMonitor, checkConditionsContext);
+
+        verify(testProcessorSpy).checkFinalConditionsThis(any(RefactoringStatus.class), eq(progressMonitor),
+                eq(checkConditionsContext));
+    }
+
+    @Test
+    public void shouldNotCallSubclassImplementationOfCheckFinalConditionsIfChecksWereNotSuccessfulThusFar()
+            throws CoreException {
+
+        when(testProcessorSpy.validateUserInput(progressMonitor)).thenReturn(
+                RefactoringStatus.createFatalErrorStatus("foo"));
+
+        testProcessorSpy.checkFinalConditions(progressMonitor, checkConditionsContext);
+
+        verify(testProcessorSpy, never()).checkFinalConditionsThis(any(RefactoringStatus.class), eq(progressMonitor),
+                eq(checkConditionsContext));
+    }
+
+    @Test
+    public void shouldAlwaysBeApplicable() throws CoreException {
+        assertTrue(testProcessorSpy.isApplicable());
     }
 
     // Public so it can be accessed by Mockito

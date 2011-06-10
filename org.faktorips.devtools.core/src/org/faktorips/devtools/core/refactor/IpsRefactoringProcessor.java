@@ -66,7 +66,10 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
     }
 
     /**
-     * This implementation checks that the {@link IIpsElement} to be refactored exists.
+     * This implementation checks that the {@link IIpsElement} to be refactored exists. If this
+     * check is successful the subclass implementation
+     * {@link #checkInitialConditionsThis(RefactoringStatus, IProgressMonitor)} is called which may
+     * extent the initial condition checking.
      */
     @Override
     public final RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException,
@@ -77,14 +80,32 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
             status.addFatalError(NLS.bind(Messages.IpsRefactoringProcessor_errorIpsElementDoesNotExist,
                     ipsElement.getName()));
         }
+        if (status.isOK()) {
+            checkInitialConditionsThis(status, pm);
+        }
         return status;
     }
 
     /**
-     * This implementation triggers the user input validation, checks if all registered source files
-     * are synchronized and calls the subclass implementation
+     * Subclass implementation which may extend the initial condition checking.
+     * <p>
+     * The default implementation does nothing.
+     * 
+     * @param status The {@link RefactoringStatus} to add messages to
+     * @param pm The {@link IProgressMonitor} to report progress to
+     * 
+     * @throws CoreException May be thrown at any time
+     */
+    protected void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+        // Empty base implementation that may be overwritten by subclasses.
+    }
+
+    /**
+     * This implementation triggers the user input validation and checks if all registered source
+     * files are synchronized with the file system. If the checks are successful the subclass
+     * implementation
      * {@link #checkFinalConditionsThis(RefactoringStatus, IProgressMonitor, CheckConditionsContext)}
-     * that may extend the final condition checking.
+     * that may extend the final condition checking is called.
      */
     @Override
     public final RefactoringStatus checkFinalConditions(IProgressMonitor pm, CheckConditionsContext context)
@@ -113,8 +134,8 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * <p>
      * The default implementation does nothing.
      * 
-     * @param status {@link RefactoringStatus} to add messages to
-     * @param pm {@link IProgressMonitor} to report progress to
+     * @param status The {@link RefactoringStatus} to add messages to
+     * @param pm The {@link IProgressMonitor} to report progress to
      * @param context Condition checking context to collect shared condition checks
      * 
      * @throws CoreException May be thrown at any time

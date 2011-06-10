@@ -15,41 +15,76 @@ package org.faktorips.devtools.core.internal.model.type.refactor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.faktorips.abstracttest.AbstractIpsRefactoringTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-public class PullUpAttributeProcessorTest extends AbstractIpsRefactoringTest {
+public class PullUpAttributeProcessorTest {
+
+    private static final String ATTRIBUTE_NAME = "foo";
 
     @Mock
     private IProgressMonitor progressMonitor;
 
+    @Mock
+    private IType type;
+
+    @Mock
+    private IType superType;
+
+    @Mock
+    private IAttribute attribute;
+
     private PullUpAttributeProcessor pullUpAttributeProcessor;
 
-    @Override
     @Before
-    public void setUp() throws Exception {
-        super.setUp();
+    public void setUp() throws CoreException {
         MockitoAnnotations.initMocks(this);
-        pullUpAttributeProcessor = new PullUpAttributeProcessor(policyCmptTypeAttribute);
+        when(attribute.getType()).thenReturn(type);
+        when(attribute.getName()).thenReturn(ATTRIBUTE_NAME);
+        when(type.isSubtypeOf(eq(superType), any(IIpsProject.class))).thenReturn(true);
+
+        pullUpAttributeProcessor = new PullUpAttributeProcessor(attribute);
+    }
+
+    @Test
+    public void testCheckInitialConditionsThisTypeHasNoSupertype() throws CoreException {
+        when(type.hasSupertype()).thenReturn(false);
+
+        RefactoringStatus status = new RefactoringStatus();
+        pullUpAttributeProcessor.checkInitialConditionsThis(status, progressMonitor);
+
+        assertTrue(status.hasFatalError());
+    }
+
+    @Test
+    public void testCheckInitialConditionsThisSupertypeCannotBeFound() throws CoreException {
+        when(type.hasSupertype()).thenReturn(true);
+        when(type.findSupertype(any(IIpsProject.class))).thenReturn(null);
+
+        RefactoringStatus status = new RefactoringStatus();
+        pullUpAttributeProcessor.checkInitialConditionsThis(status, progressMonitor);
+
+        assertTrue(status.hasFatalError());
     }
 
     @Test
     public void testValidateUserInputThisTargetTypeNotASupertype() throws CoreException {
-        pullUpAttributeProcessor.setTarget(mock(IType.class));
+        pullUpAttributeProcessor.setTarget(type);
 
         RefactoringStatus status = new RefactoringStatus();
         pullUpAttributeProcessor.validateUserInputThis(status, progressMonitor);
@@ -59,10 +94,10 @@ public class PullUpAttributeProcessorTest extends AbstractIpsRefactoringTest {
 
     @Test
     public void testValidateUserInputThisAttributeAlreadyExistingInTargetType() throws CoreException {
-        IPolicyCmptTypeAttribute alreadyExistingAttribute = superPolicyCmptType.newPolicyCmptTypeAttribute();
-        alreadyExistingAttribute.copyFrom(policyCmptTypeAttribute);
+        IAttribute alreadyExistingAttribute = mock(IAttribute.class);
+        when(superType.getAttribute(ATTRIBUTE_NAME)).thenReturn(alreadyExistingAttribute);
 
-        pullUpAttributeProcessor.setTarget(superPolicyCmptType);
+        pullUpAttributeProcessor.setTarget(superType);
 
         RefactoringStatus status = new RefactoringStatus();
         pullUpAttributeProcessor.validateUserInputThis(status, progressMonitor);
@@ -72,7 +107,7 @@ public class PullUpAttributeProcessorTest extends AbstractIpsRefactoringTest {
 
     @Test
     public void testValidateUserInputThisValid() throws CoreException {
-        pullUpAttributeProcessor.setTarget(superPolicyCmptType);
+        pullUpAttributeProcessor.setTarget(superType);
 
         RefactoringStatus status = new RefactoringStatus();
         pullUpAttributeProcessor.validateUserInputThis(status, progressMonitor);
@@ -84,28 +119,6 @@ public class PullUpAttributeProcessorTest extends AbstractIpsRefactoringTest {
     public void testIsTargetTypeAllowed() {
         assertTrue(pullUpAttributeProcessor.isTargetTypeAllowed(mock(IType.class)));
         assertFalse(pullUpAttributeProcessor.isTargetTypeAllowed(mock(IIpsObjectPartContainer.class)));
-    }
-
-    @Test
-    public void testPullUpPolicyCmptTypeAttribute() throws CoreException {
-        performPullUpRefactoring(policyCmptTypeAttribute, superPolicyCmptType);
-
-        // Check that attribute no longer exists in original type
-        assertNull(policyCmptType.getAttribute(policyCmptTypeAttribute.getName()));
-
-        // Check that attribute exists in target type
-        assertNotNull(superPolicyCmptType.getAttribute(policyCmptTypeAttribute.getName()));
-    }
-
-    @Test
-    public void testPullUpProductCmptTypeAttribute() throws CoreException {
-        performPullUpRefactoring(productCmptTypeAttribute, superProductCmptType);
-
-        // Check that attribute no longer exists in original type
-        assertNull(productCmptType.getAttribute(productCmptTypeAttribute.getName()));
-
-        // Check that attribute exists in target type
-        assertNotNull(superProductCmptType.getAttribute(productCmptTypeAttribute.getName()));
     }
 
 }
