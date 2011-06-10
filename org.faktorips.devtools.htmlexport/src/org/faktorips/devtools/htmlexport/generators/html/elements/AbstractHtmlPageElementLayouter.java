@@ -19,10 +19,10 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.htmlexport.generators.AbstractPageElementLayouter;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 
-public abstract class AbstractHtmlPageElementLayouter<T extends PageElement> extends AbstractPageElementLayouter<T> {
+public abstract class AbstractHtmlPageElementLayouter<T extends IPageElement> extends AbstractPageElementLayouter<T> {
 
     protected final HtmlUtil htmlUtil = new HtmlUtil();
     protected final HtmlLayouter layouter;

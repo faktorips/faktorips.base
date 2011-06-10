@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.htmlexport.context.AbstractHtmlExportPluginTest;
 import org.faktorips.devtools.htmlexport.helper.AbstractTestLayouter;
 import org.faktorips.devtools.htmlexport.helper.ContainsTextTestLayouter;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.junit.Test;
 
 public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
@@ -50,7 +50,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
 
         PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Vertrag", "VertragProdukt");
 
-        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
         objectContentPage.build();
 
         String[] texts = new String[] { name, defaultValue };
@@ -69,7 +69,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
 
         PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Vertrag", "VertragProdukt");
 
-        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
         objectContentPage.build();
 
         String[] texts = new String[] { name, defaultValue };
@@ -91,7 +91,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
         String setValue = "SetValueIpsObject";
         policy.setExtPropertyValue(id, setValue);
 
-        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
         objectContentPage.build();
 
         String[] texts = new String[] { name, setValue };
@@ -111,7 +111,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
         PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Vertrag", "VertragProdukt");
         policy.newPolicyCmptTypeAttribute();
 
-        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
         objectContentPage.build();
 
         String[] texts = new String[] { name, defaultValue };
@@ -131,7 +131,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
         PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Vertrag", "VertragProdukt");
         policy.newPolicyCmptTypeAttribute();
 
-        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
         objectContentPage.build();
 
         String[] texts = new String[] { name, defaultValue };
@@ -154,7 +154,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
         String setValue = "SetValueIpsObjectPart";
         attribute.setExtPropertyValue(id, setValue);
 
-        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
         objectContentPage.build();
 
         String[] texts = new String[] { name, setValue };
@@ -162,7 +162,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
         assertTextContained(objectContentPage, texts);
     }
 
-    private void assertTextContained(PageElement objectContentPage, String[] texts) {
+    private void assertTextContained(IPageElement objectContentPage, String[] texts) {
         AbstractTestLayouter layouter = new ContainsTextTestLayouter(texts);
         objectContentPage.acceptLayouter(layouter);
         layouter.assertTest();

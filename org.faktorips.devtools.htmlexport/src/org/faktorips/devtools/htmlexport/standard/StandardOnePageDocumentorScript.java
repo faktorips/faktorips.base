@@ -24,7 +24,7 @@ import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.helper.FileHandler;
 import org.faktorips.devtools.htmlexport.helper.IoHandler;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.standard.pages.ProjectOverviewPageElement;
 
 public class StandardOnePageDocumentorScript implements IDocumentorScript {
@@ -47,11 +47,11 @@ public class StandardOnePageDocumentorScript implements IDocumentorScript {
     }
 
     private void writeProjectOverviewPage(DocumentationContext context) {
-        PageElement projectOverviewHtml = new ProjectOverviewPageElement(context);
+        IPageElement projectOverviewHtml = new ProjectOverviewPageElement(context);
         createContent(context, projectOverviewHtml);
     }
 
-    private void createContent(DocumentationContext context, PageElement pageElement) {
+    private void createContent(DocumentationContext context, IPageElement pageElement) {
         pageElement.build();
         ILayouter layouter = context.getLayouter();
         pageElement.acceptLayouter(layouter);

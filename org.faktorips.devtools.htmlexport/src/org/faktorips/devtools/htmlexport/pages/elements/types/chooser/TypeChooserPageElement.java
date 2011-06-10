@@ -30,7 +30,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePa
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ImagePageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.types.ILinkStrategy;
@@ -101,7 +101,7 @@ public class TypeChooserPageElement extends AbstractPageElement {
         ImageData imageData = IpsUIPlugin.getImageHandling().getDefaultImage(ipsObjectType.getImplementingClass())
                 .getImageData();
 
-        PageElement pageElement = new ImagePageElement(imageData, ipsObjectType.getDisplayName(),
+        IPageElement pageElement = new ImagePageElement(imageData, ipsObjectType.getDisplayName(),
                 ipsObjectType.getFileExtension());
 
         wrapper.addPageElements(linkStrategy.createLink(pageElement));

@@ -14,7 +14,7 @@
 package org.faktorips.devtools.htmlexport.pages.elements.core.table;
 
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperType;
 
@@ -27,11 +27,11 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperType;
 public class TableCellPageElement extends WrapperPageElement {
 
     /**
-     * creates a {@link TableCellPageElement} with the given {@link PageElement}s as content of the
+     * creates a {@link TableCellPageElement} with the given {@link IPageElement}s as content of the
      * cell
      * 
      */
-    public TableCellPageElement(PageElement... pageElements) {
+    public TableCellPageElement(IPageElement... pageElements) {
         super(WrapperType.TABLECELL, pageElements);
     }
 

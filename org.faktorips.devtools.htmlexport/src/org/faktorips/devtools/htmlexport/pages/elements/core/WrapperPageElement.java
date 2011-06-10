@@ -36,19 +36,19 @@ public class WrapperPageElement extends AbstractCompositePageElement {
     }
 
     /**
-     * creates an {@link WrapperPageElement} with the given {@link PageElement}s
+     * creates an {@link WrapperPageElement} with the given {@link IPageElement}s
      * 
      */
-    public WrapperPageElement(WrapperType wrapperType, PageElement... pageElements) {
+    public WrapperPageElement(WrapperType wrapperType, IPageElement... pageElements) {
         this(wrapperType, null, pageElements);
     }
 
     /**
-     * creates an {@link WrapperPageElement} with the given {@link PageElement}s and the given
+     * creates an {@link WrapperPageElement} with the given {@link IPageElement}s and the given
      * styles
      * 
      */
-    public WrapperPageElement(WrapperType wrapperType, Set<Style> styles, PageElement... pageElements) {
+    public WrapperPageElement(WrapperType wrapperType, Set<Style> styles, IPageElement... pageElements) {
         super();
         addPageElements(pageElements);
         if (styles != null) {

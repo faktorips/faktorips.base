@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
 
@@ -58,12 +58,12 @@ public abstract class AbstractIpsObjectPartsContainerTablePageElement<T extends 
     }
 
     protected final void addRow(T rowData) {
-        List<PageElement> values = new ArrayList<PageElement>();
+        List<IPageElement> values = new ArrayList<IPageElement>();
 
         values.addAll(createRowWithIpsObjectPart(rowData));
         values.addAll(createRowWithExtentionPropertiesData(rowData));
 
-        addSubElement(new TableRowPageElement(values.toArray(new PageElement[values.size()])));
+        addSubElement(new TableRowPageElement(values.toArray(new IPageElement[values.size()])));
     }
 
     private List<String> getHeadlineWithExtentionPropertiesData() {
@@ -85,8 +85,8 @@ public abstract class AbstractIpsObjectPartsContainerTablePageElement<T extends 
         return extensionPropertyNames;
     }
 
-    private List<PageElement> createRowWithExtentionPropertiesData(T rowData) {
-        List<PageElement> extensionPropertyValues = new ArrayList<PageElement>();
+    private List<IPageElement> createRowWithExtentionPropertiesData(T rowData) {
+        List<IPageElement> extensionPropertyValues = new ArrayList<IPageElement>();
         for (IExtensionPropertyDefinition property : propertyDefinitions) {
             Object value = rowData.getExtPropertyValue(property.getPropertyId());
             extensionPropertyValues.add(new TextPageElement(value == null ? null : value.toString()));
@@ -94,7 +94,7 @@ public abstract class AbstractIpsObjectPartsContainerTablePageElement<T extends 
         return extensionPropertyValues;
     }
 
-    protected abstract List<? extends PageElement> createRowWithIpsObjectPart(T rowData);
+    protected abstract List<? extends IPageElement> createRowWithIpsObjectPart(T rowData);
 
     protected abstract List<String> getHeadlineWithIpsObjectPart();
 

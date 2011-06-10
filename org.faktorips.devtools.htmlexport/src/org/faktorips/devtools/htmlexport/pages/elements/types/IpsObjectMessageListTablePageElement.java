@@ -16,7 +16,7 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 import org.faktorips.devtools.core.internal.model.ipsobject.Description;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -39,7 +39,7 @@ public class IpsObjectMessageListTablePageElement extends MessageListTablePageEl
     }
 
     @Override
-    protected PageElement createInvalidObjectPropertiesItem(ObjectProperty objectProperty) {
+    protected IPageElement createInvalidObjectPropertiesItem(ObjectProperty objectProperty) {
         if (objectProperty.getObject() instanceof Description) {
             IIpsElement element = ((Description)objectProperty.getObject()).getParent();
             return new TextPageElement(context.getLabel(element));

@@ -16,7 +16,7 @@ package org.faktorips.devtools.htmlexport.pages.elements.core.table;
 import java.util.List;
 
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperType;
 
@@ -31,11 +31,11 @@ public class TableRowPageElement extends WrapperPageElement {
     private TablePageElement parentTablePageElement;
 
     /**
-     * creates a {@link TableRowPageElement} with the given {@link PageElement}s as content of the
+     * creates a {@link TableRowPageElement} with the given {@link IPageElement}s as content of the
      * cells
      * 
      */
-    public TableRowPageElement(PageElement[] pageElements) {
+    public TableRowPageElement(IPageElement[] pageElements) {
         super(WrapperType.TABLEROW, pageElements);
     }
 
@@ -56,12 +56,12 @@ public class TableRowPageElement extends WrapperPageElement {
     @Override
     public void visitSubElements(ILayouter layouter) {
 
-        List<PageElement> subElements = getSubElements();
+        List<IPageElement> subElements = getSubElements();
 
         int row = parentTablePageElement.getSubElements().indexOf(this);
 
         for (int column = 0; column < subElements.size(); column++) {
-            PageElement subElement = subElements.get(column);
+            IPageElement subElement = subElements.get(column);
 
             TableCellPageElement columnPageElement = getTableCellElement(subElement);
             layoutTableCell(row, column, columnPageElement);
@@ -70,7 +70,7 @@ public class TableRowPageElement extends WrapperPageElement {
         }
     }
 
-    protected TableCellPageElement getTableCellElement(PageElement pageElement) {
+    protected TableCellPageElement getTableCellElement(IPageElement pageElement) {
         if (pageElement instanceof TableCellPageElement) {
             return (TableCellPageElement)pageElement;
         }
@@ -78,12 +78,12 @@ public class TableRowPageElement extends WrapperPageElement {
     }
 
     /**
-     * layouts the given {@link TableCellPageElement} using all {@link TablePageElementLayout}s of
+     * layouts the given {@link TableCellPageElement} using all {@link ITablePageElementLayout}s of
      * the parent {@link TablePageElement}
      * 
      */
     protected void layoutTableCell(int row, int column, TableCellPageElement columnPageElement) {
-        for (TablePageElementLayout tableLayout : parentTablePageElement.getLayouts()) {
+        for (ITablePageElementLayout tableLayout : parentTablePageElement.getLayouts()) {
             tableLayout.layoutCell(row, column, columnPageElement);
         }
     }

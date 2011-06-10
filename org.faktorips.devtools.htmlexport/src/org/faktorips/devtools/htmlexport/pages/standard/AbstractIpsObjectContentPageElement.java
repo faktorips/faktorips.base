@@ -24,11 +24,11 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
-import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
+import org.faktorips.devtools.htmlexport.helper.path.HtmlPathFactory;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
@@ -159,14 +159,14 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
     }
 
     /**
-     * adds {@link PageElement}s for structural data like fitting ProductCmpt for a PolicyCmptType
+     * adds {@link IPageElement}s for structural data like fitting ProductCmpt for a PolicyCmptType
      */
     protected void addStructureData() {
         // could be overridden
     }
 
     /**
-     * adds {@link PageElement}s for hierarchical data like super- and subclasses
+     * adds {@link IPageElement}s for hierarchical data like super- and subclasses
      */
     protected void addTypeHierarchy() {
         // could be overridden
@@ -174,14 +174,14 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
 
     @Override
     public String getPathToRoot() {
-        return PathUtilFactory.createPathUtil(getDocumentedIpsObject()).getPathToRoot();
+        return HtmlPathFactory.createPathUtil(getDocumentedIpsObject()).getPathToRoot();
     }
 
     /**
      * returns the given table or the given alternative text, if the table is empty
      * 
      */
-    PageElement getTableOrAlternativeText(AbstractStandardTablePageElement tablePageElement, String alternativeText) {
+    IPageElement getTableOrAlternativeText(AbstractStandardTablePageElement tablePageElement, String alternativeText) {
         if (tablePageElement == null || tablePageElement.isEmpty()) {
             return new TextPageElement(alternativeText);
         }

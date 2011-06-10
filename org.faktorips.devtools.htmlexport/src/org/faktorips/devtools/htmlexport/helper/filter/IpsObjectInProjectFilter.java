@@ -17,12 +17,12 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- * {@link IpsElementFilter}, which accepts all {@link IIpsElement}s within the given
+ * {@link IIpsElementFilter}, which accepts all {@link IIpsElement}s within the given
  * {@link IIpsProject}
  * 
  * @author dicker
  */
-public class IpsObjectInProjectFilter implements IpsElementFilter {
+public class IpsObjectInProjectFilter implements IIpsElementFilter {
 
     private final IIpsProject ipsProject;
 

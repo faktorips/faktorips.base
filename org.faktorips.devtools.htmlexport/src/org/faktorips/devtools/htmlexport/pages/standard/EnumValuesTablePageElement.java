@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractIpsObjectPartsContainerTablePageElement;
 
@@ -70,7 +70,7 @@ class EnumValuesTablePageElement extends AbstractIpsObjectPartsContainerTablePag
     }
 
     @Override
-    protected List<? extends PageElement> createRowWithIpsObjectPart(IEnumValue rowData) {
+    protected List<? extends IPageElement> createRowWithIpsObjectPart(IEnumValue rowData) {
         List<String> valueData = new ArrayList<String>();
 
         for (IEnumAttribute enumAttribute : enumAttributes) {

@@ -23,6 +23,11 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
 
+/**
+ * An {@link ILayouter} provides Methods for layouting the exported documentation
+ * 
+ * @author dicker
+ */
 public interface ILayouter extends IGenerator {
 
     /**

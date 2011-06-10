@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
@@ -90,10 +90,10 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
     }
 
     /**
-     * creates a {@link PageElement} for an {@link ITestObject}
+     * creates a {@link IPageElement} for an {@link ITestObject}
      * 
      */
-    private PageElement createTestObjectPageElement(ITestObject testObject) {
+    private IPageElement createTestObjectPageElement(ITestObject testObject) {
         try {
             if (testObject instanceof ITestValue) {
                 return createTestValuePageElement((ITestValue)testObject);
@@ -106,18 +106,18 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
             }
         } catch (CoreException e) {
             getContext().addStatus(
-                    new IpsStatus(IStatus.ERROR, "Error creating PageElement for " + testObject.getName(), e)); //$NON-NLS-1$
+                    new IpsStatus(IStatus.ERROR, "Error creating IPageElement for " + testObject.getName(), e)); //$NON-NLS-1$
         }
 
         return TextPageElement.createParagraph(getContext().getLabel(testObject) + " " + testObject.getClass()); //$NON-NLS-1$
     }
 
-    private PageElement createTestPolicyCmptPageElement(ITestPolicyCmpt testObject) throws CoreException {
+    private IPageElement createTestPolicyCmptPageElement(ITestPolicyCmpt testObject) throws CoreException {
         TreeNodePageElement testObjectPageElement = new TreeNodePageElement(new WrapperPageElement(WrapperType.BLOCK)
                 .addPageElements(new IpsElementImagePageElement(testObject)).addPageElements(
                         new TextPageElement(testObject.getTestParameterName())));
 
-        PageElement testAttributesTable = createTestPolicyCmptTestAttributesTable(testObject);
+        IPageElement testAttributesTable = createTestPolicyCmptTestAttributesTable(testObject);
 
         testObjectPageElement.addPageElements(testAttributesTable);
 
@@ -131,7 +131,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
         return testObjectPageElement;
     }
 
-    private PageElement createTestPolicyCmptTestAttributesTable(ITestPolicyCmpt testObject) throws CoreException {
+    private IPageElement createTestPolicyCmptTestAttributesTable(ITestPolicyCmpt testObject) throws CoreException {
         ITestAttributeValue[] testAttributeValues = testObject.getTestAttributeValues();
         if (testAttributeValues.length == 0) {
             return new TextPageElement(getContext().getMessage(
@@ -150,7 +150,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
         return keyValueTable;
     }
 
-    private PageElement createTestRulePageElement(ITestRule testObject) {
+    private IPageElement createTestRulePageElement(ITestRule testObject) {
         TreeNodePageElement testObjectPageElement = createRootNode(testObject.getTestParameterName());
 
         KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement(getContext());
@@ -165,7 +165,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
         return testObjectPageElement;
     }
 
-    private PageElement createTestValuePageElement(ITestValue testObject) throws CoreException {
+    private IPageElement createTestValuePageElement(ITestValue testObject) throws CoreException {
         TreeNodePageElement testObjectPageElement = new TreeNodePageElement(new WrapperPageElement(WrapperType.BLOCK)
                 .addPageElements(new IpsElementImagePageElement(testObject)).addPageElements(
                         new TextPageElement(testObject.getTestParameterName())));

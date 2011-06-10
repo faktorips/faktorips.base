@@ -21,7 +21,7 @@ import org.faktorips.devtools.htmlexport.context.AbstractHtmlExportPluginTest;
 import org.faktorips.devtools.htmlexport.generators.IGenerator;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.junit.Before;
 
 public abstract class AbstractXmlUnitHtmlExportTest extends AbstractHtmlExportPluginTest {
@@ -39,17 +39,17 @@ public abstract class AbstractXmlUnitHtmlExportTest extends AbstractHtmlExportPl
         layouter = new HtmlLayouter(new TestUtil().createMockDocumentationContext(), "");
     }
 
-    protected void assertXPathExists(PageElement pageElement, String xPath) throws Exception {
+    protected void assertXPathExists(IPageElement pageElement, String xPath) throws Exception {
         new AbstractHtmlExportXmlUnitLayouterTest() {
         }.assertXpathExists(createXml(pageElement), xPath);
     }
 
-    protected void assertXPathNotExists(PageElement pageElement, String xPath) throws Exception {
+    protected void assertXPathNotExists(IPageElement pageElement, String xPath) throws Exception {
         new AbstractHtmlExportXmlUnitLayouterTest() {
         }.assertXpathNotExists(createXml(pageElement), xPath);
     }
 
-    private String createXml(PageElement pageElement) throws UnsupportedEncodingException {
+    private String createXml(IPageElement pageElement) throws UnsupportedEncodingException {
         pageElement.build();
 
         layouter.clear();

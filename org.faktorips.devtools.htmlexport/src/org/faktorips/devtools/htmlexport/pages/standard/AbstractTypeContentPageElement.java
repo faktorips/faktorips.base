@@ -28,7 +28,7 @@ import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
@@ -120,7 +120,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
      */
     protected void addSubTypeHierarchy() {
 
-        List<PageElement> subTypes = new ArrayList<PageElement>();
+        List<IPageElement> subTypes = new ArrayList<IPageElement>();
 
         for (IIpsSrcFile srcFile : getContext().getDocumentedSourceFiles(getDocumentedIpsObject().getIpsObjectType())) {
             addSubType(subTypes, srcFile);
@@ -133,7 +133,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
         addPageElements(new WrapperPageElement(WrapperType.BLOCK, new ListPageElement(subTypes)));
     }
 
-    private void addSubType(List<PageElement> subTypes, IIpsSrcFile srcFile) {
+    private void addSubType(List<IPageElement> subTypes, IIpsSrcFile srcFile) {
         IType type;
         try {
             type = (IType)srcFile.getIpsObject();
@@ -215,7 +215,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 
         addPageElements(new WrapperPageElement(
                 WrapperType.BLOCK,
-                new PageElement[] {
+                new IPageElement[] {
                         new TextPageElement(getContext().getMessage(
                                 HtmlExportMessages.AbstractTypeContentPageElement_extends)
                                 + " "), new PageElementUtils().createLinkPageElement(getContext(), to, "content", getContext().getLabel(to), true) })); //$NON-NLS-1$//$NON-NLS-2$ 

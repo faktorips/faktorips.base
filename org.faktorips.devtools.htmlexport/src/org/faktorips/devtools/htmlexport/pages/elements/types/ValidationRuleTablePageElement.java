@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 
 /**
@@ -45,7 +45,7 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
     }
 
     @Override
-    protected List<? extends PageElement> createRowWithIpsObjectPart(IValidationRule rule) {
+    protected List<? extends IPageElement> createRowWithIpsObjectPart(IValidationRule rule) {
         List<String> ruleData = new ArrayList<String>();
 
         ruleData.add(getContext().getLabel(rule));

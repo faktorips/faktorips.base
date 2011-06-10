@@ -18,12 +18,12 @@ import java.util.Set;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 
 /**
- * The PageElement is a node in the tree, which represents the exported information
+ * The IPageElement is a node in the tree, which represents the exported information
  * 
  * @author dicker
  * 
  */
-public interface PageElement {
+public interface IPageElement {
 
     /**
      * returns a Set of {@link Style}s, which define the Style of the Node
@@ -36,10 +36,10 @@ public interface PageElement {
      * adds {@link Style}s and returns this
      * 
      */
-    public PageElement addStyles(Style... style);
+    public IPageElement addStyles(Style... style);
 
     /**
-     * checks, whether PageElement has the Style
+     * checks, whether IPageElement has the Style
      * 
      */
     public boolean hasStyle(Style style);
@@ -62,7 +62,7 @@ public interface PageElement {
     public void build();
 
     /**
-     * changes the PageElement to a block
+     * changes the IPageElement to a block
      */
     public void makeBlock();
 

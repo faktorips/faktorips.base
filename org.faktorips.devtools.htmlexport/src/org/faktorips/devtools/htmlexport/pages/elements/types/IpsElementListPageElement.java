@@ -22,10 +22,10 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
-import org.faktorips.devtools.htmlexport.helper.filter.IpsElementFilter;
+import org.faktorips.devtools.htmlexport.helper.filter.IIpsElementFilter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
@@ -48,7 +48,7 @@ public class IpsElementListPageElement extends AbstractIpsElementListPageElement
         this(baseIpsElement, srcFiles, ALL_FILTER, context, false);
     }
 
-    public IpsElementListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles, IpsElementFilter filter,
+    public IpsElementListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles, IIpsElementFilter filter,
             DocumentationContext context, boolean shownTypeChooser) {
         super(baseIpsElement, srcFiles, filter, context);
         this.shownTypeChooser = shownTypeChooser;
@@ -68,7 +68,7 @@ public class IpsElementListPageElement extends AbstractIpsElementListPageElement
         addPageElements(new WrapperPageElement(WrapperType.BLOCK).addPageElements(new LinkPageElement(
                 "classes", "classes", getContext().getMessage(HtmlExportMessages.IpsObjectListPageElement_allObjects)))); //$NON-NLS-1$ //$NON-NLS-2$ 
 
-        List<PageElement> classes = createClassesList();
+        List<IPageElement> classes = createClassesList();
 
         addPageElements(new TextPageElement(classes.size()
                 + " " + getContext().getMessage(HtmlExportMessages.IpsObjectListPageElement_objects))); //$NON-NLS-1$ 
@@ -81,17 +81,17 @@ public class IpsElementListPageElement extends AbstractIpsElementListPageElement
     /**
      * creates a list with {@link LinkPageElement}s to the given objects.
      * 
-     * @return List of {@link PageElement}s
+     * @return List of {@link IPageElement}s
      */
-    protected List<PageElement> createClassesList() {
+    protected List<IPageElement> createClassesList() {
         Collections.sort(srcFiles, IPS_OBJECT_COMPARATOR);
 
-        List<PageElement> items = new ArrayList<PageElement>();
+        List<IPageElement> items = new ArrayList<IPageElement>();
         for (IIpsSrcFile srcFile : srcFiles) {
             if (!filter.accept(srcFile)) {
                 continue;
             }
-            PageElement link = new PageElementUtils().createLinkPageElement(getContext(), srcFile, getLinkTarget(),
+            IPageElement link = new PageElementUtils().createLinkPageElement(getContext(), srcFile, getLinkTarget(),
                     srcFile.getIpsObjectName(), true);
             items.add(link);
         }

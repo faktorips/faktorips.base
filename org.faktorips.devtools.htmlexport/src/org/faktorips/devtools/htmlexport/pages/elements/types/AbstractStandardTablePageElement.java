@@ -18,7 +18,7 @@ import java.util.List;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.DataPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
@@ -78,7 +78,7 @@ public abstract class AbstractStandardTablePageElement extends TablePageElement 
      * adds the headline to the table and uses the values returned by the method getHeadline
      */
     protected void addHeadline() {
-        PageElement[] pageElements = new PageElementUtils().createTextPageElements(getHeadline(), null, TextType.WITHOUT_TYPE);
+        IPageElement[] pageElements = new PageElementUtils().createTextPageElements(getHeadline(), null, TextType.WITHOUT_TYPE);
 
         addSubElement(new TableRowPageElement(pageElements));
     }
@@ -87,7 +87,7 @@ public abstract class AbstractStandardTablePageElement extends TablePageElement 
      * @throws UnsupportedOperationException always
      */
     @Override
-    public AbstractCompositePageElement addPageElements(PageElement... pageElements) {
+    public AbstractCompositePageElement addPageElements(IPageElement... pageElements) {
         throw new UnsupportedOperationException();
     }
 

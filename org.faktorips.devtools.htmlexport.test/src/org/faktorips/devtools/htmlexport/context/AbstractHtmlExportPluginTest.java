@@ -214,9 +214,10 @@ public abstract class AbstractHtmlExportPluginTest extends AbstractIpsPluginTest
             GregorianCalendar cal = new GregorianCalendar(2010, 0, 1);
             IProductCmptGeneration krankenBvbBeitragXyzGeneration = (IProductCmptGeneration)krankenBvbBeitragXyz
                     .newGeneration(cal);
-            krankenBvbBeitragXyzGeneration.newAttributeValue(text3Attribute, "Ich bin der Text meiner Generation");
-            krankenBvbBeitragXyzGeneration.newAttributeValue(zahl2Attribute, "234");
-            krankenBvbBeitragXyzGeneration.newAttributeValue(geld1Attribute, "120 EUR");
+            krankenBvbBeitragXyzGeneration.newAttributeValue(text3Attribute).setValue(
+                    "Ich bin der Text meiner Generation");
+            krankenBvbBeitragXyzGeneration.newAttributeValue(zahl2Attribute).setValue("234");
+            krankenBvbBeitragXyzGeneration.newAttributeValue(geld1Attribute).setValue("120 EUR");
             krankenBvbBeitragXyzGeneration.newFormula(methodCompZahl3);
 
             IProductCmpt krankenBvbBeitragZyx = newProductCmpt(krankenBVBArt, "kranken.KrankenBVB-Beitrag-Zyx");
@@ -224,9 +225,10 @@ public abstract class AbstractHtmlExportPluginTest extends AbstractIpsPluginTest
 
             IProductCmptGeneration krankenBvbBeitragZyxGeneration = (IProductCmptGeneration)krankenBvbBeitragZyx
                     .newGeneration(cal);
-            krankenBvbBeitragZyxGeneration.newAttributeValue(text3Attribute, "Ich bin der Text meiner Generation");
-            krankenBvbBeitragZyxGeneration.newAttributeValue(zahl2Attribute, "254");
-            krankenBvbBeitragZyxGeneration.newAttributeValue(geld1Attribute, "125 EUR");
+            krankenBvbBeitragZyxGeneration.newAttributeValue(text3Attribute).setValue(
+                    "Ich bin der Text meiner Generation");
+            krankenBvbBeitragZyxGeneration.newAttributeValue(zahl2Attribute).setValue("254");
+            krankenBvbBeitragZyxGeneration.newAttributeValue(geld1Attribute).setValue("125 EUR");
             krankenBvbBeitragZyxGeneration.newFormula(methodCompZahl3);
 
             newPolicyAndProductCmptType(ipsProject, "kranken.sub.KrankenSubBVB", "kranken.sub.KrankenSubBVBArt");

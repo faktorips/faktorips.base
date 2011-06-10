@@ -28,7 +28,7 @@ public abstract class AbstractRootPageElement extends AbstractCompositePageEleme
     @Override
     public void build() {
         createId();
-        subElements = new ArrayList<PageElement>();
+        subElements = new ArrayList<IPageElement>();
     }
 
     @Override

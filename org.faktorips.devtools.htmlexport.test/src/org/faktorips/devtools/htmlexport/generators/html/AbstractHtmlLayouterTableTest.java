@@ -14,7 +14,7 @@
 package org.faktorips.devtools.htmlexport.generators.html;
 
 import org.faktorips.devtools.htmlexport.helper.html.AbstractTestHtmlLayouter;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
@@ -33,7 +33,7 @@ public abstract class AbstractHtmlLayouterTableTest extends AbstractTestHtmlLayo
         TablePageElement table = new TablePageElement();
 
         for (int row = 0; row < rows; row++) {
-            PageElement[] pageElements = new PageElement[cols];
+            IPageElement[] pageElements = new IPageElement[cols];
             for (int col = 0; col < cols; col++) {
                 pageElements[col] = new TextPageElement(createCellContent(row, col));
             }

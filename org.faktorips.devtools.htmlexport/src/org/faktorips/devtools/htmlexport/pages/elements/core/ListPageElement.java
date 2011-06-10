@@ -18,7 +18,7 @@ import java.util.List;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 
 /**
- * A {@link PageElement} representing a list.
+ * A {@link IPageElement} representing a list.
  * 
  * @author dicker
  * 
@@ -30,7 +30,7 @@ public class ListPageElement extends AbstractCompositePageElement {
         super();
     }
 
-    public ListPageElement(List<? extends PageElement> listElements) {
+    public ListPageElement(List<? extends IPageElement> listElements) {
         super();
         getSubElements().addAll(listElements);
     }
@@ -62,20 +62,20 @@ public class ListPageElement extends AbstractCompositePageElement {
 
     @Override
     public void visitSubElements(ILayouter layouter) {
-        for (PageElement subElement : getSubElements()) {
+        for (IPageElement subElement : getSubElements()) {
             // TODO HIER DIE KLASSE HOCHSCHIEBEN!!!!
             layouter.layoutWrapperPageElement(createListItem(subElement));
         }
     }
 
-    private WrapperPageElement createListItem(PageElement subElement) {
+    private WrapperPageElement createListItem(IPageElement subElement) {
         if (isListItem(subElement)) {
             return (WrapperPageElement)subElement;
         }
         return new WrapperPageElement(WrapperType.LISTITEM, subElement);
     }
 
-    private boolean isListItem(PageElement pageElement) {
+    private boolean isListItem(IPageElement pageElement) {
         if (!(pageElement instanceof WrapperPageElement)) {
             return false;
         }

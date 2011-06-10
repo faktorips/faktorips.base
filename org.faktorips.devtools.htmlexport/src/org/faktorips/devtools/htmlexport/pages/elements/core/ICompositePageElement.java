@@ -21,7 +21,7 @@ import org.faktorips.devtools.htmlexport.generators.ILayouter;
  * @author dicker
  * 
  */
-public interface ICompositePageElement extends PageElement {
+public interface ICompositePageElement extends IPageElement {
 
     /**
      * lets the {@link ILayouter} visit the subElements
@@ -30,8 +30,8 @@ public interface ICompositePageElement extends PageElement {
     public void visitSubElements(ILayouter layouter);
 
     /**
-     * adds one or more {@link PageElement}s and returns this
+     * adds one or more {@link IPageElement}s and returns this
      * 
      */
-    public ICompositePageElement addPageElements(PageElement... pageElements);
+    public ICompositePageElement addPageElements(IPageElement... pageElements);
 }

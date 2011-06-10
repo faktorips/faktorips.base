@@ -14,8 +14,8 @@
 package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 
 public interface ILinkStrategy {
-    public LinkPageElement createLink(PageElement... containedPageElements);
+    public LinkPageElement createLink(IPageElement... containedPageElements);
 }

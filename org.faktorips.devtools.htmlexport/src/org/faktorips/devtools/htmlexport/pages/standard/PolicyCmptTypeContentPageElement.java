@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
@@ -129,7 +129,7 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
                     + ": " + getContext().getMessage(HtmlExportMessages.PolicyCmptTypeContentPageElement_none))); //$NON-NLS-1$ 
             return;
         }
-        addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
+        addPageElements(new WrapperPageElement(WrapperType.BLOCK, new IPageElement[] {
                 new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": "), //$NON-NLS-1$
                 new PageElementUtils().createLinkPageElement(getContext(), to,
                         "content", getContext().getLabel(to), true) })); //$NON-NLS-1$

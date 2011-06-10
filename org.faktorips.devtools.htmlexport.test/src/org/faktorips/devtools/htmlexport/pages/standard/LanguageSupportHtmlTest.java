@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.htmlexport.context.messages.LanguageSupportTest;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.junit.Test;
 
 /**
@@ -62,7 +62,7 @@ public class LanguageSupportHtmlTest extends AbstractXmlUnitHtmlExportTest {
         enDescription.setText(enBeschreibung);
 
         context.setDescriptionLocale(Locale.GERMANY);
-        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
         assertXPathExists(objectContentPage, deXPath);
 
         context.setDescriptionLocale(Locale.ENGLISH);
@@ -83,7 +83,8 @@ public class LanguageSupportHtmlTest extends AbstractXmlUnitHtmlExportTest {
         attribute.setDatatype("String");
 
         ProductCmptGeneration generation = (ProductCmptGeneration)productCmpt.getFirstGeneration();
-        IAttributeValue value = generation.newAttributeValue(attribute, "yxz");
+        IAttributeValue value = generation.newAttributeValue(attribute);
+        value.setValue("yxz");
 
         String deXPath = "//table[@id='" + productCmpt.getName() + "_ProductGenerationAttributeTable']//tr/td[1][.='"
                 + deLabel + "']";
@@ -93,7 +94,7 @@ public class LanguageSupportHtmlTest extends AbstractXmlUnitHtmlExportTest {
         context.setDescriptionLocale(Locale.GERMAN);
         attribute.setLabelValue(Locale.GERMAN, deLabel);
 
-        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(productCmpt.getIpsSrcFile(),
+        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(productCmpt.getIpsSrcFile(),
                 context);
         assertXPathExists(objectContentPage, deXPath);
 

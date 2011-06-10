@@ -19,17 +19,17 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 
 /**
- * Base implementation of the {@link IpsElementPathUtil}
+ * Base implementation of the {@link IHtmlPath}
  * 
  * @author dicker
  * 
  */
-public abstract class AbstractIpsElementPathUtil<T extends IIpsElement> implements IpsElementPathUtil {
+public abstract class AbstractIpsElementHtmlPath<T extends IIpsElement> implements IHtmlPath {
     protected static final String PATH_UP = "../"; //$NON-NLS-1$
 
     protected T ipsElement;
 
-    protected AbstractIpsElementPathUtil(T ipsElement) {
+    protected AbstractIpsElementHtmlPath(T ipsElement) {
         this.ipsElement = ipsElement;
     }
 
@@ -64,7 +64,6 @@ public abstract class AbstractIpsElementPathUtil<T extends IIpsElement> implemen
         return ipsPackageFragment.getRelativePath().toOSString() + File.separator;
     }
 
-    @Override
     public T getIpsElement() {
         return ipsElement;
     }

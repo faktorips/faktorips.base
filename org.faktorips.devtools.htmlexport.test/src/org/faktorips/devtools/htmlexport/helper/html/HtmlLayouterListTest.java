@@ -17,7 +17,7 @@ import java.util.Arrays;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.junit.Test;
 
@@ -59,7 +59,7 @@ public class HtmlLayouterListTest extends AbstractTestHtmlLayouter {
 
     protected ListPageElement createList() {
         items = new String[] { "Item 1", "Item 2", "Item 3" };
-        PageElement[] pageElements = new PageElementUtils().createTextPageElements(Arrays.asList(items));
+        IPageElement[] pageElements = new PageElementUtils().createTextPageElements(Arrays.asList(items));
 
         ListPageElement liste = new ListPageElement(Arrays.asList(pageElements));
         return liste;

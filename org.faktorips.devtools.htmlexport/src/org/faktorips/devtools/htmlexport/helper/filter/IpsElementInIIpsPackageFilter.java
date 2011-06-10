@@ -33,7 +33,7 @@ import org.faktorips.devtools.htmlexport.context.DocumentationContext;
  * @author dicker
  * 
  */
-public class IpsElementInIIpsPackageFilter implements IpsElementFilter {
+public class IpsElementInIIpsPackageFilter implements IIpsElementFilter {
     private final IIpsPackageFragment ipsPackageFragment;
     private final DocumentationContext context;
 

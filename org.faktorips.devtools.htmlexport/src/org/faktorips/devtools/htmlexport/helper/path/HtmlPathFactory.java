@@ -23,35 +23,35 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  * 
- * Utility for choosing the right {@link IpsElementPathUtil}
+ * Utility for choosing the right {@link IHtmlPath}
  * 
  * @author dicker
  * 
  */
-public class PathUtilFactory {
+public class HtmlPathFactory {
 
     /**
-     * returns {@link IpsElementPathUtil} for the given {@link IIpsElement}
+     * returns {@link IHtmlPath} for the given {@link IIpsElement}
      * 
      */
-    public static PathUtil createPathUtil(IIpsElement ipsElement) {
+    public static IHtmlPath createPathUtil(IIpsElement ipsElement) {
         if (ipsElement instanceof IIpsProject) {
-            return new IpsProjectPathUtil((IIpsProject)ipsElement);
+            return new IpsProjectHtmlPath((IIpsProject)ipsElement);
         }
         if (ipsElement instanceof IIpsPackageFragment) {
-            return new IpsPackageFragmentPathUtil((IIpsPackageFragment)ipsElement);
+            return new IpsPackageFragmentHtmlPath((IIpsPackageFragment)ipsElement);
         }
         if (ipsElement instanceof IIpsSrcFile) {
-            return new IpsSrcFilePathUtil((IIpsSrcFile)ipsElement);
+            return new IpsSrcFileHtmlPath((IIpsSrcFile)ipsElement);
         }
         if (ipsElement instanceof IIpsObject) {
-            return new IpsSrcFilePathUtil(((IIpsObject)ipsElement).getIpsSrcFile());
+            return new IpsSrcFileHtmlPath(((IIpsObject)ipsElement).getIpsSrcFile());
         }
         throw new NotImplementedException(
-                "There is no IpsElementPathUtil for the IIpsElement of the type " + ipsElement.getClass().getCanonicalName()); //$NON-NLS-1$
+                "There is no IIpsElementHtmlPath for the IIpsElement of the type " + ipsElement.getClass().getCanonicalName()); //$NON-NLS-1$
     }
 
-    public static PathUtil createPathUtil(IpsObjectType ipsObjectType) {
-        return new IpsObjectTypePathUtil(ipsObjectType);
+    public static IHtmlPath createPathUtil(IpsObjectType ipsObjectType) {
+        return new IpsObjectTypeHtmlPath(ipsObjectType);
     }
 }

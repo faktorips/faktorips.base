@@ -18,16 +18,16 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- * {@link IpsElementPathUtil} for an {@link IIpsProject}
+ * {@link IHtmlPath} for an {@link IIpsProject}
  * 
  * @author dicker
  * 
  */
-public class IpsProjectPathUtil extends AbstractIpsElementPathUtil<IIpsProject> {
+public class IpsProjectHtmlPath extends AbstractIpsElementHtmlPath<IIpsProject> {
 
     private static final String INDEX_HTML = "indes.html"; //$NON-NLS-1$
 
-    public IpsProjectPathUtil(IIpsProject ipsElement) {
+    public IpsProjectHtmlPath(IIpsProject ipsElement) {
         super(ipsElement);
     }
 

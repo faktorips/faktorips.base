@@ -16,12 +16,15 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.ipsobject.Description;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
-import org.faktorips.devtools.htmlexport.helper.path.LinkableIpsElementUtil;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
@@ -53,7 +56,7 @@ public class MessageListTablePageElement extends AbstractStandardTablePageElemen
      */
     protected void addMessageRow(Message message) {
         int severity = message.getSeverity();
-        addSubElement(new TableRowPageElement(new PageElement[] {
+        addSubElement(new TableRowPageElement(new IPageElement[] {
                 createInvalidObjectPropertiesPageElement(message),
                 new TextPageElement(message.getText()),
                 new TextPageElement(severity == Message.ERROR ? getContext().getMessage(
@@ -64,7 +67,7 @@ public class MessageListTablePageElement extends AbstractStandardTablePageElemen
                         + severity) }));
     }
 
-    protected PageElement createInvalidObjectPropertiesPageElement(Message message) {
+    protected IPageElement createInvalidObjectPropertiesPageElement(Message message) {
         if (message.getInvalidObjectProperties().length == 0) {
             return new TextPageElement(""); //$NON-NLS-1$
         }
@@ -83,13 +86,31 @@ public class MessageListTablePageElement extends AbstractStandardTablePageElemen
         return objectPropertiesList;
     }
 
-    protected PageElement createInvalidObjectPropertiesItem(ObjectProperty objectProperty) {
-        IIpsSrcFile srcFile = new LinkableIpsElementUtil().getLinkableSrcFile(objectProperty.getObject(), getContext());
+    protected IPageElement createInvalidObjectPropertiesItem(ObjectProperty objectProperty) {
+        IIpsSrcFile srcFile = getLinkableSrcFile(objectProperty.getObject(), getContext());
         if (srcFile != null) {
             return new PageElementUtils().createLinkPageElement(context, srcFile, "content", //$NON-NLS-1$
                     srcFile.getIpsObjectName(), true);
         }
         return new TextPageElement(objectProperty.getObject().toString());
+    }
+
+    private IIpsSrcFile getLinkableSrcFile(Object object, DocumentationContext context) {
+        if (object instanceof String) {
+            return null;
+        }
+        if (object instanceof IIpsSrcFile) {
+            return (IIpsSrcFile)object;
+        }
+        if (object instanceof Description) {
+            return getLinkableSrcFile(((Description)object).getParent(), context);
+        }
+        if (object instanceof IIpsObjectPartContainer) {
+            return ((IIpsObjectPartContainer)object).getIpsSrcFile();
+        }
+
+        context.addStatus(new IpsStatus(IStatus.WARNING, "No IpsSrcFile for class " + object.getClass())); //$NON-NLS-1$
+        return null;
     }
 
     @Override

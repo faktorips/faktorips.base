@@ -13,9 +13,14 @@
 
 package org.faktorips.devtools.htmlexport.generators;
 
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 
-public interface IPageElementLayouter<T extends PageElement> {
+/**
+ * Interface for Layouting of {@link IPageElement}s
+ * 
+ * @author dicker
+ */
+public interface IPageElementLayouter<T extends IPageElement> {
 
     public void layout();
 

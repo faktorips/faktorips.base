@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
@@ -71,7 +71,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
         }
 
         @Override
-        protected List<? extends PageElement> createRowWithIpsObjectPart(IRow rowData) {
+        protected List<? extends IPageElement> createRowWithIpsObjectPart(IRow rowData) {
             return Arrays.asList(new PageElementUtils().createTextPageElements(getRowData(rowData)));
         }
 
@@ -121,7 +121,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
             return;
         }
 
-        addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
+        addPageElements(new WrapperPageElement(WrapperType.BLOCK, new IPageElement[] {
                 new TextPageElement(IpsObjectType.TABLE_STRUCTURE.getDisplayName() + ": "), //$NON-NLS-1$
                 new PageElementUtils().createLinkPageElement(getContext(), tableStructure,
                         "content", getContext().getLabel(tableStructure), true) })); //$NON-NLS-1$
@@ -170,7 +170,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
             wrapper.addPageElements(getTableOrAlternativeText(contentTablePageElement,
                     getContext().getMessage(HtmlExportMessages.TableContentsContentPageElement_noContent)));
         }
-        PageElement createContentTable = wrapper;
+        IPageElement createContentTable = wrapper;
         addPageElements(createContentTable);
     }
 

@@ -16,7 +16,7 @@ package org.faktorips.devtools.htmlexport.generators;
 import java.io.UnsupportedEncodingException;
 
 /**
- * generates data of the documentation
+ * An implementation of this interface generates output
  * 
  * @author dicker
  * 

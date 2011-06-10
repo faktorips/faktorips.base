@@ -20,11 +20,11 @@ import java.util.Set;
 
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 
 /**
- * A {@link PageElement} representing a table
+ * A {@link IPageElement} representing a table
  * 
  * @author dicker
  * 
@@ -32,9 +32,9 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 public class TablePageElement extends AbstractCompositePageElement {
 
     /**
-     * a {@link Set} of {@link TablePageElementLayout}s
+     * a {@link Set} of {@link ITablePageElementLayout}s
      */
-    private Set<TablePageElementLayout> tableLayouts = new HashSet<TablePageElementLayout>();
+    private Set<ITablePageElementLayout> tableLayouts = new HashSet<ITablePageElementLayout>();
 
     @Override
     public void acceptLayouter(ILayouter layoutVisitor) {
@@ -44,11 +44,11 @@ public class TablePageElement extends AbstractCompositePageElement {
     /**
      * adds a {@link TableRowPageElement} to the table
      * 
-     * @see org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement#addSubElement(org.faktorips.devtools.htmlexport.pages.elements.core.PageElement)
-     * @throws ClassCastException if given {@link PageElement} is not a {@link TableRowPageElement}
+     * @see org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement#addSubElement(org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement)
+     * @throws ClassCastException if given {@link IPageElement} is not a {@link TableRowPageElement}
      */
     @Override
-    protected void addSubElement(PageElement pageElement) {
+    protected void addSubElement(IPageElement pageElement) {
         TableRowPageElement rowPageElement = (TableRowPageElement)pageElement;
 
         super.addSubElement(rowPageElement);
@@ -99,7 +99,7 @@ public class TablePageElement extends AbstractCompositePageElement {
 
     @Override
     public void visitSubElements(ILayouter layouter) {
-        List<PageElement> subElements = getSubElements();
+        List<IPageElement> subElements = getSubElements();
         for (int i = 0; i < subElements.size(); i++) {
             TableRowPageElement rowPageElement = (TableRowPageElement)subElements.get(i);
             layoutTableRow(i, rowPageElement);
@@ -109,35 +109,35 @@ public class TablePageElement extends AbstractCompositePageElement {
     }
 
     /**
-     * layouts the given {@link TableRowPageElement} using all added {@link TablePageElementLayout}s
+     * layouts the given {@link TableRowPageElement} using all added {@link ITablePageElementLayout}s
      * 
      */
     protected void layoutTableRow(int i, TableRowPageElement rowPageElement) {
-        for (TablePageElementLayout tableLayout : tableLayouts) {
+        for (ITablePageElementLayout tableLayout : tableLayouts) {
             tableLayout.layoutRow(i, rowPageElement);
         }
     }
 
     /**
-     * @return the {@link TablePageElementLayout}s
+     * @return the {@link ITablePageElementLayout}s
      */
-    public Set<TablePageElementLayout> getLayouts() {
+    public Set<ITablePageElementLayout> getLayouts() {
         return tableLayouts;
     }
 
     /**
-     * adds {@link TablePageElementLayout}s
+     * adds {@link ITablePageElementLayout}s
      * 
      */
-    public void addLayouts(TablePageElementLayout... layouts) {
+    public void addLayouts(ITablePageElementLayout... layouts) {
         tableLayouts.addAll(Arrays.asList(layouts));
     }
 
     /**
-     * remove {@link TablePageElementLayout}s
+     * remove {@link ITablePageElementLayout}s
      * 
      */
-    public void removeLayouts(TablePageElementLayout... layouts) {
+    public void removeLayouts(ITablePageElementLayout... layouts) {
         tableLayouts.removeAll(Arrays.asList(layouts));
     }
 }

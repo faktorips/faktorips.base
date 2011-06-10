@@ -25,8 +25,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
-import org.faktorips.devtools.htmlexport.helper.filter.IpsElementFilter;
-import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
+import org.faktorips.devtools.htmlexport.helper.filter.IIpsElementFilter;
+import org.faktorips.devtools.htmlexport.helper.path.HtmlPathFactory;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 
 /**
@@ -41,13 +41,13 @@ public abstract class AbstractIpsElementListPageElement extends AbstractRootPage
     protected IIpsElement baseIpsElement;
     protected String linkTarget;
     protected List<IIpsSrcFile> srcFiles;
-    protected IpsElementFilter filter = ALL_FILTER;
+    protected IIpsElementFilter filter = ALL_FILTER;
     private DocumentationContext context;
 
     /**
-     * {@link IpsElementFilter}, which accepts all {@link IIpsElement}s
+     * {@link IIpsElementFilter}, which accepts all {@link IIpsElement}s
      */
-    protected final static IpsElementFilter ALL_FILTER = new IpsElementFilter() {
+    protected final static IIpsElementFilter ALL_FILTER = new IIpsElementFilter() {
         @Override
         public boolean accept(IIpsElement object) {
             return true;
@@ -74,7 +74,7 @@ public abstract class AbstractIpsElementListPageElement extends AbstractRootPage
      * @param filter for objects
      */
     public AbstractIpsElementListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles,
-            IpsElementFilter filter, DocumentationContext context) {
+            IIpsElementFilter filter, DocumentationContext context) {
         super();
         this.baseIpsElement = baseIpsElement;
         this.srcFiles = srcFiles;
@@ -145,7 +145,7 @@ public abstract class AbstractIpsElementListPageElement extends AbstractRootPage
      */
     @Override
     public String getPathToRoot() {
-        return PathUtilFactory.createPathUtil(baseIpsElement).getPathToRoot();
+        return HtmlPathFactory.createPathUtil(baseIpsElement).getPathToRoot();
     }
 
     public DocumentationContext getContext() {

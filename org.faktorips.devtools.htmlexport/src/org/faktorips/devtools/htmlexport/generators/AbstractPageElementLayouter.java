@@ -14,9 +14,9 @@
 package org.faktorips.devtools.htmlexport.generators;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 
-public abstract class AbstractPageElementLayouter<T extends PageElement> implements IPageElementLayouter<T> {
+public abstract class AbstractPageElementLayouter<T extends IPageElement> implements IPageElementLayouter<T> {
     protected final T pageElement;
 
     protected AbstractPageElementLayouter(T pageElement) {

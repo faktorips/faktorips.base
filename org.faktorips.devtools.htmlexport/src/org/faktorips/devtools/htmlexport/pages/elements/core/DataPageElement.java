@@ -14,7 +14,7 @@
 package org.faktorips.devtools.htmlexport.pages.elements.core;
 
 /**
- * A {@link DataPageElement} is a {@link PageElement} representing simply structured data like lists
+ * A {@link DataPageElement} is a {@link IPageElement} representing simply structured data like lists
  * or tables
  * 
  * @author dicker

@@ -24,8 +24,8 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
-import org.faktorips.devtools.htmlexport.helper.path.PathUtil;
-import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
+import org.faktorips.devtools.htmlexport.helper.path.IHtmlPath;
+import org.faktorips.devtools.htmlexport.helper.path.HtmlPathFactory;
 
 /**
  * Utility for generating html
@@ -211,7 +211,7 @@ public class HtmlUtil {
      * 
      */
     public String getPathFromRoot(IIpsElement ipsElement, LinkedFileType linkedFileType) {
-        PathUtil pathUtil = PathUtilFactory.createPathUtil(ipsElement);
+        IHtmlPath pathUtil = HtmlPathFactory.createPathUtil(ipsElement);
         return pathUtil.getPathFromRoot(linkedFileType) + ".html"; //$NON-NLS-1$
     }
 
@@ -220,7 +220,7 @@ public class HtmlUtil {
      * 
      */
     public String getPathFromRoot(IpsObjectType ipsObjectType, LinkedFileType linkedFileType) {
-        PathUtil pathUtil = PathUtilFactory.createPathUtil(ipsObjectType);
+        IHtmlPath pathUtil = HtmlPathFactory.createPathUtil(ipsObjectType);
         return pathUtil.getPathFromRoot(linkedFileType) + ".html"; //$NON-NLS-1$
     }
 

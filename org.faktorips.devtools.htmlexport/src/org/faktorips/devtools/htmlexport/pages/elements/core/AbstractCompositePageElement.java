@@ -29,7 +29,7 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
     /**
      * the subElements of the CompositePageElement
      */
-    protected List<PageElement> subElements = new ArrayList<PageElement>();
+    protected List<IPageElement> subElements = new ArrayList<IPageElement>();
 
     protected String title;
     private WrapperType wrapperType = WrapperType.NONE;
@@ -56,32 +56,32 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
     public abstract void build();
 
     /**
-     * adds the given {@link PageElement}s
+     * adds the given {@link IPageElement}s
      * 
      * @return a reference to this ipsObject.
      * @throws ClassCastException if the given pageElements don't match restrictions for the
      *             CompositePageElement
      */
     @Override
-    public ICompositePageElement addPageElements(PageElement... pageElements) {
-        for (PageElement pageElement : pageElements) {
+    public ICompositePageElement addPageElements(IPageElement... pageElements) {
+        for (IPageElement pageElement : pageElements) {
             addSubElement(pageElement);
         }
         return this;
     }
 
     /**
-     * adds a {@link PageElement}. Override to check restrictions for subelements (e.g. a table just
+     * adds a {@link IPageElement}. Override to check restrictions for subelements (e.g. a table just
      * should take tableRows)
      * 
      */
-    protected void addSubElement(PageElement pageElement) {
+    protected void addSubElement(IPageElement pageElement) {
         subElements.add(pageElement);
     }
 
     @Override
     public void visitSubElements(ILayouter layouter) {
-        for (PageElement subElement : subElements) {
+        for (IPageElement subElement : subElements) {
             subElement.build();
             subElement.acceptLayouter(layouter);
         }
@@ -91,7 +91,7 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
      * returns a list of the subelements
      * 
      */
-    public List<PageElement> getSubElements() {
+    public List<IPageElement> getSubElements() {
         return subElements;
     }
 
@@ -99,7 +99,7 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
      * returns the subelement t the spedified position
      * 
      */
-    public PageElement getSubElement(int index) {
+    public IPageElement getSubElement(int index) {
         return subElements.get(index);
     }
 

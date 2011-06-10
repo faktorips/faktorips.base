@@ -16,7 +16,7 @@ package org.faktorips.devtools.htmlexport.pages.elements.core;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 
 /**
- * {@link PageElement} representing a link
+ * {@link IPageElement} representing a link
  * 
  * @author dicker
  * 
@@ -34,7 +34,7 @@ public class LinkPageElement extends AbstractCompositePageElement {
 
     private String linkAnchor;
 
-    public LinkPageElement(String path, String target, PageElement... pageElements) {
+    public LinkPageElement(String path, String target, IPageElement... pageElements) {
         this(path, target);
         addPageElements(pageElements);
     }

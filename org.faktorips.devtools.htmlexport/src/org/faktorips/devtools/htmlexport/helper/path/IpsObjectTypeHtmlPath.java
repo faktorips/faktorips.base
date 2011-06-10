@@ -15,10 +15,10 @@ package org.faktorips.devtools.htmlexport.helper.path;
 
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 
-public class IpsObjectTypePathUtil implements PathUtil {
+public class IpsObjectTypeHtmlPath implements IHtmlPath {
     private final IpsObjectType ipsObjectType;
 
-    public IpsObjectTypePathUtil(IpsObjectType ipsObjectType) {
+    public IpsObjectTypeHtmlPath(IpsObjectType ipsObjectType) {
         this.ipsObjectType = ipsObjectType;
     }
 

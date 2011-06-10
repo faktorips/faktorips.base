@@ -14,13 +14,13 @@
 package org.faktorips.devtools.htmlexport.pages.elements.core.table;
 
 /**
- * Default implementation of the {@link TablePageElementLayout} with empty implementations of the
+ * Default implementation of the {@link ITablePageElementLayout} with empty implementations of the
  * methods. You could override just the method you need and leave the other
  * 
  * @author dicker
  * 
  */
-public class DefaultTablePageElementLayout implements TablePageElementLayout {
+public class DefaultTablePageElementLayout implements ITablePageElementLayout {
 
     @Override
     public void layoutCell(int row, int column, TableCellPageElement cellPageElement) {

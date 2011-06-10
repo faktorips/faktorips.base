@@ -29,11 +29,11 @@ import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementInDocumentedSourceFileFilter;
 import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
-import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
+import org.faktorips.devtools.htmlexport.helper.path.HtmlPathFactory;
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsElementImagePageElement;
 
 /**
- * Utility for {@link PageElement}s
+ * Utility for {@link IPageElement}s
  * 
  * @author dicker
  * 
@@ -43,14 +43,14 @@ public class PageElementUtils {
     private static final String ANCHOR_SEPARATOR = "."; //$NON-NLS-1$
 
     /**
-     * creates {@link PageElement}s from the given {@link String}s with {@link Style}s and
+     * creates {@link IPageElement}s from the given {@link String}s with {@link Style}s and
      * {@link TextType}s
      * 
-     * @return array of {@link PageElement}s. To enable storing of other types of PageElements like
+     * @return array of {@link IPageElement}s. To enable storing of other types of PageElements like
      *         LinkPageElement, the return type is not TextPageElement[]
      */
-    public PageElement[] createTextPageElements(List<String> texts, Set<Style> styles, TextType type) {
-        PageElement[] textPageElements = new PageElement[texts.size()];
+    public IPageElement[] createTextPageElements(List<String> texts, Set<Style> styles, TextType type) {
+        IPageElement[] textPageElements = new IPageElement[texts.size()];
 
         for (int i = 0; i < textPageElements.length; i++) {
             textPageElements[i] = new TextPageElement(texts.get(i), styles, type);
@@ -60,11 +60,11 @@ public class PageElementUtils {
     }
 
     /**
-     * creates {@link PageElement}s from the given {@link String}s
+     * creates {@link IPageElement}s from the given {@link String}s
      * 
-     * @return array of {@link PageElement}s
+     * @return array of {@link IPageElement}s
      */
-    public PageElement[] createTextPageElements(List<String> texts) {
+    public IPageElement[] createTextPageElements(List<String> texts) {
         return createTextPageElements(texts, null, TextType.WITHOUT_TYPE);
     }
 
@@ -74,14 +74,14 @@ public class PageElementUtils {
      * 
      * @return {@link List} of {@link LinkPageElement}s
      */
-    public List<PageElement> createLinkPageElements(List<? extends IIpsSrcFile> srcFiles,
+    public List<IPageElement> createLinkPageElements(List<? extends IIpsSrcFile> srcFiles,
             String target,
             Set<Style> styles,
             DocumentationContext context) {
-        List<PageElement> liste = new ArrayList<PageElement>();
+        List<IPageElement> liste = new ArrayList<IPageElement>();
 
         for (IIpsSrcFile srcFile : srcFiles) {
-            PageElement linkPageElement = createLinkPageElement(context, srcFile, target, srcFile.getIpsObjectName(),
+            IPageElement linkPageElement = createLinkPageElement(context, srcFile, target, srcFile.getIpsObjectName(),
                     true, styles.toArray(new Style[styles.size()]));
             linkPageElement.addStyles(styles.toArray(new Style[styles.size()]));
             liste.add(linkPageElement);
@@ -93,7 +93,7 @@ public class PageElementUtils {
     /**
      * creates a LinkPageElement for an IpsElement
      */
-    public PageElement createLinkPageElement(DocumentationContext context,
+    public IPageElement createLinkPageElement(DocumentationContext context,
             IIpsElement to,
             String target,
             String text,
@@ -101,7 +101,7 @@ public class PageElementUtils {
             Style... styles) {
         IpsElementInDocumentedSourceFileFilter filter = new IpsElementInDocumentedSourceFileFilter(context);
 
-        PageElement element = createIpsElementRepresentation(to, context, text, useImage);
+        IPageElement element = createIpsElementRepresentation(to, context, text, useImage);
 
         if (filter.accept(to)) {
             return createLinkPageElementToIpsElement(to, target, element).addStyles(styles);
@@ -112,7 +112,7 @@ public class PageElementUtils {
     /**
      * creates a LinkPageElement for an IpsElement
      */
-    public PageElement createLinkPageElement(DocumentationContext context,
+    public IPageElement createLinkPageElement(DocumentationContext context,
             IIpsObjectPartContainer to,
             String target,
             Style... styles) {
@@ -120,7 +120,7 @@ public class PageElementUtils {
 
         String text = getIpsObjectPartContainerText(context, to);
 
-        PageElement element = createIpsElementRepresentation(to, context, text, false);
+        IPageElement element = createIpsElementRepresentation(to, context, text, false);
 
         if (filter.accept(to.getIpsSrcFile())) {
             LinkPageElement linkToIpsObjectPart = createLinkPageElementToIpsElement(to.getIpsSrcFile(),
@@ -139,7 +139,7 @@ public class PageElementUtils {
         return to.getName() + " (" + context.getLabel(to) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    public PageElement createIpsElementRepresentation(IIpsElement ipsElement,
+    public IPageElement createIpsElementRepresentation(IIpsElement ipsElement,
             DocumentationContext context,
             String text,
             boolean useImage) {
@@ -158,7 +158,7 @@ public class PageElementUtils {
     /**
      * creates a Link to the given {@link IIpsElement}
      */
-    public PageElement createLinkPageElement(DocumentationContext context,
+    public IPageElement createLinkPageElement(DocumentationContext context,
             IIpsElement to,
             String target,
             String text,
@@ -166,15 +166,15 @@ public class PageElementUtils {
         return createLinkPageElement(context, to, target, text, useImage, new Style[0]);
     }
 
-    private LinkPageElement createLinkPageElementToIpsElement(IIpsElement to, String target, PageElement element) {
+    private LinkPageElement createLinkPageElementToIpsElement(IIpsElement to, String target, IPageElement element) {
         return createLinkPageElementToIpsElement(to, null, target, element);
     }
 
     public LinkPageElement createLinkPageElementToIpsElement(IIpsElement to,
             String linkAnchor,
             String target,
-            PageElement element) {
-        String path = PathUtilFactory.createPathUtil(to).getPathFromRoot(
+            IPageElement element) {
+        String path = HtmlPathFactory.createPathUtil(to).getPathFromRoot(
                 LinkedFileType.getLinkedFileTypeByIpsElement(to));
         LinkPageElement linkPageElement = new LinkPageElement(path, target, element);
         linkPageElement.setLinkAnchor(linkAnchor);

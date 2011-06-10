@@ -14,14 +14,14 @@
 package org.faktorips.devtools.htmlexport.pages.elements.core.table;
 
 /**
- * The {@link TablePageElementLayout} is a layout for tables
+ * The {@link ITablePageElementLayout} is a layout for tables
  * 
  * 
  * 
  * @author dicker
  * 
  */
-public interface TablePageElementLayout {
+public interface ITablePageElementLayout {
 
     /**
      * layouts the given {@link TableRowPageElement}.

@@ -22,7 +22,7 @@ import org.custommonkey.xmlunit.XMLTestCase;
 import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.faktorips.devtools.htmlexport.TestUtil;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.xml.sax.SAXException;
 
@@ -43,8 +43,8 @@ public abstract class AbstractTestHtmlLayouter extends XMLTestCase {
         layouter.clear();
     }
 
-    protected List<PageElement> createPageElementListe(String[] texte) {
-        List<PageElement> elemente = new ArrayList<PageElement>();
+    protected List<IPageElement> createPageElementListe(String[] texte) {
+        List<IPageElement> elemente = new ArrayList<IPageElement>();
         for (String text : texte) {
             elemente.add(new TextPageElement(text));
         }
@@ -57,7 +57,7 @@ public abstract class AbstractTestHtmlLayouter extends XMLTestCase {
         }
     }
 
-    protected String layout(PageElement pageElement) {
+    protected String layout(IPageElement pageElement) {
         pageElement.acceptLayouter(layouter);
         byte[] generate = layouter.generate();
 

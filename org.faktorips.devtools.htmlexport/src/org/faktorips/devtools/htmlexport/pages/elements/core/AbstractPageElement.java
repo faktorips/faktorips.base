@@ -26,7 +26,7 @@ import org.faktorips.devtools.htmlexport.generators.ILayouter;
  * @author dicker
  * 
  */
-public abstract class AbstractPageElement implements PageElement {
+public abstract class AbstractPageElement implements IPageElement {
 
     protected Set<Style> styles = new LinkedHashSet<Style>();
 
@@ -51,7 +51,7 @@ public abstract class AbstractPageElement implements PageElement {
     }
 
     @Override
-    public PageElement addStyles(Style... style) {
+    public IPageElement addStyles(Style... style) {
         styles.addAll(Arrays.asList(style));
         return this;
     }

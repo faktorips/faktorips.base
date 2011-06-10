@@ -44,7 +44,7 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
@@ -140,7 +140,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     }
 
     private void addPolicyCmptTypeAttibutesRow(IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
-        PageElement[] cells = new PageElement[productCmpt.getNumOfGenerations() + 1];
+        IPageElement[] cells = new IPageElement[productCmpt.getNumOfGenerations() + 1];
 
         cells[0] = new TextPageElement(context.getLabel(policyCmptTypeAttribute));
 
@@ -260,14 +260,14 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     }
 
     private void addSubHeadline(String category) {
-        PageElement[] pageElements = new PageElementUtils().createTextPageElements(getHeadlineWithCategory(category),
+        IPageElement[] pageElements = new PageElementUtils().createTextPageElements(getHeadlineWithCategory(category),
                 null, TextType.WITHOUT_TYPE);
 
         addSubElement(new TableRowPageElement(pageElements).addStyles(Style.TABLE_HEADLINE));
     }
 
     private void addTableStructureUsageRow(ITableStructureUsage tableStructureUsage) {
-        PageElement[] cells = new PageElement[productCmpt.getNumOfGenerations() + 1];
+        IPageElement[] cells = new IPageElement[productCmpt.getNumOfGenerations() + 1];
 
         cells[0] = new TextPageElement(tableStructureUsage.getRoleName());
 
@@ -293,7 +293,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
                 cells[i + 1] = new TextPageElement("-"); //$NON-NLS-1$
                 continue;
             }
-            PageElement linkPageElement = new PageElementUtils().createLinkPageElement(context, tableContent,
+            IPageElement linkPageElement = new PageElementUtils().createLinkPageElement(context, tableContent,
                     "content", //$NON-NLS-1$
                     context.getLabel(tableContent), true);
 
@@ -305,7 +305,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     }
 
     private void addFormulaRow(IProductCmptTypeMethod formulaSignature) {
-        PageElement[] cells = new PageElement[productCmpt.getNumOfGenerations() + 1];
+        IPageElement[] cells = new IPageElement[productCmpt.getNumOfGenerations() + 1];
 
         String labelValue = context.getLabel(formulaSignature);
 
@@ -326,7 +326,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
         List<IAssociation> associations = getAllAssociations();
         for (IAssociation association : associations) {
-            PageElement[] cells = new PageElement[productCmpt.getNumOfGenerations() + 1];
+            IPageElement[] cells = new IPageElement[productCmpt.getNumOfGenerations() + 1];
             cells[0] = new PageElementUtils().createIpsElementRepresentation(association, context,
                     context.getLabel(association), true);
             for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
@@ -344,7 +344,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
     }
 
-    private PageElement createAssociatedProductCmpts(IProductCmptGeneration productCmptGeneration,
+    private IPageElement createAssociatedProductCmpts(IProductCmptGeneration productCmptGeneration,
             IAssociation association) {
         AbstractCompositePageElement cellContent = new WrapperPageElement(WrapperType.BLOCK);
 
@@ -366,17 +366,17 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         return cellContent;
     }
 
-    private PageElement createProductCmptLink(IProductCmptLink productCmptLink) throws CoreException {
+    private IPageElement createProductCmptLink(IProductCmptLink productCmptLink) throws CoreException {
         IProductCmpt target;
         target = productCmptLink.findTarget(productCmpt.getIpsProject());
 
-        PageElement targetLink = new PageElementUtils().createLinkPageElement(context, target, "content", target //$NON-NLS-1$
+        IPageElement targetLink = new PageElementUtils().createLinkPageElement(context, target, "content", target //$NON-NLS-1$
                 .getName(), true);
 
         Set<Style> cardinalityStyles = new HashSet<Style>();
         cardinalityStyles.add(Style.INDENTION);
 
-        PageElement cardinalities = new TextPageElement(productCmptLink.getMinCardinality() + ".." //$NON-NLS-1$
+        IPageElement cardinalities = new TextPageElement(productCmptLink.getMinCardinality() + ".." //$NON-NLS-1$
                 + getCardinalityRepresentation(productCmptLink.getMaxCardinality()) + " (" //$NON-NLS-1$
                 + getCardinalityRepresentation(productCmptLink.getDefaultCardinality()) + ")", cardinalityStyles); //$NON-NLS-1$
 
@@ -404,7 +404,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
      * 
      */
     private void addAttributeRow(IAttribute attribute) {
-        PageElement[] cells = new PageElement[productCmpt.getNumOfGenerations() + 1];
+        IPageElement[] cells = new IPageElement[productCmpt.getNumOfGenerations() + 1];
 
         String caption = context.getLabel(attribute);
         cells[0] = new TextPageElement(caption);

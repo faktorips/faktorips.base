@@ -38,18 +38,18 @@ public class PageElementUtilsTest extends AbstractHtmlExportPluginTest {
         ipsProject.findAllIpsSrcFiles(srcFiles);
 
         for (IIpsSrcFile srcFile : srcFiles) {
-            PageElement pageElement = new PageElementUtils().createLinkPageElement(context, srcFile, TARGET,
+            IPageElement pageElement = new PageElementUtils().createLinkPageElement(context, srcFile, TARGET,
                     srcFile.getName(), false);
             assertIsLink(pageElement);
         }
 
     }
 
-    private void assertIsLink(PageElement pageElement) {
+    private void assertIsLink(IPageElement pageElement) {
         assertEquals(LinkPageElement.class, pageElement.getClass());
     }
 
-    private void assertIsDeadLink(PageElement pageElement) {
+    private void assertIsDeadLink(IPageElement pageElement) {
         assertEquals(TextPageElement.class, pageElement.getClass());
         assertTrue(pageElement.hasStyle(Style.DEAD_LINK));
     }
@@ -66,7 +66,7 @@ public class PageElementUtilsTest extends AbstractHtmlExportPluginTest {
         ipsProject.findAllIpsSrcFiles(srcFiles);
 
         for (IIpsSrcFile srcFile : srcFiles) {
-            PageElement pageElement = new PageElementUtils().createLinkPageElement(context, srcFile, TARGET,
+            IPageElement pageElement = new PageElementUtils().createLinkPageElement(context, srcFile, TARGET,
                     srcFile.getName(), false);
 
             if (srcFile.getIpsObjectType() == testedIpsObjectType) {
@@ -85,7 +85,7 @@ public class PageElementUtilsTest extends AbstractHtmlExportPluginTest {
         texts.add("text 3");
         texts.add("text 4");
 
-        PageElement[] textPageElements = new PageElementUtils().createTextPageElements(texts);
+        IPageElement[] textPageElements = new PageElementUtils().createTextPageElements(texts);
 
         assertEquals(texts.size(), textPageElements.length);
 

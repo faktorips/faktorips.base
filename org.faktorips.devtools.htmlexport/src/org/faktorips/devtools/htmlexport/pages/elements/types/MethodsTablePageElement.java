@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 
 /**
@@ -74,8 +74,8 @@ public class MethodsTablePageElement extends AbstractIpsObjectPartsContainerTabl
     }
 
     @Override
-    protected List<? extends PageElement> createRowWithIpsObjectPart(IMethod method) {
-        PageElement[] textPageElements = new PageElementUtils().createTextPageElements(getMethodData(method));
+    protected List<? extends IPageElement> createRowWithIpsObjectPart(IMethod method) {
+        IPageElement[] textPageElements = new PageElementUtils().createTextPageElements(getMethodData(method));
         textPageElements[0].setAnchor(new PageElementUtils().createAnchorId(method));
         return Arrays.asList(textPageElements);
     }

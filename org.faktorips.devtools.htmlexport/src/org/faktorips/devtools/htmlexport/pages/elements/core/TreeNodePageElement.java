@@ -26,11 +26,11 @@ public class TreeNodePageElement extends WrapperPageElement {
     AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
 
     /**
-     * creates a {@link TreeNodePageElement} with a PageElement as representation
+     * creates a {@link TreeNodePageElement} with a IPageElement as representation
      * 
-     * @param pageElement PageElement which represents the node
+     * @param pageElement IPageElement which represents the node
      */
-    public TreeNodePageElement(PageElement pageElement) {
+    public TreeNodePageElement(IPageElement pageElement) {
         super(WrapperType.BLOCK);
         addSubElement(pageElement);
 
@@ -42,14 +42,14 @@ public class TreeNodePageElement extends WrapperPageElement {
      * adds children to the node.
      */
     @Override
-    public AbstractCompositePageElement addPageElements(PageElement... pageElements) {
+    public AbstractCompositePageElement addPageElements(IPageElement... pageElements) {
         changePageElementsToBlock(pageElements);
         wrapper.addPageElements(pageElements);
         return this;
     }
 
-    private void changePageElementsToBlock(PageElement... pageElements) {
-        for (PageElement pageElement : pageElements) {
+    private void changePageElementsToBlock(IPageElement... pageElements) {
+        for (IPageElement pageElement : pageElements) {
             pageElement.makeBlock();
         }
     }

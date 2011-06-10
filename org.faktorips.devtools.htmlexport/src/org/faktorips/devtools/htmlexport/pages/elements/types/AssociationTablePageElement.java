@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
@@ -53,7 +53,7 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
     }
 
     @Override
-    protected List<? extends PageElement> createRowWithIpsObjectPart(IAssociation association) {
+    protected List<? extends IPageElement> createRowWithIpsObjectPart(IAssociation association) {
         List<String> values = new ArrayList<String>();
 
         values.add(context.getLabel(association));
@@ -74,7 +74,7 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
         values.add(association.isSubsetOfADerivedUnion() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
         values.add(association.isQualified() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
 
-        PageElement[] elements = new PageElementUtils().createTextPageElements(values);
+        IPageElement[] elements = new PageElementUtils().createTextPageElements(values);
 
         try {
             IIpsObject target = type.getIpsProject().findIpsObject(type.getIpsObjectType(), association.getTarget());

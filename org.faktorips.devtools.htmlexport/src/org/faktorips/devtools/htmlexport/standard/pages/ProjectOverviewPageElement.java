@@ -28,11 +28,11 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
-import org.faktorips.devtools.htmlexport.helper.path.PathUtilFactory;
+import org.faktorips.devtools.htmlexport.helper.path.HtmlPathFactory;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
@@ -74,7 +74,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
      * adds creation time
      */
     private void addCreationTime() {
-        PageElement createCreationTime = new TextPageElement(
+        IPageElement createCreationTime = new TextPageElement(
                 context.getMessage("ProjectOverviewPageElement_created") + " " //$NON-NLS-1$ //$NON-NLS-2$
                         + CREATION_TIME_DATE_FORMAT.format(new Date()), TextType.BLOCK).addStyles(Style.SMALL);
         addPageElements(createCreationTime);
@@ -103,7 +103,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         addPageElements(wrapper);
     }
 
-    private PageElement createArchiveEntriesList(IIpsObjectPath objectPath) {
+    private IPageElement createArchiveEntriesList(IIpsObjectPath objectPath) {
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(context.getMessage("ProjectOverviewPageElement_archiveEntries"), //$NON-NLS-1$
                 TextType.HEADING_3));
@@ -120,7 +120,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         return wrapper.addPageElements(archiveEntriesList);
     }
 
-    private PageElement createReferencedIpsProjectList(IIpsObjectPath objectPath) {
+    private IPageElement createReferencedIpsProjectList(IIpsObjectPath objectPath) {
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(
                 context.getMessage("ProjectOverviewPageElement_referencedProjects"), //$NON-NLS-1$
@@ -138,7 +138,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         return wrapper.addPageElements(referencedProjects);
     }
 
-    private PageElement createReferencingIpsProjectList(IIpsObjectPath objectPath) {
+    private IPageElement createReferencingIpsProjectList(IIpsObjectPath objectPath) {
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(context
                 .getMessage("ProjectOverviewPageElement_referencingProjects"), //$NON-NLS-1$
@@ -169,7 +169,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         return wrapper.addPageElements(referencingProjects);
     }
 
-    private PageElement createSourceFolders(IIpsObjectPath objectPath) {
+    private IPageElement createSourceFolders(IIpsObjectPath objectPath) {
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
         wrapper.addPageElements(new TextPageElement(context.getMessage("ProjectOverviewPageElement_sourceFolder"), //$NON-NLS-1$
                 TextType.HEADING_3));
@@ -192,7 +192,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         if (messageListTablePageElement.isEmpty()) {
             return;
         }
-        addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
+        addPageElements(new WrapperPageElement(WrapperType.BLOCK, new IPageElement[] {
                 new TextPageElement(
                         context.getMessage("ProjectOverviewPageElement_validationErros"), TextType.HEADING_2), //$NON-NLS-1$
                 messageListTablePageElement }));
@@ -213,7 +213,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
 
     @Override
     public String getPathToRoot() {
-        return PathUtilFactory.createPathUtil(getProject()).getPathToRoot();
+        return HtmlPathFactory.createPathUtil(getProject()).getPathToRoot();
     }
 
     /**

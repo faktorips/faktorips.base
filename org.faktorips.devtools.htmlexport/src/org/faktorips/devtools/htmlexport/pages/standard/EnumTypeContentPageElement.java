@@ -33,7 +33,7 @@ import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
@@ -70,7 +70,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
         }
 
         @Override
-        protected List<? extends PageElement> createRowWithIpsObjectPart(IEnumAttribute enumAttribute) {
+        protected List<? extends IPageElement> createRowWithIpsObjectPart(IEnumAttribute enumAttribute) {
             List<String> attributeData1 = new ArrayList<String>();
 
             attributeData1.add(getContext().getLabel(enumAttribute));
@@ -160,7 +160,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
         List<IIpsSrcFile> allClasses = getContext().getDocumentedSourceFiles(
                 getDocumentedIpsObject().getIpsObjectType());
 
-        List<PageElement> subTypes = new ArrayList<PageElement>();
+        List<IPageElement> subTypes = new ArrayList<IPageElement>();
         for (IIpsSrcFile srcFile : allClasses) {
             addSubType(subTypes, srcFile);
         }
@@ -169,12 +169,12 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
             return;
         }
 
-        addPageElements(new WrapperPageElement(WrapperType.BLOCK, new PageElement[] {
+        addPageElements(new WrapperPageElement(WrapperType.BLOCK, new IPageElement[] {
                 new TextPageElement(getContext().getMessage(HtmlExportMessages.EnumTypeContentPageElement_subclasses)),
                 new ListPageElement(subTypes) }));
     }
 
-    private void addSubType(List<PageElement> subTypes, IIpsSrcFile srcFile) {
+    private void addSubType(List<IPageElement> subTypes, IIpsSrcFile srcFile) {
         IEnumType type;
         try {
             type = (IEnumType)srcFile.getIpsObject();

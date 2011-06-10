@@ -27,9 +27,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
-import org.faktorips.devtools.htmlexport.helper.filter.IpsElementFilter;
+import org.faktorips.devtools.htmlexport.helper.filter.IIpsElementFilter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
@@ -56,7 +56,7 @@ public class IpsPackagesListPageElement extends AbstractIpsElementListPageElemen
     /**
      * @see AbstractIpsElementListPageElement
      */
-    public IpsPackagesListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles, IpsElementFilter filter,
+    public IpsPackagesListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles, IIpsElementFilter filter,
             DocumentationContext context) {
         super(baseIpsElement, srcFiles, filter, context);
         setTitle(getContext().getMessage(HtmlExportMessages.IpsPackagesListPageElement_allPackages)); 
@@ -80,7 +80,7 @@ public class IpsPackagesListPageElement extends AbstractIpsElementListPageElemen
 
         addPageElements(new TextPageElement(getTitle(), TextType.HEADING_2));
 
-        List<PageElement> list = createPackageList();
+        List<IPageElement> list = createPackageList();
 
         addPageElements(new TextPageElement(list.size()
                 + " " + getContext().getMessage(HtmlExportMessages.IpsPackagesListPageElement_packages), TextType.BLOCK)); //$NON-NLS-1$ 
@@ -90,13 +90,13 @@ public class IpsPackagesListPageElement extends AbstractIpsElementListPageElemen
         }
     }
 
-    private List<PageElement> createPackageList() {
+    private List<IPageElement> createPackageList() {
 
         Collections.sort(srcFiles, packagesComparator);
 
         Set<IIpsPackageFragment> packageFragments = getRelatedPackageFragments();
 
-        List<PageElement> packageLinks = new ArrayList<PageElement>();
+        List<IPageElement> packageLinks = new ArrayList<IPageElement>();
         Set<String> linkedPackagesNames = new HashSet<String>();
 
         for (IIpsPackageFragment packageFragment : packageFragments) {

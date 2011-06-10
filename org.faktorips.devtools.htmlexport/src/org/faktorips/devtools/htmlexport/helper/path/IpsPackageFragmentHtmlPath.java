@@ -13,36 +13,39 @@
 
 package org.faktorips.devtools.htmlexport.helper.path;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 
 /**
- * {@link IpsElementPathUtil} for an {@link IIpsObject}
+ * {@link IHtmlPath} for an {@link IIpsPackageFragment}
  * 
  * @author dicker
  * 
  */
-public class IpsSrcFilePathUtil extends AbstractIpsElementPathUtil<IIpsSrcFile> {
+public class IpsPackageFragmentHtmlPath extends AbstractIpsElementHtmlPath<IIpsPackageFragment> {
+    private static String PACKAGE_INDEX_FILE_NAME = "package_index"; //$NON-NLS-1$
 
-    public IpsSrcFilePathUtil(IIpsSrcFile ipsElement) {
+    public IpsPackageFragmentHtmlPath(IIpsPackageFragment ipsElement) {
         super(ipsElement);
     }
 
     @Override
-    protected String getFileName() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(getIpsElement().getName());
-        return builder.toString();
+    public String getPathFromRoot(LinkedFileType linkedFileType) {
+        if (getIpsElement().isDefaultPackage()) {
+            return PACKAGE_INDEX_FILE_NAME;
+        }
+        return super.getPathFromRoot(linkedFileType);
     }
 
     @Override
     public String getPathToRoot() {
-        return getPackageFragmentPathToRoot(getIpsPackageFragment());
+        if (getIpsElement().isDefaultPackage()) {
+            return ""; //$NON-NLS-1$
+        }
+        return getPackageFragmentPathToRoot(getIpsElement());
     }
 
     @Override
     protected IIpsPackageFragment getIpsPackageFragment() {
-        return getIpsElement().getIpsPackageFragment();
+        return getIpsElement();
     }
 }

@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParamet
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
@@ -70,12 +70,12 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
         }
 
         @Override
-        protected List<? extends PageElement> createRowWithIpsObjectPart(ITestAttribute attribute) {
+        protected List<? extends IPageElement> createRowWithIpsObjectPart(ITestAttribute attribute) {
             return Arrays.asList(getAttributeData(attribute));
         }
 
-        protected PageElement[] getAttributeData(ITestAttribute attribute) {
-            List<PageElement> attributeData = new ArrayList<PageElement>();
+        protected IPageElement[] getAttributeData(ITestAttribute attribute) {
+            List<IPageElement> attributeData = new ArrayList<IPageElement>();
 
             attributeData.add(new TextPageElement(getContext().getLabel(attribute)));
             attributeData.add(new TextPageElement(attribute.getTestAttributeType().getName()));
@@ -90,10 +90,10 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
 
             attributeData.add(new TextPageElement(getContext().getDescription(attribute)));
 
-            return attributeData.toArray(new PageElement[attributeData.size()]);
+            return attributeData.toArray(new IPageElement[attributeData.size()]);
         }
 
-        private void addPolicyComponentAndDataType(ITestAttribute attribute, List<PageElement> attributeData)
+        private void addPolicyComponentAndDataType(ITestAttribute attribute, List<IPageElement> attributeData)
                 throws CoreException {
 
             String correspondingPolicyCmptType = attribute.getCorrespondingPolicyCmptType();
@@ -188,10 +188,10 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
     }
 
     /**
-     * creates a PageElement representing the given testParameter
+     * creates a IPageElement representing the given testParameter
      * 
      */
-    private PageElement createTestParameterPageElement(ITestParameter testParameter) throws CoreException {
+    private IPageElement createTestParameterPageElement(ITestParameter testParameter) throws CoreException {
         if (testParameter instanceof TestValueParameter) {
             return createTestValueParameterPageElement((TestValueParameter)testParameter);
         }
@@ -207,11 +207,11 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
                         Style.BIG).addStyles(Style.BOLD);
     }
 
-    private PageElement createTestPolicyCmptTypePageElement(ITestPolicyCmptTypeParameter testParameter)
+    private IPageElement createTestPolicyCmptTypePageElement(ITestPolicyCmptTypeParameter testParameter)
             throws CoreException {
         IPolicyCmptType policyCmptType = testParameter.findPolicyCmptType(testParameter.getIpsProject());
 
-        PageElement linkPageElement = new PageElementUtils().createLinkPageElement(getContext(), policyCmptType,
+        IPageElement linkPageElement = new PageElementUtils().createLinkPageElement(getContext(), policyCmptType,
                 "content", getContext().getLabel(policyCmptType), true); //$NON-NLS-1$
         TreeNodePageElement testParameterPageElement = new TreeNodePageElement(
                 new WrapperPageElement(WrapperType.BLOCK).addPageElements(linkPageElement).addPageElements(
@@ -229,7 +229,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
         return testParameterPageElement;
     }
 
-    private PageElement createTestAttributeTable(ITestPolicyCmptTypeParameter testParameter) {
+    private IPageElement createTestAttributeTable(ITestPolicyCmptTypeParameter testParameter) {
 
         ICompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK).addPageElements(TextPageElement
                 .createParagraph(
@@ -265,7 +265,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
         return keyValueTable;
     }
 
-    private PageElement createTestRuleParameterPageElement(TestRuleParameter testParameter) {
+    private IPageElement createTestRuleParameterPageElement(TestRuleParameter testParameter) {
         String name = createNodeName(testParameter);
         TreeNodePageElement testParameterPageElement = createRootNode(name);
 
@@ -287,7 +287,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
         return getContext().getLabel(testParameter) + " - " + testParameter.getTestParameterType().getName(); //$NON-NLS-1$
     }
 
-    private PageElement createTestValueParameterPageElement(TestValueParameter testParameter) {
+    private IPageElement createTestValueParameterPageElement(TestValueParameter testParameter) {
         String name = createNodeName(testParameter);
         TreeNodePageElement testParameterPageElement = createRootNode(name);
 

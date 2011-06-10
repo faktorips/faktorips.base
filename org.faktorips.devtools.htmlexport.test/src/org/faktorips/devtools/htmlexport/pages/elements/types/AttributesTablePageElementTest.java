@@ -16,7 +16,7 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.standard.AbstractXmlUnitHtmlExportTest;
 import org.faktorips.devtools.htmlexport.pages.standard.ContentPageUtil;
 import org.junit.Before;
@@ -33,7 +33,7 @@ public class AttributesTablePageElementTest extends AbstractXmlUnitHtmlExportTes
         policy = newPolicyCmptType(ipsProject, "Vertrag");
     }
 
-    private void assertXPathFromTable(PageElement objectContentPage, String subXPath) throws Exception {
+    private void assertXPathFromTable(IPageElement objectContentPage, String subXPath) throws Exception {
         assertXPathExists(objectContentPage, getXPathAttributeTable() + subXPath);
     }
 
@@ -47,7 +47,7 @@ public class AttributesTablePageElementTest extends AbstractXmlUnitHtmlExportTes
         IAttribute attributeString = createStringAttribute();
         IAttribute attributeInteger = createIntegerAttribute();
 
-        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
 
         assertXPathExists(objectContentPage, getXPathAttributeTable());
 
@@ -61,7 +61,7 @@ public class AttributesTablePageElementTest extends AbstractXmlUnitHtmlExportTes
     @Test
     public void testAttributesTableNichtVorhandenOhneAttribute() throws Exception {
 
-        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
 
         assertXPathNotExists(objectContentPage, getXPathAttributeTable());
     }
@@ -71,7 +71,7 @@ public class AttributesTablePageElementTest extends AbstractXmlUnitHtmlExportTes
         IAttribute attributeString = createStringAttribute();
         createIntegerAttribute();
 
-        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
 
         assertXPathFromTable(objectContentPage, "//tr[2][td='" + attributeString.getDatatype() + "']");
 

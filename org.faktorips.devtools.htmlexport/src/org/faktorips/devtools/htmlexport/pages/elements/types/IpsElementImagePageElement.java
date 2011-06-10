@@ -33,10 +33,10 @@ import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ImagePageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 
 /**
- * A {@link PageElement} representing an image for an {@link IIpsElement}.
+ * A {@link IPageElement} representing an image for an {@link IIpsElement}.
  * 
  * @author dicker
  * 

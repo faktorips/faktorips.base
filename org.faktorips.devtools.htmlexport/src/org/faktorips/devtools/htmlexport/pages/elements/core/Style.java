@@ -14,7 +14,7 @@
 package org.faktorips.devtools.htmlexport.pages.elements.core;
 
 /**
- * Enum containing Styles for a {@link PageElement}
+ * Enum containing Styles for a {@link IPageElement}
  * 
  * @author dicker
  * 

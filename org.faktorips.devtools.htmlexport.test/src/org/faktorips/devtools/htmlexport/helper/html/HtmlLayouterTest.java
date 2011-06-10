@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
@@ -73,7 +73,7 @@ public class HtmlLayouterTest extends AbstractTestHtmlLayouter {
     @Test
     public void testHtmlLayouterListPageElement() {
         String[] texte = { "Item 1", "Punkt 2", "blablabla", "letzter Punkt" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-        List<PageElement> elementListe = createPageElementListe(texte);
+        List<IPageElement> elementListe = createPageElementListe(texte);
 
         ListPageElement pageElement = new ListPageElement(elementListe);
 
@@ -87,7 +87,7 @@ public class HtmlLayouterTest extends AbstractTestHtmlLayouter {
     @Test
     public void testHtmlLayouterListPageElementUngeordnet() {
         String[] texte = { "Item 1", "Punkt 2", "blablabla", "letzter Punkt" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-        List<PageElement> elementListe = createPageElementListe(texte);
+        List<IPageElement> elementListe = createPageElementListe(texte);
 
         ListPageElement pageElement = new ListPageElement(elementListe);
         pageElement.setOrdered(true);

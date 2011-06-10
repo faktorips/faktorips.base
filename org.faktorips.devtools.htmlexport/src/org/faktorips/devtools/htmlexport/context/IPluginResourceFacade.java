@@ -20,6 +20,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 
+/**
+ * Encapsulates access to the IpsPlugin
+ * 
+ * @author dicker
+ */
 public interface IPluginResourceFacade {
 
     public IpsObjectType[] getDefaultIpsObjectTypes();

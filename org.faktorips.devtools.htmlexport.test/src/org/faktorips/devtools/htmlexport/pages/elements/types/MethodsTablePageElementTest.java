@@ -18,7 +18,7 @@ import java.util.List;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.standard.AbstractXmlUnitHtmlExportTest;
 import org.faktorips.devtools.htmlexport.pages.standard.ContentPageUtil;
 import org.junit.Before;
@@ -35,7 +35,7 @@ public class MethodsTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
         policy = newPolicyCmptType(ipsProject, "Vertrag");
     }
 
-    private void assertXPathFromTable(PageElement objectContentPage, String subXPath) throws Exception {
+    private void assertXPathFromTable(IPageElement objectContentPage, String subXPath) throws Exception {
         assertXPathExists(objectContentPage, getXPathMethodTable() + subXPath);
     }
 
@@ -49,7 +49,7 @@ public class MethodsTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
         IMethod methodString = createStringMethod();
         IMethod methodInteger = createIntegerMethod();
 
-        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
 
         assertXPathExists(objectContentPage, getXPathMethodTable());
 
@@ -63,7 +63,7 @@ public class MethodsTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
     @Test
     public void testMethodsTableNichtVorhandenOhneAttribute() throws Exception {
 
-        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
 
         assertXPathNotExists(objectContentPage, getXPathMethodTable());
     }
@@ -72,7 +72,7 @@ public class MethodsTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
     public void testMethodsTableAufbau() throws Exception {
         createIntegerMethod();
         createStringMethod();
-        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
 
         int row = 2;
 

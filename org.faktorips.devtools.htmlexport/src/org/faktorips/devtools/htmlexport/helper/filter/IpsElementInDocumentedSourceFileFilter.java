@@ -20,12 +20,12 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 
 /**
- * {@link IpsElementFilter}, which accepts an {@link IIpsElement}, if it is documented according to
+ * {@link IIpsElementFilter}, which accepts an {@link IIpsElement}, if it is documented according to
  * the given {@link DocumentationContext}
  * 
  * @author dicker
  */
-public class IpsElementInDocumentedSourceFileFilter implements IpsElementFilter {
+public class IpsElementInDocumentedSourceFileFilter implements IIpsElementFilter {
 
     private final DocumentationContext context;
 

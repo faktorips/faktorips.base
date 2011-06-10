@@ -34,7 +34,7 @@ import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
@@ -58,10 +58,10 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         }
 
         @Override
-        protected List<? extends PageElement> createRowWithIpsObjectPart(IForeignKey foreignKey) {
-            List<PageElement> cells = new ArrayList<PageElement>();
+        protected List<? extends IPageElement> createRowWithIpsObjectPart(IForeignKey foreignKey) {
+            List<IPageElement> cells = new ArrayList<IPageElement>();
 
-            PageElement link = getLinkToReferencedTableStructure(foreignKey);
+            IPageElement link = getLinkToReferencedTableStructure(foreignKey);
 
             cells.add(new TextPageElement(getContext().getLabel(foreignKey)));
             cells.add(new TextPageElement(StringUtils.join(foreignKey.getKeyItemNames(), ", "))); //$NON-NLS-1$
@@ -72,7 +72,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
             return cells;
         }
 
-        private PageElement getLinkToReferencedTableStructure(IForeignKey foreignKey) {
+        private IPageElement getLinkToReferencedTableStructure(IForeignKey foreignKey) {
             ITableStructure findReferencedTableStructure;
             try {
                 findReferencedTableStructure = foreignKey.findReferencedTableStructure(getContext().getIpsProject());
@@ -132,7 +132,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         }
 
         @Override
-        protected List<? extends PageElement> createRowWithIpsObjectPart(IColumnRange columnRange) {
+        protected List<? extends IPageElement> createRowWithIpsObjectPart(IColumnRange columnRange) {
             return Arrays.asList(new PageElementUtils().createTextPageElements(getColumnRangeData(columnRange)));
         }
 
@@ -164,7 +164,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         }
 
         @Override
-        protected List<? extends PageElement> createRowWithIpsObjectPart(IColumn column) {
+        protected List<? extends IPageElement> createRowWithIpsObjectPart(IColumn column) {
             return Arrays.asList(new PageElementUtils().createTextPageElements(getColumnData(column)));
         }
 
@@ -203,7 +203,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         }
 
         @Override
-        protected List<? extends PageElement> createRowWithIpsObjectPart(IUniqueKey uniqueKey) {
+        protected List<? extends IPageElement> createRowWithIpsObjectPart(IUniqueKey uniqueKey) {
             return Arrays.asList(new PageElementUtils().createTextPageElements(getUniqueKeyData(uniqueKey)));
         }
 
@@ -339,12 +339,12 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
             return;
         }
 
-        List<PageElement> linkPageElements = new PageElementUtils().createLinkPageElements(new ArrayList<IIpsSrcFile>(
+        List<IPageElement> linkPageElements = new PageElementUtils().createLinkPageElements(new ArrayList<IIpsSrcFile>(
                 tableContentsSrcFiles), "content", new LinkedHashSet<Style>(), getContext()); //$NON-NLS-1$
         ListPageElement liste = new ListPageElement(linkPageElements);
 
         wrapper.addPageElements(liste);
-        PageElement createTableContentList = wrapper;
+        IPageElement createTableContentList = wrapper;
         addPageElements(createTableContentList);
     }
 }

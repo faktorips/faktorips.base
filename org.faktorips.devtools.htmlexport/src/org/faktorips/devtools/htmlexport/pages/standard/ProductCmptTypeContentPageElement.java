@@ -33,7 +33,7 @@ import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
@@ -64,8 +64,8 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
         }
 
         @Override
-        protected List<? extends PageElement> createRowWithIpsObjectPart(ITableStructureUsage tableStructureUsage) {
-            List<PageElement> pageElements = new ArrayList<PageElement>();
+        protected List<? extends IPageElement> createRowWithIpsObjectPart(ITableStructureUsage tableStructureUsage) {
+            List<IPageElement> pageElements = new ArrayList<IPageElement>();
 
             pageElements.add(new TextPageElement(tableStructureUsage.getRoleName()));
             pageElements.add(new TextPageElement(getContext().getLabel(tableStructureUsage)));
@@ -76,13 +76,13 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
             return pageElements;
         }
 
-        private PageElement getTableStructureLinks(ITableStructureUsage tableStructureUsage) {
+        private IPageElement getTableStructureLinks(ITableStructureUsage tableStructureUsage) {
             String[] tableStructures = tableStructureUsage.getTableStructures();
             if (tableStructures.length == 0) {
                 return new TextPageElement("No " + IpsObjectType.TABLE_STRUCTURE.getDisplayNamePlural()); //$NON-NLS-1$
             }
 
-            List<PageElement> links = new ArrayList<PageElement>();
+            List<IPageElement> links = new ArrayList<IPageElement>();
             for (String tableStructure : tableStructures) {
                 addLinkToTableStructure(links, tableStructureUsage, tableStructure);
             }
@@ -94,7 +94,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
             return new ListPageElement(links);
         }
 
-        private void addLinkToTableStructure(List<PageElement> links,
+        private void addLinkToTableStructure(List<IPageElement> links,
                 ITableStructureUsage tableStructureUsage,
                 String tableStructure) {
             IIpsObject ipsObject;
@@ -106,7 +106,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
                         new IpsStatus(IStatus.ERROR, "Could not find TableStructure " + tableStructure, e)); //$NON-NLS-1$
                 return;
             }
-            PageElement link = new PageElementUtils().createLinkPageElement(getContext(), ipsObject,
+            IPageElement link = new PageElementUtils().createLinkPageElement(getContext(), ipsObject,
                     "content", tableStructure, true); //$NON-NLS-1$
             links.add(link);
         }
@@ -187,7 +187,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
             return;
         }
 
-        List<PageElement> linkPageElements = new PageElementUtils().createLinkPageElements(allProductCmptSrcFiles,
+        List<IPageElement> linkPageElements = new PageElementUtils().createLinkPageElements(allProductCmptSrcFiles,
                 "content", //$NON-NLS-1$
                 new LinkedHashSet<Style>(), getContext());
         ListPageElement liste = new ListPageElement(linkPageElements);
@@ -219,7 +219,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 
         addPageElements(new WrapperPageElement(
                 WrapperType.BLOCK,
-                new PageElement[] {
+                new IPageElement[] {
                         new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": "), new PageElementUtils().createLinkPageElement(getContext(), to, "content", getContext().getLabel(to), true) })); //$NON-NLS-1$ //$NON-NLS-2$
 
     }

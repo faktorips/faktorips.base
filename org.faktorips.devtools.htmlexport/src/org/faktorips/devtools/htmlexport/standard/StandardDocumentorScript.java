@@ -37,7 +37,7 @@ import org.faktorips.devtools.htmlexport.helper.IoHandler;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementInIIpsPackageFilter;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
 import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsElementListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsObjectTypeListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsPackagesListPageElement;
@@ -119,7 +119,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
 
     private void writeClassContentPage(DocumentationContext context, IIpsSrcFile ipsSrcFile) throws IOException,
             CoreException {
-        PageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(ipsSrcFile, context);
+        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(ipsSrcFile, context);
         if (objectContentPage == null) {
             return;
         }
@@ -133,7 +133,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
                         getPageContent(context, objectContentPage));
     }
 
-    private byte[] getPageContent(DocumentationContext context, PageElement page) throws UnsupportedEncodingException {
+    private byte[] getPageContent(DocumentationContext context, IPageElement page) throws UnsupportedEncodingException {
         ILayouter layouter = context.getLayouter();
         page.acceptLayouter(layouter);
         return layouter.generate();
@@ -231,7 +231,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
         monitor.done();
     }
 
-    private void writeFileWithOutput(DocumentationContext context, PageElement allPackagesPage, String filePath)
+    private void writeFileWithOutput(DocumentationContext context, IPageElement allPackagesPage, String filePath)
             throws IOException {
         ioHandler.writeFile(context, filePath, getPageContent(context, allPackagesPage));
     }
@@ -249,7 +249,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
     private void writeProjectOverviewPage(DocumentationContext context, IProgressMonitor monitor) throws IOException {
         monitor.beginTask("", 1); //$NON-NLS-1$
 
-        PageElement projectOverviewHtml = new ProjectOverviewPageElement(context);
+        IPageElement projectOverviewHtml = new ProjectOverviewPageElement(context);
         projectOverviewHtml.build();
         ioHandler.writeFile(context, STANDARD_PATH + "summary.html", getPageContent(context, projectOverviewHtml)); //$NON-NLS-1$
 

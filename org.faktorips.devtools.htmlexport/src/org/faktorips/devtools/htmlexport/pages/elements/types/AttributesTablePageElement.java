@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
-import org.faktorips.devtools.htmlexport.pages.elements.core.PageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 
 /**
@@ -49,8 +49,8 @@ public class AttributesTablePageElement extends AbstractIpsObjectPartsContainerT
     }
 
     @Override
-    protected List<? extends PageElement> createRowWithIpsObjectPart(IAttribute attribute) {
-        PageElement[] textPageElements = new PageElementUtils().createTextPageElements(getAttributeData(attribute));
+    protected List<? extends IPageElement> createRowWithIpsObjectPart(IAttribute attribute) {
+        IPageElement[] textPageElements = new PageElementUtils().createTextPageElements(getAttributeData(attribute));
         textPageElements[0].setAnchor(new PageElementUtils().createAnchorId(attribute));
         return Arrays.asList(textPageElements);
     }
