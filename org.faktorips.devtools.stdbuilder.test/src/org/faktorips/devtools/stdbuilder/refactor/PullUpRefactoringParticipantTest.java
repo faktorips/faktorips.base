@@ -31,37 +31,51 @@ public class PullUpRefactoringParticipantTest extends RefactoringParticipantTest
 
     @Test
     public void testPullUpPolicyCmptTypeAttributeValueSetUnrestricted() throws CoreException {
-        performTestPullUpPolicyCmptTypeAttribute(ValueSetType.UNRESTRICTED);
+        performTestPullUpPolicyCmptTypeAttribute(ValueSetType.UNRESTRICTED, false);
     }
 
     @Test
     public void testPullUpPolicyCmptTypeAttributeValueSetEnum() throws CoreException {
-        performTestPullUpPolicyCmptTypeAttribute(ValueSetType.ENUM);
+        performTestPullUpPolicyCmptTypeAttribute(ValueSetType.ENUM, false);
     }
 
     @Test
     public void testPullUpPolicyCmptTypeAttributeValueSetRange() throws CoreException {
-        performTestPullUpPolicyCmptTypeAttribute(ValueSetType.RANGE);
+        performTestPullUpPolicyCmptTypeAttribute(ValueSetType.RANGE, false);
     }
 
-    private void performTestPullUpPolicyCmptTypeAttribute(ValueSetType valueSetType) throws CoreException {
-        // Create target policy component type configured by a product component type
-        IPolicyCmptType targetPolicyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "TargetPolicy");
-        IProductCmptType targetProductCmptType = newProductCmptType(ipsProject, "TargetProduct");
-        targetPolicyCmptType.setConfigurableByProductCmptType(true);
-        targetPolicyCmptType.setProductCmptType(targetProductCmptType.getQualifiedName());
-        targetProductCmptType.setConfigurationForPolicyCmptType(true);
-        targetProductCmptType.setPolicyCmptType(targetPolicyCmptType.getQualifiedName());
+    @Test
+    public void testPullUpPolicyCmptTypeAttributeFurtherUpInHierarchy() throws CoreException {
+        performTestPullUpPolicyCmptTypeAttribute(ValueSetType.UNRESTRICTED, true);
+    }
 
-        // Create source policy component type, also configured by a product component type
-        IPolicyCmptType sourcePolicyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "SourcePolicy");
-        IProductCmptType sourceProductCmptType = newProductCmptType(ipsProject, "SourceProduct");
-        sourcePolicyCmptType.setSupertype(targetPolicyCmptType.getQualifiedName());
-        sourceProductCmptType.setSupertype(targetProductCmptType.getQualifiedName());
-        sourcePolicyCmptType.setConfigurableByProductCmptType(true);
-        sourcePolicyCmptType.setProductCmptType(sourceProductCmptType.getQualifiedName());
-        sourceProductCmptType.setConfigurationForPolicyCmptType(true);
-        sourceProductCmptType.setPolicyCmptType(sourcePolicyCmptType.getQualifiedName());
+    private void performTestPullUpPolicyCmptTypeAttribute(ValueSetType valueSetType, boolean useSuperTarget)
+            throws CoreException {
+
+        // Create target product component type configuring a policy component type
+        IPolicyCmptType targetPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "TargetPolicy", "TargetProduct");
+        IProductCmptType targetProductCmptType = targetPolicyCmptType.findProductCmptType(ipsProject);
+
+        // If useSuperTarget is true create another hierarchy level
+        String sourcePolicySuperType;
+        String sourceProductSuperType;
+        if (useSuperTarget) {
+            IPolicyCmptType inBetweenPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "MidPolicy", "MidProduct");
+            IProductCmptType inBetweenProductCmptType = inBetweenPolicyCmptType.findProductCmptType(ipsProject);
+            inBetweenPolicyCmptType.setSupertype(targetPolicyCmptType.getQualifiedName());
+            inBetweenProductCmptType.setSupertype(targetProductCmptType.getQualifiedName());
+            sourcePolicySuperType = inBetweenPolicyCmptType.getQualifiedName();
+            sourceProductSuperType = inBetweenProductCmptType.getQualifiedName();
+        } else {
+            sourcePolicySuperType = targetPolicyCmptType.getQualifiedName();
+            sourceProductSuperType = targetProductCmptType.getQualifiedName();
+        }
+
+        // Create source product component type, also configuring a policy component type
+        IPolicyCmptType sourcePolicyCmptType = newPolicyAndProductCmptType(ipsProject, "SourcePolicy", "SourceProduct");
+        IProductCmptType sourceProductCmptType = sourcePolicyCmptType.findProductCmptType(ipsProject);
+        sourceProductCmptType.setSupertype(sourceProductSuperType);
+        sourcePolicyCmptType.setSupertype(sourcePolicySuperType);
 
         // Create the policy component type attribute to pull up
         IPolicyCmptTypeAttribute policyCmptTypeAttribute = createPolicyCmptTypeAttribute("foo", sourcePolicyCmptType);
@@ -85,23 +99,39 @@ public class PullUpRefactoringParticipantTest extends RefactoringParticipantTest
 
     @Test
     public void testPullUpProductCmptTypeAttribute() throws CoreException {
+        performTestPullUpProductCmptTypeAttribute(false);
+    }
+
+    @Test
+    public void testPullUpProductCmptTypeAttributeFurtherUpInHierarchy() throws CoreException {
+        performTestPullUpProductCmptTypeAttribute(true);
+    }
+
+    private void performTestPullUpProductCmptTypeAttribute(boolean useSuperTarget) throws CoreException {
         // Create target product component type configuring a policy component type
-        IProductCmptType targetProductCmptType = newProductCmptType(ipsProject, "TargetProduct");
-        IPolicyCmptType targetPolicyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "TargetPolicy");
-        targetProductCmptType.setConfigurationForPolicyCmptType(true);
-        targetProductCmptType.setPolicyCmptType(targetPolicyCmptType.getQualifiedName());
-        targetPolicyCmptType.setConfigurableByProductCmptType(true);
-        targetPolicyCmptType.setProductCmptType(targetProductCmptType.getQualifiedName());
+        IPolicyCmptType targetPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "TargetPolicy", "TargetProduct");
+        IProductCmptType targetProductCmptType = targetPolicyCmptType.findProductCmptType(ipsProject);
+
+        // If useSuperTarget is true create another hierarchy level
+        String sourcePolicySuperType;
+        String sourceProductSuperType;
+        if (useSuperTarget) {
+            IPolicyCmptType inBetweenPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "MidPolicy", "MidProduct");
+            IProductCmptType inBetweenProductCmptType = inBetweenPolicyCmptType.findProductCmptType(ipsProject);
+            inBetweenPolicyCmptType.setSupertype(targetPolicyCmptType.getQualifiedName());
+            inBetweenProductCmptType.setSupertype(targetProductCmptType.getQualifiedName());
+            sourcePolicySuperType = inBetweenPolicyCmptType.getQualifiedName();
+            sourceProductSuperType = inBetweenProductCmptType.getQualifiedName();
+        } else {
+            sourcePolicySuperType = targetPolicyCmptType.getQualifiedName();
+            sourceProductSuperType = targetProductCmptType.getQualifiedName();
+        }
 
         // Create source product component type, also configuring a policy component type
-        IProductCmptType sourceProductCmptType = newProductCmptType(ipsProject, "SourceProduct");
-        IPolicyCmptType sourcePolicyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "SourcePolicy");
-        sourceProductCmptType.setSupertype(targetProductCmptType.getQualifiedName());
-        sourcePolicyCmptType.setSupertype(targetPolicyCmptType.getQualifiedName());
-        sourceProductCmptType.setConfigurationForPolicyCmptType(true);
-        sourceProductCmptType.setPolicyCmptType(sourcePolicyCmptType.getQualifiedName());
-        sourcePolicyCmptType.setConfigurableByProductCmptType(true);
-        sourcePolicyCmptType.setProductCmptType(sourceProductCmptType.getQualifiedName());
+        IPolicyCmptType sourcePolicyCmptType = newPolicyAndProductCmptType(ipsProject, "SourcePolicy", "SourceProduct");
+        IProductCmptType sourceProductCmptType = sourcePolicyCmptType.findProductCmptType(ipsProject);
+        sourceProductCmptType.setSupertype(sourceProductSuperType);
+        sourcePolicyCmptType.setSupertype(sourcePolicySuperType);
 
         // Create the product component type attribute to pull up
         IProductCmptTypeAttribute productCmptTypeAttribute = createProductCmptTypeAttribute("foo",

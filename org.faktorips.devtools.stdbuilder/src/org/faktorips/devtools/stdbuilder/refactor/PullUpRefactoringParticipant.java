@@ -51,8 +51,6 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
 
     private final PullUpParticipantHelper refactoringHelper;
 
-    // Not needed for now, reserved for later use
-    @SuppressWarnings("unused")
     private IpsPullUpArguments arguments;
 
     public PullUpRefactoringParticipant() {
@@ -108,9 +106,9 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
             PullUpRefactoringProcessor processor = new PullUpRefactoringProcessor(new IMember[] { originalJavaMember },
                     JavaPreferencesSettings.getCodeGenerationSettings(originalJavaElement.getJavaProject()));
             processor.resetEnvironment();
+
             processor.setDestinationType(targetJavaMember.getDeclaringType());
             processor.setMembersToMove(new IMember[] { originalJavaMember });
-
             IMember[] membersToMove = determineAdditionalRequiredMembers(progressMonitor, originalJavaMember, processor);
             processor.setMembersToMove(membersToMove);
             List<IMethod> deletedMethods = determineDeletedMethods(membersToMove);
@@ -151,20 +149,11 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
         }
 
         private boolean initializeTargetJavaElementsForAttribute(IAttribute attribute, StandardBuilderSet builderSet) {
-            try {
-                IType originalType = attribute.getType();
-                IType targetType = originalType.findSupertype(originalType.getIpsProject());
-                if (targetType == null) {
-                    throw new RuntimeException("There is no supertype to pull up to."); //$NON-NLS-1$
-                }
-                IAttribute targetAttribute = targetType.newAttribute();
-                targetAttribute.copyFrom(attribute); // Temporary copy
-                setTargetJavaElements(builderSet.getGeneratedJavaElements(targetAttribute));
-                targetAttribute.delete(); // Delete temporary copy
-                return true;
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+            IAttribute targetAttribute = ((IType)arguments.getTarget()).newAttribute();
+            targetAttribute.copyFrom(attribute); // Temporary copy
+            setTargetJavaElements(builderSet.getGeneratedJavaElements(targetAttribute));
+            targetAttribute.delete(); // Delete temporary copy
+            return true;
         }
 
         /**
