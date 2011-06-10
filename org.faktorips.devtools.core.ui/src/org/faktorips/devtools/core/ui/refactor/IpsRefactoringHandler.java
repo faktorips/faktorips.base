@@ -70,6 +70,12 @@ public abstract class IpsRefactoringHandler extends AbstractHandler {
         return new CommandContributionItem(parameters);
     }
 
+    /**
+     * Must return the refactoring wizard that shall be used to guide the user trough the
+     * refactoring.
+     * <p>
+     * Won't be called if {@link #getRefactoring(Set)} returns null.
+     */
     protected abstract IpsRefactoringWizard getRefactoringWizard(IIpsRefactoring refactoring);
 
     /**
