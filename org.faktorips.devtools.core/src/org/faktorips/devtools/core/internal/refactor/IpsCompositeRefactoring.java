@@ -270,7 +270,7 @@ public abstract class IpsCompositeRefactoring extends Refactoring implements IIp
 
     @Override
     public final Set<IIpsElement> getIpsElements() {
-        return elements;
+        return new HashSet<IIpsElement>(elements);
     }
 
 }
