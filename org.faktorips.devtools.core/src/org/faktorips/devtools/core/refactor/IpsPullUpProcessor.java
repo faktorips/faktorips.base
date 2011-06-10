@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.refactor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -54,10 +55,15 @@ public abstract class IpsPullUpProcessor extends IpsRefactoringProcessor {
         List<RefactoringParticipant> participants = new ExtensionPoints(IpsPlugin.PLUGIN_ID)
                 .createExecutableExtensions(ExtensionPoints.PULL_UP_PARTICIPANTS,
                         "pullUpParticipant", "class", RefactoringParticipant.class); //$NON-NLS-1$ //$NON-NLS-2$
+        List<RefactoringParticipant> initializedParticipants = new ArrayList<RefactoringParticipant>(
+                participants.size());
         for (RefactoringParticipant participant : participants) {
-            participant.initialize(this, getIpsElement(), new IpsPullUpArguments(target));
+            boolean initialized = participant.initialize(this, getIpsElement(), new IpsPullUpArguments(target));
+            if (initialized) {
+                initializedParticipants.add(participant);
+            }
         }
-        return participants.toArray(new RefactoringParticipant[participants.size()]);
+        return initializedParticipants.toArray(new RefactoringParticipant[initializedParticipants.size()]);
     }
 
     /**
