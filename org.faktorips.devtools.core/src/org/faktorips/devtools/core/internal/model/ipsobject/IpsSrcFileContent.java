@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import java.beans.PropertyDescriptor;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.IoUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
  * 
@@ -81,17 +83,22 @@ public class IpsSrcFileContent {
 
     public void updateState(String xml, boolean newModified) {
         boolean wasModified = newModified;
+
+        String encoding = ipsObject.getIpsProject().getXmlFileCharset();
+        ByteArrayInputStream is = null;
         try {
-            String encoding = ipsObject.getIpsProject().getXmlFileCharset();
-            ByteArrayInputStream is = new ByteArrayInputStream(xml.getBytes(encoding));
-            DocumentBuilder builder = IpsPlugin.getDefault().getDocumentBuilder();
-            Document doc = builder.parse(is);
-            is.close();
+            is = new ByteArrayInputStream(xml.getBytes(encoding));
+            Document doc = IpsPlugin.getDefault().getDocumentBuilder().parse(is);
             ipsObject.initFromXml(doc.getDocumentElement());
             modified = newModified;
             parsable = true;
             initializedFinished();
-        } catch (Exception e) {
+        } catch (IOException e) {
+            IoUtil.close(is);
+            parsable = false;
+            ipsObject.markAsFromUnparsableFile();
+        } catch (SAXException e) {
+            IoUtil.close(is);
             parsable = false;
             ipsObject.markAsFromUnparsableFile();
         } finally {
@@ -102,17 +109,11 @@ public class IpsSrcFileContent {
     }
 
     public void updateState(Element el, boolean modified) {
-        try {
-            ipsObject.initFromXml(el);
-            setModified(modified);
-            parsable = true;
-            initializedFinished();
-        } catch (Exception e) {
-            parsable = false;
-            ipsObject.markAsFromUnparsableFile();
-        } finally {
-            wholeContentChanged();
-        }
+        ipsObject.initFromXml(el);
+        setModified(modified);
+        parsable = true;
+        initializedFinished();
+        wholeContentChanged();
     }
 
     public IIpsSrcFile getIpsSrcFile() {
