@@ -40,7 +40,7 @@ public interface IValidationRule extends IIpsObjectPart, IProductCmptProperty {
 
     public final static String PROPERTY_CHECK_AGAINST_VALUE_SET_RULE = "checkValueAgainstValueSetRule"; //$NON-NLS-1$
 
-    public final static String PROPERTY_CONFIGUREDABLE_BY_PRODUCT_COMPONENT = "configurableByProductComponent"; //$NON-NLS-1$
+    public final static String PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT = "configurableByProductComponent"; //$NON-NLS-1$
 
     public final static String PROPERTY_ACTIVATED_BY_DEFAULT = "activatedByDefault"; //$NON-NLS-1$
 

@@ -13,31 +13,19 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
-import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.pctype.MessageSeverity;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
-import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
-import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.util.message.MessageList;
@@ -47,18 +35,11 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
     private IValidationRule rule;
 
     // edit fields
-    private TextField nameField;
-    private TextField msgCodeField;
-    private EnumValueField msgSeverityField;
-    private TextField msgTextField;
     private CheckboxField appliedToAllField;
     private RuleFunctionsControl rfControl;
     private CheckboxField specifiedInSrcField;
-    private Text msgText;
-    private Label charCount;
 
-    private Checkbox configurableByProductBox;
-    private Checkbox defaultActivationBox;
+    private ValidationRuleDefinitionUI ruleUI = new ValidationRuleDefinitionUI(uiToolkit);
 
     public RuleEditDialog(IValidationRule rule, Shell parentShell) {
         super(rule, parentShell, Messages.RuleEditDialog_title, true);
@@ -109,71 +90,9 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
         Composite workArea = createTabItemComposite(folder, 1, false);
         ((GridLayout)workArea.getLayout()).verticalSpacing = 20;
 
-        // general group
-        createGeneralGroup(workArea);
-
-        // cconfig group
-        createConfigGroup(workArea);
-
-        // message group
-        Group msgGroup = uiToolkit.createGroup(workArea, Messages.RuleEditDialog_messageGroupTitle);
-        msgGroup.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
-        Composite msgComposite = uiToolkit.createLabelEditColumnComposite(msgGroup);
-        msgComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-        uiToolkit.createFormLabel(msgComposite, Messages.RuleEditDialog_labelCode);
-        Text codeText = uiToolkit.createText(msgComposite);
-        uiToolkit.createFormLabel(msgComposite, Messages.RuleEditDialog_labelSeverity);
-        Combo severityCombo = uiToolkit.createCombo(msgComposite, MessageSeverity.getEnumType());
-        Label label = uiToolkit.createFormLabel(msgComposite, Messages.RuleEditDialog_labelText);
-        label.getParent().setLayoutData(
-                new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.VERTICAL_ALIGN_BEGINNING));
-        msgText = uiToolkit.createMultilineText(msgComposite);
-        msgText.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                updateCharCount();
-            }
-        });
-        uiToolkit.createVerticalSpacer(msgComposite, 1);
-        charCount = uiToolkit.createFormLabel(msgComposite, ""); //$NON-NLS-1$
-        charCount.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, true, true));
-        updateCharCount();
-
-        // create fields
-        msgCodeField = new TextField(codeText);
-        msgTextField = new TextField(msgText);
-        msgSeverityField = new EnumValueField(severityCombo, MessageSeverity.getEnumType());
+        ruleUI.initUI(workArea);
 
         return workArea;
-    }
-
-    private void createConfigGroup(Composite workArea) {
-        Group configGroup = uiToolkit.createGroup(workArea, Messages.AttributeEditDialog_ConfigurationGroup);
-        configGroup.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
-        Composite nameComposite = uiToolkit.createGridComposite(configGroup, 1, false, false);
-
-        configurableByProductBox = uiToolkit.createCheckbox(nameComposite,
-                Messages.RuleEditDialog_Configurable_CheckboxLabel);
-        defaultActivationBox = uiToolkit.createCheckbox(nameComposite,
-                Messages.RuleEditDialog_ActivatedByDefault_CheckboxLabel);
-
-    }
-
-    protected void createGeneralGroup(Composite workArea) {
-        Group generalGroup = uiToolkit.createGroup(workArea, Messages.RuleEditDialog_generalTitle);
-        generalGroup.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
-        Composite nameComposite = uiToolkit.createLabelEditColumnComposite(generalGroup);
-        uiToolkit.createFormLabel(nameComposite, Messages.RuleEditDialog_labelName);
-        Text nameText = uiToolkit.createText(nameComposite);
-
-        nameText.setFocus();
-        nameField = new TextField(nameText);
-    }
-
-    private void updateCharCount() {
-        String msg = NLS.bind(Messages.RuleEditDialog_contains, new Integer(msgText.getText().length()));
-        charCount.setText(msg);
-        charCount.getParent().layout();
     }
 
     private Control createFunctionsPage(TabFolder folder) {
@@ -200,23 +119,12 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
     }
 
     private void bindFields() {
-        bindingContext.bindContent(nameField, rule, IValidationRule.PROPERTY_NAME);
-        bindingContext.bindContent(msgCodeField, rule, IValidationRule.PROPERTY_MESSAGE_CODE);
-        bindingContext.bindContent(msgSeverityField, rule, IValidationRule.PROPERTY_MESSAGE_SEVERITY);
-        bindingContext.bindContent(msgTextField, rule, IValidationRule.PROPERTY_MESSAGE_TEXT);
+        ruleUI.bindFields(rule, bindingContext);
+
         bindingContext
                 .bindContent(appliedToAllField, rule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
         bindingContext
                 .bindContent(specifiedInSrcField, rule, IValidationRule.PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC);
-        bindingContext.bindContent(new CheckboxField(configurableByProductBox), rule,
-                IValidationRule.PROPERTY_CONFIGUREDABLE_BY_PRODUCT_COMPONENT);
-        bindingContext.bindContent(new CheckboxField(defaultActivationBox), rule,
-                IValidationRule.PROPERTY_ACTIVATED_BY_DEFAULT);
-
-        bindingContext.bindEnabled(configurableByProductBox, rule.getIpsObject(),
-                IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE);
-        bindingContext.bindEnabled(defaultActivationBox, rule,
-                IValidationRule.PROPERTY_CONFIGUREDABLE_BY_PRODUCT_COMPONENT);
     }
 
     @Override

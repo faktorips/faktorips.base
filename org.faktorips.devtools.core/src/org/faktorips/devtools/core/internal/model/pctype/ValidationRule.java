@@ -317,7 +317,7 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         validatedAttrSpecifiedInSrc = Boolean.parseBoolean(element
                 .getAttribute(PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC));
         configurableByProductComponent = Boolean.parseBoolean(element
-                .getAttribute(PROPERTY_CONFIGUREDABLE_BY_PRODUCT_COMPONENT));
+                .getAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT));
         activatedByDefault = Boolean.parseBoolean(element.getAttribute(PROPERTY_ACTIVATED_BY_DEFAULT));
 
         NodeList nl = element.getChildNodes();
@@ -348,7 +348,7 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         newElement.setAttribute(PROPERTY_MESSAGE_SEVERITY, msgSeverity.getId());
         newElement.setAttribute(PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC, String.valueOf(validatedAttrSpecifiedInSrc));
         newElement.setAttribute(PROPERTY_CHECK_AGAINST_VALUE_SET_RULE, String.valueOf(checkValueAgainstValueSetRule));
-        newElement.setAttribute(PROPERTY_CONFIGUREDABLE_BY_PRODUCT_COMPONENT,
+        newElement.setAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT,
                 String.valueOf(configurableByProductComponent));
         newElement.setAttribute(PROPERTY_ACTIVATED_BY_DEFAULT, String.valueOf(activatedByDefault));
         Document doc = newElement.getOwnerDocument();

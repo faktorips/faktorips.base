@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
+import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -54,7 +54,6 @@ import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.pctype.MessageSeverity;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -67,16 +66,16 @@ import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
+import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
-import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.IntegerField;
 import org.faktorips.devtools.core.ui.controller.fields.MessageCueController;
-import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
@@ -105,8 +104,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     private IIpsProject ipsProject;
 
-    private IValidationRule rule;
-
     private Text nameText;
 
     private EditField<String> defaultValueField;
@@ -123,24 +120,14 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     private Checkbox validationRuleAdded;
 
     /**
-     * TextField to link the name input control with the rule name
+     * Holds controls for defining a validation rule.
      */
-    private TextField ruleNameField;
+    private ValidationRuleDefinitionUI ruleDefinitionUI = new ValidationRuleDefinitionUI(uiToolkit);
 
     /**
-     * TextField to link the message code input control with the rule name
+     * Manages a rule. Model is bound to above UI by the {@link BindingContext}.
      */
-    private TextField msgCodeField;
-
-    /**
-     * TextField to link the message text input control with the rule name
-     */
-    private TextField msgTextField;
-
-    /**
-     * TextField to link the message severity input control with the rule name
-     */
-    private EnumValueField msgSeverityField;
+    private RuleModel ruleModel = new RuleModel();
 
     /**
      * Folder which contains the pages shown by this editor. Used to modify which page is shown.
@@ -152,12 +139,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
      * <code>true</code>) or not.
      */
     private boolean startWithRulePage = false;
-
-    /**
-     * Controller to link the part-related input fields to the rule. The default ui-controller can
-     * not be used because the default ui-controller is for the attribute and not for the rule.
-     */
-    private IpsObjectUIController ruleUIController;
 
     private ValueDatatype currentDatatype;
 
@@ -186,7 +167,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         this.attribute = attribute;
         initialName = attribute.getName();
         ipsProject = attribute.getIpsProject();
-        rule = attribute.findValueSetRule(ipsProject);
+        ruleModel.setValidationRule(attribute.findValueSetRule(ipsProject));
         try {
             currentDatatype = attribute.findDatatype(ipsProject);
         } catch (CoreException e) {
@@ -217,7 +198,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         validationRulePage.setControl(createValidationRulePage(tabFolder));
         if (startWithRulePage) {
             tabFolder.setSelection(2);
-            ruleNameField.getControl().setFocus();
+            ruleDefinitionUI.setFocusToNameField();
         } else {
             tabFolder.setSelection(0);
             nameText.setFocus();
@@ -233,9 +214,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                if (ruleUIController != null) {
-                    ruleUIController.updateUI();
-                }
+                bindingContext.updateUI();
             }
         });
 
@@ -255,11 +234,14 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
         // initial update of the checkBox "validationRuleAdded"
         updateFieldValidationRuleAdded();
+        bindEnablement();
+        bindingContext.updateUI();
 
         return tabFolder;
     }
 
     private void updateFieldValidationRuleAdded() {
+        IValidationRule rule = ruleModel.getValidationRule();
         if (rule != null) {
             MessageList msgList;
             try {
@@ -641,8 +623,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     private Control createValidationRulePage(TabFolder folder) {
         Composite workArea = createTabItemComposite(folder, 1, false);
 
-        ((GridLayout)workArea.getLayout()).verticalSpacing = 20;
-
         Composite checkComposite = uiToolkit.createGridComposite(workArea, 1, true, false);
         validationRuleAdded = uiToolkit.createCheckbox(checkComposite,
                 Messages.AttributeEditDialog_labelActivateValidationRule);
@@ -660,81 +640,91 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         });
 
         ruleGroup = uiToolkit.createGroup(checkComposite, Messages.AttributeEditDialog_ruleTitle);
-        Composite nameComposite = uiToolkit.createLabelEditColumnComposite(ruleGroup);
-        uiToolkit.createFormLabel(nameComposite, Messages.AttributeEditDialog_labelName);
-        Text nameText = uiToolkit.createText(nameComposite);
-        nameText.setFocus();
+        ruleDefinitionUI.initUI(ruleGroup);
+        ruleModel.addPropertyChangeListener(ruleDefinitionUI);
 
-        // message group
-        Group msgGroup = uiToolkit.createGroup(ruleGroup, Messages.AttributeEditDialog_messageTitle);
-        Composite msgComposite = uiToolkit.createLabelEditColumnComposite(msgGroup);
-        msgComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-        uiToolkit.createFormLabel(msgComposite, Messages.AttributeEditDialog_labelCode);
-        Text codeText = uiToolkit.createText(msgComposite);
-        uiToolkit.createFormLabel(msgComposite, Messages.AttributeEditDialog_labelSeverity);
-        Combo severityCombo = uiToolkit.createCombo(msgComposite, MessageSeverity.getEnumType());
-        Label label = uiToolkit.createFormLabel(msgComposite, Messages.AttributeEditDialog_labelText);
-        label.getParent().setLayoutData(
-                new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.VERTICAL_ALIGN_BEGINNING));
-        Text msgText = uiToolkit.createMultilineText(msgComposite);
-
-        // create fields
-        ruleNameField = new TextField(nameText);
-        msgCodeField = new TextField(codeText);
-        msgTextField = new TextField(msgText);
-        msgSeverityField = new EnumValueField(severityCombo, MessageSeverity.getEnumType());
-
-        if (rule != null) {
-            validationRuleAdded.setChecked(true);
-            enableCheckValueAgainstValueSetRule(true);
-        } else {
-            validationRuleAdded.setChecked(false);
-            enableCheckValueAgainstValueSetRule(false);
+        IValidationRule validationRule = ruleModel.getValidationRule();
+        if (validationRule != null) {
+            ruleDefinitionUI.bindFields(validationRule, bindingContext);
         }
-        if (rule != null) {
-            createRuleUIController();
-            ruleUIController.updateUI();
-        }
+        // if (rule != null) {
+        // validationRuleAdded.setChecked(true);
+        // enableCheckValueAgainstValueSetRule(true);
+        // } else {
+        // validationRuleAdded.setChecked(false);
+        // enableCheckValueAgainstValueSetRule(false);
+        // }
 
         return workArea;
     }
 
     private void enableCheckValueAgainstValueSetRule(boolean enabled) {
-        uiToolkit.setDataChangeable(ruleGroup, enabled);
-        if (enabled) {
-            if (rule != null) {
-                // we already have a rule, so dont create one. this could happen
-                // at creation time, for example.
-                return;
-            }
-            rule = attribute.createValueSetRule();
-            rule.setDescription(Messages.AttributeEditDialog_descriptionContent);
+        // bindingContext.updateUI();
+        // uiToolkit.setDataChangeable(ruleGroup, enabled);
+    }
 
-            if (ruleUIController == null) {
-                createRuleUIController();
+    public class RuleModel extends PresentationModelObject {
+
+        public static final String PROPERTY_ENABLED = "enabled"; //$NON-NLS-1$
+        public static final String PROPERTY_VALIDATION_RULE = "validationRule"; //$NON-NLS-1$
+
+        private IValidationRule rule;
+
+        public void setValidationRule(IValidationRule r) {
+            IValidationRule oldRule = rule;
+            boolean oldEnablement = isEnabled();
+            rule = r;
+            notifyListeners(new PropertyChangeEvent(this, PROPERTY_ENABLED, oldEnablement, isEnabled()));
+            /*
+             * This notification order is crucial! First inform about enablement change, then about
+             * data change. This way controls whose enabled state is dependent on the data rather
+             * than the enablement will be activated/de-activated correctly.
+             */
+            notifyListeners(new PropertyChangeEvent(this, PROPERTY_VALIDATION_RULE, oldRule, rule));
+        }
+
+        public IValidationRule getValidationRule() {
+            return rule;
+        }
+
+        public void setEnabled(boolean enabled) {
+            if (enabled) {
+                setValidationRule(attribute.createValueSetRule());
+            } else {
+                rule.delete();
+                setValidationRule(null);
             }
-            ruleUIController.updateUI();
-        } else if (rule != null) {
-            deleteRuleUIController();
-            rule.delete();
-            rule = null;
+        }
+
+        public boolean isEnabled() {
+            return rule != null;
         }
     }
 
-    private void deleteRuleUIController() {
-        ruleUIController.remove(ruleNameField);
-        ruleUIController.remove(msgCodeField);
-        ruleUIController.remove(msgTextField);
-        ruleUIController.remove(msgSeverityField);
-        ruleUIController = null;
-    }
+    private void bindEnablement() {
+        if (validationRuleAdded != null) {
+            bindingContext.bindContent(validationRuleAdded.getButton(), ruleModel, RuleModel.PROPERTY_ENABLED);
+        }
+        bindingContext.add(new ControlPropertyBinding(ruleGroup, ruleModel, RuleModel.PROPERTY_ENABLED, null) {
+            @Override
+            public void updateUiIfNotDisposed() {
+                uiToolkit.setDataChangeable(getControl(), ruleModel.isEnabled());
+            }
+        });
 
-    private void createRuleUIController() {
-        ruleUIController = new IpsObjectUIController(rule);
-        ruleUIController.add(ruleNameField, IIpsElement.PROPERTY_NAME);
-        ruleUIController.add(msgCodeField, IValidationRule.PROPERTY_MESSAGE_CODE);
-        ruleUIController.add(msgTextField, IValidationRule.PROPERTY_MESSAGE_TEXT);
-        ruleUIController.add(msgSeverityField, IValidationRule.PROPERTY_MESSAGE_SEVERITY);
+        // bindingContext.bindEnabled(ruleDefinitionUI.getNameField().getControl(), ruleModel,
+        // RuleModel.PROPERTY_VALIDATION_RULE_ENABLED);
+        // bindingContext.bindEnabled(ruleDefinitionUI.getMsgCodeField().getControl(), ruleModel,
+        // RuleModel.PROPERTY_VALIDATION_RULE_ENABLED);
+        // bindingContext.bindEnabled(ruleDefinitionUI.getMsgSeverityField().getControl(),
+        // ruleModel,
+        // RuleModel.PROPERTY_VALIDATION_RULE_ENABLED);
+        // bindingContext.bindEnabled(ruleDefinitionUI.getMsgTextField().getControl(), ruleModel,
+        // RuleModel.PROPERTY_VALIDATION_RULE_ENABLED);
+        // bindingContext.bindEnabled(ruleDefinitionUI.getConfigurableByProductBox(), ruleModel,
+        // RuleModel.PROPERTY_VALIDATION_RULE_ENABLED);
+        // bindingContext.bindEnabled(ruleDefinitionUI.getDefaultActivationBox(), ruleModel,
+        // RuleModel.PROPERTY_VALIDATION_RULE_ENABLED);
     }
 
     private void createPersistenceTabItemIfNecessary(TabFolder tabFolder) {
@@ -957,4 +947,5 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         }
 
     }
+
 }

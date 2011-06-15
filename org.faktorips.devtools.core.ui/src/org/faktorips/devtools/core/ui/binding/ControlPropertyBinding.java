@@ -30,6 +30,16 @@ public abstract class ControlPropertyBinding {
 
     private PropertyDescriptor property;
 
+    /**
+     * Creates an object that connects/binds an object's property to a control.
+     * 
+     * @param control the control to be bound to
+     * @param object the model object containing the property that is bound to the given control
+     * @param propertyName the name of the property that is bound to the given control
+     * @param exptectedType the data type (class) of the model object's property. This information
+     *            is used to check the validity of a binding. <code>null</code> can be given to
+     *            bypass this type-check e.g. for primitive types.
+     */
     public ControlPropertyBinding(Control control, Object object, String propertyName, Class<?> exptectedType) {
         super();
         this.control = control;
