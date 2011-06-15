@@ -19,6 +19,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.faktorips.util.IoUtil;
 import org.w3c.dom.Document;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
@@ -38,15 +39,18 @@ public abstract class XmlAbstractTestCase {
      * name as the test case class and the ending "+.xml".
      */
     public Document getTestDocument() {
+        InputStream is = null;
         try {
             String resourceName = getXmlResourceName();
-            InputStream is = getClass().getResourceAsStream(resourceName);
+            is = getClass().getResourceAsStream(resourceName);
             if (is == null) {
                 throw new RuntimeException("Can't find resource " + resourceName);
             }
             return getDocumentBuilder().parse(is);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            IoUtil.close(is);
         }
     }
 
