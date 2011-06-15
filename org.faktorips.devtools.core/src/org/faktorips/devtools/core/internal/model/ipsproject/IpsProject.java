@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -103,6 +104,7 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.IoUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -219,16 +221,18 @@ public class IpsProject extends IpsElement implements IIpsProject {
         } catch (Exception e) {
             throw new CoreException(new IpsStatus("Error tranforming project data to xml string", e)); //$NON-NLS-1$
         }
-        ByteArrayInputStream is;
+        ByteArrayInputStream is = null;
         try {
             is = new ByteArrayInputStream(insertNewLineSeparatorsBeforeComment(contents).getBytes(charset));
-        } catch (Exception e) {
+            if (file.exists()) {
+                file.setContents(is, true, true, null);
+            } else {
+                file.create(is, true, null);
+            }
+        } catch (UnsupportedEncodingException e) {
             throw new CoreException(new IpsStatus("Error creating byte stream", e)); //$NON-NLS-1$
-        }
-        if (file.exists()) {
-            file.setContents(is, true, true, null);
-        } else {
-            file.create(is, true, null);
+        } finally {
+            IoUtil.close(is);
         }
     }
 
