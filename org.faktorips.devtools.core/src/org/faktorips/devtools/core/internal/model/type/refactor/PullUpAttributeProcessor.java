@@ -19,8 +19,10 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.refactor.IpsPullUpProcessor;
 
 /**
@@ -92,9 +94,19 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor {
             return;
         }
 
-        if (getTargetType().getAttribute(getAttribute().getName()) != null) {
+        IAttribute targetAttribute = getTargetType().getAttribute(getAttribute().getName());
+        if (targetAttribute != null) {
             status.addFatalError(NLS.bind(Messages.PullUpAttributeProcessor_msgAttributeAlreadyExistingInTargetType,
                     getAttribute().getName()));
+            return;
+        }
+
+        if (getAttribute().isOverwrite()) {
+            BaseOfOverriddenAttributeVisitor visitor = new BaseOfOverriddenAttributeVisitor(getIpsProject());
+            visitor.start(getTargetType());
+            if (!visitor.baseOfOverriddenAttributeFound) {
+                status.addFatalError(Messages.PullUpAttributeProcessor_msgBaseOfOverwrittenAttributeNotFound);
+            }
             return;
         }
     }
@@ -133,6 +145,25 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor {
 
     private IType getTargetType() {
         return (IType)getTarget();
+    }
+
+    private class BaseOfOverriddenAttributeVisitor extends TypeHierarchyVisitor<IType> {
+
+        private boolean baseOfOverriddenAttributeFound;
+
+        private BaseOfOverriddenAttributeVisitor(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        @Override
+        protected boolean visit(IType currentType) throws CoreException {
+            if (currentType.getAttribute(getAttribute().getName()) != null) {
+                baseOfOverriddenAttributeFound = true;
+                return false;
+            }
+            return true;
+        }
+
     }
 
 }

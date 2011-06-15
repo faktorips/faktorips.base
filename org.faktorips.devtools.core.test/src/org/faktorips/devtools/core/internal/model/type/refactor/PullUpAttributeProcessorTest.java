@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.internal.model.type.refactor;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -41,6 +40,8 @@ public class PullUpAttributeProcessorTest {
     private IProgressMonitor progressMonitor;
 
     @Mock
+    private IIpsProject ipsProject;
+    @Mock
     private IType type;
 
     @Mock
@@ -54,6 +55,7 @@ public class PullUpAttributeProcessorTest {
     @Before
     public void setUp() throws CoreException {
         MockitoAnnotations.initMocks(this);
+        when(attribute.getIpsProject()).thenReturn(ipsProject);
         when(attribute.getType()).thenReturn(type);
         when(attribute.getName()).thenReturn(ATTRIBUTE_NAME);
         when(type.isSubtypeOf(eq(superType), any(IIpsProject.class))).thenReturn(true);
@@ -89,7 +91,7 @@ public class PullUpAttributeProcessorTest {
         RefactoringStatus status = new RefactoringStatus();
         pullUpAttributeProcessor.validateUserInputThis(status, progressMonitor);
 
-        assertEquals(RefactoringStatus.FATAL, status.getSeverity());
+        assertTrue(status.hasFatalError());
     }
 
     @Test
@@ -102,7 +104,45 @@ public class PullUpAttributeProcessorTest {
         RefactoringStatus status = new RefactoringStatus();
         pullUpAttributeProcessor.validateUserInputThis(status, progressMonitor);
 
-        assertEquals(RefactoringStatus.FATAL, status.getSeverity());
+        assertTrue(status.hasFatalError());
+    }
+
+    @Test
+    public void testValidateUserInputThisOverwrittenAttributeNotFoundInTargetTypeSuperHierarchy() throws CoreException {
+        when(attribute.isOverwrite()).thenReturn(true);
+
+        // Add another hierarchy level
+        IType superSuperType = mock(IType.class);
+        when(superType.findSupertype(any(IIpsProject.class))).thenReturn(superSuperType);
+        when(type.isSubtypeOf(eq(superSuperType), any(IIpsProject.class))).thenReturn(true);
+
+        pullUpAttributeProcessor.setTarget(superType);
+
+        RefactoringStatus status = new RefactoringStatus();
+        pullUpAttributeProcessor.validateUserInputThis(status, progressMonitor);
+
+        assertTrue(status.hasFatalError());
+    }
+
+    @Test
+    public void testValidateUserInputThisOverwrittenAttributeFoundInTargetTypeSuperHierarchy() throws CoreException {
+        when(attribute.isOverwrite()).thenReturn(true);
+
+        // Add another hierarchy level
+        IType superSuperType = mock(IType.class);
+        when(superType.findSupertype(any(IIpsProject.class))).thenReturn(superSuperType);
+        when(type.isSubtypeOf(eq(superSuperType), any(IIpsProject.class))).thenReturn(true);
+
+        // Create the base attribute
+        IAttribute baseAttribute = mock(IAttribute.class);
+        when(superSuperType.getAttribute(ATTRIBUTE_NAME)).thenReturn(baseAttribute);
+
+        pullUpAttributeProcessor.setTarget(superType);
+
+        RefactoringStatus status = new RefactoringStatus();
+        pullUpAttributeProcessor.validateUserInputThis(status, progressMonitor);
+
+        assertTrue(status.isOK());
     }
 
     @Test

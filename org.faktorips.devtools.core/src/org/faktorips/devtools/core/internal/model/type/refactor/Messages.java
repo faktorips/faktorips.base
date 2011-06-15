@@ -39,5 +39,6 @@ public class Messages extends NLS {
     public static String PullUpAttributeProcessor_msgSupertypeCouldNotBeFound;
     public static String PullUpAttributeProcessor_msgTargetTypeMustBeSupertype;
     public static String PullUpAttributeProcessor_msgAttributeAlreadyExistingInTargetType;
+    public static String PullUpAttributeProcessor_msgBaseOfOverwrittenAttributeNotFound;
 
 }
