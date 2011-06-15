@@ -719,6 +719,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     public List<IJavaElement> getGeneratedJavaElements(IIpsObjectPartContainer ipsObjectPartContainer) {
         ArgumentCheck.notNull(ipsObjectPartContainer);
 
+        clearGenerators();
+
         List<IJavaElement> javaElements = new ArrayList<IJavaElement>();
         for (IIpsArtefactBuilder builder : getArtefactBuilders()) {
             if (builder instanceof ProductCmptBuilder) {
