@@ -86,29 +86,26 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
     }
 
     public String getQualifiedName(boolean forInterface) {
-        return getQualifiedName(type, builderSet, getPackageName(forInterface), forInterface);
+        return getQualifiedName(type, getPackageName(forInterface), forInterface);
     }
 
     public static String getQualifiedName(IType type, StandardBuilderSet builderSet, boolean forInterface) {
         if (type != null) {
-            return getQualifiedName(type, builderSet, getPackageName(type, builderSet, forInterface), forInterface);
+            return getQualifiedName(type, getPackageName(type, builderSet, forInterface), forInterface);
         }
         return null;
     }
 
-    private static String getQualifiedName(IType type,
-            StandardBuilderSet builderSet,
-            String packageName,
-            boolean forInterface) {
+    private static String getQualifiedName(IType type, String packageName, boolean forInterface) {
 
         StringBuffer buf = new StringBuffer();
         buf.append(packageName);
         buf.append('.');
-        buf.append(getUnqualifiedClassName(type, builderSet, forInterface));
+        buf.append(getUnqualifiedClassName(type, forInterface));
         return buf.toString();
     }
 
-    public static String getUnqualifiedClassName(IType type, StandardBuilderSet builderSet, boolean forInterface) {
+    public static String getUnqualifiedClassName(IType type, boolean forInterface) {
         if (forInterface) {
             return type.getIpsProject().getJavaNamingConvention().getPublishedInterfaceName(type.getName());
 
@@ -122,7 +119,7 @@ public abstract class GenType extends JavaGeneratorForIpsPart {
      * @throws CoreException is delegated from calls to other methods
      */
     public String getUnqualifiedClassName(boolean forInterface) throws CoreException {
-        return getUnqualifiedClassName(type, builderSet, forInterface);
+        return getUnqualifiedClassName(type, forInterface);
     }
 
     /**
