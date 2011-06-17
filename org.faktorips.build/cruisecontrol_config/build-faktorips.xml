@@ -486,6 +486,7 @@
     	<property name="pluginbuilder.features.ormext" value="org.faktorips.ormext.feature,org.faktorips.ormext.feature.nls1,org.faktorips.ormext.feature.source"/>
     	<!-- devtarget additional jars --> 
 		<property name="devtarget.jar.path" value="${basedir}/org.faktorips.devtarget/eclipse/dropins/deploy/eclipse"/>
+		<property name="devtarget.aok.jar.path" value="${basedir}/de.aoksystems.omc.tools.feature/dropins/eclipse"/>
 		
 		<condition property="isMinVersion3" value="true" >
 			<not>
@@ -514,11 +515,15 @@
 	    <condition property="isCustomBuild" value="true">
 	    	 <not><equals arg1="${customBuild}" arg2="NONE"/></not>
 	    </condition>
+		<condition property="isCustomAOK" value="true">
+	    	 <equals arg1="${customBuild}" arg2="aok"/>
+	    </condition>
 	    	 	
         <condition property="is.product.build" value="true">
          <length string="${productProject}" when="greater" length="0" />
 	    </condition>
 
+		
     	<!-- check if the branch all.map should be used, if a branch is given 
     		     otherwise the cvs all.map is used to fetch the sources from cvs -->
 		<property name="all.map" value="all.map"/> <!-- default -->
@@ -582,6 +587,7 @@
 		
 		<!-- add devtarget deploy jars to updatesite -->
 		<antcall inheritall="true" target="-add.devtarget.jar.to.updatesite.zip"/>
+		<antcall inheritall="true" target="-add.devtarget.aok.jar.to.updatesite.zip"/>
 
 		<antcall inheritall="true" target="-publish.release.all"/>
 		<antcall inheritall="true" target="-publish.product"/>
@@ -1047,6 +1053,9 @@ ${faktoripsProductLinuxZipPath}
               	
     <target name="-add.devtarget.jar.to.updatesite.zip">
     	<zip destfile="${buildDirectory}/results/updateSite-${build.version}.zip" basedir="${devtarget.jar.path}" update="true" />
+    </target>
+    <target name="-add.devtarget.aok.jar.to.updatesite.zip" if="isCustomAOK">
+    	<zip destfile="${buildDirectory}/results/updateSite-${build.version}.zip" basedir="${devtarget.aok.jar.path}" update="true" />
     </target>
 	
     <target name="-merge.updatesite.xml" unless="isSkipPublish">
