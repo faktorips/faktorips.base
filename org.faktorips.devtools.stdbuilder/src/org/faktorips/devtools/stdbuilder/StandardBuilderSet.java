@@ -719,7 +719,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     public List<IJavaElement> getGeneratedJavaElements(IIpsObjectPartContainer ipsObjectPartContainer) {
         ArgumentCheck.notNull(ipsObjectPartContainer);
 
+        // Clear generators so they will be re-initialized
         clearGenerators();
+
+        // Re-creation of generators might fail due to cached validation errors
+        ipsObjectPartContainer.getIpsModel().clearValidationCache();
 
         List<IJavaElement> javaElements = new ArrayList<IJavaElement>();
         for (IIpsArtefactBuilder builder : getArtefactBuilders()) {
