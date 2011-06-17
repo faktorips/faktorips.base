@@ -30,7 +30,10 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.core.internal.model.enums.EnumTypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -95,7 +98,7 @@ public class IpsPullUpRefactoringWizard extends IpsRefactoringWizard {
             destinationTreeViewer.getTree().setLayoutData(gridData);
 
             destinationTreeViewer.setLabelProvider(new DefaultLabelProvider());
-            destinationTreeViewer.setContentProvider(new DestinationTreeContentProvider());
+            destinationTreeViewer.setContentProvider(createDestinationTreeContentProvider());
             destinationTreeViewer.setAutoExpandLevel(TreeViewer.ALL_LEVELS);
             destinationTreeViewer.setInput(getIpsElement());
 
@@ -110,6 +113,16 @@ public class IpsPullUpRefactoringWizard extends IpsRefactoringWizard {
             });
         }
 
+        private ITreeContentProvider createDestinationTreeContentProvider() {
+            if (getIpsElement() instanceof IAttribute) {
+                return new TypeDestinationTreeContentProvider();
+            }
+            if (getIpsElement() instanceof IEnumAttribute) {
+                return new EnumTypeDestinationTreeContentProvider();
+            }
+            throw new RuntimeException();
+        }
+
         @Override
         protected void setPromptMessage() {
             setMessage(NLS.bind(Messages.PullUpUserInputPage_message, getIpsElementName(getIpsElement()),
@@ -122,10 +135,6 @@ public class IpsPullUpRefactoringWizard extends IpsRefactoringWizard {
             Object selectedElement = selection.getFirstElement();
             if (selectedElement == null) {
                 throw new RuntimeException("No selection available."); //$NON-NLS-1$
-            }
-
-            if (!(selectedElement instanceof IType)) {
-                throw new RuntimeException("Only types are valid selections."); //$NON-NLS-1$
             }
 
             getIpsPullUpProcessor().setTarget((IIpsObjectPartContainer)selectedElement);
@@ -143,7 +152,7 @@ public class IpsPullUpRefactoringWizard extends IpsRefactoringWizard {
 
     }
 
-    private static class DestinationTreeContentProvider implements ITreeContentProvider {
+    private static class TypeDestinationTreeContentProvider implements ITreeContentProvider {
 
         private Map<IType, IType> parentToChildInHierarchy = new HashMap<IType, IType>();
 
@@ -156,7 +165,8 @@ public class IpsPullUpRefactoringWizard extends IpsRefactoringWizard {
             if (inputElement instanceof IAttribute) {
                 IAttribute attribute = (IAttribute)inputElement;
                 leafType = attribute.getType();
-                RootOfHierarchyVisitor rootOfHierarchyVisitor = new RootOfHierarchyVisitor(attribute.getIpsProject());
+                RootOfTypeHierarchyVisitor rootOfHierarchyVisitor = new RootOfTypeHierarchyVisitor(
+                        attribute.getIpsProject());
                 try {
                     rootOfHierarchyVisitor.start(leafType);
                 } catch (CoreException e) {
@@ -207,16 +217,103 @@ public class IpsPullUpRefactoringWizard extends IpsRefactoringWizard {
             // Nothing to do
         }
 
-        private class RootOfHierarchyVisitor extends TypeHierarchyVisitor<IType> {
+        private class RootOfTypeHierarchyVisitor extends TypeHierarchyVisitor<IType> {
 
             private IType previousType;
 
-            public RootOfHierarchyVisitor(IIpsProject ipsProject) {
+            public RootOfTypeHierarchyVisitor(IIpsProject ipsProject) {
                 super(ipsProject);
             }
 
             @Override
             protected boolean visit(IType currentType) throws CoreException {
+                if (previousType != null) {
+                    parentToChildInHierarchy.put(currentType, previousType);
+                    childToParentInHierarchy.put(previousType, currentType);
+                }
+                previousType = currentType;
+                return true;
+            }
+
+        }
+
+    }
+
+    private static class EnumTypeDestinationTreeContentProvider implements ITreeContentProvider {
+
+        private Map<IEnumType, IEnumType> parentToChildInHierarchy = new HashMap<IEnumType, IEnumType>();
+
+        private Map<IEnumType, IEnumType> childToParentInHierarchy = new HashMap<IEnumType, IEnumType>();
+
+        private IEnumType leafType;
+
+        @Override
+        public Object[] getElements(Object inputElement) {
+            if (inputElement instanceof IEnumAttribute) {
+                IEnumAttribute enumAttribute = (IEnumAttribute)inputElement;
+                leafType = enumAttribute.getEnumType();
+                RootOfEnumTypeHierarchyVisitor rootOfHierarchyVisitor = new RootOfEnumTypeHierarchyVisitor(
+                        enumAttribute.getIpsProject());
+                try {
+                    rootOfHierarchyVisitor.start(leafType);
+                } catch (CoreException e) {
+                    throw new RuntimeException(e);
+                }
+                List<IEnumType> visitedEnumTypes = rootOfHierarchyVisitor.getVisited();
+                IEnumType rootType = visitedEnumTypes.get(visitedEnumTypes.size() - 1);
+                return new Object[] { rootType };
+            }
+            return new Object[0];
+        }
+
+        @Override
+        public Object[] getChildren(Object parentElement) {
+            if (parentElement instanceof IEnumType) {
+                IEnumType child = parentToChildInHierarchy.get(parentElement);
+                if (child != null) {
+                    return new Object[] { child };
+                }
+            }
+            return new Object[0];
+        }
+
+        @Override
+        public Object getParent(Object element) {
+            if (element instanceof IEnumType) {
+                return childToParentInHierarchy.get(element);
+            }
+            return null;
+        }
+
+        @Override
+        public boolean hasChildren(Object element) {
+            if (element instanceof IEnumType) {
+                IEnumType child = parentToChildInHierarchy.get(element);
+                return child != null && !child.equals(leafType);
+            }
+            return false;
+        }
+
+        @Override
+        public void dispose() {
+            // Nothing to do
+        }
+
+        @Override
+        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            // Nothing to do
+        }
+
+        private class RootOfEnumTypeHierarchyVisitor extends EnumTypeHierarchyVisitor {
+
+            private IEnumType previousType;
+
+            public RootOfEnumTypeHierarchyVisitor(IIpsProject ipsProject) {
+                super(ipsProject);
+            }
+
+            @Override
+            protected boolean visit(IEnumType currentType) throws CoreException {
                 if (previousType != null) {
                     parentToChildInHierarchy.put(currentType, previousType);
                     childToParentInHierarchy.put(previousType, currentType);
