@@ -79,17 +79,25 @@ public class RenameEnumAttributeProcessorTest extends AbstractIpsRefactoringTest
         String newAttributeName = "newAttributeName";
         performRenameRefactoring(enumAttribute, newAttributeName);
 
-        // Check for changed attribute name.
+        // Check for changed attribute name
         assertNull(enumType.getEnumAttribute(ENUM_ATTRIBUTE_NAME));
         assertNotNull(enumType.getEnumAttribute(newAttributeName));
         assertTrue(enumAttribute.getName().equals(newAttributeName));
 
-        // TODO AW: Write extra test for enumeration content reference.
-
-        // Check for inherited attribute update.
+        // Check for inherited attribute update
         assertNull(subEnumType.getEnumAttributeIncludeSupertypeCopies(ENUM_ATTRIBUTE_NAME));
         assertNotNull(subEnumType.getEnumAttributeIncludeSupertypeCopies(newAttributeName));
         assertEquals(newAttributeName, inheritedEnumAttribute.getName());
+    }
+
+    @Test
+    public void testRenameEnumAttributeReferencedByEnumContent() throws CoreException {
+        String newAttributeName = "foo";
+        performRenameRefactoring(enumAttribute, newAttributeName);
+
+        // Check for enum content reference update
+        assertNull(enumContent.getEnumAttributeReference(ENUM_ATTRIBUTE_NAME));
+        assertEquals(newAttributeName, enumContent.getEnumAttributeReference(newAttributeName).getName());
     }
 
     @Test

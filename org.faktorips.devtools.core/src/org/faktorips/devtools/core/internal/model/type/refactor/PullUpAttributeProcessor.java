@@ -41,7 +41,7 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor {
     @Override
     protected void addIpsSrcFiles() {
         addIpsSrcFile(getIpsSrcFile());
-        addIpsSrcFile(getTargetType().getIpsSrcFile());
+        addIpsSrcFile(getTarget().getIpsSrcFile());
     }
 
     @Override
@@ -50,13 +50,9 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor {
         deleteOriginalAttribute();
     }
 
-    /**
-     * Pulls the attribute up to the target type and returns the new attribute.
-     */
-    private IAttribute pullUpAttribute() {
+    private void pullUpAttribute() {
         IAttribute newAttribute = getTargetType().newAttribute();
         newAttribute.copyFrom(getAttribute());
-        return newAttribute;
     }
 
     private void deleteOriginalAttribute() {
@@ -73,6 +69,7 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor {
             status.addFatalError(NLS.bind(Messages.PullUpAttributeProcessor_msgTypeHasNoSupertype, getType().getName()));
             return;
         }
+
         if (getType().findSupertype(getIpsProject()) == null) {
             status.addFatalError(NLS.bind(Messages.PullUpAttributeProcessor_msgSupertypeCouldNotBeFound, getType()
                     .getSupertype()));
@@ -86,6 +83,9 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor {
      * This implementation checks that the target type is a supertype of the attribute's type and
      * that no attribute with the same name as the attribute to be refactored already exists in the
      * target type.
+     * <p>
+     * Furthermore, if the attribute is marked as overwrite the overwritten attribute must be found
+     * in the super type hierarchy of the target type.
      */
     @Override
     public void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
@@ -106,8 +106,8 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor {
             visitor.start(getTargetType());
             if (!visitor.baseOfOverriddenAttributeFound) {
                 status.addFatalError(Messages.PullUpAttributeProcessor_msgBaseOfOverwrittenAttributeNotFound);
+                return;
             }
-            return;
         }
     }
 

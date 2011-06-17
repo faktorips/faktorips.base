@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.internal.refactor;
 
 import java.util.Set;
 
+import org.faktorips.devtools.core.internal.model.enums.refactor.PullUpEnumAttributeProcessor;
 import org.faktorips.devtools.core.internal.model.enums.refactor.RenameEnumAttributeProcessor;
 import org.faktorips.devtools.core.internal.model.enums.refactor.RenameEnumLiteralNameAttributeValueProcessor;
 import org.faktorips.devtools.core.internal.model.ipsobject.refactor.MoveIpsObjectProcessor;
@@ -114,6 +115,8 @@ public final class IpsRefactoringFactory implements IIpsRefactoringFactory {
         IpsPullUpProcessor ipsPullUpProcessor = null;
         if (ipsObjectPart instanceof IAttribute) {
             ipsPullUpProcessor = new PullUpAttributeProcessor((IAttribute)ipsObjectPart);
+        } else if (ipsObjectPart instanceof IEnumAttribute) {
+            ipsPullUpProcessor = new PullUpEnumAttributeProcessor((IEnumAttribute)ipsObjectPart);
         } else {
             return null;
         }

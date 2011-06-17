@@ -15,8 +15,6 @@ package org.faktorips.devtools.core.internal.model.type.refactor;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -58,7 +56,7 @@ public class PullUpAttributeProcessorTest {
         when(attribute.getIpsProject()).thenReturn(ipsProject);
         when(attribute.getType()).thenReturn(type);
         when(attribute.getName()).thenReturn(ATTRIBUTE_NAME);
-        when(type.isSubtypeOf(eq(superType), any(IIpsProject.class))).thenReturn(true);
+        when(type.isSubtypeOf(superType, ipsProject)).thenReturn(true);
 
         pullUpAttributeProcessor = new PullUpAttributeProcessor(attribute);
     }
@@ -76,7 +74,7 @@ public class PullUpAttributeProcessorTest {
     @Test
     public void testCheckInitialConditionsThisSupertypeCannotBeFound() throws CoreException {
         when(type.hasSupertype()).thenReturn(true);
-        when(type.findSupertype(any(IIpsProject.class))).thenReturn(null);
+        when(type.findSupertype(ipsProject)).thenReturn(null);
 
         RefactoringStatus status = new RefactoringStatus();
         pullUpAttributeProcessor.checkInitialConditionsThis(status, progressMonitor);
@@ -113,8 +111,8 @@ public class PullUpAttributeProcessorTest {
 
         // Add another hierarchy level
         IType superSuperType = mock(IType.class);
-        when(superType.findSupertype(any(IIpsProject.class))).thenReturn(superSuperType);
-        when(type.isSubtypeOf(eq(superSuperType), any(IIpsProject.class))).thenReturn(true);
+        when(superType.findSupertype(ipsProject)).thenReturn(superSuperType);
+        when(type.isSubtypeOf(superSuperType, ipsProject)).thenReturn(true);
 
         pullUpAttributeProcessor.setTarget(superType);
 
@@ -130,8 +128,8 @@ public class PullUpAttributeProcessorTest {
 
         // Add another hierarchy level
         IType superSuperType = mock(IType.class);
-        when(superType.findSupertype(any(IIpsProject.class))).thenReturn(superSuperType);
-        when(type.isSubtypeOf(eq(superSuperType), any(IIpsProject.class))).thenReturn(true);
+        when(superType.findSupertype(ipsProject)).thenReturn(superSuperType);
+        when(type.isSubtypeOf(superSuperType, ipsProject)).thenReturn(true);
 
         // Create the base attribute
         IAttribute baseAttribute = mock(IAttribute.class);

@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.faktorips.devtools.core.internal.model.enums.refactor.PullUpEnumAttributeProcessor;
 import org.faktorips.devtools.core.internal.model.enums.refactor.RenameEnumAttributeProcessor;
 import org.faktorips.devtools.core.internal.model.enums.refactor.RenameEnumLiteralNameAttributeValueProcessor;
 import org.faktorips.devtools.core.internal.model.ipsobject.refactor.MoveIpsObjectProcessor;
@@ -147,6 +148,13 @@ public class IpsRefactoringFactoryTest {
         IIpsProcessorBasedRefactoring ipsPullUpRefactoring = ipsRefactoringFactory
                 .createPullUpRefactoring(mock(IAttribute.class));
         assertTrue(ipsPullUpRefactoring.getIpsRefactoringProcessor() instanceof PullUpAttributeProcessor);
+    }
+
+    @Test
+    public void testCreatePullUpRefactoringEnumAttribute() {
+        IIpsProcessorBasedRefactoring ipsPullUpRefactoring = ipsRefactoringFactory
+                .createPullUpRefactoring(mock(IEnumAttribute.class));
+        assertTrue(ipsPullUpRefactoring.getIpsRefactoringProcessor() instanceof PullUpEnumAttributeProcessor);
     }
 
     @Test

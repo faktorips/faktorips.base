@@ -30,4 +30,12 @@ public class Messages extends NLS {
     public static String RenameEnumAttributeProcessor_processorName;
     public static String RenameEnumLiteralNameAttributeValueProcessor_processorName;
 
+    public static String PullUpEnumAttributeProcessor_processorName;
+    public static String PullUpEnumAttributeProcessor_msgEnumTypeHasNoSuperEnumType;
+    public static String PullUpEnumAttributeProcessor_msgSuperEnumTypeCannotBeFound;
+    public static String PullUpEnumAttributeProcessor_msgLiteralNameAttributeCannotBePulledUp;
+    public static String PullUpEnumAttributeProcessor_msgTargetEnumTypeMustBeASupertype;
+    public static String PullUpEnumAttributeProcessor_msgEnumAttributeAlreadyExistsInTarget;
+    public static String PullUpEnumAttributeProcessor_msgEnumAttributeBaseOfInheritedAttributeNotFound;
+
 }
