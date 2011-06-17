@@ -778,7 +778,6 @@ checkoutPluginbuilderPartsAndDevtarget()
   if [ "$CUSTOM_BUILD" = "aok" ] ; then
     checkoutModule $WORKINGDIR/$DEVTARGET_PLUGIN_NAME/eclipse/dropins/aok $_FETCH_TAG de.aoksystems.omc.tools.feature/dropins $BRANCH
   fi
-  exit 1
 }
 
 printBoolean ()
