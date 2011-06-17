@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Locale;
 import java.util.Properties;
 
-import org.faktorips.devtools.htmlexport.FakePluginResourcesFacade;
+import org.faktorips.devtools.htmlexport.MockPluginResourcesFacade;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +31,7 @@ public class MessagesManagerTest {
 
     @Before
     public void setUp() throws Exception {
-        FakePluginResourcesFacade pluginResources = new FakePluginResourcesFacade();
+        MockPluginResourcesFacade pluginResources = new MockPluginResourcesFacade();
         Properties enMessages = new Properties();
         enMessages.put(KEY, "Project");
         pluginResources.putMessageProperties("org/faktorips/devtools/htmlexport/context/messages/messages.properties",

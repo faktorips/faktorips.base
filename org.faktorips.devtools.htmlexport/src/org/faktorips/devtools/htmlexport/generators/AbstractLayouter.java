@@ -16,6 +16,11 @@ package org.faktorips.devtools.htmlexport.generators;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Base class of {@link ILayouter}s
+ * 
+ * @author dicker
+ */
 public abstract class AbstractLayouter extends AbstractTextGenerator implements ILayouter {
 
     /**

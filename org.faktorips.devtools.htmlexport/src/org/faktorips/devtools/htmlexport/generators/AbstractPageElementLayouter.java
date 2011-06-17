@@ -16,6 +16,11 @@ package org.faktorips.devtools.htmlexport.generators;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 
+/**
+ * Base class of {@link IPageElementLayouter}
+ * 
+ * @author dicker
+ */
 public abstract class AbstractPageElementLayouter<T extends IPageElement> implements IPageElementLayouter<T> {
     protected final T pageElement;
 

@@ -16,6 +16,11 @@ package org.faktorips.devtools.htmlexport.generators.html;
 import org.faktorips.devtools.htmlexport.generators.AbstractTextGenerator;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
 
+/**
+ * Generator for Html-Frames
+ * 
+ * @author dicker
+ */
 public class BaseFrameHtmlGenerator extends AbstractTextGenerator {
     private String title;
     private String colDefinition;

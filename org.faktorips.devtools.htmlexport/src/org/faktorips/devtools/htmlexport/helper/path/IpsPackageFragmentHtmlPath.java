@@ -39,7 +39,7 @@ public class IpsPackageFragmentHtmlPath extends AbstractIpsElementHtmlPath<IIpsP
     @Override
     public String getPathToRoot() {
         if (getIpsElement().isDefaultPackage()) {
-            return ""; //$NON-NLS-1$
+            return EMPTY_PATH;
         }
         return getPackageFragmentPathToRoot(getIpsElement());
     }

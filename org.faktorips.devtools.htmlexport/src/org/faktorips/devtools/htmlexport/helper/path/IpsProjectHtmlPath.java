@@ -38,7 +38,7 @@ public class IpsProjectHtmlPath extends AbstractIpsElementHtmlPath<IIpsProject> 
 
     @Override
     public String getPathToRoot() {
-        return ""; //$NON-NLS-1$
+        return EMPTY_PATH;
     }
 
     @Override

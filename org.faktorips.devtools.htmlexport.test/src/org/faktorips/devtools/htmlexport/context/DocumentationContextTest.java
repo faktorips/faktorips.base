@@ -19,14 +19,14 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.htmlexport.FakePluginResourcesFacade;
+import org.faktorips.devtools.htmlexport.MockPluginResourcesFacade;
 import org.junit.Test;
 
 public class DocumentationContextTest {
 
     @Test
     public void testExportStatus() {
-        DocumentationContext context = new DocumentationContext(new FakePluginResourcesFacade());
+        DocumentationContext context = new DocumentationContext(new MockPluginResourcesFacade());
 
         assertEquals(IStatus.OK, context.getExportStatus().getSeverity());
 

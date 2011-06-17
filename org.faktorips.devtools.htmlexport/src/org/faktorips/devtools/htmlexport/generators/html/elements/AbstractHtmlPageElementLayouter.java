@@ -22,6 +22,10 @@ import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 
+/**
+ * 
+ * @author dicker
+ */
 public abstract class AbstractHtmlPageElementLayouter<T extends IPageElement> extends AbstractPageElementLayouter<T> {
 
     protected final HtmlUtil htmlUtil = new HtmlUtil();
@@ -46,7 +50,7 @@ public abstract class AbstractHtmlPageElementLayouter<T extends IPageElement> ex
         if (styles == null || styles.isEmpty()) {
             return null;
         }
-        
+
         return StringUtils.join(styles, ' ');
     }
 }

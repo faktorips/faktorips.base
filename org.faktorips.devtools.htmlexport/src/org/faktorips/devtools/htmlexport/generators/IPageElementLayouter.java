@@ -22,6 +22,9 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
  */
 public interface IPageElementLayouter<T extends IPageElement> {
 
+    /**
+     * layouts the {@link IPageElement}
+     */
     public void layout();
 
 }

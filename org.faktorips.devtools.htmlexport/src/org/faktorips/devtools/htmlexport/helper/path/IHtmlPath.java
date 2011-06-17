@@ -24,6 +24,8 @@ package org.faktorips.devtools.htmlexport.helper.path;
  */
 public interface IHtmlPath {
 
+    public static final String EMPTY_PATH = ""; //$NON-NLS-1$
+
     /**
      * returns relative path of this location to the root
      * 

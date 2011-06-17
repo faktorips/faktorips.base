@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 
 /**
- * Encapsulates access to the IpsPlugin
+ * Encapsulates accesses to the IpsPlugin
  * 
  * @author dicker
  */

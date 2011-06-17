@@ -24,7 +24,7 @@ public class IpsObjectTypeHtmlPath implements IHtmlPath {
 
     @Override
     public String getPathToRoot() {
-        return ""; //$NON-NLS-1$
+        return EMPTY_PATH;
     }
 
     @Override

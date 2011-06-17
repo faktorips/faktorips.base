@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
  * 
  */
 public abstract class AbstractIpsElementHtmlPath<T extends IIpsElement> implements IHtmlPath {
-    protected static final String PATH_UP = "../"; //$NON-NLS-1$
+    protected static final String UP_PATH = "../"; //$NON-NLS-1$
 
     protected T ipsElement;
 
@@ -39,15 +39,15 @@ public abstract class AbstractIpsElementHtmlPath<T extends IIpsElement> implemen
      */
     protected String getPackageFragmentPathToRoot(IIpsPackageFragment packageFragment) {
         if (packageFragment.isDefaultPackage()) {
-            return ""; //$NON-NLS-1$
+            return EMPTY_PATH;
         }
 
         StringBuilder builder = new StringBuilder();
 
-        builder.append(PATH_UP);
+        builder.append(UP_PATH);
         packageFragment = packageFragment.getParentIpsPackageFragment();
         while (packageFragment.getParentIpsPackageFragment() != null) {
-            builder.append(PATH_UP);
+            builder.append(UP_PATH);
             packageFragment = packageFragment.getParentIpsPackageFragment();
         }
         return builder.toString();
@@ -59,7 +59,7 @@ public abstract class AbstractIpsElementHtmlPath<T extends IIpsElement> implemen
      */
     protected String getPackageFragmentPathFromRoot(IIpsPackageFragment ipsPackageFragment) {
         if (ipsPackageFragment.isDefaultPackage()) {
-            return ""; //$NON-NLS-1$
+            return EMPTY_PATH;
         }
         return ipsPackageFragment.getRelativePath().toOSString() + File.separator;
     }

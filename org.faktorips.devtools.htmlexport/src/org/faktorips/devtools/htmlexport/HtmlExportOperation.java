@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 
 /**
- * The Documentor is the base for the export and should be used as base for the documentation.
+ * Operation to run the HtmlExport
  * 
  * @author dicker
  * 

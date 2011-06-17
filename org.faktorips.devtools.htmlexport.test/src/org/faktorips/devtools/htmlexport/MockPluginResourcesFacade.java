@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 import org.faktorips.devtools.htmlexport.context.IPluginResourceFacade;
 
-public class FakePluginResourcesFacade implements IPluginResourceFacade {
+public class MockPluginResourcesFacade implements IPluginResourceFacade {
 
     private Map<String, Properties> messagesMap = new HashMap<String, Properties>();
 
@@ -36,11 +36,11 @@ public class FakePluginResourcesFacade implements IPluginResourceFacade {
 
     private IpsObjectType[] defaultIpsObjectTypes;
 
-    public FakePluginResourcesFacade() {
+    public MockPluginResourcesFacade() {
         this(ALL_IPS_OBJECT_TYPES);
     }
 
-    public FakePluginResourcesFacade(IpsObjectType[] defaultIpsObjectTypes) {
+    public MockPluginResourcesFacade(IpsObjectType[] defaultIpsObjectTypes) {
         this.defaultIpsObjectTypes = defaultIpsObjectTypes;
     }
 

@@ -24,7 +24,14 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 
-public class MessagesManager {
+/**
+ * This class manages the Messages for the HtmlExport. This is necessary, because the {@link Locale}
+ * of the HtmlExport may not be the {@link Locale} of the workspace. Because of this the eclipse
+ * mechanism for localized messages is not useful here.
+ * 
+ * @author dicker
+ */
+public final class MessagesManager {
 
     private final Properties messages = new Properties();
     private final DocumentationContext context;
@@ -37,17 +44,17 @@ public class MessagesManager {
     }
 
     private void initialize(Locale locale) {
-        initializeStandardMessages();
+        loadStandardMessages();
 
         if (isEnglish(locale)) {
             return;
         }
 
-        initializeLocalizedMessages(locale);
+        loadMessages(getClass(), locale);
     }
 
-    private void initializeStandardMessages() {
-        initializeLocalizedMessages(Locale.UK);
+    private void loadStandardMessages() {
+        loadMessages(getClass(), Locale.UK);
     }
 
     private boolean isEnglish(Locale locale) {
@@ -58,11 +65,7 @@ public class MessagesManager {
         return "en".equals(nl); //$NON-NLS-1$
     }
 
-    private void initializeLocalizedMessages(Locale locale) {
-        loadMessages(getClass(), locale);
-    }
-
-    protected void loadMessages(Class<?> clazz, Locale locale) {
+    private void loadMessages(Class<?> clazz, Locale locale) {
         String resourceName = clazz.getPackage().getName().replace('.', File.separatorChar) + File.separatorChar
                 + getMessagesFileName(locale);
 
@@ -78,6 +81,10 @@ public class MessagesManager {
         return "messages_" + locale.getLanguage() + ".properties"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    /**
+     * 
+     * returns a message for the given messageId
+     */
     public String getMessage(String messageId) {
         if (messages.containsKey(messageId)) {
             return messages.getProperty(messageId);
@@ -89,6 +96,9 @@ public class MessagesManager {
         return messageId;
     }
 
+    /**
+     * returns a message for the given object
+     */
     public String getMessage(Object object) {
         if (object instanceof IpsObjectType) {
             IpsObjectType objectType = (IpsObjectType)object;
