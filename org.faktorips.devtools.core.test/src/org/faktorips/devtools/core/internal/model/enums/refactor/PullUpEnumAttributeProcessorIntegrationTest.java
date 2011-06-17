@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.internal.model.enums.refactor;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.CoreException;
@@ -29,13 +28,19 @@ public class PullUpEnumAttributeProcessorIntegrationTest extends AbstractIpsRefa
         superEnumType.setAbstract(true);
         enumType.setSuperEnumType(superEnumType.getQualifiedName());
 
+        IEnumType siblingEnumType = newEnumType(ipsProject, "SiblingEnumType");
+        siblingEnumType.setSuperEnumType(superEnumType.getQualifiedName());
+
         performPullUpRefactoring(enumAttribute, superEnumType);
 
-        // Check for no longer existing original enum attribute
-        assertFalse(enumType.containsEnumAttribute(ENUM_ATTRIBUTE_NAME));
+        // Check that the original enum attribute is marked as inherited
+        assertTrue(enumAttribute.isInherited());
 
         // Check that enum attribute exists in target enum type
         assertTrue(superEnumType.containsEnumAttribute(ENUM_ATTRIBUTE_NAME));
+
+        // Check that the pulled up attribute is inherited by other sub types of target enum type
+        assertTrue(siblingEnumType.getEnumAttributeIncludeSupertypeCopies(ENUM_ATTRIBUTE_NAME).isInherited());
     }
 
 }

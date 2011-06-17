@@ -117,7 +117,7 @@ public class PullUpEnumAttributeProcessorTest {
 
     @Test
     public void testValidateUserInputThisEnumAttributeAlreadyExistingInTargetEnumType() throws CoreException {
-        when(superEnumType.containsEnumAttribute(ENUM_ATTRIBUTE_NAME)).thenReturn(true);
+        when(superEnumType.containsEnumAttributeIncludeSupertypeCopies(ENUM_ATTRIBUTE_NAME)).thenReturn(true);
 
         RefactoringStatus status = new RefactoringStatus();
         pullUpEnumAttributeProcessor.validateUserInputThis(status, progressMonitor);

@@ -13,6 +13,10 @@
 
 package org.faktorips.devtools.core.internal.model.enums.refactor;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
@@ -23,6 +27,7 @@ import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.refactor.IpsPullUpProcessor;
 
@@ -33,6 +38,9 @@ import org.faktorips.devtools.core.refactor.IpsPullUpProcessor;
  */
 public class PullUpEnumAttributeProcessor extends IpsPullUpProcessor {
 
+    /** Set containing all sub enum types of the target enum type. */
+    private final Set<IEnumType> subEnumTypes = new HashSet<IEnumType>();
+
     public PullUpEnumAttributeProcessor(IEnumAttribute enumAttribute) {
         super(enumAttribute);
     }
@@ -40,13 +48,24 @@ public class PullUpEnumAttributeProcessor extends IpsPullUpProcessor {
     @Override
     protected void addIpsSrcFiles() throws CoreException {
         addIpsSrcFile(getIpsSrcFile());
+
         addIpsSrcFile(getTarget().getIpsSrcFile());
+
+        // Sub enum types of target enum type
+        for (IIpsSrcFile ipsSrcFile : findReferencingIpsSrcFiles(IpsObjectType.ENUM_TYPE)) {
+            IEnumType enumType = (IEnumType)ipsSrcFile.getIpsObject();
+            if (enumType.isSubEnumTypeOf(getTargetEnumType(), getIpsProject()) && !enumType.equals(getEnumType())) {
+                addIpsSrcFile(ipsSrcFile);
+                subEnumTypes.add(enumType);
+            }
+        }
     }
 
     @Override
     protected void refactorIpsModel(IProgressMonitor pm) throws CoreException {
         pullUpEnumAttribute();
-        deleteOriginalEnumAttribute();
+        markeOriginalEnumAttributeInherited();
+        inheritEnumAttributeInSubclassesOfTarget();
     }
 
     private void pullUpEnumAttribute() throws CoreException {
@@ -54,8 +73,15 @@ public class PullUpEnumAttributeProcessor extends IpsPullUpProcessor {
         newEnumAttribute.copyFrom(getEnumAttribute());
     }
 
-    private void deleteOriginalEnumAttribute() {
-        getEnumAttribute().delete();
+    private void markeOriginalEnumAttributeInherited() {
+        getEnumAttribute().setInherited(true);
+    }
+
+    private void inheritEnumAttributeInSubclassesOfTarget() throws CoreException {
+        IEnumAttribute pulledUpAttribute = getTargetEnumType().getEnumAttribute(getEnumAttribute().getName());
+        for (IEnumType subEnumType : subEnumTypes) {
+            subEnumType.inheritEnumAttributes(Arrays.asList(pulledUpAttribute));
+        }
     }
 
     /**
@@ -102,7 +128,7 @@ public class PullUpEnumAttributeProcessor extends IpsPullUpProcessor {
             return;
         }
 
-        if (getTargetEnumType().containsEnumAttribute(getEnumAttribute().getName())) {
+        if (getTargetEnumType().containsEnumAttributeIncludeSupertypeCopies(getEnumAttribute().getName())) {
             status.addFatalError(NLS.bind(Messages.PullUpEnumAttributeProcessor_msgEnumAttributeAlreadyExistsInTarget,
                     getEnumAttribute().getName()));
             return;
