@@ -91,7 +91,7 @@ public class TableRowPageElement extends WrapperPageElement {
     /**
      * @return the parentTablePageElement
      */
-    protected TablePageElement getParentTablePageElement() {
+    public TablePageElement getParentTablePageElement() {
         return parentTablePageElement;
     }
 

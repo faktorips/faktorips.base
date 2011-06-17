@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
@@ -33,6 +34,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
@@ -90,19 +92,71 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         addTableStructureUsages();
 
         addChildProductCmptTypes();
+
+        addValidationRules();
+
+    }
+
+    private void addValidationRules() {
+        IPolicyCmptType policyCmptType = getPolicyCmptType();
+
+        if (policyCmptType == null) {
+            return;
+        }
+
+        List<IValidationRule> validationRules = new ArrayList<IValidationRule>();
+        try {
+            validationRules = policyCmptType.findAllValidationRules(context.getIpsProject());
+        } catch (CoreException e) {
+            context.addStatus(new IpsStatus(IStatus.WARNING, "Error finding ValidationsRules of PolicyCmptType " //$NON-NLS-1$
+                    + policyCmptType.getQualifiedName(), e));
+            return;
+        }
+
+        List<IValidationRule> productConfigurableValidationRules = new ArrayList<IValidationRule>();
+
+        for (IValidationRule validationRule : validationRules) {
+            if (validationRule.isConfigurableByProductComponent()) {
+                productConfigurableValidationRules.add(validationRule);
+            }
+        }
+
+        if (productConfigurableValidationRules.isEmpty()) {
+            return;
+        }
+
+        addSubHeadline(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_validationRules));
+
+        for (IValidationRule validationRule : productConfigurableValidationRules) {
+            addValidationRulesRow(validationRule);
+        }
+
+    }
+
+    private void addValidationRulesRow(IValidationRule validationRule) {
+        IPageElement[] cells = new IPageElement[productCmpt.getNumOfGenerations() + 1];
+
+        cells[0] = new TextPageElement(context.getLabel(validationRule));
+
+        for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
+            IProductCmptGeneration productCmptGeneration = productCmpt.getProductCmptGeneration(i);
+
+            IValidationRuleConfig validationRuleConfig = productCmptGeneration.getValidationRuleConfig(validationRule
+                    .getName());
+
+            cells[i + 1] = new TextPageElement(
+                    validationRuleConfig != null && validationRuleConfig.isActive() ? "X" : "-", TextType.BLOCK); //$NON-NLS-1$ //$NON-NLS-2$
+            cells[i + 1].addStyles(Style.CENTER);
+
+        }
+        addSubElement(new TableRowPageElement(cells));
+
     }
 
     private void addPolicyCmptTypeAttibutes() {
         List<IPolicyCmptTypeAttribute> policyCmptTypeAttributes = new ArrayList<IPolicyCmptTypeAttribute>();
 
-        IPolicyCmptType policyCmptType = null;
-        try {
-            policyCmptType = productCmptType.findPolicyCmptType(context.getIpsProject());
-        } catch (CoreException e) {
-            context.addStatus(new IpsStatus(IStatus.ERROR, "Error finding PolicyCmptType of ProductCmptType " //$NON-NLS-1$
-                    + productCmptType.getQualifiedName(), e));
-            return;
-        }
+        IPolicyCmptType policyCmptType = getPolicyCmptType();
 
         if (policyCmptType == null) {
             return;
@@ -116,6 +170,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
                     + policyCmptType.getQualifiedName(), e));
             return;
         }
+
         for (IAttribute attribute : attributes) {
             if (!(attribute instanceof IPolicyCmptTypeAttribute)) {
                 continue;
@@ -137,6 +192,17 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             addPolicyCmptTypeAttibutesRow(policyCmptTypeAttribute);
         }
 
+    }
+
+    private IPolicyCmptType getPolicyCmptType() {
+        IPolicyCmptType policyCmptType = null;
+        try {
+            policyCmptType = productCmptType.findPolicyCmptType(context.getIpsProject());
+        } catch (CoreException e) {
+            context.addStatus(new IpsStatus(IStatus.ERROR, "Error finding PolicyCmptType of ProductCmptType " //$NON-NLS-1$
+                    + productCmptType.getQualifiedName(), e));
+        }
+        return policyCmptType;
     }
 
     private void addPolicyCmptTypeAttibutesRow(IPolicyCmptTypeAttribute policyCmptTypeAttribute) {

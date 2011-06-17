@@ -25,6 +25,7 @@ import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
+import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 
 /**
  * Represents a table with the {@link ValidationRule}s of an {@link IPolicyCmptType} as rows and the
@@ -55,6 +56,8 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
 
         ruleData.add(StringUtils.join(rule.getBusinessFunctions(), '\n'));
         ruleData.add(StringUtils.join(rule.getValidatedAttributes(), '\n'));
+        ruleData.add(rule.isConfigurableByProductComponent() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
+        ruleData.add(rule.isActivatedByDefault() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
         ruleData.add(getContext().getDescription(rule));
 
         return Arrays.asList(new PageElementUtils().createTextPageElements(ruleData));
@@ -73,6 +76,15 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
                 HtmlExportMessages.ValidationRuleTablePageElement_headlineBusinessFunctions));
         headline.add(getContext().getMessage(
                 HtmlExportMessages.ValidationRuleTablePageElement_headlineValidatedAttributes));
+
+        addHeadlineAndColumnLayout(headline,
+                getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineProductRelevant),
+                Style.CENTER);
+
+        addHeadlineAndColumnLayout(headline,
+                getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineActivatedByDefault),
+                Style.CENTER);
+
         headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineDescription));
 
         return headline;
