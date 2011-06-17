@@ -35,7 +35,7 @@ public class PullUpEnumAttributeProcessorIntegrationTest extends AbstractIpsRefa
         assertFalse(enumType.containsEnumAttribute(ENUM_ATTRIBUTE_NAME));
 
         // Check that enum attribute exists in target enum type
-        assertTrue(enumType.containsEnumAttribute(ENUM_ATTRIBUTE_NAME));
+        assertTrue(superEnumType.containsEnumAttribute(ENUM_ATTRIBUTE_NAME));
     }
 
 }
