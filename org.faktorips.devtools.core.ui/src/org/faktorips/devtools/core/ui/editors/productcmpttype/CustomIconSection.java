@@ -134,7 +134,7 @@ public class CustomIconSection extends IpsSection {
         bindingContext.add(new ControlPropertyBinding(iconPathText, type, IProductCmptType.PROPERTY_ICON_FOR_INSTANCES,
                 String.class) {
             @Override
-            public void updateUiIfNotDisposed() {
+            public void updateUiIfNotDisposed(String nameOfChangedProperty) {
                 refreshIcon();
             }
         });

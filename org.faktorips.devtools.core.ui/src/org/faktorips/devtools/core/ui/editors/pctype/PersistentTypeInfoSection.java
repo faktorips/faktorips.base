@@ -79,7 +79,7 @@ public class PersistentTypeInfoSection extends IpsSection {
         }
 
         @Override
-        public void updateUiIfNotDisposed() {
+        public void updateUiIfNotDisposed(String nameOfChangedProperty) {
             try {
                 boolean enabled = (Boolean)getProperty().getReadMethod().invoke(getObject(), new Object[0]);
                 if (oldValue != null && enabled == oldValue) {
@@ -163,7 +163,7 @@ public class PersistentTypeInfoSection extends IpsSection {
             bindingContext.add(new ControlPropertyBinding(persistentTypeField.getControl(), ipsObject
                     .getPersistenceTypeInfo(), "enabled", Boolean.TYPE) { //$NON-NLS-1$
                         @Override
-                        public void updateUiIfNotDisposed() {
+                        public void updateUiIfNotDisposed(String nameOfChangedProperty) {
                             IPersistentTypeInfo persTypeInfo = (IPersistentTypeInfo)getObject();
                             boolean enabled = persTypeInfo.getPersistentType() == PersistentType.ENTITY;
                             for (Control ctrl : persistentComposites) {
@@ -179,7 +179,7 @@ public class PersistentTypeInfoSection extends IpsSection {
             bindingContext.add(new EnabledControlsBindingByProperty(checkboxTableDefinedInSuperclass, toolkit,
                     IPersistentTypeInfo.PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE, false) {
                 @Override
-                public void updateUiIfNotDisposed() {
+                public void updateUiIfNotDisposed(String nameOfChangedProperty) {
                     IPersistentTypeInfo persistenceTypeInfo = ipsObject.getPersistenceTypeInfo();
                     if (!(ipsObject.getPersistenceTypeInfo().getPersistentType() == PersistentType.ENTITY)) {
                         uiToolkit.setDataChangeable(tableNameText, false);

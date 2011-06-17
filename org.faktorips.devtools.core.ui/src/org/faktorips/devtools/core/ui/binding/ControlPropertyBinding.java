@@ -63,13 +63,27 @@ public abstract class ControlPropertyBinding {
         return property;
     }
 
-    public final void updateUI() {
+    public String getPropertyName() {
+        return getProperty().getName();
+    }
+
+    public final void updateUI(String propertyName) {
         if (!control.isDisposed()) {
-            updateUiIfNotDisposed();
+            updateUiIfNotDisposed(propertyName);
         }
     }
 
-    public abstract void updateUiIfNotDisposed();
+    public final void updateUI() {
+        updateUI(null);
+    }
+
+    /**
+     * Updates the UI for this binding.
+     * 
+     * @param nameOfChangedProperty the name of the changed property or <code>null</code> if no
+     *            specific property could be determined (i.e. the object as a whole has changed).
+     */
+    public abstract void updateUiIfNotDisposed(String nameOfChangedProperty);
 
     @Override
     public String toString() {

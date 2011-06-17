@@ -607,7 +607,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         private Object oldValue;
 
         @Override
-        public void updateUiIfNotDisposed() {
+        public void updateUiIfNotDisposed(String nameOfChangedProperty) {
             try {
                 Object newValue = getProperty().getReadMethod().invoke(getObject(), new Object[0]);
                 if (oldValue == null || !oldValue.equals(newValue)) {

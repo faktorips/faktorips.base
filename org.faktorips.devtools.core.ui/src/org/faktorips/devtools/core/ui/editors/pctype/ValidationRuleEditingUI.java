@@ -36,22 +36,22 @@ import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.AbstractCheckbox;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
-import org.faktorips.devtools.core.ui.editors.pctype.AttributeEditDialog.RuleModel;
+import org.faktorips.devtools.core.ui.editors.pctype.AttributeEditDialog.RuleUIModel;
 
 /**
- * Helper class to create the UI controls needed to define an {@link IValidationRule}. An instance
- * of this class can be created at any time, its UI isn't created until {@link #initUI(Composite)}
- * is called.
+ * Helper class to create the UI controls needed to define/edit an {@link IValidationRule}. An
+ * instance of this class can be created at any time, its UI isn't created until
+ * {@link #initUI(Composite)} is called.
  * <p>
  * To be used wherever a validation rule (definition) is created via GUI. A {@link BindingContext}
- * is used to link model an UI.
+ * is used to link model and UI.
  * 
  * @see RuleEditDialog
  * @see AttributeEditDialog
  * 
  * @author Stefan Widmaier, FaktorZehn AG
  */
-public class ValidationRuleDefinitionUI implements PropertyChangeListener {
+public class ValidationRuleEditingUI implements PropertyChangeListener {
 
     private boolean uiInitialized = false;
 
@@ -67,7 +67,7 @@ public class ValidationRuleDefinitionUI implements PropertyChangeListener {
 
     private BindingContext bindingContext = new BindingContext();
 
-    public ValidationRuleDefinitionUI(UIToolkit uiToolkit) {
+    public ValidationRuleEditingUI(UIToolkit uiToolkit) {
         this.uiToolkit = uiToolkit;
     }
 
@@ -179,7 +179,7 @@ public class ValidationRuleDefinitionUI implements PropertyChangeListener {
      *            edited by the controls created by this class.
      * @param bindingContext the {@link BindingContext} to remove bindings from
      */
-    public void bindFields(IValidationRule rule, BindingContext bindingContext) {
+    protected void bindFields(IValidationRule rule, BindingContext bindingContext) {
         bindingContext.bindContent(nameField, rule, IValidationRule.PROPERTY_NAME);
         bindingContext.bindContent(msgCodeField, rule, IValidationRule.PROPERTY_MESSAGE_CODE);
         bindingContext.bindContent(msgSeverityField, rule, IValidationRule.PROPERTY_MESSAGE_SEVERITY);
@@ -217,7 +217,7 @@ public class ValidationRuleDefinitionUI implements PropertyChangeListener {
      * 
      * @param bindingContext the {@link BindingContext} to remove bindings from
      */
-    public void removeBindingsFromContext(BindingContext bindingContext) {
+    protected void removeBindingsFromContext(BindingContext bindingContext) {
         bindingContext.removeBindings(nameField.getControl());
         bindingContext.removeBindings(msgCodeField.getControl());
         bindingContext.removeBindings(msgSeverityField.getControl());
@@ -226,9 +226,14 @@ public class ValidationRuleDefinitionUI implements PropertyChangeListener {
         bindingContext.removeBindings(defaultActivationBox);
     }
 
+    /**
+     * {@inheritDoc} Binds this UIs controls to the new rule given by the
+     * {@link PropertyChangeEvent} and updates them accordingly. If no rule is given (
+     * <code>null</code>) all bindings are removed.
+     */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (isUiInitialized() && evt.getPropertyName() == RuleModel.PROPERTY_VALIDATION_RULE) {
+        if (isUiInitialized() && evt.getPropertyName() == RuleUIModel.PROPERTY_VALIDATION_RULE) {
             removeBindingsFromContext(bindingContext);
             if (evt.getNewValue() != null) {
                 IValidationRule rule = (IValidationRule)evt.getNewValue();
@@ -236,5 +241,9 @@ public class ValidationRuleDefinitionUI implements PropertyChangeListener {
             }
             bindingContext.updateUI();
         }
+    }
+
+    public void updateUI() {
+        bindingContext.updateUI();
     }
 }

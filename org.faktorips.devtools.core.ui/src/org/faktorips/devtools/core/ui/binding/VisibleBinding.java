@@ -28,7 +28,7 @@ public class VisibleBinding extends ControlPropertyBinding {
     }
 
     @Override
-    public void updateUiIfNotDisposed() {
+    public void updateUiIfNotDisposed(String nameOfChangedProperty) {
         try {
             Boolean value = (Boolean)getProperty().getReadMethod().invoke(getObject(), new Object[0]);
             getControl().setVisible(value.booleanValue());

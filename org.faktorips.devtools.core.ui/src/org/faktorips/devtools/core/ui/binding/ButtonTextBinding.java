@@ -36,7 +36,7 @@ public class ButtonTextBinding extends ControlPropertyBinding {
     }
 
     @Override
-    public void updateUiIfNotDisposed() {
+    public void updateUiIfNotDisposed(String nameOfChangedProperty) {
         try {
             String value = (String)getProperty().getReadMethod().invoke(getObject(), new Object[0]);
             if (getControl() instanceof Checkbox) {

@@ -380,19 +380,25 @@ public class BindingContext {
         add(new VisibleBinding(control, object, property));
     }
 
-    private void add(FieldPropertyMapping mapping) {
+    protected void add(FieldPropertyMapping mapping) {
         registerIpsModelChangeListener();
         mapping.getField().addChangeListener(listener);
         mapping.getField().getControl().addFocusListener(listener);
         mappings.add(mapping);
-        if (mapping.getObject() instanceof IIpsObjectPartContainer) {
-            IIpsObjectPartContainer container = (IIpsObjectPartContainer)mapping.getObject();
+        Object object = mapping.getObject();
+        if (object instanceof IIpsObjectPartContainer) {
+            IIpsObjectPartContainer container = (IIpsObjectPartContainer)object;
             IIpsObject ipsObject = container.getIpsObject();
             if (!ipsObjects.contains(ipsObject)) {
                 ipsObjects.add(ipsObject);
             }
-        } else if (mapping.getObject() instanceof PresentationModelObject) {
-            PresentationModelObject pmo = (PresentationModelObject)mapping.getObject();
+        }
+        addListenerToObject(object);
+    }
+
+    protected void addListenerToObject(Object object) {
+        if (object instanceof PresentationModelObject) {
+            PresentationModelObject pmo = (PresentationModelObject)object;
             pmo.addPropertyChangeListener(listener);
         }
     }
@@ -400,6 +406,7 @@ public class BindingContext {
     public void add(ControlPropertyBinding binding) {
         registerIpsModelChangeListener();
         controlBindings.add(binding);
+        addListenerToObject(binding.getObject());
     }
 
     private void registerIpsModelChangeListener() {
@@ -479,9 +486,9 @@ public class BindingContext {
     }
 
     /**
-     * Validates all binded the part containers and updates the fields that are associated with
-     * properties of the IpsPartContainer. It returns the MessageList which is the result of the
-     * validation. This return value can be evaluated when overriding this method.
+     * Validates all bound part containers and updates the fields that are associated with their
+     * properties. It returns the MessageList which is the result of the validation. This return
+     * value can be evaluated when overriding this method.
      */
     protected void showValidationStatus(List<FieldPropertyMapping> propertyMappings) {
         List<IIpsObject> copy = new CopyOnWriteArrayList<IIpsObject>(ipsObjects);
@@ -531,15 +538,28 @@ public class BindingContext {
     }
 
     private void applyControlBindings() {
+        applyControlBindings(null);
+    }
+
+    /**
+     * Applies all bindings in this context and provides them with the given property name.
+     * 
+     * @param propertyName the name of the changed property, or <code>null</code> if all properties
+     *            of an object may have changed.
+     */
+    private void applyControlBindings(String propertyName) {
         List<ControlPropertyBinding> copy = new CopyOnWriteArrayList<ControlPropertyBinding>(controlBindings);
         for (ControlPropertyBinding binding : copy) {
             try {
-                binding.updateUI();
+                if (propertyName == null) {
+                    binding.updateUI();
+                } else {
+                    binding.updateUI(propertyName);
+                }
             } catch (Exception e) {
                 IpsPlugin.log(new IpsStatus("Error updating ui with control binding " + binding)); //$NON-NLS-1$
             }
         }
-
     }
 
     class Listener implements ContentsChangeListener, ValueChangeListener, FocusListener, PropertyChangeListener {
@@ -613,7 +633,7 @@ public class BindingContext {
                 }
             }
 
-            applyControlBindings();
+            applyControlBindings(evt.getPropertyName());
         }
     }
 
@@ -677,6 +697,13 @@ public class BindingContext {
         sb.append(']');
 
         return sb.toString();
+    }
+
+    /*
+     * For testing purposes
+     */
+    protected Listener getListener() {
+        return listener;
     }
 
 }

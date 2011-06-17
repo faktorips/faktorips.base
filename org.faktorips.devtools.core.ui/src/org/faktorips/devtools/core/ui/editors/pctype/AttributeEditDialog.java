@@ -28,7 +28,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -122,12 +121,12 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     /**
      * Holds controls for defining a validation rule.
      */
-    private ValidationRuleDefinitionUI ruleDefinitionUI = new ValidationRuleDefinitionUI(uiToolkit);
+    private ValidationRuleEditingUI ruleDefinitionUI = new ValidationRuleEditingUI(uiToolkit);
 
     /**
      * Manages a rule. Model is bound to above UI by the {@link BindingContext}.
      */
-    private RuleModel ruleModel = new RuleModel();
+    private RuleUIModel ruleModel = new RuleUIModel();
 
     /**
      * Folder which contains the pages shown by this editor. Used to modify which page is shown.
@@ -215,6 +214,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 bindingContext.updateUI();
+                ruleDefinitionUI.updateUI();
             }
         });
 
@@ -234,7 +234,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
         // initial update of the checkBox "validationRuleAdded"
         updateFieldValidationRuleAdded();
-        bindEnablement();
         bindingContext.updateUI();
 
         return tabFolder;
@@ -627,43 +626,18 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         validationRuleAdded = uiToolkit.createCheckbox(checkComposite,
                 Messages.AttributeEditDialog_labelActivateValidationRule);
         validationRuleAdded.setToolTipText(Messages.AttributeEditDialog_tooltipActivateValidationRule);
-        validationRuleAdded.getButton().addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // nothing to do
-            }
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                enableCheckValueAgainstValueSetRule(((Button)e.getSource()).getSelection());
-            }
-        });
 
         ruleGroup = uiToolkit.createGroup(checkComposite, Messages.AttributeEditDialog_ruleTitle);
+        bindEnablement();
         ruleDefinitionUI.initUI(ruleGroup);
         ruleModel.addPropertyChangeListener(ruleDefinitionUI);
-
-        IValidationRule validationRule = ruleModel.getValidationRule();
-        if (validationRule != null) {
-            ruleDefinitionUI.bindFields(validationRule, bindingContext);
-        }
-        // if (rule != null) {
-        // validationRuleAdded.setChecked(true);
-        // enableCheckValueAgainstValueSetRule(true);
-        // } else {
-        // validationRuleAdded.setChecked(false);
-        // enableCheckValueAgainstValueSetRule(false);
-        // }
+        // initialize ruleDefintionUI state.
+        ruleModel.fireRuleChange();
 
         return workArea;
     }
 
-    private void enableCheckValueAgainstValueSetRule(boolean enabled) {
-        // bindingContext.updateUI();
-        // uiToolkit.setDataChangeable(ruleGroup, enabled);
-    }
-
-    public class RuleModel extends PresentationModelObject {
+    public class RuleUIModel extends PresentationModelObject {
 
         public static final String PROPERTY_ENABLED = "enabled"; //$NON-NLS-1$
         public static final String PROPERTY_VALIDATION_RULE = "validationRule"; //$NON-NLS-1$
@@ -674,13 +648,17 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             IValidationRule oldRule = rule;
             boolean oldEnablement = isEnabled();
             rule = r;
-            notifyListeners(new PropertyChangeEvent(this, PROPERTY_ENABLED, oldEnablement, isEnabled()));
             /*
              * This notification order is crucial! First inform about enablement change, then about
              * data change. This way controls whose enabled state is dependent on the data rather
              * than the enablement will be activated/de-activated correctly.
              */
+            notifyListeners(new PropertyChangeEvent(this, PROPERTY_ENABLED, oldEnablement, isEnabled()));
             notifyListeners(new PropertyChangeEvent(this, PROPERTY_VALIDATION_RULE, oldRule, rule));
+        }
+
+        public void fireRuleChange() {
+            notifyListeners(new PropertyChangeEvent(this, PROPERTY_VALIDATION_RULE, rule, rule));
         }
 
         public IValidationRule getValidationRule() {
@@ -703,28 +681,16 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     private void bindEnablement() {
         if (validationRuleAdded != null) {
-            bindingContext.bindContent(validationRuleAdded.getButton(), ruleModel, RuleModel.PROPERTY_ENABLED);
+            bindingContext.bindContent(validationRuleAdded.getButton(), ruleModel, RuleUIModel.PROPERTY_ENABLED);
         }
-        bindingContext.add(new ControlPropertyBinding(ruleGroup, ruleModel, RuleModel.PROPERTY_ENABLED, null) {
+        bindingContext.add(new ControlPropertyBinding(ruleGroup, ruleModel, RuleUIModel.PROPERTY_ENABLED, null) {
             @Override
-            public void updateUiIfNotDisposed() {
-                uiToolkit.setDataChangeable(getControl(), ruleModel.isEnabled());
+            public void updateUiIfNotDisposed(String nameOfChangedProperty) {
+                if (nameOfChangedProperty != null && nameOfChangedProperty.equals(getPropertyName())) {
+                    uiToolkit.setDataChangeable(getControl(), ruleModel.isEnabled());
+                }
             }
         });
-
-        // bindingContext.bindEnabled(ruleDefinitionUI.getNameField().getControl(), ruleModel,
-        // RuleModel.PROPERTY_VALIDATION_RULE_ENABLED);
-        // bindingContext.bindEnabled(ruleDefinitionUI.getMsgCodeField().getControl(), ruleModel,
-        // RuleModel.PROPERTY_VALIDATION_RULE_ENABLED);
-        // bindingContext.bindEnabled(ruleDefinitionUI.getMsgSeverityField().getControl(),
-        // ruleModel,
-        // RuleModel.PROPERTY_VALIDATION_RULE_ENABLED);
-        // bindingContext.bindEnabled(ruleDefinitionUI.getMsgTextField().getControl(), ruleModel,
-        // RuleModel.PROPERTY_VALIDATION_RULE_ENABLED);
-        // bindingContext.bindEnabled(ruleDefinitionUI.getConfigurableByProductBox(), ruleModel,
-        // RuleModel.PROPERTY_VALIDATION_RULE_ENABLED);
-        // bindingContext.bindEnabled(ruleDefinitionUI.getDefaultActivationBox(), ruleModel,
-        // RuleModel.PROPERTY_VALIDATION_RULE_ENABLED);
     }
 
     private void createPersistenceTabItemIfNecessary(TabFolder tabFolder) {
@@ -803,7 +769,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         bindingContext.add(new ControlPropertyBinding(c, attribute.getPolicyCmptType().getPersistenceTypeInfo(),
                 "enabled", Boolean.TYPE) { //$NON-NLS-1$
                     @Override
-                    public void updateUiIfNotDisposed() {
+                    public void updateUiIfNotDisposed(String nameOfChangedProperty) {
                         if (!isPersistentEnabled()) {
                             uiToolkit.setDataChangeable(persistencePage.getControl(), false);
                             return;
@@ -821,7 +787,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         bindingContext.add(new ControlPropertyBinding(c, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TRANSIENT, Boolean.TYPE) {
             @Override
-            public void updateUiIfNotDisposed() {
+            public void updateUiIfNotDisposed(String nameOfChangedProperty) {
                 if (!isPersistentEnabled()) {
                     uiToolkit.setDataChangeable(group, false);
                     return;
@@ -837,7 +803,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         // datatype depending enabled or disabled controls
         bindingContext.add(new ControlPropertyBinding(c, attribute, IAttribute.PROPERTY_DATATYPE, String.class) {
             @Override
-            public void updateUiIfNotDisposed() {
+            public void updateUiIfNotDisposed(String nameOfChangedProperty) {
                 boolean enabled = isPersistentEnabled();
                 if (!enabled) {
                     uiToolkit.setDataChangeable(group, false);

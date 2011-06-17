@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -177,8 +178,19 @@ public class ValidationRuleConfigSection extends IpsSection {
         };
     }
 
+    /**
+     * Creates a label provider that does <em>not</em> return images as the rule icon should not be
+     * displayed in this section.
+     * 
+     * @return a new label provider, that does not provide images.
+     */
     private IBaseLabelProvider createLabelProvider() {
-        return new DefaultLabelProvider();
+        return new DefaultLabelProvider() {
+            @Override
+            public Image getImage(Object element) {
+                return null;
+            }
+        };
     }
 
     @Override

@@ -31,7 +31,7 @@ public class EnableBinding extends ControlPropertyBinding {
     }
 
     @Override
-    public void updateUiIfNotDisposed() {
+    public void updateUiIfNotDisposed(String nameOfChangedProperty) {
         try {
             Object value = getProperty().getReadMethod().invoke(getObject(), new Object[0]);
             boolean enabled = value != null && value.equals(expectedValue);

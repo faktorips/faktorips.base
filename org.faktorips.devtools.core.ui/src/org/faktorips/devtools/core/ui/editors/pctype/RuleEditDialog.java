@@ -39,7 +39,7 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
     private RuleFunctionsControl rfControl;
     private CheckboxField specifiedInSrcField;
 
-    private ValidationRuleDefinitionUI ruleUI = new ValidationRuleDefinitionUI(uiToolkit);
+    private ValidationRuleEditingUI ruleUI = new ValidationRuleEditingUI(uiToolkit);
 
     public RuleEditDialog(IValidationRule rule, Shell parentShell) {
         super(rule, parentShell, Messages.RuleEditDialog_title, true);
