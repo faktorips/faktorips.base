@@ -719,7 +719,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     public List<IJavaElement> getGeneratedJavaElements(IIpsObjectPartContainer ipsObjectPartContainer) {
         ArgumentCheck.notNull(ipsObjectPartContainer);
 
-        // Clear generators so they will be re-initialized
+        /*
+         * Clear generators so they will be re-initialized. We need to do this as if for example a
+         * new attribute is added to a type due to a pull up refactoring the generator won't notice
+         * it until another build happens but during the refactoring builds won't happen.
+         */
         clearGenerators();
 
         // Re-creation of generators might fail due to cached validation errors
