@@ -1055,7 +1055,10 @@ ${faktoripsProductLinuxZipPath}
     	<zip destfile="${buildDirectory}/results/updateSite-${build.version}.zip" basedir="${devtarget.jar.path}" update="true" />
     </target>
     <target name="-add.devtarget.aok.jar.to.updatesite.zip" if="isCustomAOK">
+    	<!-- TODO muessen wir im Moment noch manuell machen
+    	wenn wir das hier wollen, muessen wir devtarget.aok.jar.path vorher auschecken...
     	<zip destfile="${buildDirectory}/results/updateSite-${build.version}.zip" basedir="${devtarget.aok.jar.path}" update="true" />
+    	-->
     </target>
 	
     <target name="-merge.updatesite.xml" unless="isSkipPublish">
