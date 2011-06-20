@@ -33,6 +33,8 @@ import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
@@ -144,6 +146,9 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
             boolean success = false;
             if (ipsObjectPartContainer instanceof IAttribute) {
                 success = initializeTargetJavaElementsForAttribute((IAttribute)ipsObjectPartContainer, builderSet);
+            } else if (ipsObjectPartContainer instanceof IEnumAttribute) {
+                success = initializeTargetJavaElementsForEnumAttribute((IEnumAttribute)ipsObjectPartContainer,
+                        builderSet);
             }
             return success;
         }
@@ -156,9 +161,24 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
             return true;
         }
 
+        private boolean initializeTargetJavaElementsForEnumAttribute(IEnumAttribute enumAttribute,
+                StandardBuilderSet builderSet) {
+
+            try {
+                IEnumAttribute targetEnumAttribute = ((IEnumType)arguments.getTarget()).newEnumAttribute();
+                targetEnumAttribute.copyFrom(enumAttribute); // Temporary copy
+                setTargetJavaElements(builderSet.getGeneratedJavaElements(targetEnumAttribute));
+                targetEnumAttribute.delete(); // Delete temporary copy
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
+            return true;
+        }
+
         /**
-         * Forbids the pull up refactoring for members that originate from an interface, as the JDT
-         * does not support pulling up members from interfaces to other interfaces.
+         * Forbids the pull up refactoring for members that originate from an interface or from an
+         * enum as the JDT does not support pulling up members from interfaces to other interfaces
+         * and pulling up members that originate from enums.
          */
         @Override
         protected boolean prepareRefactoring(IJavaElement originalJavaElement, IJavaElement targetJavaElement)
@@ -166,12 +186,12 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
 
             IMember originalJavaMember = (IMember)originalJavaElement;
             org.eclipse.jdt.core.IType originalType = (org.eclipse.jdt.core.IType)originalJavaMember.getParent();
-            return !originalType.isInterface();
+            return !originalType.isInterface() && !originalType.isEnum();
         }
 
         /**
-         * Handles the members that originate from interfaces and therefore were excluded from the
-         * refactoring by {@link #prepareRefactoring(IJavaElement, IJavaElement)}.
+         * Handles the members that originate from interfaces or enums and therefore were excluded
+         * from the refactoring by {@link #prepareRefactoring(IJavaElement, IJavaElement)}.
          * <p>
          * The members will be copied to the target type and deleted from the original type.
          */
@@ -181,7 +201,7 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
 
             IMember originalJavaMember = (IMember)originalJavaElement;
             org.eclipse.jdt.core.IType originalType = (org.eclipse.jdt.core.IType)originalJavaMember.getParent();
-            if (!originalType.isInterface()) {
+            if (!originalType.isInterface() && !originalType.isEnum()) {
                 return;
             }
 
