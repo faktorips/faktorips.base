@@ -97,6 +97,13 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
             return true;
         }
 
+        @Override
+        protected boolean isTargetJavaElementForOriginalJavaElement(IJavaElement originalJavaElement,
+                IJavaElement targetJavaElement) {
+
+            return false;
+        }
+
     }
 
 }

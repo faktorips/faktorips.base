@@ -14,7 +14,9 @@
 package org.faktorips.devtools.stdbuilder.refactor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
@@ -78,6 +80,15 @@ public abstract class RefactoringParticipantHelper {
     private List<IJavaElement> targetJavaElements;
 
     /**
+     * Maps specific original elements in {@link #originalJavaElements} to their associated target
+     * element in {@link #targetJavaElements}. This is necessary as there might be fewer target
+     * elements than original elements. A simple index-to-index mapping won't suffice in this case.
+     */
+    private Map<IJavaElement, IJavaElement> originalToTargetElement;
+
+    private IIpsProject ipsProject;
+
+    /**
      * Checks the conditions of the JDT refactorings to be performed.
      * 
      * @see RefactoringParticipant#checkConditions(IProgressMonitor, CheckConditionsContext)
@@ -86,21 +97,26 @@ public abstract class RefactoringParticipantHelper {
         RefactoringStatus status = new RefactoringStatus();
 
         for (int i = 0; i < getNumberOfJavaElementsToRefactor(); i++) {
-            IJavaElement javaElement = originalJavaElements.get(i);
+            IJavaElement originalJavaElement = originalJavaElements.get(i);
+            IJavaElement targetJavaElement = originalToTargetElement.get(originalJavaElement);
+            if (targetJavaElement == null) {
+                // The element does not need to be refactored
+                continue;
+            }
 
             /*
              * The refactoring may be executed without present Java code or the Java element might
              * already have been refactored as a side-effect of the refactoring of a previous
              * element.
              */
-            if (!(javaElement.exists())) {
+            if (!(originalJavaElement.exists())) {
                 continue;
             }
 
             // Ignore constructors as they will not be refactored
-            if (javaElement instanceof IMethod) {
+            if (originalJavaElement instanceof IMethod) {
                 try {
-                    if (((IMethod)javaElement).isConstructor()) {
+                    if (((IMethod)originalJavaElement).isConstructor()) {
                         continue;
                     }
                 } catch (JavaModelException e) {
@@ -111,13 +127,13 @@ public abstract class RefactoringParticipantHelper {
             }
 
             try {
-                Refactoring jdtRefactoring = createJdtRefactoring(javaElement, targetJavaElements.get(i), status, pm);
+                Refactoring jdtRefactoring = createJdtRefactoring(originalJavaElement, targetJavaElement, status, pm);
                 if (jdtRefactoring != null) {
-                    if (prepareRefactoring(javaElement, targetJavaElements.get(i))) {
+                    if (prepareRefactoring(originalJavaElement, targetJavaElement)) {
                         RefactoringStatus conditionsStatus = jdtRefactoring.checkAllConditions(pm);
                         status.merge(conditionsStatus);
                     }
-                    finalizeRefactoring(javaElement, targetJavaElements.get(i));
+                    finalizeRefactoring(originalJavaElement, targetJavaElement);
                 }
             } catch (CoreException e) {
                 RefactoringStatus errorStatus = new RefactoringStatus();
@@ -126,7 +142,7 @@ public abstract class RefactoringParticipantHelper {
             }
         }
 
-        // Assure that every message is only contained and thus shown once
+        // Assure that every status message is only contained and thus shown once
         RefactoringStatus finalStatus = new RefactoringStatus();
         List<String> messages = new ArrayList<String>(status.getEntries().length);
         for (RefactoringStatusEntry entry : status.getEntries()) {
@@ -153,10 +169,14 @@ public abstract class RefactoringParticipantHelper {
          * refer to does no longer exist).
          */
         List<IJavaElement> sortedOriginalJavaElements = sortJavaElements(originalJavaElements);
-        List<IJavaElement> sortedTargetJavaElements = sortJavaElements(targetJavaElements);
 
         for (int i = 0; i < getNumberOfJavaElementsToRefactor(); i++) {
             IJavaElement originalJavaElement = sortedOriginalJavaElements.get(i);
+            IJavaElement targetJavaElement = originalToTargetElement.get(originalJavaElement);
+            if (targetJavaElement == null) {
+                // The element does not need to be refactored
+                continue;
+            }
 
             /*
              * Do not try to refactor non-existing Java elements as the user may want to try to
@@ -184,7 +204,6 @@ public abstract class RefactoringParticipantHelper {
              * become invalid when refactorings are performed. Because of that new instances are
              * created here.
              */
-            IJavaElement targetJavaElement = sortedTargetJavaElements.get(i);
             Refactoring jdtRefactoring = createJdtRefactoring(originalJavaElement, targetJavaElement,
                     new RefactoringStatus(), pm);
             if (jdtRefactoring != null) {
@@ -291,13 +310,80 @@ public abstract class RefactoringParticipantHelper {
             return false;
         }
 
+        ipsProject = ipsObjectPartContainer.getIpsProject();
+
         StandardBuilderSet standardBuilderSet = (StandardBuilderSet)ipsArtefactBuilderSet;
         boolean success = initializeOriginalJavaElements(ipsObjectPartContainer, standardBuilderSet);
         if (success) {
             success = initializeTargetJavaElements(ipsObjectPartContainer, standardBuilderSet);
         }
 
+        initializeOriginalToTargetElements();
+
         return success;
+    }
+
+    private void initializeOriginalToTargetElements() {
+        originalToTargetElement = new HashMap<IJavaElement, IJavaElement>(originalJavaElements.size());
+        for (IJavaElement originalJavaElement : originalJavaElements) {
+            for (IJavaElement targetJavaElement : targetJavaElements) {
+                if (isTargetJavaElementForOriginalJavaElement(originalJavaElement, targetJavaElement)) {
+                    originalToTargetElement.put(originalJavaElement, targetJavaElement);
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Responsible for returning whether the given target Java element maps to the given original
+     * Java element.
+     * <p>
+     * This operation is called during participant initialization. The default implementation checks
+     * that
+     * <ul>
+     * <li>the names are equal
+     * <li>the element types of the parent elements are equal and
+     * <li>the names of the parent elements either both end with the generation concept name
+     * abbreviation or both do not.
+     * </ul>
+     * <p>
+     * Subclasses should override this method as necessary.
+     * 
+     * @param originalJavaElement The original Java element to find the corresponding target Java
+     *            element for
+     * @param targetJavaElement The target Java element in question to be corresponding to the
+     *            original Java element
+     */
+    protected boolean isTargetJavaElementForOriginalJavaElement(IJavaElement originalJavaElement,
+            IJavaElement targetJavaElement) {
+
+        boolean namesOk = originalJavaElement.getElementName().equals(targetJavaElement.getElementName());
+
+        int originalParentType = originalJavaElement.getParent().getElementType();
+        int targetParentType = targetJavaElement.getParent().getElementType();
+        boolean parentTypesOk = originalParentType == targetParentType;
+        if (parentTypesOk && originalParentType == IJavaElement.TYPE) {
+            IType originalParent = (IType)originalJavaElement.getParent();
+            IType targetParent = (IType)targetJavaElement.getParent();
+            try {
+                parentTypesOk = originalParent.isInterface() ? targetParent.isInterface() : true;
+                if (parentTypesOk) {
+                    parentTypesOk = originalParent.isEnum() ? targetParent.isEnum() : true;
+                }
+            } catch (JavaModelException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        String originalParentName = originalJavaElement.getParent().getElementName();
+        String targetParentName = targetJavaElement.getParent().getElementName();
+        String generationConceptNameAbbreviation = ipsProject.getChangesInTimeNamingConventionForGeneratedCode()
+                .getGenerationConceptNameAbbreviation();
+        boolean parentNamesOk = originalParentName.endsWith(generationConceptNameAbbreviation) ? targetParentName
+                .endsWith(generationConceptNameAbbreviation) : true;
+
+        return namesOk && parentTypesOk && parentNamesOk;
     }
 
     /**
@@ -401,6 +487,10 @@ public abstract class RefactoringParticipantHelper {
 
     protected final List<IJavaElement> getOriginalJavaElements() {
         return originalJavaElements;
+    }
+
+    protected final List<IJavaElement> getTargetJavaElements() {
+        return targetJavaElements;
     }
 
     /**
