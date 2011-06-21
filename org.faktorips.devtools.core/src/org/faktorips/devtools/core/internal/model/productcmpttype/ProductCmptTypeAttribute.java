@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -61,11 +60,11 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         String changingOverTimeAttribute = element.getAttribute(PROPERTY_CHANGING_OVER_TIME);
-        if (StringUtils.isEmpty(changingOverTimeAttribute)) {
-            // compatibility to not migrated files
-            changingOverTime = true;
-        } else {
+        if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
             changingOverTime = Boolean.parseBoolean(changingOverTimeAttribute);
+        } else {
+            // compatibility to not yet migrated files
+            changingOverTime = true;
         }
     }
 

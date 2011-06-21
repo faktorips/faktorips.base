@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TestCases>
+    <ValidationRuleDef appliedForAllBusinessFunctions="true" checkValueAgainstValueSetRule="false" id="718e05a5-9fe9-4e2c-a583-79a9f905823d" messageCode="Rule1" messageSeverity="error" messageText="1234" name="Rule1" validatedAttrSpecifiedInSrc="false">
+        <Label id="c5b6505e-7a13-4be0-beac-98d145ce5d09" locale="de" pluralValue="" value=""/>
+        <Description id="7d9ec9b8-8f86-42a1-89f9-bb6af04276bf" locale="de"/>
+    </ValidationRuleDef>
+    <Attribute computationMethodSignature="" datatype="String" id="80d8db7c-884c-4f12-bd11-36ba5e4f6e66" modifier="published" name="StringTest" overwrite="false" productRelevant="false">
+        <DefaultValue isNull="true"/>
+        <Label id="6b90957b-68f3-495c-bc74-3b0f1a087dea" locale="de" pluralValue="" value=""/>
+        <Description id="13aa4055-c619-4c0e-824d-72cb8dd578bb" locale="de"/>
+        <ValueSet abstract="false" id="267915b9-8efe-4bb9-b68d-6166ff9e6747">
+            <Enum/>
+        </ValueSet>
+    </Attribute>
+</TestCases>

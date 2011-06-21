@@ -13,19 +13,19 @@
 
 package org.faktorips.devtools.core.internal.migrationextensions;
 
-import java.util.List;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.migration.DefaultMigration;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.pctype.ValidationRule;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOperationFactory;
 import org.faktorips.runtime.internal.ProductComponent;
@@ -39,6 +39,12 @@ import org.faktorips.runtime.internal.ProductComponent;
  * <p>
  * No {@link ProductComponent}s are changed by this migration as all previously existing
  * {@link ValidationRule}s are defined as not configurable.
+ * <p>
+ * Changes {@link ProductCmptType}s containing attributes. Each {@link ProductCmptTypeAttribute} is
+ * set to be changing over time. Thus no product components need to be changed in that regard.
+ * 
+ * Note: This migration may be applied to the same ipsObjects again without overwriting manual
+ * changes with the default values described above.
  * 
  * @author Stefan Widmaier
  */
@@ -52,22 +58,31 @@ public class Migration_3_4_0 extends DefaultMigration {
     protected void migrate(IIpsSrcFile srcFile) throws CoreException {
         if (srcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE)) {
             IIpsObject ipsObject = srcFile.getIpsObject();
-            if (migrateType((IPolicyCmptType)ipsObject)) {
+            if (hasVRules((IPolicyCmptType)ipsObject)) {
+                /*
+                 * Loading an saving the type will automatically establish the default values. See
+                 * ValidationRule#initPropertiesFromXml()
+                 */
+                srcFile.markAsDirty();
+            }
+        } else if (srcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT_TYPE)) {
+            IIpsObject ipsObject = srcFile.getIpsObject();
+            if (hasAttributes((IProductCmptType)ipsObject)) {
+                /*
+                 * Loading an saving the type will automatically establish the default values. See
+                 * ProductCmptTypeAttribute#initPropertiesFromXml()
+                 */
                 srcFile.markAsDirty();
             }
         }
-        // TODO ProdCmptType for constant Attributes
     }
 
-    private boolean migrateType(IPolicyCmptType type) {
-        List<IValidationRule> rules = type.getValidationRules();
-        boolean result = false;
-        for (IValidationRule rule : rules) {
-            rule.setConfigurableByProductComponent(false);
-            rule.setActivatedByDefault(true);
-            result = true;
-        }
-        return result;
+    private boolean hasAttributes(IProductCmptType prodType) {
+        return prodType.getNumOfAttributes() > 0;
+    }
+
+    private boolean hasVRules(IPolicyCmptType type) {
+        return type.getNumOfRules() > 0;
     }
 
     @Override

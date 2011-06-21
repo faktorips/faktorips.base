@@ -318,7 +318,15 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
                 .getAttribute(PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC));
         configurableByProductComponent = Boolean.parseBoolean(element
                 .getAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT));
-        activatedByDefault = Boolean.parseBoolean(element.getAttribute(PROPERTY_ACTIVATED_BY_DEFAULT));
+        if (element.hasAttribute(PROPERTY_ACTIVATED_BY_DEFAULT)) {
+            activatedByDefault = Boolean.parseBoolean(element.getAttribute(PROPERTY_ACTIVATED_BY_DEFAULT));
+        } else {
+            /*
+             * Preserve true as default value if attribute does not exist. This maintains
+             * compatibility to rules that have not yet been migrated.
+             */
+            activatedByDefault = true;
+        }
 
         NodeList nl = element.getChildNodes();
         functions.clear();
