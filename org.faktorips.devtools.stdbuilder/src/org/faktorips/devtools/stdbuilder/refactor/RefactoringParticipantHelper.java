@@ -371,6 +371,9 @@ public abstract class RefactoringParticipantHelper {
                 if (parentTypesOk) {
                     parentTypesOk = originalParent.isEnum() ? targetParent.isEnum() : true;
                 }
+                if (parentTypesOk) {
+                    parentTypesOk = originalParent.isClass() ? targetParent.isClass() : true;
+                }
             } catch (JavaModelException e) {
                 throw new RuntimeException(e);
             }
@@ -380,8 +383,10 @@ public abstract class RefactoringParticipantHelper {
         String targetParentName = targetJavaElement.getParent().getElementName();
         String generationConceptNameAbbreviation = ipsProject.getChangesInTimeNamingConventionForGeneratedCode()
                 .getGenerationConceptNameAbbreviation();
-        boolean parentNamesOk = originalParentName.endsWith(generationConceptNameAbbreviation) ? targetParentName
-                .endsWith(generationConceptNameAbbreviation) : true;
+        boolean parentNamesOk = originalParentName.endsWith(generationConceptNameAbbreviation)
+                && targetParentName.endsWith(generationConceptNameAbbreviation)
+                || !originalParentName.endsWith(generationConceptNameAbbreviation)
+                && !targetParentName.endsWith(generationConceptNameAbbreviation);
 
         return namesOk && parentTypesOk && parentNamesOk;
     }
