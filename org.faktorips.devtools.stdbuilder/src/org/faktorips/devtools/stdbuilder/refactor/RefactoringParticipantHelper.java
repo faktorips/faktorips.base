@@ -367,12 +367,12 @@ public abstract class RefactoringParticipantHelper {
             IType originalParent = (IType)originalJavaElement.getParent();
             IType targetParent = (IType)targetJavaElement.getParent();
             try {
-                parentTypesOk = originalParent.isInterface() ? targetParent.isInterface() : true;
-                if (parentTypesOk) {
-                    parentTypesOk = originalParent.isEnum() ? targetParent.isEnum() : true;
-                }
-                if (parentTypesOk) {
-                    parentTypesOk = originalParent.isClass() ? targetParent.isClass() : true;
+                if (originalParent.isInterface()) {
+                    parentTypesOk = targetParent.isInterface();
+                } else if (originalParent.isEnum()) {
+                    parentTypesOk = targetParent.isInterface();
+                } else if (originalParent.isClass()) {
+                    parentTypesOk = targetParent.isClass();
                 }
             } catch (JavaModelException e) {
                 throw new RuntimeException(e);

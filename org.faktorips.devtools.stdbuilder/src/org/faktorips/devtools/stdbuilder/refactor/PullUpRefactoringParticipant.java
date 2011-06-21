@@ -190,24 +190,39 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
         }
 
         /**
-         * Handles the members that originate from interfaces or enums and therefore were excluded
-         * from the refactoring by {@link #prepareRefactoring(IJavaElement, IJavaElement)}.
+         * Handles the members that originate from interfaces and therefore were excluded from the
+         * refactoring by {@link #prepareRefactoring(IJavaElement, IJavaElement)}.
          * <p>
          * The members will be copied to the target type and deleted from the original type.
+         * <p>
+         * Members that originate from enums and were therefore excluded by
+         * {@link #prepareRefactoring(IJavaElement, IJavaElement)} are not refactored at all (the
+         * code generator will automatically generate the method declarations in the super
+         * interface).
          */
         @Override
         protected void finalizeRefactoring(IJavaElement originalJavaElement, IJavaElement targetJavaElement)
                 throws CoreException {
 
             IMember originalJavaMember = (IMember)originalJavaElement;
-            org.eclipse.jdt.core.IType originalType = (org.eclipse.jdt.core.IType)originalJavaMember.getParent();
-            if (!originalType.isInterface() && !originalType.isEnum()) {
+            org.eclipse.jdt.core.IType originalJavaType = (org.eclipse.jdt.core.IType)originalJavaMember.getParent();
+            if (!originalJavaType.isInterface()) {
                 return;
             }
 
             IMember targetJavaMember = (IMember)targetJavaElement;
-            org.eclipse.jdt.core.IType targetType = (org.eclipse.jdt.core.IType)targetJavaMember.getParent();
-            originalJavaMember.copy(targetType, null, null, true, null);
+            org.eclipse.jdt.core.IType targetJavaType = (org.eclipse.jdt.core.IType)targetJavaMember.getParent();
+            pullUpFromInterfaceToInterface(originalJavaMember, targetJavaType);
+        }
+
+        private void pullUpFromInterfaceToInterface(IMember originalJavaMember,
+                org.eclipse.jdt.core.IType targetJavaType) throws JavaModelException {
+
+            /*
+             * Pull up from interface to interface means we just copy the member to the target
+             * interface and delete it from the original interface.
+             */
+            originalJavaMember.copy(targetJavaType, null, null, true, null);
             originalJavaMember.delete(true, null);
         }
 
