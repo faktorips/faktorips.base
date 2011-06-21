@@ -686,7 +686,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         bindingContext.add(new ControlPropertyBinding(ruleGroup, ruleModel, RuleUIModel.PROPERTY_ENABLED, null) {
             @Override
             public void updateUiIfNotDisposed(String nameOfChangedProperty) {
-                if (nameOfChangedProperty != null && nameOfChangedProperty.equals(getPropertyName())) {
+                if (nameOfChangedProperty == null || nameOfChangedProperty.equals(getPropertyName())) {
                     uiToolkit.setDataChangeable(getControl(), ruleModel.isEnabled());
                 }
             }

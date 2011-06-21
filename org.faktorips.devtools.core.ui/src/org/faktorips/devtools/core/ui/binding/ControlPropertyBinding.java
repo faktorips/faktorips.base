@@ -31,7 +31,8 @@ public abstract class ControlPropertyBinding {
     private PropertyDescriptor property;
 
     /**
-     * Creates an object that connects/binds an object's property to a control.
+     * Checks the given propertyName and expectedType and creates a {@link ControlPropertyBinding}
+     * if valid.
      * 
      * @param control the control to be bound to
      * @param object the model object containing the property that is bound to the given control
@@ -39,6 +40,8 @@ public abstract class ControlPropertyBinding {
      * @param exptectedType the data type (class) of the model object's property. This information
      *            is used to check the validity of a binding. <code>null</code> can be given to
      *            bypass this type-check e.g. for primitive types.
+     * @throws IllegalArgumentException if the bound property's type/class does not match the
+     *             expectedType.
      */
     public ControlPropertyBinding(Control control, Object object, String propertyName, Class<?> exptectedType) {
         super();
@@ -78,7 +81,18 @@ public abstract class ControlPropertyBinding {
     }
 
     /**
-     * Updates the UI for this binding.
+     * Updates the UI for this binding. This method is called only if this binding's control is not
+     * disposed.
+     * <p>
+     * When implementing updates that depend on the given property, consider the case
+     * <code>propertyName==null</code> explicitly. In most cases <code>null</code> (a change of the
+     * model object as a whole) require an update of the UI. The code could then look like this:
+     * <p>
+     * <code>
+     * if(nameOfChangedProperty==null || nameOfChangedProperty.equals(getPropertyName())){
+     * //update UI
+     * }
+     * </code>
      * 
      * @param nameOfChangedProperty the name of the changed property or <code>null</code> if no
      *            specific property could be determined (i.e. the object as a whole has changed).
