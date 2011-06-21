@@ -299,16 +299,13 @@ public final class RenameRefactoringParticipant extends RenameParticipant {
         }
 
         @Override
-        protected boolean isTargetJavaElementForOriginalJavaElement(IJavaElement originalJavaElement,
-                IJavaElement targetJavaElement) {
-
+        protected IJavaElement getTargetJavaElementForOriginalJavaElement(IJavaElement originalJavaElement) {
             /*
              * When renaming, the original Java elements map index-to-index to the target Java
              * elements. This might not be the most elegant solution but it will suffice for now.
              */
             int originalIndex = getOriginalJavaElements().indexOf(originalJavaElement);
-            int targetIndex = getTargetJavaElements().indexOf(targetJavaElement);
-            return originalIndex == targetIndex;
+            return getTargetJavaElements().get(originalIndex);
         }
 
     }

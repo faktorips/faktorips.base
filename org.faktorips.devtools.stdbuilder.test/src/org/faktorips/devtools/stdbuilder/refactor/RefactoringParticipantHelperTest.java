@@ -98,10 +98,8 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
         }
 
         @Override
-        protected boolean isTargetJavaElementForOriginalJavaElement(IJavaElement originalJavaElement,
-                IJavaElement targetJavaElement) {
-
-            return false;
+        protected IJavaElement getTargetJavaElementForOriginalJavaElement(IJavaElement originalJavaElement) {
+            return null;
         }
 
     }
