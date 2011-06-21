@@ -52,7 +52,7 @@ public class BindingContextTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void applyingAllBindingsOnContentChange() throws CoreException {
+    public void applyAllBindingsOnContentChange() throws CoreException {
         ControlPropertyBinding binding = new TestBinding(controlMock, pmo, TestPMO.PROPERTY_ENABLED, null);
         binding = spy(binding);
         bindingContext.add(binding);
@@ -67,7 +67,7 @@ public class BindingContextTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void applyingAllBindingsOnPropertyChange() {
+    public void applyAllBindingsOnPropertyChange() {
         ControlPropertyBinding binding = new TestBinding(controlMock, pmo, TestPMO.PROPERTY_ENABLED, null);
         binding = spy(binding);
         bindingContext.add(binding);
@@ -77,7 +77,7 @@ public class BindingContextTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void updatingAllMappingsOnContentChange() throws CoreException {
+    public void updateAllMappingsOnContentChange() throws CoreException {
         IIpsObjectPartContainer ipsObject = newProductCmpt(newIpsProject(), "ProdCmpt");
         FieldPropertyMapping mapping = bindingContext.createMapping(editField, ipsObject, "name"); // some
                                                                                                    // valid
@@ -93,16 +93,16 @@ public class BindingContextTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void updatingMappingsOnPropertyChangeForSameProperty() {
-        updatingMappingsOnPropertyChange(TestPMO.PROPERTY_ENABLED);
+    public void updateMappingsOnPropertyChangeForSameProperty() {
+        updateMappingsOnPropertyChange(TestPMO.PROPERTY_ENABLED);
     }
 
     @Test
-    public void updatingMappingsOnPropertyChangeForDifferentProperty() {
-        updatingMappingsOnPropertyChange(TestPMO.PROPERTY_OTHER_PROPERTY);
+    public void updateMappingsOnPropertyChangeForDifferentProperty() {
+        updateMappingsOnPropertyChange(TestPMO.PROPERTY_OTHER_PROPERTY);
     }
 
-    protected void updatingMappingsOnPropertyChange(String propertyName) {
+    protected void updateMappingsOnPropertyChange(String propertyName) {
         FieldPropertyMapping mapping = bindingContext.createMapping(editField, pmo, propertyName);
         FieldPropertyMapping spyMapping = spy(mapping);
         bindingContext.add(spyMapping);
