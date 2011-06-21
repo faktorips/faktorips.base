@@ -337,6 +337,9 @@ public abstract class RefactoringParticipantHelper {
     protected IJavaElement getTargetJavaElementForOriginalJavaElement(IJavaElement originalJavaElement) {
         for (IJavaElement targetJavaElement : targetJavaElements) {
             boolean namesOk = originalJavaElement.getElementName().equals(targetJavaElement.getElementName());
+            if (!namesOk) {
+                continue;
+            }
 
             int originalParentType = originalJavaElement.getParent().getElementType();
             int targetParentType = targetJavaElement.getParent().getElementType();
@@ -356,6 +359,9 @@ public abstract class RefactoringParticipantHelper {
                     throw new RuntimeException(e);
                 }
             }
+            if (!parentTypesOk) {
+                continue;
+            }
 
             String originalParentName = originalJavaElement.getParent().getElementName();
             String targetParentName = targetJavaElement.getParent().getElementName();
@@ -365,10 +371,12 @@ public abstract class RefactoringParticipantHelper {
                     && targetParentName.endsWith(generationConceptNameAbbreviation)
                     || !originalParentName.endsWith(generationConceptNameAbbreviation)
                     && !targetParentName.endsWith(generationConceptNameAbbreviation);
-
-            if (namesOk && parentTypesOk && parentNamesOk) {
-                return targetJavaElement;
+            if (!parentNamesOk) {
+                continue;
             }
+
+            // All checks passed
+            return targetJavaElement;
         }
 
         return null;
