@@ -81,6 +81,8 @@ public interface IIpsObjectPathEntry {
 
     /**
      * Type constant indicating a plugin entry.
+     * 
+     * !!! EXPERIMENTAL !!!
      */
     public final static String TYPE_PLUGIN = "plugin"; //$NON-NLS-1$
 
