@@ -33,24 +33,28 @@ public interface IIpsContainerEntry extends IIpsObjectPathEntry {
     public String getName();
 
     /**
-     * Returns the kind of the container. The kind is used to lookup the container in the ips model
+     * Returns the ID of the container type. The ID is used to lookup the container in the IPS model
      * via {@link IIpsModel#getIpsObjectPathContainer(IIpsProject, String)}.
      */
-    public String getContainerKind();
+    public String getContainerTypeId();
 
     /**
-     * Returns the ips object path container that is referenced by this entry. The container is used
-     * to resolve the entries that contain ips objects. Returns <code>null</code> if the container
+     * Returns the IPS object path container that is referenced by this entry. The container is used
+     * to resolve the entries that contain IPS objects. Returns <code>null</code> if the container
      * is not found.
      */
     public IIpsObjectPathContainer getIpsObjectPathContainer();
 
     /**
-     * Returns the optional path information needed by certain ips object path containers to resolve
-     * entries. For exmple the JDT {@link IClasspathContainer} identifies the container by a path
+     * Returns the optional path information needed by certain IPS object path containers to resolve
+     * entries. For example the JDT {@link IClasspathContainer} identifies the container by a path
      * {@link IClasspathContainer#getPath()}.
+     * 
+     * The name is chosen with regards to JDT classpath containers. Note that the first segment in
+     * the path returned by the JDT, is the same as the container type. So this path here represents
+     * the optional segments,
      */
-    public String getContainerPath();
+    public String getOptionalPath();
 
     /**
      * Returns the list of entries that are provided by the container this entry refers to. The

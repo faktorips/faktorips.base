@@ -30,9 +30,9 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchiveEntry;
-import org.faktorips.devtools.core.model.ipsproject.IIpsContainerEntry;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
@@ -42,56 +42,53 @@ import org.faktorips.util.message.MessageList;
 /**
  * An ips object path container entry that is based on a JDT classpath container.
  * 
+ * !!! Experimental !!!
+ * 
  * @author Jan Ortmann
  */
-public class IpsContainerBasedOnJdtClasspathContainer implements IIpsObjectPathContainer {
+public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathContainer {
 
-    public final static String KIND = "ClasspathContainer"; //$NON-NLS-1$
+    public final static String TYPE_ID = "ClasspathContainer"; //$NON-NLS-1$
 
     private IClasspathContainer jdtClasspathContainer = null;
     private List<IIpsObjectPathEntry> resolvedEntries = new ArrayList<IIpsObjectPathEntry>(0);
 
-    public IpsContainerBasedOnJdtClasspathContainer() {
-        super();
+    public IpsContainer4JdtClasspathContainer(IIpsObjectPathContainerType containerType, IIpsProject ipsProject,
+            String optionalPath) {
+        super(containerType, ipsProject, optionalPath);
     }
 
     @Override
-    public String getKind() {
-        return KIND;
-    }
-
-    @Override
-    public String getName(IIpsContainerEntry entry) {
+    public String getName() {
         IClasspathContainer cpContainer;
         try {
-            cpContainer = findClasspathContainer(entry);
+            cpContainer = findClasspathContainer();
         } catch (JavaModelException e) {
             cpContainer = null;
         }
         if (cpContainer != null) {
             return cpContainer.getDescription();
         }
-        return "InvalidContainer: " + entry.getContainerKind() + '[' + entry.getContainerPath() + ']'; //$NON-NLS-1$
+        return "InvalidContainer: " + getContainerType().getId() + '[' + getOptionalPath() + ']'; //$NON-NLS-1$
     }
 
     @Override
-    public List<IIpsObjectPathEntry> resolveEntries(IIpsContainerEntry containerEntry) throws CoreException {
-        IJavaProject javaProject = containerEntry.getIpsProject().getJavaProject();
+    public List<IIpsObjectPathEntry> resolveEntries() throws CoreException {
+        IJavaProject javaProject = getIpsProject().getJavaProject();
         if (jdtClasspathContainer != null) {
-            IClasspathContainer actualContainer = JavaCore.getClasspathContainer(new Path(containerEntry
-                    .getContainerPath()), javaProject);
+            IClasspathContainer actualContainer = JavaCore.getClasspathContainer(new Path(getOptionalPath()),
+                    javaProject);
             if (jdtClasspathContainer == actualContainer) {
                 return resolvedEntries;
             }
             jdtClasspathContainer = actualContainer;
         } else {
-            jdtClasspathContainer = JavaCore.getClasspathContainer(new Path(containerEntry.getContainerPath()),
-                    javaProject);
+            jdtClasspathContainer = JavaCore.getClasspathContainer(new Path(getOptionalPath()), javaProject);
             if (jdtClasspathContainer == null) {
                 return new ArrayList<IIpsObjectPathEntry>(0);
             }
         }
-        IpsObjectPath ipsObjectPath = (IpsObjectPath)containerEntry.getIpsObjectPath();
+        IpsObjectPath ipsObjectPath = getIpsObjectPath();
         resolvedEntries = new ArrayList<IIpsObjectPathEntry>();
         IClasspathEntry[] entries = jdtClasspathContainer.getClasspathEntries();
         for (int i = 0; i < entries.length; i++) {
@@ -104,6 +101,14 @@ public class IpsContainerBasedOnJdtClasspathContainer implements IIpsObjectPathC
         return resolvedEntries;
     }
 
+    /**
+     * Returns the IPS project's object path in an efficient way.
+     */
+    private IpsObjectPath getIpsObjectPath() {
+        IpsModel ipsModel = (IpsModel)getIpsProject().getIpsModel();
+        return (IpsObjectPath)ipsModel.getIpsProjectProperties((IpsProject)getIpsProject()).getIpsObjectPath();
+    }
+
     private IIpsObjectPathEntry createIpsEntry(IClasspathEntry entry, IpsObjectPath ipsObjectPath) {
         if (entry == null) {
             return null;
@@ -113,8 +118,9 @@ public class IpsContainerBasedOnJdtClasspathContainer implements IIpsObjectPathC
         } else if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
             return createIpsArchiveEntry(entry, ipsObjectPath);
         }
-        IpsPlugin.log(new IpsStatus(
-                "IpsContainerBasedOnJdtClasspathContainer: Unsupported kind of ClasspathEntry " + entry.getEntryKind())); //$NON-NLS-1$
+        IpsPlugin
+                .log(new IpsStatus(
+                        "IpsContainerBasedOnJdtClasspathContainer: Unsupported kind of ClasspathEntry " + entry.getEntryKind())); //$NON-NLS-1$
         return null;
     }
 
@@ -146,20 +152,18 @@ public class IpsContainerBasedOnJdtClasspathContainer implements IIpsObjectPathC
     /**
      * Returns the JDT classpath container identified by the given IPS container entry.
      * 
-     * @param containerEntry An IPS object path container entry identifying a JDT classpath
-     *            container.
      * @return The identified JDT classpath container or <code>null</code> of the entry does not
      *         identify one.
      * 
      * @throws JavaModelException if an error occurs while accessing the classpath container.
      * @throws NullPointerException if containerEntry is <code>null</code>.
      */
-    public IClasspathContainer findClasspathContainer(IIpsContainerEntry containerEntry) throws JavaModelException {
-        IJavaProject javaProject = containerEntry.getIpsProject().getJavaProject();
+    public IClasspathContainer findClasspathContainer() throws JavaModelException {
+        IJavaProject javaProject = getIpsProject().getJavaProject();
         if (javaProject == null) {
             return null;
         }
-        IPath classpathContainerPath = new Path(containerEntry.getContainerPath());
+        IPath classpathContainerPath = new Path(getOptionalPath());
         IClasspathEntry[] entries = javaProject.getRawClasspath();
         for (int i = 0; i < entries.length; i++) {
             if (entries[i].getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
@@ -172,10 +176,10 @@ public class IpsContainerBasedOnJdtClasspathContainer implements IIpsObjectPathC
     }
 
     @Override
-    public MessageList validate(IIpsContainerEntry entry) throws CoreException {
+    public MessageList validate() throws CoreException {
         IClasspathContainer container;
         try {
-            container = findClasspathContainer(entry);
+            container = findClasspathContainer();
         } catch (JavaModelException e) {
             IpsPlugin.log(e);
             container = null;
@@ -185,7 +189,7 @@ public class IpsContainerBasedOnJdtClasspathContainer implements IIpsObjectPathC
         }
         MessageList result = new MessageList();
         Message msg = Message.newError("Invalid-ClasspathContainer-Path", //$NON-NLS-1$
-                "Invalid IPS Object Path: The container path '" + entry.getContainerPath() //$NON-NLS-1$
+                "Invalid IPS Object Path: The container path '" + getOptionalPath() //$NON-NLS-1$
                         + "' does not identify a JDT Classpath Container!"); //$NON-NLS-1$
         result.add(msg);
         return result;

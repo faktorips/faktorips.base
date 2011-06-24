@@ -69,7 +69,6 @@ import org.faktorips.devtools.core.internal.model.ipsproject.ChangesOverTimeNami
 import org.faktorips.devtools.core.internal.model.ipsproject.ClassLoaderProvider;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetInfo;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsContainerBasedOnJdtClasspathContainer;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragmentDefaultSortDefinition;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
@@ -210,8 +209,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     private Map<IIpsPackageFragment, IIpsPackageFragmentSortDefinition> sortOrderCache = new HashMap<IIpsPackageFragment, IIpsPackageFragmentSortDefinition>();
 
     private Map<IIpsPackageFragmentSortDefinition, Long> lastIpsSortOrderModifications = new HashMap<IIpsPackageFragmentSortDefinition, Long>();
-
-    private Map<IIpsProject, IIpsObjectPathContainer> ipsObjectPathContainers = new HashMap<IIpsProject, IIpsObjectPathContainer>();
 
     public IpsModel() {
         super(null, "IpsModel"); //$NON-NLS-1$
@@ -1724,18 +1721,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     @Override
-    // TODO the implementation currently supports only JDT classpath container!!!!
-    public IIpsObjectPathContainer getIpsObjectPathContainer(IIpsProject ipsProject, String containerKind) {
+    public IIpsObjectPathContainer getIpsObjectPathContainer(IIpsProject ipsProject,
+            String containerTypeId,
+            String optionalPath) {
+
         ArgumentCheck.notNull(ipsProject);
-        ArgumentCheck.notNull(containerKind);
-        if (containerKind.equals(IpsContainerBasedOnJdtClasspathContainer.KIND)) {
-            IIpsObjectPathContainer container = ipsObjectPathContainers.get(ipsProject);
-            if (container == null) {
-                container = new IpsContainerBasedOnJdtClasspathContainer();
-                ipsObjectPathContainers.put(ipsProject, container);
-            }
-            return container;
-        }
+        ArgumentCheck.notNull(containerTypeId);
+        ArgumentCheck.notNull(optionalPath);
+
         return null;
     }
 

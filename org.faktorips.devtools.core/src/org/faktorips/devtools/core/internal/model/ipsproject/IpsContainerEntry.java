@@ -21,6 +21,7 @@ import java.util.Set;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -38,8 +39,8 @@ import org.w3c.dom.Element;
  */
 public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContainerEntry {
 
-    private String containerKind;
-    private String containerPath;
+    private String containerTypeId;
+    private String optionalPath;
 
     public IpsContainerEntry(IpsObjectPath path) {
         super(path);
@@ -59,27 +60,28 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
     }
 
     @Override
-    public String getContainerKind() {
-        return containerKind;
+    public String getContainerTypeId() {
+        return containerTypeId;
     }
 
     @Override
-    public String getContainerPath() {
-        return containerPath;
+    public String getOptionalPath() {
+        return optionalPath;
     }
 
     @Override
     public String getName() {
         IIpsObjectPathContainer container = getIpsObjectPathContainer();
         if (container == null) {
-            return "InvalidContainer: " + containerKind + '[' + containerPath + ']'; //$NON-NLS-1$
+            return "InvalidContainer: " + containerTypeId + '[' + optionalPath + ']'; //$NON-NLS-1$
         }
-        return container.getName(this);
+        return container.getName();
     }
 
     @Override
     public IIpsObjectPathContainer getIpsObjectPathContainer() {
-        return IpsPlugin.getDefault().getIpsModel().getIpsObjectPathContainer(getIpsProject(), containerKind);
+        IIpsModel ipsModel = IpsPlugin.getDefault().getIpsModel();
+        return ipsModel.getIpsObjectPathContainer(getIpsProject(), containerTypeId, optionalPath);
     }
 
     @Override
@@ -88,7 +90,7 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
         if (container == null) {
             return new ArrayList<IIpsObjectPathEntry>(0);
         }
-        return container.resolveEntries(this);
+        return container.resolveEntries();
     }
 
     /**
@@ -192,8 +194,8 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
      */
     @Override
     public void initFromXml(Element element, IProject project) {
-        containerKind = element.getAttribute("kind"); //$NON-NLS-1$
-        containerPath = element.getAttribute("path"); //$NON-NLS-1$
+        containerTypeId = element.getAttribute("kind"); //$NON-NLS-1$
+        optionalPath = element.getAttribute("path"); //$NON-NLS-1$
     }
 
     /**
@@ -203,8 +205,8 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
     public Element toXml(Document doc) {
         Element element = doc.createElement(XML_ELEMENT);
         element.setAttribute("type", TYPE_CONTAINER); //$NON-NLS-1$
-        element.setAttribute("kind", containerKind); //$NON-NLS-1$
-        element.setAttribute("path", containerPath); //$NON-NLS-1$
+        element.setAttribute("container", containerTypeId); //$NON-NLS-1$
+        element.setAttribute("path", optionalPath); //$NON-NLS-1$
         return element;
     }
 
@@ -216,11 +218,11 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
         IIpsObjectPathContainer container = getIpsObjectPathContainer();
         if (container == null) {
             MessageList result = new MessageList();
-            result.add(Message.newError("Invalid Container Entry", "No container of kind " //$NON-NLS-1$ //$NON-NLS-2$
-                    + containerKind + "found.")); //$NON-NLS-1$
+            result.add(Message.newError("Invalid Container Entry", "No container of type " //$NON-NLS-1$ //$NON-NLS-2$
+                    + containerTypeId + "found.")); //$NON-NLS-1$
             return result;
         }
-        return container.validate(this);
+        return container.validate();
     }
 
     @Override

@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.faktorips.devtools.core.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategyFactory;
 import org.faktorips.util.ArgumentCheck;
@@ -35,6 +36,15 @@ import org.faktorips.util.ArgumentCheck;
  * @author Jan Ortmann
  */
 public class ExtensionPoints {
+
+    /**
+     * IpsPlugin relative id of the extension point for IPS object path container types.
+     * 
+     * @see IIpsObjectPathContainerType
+     * 
+     * @since 3.4
+     */
+    public final static String IPS_OBJECT_PATH_CONTAINER_TYPE = "ipsObjectPathContainerType"; //$NON-NLS-1$
 
     /**
      * IpsPlugin relative id of the extension point for IpsObjectTypes.
@@ -77,6 +87,17 @@ public class ExtensionPoints {
 
     public ExtensionPoints(String nameSpace) {
         this(Platform.getExtensionRegistry(), nameSpace);
+    }
+
+    /**
+     * Creates a new instance with the platforms extension registry and the IPS plugin ID as
+     * namespace.
+     * 
+     * @see Platform#getExtensionRegistry()
+     * @see IpsPlugin#PLUGIN_ID
+     */
+    public ExtensionPoints() {
+        this(Platform.getExtensionRegistry(), IpsPlugin.PLUGIN_ID);
     }
 
     /**

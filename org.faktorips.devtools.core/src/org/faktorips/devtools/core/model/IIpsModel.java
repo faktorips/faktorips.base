@@ -295,15 +295,18 @@ public interface IIpsModel extends IIpsElement {
     public List<ITestCase> searchReferencingTestCases(IProductCmpt cmpt) throws CoreException;
 
     /**
-     * Returns the container identified by the given containerKind for the given IPS project.
-     * Returns <code>null</code> if no container with the given kind exists.
+     * Returns the container identified by the given type ID and optional path for the given IPS
+     * project. Returns <code>null</code> if no such container exists.
      * 
-     * @param containerKind The container kind
+     * @param ipsProject The IPS project
+     * @param containerTypeId The unique ID of the container type.
+     * @param optionalPath The optional path info.
      * 
-     * @throws NullPointerException if containerKind is <code>null</code> or ipsProject is
-     *             <code>null</code>.
+     * @throws NullPointerException if any argument is <code>null</code>.
      */
-    public IIpsObjectPathContainer getIpsObjectPathContainer(IIpsProject ipsProject, String containerKind);
+    public IIpsObjectPathContainer getIpsObjectPathContainer(IIpsProject ipsProject,
+            String containerTypeId,
+            String optionalPath);
 
     /**
      * Adding a {@link IIpsSrcFilesChangeListener} to the list of listeners. If the listener already

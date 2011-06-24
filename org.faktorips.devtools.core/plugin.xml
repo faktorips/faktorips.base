@@ -19,6 +19,7 @@
    <extension-point id="customValidation" name="Custom Validation" schema="schema/customValidation.exsd"/>
    <extension-point id="productReleaseExtension" name="Release Deployment Extension" schema="schema/productReleaseExtension.exsd"/>
    <extension-point id="productComponentNamingStrategy" name="Product Component Naming Strategy" schema="schema/productComponentNamingStrategy.exsd"/>
+   <extension-point id="ipsObjectPathContainerType" name="IPS Object Path Container Type" schema="schema/ipsObjectPathContainerType.exsd"/>
    
 <!-- 
     Extensions to the Java perspective
@@ -421,5 +422,12 @@
             class="org.faktorips.devtools.core.IpsClasspathContainerInitializer"
             id="org.faktorips.devtools.core.ipsClasspathContainer">
       </classpathContainerInitializer>
+   </extension>
+   <extension
+         point="org.faktorips.devtools.core.ipsObjectPathContainerType">
+      <containerType
+            class="org.faktorips.devtools.core.internal.model.ipsproject.IpsContainer4JdtClasspathContainerType"
+            typeId="JDTClasspathContainer">
+      </containerType>
    </extension>
 </plugin>

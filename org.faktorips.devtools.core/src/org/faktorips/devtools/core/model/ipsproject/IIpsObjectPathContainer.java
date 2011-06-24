@@ -19,13 +19,17 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.util.message.MessageList;
 
 /**
- * An ips object path container provides a way to wrap a set of ips object path entries of type
+ * An IPS object path container provides a way to wrap a set of IPS object path entries of type
  * archive or project. What entries the container contains is not fixed, it is computed dynamically
- * by the {@link #resolveEntries(IIpsContainerEntry)} method. Basically the concept is the same as
- * classpath containers in JDT.
+ * by the {@link #resolveEntries()} method. Basically the concept is the same as classpath
+ * containers in JDT. As JDT containers, IPS object path containers exist per project. (In the JDT
+ * documentation is is sometime not clear if they refer to a container type (like JRE runtime,
+ * MAVEN, PluginDependencies) or the container instance that exists per project.
+ * 
  * <p>
- * To use an ips object path container in an ips project, the project's ips object path must contain
- * an {@link IIpsContainerEntry} that refers to an ips object path container by id.
+ * To use an IPS object path container in an IPS project, the project's IPS object path must contain
+ * an {@link IIpsContainerEntry} that refers to an IPS object path container by container type id (
+ * {@link IIpsObjectPathContainerType#getId()}.
  * 
  * @since 3.3
  * 
@@ -34,33 +38,44 @@ import org.faktorips.util.message.MessageList;
 public interface IIpsObjectPathContainer {
 
     /**
-     * Returns the kind of the ips object path container that uniquely identifies it in the ips
-     * model.
+     * Returns the type of this container. This method never returns <code>null</code>.
      */
-    public String getKind();
+    IIpsObjectPathContainerType getContainerType();
+
+    /**
+     * Returns the IPS project this container belongs to.
+     */
+    public IIpsProject getIpsProject();
+
+    /**
+     * Returns the container's optional path information. Never returns null.
+     */
+    public String getOptionalPath();
 
     /**
      * Returns a name for the given entry that can be presented to the user. E.g. for containers
-     * based on a JDT classpath container, the name of the classpath container is returned.
+     * based on a JDT classpath container, the name of the JDT classpath container is returned.
      */
-    public String getName(IIpsContainerEntry entry);
+    public String getName();
 
     /**
      * Returns the list of entries of type {@link IIpsObjectPathEntry#TYPE_PROJECT_REFERENCE} or
      * {@link IIpsObjectPathEntry#TYPE_ARCHIVE} that are provided by this container for the given
      * container entry.
      * 
-     * @param containerEntry A container entry that refers to this container.
      * @return The resolved list of entries.
      * 
      * @throws CoreException if an exceptions occurs while resolving the entries.
+     * @throws NullPointerException if containerEntry is <code>null</code>.
      */
-    public List<IIpsObjectPathEntry> resolveEntries(IIpsContainerEntry containerEntry) throws CoreException;
+    public List<IIpsObjectPathEntry> resolveEntries() throws CoreException;
 
     /**
      * Validates if the given entry is valid.
      * 
      * @return list of messages or <code>null</code>.
+     * 
+     * @throws NullPointerException if containerEntry is <code>null</code>.
      */
-    public MessageList validate(IIpsContainerEntry entry) throws CoreException;
+    public MessageList validate() throws CoreException;
 }
