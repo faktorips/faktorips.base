@@ -13,13 +13,18 @@
 
 package org.faktorips.devtools.core.internal.migrationextensions;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -45,6 +50,7 @@ public class Migration_3_4_0Test extends AbstractIpsPluginTest {
         ipsProject = newIpsProject();
         policyCmptType = newPolicyCmptType(ipsProject, "TestPCTYpe");
         rule = policyCmptType.newRule();
+        rule.setName("Rule1");
 
         prodType = newProductCmptType(ipsProject, "TestProdType");
         attribute = (IProductCmptTypeAttribute)prodType.newAttribute();
@@ -125,6 +131,24 @@ public class Migration_3_4_0Test extends AbstractIpsPluginTest {
         prodType = (ProductCmptType)prodType.getIpsSrcFile().getIpsObject();
         attribute = (IProductCmptTypeAttribute)prodType.getAttribute("StringTest");
         assertFalse(attribute.isChangingOverTime());
+    }
+
+    @Test
+    public void createsDefaultLabel() throws CoreException {
+        List<ILabel> labels = rule.getLabels();
+        for (ILabel label : labels) {
+            label.delete();
+        }
+        assertEquals(0, rule.getLabels().size());
+
+        policyCmptType.getIpsSrcFile().save(true, null);
+        new Migration_3_4_0(ipsProject, "test").migrate(policyCmptType.getIpsSrcFile());
+        policyCmptType.getIpsSrcFile().save(true, null);
+
+        policyCmptType = (PolicyCmptType)policyCmptType.getIpsSrcFile().getIpsObject();
+        rule = policyCmptType.getValidationRule("Rule1");
+        assertNotNull(rule);
+        assertEquals(1, rule.getLabels().size());
     }
 
 }

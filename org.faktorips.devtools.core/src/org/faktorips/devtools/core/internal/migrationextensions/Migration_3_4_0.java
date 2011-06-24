@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.migrationextensions;
 
+import java.util.Locale;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.migration.DefaultMigration;
@@ -22,9 +24,11 @@ import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTyp
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOperationFactory;
@@ -35,13 +39,15 @@ import org.faktorips.runtime.internal.ProductComponent;
  * <p>
  * Changes {@link PolicyCmptType}s containing {@link ValidationRule}s. For each rule the attributes
  * "configuredByProductComponent" and "activatedByDefault" are created and set to <code>false</code>
- * and <code>true</code> respectively.
+ * and <code>true</code> respectively. If a rule does not contain a label a default label is
+ * created. (locale=de_DE, value=<name of the rule>)
  * <p>
  * No {@link ProductComponent}s are changed by this migration as all previously existing
  * {@link ValidationRule}s are defined as not configurable.
  * <p>
  * Changes {@link ProductCmptType}s containing attributes. Each {@link ProductCmptTypeAttribute} is
- * set to be changing over time. Thus no product components need to be changed in that regard.
+ * set to be changing over time. Thus no product components (and generations) need to be changed in
+ * that regard.
  * 
  * Note: This migration may be applied to the same ipsObjects again without overwriting manual
  * changes with the default values described above.
@@ -58,7 +64,7 @@ public class Migration_3_4_0 extends DefaultMigration {
     protected void migrate(IIpsSrcFile srcFile) throws CoreException {
         if (srcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE)) {
             IIpsObject ipsObject = srcFile.getIpsObject();
-            if (hasVRules((IPolicyCmptType)ipsObject)) {
+            if (migrateVRules((IPolicyCmptType)ipsObject)) {
                 /*
                  * Loading an saving the type will automatically establish the default values. See
                  * ValidationRule#initPropertiesFromXml()
@@ -81,7 +87,17 @@ public class Migration_3_4_0 extends DefaultMigration {
         return prodType.getNumOfAttributes() > 0;
     }
 
-    private boolean hasVRules(IPolicyCmptType type) {
+    /*
+     * Create default label if absent. return true if type has rules.
+     */
+    private boolean migrateVRules(IPolicyCmptType type) {
+        for (IValidationRule rule : type.getValidationRules()) {
+            if (rule.getLabel(Locale.GERMANY) == null) {
+                ILabel newLabel = rule.newLabel();
+                newLabel.setValue(rule.getName());
+                newLabel.setLocale(Locale.GERMANY);
+            }
+        }
         return type.getNumOfRules() > 0;
     }
 
