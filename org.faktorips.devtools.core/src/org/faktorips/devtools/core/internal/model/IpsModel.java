@@ -210,6 +210,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     private Map<IIpsPackageFragmentSortDefinition, Long> lastIpsSortOrderModifications = new HashMap<IIpsPackageFragmentSortDefinition, Long>();
 
+    /**
+     * A map containing project data per project.
+     */
+    private Map<IIpsProject, IpsProjectData> dataPerIpsProject = new HashMap<IIpsProject, IpsProjectData>();
+
+    private IpsObjectPathContainerFactory ipsObjectPathContainerFactory = IpsObjectPathContainerFactory
+            .newFactoryBasedOnExtensions();
+
     public IpsModel() {
         super(null, "IpsModel"); //$NON-NLS-1$
         if (TRACE_MODEL_MANAGEMENT) {
@@ -291,6 +299,18 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             }
         }
         return validTypes;
+    }
+
+    /**
+     * Returns the data for the given ips project.
+     */
+    private IpsProjectData getIpsProjectData(IIpsProject ipsProject) {
+        IpsProjectData data = dataPerIpsProject.get(ipsProject);
+        if (data == null) {
+            data = new IpsProjectData(ipsProject, ipsObjectPathContainerFactory);
+            dataPerIpsProject.put(ipsProject, data);
+        }
+        return data;
     }
 
     public void startListeningToResourceChanges() {
@@ -1729,7 +1749,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         ArgumentCheck.notNull(containerTypeId);
         ArgumentCheck.notNull(optionalPath);
 
-        return null;
+        IpsProjectData data = getIpsProjectData(ipsProject);
+        return data.getIpsObjectPathContainer(containerTypeId, optionalPath);
     }
 
     @Override
