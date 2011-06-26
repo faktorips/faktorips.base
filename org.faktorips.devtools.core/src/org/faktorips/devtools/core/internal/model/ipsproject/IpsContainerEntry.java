@@ -194,7 +194,7 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
      */
     @Override
     public void initFromXml(Element element, IProject project) {
-        containerTypeId = element.getAttribute("kind"); //$NON-NLS-1$
+        containerTypeId = element.getAttribute("container"); //$NON-NLS-1$
         optionalPath = element.getAttribute("path"); //$NON-NLS-1$
     }
 
