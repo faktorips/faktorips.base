@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IClasspathContainer;
-import org.faktorips.devtools.core.model.IIpsModel;
 
 /**
  * A container entry is an entry that wraps severall other, none-container entries. The entries are
@@ -33,8 +32,7 @@ public interface IIpsContainerEntry extends IIpsObjectPathEntry {
     public String getName();
 
     /**
-     * Returns the ID of the container type. The ID is used to lookup the container in the IPS model
-     * via {@link IIpsModel#getIpsObjectPathContainer(IIpsProject, String)}.
+     * Returns the ID of the container type.
      */
     public String getContainerTypeId();
 
