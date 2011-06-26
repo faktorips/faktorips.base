@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -60,4 +62,11 @@ public abstract class AbstractIpsObjectPathContainer implements IIpsObjectPathCo
         return containerType.getId();
     }
 
+    /**
+     * Returns the ips project's object path.
+     */
+    public IpsObjectPath getIpsObjectPath() {
+        IpsModel model = (IpsModel)IpsPlugin.getDefault().getIpsModel();
+        return (IpsObjectPath)model.getIpsProjectProperties((IpsProject)getIpsProject()).getIpsObjectPath();
+    }
 }

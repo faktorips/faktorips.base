@@ -30,7 +30,6 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchiveEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
@@ -99,14 +98,6 @@ public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathCon
             }
         }
         return resolvedEntries;
-    }
-
-    /**
-     * Returns the IPS project's object path in an efficient way.
-     */
-    private IpsObjectPath getIpsObjectPath() {
-        IpsModel ipsModel = (IpsModel)getIpsProject().getIpsModel();
-        return (IpsObjectPath)ipsModel.getIpsProjectProperties((IpsProject)getIpsProject()).getIpsObjectPath();
     }
 
     private IIpsObjectPathEntry createIpsEntry(IClasspathEntry entry, IpsObjectPath ipsObjectPath) {
