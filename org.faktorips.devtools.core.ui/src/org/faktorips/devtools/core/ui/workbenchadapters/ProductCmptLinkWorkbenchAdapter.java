@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -49,6 +50,9 @@ public class ProductCmptLinkWorkbenchAdapter extends IpsObjectPartWorkbenchAdapt
             IProductCmptLink link = (IProductCmptLink)ipsObjectPart;
             try {
                 IProductCmpt findTarget = link.findTarget(ipsObjectPart.getIpsProject());
+                if (findTarget == null) {
+                    return StringUtils.EMPTY;
+                }
                 return findTarget.getName();
             } catch (CoreException e) {
                 IpsPlugin.log(e);

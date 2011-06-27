@@ -43,6 +43,9 @@ public class ProductCmptLinkAdapterFactory extends AbstractIpsAdapterFactory {
 
         try {
             IProductCmpt target = link.findTarget(link.getIpsProject());
+            if (target == null) {
+                return null;
+            }
             if (IIpsObject.class.isAssignableFrom(adapterType)) {
                 return target;
             }
