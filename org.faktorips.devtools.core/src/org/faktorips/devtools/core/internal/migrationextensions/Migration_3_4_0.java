@@ -13,7 +13,8 @@
 
 package org.faktorips.devtools.core.internal.migrationextensions;
 
-import java.util.Locale;
+import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -27,6 +28,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -37,10 +39,13 @@ import org.faktorips.runtime.internal.ProductComponent;
 /**
  * Migration to version 3.4.0.
  * <p>
- * Changes {@link PolicyCmptType}s containing {@link ValidationRule}s. For each rule the attributes
- * "configuredByProductComponent" and "activatedByDefault" are created and set to <code>false</code>
- * and <code>true</code> respectively. If a rule does not contain a label a default label is
- * created. (locale=de_DE, value=<name of the rule>)
+ * Changes {@link PolicyCmptType}s containing {@link ValidationRule}s. For each rule:
+ * <ul>
+ * <li>the attributes "configuredByProductComponent" and "activatedByDefault" are created and set to
+ * <code>false</code> and <code>true</code> respectively</li>
+ * <li>a default label (value="") is created for every language supported by the containing IPS
+ * project</li>
+ * </ul>
  * <p>
  * No {@link ProductComponent}s are changed by this migration as all previously existing
  * {@link ValidationRule}s are defined as not configurable.
@@ -92,13 +97,29 @@ public class Migration_3_4_0 extends DefaultMigration {
      */
     private boolean migrateVRules(IPolicyCmptType type) {
         for (IValidationRule rule : type.getValidationRules()) {
-            if (rule.getLabel(Locale.GERMANY) == null) {
-                ILabel newLabel = rule.newLabel();
-                newLabel.setValue(rule.getName());
-                newLabel.setLocale(Locale.GERMANY);
-            }
+            createLabelsIfAbsent(rule);
         }
         return type.getNumOfRules() > 0;
+    }
+
+    private void createLabelsIfAbsent(IValidationRule rule) {
+        Set<ISupportedLanguage> supportedLanguages = rule.getIpsProject().getProperties().getSupportedLanguages();
+        for (ISupportedLanguage supportedLanguage : supportedLanguages) {
+            if (!hasLabelForLanguage(rule, supportedLanguage)) {
+                ILabel newLabel = rule.newLabel();
+                newLabel.setLocale(supportedLanguage.getLocale());
+            }
+        }
+    }
+
+    protected boolean hasLabelForLanguage(IValidationRule rule, ISupportedLanguage supportedLanguage) {
+        List<ILabel> labels = rule.getLabels();
+        for (ILabel label : labels) {
+            if (label.getLocale() == supportedLanguage.getLocale()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
