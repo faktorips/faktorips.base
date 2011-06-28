@@ -19,6 +19,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -26,6 +27,7 @@ import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -48,6 +50,11 @@ public class Migration_3_4_0Test extends AbstractIpsPluginTest {
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.addSupportedLanguage(Locale.GERMAN);
+        properties.addSupportedLanguage(Locale.FRENCH);
+        properties.addSupportedLanguage(Locale.ENGLISH);
+        ipsProject.setProperties(properties);
         policyCmptType = newPolicyCmptType(ipsProject, "TestPCTYpe");
         rule = policyCmptType.newRule();
         rule.setName("Rule1");
@@ -148,7 +155,7 @@ public class Migration_3_4_0Test extends AbstractIpsPluginTest {
         policyCmptType = (PolicyCmptType)policyCmptType.getIpsSrcFile().getIpsObject();
         rule = policyCmptType.getValidationRule("Rule1");
         assertNotNull(rule);
-        assertEquals(1, rule.getLabels().size());
+        assertEquals(3, rule.getLabels().size());
     }
 
 }
