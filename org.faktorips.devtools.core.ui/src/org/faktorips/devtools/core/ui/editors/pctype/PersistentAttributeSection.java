@@ -29,6 +29,8 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -91,6 +93,15 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
     public PersistentAttributeSection(IPolicyCmptType ipsObject, Composite parent, UIToolkit toolkit) {
         super(ipsObject, parent, null, ExpandableComposite.TITLE_BAR,
                 Messages.PersistentAttributeSection_titleAttributes, toolkit);
+        addDisposeListener(new DisposeListener() {
+
+            @Override
+            public void widgetDisposed(DisposeEvent e) {
+                if (resourceManager != null) {
+                    resourceManager.dispose();
+                }
+            }
+        });
     }
 
     @Override
@@ -271,12 +282,6 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
         public ILabelProvider createLabelProvider() {
             return new PersistentAttributeLabelProvider();
         }
-    }
-
-    @Override
-    public void dispose() {
-        getResourceManager().dispose();
-        super.dispose();
     }
 
 }

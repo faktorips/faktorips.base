@@ -231,4 +231,12 @@ public class ModelSearchPage extends DialogPage implements ISearchPage {
         }
         return dialogSettings;
     }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        if (bindingContext != null) {
+            bindingContext.dispose();
+        }
+    }
 }

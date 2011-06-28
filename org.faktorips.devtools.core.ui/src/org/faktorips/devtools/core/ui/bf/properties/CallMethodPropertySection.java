@@ -101,6 +101,9 @@ public class CallMethodPropertySection extends AbstractPropertySection implement
     @Override
     public void dispose() {
         super.dispose();
+        if (bindingContext != null) {
+            bindingContext.dispose();
+        }
     }
 
     public IBFElement getBFElement() {

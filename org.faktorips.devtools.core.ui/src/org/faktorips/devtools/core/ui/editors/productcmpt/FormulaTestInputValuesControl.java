@@ -32,6 +32,8 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
@@ -225,12 +227,14 @@ public class FormulaTestInputValuesControl extends Composite implements ColumnCh
         this.uiToolkit = uiToolkit;
         this.uiController = uiController;
         this.ipsProject = ipsProject;
-    }
 
-    @Override
-    public void dispose() {
-        resourceManager.dispose();
-        super.dispose();
+        addDisposeListener(new DisposeListener() {
+
+            @Override
+            public void widgetDisposed(DisposeEvent e) {
+                resourceManager.dispose();
+            }
+        });
     }
 
     /**

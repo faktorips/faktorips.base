@@ -67,4 +67,12 @@ public class DescriptionPropertySection extends AbstractPropertySection {
         bindingContext.updateUI();
     }
 
+    @Override
+    public void dispose() {
+        super.dispose();
+        if (bindingContext != null) {
+            bindingContext.dispose();
+        }
+    }
+
 }

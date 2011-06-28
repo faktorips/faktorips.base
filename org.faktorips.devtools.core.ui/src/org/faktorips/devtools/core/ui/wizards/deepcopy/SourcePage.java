@@ -118,6 +118,8 @@ public class SourcePage extends WizardPage {
 
     private GenerationDateViewer generationDateViewer;
 
+    private BindingContext bindingContext;
+
     /**
      * Creates a new page to select the objects to copy.
      */
@@ -320,36 +322,41 @@ public class SourcePage extends WizardPage {
     }
 
     private void createBindings() {
-        final BindingContext binding = new BindingContext();
+        bindingContext = new BindingContext();
         ChangeListener propertyChangeListener = new ChangeListener();
         getPresentationModel().addPropertyChangeListener(propertyChangeListener);
 
         StructuredViewerField<GenerationDate> generationDateField = StructuredViewerField.newInstance(
                 generationDateViewer, GenerationDate.class);
-        binding.bindContent(generationDateField, getPresentationModel(), DeepCopyPresentationModel.OLD_VALID_FROM);
+        bindingContext.bindContent(generationDateField, getPresentationModel(),
+                DeepCopyPresentationModel.OLD_VALID_FROM);
 
         DateControlField<GregorianCalendar> newWorkingDateField = new DateControlField<GregorianCalendar>(
                 newWorkingDateControl, GregorianCalendarFormat.newInstance(), false);
-        binding.bindContent(newWorkingDateField, getPresentationModel(), DeepCopyPresentationModel.NEW_VALID_FROM);
+        bindingContext.bindContent(newWorkingDateField, getPresentationModel(),
+                DeepCopyPresentationModel.NEW_VALID_FROM);
 
         IpsPckFragmentRootRefField packageRootField = new IpsPckFragmentRootRefField(targetPackRootControl);
         IpsPckFragmentRefField packageField = new IpsPckFragmentRefField(targetPackageControl);
-        binding.bindContent(packageRootField, getPresentationModel(), DeepCopyPresentationModel.TARGET_PACKAGE_ROOT);
-        binding.bindContent(packageField, getPresentationModel(), DeepCopyPresentationModel.TARGET_PACKAGE);
+        bindingContext.bindContent(packageRootField, getPresentationModel(),
+                DeepCopyPresentationModel.TARGET_PACKAGE_ROOT);
+        bindingContext.bindContent(packageField, getPresentationModel(), DeepCopyPresentationModel.TARGET_PACKAGE);
 
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
             TextField searchInputField = new TextField(searchInput);
             TextField replaceInputField = new TextField(replaceInput);
-            binding.bindContent(searchInputField, getPresentationModel(), DeepCopyPresentationModel.SEARCH_INPUT);
-            binding.bindContent(replaceInputField, getPresentationModel(), DeepCopyPresentationModel.REPLACE_INPUT);
+            bindingContext
+                    .bindContent(searchInputField, getPresentationModel(), DeepCopyPresentationModel.SEARCH_INPUT);
+            bindingContext.bindContent(replaceInputField, getPresentationModel(),
+                    DeepCopyPresentationModel.REPLACE_INPUT);
 
             searchInputField.setText(""); //$NON-NLS-1$
             replaceInputField.setText(""); //$NON-NLS-1$
         }
         TextField versionField = new TextField(versionId);
-        binding.bindContent(versionField, getPresentationModel(), DeepCopyPresentationModel.VERSION_ID);
+        bindingContext.bindContent(versionField, getPresentationModel(), DeepCopyPresentationModel.VERSION_ID);
 
-        binding.bindContent(copyTableContentsBtn, getPresentationModel(), DeepCopyPresentationModel.COPY_TABLE);
+        bindingContext.bindContent(copyTableContentsBtn, getPresentationModel(), DeepCopyPresentationModel.COPY_TABLE);
 
         tree.addCheckStateListener(new ICheckStateListener() {
 
@@ -378,7 +385,7 @@ public class SourcePage extends WizardPage {
 
         getTreeStatus().addPropertyChangeListener(propertyChangeListener);
 
-        binding.updateUI();
+        bindingContext.updateUI();
     }
 
     /**
@@ -750,6 +757,14 @@ public class SourcePage extends WizardPage {
         }
         // otherwise buttons are disabled after run and save ui state?
         copyTableContentsBtn.setEnabled(true);
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        if (bindingContext != null) {
+            bindingContext.dispose();
+        }
     }
 
     private class ChangeListener implements PropertyChangeListener {

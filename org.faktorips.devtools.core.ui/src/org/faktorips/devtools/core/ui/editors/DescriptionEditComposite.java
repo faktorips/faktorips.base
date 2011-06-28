@@ -18,6 +18,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
@@ -73,6 +75,15 @@ public final class DescriptionEditComposite extends Composite {
         this.describedElement = describedElement;
         languageCodes = new LinkedHashMap<String, String>();
         bindingContext = new BindingContext();
+        addDisposeListener(new DisposeListener() {
+
+            @Override
+            public void widgetDisposed(DisposeEvent e) {
+                if (bindingContext != null) {
+                    bindingContext.dispose();
+                }
+            }
+        });
 
         createLayout();
 

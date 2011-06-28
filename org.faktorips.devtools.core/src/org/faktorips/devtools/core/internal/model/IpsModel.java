@@ -721,10 +721,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             @Override
             public void run() {
                 List<ContentsChangeListener> copy = new CopyOnWriteArrayList<ContentsChangeListener>(changeListeners); // copy
-                // do
-                // avoid
-                // concurrent
-                // modifications while iterating
+                // do avoid concurrent modifications while iterating
                 for (ContentsChangeListener listener : copy) {
                     if (!event.getIpsSrcFile().exists()) {
                         break;

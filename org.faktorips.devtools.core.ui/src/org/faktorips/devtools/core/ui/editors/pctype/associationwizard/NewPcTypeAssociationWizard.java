@@ -922,7 +922,9 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     public void dispose() {
         IpsPlugin.getDefault().getIpsModel().removeChangeListener(this);
 
-        bindingContext.dispose();
+        if (bindingContext != null) {
+            bindingContext.dispose();
+        }
 
         super.dispose();
     }

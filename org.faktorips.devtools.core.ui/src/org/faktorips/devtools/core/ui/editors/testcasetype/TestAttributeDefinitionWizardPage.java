@@ -183,4 +183,12 @@ public class TestAttributeDefinitionWizardPage extends WizardPage {
         }
         return true;
     }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        if (bindingContext != null) {
+            bindingContext.dispose();
+        }
+    }
 }

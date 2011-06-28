@@ -61,6 +61,8 @@ import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseAdapter;
@@ -227,7 +229,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     // Contains all failure details for one test run
     private List<FailureDetails> allFailureDetails = new ArrayList<FailureDetails>();
 
-    // Listener about content changes
     private TestCaseContentChangeListener changeListener;
 
     // Contains the menu in the title if available
@@ -973,7 +974,17 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
         // add listener on model,
         // if the model changed reset the test run status
-        testCase.getIpsModel().addChangeListener(new TestCaseContentChangeListener(this));
+        changeListener = new TestCaseContentChangeListener(this);
+        testCase.getIpsModel().addChangeListener(changeListener);
+        addDisposeListener(new DisposeListener() {
+
+            @Override
+            public void widgetDisposed(DisposeEvent e) {
+                fFailureColor.dispose();
+                fOkColor.dispose();
+                removeAllListener();
+            }
+        });
     }
 
     private void contentsHasChanged(ContentChangeEvent event) {
@@ -990,15 +1001,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public void dispose() {
-        fFailureColor.dispose();
-        fOkColor.dispose();
-
-        removeAllListener();
-        super.dispose();
     }
 
     /**

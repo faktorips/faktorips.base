@@ -54,6 +54,8 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyEvent;
@@ -957,6 +959,13 @@ public class TestCaseTypeSection extends IpsSection {
         super(parent, ExpandableComposite.NO_TITLE, GridData.FILL_BOTH, toolkit);
 
         resourceManager = new LocalResourceManager(JFaceResources.getResources());
+        addDisposeListener(new DisposeListener() {
+
+            @Override
+            public void widgetDisposed(DisposeEvent e) {
+                resourceManager.dispose();
+            }
+        });
 
         objectCache = new SectionDetailObjectCache();
 
@@ -967,12 +976,6 @@ public class TestCaseTypeSection extends IpsSection {
 
         initControls();
         setText(title);
-    }
-
-    @Override
-    public void dispose() {
-        resourceManager.dispose();
-        super.dispose();
     }
 
     @Override

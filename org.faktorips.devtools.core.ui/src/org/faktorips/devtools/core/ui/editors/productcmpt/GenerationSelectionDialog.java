@@ -601,4 +601,12 @@ public class GenerationSelectionDialog extends TitleAreaDialog {
         createdChoices.addAll(allButtons.keySet());
         return createdChoices;
     }
+
+    @Override
+    public boolean close() {
+        if (bindingContext != null) {
+            bindingContext.dispose();
+        }
+        return super.close();
+    }
 }

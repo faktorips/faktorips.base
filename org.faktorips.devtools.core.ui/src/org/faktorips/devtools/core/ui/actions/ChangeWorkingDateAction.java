@@ -194,6 +194,15 @@ public class ChangeWorkingDateAction implements IWorkbenchWindowActionDelegate {
         private IStatus createStatus(int severity, String message) {
             return new Status(severity, IpsPlugin.PLUGIN_ID, 0, message, null);
         }
+
+        @Override
+        public boolean close() {
+            if (bindingContext != null) {
+                bindingContext.dispose();
+            }
+            return super.close();
+        }
+
     }
 
     @Override
@@ -214,8 +223,8 @@ public class ChangeWorkingDateAction implements IWorkbenchWindowActionDelegate {
                 .getGenerationConceptNamePlural(true);
 
         WorkingDateInputDialog dialog = new WorkingDateInputDialog(shell, Messages.ChangeWorkingDateAction_title,
-                Messages.ChangeWorkingDateAction_description, ipsPreferences.getFormattedWorkingDate(), ipsPreferences
-                        .canEditRecentGeneration());
+                Messages.ChangeWorkingDateAction_description, ipsPreferences.getFormattedWorkingDate(),
+                ipsPreferences.canEditRecentGeneration());
 
         if (dialog.open() == InputDialog.OK) {
             try {

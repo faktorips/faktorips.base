@@ -38,6 +38,8 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
@@ -358,14 +360,14 @@ public class FormulaTestCaseControl extends Composite implements ColumnChangeLis
         // colors are taken from the JUnit test runner to show a corporate identify for test support
         failureColor = new Color(getDisplay(), 159, 63, 63);
         okColor = new Color(getDisplay(), 95, 191, 95);
-    }
+        addDisposeListener(new DisposeListener() {
 
-    @Override
-    public void dispose() {
-        failureColor.dispose();
-        okColor.dispose();
-
-        super.dispose();
+            @Override
+            public void widgetDisposed(DisposeEvent e) {
+                failureColor.dispose();
+                okColor.dispose();
+            }
+        });
     }
 
     /**

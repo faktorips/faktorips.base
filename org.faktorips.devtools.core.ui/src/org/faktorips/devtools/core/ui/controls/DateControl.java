@@ -18,6 +18,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.MouseAdapter;
@@ -56,6 +58,15 @@ public class DateControl extends TextButtonControl {
         super(parent, toolkit, "", true, 24, SWT.RIGHT); //$NON-NLS-1$
         setButtonImage(IpsUIPlugin.getImageHandling().getSharedImage("Calendar.png", true)); //$NON-NLS-1$
         dateFormat = DateISOStringFormat.newInstance();
+        addDisposeListener(new DisposeListener() {
+
+            @Override
+            public void widgetDisposed(DisposeEvent e) {
+                if (calendarShell != null) {
+                    calendarShell.dispose();
+                }
+            }
+        });
     }
 
     @Override
@@ -136,11 +147,4 @@ public class DateControl extends TextButtonControl {
         setText(dateFormat.formatDate(calendar.getTime()));
     }
 
-    @Override
-    public void dispose() {
-        if (calendarShell != null) {
-            calendarShell.dispose();
-        }
-        super.dispose();
-    }
 }

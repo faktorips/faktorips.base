@@ -86,4 +86,12 @@ public class CallBusinessFunctionActionPropertySection extends AbstractPropertyS
         avoidDoubleCall = false;
     }
 
+    @Override
+    public void dispose() {
+        super.dispose();
+        if (bindingContext != null) {
+            bindingContext.dispose();
+        }
+    }
+
 }

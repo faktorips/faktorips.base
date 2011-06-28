@@ -36,7 +36,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
-import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -57,7 +56,6 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
     protected BindingContext bindingContext = new BindingContext();
 
     private IIpsObjectPart part;
-    private TextField descriptionField;
     private Memento oldState;
     private boolean dirty = false;
 
@@ -222,18 +220,6 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
             return part.getIpsObject().getName() + ' ' + part.getParent().getName() + '.' + part.getName();
         }
         return part.getIpsObject().getName() + '.' + part.getName();
-    }
-
-    /**
-     * Enables / disables the description field.
-     * 
-     * @param enabled Enables the description field if <code>true</code>, disables it if
-     *            <code>false</code>.
-     */
-    protected void setEnabledDescription(boolean enabled) {
-        if (descriptionField != null) {
-            descriptionField.getControl().setEnabled(enabled);
-        }
     }
 
     @Override

@@ -71,6 +71,9 @@ public class NamedOnlyBFElementsPropertySection extends AbstractPropertySection 
     @Override
     public void dispose() {
         super.dispose();
+        if (bindingContext != null) {
+            bindingContext.dispose();
+        }
     }
 
     public IBFElement getBFElement() {
