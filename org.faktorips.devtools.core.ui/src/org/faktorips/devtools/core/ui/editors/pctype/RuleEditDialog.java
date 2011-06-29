@@ -120,7 +120,6 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
 
     private void bindFields() {
         ruleUI.bindFields(rule, bindingContext);
-
         bindingContext
                 .bindContent(appliedToAllField, rule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
         bindingContext

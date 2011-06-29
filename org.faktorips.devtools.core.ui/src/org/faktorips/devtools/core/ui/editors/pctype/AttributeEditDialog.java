@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.editors.pctype;
 
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -214,7 +215,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 bindingContext.updateUI();
-                ruleDefinitionUI.updateUI();
             }
         });
 
@@ -630,7 +630,24 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         ruleGroup = uiToolkit.createGroup(checkComposite, Messages.AttributeEditDialog_ruleTitle);
         bindEnablement();
         ruleDefinitionUI.initUI(ruleGroup);
-        ruleModel.addPropertyChangeListener(ruleDefinitionUI);
+        ruleModel.addPropertyChangeListener(new PropertyChangeListener() {
+            /**
+             * {@inheritDoc} Binds the ruleDefinitionUIs controls to the new rule given by the
+             * {@link PropertyChangeEvent} and updates them accordingly. If no rule is given (
+             * <code>null</code>) all bindings are removed.
+             */
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (ruleDefinitionUI.isUiInitialized() && evt.getPropertyName() == RuleUIModel.PROPERTY_VALIDATION_RULE) {
+                    ruleDefinitionUI.removeBindingsFromContext(bindingContext);
+                    if (evt.getNewValue() != null) {
+                        IValidationRule rule = (IValidationRule)evt.getNewValue();
+                        ruleDefinitionUI.bindFields(rule, bindingContext);
+                    }
+                    bindingContext.updateUI();
+                }
+            }
+        });
         // initialize ruleDefintionUI state.
         ruleModel.fireRuleChange();
 

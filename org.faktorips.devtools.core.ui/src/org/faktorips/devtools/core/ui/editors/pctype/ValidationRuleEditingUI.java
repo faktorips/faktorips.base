@@ -13,9 +13,6 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -36,7 +33,6 @@ import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.AbstractCheckbox;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
-import org.faktorips.devtools.core.ui.editors.pctype.AttributeEditDialog.RuleUIModel;
 
 /**
  * Helper class to create the UI controls needed to define/edit an {@link IValidationRule}. An
@@ -51,7 +47,7 @@ import org.faktorips.devtools.core.ui.editors.pctype.AttributeEditDialog.RuleUIM
  * 
  * @author Stefan Widmaier, FaktorZehn AG
  */
-public class ValidationRuleEditingUI implements PropertyChangeListener {
+public class ValidationRuleEditingUI {
 
     private boolean uiInitialized = false;
 
@@ -64,8 +60,6 @@ public class ValidationRuleEditingUI implements PropertyChangeListener {
     private final UIToolkit uiToolkit;
     private Checkbox configurableByProductBox;
     private Checkbox defaultActivationBox;
-
-    private BindingContext bindingContext = new BindingContext();
 
     public ValidationRuleEditingUI(UIToolkit uiToolkit) {
         this.uiToolkit = uiToolkit;
@@ -226,24 +220,4 @@ public class ValidationRuleEditingUI implements PropertyChangeListener {
         bindingContext.removeBindings(defaultActivationBox);
     }
 
-    /**
-     * {@inheritDoc} Binds this UIs controls to the new rule given by the
-     * {@link PropertyChangeEvent} and updates them accordingly. If no rule is given (
-     * <code>null</code>) all bindings are removed.
-     */
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        if (isUiInitialized() && evt.getPropertyName() == RuleUIModel.PROPERTY_VALIDATION_RULE) {
-            removeBindingsFromContext(bindingContext);
-            if (evt.getNewValue() != null) {
-                IValidationRule rule = (IValidationRule)evt.getNewValue();
-                bindFields(rule, bindingContext);
-            }
-            bindingContext.updateUI();
-        }
-    }
-
-    public void updateUI() {
-        bindingContext.updateUI();
-    }
 }
