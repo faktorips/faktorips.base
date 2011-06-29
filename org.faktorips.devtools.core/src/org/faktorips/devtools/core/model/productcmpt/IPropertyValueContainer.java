@@ -52,6 +52,12 @@ public interface IPropertyValueContainer extends IIpsObjectPartContainer {
     public abstract <T extends IPropertyValue> List<T> getPropertyValues(Class<T> type);
 
     /**
+     * Returns all property values in this container or an empty list, if no property values are
+     * defined.
+     */
+    public abstract List<IPropertyValue> getAllPropertyValues();
+
+    /**
      * Creates a new property value for the given property.
      * 
      * @throws NullPointerException if property is <code>null</code>.

@@ -141,6 +141,11 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     @Override
+    public List<IPropertyValue> getAllPropertyValues() {
+        return propertyValueCollection.getAllPropertyValues();
+    }
+
+    @Override
     public IPropertyValue newPropertyValue(IProductCmptProperty property) {
         IPropertyValue newPropertyValue = propertyValueCollection.newPropertyValue(this, property, getNextPartId());
         objectHasChanged();
