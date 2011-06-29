@@ -200,9 +200,10 @@ public class ClassToInstancesMap<T> {
             }
         });
 
-        for (List<? extends T> list : internalMap.values()) {
-            result.addAll(list);
+        for (Class<? extends T> key : sortedKeySet) {
+            result.addAll(internalMap.get(key));
         }
+
         return result;
     }
 

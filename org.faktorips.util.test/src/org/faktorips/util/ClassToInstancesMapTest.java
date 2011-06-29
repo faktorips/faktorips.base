@@ -161,8 +161,8 @@ public class ClassToInstancesMapTest {
         List<Object> values = classToMultiInstanceMap.values();
         assertEquals(0, values.size());
 
-        classToMultiInstanceMap.put(String.class, "321");
-        classToMultiInstanceMap.put(String.class, "123");
+        classToMultiInstanceMap.put(String.class, "a321");
+        classToMultiInstanceMap.put(String.class, "a123");
         classToMultiInstanceMap.put(Integer.class, 123);
 
         // assert that values is a passive copy
@@ -171,13 +171,13 @@ public class ClassToInstancesMapTest {
         values = classToMultiInstanceMap.values();
         assertEquals(3, values.size());
 
-        assertTrue(values.contains("123"));
-        assertTrue(values.contains("321"));
+        assertTrue(values.contains("a123"));
+        assertTrue(values.contains("a321"));
         assertTrue(values.contains(123));
 
         // values are ordered by class and by natural order
         assertEquals(123, values.get(0));
-        assertEquals("321", values.get(1));
-        assertEquals("123", values.get(2));
+        assertEquals("a321", values.get(1));
+        assertEquals("a123", values.get(2));
     }
 }
