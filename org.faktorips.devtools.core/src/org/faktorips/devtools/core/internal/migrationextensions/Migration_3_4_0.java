@@ -107,6 +107,7 @@ public class Migration_3_4_0 extends DefaultMigration {
         for (ISupportedLanguage supportedLanguage : supportedLanguages) {
             if (!hasLabelForLanguage(rule, supportedLanguage)) {
                 ILabel newLabel = rule.newLabel();
+                newLabel.setValue(""); //$NON-NLS-1$
                 newLabel.setLocale(supportedLanguage.getLocale());
             }
         }
