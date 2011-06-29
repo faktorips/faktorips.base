@@ -20,8 +20,10 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.DialogSettings;
 import org.eclipse.jface.dialogs.TrayDialog;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -166,6 +168,45 @@ public class IpsPackageSortDefDialog extends TrayDialog {
 
         createTreeViewer(sortComposite);
         createUpDownButtons(sortComposite);
+        udpateButtonEnablement();
+        treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent event) {
+                udpateButtonEnablement();
+            }
+        });
+    }
+
+    /**
+     * Enables or disables the buttons {@link #up} and {@link #down} according to the
+     * {@link #treeViewer}'s current selection.
+     * <p>
+     * Both buttons are disabled if no element is selected or if the element represents a source
+     * folder or packageFragmentRoot respectively.
+     * <p>
+     * For movable elements (PackageFragments) the button {@link #up} is disabled if the fragment is
+     * the first in its parent and cannot be moved further upwards, #down analogous.
+     */
+    private void udpateButtonEnablement() {
+        Object selectedElement = getFirstSelectedElementFromTreeViewer();
+        if (selectedElement != null && selectedElement instanceof IIpsPackageFragment) {
+            IIpsPackageFragment fragment = (IIpsPackageFragment)selectedElement;
+            if (fragment.isDefaultPackage()) {
+                /*
+                 * These are the sourceFolders or pckgFragmentRoots displayed in the dialog. Disable
+                 * buttons, as reordering is not possible.
+                 */
+                up.setEnabled(false);
+                down.setEnabled(false);
+            } else {
+                up.setEnabled(!sortOrderPM.isFirstInParent(fragment));
+                down.setEnabled(!sortOrderPM.isLastInParent(fragment));
+            }
+        } else {
+            // nothing or no movable element selected, disable buttons
+            up.setEnabled(false);
+            down.setEnabled(false);
+        }
     }
 
     /**
@@ -198,10 +239,8 @@ public class IpsPackageSortDefDialog extends TrayDialog {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 upPressed();
-                treeViewer.refresh();
             }
         });
-
         setButtonLayoutData(up);
 
         down = toolkit.createButton(upDownComposite, Messages.IpsPackageSortDefDialog_down);
@@ -226,12 +265,13 @@ public class IpsPackageSortDefDialog extends TrayDialog {
      * Handle Button <code>down</code>.
      */
     protected void downPressed() {
-        Object element = ((IStructuredSelection)treeViewer.getSelection()).getFirstElement();
+        Object element = getFirstSelectedElementFromTreeViewer();
 
         if (element instanceof IIpsPackageFragment) {
             IIpsPackageFragment fragment = (IIpsPackageFragment)element;
             sortOrderPM.moveOneDown(fragment);
             treeViewer.refresh(false);
+            udpateButtonEnablement();
         }
     }
 
@@ -239,13 +279,18 @@ public class IpsPackageSortDefDialog extends TrayDialog {
      * Handle Button <code>up</code>.
      */
     protected void upPressed() {
-        Object element = ((IStructuredSelection)treeViewer.getSelection()).getFirstElement();
+        Object element = getFirstSelectedElementFromTreeViewer();
 
         if (element instanceof IIpsPackageFragment) {
             IIpsPackageFragment fragment = (IIpsPackageFragment)element;
             sortOrderPM.moveOneUp(fragment);
             treeViewer.refresh(false);
+            udpateButtonEnablement();
         }
+    }
+
+    protected Object getFirstSelectedElementFromTreeViewer() {
+        return ((IStructuredSelection)treeViewer.getSelection()).getFirstElement();
     }
 
     @Override

@@ -107,6 +107,46 @@ public class IpsProjectSortOrdersPM implements ITreeContentProvider {
     }
 
     /**
+     * Returns <code>true</code> if the given {@link IIpsPackageFragment} is the first one in its
+     * parent and thus no moveUp-Operation is possible. Returns <code>false</code> if the package
+     * fragment is not the first or if no state can be determined (e.g. package fragment is not part
+     * of this order's package hierarchy).
+     * 
+     * @param fragment the fragment
+     * @return <code>true</code> if the fragment is the first in its parent, <code>false</code> if
+     *         it isn't or if no state can be determined.
+     */
+    public boolean isFirstInParent(IIpsPackageFragment fragment) {
+        IIpsPackageFragment parent = fragment.getParentIpsPackageFragment();
+        if (fragmentHierarchy.containsKey(parent)) {
+            List<IIpsPackageFragment> list = fragmentHierarchy.get(parent);
+            return list.isEmpty() ? false : list.indexOf(fragment) == 0;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Returns <code>true</code> if the given {@link IIpsPackageFragment} is the last one in its
+     * parent and thus no moveDown-Operation is possible. Returns <code>false</code> if the package
+     * fragment is not the last or if no state can be determined (e.g. package fragment is not part
+     * of this order's package hierarchy).
+     * 
+     * @param fragment the fragment
+     * @return <code>true</code> if the fragment is the last in its parent, <code>false</code> if it
+     *         isn't or if no state can be determined.
+     */
+    public boolean isLastInParent(IIpsPackageFragment fragment) {
+        IIpsPackageFragment parent = fragment.getParentIpsPackageFragment();
+        if (fragmentHierarchy.containsKey(parent)) {
+            List<IIpsPackageFragment> list = fragmentHierarchy.get(parent);
+            return list.isEmpty() ? false : list.indexOf(fragment) == (list.size() - 1);
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Move a IIpsPackageFragment <code>shift</code> positions down in the child hierarchy. v are
      * not allowed to be moved!
      * 
