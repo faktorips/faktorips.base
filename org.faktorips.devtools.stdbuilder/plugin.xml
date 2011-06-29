@@ -113,6 +113,14 @@
 	               </value>
 	            </discreteValues>               
          </builderSetPropertyDef>
+         <builderSetPropertyDef
+               defaultValue="true"
+               description="Mark none mergeable resources as derived"
+               disableValue="false"
+               label="Derived Resources"
+               name="markNoneMergeableResourcesAsDerived"
+               type="boolean">
+         </builderSetPropertyDef>
       </builderSet>
    </extension>
    <extension

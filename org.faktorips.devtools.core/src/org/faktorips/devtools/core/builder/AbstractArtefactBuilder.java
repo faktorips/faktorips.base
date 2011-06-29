@@ -105,7 +105,7 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
                 createFolderIfNotThere((IFolder)parent);
             }
             file.create(new ByteArrayInputStream("".getBytes()), true, null); //$NON-NLS-1$
-            file.setDerived(buildsDerivedArtefacts());
+            file.setDerived(buildsDerivedArtefacts() && getBuilderSet().isMarkNoneMergableResourcesAsDerived());
             return true;
         }
 
@@ -135,7 +135,7 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
                 createFolderIfNotThere((IFolder)parent);
             }
             folder.create(true, true, null);
-            folder.setDerived(buildsDerivedArtefacts());
+            folder.setDerived(buildsDerivedArtefacts() && getBuilderSet().isMarkNoneMergableResourcesAsDerived());
             return true;
         }
         return false;

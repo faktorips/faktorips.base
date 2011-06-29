@@ -23,7 +23,6 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -64,8 +63,13 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
         ipsArtefactBuilders = builders;
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put(CONFIG_PROPERTY_GENERATOR_LOCALE, Locale.GERMAN.getLanguage());
-        IpsArtefactBuilderSetConfig config = new IpsArtefactBuilderSetConfig(properties);
+        TestBuilderSetConfig config = new TestBuilderSetConfig(properties);
         initialize(config);
+    }
+
+    @Override
+    public TestBuilderSetConfig getConfig() {
+        return (TestBuilderSetConfig)super.getConfig();
     }
 
     @Override

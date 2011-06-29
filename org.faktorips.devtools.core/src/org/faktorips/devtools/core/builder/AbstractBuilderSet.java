@@ -39,6 +39,11 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
      */
     public final static String CONFIG_PROPERTY_GENERATOR_LOCALE = "generatorLocale"; //$NON-NLS-1$
 
+    /**
+     * Configuration property setting that none mergeable filed should be marked as derived filed.
+     */
+    public final static String CONFIG_MARK_NONE_MERGEABLE_RESOURCES_AS_DERIVED = "markNoneMergeableResourcesAsDerived"; //$NON-NLS-1$
+
     private String id;
     private String label;
     private IIpsProject ipsProject;
@@ -192,4 +197,16 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
     public boolean isPersistentProviderSupportOrphanRemoval() {
         return false;
     }
+
+    @Override
+    public boolean isMarkNoneMergableResourcesAsDerived() {
+        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(
+                CONFIG_MARK_NONE_MERGEABLE_RESOURCES_AS_DERIVED);
+        if (propertyValueAsBoolean != null) {
+            return propertyValueAsBoolean;
+        } else {
+            return true;
+        }
+    }
+
 }

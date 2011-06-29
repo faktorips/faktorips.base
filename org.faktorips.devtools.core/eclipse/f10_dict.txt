@@ -10096,3 +10096,4 @@ ausliefern
 synchronisiert
 covariant
 unspecific
+mergeable

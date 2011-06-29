@@ -284,4 +284,11 @@ public interface IIpsArtefactBuilderSet {
      */
     public <T extends IIpsArtefactBuilder> List<T> getBuildersByClass(Class<T> builderClass);
 
+    /**
+     * Getting true if none mergeable resources should be marked as derived or not.
+     * 
+     * @return True to mark the files and folders as derived
+     */
+    public boolean isMarkNoneMergableResourcesAsDerived();
+
 }

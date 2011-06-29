@@ -18,12 +18,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -34,6 +36,7 @@ import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.LocalizedStringsSet;
 import org.junit.Before;
@@ -53,13 +56,14 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         super.setUp();
 
         ipsProject = newIpsProject();
-        ipsSrcFile = newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy").getIpsSrcFile();
+        IIpsPackageFragment pack = ipsProject.getIpsPackageFragmentRoots()[0].createPackageFragment("test", true, null);
+        ipsSrcFile = newIpsObject(pack, IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy").getIpsSrcFile();
 
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet();
         builderSet.setIpsProject(ipsProject);
 
-        builder = new StubJavaSourceFileBuilder(builderSet, "dummy", new LocalizedStringsSet(
-                JavaSourceFileBuilderTest.class), ipsSrcFile, false);
+        builder = new StubJavaSourceFileBuilder(builderSet, DefaultBuilderSet.KIND_POLICY_CMPT_TYPE_INTERFACE,
+                new LocalizedStringsSet(JavaSourceFileBuilderTest.class), ipsSrcFile, false);
         builder.beforeBuildProcess(ipsProject, IncrementalProjectBuilder.INCREMENTAL_BUILD);
     }
 
@@ -90,8 +94,8 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         verify(spyBuilder).generate();
 
         // check file creation
-        IFile file = ipsProject.getIpsPackageFragmentRoots()[0].getArtefactDestination(false)
-                .getFile("TestPolicy.java");
+        IFile file = ipsProject.getIpsPackageFragmentRoots()[0].getArtefactDestination(false).getFile(
+                "org/faktorips/sample/model/test/TestPolicy.java");
         assertTrue(file.exists());
 
         /*
@@ -104,18 +108,69 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testMarkGeneratedResourceAsDerived() throws Exception {
+        JavaSourceFileBuilder spyBuilder = spy(builder);
+
+        TestIpsArtefactBuilderSet builderSet = (TestIpsArtefactBuilderSet)spyBuilder.getBuilderSet();
+        Map<String, Object> properties = builderSet.getConfig().getProperties();
+        properties.put(AbstractBuilderSet.CONFIG_MARK_NONE_MERGEABLE_RESOURCES_AS_DERIVED, true);
+
+        spyBuilder.build(ipsSrcFile);
+
+        IFile file = ipsProject.getIpsPackageFragmentRoots()[0].getArtefactDestination(false).getFile(
+                "org/faktorips/sample/model/test/TestPolicy.java");
+        assertTrue(file.exists());
+        assertFalse(file.isDerived());
+        assertFalse(file.getParent().isDerived());
+
+        spyBuilder.delete(ipsSrcFile);
+        reset(spyBuilder);
+
+        doReturn(true).when(spyBuilder).buildsDerivedArtefacts();
+        spyBuilder.build(ipsSrcFile);
+        file = ipsProject.getIpsPackageFragmentRoots()[0].getArtefactDestination(true).getFile(
+                "org/faktorips/sample/model/test/TestPolicy.java");
+        assertTrue(file.exists());
+        assertTrue(file.isDerived());
+        assertTrue(file.getParent().isDerived());
+
+        spyBuilder.delete(ipsSrcFile);
+        reset(spyBuilder);
+
+        properties.put(AbstractBuilderSet.CONFIG_MARK_NONE_MERGEABLE_RESOURCES_AS_DERIVED, false);
+        spyBuilder.build(ipsSrcFile);
+
+        file = ipsProject.getIpsPackageFragmentRoots()[0].getArtefactDestination(false).getFile(
+                "org/faktorips/sample/model/test/TestPolicy.java");
+        assertTrue(file.exists());
+        assertFalse(file.isDerived());
+        assertFalse(file.getParent().isDerived());
+
+        spyBuilder.delete(ipsSrcFile);
+        reset(spyBuilder);
+        doReturn(true).when(spyBuilder).buildsDerivedArtefacts();
+        spyBuilder.build(ipsSrcFile);
+        file = ipsProject.getIpsPackageFragmentRoots()[0].getArtefactDestination(true).getFile(
+                "org/faktorips/sample/model/test/TestPolicy.java");
+        assertTrue(file.exists());
+        assertFalse(file.isDerived());
+        assertFalse(file.getParent().isDerived());
+    }
+
+    @Test
     public void testDelete() throws Exception {
         builder.beforeBuild(ipsSrcFile, null);
         builder.build(ipsSrcFile);
         builder.afterBuild(ipsSrcFile);
         // check file creation
-        IFile file = ipsProject.getIpsPackageFragmentRoots()[0].getArtefactDestination(false)
-                .getFile("TestPolicy.java");
+        IFile file = ipsProject.getIpsPackageFragmentRoots()[0].getArtefactDestination(false).getFile(
+                "org/faktorips/sample/model/test/TestPolicy.java");
         assertTrue(file.exists());
 
         // check file deletion
         builder.delete(ipsSrcFile);
-        file = ipsProject.getIpsPackageFragmentRoots()[0].getArtefactDestination(false).getFile("TestPolicy.java");
+        file = ipsProject.getIpsPackageFragmentRoots()[0].getArtefactDestination(false).getFile(
+                "org/faktorips/sample/model/test/TestPolicy.java");
         assertFalse(file.exists());
     }
 
