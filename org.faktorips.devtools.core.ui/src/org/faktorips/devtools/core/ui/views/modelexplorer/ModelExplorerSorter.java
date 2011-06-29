@@ -217,13 +217,6 @@ public class ModelExplorerSorter extends ViewerSorter {
         if (o1 instanceof IPolicyCmptTypeAttribute && o2 instanceof IPolicyCmptTypeAssociation) {
             return -1;
         }
-        if (o1 instanceof IValidationRule && o2 instanceof IValidationRule) {
-            return 0;
-        } else if (o1 instanceof IValidationRule) {
-            return 1;
-        } else if (o2 instanceof IValidationRule) {
-            return -1;
-        }
 
         // ------- IResource sorting -------
         // sort IpsProjects and IProjects lexicographically (ignoring case)
@@ -287,6 +280,9 @@ public class ModelExplorerSorter extends ViewerSorter {
         }
         if (member instanceof ITableStructure) {
             return 4;
+        }
+        if (member instanceof IValidationRule) {
+            return 5;
         }
         return -1;
 
