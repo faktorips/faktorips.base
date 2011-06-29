@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
@@ -223,9 +222,8 @@ public class PropertyValueCollection {
 
     /**
      * Returns a list of all {@link IPropertyValue}s in this container. Parts of the same
-     * {@link ProductCmptPropertyType} retain their natural order but no order can be guaranteed in
-     * which the different {@link ProductCmptPropertyType}'s are returned. e.g. it cannot be ensured
-     * {@link IAttributeValue} are always the first elements in the returned list.
+     * {@link ProductCmptPropertyType} retain their natural order. The different
+     * {@link ProductCmptPropertyType}s are always in the same order.
      * 
      * @return all property values this container manages.
      */

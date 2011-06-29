@@ -14,8 +14,11 @@
 package org.faktorips.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -94,7 +97,7 @@ public class ClassToInstancesMap<T> {
      * @return The number of discrete values stored in this map.
      */
     public int size() {
-        return values().size();
+        return valuesInternal().size();
     }
 
     /**
@@ -113,7 +116,7 @@ public class ClassToInstancesMap<T> {
      * @return true if the map is empty or false if there is at least one element.
      */
     public boolean isEmpty() {
-        return values().isEmpty();
+        return valuesInternal().isEmpty();
     }
 
     /**
@@ -167,12 +170,36 @@ public class ClassToInstancesMap<T> {
     }
 
     /**
-     * This method returns all values in one collection.
+     * This method returns all values in one collection but does not guaranty any order of the
+     * values.
+     * 
+     * @return All values stored in this map in one collection.
+     */
+    private List<T> valuesInternal() {
+        ArrayList<T> result = new ArrayList<T>();
+        for (List<? extends T> list : internalMap.values()) {
+            result.addAll(list);
+        }
+        return result;
+    }
+
+    /**
+     * This method returns all values in one collection. The order of the lists of different classes
+     * is always the same.
      * 
      * @return All values stored in this map in one collection.
      */
     public List<T> values() {
         ArrayList<T> result = new ArrayList<T>();
+        Set<Class<? extends T>> keySet = internalMap.keySet();
+        ArrayList<Class<? extends T>> sortedKeySet = new ArrayList<Class<? extends T>>(keySet);
+        Collections.sort(sortedKeySet, new Comparator<Class<? extends T>>() {
+
+            public int compare(Class<? extends T> o1, Class<? extends T> o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+
         for (List<? extends T> list : internalMap.values()) {
             result.addAll(list);
         }
