@@ -13,6 +13,8 @@
 
 package org.faktorips.devtools.core.ui.team.compare.productcmpt;
 
+import java.util.List;
+
 import org.eclipse.compare.structuremergeviewer.IStructureComparator;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -20,6 +22,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItemCreator;
 
 /**
@@ -67,6 +70,10 @@ public class ProductCmptCompareItemCreator extends AbstractCompareItemCreator {
                 ProductCmptCompareItem root = new ProductCmptCompareItem(null, file);
                 IProductCmpt product = (IProductCmpt)file.getIpsObject();
                 ProductCmptCompareItem ipsObject = new ProductCmptCompareItem(root, product);
+                List<IPropertyValue> propertyValues = product.getAllPropertyValues();
+                for (IPropertyValue propertyValue : propertyValues) {
+                    new ProductCmptCompareItem(ipsObject, propertyValue);
+                }
                 // Generations of product
                 IIpsObjectGeneration[] gens = product.getGenerationsOrderedByValidDate();
                 for (IIpsObjectGeneration gen : gens) {

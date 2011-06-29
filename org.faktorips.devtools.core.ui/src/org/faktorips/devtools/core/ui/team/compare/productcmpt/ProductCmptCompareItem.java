@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
@@ -70,10 +71,14 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     }
 
     /**
-     * A CompareItem representing a generation is processed separately in
-     * initGenerationContentString().
+     * Writes the content string of this compare item and its children to the given buffer and set
+     * the style ranges.
+     * <p>
+     * A CompareItem representing a product component or one of its generations is processed
+     * separately in
+     * {@link #initPropertyValueContainerContentString(IPropertyValueContainer, StringBuffer, int)}.
      * 
-     * @see #initGenerationContentString(StringBuffer, int)
+     * @see #getContentString()
      */
     @Override
     protected int initTreeContentString(StringBuffer sb, int offset) {
@@ -82,8 +87,13 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         for (AbstractCompareItem compareItem : children) {
             ProductCmptCompareItem child = (ProductCmptCompareItem)compareItem;
             sb.append(NEWLINE);
-            if (child.getIpsElement() instanceof IIpsObjectGeneration) {
-                child.initGenerationContentString(sb, sb.length() - startIndex + offset);
+            if (child.getIpsElement() instanceof IProductCmpt) {
+                /*
+                 * End recursion and initialize string with custom method (for the component and its
+                 * children)
+                 */
+                child.initPropertyValueContainerContentString((IPropertyValueContainer)child.getIpsElement(), sb,
+                        sb.length() - startIndex + offset);
             } else {
                 child.initTreeContentString(sb, sb.length() - startIndex + offset);
             }
@@ -97,36 +107,34 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     }
 
     /**
-     * Creates the string representation of this <code>ProductCmptCompareItem</code> and expects a
-     * <code>IIpsObjectGeneration</code> as contained <code>IIpsElement</code>.
+     * Creates the string representation of this <code>ProductCmptCompareItem</code> (and its
+     * children) and expects an {@link IPropertyValueContainer} as contained {@link IIpsElement}
      * <p>
      * Similarly to initTreeContentString() this method also calculates the document-ranges for this
-     * CompareItem and its children. The children of a generation (relations and config-elements)
-     * are not treated equal. They are ordered and displayed in two separate lists, one with header
-     * "relations" the other with header "attributes".
-     * <p>
-     * Except for the ordering of children the creation of the content string and calculation of
-     * text ranges works similarly to the initTreeContentString() method.
+     * CompareItem and its children. The children of a generation or product component (e.g.
+     * relations and config-elements) are ordered and displayed in separate groups.
      */
-    private int initGenerationContentString(StringBuffer sb, int offset) {
-        IProductCmptGeneration generation = (IProductCmptGeneration)getIpsElement();
+    private int initPropertyValueContainerContentString(IPropertyValueContainer valueContainer,
+            StringBuffer sb,
+            int offset) {
+
         int startIndex = sb.length();
         sb.append(getContentString());
-        List<ProductCmptCompareItem> attributes = getPropertyValues(children);
-        List<ProductCmptCompareItem> relations = getRelations(children);
-        List<ProductCmptCompareItem> rules = getRules(children);
+        List<ProductCmptCompareItem> attributes = getCompareItemsOfClass(children, IAttributeValue.class);
+        List<ProductCmptCompareItem> relations = getCompareItemsOfClass(children, IProductCmptLink.class);
+        List<ProductCmptCompareItem> rules = getCompareItemsOfClass(children, IValidationRuleConfig.class);
         if (!attributes.isEmpty()) {
             sb.append(NEWLINE);
-            String attrHeader = getAttributeListHeader(generation);
-            sb.append(attrHeader);
+            sb.append(getAttributeListHeader(valueContainer));
             for (ProductCmptCompareItem attribute : attributes) {
                 sb.append(NEWLINE);
                 attribute.initTreeContentString(sb, sb.length() - startIndex + offset);
             }
         }
         if (!relations.isEmpty()) {
+            IProductCmptGeneration generation = (IProductCmptGeneration)valueContainer;
             sb.append(NEWLINE);
-            String relationsHeader = getRelationListHeader(generation);
+            String relationsHeader = getRelationListHeader(valueContainer);
             sb.append(relationsHeader);
             String[] relationTypes = getRelationTypes(generation);
             for (String relationType : relationTypes) {
@@ -143,21 +151,38 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         }
         if (!rules.isEmpty()) {
             sb.append(NEWLINE);
-            sb.append(getRuleListHeader(generation));
+            sb.append(getRuleListHeader(valueContainer));
             for (ProductCmptCompareItem rule : rules) {
                 sb.append(NEWLINE);
                 rule.initTreeContentString(sb, sb.length() - startIndex + offset);
             }
         }
+        if (getIpsElement() instanceof IProductCmpt) {
+            // call this method recursively for all generations in a product component
+            sb.append(NEWLINE);
+            List<ProductCmptCompareItem> genItems = getCompareItemsOfClass(children, IProductCmptGeneration.class);
+            for (ProductCmptCompareItem genItem : genItems) {
+                genItem.initPropertyValueContainerContentString((IPropertyValueContainer)genItem.getIpsElement(), sb,
+                        sb.length() - startIndex + offset);
+            }
+        }
         setRange(offset, sb.length() - startIndex);
         return sb.length() - startIndex;
+
     }
 
-    private String getRuleListHeader(IProductCmptGeneration gen) {
+    protected void conditionalAppendGenerationDateAndTab(IPropertyValueContainer valueContainer, StringBuffer sb) {
+        boolean appendGenerationIndent = valueContainer instanceof IProductCmptGeneration;
+        if (appendGenerationIndent) {
+            sb.append(getGenerationDateText((IIpsObjectGeneration)valueContainer)).append(TAB);
+        }
+    }
+
+    private String getRuleListHeader(IPropertyValueContainer valueContainer) {
         StringBuffer sb = new StringBuffer();
         String ruleHeaderName = org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ValidationRuleSection_DefaultTitle;
-        appendGenerationDateForLineStart(gen, sb);
-        sb.append(TAB).append(TAB).append(ruleHeaderName).append(COLON_BLANK);
+        conditionalAppendGenerationDateAndTab(valueContainer, sb);
+        sb.append(TAB).append(ruleHeaderName).append(COLON_BLANK);
         return sb.toString();
     }
 
@@ -165,11 +190,12 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      * Returns a string used as header for the list of attributes (configelements) in the string
      * representation of this CompareItem.
      */
-    private String getAttributeListHeader(IIpsObjectGeneration gen) {
+    private String getAttributeListHeader(IPropertyValueContainer valueContainer) {
         StringBuffer sb = new StringBuffer();
         String attrString = org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_attribute;
-        appendGenerationDateForLineStart(gen, sb);
-        sb.append(TAB).append(TAB).append(attrString).append(COLON_BLANK);
+        conditionalAppendGenerationDateAndTab(valueContainer, sb);
+        sb.append(TAB).append(attrString);
+        sb.append(COLON_BLANK);
         return sb.toString();
     }
 
@@ -177,11 +203,11 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      * Returns a string used as header for the list of relations in the string representation of
      * this CompareItem.
      */
-    private String getRelationListHeader(IIpsObjectGeneration gen) {
+    private String getRelationListHeader(IPropertyValueContainer valueContainer) {
         StringBuffer sb = new StringBuffer();
         String relString = org.faktorips.devtools.core.ui.editors.productcmpt.Messages.PropertiesPage_relations;
-        appendGenerationDateForLineStart(gen, sb);
-        sb.append(TAB).append(TAB).append(relString).append(COLON_BLANK);
+        conditionalAppendGenerationDateAndTab(valueContainer, sb);
+        sb.append(TAB).append(relString).append(COLON_BLANK);
         return sb.toString();
     }
 
@@ -192,29 +218,13 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     private String getRelationTypeHeader(IIpsObjectGeneration gen, String relationType) {
         StringBuffer sb = new StringBuffer();
         sb.append(NEWLINE);
-        appendGenerationDateForLineStart(gen, sb);
+        sb.append(getGenerationDateText(gen));
         sb.append(TAB).append(TAB).append(TAB).append(relationType);
         return sb.toString();
     }
 
-    protected void appendGenerationDateForLineStart(IIpsObjectGeneration gen, StringBuffer sb) {
-        String validFrom = IpsPlugin.getDefault().getIpsPreferences().getDateFormat()
-                .format(gen.getValidFrom().getTime());
-        sb.append(validFrom);
-    }
-
-    /**
-     * Returns a list containing all <code>ProductCmptCompareItem</code>s in the given list that
-     * contain a <code>IConfigElement</code>.
-     */
-    private List<ProductCmptCompareItem> getPropertyValues(List<AbstractCompareItem> items) {
-        List<ProductCmptCompareItem> ces = new ArrayList<ProductCmptCompareItem>();
-        for (AbstractCompareItem item : items) {
-            if (item.getIpsElement() instanceof IPropertyValue) {
-                ces.add((ProductCmptCompareItem)item);
-            }
-        }
-        return ces;
+    private String getGenerationDateText(IIpsObjectGeneration gen) {
+        return IpsPlugin.getDefault().getIpsPreferences().getDateFormat().format(gen.getValidFrom().getTime());
     }
 
     /**
@@ -235,26 +245,12 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
 
     /**
      * Returns a list containing all <code>ProductCmptCompareItem</code>s in the given list that
-     * contain an <code>IProductComponentRelation</code>.
+     * contain an instance of the given class.
      */
-    private List<ProductCmptCompareItem> getRelations(List<AbstractCompareItem> items) {
+    protected List<ProductCmptCompareItem> getCompareItemsOfClass(List<AbstractCompareItem> items, Class<?> clazz) {
         List<ProductCmptCompareItem> rels = new ArrayList<ProductCmptCompareItem>();
         for (AbstractCompareItem item : items) {
-            if (item.getIpsElement() instanceof IProductCmptLink) {
-                rels.add((ProductCmptCompareItem)item);
-            }
-        }
-        return rels;
-    }
-
-    /**
-     * Returns a list containing all <code>ProductCmptCompareItem</code>s in the given list that
-     * represent an <code>IValidationRule</code>.
-     */
-    private List<ProductCmptCompareItem> getRules(List<AbstractCompareItem> items) {
-        List<ProductCmptCompareItem> rels = new ArrayList<ProductCmptCompareItem>();
-        for (AbstractCompareItem item : items) {
-            if (item.getIpsElement() instanceof IValidationRuleConfig) {
+            if (clazz.isAssignableFrom(item.getIpsElement().getClass())) {
                 rels.add((ProductCmptCompareItem)item);
             }
         }
@@ -292,7 +288,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         }
         if (getIpsElement() instanceof IProductCmptLink) {
             IProductCmptLink rel = (IProductCmptLink)getIpsElement();
-            appendGenerationDateForLineStart(rel.getProductCmptGeneration(), sb);
+            sb.append(getGenerationDateText(rel.getProductCmptGeneration()));
             sb.append(TAB).append(TAB).append(TAB).append(TAB).append(rel.getTarget());
             sb.append(BLANK).append(BLANK).append("["); //$NON-NLS-1$
             if (rel.isMandatory()) {
@@ -311,39 +307,35 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
             sb.append(BLANK).append(BLANK).append("(").append(rel.getId()).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
         } else if (getIpsElement() instanceof IConfigElement) {
             IConfigElement configElement = (IConfigElement)getIpsElement();
-            appendGenerationDateForLineStart(configElement.getProductCmptGeneration(), sb);
-            sb.append(TAB).append(TAB).append(TAB).append(configElement.getName()).append(NEWLINE);
-            appendGenerationDateForLineStart(configElement.getProductCmptGeneration(), sb);
+            conditionalAppendGenerationDateAndTab(configElement.getPropertyValueContainer(), sb);
+            sb.append(TAB).append(TAB).append(configElement.getName()).append(NEWLINE);
+            conditionalAppendGenerationDateAndTab(configElement.getPropertyValueContainer(), sb);
             sb.append(TAB)
-                    .append(TAB)
                     .append(TAB)
                     .append(TAB)
                     .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.PolicyAttributeEditDialog_defaultValue)
                     .append(BLANK);
             sb.append(configElement.getValue()).append(NEWLINE);
-            appendGenerationDateForLineStart(configElement.getProductCmptGeneration(), sb);
-            sb.append(TAB).append(TAB).append(TAB).append(TAB).append(Messages.ProductCmptCompareItem_ValueSet)
-                    .append(COLON_BLANK);
+            conditionalAppendGenerationDateAndTab(configElement.getPropertyValueContainer(), sb);
+            sb.append(TAB).append(TAB).append(TAB).append(Messages.ProductCmptCompareItem_ValueSet).append(COLON_BLANK);
             sb.append(getValueSetContent(configElement));
-        } else if (getIpsElement() instanceof IPropertyValue) {
-            IPropertyValue value = (IPropertyValue)getIpsElement();
-            // TODO XXX FIPS-472
-            // appendGenerationDateForLineStart(value.getProductCmptGeneration(), sb);
-            sb.append(TAB).append(TAB).append(TAB).append(value.getPropertyName()).append(COLON_BLANK);
-            sb.append(value.getPropertyValue());
         } else if (getIpsElement() instanceof IValidationRuleConfig) {
             IValidationRuleConfig rule = (IValidationRuleConfig)getIpsElement();
-            // TODO XXX FIPS-472
-            // appendGenerationDateForLineStart(rule.getProductCmptGeneration(), sb);
-            sb.append(TAB).append(TAB).append(TAB).append(rule.getName()).append(COLON_BLANK);
+            conditionalAppendGenerationDateAndTab(rule.getPropertyValueContainer(), sb);
+            sb.append(TAB).append(TAB).append(rule.getName()).append(COLON_BLANK);
             sb.append(rule.isActive() ? Messages.ProductCmptCompareItem_VRule_active
                     : Messages.ProductCmptCompareItem_VRule_inactive);
+        } else if (getIpsElement() instanceof IPropertyValue) {
+            IPropertyValue value = (IPropertyValue)getIpsElement();
+            conditionalAppendGenerationDateAndTab(value.getPropertyValueContainer(), sb);
+            sb.append(TAB).append(TAB).append(value.getPropertyName()).append(COLON_BLANK);
+            sb.append(value.getPropertyValue());
         } else if (getIpsElement() instanceof IIpsObjectGeneration) {
             IIpsObjectGeneration gen = (IIpsObjectGeneration)getIpsElement();
-            appendGenerationDateForLineStart(gen, sb);
+            sb.append(getGenerationDateText(gen));
             sb.append(TAB).append(changingNamingConventionGenerationString).append(COLON_BLANK);
             sb.append(QUOTE).append(gen.getName()).append(QUOTE).append(NEWLINE);
-            appendGenerationDateForLineStart(gen, sb);
+            sb.append(getGenerationDateText(gen));
             sb.append(TAB)
                     .append(TAB)
                     .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.GenerationEditDialog_labelValidFrom)
@@ -354,15 +346,10 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
             sb.append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductCmptEditor_productComponent);
             sb.append(QUOTE).append(product.getName()).append(QUOTE).append(NEWLINE);
             sb.append(TAB)
-                    .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_attribute)
-                    .append(COLON_BLANK).append(NEWLINE);
-            sb.append(TAB)
-                    .append(TAB)
                     .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_template)
                     .append(COLON_BLANK);
             sb.append(QUOTE).append(product.getProductCmptType()).append(QUOTE).append(NEWLINE);
             sb.append(TAB)
-                    .append(TAB)
                     .append(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_labelRuntimeId)
                     .append(COLON_BLANK);
             sb.append(QUOTE).append(product.getRuntimeId()).append(QUOTE);

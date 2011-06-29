@@ -71,6 +71,12 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
         Pattern rulesPattern = Pattern
                 .compile(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ValidationRuleSection_DefaultTitle);
         linePatternList.add(rulesPattern);
+        Pattern typePattern = Pattern
+                .compile(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_template);
+        linePatternList.add(typePattern);
+        Pattern runtimeIDPattern = Pattern
+                .compile(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_labelRuntimeId);
+        linePatternList.add(runtimeIDPattern);
 
         // Patterns for TableContents Messages.TableContentsCompareItem_TableContents
         Pattern tablePattern = Pattern
