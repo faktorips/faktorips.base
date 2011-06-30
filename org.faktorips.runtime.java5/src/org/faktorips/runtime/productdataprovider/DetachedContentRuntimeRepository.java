@@ -45,7 +45,8 @@ import org.w3c.dom.Element;
  * 
  * @author dirmeier
  */
-public class DetachedContentRuntimeRepository extends AbstractClassLoadingRuntimeRepository {
+public class DetachedContentRuntimeRepository extends AbstractClassLoadingRuntimeRepository implements
+        IDetachedContentRuntimeRepository {
 
     private final IProductDataProvider productDataProvider;
     private final IFormulaEvaluatorFactory formulaEvaluatorFactory;
