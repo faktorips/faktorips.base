@@ -871,14 +871,14 @@ schutz” abgerufen und ausgedruckt werden.
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
+         unpack="true"/>
 
    <plugin
          id="org.faktorips.valuetypes.java5"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
+         unpack="true"/>
 
    <plugin
          id="org.faktorips.devtools.core.ui"
