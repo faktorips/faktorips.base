@@ -423,8 +423,10 @@ public class BindingContext {
     }
 
     /**
-     * Removes all bindings for the given control. Use {@link #removeBindings(Object)} wherever
-     * possible.
+     * Removes all bindings for the given control. Use this method if you need to unbind a specific
+     * control from an object without affecting other controls that are bound to the same object.
+     * This is useful for for objects that stay the same but individual UI controls need to be
+     * detached on user interaction.
      */
     /*
      * TODO AW: It would be nice to have this more fine granular - remove enabledState binding,
@@ -468,7 +470,10 @@ public class BindingContext {
     }
 
     /**
-     * Removes all bindings/mappings that are connected to the given object.
+     * Removes all bindings/mappings that are connected to the given object. Use this method if
+     * multiple controls are bound to a specific object and you want to remove all of them at once.
+     * This is useful when binding controls to an object that is created or deleted by user
+     * interaction (e.g. an IpsObjectPart).
      * 
      * @param object the bound object.
      */
