@@ -189,18 +189,17 @@ public abstract class GenAssociation extends GenTypePart {
 
         String varName = "new" + association.getTargetRoleSingular();
         methodsBuilder.openBracket();
-        methodsBuilder.appendClassName(targetImplClassName);
+        methodsBuilder.appendClassName(targetInterfaceName);
         methodsBuilder.append(" ");
         methodsBuilder.append(varName);
-        methodsBuilder.append(" = new ");
-        methodsBuilder.appendClassName(targetImplClassName);
+        methodsBuilder.append(" = ");
         if (inclProductCmptArg) {
-            methodsBuilder.append("(");
-            methodsBuilder.append(getParamNameForProductCmptInNewChildMethod(target
-                    .findProductCmptType(getIpsProject())));
-            methodsBuilder.appendln(");");
+            GenPolicyCmptType targetGenerator = getGeneratorFor(target);
+            methodsBuilder
+                    .append(getParamNameForProductCmptInNewChildMethod(target.findProductCmptType(getIpsProject()))) //
+                    .append('.').append(targetGenerator.getMethodNameCreatePolicyCmpt()).appendln("();");
         } else {
-            methodsBuilder.appendln("();");
+            methodsBuilder.append("new ").appendClassName(targetImplClassName).appendln("();");
         }
         methodsBuilder.append(addOrSetMethod);
         methodsBuilder.append("(");
