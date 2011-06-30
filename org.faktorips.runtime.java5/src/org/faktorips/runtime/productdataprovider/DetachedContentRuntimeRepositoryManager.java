@@ -45,6 +45,15 @@ public class DetachedContentRuntimeRepositoryManager extends AbstractRuntimeRepo
     }
 
     @Override
+    public synchronized IDetachedContentRuntimeRepository getActualRuntimeRepository() {
+        if (super.getActualRuntimeRepository() instanceof DetachedContentRuntimeRepository) {
+            return (IDetachedContentRuntimeRepository)super.getActualRuntimeRepository();
+        } else {
+            throw new RuntimeException("Illegal repository class in detached content runtime repository.");
+        }
+    }
+
+    @Override
     protected boolean isRepositoryUpToDate(IRuntimeRepository actualRuntimeRepository) {
         if (actualRuntimeRepository instanceof DetachedContentRuntimeRepository) {
             DetachedContentRuntimeRepository detachedContentRR = (DetachedContentRuntimeRepository)actualRuntimeRepository;
