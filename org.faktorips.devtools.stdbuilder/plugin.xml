@@ -116,7 +116,7 @@
          <builderSetPropertyDef
                defaultValue="true"
                description="Mark none mergeable resources as derived"
-               disableValue="false"
+               disableValue="true"
                label="Derived Resources"
                name="markNoneMergeableResourcesAsDerived"
                type="boolean">

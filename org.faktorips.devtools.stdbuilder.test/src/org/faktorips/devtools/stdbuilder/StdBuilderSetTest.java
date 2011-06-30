@@ -68,7 +68,7 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
                 .getIpsArtefactBuilderSetInfo("org.faktorips.devtools.stdbuilder.ipsstdbuilderset");
         assertNotNull(builderSetInfo);
         IIpsBuilderSetPropertyDef[] propertyDefs = builderSetInfo.getPropertyDefinitions();
-        assertEquals(11, propertyDefs.length);
+        assertEquals(12, propertyDefs.length);
 
         ArrayList<String> propertyDefNames = new ArrayList<String>();
         for (IIpsBuilderSetPropertyDef propertyDef : propertyDefs) {
@@ -86,6 +86,7 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
         assertTrue(propertyDefNames.contains("generateJaxbSupport"));
         assertTrue(propertyDefNames.contains("persistenceProvider"));
         assertTrue(propertyDefNames.contains("formulaCompiling"));
+        assertTrue(propertyDefNames.contains("markNoneMergeableResourcesAsDerived"));
 
         IIpsBuilderSetPropertyDef loggingConnectorPropertyDef = builderSetInfo
                 .getPropertyDefinition("loggingFrameworkConnector");
@@ -136,6 +137,9 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
 
     @Test
     public void testCleanBuildNonDerivedFiles() throws CoreException {
+        // need to set marking derived resources true because we want the clean build to remove all
+        // derived files
+
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
         IProductCmpt productCmpt = newProductCmpt(type, "Product");
 
