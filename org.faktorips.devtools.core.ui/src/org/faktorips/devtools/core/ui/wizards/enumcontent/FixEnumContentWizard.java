@@ -616,12 +616,16 @@ public class FixEnumContentWizard extends Wizard {
             int numberEnumAttributes = newEnumType.getEnumAttributesCountIncludeSupertypeCopies(false);
             combos = new Combo[numberEnumAttributes];
             labels = new Label[numberEnumAttributes];
+            int[] preSelectedComboIndexes = new int[numberEnumAttributes];
             List<IEnumAttribute> enumAttributes = newEnumType.getEnumAttributesIncludeSupertypeCopies(false);
             for (int i = 0; i < numberEnumAttributes; i++) {
                 IEnumAttribute currentEnumAttribute = enumAttributes.get(i);
                 labels[i] = uiToolkit.createFormLabel(contents, currentEnumAttribute.getName() + ':');
                 combos[i] = uiToolkit.createCombo(contents);
                 for (int j = 0; j < availableColumns.size(); j++) {
+                    if (availableColumns.get(j).equals(currentEnumAttribute.getName())) {
+                        preSelectedComboIndexes[i] = j;
+                    }
                     String listItem = (j == 0) ? "" : " - "; //$NON-NLS-1$ //$NON-NLS-2$
                     combos[i].add(listItem + availableColumns.get(j));
                     combos[i].addModifyListener(new ModifyListener() {
@@ -631,6 +635,10 @@ public class FixEnumContentWizard extends Wizard {
                         }
                     });
                 }
+            }
+            // Initialize combo selections (column name to attribute name)
+            for (int i = 0; i < numberEnumAttributes; i++) {
+                combos[i].select(preSelectedComboIndexes[i]);
             }
 
             scrolledControl.setContent(attributesGroup);
