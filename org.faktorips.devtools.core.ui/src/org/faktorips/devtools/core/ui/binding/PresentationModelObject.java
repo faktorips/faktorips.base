@@ -72,4 +72,10 @@ public class PresentationModelObject {
         }
     }
 
+    /*
+     * For testing purposes
+     */
+    public int getListenerCount() {
+        return propertyChangeListeners.size();
+    }
 }

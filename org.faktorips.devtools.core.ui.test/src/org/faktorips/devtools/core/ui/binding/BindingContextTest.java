@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.ui.binding;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -22,7 +23,10 @@ import static org.mockito.Mockito.when;
 import java.beans.PropertyChangeEvent;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -100,6 +104,75 @@ public class BindingContextTest extends AbstractIpsPluginTest {
     @Test
     public void updateMappingsOnPropertyChangeForDifferentProperty() {
         updateMappingsOnPropertyChange(TestPMO.PROPERTY_OTHER_PROPERTY);
+    }
+
+    @Test
+    public void removeListenerFromPMO() {
+        ControlPropertyBinding binding = mock(ControlPropertyBinding.class);
+        when(binding.getObject()).thenReturn(pmo);
+        bindingContext.add(binding);
+
+        ControlPropertyBinding binding2 = mock(ControlPropertyBinding.class);
+        when(binding2.getObject()).thenReturn(pmo);
+        bindingContext.add(binding);
+
+        assertEquals(2, bindingContext.getNumberOfMappingsAndBindings());
+        assertEquals(1, pmo.getListenerCount());
+        bindingContext.removeBindings(pmo);
+        assertEquals(0, bindingContext.getNumberOfMappingsAndBindings());
+        assertEquals(0, pmo.getListenerCount());
+    }
+
+    @Test
+    public void notRemoveBindingsForUnrelatedObject() {
+        ControlPropertyBinding binding = mock(ControlPropertyBinding.class);
+        when(binding.getObject()).thenReturn(pmo);
+        bindingContext.add(binding);
+
+        ControlPropertyBinding binding2 = mock(ControlPropertyBinding.class);
+        when(binding2.getObject()).thenReturn(pmo);
+        bindingContext.add(binding2);
+
+        String string = new String();
+        ControlPropertyBinding binding3 = mock(ControlPropertyBinding.class);
+        when(binding3.getObject()).thenReturn(string);
+        bindingContext.add(binding3);
+
+        assertEquals(3, bindingContext.getNumberOfMappingsAndBindings());
+        assertEquals(1, pmo.getListenerCount());
+        bindingContext.removeBindings(string);
+        assertEquals(2, bindingContext.getNumberOfMappingsAndBindings());
+        assertEquals(1, pmo.getListenerCount());
+    }
+
+    @Test
+    public void removeBindingsForControlAndObject() {
+        Shell shell = new Shell();
+        Text textControl = new Text(shell, SWT.NONE);
+        Text textControl2 = new Text(shell, SWT.NONE);
+
+        ControlPropertyBinding binding = mock(ControlPropertyBinding.class);
+        when(binding.getObject()).thenReturn(pmo);
+        when(binding.getControl()).thenReturn(textControl);
+        bindingContext.add(binding);
+
+        ControlPropertyBinding binding2 = mock(ControlPropertyBinding.class);
+        when(binding2.getObject()).thenReturn(pmo);
+        when(binding2.getControl()).thenReturn(textControl2);
+        bindingContext.add(binding2);
+
+        assertEquals(2, bindingContext.getNumberOfMappingsAndBindings());
+        assertEquals(1, pmo.getListenerCount());
+        bindingContext.removeBindings(textControl);
+        assertEquals(1, bindingContext.getNumberOfMappingsAndBindings());
+        // listener keeps listening to pmo as long a at least on binding exists
+        assertEquals(1, pmo.getListenerCount());
+        bindingContext.removeBindings(textControl2);
+        assertEquals(0, bindingContext.getNumberOfMappingsAndBindings());
+        // listener removed when last mapping removed
+        assertEquals(0, pmo.getListenerCount());
+
+        shell.dispose();
     }
 
     protected void updateMappingsOnPropertyChange(String propertyName) {

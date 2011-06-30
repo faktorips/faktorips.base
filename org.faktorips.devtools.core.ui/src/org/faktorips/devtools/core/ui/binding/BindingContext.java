@@ -403,6 +403,13 @@ public class BindingContext {
         }
     }
 
+    private void removeListenerFromObject(Object object) {
+        if (object instanceof PresentationModelObject) {
+            PresentationModelObject pmo = (PresentationModelObject)object;
+            pmo.removePropertyChangeListener(listener);
+        }
+    }
+
     public void add(ControlPropertyBinding binding) {
         registerIpsModelChangeListener();
         controlBindings.add(binding);
@@ -416,26 +423,69 @@ public class BindingContext {
     }
 
     /**
-     * Removes all bindings for the given control.
+     * Removes all bindings for the given control. Use {@link #removeBindings(Object)} wherever
+     * possible.
      */
     /*
      * TODO AW: It would be nice to have this more fine granular - remove enabledState binding,
      * content binding etc.
      */
     public void removeBindings(Control control) {
+        List<Object> listenerRemoveCandidates = new ArrayList<Object>();
         for (Iterator<ControlPropertyBinding> it = controlBindings.iterator(); it.hasNext();) {
             ControlPropertyBinding binding = it.next();
             if (binding.getControl() == control) {
                 it.remove();
+                listenerRemoveCandidates.add(binding.getObject());
             }
         }
-
         for (Iterator<FieldPropertyMapping> it = mappings.iterator(); it.hasNext();) {
-            FieldPropertyMapping binding = it.next();
-            if (binding.getField().getControl() == control) {
+            FieldPropertyMapping mapping = it.next();
+            if (mapping.getField().getControl() == control) {
+                it.remove();
+                listenerRemoveCandidates.add(mapping.getObject());
+            }
+        }
+        for (Object listenerRemoveCandidate : listenerRemoveCandidates) {
+            if (!existsMappingOrBindingFor(listenerRemoveCandidate)) {
+                removeListenerFromObject(listenerRemoveCandidate);
+            }
+        }
+    }
+
+    private boolean existsMappingOrBindingFor(Object candidate) {
+        for (ControlPropertyBinding binding : controlBindings) {
+            if (binding.getObject() == candidate) {
+                return true;
+            }
+        }
+        for (FieldPropertyMapping mapping : mappings) {
+            if (mapping.getObject() == candidate) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Removes all bindings/mappings that are connected to the given object.
+     * 
+     * @param object the bound object.
+     */
+    public void removeBindings(Object object) {
+        for (Iterator<ControlPropertyBinding> it = controlBindings.iterator(); it.hasNext();) {
+            ControlPropertyBinding binding = it.next();
+            if (binding.getObject() == object) {
                 it.remove();
             }
         }
+        for (Iterator<FieldPropertyMapping> it = mappings.iterator(); it.hasNext();) {
+            FieldPropertyMapping mapping = it.next();
+            if (mapping.getObject() == object) {
+                it.remove();
+            }
+        }
+        removeListenerFromObject(object);
     }
 
     /**
@@ -704,6 +754,13 @@ public class BindingContext {
      */
     protected Listener getListener() {
         return listener;
+    }
+
+    /*
+     * For testing purposes
+     */
+    protected int getNumberOfMappingsAndBindings() {
+        return mappings.size() + controlBindings.size();
     }
 
 }
