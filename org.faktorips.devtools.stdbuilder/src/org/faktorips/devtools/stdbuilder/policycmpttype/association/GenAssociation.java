@@ -189,7 +189,14 @@ public abstract class GenAssociation extends GenTypePart {
 
         String varName = "new" + association.getTargetRoleSingular();
         methodsBuilder.openBracket();
-        methodsBuilder.appendClassName(targetInterfaceName);
+        if (inclProductCmptArg) {
+            methodsBuilder.appendClassName(targetInterfaceName);
+        } else {
+            // The initialize() method is in the interface IConfigurableModelObject. In not
+            // configured model objects we do not have the initialize() method in the interface so
+            // we use the implementation class here.
+            methodsBuilder.appendClassName(targetImplClassName);
+        }
         methodsBuilder.append(" ");
         methodsBuilder.append(varName);
         methodsBuilder.append(" = ");
@@ -201,14 +208,9 @@ public abstract class GenAssociation extends GenTypePart {
         } else {
             methodsBuilder.append("new ").appendClassName(targetImplClassName).appendln("();");
         }
-        methodsBuilder.append(addOrSetMethod);
-        methodsBuilder.append("(");
-        methodsBuilder.append(varName);
-        methodsBuilder.appendln(");");
-        methodsBuilder.append(varName);
-        methodsBuilder.append(".");
-        methodsBuilder.append(getGenPolicyCmptType().getMethodNameInitialize());
-        methodsBuilder.appendln("();");
+        methodsBuilder.append(addOrSetMethod).append("(").append(varName).appendln(");");
+        methodsBuilder.append(varName).append(".").append(getGenPolicyCmptType().getMethodNameInitialize())
+                .appendln("();");
         // notfiyChangeListener
         if (getGenPolicyCmptType().isGenerateChangeListenerSupport()) {
             generateChangeListenerSupportAfterChange(methodsBuilder, ChangeEventType.ASSOCIATION_OBJECT_ADDED, varName);
