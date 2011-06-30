@@ -23,9 +23,7 @@ import static org.mockito.Mockito.when;
 import java.beans.PropertyChangeEvent;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
@@ -147,9 +145,8 @@ public class BindingContextTest extends AbstractIpsPluginTest {
 
     @Test
     public void removeBindingsForControlAndObject() {
-        Shell shell = new Shell();
-        Text textControl = new Text(shell, SWT.NONE);
-        Text textControl2 = new Text(shell, SWT.NONE);
+        Text textControl = mock(Text.class);
+        Text textControl2 = mock(Text.class);
 
         ControlPropertyBinding binding = mock(ControlPropertyBinding.class);
         when(binding.getObject()).thenReturn(pmo);
@@ -165,14 +162,48 @@ public class BindingContextTest extends AbstractIpsPluginTest {
         assertEquals(1, pmo.getListenerCount());
         bindingContext.removeBindings(textControl);
         assertEquals(1, bindingContext.getNumberOfMappingsAndBindings());
-        // listener keeps listening to pmo as long a at least on binding exists
+        // listener keeps listening to pmo as long a at least on binding exists!
         assertEquals(1, pmo.getListenerCount());
         bindingContext.removeBindings(textControl2);
         assertEquals(0, bindingContext.getNumberOfMappingsAndBindings());
         // listener removed when last mapping removed
         assertEquals(0, pmo.getListenerCount());
+    }
 
-        shell.dispose();
+    @Test
+    public void removeMappingAndControlListeners() {
+        Text textControl = mock(Text.class);
+
+        EditField field = mock(EditField.class);
+        FieldPropertyMapping mapping = mock(FieldPropertyMapping.class);
+        when(mapping.getField()).thenReturn(field);
+        when(mapping.getObject()).thenReturn(pmo);
+        when(field.getControl()).thenReturn(textControl);
+        bindingContext.add(mapping);
+
+        assertEquals(1, bindingContext.getNumberOfMappingsAndBindings());
+        verify(textControl).addFocusListener(bindingContext.getListener());
+        bindingContext.removeBindings(textControl);
+        assertEquals(0, bindingContext.getNumberOfMappingsAndBindings());
+        verify(textControl).removeFocusListener(bindingContext.getListener());
+    }
+
+    @Test
+    public void removeMappingAndControlListeners2() {
+        Text textControl = mock(Text.class);
+
+        EditField field = mock(EditField.class);
+        FieldPropertyMapping mapping = mock(FieldPropertyMapping.class);
+        when(mapping.getField()).thenReturn(field);
+        when(mapping.getObject()).thenReturn(pmo);
+        when(field.getControl()).thenReturn(textControl);
+        bindingContext.add(mapping);
+
+        assertEquals(1, bindingContext.getNumberOfMappingsAndBindings());
+        verify(textControl).addFocusListener(bindingContext.getListener());
+        bindingContext.removeBindings(pmo);
+        assertEquals(0, bindingContext.getNumberOfMappingsAndBindings());
+        verify(textControl).removeFocusListener(bindingContext.getListener());
     }
 
     protected void updateMappingsOnPropertyChange(String propertyName) {

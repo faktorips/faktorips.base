@@ -445,6 +445,8 @@ public class BindingContext {
             FieldPropertyMapping mapping = it.next();
             if (mapping.getField().getControl() == control) {
                 it.remove();
+                mapping.getField().removeChangeListener(listener);
+                mapping.getField().getControl().removeFocusListener(listener);
                 listenerRemoveCandidates.add(mapping.getObject());
             }
         }
@@ -488,6 +490,8 @@ public class BindingContext {
             FieldPropertyMapping mapping = it.next();
             if (mapping.getObject() == object) {
                 it.remove();
+                mapping.getField().removeChangeListener(listener);
+                mapping.getField().getControl().removeFocusListener(listener);
             }
         }
         removeListenerFromObject(object);
