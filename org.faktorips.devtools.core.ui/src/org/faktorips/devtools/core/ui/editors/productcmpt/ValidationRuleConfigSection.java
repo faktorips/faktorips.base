@@ -32,13 +32,13 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IDataChangeableReadAccess;
 import org.faktorips.devtools.core.ui.IDataChangeableStateChangeListener;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.editors.pctype.ContentsChangeListenerForWidget;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
 
@@ -62,15 +62,15 @@ public class ValidationRuleConfigSection extends IpsSection {
         setInitCollapsedIfNoContent(true);
         initControls();
 
-        IpsPlugin.getDefault().getIpsModel().addChangeListener(new ContentsChangeListener() {
-
-            @Override
-            public void contentsChanged(ContentChangeEvent event) {
-                if (event.isAffected(generation)) {
-                    setCheckedState();
-                }
-            }
-        });
+        IpsPlugin.getDefault().getIpsModel()
+                .addChangeListener(new ContentsChangeListenerForWidget(tableViewer.getTable()) {
+                    @Override
+                    public void contentsChangedAndWidgetIsNotDisposed(ContentChangeEvent event) {
+                        if (event.isAffected(generation)) {
+                            setCheckedState();
+                        }
+                    }
+                });
     }
 
     @Override

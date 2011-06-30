@@ -241,7 +241,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         valueChanged(oldName, newMethodName);
     }
 
-    // TODO internationalize messages
     @Override
     protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
         super.validateThis(result, ipsProject);
@@ -283,7 +282,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
                         PROPERTY_OVERWRITES, PROPERTY_NAME }));
             } else {
                 if (!valueSet.isDetailedSpecificationOf(superAttr.getValueSet())) {
-                    String text = "The value set defined in this attribute must be a more detailed specification of the value set in the overridden attribute (but it is not).";
+                    String text = Messages.PolicyCmptTypeAttribute_ValueSet_not_SubValueSet_of_the_overridden_attribute;
                     result.add(new Message("", text, Message.ERROR, this)); //$NON-NLS-1$
                 }
                 if (!attributeType.equals(superAttr.getAttributeType())) {

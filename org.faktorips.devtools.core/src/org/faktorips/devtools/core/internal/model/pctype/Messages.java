@@ -91,6 +91,7 @@ public class Messages extends NLS {
     public static String PolicyCmptTypeAttribute_msg_ComputationMethodSignatureHasADifferentDatatype;
     public static String PolicyCmptTypeAttribute_msg_ComputationMethodSignatureIsMissing;
     public static String PolicyCmptTypeAttribute_TypeOfOverwrittenAttributeCantBeChanged;
+    public static String PolicyCmptTypeAttribute_ValueSet_not_SubValueSet_of_the_overridden_attribute;
 
     public static String Association_msg_InverseAssociationInconsistentWithDerivedUnion;
     public static String Association_msg_AssociationNotFoundInTarget;

@@ -87,6 +87,7 @@ import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 import org.faktorips.devtools.core.util.PersistenceUtil;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.util.memento.Memento;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -225,7 +226,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                     return;
                 }
                 if (event.getIpsSrcFile().equals(attribute.getIpsObject().getIpsSrcFile())) {
-                    updateFieldValidationRuleAdded();
+                    updateErrorMessages();
                 }
             }
         };
@@ -233,14 +234,14 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         attribute.getIpsModel().addChangeListener(listener);
 
         // initial update of the checkBox "validationRuleAdded"
-        updateFieldValidationRuleAdded();
+        updateErrorMessages();
         bindingContext.updateUI();
 
         return tabFolder;
     }
 
-    private void updateFieldValidationRuleAdded() {
-        IValidationRule rule = ruleModel.getValidationRule();
+    private void updateErrorMessages() {
+        IValidationRule rule = attribute.findValueSetRule(ipsProject);
         if (rule != null) {
             MessageList msgList;
             try {
@@ -254,9 +255,33 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             } catch (CoreException e) {
                 IpsPlugin.log(e);
             }
-            return;
+        } else {
+            MessageCueController.setMessageCue(validationRuleAdded, null);
         }
-        MessageCueController.setMessageCue(validationRuleAdded, null);
+        updateDialogErrorMessage();
+    }
+
+    private void updateDialogErrorMessage() {
+        try {
+            MessageList msgList = attribute.validate(ipsProject);
+            IValidationRule validationRule = attribute.findValueSetRule(ipsProject);
+            if (validationRule != null && !validationRule.isDeleted()) {
+                /*
+                 * Validate both Attribute and rule, as rule is not a child of the attribute but of
+                 * the containing PolicyCmptType.
+                 */
+                msgList.add(validationRule.validate(ipsProject));
+            }
+            Message firstMessage = msgList.getFirstMessage(Message.ERROR);
+            if (firstMessage != null) {
+                setErrorMessage(firstMessage.getText());
+            } else {
+                setErrorMessage(null);
+            }
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+            setErrorMessage(null);
+        }
     }
 
     /**
