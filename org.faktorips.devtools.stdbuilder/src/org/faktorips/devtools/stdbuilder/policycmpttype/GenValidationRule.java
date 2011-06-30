@@ -42,6 +42,7 @@ import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.MsgReplacementParameter;
 import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.util.LocalizedStringsSet;
+import org.faktorips.util.StringUtil;
 
 /**
  * Generator for validation rules.
@@ -411,7 +412,8 @@ public class GenValidationRule extends GenTypePart {
     }
 
     public String getFieldNameForRuleName() {
-        return getLocalizedText("FIELD_RULE_NAME", StringUtils.upperCase(getValidationRule().getName()));
+        return getLocalizedText("FIELD_RULE_NAME",
+                StringUtils.upperCase(StringUtil.camelCaseToUnderscore(getValidationRule().getName(), false)));
     }
 
     public String getMethodNameCreateMessageForRule() {
@@ -426,22 +428,20 @@ public class GenValidationRule extends GenTypePart {
     public void getGeneratedJavaElementsForPublishedInterface(List<IJavaElement> javaElements,
             IType generatedJavaType,
             IIpsElement ipsElement) {
-
-        addMsgCodeFieldToGeneratedJavaElements(javaElements, generatedJavaType);
+        addFieldToGeneratedJavaElements(javaElements, generatedJavaType, getFieldNameForMsgCode());
+        addFieldToGeneratedJavaElements(javaElements, generatedJavaType, getFieldNameForRuleName());
     }
 
     @Override
     public void getGeneratedJavaElementsForImplementation(List<IJavaElement> javaElements,
             IType generatedJavaType,
             IIpsElement ipsElement) {
-
         addExecRuleMethodToGeneratedJavaElements(javaElements, generatedJavaType);
         addCreateMessageForRuleMethodToGeneratedJavaElements(javaElements, generatedJavaType);
     }
 
     private void addCreateMessageForRuleMethodToGeneratedJavaElements(List<IJavaElement> javaElements,
             IType generatedJavaType) {
-
         String[] parameters = new String[] { unresolvedParam(IValidationContext.class) };
         if (getValidationRule().isValidatedAttrSpecifiedInSrc()) {
             parameters = new String[] { unresolvedParam(IValidationContext.class),
@@ -454,10 +454,6 @@ public class GenValidationRule extends GenTypePart {
     private void addExecRuleMethodToGeneratedJavaElements(List<IJavaElement> javaElements, IType generatedJavaType) {
         addMethodToGeneratedJavaElements(javaElements, generatedJavaType, getMethodNameExecRule(),
                 unresolvedParam(MessageList.class), unresolvedParam(IValidationContext.class));
-    }
-
-    private void addMsgCodeFieldToGeneratedJavaElements(List<IJavaElement> javaElements, IType generatedJavaType) {
-        addFieldToGeneratedJavaElements(javaElements, generatedJavaType, getFieldNameForMsgCode());
     }
 
 }
