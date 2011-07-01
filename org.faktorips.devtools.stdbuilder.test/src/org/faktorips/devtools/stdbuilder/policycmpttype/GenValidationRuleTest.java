@@ -47,7 +47,8 @@ public class GenValidationRuleTest extends PolicyCmptTypeBuilderTest {
                 validationRule);
 
         expectField(0, javaInterface, genValidationRule.getFieldNameForMsgCode());
-        assertEquals(1, generatedJavaElements.size());
+        expectField(1, javaInterface, genValidationRule.getFieldNameForRuleName());
+        assertEquals(2, generatedJavaElements.size());
     }
 
     @Test
@@ -58,7 +59,8 @@ public class GenValidationRuleTest extends PolicyCmptTypeBuilderTest {
                 validationRule);
 
         expectField(0, javaInterface, genValidationRule.getFieldNameForMsgCode());
-        assertEquals(1, generatedJavaElements.size());
+        expectField(1, javaInterface, genValidationRule.getFieldNameForRuleName());
+        assertEquals(2, generatedJavaElements.size());
     }
 
     @Test
