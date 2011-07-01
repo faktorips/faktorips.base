@@ -63,6 +63,8 @@ public interface HtmlExportMessages {
     public static final String ProductGenerationAttributeTable_valueSetUnrestricted = "ProductGenerationAttributeTable_valueSetUnrestricted";
     public static final String ProductGenerationAttributeTable_cardinalityExplanation = "ProductGenerationAttributeTable_cardinalityExplanation";
     public static final String ProductGenerationAttributeTable_validationRules = "ProductGenerationAttributeTable_validationRules";
+    public static final String ProductGenerationAttributeTable_validationRulesActive = "ProductGenerationAttributeTable_validationRulesActive";
+    public static final String ProductGenerationAttributeTable_validationRulesInactive = "ProductGenerationAttributeTable_validationRulesInactive";
 
     public static final String ValidationRuleTablePageElement_headlineDescription = "ValidationRuleTablePageElement_headlineDescription";
     public static final String ValidationRuleTablePageElement_headlineMessageCode = "ValidationRuleTablePageElement_headlineMessageCode";
@@ -130,8 +132,10 @@ public interface HtmlExportMessages {
     public static final String ProductCmptTypeContentPageElement_description = "ProductCmptTypeContentPageElement_description";
     public static final String ProductCmptTypeContentPageElement_headlineLabel = "ProductCmptTypeContentPageElement_headlineLabel";
     public static final String ProductCmptTypeContentPageElement_mandatory = "ProductCmptTypeContentPageElement_mandatory";
-    public static final String ProductCmptTypeContentPageElement_no = "ProductCmptTypeContentPageElement_no";
+    public static final String ProductCmptTypeContentPageElement_tableStructures = "ProductCmptTypeContentPageElement_tableStructures";
     public static final String ProductCmptTypeContentPageElement_noTableStructures = "ProductCmptTypeContentPageElement_noTableStructures";
+    public static final String ProductCmptTypeContentPageElement_productComponents = "ProductCmptTypeContentPageElement_productComponents";
+    public static final String ProductCmptTypeContentPageElement_noProductComponents = "ProductCmptTypeContentPageElement_noProductComponents";
 
     public static final String TableContentsContentPageElement_content = "TableContentsContentPageElement_content";
     public static final String TableContentsContentPageElement_description = "TableContentsContentPageElement_description";

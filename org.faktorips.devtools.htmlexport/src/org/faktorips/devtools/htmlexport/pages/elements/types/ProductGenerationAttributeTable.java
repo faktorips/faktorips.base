@@ -145,7 +145,10 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
                     .getName());
 
             cells[i + 1] = new TextPageElement(
-                    validationRuleConfig != null && validationRuleConfig.isActive() ? "X" : "-", TextType.BLOCK); //$NON-NLS-1$ //$NON-NLS-2$
+                    validationRuleConfig != null && validationRuleConfig.isActive() ? getContext().getMessage(
+                            HtmlExportMessages.ProductGenerationAttributeTable_validationRulesActive) : getContext()
+                            .getMessage(HtmlExportMessages.ProductGenerationAttributeTable_validationRulesInactive),
+                    TextType.BLOCK);
             cells[i + 1].addStyles(Style.CENTER);
 
         }

@@ -139,8 +139,7 @@ public class HtmlLayouter extends AbstractLayouter {
      */
     void initBaseResources() {
         try {
-            LayoutResource cssResource = new LayoutResource(getStyleDefinitionPath(), ioHandler.readFile(
-                    "org.faktorips.devtools.htmlexport", HTML_BASE_CSS)); //$NON-NLS-1$
+            LayoutResource cssResource = new LayoutResource(getStyleDefinitionPath(), ioHandler.readFile(HTML_BASE_CSS));
 
             addLayoutResource(cssResource);
 

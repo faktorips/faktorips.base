@@ -41,12 +41,11 @@ public interface IoHandler {
 
     /**
      * Reads the content of a file from the given bundle
-     * 
-     * @param bundleName name of the bundle
      * @param fileName name of the file
+     * 
      * @return content of the file
      * @throws IOException if an IOException occurs
      */
-    public byte[] readFile(String bundleName, String fileName) throws IOException;
+    public byte[] readFile(String fileName) throws IOException;
 
 }

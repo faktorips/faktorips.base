@@ -32,8 +32,8 @@ import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
@@ -151,8 +151,8 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
      */
     private void addTableStructureTable() {
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-        wrapper.addPageElements(new TextPageElement(IpsObjectType.TABLE_STRUCTURE.getDisplayNamePlural(),
-                TextType.HEADING_2));
+        wrapper.addPageElements(new TextPageElement(getContext().getMessage(
+                HtmlExportMessages.ProductCmptTypeContentPageElement_tableStructures), TextType.HEADING_2));
         wrapper.addPageElements((getTableOrAlternativeText(new TableStructureTablePageElement(getDocumentedIpsObject(),
                 getContext()),
                 getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_noTableStructures))));
@@ -176,13 +176,12 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
         allProductCmptSrcFiles.retainAll(getContext().getDocumentedSourceFiles());
 
         AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
-        wrapper.addPageElements(new TextPageElement(IpsObjectType.PRODUCT_CMPT.getDisplayNamePlural(),
-                TextType.HEADING_2));
+        wrapper.addPageElements(new TextPageElement(getContext().getMessage(
+                HtmlExportMessages.ProductCmptTypeContentPageElement_productComponents), TextType.HEADING_2));
 
         if (allProductCmptSrcFiles.size() == 0) {
             wrapper.addPageElements(new TextPageElement(getContext().getMessage(
-                    HtmlExportMessages.ProductCmptTypeContentPageElement_no)
-                    + IpsObjectType.PRODUCT_CMPT.getDisplayNamePlural()));
+                    HtmlExportMessages.ProductCmptTypeContentPageElement_noProductComponents)));
             addPageElements(wrapper);
             return;
         }

@@ -53,7 +53,7 @@ public class PluginResourceFacade implements IPluginResourceFacade {
         Properties messages = new Properties();
 
         try {
-            byte[] bs = new FileHandler().readFile("org.faktorips.devtools.htmlexport", resourceName); //$NON-NLS-1$
+            byte[] bs = new FileHandler().readFile(resourceName);
             messages.load(new ByteArrayInputStream(bs));
         } catch (IOException e) {
             throw new CoreException(new IpsStatus(IStatus.WARNING,

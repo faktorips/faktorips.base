@@ -27,7 +27,7 @@ public class TestUtil {
     public IoHandler createMockIoHandler() {
         IoHandler ioHandler = mock(IoHandler.class);
         try {
-            when(ioHandler.readFile(anyString(), anyString())).thenReturn(new byte[0]);
+            when(ioHandler.readFile(anyString())).thenReturn(new byte[0]);
         } catch (IOException e) {
             // should not happen
             throw new RuntimeException(e);
