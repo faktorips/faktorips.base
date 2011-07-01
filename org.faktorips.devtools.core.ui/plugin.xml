@@ -1715,11 +1715,6 @@
          point="org.eclipse.ui.menus">
       <menuContribution
             locationURI="menu:org.eclipse.search.menu?after=dialogGroup">
-            <!-- 
-            	menu:org.eclipse.search.menu?before=fileSearchContextMenuActionsGroup
-            	menu:org.eclipse.search.menu?after=dialogGroup
-            	menu:org.eclipse.ui.main.menu
-             -->
          <command
                commandId="org.faktorips.devtools.core.ui.search.model"
                icon="icons/ModelSearch.gif"
