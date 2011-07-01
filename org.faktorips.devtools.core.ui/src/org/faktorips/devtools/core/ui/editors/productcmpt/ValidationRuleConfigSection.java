@@ -62,15 +62,17 @@ public class ValidationRuleConfigSection extends IpsSection {
         setInitCollapsedIfNoContent(true);
         initControls();
 
-        IpsPlugin.getDefault().getIpsModel()
-                .addChangeListener(new ContentsChangeListenerForWidget(tableViewer.getTable()) {
-                    @Override
-                    public void contentsChangedAndWidgetIsNotDisposed(ContentChangeEvent event) {
-                        if (event.isAffected(generation)) {
-                            setCheckedState();
+        if (tableViewer != null) {
+            IpsPlugin.getDefault().getIpsModel()
+                    .addChangeListener(new ContentsChangeListenerForWidget(tableViewer.getTable()) {
+                        @Override
+                        public void contentsChangedAndWidgetIsNotDisposed(ContentChangeEvent event) {
+                            if (event.isAffected(generation)) {
+                                setCheckedState();
+                            }
                         }
-                    }
-                });
+                    });
+        }
     }
 
     @Override
