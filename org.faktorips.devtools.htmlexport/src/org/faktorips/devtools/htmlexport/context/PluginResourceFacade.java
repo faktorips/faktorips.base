@@ -13,8 +13,8 @@
 
 package org.faktorips.devtools.htmlexport.context;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 import org.eclipse.core.runtime.CoreException;
@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
-import org.faktorips.devtools.htmlexport.HtmlExportPlugin;
+import org.faktorips.devtools.htmlexport.helper.FileHandler;
 
 public class PluginResourceFacade implements IPluginResourceFacade {
 
@@ -52,22 +52,12 @@ public class PluginResourceFacade implements IPluginResourceFacade {
     public Properties getMessageProperties(String resourceName) throws CoreException {
         Properties messages = new Properties();
 
-        final InputStream inputStream = HtmlExportPlugin.class.getClassLoader().getResourceAsStream(resourceName);
-
-        if (inputStream == null) {
-            throw new CoreException(new IpsStatus(IStatus.WARNING, "Messages " + resourceName + " not found")); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-
         try {
-            messages.load(inputStream);
+            byte[] bs = new FileHandler().readFile("org.faktorips.devtools.htmlexport", resourceName); //$NON-NLS-1$
+            messages.load(new ByteArrayInputStream(bs));
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus(IStatus.WARNING, "Messages " + resourceName + " couldn't be loaded")); //$NON-NLS-1$ //$NON-NLS-2$
-        } finally {
-            try {
-                inputStream.close();
-            } catch (IOException e) {
-                // nothing to do
-            }
+            throw new CoreException(new IpsStatus(IStatus.WARNING,
+                    "Messages " + resourceName + " not be loaded found", e)); //$NON-NLS-1$ //$NON-NLS-2$        } 
         }
 
         return messages;
