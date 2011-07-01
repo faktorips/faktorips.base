@@ -761,13 +761,6 @@ public class BindingContext {
     /*
      * For testing purposes
      */
-    protected Listener getListener() {
-        return listener;
-    }
-
-    /*
-     * For testing purposes
-     */
     protected int getNumberOfMappingsAndBindings() {
         return mappings.size() + controlBindings.size();
     }
