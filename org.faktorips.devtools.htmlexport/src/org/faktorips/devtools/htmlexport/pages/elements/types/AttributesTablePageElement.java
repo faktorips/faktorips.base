@@ -34,7 +34,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
  * @author dicker
  * 
  */
-public class AttributesTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IAttribute> {
+public abstract class AttributesTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IAttribute> {
 
     protected IType type;
 

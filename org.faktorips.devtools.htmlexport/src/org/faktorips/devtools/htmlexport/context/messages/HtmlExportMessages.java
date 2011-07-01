@@ -136,6 +136,7 @@ public interface HtmlExportMessages {
     public static final String ProductCmptTypeContentPageElement_noTableStructures = "ProductCmptTypeContentPageElement_noTableStructures";
     public static final String ProductCmptTypeContentPageElement_productComponents = "ProductCmptTypeContentPageElement_productComponents";
     public static final String ProductCmptTypeContentPageElement_noProductComponents = "ProductCmptTypeContentPageElement_noProductComponents";
+    public static final String ProductCmptTypeContentPageElement_changeableInAdjustment = "ProductCmptTypeContentPageElement_changeableInAdjustment";
 
     public static final String TableContentsContentPageElement_content = "TableContentsContentPageElement_content";
     public static final String TableContentsContentPageElement_description = "TableContentsContentPageElement_description";
@@ -205,4 +206,5 @@ public interface HtmlExportMessages {
     public static final String InheritedTypeAssociationsPageElement_inheritedAssociations = "InheritedTypeAssociationsPageElement_inheritedAssociations";
     public static final String ValidationRuleTablePageElement_headlineProductRelevant = "ValidationRuleTablePageElement_headlineProductRelevant";
     public static final String ValidationRuleTablePageElement_headlineActivatedByDefault = "ValidationRuleTablePageElement_headlineActivatedByDefault";
+
 }

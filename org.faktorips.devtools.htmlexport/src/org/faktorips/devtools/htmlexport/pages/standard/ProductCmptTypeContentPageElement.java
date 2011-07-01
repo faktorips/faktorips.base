@@ -26,9 +26,12 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
@@ -41,6 +44,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractIpsObjectPartsContainerTablePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.types.AttributesTablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.MethodsTablePageElement;
 
 /**
@@ -50,6 +54,36 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.MethodsTablePageEl
  * 
  */
 public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageElement<IProductCmptType> {
+
+    public class ProductCmptTypeAttributesTablePageElement extends AttributesTablePageElement {
+
+        public ProductCmptTypeAttributesTablePageElement(IType type, DocumentationContext context) {
+            super(type, context);
+        }
+
+        @Override
+        protected List<String> getAttributeData(IAttribute attribute) {
+            List<String> attributeData = super.getAttributeData(attribute);
+
+            IProductCmptTypeAttribute polAttribute = (IProductCmptTypeAttribute)attribute;
+
+            attributeData.add(polAttribute.isChangingOverTime() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
+
+            return attributeData;
+        }
+
+        @Override
+        protected List<String> getHeadlineWithIpsObjectPart() {
+            List<String> headline = super.getHeadlineWithIpsObjectPart();
+
+            addHeadlineAndColumnLayout(headline,
+                    getContext()
+                            .getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_changeableInAdjustment),
+                    Style.CENTER);
+
+            return headline;
+        }
+    }
 
     /**
      * a table representing the table structures of the given productCmptType
@@ -247,5 +281,10 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
             }
 
         };
+    }
+
+    @Override
+    AttributesTablePageElement getAttributesTablePageElement() {
+        return new ProductCmptTypeAttributesTablePageElement(getDocumentedIpsObject(), getContext());
     }
 }

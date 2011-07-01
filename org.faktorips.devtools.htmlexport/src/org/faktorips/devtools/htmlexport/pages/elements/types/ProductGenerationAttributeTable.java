@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -478,19 +479,27 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         String caption = context.getLabel(attribute);
         cells[0] = new TextPageElement(caption);
 
-        for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
-            IProductCmptGeneration productCmptGeneration = productCmpt.getProductCmptGeneration(i);
-            String value = getAttributeValueInProductCmptGeneration(productCmptGeneration, attribute);
-            cells[i + 1] = new TextPageElement(value);
-        }
+        if (((IProductCmptTypeAttribute)attribute).isChangingOverTime()) {
+            for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
+                IProductCmptGeneration productCmptGeneration = productCmpt.getProductCmptGeneration(i);
+                IAttributeValue attributeValue = productCmptGeneration.getAttributeValue(attribute.getName());
 
+                String value = getValueOfAttribute(attributeValue, attribute);
+                cells[i + 1] = new TextPageElement(value);
+            }
+        } else {
+            IAttributeValue attributeValue = productCmpt.getAttributeValue(attribute.getName());
+            String value = getValueOfAttribute(attributeValue, attribute);
+
+            for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
+                cells[i + 1] = new TextPageElement(value);
+            }
+        }
         addSubElement(new TableRowPageElement(cells));
 
     }
 
-    private String getAttributeValueInProductCmptGeneration(IProductCmptGeneration productCmptGeneration,
-            IAttribute attribute) {
-        IAttributeValue attributeValue = productCmptGeneration.getAttributeValue(attribute.getName());
+    private String getValueOfAttribute(IAttributeValue attributeValue, IAttribute attribute) {
 
         String value;
         try {
