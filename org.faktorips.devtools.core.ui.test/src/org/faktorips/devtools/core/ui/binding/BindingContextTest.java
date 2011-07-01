@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.ui.binding;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -22,13 +23,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.FieldPropertyMapping;
 import org.junit.Before;
@@ -64,8 +68,8 @@ public class BindingContextTest extends AbstractIpsPluginTest {
         ContentChangeEvent contentChangeEventMock = mock(ContentChangeEvent.class);
         when(contentChangeEventMock.isAffected(ipsObject)).thenReturn(true);
 
-        bindingContext.getListener().contentsChanged(contentChangeEventMock);
-
+        // force property change
+        pmo.fireChange();
         verify(binding, times(1)).updateUI();
     }
 
@@ -81,17 +85,15 @@ public class BindingContextTest extends AbstractIpsPluginTest {
 
     @Test
     public void updateAllMappingsOnContentChange() throws CoreException {
-        IIpsObjectPartContainer ipsObject = newProductCmpt(newIpsProject(), "ProdCmpt");
-        FieldPropertyMapping mapping = bindingContext.createMapping(editField, ipsObject, "name"); // some
-                                                                                                   // valid
-                                                                                                   // property
+        IProductCmpt prodCmpt = newProductCmpt(newIpsProject(), "ProdCmpt");
+        FieldPropertyMapping mapping = bindingContext.createMapping(editField, prodCmpt, "name"); // some
+                                                                                                  // valid
+                                                                                                  // property
         FieldPropertyMapping spyMapping = spy(mapping);
         bindingContext.add(spyMapping);
 
-        ContentChangeEvent contentChangeEventMock = mock(ContentChangeEvent.class);
-        when(contentChangeEventMock.isAffected(ipsObject)).thenReturn(true);
-
-        bindingContext.getListener().contentsChanged(contentChangeEventMock);
+        // force property change
+        prodCmpt.newGeneration();
         verify(spyMapping, times(1)).setControlValue();
     }
 
@@ -117,10 +119,10 @@ public class BindingContextTest extends AbstractIpsPluginTest {
         bindingContext.add(binding);
 
         assertEquals(2, bindingContext.getNumberOfMappingsAndBindings());
-        verify(pmo, times(2)).addPropertyChangeListener(bindingContext.getListener());
+        verify(pmo, times(2)).addPropertyChangeListener(any(PropertyChangeListener.class));
         bindingContext.removeBindings(pmo);
         assertEquals(0, bindingContext.getNumberOfMappingsAndBindings());
-        verify(pmo).removePropertyChangeListener(bindingContext.getListener());
+        verify(pmo).removePropertyChangeListener(any(PropertyChangeListener.class));
     }
 
     @Test
@@ -140,10 +142,10 @@ public class BindingContextTest extends AbstractIpsPluginTest {
         bindingContext.add(binding3);
 
         assertEquals(3, bindingContext.getNumberOfMappingsAndBindings());
-        verify(pmo, times(2)).addPropertyChangeListener(bindingContext.getListener());
+        verify(pmo, times(2)).addPropertyChangeListener(any(PropertyChangeListener.class));
         bindingContext.removeBindings(string);
         assertEquals(2, bindingContext.getNumberOfMappingsAndBindings());
-        verify(pmo, never()).removePropertyChangeListener(bindingContext.getListener());
+        verify(pmo, never()).removePropertyChangeListener(any(PropertyChangeListener.class));
     }
 
     @Test
@@ -163,15 +165,15 @@ public class BindingContextTest extends AbstractIpsPluginTest {
         bindingContext.add(binding2);
 
         assertEquals(2, bindingContext.getNumberOfMappingsAndBindings());
-        verify(pmo, times(2)).addPropertyChangeListener(bindingContext.getListener());
+        verify(pmo, times(2)).addPropertyChangeListener(any(PropertyChangeListener.class));
         bindingContext.removeBindings(textControl);
         assertEquals(1, bindingContext.getNumberOfMappingsAndBindings());
         // listener keeps listening to pmo as long a at least on binding exists!
-        verify(pmo, never()).removePropertyChangeListener(bindingContext.getListener());
+        verify(pmo, never()).removePropertyChangeListener(any(PropertyChangeListener.class));
         bindingContext.removeBindings(textControl2);
         assertEquals(0, bindingContext.getNumberOfMappingsAndBindings());
         // listener removed when last mapping removed
-        verify(pmo).removePropertyChangeListener(bindingContext.getListener());
+        verify(pmo).removePropertyChangeListener(any(PropertyChangeListener.class));
     }
 
     @Test
@@ -186,10 +188,10 @@ public class BindingContextTest extends AbstractIpsPluginTest {
         bindingContext.add(mapping);
 
         assertEquals(1, bindingContext.getNumberOfMappingsAndBindings());
-        verify(textControl).addFocusListener(bindingContext.getListener());
+        verify(textControl).addFocusListener(any(FocusListener.class));
         bindingContext.removeBindings(textControl);
         assertEquals(0, bindingContext.getNumberOfMappingsAndBindings());
-        verify(textControl).removeFocusListener(bindingContext.getListener());
+        verify(textControl).removeFocusListener(any(FocusListener.class));
     }
 
     @Test
@@ -204,10 +206,10 @@ public class BindingContextTest extends AbstractIpsPluginTest {
         bindingContext.add(mapping);
 
         assertEquals(1, bindingContext.getNumberOfMappingsAndBindings());
-        verify(textControl).addFocusListener(bindingContext.getListener());
+        verify(textControl).addFocusListener(any(FocusListener.class));
         bindingContext.removeBindings(pmo);
         assertEquals(0, bindingContext.getNumberOfMappingsAndBindings());
-        verify(textControl).removeFocusListener(bindingContext.getListener());
+        verify(textControl).removeFocusListener(any(FocusListener.class));
     }
 
     protected void updateMappingsOnPropertyChange(String propertyName) {
@@ -227,6 +229,10 @@ public class BindingContextTest extends AbstractIpsPluginTest {
 
         public boolean isEnabled() {
             return isEnabled;
+        }
+
+        public void fireChange() {
+            notifyListeners();
         }
 
         public void setEnabled(boolean enabled) {
