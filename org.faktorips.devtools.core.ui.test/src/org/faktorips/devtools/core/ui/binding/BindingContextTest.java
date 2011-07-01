@@ -15,6 +15,7 @@ package org.faktorips.devtools.core.ui.binding;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -107,6 +108,7 @@ public class BindingContextTest extends AbstractIpsPluginTest {
     @Test
     public void removeListenerFromPMO() {
         ControlPropertyBinding binding = mock(ControlPropertyBinding.class);
+        pmo = mock(TestPMO.class);
         when(binding.getObject()).thenReturn(pmo);
         bindingContext.add(binding);
 
@@ -115,15 +117,16 @@ public class BindingContextTest extends AbstractIpsPluginTest {
         bindingContext.add(binding);
 
         assertEquals(2, bindingContext.getNumberOfMappingsAndBindings());
-        assertEquals(1, pmo.getListenerCount());
+        verify(pmo, times(2)).addPropertyChangeListener(bindingContext.getListener());
         bindingContext.removeBindings(pmo);
         assertEquals(0, bindingContext.getNumberOfMappingsAndBindings());
-        assertEquals(0, pmo.getListenerCount());
+        verify(pmo).removePropertyChangeListener(bindingContext.getListener());
     }
 
     @Test
     public void notRemoveBindingsForUnrelatedObject() {
         ControlPropertyBinding binding = mock(ControlPropertyBinding.class);
+        pmo = mock(TestPMO.class);
         when(binding.getObject()).thenReturn(pmo);
         bindingContext.add(binding);
 
@@ -137,16 +140,17 @@ public class BindingContextTest extends AbstractIpsPluginTest {
         bindingContext.add(binding3);
 
         assertEquals(3, bindingContext.getNumberOfMappingsAndBindings());
-        assertEquals(1, pmo.getListenerCount());
+        verify(pmo, times(2)).addPropertyChangeListener(bindingContext.getListener());
         bindingContext.removeBindings(string);
         assertEquals(2, bindingContext.getNumberOfMappingsAndBindings());
-        assertEquals(1, pmo.getListenerCount());
+        verify(pmo, never()).removePropertyChangeListener(bindingContext.getListener());
     }
 
     @Test
     public void removeBindingsForControlAndObject() {
         Text textControl = mock(Text.class);
         Text textControl2 = mock(Text.class);
+        pmo = mock(TestPMO.class);
 
         ControlPropertyBinding binding = mock(ControlPropertyBinding.class);
         when(binding.getObject()).thenReturn(pmo);
@@ -159,15 +163,15 @@ public class BindingContextTest extends AbstractIpsPluginTest {
         bindingContext.add(binding2);
 
         assertEquals(2, bindingContext.getNumberOfMappingsAndBindings());
-        assertEquals(1, pmo.getListenerCount());
+        verify(pmo, times(2)).addPropertyChangeListener(bindingContext.getListener());
         bindingContext.removeBindings(textControl);
         assertEquals(1, bindingContext.getNumberOfMappingsAndBindings());
         // listener keeps listening to pmo as long a at least on binding exists!
-        assertEquals(1, pmo.getListenerCount());
+        verify(pmo, never()).removePropertyChangeListener(bindingContext.getListener());
         bindingContext.removeBindings(textControl2);
         assertEquals(0, bindingContext.getNumberOfMappingsAndBindings());
         // listener removed when last mapping removed
-        assertEquals(0, pmo.getListenerCount());
+        verify(pmo).removePropertyChangeListener(bindingContext.getListener());
     }
 
     @Test
