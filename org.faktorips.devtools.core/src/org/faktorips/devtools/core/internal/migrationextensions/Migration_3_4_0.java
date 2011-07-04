@@ -135,7 +135,7 @@ public class Migration_3_4_0 extends DefaultMigration {
 
     @Override
     public String getTargetVersion() {
-        return "3.4.0.ms2"; //$NON-NLS-1$
+        return "3.4.0.rc1"; //$NON-NLS-1$
     }
 
     public static class Factory implements IIpsProjectMigrationOperationFactory {
