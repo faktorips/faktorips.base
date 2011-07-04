@@ -7,6 +7,7 @@
 
    <description url="http://www.faktorips.org">
       Faktor-IPS - German Language Pack
+Dieses Paket enthält die deutschen Übersetzungen für Faktor-IPS. Um auch die von Eclipse mitgebrachten Funktionen auf deutsch zu sehen, müssen Sie zusätzlich das deutsche Sprachpacket von Eclipse.org installieren.
    </description>
 
    <copyright url="http://www.faktorips.org">
