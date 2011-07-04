@@ -44,9 +44,9 @@
 	<merge:sweep markup="^restrained$" action="comment" select="Member"/>
 	 -->
 
-	<!-- Overwrite the java doc comment before @generated or @restrainedmodifiable and use the customized java doc comment after @generated 
+	<!-- Overwrite the java doc comment before @generated or @restrainedmodifiable and use the customized java doc comment after @generated--> 
 	<merge:pull targetMarkup="^gen$|^restrained$" sourceGet="Member/getComment" sourceTransfer="@\s*(?:generated|restrainedmodifiable)(.*\n)?(.*)?" targetPut="Member/setComment"/>
-	-->
+
 	<!-- Do not overwrite comment of type until we have a new merge strategy to check every java file that there is no @implements before the @generated tag  -->
 	<merge:pull sourceGet="Method/getComment" targetMarkup="^gen$|^restrained$" sourceTransfer="@\s*(?:generated|restrainedmodifiable)(.*\n)?" targetPut="Method/setComment"/>
 	<merge:pull sourceGet="Field/getComment" targetMarkup="^gen$|^restrained$" sourceTransfer="@\s*(?:generated|restrainedmodifiable)(.*\n)?" targetPut="Field/setComment"/>
