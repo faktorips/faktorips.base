@@ -757,6 +757,9 @@ ${faktoripsProductLinuxZipPath}
         <!--copy zipped features into the faktorips download directory -->
         <!-- faktorips -->
         <mkdir dir="${downloadDir}" />
+		
+		<!-- Do not copy every feature to download dir - only update-site is published
+		
         <antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
             <param name="source" value="org.faktorips.feature-${build.version}.zip" />
             <param name="dest.name" value="${faktoripsReleaseDownloadZipPath}" />
@@ -765,7 +768,9 @@ ${faktoripsProductLinuxZipPath}
             <param name="source" value="org.faktorips.feature.nls1-${build.version}.zip" />
             <param name="dest.name" value="${faktoripsNls1ReleaseDownloadZipPath}" />
         </antcall>
+        -->
         <!-- uml -->
+		<!-- Do not copy every feature to download dir - only update-site is published
         <antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
             <param name="source" value="org.faktorips.uml.feature-${build.version}.zip" />
             <param name="dest.name" value="${faktoripsUmlReleaseDownloadZipPath}" />
@@ -774,7 +779,9 @@ ${faktoripsProductLinuxZipPath}
             <param name="source" value="org.faktorips.uml.feature.nls1-${build.version}.zip" />
             <param name="dest.name" value="${faktoripsUmlNls1ReleaseDownloadZipPath}" />
         </antcall>
+        -->
         <!-- ormext -->
+		<!-- Do not copy every feature to download dir - only update-site is published
         <antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
             <param name="source" value="org.faktorips.ormext.feature-${build.version}.zip" />
             <param name="dest.name" value="${faktoripsOrmextReleaseDownloadZipPath}" />
@@ -783,9 +790,14 @@ ${faktoripsProductLinuxZipPath}
             <param name="source" value="org.faktorips.ormext.feature.nls1-${build.version}.zip" />
             <param name="dest.name" value="${faktoripsOrmextNls1ReleaseDownloadZipPath}" />
         </antcall>
+        -->
         <!-- updatesite -->
+		<condition property="updateSiteNamePrefix" value="p2-repository" else="updateSite">
+			<available file="${buildDirectory}/results/p2-repository-${build.version}.zip"/>
+		</condition>
+			
         <antcall inheritall="true" target="-copy.faktorips.release.to.download.dir">
-            <param name="source" value="updateSite-${build.version}.zip" />
+            <param name="source" value="${updateSiteNamePrefix}-${build.version}.zip" />
             <param name="dest.name" value="${faktoripsUpdateSiteZipPath}" />
         </antcall>
         
