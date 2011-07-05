@@ -861,6 +861,9 @@ ${faktoripsProductLinuxZipPath}
         <!--   copy to faktorips updatesite website directory -->
         <antcall inheritall="true" target="-checkout.updatesite.on.faktorips.org"/>
         <antcall inheritall="true" target="-copy.updatesite.to.faktorips.org"/>
+		
+    	<ant dir="${projectsRootDir}/${pluginbuildermodule}/" antfile="build.xml" target="-generate.p2.metadata" inheritall="true" />
+
         
         <!-- report -->
         <echo message=""/>
