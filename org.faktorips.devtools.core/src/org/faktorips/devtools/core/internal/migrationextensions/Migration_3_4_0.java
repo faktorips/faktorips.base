@@ -116,7 +116,7 @@ public class Migration_3_4_0 extends DefaultMigration {
     protected boolean hasLabelForLanguage(IValidationRule rule, ISupportedLanguage supportedLanguage) {
         List<ILabel> labels = rule.getLabels();
         for (ILabel label : labels) {
-            if (label.getLocale() == supportedLanguage.getLocale()) {
+            if (label.getLocale().equals(supportedLanguage.getLocale())) {
                 return true;
             }
         }
