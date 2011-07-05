@@ -190,6 +190,13 @@ public abstract class GenAssociation extends GenTypePart {
         String varName = "new" + association.getTargetRoleSingular();
         methodsBuilder.openBracket();
         if (inclProductCmptArg) {
+            // if parameter is null we delegate to the newChild method without parameter
+            methodsBuilder.append("if (")
+                    .append(getParamNameForProductCmptInNewChildMethod(target.findProductCmptType(getIpsProject())))
+                    .append(" == null)").openBracket();
+            methodsBuilder.append("return ").append(getMethodNameNewChild(association)).appendln("();");
+            methodsBuilder.closeBracket();
+
             methodsBuilder.appendClassName(targetInterfaceName);
         } else {
             // The initialize() method is in the interface IConfigurableModelObject. In not
