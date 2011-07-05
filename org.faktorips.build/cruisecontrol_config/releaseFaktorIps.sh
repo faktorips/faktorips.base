@@ -772,11 +772,12 @@ checkoutPluginbuilderPartsAndDevtarget()
   checkoutModule $PLUGINBUILDER_PROJECT_DIR/lizenz $_FETCH_TAG $PLUGINBUILDER_PROJECT_NAME/lizenz $BRANCH
 
   # checkout devtarget
-  checkoutModule $WORKINGDIR/$DEVTARGET_PLUGIN_NAME $_FETCH_TAG $DEVTARGET_PLUGIN_NAME $BRANCH
+  DEVTARGET_PLUGIN_PATH=$PROJECTSROOTDIR/$DEVTARGET_PLUGIN_NAME
+  checkoutModule $DEVTARGET_PLUGIN_PATH $_FETCH_TAG $DEVTARGET_PLUGIN_NAME $BRANCH
   
   # special case for custom build aok
   if [ "$CUSTOM_BUILD" = "aok" ] ; then
-    checkoutModule $WORKINGDIR/$DEVTARGET_PLUGIN_NAME/eclipse/dropins/aok $_FETCH_TAG de.aoksystems.omc.tools.feature/dropins $BRANCH
+    checkoutModule $DEVTARGET_PLUGIN_PATH/eclipse/dropins/aok $_FETCH_TAG de.aoksystems.omc.tools.feature/dropins $BRANCH
   fi
 }
 
@@ -884,6 +885,7 @@ EXEC="$ANT_HOME/bin/ant -buildfile $BUILDFILE release \
  -DnoBranch=$NOBRANCH \
  -Dcvsroot=$CVS_ROOT \
  -DminVersion3=$MIN_VERSION_3
+ -Ddevtarget.jar.path=$DEVTARGET_PLUGIN_PATH
  "
 echo $EXEC
 eval $EXEC
