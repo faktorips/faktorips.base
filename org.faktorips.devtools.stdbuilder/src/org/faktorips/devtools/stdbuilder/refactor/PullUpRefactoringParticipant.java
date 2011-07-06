@@ -14,7 +14,6 @@
 package org.faktorips.devtools.stdbuilder.refactor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -111,9 +110,7 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
 
             processor.setDestinationType(targetJavaMember.getDeclaringType());
             processor.setMembersToMove(new IMember[] { originalJavaMember });
-            IMember[] membersToMove = determineAdditionalRequiredMembers(progressMonitor, originalJavaMember, processor);
-            processor.setMembersToMove(membersToMove);
-            List<IMethod> deletedMethods = determineDeletedMethods(membersToMove);
+            List<IMethod> deletedMethods = determineDeletedMethods(new IMember[] { originalJavaMember });
             processor.setDeletedMethods(deletedMethods.toArray(new IMethod[deletedMethods.size()]));
 
             return new ProcessorBasedRefactoring(processor);
@@ -127,16 +124,6 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
                 }
             }
             return deletedMethods;
-        }
-
-        private IMember[] determineAdditionalRequiredMembers(IProgressMonitor progressMonitor,
-                IMember originalJavaMember,
-                PullUpRefactoringProcessor processor) throws JavaModelException {
-
-            IMember[] additionalRequiredMembers = processor.getAdditionalRequiredMembersToPullUp(progressMonitor);
-            IMember[] membersToMove = Arrays.copyOf(additionalRequiredMembers, additionalRequiredMembers.length + 1);
-            membersToMove[additionalRequiredMembers.length] = originalJavaMember;
-            return membersToMove;
         }
 
         @Override
