@@ -77,8 +77,6 @@ public abstract class RefactoringParticipantHelper {
      */
     private List<IJavaElement> targetJavaElements;
 
-    private IIpsProject ipsProject;
-
     /**
      * Checks the conditions of the JDT refactorings to be performed.
      * 
@@ -302,8 +300,6 @@ public abstract class RefactoringParticipantHelper {
             return false;
         }
 
-        ipsProject = ipsObjectPartContainer.getIpsProject();
-
         StandardBuilderSet standardBuilderSet = (StandardBuilderSet)ipsArtefactBuilderSet;
         boolean success = initializeOriginalJavaElements(ipsObjectPartContainer, standardBuilderSet);
         if (success) {
@@ -314,19 +310,14 @@ public abstract class RefactoringParticipantHelper {
     }
 
     /**
-     * Responsible for returning whether the target Java element that maps to the given original
-     * Java element.
+     * Responsible for returning whether the target Java element maps to the given original Java
+     * element.
      * <p>
      * Returns null if there is no target Java element for the given original Java element, which
      * means that the original Java element does not need to be refactored.
      * <p>
-     * The default implementation searches for the element for which
-     * <ul>
-     * <li>the names are equal
-     * <li>the element types of the parent elements are equal and
-     * <li>the names of the parent elements either both end with the generation concept name
-     * abbreviation or both do not.
-     * </ul>
+     * The default implementation just compares the index of the original Java element to the index
+     * of the target Java element.
      * <p>
      * Subclasses should override this method as necessary.
      * 
@@ -334,51 +325,11 @@ public abstract class RefactoringParticipantHelper {
      *            element for
      */
     protected IJavaElement getTargetJavaElementForOriginalJavaElement(IJavaElement originalJavaElement) {
-        for (IJavaElement targetJavaElement : targetJavaElements) {
-            boolean namesOk = originalJavaElement.getElementName().equals(targetJavaElement.getElementName());
-            if (!namesOk) {
-                continue;
-            }
-
-            int originalParentType = originalJavaElement.getParent().getElementType();
-            int targetParentType = targetJavaElement.getParent().getElementType();
-            boolean parentTypesOk = originalParentType == targetParentType;
-            if (parentTypesOk && originalParentType == IJavaElement.TYPE) {
-                IType originalParent = (IType)originalJavaElement.getParent();
-                IType targetParent = (IType)targetJavaElement.getParent();
-                try {
-                    if (originalParent.isInterface()) {
-                        parentTypesOk = targetParent.isInterface();
-                    } else if (originalParent.isEnum()) {
-                        parentTypesOk = targetParent.isInterface();
-                    } else if (originalParent.isClass()) {
-                        parentTypesOk = targetParent.isClass();
-                    }
-                } catch (JavaModelException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            if (!parentTypesOk) {
-                continue;
-            }
-
-            String originalParentName = originalJavaElement.getParent().getElementName();
-            String targetParentName = targetJavaElement.getParent().getElementName();
-            String generationConceptNameAbbreviation = ipsProject.getChangesInTimeNamingConventionForGeneratedCode()
-                    .getGenerationConceptNameAbbreviation();
-            boolean parentNamesOk = originalParentName.endsWith(generationConceptNameAbbreviation)
-                    && targetParentName.endsWith(generationConceptNameAbbreviation)
-                    || !originalParentName.endsWith(generationConceptNameAbbreviation)
-                    && !targetParentName.endsWith(generationConceptNameAbbreviation);
-            if (!parentNamesOk) {
-                continue;
-            }
-
-            // All checks passed
-            return targetJavaElement;
+        int originalIndex = getOriginalJavaElements().indexOf(originalJavaElement);
+        if (getTargetJavaElements().size() <= originalIndex) {
+            return null;
         }
-
-        return null;
+        return getTargetJavaElements().get(originalIndex);
     }
 
     /**

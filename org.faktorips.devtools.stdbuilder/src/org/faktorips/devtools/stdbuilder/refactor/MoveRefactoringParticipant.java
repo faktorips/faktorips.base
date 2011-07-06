@@ -112,16 +112,6 @@ public final class MoveRefactoringParticipant extends MoveParticipant {
             return success;
         }
 
-        @Override
-        protected IJavaElement getTargetJavaElementForOriginalJavaElement(IJavaElement originalJavaElement) {
-            /*
-             * When moving, the original Java elements map index-to-index to the target Java
-             * elements. This might not be the most elegant solution but it will suffice for now.
-             */
-            int originalIndex = getOriginalJavaElements().indexOf(originalJavaElement);
-            return getTargetJavaElements().get(originalIndex);
-        }
-
     }
 
 }
