@@ -125,7 +125,6 @@ public abstract class RefactoringParticipantHelper {
                         RefactoringStatus conditionsStatus = jdtRefactoring.checkAllConditions(pm);
                         status.merge(conditionsStatus);
                     }
-                    finalizeRefactoring(originalJavaElement, targetJavaElement);
                 }
             } catch (CoreException e) {
                 RefactoringStatus errorStatus = new RefactoringStatus();
