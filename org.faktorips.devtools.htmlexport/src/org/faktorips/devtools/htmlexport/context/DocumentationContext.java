@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -286,14 +285,5 @@ public class DocumentationContext {
 
     public UIDatatypeFormatter getDatatypeFormatter() {
         return pluginResources.getDatatypeFormatter();
-    }
-
-    public Properties getMessageProperties(String resourceName) {
-        try {
-            return pluginResources.getMessageProperties(resourceName);
-        } catch (CoreException e) {
-            addStatus(e.getStatus());
-            return new Properties();
-        }
     }
 }
