@@ -52,11 +52,11 @@ public class LanguageSupportTest extends AbstractHtmlExportPluginTest {
         }
         enDescription.setText(enBeschreibung);
 
-        context.setDescriptionLocale(Locale.GERMANY);
+        context.setDocumentationLocale(Locale.GERMANY);
 
         assertEquals(deBeschreibung, context.getDescription(policy));
 
-        context.setDescriptionLocale(Locale.ENGLISH);
+        context.setDocumentationLocale(Locale.ENGLISH);
 
         assertEquals(enBeschreibung, context.getDescription(policy));
     }
@@ -76,12 +76,12 @@ public class LanguageSupportTest extends AbstractHtmlExportPluginTest {
                 attribute.getName(), "yxz");
         assertEquals(name, context.getCaption(value));
 
-        context.setDescriptionLocale(Locale.GERMAN);
+        context.setDocumentationLocale(Locale.GERMAN);
         attribute.setLabelValue(Locale.GERMAN, deLabel);
 
         assertEquals(deLabel, context.getCaption(value));
 
-        context.setDescriptionLocale(Locale.ENGLISH);
+        context.setDocumentationLocale(Locale.ENGLISH);
         assertEquals(deLabel, context.getCaption(value));
 
         attribute.setLabelValue(Locale.ENGLISH, enLabel);

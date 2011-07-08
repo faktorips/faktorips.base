@@ -49,7 +49,7 @@ public final class MessagesManager {
      */
     public String getMessage(String messageId) {
         try {
-            return localizedStringsSet.getString(messageId, context.getDescriptionLocale());
+            return localizedStringsSet.getString(messageId, context.getDocumentationLocale());
         } catch (MissingResourceException e) {
             context.addStatus(new IpsStatus(IStatus.INFO, "Message with Id " + messageId + " not found.")); //$NON-NLS-1$ //$NON-NLS-2$
             notFoundMessages.add(messageId);

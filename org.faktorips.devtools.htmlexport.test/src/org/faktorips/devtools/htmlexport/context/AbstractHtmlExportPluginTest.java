@@ -69,7 +69,7 @@ public abstract class AbstractHtmlExportPluginTest extends AbstractIpsPluginTest
         context.setPath(location + File.separator + "html");
         context.setIpsProject(ipsProject);
         context.setLayouter(new HtmlLayouter(context, ".resource"));
-        context.setDescriptionLocale(Locale.GERMANY);
+        context.setDocumentationLocale(Locale.GERMANY);
     }
 
     protected void createStandardProjekt() {

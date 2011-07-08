@@ -72,7 +72,7 @@ public class DocumentationContext {
 
     private boolean showValidationErrors = true;
 
-    private Locale descriptionLocale;
+    private Locale documentationLocale;
 
     private MessagesManager messagesManager;
     private MultiLanguageSupport multiLanguageSupport;
@@ -211,17 +211,17 @@ public class DocumentationContext {
         this.showValidationErrors = outputMessages;
     }
 
-    public void setDescriptionLocale(Locale descriptionLocale) {
-        if (this.descriptionLocale == descriptionLocale) {
+    public void setDocumentationLocale(Locale descriptionLocale) {
+        if (this.documentationLocale == descriptionLocale) {
             return;
         }
-        this.descriptionLocale = descriptionLocale;
+        this.documentationLocale = descriptionLocale;
         multiLanguageSupport = new MultiLanguageSupport(descriptionLocale);
         messagesManager = new MessagesManager(this);
     }
 
-    public Locale getDescriptionLocale() {
-        return descriptionLocale;
+    public Locale getDocumentationLocale() {
+        return documentationLocale;
     }
 
     public String getDescription(IDescribedElement describedElement) {

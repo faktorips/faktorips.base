@@ -83,7 +83,7 @@ public class IpsProjectHtmlExportWizard extends Wizard implements IExportWizard 
 
         context.setPath(ipsProjectHtmlExportWizardPage.getDestinationDirectory());
         context.setShowValidationErrors(ipsProjectHtmlExportWizardPage.getShowValidationErrors());
-        context.setDescriptionLocale(ipsProjectHtmlExportWizardPage.getSupportedLanguage());
+        context.setDocumentationLocale(ipsProjectHtmlExportWizardPage.getSupportedLanguage());
 
         context.setIpsProject(ipsProjectHtmlExportWizardPage.getSelectedIpsProject());
         context.setLayouter(new HtmlLayouter(context, ".resource")); //$NON-NLS-1$

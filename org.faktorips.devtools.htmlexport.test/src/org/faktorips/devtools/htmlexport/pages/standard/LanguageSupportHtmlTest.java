@@ -61,11 +61,11 @@ public class LanguageSupportHtmlTest extends AbstractXmlUnitHtmlExportTest {
         }
         enDescription.setText(enBeschreibung);
 
-        context.setDescriptionLocale(Locale.GERMANY);
+        context.setDocumentationLocale(Locale.GERMANY);
         IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
         assertXPathExists(objectContentPage, deXPath);
 
-        context.setDescriptionLocale(Locale.ENGLISH);
+        context.setDocumentationLocale(Locale.ENGLISH);
         objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
         assertXPathExists(objectContentPage, enXPath);
     }
@@ -91,7 +91,7 @@ public class LanguageSupportHtmlTest extends AbstractXmlUnitHtmlExportTest {
         String enXPath = "//table[@id='" + productCmpt.getName() + "_ProductGenerationAttributeTable']//tr/td[1][.='"
                 + enLabel + "']";
 
-        context.setDescriptionLocale(Locale.GERMAN);
+        context.setDocumentationLocale(Locale.GERMAN);
         attribute.setLabelValue(Locale.GERMAN, deLabel);
 
         IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(productCmpt.getIpsSrcFile(),
@@ -100,7 +100,7 @@ public class LanguageSupportHtmlTest extends AbstractXmlUnitHtmlExportTest {
 
         assertEquals(deLabel, context.getCaption(value));
 
-        context.setDescriptionLocale(Locale.ENGLISH);
+        context.setDocumentationLocale(Locale.ENGLISH);
         objectContentPage = ContentPageUtil.createObjectContentPageElement(productCmpt.getIpsSrcFile(), context);
         assertXPathExists(objectContentPage, deXPath);
 

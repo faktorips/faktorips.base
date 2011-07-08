@@ -47,7 +47,7 @@ public class MessagesManagerTest {
 
     @Test
     public void testProjectOverviewPageElementProjectEn() {
-        context.setDescriptionLocale(Locale.UK);
+        context.setDocumentationLocale(Locale.UK);
 
         MessagesManager manager = new MessagesManager(context);
 
@@ -57,7 +57,7 @@ public class MessagesManagerTest {
 
     @Test
     public void testProjectOverviewPageElementProjectDe() {
-        context.setDescriptionLocale(Locale.GERMAN);
+        context.setDocumentationLocale(Locale.GERMAN);
 
         MessagesManager manager = new MessagesManager(context);
 
@@ -67,7 +67,7 @@ public class MessagesManagerTest {
 
     @Test
     public void testProjectOverviewPageElementProjectNotUsedLocaleWithFallback() {
-        context.setDescriptionLocale(Locale.TRADITIONAL_CHINESE);
+        context.setDocumentationLocale(Locale.TRADITIONAL_CHINESE);
 
         MessagesManager manager = new MessagesManager(context);
 
@@ -79,7 +79,7 @@ public class MessagesManagerTest {
     @Test
     public void testProjectOverviewPageElementProjectNotUsedKey() {
         String wrongKey = "definitiv ungültiger name für eine property";
-        context.setDescriptionLocale(Locale.UK);
+        context.setDocumentationLocale(Locale.UK);
 
         MessagesManager manager = new MessagesManager(context);
 
