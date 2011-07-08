@@ -63,19 +63,24 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
         linePatternList.add(productPattern);
         highlightColorMap.put(productPattern, ipsObjectHighlight);
         Pattern attributesPattern = Pattern
-                .compile(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_attribute);
+                .compile(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_attribute
+                        + AbstractCompareItem.COLON_BLANK);
         linePatternList.add(attributesPattern);
         Pattern propertiesPattern = Pattern
-                .compile(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.PropertiesPage_relations);
+                .compile(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.PropertiesPage_relations
+                        + AbstractCompareItem.COLON_BLANK);
         linePatternList.add(propertiesPattern);
         Pattern rulesPattern = Pattern
-                .compile(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ValidationRuleSection_DefaultTitle);
+                .compile(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ValidationRuleSection_DefaultTitle
+                        + AbstractCompareItem.COLON_BLANK);
         linePatternList.add(rulesPattern);
         Pattern typePattern = Pattern
-                .compile(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_template);
+                .compile(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_template
+                        + AbstractCompareItem.COLON_BLANK);
         linePatternList.add(typePattern);
         Pattern runtimeIDPattern = Pattern
-                .compile(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_labelRuntimeId);
+                .compile(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_labelRuntimeId
+                        + AbstractCompareItem.COLON_BLANK);
         linePatternList.add(runtimeIDPattern);
 
         // Patterns for TableContents Messages.TableContentsCompareItem_TableContents

@@ -164,6 +164,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
             for (ProductCmptCompareItem genItem : genItems) {
                 genItem.initPropertyValueContainerContentString((IPropertyValueContainer)genItem.getIpsElement(), sb,
                         sb.length() - startIndex + offset);
+                sb.append(NEWLINE);
             }
         }
         setRange(offset, sb.length() - startIndex);

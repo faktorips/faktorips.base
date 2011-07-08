@@ -68,19 +68,19 @@ public class ProductCmptCompareItemCreator extends AbstractCompareItemCreator {
         try {
             if (file.getIpsObject() instanceof IProductCmpt) {
                 ProductCmptCompareItem root = new ProductCmptCompareItem(null, file);
-                IProductCmpt product = (IProductCmpt)file.getIpsObject();
-                ProductCmptCompareItem ipsObject = new ProductCmptCompareItem(root, product);
-                List<IPropertyValue> propertyValues = product.getAllPropertyValues();
+                IProductCmpt productCmpt = (IProductCmpt)file.getIpsObject();
+                ProductCmptCompareItem productCmptItem = new ProductCmptCompareItem(root, productCmpt);
+                List<IPropertyValue> propertyValues = productCmpt.getAllPropertyValues();
                 for (IPropertyValue propertyValue : propertyValues) {
-                    new ProductCmptCompareItem(ipsObject, propertyValue);
+                    new ProductCmptCompareItem(productCmptItem, propertyValue);
                 }
                 // Generations of product
-                IIpsObjectGeneration[] gens = product.getGenerationsOrderedByValidDate();
+                IIpsObjectGeneration[] gens = productCmpt.getGenerationsOrderedByValidDate();
                 for (IIpsObjectGeneration gen : gens) {
-                    ProductCmptCompareItem generation = new ProductCmptCompareItem(ipsObject, gen);
+                    ProductCmptCompareItem generationItem = new ProductCmptCompareItem(productCmptItem, gen);
                     IIpsElement[] children = gen.getChildren();
                     for (IIpsElement element : children) {
-                        new ProductCmptCompareItem(generation, element);
+                        new ProductCmptCompareItem(generationItem, element);
                     }
                 }
                 // create the name, root document and ranges for all nodes
