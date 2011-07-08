@@ -74,7 +74,7 @@ public final class MoveRefactoringParticipant extends MoveParticipant {
     private final class MoveParticipantHelper extends RefactoringParticipantHelper {
 
         @Override
-        protected Refactoring createJdtRefactoring(IJavaElement originalJavaElement,
+        protected JavaRefactoring createJavaRefactoring(IJavaElement originalJavaElement,
                 IJavaElement targetJavaElement,
                 RefactoringStatus status,
                 IProgressMonitor progressMonitor) throws CoreException {
@@ -94,7 +94,9 @@ public final class MoveRefactoringParticipant extends MoveParticipant {
             descriptor.setDestination(targetJavaType.getPackageFragment());
             descriptor.setProject(targetJavaType.getJavaProject().getElementName());
             descriptor.setUpdateReferences(getArguments().getUpdateReferences());
-            return descriptor.createRefactoring(status);
+            Refactoring jdtRefactoring = descriptor.createRefactoring(status);
+
+            return new JdtRefactoring(jdtRefactoring);
         }
 
         @Override

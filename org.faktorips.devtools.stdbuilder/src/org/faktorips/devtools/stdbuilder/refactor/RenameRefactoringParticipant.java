@@ -85,7 +85,7 @@ public final class RenameRefactoringParticipant extends RenameParticipant {
     private class RenameParticipantHelper extends RefactoringParticipantHelper {
 
         @Override
-        protected Refactoring createJdtRefactoring(IJavaElement originalJavaElement,
+        protected JavaRefactoring createJavaRefactoring(IJavaElement originalJavaElement,
                 IJavaElement targetJavaElement,
                 RefactoringStatus status,
                 IProgressMonitor progressMonitor) throws CoreException {
@@ -119,7 +119,9 @@ public final class RenameRefactoringParticipant extends RenameParticipant {
             descriptor.setJavaElement(originalJavaElement);
             descriptor.setNewName(newName);
             descriptor.setUpdateReferences(getArguments().getUpdateReferences());
-            return descriptor.createRefactoring(status);
+            Refactoring jdtRefactoring = descriptor.createRefactoring(status);
+
+            return new JdtRefactoring(jdtRefactoring);
         }
 
         /**

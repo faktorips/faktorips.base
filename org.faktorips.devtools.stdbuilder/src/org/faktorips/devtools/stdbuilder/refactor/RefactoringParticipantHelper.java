@@ -16,7 +16,6 @@ package org.faktorips.devtools.stdbuilder.refactor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -27,16 +26,12 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.ltk.core.refactoring.Change;
-import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.NullChange;
-import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
-import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.resource.DeleteResourceChange;
-import org.eclipse.swt.widgets.Display;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -117,12 +112,11 @@ public abstract class RefactoringParticipantHelper {
             }
 
             try {
-                Refactoring jdtRefactoring = createJdtRefactoring(originalJavaElement, targetJavaElement, status, pm);
-                if (jdtRefactoring != null) {
-                    if (prepareRefactoring(originalJavaElement, targetJavaElement)) {
-                        RefactoringStatus conditionsStatus = jdtRefactoring.checkAllConditions(pm);
-                        status.merge(conditionsStatus);
-                    }
+                JavaRefactoring javaRefactoring = createJavaRefactoring(originalJavaElement, targetJavaElement, status,
+                        pm);
+                if (javaRefactoring != null) {
+                    RefactoringStatus conditionsStatus = javaRefactoring.checkAllConditions(pm);
+                    status.merge(conditionsStatus);
                 }
             } catch (CoreException e) {
                 RefactoringStatus errorStatus = new RefactoringStatus();
@@ -194,54 +188,14 @@ public abstract class RefactoringParticipantHelper {
              * become invalid when refactorings are performed. Because of that new instances are
              * created here.
              */
-            Refactoring jdtRefactoring = createJdtRefactoring(originalJavaElement, targetJavaElement,
+            JavaRefactoring javaRefactoring = createJavaRefactoring(originalJavaElement, targetJavaElement,
                     new RefactoringStatus(), pm);
-            if (jdtRefactoring != null) {
-                if (prepareRefactoring(originalJavaElement, targetJavaElement)) {
-                    performRefactoring(jdtRefactoring, pm);
-                }
-                finalizeRefactoring(originalJavaElement, targetJavaElement);
+            if (javaRefactoring != null) {
+                javaRefactoring.perform(pm);
             }
         }
 
         return new NullChange();
-    }
-
-    /**
-     * This operation is called right before a JDT refactoring is executed and may be implemented by
-     * subclasses in order to do preparations.
-     * <p>
-     * Must return true if the refactoring may be executed, false otherwise. Note that
-     * {@link #finalizeRefactoring(IJavaElement, IJavaElement)} will be called in any way.
-     * <p>
-     * The default implementation just does nothing and always returns true.
-     * 
-     * @param originalJavaElement The {@link IJavaElement} as it is before the refactoring
-     * @param targetJavaElement The {@link IJavaElement} as it will be after the refactoring
-     * 
-     * @throws CoreException If any error occurs
-     */
-    protected boolean prepareRefactoring(IJavaElement originalJavaElement, IJavaElement targetJavaElement)
-            throws CoreException {
-
-        return true;
-    }
-
-    /**
-     * This operation is called right after a JDT refactoring was executed and may be implemented by
-     * subclasses in order to do clean up.
-     * <p>
-     * The default implementation just does nothing.
-     * 
-     * @param originalJavaElement The {@link IJavaElement} as it was before the refactoring
-     * @param targetJavaElement The {@link IJavaElement} as it is after the refactoring
-     * 
-     * @throws CoreException If any error occurs
-     */
-    protected void finalizeRefactoring(IJavaElement originalJavaElement, IJavaElement targetJavaElement)
-            throws CoreException {
-
-        // Empty default implementation
     }
 
     /**
@@ -261,21 +215,6 @@ public abstract class RefactoringParticipantHelper {
         }
         sortedJavaElements.addAll(collectedTypes);
         return sortedJavaElements;
-    }
-
-    private void performRefactoring(final Refactoring refactoring, final IProgressMonitor pm) {
-        Display.getDefault().syncExec(new Runnable() {
-            @Override
-            public void run() {
-                IWorkspaceRunnable operation = new PerformRefactoringOperation(refactoring,
-                        CheckConditionsOperation.FINAL_CONDITIONS);
-                try {
-                    operation.run(pm);
-                } catch (CoreException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
     }
 
     /**
@@ -440,10 +379,10 @@ public abstract class RefactoringParticipantHelper {
     }
 
     /**
-     * Subclass implementation that is responsible for returning an appropriate JDT refactoring for
-     * the given Java element.
+     * Subclass implementation that is responsible for instantiating and returning an appropriate
+     * Java refactoring for the given original and target Java element.
      * <p>
-     * May return null if no refactoring has to be performed.
+     * If no refactoring has to be performed, null may be returned.
      * 
      * @param originalJavaElement The original Java element as it is before the refactoring is
      *            performed
@@ -455,7 +394,7 @@ public abstract class RefactoringParticipantHelper {
      * 
      * @throws CoreException If an error occurs during creation of the refactoring instance
      */
-    protected abstract Refactoring createJdtRefactoring(IJavaElement originalJavaElement,
+    protected abstract JavaRefactoring createJavaRefactoring(IJavaElement originalJavaElement,
             IJavaElement targetJavaElement,
             RefactoringStatus status,
             IProgressMonitor progressMonitor) throws CoreException;

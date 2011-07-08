@@ -88,7 +88,7 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
     private class PullUpParticipantHelper extends RefactoringParticipantHelper {
 
         @Override
-        protected Refactoring createJdtRefactoring(IJavaElement originalJavaElement,
+        protected JavaRefactoring createJavaRefactoring(IJavaElement originalJavaElement,
                 IJavaElement targetJavaElement,
                 RefactoringStatus status,
                 IProgressMonitor progressMonitor) throws CoreException {
@@ -104,6 +104,12 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
                 return null;
             }
 
+            org.eclipse.jdt.core.IType originalType = (org.eclipse.jdt.core.IType)originalJavaMember.getParent();
+            if (originalType.isInterface() || originalType.isEnum()) {
+                return new PullUpFromInterfaceToInterfaceRefactoring(originalJavaMember,
+                        (org.eclipse.jdt.core.IType)targetJavaMember.getParent());
+            }
+
             PullUpRefactoringProcessor processor = new PullUpRefactoringProcessor(new IMember[] { originalJavaMember },
                     JavaPreferencesSettings.getCodeGenerationSettings(originalJavaElement.getJavaProject()));
             processor.resetEnvironment();
@@ -112,8 +118,9 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
             processor.setMembersToMove(new IMember[] { originalJavaMember });
             List<IMethod> deletedMethods = determineDeletedMethods(new IMember[] { originalJavaMember });
             processor.setDeletedMethods(deletedMethods.toArray(new IMethod[deletedMethods.size()]));
+            Refactoring jdtRefactoring = new ProcessorBasedRefactoring(processor);
 
-            return new ProcessorBasedRefactoring(processor);
+            return new JdtRefactoring(jdtRefactoring);
         }
 
         private List<IMethod> determineDeletedMethods(IMember[] membersToMove) {
@@ -162,55 +169,38 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
             return true;
         }
 
-        /**
-         * Forbids the pull up refactoring for members that originate from an interface or from an
-         * enum as the JDT does not support pulling up members from interfaces to other interfaces
-         * and pulling up members that originate from enums.
-         */
-        @Override
-        protected boolean prepareRefactoring(IJavaElement originalJavaElement, IJavaElement targetJavaElement)
-                throws CoreException {
+    }
 
-            IMember originalJavaMember = (IMember)originalJavaElement;
-            org.eclipse.jdt.core.IType originalType = (org.eclipse.jdt.core.IType)originalJavaMember.getParent();
-            return !originalType.isInterface() && !originalType.isEnum();
+    private static class PullUpFromInterfaceToInterfaceRefactoring extends JavaRefactoring {
+
+        private final IMember memberToPullUp;
+
+        private final org.eclipse.jdt.core.IType targetInterface;
+
+        private PullUpFromInterfaceToInterfaceRefactoring(IMember memberToPullUp,
+                org.eclipse.jdt.core.IType targetInterface) {
+
+            this.memberToPullUp = memberToPullUp;
+            this.targetInterface = targetInterface;
         }
 
-        /**
-         * Handles the members that originate from interfaces and therefore were excluded from the
-         * refactoring by {@link #prepareRefactoring(IJavaElement, IJavaElement)}.
-         * <p>
-         * The members will be copied to the target type and deleted from the original type.
-         * <p>
-         * Members that originate from enums and were therefore excluded by
-         * {@link #prepareRefactoring(IJavaElement, IJavaElement)} are not refactored at all (the
-         * code generator will automatically generate the method declarations in the super
-         * interface).
-         */
         @Override
-        protected void finalizeRefactoring(IJavaElement originalJavaElement, IJavaElement targetJavaElement)
-                throws CoreException {
-
-            IMember originalJavaMember = (IMember)originalJavaElement;
-            org.eclipse.jdt.core.IType originalJavaType = (org.eclipse.jdt.core.IType)originalJavaMember.getParent();
-            if (!originalJavaType.isInterface()) {
-                return;
-            }
-
-            IMember targetJavaMember = (IMember)targetJavaElement;
-            org.eclipse.jdt.core.IType targetJavaType = (org.eclipse.jdt.core.IType)targetJavaMember.getParent();
-            pullUpFromInterfaceToInterface(originalJavaMember, targetJavaType);
+        public RefactoringStatus checkAllConditions(IProgressMonitor pm) throws CoreException {
+            return new RefactoringStatus();
         }
 
-        private void pullUpFromInterfaceToInterface(IMember originalJavaMember,
-                org.eclipse.jdt.core.IType targetJavaType) throws JavaModelException {
-
+        @Override
+        public void perform(IProgressMonitor pm) {
             /*
              * Pull up from interface to interface means we just copy the member to the target
              * interface and delete it from the original interface.
              */
-            originalJavaMember.copy(targetJavaType, null, null, true, null);
-            originalJavaMember.delete(true, null);
+            try {
+                memberToPullUp.copy(targetInterface, null, null, true, null);
+                memberToPullUp.delete(true, null);
+            } catch (JavaModelException e) {
+                throw new RuntimeException(e);
+            }
         }
 
     }

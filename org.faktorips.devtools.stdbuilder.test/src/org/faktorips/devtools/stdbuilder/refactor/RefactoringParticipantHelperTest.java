@@ -22,7 +22,6 @@ import static org.mockito.Mockito.when;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -82,7 +81,7 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
     public static class TestParticipantHelper extends RefactoringParticipantHelper {
 
         @Override
-        protected Refactoring createJdtRefactoring(IJavaElement generatedJavaElement,
+        protected JavaRefactoring createJavaRefactoring(IJavaElement generatedJavaElement,
                 IJavaElement targetJavaElement,
                 RefactoringStatus status,
                 IProgressMonitor progressMonitor) {
