@@ -105,9 +105,12 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
             }
 
             org.eclipse.jdt.core.IType originalType = (org.eclipse.jdt.core.IType)originalJavaMember.getParent();
-            if (originalType.isInterface() || originalType.isEnum()) {
+            if (originalType.isInterface()) {
                 return new PullUpFromInterfaceToInterfaceRefactoring(originalJavaMember,
                         (org.eclipse.jdt.core.IType)targetJavaMember.getParent());
+            }
+            if (originalType.isEnum()) {
+                return null;
             }
 
             PullUpRefactoringProcessor processor = new PullUpRefactoringProcessor(new IMember[] { originalJavaMember },
@@ -115,8 +118,10 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
             processor.resetEnvironment();
 
             processor.setDestinationType(targetJavaMember.getDeclaringType());
-            processor.setMembersToMove(new IMember[] { originalJavaMember });
-            List<IMethod> deletedMethods = determineDeletedMethods(new IMember[] { originalJavaMember });
+            // Pull up all members within a type at once to avoid JDT errors
+            IMember[] membersToMove = getOriginalJavaMembersByType().get(originalType).toArray(new IMember[0]);
+            processor.setMembersToMove(membersToMove);
+            List<IMethod> deletedMethods = determineDeletedMethods(membersToMove);
             processor.setDeletedMethods(deletedMethods.toArray(new IMethod[deletedMethods.size()]));
             Refactoring jdtRefactoring = new ProcessorBasedRefactoring(processor);
 

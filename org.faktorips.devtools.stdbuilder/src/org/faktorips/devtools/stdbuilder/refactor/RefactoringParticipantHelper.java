@@ -14,14 +14,18 @@
 package org.faktorips.devtools.stdbuilder.refactor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
@@ -71,6 +75,8 @@ public abstract class RefactoringParticipantHelper {
      * to provide the JDT refactorings with the correct new names for the {@link IJavaElement}s.
      */
     private List<IJavaElement> targetJavaElements;
+
+    private Map<IType, List<IMember>> originalJavaMembersByType;
 
     /**
      * Checks the conditions of the JDT refactorings to be performed.
@@ -245,7 +251,28 @@ public abstract class RefactoringParticipantHelper {
             success = initializeTargetJavaElements(ipsObjectPartContainer, standardBuilderSet);
         }
 
+        initializeOriginalJavaMembersByType();
+
         return success;
+    }
+
+    private void initializeOriginalJavaMembersByType() {
+        originalJavaMembersByType = new HashMap<IType, List<IMember>>();
+        for (IJavaElement originalJavaElement : originalJavaElements) {
+            if (originalJavaElement instanceof IField || originalJavaElement instanceof IMethod) {
+                IType type = (IType)originalJavaElement.getParent();
+                List<IMember> members = originalJavaMembersByType.get(type);
+                if (members == null) {
+                    members = new ArrayList<IMember>();
+                }
+                members.add((IMember)originalJavaElement);
+                originalJavaMembersByType.put(type, members);
+            }
+        }
+    }
+
+    protected Map<IType, List<IMember>> getOriginalJavaMembersByType() {
+        return originalJavaMembersByType;
     }
 
     /**
