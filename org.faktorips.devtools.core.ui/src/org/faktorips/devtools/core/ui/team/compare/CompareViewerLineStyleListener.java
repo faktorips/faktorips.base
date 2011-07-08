@@ -27,6 +27,7 @@ import org.eclipse.swt.custom.LineStyleListener;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Color;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.team.compare.productcmpt.Messages;
 
 /**
  * LineStyleListener for the IpsObjectCompareViewer. Colors keywords (tokens) in the text
@@ -82,6 +83,9 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
                 .compile(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_labelRuntimeId
                         + AbstractCompareItem.COLON_BLANK);
         linePatternList.add(runtimeIDPattern);
+        Pattern tableUsagesPattern = Pattern.compile(Messages.ProductCmptCompareItem_TableUsagesHeader
+                + AbstractCompareItem.COLON_BLANK);
+        linePatternList.add(tableUsagesPattern);
 
         // Patterns for TableContents Messages.TableContentsCompareItem_TableContents
         Pattern tablePattern = Pattern

@@ -86,7 +86,6 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         sb.append(getContentString());
         for (AbstractCompareItem compareItem : children) {
             ProductCmptCompareItem child = (ProductCmptCompareItem)compareItem;
-            sb.append(NEWLINE);
             if (child.getIpsElement() instanceof IProductCmpt) {
                 /*
                  * End recursion and initialize string with custom method (for the component and its
@@ -122,6 +121,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         sb.append(getContentString());
         List<ProductCmptCompareItem> attributes = getCompareItemsOfClass(children, IAttributeValue.class);
         List<ProductCmptCompareItem> relations = getCompareItemsOfClass(children, IProductCmptLink.class);
+        List<ProductCmptCompareItem> tableUsages = getCompareItemsOfClass(children, ITableContentUsage.class);
         List<ProductCmptCompareItem> rules = getCompareItemsOfClass(children, IValidationRuleConfig.class);
         if (!attributes.isEmpty()) {
             sb.append(NEWLINE);
@@ -149,6 +149,14 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
                 }
             }
         }
+        if (!tableUsages.isEmpty()) {
+            sb.append(NEWLINE);
+            sb.append(getTableUsageListHeader(valueContainer));
+            for (ProductCmptCompareItem tableUsage : tableUsages) {
+                sb.append(NEWLINE);
+                tableUsage.initTreeContentString(sb, sb.length() - startIndex + offset);
+            }
+        }
         if (!rules.isEmpty()) {
             sb.append(NEWLINE);
             sb.append(getRuleListHeader(valueContainer));
@@ -159,12 +167,11 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         }
         if (getIpsElement() instanceof IProductCmpt) {
             // call this method recursively for all generations in a product component
-            sb.append(NEWLINE);
             List<ProductCmptCompareItem> genItems = getCompareItemsOfClass(children, IProductCmptGeneration.class);
             for (ProductCmptCompareItem genItem : genItems) {
+                sb.append(NEWLINE);
                 genItem.initPropertyValueContainerContentString((IPropertyValueContainer)genItem.getIpsElement(), sb,
                         sb.length() - startIndex + offset);
-                sb.append(NEWLINE);
             }
         }
         setRange(offset, sb.length() - startIndex);
@@ -187,6 +194,14 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         return sb.toString();
     }
 
+    private Object getTableUsageListHeader(IPropertyValueContainer valueContainer) {
+        StringBuffer sb = new StringBuffer();
+        String headerName = Messages.ProductCmptCompareItem_TableUsagesHeader;
+        conditionalAppendGenerationDateAndTab(valueContainer, sb);
+        sb.append(TAB).append(headerName).append(COLON_BLANK);
+        return sb.toString();
+    }
+
     /**
      * Returns a string used as header for the list of attributes (configelements) in the string
      * representation of this CompareItem.
@@ -195,8 +210,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         StringBuffer sb = new StringBuffer();
         String attrString = org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_attribute;
         conditionalAppendGenerationDateAndTab(valueContainer, sb);
-        sb.append(TAB).append(attrString);
-        sb.append(COLON_BLANK);
+        sb.append(TAB).append(attrString).append(COLON_BLANK);
         return sb.toString();
     }
 
@@ -326,6 +340,11 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
             sb.append(TAB).append(TAB).append(rule.getName()).append(COLON_BLANK);
             sb.append(rule.isActive() ? Messages.ProductCmptCompareItem_VRule_active
                     : Messages.ProductCmptCompareItem_VRule_inactive);
+        } else if (getIpsElement() instanceof ITableContentUsage) {
+            ITableContentUsage tableUsage = (ITableContentUsage)getIpsElement();
+            conditionalAppendGenerationDateAndTab(tableUsage.getPropertyValueContainer(), sb);
+            sb.append(TAB).append(TAB).append(getCaption(tableUsage)).append(COLON_BLANK);
+            sb.append(tableUsage.getPropertyValue());
         } else if (getIpsElement() instanceof IPropertyValue) {
             IPropertyValue value = (IPropertyValue)getIpsElement();
             conditionalAppendGenerationDateAndTab(value.getPropertyValueContainer(), sb);
