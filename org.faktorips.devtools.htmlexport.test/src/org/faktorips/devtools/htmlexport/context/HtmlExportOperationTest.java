@@ -3,6 +3,8 @@ package org.faktorips.devtools.htmlexport.context;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Locale;
+
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.htmlexport.HtmlExportOperation;
 import org.faktorips.devtools.htmlexport.IDocumentorScript;
@@ -31,6 +33,7 @@ public class HtmlExportOperationTest extends AbstractHtmlExportPluginTest {
 
         IDocumentorScript script = new StandardDocumentorScript(new TestUtil().createMockIoHandler());
         context.addDocumentorScript(script);
+        context.setDocumentationLocale(Locale.ENGLISH);
 
         context.setDocumentedIpsObjectTypes(context.getIpsProject().getIpsModel().getIpsObjectTypes());
 
