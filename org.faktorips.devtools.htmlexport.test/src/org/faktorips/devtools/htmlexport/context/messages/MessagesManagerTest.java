@@ -20,7 +20,6 @@ import junit.framework.TestCase;
 
 import org.faktorips.devtools.htmlexport.FakePluginResourcesFacade;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
-import org.faktorips.devtools.htmlexport.context.messages.MessagesManager;
 
 public class MessagesManagerTest extends TestCase {
     private DocumentationContext context;
@@ -66,8 +65,6 @@ public class MessagesManagerTest extends TestCase {
         context.setDescriptionLocale(Locale.TRADITIONAL_CHINESE);
 
         MessagesManager manager = new MessagesManager(context);
-
-        assertFalse(context.getExportStatus().isOK());
 
         String expectedResult = "Project";
 

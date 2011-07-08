@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005-2010 Faktor Zehn AG und andere.
+ * Copyright (c) 2005-2011 Faktor Zehn AG und andere.
  * 
  * Alle Rechte vorbehalten.
  * 
@@ -13,82 +13,53 @@
 
 package org.faktorips.devtools.htmlexport.context.messages;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Properties;
+import java.util.MissingResourceException;
 
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.util.LocalizedStringsSet;
 
-public class MessagesManager {
+/**
+ * This class manages the Messages for the HtmlExport. This is necessary, because the {@link Locale}
+ * of the HtmlExport may not be the {@link Locale} of the workspace. Because of this the eclipse
+ * mechanism for localized messages is not useful here.
+ * 
+ * @author dicker
+ */
+public final class MessagesManager {
 
-    private final Properties messages = new Properties();
+    private final LocalizedStringsSet localizedStringsSet;
     private final DocumentationContext context;
     private final List<String> notFoundMessages;
 
     public MessagesManager(DocumentationContext context) {
         this.context = context;
         this.notFoundMessages = new ArrayList<String>();
-        initialize(context.getDescriptionLocale());
+        localizedStringsSet = new LocalizedStringsSet(this.getClass());
     }
 
-    private void initialize(Locale locale) {
-        initializeStandardMessages();
-
-        if (isEnglish(locale)) {
-            return;
-        }
-
-        initializeLocalizedMessages(locale);
-    }
-
-    private void initializeStandardMessages() {
-        initializeLocalizedMessages(Locale.UK);
-    }
-
-    private boolean isEnglish(Locale locale) {
-        String nl = locale.getLanguage();
-        if (nl.length() > 2) {
-            nl = nl.substring(0, 2);
-        }
-        return "en".equals(nl); //$NON-NLS-1$
-    }
-
-    private void initializeLocalizedMessages(Locale locale) {
-        loadMessages(getClass(), locale);
-    }
-
-    protected void loadMessages(Class<?> clazz, Locale locale) {
-        String resourceName = clazz.getPackage().getName().replace('.', File.separatorChar) + File.separatorChar
-                + getMessagesFileName(locale);
-
-        Properties messageProperties = context.getMessageProperties(resourceName);
-
-        messages.putAll(messageProperties);
-    }
-
-    private String getMessagesFileName(Locale locale) {
-        if (locale.getLanguage().equals(Locale.UK.getLanguage())) {
-            return "messages.properties"; //$NON-NLS-1$
-        }
-        return "messages_" + locale.getLanguage() + ".properties"; //$NON-NLS-1$ //$NON-NLS-2$
-    }
-
+    /**
+     * 
+     * returns a message for the given messageId
+     */
     public String getMessage(String messageId) {
-        if (messages.containsKey(messageId)) {
-            return messages.getProperty(messageId);
-        }
-        if (!notFoundMessages.contains(messageId)) {
+        try {
+            return localizedStringsSet.getString(messageId, context.getDescriptionLocale());
+        } catch (MissingResourceException e) {
             context.addStatus(new IpsStatus(IStatus.INFO, "Message with Id " + messageId + " not found.")); //$NON-NLS-1$ //$NON-NLS-2$
             notFoundMessages.add(messageId);
         }
         return messageId;
     }
 
+    /**
+     * returns a message for the given object
+     */
     public String getMessage(Object object) {
         if (object instanceof IpsObjectType) {
             IpsObjectType objectType = (IpsObjectType)object;
