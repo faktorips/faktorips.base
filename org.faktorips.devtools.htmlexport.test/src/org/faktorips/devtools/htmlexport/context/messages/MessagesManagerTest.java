@@ -71,8 +71,6 @@ public class MessagesManagerTest {
 
         MessagesManager manager = new MessagesManager(context);
 
-        assertFalse(context.getExportStatus().isOK());
-
         String expectedResult = "Project";
 
         assertEquals(expectedResult, manager.getMessage(KEY));

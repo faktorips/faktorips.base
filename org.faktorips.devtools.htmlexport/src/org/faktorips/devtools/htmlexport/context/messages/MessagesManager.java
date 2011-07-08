@@ -13,16 +13,16 @@
 
 package org.faktorips.devtools.htmlexport.context.messages;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Properties;
+import java.util.MissingResourceException;
 
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.util.LocalizedStringsSet;
 
 /**
  * This class manages the Messages for the HtmlExport. This is necessary, because the {@link Locale}
@@ -33,52 +33,14 @@ import org.faktorips.devtools.htmlexport.context.DocumentationContext;
  */
 public final class MessagesManager {
 
-    private final Properties messages = new Properties();
+    private final LocalizedStringsSet localizedStringsSet;
     private final DocumentationContext context;
     private final List<String> notFoundMessages;
 
     public MessagesManager(DocumentationContext context) {
         this.context = context;
         this.notFoundMessages = new ArrayList<String>();
-        initialize(context.getDescriptionLocale());
-    }
-
-    private void initialize(Locale locale) {
-        loadStandardMessages();
-
-        if (isEnglish(locale)) {
-            return;
-        }
-
-        loadMessages(getClass(), locale);
-    }
-
-    private void loadStandardMessages() {
-        loadMessages(getClass(), Locale.UK);
-    }
-
-    private boolean isEnglish(Locale locale) {
-        String nl = locale.getLanguage();
-        if (nl.length() > 2) {
-            nl = nl.substring(0, 2);
-        }
-        return "en".equals(nl); //$NON-NLS-1$
-    }
-
-    private void loadMessages(Class<?> clazz, Locale locale) {
-        String resourceName = clazz.getPackage().getName().replace('.', File.separatorChar) + File.separatorChar
-                + getMessagesFileName(locale);
-
-        Properties messageProperties = context.getMessageProperties(resourceName);
-
-        messages.putAll(messageProperties);
-    }
-
-    private String getMessagesFileName(Locale locale) {
-        if (locale.getLanguage().equals(Locale.UK.getLanguage())) {
-            return "messages.properties"; //$NON-NLS-1$
-        }
-        return "messages_" + locale.getLanguage() + ".properties"; //$NON-NLS-1$ //$NON-NLS-2$
+        localizedStringsSet = new LocalizedStringsSet(this.getClass());
     }
 
     /**
@@ -86,10 +48,9 @@ public final class MessagesManager {
      * returns a message for the given messageId
      */
     public String getMessage(String messageId) {
-        if (messages.containsKey(messageId)) {
-            return messages.getProperty(messageId);
-        }
-        if (!notFoundMessages.contains(messageId)) {
+        try {
+            return localizedStringsSet.getString(messageId, context.getDescriptionLocale());
+        } catch (MissingResourceException e) {
             context.addStatus(new IpsStatus(IStatus.INFO, "Message with Id " + messageId + " not found.")); //$NON-NLS-1$ //$NON-NLS-2$
             notFoundMessages.add(messageId);
         }
