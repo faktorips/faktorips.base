@@ -248,6 +248,7 @@ public class GenValidationRule extends GenTypePart {
         IValidationRule rule = getIpsPart();
         String localVarObjectProperties = "invalidObjectProperties";
         String localVarReplacementParams = "replacementParameters";
+        String localVarMessageHelper = "messageHelper";
         String localVarMessage = "message";
         String parameterContext = "context";
 
@@ -282,11 +283,11 @@ public class GenValidationRule extends GenTypePart {
         ValidationMessagesPropertiesBuilder validationMessageBuilder = getBuilderSet().getBuildersByClass(
                 ValidationMessagesPropertiesBuilder.class).get(0);
         String messagesPropertiesName = validationMessageBuilder.getResourceBundleBaseName(entry);
-        body.appendClassName(String.class).append(" ").append(localVarMessage).append(" = ")//
+        body.appendClassName(MessagesHelper.class).append(" ").append(localVarMessageHelper).append(" = ")//
                 .append("new ").appendClassName(MessagesHelper.class).append("(\"").append(messagesPropertiesName)//
-                .append("\", ")//
-                .append("getClass().getClassLoader())") //
-                .append(".").append(MethodNames.MESSAGE_HELPER_GET_MESSAGE).append("\"") //
+                .append("\", ").appendln("getClass().getClassLoader());");
+        body.appendClassName(String.class).append(" ").append(localVarMessage).append(" = ")//
+                .append(localVarMessageHelper).append(".").append(MethodNames.MESSAGE_HELPER_GET_MESSAGE).append("(\"") //
                 .append(validationMessageBuilder.getMessageKey(getIpsPart())).append("\", ") //
                 .append(parameterContext).append(".").append(MethodNames.VALIDATION_CONTEXT_GET_LOCALE).append("()"); //
 
