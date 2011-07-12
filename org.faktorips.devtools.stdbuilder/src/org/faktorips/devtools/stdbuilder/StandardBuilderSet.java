@@ -674,8 +674,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         }
         CachedPersistenceProvider pProviderCached = allSupportedPersistenceProvider.get(persistenceProviderKey);
         if (pProviderCached == null) {
-            IpsPlugin.log(new IpsStatus(IStatus.WARNING, "Unknow persistence provider  \"" + persistenceProviderKey //$NON-NLS-1$
-                    + "\". Supported provider are: " + allSupportedPersistenceProvider.keySet().toString()));
+            StdBuilderPlugin.log(new IpsStatus(IStatus.WARNING,
+                    "Unknow persistence provider  \"" + persistenceProviderKey //$NON-NLS-1$
+                            + "\". Supported provider are: " + allSupportedPersistenceProvider.keySet().toString()));
             return null;
         }
 
@@ -683,7 +684,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             try {
                 pProviderCached.cachedProvider = pProviderCached.persistenceProviderClass.newInstance();
             } catch (Exception e) {
-                IpsPlugin.log(e);
+                throw new RuntimeException(e);
             }
         }
         return pProviderCached.cachedProvider;

@@ -36,7 +36,6 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.resource.DeleteResourceChange;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -46,6 +45,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.util.RefactorUtil;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -368,7 +368,7 @@ public abstract class RefactoringParticipantHelper {
 
         } catch (CoreException e) {
             // The participant won't be initialized if a CoreException occurs
-            IpsPlugin.log(e);
+            StdBuilderPlugin.log(e);
             return false;
 
         } finally {

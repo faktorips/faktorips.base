@@ -20,7 +20,7 @@ import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.swt.widgets.Display;
+import org.faktorips.devtools.core.DisplayProvider;
 
 /**
  * A Java refactoring that encapsulates a JDT Java refactoring.
@@ -42,7 +42,8 @@ public final class JdtRefactoring extends JavaRefactoring {
 
     @Override
     public void perform(final IProgressMonitor pm) {
-        Display.getDefault().syncExec(new Runnable() {
+        // We had random exceptions on some machines when not using the user-interface thread
+        DisplayProvider.syncExec(new Runnable() {
             @Override
             public void run() {
                 IWorkspaceRunnable operation = new PerformRefactoringOperation(jdtRefactoring,
