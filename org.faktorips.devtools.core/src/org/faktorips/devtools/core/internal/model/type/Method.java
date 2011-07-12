@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IParameter;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -366,6 +367,26 @@ public class Method extends TypePart implements IMethod {
             return true;
         }
 
+    }
+
+    @Override
+    public ProductCmptPropertyType getProductCmptPropertyType() {
+        return ProductCmptPropertyType.FORMULA;
+    }
+
+    @Override
+    public String getPropertyName() {
+        return getName();
+    }
+
+    @Override
+    public boolean isChangingOverTime() {
+        return true;
+    }
+
+    @Override
+    public String getPropertyDatatype() {
+        return getDatatype();
     }
 
 }
