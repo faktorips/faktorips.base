@@ -76,9 +76,9 @@ public class ValidationMessagesPropertiesBuilder extends AbstractArtefactBuilder
     /**
      * {@inheritDoc}
      * 
-     * The {@link ValidationMessagesPropertiesBuilder} have to check the modification state for every the
-     * property files. In case of {@link IncrementalProjectBuilder#FULL_BUILD} we clear every
-     * property file and try to read the existing file.
+     * The {@link ValidationMessagesPropertiesBuilder} have to check the modification state for
+     * every the property files. In case of {@link IncrementalProjectBuilder#FULL_BUILD} we clear
+     * every property file and try to read the existing file.
      * <p>
      * This method also creates the folder of the property file if it does not exists yet. We need
      * to do this before building because after otherwise the PDE-Builder may mark the folder as not
@@ -143,8 +143,8 @@ public class ValidationMessagesPropertiesBuilder extends AbstractArtefactBuilder
     }
 
     /**
-     * If the property file was modified, the {@link ValidationMessagesPropertiesBuilder} have to save the new
-     * property file.
+     * If the property file was modified, the {@link ValidationMessagesPropertiesBuilder} have to
+     * save the new property file.
      * 
      * {@inheritDoc}
      */
@@ -234,15 +234,19 @@ public class ValidationMessagesPropertiesBuilder extends AbstractArtefactBuilder
 
     @Override
     public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
-        ValidationMessages messages = getMessages(ipsSrcFile);
-        IIpsObject ipsObject = ipsSrcFile.getIpsObject();
-        if (ipsObject instanceof IPolicyCmptType) {
-            IPolicyCmptType policyCmptType = (IPolicyCmptType)ipsObject;
-            List<IValidationRule> validationRules = policyCmptType.getValidationRules();
-            for (IValidationRule validationRule : validationRules) {
-                messages.remove(getMessageKey(validationRule));
-            }
-        }
+        // TODO delete cannot get the deleted ipsObject
+        // if (!ipsSrcFile.exists()) {
+        // return;
+        // }
+        // ValidationMessages messages = getMessages(ipsSrcFile);
+        // IIpsObject ipsObject = ipsSrcFile.getIpsObject();
+        // if (ipsObject instanceof IPolicyCmptType) {
+        // IPolicyCmptType policyCmptType = (IPolicyCmptType)ipsObject;
+        // List<IValidationRule> validationRules = policyCmptType.getValidationRules();
+        // for (IValidationRule validationRule : validationRules) {
+        // messages.remove(getMessageKey(validationRule));
+        // }
+        // }
     }
 
     /**
