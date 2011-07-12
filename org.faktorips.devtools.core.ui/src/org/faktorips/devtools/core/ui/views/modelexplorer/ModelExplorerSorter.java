@@ -15,10 +15,8 @@ package org.faktorips.devtools.core.ui.views.modelexplorer;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageNameComparator;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -174,12 +172,7 @@ public class ModelExplorerSorter extends ViewerSorter {
         if (o1 instanceof IIpsPackageFragmentRoot && o2 instanceof IIpsPackageFragmentRoot) {
             IIpsPackageFragmentRoot root1 = ((IIpsPackageFragmentRoot)o1);
             IIpsPackageFragmentRoot root2 = ((IIpsPackageFragmentRoot)o2);
-            try {
-                return root1.getIpsObjectPathEntry().getIndex() - root2.getIpsObjectPathEntry().getIndex();
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-                return root1.getName().compareTo(root2.getName());
-            }
+            return root1.getIpsObjectPathEntry().getIndex() - root2.getIpsObjectPathEntry().getIndex();
         }
         if (o1 instanceof IIpsPackageFragment && o2 instanceof IIpsPackageFragment) {
             IIpsPackageFragment fragment = ((IIpsPackageFragment)o1);

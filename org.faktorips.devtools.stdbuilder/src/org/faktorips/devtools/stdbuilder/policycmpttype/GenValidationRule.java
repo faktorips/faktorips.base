@@ -15,9 +15,12 @@ package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.unresolvedParam;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -27,10 +30,9 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
-import org.faktorips.devtools.core.builder.MessageFragment;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -41,6 +43,8 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.MsgReplacementParameter;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.MethodNames;
+import org.faktorips.runtime.util.MessagesHelper;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 
@@ -53,8 +57,13 @@ public class GenValidationRule extends GenTypePart {
 
     private final static LocalizedStringsSet LOCALIZED_STRINGS = new LocalizedStringsSet(GenValidationRule.class);
 
-    public GenValidationRule(GenPolicyCmptType genPolicyCmptType, IIpsObjectPartContainer part) {
+    public GenValidationRule(GenPolicyCmptType genPolicyCmptType, IValidationRule part) {
         super(genPolicyCmptType, part, LOCALIZED_STRINGS);
+    }
+
+    @Override
+    public IValidationRule getIpsPart() {
+        return (IValidationRule)super.getIpsPart();
     }
 
     @Override
@@ -117,7 +126,7 @@ public class GenValidationRule extends GenTypePart {
      * </pre>
      */
     private void generateMethodExecRule(JavaCodeFragmentBuilder builder) throws CoreException {
-        IValidationRule rule = (IValidationRule)getIpsPart();
+        IValidationRule rule = getIpsPart();
         String parameterValidationContext = "context";
         String javaDoc = getLocalizedText("EXEC_RULE_JAVADOC", rule.getName());
         JavaCodeFragment body = new JavaCodeFragment();
@@ -175,19 +184,13 @@ public class GenValidationRule extends GenTypePart {
         boolean generateToDo = false;
         body.append("ml.add(");
         body.append(getMethodNameCreateMessageForRule());
-        MessageFragment msgFrag = MessageFragment.createMessageFragment(rule.getMessageText(),
-                MessageFragment.VALUES_AS_PARAMETER_NAMES);
+        Set<String> replacementParameters = getReplacementParameters(rule.getMessageText());
         body.append("(context");
-        if (msgFrag.hasParameters()) {
+        for (@SuppressWarnings("unused")
+        String replacement : replacementParameters) {
             body.append(", ");
-            String[] parameterNames = msgFrag.getParameterNames();
-            for (int j = 0; j < parameterNames.length; j++) {
-                body.append("null");
-                generateToDo = true;
-                if (j < parameterNames.length - 1) {
-                    body.append(", ");
-                }
-            }
+            body.append("null");
+            generateToDo = true;
         }
 
         if (rule.isValidatedAttrSpecifiedInSrc()) {
@@ -231,32 +234,31 @@ public class GenValidationRule extends GenTypePart {
      *   protected Message createMessageForRuleARule(String p0, String p1, String p2) {
      *      ObjectProperty[] objectProperties = new ObjectProperty[] { new ObjectProperty(this, PROPERTY_NAME_A),
      *              new ObjectProperty(this, PROPERTY_NAME_B) };
-     *      StringBuffer text = new StringBuffer();
-     *      text.append(&quot;Check parameters &quot;);
-     *      text.append(p0);
-     *      text.append(&quot;, check if line break works in generated code\n&quot;);
-     *      text.append(p1);
-     *      text.append(&quot; and &quot;);
-     *      text.append(p2);
-     *      return new Message(MSG_CODE_ARULE, text.toString(), Message.ERROR, objectProperties);
+     *      MsgReplacementParameter[] replacementParameters = new MsgReplacementParameter[] { new MsgReplacementParameter(
+     *                 "0", p0), new MsgReplacementParameter("1", p1), new MsgReplacementParameter("2", p2) };
+     *      String message = new MessagesHelper("org.faktorips.integrationtest.internal.messages", getClass()
+     *                 .getClassLoader()).getMessage("rules.TestPolicy_aRule", context.getLocale(), p0, p1, p2);
+     * 
+     *      return new Message(MSG_CODE_ARULE, message, Message.ERROR, objectProperties);
      *  }
      * </pre>
      */
     private void generateMethodCreateMessageForRule(JavaCodeFragmentBuilder builder, IIpsProject ipsProject)
             throws CoreException {
-        IValidationRule rule = (IValidationRule)getIpsPart();
+        IValidationRule rule = getIpsPart();
         String localVarObjectProperties = "invalidObjectProperties";
         String localVarReplacementParams = "replacementParameters";
-        MessageFragment msgFrag = MessageFragment.createMessageFragment(rule.getMessageText(),
-                MessageFragment.VALUES_AS_PARAMETER_NAMES);
+        String localVarMessage = "message";
+        String parameterContext = "context";
 
+        Set<String> replacementParameters = getReplacementParameters(rule.getMessageText());
         // determine method parameters (name and type)
-        List<String> methodParamNames = new ArrayList<String>(msgFrag.getNumberOfParameters() + 2);
-        List<String> methodParamTypes = new ArrayList<String>(msgFrag.getNumberOfParameters() + 2);
-        methodParamNames.add("context");
+        List<String> methodParamNames = new ArrayList<String>(replacementParameters.size() + 2);
+        List<String> methodParamTypes = new ArrayList<String>(replacementParameters.size() + 2);
+        methodParamNames.add(parameterContext);
         methodParamTypes.add(IValidationContext.class.getName());
-        methodParamNames.addAll(Arrays.asList(msgFrag.getParameterNames()));
-        methodParamTypes.addAll(Arrays.asList(msgFrag.getParameterClasses()));
+        methodParamNames.addAll(replacementParameters);
+        methodParamTypes.addAll(getReplacementClasses(replacementParameters.size()));
         if (rule.isValidatedAttrSpecifiedInSrc()) {
             methodParamNames.add(localVarObjectProperties);
             methodParamTypes.add(ObjectProperty.class.getName() + "[]");
@@ -270,12 +272,29 @@ public class GenValidationRule extends GenTypePart {
                     ipsProject));
         }
         // code for replacement parameters
-        if (msgFrag.hasParameters()) {
-            body.append(generateCodeForMsgReplacementParameters(localVarReplacementParams, msgFrag.getParameterNames()));
+        if (!replacementParameters.isEmpty()) {
+            body.append(generateCodeForMsgReplacementParameters(localVarReplacementParams, replacementParameters));
         }
 
         // code to construct the message's text
-        body.append(msgFrag.getFrag());
+        IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)getIpsPart().getIpsSrcFile().getIpsPackageFragment().getRoot()
+                .getIpsObjectPathEntry();
+        ValidationMessagesPropertiesBuilder validationMessageBuilder = getBuilderSet().getBuildersByClass(
+                ValidationMessagesPropertiesBuilder.class).get(0);
+        String messagesPropertiesName = validationMessageBuilder.getResourceBundleBaseName(entry);
+        body.appendClassName(String.class).append(" ").append(localVarMessage).append(" = ")//
+                .append("new ").appendClassName(MessagesHelper.class).append("(\"").append(messagesPropertiesName)//
+                .append("\", ")//
+                .append("getClass().getClassLoader())") //
+                .append(".").append(MethodNames.MESSAGE_HELPER_GET_MESSAGE).append("\"") //
+                .append(validationMessageBuilder.getMessageKey(getIpsPart())).append("\", ") //
+                .append(parameterContext).append(".").append(MethodNames.VALIDATION_CONTEXT_GET_LOCALE).append("()"); //
+
+        for (String replacementParameter : replacementParameters) {
+            body.append(", ");
+            body.append(replacementParameter);
+        }
+        body.append(");");
 
         // code to create the message and return it.
         body.append("return new ");
@@ -283,12 +302,12 @@ public class GenValidationRule extends GenTypePart {
         body.append('(');
         body.append(getFieldNameForMsgCode());
         body.append(", ");
-        body.append(msgFrag.getMsgTextExpression());
+        body.append(localVarMessage);
         body.append(", ");
         body.append(rule.getMessageSeverity().getJavaSourcecode());
         body.append(", ");
         body.append(localVarObjectProperties);
-        if (msgFrag.hasParameters()) {
+        if (!replacementParameters.isEmpty()) {
             body.append(", ");
             body.append(localVarReplacementParams);
         }
@@ -299,6 +318,33 @@ public class GenValidationRule extends GenTypePart {
                 getMethodNameCreateMessageForRule(), methodParamNames.toArray(new String[methodParamNames.size()]),
                 methodParamTypes.toArray(new String[methodParamTypes.size()]), body, javaDoc,
                 JavaSourceFileBuilder.ANNOTATION_GENERATED);
+    }
+
+    /**
+     * Extracting the replacement parameters from given messageText. The replacement parameters are
+     * defined curly braces. In contrast to the replacement parameters used in {@link MessageFormat}
+     * , these parameters could have names and not only indices. However you could use additional
+     * format information separated by comma as used by {@link MessageFormat}.
+     */
+    Set<String> getReplacementParameters(String messageText) {
+        Set<String> result = new LinkedHashSet<String>();
+        Matcher matcher = ValidationMessagesPropertiesBuilder.REPLACEMENT_PARAMETER_REGEXT.matcher(messageText);
+        while (matcher.find()) {
+            String parameterName = matcher.group();
+            if (!Character.isJavaIdentifierStart(parameterName.charAt(0))) {
+                parameterName = "p" + parameterName;
+            }
+            result.add(parameterName);
+        }
+        return result;
+    }
+
+    private List<String> getReplacementClasses(int size) {
+        ArrayList<String> classes = new ArrayList<String>(size);
+        for (int i = 0; i < size; i++) {
+            classes.add(Object.class.getName());
+        }
+        return classes;
     }
 
     private JavaCodeFragment generateCodeForInvalidObjectProperties(String pObjectProperties,
@@ -351,7 +397,7 @@ public class GenValidationRule extends GenTypePart {
      * 
      * </pre>
      */
-    private JavaCodeFragment generateCodeForMsgReplacementParameters(String localVar, String[] parameterNames) {
+    private JavaCodeFragment generateCodeForMsgReplacementParameters(String localVar, Set<String> replacementParameters) {
         JavaCodeFragment code = new JavaCodeFragment();
         // MsgReplacementParameter[] replacementParameters = new
         // MsgReplacementParameter[] {
@@ -360,19 +406,21 @@ public class GenValidationRule extends GenTypePart {
         code.appendClassName(MsgReplacementParameter.class);
         code.appendln("[] {");
 
-        for (int i = 0; i < parameterNames.length; i++) {
+        int i = 0;
+        for (String string : replacementParameters) {
 
             // new MsgReplacementParameter("paramName", paramName),
             code.append("new ");
             code.appendClassName(MsgReplacementParameter.class);
             code.append("(");
-            code.appendQuoted(parameterNames[i]);
+            code.appendQuoted(string);
             code.append(", ");
-            code.append(parameterNames[i]);
+            code.append(string);
             code.append(")");
-            if (i != parameterNames.length - 1) {
+            if (i != replacementParameters.size() - 1) {
                 code.append(", ");
             }
+            i++;
             code.appendln();
         }
 
@@ -381,7 +429,7 @@ public class GenValidationRule extends GenTypePart {
     }
 
     private IValidationRule getValidationRule() {
-        return (IValidationRule)getIpsPart();
+        return getIpsPart();
     }
 
     private void generateFieldForMsgCode(JavaCodeFragmentBuilder membersBuilder) {

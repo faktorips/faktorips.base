@@ -168,17 +168,17 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
     }
 
     @Override
-    public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws CoreException {
+    public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) {
         return (IFile)testObjectsMap.get(root);
     }
 
     @Override
-    public String getTocFilePackageName(IIpsPackageFragmentRoot root) throws CoreException {
+    public String getTocFilePackageName(IIpsPackageFragmentRoot root) {
         return (String)testObjectsMap.get(root);
     }
 
     @Override
-    public String getRuntimeRepositoryTocResourceName(IIpsPackageFragmentRoot root) throws CoreException {
+    public String getRuntimeRepositoryTocResourceName(IIpsPackageFragmentRoot root) {
         return (String)testObjectsMap.get(root);
     }
 

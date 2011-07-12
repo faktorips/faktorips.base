@@ -85,12 +85,12 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     }
 
     @Override
-    public String getRuntimeRepositoryTocResourceName(IIpsPackageFragmentRoot root) throws CoreException {
+    public String getRuntimeRepositoryTocResourceName(IIpsPackageFragmentRoot root) {
         return null;
     }
 
     @Override
-    public String getTocFilePackageName(IIpsPackageFragmentRoot root) throws CoreException {
+    public String getTocFilePackageName(IIpsPackageFragmentRoot root) {
         return null;
     }
 
@@ -122,6 +122,11 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
 
     @Override
     public DatatypeHelper getDatatypeHelperForEnumType(EnumTypeDatatypeAdapter datatypeAdapter) {
+        return null;
+    }
+
+    @Override
+    public String getInternalPackage(String basePackageName, String subPackageFragment) {
         return null;
     }
 

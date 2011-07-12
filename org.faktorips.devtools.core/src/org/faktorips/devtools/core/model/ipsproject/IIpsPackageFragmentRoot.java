@@ -47,10 +47,8 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
     /**
      * Returns the entry in the IPS object path that results in this package fragment root. E.g. an
      * entry defining a source folder leads to an IPS package fragment root.
-     * 
-     * @throws CoreException if an exception occurs while accessing the object path.
      */
-    public IIpsObjectPathEntry getIpsObjectPathEntry() throws CoreException;
+    public IIpsObjectPathEntry getIpsObjectPathEntry();
 
     /**
      * Returns the artifact destination for the artifacts generated on behalf of the IPS objects

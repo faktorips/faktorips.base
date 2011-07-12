@@ -24,8 +24,30 @@ import java.util.Map;
  */
 public class ValidationContext implements IValidationContext {
 
-    private Locale locale;
-    private Map<String, Object> propertyValues = new HashMap<String, Object>();
+    private final Locale locale;
+
+    private final Map<String, Object> propertyValues = new HashMap<String, Object>();
+
+    private final ClassLoader resourceClassLoader;
+
+    /**
+     * Creates a new validation context with the specified local.
+     * 
+     * @param locale Setting the locale of this context
+     * @param resourceClassLoader setting the {@link ClassLoader} used to load resources
+     * 
+     * @throws NullPointerException if one of the specified parameters is null
+     */
+    public ValidationContext(Locale locale, ClassLoader resourceClassLoader) {
+        if (locale == null) {
+            throw new NullPointerException("The parameter locale cannot be null.");
+        }
+        if (resourceClassLoader == null) {
+            throw new NullPointerException("The parameter resourceClassLoader cannot be null.");
+        }
+        this.locale = locale;
+        this.resourceClassLoader = resourceClassLoader;
+    }
 
     /**
      * Creates a new validation context with the specified local.
@@ -33,10 +55,7 @@ public class ValidationContext implements IValidationContext {
      * @throws NullPointerException if the specified parameter is null
      */
     public ValidationContext(Locale locale) {
-        if (locale == null) {
-            throw new NullPointerException("The parameter locale cannot be null.");
-        }
-        this.locale = locale;
+        this(locale, ValidationContext.class.getClassLoader());
     }
 
     /**
@@ -63,6 +82,13 @@ public class ValidationContext implements IValidationContext {
      */
     public void setValue(String propertyName, Object value) {
         propertyValues.put(propertyName, value);
+    }
+
+    /**
+     * @return Returns the resourceClassLoader.
+     */
+    public ClassLoader getResourceClassLoader() {
+        return resourceClassLoader;
     }
 
 }

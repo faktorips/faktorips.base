@@ -82,9 +82,9 @@ public class IpsPlugin extends AbstractUIPlugin {
     public final static boolean TRACE_UI = Boolean.valueOf(
             Platform.getDebugOption("org.faktorips.devtools.core/trace/ui")).booleanValue(); //$NON-NLS-1$
 
-    private final static MultiLanguageSupport multiLanguageSupport = new MultiLanguageSupport();
+    private final MultiLanguageSupport multiLanguageSupport = new MultiLanguageSupport();
 
-    private final static IIpsRefactoringFactory ipsRefactoringFactory = new IpsRefactoringFactory();
+    private final IIpsRefactoringFactory ipsRefactoringFactory = new IpsRefactoringFactory();
 
     /**
      * Returns the full extension id. This is the plugin's id plus the plug-in relative extension id
@@ -101,14 +101,14 @@ public class IpsPlugin extends AbstractUIPlugin {
      * Provides access to operations related to multi-language support.
      */
     public final static MultiLanguageSupport getMultiLanguageSupport() {
-        return multiLanguageSupport;
+        return getDefault().multiLanguageSupport;
     }
 
     /**
      * Provides a factory that allows to create IPS refactorings.
      */
     public final static IIpsRefactoringFactory getIpsRefactoringFactory() {
-        return ipsRefactoringFactory;
+        return getDefault().ipsRefactoringFactory;
     }
 
     /** The shared instance. */
@@ -224,7 +224,7 @@ public class IpsPlugin extends AbstractUIPlugin {
      * Logs the status.
      */
     public final static void log(IStatus status) {
-        if (!plugin.suppressLoggingDuringTestExecution) {
+        if (plugin != null && !plugin.suppressLoggingDuringTestExecution) {
             plugin.getLog().log(status);
         }
     }

@@ -14,17 +14,20 @@
 package org.faktorips.devtools.core.builder;
 
 import java.io.ByteArrayInputStream;
+import java.util.Locale;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.LocalizedStringsSet;
 
 /**
  * Abstract base class for artefact builders.
@@ -33,11 +36,17 @@ import org.faktorips.util.ArgumentCheck;
  */
 public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
 
-    private IIpsArtefactBuilderSet builderSet;
+    private final IIpsArtefactBuilderSet builderSet;
+    private final LocalizedStringsSet localizedStringsSet;
 
     public AbstractArtefactBuilder(IIpsArtefactBuilderSet builderSet) {
+        this(builderSet, null);
+    }
+
+    public AbstractArtefactBuilder(IIpsArtefactBuilderSet builderSet, LocalizedStringsSet localizedStringsSet) {
         ArgumentCheck.notNull(builderSet);
         this.builderSet = builderSet;
+        this.localizedStringsSet = localizedStringsSet;
     }
 
     @Override
@@ -139,6 +148,76 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Returns the language in that variables, methods are named and and Java documentations are
+     * written in.
+     */
+    public Locale getLanguageUsedInGeneratedSourceCode() {
+        return getBuilderSet().getLanguageUsedInGeneratedSourceCode();
+    }
+
+    /**
+     * Returns the localized text for the provided key. Calling this method is only allowed during
+     * the build cycle. If it is called outside the build cycle a RuntimeException is thrown. In
+     * addition if no LocalizedStringSet has been set to this builder a RuntimeException is thrown.
+     * 
+     * @param element the IPS element used to access the IPS project where the language to use is
+     *            defined.
+     * @param key the key that identifies the requested text
+     */
+    public String getLocalizedText(IIpsElement element, String key) {
+        if (localizedStringsSet == null) {
+            throw new RuntimeException(
+                    "A LocalizedStringSet has to be set to this builder to be able to call this method."); //$NON-NLS-1$
+        }
+        return getLocalizedStringSet().getString(key, getLanguageUsedInGeneratedSourceCode());
+    }
+
+    /**
+     * Returns the localized string set of this builder.
+     */
+    protected LocalizedStringsSet getLocalizedStringSet() {
+        return localizedStringsSet;
+    }
+
+    /**
+     * Returns the localized text for the provided key. Calling this method is only allowed during
+     * the build cycle. If it is called outside the build cycle a RuntimeException is thrown. In
+     * addition if no LocalizedStringSet has been set to this builder a RuntimeException is thrown.
+     * 
+     * @param element the IPS element used to access the IPS project where the language to use is
+     *            defined.
+     * @param key the key that identifies the requested text
+     * @param replacement an indicated region within the text is replaced by the string
+     *            representation of this value
+     */
+    public String getLocalizedText(IIpsElement element, String key, Object replacement) {
+        if (localizedStringsSet == null) {
+            throw new RuntimeException(
+                    "A LocalizedStringSet has to be set to this builder to be able to call this method."); //$NON-NLS-1$
+        }
+        return getLocalizedStringSet().getString(key, getLanguageUsedInGeneratedSourceCode(), replacement);
+    }
+
+    /**
+     * Returns the localized text for the provided key. Calling this method is only allowed during
+     * the build cycle. If it is called outside the build cycle a RuntimeException is thrown. In
+     * addition if no LocalizedStringSet has been set to this builder a RuntimeException is thrown.
+     * 
+     * @param element the IPS element used to access the IPS project where the language to use is
+     *            defined.
+     * @param key the key that identifies the requested text
+     * @param replacements indicated regions within the text are replaced by the string
+     *            representations of these values.
+     */
+    public String getLocalizedText(IIpsElement element, String key, Object[] replacements) {
+        if (localizedStringsSet == null) {
+            throw new RuntimeException(
+                    "A LocalizedStringSet has to be set to this builder to be able to call this method."); //$NON-NLS-1$
+        }
+        return getLocalizedStringSet().getString(key, getLanguageUsedInGeneratedSourceCode(), replacements);
     }
 
 }

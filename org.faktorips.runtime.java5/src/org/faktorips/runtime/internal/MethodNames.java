@@ -185,4 +185,7 @@ public class MethodNames {
 
     public final static String METHOD_COPY_ASSOCIATIONS = "copyAssociationsInternal";
 
+    public final static String VALIDATION_CONTEXT_GET_LOCALE = "getLocale";
+
+    public final static String MESSAGE_HELPER_GET_MESSAGE = "getMessage";
 }

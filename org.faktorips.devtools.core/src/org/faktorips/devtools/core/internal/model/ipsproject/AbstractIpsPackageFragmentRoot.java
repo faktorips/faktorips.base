@@ -14,7 +14,6 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -37,22 +36,12 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
 
     @Override
     public boolean isBasedOnSourceFolder() {
-        try {
-            return getIpsObjectPathEntry().getType() == IIpsObjectPathEntry.TYPE_SRC_FOLDER;
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return true;
-        }
+        return getIpsObjectPathEntry().getType() == IIpsObjectPathEntry.TYPE_SRC_FOLDER;
     }
 
     @Override
     public boolean isBasedOnIpsArchive() {
-        try {
-            return getIpsObjectPathEntry().getType() == IIpsObjectPathEntry.TYPE_ARCHIVE;
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return false;
-        }
+        return getIpsObjectPathEntry().getType() == IIpsObjectPathEntry.TYPE_ARCHIVE;
     }
 
     @Override
@@ -66,7 +55,7 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
     }
 
     @Override
-    public IIpsObjectPathEntry getIpsObjectPathEntry() throws CoreException {
+    public IIpsObjectPathEntry getIpsObjectPathEntry() {
         return ((IpsProject)getIpsProject()).getIpsObjectPathInternal().getEntry(getName());
     }
 

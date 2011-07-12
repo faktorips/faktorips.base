@@ -20,7 +20,6 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -146,8 +145,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
     private IIpsSrcFile ipsSrcFile;
 
-    private LocalizedStringsSet localizedStringsSet;
-
     private boolean generationCanceled;
 
     private MultiStatus buildStatus;
@@ -172,10 +169,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      */
     public JavaSourceFileBuilder(DefaultBuilderSet builderSet, String kindId, LocalizedStringsSet localizedStringsSet) {
 
-        super(builderSet);
+        super(builderSet, localizedStringsSet);
         ArgumentCheck.notNull(kindId, this);
         this.kindId = kindId;
-        this.localizedStringsSet = localizedStringsSet;
         initJavaOptions();
     }
 
@@ -225,14 +221,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      */
     public static IChangesOverTimeNamingConvention getChangesInTimeNamingConvention(IIpsElement element) {
         return element.getIpsProject().getChangesInTimeNamingConventionForGeneratedCode();
-    }
-
-    /**
-     * Returns the language in that variables, methods are named and and Java documentations are
-     * written in.
-     */
-    public Locale getLanguageUsedInGeneratedSourceCode() {
-        return getBuilderSet().getLanguageUsedInGeneratedSourceCode();
     }
 
     /**
@@ -481,23 +469,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Returns the localized text for the provided key. Calling this method is only allowed during
-     * the build cycle. If it is called outside the build cycle a RuntimeException is thrown. In
-     * addition if no LocalizedStringSet has been set to this builder a RuntimeException is thrown.
-     * 
-     * @param element the IPS element used to access the IPS project where the language to use is
-     *            defined.
-     * @param key the key that identifies the requested text
-     */
-    public String getLocalizedText(IIpsElement element, String key) {
-        if (localizedStringsSet == null) {
-            throw new RuntimeException(
-                    "A LocalizedStringSet has to be set to this builder to be able to call this method."); //$NON-NLS-1$
-        }
-        return getLocalizedStringSet().getString(key, getLanguageUsedInGeneratedSourceCode());
-    }
-
-    /**
      * Returns a single line comment containing a TO DO.
      * 
      * @param element Any IPS element used to access the IPS project and determine the language for
@@ -689,44 +660,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Returns the localized text for the provided key. Calling this method is only allowed during
-     * the build cycle. If it is called outside the build cycle a RuntimeException is thrown. In
-     * addition if no LocalizedStringSet has been set to this builder a RuntimeException is thrown.
-     * 
-     * @param element the IPS element used to access the IPS project where the language to use is
-     *            defined.
-     * @param key the key that identifies the requested text
-     * @param replacement an indicated region within the text is replaced by the string
-     *            representation of this value
-     */
-    public String getLocalizedText(IIpsElement element, String key, Object replacement) {
-        if (localizedStringsSet == null) {
-            throw new RuntimeException(
-                    "A LocalizedStringSet has to be set to this builder to be able to call this method."); //$NON-NLS-1$
-        }
-        return getLocalizedStringSet().getString(key, getLanguageUsedInGeneratedSourceCode(), replacement);
-    }
-
-    /**
-     * Returns the localized text for the provided key. Calling this method is only allowed during
-     * the build cycle. If it is called outside the build cycle a RuntimeException is thrown. In
-     * addition if no LocalizedStringSet has been set to this builder a RuntimeException is thrown.
-     * 
-     * @param element the IPS element used to access the IPS project where the language to use is
-     *            defined.
-     * @param key the key that identifies the requested text
-     * @param replacements indicated regions within the text are replaced by the string
-     *            representations of these values.
-     */
-    public String getLocalizedText(IIpsElement element, String key, Object[] replacements) {
-        if (localizedStringsSet == null) {
-            throw new RuntimeException(
-                    "A LocalizedStringSet has to be set to this builder to be able to call this method."); //$NON-NLS-1$
-        }
-        return getLocalizedStringSet().getString(key, getLanguageUsedInGeneratedSourceCode(), replacements);
-    }
-
-    /**
      * Returns the modifier used to defined a method in an interface.
      * 
      * @see java.lang.reflect.Modifier
@@ -861,13 +794,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      */
     public void appendGenerics(JavaCodeFragmentBuilder fragmentBuilder, Class<?>... classes) {
         JavaGeneratorHelper.appendGenerics(fragmentBuilder, getIpsProject(), classes);
-    }
-
-    /**
-     * Returns the localized string set of this builder.
-     */
-    private LocalizedStringsSet getLocalizedStringSet() {
-        return localizedStringsSet;
     }
 
     private String format(String content) {

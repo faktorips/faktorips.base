@@ -60,6 +60,7 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassJaxbAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
+import org.faktorips.devtools.stdbuilder.policycmpttype.ValidationMessagesPropertiesBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.persistence.PolicyCmptImplClassJpaAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptXMLBuilder;
@@ -497,6 +498,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         tocFileBuilder.setEnumTypeBuilder(enumTypeBuilder);
         tocFileBuilder.setEnumXmlAdapterBuilder(enumXmlAdapterBuilder);
 
+        ValidationMessagesPropertiesBuilder validationMessagesBuilder = new ValidationMessagesPropertiesBuilder(this);
+
         createAnnotationGeneratorMap();
 
         if (ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())) {
@@ -511,16 +514,19 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                     productCmptImplClassBuilder, productCmptGenInterfaceBuilder, productCmptGenImplClassBuilder,
                     policyCmptImplClassBuilder, policyCmptInterfaceBuilder, productCmptGenerationImplBuilder,
                     tableContentCopyBuilder, productCmptContentCopyBuilder, testCaseTypeClassBuilder, testCaseBuilder,
-                    formulaTestBuilder, tocFileBuilder, policyModelTypeBuilder, productModelTypeBuilder,
-                    businessFunctionBuilder, enumTypeBuilder, enumContentBuilder, enumXmlAdapterBuilder };
+                    formulaTestBuilder, tocFileBuilder, validationMessagesBuilder, policyModelTypeBuilder,
+                    productModelTypeBuilder, businessFunctionBuilder, enumTypeBuilder, enumContentBuilder,
+                    enumXmlAdapterBuilder };
         } else {
             tocFileBuilder.setGenerateEntriesForModelTypes(false);
             return new IIpsArtefactBuilder[] { tableImplBuilder, tableRowBuilder, productCmptInterfaceBuilder,
                     productCmptImplClassBuilder, productCmptGenInterfaceBuilder, productCmptGenImplClassBuilder,
                     policyCmptImplClassBuilder, policyCmptInterfaceBuilder, productCmptGenerationImplBuilder,
                     tableContentCopyBuilder, productCmptContentCopyBuilder, testCaseTypeClassBuilder, testCaseBuilder,
-                    formulaTestBuilder, tocFileBuilder, businessFunctionBuilder, enumTypeBuilder, enumContentBuilder };
+                    formulaTestBuilder, tocFileBuilder, validationMessagesBuilder, businessFunctionBuilder,
+                    enumTypeBuilder, enumContentBuilder };
         }
+
     }
 
     private void createAnnotationGeneratorMap() throws CoreException {

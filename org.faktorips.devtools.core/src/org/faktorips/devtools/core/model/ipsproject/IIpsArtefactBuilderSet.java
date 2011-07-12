@@ -167,7 +167,7 @@ public interface IIpsArtefactBuilderSet {
      * 
      * @see org.faktorips.runtime.ClassloaderRuntimeRepository#create(String)
      */
-    public String getRuntimeRepositoryTocResourceName(IIpsPackageFragmentRoot root) throws CoreException;
+    public String getRuntimeRepositoryTocResourceName(IIpsPackageFragmentRoot root);
 
     /**
      * Returns the package name of the generated TOC file.<br>
@@ -176,7 +176,18 @@ public interface IIpsArtefactBuilderSet {
      * @deprecated use getRuntimeRepositoryTocResourceName(root)
      */
     @Deprecated
-    public String getTocFilePackageName(IIpsPackageFragmentRoot root) throws CoreException;
+    public String getTocFilePackageName(IIpsPackageFragmentRoot root);
+
+    /**
+     * Getting the internal package for the given base package name and the specified sub package
+     * fragment.
+     * 
+     * @param basePackageName The name of the base package
+     * @param subPackageFragment The name of the sub package fragment
+     * 
+     * @return the name of the internal package for given basePackageName and subPackageFragment
+     */
+    public String getInternalPackage(String basePackageName, String subPackageFragment);
 
     /**
      * Returns the locale of the language that is used by the generator to generate source code and

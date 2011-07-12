@@ -13,7 +13,8 @@ Export-Package: org.faktorips.runtime,
  org.faktorips.runtime.jaxb,
  org.faktorips.runtime.modeltype,
  org.faktorips.runtime.productdataprovider,
- org.faktorips.runtime.test
+ org.faktorips.runtime.test,
+ org.faktorips.runtime.util
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
  J2SE-1.5

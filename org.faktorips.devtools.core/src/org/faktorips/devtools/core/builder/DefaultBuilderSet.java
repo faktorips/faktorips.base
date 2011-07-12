@@ -13,6 +13,7 @@
 
 package org.faktorips.devtools.core.builder;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
@@ -92,11 +93,18 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
 
         String basePackName = mergableArtefact ? ipsSrcFile.getBasePackageNameForMergableArtefacts() : ipsSrcFile
                 .getBasePackageNameForDerivedArtefacts();
-        if (!publishedArtefact) {
-            basePackName = QNameUtil.concat(basePackName, INTERNAL_PACKAGE);
-        }
         String packageFragName = ipsSrcFile.getIpsPackageFragment().getName().toLowerCase();
-        return QNameUtil.concat(basePackName, packageFragName);
+        if (!publishedArtefact) {
+            return getInternalPackage(basePackName, packageFragName);
+        } else {
+            return QNameUtil.concat(basePackName, packageFragName);
+        }
+    }
+
+    @Override
+    public String getInternalPackage(final String basePackName, final String subPackageFragment) {
+        String internalBasePack = QNameUtil.concat(basePackName, INTERNAL_PACKAGE);
+        return QNameUtil.concat(internalBasePack, subPackageFragment);
     }
 
     /**
@@ -116,14 +124,14 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     }
 
     @Override
-    public String getTocFilePackageName(IIpsPackageFragmentRoot root) throws CoreException {
+    public String getTocFilePackageName(IIpsPackageFragmentRoot root) {
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
         String basePackName = entry.getBasePackageNameForDerivedJavaClasses();
-        return QNameUtil.concat(basePackName, INTERNAL_PACKAGE);
+        return getInternalPackage(basePackName, StringUtils.EMPTY);
     }
 
     @Override
-    public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws CoreException {
+    public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) {
         if (root == null) {
             return null;
         }
@@ -141,13 +149,13 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
         return tocFileLocation.getFile(path);
     }
 
-    private IFolder getTocFileLocation(IIpsPackageFragmentRoot root) throws CoreException {
+    private IFolder getTocFileLocation(IIpsPackageFragmentRoot root) {
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
         return entry.getOutputFolderForDerivedJavaFiles();
     }
 
     @Override
-    public String getRuntimeRepositoryTocResourceName(IIpsPackageFragmentRoot root) throws CoreException {
+    public String getRuntimeRepositoryTocResourceName(IIpsPackageFragmentRoot root) {
         IFile tocFile = getRuntimeRepositoryTocFile(root);
         if (tocFile == null) {
             return null;

@@ -860,10 +860,10 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     // IMAGE HANDLING
     // ************************************************
 
-    private final static ImageHandling images = new ImageHandling();
+    private final ImageHandling images = new ImageHandling();
 
     public static ImageHandling getImageHandling() {
-        return images;
+        return getDefault().images;
     }
 
     /**
