@@ -14,13 +14,13 @@
 package org.faktorips.devtools.stdbuilder.refactor;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.faktorips.devtools.core.DisplayProvider;
 
 /**
  * A Java refactoring that encapsulates a JDT Java refactoring.
@@ -41,20 +41,15 @@ public final class JdtRefactoring extends JavaRefactoring {
     }
 
     @Override
-    public void perform(final IProgressMonitor pm) {
-        // We had random exceptions on some machines when not using the user-interface thread
-        DisplayProvider.syncExec(new Runnable() {
+    public void perform(final IProgressMonitor pm) throws CoreException {
+        ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
             @Override
-            public void run() {
+            public void run(IProgressMonitor monitor) throws CoreException {
                 IWorkspaceRunnable operation = new PerformRefactoringOperation(jdtRefactoring,
                         CheckConditionsOperation.FINAL_CONDITIONS);
-                try {
-                    operation.run(pm);
-                } catch (CoreException e) {
-                    throw new RuntimeException(e);
-                }
+                operation.run(pm);
             }
-        });
+        }, pm);
     }
 
 }

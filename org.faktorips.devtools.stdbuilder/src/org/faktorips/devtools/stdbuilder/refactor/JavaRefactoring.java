@@ -35,7 +35,7 @@ public abstract class JavaRefactoring {
      * @param pm The progress monitor to report progress to or null if no progress reporting is
      *            needed
      * 
-     * @throws CoreException May throw this kind of exception if an error occurs
+     * @throws CoreException If an error occurs during condition checking
      */
     public abstract RefactoringStatus checkAllConditions(final IProgressMonitor pm) throws CoreException;
 
@@ -44,7 +44,9 @@ public abstract class JavaRefactoring {
      * 
      * @param pm The progress monitor to report progress to or null if no progress reporting is
      *            needed
+     * 
+     * @throws CoreException If an error occurs during the refactoring
      */
-    public abstract void perform(final IProgressMonitor pm);
+    public abstract void perform(final IProgressMonitor pm) throws CoreException;
 
 }
