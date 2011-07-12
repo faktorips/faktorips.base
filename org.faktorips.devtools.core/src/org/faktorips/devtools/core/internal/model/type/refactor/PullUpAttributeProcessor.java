@@ -50,9 +50,10 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor {
         deleteOriginalAttribute();
     }
 
-    private void pullUpAttribute() {
+    private IAttribute pullUpAttribute() {
         IAttribute newAttribute = getTargetType().newAttribute();
         newAttribute.copyFrom(getAttribute());
+        return newAttribute;
     }
 
     private void deleteOriginalAttribute() {
@@ -89,6 +90,8 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor {
      */
     @Override
     public void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+        super.validateUserInputThis(status, pm);
+
         if (!getType().isSubtypeOf(getTargetType(), getIpsProject())) {
             status.addFatalError(Messages.PullUpAttributeProcessor_msgTargetTypeMustBeSupertype);
             return;

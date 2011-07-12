@@ -307,13 +307,44 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
     }
 
     /**
-     * Responsible for validating the user input.
+     * Validates the user input by calling the subclass implementation.
+     * <p>
+     * If there are no errors the IPS model is checked to be in a valid state.
      * 
      * @param pm The {@link IProgressMonitor} to report progress to
      * 
      * @throws CoreException If an error occurs while validating the user input
      */
-    public abstract RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreException;
+    public final RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreException {
+        RefactoringStatus status = new RefactoringStatus();
+        MessageList validationMessageList = new MessageList();
+        validateUserInputThis(status, pm);
+        if (!status.hasFatalError()) {
+            validateIpsModel(validationMessageList);
+            addValidationMessagesToStatus(validationMessageList, status);
+        }
+        return status;
+    }
+
+    /**
+     * Responsible for validating the IPS model as required by the refactoring.
+     * 
+     * @param validationMessageList Message list to report validation errors to
+     * 
+     * @throws CoreException If an error occurs while validating the IPS model
+     */
+    protected abstract void validateIpsModel(MessageList validationMessageList) throws CoreException;
+
+    /**
+     * This operation is called by {@link #validateUserInput(IProgressMonitor)}. Subclasses must
+     * implement special user input validations here.
+     * 
+     * @param status {@link RefactoringStatus} to report messages to
+     * @param pm {@link IProgressMonitor} to report progress to
+     * 
+     * @throws CoreException May be thrown at any time
+     */
+    protected abstract void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException;
 
     /**
      * Returns whether this refactoring processor requires that all IPS source files are saved

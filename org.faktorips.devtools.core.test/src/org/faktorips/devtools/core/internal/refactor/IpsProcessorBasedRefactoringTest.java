@@ -29,6 +29,7 @@ import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
+import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -48,12 +49,6 @@ public class IpsProcessorBasedRefactoringTest {
         MockitoAnnotations.initMocks(this);
         ipsRefactoringProcessor = new TestRefactoringProcessor(ipsElement);
         ipsProcessorBasedRefactoring = new IpsProcessorBasedRefactoring(ipsRefactoringProcessor);
-    }
-
-    @Test
-    public void testValidateUserInput() throws CoreException {
-        RefactoringStatus refactoringStatus = ipsProcessorBasedRefactoring.validateUserInput(null);
-        assertEquals(refactoringStatus, ipsRefactoringProcessor.validateUserInputRefactoringStatus);
     }
 
     @Test
@@ -91,17 +86,10 @@ public class IpsProcessorBasedRefactoringTest {
 
     private static class TestRefactoringProcessor extends IpsRefactoringProcessor {
 
-        private final RefactoringStatus validateUserInputRefactoringStatus = new RefactoringStatus();
-
         private boolean sourceFilesSavedRequired;
 
         protected TestRefactoringProcessor(IIpsElement ipsElement) {
             super(ipsElement);
-        }
-
-        @Override
-        public RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreException {
-            return validateUserInputRefactoringStatus;
         }
 
         @Override
@@ -111,6 +99,16 @@ public class IpsProcessorBasedRefactoringTest {
 
         private void setSourceFilesSavedRequired(boolean sourceFilesSavedRequired) {
             this.sourceFilesSavedRequired = sourceFilesSavedRequired;
+        }
+
+        @Override
+        protected void validateIpsModel(MessageList validationMessageList) throws CoreException {
+
+        }
+
+        @Override
+        protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+
         }
 
         @Override

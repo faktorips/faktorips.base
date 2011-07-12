@@ -49,32 +49,15 @@ public abstract class IpsMoveProcessor extends IpsRefactoringProcessor {
     }
 
     /**
-     * This implementation validates the target {@link IIpsPackageFragment} and returns a
-     * {@link RefactoringStatus} as result of the validation. It checks that it does not equal the
-     * {@link IIpsObject}'s original {@link IIpsPackageFragment}.
+     * This implementation validates the target {@link IIpsPackageFragment}. It checks that it does
+     * not equal the {@link IIpsObject}'s original {@link IIpsPackageFragment}.
      */
     @Override
-    public RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreException {
-        RefactoringStatus status = new RefactoringStatus();
+    protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
         if (targetIpsPackageFragment.equals(originalIpsPackageFragment)) {
             status.addFatalError(Messages.IpsMoveProcessor_msgTargetLocationEqualsOriginalLocation);
-        } else {
-            validateUserInputThis(status, pm);
         }
-        return status;
     }
-
-    /**
-     * Subclasses must implement this operation and provide special user input validations.
-     * <p>
-     * This operation is called by {@link #validateUserInput(IProgressMonitor)}.
-     * 
-     * @param status {@link RefactoringStatus} to report messages to
-     * @param pm {@link IProgressMonitor} to report progress to
-     * 
-     * @throws CoreException May be thrown at any time
-     */
-    protected abstract void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException;
 
     @Override
     public RefactoringParticipant[] loadParticipants(RefactoringStatus status, SharableParticipants sharedParticipants)

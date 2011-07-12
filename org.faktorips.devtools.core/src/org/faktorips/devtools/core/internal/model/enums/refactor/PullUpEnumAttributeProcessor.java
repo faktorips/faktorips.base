@@ -123,6 +123,8 @@ public class PullUpEnumAttributeProcessor extends IpsPullUpProcessor {
      */
     @Override
     protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+        super.validateUserInputThis(status, pm);
+
         if (!getEnumType().isSubEnumTypeOf(getTargetEnumType(), getIpsProject())) {
             status.addFatalError(Messages.PullUpEnumAttributeProcessor_msgTargetEnumTypeMustBeASupertype);
             return;

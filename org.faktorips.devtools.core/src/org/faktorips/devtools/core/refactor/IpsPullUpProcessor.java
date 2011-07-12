@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.internal.refactor.Messages;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.MessageList;
 
 /**
  * Abstract base class for all Faktor-IPS "Pull Up" refactoring processors.
@@ -66,46 +67,34 @@ public abstract class IpsPullUpProcessor extends IpsRefactoringProcessor {
         return initializedParticipants.toArray(new RefactoringParticipant[initializedParticipants.size()]);
     }
 
+    @Override
+    protected void validateIpsModel(MessageList validationMessageList) throws CoreException {
+        validationMessageList.add(getIpsObjectPart().validate(getIpsProject()));
+        validationMessageList.add(getTarget().validate(getIpsProject()));
+    }
+
     /**
-     * This implementation validates the target container and returns a {@link RefactoringStatus} as
-     * result of the validation.
-     * <p>
-     * It checks that the target container is specified and does not equal the current container.
+     * This implementation validates the target container. It checks that the target container is
+     * specified and does not equal the current container.
      */
     @Override
-    public RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreException {
-        RefactoringStatus status = new RefactoringStatus();
-
+    protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
         if (target == null) {
             status.addFatalError(NLS.bind(Messages.IpsPullUpProcessor_msgTargetNotSpecified,
                     getLocalizedContainerCaption()));
-            return status;
+            return;
         }
 
         if (target.equals(getIpsObjectPart().getIpsObject())) {
             status.addFatalError(NLS.bind(Messages.IpsPullUpProcessor_msgTargetEqualsCurrentContainer,
                     getLocalizedContainerCaption()));
-            return status;
+            return;
         }
-
-        validateUserInputThis(status, pm);
-        return status;
     }
 
     private String getLocalizedContainerCaption() {
         return IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(getIpsObjectPart().getIpsObject());
     }
-
-    /**
-     * This operation is called by {@link #validateUserInput(IProgressMonitor)}. Subclasses must
-     * implement special user input validations here.
-     * 
-     * @param status {@link RefactoringStatus} to report messages to
-     * @param pm {@link IProgressMonitor} to report progress to
-     * 
-     * @throws CoreException May be thrown at any time
-     */
-    protected abstract void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException;
 
     /**
      * Sets the target container the {@link IIpsObjectPart} to be refactored shall be moved up to.

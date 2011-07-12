@@ -15,7 +15,6 @@ package org.faktorips.devtools.core.internal.model.enums.refactor;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -34,20 +33,13 @@ public class RenameEnumLiteralNameAttributeValueProcessor extends IpsRenameProce
     }
 
     @Override
-    protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
-        IEnumAttributeValue enumAttributeValue = getEnumLiteralNameAttributeValue();
-        enumAttributeValue.setValue(getNewName());
-
-        enumAttributeValue.getIpsModel().clearValidationCache();
-        MessageList validationMessageList = enumAttributeValue.validate(getIpsProject());
-        addValidationMessagesToStatus(validationMessageList, status);
-
-        enumAttributeValue.setValue(getOriginalName());
+    protected void addIpsSrcFiles() throws CoreException {
+        addIpsSrcFile(getIpsSrcFile());
     }
 
     @Override
-    protected void addIpsSrcFiles() throws CoreException {
-        addIpsSrcFile(getIpsSrcFile());
+    protected void validateIpsModel(MessageList validationMessageList) throws CoreException {
+        validationMessageList.add(getEnumLiteralNameAttributeValue().validate(getIpsProject()));
     }
 
     @Override

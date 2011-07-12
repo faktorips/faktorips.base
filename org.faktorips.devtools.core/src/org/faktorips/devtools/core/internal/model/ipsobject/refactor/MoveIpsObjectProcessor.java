@@ -52,8 +52,9 @@ public final class MoveIpsObjectProcessor extends IpsMoveProcessor {
     }
 
     @Override
-    protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
-        renameMoveHelper.validateUserInputThis(getTargetIpsPackageFragment(), getIpsElement().getName(), status);
+    protected void validateIpsModel(MessageList validationMessageList) throws CoreException {
+        renameMoveHelper.validateIpsModel(getTargetIpsPackageFragment(), getIpsElement().getName(),
+                validationMessageList);
     }
 
     @Override

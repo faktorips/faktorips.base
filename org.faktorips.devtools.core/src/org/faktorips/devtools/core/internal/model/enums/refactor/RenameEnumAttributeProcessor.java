@@ -17,7 +17,6 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeReference;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
@@ -49,18 +48,6 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
                 .add(IEnumLiteralNameAttribute.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_DOES_NOT_EXIST);
     }
 
-    @Override
-    protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
-        getEnumAttribute().setName(getNewName());
-
-        getEnumAttribute().getIpsModel().clearValidationCache();
-        MessageList validationMessageList = getEnumAttribute().validate(getIpsProject());
-        validationMessageList.add(getEnumType().validate(getIpsProject()));
-        addValidationMessagesToStatus(validationMessageList, status);
-
-        getEnumAttribute().setName(getOriginalName());
-    }
-
     private IIpsSrcFile getIpsSrcFile() {
         return getEnumAttribute().getIpsSrcFile();
     }
@@ -81,6 +68,12 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
     }
 
     @Override
+    protected void validateIpsModel(MessageList validationMessageList) throws CoreException {
+        validationMessageList.add(getEnumAttribute().validate(getIpsProject()));
+        validationMessageList.add(getEnumType().validate(getIpsProject()));
+    }
+
+    @Override
     protected void refactorIpsModel(IProgressMonitor pm) throws CoreException {
         updateSubclassReferences();
         if (!(getEnumType().isAbstract())) {
@@ -93,7 +86,6 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
         updateEnumAttributeName();
     }
 
-    /** Updates the default value provider reference in the literal name attribute. */
     private void updateLiteralNameReference() {
         IEnumLiteralNameAttribute literalNameAttribute = getEnumType().getEnumLiteralNameAttribute();
         if (literalNameAttribute.getDefaultValueProviderAttribute().equals(getOriginalName())) {
@@ -101,7 +93,6 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
         }
     }
 
-    /** Updates all inherited attributes based on the enumeration attribute to be refactored. */
     private void updateSubclassReferences() throws CoreException {
         for (IIpsSrcFile ipsSrcFile : enumTypeSrcFiles) {
             IEnumType enumType = (IEnumType)ipsSrcFile.getIpsObject();
@@ -115,7 +106,6 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
         }
     }
 
-    /** Updates the reference to the enumeration attribute in the enumeration content. */
     private void updateEnumContentReference() throws CoreException {
         IEnumContent enumContent = getEnumType().findEnumContent(getIpsProject());
         if (enumContent != null) {
@@ -126,7 +116,6 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
         }
     }
 
-    /** Updates the name of the enumeration attribute itself. */
     private void updateEnumAttributeName() {
         getEnumAttribute().setName(getNewName());
     }

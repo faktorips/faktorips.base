@@ -96,39 +96,27 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
     }
 
     @Override
-    public RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreException {
-        RefactoringStatus status = new RefactoringStatus();
-
-        if (getNewName().isEmpty()) {
-            status.addFatalError(Messages.RenameAssociationProcessor_msgNewNameMustNotBeEmpty);
-            return status;
-        }
-
-        if (getNewName().equals(getOriginalName()) && getNewPluralName().equals(getOriginalPluralName())) {
-            status.addFatalError(Messages.RenameAssociationProcessor_msgEitherNameOrPluralNameMustBeChanged);
-            return status;
-        }
-
-        if (getAssociation().is1ToMany() && getNewPluralName().isEmpty()) {
-            status.addFatalError(Messages.RenameAssociationProcessor_msgNewPluralNameMustNotBeEmptyForToManyAssociations);
-            return status;
-        }
-
-        validateUserInputThis(status, pm);
-        return status;
+    protected void validateIpsModel(MessageList validationMessageList) throws CoreException {
+        validationMessageList.add(getAssociation().validate(getIpsProject()));
+        validationMessageList.add(getType().validate(getIpsProject()));
     }
 
     @Override
     protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
-        getAssociation().setTargetRoleSingular(getNewName());
-        getAssociation().setTargetRolePlural(getNewPluralName());
+        if (getNewName().isEmpty()) {
+            status.addFatalError(Messages.RenameAssociationProcessor_msgNewNameMustNotBeEmpty);
+            return;
+        }
 
-        MessageList validationMessageList = getAssociation().validate(getIpsProject());
-        validationMessageList.add(getType().validate(getIpsProject()));
-        addValidationMessagesToStatus(validationMessageList, status);
+        if (getNewName().equals(getOriginalName()) && getNewPluralName().equals(getOriginalPluralName())) {
+            status.addFatalError(Messages.RenameAssociationProcessor_msgEitherNameOrPluralNameMustBeChanged);
+            return;
+        }
 
-        getAssociation().setTargetRoleSingular(getOriginalName());
-        getAssociation().setTargetRolePlural(getOriginalPluralName());
+        if (getAssociation().is1ToMany() && getNewPluralName().isEmpty()) {
+            status.addFatalError(Messages.RenameAssociationProcessor_msgNewPluralNameMustNotBeEmptyForToManyAssociations);
+            return;
+        }
     }
 
     @Override

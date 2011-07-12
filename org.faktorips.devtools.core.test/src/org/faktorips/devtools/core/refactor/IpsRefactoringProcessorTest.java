@@ -13,7 +13,6 @@
 
 package org.faktorips.devtools.core.refactor;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -35,6 +34,7 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -126,24 +126,15 @@ public class IpsRefactoringProcessorTest {
 
     @Test
     public void shouldValidateUserInputOnCheckFinalConditions() throws OperationCanceledException, CoreException {
-        when(testProcessorSpy.validateUserInput(progressMonitor)).thenReturn(
-                RefactoringStatus.createFatalErrorStatus("foo"));
-
-        RefactoringStatus checkFinalConditionsStatus = testProcessorSpy.checkFinalConditions(progressMonitor,
-                checkConditionsContext);
-
-        assertEquals(1, checkFinalConditionsStatus.getEntries().length);
-        assertEquals("foo", checkFinalConditionsStatus.getEntryAt(0).getMessage());
+        testProcessorSpy.checkFinalConditions(progressMonitor, checkConditionsContext);
+        assertTrue(testProcessorSpy.validateUserInputThisCalled);
     }
 
     @Test
     public void shouldCallSubclassImplementationOfCheckFinalConditionsIfChecksWereSuccessfulThusFar()
             throws CoreException {
 
-        when(testProcessorSpy.validateUserInput(progressMonitor)).thenReturn(new RefactoringStatus());
-
         testProcessorSpy.checkFinalConditions(progressMonitor, checkConditionsContext);
-
         verify(testProcessorSpy).checkFinalConditionsThis(any(RefactoringStatus.class), eq(progressMonitor),
                 eq(checkConditionsContext));
     }
@@ -152,8 +143,7 @@ public class IpsRefactoringProcessorTest {
     public void shouldNotCallSubclassImplementationOfCheckFinalConditionsIfChecksWereNotSuccessfulThusFar()
             throws CoreException {
 
-        when(testProcessorSpy.validateUserInput(progressMonitor)).thenReturn(
-                RefactoringStatus.createFatalErrorStatus("foo"));
+        testProcessorSpy.invalid = true;
 
         testProcessorSpy.checkFinalConditions(progressMonitor, checkConditionsContext);
 
@@ -169,8 +159,25 @@ public class IpsRefactoringProcessorTest {
     // Public so it can be accessed by Mockito
     public static class TestProcessor extends IpsRefactoringProcessor {
 
+        private boolean invalid;
+
+        private boolean validateUserInputThisCalled;
+
         protected TestProcessor(IIpsElement ipsElement) {
             super(ipsElement);
+        }
+
+        @Override
+        protected void validateIpsModel(MessageList validationMessageList) throws CoreException {
+
+        }
+
+        @Override
+        protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+            if (invalid) {
+                status.addFatalError("foo");
+            }
+            validateUserInputThisCalled = true;
         }
 
         @Override
@@ -197,11 +204,6 @@ public class IpsRefactoringProcessorTest {
         public RefactoringParticipant[] loadParticipants(RefactoringStatus status,
                 SharableParticipants sharedParticipants) throws CoreException {
 
-            return null;
-        }
-
-        @Override
-        public RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreException {
             return null;
         }
 

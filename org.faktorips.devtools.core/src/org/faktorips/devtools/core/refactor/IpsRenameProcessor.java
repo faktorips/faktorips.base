@@ -67,40 +67,20 @@ public abstract class IpsRenameProcessor extends IpsRefactoringProcessor {
     }
 
     /**
-     * This implementation validates the element's new name and returns a {@link RefactoringStatus}
-     * as result of the validation. It checks that the name is not empty and that the name does not
-     * equal the element's original name.
-     * <p>
-     * If {@link #isPluralNameRefactoringRequired()} is true the same rules apply for the new plural
-     * name.
+     * This implementation validates the element's new name. It checks that the name is not empty
+     * and that the name does not equal the element's original name.
      */
     @Override
-    public RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreException {
-        RefactoringStatus status = new RefactoringStatus();
-
-        if (newName.length() < 1) {
+    protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+        if (newName.isEmpty()) {
             status.addFatalError(Messages.IpsRenameProcessor_msgNewNameEmpty);
-            return status;
+            return;
         }
         if (newName.equals(originalName)) {
             status.addFatalError(Messages.IpsRenameProcessor_msgNewNameEqualsOriginalName);
-            return status;
+            return;
         }
-
-        validateUserInputThis(status, pm);
-        return status;
     }
-
-    /**
-     * This operation is called by {@link #validateUserInput(IProgressMonitor)}. Subclasses must
-     * implement special user input validations here.
-     * 
-     * @param status {@link RefactoringStatus} to report messages to
-     * @param pm {@link IProgressMonitor} to report progress to
-     * 
-     * @throws CoreException May be thrown at any time
-     */
-    protected abstract void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException;
 
     @Override
     public final RefactoringParticipant[] loadParticipants(RefactoringStatus status,

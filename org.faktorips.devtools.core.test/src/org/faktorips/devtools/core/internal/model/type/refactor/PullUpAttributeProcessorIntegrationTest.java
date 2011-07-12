@@ -15,8 +15,10 @@ package org.faktorips.devtools.core.internal.model.type.refactor;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.abstracttest.AbstractIpsRefactoringTest;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -25,6 +27,15 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.junit.Test;
 
 public class PullUpAttributeProcessorIntegrationTest extends AbstractIpsRefactoringTest {
+
+    @Test
+    public void testFinalCheckConditionsInvalidModel() throws CoreException {
+        policyCmptTypeAttribute.setDatatype(null);
+
+        RefactoringStatus status = performPullUpRefactoring(policyCmptTypeAttribute, superPolicyCmptType);
+
+        assertTrue(status.hasFatalError());
+    }
 
     @Test
     public void testPullUpPolicyCmptTypeAttribute() throws CoreException {

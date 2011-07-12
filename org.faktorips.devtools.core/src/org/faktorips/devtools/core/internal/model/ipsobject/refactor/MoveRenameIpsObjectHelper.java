@@ -50,6 +50,7 @@ import org.faktorips.devtools.core.util.BeanUtil;
 import org.faktorips.devtools.core.util.RefactorUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -104,19 +105,18 @@ public final class MoveRenameIpsObjectHelper {
     }
 
     /**
-     * Can't validate because for IPS object validation the object's source file must be copied.
-     * Validation will still be performed during final condition checking so it should be OK. We
-     * check if there is already a source file with the new name in this package however.
+     * Check if there is already a source file with the new name in this package.
      */
-    public void validateUserInputThis(IIpsPackageFragment targetIpsPackageFragment,
+    public void validateIpsModel(IIpsPackageFragment targetIpsPackageFragment,
             String newName,
-            RefactoringStatus status) throws CoreException {
+            MessageList validationMessageList) throws CoreException {
 
         for (IIpsSrcFile ipsSrcFile : targetIpsPackageFragment.getIpsSrcFiles()) {
             String sourceFileName = ipsSrcFile.getName();
             if (sourceFileName.equals(newName + '.' + toBeRefactored.getIpsObjectType().getFileExtension())) {
-                status.addFatalError(NLS.bind(Messages.MoveRenameIpsObjectHelper_msgSourceFileAlreadyExists, newName,
-                        targetIpsPackageFragment.getName()));
+                String text = NLS.bind(Messages.MoveRenameIpsObjectHelper_msgSourceFileAlreadyExists, newName,
+                        targetIpsPackageFragment.getName());
+                validationMessageList.add(new Message(null, text, Message.ERROR));
                 break;
             }
         }

@@ -19,7 +19,6 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -85,14 +84,9 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     }
 
     @Override
-    protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
-        getAttribute().setName(getNewName());
-
-        MessageList validationMessageList = getAttribute().validate(getIpsProject());
+    protected void validateIpsModel(MessageList validationMessageList) throws CoreException {
+        validationMessageList.add(getAttribute().validate(getIpsProject()));
         validationMessageList.add(getType().validate(getIpsProject()));
-        addValidationMessagesToStatus(validationMessageList, status);
-
-        getAttribute().setName(getOriginalName());
     }
 
     @Override

@@ -53,8 +53,8 @@ public final class RenameIpsObjectProcessor extends IpsRenameProcessor {
     }
 
     @Override
-    protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
-        renameMoveHelper.validateUserInputThis(getIpsObject().getIpsPackageFragment(), getNewName(), status);
+    protected void validateIpsModel(MessageList validationMessageList) throws CoreException {
+        renameMoveHelper.validateIpsModel(getIpsObject().getIpsPackageFragment(), getNewName(), validationMessageList);
     }
 
     @Override

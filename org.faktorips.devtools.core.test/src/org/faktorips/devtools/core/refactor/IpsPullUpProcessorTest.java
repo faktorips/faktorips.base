@@ -93,11 +93,6 @@ public class IpsPullUpProcessorTest {
         }
 
         @Override
-        protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
-
-        }
-
-        @Override
         protected void refactorIpsModel(IProgressMonitor pm) throws CoreException {
 
         }

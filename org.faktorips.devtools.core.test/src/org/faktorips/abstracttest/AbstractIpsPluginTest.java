@@ -1291,9 +1291,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         PerformRefactoringOperation operation = new PerformRefactoringOperation(ipsRefactoring.toLtkRefactoring(),
                 CheckConditionsOperation.ALL_CONDITIONS);
         ResourcesPlugin.getWorkspace().run(operation, new NullProgressMonitor());
-        RefactoringStatus validationStatus = operation.getValidationStatus();
-        System.out.println(validationStatus);
-        return validationStatus;
+        RefactoringStatus conditionStatus = operation.getConditionStatus();
+        return conditionStatus;
     }
 
     /**
