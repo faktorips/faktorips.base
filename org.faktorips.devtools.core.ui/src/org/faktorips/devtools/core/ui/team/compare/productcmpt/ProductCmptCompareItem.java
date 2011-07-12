@@ -444,8 +444,8 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
                         .append(getCaption(formula)).append(QUOTE);
             } else if (getIpsElement() instanceof ITableContentUsage) {
                 ITableContentUsage tableUsage = (ITableContentUsage)getIpsElement();
-                sb.append(Messages.ProductCmptCompareItem_TableContentsLabel).append(COLON_BLANK).append(QUOTE)
-                        .append(getCaption(tableUsage)).append(QUOTE);
+                sb.append(getCaption(tableUsage)).append(COLON_BLANK).append(QUOTE)
+                        .append(tableUsage.getPropertyValue()).append(QUOTE);
             } else if (getIpsElement() instanceof IValidationRuleConfig) {
                 IValidationRuleConfig vRuleConfig = (IValidationRuleConfig)getIpsElement();
                 sb.append(Messages.ProductCmptCompareItem_RuleLabel).append(COLON_BLANK).append(QUOTE)
