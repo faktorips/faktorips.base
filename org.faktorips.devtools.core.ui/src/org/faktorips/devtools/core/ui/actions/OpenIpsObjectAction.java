@@ -13,9 +13,11 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -53,14 +55,16 @@ public class OpenIpsObjectAction extends Action implements IWorkbenchWindowActio
 
     @Override
     public void run() {
-        Shell parent = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
+        IWorkbenchWindow activeWorkbenchWindow = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
+        Shell parent = activeWorkbenchWindow.getShell();
         perspective = getCurrentPerspective().getId();
         try {
             boolean onlyProdDefs = perspective
                     .equals(IpsProductDefinitionPerspectiveFactory.PRODUCTDEFINITIONPERSPECTIVE_ID);
             OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(parent,
                     Messages.OpenIpsObjectAction_dialogTitle, new OpenIpsObjectContext(onlyProdDefs));
-            dialog.setFilter(StringUtil.unqualifiedName(super.getText()));
+            String selectedText = getSelectedText(activeWorkbenchWindow);
+            dialog.setFilter(StringUtil.unqualifiedName(selectedText));
             if (dialog.open() == Window.OK) {
                 IIpsElement object = dialog.getSelectedObject();
                 if (object != null) {
@@ -77,6 +81,16 @@ public class OpenIpsObjectAction extends Action implements IWorkbenchWindowActio
             IpsPlugin.logAndShowErrorDialog(e);
         }
 
+    }
+
+    protected String getSelectedText(IWorkbenchWindow activeWorkbenchWindow) {
+        String selectedText = StringUtils.EMPTY;
+        ISelection selection = activeWorkbenchWindow.getSelectionService().getSelection();
+        if (selection instanceof ITextSelection) {
+            ITextSelection textSelection = (ITextSelection)selection;
+            selectedText = textSelection.getText();
+        }
+        return selectedText;
     }
 
     public IPerspectiveDescriptor getCurrentPerspective() {
