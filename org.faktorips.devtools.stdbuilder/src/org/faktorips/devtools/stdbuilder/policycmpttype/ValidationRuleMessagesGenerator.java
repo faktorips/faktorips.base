@@ -94,7 +94,7 @@ public class ValidationRuleMessagesGenerator {
         pcTypeNamesToValidationRuleNamesMap.clear();
     }
 
-    public void storeMessagesToFile(IFile propertyFile, MessagesProperties messages, String comments)
+    private void storeMessagesToFile(IFile propertyFile, MessagesProperties messages, String comments)
             throws CoreException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         messages.store(outputStream, comments);
@@ -113,7 +113,7 @@ public class ValidationRuleMessagesGenerator {
     /**
      * @return Returns the messagesPropertiesFile.
      */
-    public IFile getMessagesPropertiesFile() {
+    private IFile getMessagesPropertiesFile() {
         return messagesPropertiesFile;
     }
 
