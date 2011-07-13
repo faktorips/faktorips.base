@@ -17,47 +17,36 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Properties;
 
 import org.junit.Test;
 
 public class MessagesPropertiesTest {
 
     @Test
-    public void shouldCallPropertiesPut() throws Exception {
-        Properties properties = mock(Properties.class);
-
-        MessagesProperties validationMessages = new MessagesProperties(properties);
+    public void testPut() throws Exception {
+        MessagesProperties validationMessages = new MessagesProperties();
 
         validationMessages.put("abc", "message");
 
-        verify(properties).put("abc", "message");
+        assertEquals("message", validationMessages.getMessage("abc"));
     }
 
     @Test
     public void shouldCallPropertiesRemove() throws Exception {
-        Properties properties = mock(Properties.class);
+        MessagesProperties validationMessages = new MessagesProperties();
 
-        MessagesProperties validationMessages = new MessagesProperties(properties);
+        validationMessages.put("abc", "message");
         validationMessages.remove("abc");
 
-        verify(properties).remove("abc");
-    }
-
-    @Test
-    public void shouldGetPropertiesElement() throws Exception {
-        Properties properties = mock(Properties.class);
-        String key = "abc";
-        when(properties.getProperty(key)).thenReturn("xyz");
-
-        MessagesProperties validationMessages = new MessagesProperties(properties);
-        assertEquals("xyz", validationMessages.getMessage(key));
+        assertNull(validationMessages.getMessage("abc"));
     }
 
     @Test
@@ -92,13 +81,12 @@ public class MessagesPropertiesTest {
 
     @Test
     public void shouldCallPropertyLoad() throws Exception {
-        Properties properties = mock(Properties.class);
-        MessagesProperties validationMessages = new MessagesProperties(properties);
+        MessagesProperties validationMessages = new MessagesProperties();
 
         InputStream inputStream = mock(InputStream.class);
         validationMessages.load(inputStream);
 
-        verify(properties).load(inputStream);
+        verify(inputStream).read(any(byte[].class));
         verify(inputStream).close();
     }
 
@@ -118,14 +106,13 @@ public class MessagesPropertiesTest {
 
     @Test
     public void shouldCallPropertyStore() throws Exception {
-        Properties properties = mock(Properties.class);
-        MessagesProperties validationMessages = new MessagesProperties(properties);
+        MessagesProperties validationMessages = new MessagesProperties();
 
         OutputStream outputStream = mock(OutputStream.class);
         String comments = "comments";
         validationMessages.store(outputStream, comments);
 
-        verify(properties).store(outputStream, comments);
+        verify(outputStream).write(any(byte[].class), anyInt(), anyInt());
         verify(outputStream).close();
     }
 
@@ -146,12 +133,31 @@ public class MessagesPropertiesTest {
 
     @Test
     public void shouldGetSizeFromProperties() throws Exception {
-        Properties properties = mock(Properties.class);
-        MessagesProperties validationMessages = new MessagesProperties(properties);
+        MessagesProperties validationMessages = new MessagesProperties();
 
-        when(properties.size()).thenReturn(123456);
+        validationMessages.put("abc", "123");
+        validationMessages.put("abc", "312");
+        validationMessages.put("xyz", "123");
 
-        assertEquals(123456, validationMessages.size());
+        assertEquals(2, validationMessages.size());
+    }
+
+    @Test
+    public void shouldSortPropertyKeys() throws Exception {
+        MessagesProperties validationMessages = new MessagesProperties();
+
+        validationMessages.put("aaa1", "123");
+        validationMessages.put("aaa0", "123");
+        validationMessages.put("abc", "312");
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        validationMessages.store(outputStream, "");
+
+        String propertyText = outputStream.toString();
+        int pos0 = propertyText.indexOf("aaa0");
+        int pos1 = propertyText.indexOf("aaa1");
+
+        assertTrue(pos0 < pos1);
     }
 
 }

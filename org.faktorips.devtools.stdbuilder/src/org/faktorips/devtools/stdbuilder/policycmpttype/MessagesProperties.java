@@ -16,7 +16,11 @@ package org.faktorips.devtools.stdbuilder.policycmpttype;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.Properties;
+import java.util.Vector;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -33,14 +37,7 @@ public class MessagesProperties {
      * Default constructor creating a new {@link Properties} object.
      */
     public MessagesProperties() {
-        this(new Properties());
-    }
-
-    /**
-     * Constructor using an existing {@link Properties} object.
-     */
-    public MessagesProperties(Properties properties) {
-        this.properties = properties;
+        properties = new SortedProperties();
     }
 
     /**
@@ -129,4 +126,29 @@ public class MessagesProperties {
         properties.clear();
     }
 
+    private static class SortedProperties extends Properties {
+
+        /**
+         * Comment for <code>serialVersionUID</code>
+         */
+        private static final long serialVersionUID = 7627392983212145038L;
+
+        @Override
+        public synchronized Enumeration<Object> keys() {
+            Enumeration<Object> keysEnum = super.keys();
+            Vector<Object> keyList = new Vector<Object>();
+            while (keysEnum.hasMoreElements()) {
+                keyList.add(keysEnum.nextElement());
+            }
+            Collections.sort(keyList, new Comparator<Object>() {
+
+                @Override
+                public int compare(Object o1, Object o2) {
+                    return o1.toString().compareTo(o2.toString());
+                }
+            });
+            return keyList.elements();
+        }
+
+    }
 }
