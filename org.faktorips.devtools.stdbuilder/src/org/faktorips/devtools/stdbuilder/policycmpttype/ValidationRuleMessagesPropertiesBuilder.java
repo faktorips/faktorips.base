@@ -13,14 +13,8 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.text.MessageFormat;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
@@ -28,23 +22,21 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.util.QNameUtil;
-import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
 import org.faktorips.util.LocalizedStringsSet;
 
-public class ValidationMessagesPropertiesBuilder extends AbstractArtefactBuilder {
+public class ValidationRuleMessagesPropertiesBuilder extends AbstractArtefactBuilder {
 
     private static final String MESSAGES_COMMENT = "MESSAGES_COMMENT";
 
@@ -52,31 +44,28 @@ public class ValidationMessagesPropertiesBuilder extends AbstractArtefactBuilder
 
     static final String MESSAGES_PREFIX = ".properties";
 
-    // matching a text that follows '{' and is followed by '{' or ','
-    public static final Pattern REPLACEMENT_PARAMETER_REGEXT = Pattern.compile("(?<=(\\{))[\\p{L}0-9]+(?=([,\\}]))");
-
-    private final Map<IFile, ValidationMessages> messagesMap;
+    private final Map<IFile, ValidationRuleMessagesGenerator> messageGeneratorMap;
 
     /**
      * This constructor setting the specified builder set and initializes a new map as
-     * {@link #messagesMap}
+     * {@link #messageGeneratorMap}
      * 
      * @param builderSet The builder set this builder belongs to
      */
-    public ValidationMessagesPropertiesBuilder(IIpsArtefactBuilderSet builderSet) {
-        super(builderSet, new LocalizedStringsSet(ValidationMessagesPropertiesBuilder.class));
-        messagesMap = new HashMap<IFile, ValidationMessages>();
+    public ValidationRuleMessagesPropertiesBuilder(IIpsArtefactBuilderSet builderSet) {
+        super(builderSet, new LocalizedStringsSet(ValidationRuleMessagesPropertiesBuilder.class));
+        messageGeneratorMap = new HashMap<IFile, ValidationRuleMessagesGenerator>();
     }
 
     @Override
     public String getName() {
-        return "ValidationMessagesPropertiesBuilder";
+        return "ValidationRuleMessagesPropertiesBuilder";
     }
 
     /**
      * {@inheritDoc}
      * 
-     * The {@link ValidationMessagesPropertiesBuilder} have to check the modification state for
+     * The {@link ValidationRuleMessagesPropertiesBuilder} have to check the modification state for
      * every the property files. In case of {@link IncrementalProjectBuilder#FULL_BUILD} we clear
      * every property file and try to read the existing file.
      * <p>
@@ -90,7 +79,7 @@ public class ValidationMessagesPropertiesBuilder extends AbstractArtefactBuilder
         super.beforeBuildProcess(project, buildKind);
         for (IIpsPackageFragmentRoot srcRoot : project.getSourceIpsPackageFragmentRoots()) {
             if (buildKind == IncrementalProjectBuilder.FULL_BUILD) {
-                getMessages(srcRoot).clear();
+                getMessagesGenerator(srcRoot).loadMessages();
             }
             IFile propertyFile = getPropertyFile(srcRoot);
             if (propertyFile == null) {
@@ -102,48 +91,15 @@ public class ValidationMessagesPropertiesBuilder extends AbstractArtefactBuilder
 
     @Override
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
-        ValidationMessages messages = getMessages(ipsSrcFile);
+        ValidationRuleMessagesGenerator messagesGenerator = getMessagesGenerator(ipsSrcFile);
         IIpsObject ipsObject = ipsSrcFile.getIpsObject();
         if (ipsObject instanceof IPolicyCmptType) {
-            IPolicyCmptType policyCmptType = (IPolicyCmptType)ipsObject;
-            List<IValidationRule> validationRules = policyCmptType.getValidationRules();
-            for (IValidationRule validationRule : validationRules) {
-                messages.put(getMessageKey(validationRule), getMessageText(validationRule));
-            }
+            messagesGenerator.generate((IPolicyCmptType)ipsObject);
         }
     }
 
     /**
-     * Getting the message text from {@link IValidationRule} and convert the replace parameters to
-     * match java {@link MessageFormat}
-     * 
-     * @param validationRule The validationRule holding the message text
-     * @return the text of validationRule with converted replacement parameters
-     */
-    protected String getMessageText(IValidationRule validationRule) {
-        String messageText = validationRule.getMessageText();
-        StringBuilder result = new StringBuilder();
-
-        Matcher matcher = REPLACEMENT_PARAMETER_REGEXT.matcher(messageText);
-        int lastEnd = 0;
-        Map<String, Integer> parameterNameToIndex = new HashMap<String, Integer>();
-        while (matcher.find()) {
-            result.append(messageText.substring(lastEnd, matcher.start()));
-            String parameterName = matcher.group();
-            Integer argumentIndex = parameterNameToIndex.get(parameterName);
-            if (argumentIndex == null) {
-                argumentIndex = parameterNameToIndex.size();
-                parameterNameToIndex.put(parameterName, argumentIndex);
-            }
-            result.append(argumentIndex);
-            lastEnd = matcher.end();
-        }
-        result.append(messageText.substring(lastEnd));
-        return result.toString();
-    }
-
-    /**
-     * If the property file was modified, the {@link ValidationMessagesPropertiesBuilder} have to
+     * If the property file was modified, the {@link ValidationRuleMessagesPropertiesBuilder} have to
      * save the new property file.
      * 
      * {@inheritDoc}
@@ -153,24 +109,12 @@ public class ValidationMessagesPropertiesBuilder extends AbstractArtefactBuilder
         super.afterBuildProcess(ipsProject, buildKind);
         IIpsPackageFragmentRoot[] srcRoots = ipsProject.getSourceIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot srcRoot : srcRoots) {
-            ValidationMessages messages = getMessages(srcRoot);
-            if (messages.isModified()) {
-                String comments = NLS.bind(getLocalizedText(ipsProject, MESSAGES_COMMENT), ipsProject.getName() + "/"
-                        + srcRoot.getName());
-                IFile propertyFile = getPropertyFile(srcRoot);
-                storeMessagesToFile(propertyFile, messages, comments);
-            }
+            String comment = NLS.bind(getLocalizedText(ipsProject, MESSAGES_COMMENT), ipsProject.getName() + "/"
+                    + srcRoot.getName());
+            ValidationRuleMessagesGenerator messagesGenerator = getMessagesGenerator(srcRoot);
+            messagesGenerator.saveIfModified(comment, buildsDerivedArtefacts()
+                    && getBuilderSet().isMarkNoneMergableResourcesAsDerived());
         }
-    }
-
-    protected void storeMessagesToFile(IFile propertyFile, ValidationMessages messages, String comments)
-            throws CoreException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        messages.store(outputStream, comments);
-
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-        createFileIfNotThere(propertyFile);
-        propertyFile.setContents(inputStream, true, true, new NullProgressMonitor());
     }
 
     protected IFile getPropertyFile(IIpsPackageFragmentRoot root) {
@@ -196,35 +140,19 @@ public class ValidationMessagesPropertiesBuilder extends AbstractArtefactBuilder
         return getBuilderSet().getInternalPackage(basePack, StringUtils.EMPTY);
     }
 
-    protected ValidationMessages getMessages(IIpsSrcFile ipsSrcFile) {
+    protected ValidationRuleMessagesGenerator getMessagesGenerator(IIpsSrcFile ipsSrcFile) {
         IIpsPackageFragmentRoot root = ipsSrcFile.getIpsPackageFragment().getRoot();
-        return getMessages(root);
+        return getMessagesGenerator(root);
     }
 
-    protected ValidationMessages getMessages(IIpsPackageFragmentRoot root) {
+    protected ValidationRuleMessagesGenerator getMessagesGenerator(IIpsPackageFragmentRoot root) {
         IFile propertyFile = getPropertyFile(root);
-        ValidationMessages messages = messagesMap.get(propertyFile);
-        if (messages == null) {
-            messages = new ValidationMessages();
-            loadMessagesFromFile(propertyFile, messages);
+        ValidationRuleMessagesGenerator messagesGenerator = messageGeneratorMap.get(propertyFile);
+        if (messagesGenerator == null) {
+            messagesGenerator = new ValidationRuleMessagesGenerator(propertyFile);
+            messageGeneratorMap.put(propertyFile, messagesGenerator);
         }
-        return messages;
-    }
-
-    protected void loadMessagesFromFile(IFile propertyFile, ValidationMessages messages) {
-        try {
-            if (propertyFile.exists()) {
-                messages.load(propertyFile.getContents());
-            }
-        } catch (CoreException e) {
-            StdBuilderPlugin.log(e);
-        }
-        messagesMap.put(propertyFile, messages);
-    }
-
-    protected String getMessageKey(IValidationRule validationRule) {
-        IIpsObject ipsObject = validationRule.getIpsObject();
-        return ipsObject.getQualifiedName() + "_" + validationRule.getName();
+        return messagesGenerator;
     }
 
     @Override
@@ -234,19 +162,12 @@ public class ValidationMessagesPropertiesBuilder extends AbstractArtefactBuilder
 
     @Override
     public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
-        // TODO delete cannot get the deleted ipsObject
-        // if (!ipsSrcFile.exists()) {
-        // return;
-        // }
-        // ValidationMessages messages = getMessages(ipsSrcFile);
-        // IIpsObject ipsObject = ipsSrcFile.getIpsObject();
-        // if (ipsObject instanceof IPolicyCmptType) {
-        // IPolicyCmptType policyCmptType = (IPolicyCmptType)ipsObject;
-        // List<IValidationRule> validationRules = policyCmptType.getValidationRules();
-        // for (IValidationRule validationRule : validationRules) {
-        // messages.remove(getMessageKey(validationRule));
-        // }
-        // }
+        ValidationRuleMessagesGenerator messagesGenerator = getMessagesGenerator(ipsSrcFile.getIpsPackageFragment()
+                .getRoot());
+        QualifiedNameType qualifiedNameType = ipsSrcFile.getQualifiedNameType();
+        if (qualifiedNameType.getIpsObjectType() == IpsObjectType.POLICY_CMPT_TYPE) {
+            messagesGenerator.deleteAllMessagesFor(qualifiedNameType.getName());
+        }
     }
 
     /**

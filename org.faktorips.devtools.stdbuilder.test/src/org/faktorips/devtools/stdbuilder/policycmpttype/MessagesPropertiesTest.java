@@ -27,13 +27,13 @@ import java.util.Properties;
 
 import org.junit.Test;
 
-public class ValidationMessagesTest {
+public class MessagesPropertiesTest {
 
     @Test
     public void shouldCallPropertiesPut() throws Exception {
         Properties properties = mock(Properties.class);
 
-        ValidationMessages validationMessages = new ValidationMessages(properties);
+        MessagesProperties validationMessages = new MessagesProperties(properties);
 
         validationMessages.put("abc", "message");
 
@@ -44,7 +44,7 @@ public class ValidationMessagesTest {
     public void shouldCallPropertiesRemove() throws Exception {
         Properties properties = mock(Properties.class);
 
-        ValidationMessages validationMessages = new ValidationMessages(properties);
+        MessagesProperties validationMessages = new MessagesProperties(properties);
         validationMessages.remove("abc");
 
         verify(properties).remove("abc");
@@ -56,13 +56,13 @@ public class ValidationMessagesTest {
         String key = "abc";
         when(properties.getProperty(key)).thenReturn("xyz");
 
-        ValidationMessages validationMessages = new ValidationMessages(properties);
+        MessagesProperties validationMessages = new MessagesProperties(properties);
         assertEquals("xyz", validationMessages.getMessage(key));
     }
 
     @Test
     public void shouldBeModifiedAfterSuccessfullPut() throws Exception {
-        ValidationMessages validationMessages = new ValidationMessages();
+        MessagesProperties validationMessages = new MessagesProperties();
         assertFalse(validationMessages.isModified());
 
         validationMessages.put("key", "message");
@@ -76,7 +76,7 @@ public class ValidationMessagesTest {
 
     @Test
     public void shouldBeModifiedAfterSuccessfullRemove() throws Exception {
-        ValidationMessages validationMessages = new ValidationMessages();
+        MessagesProperties validationMessages = new MessagesProperties();
         assertFalse(validationMessages.isModified());
 
         validationMessages.remove("key");
@@ -93,7 +93,7 @@ public class ValidationMessagesTest {
     @Test
     public void shouldCallPropertyLoad() throws Exception {
         Properties properties = mock(Properties.class);
-        ValidationMessages validationMessages = new ValidationMessages(properties);
+        MessagesProperties validationMessages = new MessagesProperties(properties);
 
         InputStream inputStream = mock(InputStream.class);
         validationMessages.load(inputStream);
@@ -104,7 +104,7 @@ public class ValidationMessagesTest {
 
     @Test
     public void shouldNotBeModifiedAfterLoad() throws Exception {
-        ValidationMessages validationMessages = new ValidationMessages();
+        MessagesProperties validationMessages = new MessagesProperties();
         assertFalse(validationMessages.isModified());
 
         validationMessages.put("abc", "text");
@@ -119,7 +119,7 @@ public class ValidationMessagesTest {
     @Test
     public void shouldCallPropertyStore() throws Exception {
         Properties properties = mock(Properties.class);
-        ValidationMessages validationMessages = new ValidationMessages(properties);
+        MessagesProperties validationMessages = new MessagesProperties(properties);
 
         OutputStream outputStream = mock(OutputStream.class);
         String comments = "comments";
@@ -131,7 +131,7 @@ public class ValidationMessagesTest {
 
     @Test
     public void shouldNotBeModifiedAfterStore() throws Exception {
-        ValidationMessages validationMessages = new ValidationMessages();
+        MessagesProperties validationMessages = new MessagesProperties();
         assertFalse(validationMessages.isModified());
 
         String messageText = "text";
@@ -147,7 +147,7 @@ public class ValidationMessagesTest {
     @Test
     public void shouldGetSizeFromProperties() throws Exception {
         Properties properties = mock(Properties.class);
-        ValidationMessages validationMessages = new ValidationMessages(properties);
+        MessagesProperties validationMessages = new MessagesProperties(properties);
 
         when(properties.size()).thenReturn(123456);
 

@@ -60,7 +60,7 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.GenPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassJaxbAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
-import org.faktorips.devtools.stdbuilder.policycmpttype.ValidationMessagesPropertiesBuilder;
+import org.faktorips.devtools.stdbuilder.policycmpttype.ValidationRuleMessagesPropertiesBuilder;
 import org.faktorips.devtools.stdbuilder.policycmpttype.persistence.PolicyCmptImplClassJpaAnnGenFactory;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptXMLBuilder;
@@ -498,7 +498,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         tocFileBuilder.setEnumTypeBuilder(enumTypeBuilder);
         tocFileBuilder.setEnumXmlAdapterBuilder(enumXmlAdapterBuilder);
 
-        ValidationMessagesPropertiesBuilder validationMessagesBuilder = new ValidationMessagesPropertiesBuilder(this);
+        ValidationRuleMessagesPropertiesBuilder validationMessagesBuilder = new ValidationRuleMessagesPropertiesBuilder(this);
 
         createAnnotationGeneratorMap();
 

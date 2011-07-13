@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.Status;
 import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
 import org.faktorips.util.IoUtil;
 
-public class ValidationMessages {
+public class MessagesProperties {
 
     private final Properties properties;
 
@@ -32,14 +32,14 @@ public class ValidationMessages {
     /**
      * Default constructor creating a new {@link Properties} object.
      */
-    public ValidationMessages() {
+    public MessagesProperties() {
         this(new Properties());
     }
 
     /**
      * Constructor using an existing {@link Properties} object.
      */
-    public ValidationMessages(Properties properties) {
+    public MessagesProperties(Properties properties) {
         this.properties = properties;
     }
 

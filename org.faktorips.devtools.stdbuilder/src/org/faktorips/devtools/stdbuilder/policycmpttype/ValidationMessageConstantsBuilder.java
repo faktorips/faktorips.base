@@ -35,10 +35,10 @@ import org.faktorips.util.StringUtil;
 public class ValidationMessageConstantsBuilder extends DefaultJavaSourceFileBuilder {
 
     private final String CONSTANT_RESOURCE_BUNDLE_NAME = "RESOURCE_BUNDLE_NAME";
-    private final ValidationMessagesPropertiesBuilder propertiesBuilder;
+    private final ValidationRuleMessagesPropertiesBuilder propertiesBuilder;
 
     public ValidationMessageConstantsBuilder(DefaultBuilderSet builderSet, String kindId,
-            ValidationMessagesPropertiesBuilder propertiesBuilder) {
+            ValidationRuleMessagesPropertiesBuilder propertiesBuilder) {
         super(builderSet, kindId, new LocalizedStringsSet(ValidationMessageConstantsBuilder.class));
         this.propertiesBuilder = propertiesBuilder;
         setMergeEnabled(true);
@@ -113,7 +113,7 @@ public class ValidationMessageConstantsBuilder extends DefaultJavaSourceFileBuil
 
     @Override
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return "ValidationMessages";
+        return "MessagesProperties";
     }
 
 }

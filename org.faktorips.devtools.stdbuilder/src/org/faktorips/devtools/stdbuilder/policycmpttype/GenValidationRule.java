@@ -280,16 +280,16 @@ public class GenValidationRule extends GenTypePart {
         // code to construct the message's text
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)getIpsPart().getIpsSrcFile().getIpsPackageFragment().getRoot()
                 .getIpsObjectPathEntry();
-        ValidationMessagesPropertiesBuilder validationMessageBuilder = getBuilderSet().getBuildersByClass(
-                ValidationMessagesPropertiesBuilder.class).get(0);
+        ValidationRuleMessagesPropertiesBuilder validationMessageBuilder = getBuilderSet().getBuildersByClass(
+                ValidationRuleMessagesPropertiesBuilder.class).get(0);
         String messagesPropertiesName = validationMessageBuilder.getResourceBundleBaseName(entry);
         body.appendClassName(MessagesHelper.class).append(" ").append(localVarMessageHelper).append(" = ")//
                 .append("new ").appendClassName(MessagesHelper.class).append("(\"").append(messagesPropertiesName)//
                 .append("\", ").appendln("getClass().getClassLoader());");
         body.appendClassName(String.class).append(" ").append(localVarMessage).append(" = ")//
                 .append(localVarMessageHelper).append(".").append(MethodNames.MESSAGE_HELPER_GET_MESSAGE).append("(\"") //
-                .append(validationMessageBuilder.getMessageKey(getIpsPart())).append("\", ") //
-                .append(parameterContext).append(".").append(MethodNames.VALIDATION_CONTEXT_GET_LOCALE).append("()"); //
+                .append(ValidationRuleMessagesGenerator.getMessageKey(getIpsPart())).append("\", ") //
+                .append(parameterContext).append(".").append(MethodNames.VALIDATION_CONTEXT_GET_LOCALE).append("()");
 
         for (String replacementParameter : replacementParameters) {
             body.append(", ");
@@ -329,7 +329,7 @@ public class GenValidationRule extends GenTypePart {
      */
     Set<String> getReplacementParameters(String messageText) {
         Set<String> result = new LinkedHashSet<String>();
-        Matcher matcher = ValidationMessagesPropertiesBuilder.REPLACEMENT_PARAMETER_REGEXT.matcher(messageText);
+        Matcher matcher = ValidationRuleMessagesGenerator.REPLACEMENT_PARAMETER_REGEXT.matcher(messageText);
         while (matcher.find()) {
             String parameterName = matcher.group();
             if (!Character.isJavaIdentifierStart(parameterName.charAt(0))) {
