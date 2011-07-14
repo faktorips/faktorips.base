@@ -76,9 +76,10 @@ public class ValidationRuleMessagesGenerator {
      * 
      * @param comment The comment for the properties file
      * @param markFileAsDerived Specify whether the file have to be marked as derived or not
+     * @return true if file was modified otherwise false
      * @throws CoreException in case of any exception during writing to file
      */
-    public void saveIfModified(String comment, boolean markFileAsDerived) throws CoreException {
+    public boolean saveIfModified(String comment, boolean markFileAsDerived) throws CoreException {
         if (getValidationMessages().isModified()) {
             IFile file = getMessagesPropertiesFile();
             if (!file.exists()) {
@@ -86,6 +87,9 @@ public class ValidationRuleMessagesGenerator {
                 file.setDerived(markFileAsDerived);
             }
             storeMessagesToFile(file, getValidationMessages(), comment);
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -113,7 +117,7 @@ public class ValidationRuleMessagesGenerator {
     /**
      * @return Returns the messagesPropertiesFile.
      */
-    private IFile getMessagesPropertiesFile() {
+    public IFile getMessagesPropertiesFile() {
         return messagesPropertiesFile;
     }
 

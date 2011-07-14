@@ -61,7 +61,7 @@ public class MessagesProperties {
      * @param messageText the text of the message
      */
     public void put(String messageKey, String messageText) {
-        if (!messageText.equals(properties.put(messageKey, messageText))) {
+        if (!messageText.equals(properties.setProperty(messageKey, messageText))) {
             setModified(true);
         }
     }

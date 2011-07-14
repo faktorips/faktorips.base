@@ -99,8 +99,8 @@ public class ValidationRuleMessagesPropertiesBuilder extends AbstractArtefactBui
     }
 
     /**
-     * If the property file was modified, the {@link ValidationRuleMessagesPropertiesBuilder} have to
-     * save the new property file.
+     * If the property file was modified, the {@link ValidationRuleMessagesPropertiesBuilder} have
+     * to save the new property file.
      * 
      * {@inheritDoc}
      */
