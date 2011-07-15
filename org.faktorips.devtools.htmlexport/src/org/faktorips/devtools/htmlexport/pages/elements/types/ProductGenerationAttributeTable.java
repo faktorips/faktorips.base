@@ -14,6 +14,7 @@
 package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -474,29 +475,43 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
      * 
      */
     private void addAttributeRow(IAttribute attribute) {
-        IPageElement[] cells = new IPageElement[productCmpt.getNumOfGenerations() + 1];
-
-        String caption = context.getLabel(attribute);
-        cells[0] = new TextPageElement(caption);
+        IPageElement[] cells;
 
         if (((IProductCmptTypeAttribute)attribute).isChangingOverTime()) {
-            for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
-                IProductCmptGeneration productCmptGeneration = productCmpt.getProductCmptGeneration(i);
-                IAttributeValue attributeValue = productCmptGeneration.getAttributeValue(attribute.getName());
-
-                String value = getValueOfAttribute(attributeValue, attribute);
-                cells[i + 1] = new TextPageElement(value);
-            }
+            cells = createChangeableAttributeRow(attribute);
         } else {
-            IAttributeValue attributeValue = productCmpt.getAttributeValue(attribute.getName());
-            String value = getValueOfAttribute(attributeValue, attribute);
-
-            for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
-                cells[i + 1] = new TextPageElement(value);
-            }
+            cells = createNotChangeableAttributeRow(attribute);
         }
         addSubElement(new TableRowPageElement(cells));
+    }
 
+    private IPageElement[] createNotChangeableAttributeRow(IAttribute attribute) {
+        IPageElement[] cells = new IPageElement[productCmpt.getNumOfGenerations() + 1];
+        cells[0] = new WrapperPageElement(WrapperType.NONE)
+                .addPageElements(
+                        new TextPageElement(context.getLabel(attribute)),
+                        new TextPageElement(" "), new TextPageElement(context.getMessage(HtmlExportMessages.ProductGenerationAttributeTable_notChangeableAttributes), //$NON-NLS-1$
+                                Collections.singleton(Style.SMALL)));
+        IAttributeValue attributeValue = productCmpt.getAttributeValue(attribute.getName());
+        String value = getValueOfAttribute(attributeValue, attribute);
+
+        for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
+            cells[i + 1] = new TextPageElement(value);
+        }
+        return cells;
+    }
+
+    private IPageElement[] createChangeableAttributeRow(IAttribute attribute) {
+        IPageElement[] cells = new IPageElement[productCmpt.getNumOfGenerations() + 1];
+        cells[0] = new TextPageElement(context.getLabel(attribute));
+        for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
+            IProductCmptGeneration productCmptGeneration = productCmpt.getProductCmptGeneration(i);
+            IAttributeValue attributeValue = productCmptGeneration.getAttributeValue(attribute.getName());
+
+            String value = getValueOfAttribute(attributeValue, attribute);
+            cells[i + 1] = new TextPageElement(value);
+        }
+        return cells;
     }
 
     private String getValueOfAttribute(IAttributeValue attributeValue, IAttribute attribute) {

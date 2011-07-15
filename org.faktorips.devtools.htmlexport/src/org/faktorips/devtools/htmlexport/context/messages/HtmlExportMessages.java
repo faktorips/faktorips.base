@@ -51,6 +51,7 @@ public interface HtmlExportMessages {
 
     public static final String ProductGenerationAttributeTable_associatedComponents = "ProductGenerationAttributeTable_associatedComponents";
     public static final String ProductGenerationAttributeTable_attributes = "ProductGenerationAttributeTable_attributes";
+    public static final String ProductGenerationAttributeTable_notChangeableAttributes = "ProductGenerationAttributeTable_notChangeableAttributes";
     public static final String ProductGenerationAttributeTable_defaultsAndValueSets = "ProductGenerationAttributeTable_defaultsAndValueSets";
     public static final String ProductGenerationAttributeTable_defaultValue = "ProductGenerationAttributeTable_defaultValue";
     public static final String ProductGenerationAttributeTable_formulas = "ProductGenerationAttributeTable_formulas";
