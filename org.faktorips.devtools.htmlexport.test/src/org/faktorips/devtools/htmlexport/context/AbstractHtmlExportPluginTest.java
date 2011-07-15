@@ -1,19 +1,14 @@
 package org.faktorips.devtools.htmlexport.context;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -31,11 +26,7 @@ import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.htmlexport.HtmlExportOperation;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
 import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
 
 public abstract class AbstractHtmlExportPluginTest extends AbstractIpsPluginTest {
 
@@ -81,29 +72,6 @@ public abstract class AbstractHtmlExportPluginTest extends AbstractIpsPluginTest
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Ignore
-    @Test
-    public void testCreateMassivProjektOhneValidierungsFehler() {
-        createMassivProjekt();
-
-        org.faktorips.util.message.MessageList ml;
-        try {
-            List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
-            ipsProject.findAllIpsSrcFiles(srcFiles);
-
-            ml = new MessageList();
-            for (IIpsSrcFile ipsSrcFile : srcFiles) {
-                ml.add(ipsSrcFile.getIpsObject().validate(ipsProject));
-            }
-
-            assertEquals(ml.toString(), 0, ml.getNoOfMessages(Message.ERROR));
-
-        } catch (CoreException e) {
-            e.printStackTrace();
-        }
-
     }
 
     protected void createMassivProjekt() {

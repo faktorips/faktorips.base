@@ -49,21 +49,23 @@ public class MethodsTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
         IMethod methodString = createStringMethod();
         IMethod methodInteger = createIntegerMethod();
 
-        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil
+                .createObjectContentPageElement(policy.getIpsSrcFile(), context);
 
         assertXPathExists(objectContentPage, getXPathMethodTable());
 
         assertXPathFromTable(objectContentPage, "[count(.//tr)=3]");
 
-        assertXPathFromTable(objectContentPage, "//tr[2][td='" + methodString.getName() + "']");
+        assertXPathFromTable(objectContentPage, "//tr[2][td='" + context.getLabel(methodString) + "']");
 
-        assertXPathFromTable(objectContentPage, "//tr[3][td='" + methodInteger.getName() + "']");
+        assertXPathFromTable(objectContentPage, "//tr[3][td='" + context.getLabel(methodInteger) + "']");
     }
 
     @Test
     public void testMethodsTableNichtVorhandenOhneAttribute() throws Exception {
 
-        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil
+                .createObjectContentPageElement(policy.getIpsSrcFile(), context);
 
         assertXPathNotExists(objectContentPage, getXPathMethodTable());
     }
@@ -72,7 +74,8 @@ public class MethodsTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
     public void testMethodsTableAufbau() throws Exception {
         createIntegerMethod();
         createStringMethod();
-        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil
+                .createObjectContentPageElement(policy.getIpsSrcFile(), context);
 
         int row = 2;
 
@@ -81,7 +84,7 @@ public class MethodsTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
             assertXPathFromTable(objectContentPage, "//tr[" + row + "][td='" + method.getDatatype() + "']");
             assertXPathFromTable(objectContentPage, "//tr[" + row + "][td='" + method.getModifier().getId() + "']");
             assertXPathFromTable(objectContentPage, "//tr[" + row + "][td='" + (method.isAbstract() ? "X" : "-") + "']");
-            assertXPathFromTable(objectContentPage, "//tr[" + row + "][td='" + method.getName() + "']");
+            assertXPathFromTable(objectContentPage, "//tr[" + row + "][td='" + context.getLabel(method) + "']");
             assertXPathFromTable(objectContentPage, "//tr[" + row + "][td='" + method.getSignatureString() + "']");
             row++;
         }
