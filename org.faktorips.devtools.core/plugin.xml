@@ -413,7 +413,7 @@
       </migrationOperation>
       <migrationOperation
             class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_4_0$Factory"
-            targetVersion="3.4.0.rc1">
+            targetVersion="3.4.0.rfinal">
       </migrationOperation>
    </extension>
    <extension
