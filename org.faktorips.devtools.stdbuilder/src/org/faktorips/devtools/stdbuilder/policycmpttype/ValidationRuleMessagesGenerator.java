@@ -40,7 +40,7 @@ public class ValidationRuleMessagesGenerator {
      */
     private static final String KEY_SEPARATOR = "-";
 
-    // matching a text that follows '{' and is followed by '{' or ','
+    // matching a text that follows '{' and is followed by '}' or ','
     public static final Pattern REPLACEMENT_PARAMETER_REGEXT = Pattern.compile("(?<=(\\{))[\\p{L}0-9]+(?=([,\\}]))");
 
     private final Map<String, Set<String>> pcTypeNamesToValidationRuleNamesMap = new HashMap<String, Set<String>>();
