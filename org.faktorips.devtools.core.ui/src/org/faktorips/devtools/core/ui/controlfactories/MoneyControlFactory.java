@@ -60,7 +60,7 @@ public class MoneyControlFactory extends ValueDatatypeControlFactory {
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
-        Text control = toolkit.createText(parent, getDefaultAlignment());
+        Text control = toolkit.createTextAppendStyle(parent, getDefaultAlignment());
         return control;
     }
 
