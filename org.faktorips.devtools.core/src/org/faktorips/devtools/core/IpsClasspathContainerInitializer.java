@@ -55,17 +55,12 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
 
         URL installLocation;
         if (sources) {
-            // this entry is used for deployed bundles. In development runtime this would be null.
             installLocation = bundle.getEntry("src.zip"); //$NON-NLS-1$
             if (installLocation == null) {
                 installLocation = bundle.getEntry("src"); //$NON-NLS-1$ 
             }
         } else {
-            // this entry is used for development runtime. In deployed bundles this would be null.
-            installLocation = bundle.getEntry("/bin"); //$NON-NLS-1$
-            if (installLocation == null) {
-                installLocation = bundle.getEntry("/"); //$NON-NLS-1$
-            }
+            installLocation = bundle.getResource("/"); //$NON-NLS-1$
         }
 
         if (installLocation == null) {

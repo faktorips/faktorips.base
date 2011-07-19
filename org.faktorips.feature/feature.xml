@@ -8,8 +8,7 @@
    <install-handler/>
 
    <description url="http://www.faktorips.org">
-      Faktor-IPS Core Feature
-This feature is needed for every Faktor-IPS installation.
+      Faktor-IPS
    </description>
 
    <copyright url="http://www.faktorips.org">
