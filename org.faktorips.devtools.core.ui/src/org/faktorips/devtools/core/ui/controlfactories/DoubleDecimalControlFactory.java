@@ -69,7 +69,7 @@ public class DoubleDecimalControlFactory extends ValueDatatypeControlFactory {
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
-        return toolkit.createText(parent, getDefaultAlignment());
+        return toolkit.createTextAppendStyle(parent, getDefaultAlignment());
     }
 
     /**

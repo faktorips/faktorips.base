@@ -41,7 +41,7 @@ public abstract class TextAndSecondControlComposite extends ControlComposite {
         layout.marginWidth = 0;
         setLayout(layout);
         if (toolkit.getFormToolkit() == null) {
-            text = toolkit.createText(this, SWT.SINGLE | style);
+            text = toolkit.createTextAppendStyle(this, SWT.SINGLE | style);
         } else {
             Composite c = toolkit.getFormToolkit().createComposite(this);
             GridLayout layout2 = new GridLayout(2, false);
