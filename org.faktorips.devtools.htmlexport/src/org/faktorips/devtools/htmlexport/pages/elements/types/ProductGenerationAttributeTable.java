@@ -106,7 +106,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             return;
         }
 
-        List<IValidationRule> validationRules = new ArrayList<IValidationRule>();
+        List<IValidationRule> validationRules;
         try {
             validationRules = policyCmptType.findAllValidationRules(context.getIpsProject());
         } catch (CoreException e) {
@@ -167,7 +167,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             return;
         }
 
-        List<IAttribute> attributes = new ArrayList<IAttribute>();
+        List<IAttribute> attributes;
         try {
             attributes = policyCmptType.findAllAttributes(context.getIpsProject());
         } catch (CoreException e) {

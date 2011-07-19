@@ -49,7 +49,10 @@ public class FileHandler implements IoHandler {
     public void writeFile(String filename, byte[] content) throws IOException {
         File file = new File((filename));
         if (!file.getParentFile().exists()) {
-            file.getParentFile().mkdirs();
+            boolean parentDirectoriesCreated = file.getParentFile().mkdirs();
+            if (!parentDirectoriesCreated) {
+                throw new IOException("Could not create parent directories for file " + filename); //$NON-NLS-1$
+            }
         }
         OutputStream outputStream = new FileOutputStream(file);
         outputStream.write(content);

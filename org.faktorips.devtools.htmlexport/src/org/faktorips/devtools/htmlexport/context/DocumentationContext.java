@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -143,7 +144,7 @@ public class DocumentationContext {
                 ipsProject.findAllIpsSrcFiles(documentedSrcFiles, getDocumentedIpsObjectTypes());
             } catch (CoreException e) {
                 addStatus(new IpsStatus(IStatus.ERROR,
-                        "Error finding IpsSrcFiles of types " + getDocumentedIpsObjectTypes(), e)); //$NON-NLS-1$
+                        "Error finding IpsSrcFiles of types " + StringUtils.join(getDocumentedIpsObjectTypes(), ';'), e)); //$NON-NLS-1$
             }
         }
 
@@ -164,7 +165,8 @@ public class DocumentationContext {
         try {
             ipsProject.findAllIpsSrcFiles(result, ipsObjectTypes);
         } catch (CoreException e) {
-            addStatus(new IpsStatus(IStatus.ERROR, "Error finding IpsSrcFiles of types " + ipsObjectTypes, e)); //$NON-NLS-1$
+            addStatus(new IpsStatus(IStatus.ERROR,
+                    "Error finding IpsSrcFiles of types " + StringUtils.join(ipsObjectTypes, ';'), e)); //$NON-NLS-1$
         }
 
         result.retainAll(getDocumentedSourceFiles());
