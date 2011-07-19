@@ -77,7 +77,7 @@ public class GregorianCalendarControlFactory extends ValueDatatypeControlFactory
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
-        Text text = toolkit.createText(parent, getDefaultAlignment());
+        Text text = toolkit.createTextAppendStyle(parent, getDefaultAlignment());
         return text;
     }
 

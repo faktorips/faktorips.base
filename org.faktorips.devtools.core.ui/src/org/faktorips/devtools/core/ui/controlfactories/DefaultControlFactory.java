@@ -108,7 +108,7 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
             int columnIndex,
             IIpsProject ipsProject) {
 
-        Text textControl = toolkit.createText(tableViewer.getTable(), SWT.SINGLE);
+        Text textControl = toolkit.createText(tableViewer.getTable(), SWT.SINGLE | getDefaultAlignment());
         TextCellEditor cellEditor = new TextCellEditor(textControl);
         TableViewerTraversalStrategy strat = new TableViewerTraversalStrategy(cellEditor, tableViewer, columnIndex);
         strat.setRowCreating(true);
@@ -128,7 +128,7 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
             int columnIndex,
             IIpsProject ipsProject) {
 
-        Text textControl = toolkit.createText(gridViewer.getGrid(), SWT.SINGLE);
+        Text textControl = toolkit.createText(gridViewer.getGrid(), SWT.SINGLE | getDefaultAlignment());
         TextCellEditor cellEditor = new TextCellEditor(textControl);
         cellEditor.setTraversalStrategy(new GridTableViewerTraversalStrategy(cellEditor, gridViewer, columnIndex));
         return cellEditor;
@@ -142,7 +142,7 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
             int columnIndex,
             IIpsProject ipsProject) {
 
-        Text textControl = toolkit.createText(gridViewer.getGrid(), SWT.SINGLE);
+        Text textControl = toolkit.createText(gridViewer.getGrid(), SWT.SINGLE | getDefaultAlignment());
         TextCellEditor cellEditor = new TextCellEditor(textControl);
         return cellEditor;
     }
