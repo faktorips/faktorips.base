@@ -385,13 +385,21 @@ public class UIToolkit {
         if (formToolkit != null) {
             newText = formToolkit.createText(parent, null, style);
         } else {
-            newText = new Text(parent, style | SWT.BORDER);
+            newText = new Text(parent, style);
         }
         GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
         gridData.widthHint = DEFAULT_WIDTH;
         newText.setLayoutData(gridData);
         return newText;
 
+    }
+
+    public Text createTextAppendStyle(Composite parent, int style) {
+        if (formToolkit != null) {
+            return createText(parent, style);
+        } else {
+            return createText(parent, SWT.SINGLE | SWT.BORDER | style);
+        }
     }
 
     public Text createText(Composite parent) {
