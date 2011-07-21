@@ -198,19 +198,17 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
     protected T newPart(IpsObjectPartInitializer<T> initializer) {
         T part = newPartInternal(parent.getNextPartId(), getConstructor(partsBaseClass));
         initializer.initialize(part);
-        parent.partWasAdded(part);
         return part;
     }
 
     public T newPart() {
         T newPart = newPartInternal(parent.getNextPartId(), getConstructor(partsBaseClass));
-        parent.partWasAdded(newPart);
         return newPart;
     }
 
     public T newPart(Element el, String id) {
         if (xmlTag.equals(el.getNodeName())) {
-            return newPartInternal(id, getConstructor(partsBaseClass));
+            return newPartInternalWithoutNotify(id, getConstructor(partsBaseClass));
         }
         return null;
     }
@@ -243,6 +241,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
     public boolean addPart(IIpsObjectPart part) {
         if (this.partsBaseClass.isAssignableFrom(part.getClass())) {
             parts.add((T)part);
+            parent.partWasAdded(part);
             return true;
         }
         return false;
@@ -256,14 +255,28 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
         return parts.remove(part);
     }
 
+    private T newPartInternal(String id, Constructor<T> constructor) {
+        return newPartInternal(id, constructor, true);
+    }
+
+    private T newPartInternalWithoutNotify(String id, Constructor<T> constructor) {
+        return newPartInternal(id, constructor, false);
+    }
+
     /**
      * Creates a new part without updating the src file. Subclasses have to instantiate a new object
      * of the concrete subclass of IpsObjectPart.
+     * 
+     * @param notifyParent if <code>true</code> the parent (ips object) will be informed about the
+     *            addition of the new part.
      */
-    private T newPartInternal(String id, Constructor<T> constructor) {
+    private T newPartInternal(String id, Constructor<T> constructor, boolean notifyParent) {
         try {
             T newPart = constructor.newInstance(new Object[] { parent, id });
             parts.add(newPart);
+            if (notifyParent) {
+                parent.partWasAdded(newPart);
+            }
             return newPart;
         } catch (Exception e) {
             throw new RuntimeException(this + ", Error creating new instance via constructor " + constructor, e); //$NON-NLS-1$
