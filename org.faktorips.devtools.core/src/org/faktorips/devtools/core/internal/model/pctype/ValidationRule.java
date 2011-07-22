@@ -16,15 +16,19 @@ package org.faktorips.devtools.core.internal.model.pctype;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.InternationalString;
+import org.faktorips.devtools.core.internal.model.InternationalStringXmlHelper;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -45,9 +49,15 @@ import org.w3c.dom.NodeList;
 
 public class ValidationRule extends AtomicIpsObjectPart implements IValidationRule {
 
+    private static final String VALIDATED_ATTRIBUTE = "ValidatedAttribute"; //$NON-NLS-1$
+
+    private static final String BUSINESS_FUNCTION = "BusinessFunction"; //$NON-NLS-1$
+
     public final static String TAG_NAME = "ValidationRuleDef"; //$NON-NLS-1$
 
-    private String msgText = ""; //$NON-NLS-1$
+    public final static String XML_TAG_MSG_TXT = "MessageText"; //$NON-NLS-1$
+
+    private final IInternationalString msgText;
 
     private String msgCode = ""; //$NON-NLS-1$
 
@@ -81,18 +91,18 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
      */
     public ValidationRule(IPolicyCmptType pcType, String id) {
         super(pcType, id);
+        msgText = new InternationalString(new Observer() {
+
+            @Override
+            public void update(Observable o, Object arg) {
+                objectHasChanged();
+            }
+        });
     }
 
     @Override
     public IPolicyCmptType getType() {
         return (IPolicyCmptType)getParent();
-    }
-
-    /**
-     * Constructor for testing purposes.
-     */
-    public ValidationRule() {
-        // Provides default constructor for testing purposes.
     }
 
     @Override
@@ -173,12 +183,6 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
 
         IIpsProject project = getIpsProject();
         validateBusinessFunctions(list, project);
-
-        if (SystemUtils.LINE_SEPARATOR != null && SystemUtils.LINE_SEPARATOR.length() > 0
-                && msgText.indexOf(SystemUtils.LINE_SEPARATOR) != -1) {
-            list.add(new Message(IValidationRule.MSGCODE_NO_NEWLINE, Messages.ValidationRule_msgNoNewlineAllowed,
-                    Message.ERROR, this, IValidationRule.PROPERTY_MESSAGE_TEXT));
-        }
 
         validateValidatedAttribute(list, ipsProject);
         validateCheckValueAgainstValueSet(list);
@@ -263,15 +267,8 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
     }
 
     @Override
-    public String getMessageText() {
+    public IInternationalString getMessageText() {
         return msgText;
-    }
-
-    @Override
-    public void setMessageText(String newText) {
-        String oldText = msgText;
-        msgText = newText;
-        valueChanged(oldText, msgText);
     }
 
     @Override
@@ -310,7 +307,6 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         appliedForAllBusinessFunction = Boolean.parseBoolean(element
                 .getAttribute(PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS));
         msgCode = element.getAttribute(PROPERTY_MESSAGE_CODE);
-        msgText = element.getAttribute(PROPERTY_MESSAGE_TEXT);
         msgSeverity = MessageSeverity.getMessageSeverity(element.getAttribute(PROPERTY_MESSAGE_SEVERITY));
         checkValueAgainstValueSetRule = Boolean.parseBoolean(element
                 .getAttribute(PROPERTY_CHECK_AGAINST_VALUE_SET_RULE));
@@ -334,11 +330,14 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element) {
                 Element subElement = (Element)nl.item(i);
-                if (subElement.getNodeName().equals("BusinessFunction")) { //$NON-NLS-1$
+                if (subElement.getNodeName().equals(BUSINESS_FUNCTION)) {
                     functions.add(subElement.getAttribute("name")); //$NON-NLS-1$
                 }
-                if (subElement.getNodeName().equals("ValidatedAttribute")) { //$NON-NLS-1$
+                if (subElement.getNodeName().equals(VALIDATED_ATTRIBUTE)) {
                     validatedAttributes.add(subElement.getAttribute("name")); //$NON-NLS-1$
+                }
+                if (subElement.getNodeName().equals(XML_TAG_MSG_TXT)) {
+                    InternationalStringXmlHelper.initFromXml(msgText, subElement);
                 }
             }
         }
@@ -352,7 +351,6 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         newElement.setAttribute(PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS,
                 String.valueOf(appliedForAllBusinessFunction));
         newElement.setAttribute(PROPERTY_MESSAGE_CODE, msgCode);
-        newElement.setAttribute(PROPERTY_MESSAGE_TEXT, msgText);
         newElement.setAttribute(PROPERTY_MESSAGE_SEVERITY, msgSeverity.getId());
         newElement.setAttribute(PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC, String.valueOf(validatedAttrSpecifiedInSrc));
         newElement.setAttribute(PROPERTY_CHECK_AGAINST_VALUE_SET_RULE, String.valueOf(checkValueAgainstValueSetRule));
@@ -361,16 +359,17 @@ public class ValidationRule extends AtomicIpsObjectPart implements IValidationRu
         newElement.setAttribute(PROPERTY_ACTIVATED_BY_DEFAULT, String.valueOf(activatedByDefault));
         Document doc = newElement.getOwnerDocument();
         for (int i = 0; i < functions.size(); i++) {
-            Element fctElement = doc.createElement("BusinessFunction"); //$NON-NLS-1$
+            Element fctElement = doc.createElement(BUSINESS_FUNCTION);
             fctElement.setAttribute("name", functions.get(i)); //$NON-NLS-1$
             newElement.appendChild(fctElement);
         }
         for (int i = 0; i < validatedAttributes.size(); i++) {
-            Element attrElement = doc.createElement("ValidatedAttribute"); //$NON-NLS-1$
+            Element attrElement = doc.createElement(VALIDATED_ATTRIBUTE);
             attrElement.setAttribute("name", validatedAttributes //$NON-NLS-1$
                     .get(i));
             newElement.appendChild(attrElement);
         }
+        InternationalStringXmlHelper.toXml(msgText, newElement, XML_TAG_MSG_TXT);
     }
 
     @Override

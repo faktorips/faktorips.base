@@ -18,7 +18,9 @@ import java.io.ByteArrayOutputStream;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -27,6 +29,9 @@ import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.faktorips.devtools.core.internal.model.InternationalString;
+import org.faktorips.devtools.core.model.IInternationalString;
+import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -49,8 +54,11 @@ public class ValidationRuleMessagesGenerator {
 
     private final IFile messagesPropertiesFile;
 
-    public ValidationRuleMessagesGenerator(IFile messagesPropertiesFile) {
+    private final Locale locale;
+
+    public ValidationRuleMessagesGenerator(IFile messagesPropertiesFile, Locale locale) {
         this.messagesPropertiesFile = messagesPropertiesFile;
+        this.locale = locale;
         try {
             if (messagesPropertiesFile.exists()) {
                 getValidationMessages().load(messagesPropertiesFile.getContents());
@@ -69,6 +77,32 @@ public class ValidationRuleMessagesGenerator {
 
     public static String getMessageKey(String policyCmptTypeQName, String ruleName) {
         return policyCmptTypeQName + KEY_SEPARATOR + ruleName;
+    }
+
+    /**
+     * Extracting the replacement parameters from given messageText. The replacement parameters are
+     * defined curly braces. In contrast to the replacement parameters used in {@link MessageFormat}
+     * , these parameters could have names and not only indices. However you could use additional
+     * format information separated by comma as used by {@link MessageFormat}.
+     * 
+     * @param internationalString the {@link InternationalString} containing all message texts
+     * @param makeJavaIdentifier true to make parameter names to valid java identifier
+     */
+    public static LinkedHashSet<String> getReplacementParameters(IInternationalString internationalString,
+            boolean makeJavaIdentifier) {
+        LinkedHashSet<String> result = new LinkedHashSet<String>();
+        for (ILocalizedString localizedString : internationalString.values()) {
+            String text = localizedString.getValue();
+            Matcher matcher = ValidationRuleMessagesGenerator.REPLACEMENT_PARAMETER_REGEXT.matcher(text);
+            while (matcher.find()) {
+                String parameterName = matcher.group();
+                if (makeJavaIdentifier && !Character.isJavaIdentifierStart(parameterName.charAt(0))) {
+                    parameterName = "p" + parameterName;
+                }
+                result.add(parameterName);
+            }
+        }
+        return result;
     }
 
     /**
@@ -169,7 +203,11 @@ public class ValidationRuleMessagesGenerator {
     }
 
     void addValidationRuleMessage(IValidationRule validationRule, Set<String> ruleNames) {
-        getValidationMessages().put(getMessageKey(validationRule), getMessageText(validationRule));
+        String messageText = getMessageText(validationRule);
+        if (messageText == null) {
+            return;
+        }
+        getValidationMessages().put(getMessageKey(validationRule), messageText);
         ruleNames.add(validationRule.getName());
     }
 
@@ -181,7 +219,12 @@ public class ValidationRuleMessagesGenerator {
      * @return the text of validationRule with converted replacement parameters
      */
     String getMessageText(IValidationRule validationRule) {
-        String messageText = validationRule.getMessageText();
+        IInternationalString internationalString = validationRule.getMessageText();
+        ILocalizedString localizedString = internationalString.get(locale);
+        if (localizedString == null) {
+            return null;
+        }
+        String messageText = localizedString.getValue();
         if (messageText == null) {
             return "";
         }
@@ -189,20 +232,27 @@ public class ValidationRuleMessagesGenerator {
 
         Matcher matcher = REPLACEMENT_PARAMETER_REGEXT.matcher(messageText);
         int lastEnd = 0;
-        Map<String, Integer> parameterNameToIndex = new HashMap<String, Integer>();
+        LinkedHashSet<String> parameterNames = getReplacementParameters(internationalString, false);
         while (matcher.find()) {
             result.append(messageText.substring(lastEnd, matcher.start()));
             String parameterName = matcher.group();
-            Integer argumentIndex = parameterNameToIndex.get(parameterName);
-            if (argumentIndex == null) {
-                argumentIndex = parameterNameToIndex.size();
-                parameterNameToIndex.put(parameterName, argumentIndex);
-            }
+            Integer argumentIndex = getIndexOf(parameterName, parameterNames);
             result.append(argumentIndex);
             lastEnd = matcher.end();
         }
         result.append(messageText.substring(lastEnd));
         return result.toString();
+    }
+
+    private Integer getIndexOf(String parameterName, LinkedHashSet<String> parameterNames) {
+        int i = 0;
+        for (String string : parameterNames) {
+            if (string.equals(parameterName)) {
+                return i;
+            }
+            i++;
+        }
+        return -1;
     }
 
     Set<String> getRuleNames(String pcTypeName) {

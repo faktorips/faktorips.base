@@ -611,7 +611,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         productCmpt.newPropertyValue(attr2);
         assertEquals(2, productCmpt.getPropertyValues(ProductCmptPropertyType.VALUE.getValueClass()).size());
 
-        productCmpt.newPropertyValue(new ValidationRule());
+        productCmpt.newPropertyValue(new ValidationRule(mock(IPolicyCmptType.class), ""));
         assertEquals(2, productCmpt.getPropertyValues(ProductCmptPropertyType.VALUE.getValueClass()).size());
         productCmpt.newPropertyValue(new PolicyCmptTypeAttribute(policyCmptType, "pcTypeAttribute"));
         assertEquals(2, productCmpt.getPropertyValues(ProductCmptPropertyType.VALUE.getValueClass()).size());

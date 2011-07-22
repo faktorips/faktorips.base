@@ -15,6 +15,7 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import java.util.List;
 
+import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
@@ -49,7 +50,8 @@ public class RulesTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
         IValidationRule methodString = createRuleWithAttributes();
         IValidationRule methodInteger = createRuleWithoutAttributes();
 
-        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil
+                .createObjectContentPageElement(policy.getIpsSrcFile(), context);
 
         assertXPathExists(objectContentPage, getXPathMethodTable());
 
@@ -63,7 +65,8 @@ public class RulesTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
     @Test
     public void testMethodsTableNichtVorhandenOhneAttribute() throws Exception {
 
-        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil
+                .createObjectContentPageElement(policy.getIpsSrcFile(), context);
 
         assertXPathNotExists(objectContentPage, getXPathMethodTable());
     }
@@ -72,7 +75,8 @@ public class RulesTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
     public void testMethodsTableAufbau() throws Exception {
         createRuleWithoutAttributes();
         createRuleWithAttributes();
-        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil
+                .createObjectContentPageElement(policy.getIpsSrcFile(), context);
 
         int row = 2;
 
@@ -82,7 +86,9 @@ public class RulesTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
             assertXPathFromTable(objectContentPage, "//tr[" + row + "][td='" + rule.getMessageCode() + "']");
             assertXPathFromTable(objectContentPage, "//tr[" + row + "][td='" + rule.getMessageSeverity().getName()
                     + "']");
-            assertXPathFromTable(objectContentPage, "//tr[" + row + "][td='" + rule.getMessageText() + "']");
+            assertXPathFromTable(objectContentPage,
+                    "//tr[" + row + "][td='" + rule.getMessageText().get(context.getDocumentationLocale()).getValue()
+                            + "']");
 
             String[] validatedAttributes = rule.getValidatedAttributes();
             for (String validatedAttribute : validatedAttributes) {
@@ -99,7 +105,8 @@ public class RulesTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
         rule.setName("RuleWithoutAttributes");
         rule.setMessageCode("CODE_WITHOUT_ATTRIBUTES");
         rule.setMessageSeverity(MessageSeverity.ERROR);
-        rule.setMessageText("blubber");
+        String msgTxt = "blubber";
+        rule.getMessageText().add(new LocalizedString(context.getDocumentationLocale(), msgTxt));
         rule.addValidatedAttribute("Attribut_1");
         rule.addValidatedAttribute("Attribut_2");
         return rule;
@@ -110,7 +117,8 @@ public class RulesTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
         rule.setName("RuleWithAttributes");
         rule.setMessageCode("CODE_WITH_ATTRIBUTES");
         rule.setMessageSeverity(MessageSeverity.WARNING);
-        rule.setMessageText("blabla");
+        String msgTxt = "blabla";
+        rule.getMessageText().add(new LocalizedString(context.getDocumentationLocale(), msgTxt));
         return rule;
     }
 }

@@ -30,12 +30,16 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
+import java.util.HashSet;
+import java.util.Locale;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.faktorips.devtools.core.internal.model.ipsproject.SupportedLanguage;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -44,7 +48,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
+import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.junit.Test;
 
@@ -54,7 +60,7 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
     public void testIsBuilderFor() throws Exception {
         IIpsArtefactBuilderSet builderSet = mockBuilderSet();
         ValidationRuleMessagesPropertiesBuilder builder = new ValidationRuleMessagesPropertiesBuilder(builderSet);
-        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+        IIpsSrcFile ipsSrcFile = mockIpsSrcFile();
 
         when(ipsSrcFile.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
         assertTrue(builder.isBuilderFor(ipsSrcFile));
@@ -71,10 +77,11 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         // we use a spy object to insert the generatorMock
         ValidationRuleMessagesGenerator generatorMock = mock(ValidationRuleMessagesGenerator.class);
         ValidationRuleMessagesPropertiesBuilder builderSpy = spy(new ValidationRuleMessagesPropertiesBuilder(builderSet));
-        doReturn(generatorMock).when(builderSpy).getMessagesGenerator(any(IIpsPackageFragmentRoot.class));
+        doReturn(generatorMock).when(builderSpy).getMessagesGenerator(any(IIpsPackageFragmentRoot.class),
+                any(ISupportedLanguage.class));
 
         IPolicyCmptType pcType = mock(IPolicyCmptType.class);
-        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+        IIpsSrcFile ipsSrcFile = mockIpsSrcFile();
         IIpsPackageFragment pack = mockPackageFragment();
 
         when(ipsSrcFile.getIpsPackageFragment()).thenReturn(pack);
@@ -84,68 +91,6 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         builderSpy.build(ipsSrcFile);
 
         verify(generatorMock).generate(pcType);
-
-        // String pcTypeName = "PcTypeTestName";
-        // String vrule1Name = "rule1Name";
-        // String testMessage1 = "testMessage1";
-        //
-        // IValidationRule vRule1 = mockValidationRule(pcType);
-        // when(vRule1.getName()).thenReturn(vrule1Name);
-        // when(vRule1.getMessageText()).thenReturn(testMessage1);
-        //
-        // String vrule2Name = "rule2Name";
-        // String testMessage2 = "testMessage2";
-        //
-        // IValidationRule vRule2 = mockValidationRule(pcType);
-        // when(vRule2.getName()).thenReturn(vrule2Name);
-        // when(vRule2.getMessageText()).thenReturn(testMessage2);
-        //
-        // List<IValidationRule> listOfValidationRules = new ArrayList<IValidationRule>();
-        // listOfValidationRules.add(vRule1);
-        //
-        // when(pcType.getQualifiedName()).thenReturn(pcTypeName);
-        // when(pcType.getValidationRules()).thenReturn(listOfValidationRules);
-        //
-        // assertEquals(1, messages.size());
-        // assertEquals(messages.getMessage(pcTypeName + "_" + vrule1Name), testMessage1);
-        //
-        // listOfValidationRules.add(vRule2);
-        //
-        // builder.build(ipsSrcFile);
-        //
-        // assertEquals(2, messages.size());
-        // assertEquals(messages.getMessage(pcTypeName + "_" + vrule1Name), testMessage1);
-        // assertEquals(messages.getMessage(pcTypeName + "_" + vrule2Name), testMessage2);
-        //
-        // // when calling the build method with an other object, the older messages should not be
-        // // removed
-        // String pcTypeName2 = "PcTypeTestName2";
-        // IIpsSrcFile ipsSrcFile2 = mock(IIpsSrcFile.class);
-        // when(ipsSrcFile2.getIpsPackageFragment()).thenReturn(pack);
-        // IPolicyCmptType pcType2 = mock(IPolicyCmptType.class);
-        // when(ipsSrcFile2.getIpsObject()).thenReturn(pcType2);
-        // when(pcType2.getQualifiedName()).thenReturn(pcTypeName2);
-        //
-        // IValidationRule vRule2_1 = mockValidationRule(pcType2);
-        // when(vRule2_1.getName()).thenReturn(vrule1Name);
-        // when(vRule2_1.getMessageText()).thenReturn(testMessage1);
-        // IValidationRule vRule2_2 = mockValidationRule(pcType2);
-        // when(vRule2_2.getName()).thenReturn(vrule2Name);
-        // when(vRule2_2.getMessageText()).thenReturn(testMessage2);
-        //
-        // List<IValidationRule> listOfValidationRules2 = new ArrayList<IValidationRule>();
-        // listOfValidationRules2.add(vRule2_1);
-        // listOfValidationRules2.add(vRule2_2);
-        //
-        // when(pcType2.getValidationRules()).thenReturn(listOfValidationRules2);
-        //
-        // builder.build(ipsSrcFile2);
-        //
-        // assertEquals(4, messages.size());
-        // assertEquals(messages.getMessage(pcTypeName + "_" + vrule1Name), testMessage1);
-        // assertEquals(messages.getMessage(pcTypeName + "_" + vrule2Name), testMessage2);
-        // assertEquals(messages.getMessage(pcTypeName2 + "_" + vrule1Name), testMessage1);
-        // assertEquals(messages.getMessage(pcTypeName2 + "_" + vrule2Name), testMessage2);
     }
 
     @Test
@@ -155,27 +100,28 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
 
         IIpsPackageFragment pack = mockPackageFragment();
 
-        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+        IIpsSrcFile ipsSrcFile = mockIpsSrcFile();
         when(ipsSrcFile.getIpsPackageFragment()).thenReturn(pack);
 
-        ValidationRuleMessagesGenerator messageGenerator = builder.getMessagesGenerator(ipsSrcFile);
-        assertSame(messageGenerator, builder.getMessagesGenerator(ipsSrcFile));
+        ISupportedLanguage supportedLanguage = new SupportedLanguage(Locale.GERMAN);
+        ValidationRuleMessagesGenerator messageGenerator = builder.getMessagesGenerator(ipsSrcFile, supportedLanguage);
+        assertSame(messageGenerator, builder.getMessagesGenerator(ipsSrcFile, supportedLanguage));
 
-        IIpsSrcFile otherIpsSrcFile = mock(IIpsSrcFile.class);
+        IIpsSrcFile otherIpsSrcFile = mockIpsSrcFile();
         when(otherIpsSrcFile.getIpsPackageFragment()).thenReturn(pack);
 
-        assertSame(messageGenerator, builder.getMessagesGenerator(otherIpsSrcFile));
+        assertSame(messageGenerator, builder.getMessagesGenerator(otherIpsSrcFile, supportedLanguage));
 
         IIpsPackageFragment pack2 = mockPackageFragment();
 
-        IIpsSrcFile ipsSrcFile2 = mock(IIpsSrcFile.class);
+        IIpsSrcFile ipsSrcFile2 = mockIpsSrcFile();
         when(ipsSrcFile2.getIpsPackageFragment()).thenReturn(pack2);
 
-        assertNotSame(messageGenerator, builder.getMessagesGenerator(ipsSrcFile2));
+        assertNotSame(messageGenerator, builder.getMessagesGenerator(ipsSrcFile2, supportedLanguage));
 
         // overwrite the root of pack2
         doReturn(pack.getRoot()).when(pack2).getRoot();
-        assertSame(messageGenerator, builder.getMessagesGenerator(ipsSrcFile2));
+        assertSame(messageGenerator, builder.getMessagesGenerator(ipsSrcFile2, supportedLanguage));
     }
 
     @Test
@@ -185,11 +131,12 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         // we use a spy object to insert the generatorMock
         ValidationRuleMessagesGenerator generatorMock = mock(ValidationRuleMessagesGenerator.class);
         ValidationRuleMessagesPropertiesBuilder builderSpy = spy(new ValidationRuleMessagesPropertiesBuilder(builderSet));
-        doReturn(generatorMock).when(builderSpy).getMessagesGenerator(any(IIpsPackageFragmentRoot.class));
+        doReturn(generatorMock).when(builderSpy).getMessagesGenerator(any(IIpsPackageFragmentRoot.class),
+                any(ISupportedLanguage.class));
 
         IIpsPackageFragment pack = mockPackageFragment();
 
-        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+        IIpsSrcFile ipsSrcFile = mockIpsSrcFile();
         when(ipsSrcFile.getIpsPackageFragment()).thenReturn(pack);
 
         // should not throw any exception
@@ -211,9 +158,10 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         // we use a spy object to insert the generatorMock
         ValidationRuleMessagesGenerator generatorMock = mock(ValidationRuleMessagesGenerator.class);
         ValidationRuleMessagesPropertiesBuilder builderSpy = spy(new ValidationRuleMessagesPropertiesBuilder(builderSet));
-        doReturn(generatorMock).when(builderSpy).getMessagesGenerator(any(IIpsPackageFragmentRoot.class));
+        doReturn(generatorMock).when(builderSpy).getMessagesGenerator(any(IIpsPackageFragmentRoot.class),
+                any(ISupportedLanguage.class));
 
-        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+        IIpsSrcFile ipsSrcFile = mockIpsSrcFile();
         IPolicyCmptType pcType = mock(IPolicyCmptType.class);
         when(ipsSrcFile.getIpsObject()).thenReturn(pcType);
         String pcTypeName = "PcTypeTestName";
@@ -234,11 +182,12 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         // we use a spy object to insert the generatorMock
         ValidationRuleMessagesGenerator generatorMock = mock(ValidationRuleMessagesGenerator.class);
         ValidationRuleMessagesPropertiesBuilder builderSpy = spy(new ValidationRuleMessagesPropertiesBuilder(builderSet));
-        doReturn(generatorMock).when(builderSpy).getMessagesGenerator(any(IIpsPackageFragmentRoot.class));
+        doReturn(generatorMock).when(builderSpy).getMessagesGenerator(any(IIpsPackageFragmentRoot.class),
+                any(ISupportedLanguage.class));
 
         IIpsPackageFragment pack = mockPackageFragment();
 
-        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+        IIpsSrcFile ipsSrcFile = mockIpsSrcFile();
         IpsObjectType ipsObjectType = mock(IpsObjectType.class);
         when(ipsSrcFile.getQualifiedNameType()).thenReturn(new QualifiedNameType("pcType", ipsObjectType));
         when(ipsSrcFile.getIpsPackageFragment()).thenReturn(pack);
@@ -283,7 +232,36 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         IIpsPackageFragmentRoot root = mock(IIpsPackageFragmentRoot.class);
         when(root.getIpsObjectPathEntry()).thenReturn(ipsSrcFolderEntry);
 
-        IFile propertyFile = validationMessagesBuilder.getPropertyFile(root);
+        ISupportedLanguage supportedLanguage = new SupportedLanguage(null, true);
+        IFile propertyFile = validationMessagesBuilder.getPropertyFile(root, supportedLanguage);
+        assertEquals(file, propertyFile);
+    }
+
+    @Test
+    public void testGetPropertyFileForLocale() throws Exception {
+        IIpsArtefactBuilderSet builderSet = mockBuilderSet();
+        ValidationRuleMessagesPropertiesBuilder validationMessagesBuilder = new ValidationRuleMessagesPropertiesBuilder(
+                builderSet);
+
+        Locale locale = Locale.GERMAN;
+
+        IFile file = mock(IFile.class);
+
+        IPath path = new Path(ROOT_FOLDER + "/" + ValidationRuleMessagesPropertiesBuilder.MESSAGES_BASENAME + "_"
+                + locale.getLanguage() + ValidationRuleMessagesPropertiesBuilder.MESSAGES_PREFIX);
+
+        IFolder derivedFolder = mock(IFolder.class);
+        when(derivedFolder.getFile(path)).thenReturn(file);
+
+        IIpsSrcFolderEntry ipsSrcFolderEntry = mock(IIpsSrcFolderEntry.class);
+        when(ipsSrcFolderEntry.getOutputFolderForDerivedJavaFiles()).thenReturn(derivedFolder);
+        when(ipsSrcFolderEntry.getBasePackageNameForDerivedJavaClasses()).thenReturn(TEST_PACK);
+
+        IIpsPackageFragmentRoot root = mock(IIpsPackageFragmentRoot.class);
+        when(root.getIpsObjectPathEntry()).thenReturn(ipsSrcFolderEntry);
+
+        ISupportedLanguage supportedLanguage = new SupportedLanguage(locale, false);
+        IFile propertyFile = validationMessagesBuilder.getPropertyFile(root, supportedLanguage);
         assertEquals(file, propertyFile);
     }
 
@@ -293,13 +271,14 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         IIpsPackageFragment fragment = mockPackageFragment();
         IIpsPackageFragmentRoot root = fragment.getRoot();
 
-        IIpsProject ipsProject = mock(IIpsProject.class);
+        IIpsProject ipsProject = mockIpsProject();
         when(ipsProject.getSourceIpsPackageFragmentRoots()).thenReturn(new IIpsPackageFragmentRoot[] { root });
 
         ValidationRuleMessagesPropertiesBuilder validationMessagesBuilder = new ValidationRuleMessagesPropertiesBuilder(
                 builderSet);
 
-        IFile propertyFile = validationMessagesBuilder.getPropertyFile(root);
+        ISupportedLanguage supportedLanguage = new SupportedLanguage(Locale.GERMAN);
+        IFile propertyFile = validationMessagesBuilder.getPropertyFile(root, supportedLanguage);
         when(propertyFile.exists()).thenReturn(true);
         IFolder folder = mock(IFolder.class);
         when(propertyFile.getParent()).thenReturn(folder);
@@ -313,20 +292,6 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         validationMessagesBuilder.beforeBuildProcess(ipsProject, IncrementalProjectBuilder.INCREMENTAL_BUILD);
         verify(folder).exists();
         verifyNoMoreInteractions(folder);
-
-        // MessagesProperties validationMessages = mock(MessagesProperties.class);
-        // validationMessagesBuilder.loadMessagesFromFile(propertyFile, validationMessages);
-        // verify(validationMessages).load(any(InputStream.class));
-        // reset(validationMessages);
-        //
-        // validationMessagesBuilder.beforeBuildProcess(ipsProject,
-        // IncrementalProjectBuilder.INCREMENTAL_BUILD);
-        // verifyZeroInteractions(validationMessages);
-        //
-        // validationMessagesBuilder.beforeBuildProcess(ipsProject,
-        // IncrementalProjectBuilder.FULL_BUILD);
-        // verify(validationMessages).clear();
-        // verifyNoMoreInteractions(validationMessages);
     }
 
     @Test
@@ -338,9 +303,10 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         // we use a spy object to insert the generatorMock
         ValidationRuleMessagesGenerator generatorMock = mock(ValidationRuleMessagesGenerator.class);
         ValidationRuleMessagesPropertiesBuilder builderSpy = spy(new ValidationRuleMessagesPropertiesBuilder(builderSet));
-        doReturn(generatorMock).when(builderSpy).getMessagesGenerator(any(IIpsPackageFragmentRoot.class));
+        doReturn(generatorMock).when(builderSpy).getMessagesGenerator(any(IIpsPackageFragmentRoot.class),
+                any(ISupportedLanguage.class));
 
-        IIpsProject ipsProject = mock(IIpsProject.class);
+        IIpsProject ipsProject = mockIpsProject();
         when(ipsProject.getSourceIpsPackageFragmentRoots()).thenReturn(new IIpsPackageFragmentRoot[] {});
 
         builderSpy.afterBuildProcess(ipsProject, 0);
@@ -358,18 +324,38 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         IIpsPackageFragment fragment = mockPackageFragment();
         IIpsPackageFragmentRoot root = fragment.getRoot();
 
-        IIpsProject ipsProject = mock(IIpsProject.class);
+        IIpsProject ipsProject = mockIpsProject();
         when(ipsProject.getSourceIpsPackageFragmentRoots()).thenReturn(new IIpsPackageFragmentRoot[] { root });
 
         ValidationRuleMessagesPropertiesBuilder validationMessagesBuilder = new ValidationRuleMessagesPropertiesBuilder(
                 builderSet);
 
         IFolder folder = mock(IFolder.class);
-        IFile propertyFile = validationMessagesBuilder.getPropertyFile(root);
+        ISupportedLanguage supportedLanguage = new SupportedLanguage(Locale.GERMAN);
+
+        IFile propertyFile = validationMessagesBuilder.getPropertyFile(root, supportedLanguage);
         when(propertyFile.getParent()).thenReturn(folder);
 
         validationMessagesBuilder.beforeBuildProcess(ipsProject, IncrementalProjectBuilder.INCREMENTAL_BUILD);
         verify(folder).create(anyBoolean(), anyBoolean(), any(IProgressMonitor.class));
+    }
+
+    protected IIpsSrcFile mockIpsSrcFile() {
+        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+        IIpsProject ipsProject = mockIpsProject();
+        when(ipsSrcFile.getIpsProject()).thenReturn(ipsProject);
+        return ipsSrcFile;
+    }
+
+    protected IIpsProject mockIpsProject() {
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        IIpsProjectProperties properties = mock(IIpsProjectProperties.class);
+        when(ipsProject.getProperties()).thenReturn(properties);
+        ISupportedLanguage supportedLanguage = new SupportedLanguage(Locale.GERMAN);
+        HashSet<ISupportedLanguage> supportedLanguages = new HashSet<ISupportedLanguage>();
+        supportedLanguages.add(supportedLanguage);
+        when(properties.getSupportedLanguages()).thenReturn(supportedLanguages);
+        return ipsProject;
     }
 
 }

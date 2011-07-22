@@ -28,10 +28,10 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.binding.InternationalStringPresentationObject;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
-import org.faktorips.devtools.core.ui.controls.AbstractCheckbox;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 
 /**
@@ -141,30 +141,6 @@ public class ValidationRuleEditingUI {
         charCount.getParent().layout();
     }
 
-    public TextField getNameField() {
-        return nameField;
-    }
-
-    public TextField getMsgCodeField() {
-        return msgCodeField;
-    }
-
-    public EnumValueField getMsgSeverityField() {
-        return msgSeverityField;
-    }
-
-    public TextField getMsgTextField() {
-        return msgTextField;
-    }
-
-    public AbstractCheckbox getConfigurableByProductBox() {
-        return configurableByProductBox;
-    }
-
-    public AbstractCheckbox getDefaultActivationBox() {
-        return defaultActivationBox;
-    }
-
     /**
      * Binds all of this UI's controls to the given {@link IValidationRule} and
      * {@link BindingContext}.
@@ -177,7 +153,10 @@ public class ValidationRuleEditingUI {
         bindingContext.bindContent(nameField, rule, IValidationRule.PROPERTY_NAME);
         bindingContext.bindContent(msgCodeField, rule, IValidationRule.PROPERTY_MESSAGE_CODE);
         bindingContext.bindContent(msgSeverityField, rule, IValidationRule.PROPERTY_MESSAGE_SEVERITY);
-        bindingContext.bindContent(msgTextField, rule, IValidationRule.PROPERTY_MESSAGE_TEXT);
+        InternationalStringPresentationObject msgTextPMO = new InternationalStringPresentationObject(
+                rule.getMessageText());
+        msgTextPMO.setLocale(rule.getIpsProject().getProperties().getDefaultLanguage().getLocale());
+        bindingContext.bindContent(msgTextField, msgTextPMO, InternationalStringPresentationObject.PROPERTY_TEXT);
         bindingContext.bindContent(new CheckboxField(configurableByProductBox), rule,
                 IValidationRule.PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT);
         bindingContext.bindContent(new CheckboxField(defaultActivationBox), rule,

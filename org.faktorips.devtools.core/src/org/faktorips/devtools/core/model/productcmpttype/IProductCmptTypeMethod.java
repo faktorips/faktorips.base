@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.model.productcmpttype;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 
 /**
  * Method signatures for product component types extend the "normal" method. The provide an
@@ -24,7 +23,7 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
  * 
  * @author Jan Ortmann
  */
-public interface IProductCmptTypeMethod extends IMethod, IProductCmptProperty {
+public interface IProductCmptTypeMethod extends IMethod {
 
     public final static String PROPERTY_FORMULA_SIGNATURE_DEFINITION = "formulaSignatureDefinition"; //$NON-NLS-1$
     public final static String PROPERTY_OVERLOADS_FORMULA = "overloadsFormula"; //$NON-NLS-1$

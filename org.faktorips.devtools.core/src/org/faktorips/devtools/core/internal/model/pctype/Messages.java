@@ -107,7 +107,6 @@ public class Messages extends NLS {
     public static String ValidationRule_msgDuplicateEntries;
     public static String ValidationRule_msgOneBusinessFunction;
     public static String ValidationRule_msgValueSetRule;
-    public static String ValidationRule_msgNoNewlineAllowed;
     public static String ValidationRule_msgCodeShouldBeProvided;
 
     public static String Attribute_msgAttributeCantBeProductRelevantIfTypeIsNot;

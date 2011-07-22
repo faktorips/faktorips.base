@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--
- Test data for AttributeImplTest.java
--->
-<ValidationRuleDef id="42" name="checkAge" appliedInAllBusinessFunctions="false" messageSeverity="warning" messageCode="ageMissing" messageText="messageText">
-    <BusinessFunction name="NewOffer"/>
-    <BusinessFunction name="Renewal"/>
-    <ValidatedAttribute name="a"/>
-    <ValidatedAttribute name="b"/>
+<!-- Test data for AttributeImplTest.java -->
+<ValidationRuleDef id="42" name="checkAge"
+	appliedInAllBusinessFunctions="false" messageSeverity="warning"
+	messageCode="ageMissing">
+	<BusinessFunction name="NewOffer" />
+	<BusinessFunction name="Renewal" />
+	<ValidatedAttribute name="a" />
+	<ValidatedAttribute name="b" />
+	<MessageText>
+		<InternationalString id="1">
+			<LocalizedString locale="de" text="messageText" />
+		</InternationalString>
+	</MessageText>
 </ValidationRuleDef>

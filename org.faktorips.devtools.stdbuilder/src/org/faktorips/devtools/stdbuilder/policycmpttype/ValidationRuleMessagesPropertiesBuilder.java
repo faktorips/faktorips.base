@@ -14,6 +14,7 @@
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -32,6 +33,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
+import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.util.LocalizedStringsSet;
@@ -78,23 +80,27 @@ public class ValidationRuleMessagesPropertiesBuilder extends AbstractArtefactBui
     public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
         super.beforeBuildProcess(project, buildKind);
         for (IIpsPackageFragmentRoot srcRoot : project.getSourceIpsPackageFragmentRoots()) {
-            if (buildKind == IncrementalProjectBuilder.FULL_BUILD) {
-                getMessagesGenerator(srcRoot).loadMessages();
+            for (ISupportedLanguage supportedLanguage : project.getProperties().getSupportedLanguages()) {
+                if (buildKind == IncrementalProjectBuilder.FULL_BUILD) {
+                    getMessagesGenerator(srcRoot, supportedLanguage).loadMessages();
+                }
+                IFile propertyFile = getPropertyFile(srcRoot, supportedLanguage);
+                if (propertyFile == null) {
+                    continue;
+                }
+                createFolderIfNotThere((IFolder)propertyFile.getParent());
             }
-            IFile propertyFile = getPropertyFile(srcRoot);
-            if (propertyFile == null) {
-                continue;
-            }
-            createFolderIfNotThere((IFolder)propertyFile.getParent());
         }
     }
 
     @Override
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
-        ValidationRuleMessagesGenerator messagesGenerator = getMessagesGenerator(ipsSrcFile);
-        IIpsObject ipsObject = ipsSrcFile.getIpsObject();
-        if (ipsObject instanceof IPolicyCmptType) {
-            messagesGenerator.generate((IPolicyCmptType)ipsObject);
+        for (ISupportedLanguage supportedLanguage : ipsSrcFile.getIpsProject().getProperties().getSupportedLanguages()) {
+            ValidationRuleMessagesGenerator messagesGenerator = getMessagesGenerator(ipsSrcFile, supportedLanguage);
+            IIpsObject ipsObject = ipsSrcFile.getIpsObject();
+            if (ipsObject instanceof IPolicyCmptType) {
+                messagesGenerator.generate((IPolicyCmptType)ipsObject);
+            }
         }
     }
 
@@ -109,25 +115,32 @@ public class ValidationRuleMessagesPropertiesBuilder extends AbstractArtefactBui
         super.afterBuildProcess(ipsProject, buildKind);
         IIpsPackageFragmentRoot[] srcRoots = ipsProject.getSourceIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot srcRoot : srcRoots) {
-            String comment = NLS.bind(getLocalizedText(ipsProject, MESSAGES_COMMENT), ipsProject.getName() + "/"
-                    + srcRoot.getName());
-            ValidationRuleMessagesGenerator messagesGenerator = getMessagesGenerator(srcRoot);
-            messagesGenerator.saveIfModified(comment, buildsDerivedArtefacts()
-                    && getBuilderSet().isMarkNoneMergableResourcesAsDerived());
+            for (ISupportedLanguage supportedLanguage : ipsProject.getProperties().getSupportedLanguages()) {
+                String comment = NLS.bind(getLocalizedText(ipsProject, MESSAGES_COMMENT), ipsProject.getName() + "/"
+                        + srcRoot.getName());
+                ValidationRuleMessagesGenerator messagesGenerator = getMessagesGenerator(srcRoot, supportedLanguage);
+                messagesGenerator.saveIfModified(comment, buildsDerivedArtefacts()
+                        && getBuilderSet().isMarkNoneMergableResourcesAsDerived());
+            }
         }
     }
 
-    protected IFile getPropertyFile(IIpsPackageFragmentRoot root) {
+    protected IFile getPropertyFile(IIpsPackageFragmentRoot root, ISupportedLanguage supportedLanguage) {
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
         IFolder derivedFolder = entry.getOutputFolderForDerivedJavaFiles();
 
-        IPath path = QNameUtil.toPath(getResourceBundlePackage(entry)).append(getMessagesFileName());
+        IPath path = QNameUtil.toPath(getResourceBundlePackage(entry)).append(
+                getMessagesFileName(supportedLanguage.getLocale(), supportedLanguage.isDefaultLanguage()));
         IFile messagesFile = derivedFolder.getFile(path);
         return messagesFile;
     }
 
-    protected String getMessagesFileName() {
-        return MESSAGES_BASENAME + MESSAGES_PREFIX;
+    protected String getMessagesFileName(Locale locale, boolean isDefaultLocale) {
+        if (isDefaultLocale) {
+            return MESSAGES_BASENAME + MESSAGES_PREFIX;
+        } else {
+            return MESSAGES_BASENAME + "_" + locale.getLanguage() + MESSAGES_PREFIX;
+        }
     }
 
     protected String getResourceBundleBaseName(IIpsSrcFolderEntry entry) {
@@ -140,16 +153,18 @@ public class ValidationRuleMessagesPropertiesBuilder extends AbstractArtefactBui
         return getBuilderSet().getInternalPackage(basePack, StringUtils.EMPTY);
     }
 
-    protected ValidationRuleMessagesGenerator getMessagesGenerator(IIpsSrcFile ipsSrcFile) {
+    protected ValidationRuleMessagesGenerator getMessagesGenerator(IIpsSrcFile ipsSrcFile,
+            ISupportedLanguage supportedLanguage) {
         IIpsPackageFragmentRoot root = ipsSrcFile.getIpsPackageFragment().getRoot();
-        return getMessagesGenerator(root);
+        return getMessagesGenerator(root, supportedLanguage);
     }
 
-    protected ValidationRuleMessagesGenerator getMessagesGenerator(IIpsPackageFragmentRoot root) {
-        IFile propertyFile = getPropertyFile(root);
+    protected ValidationRuleMessagesGenerator getMessagesGenerator(IIpsPackageFragmentRoot root,
+            ISupportedLanguage supportedLanguage) {
+        IFile propertyFile = getPropertyFile(root, supportedLanguage);
         ValidationRuleMessagesGenerator messagesGenerator = messageGeneratorMap.get(propertyFile);
         if (messagesGenerator == null) {
-            messagesGenerator = new ValidationRuleMessagesGenerator(propertyFile);
+            messagesGenerator = new ValidationRuleMessagesGenerator(propertyFile, supportedLanguage.getLocale());
             messageGeneratorMap.put(propertyFile, messagesGenerator);
         }
         return messagesGenerator;
@@ -162,11 +177,13 @@ public class ValidationRuleMessagesPropertiesBuilder extends AbstractArtefactBui
 
     @Override
     public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
-        ValidationRuleMessagesGenerator messagesGenerator = getMessagesGenerator(ipsSrcFile.getIpsPackageFragment()
-                .getRoot());
-        QualifiedNameType qualifiedNameType = ipsSrcFile.getQualifiedNameType();
-        if (qualifiedNameType.getIpsObjectType() == IpsObjectType.POLICY_CMPT_TYPE) {
-            messagesGenerator.deleteAllMessagesFor(qualifiedNameType.getName());
+        for (ISupportedLanguage supportedLanguage : ipsSrcFile.getIpsProject().getProperties().getSupportedLanguages()) {
+            ValidationRuleMessagesGenerator messagesGenerator = getMessagesGenerator(ipsSrcFile.getIpsPackageFragment()
+                    .getRoot(), supportedLanguage);
+            QualifiedNameType qualifiedNameType = ipsSrcFile.getQualifiedNameType();
+            if (qualifiedNameType.getIpsObjectType() == IpsObjectType.POLICY_CMPT_TYPE) {
+                messagesGenerator.deleteAllMessagesFor(qualifiedNameType.getName());
+            }
         }
     }
 

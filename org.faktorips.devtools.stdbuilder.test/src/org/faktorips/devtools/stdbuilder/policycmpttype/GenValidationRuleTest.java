@@ -16,9 +16,6 @@ package org.faktorips.devtools.stdbuilder.policycmpttype;
 import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.unresolvedParam;
 import static org.junit.Assert.assertEquals;
 
-import java.util.Iterator;
-import java.util.Set;
-
 import org.faktorips.devtools.core.internal.model.pctype.ValidationRule;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.runtime.IValidationContext;
@@ -82,29 +79,6 @@ public class GenValidationRuleTest extends PolicyCmptTypeBuilderTest {
 
         expectExecRuleMethod();
         expectCreateMessageForRuleMethod(true);
-    }
-
-    @Test
-    public void testGetReplacementParameters() throws Exception {
-        Set<String> replacementParameters = genValidationRule.getReplacementParameters("");
-        assertEquals(0, replacementParameters.size());
-
-        replacementParameters = genValidationRule.getReplacementParameters("anc {abc123} afs");
-        assertEquals(1, replacementParameters.size());
-        Iterator<String> iterator = replacementParameters.iterator();
-        assertEquals("abc123", iterator.next());
-
-        replacementParameters = genValidationRule.getReplacementParameters("{abc123} xyq {0}");
-        assertEquals(2, replacementParameters.size());
-        iterator = replacementParameters.iterator();
-        assertEquals("abc123", iterator.next());
-        assertEquals("p0", iterator.next());
-
-        replacementParameters = genValidationRule.getReplacementParameters("abc {abc123} xyq {0} {abc123}");
-        assertEquals(2, replacementParameters.size());
-        iterator = replacementParameters.iterator();
-        assertEquals("abc123", iterator.next());
-        assertEquals("p0", iterator.next());
     }
 
     private void expectExecRuleMethod() {

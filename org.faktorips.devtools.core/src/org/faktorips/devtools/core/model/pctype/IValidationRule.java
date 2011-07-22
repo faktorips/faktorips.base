@@ -14,6 +14,7 @@
 package org.faktorips.devtools.core.model.pctype;
 
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 
@@ -48,11 +49,6 @@ public interface IValidationRule extends IIpsObjectPart, IProductCmptProperty {
      * Prefix for all message codes of this class.
      */
     public final static String MSGCODE_PREFIX = "VALIDATIONRULE-"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the message text contains a newline.
-     */
-    public final static String MSGCODE_NO_NEWLINE = MSGCODE_PREFIX + "NoNewlineAllowed"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the message code shouldn't be empty.
@@ -91,13 +87,7 @@ public interface IValidationRule extends IIpsObjectPart, IProductCmptProperty {
      * Returns the message text that is presented to the user, if the rule determines that a given
      * policy is invalid.
      */
-    public String getMessageText();
-
-    /**
-     * Sets the message text, that is presented to the user, if the rule determines that a given
-     * policy is invalid.
-     */
-    public void setMessageText(String newText);
+    public IInternationalString getMessageText();
 
     /**
      * Returns the code of the message that is generated, if the rule determines that a given policy

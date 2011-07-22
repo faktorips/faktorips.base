@@ -23,6 +23,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
+import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
@@ -66,6 +67,8 @@ public abstract class AbstractValidationMessagesBuilderTest {
     protected IValidationRule mockValidationRule(IPolicyCmptType type) {
         IValidationRule validationRule = mock(IValidationRule.class);
         when(validationRule.getIpsObject()).thenReturn(type);
+        IInternationalString msgText = mock(IInternationalString.class);
+        when(validationRule.getMessageText()).thenReturn(msgText);
         return validationRule;
     }
 

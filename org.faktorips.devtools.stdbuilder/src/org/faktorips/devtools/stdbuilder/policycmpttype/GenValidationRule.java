@@ -15,12 +15,9 @@ package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.unresolvedParam;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -184,7 +181,8 @@ public class GenValidationRule extends GenTypePart {
         boolean generateToDo = false;
         body.append("ml.add(");
         body.append(getMethodNameCreateMessageForRule());
-        Set<String> replacementParameters = getReplacementParameters(rule.getMessageText());
+        Set<String> replacementParameters = ValidationRuleMessagesGenerator.getReplacementParameters(
+                rule.getMessageText(), true);
         body.append("(context");
         for (@SuppressWarnings("unused")
         String replacement : replacementParameters) {
@@ -252,7 +250,8 @@ public class GenValidationRule extends GenTypePart {
         String localVarMessage = "message";
         String parameterContext = "context";
 
-        Set<String> replacementParameters = getReplacementParameters(rule.getMessageText());
+        Set<String> replacementParameters = ValidationRuleMessagesGenerator.getReplacementParameters(
+                rule.getMessageText(), true);
         // determine method parameters (name and type)
         List<String> methodParamNames = new ArrayList<String>(replacementParameters.size() + 2);
         List<String> methodParamTypes = new ArrayList<String>(replacementParameters.size() + 2);
@@ -319,25 +318,6 @@ public class GenValidationRule extends GenTypePart {
                 getMethodNameCreateMessageForRule(), methodParamNames.toArray(new String[methodParamNames.size()]),
                 methodParamTypes.toArray(new String[methodParamTypes.size()]), body, javaDoc,
                 JavaSourceFileBuilder.ANNOTATION_GENERATED);
-    }
-
-    /**
-     * Extracting the replacement parameters from given messageText. The replacement parameters are
-     * defined curly braces. In contrast to the replacement parameters used in {@link MessageFormat}
-     * , these parameters could have names and not only indices. However you could use additional
-     * format information separated by comma as used by {@link MessageFormat}.
-     */
-    Set<String> getReplacementParameters(String messageText) {
-        Set<String> result = new LinkedHashSet<String>();
-        Matcher matcher = ValidationRuleMessagesGenerator.REPLACEMENT_PARAMETER_REGEXT.matcher(messageText);
-        while (matcher.find()) {
-            String parameterName = matcher.group();
-            if (!Character.isJavaIdentifierStart(parameterName.charAt(0))) {
-                parameterName = "p" + parameterName;
-            }
-            result.add(parameterName);
-        }
-        return result;
     }
 
     private List<String> getReplacementClasses(int size) {

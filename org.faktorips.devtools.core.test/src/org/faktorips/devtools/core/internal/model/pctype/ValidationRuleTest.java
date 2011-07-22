@@ -18,14 +18,18 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
-import org.apache.commons.lang.SystemUtils;
+import java.util.Locale;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
@@ -66,13 +70,6 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     public void testSetName() {
         rule.setName("newName");
         assertEquals("newName", rule.getName());
-        assertTrue(ipsSrcFile.isDirty());
-    }
-
-    @Test
-    public void testSetMessageText() {
-        rule.setMessageText("newText");
-        assertEquals("newText", rule.getMessageText());
         assertTrue(ipsSrcFile.isDirty());
     }
 
@@ -126,7 +123,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertEquals("42", rule.getId());
         assertEquals("checkAge", rule.getName());
         assertEquals("ageMissing", rule.getMessageCode());
-        assertEquals("messageText", rule.getMessageText());
+        assertEquals("messageText", rule.getMessageText().get(Locale.GERMAN).getValue());
         assertEquals(MessageSeverity.WARNING, rule.getMessageSeverity());
         assertFalse(rule.isAppliedForAllBusinessFunctions());
         String[] functions = rule.getBusinessFunctions();
@@ -144,7 +141,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         rule.setName("checkAge");
         rule.setAppliedForAllBusinessFunctions(true);
         rule.setMessageCode("ageMissing");
-        rule.setMessageText("messageText");
+        rule.getMessageText().add(new LocalizedString(Locale.GERMAN, "messageText"));
         rule.setMessageSeverity(MessageSeverity.WARNING);
         rule.setBusinessFunctions(new String[] { "NewOffer", "Renewal" });
         rule.addValidatedAttribute("a");
@@ -152,12 +149,12 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 
         Element element = rule.toXml(newDocument());
 
-        ValidationRule copy = new ValidationRule();
+        ValidationRule copy = new ValidationRule(mock(IPolicyCmptType.class), "");
         copy.initFromXml(element);
         assertEquals(rule.getId(), copy.getId());
         assertEquals("checkAge", copy.getName());
         assertEquals("ageMissing", copy.getMessageCode());
-        assertEquals("messageText", copy.getMessageText());
+        assertEquals("messageText", copy.getMessageText().get(Locale.GERMAN).getValue());
         assertEquals(MessageSeverity.WARNING, copy.getMessageSeverity());
         assertTrue(copy.isAppliedForAllBusinessFunctions());
         String[] functions = copy.getBusinessFunctions();
@@ -257,17 +254,6 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         rule.setMessageCode("code");
         list = rule.validate(ipsSrcFile.getIpsProject());
         assertNull(list.getMessageByCode(IValidationRule.MSGCODE_MSGCODE_SHOULDNT_BE_EMPTY));
-    }
-
-    @Test
-    public void testValidateMessageText() throws Exception {
-        rule.setMessageText("Messagetext " + SystemUtils.LINE_SEPARATOR + " bla bla");
-        MessageList ml = rule.validate(ipsSrcFile.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IValidationRule.MSGCODE_NO_NEWLINE));
-
-        rule.setMessageText("Messagetext  bla bla");
-        ml = rule.validate(ipsSrcFile.getIpsProject());
-        assertNull(ml.getMessageByCode(IValidationRule.MSGCODE_NO_NEWLINE));
     }
 
     @Test

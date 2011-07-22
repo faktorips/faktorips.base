@@ -52,10 +52,10 @@
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  The migration class that is responsible to migrate the model to the target version
+                  The factory of migration class that is responsible to migrate the model to the target version. The factory have to implements the interface IIpsProjectMigrationOperationFactory. It is necessary to use a factory instead of the migration class because the migration class needs additional state information.
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOperationFactory"/>
+                  <meta.attribute kind="java" basedOn="org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOperationFactory:org.faktorips.devtools.core.model.versionmanager.IIpsProjectMigrationOperationFactory"/>
                </appInfo>
             </annotation>
          </attribute>
@@ -64,9 +64,6 @@
                <documentation>
                   The target version to which this migration transforms the model
                </documentation>
-               <appInfo>
-                  <meta.attribute kind="identifier"/>
-               </appInfo>
             </annotation>
          </attribute>
       </complexType>

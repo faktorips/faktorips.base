@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.LocalizedString;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -138,7 +139,9 @@ public abstract class AbstractHtmlExportPluginTest extends AbstractIpsPluginTest
             rule1.newDescription().setText("Beschreibung der Regel");
             rule1.setMessageCode("xyz");
             rule1.setMessageSeverity(MessageSeverity.WARNING);
-            rule1.setMessageText("Hallo, Fehler!");
+
+            String msgText = "Hallo, Fehler!";
+            rule1.getMessageText().add(new LocalizedString(context.getDocumentationLocale(), msgText));
             rule1.addValidatedAttribute("Text1");
             rule1.addValidatedAttribute("Geld2");
 

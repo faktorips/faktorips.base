@@ -103,9 +103,9 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
                         if (srcFile != null) {
                             migrate(srcFile);
                         }
-                        if (monitor.isCanceled()) {
-                            break;
-                        }
+                    }
+                    if (monitor.isCanceled()) {
+                        break;
                     }
                 }
             } catch (Exception e) {
@@ -153,8 +153,12 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
      * implement their migration logic here.
      * 
      * @see IIpsSrcFile#markAsDirty()
+     * @return true when migration is done and {@link #migrate(IIpsSrcFile)} should not be called
      */
-    protected abstract boolean migrate(IFile file) throws CoreException;
+    protected boolean migrate(IFile file) throws CoreException {
+        // default do nothing
+        return false;
+    }
 
     /**
      * This template method is called after the ips object is loaded. Subclasses must implement
