@@ -22,6 +22,11 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
+/**
+ * Scope for projects
+ * 
+ * @author dicker
+ */
 public class ModelSearchProjectsScope extends AbstractModelSearchScope {
 
     protected final ISelection selection;
@@ -56,7 +61,8 @@ public class ModelSearchProjectsScope extends AbstractModelSearchScope {
 
     @Override
     protected String getScopeTypeLabel(boolean singular) {
-        return singular ? Messages.ModelSearchProjectsScope_scopeTypeLabelSingular : Messages.ModelSearchProjectsScope_scopeTypeLabelPlural;
+        return singular ? Messages.ModelSearchProjectsScope_scopeTypeLabelSingular
+                : Messages.ModelSearchProjectsScope_scopeTypeLabelPlural;
     }
 
 }

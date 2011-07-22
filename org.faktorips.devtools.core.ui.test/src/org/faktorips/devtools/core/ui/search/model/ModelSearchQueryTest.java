@@ -16,13 +16,13 @@ package org.faktorips.devtools.core.ui.search.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -31,46 +31,55 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.ui.search.model.scope.ModelSearchScope;
+import org.faktorips.devtools.core.ui.search.model.scope.IModelSearchScope;
 import org.junit.Before;
 import org.junit.Test;
 
 public class ModelSearchQueryTest {
 
-    private ModelSearchPresentationModel model;
+    private ModelSearchPresentationModel searchModel;
     private ModelSearchQuery query;
     private ModelSearchResult searchResult;
+    private IIpsModel ipsModel;
 
-    private ModelSearchScope scope;
+    private IModelSearchScope scope;
 
     @Before
     public void setUp() throws Exception {
-        model = mock(ModelSearchPresentationModel.class);
+        searchModel = mock(ModelSearchPresentationModel.class);
 
-        scope = mock(ModelSearchScope.class);
+        ipsModel = mock(IIpsModel.class);
+        when(ipsModel.getExtensionPropertyDefinitions(any(Class.class), anyBoolean())).thenReturn(
+                new IExtensionPropertyDefinition[0]);
 
-        when(model.getSearchScope()).thenReturn(scope);
+        scope = mock(IModelSearchScope.class);
 
-        query = new ModelSearchQuery(model);
+        when(searchModel.getSearchScope()).thenReturn(scope);
+
+        query = new ModelSearchQuery(searchModel, ipsModel);
         searchResult = (ModelSearchResult)query.getSearchResult();
     }
 
     @Test
     public void testSucheKlassenName() throws CoreException {
 
-        when(model.getTypeName()).thenReturn("SrcF");
+        when(searchModel.getTypeName()).thenReturn("SrcF");
 
         IIpsSrcFile srcFile1 = mock(IpsSrcFile.class);
         when(srcFile1.getIpsObjectName()).thenReturn("SrcFile1");
@@ -128,10 +137,12 @@ public class ModelSearchQueryTest {
     @Test
     public void testSucheAttribute() throws CoreException {
 
-        when(model.getTypeName()).thenReturn("SrcF");
-        when(model.getSearchTerm()).thenReturn("MatchingAttr");
+        when(searchModel.getTypeName()).thenReturn("SrcF");
+        when(searchModel.getSearchTerm()).thenReturn("MatchingAttr");
 
-        when(model.isSearchAttributes()).thenReturn(true);
+        Set<Class<? extends IIpsObjectPart>> set = new HashSet<Class<? extends IIpsObjectPart>>();
+        set.add(IAttribute.class);
+        when(searchModel.getSearchedClazzes()).thenReturn(set);
 
         IIpsSrcFile srcFile1 = mock(IpsSrcFile.class);
         when(srcFile1.getIpsObjectName()).thenReturn("SrcFile1");
@@ -162,16 +173,14 @@ public class ModelSearchQueryTest {
         IAttribute notMatchingAttribute = mock(IAttribute.class);
         when(notMatchingAttribute.getName()).thenReturn("NoMatchingAttribute");
 
-        List<IAttribute> attributes = new ArrayList<IAttribute>();
-        attributes.add(notMatchingAttribute);
-        attributes.add(matchingAttribute);
+        IIpsElement[] attributes = new IIpsElement[] { notMatchingAttribute, matchingAttribute };
 
-        when(type1.getAttributes()).thenReturn(attributes);
+        when(type1.getChildren()).thenReturn(attributes);
 
         IAttribute nameMatchingAttributeAtWrongClass = mock(IAttribute.class);
         when(nameMatchingAttributeAtWrongClass.getName()).thenReturn("MatchingAttributeAtWrongClass");
 
-        when(type2.getAttributes()).thenReturn(Collections.singletonList(nameMatchingAttributeAtWrongClass));
+        when(type2.getChildren()).thenReturn(new IIpsElement[] { nameMatchingAttributeAtWrongClass });
 
         IStatus status = query.run(new NullProgressMonitor());
 
@@ -182,7 +191,7 @@ public class ModelSearchQueryTest {
         assertObjectNotMatched(notMatchingAttribute);
         assertObjectNotMatched(nameMatchingAttributeAtWrongClass);
 
-        when(model.isSearchAttributes()).thenReturn(false);
+        when(searchModel.getSearchedClazzes()).thenReturn(new HashSet<Class<? extends IIpsObjectPart>>());
 
         status = query.run(new NullProgressMonitor());
 
@@ -195,10 +204,12 @@ public class ModelSearchQueryTest {
     @Test
     public void testSucheMethoden() throws CoreException {
 
-        when(model.getTypeName()).thenReturn("SrcF");
-        when(model.getSearchTerm()).thenReturn("MatchingMet");
+        when(searchModel.getTypeName()).thenReturn("SrcF");
+        when(searchModel.getSearchTerm()).thenReturn("MatchingMet");
 
-        when(model.isSearchMethods()).thenReturn(true);
+        Set<Class<? extends IIpsObjectPart>> set = new HashSet<Class<? extends IIpsObjectPart>>();
+        set.add(IMethod.class);
+        when(searchModel.getSearchedClazzes()).thenReturn(set);
 
         IIpsSrcFile srcFile1 = mock(IpsSrcFile.class);
         when(srcFile1.getIpsObjectName()).thenReturn("SrcFile1");
@@ -229,16 +240,14 @@ public class ModelSearchQueryTest {
         IMethod notMatchingMethod = mock(IMethod.class);
         when(notMatchingMethod.getName()).thenReturn("NoMatchingMethod");
 
-        ArrayList<IMethod> methods = new ArrayList<IMethod>();
-        methods.add(notMatchingMethod);
-        methods.add(matchingMethod);
+        IIpsElement[] methods = new IIpsElement[] { notMatchingMethod, matchingMethod };
 
-        when(type1.getMethods()).thenReturn(methods);
+        when(type1.getChildren()).thenReturn(methods);
 
         IMethod nameMatchingMethodAtWrongClass = mock(IMethod.class);
         when(nameMatchingMethodAtWrongClass.getName()).thenReturn("MatchingMethodAtWrongClass");
 
-        when(type2.getMethods()).thenReturn(Collections.singletonList(nameMatchingMethodAtWrongClass));
+        when(type2.getChildren()).thenReturn(new IIpsElement[] { nameMatchingMethodAtWrongClass });
 
         IStatus status = query.run(new NullProgressMonitor());
 
@@ -249,7 +258,7 @@ public class ModelSearchQueryTest {
         assertObjectNotMatched(notMatchingMethod);
         assertObjectNotMatched(nameMatchingMethodAtWrongClass);
 
-        when(model.isSearchMethods()).thenReturn(false);
+        when(searchModel.getSearchedClazzes()).thenReturn(new HashSet<Class<? extends IIpsObjectPart>>());
 
         status = query.run(new NullProgressMonitor());
 
@@ -262,10 +271,12 @@ public class ModelSearchQueryTest {
     @Test
     public void testSucheAssoziationen() throws CoreException {
 
-        when(model.getTypeName()).thenReturn("SrcF");
-        when(model.getSearchTerm()).thenReturn("MatchingMet");
+        when(searchModel.getTypeName()).thenReturn("SrcF");
+        when(searchModel.getSearchTerm()).thenReturn("MatchingMet");
 
-        when(model.isSearchAssociations()).thenReturn(true);
+        Set<Class<? extends IIpsObjectPart>> set = new HashSet<Class<? extends IIpsObjectPart>>();
+        set.add(IAssociation.class);
+        when(searchModel.getSearchedClazzes()).thenReturn(set);
 
         IIpsSrcFile srcFile1 = mock(IpsSrcFile.class);
         when(srcFile1.getIpsObjectName()).thenReturn("SrcFile1");
@@ -296,16 +307,14 @@ public class ModelSearchQueryTest {
         IAssociation notMatchingAssociation = mock(IAssociation.class);
         when(notMatchingAssociation.getName()).thenReturn("NoMatchingAssociation");
 
-        ArrayList<IAssociation> associations = new ArrayList<IAssociation>();
-        associations.add(notMatchingAssociation);
-        associations.add(matchingAssociation);
+        IIpsElement[] associations = new IIpsElement[] { notMatchingAssociation, matchingAssociation };
 
-        when(type1.getAssociations()).thenReturn(associations);
+        when(type1.getChildren()).thenReturn(associations);
 
         IAssociation nameMatchingAssociationAtWrongClass = mock(IAssociation.class);
         when(nameMatchingAssociationAtWrongClass.getName()).thenReturn("MatchingMethodAtWrongClass");
 
-        when(type2.getAssociations()).thenReturn(Collections.singletonList(nameMatchingAssociationAtWrongClass));
+        when(type2.getChildren()).thenReturn(new IIpsElement[] { nameMatchingAssociationAtWrongClass });
 
         IStatus status = query.run(new NullProgressMonitor());
 
@@ -316,7 +325,7 @@ public class ModelSearchQueryTest {
         assertObjectNotMatched(notMatchingAssociation);
         assertObjectNotMatched(nameMatchingAssociationAtWrongClass);
 
-        when(model.isSearchAssociations()).thenReturn(false);
+        when(searchModel.getSearchedClazzes()).thenReturn(new HashSet<Class<? extends IIpsObjectPart>>());
 
         status = query.run(new NullProgressMonitor());
 
@@ -329,10 +338,12 @@ public class ModelSearchQueryTest {
     @Test
     public void testSucheTableStructureUsages() throws CoreException {
 
-        when(model.getTypeName()).thenReturn("SrcF");
-        when(model.getSearchTerm()).thenReturn("MatchingMet");
+        when(searchModel.getTypeName()).thenReturn("SrcF");
+        when(searchModel.getSearchTerm()).thenReturn("MatchingMet");
 
-        when(model.isSearchTableStructureUsages()).thenReturn(true);
+        Set<Class<? extends IIpsObjectPart>> set = new HashSet<Class<? extends IIpsObjectPart>>();
+        set.add(ITableStructureUsage.class);
+        when(searchModel.getSearchedClazzes()).thenReturn(set);
 
         IIpsSrcFile srcFile1 = mock(IpsSrcFile.class);
         when(srcFile1.getIpsObjectName()).thenReturn("SrcFile1");
@@ -348,10 +359,10 @@ public class ModelSearchQueryTest {
 
         when(scope.getSelectedIpsSrcFiles()).thenReturn(srcFiles);
 
-        ProductCmptType type1 = mock(ProductCmptType.class);
+        IProductCmptType type1 = mock(IProductCmptType.class);
         when(type1.getName()).thenReturn("SrcFile1");
 
-        ProductCmptType type2 = mock(ProductCmptType.class);
+        IProductCmptType type2 = mock(IProductCmptType.class);
         when(type2.getName()).thenReturn("SourceFile2");
 
         when(srcFile1.getIpsObject()).thenReturn(type1);
@@ -363,17 +374,15 @@ public class ModelSearchQueryTest {
         ITableStructureUsage notMatchingTableStructureUsage = mock(ITableStructureUsage.class);
         when(notMatchingTableStructureUsage.getName()).thenReturn("NoMatchingTableStructureUsage");
 
-        ArrayList<ITableStructureUsage> tableStructureUsages = new ArrayList<ITableStructureUsage>();
-        tableStructureUsages.add(notMatchingTableStructureUsage);
-        tableStructureUsages.add(matchingTableStructureUsage);
+        IIpsElement[] tableStructureUsages = new IIpsElement[] { notMatchingTableStructureUsage,
+                matchingTableStructureUsage };
 
-        when(type1.getTableStructureUsages()).thenReturn(tableStructureUsages);
+        when(type1.getChildren()).thenReturn(tableStructureUsages);
 
         ITableStructureUsage nameMatchingTableStructureUsageAtWrongClass = mock(ITableStructureUsage.class);
         when(nameMatchingTableStructureUsageAtWrongClass.getName()).thenReturn("MatchingMethodAtWrongClass");
 
-        when(type2.getTableStructureUsages()).thenReturn(
-                Collections.singletonList(nameMatchingTableStructureUsageAtWrongClass));
+        when(type2.getChildren()).thenReturn(new IIpsElement[] { nameMatchingTableStructureUsageAtWrongClass });
 
         IStatus status = query.run(new NullProgressMonitor());
 
@@ -384,7 +393,7 @@ public class ModelSearchQueryTest {
         assertObjectNotMatched(notMatchingTableStructureUsage);
         assertObjectNotMatched(nameMatchingTableStructureUsageAtWrongClass);
 
-        when(model.isSearchTableStructureUsages()).thenReturn(false);
+        when(searchModel.getSearchedClazzes()).thenReturn(new HashSet<Class<? extends IIpsObjectPart>>());
 
         status = query.run(new NullProgressMonitor());
 
@@ -396,10 +405,12 @@ public class ModelSearchQueryTest {
     @Test
     public void testSucheRules() throws CoreException {
 
-        when(model.getTypeName()).thenReturn("SrcF");
-        when(model.getSearchTerm()).thenReturn("MatchingMet");
+        when(searchModel.getTypeName()).thenReturn("SrcF");
+        when(searchModel.getSearchTerm()).thenReturn("MatchingMet");
 
-        when(model.isSearchValidationRules()).thenReturn(true);
+        Set<Class<? extends IIpsObjectPart>> set = new HashSet<Class<? extends IIpsObjectPart>>();
+        set.add(IValidationRule.class);
+        when(searchModel.getSearchedClazzes()).thenReturn(set);
 
         IIpsSrcFile srcFile1 = mock(IpsSrcFile.class);
         when(srcFile1.getIpsObjectName()).thenReturn("SrcFile1");
@@ -415,10 +426,10 @@ public class ModelSearchQueryTest {
 
         when(scope.getSelectedIpsSrcFiles()).thenReturn(srcFiles);
 
-        PolicyCmptType type1 = mock(PolicyCmptType.class);
+        IPolicyCmptType type1 = mock(IPolicyCmptType.class);
         when(type1.getName()).thenReturn("SrcFile1");
 
-        PolicyCmptType type2 = mock(PolicyCmptType.class);
+        IPolicyCmptType type2 = mock(IPolicyCmptType.class);
         when(type2.getName()).thenReturn("SourceFile2");
 
         when(srcFile1.getIpsObject()).thenReturn(type1);
@@ -430,16 +441,14 @@ public class ModelSearchQueryTest {
         IValidationRule notMatchingRule = mock(IValidationRule.class);
         when(notMatchingRule.getName()).thenReturn("NoMatchingRule");
 
-        ArrayList<IValidationRule> Rules = new ArrayList<IValidationRule>();
-        Rules.add(notMatchingRule);
-        Rules.add(matchingRule);
+        IIpsElement[] rules = new IIpsElement[] { notMatchingRule, matchingRule };
 
-        when(type1.getValidationRules()).thenReturn(Rules);
+        when(type1.getChildren()).thenReturn(rules);
 
         IValidationRule nameMatchingRuleAtWrongClass = mock(IValidationRule.class);
         when(nameMatchingRuleAtWrongClass.getName()).thenReturn("MatchingMethodAtWrongClass");
 
-        when(type2.getValidationRules()).thenReturn(Collections.singletonList(nameMatchingRuleAtWrongClass));
+        when(type2.getChildren()).thenReturn(new IIpsElement[] { nameMatchingRuleAtWrongClass });
 
         IStatus status = query.run(new NullProgressMonitor());
 
@@ -450,12 +459,76 @@ public class ModelSearchQueryTest {
         assertObjectNotMatched(notMatchingRule);
         assertObjectNotMatched(nameMatchingRuleAtWrongClass);
 
-        when(model.isSearchValidationRules()).thenReturn(false);
+        when(searchModel.getSearchedClazzes()).thenReturn(new HashSet<Class<? extends IIpsObjectPart>>());
 
         status = query.run(new NullProgressMonitor());
 
         assertEquals(IStatus.OK, status.getSeverity());
 
         assertEquals(0, searchResult.getMatchCount());
+    }
+
+    @Test
+    public void testSucheLabels() throws CoreException {
+
+        when(searchModel.getTypeName()).thenReturn("SrcF");
+        when(searchModel.getSearchTerm()).thenReturn("Matching");
+
+        Set<Class<? extends IIpsObjectPart>> set = new HashSet<Class<? extends IIpsObjectPart>>();
+        set.add(IAttribute.class);
+        when(searchModel.getSearchedClazzes()).thenReturn(set);
+
+        IIpsSrcFile srcFile1 = mock(IpsSrcFile.class);
+        when(srcFile1.getIpsObjectName()).thenReturn("SrcFile1");
+        when(srcFile1.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
+
+        IIpsSrcFile srcFile2 = mock(IpsSrcFile.class);
+        when(srcFile2.getIpsObjectName()).thenReturn("SourceFile2");
+        when(srcFile2.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
+
+        Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
+        srcFiles.add(srcFile1);
+        srcFiles.add(srcFile2);
+
+        when(scope.getSelectedIpsSrcFiles()).thenReturn(srcFiles);
+
+        IType type1 = mock(IType.class);
+        when(type1.getName()).thenReturn("SrcFile1");
+
+        IType type2 = mock(IType.class);
+        when(type2.getName()).thenReturn("SourceFile2");
+
+        when(srcFile1.getIpsObject()).thenReturn(type1);
+        when(srcFile2.getIpsObject()).thenReturn(type2);
+
+        IAttribute matchingAttribute = mock(IAttribute.class);
+        when(matchingAttribute.getName()).thenReturn("Name");
+
+        Locale locale = Locale.ENGLISH;
+
+        ILabel label = mock(ILabel.class);
+        when(label.getValue()).thenReturn("MatchingLabel");
+        when(matchingAttribute.getLabel(locale)).thenReturn(label);
+
+        IIpsElement[] attributes = new IIpsElement[] { matchingAttribute };
+
+        when(type1.getChildren()).thenReturn(attributes);
+
+        when(searchModel.getSearchLocale()).thenReturn(Locale.GERMAN);
+
+        IStatus status = query.run(new NullProgressMonitor());
+
+        assertEquals(IStatus.OK, status.getSeverity());
+
+        assertEquals(0, searchResult.getMatchCount());
+
+        when(searchModel.getSearchLocale()).thenReturn(Locale.ENGLISH);
+
+        status = query.run(new NullProgressMonitor());
+
+        assertEquals(IStatus.OK, status.getSeverity());
+
+        assertEquals(1, searchResult.getMatchCount());
+        assertObjectMatched(matchingAttribute);
     }
 }

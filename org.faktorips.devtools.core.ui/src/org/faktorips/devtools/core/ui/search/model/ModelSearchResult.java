@@ -25,6 +25,11 @@ import org.eclipse.search.ui.text.Match;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
+/**
+ * The result of a Faktor-IPS Model Search
+ * 
+ * @author dicker
+ */
 public class ModelSearchResult extends AbstractTextSearchResult {
 
     private Set<IIpsElement> matchingIpsElements = new HashSet<IIpsElement>();

@@ -11,17 +11,31 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.search.model.finder;
+package org.faktorips.devtools.core.ui.search.model;
 
-import java.util.List;
+import java.util.Set;
 
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.type.IType;
 
-public class MethodFinder extends AbstractIpsObjectPartFinder {
+/**
+ * ClassMatcher tests, whether an IIpsElement matches one of the given classes.
+ * 
+ * @author dicker
+ */
+public class ClassMatcher {
+    private final Set<Class<? extends IIpsObjectPart>> clazzes;
 
-    @Override
-    protected List<? extends IIpsObjectPart> getIpsObjectParts(IType type) {
-        return type.getMethods();
+    public ClassMatcher(Set<Class<? extends IIpsObjectPart>> clazzes) {
+        this.clazzes = clazzes;
+    }
+
+    public boolean isMatchingClass(IIpsElement element) {
+        for (Class<? extends IIpsObjectPart> clazz : clazzes) {
+            if (clazz.isAssignableFrom(element.getClass())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

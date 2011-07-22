@@ -38,11 +38,16 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.search.model.scope.ModelSearchProjectsScope;
-import org.faktorips.devtools.core.ui.search.model.scope.ModelSearchScope;
+import org.faktorips.devtools.core.ui.search.model.scope.IModelSearchScope;
 import org.faktorips.devtools.core.ui.search.model.scope.ModelSearchSelectionScope;
 import org.faktorips.devtools.core.ui.search.model.scope.ModelSearchWorkingSetScope;
 import org.faktorips.devtools.core.ui.search.model.scope.ModelSearchWorkspaceScope;
 
+/**
+ * DialogPage for the Faktor-IPS Model Search
+ * 
+ * @author dicker
+ */
 public class ModelSearchPage extends DialogPage implements ISearchPage {
 
     private final BindingContext bindingContext = new BindingContext();
@@ -136,16 +141,10 @@ public class ModelSearchPage extends DialogPage implements ISearchPage {
         bindingContext.updateUI();
     }
 
-    public String getTypeName() {
-        return txtTypeName.getText();
-    }
-
-    public void setTypeName(String typeName) {
-        txtTypeName.setText(typeName);
-    }
-
     @Override
     public boolean performAction() {
+        // it is impossible link the search scope to the model with the context binding, because a
+        // changed selection of the scope doesn't throw an event.
         model.setSearchScope(createSearchScope());
 
         ModelSearchQuery query = new ModelSearchQuery(model);
@@ -157,7 +156,7 @@ public class ModelSearchPage extends DialogPage implements ISearchPage {
         return true;
     }
 
-    private ModelSearchScope createSearchScope() {
+    private IModelSearchScope createSearchScope() {
         int selectedScope = container.getSelectedScope();
 
         switch (selectedScope) {
@@ -165,17 +164,13 @@ public class ModelSearchPage extends DialogPage implements ISearchPage {
                 return new ModelSearchWorkspaceScope();
 
             case ISearchPageContainer.SELECTION_SCOPE:
-                ModelSearchSelectionScope modelSearchSelectionScope = new ModelSearchSelectionScope(
-                        container.getSelection());
-                return modelSearchSelectionScope;
+                return new ModelSearchSelectionScope(container.getSelection());
 
             case ISearchPageContainer.WORKING_SET_SCOPE:
                 return new ModelSearchWorkingSetScope(container.getSelectedWorkingSets());
 
             case ISearchPageContainer.SELECTED_PROJECTS_SCOPE:
-                ModelSearchProjectsScope modelSearchProjectsScope = new ModelSearchProjectsScope(
-                        container.getSelection());
-                return modelSearchProjectsScope;
+                return new ModelSearchProjectsScope(container.getSelection());
 
             default:
                 break;

@@ -28,7 +28,12 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
-public abstract class AbstractModelSearchScope implements ModelSearchScope {
+/**
+ * Abstract implementation of the IModelSearchScope
+ * 
+ * @author dicker
+ */
+public abstract class AbstractModelSearchScope implements IModelSearchScope {
 
     @Override
     public Set<IIpsSrcFile> getSelectedIpsSrcFiles() throws CoreException {
@@ -41,7 +46,7 @@ public abstract class AbstractModelSearchScope implements ModelSearchScope {
         return srcFiles;
     }
 
-    protected List<IResource> getSelectedResources() {
+    private List<IResource> getSelectedResources() {
 
         List<IResource> resources = new ArrayList<IResource>();
 
@@ -60,6 +65,9 @@ public abstract class AbstractModelSearchScope implements ModelSearchScope {
         return resources;
     }
 
+    /**
+     * returns a List of Names for the Label of the Result of the search
+     */
     protected List<String> getNamesOfSelectedObjects() {
 
         List<String> names = new ArrayList<String>();
@@ -99,6 +107,9 @@ public abstract class AbstractModelSearchScope implements ModelSearchScope {
         }
     }
 
+    /**
+     * returns the Type-Label of the Scope from the subclasses
+     */
     protected abstract String getScopeTypeLabel(boolean singular);
 
     private void addResource(Set<IIpsSrcFile> srcFiles, IResource resource) throws CoreException {
@@ -121,7 +132,7 @@ public abstract class AbstractModelSearchScope implements ModelSearchScope {
 
     protected abstract List<?> getSelectedObjects();
 
-    protected void addSrcFilesOfElement(Set<IIpsSrcFile> srcFiles, IIpsElement element) throws CoreException {
+    private void addSrcFilesOfElement(Set<IIpsSrcFile> srcFiles, IIpsElement element) throws CoreException {
         if (element instanceof IIpsSrcFile) {
             IIpsSrcFile srcFile = (IIpsSrcFile)element;
             srcFiles.add(srcFile);

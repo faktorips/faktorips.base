@@ -18,6 +18,11 @@ import java.util.List;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 
+/**
+ * scope for workspace
+ * 
+ * @author dicker
+ */
 public class ModelSearchWorkspaceScope extends AbstractModelSearchScope {
 
     @Override

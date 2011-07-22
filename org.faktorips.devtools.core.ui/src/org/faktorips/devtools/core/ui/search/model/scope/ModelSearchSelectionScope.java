@@ -18,6 +18,11 @@ import java.util.List;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
+/**
+ * Scope for Selection
+ * 
+ * @author dicker
+ */
 public class ModelSearchSelectionScope extends AbstractModelSearchScope {
 
     ISelection selection;

@@ -19,9 +19,7 @@ import java.util.regex.PatternSyntaxException;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * Matcher mit oder ohne Wildcards
- * 
- * TODO subclassing
+ * Text-Matcher, which uses ? and * as wildcards for one are many Characters
  * 
  * @author dicker
  */
@@ -33,9 +31,8 @@ public class WildcardMatcher {
     private static final String REGEXP_ZERO_OR_MANY = ".*"; //$NON-NLS-1$
     private static final String REGEXP_ONCE = "."; //$NON-NLS-1$
 
-    private Pattern pattern;
-    private boolean isRegExp;
-    private boolean isValidPattern;
+    private final Pattern pattern;
+    private final boolean isRegExp;
 
     public WildcardMatcher(String searchTerm) {
 
@@ -49,13 +46,15 @@ public class WildcardMatcher {
             regexpSearchTerm = searchTerm + REGEXP_ZERO_OR_MANY;
         }
 
-        try {
-            pattern = Pattern.compile(regexpSearchTerm, Pattern.CASE_INSENSITIVE);
-            isValidPattern = true;
-        } catch (PatternSyntaxException e) {
-            isValidPattern = false;
-        }
+        pattern = createPattern(regexpSearchTerm);
+    }
 
+    private Pattern createPattern(String regexpSearchTerm) {
+        try {
+            return Pattern.compile(regexpSearchTerm, Pattern.CASE_INSENSITIVE);
+        } catch (PatternSyntaxException e) {
+            return null;
+        }
     }
 
     public boolean isMatching(String text) {
@@ -63,7 +62,7 @@ public class WildcardMatcher {
             return false;
         }
 
-        if (!isValidPattern) {
+        if (pattern == null) {
             return false;
         }
 

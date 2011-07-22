@@ -19,6 +19,11 @@ import java.util.List;
 
 import org.eclipse.ui.IWorkingSet;
 
+/**
+ * scope for working sets
+ * 
+ * @author dicker
+ */
 public class ModelSearchWorkingSetScope extends AbstractModelSearchScope {
 
     private final IWorkingSet[] workingSets;
@@ -40,7 +45,8 @@ public class ModelSearchWorkingSetScope extends AbstractModelSearchScope {
 
     @Override
     protected String getScopeTypeLabel(boolean singular) {
-        return singular ? Messages.ModelSearchWorkingSetScope_scopeTypeLabelSingular : Messages.ModelSearchWorkingSetScope_scopeTypeLabelPlural;
+        return singular ? Messages.ModelSearchWorkingSetScope_scopeTypeLabelSingular
+                : Messages.ModelSearchWorkingSetScope_scopeTypeLabelPlural;
     }
 
     @Override
