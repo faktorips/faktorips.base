@@ -152,8 +152,11 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
      * This template method is called for all files in an ips package fragments. Subclasses must
      * implement their migration logic here.
      * 
+     * @param file the file that should be migrated
+     * 
      * @see IIpsSrcFile#markAsDirty()
      * @return true when migration is done and {@link #migrate(IIpsSrcFile)} should not be called
+     * @throws CoreException in case of any exception throw a {@link CoreException}
      */
     protected boolean migrate(IFile file) throws CoreException {
         // default do nothing

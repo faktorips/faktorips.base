@@ -52,7 +52,7 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
         ruleData.add(getContext().getLabel(rule));
         ruleData.add(rule.getMessageCode());
         ruleData.add(rule.getMessageSeverity().getName());
-        ruleData.add(rule.getMessageText());
+        ruleData.add(rule.getMessageText().get(getContext().getDocumentationLocale()).getValue());
 
         ruleData.add(StringUtils.join(rule.getBusinessFunctions(), '\n'));
         ruleData.add(StringUtils.join(rule.getValidatedAttributes(), '\n'));

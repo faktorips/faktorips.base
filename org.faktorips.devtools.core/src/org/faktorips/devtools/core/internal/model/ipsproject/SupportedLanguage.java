@@ -37,7 +37,12 @@ public class SupportedLanguage implements ISupportedLanguage {
     }
 
     public SupportedLanguage(Locale locale) {
+        this(locale, false);
+    }
+
+    public SupportedLanguage(Locale locale, boolean defaultLanguage) {
         this.locale = locale;
+        this.defaultLanguage = defaultLanguage;
     }
 
     @Override
