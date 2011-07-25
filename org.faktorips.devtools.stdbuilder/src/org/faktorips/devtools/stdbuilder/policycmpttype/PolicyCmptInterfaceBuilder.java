@@ -35,7 +35,6 @@ import org.faktorips.runtime.IDependantObject;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IVisitorSupport;
 import org.faktorips.util.LocalizedStringsSet;
-import org.faktorips.util.StringUtil;
 
 public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
 
@@ -51,12 +50,7 @@ public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
 
     @Override
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return getJavaNamingConvention().getPublishedInterfaceName(getPolicyCmptTypeName(ipsSrcFile));
-    }
-
-    public String getPolicyCmptTypeName(IIpsSrcFile ipsSrcFile) {
-        String name = StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName());
-        return StringUtils.capitalize(name);
+        return getJavaNamingConvention().getPublishedInterfaceName(ipsSrcFile.getIpsObjectName());
     }
 
     @Override
