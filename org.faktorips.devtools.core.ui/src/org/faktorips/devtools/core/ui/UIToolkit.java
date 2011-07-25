@@ -16,6 +16,10 @@ package org.faktorips.devtools.core.ui;
 import java.util.ArrayList;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.fieldassist.ContentProposalAdapter;
+import org.eclipse.jface.fieldassist.IContentProposalProvider;
+import org.eclipse.jface.fieldassist.IControlContentAdapter;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
@@ -40,6 +44,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
+import org.faktorips.devtools.core.ui.controls.EnumControl;
 import org.faktorips.devtools.core.ui.controls.EnumRefControl;
 import org.faktorips.devtools.core.ui.controls.EnumTypeRefControl;
 import org.faktorips.devtools.core.ui.controls.FilteredIpsObjectTypeRefControl;
@@ -821,6 +826,10 @@ public class UIToolkit {
         return new Table(parent, style);
     }
 
+    public EnumControl createEnumControl(Composite parent) {
+        return new EnumControl(parent, this);
+    }
+
     /**
      * Creates a new TestCaseTypeRefControl.
      */
@@ -874,6 +883,27 @@ public class UIToolkit {
         if (control.getLayoutData() instanceof GridData) {
             ((GridData)control.getLayoutData()).widthHint = width;
         }
+    }
+
+    /**
+     * Attaches a {@link ContentProposalAdapter} to the given control, thereby adding content
+     * proposal support.
+     * 
+     * @param control The control to add content proposal support to
+     * @param contentAdapter Specifies how to set and retrieve data of the control
+     * @param proposalProvider Provides content proposals as appropriate to the control's current
+     *            content
+     * @param labelProvider Specifies how the content proposals are shown to the user
+     */
+    public void attachContentProposalAdapter(Control control,
+            IControlContentAdapter contentAdapter,
+            IContentProposalProvider proposalProvider,
+            ILabelProvider labelProvider) {
+
+        ContentProposalAdapter contentProposalAdapter = new ContentProposalAdapter(control, contentAdapter,
+                proposalProvider, null, null);
+        contentProposalAdapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);
+        contentProposalAdapter.setLabelProvider(labelProvider);
     }
 
 }
