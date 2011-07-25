@@ -17,14 +17,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
+import java.io.InputStream;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
@@ -59,21 +58,20 @@ public class Migration_3_5Test extends XmlAbstractTestCase {
 
     @Test
     public void shouldMigrateModifyIpsSrcFile() throws Exception {
+        InputStream resourceAsStream = getClass().getResourceAsStream(getXmlResourceName());
         Locale locale = new Locale("test");
 
         IIpsProject ipsProject = mockProject(locale);
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
         IFile file = mock(IFile.class);
+
         when(ipsSrcFile.getCorrespondingFile()).thenReturn(file);
+        when(file.getContents()).thenReturn(resourceAsStream);
 
         Migration_3_5 migration_3_5 = new Migration_3_5(ipsProject, "testFeatureId");
-        Migration_3_5 migrationSpy = spy(migration_3_5);
-        Element element = mock(Element.class);
-        doReturn(element).when(migrationSpy).getElement(file);
-        doReturn(true).when(migrationSpy).migrateXml(element);
 
         when(ipsSrcFile.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
-        migrationSpy.migrate(ipsSrcFile);
+        migration_3_5.migrate(ipsSrcFile);
 
         verify(ipsSrcFile).setMemento(any(IpsSrcFileMemento.class));
         verify(ipsSrcFile).markAsDirty();
