@@ -309,9 +309,9 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
 
         performRenameRefactoring(policyCmptType, "policyCmptType");
 
-        assertTrue(getJavaType("", getPublishedInterfaceName("PolicyCmptType", ipsProject), true, false, ipsProject)
+        assertTrue(getJavaType("", getPublishedInterfaceName("policyCmptType", ipsProject), true, false, ipsProject)
                 .exists());
-        assertTrue(getJavaType("", "PolicyCmptType", false, false, ipsProject).exists());
+        assertTrue(getJavaType("", "policyCmptType", false, false, ipsProject).exists());
     }
 
     private IPolicyCmptTypeAttribute createPolicyCmptTypeAttribute(String name,
