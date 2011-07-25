@@ -109,7 +109,7 @@ public abstract class AttributesSection extends SimpleIpsPartsSection {
 
             public OpenEnumerationTypeInNewEditor(ISelectionProvider selectionProvider) {
                 super(selectionProvider);
-                setText(Messages.AttributesSection_openEnumTypeInNewEditor);
+                setText(Messages.AttributesSection_openEnumContentInNewEditor);
             }
 
             @Override
@@ -140,7 +140,7 @@ public abstract class AttributesSection extends SimpleIpsPartsSection {
                     Datatype datatype = attribute.findDatatype(attribute.getIpsProject());
                     if (datatype instanceof EnumTypeDatatypeAdapter) {
                         EnumTypeDatatypeAdapter enumDatatype = (EnumTypeDatatypeAdapter)datatype;
-                        IpsUIPlugin.getDefault().openEditor(enumDatatype.getEnumType());
+                        IpsUIPlugin.getDefault().openEditor(enumDatatype.getEnumValueContainer());
                     }
                 } catch (CoreException e) {
                     throw new RuntimeException(e);
