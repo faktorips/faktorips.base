@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.internal.migration.DefaultMigration;
 import org.faktorips.devtools.core.internal.model.InternationalString;
 import org.faktorips.devtools.core.internal.model.InternationalStringXmlHelper;
 import org.faktorips.devtools.core.internal.model.LocalizedString;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsSrcFileMemento;
 import org.faktorips.devtools.core.internal.model.pctype.ValidationRule;
 import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -50,44 +51,21 @@ import org.xml.sax.SAXException;
  */
 public class Migration_3_5 extends DefaultMigration {
 
+    private static final String OLD_XML_ATTR_MESSAGE_TEXT = "messageText"; //$NON-NLS-1$
+
     public Migration_3_5(IIpsProject projectToMigrate, String featureId) {
         super(projectToMigrate, featureId);
     }
 
-    private boolean migrateXml(Element element) {
-        boolean migratedAnyElement = false;
-        if (element.getNodeName().equals(IpsObjectType.POLICY_CMPT_TYPE.getXmlElementName())) {
-            NodeList rulesNodeList = element.getElementsByTagName(ValidationRule.TAG_NAME);
-            for (int i = 0; i < rulesNodeList.getLength(); i++) {
-                Element ruleNode = (Element)rulesNodeList.item(i);
-                migratedAnyElement |= migrateRuleNoe(ruleNode);
-            }
-        }
-        return migratedAnyElement;
-
-    }
-
-    private boolean migrateRuleNoe(Element ruleNode) {
-        Locale locale = getIpsProject().getProperties().getDefaultLanguage().getLocale();
-        String oldMsgText = ruleNode.getAttribute("messageText"); //$NON-NLS-1$
-        IInternationalString internationalString = new InternationalString();
-        internationalString.add(new LocalizedString(locale, oldMsgText));
-        InternationalStringXmlHelper.toXml(internationalString, ruleNode, ValidationRule.XML_TAG_MSG_TXT);
-        return true;
-    }
-
     @Override
     protected void migrate(IIpsSrcFile srcFile) throws CoreException {
-        if (srcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE)) {
+        if (IpsObjectType.POLICY_CMPT_TYPE.equals(srcFile.getIpsObjectType())) {
             IFile file = srcFile.getCorrespondingFile();
-            InputStream inputStream = file.getContents();
-            DocumentBuilder builder = IpsPlugin.getDefault().getDocumentBuilder();
             try {
-                Document doc = builder.parse(inputStream);
-                Element element = doc.getDocumentElement();
+                Element element = getElement(file);
                 boolean wasMigrated = migrateXml(element);
                 if (wasMigrated) {
-                    IIpsSrcFileMemento memento = new IIpsSrcFileMemento(srcFile, element, true);
+                    IIpsSrcFileMemento memento = new IpsSrcFileMemento(srcFile, element, true);
                     srcFile.setMemento(memento);
                     srcFile.markAsDirty();
                 }
@@ -99,6 +77,37 @@ public class Migration_3_5 extends DefaultMigration {
                         "Error while reading file " + file.getFullPath(), e)); //$NON-NLS-1$
             }
         }
+    }
+
+    Element getElement(IFile file) throws CoreException, SAXException, IOException {
+        InputStream inputStream = file.getContents();
+        DocumentBuilder builder = IpsPlugin.getDefault().getDocumentBuilder();
+        Document doc = builder.parse(inputStream);
+        Element element = doc.getDocumentElement();
+        return element;
+    }
+
+    boolean migrateXml(Element element) {
+        boolean migratedAnyElement = false;
+        if (element.getNodeName().equals(IpsObjectType.POLICY_CMPT_TYPE.getXmlElementName())) {
+            NodeList rulesNodeList = element.getElementsByTagName(ValidationRule.TAG_NAME);
+            for (int i = 0; i < rulesNodeList.getLength(); i++) {
+                Element ruleNode = (Element)rulesNodeList.item(i);
+                migratedAnyElement |= migrateRuleNode(ruleNode);
+            }
+        }
+        return migratedAnyElement;
+
+    }
+
+    private boolean migrateRuleNode(Element ruleNode) {
+        Locale locale = getIpsProject().getProperties().getDefaultLanguage().getLocale();
+        String oldMsgText = ruleNode.getAttribute(OLD_XML_ATTR_MESSAGE_TEXT);
+        IInternationalString internationalString = new InternationalString();
+        internationalString.add(new LocalizedString(locale, oldMsgText));
+        InternationalStringXmlHelper.toXml(internationalString, ruleNode, ValidationRule.XML_TAG_MSG_TXT);
+        ruleNode.removeAttribute(OLD_XML_ATTR_MESSAGE_TEXT);
+        return true;
     }
 
     @Override

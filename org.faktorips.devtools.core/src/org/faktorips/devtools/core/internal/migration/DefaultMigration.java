@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsSrcFileMemento;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFileMemento;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -140,7 +141,7 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
             transformer.transform(new StreamSource(oldContent), result);
             Element firstElement = XmlUtil.getFirstElement(result.getNode());
             firstElement.normalize();
-            IIpsSrcFileMemento memento = new IIpsSrcFileMemento(srcFile, firstElement, true);
+            IIpsSrcFileMemento memento = new IpsSrcFileMemento(srcFile, firstElement, true);
             srcFile.setMemento(memento);
             srcFile.markAsDirty();
         } catch (Exception e) {

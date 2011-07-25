@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.IpsModel;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsSrcFileMemento;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFileMemento;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -94,7 +95,7 @@ public class IpsSrcFile extends AbstractIpsSrcFile {
     @Override
     public IIpsSrcFileMemento newMemento() throws CoreException {
         Document doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
-        return new IIpsSrcFileMemento(this, getIpsObject().toXml(doc), isDirty());
+        return new IpsSrcFileMemento(this, getIpsObject().toXml(doc), isDirty());
     }
 
     @Override
