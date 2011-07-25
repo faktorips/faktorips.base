@@ -162,16 +162,12 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * 
      * @param builderSet the package information for the generated java source file and for other
      *            generated java classes within this package structure. Cannot be null.
-     * @param kindId cannot be null
      * @param localizedStringsSet provides locale specific texts. It can be null. If the
      *            getLocalizedText() methods are called and the localizedStringsSet is not set an
      *            exception is thrown
      */
-    public JavaSourceFileBuilder(DefaultBuilderSet builderSet, String kindId, LocalizedStringsSet localizedStringsSet) {
-
+    public JavaSourceFileBuilder(DefaultBuilderSet builderSet, LocalizedStringsSet localizedStringsSet) {
         super(builderSet, localizedStringsSet);
-        ArgumentCheck.notNull(kindId, this);
-        this.kindId = kindId;
         initJavaOptions();
     }
 
@@ -304,7 +300,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * @throws CoreException is delegated from calls to other methods
      */
     public String getPackage(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return getPackageStructure().getPackage(getKindId(), ipsSrcFile);
+        return getPackageStructure().getPackage(this, ipsSrcFile);
     }
 
     /**
@@ -316,7 +312,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * @throws CoreException is delegated from calls to other methods
      */
     public String getPackage() throws CoreException {
-        return getPackageStructure().getPackage(getKindId(), getIpsSrcFile());
+        return getPackageStructure().getPackage(this, getIpsSrcFile());
     }
 
     /**
@@ -329,7 +325,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      */
     public String getQualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
         StringBuffer buf = new StringBuffer();
-        String packageName = getPackageStructure().getPackage(getKindId(), ipsSrcFile);
+        String packageName = getPackageStructure().getPackage(this, ipsSrcFile);
         if (packageName != null) {
             buf.append(packageName);
             buf.append('.');
@@ -1046,7 +1042,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
                     .getArtefactDestination(buildsDerivedArtefacts());
             IPackageFragmentRoot javaRoot = ipsObject.getIpsProject().getJavaProject()
                     .getPackageFragmentRoot(outputFolder);
-            String packageName = getBuilderSet().getPackage(getKindId(), ipsObject.getIpsSrcFile());
+            String packageName = getBuilderSet().getPackage(this, ipsObject.getIpsSrcFile());
             IPackageFragment fragment = javaRoot.getPackageFragment(packageName);
             List<IType> javaTypes = new ArrayList<IType>(1);
             getGeneratedJavaTypesThis(ipsObject, fragment, javaTypes);

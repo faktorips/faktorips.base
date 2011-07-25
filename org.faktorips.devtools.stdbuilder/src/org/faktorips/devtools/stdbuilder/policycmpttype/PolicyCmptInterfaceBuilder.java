@@ -39,8 +39,8 @@ import org.faktorips.util.StringUtil;
 
 public class PolicyCmptInterfaceBuilder extends BasePolicyCmptTypeBuilder {
 
-    public PolicyCmptInterfaceBuilder(DefaultBuilderSet builderSet, String kindId) {
-        super(builderSet, kindId, new LocalizedStringsSet(PolicyCmptInterfaceBuilder.class));
+    public PolicyCmptInterfaceBuilder(DefaultBuilderSet builderSet) {
+        super(builderSet, new LocalizedStringsSet(PolicyCmptInterfaceBuilder.class));
         setMergeEnabled(true);
     }
 

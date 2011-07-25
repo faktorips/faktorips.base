@@ -54,9 +54,9 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
 
     private final ProductCmptBuilder productCmptGenerationImplBuilder;
 
-    public ProductCmptXMLBuilder(IpsObjectType type, StandardBuilderSet builderSet, String kind,
+    public ProductCmptXMLBuilder(IpsObjectType type, StandardBuilderSet builderSet,
             ProductCmptBuilder productCmptGenerationImplBuilder) {
-        super(type, builderSet, kind);
+        super(type, builderSet);
         this.productCmptGenerationImplBuilder = productCmptGenerationImplBuilder;
     }
 

@@ -112,8 +112,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
      * @see Class#getResourceAsStream(java.lang.String)
      */
     public String getXmlResourcePath(ITestCase testCase) throws CoreException {
-        String packageInternal = getBuilderSet().getPackage(DefaultBuilderSet.KIND_TEST_CASE_XML,
-                testCase.getIpsSrcFile());
+        String packageInternal = getBuilderSet().getPackage(this, testCase.getIpsSrcFile());
         return packageInternal.replace('.', '/') + '/' + testCase.getName() + ".xml";
     }
 
@@ -186,7 +185,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
      * Returns the package folder for the given ips sourcefile.
      */
     private IFolder getXmlContentFileFolder(IIpsSrcFile ipsSrcFile) throws CoreException {
-        String packageString = getBuilderSet().getPackage(DefaultBuilderSet.KIND_TEST_CASE_XML, ipsSrcFile);
+        String packageString = getBuilderSet().getPackage(this, ipsSrcFile);
         IPath pathToPack = new Path(packageString.replace('.', '/'));
         return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getFolder(pathToPack);
     }

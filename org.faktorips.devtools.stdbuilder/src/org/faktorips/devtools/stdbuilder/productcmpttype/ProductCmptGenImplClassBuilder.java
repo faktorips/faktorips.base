@@ -75,8 +75,8 @@ public class ProductCmptGenImplClassBuilder extends BaseProductCmptTypeBuilder {
     private ProductCmptGenInterfaceBuilder productCmptGenInterfaceBuilder;
     private EnumTypeBuilder enumTypeBuilder;
 
-    public ProductCmptGenImplClassBuilder(StandardBuilderSet builderSet, String kindId) {
-        super(builderSet, kindId, new LocalizedStringsSet(ProductCmptGenImplClassBuilder.class));
+    public ProductCmptGenImplClassBuilder(StandardBuilderSet builderSet) {
+        super(builderSet, new LocalizedStringsSet(ProductCmptGenImplClassBuilder.class));
         setMergeEnabled(true);
     }
 

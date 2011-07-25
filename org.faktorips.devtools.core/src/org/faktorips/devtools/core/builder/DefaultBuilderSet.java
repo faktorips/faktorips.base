@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.IPath;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
@@ -45,35 +45,6 @@ import org.faktorips.fl.IdentifierResolver;
  * @author Peter Erzberger
  */
 public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJavaPackageStructure {
-
-    /*
-     * These constants are not supposed to be used within JavaSourceFileBuilder implementations.
-     * Since the JavaSourceFileBuilder implementations might get used in other artefact builder sets
-     * using these constants would introduce a dependency to this builder set. however the constants
-     * are public for use in test cases.
-     */
-    public final static String KIND_PRODUCT_CMPT_TYPE_INTERFACE = "productcmptinterface"; //$NON-NLS-1$
-    public final static String KIND_PRODUCT_CMPT_TYPE_IMPL = "productcmptimplementation"; //$NON-NLS-1$
-    public final static String KIND_PRODUCT_CMPT_TYPE_GENERATION_INTERFACE = "productCmptGenerationInterface"; //$NON-NLS-1$
-    public final static String KIND_PRODUCT_CMPT_TYPE_GENERATION_IMPL = "productCmptGenerationImpl"; //$NON-NLS-1$
-    public final static String KIND_PRODUCT_CMPT = "productcmptcontent"; //$NON-NLS-1$
-    public final static String KIND_PRODUCT_CMPT_GENERATION = "productcmptgeneration"; //$NON-NLS-1$
-    public final static String KIND_POLICY_CMPT_TYPE_INTERFACE = "policycmptinterface"; //$NON-NLS-1$
-    public final static String KIND_POLICY_CMPT_TYPE_IMPL = "policycmptimpl"; //$NON-NLS-1$
-    public final static String KIND_MODEL_TYPE = "modeltype"; //$NON-NLS-1$
-    public final static String KIND_TABLE_IMPL = "tableimpl"; //$NON-NLS-1$
-    public final static String KIND_TABLE_CONTENT = "tablecontent"; //$NON-NLS-1$
-    public final static String KIND_TABLE_ROW = "tablerow"; //$NON-NLS-1$
-    public final static String KIND_TEST_CASE_TYPE_CLASS = "testcasetypeclass"; //$NON-NLS-1$
-    public final static String KIND_TEST_CASE_XML = "testcasexml"; //$NON-NLS-1$
-    public final static String KIND_FORMULA_TEST_CASE = "formulatestcase"; //$NON-NLS-1$
-    public final static String KIND_ENUM_TYPE = "enumtype"; //$NON-NLS-1$
-    public final static String KIND_ENUM_CONTENT = "enumcontent"; //$NON-NLS-1$
-    public final static String KIND_BUSINESS_FUNCTION = "businessfunction"; //$NON-NLS-1$
-
-    public final static String KIND_TABLE_TOCENTRY = "tabletocentry"; //$NON-NLS-1$
-    public final static String KIND_PRODUCT_CMPT_TOCENTRY = "productcmpttocentry"; //$NON-NLS-1$
-    public final static String KIND_ENUM_CONTENT_TOCENTRY = "enumcontenttocentry"; //$NON-NLS-1$
 
     private final static String INTERNAL_PACKAGE = "internal"; //$NON-NLS-1$
 
@@ -165,95 +136,14 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     }
 
     @Override
-    public String getPackage(String kind, IIpsSrcFile ipsSrcFile) throws CoreException {
-        // TODO This could be more efficient.
-        if (IpsObjectType.TABLE_STRUCTURE.equals(ipsSrcFile.getIpsObjectType())) {
-            if (KIND_TABLE_IMPL.equals(kind) || KIND_TABLE_ROW.equals(kind)) {
-                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
-            }
+    public String getPackage(IIpsArtefactBuilder builder, IIpsSrcFile ipsSrcFile) throws CoreException {
+        if (builder instanceof JavaSourceFileBuilder) {
+
+            JavaSourceFileBuilder javaBuilder = (JavaSourceFileBuilder)builder;
+            return getPackageNameForGeneratedArtefacts(ipsSrcFile, javaBuilder.isBuildingPublishedSourceFile(),
+                    builder.buildsDerivedArtefacts());
         }
-
-        if (IpsObjectType.POLICY_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType())) {
-            if (KIND_POLICY_CMPT_TYPE_INTERFACE.equals(kind)) {
-                return getPackageNameForMergablePublishedArtefacts(ipsSrcFile);
-            }
-
-            if (KIND_POLICY_CMPT_TYPE_IMPL.equals(kind)) {
-                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
-            }
-
-            if (KIND_MODEL_TYPE.equals(kind)) {
-                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
-            }
-
-        }
-
-        if (IpsObjectType.PRODUCT_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType())) {
-            if (KIND_PRODUCT_CMPT_TYPE_INTERFACE.equals(kind)) {
-                return getPackageNameForMergablePublishedArtefacts(ipsSrcFile);
-            }
-
-            if (KIND_PRODUCT_CMPT_TYPE_IMPL.equals(kind)) {
-                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
-            }
-            if (KIND_PRODUCT_CMPT_TYPE_GENERATION_INTERFACE.equals(kind)) {
-                return getPackageNameForMergablePublishedArtefacts(ipsSrcFile);
-            }
-            if (KIND_PRODUCT_CMPT_TYPE_GENERATION_IMPL.equals(kind)) {
-                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
-            }
-
-            if (KIND_MODEL_TYPE.equals(kind)) {
-                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
-            }
-        }
-
-        if (IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType())) {
-            if (KIND_PRODUCT_CMPT.equals(kind)) {
-                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
-            }
-            if (KIND_PRODUCT_CMPT_TOCENTRY.equals(kind)) {
-                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
-            }
-            if (KIND_PRODUCT_CMPT_GENERATION.equals(kind)) {
-                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
-            }
-            if (KIND_FORMULA_TEST_CASE.equals(kind)) {
-                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
-            }
-        }
-
-        if (IpsObjectType.ENUM_CONTENT.equals(ipsSrcFile.getIpsObjectType())) {
-            if (KIND_ENUM_CONTENT.equals(kind)) {
-                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
-            }
-            if (KIND_ENUM_CONTENT_TOCENTRY.equals(kind)) {
-                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
-            }
-        }
-
-        if (IpsObjectType.TABLE_CONTENTS.equals(ipsSrcFile.getIpsObjectType())) {
-            if (KIND_TABLE_CONTENT.equals(kind)) {
-                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
-            }
-            if (KIND_TABLE_TOCENTRY.equals(kind)) {
-                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
-            }
-        }
-
-        if (IpsObjectType.TEST_CASE_TYPE.equals(ipsSrcFile.getIpsObjectType())) {
-            if (KIND_TEST_CASE_TYPE_CLASS.equals(kind)) {
-                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
-            }
-        }
-
-        if (IpsObjectType.TEST_CASE.equals(ipsSrcFile.getIpsObjectType())) {
-            if (KIND_TEST_CASE_XML.equals(kind)) {
-                return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
-            }
-        }
-
-        return null;
+        return getPackageNameForGeneratedArtefacts(ipsSrcFile, false, builder.buildsDerivedArtefacts());
     }
 
     @Override

@@ -19,8 +19,8 @@ import org.faktorips.devtools.stdbuilder.XmlContentFileCopyBuilder;
 
 public class TableContentBuilder extends XmlContentFileCopyBuilder {
 
-    public TableContentBuilder(DefaultBuilderSet builderSet, String kind) {
-        super(IpsObjectType.TABLE_CONTENTS, builderSet, kind);
+    public TableContentBuilder(DefaultBuilderSet builderSet) {
+        super(IpsObjectType.TABLE_CONTENTS, builderSet);
     }
 
 }

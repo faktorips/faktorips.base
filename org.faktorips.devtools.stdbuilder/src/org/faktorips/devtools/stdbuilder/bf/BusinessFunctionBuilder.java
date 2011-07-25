@@ -50,8 +50,8 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
 
     public final static String PACKAGE_STRUCTURE_KIND_ID = "BusinessFunctionBuilder.bf.stdbuilder.devtools.faktorips.org"; //$NON-NLS-1$
 
-    public BusinessFunctionBuilder(DefaultBuilderSet builderSet, String kindId) {
-        super(builderSet, kindId, new LocalizedStringsSet(BusinessFunctionBuilder.class));
+    public BusinessFunctionBuilder(DefaultBuilderSet builderSet) {
+        super(builderSet, new LocalizedStringsSet(BusinessFunctionBuilder.class));
         setMergeEnabled(true);
     }
 

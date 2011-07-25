@@ -18,7 +18,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.GregorianCalendar;
 
 import org.eclipse.jdt.core.IType;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
@@ -52,9 +51,8 @@ public class ProductCmptGenerationCuBuilderTest extends AbstractStdBuilderTest {
         firstDate.set(2010, 2, 20);
         secondGeneration.setValidFrom(secondDate);
 
-        ProductCmptBuilder productCmptBuilder = new ProductCmptBuilder(builderSet, DefaultBuilderSet.KIND_PRODUCT_CMPT);
-        builder = new ProductCmptGenerationCuBuilder(builderSet, DefaultBuilderSet.KIND_PRODUCT_CMPT_GENERATION,
-                productCmptBuilder);
+        ProductCmptBuilder productCmptBuilder = new ProductCmptBuilder(builderSet);
+        builder = new ProductCmptGenerationCuBuilder(builderSet, productCmptBuilder);
     }
 
     @Test
@@ -64,7 +62,7 @@ public class ProductCmptGenerationCuBuilderTest extends AbstractStdBuilderTest {
     }
 
     private IType getGeneratedJavaClass(String generationNamePart) {
-        return getGeneratedJavaClass(productCmpt, true, builder.getKindId(), PRODUCT_CMPT_NAME + generationNamePart);
+        return getGeneratedJavaClass(productCmpt, true, builder, PRODUCT_CMPT_NAME + generationNamePart);
     }
 
 }

@@ -49,9 +49,8 @@ import org.w3c.dom.Element;
  */
 public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptTypeBuilder {
 
-    public BaseProductCmptTypeBuilder(StandardBuilderSet builderSet, String kindId,
-            LocalizedStringsSet localizedStringsSet) {
-        super(builderSet, kindId, localizedStringsSet);
+    public BaseProductCmptTypeBuilder(StandardBuilderSet builderSet, LocalizedStringsSet localizedStringsSet) {
+        super(builderSet, localizedStringsSet);
     }
 
     @Override

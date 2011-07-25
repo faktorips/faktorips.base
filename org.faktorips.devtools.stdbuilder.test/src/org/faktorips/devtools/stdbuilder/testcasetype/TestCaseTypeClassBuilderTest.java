@@ -17,7 +17,6 @@ import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.stringParam;
 import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.unresolvedParam;
 
 import org.eclipse.jdt.core.IType;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.runtime.test.IpsTestResult;
@@ -41,8 +40,8 @@ public class TestCaseTypeClassBuilderTest extends AbstractStdBuilderTest {
         super.setUp();
 
         testCaseType = newTestCaseType(ipsProject, TEST_CASE_TYPE_NAME);
-        builder = new TestCaseTypeClassBuilder(builderSet, DefaultBuilderSet.KIND_TEST_CASE_TYPE_CLASS);
-        javaClass = getGeneratedJavaClass(testCaseType, false, builder.getKindId(), TEST_CASE_TYPE_NAME);
+        builder = new TestCaseTypeClassBuilder(builderSet);
+        javaClass = getGeneratedJavaClass(testCaseType, false, builder, TEST_CASE_TYPE_NAME);
     }
 
     @Test

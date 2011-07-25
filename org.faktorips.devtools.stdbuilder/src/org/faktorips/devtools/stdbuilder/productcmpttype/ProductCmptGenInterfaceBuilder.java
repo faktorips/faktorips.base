@@ -44,8 +44,8 @@ public class ProductCmptGenInterfaceBuilder extends BaseProductCmptTypeBuilder {
 
     private ProductCmptInterfaceBuilder productCmptInterfaceBuilder;
 
-    public ProductCmptGenInterfaceBuilder(StandardBuilderSet builderSet, String kindId) {
-        super(builderSet, kindId, new LocalizedStringsSet(ProductCmptGenInterfaceBuilder.class));
+    public ProductCmptGenInterfaceBuilder(StandardBuilderSet builderSet) {
+        super(builderSet, new LocalizedStringsSet(ProductCmptGenInterfaceBuilder.class));
         setMergeEnabled(true);
     }
 

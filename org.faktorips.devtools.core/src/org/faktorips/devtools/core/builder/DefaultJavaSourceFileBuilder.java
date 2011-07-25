@@ -74,9 +74,8 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     private List<TypeSection> innerClassesSections;
     private boolean loggerInstanceGenerated = false;
 
-    public DefaultJavaSourceFileBuilder(DefaultBuilderSet builderSet, String kindId,
-            LocalizedStringsSet localizedStringsSet) {
-        super(builderSet, kindId, localizedStringsSet);
+    public DefaultJavaSourceFileBuilder(DefaultBuilderSet builderSet, LocalizedStringsSet localizedStringsSet) {
+        super(builderSet, localizedStringsSet);
     }
 
     /**

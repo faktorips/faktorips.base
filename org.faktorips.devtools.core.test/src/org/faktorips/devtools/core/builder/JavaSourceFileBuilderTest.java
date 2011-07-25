@@ -62,8 +62,8 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet();
         builderSet.setIpsProject(ipsProject);
 
-        builder = new StubJavaSourceFileBuilder(builderSet, DefaultBuilderSet.KIND_POLICY_CMPT_TYPE_INTERFACE,
-                new LocalizedStringsSet(JavaSourceFileBuilderTest.class), ipsSrcFile, false);
+        builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
+                ipsSrcFile, true);
         builder.beforeBuildProcess(ipsProject, IncrementalProjectBuilder.INCREMENTAL_BUILD);
     }
 
@@ -189,13 +189,13 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         private final boolean buildingPublishedSourceFile;
 
         public StubJavaSourceFileBuilder(IIpsSrcFile ipsSrcFile, boolean buildingPublishedSourceFile) {
-            this(mock(DefaultBuilderSet.class), "", null, ipsSrcFile, buildingPublishedSourceFile);
+            this(mock(DefaultBuilderSet.class), null, ipsSrcFile, buildingPublishedSourceFile);
         }
 
-        public StubJavaSourceFileBuilder(DefaultBuilderSet builderSet, String kindId,
-                LocalizedStringsSet localizedStringsSet, IIpsSrcFile ipsSrcFile, boolean buildingPublishedSourceFile) {
+        public StubJavaSourceFileBuilder(DefaultBuilderSet builderSet, LocalizedStringsSet localizedStringsSet,
+                IIpsSrcFile ipsSrcFile, boolean buildingPublishedSourceFile) {
 
-            super(builderSet, kindId, localizedStringsSet);
+            super(builderSet, localizedStringsSet);
             this.ipsSrcFile = ipsSrcFile;
             this.buildingPublishedSourceFile = buildingPublishedSourceFile;
         }

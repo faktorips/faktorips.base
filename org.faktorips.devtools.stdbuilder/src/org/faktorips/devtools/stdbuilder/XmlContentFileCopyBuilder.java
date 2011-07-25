@@ -30,8 +30,8 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
  */
 public class XmlContentFileCopyBuilder extends AbstractXmlFileBuilder {
 
-    public XmlContentFileCopyBuilder(IpsObjectType type, DefaultBuilderSet builderSet, String kind) {
-        super(type, builderSet, kind);
+    public XmlContentFileCopyBuilder(IpsObjectType type, DefaultBuilderSet builderSet) {
+        super(type, builderSet);
     }
 
     /**

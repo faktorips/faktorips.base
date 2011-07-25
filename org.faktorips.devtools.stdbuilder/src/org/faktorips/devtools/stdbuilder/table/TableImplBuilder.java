@@ -43,7 +43,6 @@ import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
-import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.runtime.IRuntimeRepository;
@@ -51,7 +50,6 @@ import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree;
 import org.faktorips.runtime.internal.ReadOnlyBinaryRangeTree.TwoColumnKey;
 import org.faktorips.runtime.internal.Table;
 import org.faktorips.util.LocalizedStringsSet;
-import org.faktorips.util.StringUtil;
 
 /**
  * Important: This builder expects from the <code>IJavaPackageStructure</code> the qualified class
@@ -74,15 +72,6 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
     private final static String INIT_KEY_MAPS = "initKeyMaps";
 
-    // this method should be removed when the table generators are refactored to the new generator
-    // design (Jan)
-    public final static String getQualifiedClassName(IIpsSrcFile ipsSrcFile, DefaultBuilderSet builderSet)
-            throws CoreException {
-        String pack = builderSet.getPackage(DefaultBuilderSet.KIND_TABLE_IMPL, ipsSrcFile);
-        String unqalifiedName = StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName());
-        return QNameUtil.concat(pack, unqalifiedName);
-    }
-
     private TableRowBuilder tableRowBuilder;
 
     private String[] fKeyVariableNames;
@@ -95,8 +84,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     private String qualifiedTableRowName;
     private Map<String, IColumnRange> fRanges;
 
-    public TableImplBuilder(DefaultBuilderSet builderSet, String kindId) {
-        super(builderSet, kindId, new LocalizedStringsSet(TableImplBuilder.class));
+    public TableImplBuilder(DefaultBuilderSet builderSet) {
+        super(builderSet, new LocalizedStringsSet(TableImplBuilder.class));
         setMergeEnabled(true);
     }
 

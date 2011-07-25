@@ -41,9 +41,9 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     private MultiStatus buildStatus;
     private ProductCmptGenerationCuBuilder generationBuilder;
 
-    public ProductCmptBuilder(StandardBuilderSet builderSet, String kindId) {
+    public ProductCmptBuilder(StandardBuilderSet builderSet) {
         super(builderSet);
-        generationBuilder = new ProductCmptGenerationCuBuilder(builderSet, kindId, this);
+        generationBuilder = new ProductCmptGenerationCuBuilder(builderSet, this);
     }
 
     public void setProductCmptImplBuilder(ProductCmptImplClassBuilder builder) {

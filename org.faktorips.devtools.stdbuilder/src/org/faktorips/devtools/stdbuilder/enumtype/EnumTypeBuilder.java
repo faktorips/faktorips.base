@@ -63,9 +63,6 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
-    /** The package id identifying the builder */
-    public final static String PACKAGE_STRUCTURE_KIND_ID = "EnumTypeBuilder.enumtype.stdbuilder.devtools.faktorips.org"; //$NON-NLS-1$
-
     /** The builder configuration property name that indicates whether to use Java 5 enum types. */
     private final static String USE_JAVA_ENUM_TYPES_CONFIG_PROPERTY = "useJavaEnumTypes"; //$NON-NLS-1$
 
@@ -76,7 +73,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      * @param builderSet The IPS artefact builder set this builder shall be a part of.
      */
     public EnumTypeBuilder(DefaultBuilderSet builderSet) {
-        super(builderSet, PACKAGE_STRUCTURE_KIND_ID, new LocalizedStringsSet(EnumTypeBuilder.class));
+        super(builderSet, new LocalizedStringsSet(EnumTypeBuilder.class));
         setMergeEnabled(true);
     }
 

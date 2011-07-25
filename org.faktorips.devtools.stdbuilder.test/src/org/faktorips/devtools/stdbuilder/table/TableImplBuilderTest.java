@@ -20,11 +20,9 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,7 +40,7 @@ public class TableImplBuilderTest extends AbstractStdBuilderTest {
         super.setUp();
 
         structure = newTableStructure(ipsProject, TABLE_STRUCTURE_NAME);
-        builder = new TableImplBuilder(builderSet, DefaultBuilderSet.KIND_TABLE_IMPL);
+        builder = new TableImplBuilder(builderSet);
     }
 
     @Test
@@ -73,7 +71,7 @@ public class TableImplBuilderTest extends AbstractStdBuilderTest {
     }
 
     private IType getGeneratedJavaClass() {
-        return getGeneratedJavaClass(structure, false, StandardBuilderSet.KIND_TABLE_IMPL, TABLE_STRUCTURE_NAME);
+        return getGeneratedJavaClass(structure, false, builder, TABLE_STRUCTURE_NAME);
     }
 
 }

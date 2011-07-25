@@ -50,8 +50,8 @@ import org.faktorips.util.message.MessageList;
  */
 public abstract class BasePolicyCmptTypeBuilder extends AbstractPcTypeBuilder {
 
-    public BasePolicyCmptTypeBuilder(DefaultBuilderSet builderSet, String kindId, LocalizedStringsSet stringsSet) {
-        super(builderSet, kindId, stringsSet);
+    public BasePolicyCmptTypeBuilder(DefaultBuilderSet builderSet, LocalizedStringsSet stringsSet) {
+        super(builderSet, stringsSet);
     }
 
     @Override

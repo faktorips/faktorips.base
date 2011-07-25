@@ -44,8 +44,8 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public abstract class AbstractPcTypeBuilder extends AbstractTypeBuilder {
 
-    public AbstractPcTypeBuilder(DefaultBuilderSet builderSet, String kindId, LocalizedStringsSet stringsSet) {
-        super(builderSet, kindId, stringsSet);
+    public AbstractPcTypeBuilder(DefaultBuilderSet builderSet, LocalizedStringsSet stringsSet) {
+        super(builderSet, stringsSet);
     }
 
     /**

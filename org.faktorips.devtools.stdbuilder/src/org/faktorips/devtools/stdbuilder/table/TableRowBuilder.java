@@ -41,8 +41,8 @@ public class TableRowBuilder extends DefaultJavaSourceFileBuilder {
 
     private final String KEY_CONSTRUCTOR_JAVADOC = "TABLE_ROW_BUILDER_CONSTRUCTOR_JAVADOC";
 
-    public TableRowBuilder(DefaultBuilderSet builderSet, String kindId) {
-        super(builderSet, kindId, new LocalizedStringsSet(TableRowBuilder.class));
+    public TableRowBuilder(DefaultBuilderSet builderSet) {
+        super(builderSet, new LocalizedStringsSet(TableRowBuilder.class));
         setMergeEnabled(true);
     }
 
@@ -190,8 +190,8 @@ public class TableRowBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private void generateCodeForToStringMethod(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
-    	methodBuilder.javaDoc("", ANNOTATION_GENERATED);
-    	appendOverrideAnnotation(methodBuilder, false);
+        methodBuilder.javaDoc("", ANNOTATION_GENERATED);
+        appendOverrideAnnotation(methodBuilder, false);
         methodBuilder.methodBegin(Modifier.PUBLIC, String.class, "toString", new String[0], new Class[0]);
         methodBuilder.append("return \"\"");
         for (int i = 0; i < getTableStructure().getNumOfColumns(); i++) {

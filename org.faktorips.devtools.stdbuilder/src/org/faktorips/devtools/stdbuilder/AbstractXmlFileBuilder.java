@@ -39,14 +39,11 @@ import org.faktorips.util.StringUtil;
 public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
 
     private IpsObjectType ipsObjectType;
-    private String kind;
 
-    public AbstractXmlFileBuilder(IpsObjectType type, DefaultBuilderSet builderSet, String kind) {
+    public AbstractXmlFileBuilder(IpsObjectType type, DefaultBuilderSet builderSet) {
         super(builderSet);
-        ArgumentCheck.notNull(kind, this);
         ArgumentCheck.notNull(type, this);
         ipsObjectType = type;
-        this.kind = kind;
     }
 
     @Override
@@ -97,7 +94,7 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
     }
 
     private IFolder getXmlContentFileFolder(IIpsSrcFile ipsSrcFile) throws CoreException {
-        String packageString = getBuilderSet().getPackage(kind, ipsSrcFile);
+        String packageString = getBuilderSet().getPackage(this, ipsSrcFile);
         IPath pathToPack = new Path(packageString.replace('.', '/'));
         return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getFolder(pathToPack);
     }

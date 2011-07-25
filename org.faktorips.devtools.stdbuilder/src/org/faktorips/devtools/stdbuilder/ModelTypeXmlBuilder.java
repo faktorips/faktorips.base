@@ -66,8 +66,8 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
 
     private Document doc;
 
-    public ModelTypeXmlBuilder(IpsObjectType type, DefaultBuilderSet builderSet, String kind) {
-        super(type, builderSet, kind);
+    public ModelTypeXmlBuilder(IpsObjectType type, DefaultBuilderSet builderSet) {
+        super(type, builderSet);
     }
 
     @Override
@@ -334,7 +334,7 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
      * @see Class#getResourceAsStream(java.lang.String)
      */
     public String getXmlResourcePath(IType type) throws CoreException {
-        String packageInternal = getBuilderSet().getPackage(DefaultBuilderSet.KIND_MODEL_TYPE, type.getIpsSrcFile());
+        String packageInternal = getBuilderSet().getPackage(this, type.getIpsSrcFile());
         return packageInternal.replace('.', '/') + '/' + type.getName() + ".xml";
     }
 

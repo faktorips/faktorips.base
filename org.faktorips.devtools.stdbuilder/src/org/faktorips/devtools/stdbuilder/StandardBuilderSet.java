@@ -34,7 +34,6 @@ import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -394,27 +393,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     @Override
-    public String getPackage(String kind, IIpsSrcFile ipsSrcFile) throws CoreException {
-        String returnValue = super.getPackage(kind, ipsSrcFile);
-        if (returnValue != null) {
-            return returnValue;
-        }
-
-        IpsObjectType objectType = ipsSrcFile.getIpsObjectType();
-        if (BusinessFunctionIpsObjectType.getInstance().equals(objectType)) {
-            return getPackageNameForMergablePublishedArtefacts(ipsSrcFile);
-        }
-        if (IpsObjectType.ENUM_TYPE.equals(objectType) && EnumXmlAdapterBuilder.PACKAGE_STRUCTURE_KIND_ID.equals(kind)) {
-            return getPackageNameForMergableInternalArtefacts(ipsSrcFile);
-        }
-        if (IpsObjectType.ENUM_TYPE.equals(objectType)) {
-            return getPackageNameForMergablePublishedArtefacts(ipsSrcFile);
-        }
-
-        throw new IllegalArgumentException("Unexpected kind id " + kind + " for the IpsObjectType: " + objectType); //$NON-NLS-1$ //$NON-NLS-2$
-    }
-
-    @Override
     public boolean isSupportFlIdentifierResolver() {
         return true;
     }
@@ -422,45 +400,40 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     @Override
     protected IIpsArtefactBuilder[] createBuilders() throws CoreException {
         // create policy component type builders
-        policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(this, KIND_POLICY_CMPT_TYPE_IMPL);
-        policyCmptInterfaceBuilder = new PolicyCmptInterfaceBuilder(this, KIND_POLICY_CMPT_TYPE_INTERFACE);
+        policyCmptImplClassBuilder = new PolicyCmptImplClassBuilder(this);
+        policyCmptInterfaceBuilder = new PolicyCmptInterfaceBuilder(this);
 
         // create product component type builders
-        productCmptInterfaceBuilder = new ProductCmptInterfaceBuilder(this, KIND_PRODUCT_CMPT_TYPE_INTERFACE);
-        productCmptImplClassBuilder = new ProductCmptImplClassBuilder(this, KIND_PRODUCT_CMPT_TYPE_IMPL);
-        productCmptGenInterfaceBuilder = new ProductCmptGenInterfaceBuilder(this,
-                DefaultBuilderSet.KIND_PRODUCT_CMPT_TYPE_GENERATION_INTERFACE);
-        productCmptGenImplClassBuilder = new ProductCmptGenImplClassBuilder(this,
-                DefaultBuilderSet.KIND_PRODUCT_CMPT_TYPE_GENERATION_IMPL);
+        productCmptInterfaceBuilder = new ProductCmptInterfaceBuilder(this);
+        productCmptImplClassBuilder = new ProductCmptImplClassBuilder(this);
+        productCmptGenInterfaceBuilder = new ProductCmptGenInterfaceBuilder(this);
+        productCmptGenImplClassBuilder = new ProductCmptGenImplClassBuilder(this);
 
         // table structure builders
-        tableImplBuilder = new TableImplBuilder(this, KIND_TABLE_IMPL);
-        tableRowBuilder = new TableRowBuilder(this, KIND_TABLE_ROW);
+        tableImplBuilder = new TableImplBuilder(this);
+        tableRowBuilder = new TableRowBuilder(this);
         tableImplBuilder.setTableRowBuilder(tableRowBuilder);
 
         // table content builders
-        IIpsArtefactBuilder tableContentCopyBuilder = new TableContentBuilder(this, KIND_TABLE_CONTENT);
+        IIpsArtefactBuilder tableContentCopyBuilder = new TableContentBuilder(this);
 
         // test case type builders
-        TestCaseTypeClassBuilder testCaseTypeClassBuilder = new TestCaseTypeClassBuilder(this,
-                KIND_TEST_CASE_TYPE_CLASS);
+        TestCaseTypeClassBuilder testCaseTypeClassBuilder = new TestCaseTypeClassBuilder(this);
 
         // test case builder
         TestCaseBuilder testCaseBuilder = new TestCaseBuilder(this);
 
         // formula test builder
-        FormulaTestBuilder formulaTestBuilder = new FormulaTestBuilder(this, KIND_FORMULA_TEST_CASE);
+        FormulaTestBuilder formulaTestBuilder = new FormulaTestBuilder(this);
 
         // toc file builder
         TocFileBuilder tocFileBuilder = new TocFileBuilder(this);
 
-        BusinessFunctionBuilder businessFunctionBuilder = new BusinessFunctionBuilder(this,
-                BusinessFunctionBuilder.PACKAGE_STRUCTURE_KIND_ID);
+        BusinessFunctionBuilder businessFunctionBuilder = new BusinessFunctionBuilder(this);
         // New enum type builder
         enumTypeBuilder = new EnumTypeBuilder(this);
         EnumXmlAdapterBuilder enumXmlAdapterBuilder = new EnumXmlAdapterBuilder(this, enumTypeBuilder);
-        IIpsArtefactBuilder enumContentBuilder = new XmlContentFileCopyBuilder(IpsObjectType.ENUM_CONTENT, this,
-                KIND_ENUM_CONTENT);
+        IIpsArtefactBuilder enumContentBuilder = new XmlContentFileCopyBuilder(IpsObjectType.ENUM_CONTENT, this);
 
         //
         // wire up the builders
@@ -468,9 +441,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         productCmptGenImplClassBuilder.setEnumTypeBuilder(enumTypeBuilder);
 
         // product component builders
-        ProductCmptBuilder productCmptGenerationImplBuilder = new ProductCmptBuilder(this, KIND_PRODUCT_CMPT_GENERATION);
+        ProductCmptBuilder productCmptGenerationImplBuilder = new ProductCmptBuilder(this);
         IIpsArtefactBuilder productCmptContentCopyBuilder = new ProductCmptXMLBuilder(IpsObjectType.PRODUCT_CMPT, this,
-                KIND_PRODUCT_CMPT, productCmptGenerationImplBuilder);
+                productCmptGenerationImplBuilder);
 
         productCmptGenerationImplBuilder.setProductCmptImplBuilder(productCmptImplClassBuilder);
         productCmptGenerationImplBuilder.setProductCmptGenImplBuilder(productCmptGenImplClassBuilder);
@@ -498,15 +471,14 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         tocFileBuilder.setEnumTypeBuilder(enumTypeBuilder);
         tocFileBuilder.setEnumXmlAdapterBuilder(enumXmlAdapterBuilder);
 
-        ValidationRuleMessagesPropertiesBuilder validationMessagesBuilder = new ValidationRuleMessagesPropertiesBuilder(this);
+        ValidationRuleMessagesPropertiesBuilder validationMessagesBuilder = new ValidationRuleMessagesPropertiesBuilder(
+                this);
 
         createAnnotationGeneratorMap();
 
         if (ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())) {
-            ModelTypeXmlBuilder policyModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.POLICY_CMPT_TYPE, this,
-                    KIND_MODEL_TYPE);
-            ModelTypeXmlBuilder productModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.PRODUCT_CMPT_TYPE,
-                    this, KIND_MODEL_TYPE);
+            ModelTypeXmlBuilder policyModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.POLICY_CMPT_TYPE, this);
+            ModelTypeXmlBuilder productModelTypeBuilder = new ModelTypeXmlBuilder(IpsObjectType.PRODUCT_CMPT_TYPE, this);
             tocFileBuilder.setPolicyModelTypeXmlBuilder(policyModelTypeBuilder);
             tocFileBuilder.setProductModelTypeXmlBuilder(productModelTypeBuilder);
             tocFileBuilder.setGenerateEntriesForModelTypes(true);

@@ -16,7 +16,6 @@ package org.faktorips.devtools.stdbuilder.table;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.jdt.core.IType;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.junit.Before;
@@ -36,7 +35,7 @@ public class TableRowBuilderTest extends AbstractStdBuilderTest {
         super.setUp();
 
         structure = newTableStructure(ipsProject, TABLE_STRUCTURE_NAME);
-        builder = new TableRowBuilder(builderSet, DefaultBuilderSet.KIND_TABLE_ROW);
+        builder = new TableRowBuilder(builderSet);
     }
 
     @Test
@@ -46,7 +45,7 @@ public class TableRowBuilderTest extends AbstractStdBuilderTest {
     }
 
     private IType getGeneratedJavaClass() {
-        return getGeneratedJavaClass(structure, false, builder.getKindId(), TABLE_STRUCTURE_NAME + "Row");
+        return getGeneratedJavaClass(structure, false, builder, TABLE_STRUCTURE_NAME + "Row");
     }
 
 }

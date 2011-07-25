@@ -16,6 +16,7 @@ package org.faktorips.devtools.stdbuilder.formulatest;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -97,8 +98,8 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
     private Map<String, List<String>> testParameterTypesForGeneration;
     private Map<String, List<String>> testParameterNamesForGeneration;
 
-    public FormulaTestBuilder(DefaultBuilderSet builderSet, String kindId) {
-        super(builderSet, kindId, new LocalizedStringsSet(FormulaTestBuilder.class));
+    public FormulaTestBuilder(DefaultBuilderSet builderSet) {
+        super(builderSet, new LocalizedStringsSet(FormulaTestBuilder.class));
         project = builderSet.getIpsProject();
         productCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategy();
         productCmptNamingStrategy.setIpsProject(project);
@@ -150,9 +151,9 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
     public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
         super.beforeBuild(ipsSrcFile, status);
 
-        formulasToTestForGeneration = new HashMap<IFormula, Integer>();
-        testParameterTypesForGeneration = new HashMap<String, List<String>>();
-        testParameterNamesForGeneration = new HashMap<String, List<String>>();
+        formulasToTestForGeneration = new LinkedHashMap<IFormula, Integer>();
+        testParameterTypesForGeneration = new LinkedHashMap<String, List<String>>();
+        testParameterNamesForGeneration = new LinkedHashMap<String, List<String>>();
     }
 
     protected String getSuperClassName() {
@@ -205,7 +206,7 @@ public class FormulaTestBuilder extends DefaultJavaSourceFileBuilder {
      * Returns the package folder for the given ips sourcefile.
      */
     private IFolder getFolder(IIpsSrcFile ipsSrcFile) throws CoreException {
-        String packageString = getBuilderSet().getPackage(DefaultBuilderSet.KIND_FORMULA_TEST_CASE, ipsSrcFile);
+        String packageString = getBuilderSet().getPackage(this, ipsSrcFile);
         IPath pathToPack = new Path(packageString.replace('.', '/'));
         return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getFolder(pathToPack);
     }

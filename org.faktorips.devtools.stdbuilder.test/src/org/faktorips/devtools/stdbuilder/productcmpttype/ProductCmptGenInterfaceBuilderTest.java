@@ -15,7 +15,6 @@ package org.faktorips.devtools.stdbuilder.productcmpttype;
 
 import static org.junit.Assert.assertTrue;
 
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,8 +27,7 @@ public class ProductCmptGenInterfaceBuilderTest extends ProductCmptTypeBuilderTe
     public void setUp() throws Exception {
         super.setUp();
 
-        builder = new ProductCmptGenInterfaceBuilder(builderSet,
-                DefaultBuilderSet.KIND_PRODUCT_CMPT_TYPE_GENERATION_INTERFACE);
+        builder = new ProductCmptGenInterfaceBuilder(builderSet);
     }
 
     @Test

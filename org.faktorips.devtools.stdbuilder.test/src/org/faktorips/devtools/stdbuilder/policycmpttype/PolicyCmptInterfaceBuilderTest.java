@@ -28,7 +28,7 @@ public class PolicyCmptInterfaceBuilderTest extends PolicyCmptTypeBuilderTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        builder = new PolicyCmptInterfaceBuilder(builderSet, DefaultBuilderSet.KIND_POLICY_CMPT_TYPE_INTERFACE);
+        builder = new PolicyCmptInterfaceBuilder(builderSet);
     }
 
     @Test

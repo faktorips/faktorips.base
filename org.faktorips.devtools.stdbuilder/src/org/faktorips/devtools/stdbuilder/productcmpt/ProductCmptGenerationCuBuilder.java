@@ -77,10 +77,8 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
     private ProductCmptImplClassBuilder productCmptImplBuilder;
     private ProductCmptGenImplClassBuilder productCmptGenImplBuilder;
 
-    public ProductCmptGenerationCuBuilder(DefaultBuilderSet builderSet, String kindId,
-            ProductCmptBuilder productCmptBuilder) {
-
-        super(builderSet, kindId, new LocalizedStringsSet(ProductCmptGenerationCuBuilder.class));
+    public ProductCmptGenerationCuBuilder(DefaultBuilderSet builderSet, ProductCmptBuilder productCmptBuilder) {
+        super(builderSet, new LocalizedStringsSet(ProductCmptGenerationCuBuilder.class));
         this.productCmptBuilder = productCmptBuilder;
     }
 

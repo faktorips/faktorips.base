@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptInterfaceBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpttype.ProductCmptTypeBuilderTest;
 import org.junit.Before;
 
@@ -46,8 +46,8 @@ public abstract class GenProdAssociationTest extends ProductCmptTypeBuilderTest 
 
         targetProductCmptType = newProductCmptType(ipsProject, TARGET_PRODUCT_NAME);
 
-        javaInterfaceTargetType = getGeneratedJavaInterface(targetProductCmptType, false,
-                StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE, TARGET_PRODUCT_NAME);
+        javaInterfaceTargetType = getGeneratedJavaInterface(targetProductCmptType, false, builderSet
+                .getBuildersByClass(ProductCmptInterfaceBuilder.class).get(0), TARGET_PRODUCT_NAME);
 
         association = productCmptType.newProductCmptTypeAssociation();
         association.setMinCardinality(0);

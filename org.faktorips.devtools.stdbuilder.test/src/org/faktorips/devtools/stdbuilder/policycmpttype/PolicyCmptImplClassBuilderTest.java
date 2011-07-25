@@ -19,7 +19,6 @@ import static org.junit.Assert.fail;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -43,7 +42,7 @@ public class PolicyCmptImplClassBuilderTest extends PolicyCmptTypeBuilderTest {
         IIpsProjectProperties props = ipsProject.getProperties();
         ipsProject.setProperties(props);
 
-        builder = new PolicyCmptImplClassBuilder(builderSet, DefaultBuilderSet.KIND_POLICY_CMPT_TYPE_IMPL);
+        builder = new PolicyCmptImplClassBuilder(builderSet);
     }
 
     @Test

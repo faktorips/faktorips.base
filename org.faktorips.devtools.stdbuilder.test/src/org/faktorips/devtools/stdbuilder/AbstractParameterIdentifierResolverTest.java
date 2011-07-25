@@ -23,8 +23,6 @@ import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.builder.AbstractParameterIdentifierResolver;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
-import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -80,7 +78,7 @@ public class AbstractParameterIdentifierResolverTest extends AbstractStdBuilderT
     private PolicyCmptInterfaceBuilder getPolicyCmptInterfaceBuilder() throws Exception {
         IIpsArtefactBuilder[] builders = ipsProject.getIpsArtefactBuilderSet().getArtefactBuilders();
         for (IIpsArtefactBuilder builder : builders) {
-            if (((JavaSourceFileBuilder)builder).getKindId().equals(DefaultBuilderSet.KIND_POLICY_CMPT_TYPE_INTERFACE)) {
+            if (builder instanceof PolicyCmptInterfaceBuilder) {
                 return (PolicyCmptInterfaceBuilder)builder;
             }
         }

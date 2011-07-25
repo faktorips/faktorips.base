@@ -19,6 +19,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassBuilder;
+import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptInterfaceBuilder;
 import org.junit.Before;
 
 public abstract class ProductCmptTypeBuilderTest extends AbstractStdBuilderTest {
@@ -59,23 +61,22 @@ public abstract class ProductCmptTypeBuilderTest extends AbstractStdBuilderTest 
                 (StandardBuilderSet)ipsProject.getIpsArtefactBuilderSet());
 
         javaClassConfiguredPolicy = getGeneratedJavaClass(policyCmptType, false,
-                StandardBuilderSet.KIND_POLICY_CMPT_TYPE_IMPL, POLICY_NAME);
+                builderSet.getBuildersByClass(PolicyCmptImplClassBuilder.class).get(0), POLICY_NAME);
         javaInterfaceConfiguredPolicy = getGeneratedJavaInterface(policyCmptType, false,
-                StandardBuilderSet.KIND_POLICY_CMPT_TYPE_INTERFACE, POLICY_NAME);
+                builderSet.getBuildersByClass(PolicyCmptInterfaceBuilder.class).get(0), POLICY_NAME);
 
         IChangesOverTimeNamingConvention changesOverTimeNamingConvention = ipsProject
                 .getChangesInTimeNamingConventionForGeneratedCode();
         javaClassGeneration = getGeneratedJavaClass(productCmptType, false,
-                StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_GENERATION_IMPL, PRODUCT_NAME
+                builderSet.getBuildersByClass(ProductCmptGenImplClassBuilder.class).get(0), PRODUCT_NAME
                         + changesOverTimeNamingConvention.getGenerationConceptNameAbbreviation());
         javaInterfaceGeneration = getGeneratedJavaInterface(productCmptType, false,
-                StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_GENERATION_INTERFACE, PRODUCT_NAME
+                builderSet.getBuildersByClass(ProductCmptGenInterfaceBuilder.class).get(0), PRODUCT_NAME
                         + changesOverTimeNamingConvention.getGenerationConceptNameAbbreviation());
 
-        javaClass = getGeneratedJavaClass(productCmptType, false, StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_IMPL,
-                PRODUCT_NAME);
+        javaClass = getGeneratedJavaClass(productCmptType, false,
+                builderSet.getBuildersByClass(ProductCmptImplClassBuilder.class).get(0), PRODUCT_NAME);
         javaInterface = getGeneratedJavaInterface(productCmptType, false,
-                StandardBuilderSet.KIND_PRODUCT_CMPT_TYPE_INTERFACE, PRODUCT_NAME);
+                builderSet.getBuildersByClass(ProductCmptInterfaceBuilder.class).get(0), PRODUCT_NAME);
     }
-
 }

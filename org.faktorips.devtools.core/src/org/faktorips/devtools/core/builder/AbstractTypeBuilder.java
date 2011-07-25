@@ -36,8 +36,8 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public abstract class AbstractTypeBuilder extends DefaultJavaSourceFileBuilder {
 
-    public AbstractTypeBuilder(DefaultBuilderSet builderSet, String kindId, LocalizedStringsSet localizedStringsSet) {
-        super(builderSet, kindId, localizedStringsSet);
+    public AbstractTypeBuilder(DefaultBuilderSet builderSet, LocalizedStringsSet localizedStringsSet) {
+        super(builderSet, localizedStringsSet);
     }
 
     @Override

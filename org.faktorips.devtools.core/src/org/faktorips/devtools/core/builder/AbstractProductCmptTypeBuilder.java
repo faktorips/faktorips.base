@@ -41,10 +41,9 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public abstract class AbstractProductCmptTypeBuilder extends AbstractTypeBuilder {
 
-    public AbstractProductCmptTypeBuilder(DefaultBuilderSet builderSet, String kindId,
-            LocalizedStringsSet localizedStringsSet) {
+    public AbstractProductCmptTypeBuilder(DefaultBuilderSet builderSet, LocalizedStringsSet localizedStringsSet) {
 
-        super(builderSet, kindId, localizedStringsSet);
+        super(builderSet, localizedStringsSet);
     }
 
     @Override

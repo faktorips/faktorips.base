@@ -20,7 +20,6 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -28,7 +27,6 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -65,7 +63,7 @@ public class FormulaTestBuilderTest extends AbstractStdBuilderTest {
         formula.newFormulaTestCase();
         formula.setFormulaSignature("testFormula");
 
-        builder = new FormulaTestBuilder(builderSet, DefaultBuilderSet.KIND_FORMULA_TEST_CASE);
+        builder = new FormulaTestBuilder(builderSet);
     }
 
     @Test
@@ -93,8 +91,7 @@ public class FormulaTestBuilderTest extends AbstractStdBuilderTest {
     }
 
     private IType getGeneratedJavaClass() {
-        return getGeneratedJavaClass(productCmpt, true, StandardBuilderSet.KIND_FORMULA_TEST_CASE, PRODUCT_NAME
-                + FormulaTestBuilder.RUNTIME_EXTENSION);
+        return getGeneratedJavaClass(productCmpt, true, builder, PRODUCT_NAME + FormulaTestBuilder.RUNTIME_EXTENSION);
     }
 
 }

@@ -16,11 +16,9 @@ package org.faktorips.devtools.stdbuilder.bf;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.jdt.core.IType;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,7 +35,7 @@ public class BusinessFunctionBuilderTest extends AbstractStdBuilderTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        builder = new BusinessFunctionBuilder(builderSet, DefaultBuilderSet.KIND_BUSINESS_FUNCTION);
+        builder = new BusinessFunctionBuilder(builderSet);
         businessFunction = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 BUSINESS_FUNCTION_NAME);
     }
@@ -49,8 +47,7 @@ public class BusinessFunctionBuilderTest extends AbstractStdBuilderTest {
     }
 
     private IType getGeneratedJavaClass() {
-        return getGeneratedJavaClass(businessFunction, false, StandardBuilderSet.KIND_BUSINESS_FUNCTION,
-                BUSINESS_FUNCTION_NAME);
+        return getGeneratedJavaClass(businessFunction, false, builder, BUSINESS_FUNCTION_NAME);
     }
 
 }

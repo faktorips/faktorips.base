@@ -35,7 +35,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
-import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -414,8 +413,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         if (kind == null) {
             return null;
         }
-        String packageString = getBuilderSet().getPackage(DefaultBuilderSet.KIND_PRODUCT_CMPT_TOCENTRY,
-                productCmpt.getIpsSrcFile()).replace('.', '/');
+        String packageString = getBuilderSet().getPackage(this, productCmpt.getIpsSrcFile()).replace('.', '/');
         String xmlResourceName = packageString + '/' + productCmpt.getName() + ".xml"; //$NON-NLS-1$
         String ipsObjectId = productCmpt.getRuntimeId();
         String ipsObjectQName = productCmpt.getQualifiedName();
@@ -484,8 +482,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         if (tableStructure == null) {
             return null;
         }
-        String packageInternal = getBuilderSet().getPackage(DefaultBuilderSet.KIND_TABLE_TOCENTRY,
-                tableContents.getIpsSrcFile());
+        String packageInternal = getBuilderSet().getPackage(this, tableContents.getIpsSrcFile());
         String tableStructureName = tableImplClassBuilder.getQualifiedClassName(tableStructure.getIpsSrcFile());
         String xmlResourceName = packageInternal.replace('.', '/') + '/' + tableContents.getName() + ".xml"; //$NON-NLS-1$
         TocEntryObject entry = new TableContentTocEntry(tableContents.getQualifiedName(),
@@ -531,8 +528,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         String objectId = packageRootName + "." + enumContent.getQualifiedName(); //$NON-NLS-1$
         objectId = objectId.replace('.', '/') + "." + IpsObjectType.ENUM_CONTENT.getFileExtension(); //$NON-NLS-1$
 
-        String packageString = getBuilderSet().getPackage(DefaultBuilderSet.KIND_ENUM_CONTENT_TOCENTRY,
-                enumContent.getIpsSrcFile()).replace('.', '/');
+        String packageString = getBuilderSet().getPackage(this, enumContent.getIpsSrcFile()).replace('.', '/');
         String xmlResourceName = packageString + '/' + enumContent.getName() + ".xml"; //$NON-NLS-1$
         String enumTypeName = enumTypeBuilder.getQualifiedClassName(enumType);
         TocEntryObject entry = new EnumContentTocEntry(objectId, enumContent.getQualifiedName(), xmlResourceName,

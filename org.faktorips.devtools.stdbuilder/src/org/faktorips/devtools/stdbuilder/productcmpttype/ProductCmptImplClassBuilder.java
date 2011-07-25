@@ -49,8 +49,8 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class ProductCmptImplClassBuilder extends BaseProductCmptTypeBuilder {
 
-    public ProductCmptImplClassBuilder(StandardBuilderSet builderSet, String kindId) {
-        super(builderSet, kindId, new LocalizedStringsSet(ProductCmptImplClassBuilder.class));
+    public ProductCmptImplClassBuilder(StandardBuilderSet builderSet) {
+        super(builderSet, new LocalizedStringsSet(ProductCmptImplClassBuilder.class));
         setMergeEnabled(true);
     }
 

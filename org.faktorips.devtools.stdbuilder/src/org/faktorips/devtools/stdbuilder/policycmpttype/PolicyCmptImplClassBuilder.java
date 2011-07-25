@@ -74,8 +74,8 @@ import org.w3c.dom.Element;
 
 public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
-    public PolicyCmptImplClassBuilder(DefaultBuilderSet builderSet, String kindId) {
-        super(builderSet, kindId, new LocalizedStringsSet(PolicyCmptImplClassBuilder.class));
+    public PolicyCmptImplClassBuilder(DefaultBuilderSet builderSet) {
+        super(builderSet, new LocalizedStringsSet(PolicyCmptImplClassBuilder.class));
         setMergeEnabled(true);
     }
 

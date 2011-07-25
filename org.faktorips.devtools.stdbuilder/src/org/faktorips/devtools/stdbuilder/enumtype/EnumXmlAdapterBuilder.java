@@ -42,13 +42,10 @@ import org.faktorips.util.LocalizedStringsSet;
  */
 public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
 
-    /** The package id identifiying the builder */
-    public final static String PACKAGE_STRUCTURE_KIND_ID = "EnumXmlAdapterBuilder.enumtype.stdbuilder.devtools.faktorips.org"; //$NON-NLS-1$
-
     public EnumTypeBuilder enumTypeBuilder;
 
     public EnumXmlAdapterBuilder(DefaultBuilderSet builderSet, EnumTypeBuilder enumTypeBuilder) {
-        super(builderSet, PACKAGE_STRUCTURE_KIND_ID, new LocalizedStringsSet(EnumXmlAdapterBuilder.class));
+        super(builderSet, new LocalizedStringsSet(EnumXmlAdapterBuilder.class));
         this.enumTypeBuilder = enumTypeBuilder;
     }
 
