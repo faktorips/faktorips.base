@@ -62,7 +62,21 @@ public abstract class TextAndSecondControlComposite extends ControlComposite {
         }
         secondControl = createSecondControl(toolkit);
 
-        text.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
+        GridData textGridData = new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL);
+        /*
+         * SW 26.7.2011: Workaround for several layout/resize problems with TextButtonControls (see
+         * FIPS-617).
+         * 
+         * In the ProdCmptEditor especially the formula edit fields caused problems as they
+         * potentially contain long texts. Collapsing or expanding the formula section then caused
+         * the whole section to be drawn as large as it needed to be to display the whole formula at
+         * once. Setting the width hint to a "small" value prevents the text control to acquire
+         * space at will. I have no idea why that is and why the text control grabbed so much space
+         * in the first place.
+         */
+        textGridData.widthHint = 25;
+        text.setLayoutData(textGridData);
+
         GridData d = new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_VERTICAL);
         if (buttonHeightHint > -1) {
             d.heightHint = buttonHeightHint;
