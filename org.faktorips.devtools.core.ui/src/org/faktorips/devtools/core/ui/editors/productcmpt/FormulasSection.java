@@ -44,7 +44,6 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.CompositeUIController;
 import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
-import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.FormulaEditControl;
 import org.faktorips.devtools.core.ui.controls.TableContentsUsageRefControl;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
@@ -127,8 +126,8 @@ public class FormulasSection extends IpsSection {
      */
     private void createEditControls() {
         uiMasterController = new CompositeUIController();
-        IpsObjectUIController ctrl = new IpsObjectUIController(generation.getIpsObject());
-        uiMasterController.add(ctrl);
+        IpsObjectUIController uiController = new IpsObjectUIController(generation.getIpsObject());
+        uiMasterController.add(uiController);
 
         IFormula[] formulas = generation.getFormulas();
         Arrays.sort(
@@ -176,7 +175,7 @@ public class FormulasSection extends IpsSection {
 
                 TableContentsUsageRefControl tcuControl = new TableContentsUsageRefControl(generation.getIpsProject(),
                         rootPane, toolkit, tsu);
-                ctrl.add(new TextButtonField(tcuControl), usage, ITableContentUsage.PROPERTY_TABLE_CONTENT);
+                uiController.add(new TextButtonField(tcuControl), usage, ITableContentUsage.PROPERTY_TABLE_CONTENT);
                 addFocusControl(tcuControl.getTextControl());
                 this.editControls.add(tcuControl);
             } catch (CoreException e) {
@@ -200,7 +199,7 @@ public class FormulasSection extends IpsSection {
             }
 
             FormulaEditControl evc = new FormulaEditControl(rootPane, toolkit, formula, getShell(), this);
-            ctrl.add(new TextField(evc.getTextControl()), formula, IFormula.PROPERTY_EXPRESSION);
+            uiController.add(new TextButtonField(evc), formula, IFormula.PROPERTY_EXPRESSION);
             addFocusControl(evc.getTextControl());
             this.editControls.add(evc);
 
