@@ -76,7 +76,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
      * @throws NullPointerException If <tt>enumType</tt> is <tt>null</tt>.
      */
     public EnumTypeGeneralInfoSection(IEnumType enumType, Composite parent, UIToolkit toolkit) {
-        super(ID, parent, GridData.FILL_HORIZONTAL, toolkit);
+        super(ID, parent, GridData.FILL_BOTH, toolkit);
         ArgumentCheck.notNull(enumType);
 
         this.enumType = enumType;
