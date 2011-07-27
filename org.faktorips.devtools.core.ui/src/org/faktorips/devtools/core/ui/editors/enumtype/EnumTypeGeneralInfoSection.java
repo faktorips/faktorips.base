@@ -82,6 +82,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         this.enumType = enumType;
         extFactory = new ExtensionPropertyControlFactory(enumType.getClass());
 
+        setGrabVerticalSpace(false);
         initControls();
         setText(Messages.EnumTypeGeneralInfoSection_title);
     }
@@ -105,7 +106,6 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
                 }
             }
         });
-
         // Supertype
         EnumTypeRefControl supertypeRefControl = toolkit.createEnumTypeRefControl(enumType.getIpsProject(), composite,
                 true);

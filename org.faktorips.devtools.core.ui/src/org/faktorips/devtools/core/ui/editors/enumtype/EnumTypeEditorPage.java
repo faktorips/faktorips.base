@@ -18,7 +18,6 @@ import org.eclipse.jface.action.ContributionManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.menus.IMenuService;
@@ -107,9 +106,7 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
         formBody.setLayout(createPageLayout(1, false));
 
         new EnumTypeGeneralInfoSection(enumType, formBody, toolkit);
-
-        Composite remainerSection = createGridComposite(toolkit, formBody, 1, true, GridData.FILL_HORIZONTAL);
-        enumAttributesSection = new EnumAttributesSection(enumType, remainerSection, getSite(), toolkit);
+        enumAttributesSection = new EnumAttributesSection(enumType, formBody, getSite(), toolkit);
         try {
             enumValuesSection = new EnumValuesSection(enumType, formBody, toolkit);
         } catch (CoreException e) {

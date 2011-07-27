@@ -62,6 +62,13 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
     public EnumAttributesSection(IEnumType enumType, Composite parent, IWorkbenchPartSite site, UIToolkit toolkit) {
         super(ID, enumType, parent, site, Messages.EnumAttributesSection_title, toolkit);
 
+        setGrabVerticalSpace(false);
+        /*
+         * Workaround: re-layout to let setGrabVerticalSpace() to take effect. This is necessary as
+         * the controls are created in the super constructor.
+         */
+        relayoutSection(true);
+
         addMonitoredValidationMessageCode(IEnumType.MSGCODE_ENUM_TYPE_MULTIPLE_LITERAL_NAME_ATTRIBUTES);
         addMonitoredValidationMessageCode(IEnumType.MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE);
         addMonitoredValidationMessageCode(IEnumType.MSGCODE_ENUM_TYPE_NO_USED_AS_ID_IN_FAKTOR_IPS_UI_ATTRIBUTE);
