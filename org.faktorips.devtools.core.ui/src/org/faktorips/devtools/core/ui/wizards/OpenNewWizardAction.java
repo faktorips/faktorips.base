@@ -69,7 +69,7 @@ public abstract class OpenNewWizardAction implements IWorkbenchWindowActionDeleg
         dialog.open();
     }
 
-    private IStructuredSelection getCurrentSelection() {
+    protected IStructuredSelection getCurrentSelection() {
         if (window != null) {
             ISelection selection = window.getSelectionService().getSelection();
             if (selection instanceof IStructuredSelection) {
