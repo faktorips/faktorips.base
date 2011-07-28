@@ -220,7 +220,7 @@ public class GenProductCmptTypeAttribute extends GenAttribute {
         builder.append("value = ");
         builder.appendClassName(ValueToXmlHelper.class);
         builder.append(".getValueFromElement(configElement, \"Value\");");
-        builder.append("this.").append(getMemberVarName());
+        builder.append(getMemberVarName());
         builder.append(" = ");
         if (getDatatypeHelper() instanceof EnumTypeDatatypeHelper) {
             EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)getDatatypeHelper();
