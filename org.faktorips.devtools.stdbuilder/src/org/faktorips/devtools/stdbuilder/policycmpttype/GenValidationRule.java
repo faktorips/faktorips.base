@@ -145,15 +145,15 @@ public class GenValidationRule extends GenTypePart {
             body.append(")");
             body.appendOpenBracket();
         }
+
         if (rule.isConfigurableByProductComponent()) {
             body.append("if(getProductCmptGeneration().isValidationRuleActivated(") //
                     .append(getFieldNameForRuleName()) //
-                    .append("))") //
-                    .appendOpenBracket();
-            if (!rule.isCheckValueAgainstValueSetRule()) {
-                body.appendln("//begin-user-code");
-                body.appendln(getLocalizedToDo("EXEC_RULE_IMPLEMENT", rule.getName()));
-            }
+                    .append("))").appendOpenBracket();
+        }
+        if (!rule.isCheckValueAgainstValueSetRule()) {
+            body.appendln("//begin-user-code");
+            body.appendln(getLocalizedToDo("EXEC_RULE_IMPLEMENT", rule.getName()));
         }
 
         String[] javaDocAnnotation = JavaSourceFileBuilder.ANNOTATION_RESTRAINED_MODIFIABLE;
@@ -206,13 +206,15 @@ public class GenValidationRule extends GenTypePart {
         body.appendln();
         body.appendCloseBracket();
         body.appendln(" return CONTINUE_VALIDATION;");
+
+        if (!rule.isCheckValueAgainstValueSetRule()) {
+            body.appendln("//end-user-code");
+        }
         if (rule.isConfigurableByProductComponent()) {
-            if (!rule.isCheckValueAgainstValueSetRule()) {
-                body.appendln("//end-user-code");
-            }
             body.appendCloseBracket();
             body.appendln(" return CONTINUE_VALIDATION;");
         }
+
         if (!rule.isAppliedForAllBusinessFunctions() && businessFunctions.length > 0) {
             body.appendCloseBracket();
             body.appendln(" return CONTINUE_VALIDATION;");
