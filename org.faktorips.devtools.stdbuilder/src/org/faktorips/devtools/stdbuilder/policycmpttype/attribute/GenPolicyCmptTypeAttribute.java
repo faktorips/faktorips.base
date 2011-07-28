@@ -139,7 +139,7 @@ public abstract class GenPolicyCmptTypeAttribute extends GenAttribute {
         builder.appendln(")) {");
         String expr = (isUseTypesafeCollections() ? "" : "(String)") + propMapName + ".get(\""
                 + getAttribute().getName() + "\")";
-        builder.append(getMemberVarName() + " = ");
+        builder.append("this.").append(getMemberVarName() + " = ");
         if (getDatatypeHelper() instanceof EnumTypeDatatypeHelper) {
             EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)getDatatypeHelper();
             if (!enumHelper.getEnumType().isContainingValues()) {

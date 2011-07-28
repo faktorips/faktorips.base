@@ -145,7 +145,7 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
      *      configElement = (Element)configMap.get(&quot;testTypeDecimal&quot;);
      *      if (configElement != null) {
      *          value = ValueToXmlHelper.getValueFromElement(configElement, &quot;Value&quot;);
-     *          testTypeDecimal = Decimal.valueOf(value);
+     *          this.testTypeDecimal = Decimal.valueOf(value);
      *      }
      *  }
      * </pre>
@@ -161,7 +161,7 @@ public abstract class BaseProductCmptTypeBuilder extends AbstractProductCmptType
      *      configElement = configMap.get(&quot;testTypeDecimal&quot;);
      *      if (configElement != null) {
      *          value = ValueToXmlHelper.getValueFromElement(configElement, &quot;Value&quot;);
-     *          testTypeDecimal = Decimal.valueOf(value);
+     *          this.testTypeDecimal = Decimal.valueOf(value);
      *      }
      *  }
      * </pre>

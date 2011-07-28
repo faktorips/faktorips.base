@@ -104,8 +104,7 @@ public class PolicyCmptImplClassBuilder extends BasePolicyCmptTypeBuilder {
 
     @Override
     public String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
-        String name = StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName());
-        return getJavaNamingConvention().getImplementationClassName(StringUtils.capitalize(name));
+        return getJavaNamingConvention().getImplementationClassName(ipsSrcFile.getIpsObjectName());
     }
 
     @Override

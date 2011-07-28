@@ -813,7 +813,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
             JavaCodeFragmentBuilder builder) throws CoreException {
         String cardinalityFieldName = policyCmptTypeAssociation == null ? "" : getFieldNameCardinalityForAssociation();
         String fieldName = getFieldNameToManyAssociation();
-        builder.append(fieldName);
+        builder.append("this.").append(fieldName);
         builder.appendln(" = new ");
         if (isUseTypesafeCollections()) {
             builder.appendClassName(LinkedHashMap.class.getName());
@@ -844,7 +844,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
                     + getQualifiedInterfaceClassNameForTarget() + ">");
             builder.appendln("(this);");
             builder.appendln("link.initFromXml(element);");
-            builder.append(fieldName);
+            builder.append("this.").append(fieldName);
             builder.appendln(".put(link.getTargetId(), link);");
         } else {
             builder.appendln("for (int i=0; i<associationElements.size(); i++) {");
@@ -852,7 +852,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
             builder.append(" element = (");
             builder.appendClassName(Element.class);
             builder.append(")associationElements.get(i);");
-            builder.append(fieldName);
+            builder.append("this.").append(fieldName);
             builder.append("[i] = ");
             builder.appendln("element.getAttribute(\"" + ProductCmptGenImplClassBuilder.XML_ATTRIBUTE_TARGET_RUNTIME_ID
                     + "\");");
@@ -860,7 +860,7 @@ public class GenProdAssociationToMany extends GenProdAssociation {
                 builder.append("addToCardinalityMap(");
                 builder.append(cardinalityFieldName);
                 builder.append(", ");
-                builder.append(fieldName);
+                builder.append("this.").append(fieldName);
                 builder.append("[i], ");
                 builder.appendln("element);");
             }

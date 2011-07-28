@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Faktor-IPS" id="org.faktorips.devtools.core.FaktorIPS" application="org.faktorips.devtools.core.productDefinitionTool" version="FAKTOR_IPS_DO_NOT_CHANGE_0.0.0" useFeatures="true" includeLaunchers="true">
+<product name="Faktor-IPS" id="org.faktorips.devtools.core.FaktorIPS" application="org.faktorips.devtools.core.productDefinitionTool" version="999.999.999.doNotChange" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.faktorips.devtools.core/icons/FaktorIpsIcon128.gif"/>
@@ -32,7 +32,7 @@
    </launcher>
 
    <vm>
-      <windows include="true">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</windows>
+      <windows>org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</windows>
    </vm>
 
    <plugins>
