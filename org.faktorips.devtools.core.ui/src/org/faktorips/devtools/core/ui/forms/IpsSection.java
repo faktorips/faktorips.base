@@ -161,11 +161,11 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
 
         // Create the UI section widget that is being wrapped by this composite
         section = toolkit.getFormToolkit().createSection(this, style);
-        section.setLayoutData(new GridData(GridData.FILL_BOTH));
+        section.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
 
         // Create the client composite for the section
         clientComposite = toolkit.createGridComposite(section, 1, false, false);
-        clientComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        clientComposite.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
         initClientComposite(clientComposite, toolkit);
         section.setClient(clientComposite);
         toolkit.getFormToolkit().paintBordersFor(clientComposite);
@@ -279,11 +279,17 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
      */
     protected void relayoutSection(boolean expanded) {
         if (isGrabVerticalSpace()) {
-            GridData gridData = (GridData)getLayoutData();
-            gridData.grabExcessVerticalSpace = expanded;
+            setGrabVerticalLayoutData(expanded);
+        } else {
+            setGrabVerticalLayoutData(false);
         }
         updateSectionTitle();
         getParent().layout();
+    }
+
+    private void setGrabVerticalLayoutData(boolean expanded) {
+        GridData gridData = (GridData)getLayoutData();
+        gridData.grabExcessVerticalSpace = expanded;
     }
 
     /**

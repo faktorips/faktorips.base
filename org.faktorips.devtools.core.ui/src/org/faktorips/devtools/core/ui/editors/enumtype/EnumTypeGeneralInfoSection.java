@@ -76,12 +76,13 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
      * @throws NullPointerException If <tt>enumType</tt> is <tt>null</tt>.
      */
     public EnumTypeGeneralInfoSection(IEnumType enumType, Composite parent, UIToolkit toolkit) {
-        super(ID, parent, GridData.FILL_HORIZONTAL, toolkit);
+        super(ID, parent, GridData.FILL_BOTH, toolkit);
         ArgumentCheck.notNull(enumType);
 
         this.enumType = enumType;
         extFactory = new ExtensionPropertyControlFactory(enumType.getClass());
 
+        setGrabVerticalSpace(false);
         initControls();
         setText(Messages.EnumTypeGeneralInfoSection_title);
     }
@@ -105,7 +106,6 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
                 }
             }
         });
-
         // Supertype
         EnumTypeRefControl supertypeRefControl = toolkit.createEnumTypeRefControl(enumType.getIpsProject(), composite,
                 true);
