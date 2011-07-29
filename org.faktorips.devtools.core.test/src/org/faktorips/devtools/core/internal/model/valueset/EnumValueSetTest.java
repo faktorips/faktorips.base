@@ -620,7 +620,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         list = set2.validate(ipsProject);
         assertEquals(0, list.size());
 
-        ce.getProductCmpt().setProductCmptType("unkown");
+        ((IProductCmptGeneration)ce.getPropertyValueContainer()).getProductCmpt().setProductCmptType("unkown");
         list = set2.validate(ipsProject);
         assertEquals(2, list.size());
         MessageList messages = list.getMessagesFor(set2, IEnumValueSet.PROPERTY_VALUES);
