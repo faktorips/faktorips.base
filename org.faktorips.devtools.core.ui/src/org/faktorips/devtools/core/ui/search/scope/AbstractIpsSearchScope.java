@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.search.model.scope;
+package org.faktorips.devtools.core.ui.search.scope;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,11 +29,11 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- * Abstract implementation of the IModelSearchScope
+ * Abstract implementation of the IIpsSearchScope
  * 
  * @author dicker
  */
-public abstract class AbstractModelSearchScope implements IModelSearchScope {
+public abstract class AbstractIpsSearchScope implements IIpsSearchScope {
 
     @Override
     public Set<IIpsSrcFile> getSelectedIpsSrcFiles() throws CoreException {
@@ -87,22 +87,22 @@ public abstract class AbstractModelSearchScope implements IModelSearchScope {
 
         int countSelectedResources = namesOfSelectedObjects.size();
         if (countSelectedResources == 0) {
-            return Messages.ModelSearchScope_undefinedScope;
+            return Messages.IpsSearchScope_undefinedScope;
         }
 
         String scopeType = getScopeTypeLabel(countSelectedResources == 1);
 
         switch (countSelectedResources) {
             case 1:
-                return Messages.bind(Messages.ModelSearchScope_scopeWithOneSelectedElement, new String[] { scopeType,
+                return Messages.bind(Messages.IpsSearchScope_scopeWithOneSelectedElement, new String[] { scopeType,
                         namesOfSelectedObjects.get(0) });
 
             case 2:
-                return Messages.bind(Messages.ModelSearchScope_scopeWithTwoSelectedElements, new String[] { scopeType,
+                return Messages.bind(Messages.IpsSearchScope_scopeWithTwoSelectedElements, new String[] { scopeType,
                         namesOfSelectedObjects.get(0), namesOfSelectedObjects.get(1) });
 
             default:
-                return Messages.bind(Messages.ModelSearchScope_scopeWithMoreThanTwoSelectedElements, new String[] {
+                return Messages.bind(Messages.IpsSearchScope_scopeWithMoreThanTwoSelectedElements, new String[] {
                         scopeType, namesOfSelectedObjects.get(0), namesOfSelectedObjects.get(1) });
         }
     }

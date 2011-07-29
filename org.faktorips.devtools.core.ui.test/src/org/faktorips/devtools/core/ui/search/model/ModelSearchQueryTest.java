@@ -49,7 +49,7 @@ import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.search.IIpsSearchQuery;
 import org.faktorips.devtools.core.ui.search.IpsSearchResult;
-import org.faktorips.devtools.core.ui.search.model.scope.IModelSearchScope;
+import org.faktorips.devtools.core.ui.search.scope.IIpsSearchScope;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -60,7 +60,7 @@ public class ModelSearchQueryTest {
     private IpsSearchResult searchResult;
     private IIpsModel ipsModel;
 
-    private IModelSearchScope scope;
+    private IIpsSearchScope scope;
 
     @Before
     public void setUp() throws Exception {
@@ -70,7 +70,7 @@ public class ModelSearchQueryTest {
         when(ipsModel.getExtensionPropertyDefinitions(any(Class.class), anyBoolean())).thenReturn(
                 new IExtensionPropertyDefinition[0]);
 
-        scope = mock(IModelSearchScope.class);
+        scope = mock(IIpsSearchScope.class);
 
         when(searchModel.getSearchScope()).thenReturn(scope);
 

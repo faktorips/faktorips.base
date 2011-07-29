@@ -11,32 +11,34 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.search.model.scope;
+package org.faktorips.devtools.core.ui.search.scope;
 
-import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 
 /**
- * scope for workspace
+ * Scope for Selection
  * 
  * @author dicker
  */
-public class ModelSearchWorkspaceScope extends AbstractModelSearchScope {
+public class IpsSearchSelectionScope extends AbstractIpsSearchScope {
 
-    @Override
-    protected List<?> getSelectedObjects() {
-        return Arrays.asList(ResourcesPlugin.getWorkspace().getRoot().getProjects());
-    }
+    ISelection selection;
 
-    @Override
-    public String getScopeDescription() {
-        return getScopeTypeLabel(true);
+    public IpsSearchSelectionScope(ISelection selection) {
+        this.selection = selection;
     }
 
     @Override
     protected String getScopeTypeLabel(boolean singular) {
-        return Messages.ModelSearchWorkspaceScope_scopeTypeLabel;
+        return ""; //$NON-NLS-1$
     }
+
+    @Override
+    protected List<?> getSelectedObjects() {
+        return ((IStructuredSelection)selection).toList();
+    }
+
 }

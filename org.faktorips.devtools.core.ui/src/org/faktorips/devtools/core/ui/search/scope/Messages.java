@@ -11,21 +11,21 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.search.model.scope;
+package org.faktorips.devtools.core.ui.search.scope;
 
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
-    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.search.model.scope.messages"; //$NON-NLS-1$
-    public static String ModelSearchProjectsScope_scopeTypeLabelPlural;
-    public static String ModelSearchProjectsScope_scopeTypeLabelSingular;
-    public static String ModelSearchScope_scopeWithMoreThanTwoSelectedElements;
-    public static String ModelSearchScope_scopeWithOneSelectedElement;
-    public static String ModelSearchScope_scopeWithTwoSelectedElements;
-    public static String ModelSearchScope_undefinedScope;
-    public static String ModelSearchWorkingSetScope_scopeTypeLabelPlural;
-    public static String ModelSearchWorkingSetScope_scopeTypeLabelSingular;
-    public static String ModelSearchWorkspaceScope_scopeTypeLabel;
+    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.search.scope.messages"; //$NON-NLS-1$
+    public static String IpsSearchProjectsScope_scopeTypeLabelPlural;
+    public static String IpsSearchProjectsScope_scopeTypeLabelSingular;
+    public static String IpsSearchScope_scopeWithMoreThanTwoSelectedElements;
+    public static String IpsSearchScope_scopeWithOneSelectedElement;
+    public static String IpsSearchScope_scopeWithTwoSelectedElements;
+    public static String IpsSearchScope_undefinedScope;
+    public static String IpsSearchWorkingSetScope_scopeTypeLabelPlural;
+    public static String IpsSearchWorkingSetScope_scopeTypeLabelSingular;
+    public static String IpsSearchWorkspaceScope_scopeTypeLabel;
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

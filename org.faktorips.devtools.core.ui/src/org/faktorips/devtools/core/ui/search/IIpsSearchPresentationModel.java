@@ -16,15 +16,16 @@ package org.faktorips.devtools.core.ui.search;
 import java.util.Locale;
 
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.faktorips.devtools.core.ui.search.model.scope.IModelSearchScope;
+import org.eclipse.search.ui.ISearchQuery;
+import org.faktorips.devtools.core.ui.search.scope.IIpsSearchScope;
 
-public interface ISearchPresentationModel {
+public interface IIpsSearchPresentationModel {
 
     public static final String SRC_FILE_PATTERN = "srcFilePattern"; //$NON-NLS-1$
 
-    public void setSearchScope(IModelSearchScope searchScope);
+    public void setSearchScope(IIpsSearchScope searchScope);
 
-    public IModelSearchScope getSearchScope();
+    public IIpsSearchScope getSearchScope();
 
     public Locale getSearchLocale();
 
@@ -41,4 +42,6 @@ public interface ISearchPresentationModel {
     public void setSrcFilePattern(String newValue);
 
     public String getSrcFilePattern();
+
+    public ISearchQuery createSearchQuery();
 }

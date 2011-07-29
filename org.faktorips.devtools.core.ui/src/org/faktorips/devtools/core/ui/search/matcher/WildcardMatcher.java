@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.search.model;
+package org.faktorips.devtools.core.ui.search.matcher;
 
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;

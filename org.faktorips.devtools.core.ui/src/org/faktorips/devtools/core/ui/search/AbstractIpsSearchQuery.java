@@ -28,9 +28,9 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.ui.search.model.WildcardMatcher;
+import org.faktorips.devtools.core.ui.search.matcher.WildcardMatcher;
 
-public abstract class AbstractIpsSearchQuery<T extends ISearchPresentationModel> implements IIpsSearchQuery {
+public abstract class AbstractIpsSearchQuery<T extends IIpsSearchPresentationModel> implements IIpsSearchQuery {
 
     protected final T searchModel;
     protected final IpsSearchResult searchResult;
@@ -69,7 +69,7 @@ public abstract class AbstractIpsSearchQuery<T extends ISearchPresentationModel>
     protected abstract boolean isJustTypeNameSearch();
 
     protected Set<IIpsSrcFile> getMatchingSrcFiles() throws CoreException {
-        Set<IIpsSrcFile> searchedTypes = getSelectedTypes();
+        Set<IIpsSrcFile> searchedTypes = getSelectedSrcFiles();
 
         if (StringUtils.isNotBlank(searchModel.getSrcFilePattern())) {
             WildcardMatcher typeNameMatcher = new WildcardMatcher(searchModel.getSrcFilePattern());
@@ -86,7 +86,7 @@ public abstract class AbstractIpsSearchQuery<T extends ISearchPresentationModel>
         return searchedTypes;
     }
 
-    protected Set<IIpsSrcFile> getSelectedTypes() throws CoreException {
+    protected Set<IIpsSrcFile> getSelectedSrcFiles() throws CoreException {
         Set<IIpsSrcFile> ipsSrcFilesInScope = searchModel.getSearchScope().getSelectedIpsSrcFiles();
 
         Set<IIpsSrcFile> selectedSrcFiles = new HashSet<IIpsSrcFile>();

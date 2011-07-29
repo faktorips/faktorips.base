@@ -13,15 +13,7 @@
 
 package org.faktorips.devtools.core.ui.search.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.search.ui.ISearchPage;
-import org.eclipse.search.ui.ISearchPageContainer;
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -32,32 +24,22 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
-import org.faktorips.devtools.core.ui.search.ISearchPresentationModel;
-import org.faktorips.devtools.core.ui.search.model.scope.IModelSearchScope;
-import org.faktorips.devtools.core.ui.search.model.scope.ModelSearchProjectsScope;
-import org.faktorips.devtools.core.ui.search.model.scope.ModelSearchSelectionScope;
-import org.faktorips.devtools.core.ui.search.model.scope.ModelSearchWorkingSetScope;
-import org.faktorips.devtools.core.ui.search.model.scope.ModelSearchWorkspaceScope;
+import org.faktorips.devtools.core.ui.search.AbstractIpsSearchPage;
+import org.faktorips.devtools.core.ui.search.IIpsSearchPresentationModel;
 
 /**
  * DialogPage for the Faktor-IPS Model Search
  * 
  * @author dicker
  */
-public class ModelSearchPage extends DialogPage implements ISearchPage {
-
-    private final BindingContext bindingContext = new BindingContext();
-    private final ModelSearchPresentationModel model = new ModelSearchPresentationModel();
+public class ModelSearchPage extends AbstractIpsSearchPage<ModelSearchPresentationModel> {
 
     private static final String MODEL_SEARCH_PAGE_NAME = "ModelSearchPage"; //$NON-NLS-1$
     private static final String MODEL_SEARCH_DATA = "ModelSearchData"; //$NON-NLS-1$
 
-    private ISearchPageContainer container;
     private Text txtTypeName;
     private StringValueComboField txtSearchString;
     private Combo cboSearchString;
@@ -67,9 +49,6 @@ public class ModelSearchPage extends DialogPage implements ISearchPage {
     private Checkbox ckbSearchAssociations;
     private Checkbox ckbSearchTableStructureUsages;
     private Checkbox ckbSearchValidationRules;
-
-    private List<IDialogSettings> previousSearchData;
-    private IDialogSettings dialogSettings;
 
     @Override
     public void createControl(Composite parent) {
@@ -93,7 +72,7 @@ public class ModelSearchPage extends DialogPage implements ISearchPage {
                     return;
                 }
 
-                model.read(previousSearchData.get(selectionIndex));
+                getModel().read(getPreviousSearchData().get(selectionIndex));
             }
 
             @Override
@@ -105,7 +84,7 @@ public class ModelSearchPage extends DialogPage implements ISearchPage {
         cboSearchString.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         txtSearchString = new StringValueComboField(cboSearchString);
 
-        for (IDialogSettings settings : previousSearchData) {
+        for (IDialogSettings settings : getPreviousSearchData()) {
             cboSearchString.add(settings.get(ModelSearchPresentationModel.SEARCH_TERM));
         }
 
@@ -129,26 +108,27 @@ public class ModelSearchPage extends DialogPage implements ISearchPage {
 
         setControl(composite);
 
-        bindingContext.bindContent(txtSearchString, model, ModelSearchPresentationModel.SEARCH_TERM);
-        bindingContext.bindContent(txtTypeName, model, ISearchPresentationModel.SRC_FILE_PATTERN);
-        bindingContext.bindContent(ckbSearchAttributes, model, ModelSearchPresentationModel.SEARCH_ATTRIBUTES);
-        bindingContext.bindContent(ckbSearchMethods, model, ModelSearchPresentationModel.SEARCH_METHODS);
-        bindingContext.bindContent(ckbSearchAssociations, model, ModelSearchPresentationModel.SEARCH_ASSOCIATIONS);
-        bindingContext.bindContent(ckbSearchTableStructureUsages, model,
+        getBindingContext().bindContent(txtSearchString, getModel(), ModelSearchPresentationModel.SEARCH_TERM);
+        getBindingContext().bindContent(txtTypeName, getModel(), IIpsSearchPresentationModel.SRC_FILE_PATTERN);
+        getBindingContext().bindContent(ckbSearchAttributes, getModel(), ModelSearchPresentationModel.SEARCH_ATTRIBUTES);
+        getBindingContext().bindContent(ckbSearchMethods, getModel(), ModelSearchPresentationModel.SEARCH_METHODS);
+        getBindingContext().bindContent(ckbSearchAssociations, getModel(), ModelSearchPresentationModel.SEARCH_ASSOCIATIONS);
+        getBindingContext().bindContent(ckbSearchTableStructureUsages, getModel(),
                 ModelSearchPresentationModel.SEARCH_TABLE_STRUCTURE_USAGES);
-        bindingContext.bindContent(ckbSearchValidationRules, model,
+        getBindingContext().bindContent(ckbSearchValidationRules, getModel(),
                 ModelSearchPresentationModel.SEARCH_VALIDATION_RULES);
 
-        bindingContext.updateUI();
+        getBindingContext().updateUI();
     }
 
     @Override
     public boolean performAction() {
-        // it is impossible link the search scope to the model with the context binding, because a
+        // it is impossible to link the search scope to the model with the context binding, because
+        // a
         // changed selection of the scope doesn't throw an event.
-        model.setSearchScope(createSearchScope());
+        getModel().setSearchScope(createSearchScope());
 
-        ModelSearchQuery query = new ModelSearchQuery(model);
+        ModelSearchQuery query = new ModelSearchQuery(getModel());
 
         writeConfiguration();
 
@@ -157,82 +137,18 @@ public class ModelSearchPage extends DialogPage implements ISearchPage {
         return true;
     }
 
-    private IModelSearchScope createSearchScope() {
-        int selectedScope = container.getSelectedScope();
-
-        switch (selectedScope) {
-            case ISearchPageContainer.WORKSPACE_SCOPE:
-                return new ModelSearchWorkspaceScope();
-
-            case ISearchPageContainer.SELECTION_SCOPE:
-                return new ModelSearchSelectionScope(container.getSelection());
-
-            case ISearchPageContainer.WORKING_SET_SCOPE:
-                return new ModelSearchWorkingSetScope(container.getSelectedWorkingSets());
-
-            case ISearchPageContainer.SELECTED_PROJECTS_SCOPE:
-                return new ModelSearchProjectsScope(container.getSelection());
-
-            default:
-                break;
-        }
-        return null;
+    @Override
+    protected String getDialogSettingPrefix() {
+        return MODEL_SEARCH_DATA;
     }
 
     @Override
-    public void setContainer(ISearchPageContainer container) {
-        this.container = container;
-    }
-
-    private void readConfiguration() {
-        IDialogSettings settings = getDialogSettings();
-
-        IDialogSettings[] sections = settings.getSections();
-
-        previousSearchData = new ArrayList<IDialogSettings>();
-        for (IDialogSettings dialogSettings : sections) {
-            if (dialogSettings.getName().startsWith(MODEL_SEARCH_DATA)) {
-                previousSearchData.add(dialogSettings);
-            }
-        }
-
-        Comparator<IDialogSettings> comparator = new Comparator<IDialogSettings>() {
-
-            @Override
-            public int compare(IDialogSettings arg0, IDialogSettings arg1) {
-                return arg1.getName().compareTo(arg0.getName());
-            }
-
-        };
-        Collections.sort(previousSearchData, comparator);
-    }
-
-    private void writeConfiguration() {
-        IDialogSettings settings = getDialogSettings();
-
-        // TODO evtl. sortierkriterium optimieren
-        IDialogSettings newSection = settings.addNewSection(MODEL_SEARCH_DATA + System.currentTimeMillis());
-
-        model.store(newSection);
-
-    }
-
-    private IDialogSettings getDialogSettings() {
-        if (dialogSettings == null) {
-            IDialogSettings settings = IpsPlugin.getDefault().getDialogSettings();
-            dialogSettings = settings.getSection(MODEL_SEARCH_PAGE_NAME);
-            if (dialogSettings == null) {
-                dialogSettings = settings.addNewSection(MODEL_SEARCH_PAGE_NAME);
-            }
-        }
-        return dialogSettings;
+    protected String getSearchPageName() {
+        return MODEL_SEARCH_PAGE_NAME;
     }
 
     @Override
-    public void dispose() {
-        super.dispose();
-        if (bindingContext != null) {
-            bindingContext.dispose();
-        }
+    protected ModelSearchPresentationModel createPresentationModel() {
+        return new ModelSearchPresentationModel();
     }
 }

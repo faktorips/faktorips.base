@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.search.model.scope;
+package org.faktorips.devtools.core.ui.search.scope;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +27,11 @@ import org.eclipse.jface.viewers.IStructuredSelection;
  * 
  * @author dicker
  */
-public class ModelSearchProjectsScope extends AbstractModelSearchScope {
+public class IpsSearchProjectsScope extends AbstractIpsSearchScope {
 
     protected final ISelection selection;
 
-    public ModelSearchProjectsScope(ISelection selection) {
+    public IpsSearchProjectsScope(ISelection selection) {
         this.selection = selection;
     }
 
@@ -61,8 +61,8 @@ public class ModelSearchProjectsScope extends AbstractModelSearchScope {
 
     @Override
     protected String getScopeTypeLabel(boolean singular) {
-        return singular ? Messages.ModelSearchProjectsScope_scopeTypeLabelSingular
-                : Messages.ModelSearchProjectsScope_scopeTypeLabelPlural;
+        return singular ? Messages.IpsSearchProjectsScope_scopeTypeLabelSingular
+                : Messages.IpsSearchProjectsScope_scopeTypeLabelPlural;
     }
 
 }

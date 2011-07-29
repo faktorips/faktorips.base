@@ -1936,9 +1936,23 @@
 	   <page
           canSearchEnclosingProjects="true"
           class="org.faktorips.devtools.core.ui.search.model.ModelSearchPage"
+          enabled="true"
           icon="icons/ModelSearch.gif"
           id="org.faktorips.devtools.core.ui.search.model.ModelSearchPage"
           label="%org.faktorips.devtools.core.ui.search.model.ModelSearchPage.label"
+          showScopeSection="true"
+          sizeHint="460,160">
+		</page>
+	</extension>
+	
+
+	<extension point="org.eclipse.search.searchPages">
+	   <page
+          canSearchEnclosingProjects="true"
+          class="org.faktorips.devtools.core.ui.search.product.ProductSearchPage"
+          icon="icons/ModelSearch.gif"
+          id="org.faktorips.devtools.core.ui.search.product.ProductSearchPage"
+          label="%org.faktorips.devtools.core.ui.search.product.ProductSearchPage.label"
           showScopeSection="true"
           sizeHint="460,160">
 		</page>

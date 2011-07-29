@@ -11,11 +11,12 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.search.model;
+package org.faktorips.devtools.core.ui.search.matcher;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.faktorips.devtools.core.ui.search.matcher.WildcardMatcher;
 import org.junit.Test;
 
 public class WildcardMatcherTest {

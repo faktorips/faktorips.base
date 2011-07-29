@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.search.model.scope;
+package org.faktorips.devtools.core.ui.search.scope;
 
 import java.util.Set;
 
@@ -19,11 +19,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 
 /**
- * The IModelSearchScope defines, which IpsSrcFile the search should consider.
+ * The IIpsSearchScope defines, which IpsSrcFile the search should consider.
  * 
  * @author dicker
  */
-public interface IModelSearchScope {
+public interface IIpsSearchScope {
 
     /**
      * @return Set of srcFile, which are related in this Scope

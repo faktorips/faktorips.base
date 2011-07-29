@@ -19,21 +19,21 @@ import java.util.Locale;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
-import org.faktorips.devtools.core.ui.search.model.scope.IModelSearchScope;
+import org.faktorips.devtools.core.ui.search.scope.IIpsSearchScope;
 
 public abstract class AbstractSearchPresentationModel extends PresentationModelObject implements
-        ISearchPresentationModel {
+        IIpsSearchPresentationModel {
 
-    private IModelSearchScope searchScope;
+    private IIpsSearchScope searchScope;
     private String typeName = ""; //$NON-NLS-1$
 
     @Override
-    public void setSearchScope(IModelSearchScope searchScope) {
+    public void setSearchScope(IIpsSearchScope searchScope) {
         this.searchScope = searchScope;
     }
 
     @Override
-    public IModelSearchScope getSearchScope() {
+    public IIpsSearchScope getSearchScope() {
         return searchScope;
     }
 

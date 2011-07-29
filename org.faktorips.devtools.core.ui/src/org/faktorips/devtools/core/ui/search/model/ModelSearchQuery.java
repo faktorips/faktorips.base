@@ -30,6 +30,9 @@ import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.search.AbstractIpsSearchQuery;
+import org.faktorips.devtools.core.ui.search.matcher.ClassMatcher;
+import org.faktorips.devtools.core.ui.search.matcher.ExtensionPropertyMatcher;
+import org.faktorips.devtools.core.ui.search.matcher.WildcardMatcher;
 
 /**
  * ModelSearchQuery contains the logic of the Faktor-IPS Model Search. A

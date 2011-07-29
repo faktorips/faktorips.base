@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.search.model.scope;
+package org.faktorips.devtools.core.ui.search.scope;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,11 +24,11 @@ import org.eclipse.ui.IWorkingSet;
  * 
  * @author dicker
  */
-public class ModelSearchWorkingSetScope extends AbstractModelSearchScope {
+public class IpsSearchWorkingSetScope extends AbstractIpsSearchScope {
 
     private final IWorkingSet[] workingSets;
 
-    public ModelSearchWorkingSetScope(IWorkingSet[] workingSets) {
+    public IpsSearchWorkingSetScope(IWorkingSet[] workingSets) {
         this.workingSets = workingSets;
     }
 
@@ -45,8 +45,8 @@ public class ModelSearchWorkingSetScope extends AbstractModelSearchScope {
 
     @Override
     protected String getScopeTypeLabel(boolean singular) {
-        return singular ? Messages.ModelSearchWorkingSetScope_scopeTypeLabelSingular
-                : Messages.ModelSearchWorkingSetScope_scopeTypeLabelPlural;
+        return singular ? Messages.IpsSearchWorkingSetScope_scopeTypeLabelSingular
+                : Messages.IpsSearchWorkingSetScope_scopeTypeLabelPlural;
     }
 
     @Override
