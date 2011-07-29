@@ -76,9 +76,7 @@ public class ModelSearchQuery implements ISearchQuery {
                     searchResult.addMatch(new Match(srcFile.getIpsObject(), 0, 0));
                 }
             } else {
-                Set<IType> searchedTypes = getTypes(getMatchingSrcFiles());
-
-                addMatches(searchedTypes);
+                searchDetails();
             }
         } catch (CoreException e) {
             return new IpsStatus(e);
@@ -87,6 +85,12 @@ public class ModelSearchQuery implements ISearchQuery {
         monitor.done();
         return new IpsStatus(IStatus.OK, 0,
                 org.faktorips.devtools.core.ui.search.model.Messages.ModelSearchQuery_okStatus, null);
+    }
+
+    protected void searchDetails() throws CoreException {
+        Set<IType> searchedTypes = getTypes(getMatchingSrcFiles());
+
+        addMatches(searchedTypes);
     }
 
     private void addMatches(Set<IType> searchedTypes) throws CoreException {

@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.search;
+package org.faktorips.devtools.core.ui.search.reference;
 
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IMemento;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.ui.search.IpsElementsSearchViewPage;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 
 public class ReferenceSearchResultPage extends IpsElementsSearchViewPage {

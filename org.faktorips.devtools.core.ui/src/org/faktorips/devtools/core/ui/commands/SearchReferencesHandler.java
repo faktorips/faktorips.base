@@ -23,9 +23,9 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.ui.search.ReferencesToPolicySearchQuery;
-import org.faktorips.devtools.core.ui.search.ReferencesToProductSearchQuery;
-import org.faktorips.devtools.core.ui.search.ReferencesToTableContentsSearchQuery;
+import org.faktorips.devtools.core.ui.search.reference.ReferencesToPolicySearchQuery;
+import org.faktorips.devtools.core.ui.search.reference.ReferencesToProductSearchQuery;
+import org.faktorips.devtools.core.ui.search.reference.ReferencesToTableContentsSearchQuery;
 
 /**
  * Handler for finding references to a given IpsObject. Actually supported are {@link IProductCmpt},

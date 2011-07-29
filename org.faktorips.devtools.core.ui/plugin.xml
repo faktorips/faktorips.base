@@ -1102,9 +1102,9 @@
    <extension
          point="org.eclipse.search.searchResultViewPages">
       <viewPage
-            class="org.faktorips.devtools.core.ui.search.ReferenceSearchResultPage"
+            class="org.faktorips.devtools.core.ui.search.reference.ReferenceSearchResultPage"
             id="org.faktorips.devtools.core.ui.search.ReferenceSearchResultPage"
-            searchResultClass="org.faktorips.devtools.core.ui.search.ReferenceSearchResult"/>
+            searchResultClass="org.faktorips.devtools.core.ui.search.reference.ReferenceSearchResult"/>
    </extension>
    
    <extension
