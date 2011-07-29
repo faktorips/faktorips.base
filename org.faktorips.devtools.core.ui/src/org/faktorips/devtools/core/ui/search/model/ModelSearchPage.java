@@ -37,8 +37,9 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
-import org.faktorips.devtools.core.ui.search.model.scope.ModelSearchProjectsScope;
+import org.faktorips.devtools.core.ui.search.ISearchPresentationModel;
 import org.faktorips.devtools.core.ui.search.model.scope.IModelSearchScope;
+import org.faktorips.devtools.core.ui.search.model.scope.ModelSearchProjectsScope;
 import org.faktorips.devtools.core.ui.search.model.scope.ModelSearchSelectionScope;
 import org.faktorips.devtools.core.ui.search.model.scope.ModelSearchWorkingSetScope;
 import org.faktorips.devtools.core.ui.search.model.scope.ModelSearchWorkspaceScope;
@@ -129,7 +130,7 @@ public class ModelSearchPage extends DialogPage implements ISearchPage {
         setControl(composite);
 
         bindingContext.bindContent(txtSearchString, model, ModelSearchPresentationModel.SEARCH_TERM);
-        bindingContext.bindContent(txtTypeName, model, ModelSearchPresentationModel.TYPE_NAME);
+        bindingContext.bindContent(txtTypeName, model, ISearchPresentationModel.SRC_FILE_PATTERN);
         bindingContext.bindContent(ckbSearchAttributes, model, ModelSearchPresentationModel.SEARCH_ATTRIBUTES);
         bindingContext.bindContent(ckbSearchMethods, model, ModelSearchPresentationModel.SEARCH_METHODS);
         bindingContext.bindContent(ckbSearchAssociations, model, ModelSearchPresentationModel.SEARCH_ASSOCIATIONS);

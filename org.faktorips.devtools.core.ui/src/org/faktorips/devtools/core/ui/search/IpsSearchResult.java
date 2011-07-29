@@ -11,7 +11,7 @@
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.search.model;
+package org.faktorips.devtools.core.ui.search;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -26,11 +26,11 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- * The result of a Faktor-IPS Model Search
+ * The result of a Faktor-IPS Model or Product Search
  * 
  * @author dicker
  */
-public class ModelSearchResult extends AbstractTextSearchResult {
+public class IpsSearchResult extends AbstractTextSearchResult {
 
     private Set<IIpsElement> matchingIpsElements = new HashSet<IIpsElement>();
 
@@ -51,9 +51,9 @@ public class ModelSearchResult extends AbstractTextSearchResult {
         return projects.toArray();
     }
 
-    private final ModelSearchQuery query;
+    private final IIpsSearchQuery query;
 
-    protected ModelSearchResult(ModelSearchQuery query) {
+    protected IpsSearchResult(IIpsSearchQuery query) {
         this.query = query;
     }
 
@@ -101,11 +101,11 @@ public class ModelSearchResult extends AbstractTextSearchResult {
 
     @Override
     public void removeMatch(Match match) {
-        matchingIpsElements.remove(match);
+        matchingIpsElements.remove(match.getElement());
         super.removeMatch(match);
     }
 
-    protected Set<IIpsElement> getMatchingIpsElements() {
+    public Set<IIpsElement> getMatchingIpsElements() {
         return matchingIpsElements;
     }
 }

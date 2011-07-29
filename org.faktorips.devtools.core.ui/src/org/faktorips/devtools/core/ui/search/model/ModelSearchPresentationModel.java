@@ -15,28 +15,24 @@ package org.faktorips.devtools.core.ui.search.model;
 
 import java.beans.PropertyChangeEvent;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
-import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
-import org.faktorips.devtools.core.ui.search.model.scope.IModelSearchScope;
+import org.faktorips.devtools.core.ui.search.AbstractSearchPresentationModel;
 
 /**
  * Presentation Model for the Faktor-IPS Model Search
  * 
  * @author dicker
  */
-public class ModelSearchPresentationModel extends PresentationModelObject {
+public class ModelSearchPresentationModel extends AbstractSearchPresentationModel {
 
-    public static final String TYPE_NAME = "typeName"; //$NON-NLS-1$
     public static final String SEARCH_TERM = "searchTerm"; //$NON-NLS-1$
     public static final String SEARCH_ATTRIBUTES = "searchAttributes"; //$NON-NLS-1$
     public static final String SEARCH_METHODS = "searchMethods"; //$NON-NLS-1$
@@ -44,33 +40,19 @@ public class ModelSearchPresentationModel extends PresentationModelObject {
     public static final String SEARCH_TABLE_STRUCTURE_USAGES = "searchTableStructureUsages"; //$NON-NLS-1$
     public static final String SEARCH_VALIDATION_RULES = "searchValidationRules"; //$NON-NLS-1$
 
-    private IModelSearchScope searchScope;
-
     private String searchTerm = ""; //$NON-NLS-1$
-    private String typeName = ""; //$NON-NLS-1$
-
     private final Set<Class<? extends IIpsObjectPart>> searchedClazzes = new HashSet<Class<? extends IIpsObjectPart>>();
 
     public ModelSearchPresentationModel() {
         initDefaultSearchValues();
     }
 
-    private void initDefaultSearchValues() {
+    protected void initDefaultSearchValues() {
         setSearchAttributes(true);
         setSearchMethods(true);
         setSearchAssociations(true);
         setSearchTableStructureUsages(true);
         setSearchValidationRules(true);
-    }
-
-    public String getTypeName() {
-        return typeName;
-    }
-
-    public void setTypeName(String newValue) {
-        String oldValue = typeName;
-        typeName = newValue;
-        notifyListeners(new PropertyChangeEvent(this, TYPE_NAME, oldValue, newValue));
     }
 
     public String getSearchTerm() {
@@ -146,20 +128,13 @@ public class ModelSearchPresentationModel extends PresentationModelObject {
         notifyListeners(new PropertyChangeEvent(this, SEARCH_VALIDATION_RULES, oldValue, newValue));
     }
 
-    public void setSearchScope(IModelSearchScope searchScope) {
-        this.searchScope = searchScope;
-    }
-
-    public IModelSearchScope getSearchScope() {
-        return searchScope;
-    }
-
     /**
      * stores the actual values into the dialog settings
      */
+    @Override
     public void store(IDialogSettings settings) {
         settings.put(SEARCH_TERM, getSearchTerm());
-        settings.put(TYPE_NAME, getTypeName());
+        settings.put(SRC_FILE_PATTERN, getSrcFilePattern());
 
         settings.put(SEARCH_ATTRIBUTES, isSearchAttributes());
         settings.put(SEARCH_METHODS, isSearchMethods());
@@ -171,9 +146,10 @@ public class ModelSearchPresentationModel extends PresentationModelObject {
     /**
      * reads the dialog setting and uses the values for the actual search
      */
+    @Override
     public void read(IDialogSettings settings) {
         setSearchTerm(settings.get(SEARCH_TERM));
-        setTypeName(settings.get(TYPE_NAME));
+        setSrcFilePattern(settings.get(SRC_FILE_PATTERN));
 
         setSearchAttributes(settings.getBoolean(SEARCH_ATTRIBUTES));
         setSearchMethods(settings.getBoolean(SEARCH_METHODS));
@@ -184,10 +160,5 @@ public class ModelSearchPresentationModel extends PresentationModelObject {
 
     public Set<Class<? extends IIpsObjectPart>> getSearchedClazzes() {
         return searchedClazzes;
-    }
-
-    // TODO right place?
-    public Locale getSearchLocale() {
-        return new MultiLanguageSupport().getLocalizationLocale();
     }
 }

@@ -1947,7 +1947,7 @@
 	<extension point="org.eclipse.search.searchResultViewPages">
 		<viewPage
 			id="org.faktorips.devtools.core.ui.search.model.ModelSearchResultPage"
-			searchResultClass="org.faktorips.devtools.core.ui.search.model.ModelSearchResult"
+			searchResultClass="org.faktorips.devtools.core.ui.search.IpsSearchResult"
 			class="org.faktorips.devtools.core.ui.search.IpsElementsSearchViewPage">
 		</viewPage>
 	</extension>

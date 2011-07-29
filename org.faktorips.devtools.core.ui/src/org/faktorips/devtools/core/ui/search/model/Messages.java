@@ -32,7 +32,6 @@ public class Messages extends NLS {
     public static String ModelSearchQuery_labelHitsSearchTermAndTypeName;
     public static String ModelSearchQuery_labelHitsTypeName;
     public static String ModelSearchQuery_labelHitTypeName;
-    public static String ModelSearchQuery_okStatus;
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

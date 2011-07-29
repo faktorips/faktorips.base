@@ -119,7 +119,7 @@ public class ReferenceSearchResultPage extends IpsElementsSearchViewPage {
             int fileCount = getInput().getElements().length;
             if (itemCount < fileCount) {
                 String format = Messages.ReferenceSearchResultPage_labelFilterCountDetails;
-                return NLS.bind(format, new Object[] { label, new Integer(itemCount), new Integer(fileCount) });
+                return NLS.bind(format, new Object[] { label, Integer.valueOf(itemCount), Integer.valueOf(fileCount) });
             }
         }
         return label;

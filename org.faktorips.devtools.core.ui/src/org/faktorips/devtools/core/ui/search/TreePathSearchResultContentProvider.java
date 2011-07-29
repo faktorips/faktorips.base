@@ -42,7 +42,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
  */
 public class TreePathSearchResultContentProvider implements ITreeContentProvider, ISearchResultListener {
 
-    private class IpsElementSearchTreeNode {
+    private static class IpsElementSearchTreeNode {
 
         private final Set<IIpsElement> children;
 

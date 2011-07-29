@@ -47,6 +47,8 @@ import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.ui.search.IIpsSearchQuery;
+import org.faktorips.devtools.core.ui.search.IpsSearchResult;
 import org.faktorips.devtools.core.ui.search.model.scope.IModelSearchScope;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,8 +56,8 @@ import org.junit.Test;
 public class ModelSearchQueryTest {
 
     private ModelSearchPresentationModel searchModel;
-    private ModelSearchQuery query;
-    private ModelSearchResult searchResult;
+    private IIpsSearchQuery query;
+    private IpsSearchResult searchResult;
     private IIpsModel ipsModel;
 
     private IModelSearchScope scope;
@@ -73,13 +75,13 @@ public class ModelSearchQueryTest {
         when(searchModel.getSearchScope()).thenReturn(scope);
 
         query = new ModelSearchQuery(searchModel, ipsModel);
-        searchResult = (ModelSearchResult)query.getSearchResult();
+        searchResult = (IpsSearchResult)query.getSearchResult();
     }
 
     @Test
     public void testSucheKlassenName() throws CoreException {
 
-        when(searchModel.getTypeName()).thenReturn("SrcF");
+        when(searchModel.getSrcFilePattern()).thenReturn("SrcF");
 
         IIpsSrcFile srcFile1 = mock(IpsSrcFile.class);
         when(srcFile1.getIpsObjectName()).thenReturn("SrcFile1");
@@ -137,7 +139,7 @@ public class ModelSearchQueryTest {
     @Test
     public void testSucheAttribute() throws CoreException {
 
-        when(searchModel.getTypeName()).thenReturn("SrcF");
+        when(searchModel.getSrcFilePattern()).thenReturn("SrcF");
         when(searchModel.getSearchTerm()).thenReturn("MatchingAttr");
 
         Set<Class<? extends IIpsObjectPart>> set = new HashSet<Class<? extends IIpsObjectPart>>();
@@ -204,7 +206,7 @@ public class ModelSearchQueryTest {
     @Test
     public void testSucheMethoden() throws CoreException {
 
-        when(searchModel.getTypeName()).thenReturn("SrcF");
+        when(searchModel.getSrcFilePattern()).thenReturn("SrcF");
         when(searchModel.getSearchTerm()).thenReturn("MatchingMet");
 
         Set<Class<? extends IIpsObjectPart>> set = new HashSet<Class<? extends IIpsObjectPart>>();
@@ -271,7 +273,7 @@ public class ModelSearchQueryTest {
     @Test
     public void testSucheAssoziationen() throws CoreException {
 
-        when(searchModel.getTypeName()).thenReturn("SrcF");
+        when(searchModel.getSrcFilePattern()).thenReturn("SrcF");
         when(searchModel.getSearchTerm()).thenReturn("MatchingMet");
 
         Set<Class<? extends IIpsObjectPart>> set = new HashSet<Class<? extends IIpsObjectPart>>();
@@ -338,7 +340,7 @@ public class ModelSearchQueryTest {
     @Test
     public void testSucheTableStructureUsages() throws CoreException {
 
-        when(searchModel.getTypeName()).thenReturn("SrcF");
+        when(searchModel.getSrcFilePattern()).thenReturn("SrcF");
         when(searchModel.getSearchTerm()).thenReturn("MatchingMet");
 
         Set<Class<? extends IIpsObjectPart>> set = new HashSet<Class<? extends IIpsObjectPart>>();
@@ -405,7 +407,7 @@ public class ModelSearchQueryTest {
     @Test
     public void testSucheRules() throws CoreException {
 
-        when(searchModel.getTypeName()).thenReturn("SrcF");
+        when(searchModel.getSrcFilePattern()).thenReturn("SrcF");
         when(searchModel.getSearchTerm()).thenReturn("MatchingMet");
 
         Set<Class<? extends IIpsObjectPart>> set = new HashSet<Class<? extends IIpsObjectPart>>();
@@ -471,7 +473,7 @@ public class ModelSearchQueryTest {
     @Test
     public void testSucheLabels() throws CoreException {
 
-        when(searchModel.getTypeName()).thenReturn("SrcF");
+        when(searchModel.getSrcFilePattern()).thenReturn("SrcF");
         when(searchModel.getSearchTerm()).thenReturn("Matching");
 
         Set<Class<? extends IIpsObjectPart>> set = new HashSet<Class<? extends IIpsObjectPart>>();

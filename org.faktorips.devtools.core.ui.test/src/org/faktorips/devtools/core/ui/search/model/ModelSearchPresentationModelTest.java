@@ -45,7 +45,7 @@ public class ModelSearchPresentationModelTest {
         String typeName = "type";
 
         presentationModelBasis.setSearchTerm(searchTerm);
-        presentationModelBasis.setTypeName(typeName);
+        presentationModelBasis.setSrcFilePattern(typeName);
 
         presentationModelBasis.setSearchAssociations(false);
         presentationModelBasis.setSearchAttributes(false);
@@ -59,7 +59,7 @@ public class ModelSearchPresentationModelTest {
         presentationModelTest.read(settings);
 
         assertEquals(searchTerm, presentationModelTest.getSearchTerm());
-        assertEquals(typeName, presentationModelTest.getTypeName());
+        assertEquals(typeName, presentationModelTest.getSrcFilePattern());
 
         assertFalse(presentationModelTest.isSearchAttributes());
         assertFalse(presentationModelTest.isSearchAssociations());
