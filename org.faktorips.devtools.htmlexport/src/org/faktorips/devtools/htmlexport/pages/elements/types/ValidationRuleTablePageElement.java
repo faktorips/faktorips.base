@@ -15,10 +15,13 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.internal.model.pctype.ValidationRule;
+import org.faktorips.devtools.core.model.IInternationalString;
+import org.faktorips.devtools.core.model.ILocalizedString;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
@@ -52,7 +55,8 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
         ruleData.add(getContext().getLabel(rule));
         ruleData.add(rule.getMessageCode());
         ruleData.add(rule.getMessageSeverity().getName());
-        ruleData.add(rule.getMessageText().get(getContext().getDocumentationLocale()).getValue());
+        String value = getLocalizedStringValue(rule);
+        ruleData.add(value == null ? "" : value); //$NON-NLS-1$
 
         ruleData.add(StringUtils.join(rule.getBusinessFunctions(), '\n'));
         ruleData.add(StringUtils.join(rule.getValidatedAttributes(), '\n'));
@@ -62,6 +66,25 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
 
         return Arrays.asList(new PageElementUtils().createTextPageElements(ruleData));
 
+    }
+
+    protected String getLocalizedStringValue(IValidationRule rule) {
+        IInternationalString messageText = rule.getMessageText();
+        String emptyRule = ""; //$NON-NLS-1$
+
+        ILocalizedString localizedString = messageText.get(getContext().getDocumentationLocale());
+        if (localizedString == null) {
+            // TODO workaround beseitigen, da hier zufall, welche sprache es wird (evtl. doch
+            // plattformlocale
+            Collection<ILocalizedString> values = messageText.values();
+            if (values.isEmpty()) {
+                return emptyRule;
+            }
+
+            localizedString = values.iterator().next();
+        }
+        String value = localizedString.getValue();
+        return value == null ? emptyRule : value;
     }
 
     @Override

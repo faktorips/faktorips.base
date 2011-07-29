@@ -33,8 +33,8 @@ import org.faktorips.devtools.core.model.tablestructure.IUniqueKey;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
@@ -51,7 +51,8 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
      * @author dicker
      * 
      */
-    private class ForeignKeysTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IForeignKey> {
+    private static class ForeignKeysTablePageElement extends
+            AbstractIpsObjectPartsContainerTablePageElement<IForeignKey> {
 
         public ForeignKeysTablePageElement(ITableStructure tableStructure, DocumentationContext context) {
             super(Arrays.asList(tableStructure.getForeignKeys()), context);
@@ -111,7 +112,8 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
      * @author dicker
      * 
      */
-    private class ColumnsRangesTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IColumnRange> {
+    private static class ColumnsRangesTablePageElement extends
+            AbstractIpsObjectPartsContainerTablePageElement<IColumnRange> {
 
         public ColumnsRangesTablePageElement(ITableStructure tableStructure, DocumentationContext context) {
             super(Arrays.asList(tableStructure.getRanges()), context);

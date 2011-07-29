@@ -55,7 +55,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.MethodsTablePageEl
  */
 public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageElement<IProductCmptType> {
 
-    public class ProductCmptTypeAttributesTablePageElement extends AttributesTablePageElement {
+    public static class ProductCmptTypeAttributesTablePageElement extends AttributesTablePageElement {
 
         public ProductCmptTypeAttributesTablePageElement(IType type, DocumentationContext context) {
             super(type, context);

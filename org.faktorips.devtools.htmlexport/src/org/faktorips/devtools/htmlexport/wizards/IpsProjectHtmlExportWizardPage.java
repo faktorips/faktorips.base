@@ -58,8 +58,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
+import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 
@@ -81,7 +81,7 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
 
     private CheckboxTreeViewer objectTypesTreeViewer;
 
-    private final class IpsObjectLabelProvider implements ILabelProvider {
+    private static final class IpsObjectLabelProvider implements ILabelProvider {
 
         @Override
         public void addListener(ILabelProviderListener listener) {
@@ -131,7 +131,7 @@ public class IpsProjectHtmlExportWizardPage extends WizardDataTransferPage imple
 
     }
 
-    private final class IpsObjectTreeContentProvider implements ITreeContentProvider {
+    private static final class IpsObjectTreeContentProvider implements ITreeContentProvider {
         public IpsObjectTreeContentProvider() {
             createIpsObjectTypesArrays();
         }
